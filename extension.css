@@ -1,0 +1,139 @@
+.zhengsubeijing1 {
+position: absolute;
+background-color: none;
+background-repeat: no-repeat;
+background-image: url('texiao/subimage/zhengsu/zhengsu_bg.png') !important;
+background-size: 100% 100%;
+width: 205px;
+height: 69px;
+left: 0px;
+bottom: 422px;
+padding: 10px 2px 2px 2px;
+/*内边距*/
+/*字体*/
+text-align: center;
+color: #ac9a82;
+text-shadow: -1.3px 0px 2.2px #000, 0px -1.3px 2.2px #000, 1.3px 0px 2.2px #000, 0px 1.3px 2.2px #000;
+font-family: shousha;
+font-size: 18px;
+font-weight: 700;
+z-index: 8 !important;
+}
+
+.zhengsubeijing2 {
+position: absolute;
+background-color: none;
+background-repeat: no-repeat;
+background-image: url('texiao/subimage/zhengsu/zhengsu_bg.png') !important;
+background-size: 100% 100%;
+width: 205px;
+height: 69px;
+left: 0px;
+bottom: 344px !important;
+padding: 10px 2px 2px 2px;
+/*内边距*/
+/*字体*/
+text-align: center;
+color: #ac9a82;
+text-shadow: -1.3px 0px 2.2px #000, 0px -1.3px 2.2px #000, 1.3px 0px 2.2px #000, 0px 1.3px 2.2px #000;
+font-family: shousha;
+font-size: 17px;
+font-weight: 500;
+z-index: 8 !important;
+}
+
+.zhengsubeijing3 {
+position: absolute;
+background-color: none;
+background-repeat: no-repeat;
+background-image: url('texiao/subimage/zhengsu/zhengsu_bg.png') !important;
+background-size: 100% 100%;
+width: 205px;
+height: 68px;
+left: 0px;
+bottom: 266px !important;
+padding: 10px 2px 2px 2px;
+/*内边距*/
+/*字体*/
+text-align: center;
+color: #ac9a82;
+text-shadow: -1.3px 0px 2.2px #000, 0px -1.3px 2.2px #000, 1.3px 0px 2.2px #000, 0px 1.3px 2.2px #000;
+font-family: shousha;
+font-size: 17px;
+font-weight: 500;
+z-index: 8 !important;
+}
+
+/*仁库*/
+.renkubeijinggua {
+/*position:relative;*/
+--l: 15px;
+--t: 100px;
+background-repeat: no-repeat;
+background-image: url('texiao/subimage/renku/renku_bg.png') !important;
+background-size: 100% 100%;
+width: 70.5px;
+height: 42.5px;
+left: calc(var(--l));
+top: calc(var(--t));
+letter-spacing: 3.2px;
+position: absolute;
+transition: none;
+padding: 28.5px 2px 2px 2px;
+/*内边距*/
+/*字体*/
+text-align: center;
+color: #e2e0dc;
+text-shadow: -1.3px 0px 2.2px #000, 0px -1.3px 2.2px #000, 1.3px 0px 2.2px #000, 0px 1.3px 2.2px #000;
+font-family: shousha;
+font-size: 17px;
+font-weight: 900;
+z-index: 8 !important;
+}
+/*感谢 雷 的技术支持*/
+.bol-dibeijing {
+height: 100%;
+width: 100%;
+position: absolute;
+left: 0;
+top: 0;
+z-index: 8;
+}
+.bol-skilltip {
+width: 20%;
+min-height: 5%;
+left: 50%;
+top: 50%;
+font-size: 16px;
+color: #ccad76;
+font-family: 'shousha';
+background-color: rgba(36, 29, 19, 0.85);
+border: #523a24 3px solid;
+border-radius: 10px;
+position: absolute;
+display: block;
+padding: 8px;
+transform: translate(-50%, -50%);
+transition: none;
+}
+
+.bol_authorShow{
+position:absolute;
+width:200%;
+left:-100%;
+margin-left:50%;
+overflow: visible;
+top: -32px;
+font-family:'shousha';
+font-size:1.4em;
+letter-spacing: -2px;
+z-index: 9999;
+}
+.bol_authorShow1{
+overflow: visible;
+text-align:center;
+white-space:nowrap;
+HEIGHT:33px;
+padding:3px 0px;
+/*COLOR:#ffcc00;*/
+}
