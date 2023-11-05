@@ -32136,7 +32136,7 @@ wechat_sp_pangde:['male','wei',4,['mashu','wechatjuesi'],[]],
 wechat_yj_jushou:['male','qun',3,['wechatjianying','shibei'],[]],
 //神武将
 wechat_shen_zhugeliang:['male','shen',3,['wechatqixing','wechatjifeng','wechattianfa'],['shu']],
-wechat_shen_lvmeng:['male','shen',3,['shelie','wechatgongxin'],['wu']],
+wechat_shen_lvmeng:['male','shen',3,['shelie','wechatregongxin'],['wu']],
 wechat_shen_guanyu:['male','shen',5,['wechatwushen'],['shu']],
 //只因武将
 wechat_lvbu:['male','qun',4,['wushuang','wechatxiaohu'],[]],
@@ -32907,6 +32907,31 @@ target:function(player,target){
 return -target.countCards('h');
 },
 },
+},
+},
+wechatregongxin:{
+audio:'gongxin',
+inherit:'gongxin',
+content:function(){
+'step 0'
+var cards=target.getCards('h');
+player.chooseButton(2,[
+'攻心',
+cards,
+[['获得此牌','置于牌堆顶'],'tdnodes'],
+]).set('filterButton',function(button){
+var type=typeof button.link;
+if(ui.selected.buttons.length&&type==typeof ui.selected.buttons[0].link) return false;
+return type=='string'||get.color(button.link,get.owner(button.link))=='red';
+});
+'step 1'
+if(result.bool){
+if(typeof result.links[0]!='string') result.links.reverse();
+var card=result.links[1],choice=result.links[0];
+player.showCards(card,get.translation(player)+'对'+get.translation(target)+'发动了【攻心】');
+if(choice=='获得此牌') target.discard(card);
+else target.lose(card,ui.cardPile,'visible','insert');
+}
 },
 },
 wechatbuqu:{
@@ -36912,6 +36937,8 @@ wechatjilei_info:'当你受到有来源的伤害后，你可以声明一种花�
 wechat_shen_lvmeng:'微信神吕蒙',
 wechatgongxin:'攻心',
 wechatgongxin_info:'出牌阶段限一次，你可以观看一名其他角色的手牌，然后获得其中的一张红桃牌。',
+wechatregongxin:'攻心',
+wechatregongxin_info:'出牌阶段限一次，你可以观看一名其他角色的手牌，然后你可以展示其中的一张红色牌并选择一项：1.获得此牌；2.将此牌置于牌堆顶。',
 wechat_zhoutai:'微信周泰',
 wechatbuqu:'不屈',
 wechatbuqux:'创',
