@@ -4,78 +4,6 @@ return {
 name:"活动武将",
 editable:false,
 content:function(config,pack){
-// 下载进度条，源自Thunder，已经过“雷”的同意
-if (typeof game.HuoDongCreateProgress != 'function') {
-game.HuoDongCreateProgress = (title, max, fileName, value) => {
-const parent = ui.create.div(ui.window, {
-textAlign: 'center',
-width: '300px',
-height: '150px',
-left: 'calc(50% - 150px)',
-top: 'auto',
-bottom: 'calc(50% - 75px)',
-zIndex: '10',
-boxShadow: 'rgb(0 0 0 / 40 %) 0 0 0 1px, rgb(0 0 0 / 20 %) 0 3px 10px',
-backgroundImage: 'linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4))',
-borderRadius: '8px'
-});
-
-// 可拖动
-parent.className = 'dialog';
-
-const container = ui.create.div(parent, {
-position: 'absolute',
-top: '0',
-left: '0',
-width: '100%',
-height: '100%'
-});
-
-container.ontouchstart = ui.click.dialogtouchStart;
-container.ontouchmove = ui.click.touchScroll;
-container.style.WebkitOverflowScrolling = 'touch';
-parent.ontouchstart = ui.click.dragtouchdialog;
-
-const caption = ui.create.div(container, '', title, {
-position: 'relative',
-paddingTop: '8px',
-fontSize: '20px'
-});
-
-ui.create.node('br', container);
-
-const tip = ui.create.div(container, {
-position: 'relative',
-paddingTop: '8px',
-fontSize: '20px',
-width: '100%'
-});
-
-const file = ui.create.node('span', tip, '', fileName);
-file.style.width = file.style.maxWidth = '100%';
-ui.create.node('br', tip);
-const index = ui.create.node('span', tip, '', String(value || '0'));
-ui.create.node('span', tip, '', '/');
-const maxSpan = ui.create.node('span', tip, '', String(max || '未知'));
-
-ui.create.node('br', container);
-
-const progress = ui.create.node('progress.zxgxProgress', container);
-progress.setAttribute('value', value || '0');
-progress.setAttribute('max', max);
-
-parent.getTitle = () => caption.innerText;
-parent.setTitle = (title) => caption.innerText = title;
-parent.getFileName = () => file.innerText;
-parent.setFileName = (name) => file.innerText = name;
-parent.getProgressValue = () => progress.value;
-parent.setProgressValue = (value) => progress.value = index.innerText = value;
-parent.getProgressMax = () => progress.max;
-parent.setProgressMax = (max) => progress.max = maxSpan.innerText = max;
-return parent;
-};
-}
-
 //删除扩展
 delete lib.extensionMenu['extension_活动武将'].delete;
 
@@ -96,8 +24,14 @@ var HuoDong_players=[
 'Mbaby_xf_yiji',
 ];
 //加载
-var dialog=ui.create.dialog('新人制作扩展，希望大家支持<br>新人技术不足，希望大家包涵<br>'+
-'活动武将 '+lib.extensionPack.活动武将.version+' 更新内容','hidden');
+var dialog=ui.create.dialog(
+'<span class="text center">'+
+'新人制作扩展，希望大家支持<br>新人技术不足，希望大家包涵'+
+'<br>'+
+'<a href="https://github.com/mengxinzxz/HuoDong-update.git">点击前往活动武将Github仓库</a>'+
+'<br>'+
+'活动武将 '+lib.extensionPack.活动武将.version+' 更新内容'+
+'</span>','hidden');
 for(var i=0;i<HuoDong_update.length;i++){
 if(HuoDong_update[i]=='/setPlayer/'){
 if(HuoDong_players.length) dialog.addSmall([HuoDong_players,'character']);
@@ -37278,7 +37212,7 @@ characterSort:{
 huodongcharacter:{
 CLongZhou:['lz_sufei','lz_tangzi','lz_liuqi','lz_huangquan'],
 CZHengHuo:['bilibili_zhengxuan','bilibili_sp_xuyou','old_zuoci'],
-Chuodong:['bilibili_shengxunyu','bilibili_Firewin','bilibili_jinglingqiu','bilibili_suixingsifeng','bilibili_Emptycity','bilibili_thunderlei','bilibili_lonelypatients','bilibili_babybao'],
+Chuodong:['bilibili_shengxunyu','bilibili_Firewin','bilibili_jinglingqiu','bilibili_suixingsifeng','bilibili_Emptycity','bilibili_thunderlei','bilibili_lonelypatients','bilibili_babybao','bilibili_miaojiang'],
 Cothers:['bilibili_adong','bilibili_zhangrang','bilibili_litiansuo','decade_huangwudie','bilibili_huanggai','bilibili_ekeshaoge','bilibili_guanning','bilibili_wangwang','bilibili_zhouxiaomei','diy_lvmeng'],
 CDanJi:['DJ_caiyang','DJ_pujing','DJ_huban'],
 CSCS:['biliscs_zhangrang','biliscs_zhaozhong','biliscs_sunzhang','biliscs_bilan','biliscs_xiayun','biliscs_hankui','biliscs_lisong','biliscs_duangui','biliscs_guosheng','biliscs_gaowang'],
@@ -37311,6 +37245,7 @@ bilibili_thunderlei:['male','key','2/4/3',['bilibili_Thunder','bilibili_qianxi']
 bilibili_zhengxuan:['male','qun',3,['bilibili_zhengjing'],['character:zhengxuan']],
 bilibili_lonelypatients:['male','key',4,['bilibili_meihua','bilibili_gongyou','bilibili_qianyin'],[]],
 bilibili_babybao:['male','key',4,[],['unseen']],
+bilibili_miaojiang:['female','key',4,[],['unseen','ext:活动武将/image/character/Mmiao_huangyueying.jpg']],
 //千里走单骑
 DJ_caiyang:['male','qun',1,['yinka','zhuixi'],['character:caiyang']],
 DJ_pujing:['male','qun',1,['yinka'],['character:pujing']],
@@ -47733,6 +47668,8 @@ bolcongshi:'从势',
 bolcongshi_info:'锁定技。①体力值最大的角色对你的上家和下家使用牌无距离限制。②有角色使用因〖从势①〗增加距离的牌对你的上家或下家造成伤害后，你回复1点体力。',
 bilibili_babybao:'宝',
 bol_fuhuanghou:'TW伏寿',
+bilibili_miaojiang:'睡觉不玻璃',
+bilibili_miaojiang_ab:'喵酱',
 },
 };
 for(var i in huodongcharacter.character){
@@ -47823,192 +47760,20 @@ lib.translate['卡包英文名_card_config']='卡包中文名';
 '<br>',
 },get:{
 },config:{
+/*
+//总有一天会维护好的功能
 FenJieXianE:{
 clear:true,
-name:'<li>在线更新（功能维护中，暂不可用）',
+name:'<li>在线更新',
 },
 Huodong_Update: {
-//检查游戏更新，源自Thunder，已经过“雷”的同意
-clear: true,
-intro: '点击检查扩展更新',
-name: '<button type="button">检查扩展更新</button>',
-onclick: function () {
-//是否可以更新，每次都调用的原因是判断网络问题
-let button;
-if (this instanceof HTMLButtonElement) {
-button = this;
-} else {
-button = this.childNodes[0].childNodes[0];
-}
-let parentNode = button.parentNode;
-if (button.innerText != '检查扩展更新') return;
-const address = 'https://github.com/mengxinzxz/HuoDong-update.git';
-if (button.disabled) {
-return;
-} else {
-button.innerHTML = '正在检查更新';
-button.disabled = true;
-fetch(address + 'update.js')
-.then(response => {
-if (!response.ok) throw response;
-return response.text();
-})
-.then(text => {
-var data = eval(text);
-console.log(data);
-var localVersion = lib.extensionPack.活动武将.version || '0';
-
-/** 
- * 判断版本
- * @param { string } v1 现有版本
- * @param { string } v2 要更新的版本
- * @returns { boolean | 'equal' } v1比v2小就返回true
- */
-function compareVersion(v1 = '', v2 = '') {
-// 相等版本
-if (v1 === v2) return 'equal';
-let version_1 = v1.split('.').map(item => Number(item) || 0);
-let version_2 = v2.split('.').map(item => Number(item) || 0);
-// 现有版本: 无
-if (version_1.length == 1 && version_1[0] == 0) {
-// 要更新的版本不是 无
-if (version_2.length > 1 || version_2[0] > 0) return true;
-} else if (version_2.length == 1 && version_2[0] == 0) {
-// 要更新的版本是 无
-return true;
-} else {
-for (let i = 0; i < version_1.length && i < version_2.length; i++) {
-version_1[i] = version_1[i] || 0;
-version_2[i] = version_2[i] || 0;
-if (version_2[i] > version_1[i]) return true;
-if (version_1[i] > version_2[i]) return false;
-}
-}
-};
-
-console.log(localVersion, data.version)
-//if (!compareVersion(localVersion, data.version)) return;
-
-
-function myConfirm(message, callback) {
-if (navigator.notification && navigator.notification.confirm) {
-navigator.notification.confirm(message, index => {
-index == 1 && callback();
-}, ['确定', '取消']);
-}
-else {
-window.confirm(message) && callback();
-}
-}
-
-function HuoDongUpdate() {
-/**
- * 下载一个文件
- * @param { string } url 
- */
-function download(url, success, error) {
-var path = 'extension/活动武将';
-if (window.FileTransfer) {
-// 判断是不是文件夹，不是才下载
-function downloadFile() {
-let fileTransfer = new FileTransfer();
-fileTransfer.download(encodeURI(`${address + url}?date=${(new Date()).getTime()}`), encodeURI(lib.assetURL + path + '/' + url), success, error);
-}
-window.resolveLocalFileSystemURL(lib.assetURL,
-/**
- * @param { DirectoryEntry } DirectoryEntry 
- */
-DirectoryEntry => {
-DirectoryEntry.getDirectory(path, { create: false }, dir => {
-dir.getDirectory(url, { create: false }, () => {
-console.log(`${path}/${url}是文件夹`);
-// 跳过下载
-success(true);
-}, downloadFile);
-}, downloadFile);
-}, downloadFile);
-}
-else {
-fetch(`${address + url}?date=${(new Date()).getTime()}`)
-.then(response => response.arrayBuffer())
-.then(arrayBuffer => {
-// 先创建指定文件夹
-game.ensureDirectory(path, () => {
-var fs = require('fs');
-var p = require('path');
-var filePath = p.join(__dirname, path, url);
-// 如果是个文件夹，就退出
-if (fs.existsSync(filePath)) {
-var stat = fs.statSync(filePath);
-if (stat.isDirectory()) {
-console.error(`${path + '/' + url}是个文件夹`);
-return success(true);
-}
-}
-fs.writeFile(filePath, Buffer.from(arrayBuffer), null, e => {
-if (e) error(e);
-else success();
-});
-});
-})
-.catch(response => error(new Error(response.statusText)));
-}
-}
-
-/**
- * 下载文件列表
- * @param { string[] } files 
- */
-function downloadList(files) {
-if (!Array.isArray(files) || files.length == 0) return;
-var i = 0;
-var progress = game.HuoDongCreateProgress('更新活动武将扩展', files.length, files[0], i);
-var success = skip => {
-// 下载完了就结束
-if (!files[++i]) {
-progress.setProgressValue(files.length);
-progress.setFileName('下载完成');
-setTimeout(() => {
-// 移除进度条
-progress.remove();
-// 延时提示
-setTimeout(() => {
-alert('活动武将扩展更新完成，将自动重启');
-game.reload();
-}, 100);
-}, 200);
-return;
-}
-// 下载成功，更新进度
-progress.setProgressValue(i);
-progress.setFileName(files[i]);
-download(files[i], success, error);
-};
-var error = errorText => {
-console.log('下载失败', errorText);
-progress.setFileName('重新下载: ' + files[i]);
-download(files[i], success, error);
-};
-
-download(files[i], success, error);
-}
-
-/** @type { string[] } 要下载的文件 */
-var files = localVersion == data.oldversion ? data.updateFiles : data.allFiles;
-downloadList(files);
-}
-
-if (data.version < localVersion) myConfirm(`你的活动武将扩展版本(v${localVersion})高于服务器版本(v${data.version}),是否覆盖安装?`, HuoDongUpdate);
-else if (data.version == localVersion) myConfirm(`你的活动武将扩展已是最新版本(v${data.version}),是否覆盖安装?`, HuoDongUpdate);
-else myConfirm(`活动武将扩展检测到更新(v${data.version}), 是否更新?\n${data.changeLog}`, HuoDongUpdate);
-})
-.catch(e => {
-if (e.message == 'Failed to fetch') alert('网络连接失败');
-else console.log('其他错误', e);
-});
-}
+clear:true,
+intro:'点击检查扩展更新',
+name:'<button type="button">检查扩展更新</button>',
+onclick:function(){
 },
 },
+*/
 FenJieXianA:{
 clear:true,
 name:'<li>功能杂项',
@@ -48302,7 +48067,7 @@ game.HasExtension=function(ext){
 return game.TrueHasExtension(ext)&&lib.config['extension_'+ext+'_enable'];
 };
 game.saveConfig('extension_活动武将_extension_Animate_card',bool);
-if(bool&&(game.HasExtension('十周年UI')||game.HasExtension('手杀ui')||game.HasExtension('特效测试'))) alert('已有十周年UI等特效类扩展不建议开启');
+if(bool&&(game.HasExtension('十周年UI')||game.HasExtension('特效扩展')||game.HasExtension('特效测试'))) alert('已有十周年UI等特效类扩展不建议开启');
 },
 },
 extension_Animate_equip:{
@@ -48316,7 +48081,7 @@ game.HasExtension=function(ext){
 return game.TrueHasExtension(ext)&&lib.config['extension_'+ext+'_enable'];
 };
 game.saveConfig('extension_活动武将_extension_Animate_equip',bool);
-if(bool&&(game.HasExtension('十周年UI')||game.HasExtension('手杀ui')||game.HasExtension('特效测试'))) alert('已有十周年UI等特效类扩展不建议开启');
+if(bool&&(game.HasExtension('十周年UI')||game.HasExtension('特效扩展')||game.HasExtension('特效测试'))) alert('已有十周年UI等特效类扩展不建议开启');
 },
 },
 FenJieXianD:{
@@ -48387,6 +48152,7 @@ that.innerHTML='<span>删除扩展</span>';
 },package:{
 intro:'新人制作扩展，希望大家支持。'+
 '<br>新人技术不足，希望大家包涵。'+
+'<br><a href="https://github.com/mengxinzxz/HuoDong-update.git">点击前往活动武将Github仓库</a>'+
 '<br>本扩展需同活动配件一起使用，进入游戏后，若没有此扩展/配件版本不同于现版本则会自动导入。若无法导入请万能导入活动配件。'+
 //'<br><li>欢迎大家进群支持活动武将'+
 //入群二维码图片
