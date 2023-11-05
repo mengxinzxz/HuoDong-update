@@ -17798,18 +17798,18 @@ content:function(){
 player.awakenSkill('minicunsi');
 target.addSkillLog('miniyongjue');
 'step 1'
+player.storage.miniguixiu=true;
+'step 2'
 var num=player.hp;
 player.loseHp(num);
 target.draw(num+1);
-'step 2'
-player.storage.miniguixiu=true;
 },
 ai:{
 order:4,
 expose:0.5,
 result:{
 target:function(player,target){
-if(!player.countCards('hs',{name:['tao','jiu']})) return 0;
+//if(!player.countCards('hs',{name:['tao','jiu']})) return 0;
 return lib.skill.cunsi.ai.result.target(player,target);
 },
 },
@@ -31287,7 +31287,7 @@ miniguixiu_info:'锁定技，每回合限一次，结束阶段，若你的体力
 miniguixiux:'闺秀·改',
 miniguixiux_info:'锁定技，每回合限一次，结束阶段或当你进入濒死状态时，若你的体力值为：奇数，你摸一张牌；偶数，你回复1点体力。',
 minicunsi:'存嗣',
-minicunsi_info:'限定技，出牌阶段，你可以令一名其他角色获得技能〖勇决〗，然后你失去所有体力并令其摸X张牌（X为你失去的体力数+1），最后修改技能〖闺秀〗。',
+minicunsi_info:'限定技，出牌阶段，你可以令一名其他角色获得技能〖勇决〗，然后修改技能〖闺秀〗，最后你失去所有体力并令其摸X张牌（X为你失去的体力数+1）。',
 miniyongjue:'勇决',
 miniyongjue_info:'①其他角色出牌阶段使用的第一张【杀】结算完毕后，你可以获得之。②当你受到有点数的【杀】造成的伤害时，你可以弃置一张点数大于等于此【杀】点数的牌并防止此伤害。',
 minihuguan:'护关',
