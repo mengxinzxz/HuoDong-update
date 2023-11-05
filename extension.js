@@ -13869,6 +13869,7 @@ filterTarget:lib.filter.notMe,
 selectTarget:[1,2],
 usable:1,
 content:function(){
+'step 0'
 var list=[
 get.sgn(player.hp-target.hp),
 get.sgn(player.countCards('h')-target.countCards('h')),
@@ -13879,13 +13880,31 @@ get.sgn(player.countCards('e',card=>['equip3','equip4'].includes(get.subtype(car
 while(num<5){
 game.log('第'+get.cnNumber(num+1,true)+'局',list[num]>0?'#g成功':'#y失败');
 player.addMark('minishenglun_'+(list[num]>0?'win':'lose'),1,false);
-if(player.countMark('minishenglun_win')+player.countMark('minishenglun_lose')>=10){
-var next=game.createEvent('minishenglun_result');
-next.player=player;
-next.setContent(lib.skill.minishenglun.contentx);
-}
 num++;
 }
+'step 1'
+if(player.countMark('minishenglun_win')>=10){
+player.recover();
+var next=game.createEvent('minishenglun_result');
+next.player=player;
+next.setContent(lib.skill.minishenglun.content_yiji);
+player.removeMark('minishenglun_win',player.countMark('minishenglun_win'),false);
+}
+'step 2'
+if(player.countMark('minishenglun_lose')>=10){
+player.chooseTarget('请选择【胜论】的目标','对一名角色造成1点伤害',true).set('ai',target=>get.damageEffect(target,_status.event.player,_status.event.player));
+}
+else event.finish();
+'step 3'
+if(result.bool){
+var target=result.targets[0];
+player.line(target);
+target.damage();
+}
+var next=game.createEvent('minishenglun_result');
+next.player=player;
+next.setContent(lib.skill.minishenglun.content_yiji);
+player.removeMark('minishenglun_lose',player.countMark('minishenglun_lose'),false);
 },
 ai:{
 order:1,
@@ -13906,26 +13925,14 @@ return num;
 },
 },
 },
-contentx:function(){
+content_yiji:function(){
 'step 0'
-if(player.countMark('minishenglun_win')>player.countMark('minishenglun_lose')){
-player.recover();
-event.goto(2);
-}
-else player.chooseTarget('请选择【胜论】的目标','对一名角色造成1点伤害',true).set('ai',target=>get.damageEffect(target,_status.event.player,_status.event.player));
-'step 1'
-if(result.bool){
-var target=result.targets[0];
-player.line(target);
-target.damage();
-}
-'step 2'
 player.logSkill('new_reyiji');
 player.draw(2);
 if(_status.connectMode) game.broadcastAll(function(){_status.noclearcountdown=true});
 event.given_map={};
 event.num=2;
-'step 3'
+'step 1'
 player.chooseCardTarget({
 filterCard:function(card){
 return get.itemtype(card)=='card'&&!card.hasGaintag('reyiji_tag');
@@ -13944,20 +13951,20 @@ if(val>0) return val*get.attitude(player,target)*2;
 return get.value(card,target)*get.attitude(player,target);
 },
 });
-'step 4'
+'step 2'
 if(result.bool){
 var res=result.cards,target=result.targets[0].playerid;
 player.addGaintag(res,'reyiji_tag');
 event.num-=res.length
 if(!event.given_map[target]) event.given_map[target]=[];
 event.given_map[target].addArray(res);
-if(event.num>0) event.goto(3);
+if(event.num>0) event.goto(1);
 }
 else if(event.num==2){
 if(_status.connectMode) game.broadcastAll(function(){delete _status.noclearcountdown;game.stopCountChoose()});
-event.goto(6);
+event.finish();
 }
-'step 5'
+'step 3'
 if(_status.connectMode) game.broadcastAll(function(){delete _status.noclearcountdown;game.stopCountChoose()});
 var map=[],cards=[];
 for(var i in event.given_map){
@@ -13973,9 +13980,6 @@ cards:cards,
 giver:player,
 animate:'giveAuto',
 }).setContent('gaincardMultiple');
-'step 6'
-player.removeMark('minishenglun_win',player.countMark('minishenglun_win'),false);
-player.removeMark('minishenglun_lose',player.countMark('minishenglun_lose'),false);
 },
 subSkill:{
 win:{
@@ -13997,7 +14001,7 @@ miniyuanhu:{
 audio:'yuanhu',
 enable:'phaseUse',
 filter:function(event,player){
-return player.hasCard({type:'equip'},'eh');
+return player.hasCard({type:'equip'},'he');
 },
 filterCard:{type:'equip'},
 filterTarget:function(card,player,target){
@@ -31050,7 +31054,7 @@ miniweikui_info:'出牌阶段限一次，你可以失去1点体力并选择一�
 minilizhan:'励战',
 minilizhan_info:'结束阶段，你可以令任意名已受伤的角色摸一张牌，然后你摸X张牌（X为手牌数等于体力值的目标角色数）。',
 minishenglun:'胜论',
-minishenglun_info:'出牌阶段限一次，你可以选择至多两名其他角色，然后你依次与目标角色依次比较你与其的：体力、手牌数、已装备武器牌数、已装备防具牌数、已装备坐骑牌数（你对应的数值比其大则获得1枚“胜”标记，否则获得1枚“负”标记），且当你的“胜”、“负”标记数达到10后，你执行以下效果：若你的“胜”标记数大于/不大于“负”标记数，你回复1点体力/对一名角色造成1点伤害，然后发动〖遗计〗并清除所有的“胜”标记和“负”标记。',
+minishenglun_info:'出牌阶段限一次，你可以选择至多两名其他角色，然后你依次与目标角色依次比较你与其的：体力、手牌数、已装备武器牌数、已装备防具牌数、已装备坐骑牌数（你对应的数值比其大则获得1枚“胜”标记，否则获得1枚“负”标记）。当你的“胜”/“负”标记数达到10后，你回复1点体力/对一名角色造成1点伤害，然后发动〖遗计〗并失去所有的“胜”/“负”标记。',
 miniyuanhu:'援护',
 miniyuanhu_info:'①出牌阶段限两次，你可将一张装备牌置入一名角色的装备区内并摸一张牌，若此牌为：武器牌，你弃置与其距离为1的另一名角色区域的一张牌；防具牌，其摸一张牌；坐骑牌，其回复1点体力。②回合结束时，若你本回合未发动过〖援护①〗，则你从牌堆中获得一张装备牌。',
 minisbjianxiong:'奸雄',
