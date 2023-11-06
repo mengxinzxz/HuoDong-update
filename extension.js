@@ -16,6 +16,7 @@ game.bolShowNewPack=function(){
 var HuoDong_update=[
 '/setPlayer/',
 'bugfix',
+'名称修改写法简化',
 '添加欢杀武将：伊籍',
 'To be continued...',
 ];
@@ -1524,51 +1525,17 @@ addRank(rank);
 
 //名称重置
 if(lib.config.extension_活动武将_HD_REname){
-//张仲景
-lib.translate.zhangzhongjing='张仲景';
-lib.translate.old_zhangzhongjing='旧张仲景';
-lib.translate.oldx_zhangzhongjing='旧张仲景';
-lib.translate.bol_zhangzhongjing='TW张仲景';
-//蔡文姬
-lib.translate.caiwenji='蔡文姬';
-lib.translate.re_caiwenji='手杀蔡文姬';
-lib.translate.ol_caiwenji='界蔡文姬';
-lib.translate.sp_caiwenji='SP蔡文姬';
-lib.translate.Mbaby_sp_caiwenji='SP欢杀蔡文姬';
-lib.translate.Mbaby_caiwenji='欢杀蔡文姬';
-lib.translate.wechat_sp_caiwenji='SP微信蔡文姬';
-lib.translate.Mmiao_caiwenji='喵蔡文姬';
-lib.translate.wechat_caiwenji='微信蔡文姬';
-lib.translate.yue_caiwenji='乐蔡文姬';
-//卧龙诸葛亮
-lib.translate.sp_zhugeliang='卧龙诸葛';
-lib.translate.ol_sp_zhugeliang='界卧龙诸葛';
-lib.translate.re_sp_zhugeliang='手杀卧龙诸葛';
-lib.translate.Mbaby_sp_zhugeliang='欢杀卧龙诸葛';
-//严白虎
-lib.translate.yanbaihu='严白虎';
-//甄姬
-lib.translate.zhenji='甄姬';
-lib.translate.re_zhenji='界甄姬';
-lib.translate.shen_zhenji='神甄姬';
-lib.translate.diy_zhenji='甄姬';
-lib.translate.sb_zhenji='谋甄姬';
-lib.translate.Mbaby_zhenji='欢杀甄姬';
-lib.translate.Mbaby_shen_zhenji='欢杀神甄姬';
-lib.translate.yj_zhenji='用间甄姬';
-lib.translate.Mbabysp_zhenji='SP欢杀甄姬';
-lib.translate.Mmiao_zhenji='喵甄姬';
-//伏皇后
-lib.translate.fuhuanghou='伏皇后';
-lib.translate.re_fuhuanghou='界伏皇后';
-lib.translate.xin_fuhuanghou='手杀伏皇后';
-lib.translate.sp_fuhuanghou='SP伏皇后';
-lib.translate.old_fuhuanghou='旧伏皇后';
-lib.translate.Mbaby_fuhuanghou='欢杀伏皇后';
-lib.translate.bol_fuhuanghou='TW伏皇后';
-//吉平
-lib.translate.sp_jiben='SP吉平';
-lib.translate.dc_jiben='吉平';
+var list=Object.keys(lib.translate);
+var list2=[];//不修改名称的ID白名单
+[['张机','张仲景'],['蔡琰','蔡文姬'],['卧龙','卧龙诸葛'],
+['严虎','严白虎'],['甄宓','甄姬'],['伏寿','伏皇后'],
+['吉本','吉平']].forEach(name=>{
+list.filter(name2=>!list2.includes(name2)&&lib.translate[name2].includes(name[0])).forEach(name3=>{
+var str=lib.translate[name3];
+var num=str.indexOf(name[0]);
+lib.translate[name3]=str.slice(0,num)+name[1]+str.slice(num+name[0].length,str.length);
+});
+});
 }
 
 //precA
