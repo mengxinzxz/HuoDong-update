@@ -381,18 +381,6 @@ dialog.addText('<br>注：上述数量为除开自己区域内的牌（自己武
 lib.translate._mx_cardRecord='记牌器';
 }
 
-//武将初始化加载
-for(var i in lib.character){
-//前缀
-if(lib.translate[i]&&!lib.translate[i+'_prefix']){
-if(lib.translate[i].indexOf('SP')==0) lib.translate[i+'_prefix']='SP';
-if(lib.translate[i].indexOf('TW')==0) lib.translate[i+'_prefix']='TW';
-if(lib.translate[i].indexOf('OL')==0) lib.translate[i+'_prefix']='OL';
-if(lib.translate[i].indexOf('新杀')==0) lib.translate[i+'_prefix']='新杀';
-if(lib.translate[i].indexOf('手杀')==0) lib.translate[i+'_prefix']='手杀';
-}
-}
-
 //官方武将包保护机制
 //添加
 lib.config.all.sgscharacters.push('diy');
@@ -1887,7 +1875,7 @@ return info.selectTarget&&info.selectTarget==-1&&!info.toself;
 lib.skill._reweimu={
 charlotte:true,
 trigger:{global:'useCard1'},
-filter:function(event,player,card){
+filter:function(event,player){
 var info=get.info(event.card.name);
 if(!player.hasSkill('reweimu')||event.player==player) return false;
 if(get.color(event.card)!='black'||get.type(event.card)!='trick') return false;
