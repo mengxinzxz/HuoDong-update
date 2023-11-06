@@ -19279,9 +19279,7 @@ target.gain(cards,player,'give');
 ai:{
 expose:0.3,
 order:10,
-result:{
-target:5,
-},
+result:{target:1},
 },
 },
 minizhiba3:{charlotte:true},
@@ -19808,9 +19806,7 @@ skillTagFilter:function(player){
 return player.getExpansions('minichunlao').length>0;
 },
 save:true,
-result:{
-target:3
-},
+result:{target:1},
 },
 },
 minianxu:{
@@ -22510,7 +22506,6 @@ content:function(){
 player.recover();
 },
 subSkill:{
-mark:{charlotte:true,onremove:true},
 count:{
 trigger:{player:'useCard1'},
 filter:function(event,player){
@@ -22533,7 +22528,9 @@ return player.isPhaseUsing()&&event.card.name=='sha';
 direct:true,
 priority:-15,
 content:function(){
-player.addTempSkill('miniyangwei_mark','phaseUseAfter');
+if(!player.storage.miniyangwei_mark){
+player.when('phaseUseAfter').then(()=>delete player.storage.miniyangwei_mark);
+}
 player.storage.miniyangwei_mark=trigger.card;
 },
 },
@@ -33949,10 +33946,7 @@ mark:true,
 marktext:'<span style="text-decoration: line-through;">桃</span>',
 intro:{content:'不能使用【桃】'},
 mod:{
-cardEnabled:function(card){
-if(card.name=='tao') return false;
-},
-cardSavable:function(card){
+cardEnabled2:function(card){
 if(card.name=='tao') return false;
 },
 aiValue:function(player,card,num){
@@ -34116,19 +34110,10 @@ if(result.bool){
 var target=result.targets[0];
 player.line(target);
 target.loseHp();
-target.addTempSkill('wechatwansha_recover','phaseUseAfter');
+player.when('phaseUseEnd').then(()=>{
+if(target.isIn()) target.recover();
+}).vars({target:target});
 }
-},
-subSkill:{
-recover:{
-charlotte:true,
-trigger:{global:'phaseUseEnd'},
-direct:true,
-content:function(){
-player.recover();
-},
-ai:{threaten:3},
-},
 },
 },
 wechatluanwu:{
