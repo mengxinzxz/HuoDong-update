@@ -1526,7 +1526,7 @@ addRank(rank);
 //名称重置
 if(lib.config.extension_活动武将_HD_REname){
 var list=Object.keys(lib.translate);
-var list2=[];//不修改名称的ID白名单
+var list2=['jsrg_zhenji'];//不修改名称的ID白名单
 [['张机','张仲景'],['蔡琰','蔡文姬'],['卧龙','卧龙诸葛'],
 ['严虎','严白虎'],['甄宓','甄姬'],['伏寿','伏皇后'],
 ['吉本','吉平']].forEach(name=>{
