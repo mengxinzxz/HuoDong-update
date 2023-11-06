@@ -11315,8 +11315,15 @@ return target==player;
 ][links[0]],
 selectTarget:[1,-1][links[0]],
 index:links[0],
-filterCard:true,
-selectCard:[2,0][links[0]],
+filterCard:[
+function(card,player){
+return true;
+},
+function(card,player){
+return false;
+},
+][links[0]],
+selectCard:[2,-1][links[0]],
 check:function(card){
 return 7-get.value(card);
 },
@@ -11328,9 +11335,8 @@ if(target==player) player.draw();
 },
 ai:{
 order:7,
-tag:{damage:1.5},
 result:{
-target:function(player){
+target:function(player,target){
 return get.damageEffect(target,player,player)*get.sgn(get.attitude(player,target));
 },
 },
