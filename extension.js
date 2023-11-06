@@ -11288,9 +11288,10 @@ str+='</div>';
 var next=choiceList.add(str);
 next.firstChild.addEventListener(lib.config.touchscreen?'touchend':'click',ui.click.button);
 next.firstChild.link=i;
-for(var j in lib.element.button){
-next[j]=lib.element.button[j];
-}
+//for(var j in lib.element.button){
+//next[j]=lib.element.button[j];
+//}
+Object.setPrototypeOf(next,lib.element.Button.prototype);
 choiceList.buttons.add(next.firstChild);
 }
 return choiceList;
@@ -11324,6 +11325,7 @@ function(card,player,target){
 return target==player;
 },
 ][links[0]],
+selectTarget:[1,-1][links[0]],
 index:links[0],
 filterCard:true,
 selectCard:[2,0][links[0]],
@@ -11339,7 +11341,11 @@ if(target==player) player.draw();
 ai:{
 order:7,
 tag:{damage:1.5},
-result:{target:-1},
+result:{
+target:function(player){
+return get.damageEffect(target,player,player)*get.sgn(get.attitude(player,target));
+},
+},
 },
 }
 },
@@ -20731,11 +20737,11 @@ audio:'yanxiao',
 enable:'phaseUse',
 filter:function(event,player){
 return player.countCards('he',{suit:'diamond'})&&game.hasPlayer(function(target){
-return target.canAddJudge({name:'miniyanxiao_card'})&&!target.hasJudge('miniyanxiao_card');
+return target.canAddJudge({name:'miniyanxiao_card'});
 });
 },
 filterTarget:function(card,player,target){
-return target.canAddJudge({name:'miniyanxiao_card'})&&!target.hasJudge('miniyanxiao_card');
+return target.canAddJudge({name:'miniyanxiao_card'});
 },
 filterCard:{suit:'diamond'},
 check:function(card){
