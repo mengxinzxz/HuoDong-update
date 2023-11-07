@@ -32026,7 +32026,6 @@ WeChatkill:{
 wechat_standard:['wechat_yj_jushou','wechat_sp_pangde','wechat_caojie','wechat_zhuling','wechat_caizhenji','wechat_guohuanghou','wechat_yanyan','wechat_liaohua','wechat_liuyao','wechat_quancong','wechat_xiahouba','wechat_sp_jiangwei','wechat_caoxiu','wechat_yuanshao','wechat_sundeng','wechat_re_xushu','wechat_caopi','wechat_caozhang','wechat_buzhi','wechat_sp_taishici','wechat_masu','wechat_caifuren','wechat_jianyong','wechat_lukang','wechat_caozhi','wechat_huangyueying','wechat_weiyan','wechat_gaoshun','wechat_sunliang','wechat_wangping','wechat_sp_caiwenji','wechat_caochong','wechat_huangzhong','wechat_xiahouyuan','wechat_pangde','wechat_sunshangxiang','wechat_xuchu','wechat_guanyu','wechat_caocao','wechat_shenpei','wechat_jiaxu','wechat_caoren','wechat_liuqi','wechat_zhaoxiang','wechat_caiwenji','wechat_menghuo','wechat_re_yuanshu','wechat_huaxiong','wechat_xiahoushi','wechat_xushu','wechat_zhaoyun','wechat_zhangfei','wechat_machao','wechat_yangxiu','wechat_lvmeng','wechat_zhoutai','wechat_bianfuren','wechat_sunluban','wechat_wuguotai','wechat_liubiao','wechat_liuchen','wechat_luxun','wechat_pangtong','wechat_zhangxingcai','wechat_zuoci','wechat_mayunlu'],
 wechat_extra:['wechat_shen_zhugeliang','wechat_shen_lvmeng','wechat_shen_guanyu'],
 wechat_zhiyin:['wechat_guojia','wechat_lvbu','wechat_daqiao','wechat_xiaoqiao','wechat_re_caocao','wechat_zhugeliang','wechat_simayi','wechat_re_machao'],
-wechat_yijiang:['wechat_liuling'],
 },
 },
 character:{
@@ -32110,11 +32109,8 @@ wechat_re_caocao:['male','wei',4,['wechatdelu'],['die_audio']],
 wechat_zhugeliang:['male','shu',3,['wechatsangu','wechatyanshi'],['die_audio']],
 wechat_simayi:['male','wei',3,['wechatyinren','wechatduoquan'],['die_audio']],
 wechat_re_machao:['male','qun',4,['wechatqipao','wechatzhuixi'],[]],
-//武将设计大赛
-wechat_liuling:['male','wei',3,['wechatjiusong','wechatmaotao','wechatbishi'],[]],
 },
 characterIntro:{
-liuling:'刘伶（221年-300年），字伯伦，西晋沛国（治今安徽濉溪县西北）人，魏晋时期名士，“竹林七贤”之一；与阮籍、嵇康、山涛、向秀、王戎和阮咸并称为“竹林七贤”。刘伶嗜酒不羁，被称为“醉侯”，好老庄之学，追求自由逍遥、无为而治。曾在建威将军王戎幕府下任参军。晋武帝泰始初，对朝廷策问，强调无为而治，被认为无能而罢免。泰始二年（266年）朝廷征召刘伶再次入朝为官，被刘伶拒绝。刘伶现今存世的作品只有《酒德颂》和《北芒客舍》。《酒德颂》对“礼法”表示蔑视，宣扬老庄思想和纵酒放诞生活。',
 },
 skill:{
 wechathuoshou:{
@@ -35422,77 +35418,6 @@ var cards=player.getExpansions(skill);
 if(cards.length) player.loseToDiscardpile(cards);
 },
 },
-//刘伶
-wechatjiusong:{
-audio:'ext:活动武将/audio/skill:2',
-trigger:{global:'useCard'},
-filter:function(event,player){
-return event.card.name=='jiu'&&player.countMark('wechatjiusong')<3;
-},
-forced:true,
-content:function(){
-player.addMark('wechatjiusong',1);
-},
-marktext:'醉',
-intro:{
-name:'醉',
-name2:'醉',
-content:'当前有#个“醉”',
-},
-},
-wechatmaotao:{
-audio:'ext:活动武将/audio/skill:2',
-trigger:{global:'useCardToPlayer'},
-filter:function(event,player){
-if(event.getParent().wechatmaotao||event.player==player) return false;
-return player.hasMark('wechatjiusong')&&event.targets.length==1;
-},
-check:function(event,player){
-return get.effect(event.target,event.card,event.player,player)<0;
-},
-logTarget:'player',
-content:function(){
-'step 0'
-player.removeMark('wechatjiusong',1);
-event.target=trigger.target;
-trigger.getParent().wechatmaotao=true;
-var targets=trigger.targets;
-event.num=targets.length;
-player.line(targets);
-trigger.targets.removeArray(targets);
-trigger.getParent().triggeredTargets1.removeArray(targets);
-trigger.untrigger();
-game.delayx();
-'step 1'
-var list;
-if(get.type(event.card)!='delay') list=game.filterPlayer(function(current){
-return lib.filter.targetEnabled2(trigger.card,trigger.player,current);
-});
-else list=game.filterPlayer(function(current){
-return current.canAddJudge(event.card);
-});
-if(list.length){
-var targetx=list.randomGets(Math.min(num,list.length));
-trigger.targets.addArray(targetx);
-player.line(targetx,'fire');
-game.log(trigger.card,'的目标被改为',targetx);
-}
-event.targetx=targetx;
-'step 2'
-if(target==event.targetx){
-var card=get.cardPile2(card=>card.name=='jiu');
-if(card) player.gain(card,'gain2');
-}
-},
-},
-wechatbishi:{
-audio:'ext:活动武将/audio/skill:2',
-mod:{
-targetEnabled:function(card){
-if(get.type2(card)=='trick'&&get.tag(card,'damage')) return false;
-},
-},
-},
 //SP姜维
 wechatkunfen:{
 audio:'kunfen',
@@ -36740,7 +36665,6 @@ translate:{
 wechat_standard:'微服异构·标准',
 wechat_extra:'微服异构·神武将',
 wechat_zhiyin:'微服专属·<span style="text-decoration: line-through;">只因</span>极武将',
-wechat_yijiang:'微服专属·一将成名',
 //武将
 wechat_menghuo:'微信孟获',
 wechathuoshou:'祸首',
@@ -36977,13 +36901,6 @@ wechat_caopi:'微信曹丕',
 wechatfangzhu:'放逐',
 wechatfangzhu2:'放逐',
 wechatfangzhu_info:'当你受到伤害后，你可以令一名有手牌的其他角色将所有手牌扣置于其武将牌上。该角色的回合结束时或受到伤害后，其收回武将牌上扣置的牌。',
-wechat_liuling:'刘伶',
-wechatjiusong:'酒颂',
-wechatjiusong_info:'锁定技，一名角色使用【酒】时，若你的“醉”标记数小于3，则你获得1个“醉”标记。',
-wechatmaotao:'酕醄',
-wechatmaotao_info:'其他角色使用牌指定唯一目标时，你可以失去1个“醉”标记，令此牌目标改为随机指定（无距离限制），若重新指定的目标与原目标相同，则你从牌堆中获得一张【酒】。',
-wechatbishi:'避仕',
-wechatbishi_info:'锁定技，你不能成为伤害类锦囊牌的目标。',
 wechat_sp_jiangwei:'SP微信姜维',
 wechatkunfen:'困奋',
 wechatkunfen_info:'结束阶段，你可以失去1点体力，然后摸两张牌。',
