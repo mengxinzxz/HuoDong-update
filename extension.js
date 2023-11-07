@@ -17,12 +17,12 @@ var HuoDong_update=[
 '/setPlayer/',
 'bugfix',
 '名称修改写法简化',
-'添加欢杀武将：伊籍',
+'添加欢杀武将：伊籍、公孙渊',
 'To be continued...',
 ];
 //更新武将
 var HuoDong_players=[
-'Mbaby_xf_yiji',
+'Mbaby_xf_yiji','Mbaby_gongsunyuan',
 ];
 //加载
 var dialog=ui.create.dialog(
