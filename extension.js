@@ -1526,7 +1526,7 @@ addRank(rank);
 //名称重置
 if(lib.config.extension_活动武将_HD_REname){
 var list=Object.keys(lib.translate);
-var list2=['jsrg_zhenji'];//不修改名称的ID白名单
+var list2=['jsrg_zhenji','wolong_card','pcaudio_wolong_card'];//不修改名称的ID白名单
 var list3=['卧龙凤雏'];//不修改名称的translate白名单
 [['张机','张仲景'],['蔡琰','蔡文姬'],['卧龙','卧龙诸葛'],
 ['严虎','严白虎'],['甄宓','甄姬'],['伏寿','伏皇后'],
@@ -1737,7 +1737,7 @@ if(player.marks[skill]) player.marks[skill].firstChild.innerHTML=player.getStora
 },
 };
 //陈式
-lib.skill.qingbei.subSkill.effect.intro.markcount=()=>undefined;
+if(game.HasExtension('十周年UI')) lib.skill.qingbei.subSkill.effect.intro.markcount=()=>undefined;
 lib.skill._qingbeiSuit={
 charlotte:true,
 trigger:{player:'qingbeiEnd'},
@@ -1768,37 +1768,6 @@ if(num>=4) str+='<br><li>当你造成伤害时，此伤害+1';
 return str;
 },
 };
-/*
-//神司马懿
-lib.skill.renjie.ai={
-maixie:true,
-maixie_hp:true,
-combo:'sbaiyin',
-effect:{
-target:function(card,player,target){
-if(player.hasSkillTag('jueqing',false,target)) return [1,-2];
-if(get.tag(card,'damage')){
-if(target.hp==target.maxHp){
-if(!target.hasSkill('jilue')){
-return [0,1];
-}
-return [0.7,1];
-}
-return 0.7;
-}
-},
-player:function(card,player){
-if(_status.currentPhase!=player) return;
-if(_status.event.name!='chooseToUse'||_status.event.player!=player) return;
-if(get.type(card)=='basic') return;
-if(get.tag(card,'gain')) return;
-if(get.value(card,player,'raw')>=7) return;
-if(player.hp<=2) return;
-if(!player.hasSkill('jilue')||!player.hasMark('renjie')) return 'zeroplayertarget';
-},
-},
-};
-*/
 //司马师
 lib.skill.tairan.content=function(){
 'step 0'
