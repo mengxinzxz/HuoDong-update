@@ -1531,7 +1531,7 @@ var list3=['卧龙凤雏'];//不修改名称的translate白名单
 [['张机','张仲景'],['蔡琰','蔡文姬'],['卧龙','卧龙诸葛'],
 ['严虎','严白虎'],['甄宓','甄姬'],['伏寿','伏皇后'],
 ['吉本','吉平']].forEach(name=>{
-list.filter(name2=>!list2.includes(name2)&&!list3.includes(lib.translate[name2])&&lib.translate[name2].includes(name[0])).forEach(name3=>{
+list.filter(name2=>!list2.includes(name2)&&!lib.translate[name2].includes(list3)&&lib.translate[name2].includes(name[0])).forEach(name3=>{
 var str=lib.translate[name3];
 var num=str.indexOf(name[0]);
 lib.translate[name3]=str.slice(0,num)+name[1]+str.slice(num+name[0].length,str.length);
@@ -32060,7 +32060,7 @@ wechat_quancong:['male','wu',4,['wechatyaoming'],[]],
 wechat_liaohua:['male','shu',4,['wechatdangxian','wechatfuli'],[]],
 wechat_yanyan:['male','shu',4,['wechatjuzhan'],[]],
 wechat_guohuanghou:['female','wei',3,['wechatjiaozhao','wechatdanxin'],[]],
-wechat_caizhenji:['female','wei',3,['wechatsheyi','wechattianyin'],['ext:活动武将/image/character/unknown.jpg']],
+wechat_caizhenji:['female','wei',3,['wechatsheyi','wechattianyin'],[]],
 wechat_zhuling:['male','wei',4,['wechatzhanyi'],[]],
 wechat_caojie:['female','qun',3,['wechatshouxi','huimin'],[]],
 wechat_sp_pangde:['male','wei',4,['mashu','wechatjuesi'],[]],
