@@ -13319,7 +13319,7 @@ audioname2:{
 Mbaby_jsp_guanyu:'wusheng_jsp_guanyu',
 Mbaby_guansuo:'wusheng_guansuo',
 },
-trigger:{player:'phaseZhunbeiBegin'},
+trigger:{player:'phaseBegin'},
 forced:true,
 locked:false,
 content:function(){
@@ -18005,7 +18005,7 @@ audioname2:{
 Mbaby_jsp_guanyu:'wusheng_jsp_guanyu',
 Mbaby_guansuo:'wusheng_guansuo',
 },
-trigger:{player:'phaseZhunbeiBegin'},
+trigger:{player:'phaseBegin'},
 forced:true,
 locked:false,
 content:function(){
