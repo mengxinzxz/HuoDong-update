@@ -33269,7 +33269,6 @@ skillAnimation:true,
 limited:true,
 animationColor:'orange',
 filter:function(event,player){
-if(player.storage.wechatniepan) return false;
 if(event.type=='dying'){
 if(player!=event.dying) return false;
 return true;
@@ -33463,19 +33462,21 @@ content:function(){
 'step 0'
 player.chooseCardTarget({
 prompt:get.prompt2('wechatyigui'),
-filterCard:true,
 filterTarget:function(card,player,target){
-return !_status.event.targets.includes(target)&&lib.filter.targetEnabled2(_status.event.card,player,target);
+var trigger=_status.event.getTrigger();
+return !trigger.targets.includes(target)&&lib.filter.targetEnabled2(trigger.card,player,target);
 },
+filterCard:lib.filter.cardDiscardable,
 position:'he',
 ai1:function(card){
-return 5.5-get.value(card);
+return 6-get.value(card);
 },
 ai2:function(target){
 var player=_status.event.player;
+var trigger=_status.event.getTrigger();
 return get.effect(target,trigger.card,player,player);
 },
-}).set('targets',trigger.targets).set('card',trigger.card);
+});
 'step 1'
 if(result.bool){
 var target=result.targets[0]
@@ -33490,31 +33491,26 @@ wechatshendao:{
 audio:'xinsheng',
 trigger:{player:'useCardAfter'},
 filter:function(event,player){
-var list=player.storage.wechatshendao_mark||[];
 return player.isPhaseUsing()&&event.targets&&event.targets.length&&game.hasPlayer(function(current){
-return event.targets.includes(current)&&!list.includes(current);
+return event.targets.includes(current)&&!player.getStorage('wechatshendao_mark').includes(current);
 });
 },
 forced:true,
 locked:false,
 logTarget:function(event,player){
-var list=player.storage.wechatshendao_mark||[];
 return game.filterPlayer(function(current){
-return event.targets.includes(current)&&!list.includes(current);
+return event.targets.includes(current)&&!player.getStorage('wechatshendao_mark').includes(current);
 }).sortBySeat();
 },
 content:function(){
 'step 0'
-player.addTempSkill('wechatshendao_mark');
-var list=player.storage.wechatshendao_mark,targets=game.filterPlayer(function(current){
+player.addTempSkill('wechatshendao_mark',{player:'phaseUseAfter'});
+player.markAuto('wechatshendao_mark',game.filterPlayer(function(current){
 return trigger.targets.includes(current)&&!list.includes(current);
-}).sortBySeat();
-list.addArray(targets);
-player.markSkill('wechatshendao_mark');
-player.syncStorage('wechatshendao_mark');
+}));
+player.storage.wechatshendao_mark.sortBySeat();
 'step 1'
-var list=player.storage.wechatshendao_mark;
-switch(list.length){
+switch(player.getStorage('wechatshendao_mark').length){
 case 1:
 player.chooseControl('basic','trick','equip','cancel2').set('prompt','神道：是否选择获得一种类型的牌？').set('ai',function(){
 var player=_status.event.player;
@@ -33548,20 +33544,19 @@ return list[0];
 event.goto(3);
 break;
 case 3:
-var num=0;
-for(var target of list) num+=get.damageEffect(target,player,player);
-player.chooseBool('神道：是否对'+get.translation(list.sortBySeat())+'各造成1点伤害？').set('choice',num>0);
+var targets=player.getStorage('wechatshendao_mark').filter(target=>target.isIn());
+player.chooseBool('神道：是否对'+get.translation(list.sortBySeat())+'各造成1点伤害？').set('choice',targets.reduce((num,target)=>num+get.damageEffect(target,player,player),0)>0);
 event.goto(5);
 break;
-default:event.finish();break;
+default:
+event.finish();
+break;
 }
 'step 2'
 if(result.control!='cancel2'){
 player.popup(result.control);
 game.log(player,'声明了','#y'+get.translation(result.control)+'牌');
-var card=get.cardPile(function(card){
-return get.type2(card)==result.control;
-});
+var card=get.cardPile(card=>get.type2(card)==result.control);
 if(card) player.gain(card,'gain2');
 }
 event.finish();
@@ -33597,15 +33592,13 @@ player.useCard({name:name,isCard:true},target,false);
 event.finish();
 'step 5'
 if(result.bool){
-player.line(player.storage.wechatshendao_mark.sortBySeat());
-for(var target of player.storage.wechatshendao_mark.sortBySeat()) target.damage();
+var targets=player.getStorage('wechatshendao_mark').filter(target=>target.isIn());
+player.line(targets);
+targets.forEach(target=>target.damage());
 }
 },
 subSkill:{
 mark:{
-init:function(player){
-player.storage.wechatshendao_mark=[];
-},
 charlotte:true,
 onremove:true,
 intro:{content:'已记录$'},
@@ -34084,20 +34077,11 @@ if(target.isIn()) target.recover();
 },
 wechatluanwu:{
 audio:'luanwu',
-unique:true,
-enable:'phaseUse',
-limited:true,
-skillAnimation:'epic',
-animationColor:'thunder',
-selectTarget:-1,
-multitarget:true,
-multiline:true,
+inherit:'luanwu',
 content:function(){
 'step 0'
 player.awakenSkill('wechatluanwu');
-var card=get.cardPile2(function(card){
-return card.name=='sha';
-});
+var card=get.cardPile2(card=>card.name=='sha');
 if(card) player.gain(card,'gain2');
 event.current=player;
 event.currented=[];
@@ -34127,51 +34111,11 @@ game.delay(0.5);
 event.goto(1);
 }
 },
-ai:{
-order:1,
-result:{
-player:function(player){
-if(lib.config.mode=='identity'&&game.zhu.isZhu&&player.identity=='fan'){
-if(game.zhu.hp==1&&game.zhu.countCards('h')<=2) return 1;
-}
-var num=0;
-var players=game.filterPlayer();
-for(var i=0;i<players.length;i++){
-var att=get.attitude(player,players[i]);
-if(att>0) att=1;
-if(att<0) att=-1;
-if(players[i]!=player&&players[i].hp<=3){
-if(players[i].countCards('h')==0) num+=att/players[i].hp;
-else if(players[i].countCards('h')==1) num+=att/2/players[i].hp;
-else if(players[i].countCards('h')==2) num+=att/4/players[i].hp;
-}
-if(players[i].hp==1) num+=att*1.5;
-}
-if(player.hp==1){
-return -num;
-}
-if(player.hp==2){
-return -game.players.length/4-num;
-}
-return -game.players.length/3-num;
-},
-},
-},
 },
 //审配
 wechatshouye:{
-group:'shouye_after',
 audio:'shouye',
-trigger:{target:'useCardToTarget'},
-filter:function(event,player){
-return event.player!=player&&event.targets.length==1;
-},
-check:function(event,player){
-if(event.player==game.me||event.player.isOnline()) return get.attitude(player,event.player)<0;
-return get.effect(player,event.card,event.player,player)<0;
-},
-usable:1,
-logTarget:'player',
+inherit:'shouye',
 content:function(){
 'step 0'
 player.line(trigger.player,'green');
@@ -36744,7 +36688,7 @@ wechatqiangwu:'枪舞',
 wechatqiangwu_info:'出牌阶段限一次，你可以弃置一张手牌，然后本回合你使用大于此牌点数的【杀】无距离和次数限制。',
 wechat_zuoci:'微信左慈',
 wechatyigui:'役鬼',
-wechatyigui_info:'出牌阶段限一次，当你使用普通锦囊牌指定目标时，你可以弃置一张牌并为此牌指定一个额外目标（无距离限制）。',
+wechatyigui_info:'出牌阶段限一次，当你使用普通锦囊牌时，你可以弃置一张牌并为此牌额外指定一个目标（无距离限制）。',
 wechatshendao:'神道',
 wechatshendao_info:'当你于出牌阶段使用牌结算结束后，若此牌的目标角色中存在本阶段你未记录的角色，则你记录这些角色，然后根据记录的角色数，你可以执行对应的效果：记录1名，从牌堆或弃牌堆中获得一张指定类型的牌；记录2名，视为对一名角色使用一张普通锦囊牌；记录3名，对所有记录的角色造成1点伤害。',
 wechat_mayunlu:'微信马云禄',
