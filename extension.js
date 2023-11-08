@@ -16,6 +16,7 @@ game.bolShowNewPack=function(){
 var HuoDong_update=[
 '/setPlayer/',
 'bugfix',
+'删除扩展内置序列帧特效显示',
 '名称修改写法简化',
 '添加欢杀武将：伊籍、公孙渊',
 'To be continued...',
