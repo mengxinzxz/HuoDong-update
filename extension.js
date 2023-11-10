@@ -18,12 +18,13 @@ var HuoDong_update=[
 'bugfix',
 '删除扩展内置序列帧特效显示',
 '名称修改写法简化',
-'添加欢杀武将：伊籍、公孙渊',
+'添加欢杀武将：伊籍、公孙渊、牛马老仙、王桃',
 'To be continued...',
 ];
 //更新武将
 var HuoDong_players=[
-'Mbaby_xf_yiji','Mbaby_gongsunyuan',
+'Mbaby_xf_yiji','Mbaby_gongsunyuan','Mbaby_re_nanhualaoxian',
+'Mbaby_wangtao',
 ];
 //加载
 var dialog=ui.create.dialog(
@@ -9849,7 +9850,7 @@ Mbaby_wangyue:['female','shu',3,['minihuguan','minimingluan'],['MXdelete']],
 Mbaby_xf_yiji:['male','shu',3,['minijijie','minijiyuan'],[]],
 Mbabysp_zhangfei:['male','shu',4,['minisppaoxiao','minixvhe'],[]],
 Mbaby_wolongfengchu:['male','shu',4,['miniyoulong','luanfeng'],['MXdelete']],
-Mbaby_wangtao:['female','shu',3,['minihuguan','miniyaopei'],['MXdelete']],
+Mbaby_wangtao:['female','shu',3,['minihuguan','miniyaopei'],[]],
 //吴
 Mbaby_bulianshi:['female','wu',3,['minianxu','zhuiyi'],[]],
 Mbaby_chengpu:['male','wu',4,['minilihuo','minichunlao'],[]],
@@ -9949,7 +9950,7 @@ Mbaby_caojie:['female','qun',3,['minishouxi','minihuimin'],[]],
 Mbaby_tangji:['female','qun',3,['minikangge','minijielie'],[]],
 Mbaby_libai:['male','qun',3,['minishixian'],['die_audio']],
 Mbaby_guotufengji:['male','qun',3,['minijigong','minishifei'],[]],
-Mbaby_re_nanhualaoxian:['male','qun',4,['minijinghe','minigongxiu'],['MXdelete']],
+Mbaby_re_nanhualaoxian:['male','qun',4,['minijinghe','minigongxiu'],[]],
 Mbaby_yanfuren:['female','qun',3,['minichanni','mininifu'],[]],
 Mbaby_gongsunyuan:['male','qun',4,['minihuaiyi'],[]],
 Mbaby_sp_zhangliao:['male','qun',4,['minimubing','miniziqu','minidiaoling'],[]],
