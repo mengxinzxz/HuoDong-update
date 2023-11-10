@@ -22703,25 +22703,9 @@ return 4-get.value(card);
 },
 minibenghuai:{
 audio:'benghuai',
-trigger:{player:'phaseJieshuBegin'},
-forced:true,
-filter:function(event,player){
-return !player.isMinHp()&&!player.hasSkill('rejiuchi_air')&&!player.hasSkill('oljiuchi_air');
-},
-content:function(){
-'step 0'
-player.chooseControl('baonue_hp','baonue_maxHp',function(event,player){
-if(player.isDamaged()) return 'baonue_maxHp';
-return 'baonue_hp';
-}).set('prompt','崩坏：失去1点体力或减1点体力上限');
-'step 1'
-if(result.control=='baonue_hp') player.loseHp();
-else player.loseMaxHp();
+inherit:'benghuai',
+contentAfter:function(){
 player.draw();
-},
-ai:{
-threaten:0.7,
-neg:true,
 },
 },
 miniwansha:{
