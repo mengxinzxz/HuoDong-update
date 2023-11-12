@@ -44651,6 +44651,7 @@ return event.name!='phase'||game.phaseNumber==0;
 forced:true,
 content:function(){
 var players=game.filterPlayer(current=>current!=player);
+player.line(players);
 players.forEach(target=>target.addGaintag(target.getCards('h'),'bilibili_liaoxing_tag'));
 },
 group:['bilibili_liaoxing_lose','bilibili_liaoxing_draw'],
