@@ -44657,7 +44657,7 @@ group:['bilibili_liaoxing_lose','bilibili_liaoxing_draw'],
 subSkill:{
 tag:{},
 lose:{
-trigger:{global:['loseAfter','loseAsyncAfter','cardsDiscardAfter']},
+trigger:{global:['loseAfter','equipAfter','addJudgeAfter','gainAfter','loseAsyncAfter','addToExpansionAfter']},
 filter:function(event,player){
 return lib.skill.bilibili_liaoxing.subSkill.lose.logTarget(event,player).length;
 },
@@ -44713,7 +44713,7 @@ forced:true,
 content:function(){
 var num=0;
 game.countPlayer(current=>{
-var evt=event.getl(current);
+var evt=trigger.getl(current);
 if(evt&&evt.cards2) num+=evt.cards2.filter(card=>card.name=='ying').length;
 });
 if(num) player.draw(num);
