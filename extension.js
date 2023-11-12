@@ -44644,7 +44644,7 @@ return player.countCards('h',{name:'bilibili_duoyang_zhiheng'});
 },
 },
 bilibili_liaoxing:{
-trigger:{global:'phaseBefore',player:'enterGame'},
+trigger:{global:'gameDrawAfter'},
 filter:function(event,player){
 return event.name!='phase'||game.phaseNumber==0;
 },
@@ -47060,7 +47060,7 @@ bilibili_duoyang_faq:'〖多样〗衍生武将卡功能',
 bilibili_duoyang_faq_info:'<br>衍生武将卡无主动使用方法，不计入手牌上限，当“曹操”/“刘备”/“孙权”处于你的手牌区时，你视为拥有技能〖奸雄〗/〖仁德〗/〖制衡〗。',
 bilibili_liaoxing:'瞭星',
 bilibili_liaoxing_tag:'星',
-bilibili_liaoxing_info:'锁定技。①游戏开始时，所有其他角色的手牌被标记为“星”。②一名角色失去“星”后，其获得等量的【影】。③一名角色失去【影】后，你摸等量的牌。',
+bilibili_liaoxing_info:'锁定技。①分发起始手牌后，所有其他角色的手牌被标记为“星”。②一名角色失去“星”后，其获得等量的【影】。③一名角色失去【影】后，你摸等量的牌。',
 bilibili_mx_kanpo:'看破',
 bilibili_mx_kanpo_info:'其他角色指定你为技能目标时，你可以将自己移除目标。',
 bilibili_xuxiang:'虚像',
