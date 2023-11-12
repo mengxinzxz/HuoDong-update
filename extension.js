@@ -44133,7 +44133,6 @@ player.flashAvatar('bilibili_tixiang',name);
 for(var skill of lib.character[name][3].filter(function(skill){
 return !get.skillCategoriesOf(skill,player).length;
 })) player.addTempSkill(skill,'roundStart');
-if(event.list.length<2) event.redo();
 }
 else break;
 }
