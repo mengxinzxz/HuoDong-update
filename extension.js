@@ -44705,7 +44705,7 @@ if(num) target.gain(lib.card.ying.getYing(num),'gain2');
 draw:{
 trigger:{global:['loseAfter','loseAsyncAfter']},
 filter:function(event,player){
-return game.hasPlayer(current=>{
+return game.hasPlayer2(current=>{
 var evt=event.getl(current);
 return evt&&evt.cards2&&evt.cards2.some(card=>card.name=='ying');
 });
@@ -44713,7 +44713,7 @@ return evt&&evt.cards2&&evt.cards2.some(card=>card.name=='ying');
 forced:true,
 content:function(){
 var num=0;
-game.countPlayer(current=>{
+game.countPlayer2(current=>{
 var evt=trigger.getl(current);
 if(evt&&evt.cards2) num+=evt.cards2.filter(card=>card.name=='ying').length;
 });
@@ -47054,13 +47054,13 @@ bilibili_daili_info:'锁定技，新的一轮开始时，你移去所有“统�
 bilibili_duoyang:'多样',
 bilibili_duoyangx:'多样',
 bilibili_duoyang_info:'锁定技，游戏开始时，你获得“曹操”、“刘备”、“孙权”卡牌各一张。',
-bilibili_duoyang_append:'〖多样〗衍生武将卡功能：<br>衍生武将卡无主动使用方法，不计入手牌上限，当“曹操”/“刘备”/“孙权”处于你的手牌区时，你视为拥有技能〖奸雄〗/〖仁德〗/〖制衡〗。'+
-'<br><br><span style="font-family:yuanli">我是萌新（转型中），我也是个代更者，我还是萌新的朋友，我又是群机器人，所以我到底是...</span>',
+bilibili_duoyang_append:'〖多样〗衍生武将卡功能：<br>衍生武将卡无主动使用方法，不计入手牌上限，当“曹操”/“刘备”/“孙权”处于你的手牌区时，你视为拥有技能〖奸雄〗/〖仁德〗/〖制衡〗。',
 bilibili_duoyang_faq:'〖多样〗衍生武将卡功能',
 bilibili_duoyang_faq_info:'<br>衍生武将卡无主动使用方法，不计入手牌上限，当“曹操”/“刘备”/“孙权”处于你的手牌区时，你视为拥有技能〖奸雄〗/〖仁德〗/〖制衡〗。',
 bilibili_liaoxing:'瞭星',
 bilibili_liaoxing_tag:'星',
 bilibili_liaoxing_info:'锁定技。①分发起始手牌后，所有其他角色的手牌被标记为“星”。②一名角色失去“星”后，其获得等量的【影】。③一名角色失去【影】后，你摸等量的牌。',
+bilibili_liaoxing_append:'<span style="font-family:yuanli">我是萌新（转型中），我也是个代更者，我还是萌新的朋友，我又是群机器人，所以我到底是...</span>',
 bilibili_mx_kanpo:'看破',
 bilibili_mx_kanpo_info:'其他角色指定你为技能目标时，你可以将自己移除目标。',
 bilibili_xuxiang:'虚像',
