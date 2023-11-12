@@ -16,6 +16,7 @@ game.bolShowNewPack=function(){
 var HuoDong_update=[
 '/setPlayer/',
 'bugfix',
+'名人堂武将平衡性调整',
 '删除扩展内置序列帧特效显示',
 '名称修改写法简化',
 '添加欢杀武将：伊籍、公孙渊、牛马老仙、王桃',
@@ -23,8 +24,8 @@ var HuoDong_update=[
 ];
 //更新武将
 var HuoDong_players=[
-'Mbaby_xf_yiji','Mbaby_gongsunyuan','Mbaby_re_nanhualaoxian',
-'Mbaby_wangtao',
+'bilibili_Emptycity','bilibili_shengxunyu','bilibili_Firewin','bilibili_suixingsifeng',
+'Mbaby_xf_yiji','Mbaby_gongsunyuan','Mbaby_re_nanhualaoxian','Mbaby_wangtao',
 ];
 //加载
 var dialog=ui.create.dialog(
@@ -36628,7 +36629,7 @@ characterSort:{
 huodongcharacter:{
 CLongZhou:['lz_sufei','lz_tangzi','lz_liuqi','lz_huangquan'],
 CZHengHuo:['bilibili_zhengxuan','bilibili_sp_xuyou','old_zuoci'],
-Chuodong:['bilibili_shengxunyu','bilibili_Firewin','bilibili_jinglingqiu','bilibili_suixingsifeng','bilibili_Emptycity','bilibili_thunderlei','bilibili_lonelypatients','bilibili_babybao','bilibili_miaojiang'],
+Chuodong:['bilibili_shengxunyu','bilibili_Firewin','bilibili_jinglingqiu','bilibili_suixingsifeng','bilibili_Emptycity','bilibili_thunderlei','bilibili_lonelypatients'],
 Cothers:['bilibili_adong','bilibili_zhangrang','bilibili_litiansuo','decade_huangwudie','bilibili_huanggai','bilibili_ekeshaoge','bilibili_guanning','bilibili_wangwang','bilibili_zhouxiaomei','diy_lvmeng'],
 CDanJi:['DJ_caiyang','DJ_pujing','DJ_huban'],
 CSCS:['biliscs_zhangrang','biliscs_zhaozhong','biliscs_sunzhang','biliscs_bilan','biliscs_xiayun','biliscs_hankui','biliscs_lisong','biliscs_duangui','biliscs_guosheng','biliscs_gaowang'],
@@ -36653,15 +36654,13 @@ lz_huangquan:['male','wei',3,['lzdianhu','xinfu_jianji'],['character:xf_huangqua
 bilibili_adong:['male','qun',4,['jueman','oljianman'],[]],
 old_zuoci:['male','qun',3,['gz_huashen','gz_xinsheng'],['die_audio']],
 bilibili_shengxunyu:['male','key',4,['bilibili_hehu','bilibili_jinyan','bilibili_yutai'],[]],
-bilibili_Firewin:['male','key','3/4',['jsrgfeiyang','jsrgbahu','bilibili_tixiang'],[]],
+bilibili_Firewin:['male','key',4,['jsrgfeiyang','jsrgbahu','bilibili_tixiang'],[]],
 bilibili_jinglingqiu:['male','key','3/4',['bilibili_tiyi','bilibili_zili'],[]],
-bilibili_suixingsifeng:['female','key',4,['bilibili_daili','bilibili_duoyang'],[]],
+bilibili_suixingsifeng:['female','key',4,['bilibili_daili','bilibili_duoyang','bilibili_liaoxing'],[]],
 bilibili_Emptycity:['male','key',4,['bilibili_zhiyou','bilibili_guanli'],[]],
 bilibili_thunderlei:['male','key','2/4/3',['bilibili_Thunder','bilibili_qianxi'],[]],
 bilibili_zhengxuan:['male','qun',3,['bilibili_zhengjing'],['character:zhengxuan']],
 bilibili_lonelypatients:['male','key',4,['bilibili_meihua','bilibili_gongyou','bilibili_qianyin'],[]],
-bilibili_babybao:['male','key',4,[],['unseen']],
-bilibili_miaojiang:['female','key',4,[],['unseen','ext:活动武将/image/character/Mmiao_huangyueying.jpg']],
 //千里走单骑
 DJ_caiyang:['male','qun',1,['yinka','zhuixi'],['character:caiyang']],
 DJ_pujing:['male','qun',1,['yinka'],['character:pujing']],
@@ -44014,7 +44013,7 @@ logTarget:'player',
 forced:true,
 content:function(){
 'step 0'
-trigger.player.chooseCard('交给'+get.translation(player)+get.cnNumber(event.triggername=='phaseBegin'?2:1)+'张牌以示对其的关爱',true,'he',event.triggername=='phaseBegin'?2:1);
+trigger.player.chooseCard('交给'+get.translation(player)+get.cnNumber(event.triggername=='phaseBegin'?1:2)+'张牌以示对其的关爱',true,'he',event.triggername=='phaseBegin'?2:1);
 'step 1'
 if(result.bool){
 var skill='bilibili_hehu_'+player.playerid;
@@ -44023,7 +44022,7 @@ lib.skill[skill]={};
 lib.translate[skill]='呵护熏鱼<br>关爱熏鱼';
 }
 trigger.player.give(result.cards,player);
-trigger.player.draw(event.triggername=='phaseBegin'?1:2).gaintag=[skill];
+trigger.player.draw(event.triggername=='phaseBegin'?2:1).gaintag=[skill];
 }
 },
 subSkill:{
@@ -44083,24 +44082,9 @@ locked:false,
 logTarget:'player',
 content:function(){
 'step 0'
-game.addGlobalSkill('bilibili_yutai_destroy');
-if(!_status.ShengXunYuCards) _status.ShengXunYuCards=[];
 player.gain(trigger.cards.filterInD(),'gain2');
 'step 1'
-game.delay(0.5);
-'step 2'
-var cards=[];
-for(var i=1;i<=3;i++){
-var card=game.createCard2('qizhengxiangsheng',['生','熏','鱼'][i-1],114514);
-cards.push(card);
-ui.cardPile.insertBefore(card,ui.cardPile.childNodes[get.rand(0,ui.cardPile.childNodes.length)]);
-}
-game.updateRoundNumber();
-_status.ShengXunYuCards.addArray(cards);
-player.$throw(cards.reverse(),1000);
-game.log(player,'洗入了三张','#y奇正相生');
-'step 3'
-game.delayx();
+game.delay();
 },
 },
 destroy:{
@@ -44129,33 +44113,31 @@ game.cardsGotoSpecial(cards);
 bilibili_tixiang:{
 group:['bilibili_tixiang_log'],
 unique:true,
-trigger:{global:'phaseBegin'},
-filter:function(event,player){
-return _status.roundStart==event.player;
-},
+trigger:{global:'roundStart'},
 forced:true,
 priority:10,
 content:function(){
 'step 0'
-event.list=[];
-'step 1'
+var list=[];
 var group=['wei','shu','wu','qun','jin'][player.countMark('bilibili_tixiang')%5];
+while(list.length<2){
 var name=Object.keys(lib.character).filter(function(name){
-if(event.list.includes(name)||lib.filter.characterDisabled(name)) return false;
+if(list.includes(name)||lib.filter.characterDisabled(name)) return false;
 return lib.character[name][1]==group&&lib.character[name][3].filter(function(skill){
 return !get.skillCategoriesOf(skill,player).length;
 }).length;
 }).randomGet();
 if(name){
-event.list.push(name);
+list.push(name);
 player.flashAvatar('bilibili_tixiang',name);
 for(var skill of lib.character[name][3].filter(function(skill){
 return !get.skillCategoriesOf(skill,player).length;
 })) player.addTempSkill(skill,'roundStart');
-if(event.list.length<3) event.redo();
+if(event.list.length<2) event.redo();
 }
-'step 2'
-player.changeHujia(1);
+else break;
+}
+'step 1'
 player.addMark('bilibili_tixiang',1,false);
 },
 subSkill:{
@@ -44661,6 +44643,84 @@ return player.countCards('h',{name:'bilibili_duoyang_zhiheng'});
 },
 },
 },
+bilibili_liaoxing:{
+trigger:{global:'phaseBefore',player:'enterGame'},
+filter:function(event,player){
+return event.name!='phase'||game.phaseNumber==0;
+},
+forced:true,
+content:function(){
+var players=game.filterPlayer(current=>current!=player);
+players.forEach(target=>target.addGaintag(target.getCards('h'),'bilibili_liaoxing_tag'));
+},
+group:['bilibili_liaoxing_lose','bilibili_liaoxing_draw'],
+subSkill:{
+tag:{},
+lose:{
+trigger:{global:['loseAfter','loseAsyncAfter','cardsDiscardAfter']},
+filter:function(event,player){
+return lib.skill.bilibili_liaoxing.subSkill.lose.logTarget(event,player).length;
+},
+logTarget:function(event,player){
+return game.filterPlayer(current=>{
+var evt=event.getl(current);
+if(!evt||!evt.cards2||!evt.cards2.length) return false;
+if(event.name=='lose'){
+for(var i in event.gaintag_map){
+if(event.gaintag_map[i].contains('bilibili_liaoxing_tag')) return true;
+}
+return false;
+}
+return current.hasHistory('lose',function(evt){
+if(event!=evt.getParent()) return false;
+for(var i in evt.gaintag_map){
+if(evt.gaintag_map[i].contains('bilibili_liaoxing_tag')) return true;
+}
+return false;
+});
+});
+},
+forced:true,
+content:function(){
+var targets=lib.skill.bilibili_liaoxing.subSkill.lose.logTarget(trigger,player).sortBySeat();
+while(targets.length){
+var target=targets.shift(),num=0;
+if(trigger.name=='lose'){
+for(var i in trigger.gaintag_map){
+if(trigger.gaintag_map[i].contains('bilibili_liaoxing_tag')) num++;
+}
+}
+else target.getHistory('lose',function(evt){
+if(trigger!=evt.getParent()) return false;
+for(var i in evt.gaintag_map){
+if(evt.gaintag_map[i].contains('bilibili_liaoxing_tag')) num++;
+}
+return false;
+});
+if(num) target.gain(lib.card.ying.getYing(num),'gain2');
+}
+},
+},
+draw:{
+trigger:{global:['loseAfter','loseAsyncAfter']},
+filter:function(event,player){
+return game.hasPlayer(current=>{
+var evt=event.getl(current);
+return evt&&evt.cards2&&evt.cards2.some(card=>card.name=='ying');
+});
+},
+forced:true,
+content:function(){
+var num=0;
+game.countPlayer(current=>{
+var evt=event.getl(current);
+if(evt&&evt.cards2) num+=evt.cards2.filter(card=>card.name=='ying').length;
+});
+if(num) player.draw(num);
+},
+},
+},
+},
 //萌新测试技能
 bilibili_mx_kanpo:{
 unique:true,
@@ -44902,9 +44962,9 @@ return get.skillRank(b,'in')-get.skillRank(a,'in');
 'step 1'
 if(result.control){
 player.addSkillLog(result.control);
-player.addSkill('bilibili_zhiyou_remove');
-player.markAuto('bilibili_zhiyou',[result.control]);
-player.storage.bilibili_zhiyou_remove=result.control;
+//player.addSkill('bilibili_zhiyou_remove');
+//player.markAuto('bilibili_zhiyou',[result.control]);
+//player.storage.bilibili_zhiyou_remove=result.control;
 }
 },
 ai:{
@@ -44971,11 +45031,11 @@ return target.getStockSkills(true,true).includes(skill);
 });
 if(trigger.player==player) trigger.num+=targets.length;
 else{
-trigger.num+=2;
+trigger.num+=3;
 player.addTempSkill('bilibili_guanli_gain','phaseDrawAfter');
 if(!player.storage.bilibili_guanli_gain) player.storage.bilibili_guanli_gain={};
 if(!player.storage.bilibili_guanli_gain[trigger.player.playerid]) player.storage.bilibili_guanli_gain[trigger.player.playerid]=0;
-player.storage.bilibili_guanli_gain[trigger.player.playerid]++;
+player.storage.bilibili_guanli_gain[trigger.player.playerid]+=2;
 }
 },
 subSkill:{
@@ -46966,13 +47026,13 @@ bilibili_shengxunyu:'生熏鱼',
 bilibili_jinyan:'禁言',
 bilibili_jinyan_info:'锁定技，其他角色于你的回合内至多成为一次你使用非【奇正相生】牌的目标。',
 bilibili_hehu:'呵护',
-bilibili_hehu_info:'锁定技，其他角色的回合开始/回合结束时，其须交给你两/一张牌，然后摸一/两张牌（不能对你使用）。',
+bilibili_hehu_info:'锁定技，其他角色的回合开始/回合结束时，其须交给你一/两张牌，然后摸两/一张牌（不能对你使用）。',
 bilibili_yutai:'彧态',
-bilibili_yutai_info:'你可以将X张牌当作【奇正相生】使用（X为你本回合发动〖彧态〗的次数+1，且X至多为3，若存活人数不超过4人则改为X至多为2）。一名角色打出【杀】或【闪】响应【奇正相生】时，你获得打出的牌，然后将三张花色分别为“生”、“熏”、“鱼”，点数为114514的【奇正相生】洗入牌堆（这些牌进入弃牌堆后移出游戏）。',
+bilibili_yutai_info:'你可以将X张牌当作【奇正相生】使用（X为你本回合发动〖彧态〗的次数+1，且X至多为3，若存活人数不超过4人则改为X至多为2）。一名角色打出【杀】或【闪】响应【奇正相生】时，你获得打出的牌。',
 bilibili_yutai_append:'<span style="font-family:yuanli">我是活动群团宠，我最爱的就是惹事然后被宵禁</span>',
 bilibili_Firewin:'Fire.win',
 bilibili_tixiang:'替像',
-bilibili_tixiang_info:'锁定技。①一号位的回合开始前，你按照[魏、蜀、吴、群、晋]的顺序获得当前势力的随机三张武将牌的所有无标签技能直至下一轮开始，然后获得1点护甲。②当你发动无标签技能结算结束后，你触发一次扩展内置彩蛋。',
+bilibili_tixiang_info:'锁定技。①新的一轮开始时，你按照[魏、蜀、吴、群、晋]的顺序获得当前势力的随机两张武将牌的所有无标签技能直至下一轮开始。②当你发动无标签技能结算结束后，你触发一次扩展内置彩蛋。',
 bilibili_tixiang_append:'<span style="font-family:yuanli">我每个月都要换头像，我这儿有很多的鸟可以换</span>',
 bolzenhui:'谮毁',
 bolzenhui_info:'出牌阶段限一次，当你使用【杀】或黑色普通锦囊牌指定目标时，你可选择另一名能成为此牌目标的其他角色并选择一项：①令其也成为此牌的目标。②获得其区域里的一张牌，然后将此牌的使用者改为该角色。',
@@ -46997,6 +47057,9 @@ bilibili_duoyang_append:'〖多样〗衍生武将卡功能：<br>衍生武将卡
 '<br><br><span style="font-family:yuanli">我是萌新（转型中），我也是个代更者，我还是萌新的朋友，我又是群机器人，所以我到底是...</span>',
 bilibili_duoyang_faq:'〖多样〗衍生武将卡功能',
 bilibili_duoyang_faq_info:'<br>衍生武将卡无主动使用方法，不计入手牌上限，当“曹操”/“刘备”/“孙权”处于你的手牌区时，你视为拥有技能〖奸雄〗/〖仁德〗/〖制衡〗。',
+bilibili_liaoxing:'瞭星',
+bilibili_liaoxing_tag:'星',
+bilibili_liaoxing_info:'锁定技。①游戏开始时，所有其他角色的手牌被标记为“星”。②一名角色失去“星”后，其获得等量的【影】。③一名角色失去【影】后，你摸等量的牌。',
 bilibili_mx_kanpo:'看破',
 bilibili_mx_kanpo_info:'其他角色指定你为技能目标时，你可以将自己移除目标。',
 bilibili_xuxiang:'虚像',
@@ -47009,9 +47072,9 @@ bolgongxin:'攻心',
 bolgongxin3:'攻心',
 bolgongxin_info:'出牌阶段限一次，你可以观看一名其他角色的手牌，然后你可以展示其中一张牌并选择一项：1.弃置此牌；2.将此牌置于牌堆顶。若该角色手牌中的花色数因此减少，其不能响应你本回合使用的下一张牌。',
 bilibili_zhiyou:'致优',
-bilibili_zhiyou_info:'出牌阶段限一次，若你未拥有因〖致优〗获得的技能，你可以从其他游戏角色已发动过但未你未因〖致优〗选择的随机三个武将牌上的无标签技能中选择一个，你获得此技能直到发动此技能。',
+bilibili_zhiyou_info:'出牌阶段限一次，若你未拥有因〖致优〗获得的技能，你可以从其他游戏角色已发动过但未你未因〖致优〗选择的随机三个武将牌上的无标签技能中选择获得其中一个。',
 bilibili_guanli:'管理',
-bilibili_guanli_info:'锁定技。①你对未因〖致优〗获得过其武将牌上的技能的角色使用牌无距离和次数限制。②摸牌阶段，你多摸X张牌（X为你因〖致优〗获得过其武将牌上的技能的游戏角色数）③你因〖致优〗获得过其武将牌上的技能的角色于摸牌阶段多摸两张牌，然后交给你一张牌。',
+bilibili_guanli_info:'锁定技。①你对未因〖致优〗获得过其武将牌上的技能的角色使用牌无距离和次数限制。②摸牌阶段，你多摸X张牌（X为你因〖致优〗获得过其武将牌上的技能的游戏角色数）③你因〖致优〗获得过其武将牌上的技能的角色于摸牌阶段多摸三张牌，然后交给你两张牌。',
 bilibili_guanli_append:'<span style="font-family:yuanli">你高考复习要暂时退坑了，这次肯定要整一个大的</span>',
 bilibili_Thunder:'Thunder',
 bilibili_Thunder_info:'锁定技。①回合开始时，若你的护甲值不等于3-X，你将护甲值调整至3-X（X为你此前发动〖Thunder①〗的次数，且护甲值至少调整至0）。②若你的护甲值大于0，其他角色发动无标签技能后，若本局游戏未因〖Thunder②〗制作过此技能的卡牌，则你制作一张此技能的卡牌并获得之，使用此牌可获得此牌对应的技能（若有此技能则改为摸三张牌），然后若此牌是第一次被使用，则将此牌洗入牌堆，否则将此牌移出游戏。③若你没有护甲值，你使用的有指定目标的非【铁索连环】【借刀杀人】牌结算两次，摸牌时摸牌数翻倍，造成伤害时伤害值翻倍。',
@@ -47082,10 +47145,7 @@ bolyingtu:'营图',
 bolyingtu_info:'①当你的上家于摸牌阶段外获得牌后，你可以获得其等量的牌，然后将等量的牌交给你的下家。②当你的下家使用【杀】或【决斗】指定第一个目标时，若目标角色不包含你和你的上家，则你可以取消此牌的所有目标，然后将此牌目标改为你的上家。',
 bolcongshi:'从势',
 bolcongshi_info:'锁定技。①体力值最大的角色对你的上家和下家使用牌无距离限制。②有角色使用因〖从势①〗增加距离的牌对你的上家或下家造成伤害后，你回复1点体力。',
-bilibili_babybao:'宝',
 bol_fuhuanghou:'TW伏寿',
-bilibili_miaojiang:'睡觉不玻璃',
-bilibili_miaojiang_ab:'喵酱',
 },
 };
 for(var i in huodongcharacter.character){
