@@ -13377,7 +13377,7 @@ target.addSkill('dcyongbi_eff2');
 },
 //SP曹仁
 miniweikui:{
-audio:'kuiwei',
+audio:'weikui',
 enable:'phaseUse',
 filterTarget:function(card,player,target){
 return target!=player&&target.countCards('h');
@@ -13414,7 +13414,7 @@ return -1;
 },
 },
 minilizhan:{
-audio:'yanzheng',
+audio:'lizhan',
 trigger:{player:'phaseJieshuBegin'},
 filter:function(event,player){
 return game.hasPlayer(current=>current.isDamaged());
