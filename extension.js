@@ -44053,7 +44053,7 @@ return evt.skill=='bilibili_yutai';
 if(game.hasPlayer2(function(current){
 return current.name1=='bilibili_suixingsifeng'||current.name2=='bilibili_suixingsifeng';
 })) return num;
-return Math.min(num,game.countPlayer()>4?3:2);
+return Math.min(num,3);
 },
 enable:'chooseToUse',
 filterCard:true,
@@ -46698,7 +46698,7 @@ bilibili_yutai:function(player){
 var bool=game.hasPlayer2(function(current){
 return current.name1=='bilibili_suixingsifeng'||current.name2=='bilibili_suixingsifeng';
 });
-return '你可以将X张牌当作【奇正相生】使用（X为你本回合发动〖彧态〗的次数+1'+(bool?'<span style="text-decoration: line-through;">':'')+'，且X至多为3，若存活人数不超过4人则改为X至多为2'+(bool?'</span>':'')+'）。一名角色打出【杀】或【闪】响应【奇正相生】时，你获得打出的牌，然后将三张花色分别为“生”、“熏”、“鱼”，点数为114514的【奇正相生】洗入牌堆（这些牌进入弃牌堆后移出游戏）。';
+return '你可以将X张牌当作【奇正相生】使用（X为你本回合发动〖彧态〗的次数+1'+(bool?'<span style="text-decoration: line-through;">':'')+'，且X至多为3'+(bool?'</span>':'')+'）。一名角色打出【杀】或【闪】响应【奇正相生】时，你获得打出的牌。';
 },
 },
 translate:{
@@ -47029,7 +47029,7 @@ bilibili_jinyan_info:'锁定技，其他角色于你的回合内至多成为一�
 bilibili_hehu:'呵护',
 bilibili_hehu_info:'锁定技，其他角色的回合开始/回合结束时，其须交给你一/两张牌，然后摸两/一张牌（不能对你使用）。',
 bilibili_yutai:'彧态',
-bilibili_yutai_info:'你可以将X张牌当作【奇正相生】使用（X为你本回合发动〖彧态〗的次数+1，且X至多为3，若存活人数不超过4人则改为X至多为2）。一名角色打出【杀】或【闪】响应【奇正相生】时，你获得打出的牌。',
+bilibili_yutai_info:'你可以将X张牌当作【奇正相生】使用（X为你本回合发动〖彧态〗的次数+1，且X至多为3）。一名角色打出【杀】或【闪】响应【奇正相生】时，你获得打出的牌。',
 bilibili_yutai_append:'<span style="font-family:yuanli">我是活动群团宠，我最爱的就是惹事然后被宵禁</span>',
 bilibili_Firewin:'Fire.win',
 bilibili_tixiang:'替像',
