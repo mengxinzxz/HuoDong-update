@@ -44123,7 +44123,8 @@ var group=['wei','shu','wu','qun','jin'][player.countMark('bilibili_tixiang')%5]
 while(list.length<2){
 var name=Object.keys(lib.character).filter(function(name){
 if(list.includes(name)||lib.filter.characterDisabled(name)) return false;
-return lib.character[name][1]==group&&lib.character[name][3].filter(function(skill){
+var double=get.is.double(name,true);
+return (double?double.includes(group):lib.character[name][1]==group)&&lib.character[name][3].filter(function(skill){
 return !get.skillCategoriesOf(skill,player).length;
 }).length;
 }).randomGet();
