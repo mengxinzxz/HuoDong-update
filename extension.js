@@ -44013,7 +44013,7 @@ logTarget:'player',
 forced:true,
 content:function(){
 'step 0'
-trigger.player.chooseCard('交给'+get.translation(player)+get.cnNumber(event.triggername=='phaseBegin'?1:2)+'张牌以示对其的关爱',true,'he',event.triggername=='phaseBegin'?2:1);
+trigger.player.chooseCard('交给'+get.translation(player)+get.cnNumber(event.triggername=='phaseBegin'?1:2)+'张牌以示对其的关爱',true,'he',event.triggername=='phaseBegin'?1:2);
 'step 1'
 if(result.bool){
 var skill='bilibili_hehu_'+player.playerid;
