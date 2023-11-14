@@ -44016,13 +44016,16 @@ content:function(){
 trigger.player.chooseCard('交给'+get.translation(player)+get.cnNumber(event.triggername=='phaseBegin'?1:2)+'张牌以示对其的关爱',true,'he',event.triggername=='phaseBegin'?1:2);
 'step 1'
 if(result.bool){
+if(event.triggername=='phaseBegin'){
 var skill='bilibili_hehu_'+player.playerid;
 if(!lib.skill[skill]){
 lib.skill[skill]={};
 lib.translate[skill]='呵护熏鱼<br>关爱熏鱼';
 }
 trigger.player.give(result.cards,player);
-trigger.player.draw(event.triggername=='phaseBegin'?2:1).gaintag=[skill];
+trigger.player.draw().gaintag=[skill];
+}
+else trigger.player.gain(lib.card.ying.getYing(3),'gain2');
 }
 },
 subSkill:{
@@ -44044,7 +44047,6 @@ if(card.hasGaintag('bilibili_hehu_'+target.playerid)) return false;
 },
 bilibili_yutai:{
 unique:true,
-group:'bilibili_yutai_gain',
 init:()=>game.addGlobalSkill('tianzuo_global'),
 getNum:function(player){
 var num=1+_status.event.player.getHistory('useSkill',function(evt){
@@ -44070,44 +44072,6 @@ if(player.countCards('h')>player.needsToDiscard()) return 8-get.value(card);
 return 5-get.value(card);
 },
 ai:{order:()=>get.order({name:'qizhengxiangsheng'})},
-subSkill:{
-gain:{
-trigger:{global:'respond'},
-filter:function(event,player){
-if(event.card.name!='sha'&&event.card.name!='shan') return false;
-return event.getParent(2).name=='qizhengxiangsheng'&&event.cards.filterInD().length;
-},
-forced:true,
-locked:false,
-logTarget:'player',
-content:function(){
-'step 0'
-player.gain(trigger.cards.filterInD(),'gain2');
-'step 1'
-game.delay();
-},
-},
-destroy:{
-charlotte:true,
-trigger:{global:['loseEnd','cardsDiscardEnd']},
-filter:function(event,player){
-return event.cards.filter(function(card){
-return _status.ShengXunYuCards.includes(card)&&get.position(card,true)=='d';
-}).length;
-},
-forceDie:true,
-direct:true,
-priority:Infinity,
-content:function(){
-var cards=trigger.cards.filter(function(card){
-return _status.ShengXunYuCards.includes(card)&&get.position(card,true)=='d';
-});
-_status.ShengXunYuCards.removeArray(cards);
-game.log(cards,'已被移出游戏');
-game.cardsGotoSpecial(cards);
-},
-},
-},
 },
 //Fire.win
 bilibili_tixiang:{
@@ -46698,7 +46662,7 @@ bilibili_yutai:function(player){
 var bool=game.hasPlayer2(function(current){
 return current.name1=='bilibili_suixingsifeng'||current.name2=='bilibili_suixingsifeng';
 });
-return '你可以将X张牌当作【奇正相生】使用（X为你本回合发动〖彧态〗的次数+1'+(bool?'<span style="text-decoration: line-through;">':'')+'，且X至多为3'+(bool?'</span>':'')+'）。一名角色打出【杀】或【闪】响应【奇正相生】时，你获得打出的牌。';
+return '你可以将X张牌当作【奇正相生】使用（X为你本回合发动〖彧态〗的次数+1'+(bool?'<span style="text-decoration: line-through;">':'')+'，且X至多为3'+(bool?'</span>':'')+'）。';
 },
 },
 translate:{
@@ -47027,9 +46991,9 @@ bilibili_shengxunyu:'生熏鱼',
 bilibili_jinyan:'禁言',
 bilibili_jinyan_info:'锁定技，其他角色于你的回合内至多成为一次你使用非【奇正相生】牌的目标。',
 bilibili_hehu:'呵护',
-bilibili_hehu_info:'锁定技，其他角色的回合开始/回合结束时，其须交给你一/两张牌，然后摸两/一张牌（不能对你使用）。',
+bilibili_hehu_info:'锁定技，其他角色的回合开始/回合结束时，其须交给你一/两张牌，然后其获得三张【影】/摸一张牌（不能对你使用）。',
 bilibili_yutai:'彧态',
-bilibili_yutai_info:'你可以将X张牌当作【奇正相生】使用（X为你本回合发动〖彧态〗的次数+1，且X至多为3）。一名角色打出【杀】或【闪】响应【奇正相生】时，你获得打出的牌。',
+bilibili_yutai_info:'你可以将X张牌当作【奇正相生】使用（X为你本回合发动〖彧态〗的次数+1，且X至多为3）。',
 bilibili_yutai_append:'<span style="font-family:yuanli">我是活动群团宠，我最爱的就是惹事然后被宵禁</span>',
 bilibili_Firewin:'Fire.win',
 bilibili_tixiang:'替像',
