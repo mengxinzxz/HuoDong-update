@@ -44005,7 +44005,7 @@ return evt.targets&&evt.targets.includes(target);
 bilibili_hehu:{
 unique:true,
 global:'bilibili_hehu_global',
-trigger:{global:['phaseBegin','phaseEnd']},
+trigger:{global:'phaseEnd'},
 filter:function(event,player){
 return event.player!=player&&event.player.countCards('he');
 },
@@ -44013,19 +44013,17 @@ logTarget:'player',
 forced:true,
 content:function(){
 'step 0'
-trigger.player.chooseCard('交给'+get.translation(player)+'两张牌以示对其的关爱',true,'he',2);
+trigger.player.chooseCard('交给'+get.translation(player)+'三张牌以示对其的关爱',true,'he',);
 'step 1'
 if(result.bool){
+trigger.player.give(result.cards,player);
 var skill='bilibili_hehu_'+player.playerid;
 if(!lib.skill[skill]){
 lib.skill[skill]={};
 lib.translate[skill]='呵护熏鱼<br>关爱熏鱼';
 }
-if(event.triggername=='phaseEnd'){
-trigger.player.give(result.cards,player);
 trigger.player.draw(2).gaintag=[skill];
-}
-else trigger.player.gain(lib.card.ying.getYing(3),'gain2').gaintag.add(skill);
+trigger.player.gain(lib.card.ying.getYing(2),'gain2').gaintag.add(skill);
 }
 },
 subSkill:{
@@ -46997,7 +46995,7 @@ bilibili_shengxunyu:'生熏鱼',
 bilibili_jinyan:'禁言',
 bilibili_jinyan_info:'锁定技，其他角色于你的回合内至多成为一次你使用非【奇正相生】牌的目标。',
 bilibili_hehu:'呵护',
-bilibili_hehu_info:'锁定技，其他角色的回合开始/回合结束时，其须交给你两张牌，然后其获得三张【影】/摸两张牌，其获得的这些牌不计入手牌上限且不能对你使用。',
+bilibili_hehu_info:'锁定技，其他角色回合结束时，其须交给你两张牌，然后其摸两张牌并获得两张【影】（这些牌不计入手牌上限且不能对你使用）。',
 bilibili_yutai:'彧态',
 bilibili_yutai_info:'你可以将X张牌当作【奇正相生】使用（X为你本回合发动〖彧态〗的次数+1，且X至多为3）。',
 bilibili_yutai_append:'<span style="font-family:yuanli">我是活动群团宠，我最爱的就是惹事然后被宵禁</span>',
