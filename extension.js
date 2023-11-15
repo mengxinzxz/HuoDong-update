@@ -1217,6 +1217,25 @@ lib.translate.bilibili_GuoZhan='国战补充';
 //技能
 var skill_guozhan={
 //杜预
+spwuku:{
+audio:2,
+trigger:{global:'useCard'},
+forced:true,
+preHidden:true,
+filter:function(event,player){
+if(get.type(event.card)!='equip') return false;
+return player.countMark('spwuku')<3;
+},
+content:function(){
+player.addMark('spwuku',1);
+},
+marktext:'库',
+intro:{content:'mark'},
+ai:{
+combo:'spsanchen',
+threaten:3.6,
+},
+},
 gzwuku:{
 audio:'spwuku',
 inherit:'spwuku',
@@ -1250,6 +1269,7 @@ lib.dynamicTranslate[i]=dynamicTranslate_guozhan[i];
 var translate_guozhan={
 gzwuku:'武库',
 gzwuku_info:'锁定技，当有其他势力的角色使用装备牌时，若你的“武库”数小于2，则你获得一个“武库”。',
+spwuku_info_guozhan:'锁定技，当有角色使用装备牌时，若你的“武库”数小于3，则你获得一个“武库”。',
 gznaxiang:'纳降',
 gznaxiang_info:'锁定技，当你受到其他角色造成的伤害后，或你对其他角色造成伤害后，你对其发动〖才望〗时的“弃置”改为“获得”直到你的下回合开始。',
 gzwanwei:'挽危',
@@ -1294,7 +1314,7 @@ player.$draw(cards,'nobroadcast');
 },player,list);
 };
 lib.skill.yigui.group=['yigui_init','yigui_refrain','yigui_gzshan','yigui_gzwuxie'];
-lib.translate.yigui_info='当你首次明置此武将牌时，你将剩余武将牌堆的两张牌置于武将牌上，称为“魂”；你可以展示一张武将牌上的“魂”并将其置入剩余武将牌堆，视为使用一张本回合内未以此法使用过的基本牌或普通锦囊牌。（此牌指定或响应的目标须为未确定势力的角色或野心家或与此“魂”势力相同的角色）';
+lib.translate.yigui_info='当你首次明置此武将牌时，你将剩余武将牌堆的两张牌置于武将牌上，称为“魂”；你可以展示一张武将牌上的“魂”并将其置入剩余武将牌堆，视为使用一张本回合内未以此法使用过的基本牌或普通锦囊牌。（此牌指定的目标或响应的牌的使用者须为未确定势力的角色或野心家或与此“魂”势力相同的角色）';
 //法正
 lib.skill.gzxuanhuo.subSkill.others={
 audio:'rexuanhuo',
@@ -1858,15 +1878,6 @@ return event.card.name=='sha'&&(event.targets.length>1||player.countUsed('sha',t
 priority:15,
 direct:true,
 content:function(){player.logSkill('shenji')},
-};
-//杜预
-lib.skill.spwuku.filter=function(event,player){
-if(get.type(event.card)!='equip') return false;
-return player.countMark('spwuku')<3;
-};
-lib.skill.pkwuku.filter=function(event,player){
-if(get.type(event.card)!='equip') return false;
-return player.countMark('spwuku')<3;
 };
 //水淹七军
 lib.card.shuiyanqijunx.filterTarget=function(card,player,target){
@@ -3205,7 +3216,6 @@ lib.translate.dcliuzhuan_tag='流转';
 lib.translate.olchuanwu_info='锁定技。当你造成或受到伤害后，你失去武将牌上的前X个技能直到回合结束，然后你摸等同于你此次失去的技能数的牌（X为你的攻击范围）。';
 lib.translate.clanyirong_info='出牌阶段限两次。你可以将你的手牌数摸至/弃至你的手牌上限，然后你的手牌上限-1/+1。';
 lib.translate.clanzhanding_info='你可以将任意张牌当做【杀】使用并你令你的手牌上限-1。你以此法使用的【杀】结算结束后，若你因此【杀】造成过伤害，则你将手牌摸至手牌上限，否则你令此【杀】不计入次数限制。';
-lib.translate.spwuku_info_guozhan='锁定技，当有角色使用装备牌时，若你的“武库”数小于3，则你获得一个“武库”。';
 lib.translate.dcliuzhuan_info='锁定技，其他角色的回合内，其于摸牌阶段外获得的牌无法对你使用，这些牌本回合进入弃牌堆后，你获得之。';
 lib.translate.rezhuhai_info='其他角色的回合结束时，若其本回合内造成过伤害，则你可以将一张手牌当作【杀】或【过河拆桥】对其使用。';
 lib.translate.meibu_info='其他角色的出牌阶段开始时，若你不在其攻击范围内，你可以令该角色的锦囊牌均视为【杀】直到回合结束。若如此做，本回合你视为在其攻击范围内。';
