@@ -36642,8 +36642,7 @@ CZHengHuo:['bilibili_zhengxuan','bilibili_sp_xuyou','old_zuoci'],
 Chuodong:['bilibili_shengxunyu','bilibili_Firewin','bilibili_jinglingqiu','bilibili_suixingsifeng','bilibili_Emptycity','bilibili_thunderlei','bilibili_lonelypatients'],
 Cothers:['bilibili_adong','bilibili_zhangrang','bilibili_litiansuo','decade_huangwudie','bilibili_huanggai','bilibili_ekeshaoge','bilibili_guanning','bilibili_wangwang','bilibili_zhouxiaomei','diy_lvmeng'],
 CDanJi:['DJ_caiyang','DJ_pujing','DJ_huban'],
-CSCS:['biliscs_zhangrang','biliscs_zhaozhong','biliscs_sunzhang','biliscs_bilan','biliscs_xiayun','biliscs_hankui','biliscs_lisong','biliscs_duangui','biliscs_guosheng','biliscs_gaowang'],
-CSCS2:['biliscsx_zhangrang','biliscsx_zhaozhong','biliscsx_sunzhang','biliscsx_bilan','biliscsx_xiayun','biliscsx_hankui','biliscsx_lisong','biliscsx_duangui','biliscsx_guosheng','biliscsx_gaowang'],
+CSCS:['biliscs_shichangshi','biliscs_zhangrang','biliscs_zhaozhong','biliscs_sunzhang','biliscs_bilan','biliscs_xiayun','biliscs_hankui','biliscs_lisong','biliscs_duangui','biliscs_guosheng','biliscs_gaowang'],
 },
 },
 character:{
@@ -36675,7 +36674,8 @@ bilibili_lonelypatients:['male','key',4,['bilibili_meihua','bilibili_gongyou','b
 DJ_caiyang:['male','qun',1,['yinka','zhuixi'],['character:caiyang']],
 DJ_pujing:['male','qun',1,['yinka'],['character:pujing']],
 DJ_huban:['male','qun',2,['yinka'],['character:huban']],
-//十常侍·存活
+//十常侍
+biliscs_shichangshi:['male','qun',1,['scstaoluan','scschiyan','scszimou','scspicai','scsyaozhuo','scsxiaolu','scskuiji','scschihe','scsniqu','scsmiaoyu'],['character:shichangshi']],
 biliscs_zhangrang:['male','qun',1,['scstaoluan'],['character:scs_zhangrang']],
 biliscs_zhaozhong:['male','qun',1,['scschiyan'],['character:scs_zhaozhong']],
 biliscs_sunzhang:['male','qun',1,['scszimou'],['character:scs_sunzhang']],
@@ -36686,17 +36686,6 @@ biliscs_lisong:['male','qun',1,['scskuiji'],['character:scs_lisong']],
 biliscs_duangui:['male','qun',1,['scschihe'],['character:scs_duangui']],
 biliscs_guosheng:['male','qun',1,['scsniqu'],['character:scs_guosheng']],
 biliscs_gaowang:['male','qun',1,['scsmiaoyu'],['character:scs_gaowang']],
-//十常侍·死亡
-biliscsx_zhangrang:['male','qun',1,['scstaoluan'],['character:scs_zhangrang_dead']],
-biliscsx_zhaozhong:['male','qun',1,['scschiyan'],['character:scs_zhaozhong_dead']],
-biliscsx_sunzhang:['male','qun',1,['scszimou'],['character:scs_sunzhang_dead']],
-biliscsx_bilan:['male','qun',1,['scspicai'],['character:scs_bilan_dead']],
-biliscsx_xiayun:['male','qun',1,['scsyaozhuo'],['character:scs_xiayun_dead']],
-biliscsx_hankui:['male','qun',1,['scsxiaolu'],['character:scs_hankui_dead']],
-biliscsx_lisong:['male','qun',1,['scskuiji'],['character:scs_lisong_dead']],
-biliscsx_duangui:['male','qun',1,['scschihe'],['character:scs_duangui_dead']],
-biliscsx_guosheng:['male','qun',1,['scsniqu'],['character:scs_guosheng_dead']],
-biliscsx_gaowang:['male','qun',1,['scsmiaoyu'],['character:scs_gaowang_dead']],
 },
 characterIntro:{
 ekeshaoge:'俄何烧戈，羌将。正始八年，陇西、南安、金城、西平诸羌饿何、烧戈、伐同、蛾遮塞等相结叛乱，攻围城邑，南招蜀兵，凉州名胡治无戴复叛应之。讨蜀护军夏侯霸督诸军屯为翅。郭淮退姜维，维遁退。进讨叛羌，斩饿何、烧戈，降服者万馀落。',
@@ -46525,8 +46514,7 @@ Chuodong:'<span style="font-family: yuanli">名人堂前言：</span>'+
 '活动群名人堂',
 Cothers:'自嗨',
 CDanJi:'彩蛋·千里走单骑',
-CSCS:'彩蛋·十常侍存活版',
-CSCS2:'彩蛋·十常侍死亡版',
+CSCS:'彩蛋·十常侍',
 huashen_unknown:' ',
 bilibili_zhengxuan:'郑玄',
 bilibili_zhengxuan_ab:'水果忍者',
@@ -46921,7 +46909,8 @@ bolfushou_info:'觉醒技，一名角色的回合结束时，若你的体力值�
 DJ_caiyang:'蔡阳',
 DJ_pujing:'普净',
 DJ_huban:'胡班',
-//十常侍·存活
+//十常侍
+biliscs_shichangshi:'十常侍',
 biliscs_zhangrang:'张让',
 biliscs_zhaozhong:'赵忠',
 biliscs_sunzhang:'孙璋',
@@ -46932,17 +46921,6 @@ biliscs_lisong:'栗嵩',
 biliscs_duangui:'段珪',
 biliscs_guosheng:'郭胜',
 biliscs_gaowang:'高望',
-//十常侍·死亡
-biliscsx_zhangrang:'张让',
-biliscsx_zhaozhong:'赵忠',
-biliscsx_sunzhang:'孙璋',
-biliscsx_bilan:'毕岚',
-biliscsx_xiayun:'夏恽',
-biliscsx_hankui:'韩悝',
-biliscsx_lisong:'栗嵩',
-biliscsx_duangui:'段珪',
-biliscsx_guosheng:'郭胜',
-biliscsx_gaowang:'高望',
 boldingpan:'定叛',
 boldingpan_info:'出牌阶段限X次，你可以令一名装备区里有牌的角色摸一张牌，然后其选择一项：1.令你弃置其装备区里的一张牌；2.获得其装备区里的所有牌，然后你对其造成1点伤害。（X为场上存活的最大阵营角色数）',
 bolfenxin:'焚心',
@@ -46958,7 +46936,7 @@ for(var i in huodongcharacter.character){
 if(huodongcharacter.characterSort.huodongcharacter.Cothers.includes(i)) huodongcharacter.character[i][4].push('unseen');
 huodongcharacter.character[i][4].push(((lib.device||lib.node)?'ext:':'db:extension-')+'活动武将/image/character/'+i+'.jpg');
 if(!lib.config.extension_活动配件_DanJi&&i.indexOf('DJ_')==0) delete huodongcharacter.character[i];
-if(!lib.config.extension_活动配件_SCS&&i.indexOf('biliscs_')+i.indexOf('biliscsx_')!=-2) delete huodongcharacter.character[i];
+if(!lib.config.extension_活动配件_SCS&&i.indexOf('biliscs_')!=-1) delete huodongcharacter.character[i];
 }
 return huodongcharacter;
 });
