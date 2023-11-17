@@ -19,13 +19,14 @@ var HuoDong_update=[
 '名人堂武将平衡性调整',
 '删除扩展内置序列帧特效显示',
 '名称修改写法简化',
-'添加欢杀武将：伊籍、公孙渊、牛马老仙、王桃',
+'添加欢杀武将：伊籍、公孙渊、牛马老仙、王桃、薛综、张奋',
 'To be continued...',
 ];
 //更新武将
 var HuoDong_players=[
 'bilibili_Emptycity','bilibili_shengxunyu','bilibili_Firewin','bilibili_suixingsifeng',
-'Mbaby_xf_yiji','Mbaby_gongsunyuan','Mbaby_re_nanhualaoxian','Mbaby_wangtao',
+'Mbaby_xf_yiji','Mbaby_gongsunyuan','Mbaby_re_nanhualaoxian','Mbaby_wangtao','Mbaby_xuezong',
+'Mbaby_zhangfen',
 ];
 //加载
 var dialog=ui.create.dialog(
@@ -9744,7 +9745,7 @@ characterSort:{
 MiNikill:{
 MiNi_wei:['Mbaby_caohong','Mbaby_sb_caocao','Mbaby_guojia','Mbaby_sp_caoren','Mbaby_yinfuren','Mbaby_sp_jiaxu','Mbaby_wenqin','Mbaby_kuailiangkuaiyue','Mbaby_jsp_guanyu','Mbaby_wangji','Mbaby_chenqun','Mbaby_xiahoulingnv','Mbaby_wenyang','Mbaby_sp_pangde','Mbaby_caocao','Mbaby_caozhang','Mbaby_dufuren','Mbaby_simayi','Mbaby_yangxiu','Mbaby_zhangchangpu','Mbaby_zhonghui','Mbaby_sp_jiangwei','Mbaby_caoxiu','Mbaby_xunyou','Mbaby_lidian','Mbaby_zhongyao','Mbaby_caozhen','Mbaby_guohuanghou','Mbaby_xinxianying','Mbaby_xiahouyuan','Mbaby_xizhicai','Mbaby_caorui','Mbaby_xunyu','Mbaby_dengai','Mbaby_caozhi','Mbaby_sp_caiwenji','Mbaby_caoying','Mbaby_caopi','Mbaby_caoang','Mbaby_guojia','Mbaby_zhenji','Mbaby_caoren','Mbaby_wangyi','Mbaby_zhangchunhua','Mbaby_xiahoudun','Mbaby_xuzhu','Mbaby_zhangliao','Mbaby_guohuai','Mbaby_dianwei','Mbaby_zhanghe','Mbaby_yujin','Mbaby_xuhuang'],
 MiNi_shu:['Mbaby_wolongfengchu','Mbaby_wangtao','Mbabysp_zhangfei','Mbaby_wangyue','Mbaby_xf_yiji','Mbaby_mizhu','Mbaby_mifuren','Mbaby_liuyong','Mbaby_ganfuren','Mbaby_sunqian','Mbaby_lvkai','Mbaby_zhoucang','Mbaby_huangyueying','Mbaby_yangwan','Mbaby_liuchen','Mbaby_liyan','Mbaby_chendao','Mbaby_yanyan','Mbaby_xiahouba','Mbaby_huaman','Mbaby_sp_zhugeliang','Mbaby_zhugeguo','Mbaby_jianyong','Mbaby_wangping','Mbaby_mayunlu','Mbaby_guansuo','Mbaby_xiahoushi','Mbaby_shamoke','Mbaby_wuxian','Mbaby_zhugezhan','Mbaby_qinmi','Mbaby_guanyinping','Mbaby_guanyu','Mbaby_zhugeliang','Mbaby_liubei','Mbaby_machao','Mbaby_zhurong','Mbaby_zhangfei','Mbaby_zhaoyun','Mbaby_huangzhong','Mbaby_weiyan','Mbaby_liaohua','Mbaby_pangtong','Mbaby_menghuo','Mbaby_jiangwei','Mbaby_liushan','Mbaby_fazheng','Mbaby_madai','Mbaby_guanping','Mbaby_liufeng','Mbaby_wuyi','Mbaby_zhangxingcai','Mbaby_dongyun','Mbaby_sp_sunshangxiang','Mbaby_xushu','Mbaby_masu'],
-MiNi_wu:['Mbaby_sb_huanggai','Mbaby_xuezong','Mbaby_dc_sunru','Mbaby_dingfeng','Mbaby_panjun','Mbaby_sundeng','Mbaby_luji','Mbaby_zhoufang','Mbaby_zhangxuan','Mbaby_yanjun','Mbaby_zhuhuan','Mbaby_luyusheng','Mbaby_re_jsp_pangtong','Mbaby_sunhao','Mbabysp_daqiao','Mbaby_lukang','Mbaby_buzhi','Mbaby_xushi','Mbaby_zhugeke','Mbaby_zhoufei','Mbaby_zhangzhang','Mbaby_sunliang','Mbaby_ol_sunjian','Mbaby_zhuzhi','Mbaby_bulianshi','Mbaby_chengpu','Mbaby_daqiao','Mbaby_ganning','Mbaby_huanggai','Mbaby_lusu','Mbaby_luxun','Mbaby_lvmeng','Mbaby_sunce','Mbaby_sunluban','Mbaby_sunluyu','Mbaby_sunquan','Mbaby_sunshangxiang','Mbaby_taishici','Mbaby_wuguotai','Mbaby_xiaoqiao','Mbaby_xusheng','Mbaby_zhoutai','Mbaby_zhouyu','Mbaby_zhugejin','Mbaby_zumao','Mbabysp_xiaoqiao'],
+MiNi_wu:['Mbaby_zhangfen','Mbaby_sb_huanggai','Mbaby_xuezong','Mbaby_dc_sunru','Mbaby_dingfeng','Mbaby_panjun','Mbaby_sundeng','Mbaby_luji','Mbaby_zhoufang','Mbaby_zhangxuan','Mbaby_yanjun','Mbaby_zhuhuan','Mbaby_luyusheng','Mbaby_re_jsp_pangtong','Mbaby_sunhao','Mbabysp_daqiao','Mbaby_lukang','Mbaby_buzhi','Mbaby_xushi','Mbaby_zhugeke','Mbaby_zhoufei','Mbaby_zhangzhang','Mbaby_sunliang','Mbaby_ol_sunjian','Mbaby_zhuzhi','Mbaby_bulianshi','Mbaby_chengpu','Mbaby_daqiao','Mbaby_ganning','Mbaby_huanggai','Mbaby_lusu','Mbaby_luxun','Mbaby_lvmeng','Mbaby_sunce','Mbaby_sunluban','Mbaby_sunluyu','Mbaby_sunquan','Mbaby_sunshangxiang','Mbaby_taishici','Mbaby_wuguotai','Mbaby_xiaoqiao','Mbaby_xusheng','Mbaby_zhoutai','Mbaby_zhouyu','Mbaby_zhugejin','Mbaby_zumao','Mbabysp_xiaoqiao'],
 MiNi_qun:['Mbaby_zhujun','Mbaby_gongsunyuan','Mbaby_sp_zhangliao','Mbaby_sp_ol_zhanghe','Mbaby_guotufengji','Mbaby_yanfuren','Mbaby_tangji','Mbaby_caojie','Mbaby_liangxing','Mbabysp_zhenji','Mbaby_caoxing','Mbaby_sp_menghuo','Mbaby_wangrong','Mbaby_hetaihou','Mbaby_sp_taishici','Mbaby_zhangji','Mbaby_dongbai','Mbaby_beimihu','Mbaby_chunyuqiong','Mbaby_zhangqiying','Mbaby_fuhuanghou','Mbaby_liuxie','Mbaby_quyi','Mbaby_jsp_huangyueying','Mbaby_sp_machao','Mbaby_lijue','Mbaby_panfeng','Mbaby_liuzhang','Mbaby_jiaxu','Mbaby_zhangbao','Mbaby_zhangliang','Mbaby_gaoshun','Mbaby_caifuren','Mbaby_xuyou','Mbaby_gongsunzan','Mbaby_pangde','Mbaby_jushou','Mbaby_liru','Mbaby_dongzhuo','Mbaby_zhangjiao','Mbaby_huatuo','Mbaby_lvbu','Mbaby_diaochan','Mbaby_sp_diaochan','Mbaby_huaxiong','Mbaby_yuji','Mbaby_yanwen','Mbaby_caiwenji','Mbaby_liubiao','Mbaby_yuanshao','Mbaby_yuanshu','Mbaby_chengong','Mbaby_zuoci'],
 MiNi_shen:['Mbaby_shen_taishici','Mbaby_shen_diaochan','Mbaby_shen_daxiaoqiao','Mbaby_shen_zhenji','Mbaby_shen_guojia','Mbaby_shen_huatuo','Mbaby_shen_dianwei','Mbaby_shen_lvbu','Mbaby_shen_zhugeliang','Mbaby_shen_lvmeng','Mbaby_shen_zhouyu','Mbaby_shen_guanyu','Mbaby_shen_liubei','Mbaby_shen_caocao','Mbaby_shen_zhangliao','Mbaby_shen_sunquan','Mbaby_shen_simayi','Mbaby_shen_zhaoyun','Mbaby_shen_ganning','Mbaby_shen_luxun'],
 MiNi_change:['Mbaby_re_nanhualaoxian','Mbaby_re_sunyi','Mbaby_zhaoxiang','Mbaby_xushao','Mbaby_shen_zhangjiao','Mbaby_baosanniang'],
@@ -9908,8 +9909,9 @@ Mbaby_sundeng:['male','wu',4,['minikuangbi'],[]],
 Mbaby_panjun:['male','wu',3,['miniguanwei','minigongqing'],[]],
 Mbaby_dingfeng:['male','wu',4,['miniduanbing','minifenxun'],[]],
 Mbaby_dc_sunru:['female','wu',3,['minixiecui','youxu'],['MXdelete']],
-Mbaby_xuezong:['male','wu',3,['minifunan','minijiexun'],['MXdelete']],
+Mbaby_xuezong:['male','wu',3,['minifunan','minijiexun'],[]],
 Mbaby_sb_huanggai:['male','wu',4,['minisbkurou','minisbzhaxiang'],['MXdelete']],
+Mbaby_zhangfen:['male','wu',4,['miniwanglu','minixianzhu','minichaixie'],[]],
 //群
 Mbaby_gaoshun:['male','qun',4,['minixianzhen','minijinjiu'],[]],
 Mbaby_caifuren:['female','qun',3,['minireqieting','minirexianzhou'],[]],
@@ -10046,6 +10048,30 @@ type:'equip',
 subtype:'equip1',
 ai:{basic:{equipValue:114514+1919810}},
 skills:['miniruyi_jingubang','miniruyi_jingubang2'],
+},
+minidagongche:{
+fullskin:true,
+cardimage:'dagongche',
+derivation:'Mbaby_zhangfen',
+type:'equip',
+subtype:'equip1',
+distance:{attackFrom:-1},
+skills:['minidagongche_skill'],
+cardPrompt:function(card){
+if(!card.storage) return '出牌阶段开始时，你可以视为使用一张【杀】，且当此【杀】对目标角色造成伤害后，你弃置其一张牌。若此【大攻车】未被强化，则其他角色无法弃置你装备区内的【大攻车】。当此牌离开你的装备区后，销毁之。';
+var str='出牌阶段开始时，你可以视为使用一张';
+if(card.storage.大攻车选项一) str+='无距离限制且无视防具的';
+str+='【杀】';
+if(card.storage.大攻车选项二) str+=('（此【杀】的目标上限+'+card.storage.大攻车选项二+'）');
+str+='，且当此【杀】对目标角色造成伤害后，你弃置其';
+var num=1;
+if(card.storage.大攻车选项三) num+=card.storage.大攻车选项三;
+str+=get.cnNumber(num);
+str+='张牌。当此牌离开你的装备区后，销毁之。';
+return str;
+},
+destroy:true,
+ai:{basic:{equipValue:114514+1919810}},
 },
 },
 skill:{
@@ -21339,12 +21365,9 @@ player.gain(trigger.cards.filterInD('od'),'gain2');
 },
 },
 minijiexun:{
-intro:{content:'已发动#次'},
 audio:'jiexun',
 trigger:{player:'phaseJieshuBegin'},
-onremove:true,
 direct:true,
-derivation:['twfunanx','minijiexunx'],
 content:function(){
 'step 0'
 var suits={};
@@ -21413,6 +21436,9 @@ player.removeMark('minijiexun',player.countMark('minijiexun'),false);
 game.log(player,'清空了','#g【诫训】','的发动次数');
 }
 },
+onremove:true,
+derivation:'minijiexunx',
+intro:{content:'已发动#次'},
 },
 //孙茹
 minixiecui:{
@@ -21578,6 +21604,255 @@ if(card.name=='sha'&&player.countMark('minisbzhaxiang_count')<Math.ceil(player.g
 count:{
 charlotte:true,
 onremove:true,
+},
+},
+},
+//张奋
+miniwanglu:{
+derivation:'miniwanglu_faq',
+audio:'dcwanglu',
+trigger:{player:'phaseZhunbeiBegin'},
+forced:true,
+content:function(){
+if(!player.hasEquipableSlot(5)||player.getEquip('minidagongche')){
+var next=player.phaseUse();
+event.next.remove(next);
+trigger.getParent().next.push(next);
+}
+else{
+var card=game.createCard('minidagongche','spade',9);
+player.$gain2(card);
+game.delayx();
+player.equip(card);
+}
+},
+broadcast:function(player){
+var card=player.getEquip('minidagongche');
+if(card) game.broadcast(function(card,storage){
+card.storage=storage;
+},card,card.storage);
+},
+ai:{
+effect:{
+target:function(card,player,target){
+if(target==player&&get.type(card)=='equip'&&get.subtype(card)=='equip1') return 'zerotarget';
+},
+},
+},
+},
+minixianzhu:{
+derivation:'minixianzhu_faq',
+audio:'dcxianzhu',
+trigger:{source:'damageSource'},
+filter:function(event,player){
+if(!event.card||event.card.name!='sha') return false;
+var card=player.getEquip('minidagongche');
+if(!card) return false;
+var num=0;
+for(var i=1;i<=3;i++){
+var key='大攻车选项'+get.cnNumber(i,true);
+if(card.storage[key]) num+=card.storage[key];
+}
+return num<5;
+},
+direct:true,
+content:function(){
+'step 0'
+var choiceList=[
+'令【杀】无距离限制且无视防具',
+'令【杀】的可选目标数+1',
+'令【杀】造成伤害后的弃牌数+1',
+];
+var list=[];
+var card=player.getEquip('minidagongche');
+for(var i=1;i<=3;i++){
+var key='大攻车选项'+get.cnNumber(i,true);
+var num=card.storage[key];
+if(i==1){
+if(!num) list.push('选项一');
+else choiceList[0]=('<span style="opacity:0.5; ">'+choiceList[0]+'（已强化）</span>');
+}
+else{
+list.push('选项'+get.cnNumber(i,true));
+if(num) choiceList[i-1]+=('（已强化'+num+'次）');
+}
+}
+player.chooseControl(list,'cancel2').set('prompt','是否发动【陷筑】强化【大攻车】？').set('choiceList',choiceList).set('ai',function(){
+var player=_status.event.player,controls=_status.event.controls.slice(0);
+var getval=function(choice){
+var card=player.getEquip('minidagongche');
+if(choice=='选项一'){
+card.storage.大攻车选项一=1;
+var goon=false;
+if(game.hasPlayer(function(current){
+var eff1=0,eff2=0;
+var cardx={name:'sha',isCard:true};
+if(player.canUse(cardx,current)) eff1=get.effect(current,cardx,player,player);
+cardx.storage={minidagongche:true};
+if(player.canUse(cardx,current)) eff2=get.effect(current,cardx,player,player);
+return (eff2>eff1);
+})) goon=true;
+delete card.storage.大攻车选项一;
+if(goon) return 5;
+return 0;
+}
+else if(choice=='选项二'){
+var num=1;
+if(card.storage.大攻车选项二) num+=card.storage.大攻车选项二;
+var cardx={name:'sha',isCard:true};
+if(game.countPlayer(function(current){
+return player.canUse(cardx,current)&&get.effect(current,cardx,player,player)>0;
+})>num) return 2;
+}
+else if(choice=='选项三') return 1;
+return 0;
+};
+var eff=0,current='cancel2';
+for(var i of controls){
+var effx=getval(i);
+if(effx>eff){
+eff=effx;
+current=i;
+}
+}
+return current;
+});
+'step 1'
+if(result.control!='cancel2'){
+player.logSkill('minixianzhu');
+var card=player.getEquip('minidagongche'),key='大攻车'+result.control;
+if(!card.storage[key]) card.storage[key]=0;
+card.storage[key]++;
+lib.skill.miniwanglu.broadcast(player);
+}
+},
+group:'minixianzhu_sha',
+subSkill:{
+sha:{
+audio:'dcxianzhu',
+enable:'phaseUse',
+filter:function(event,player){
+return /*player.getCardUsable('sha')>0&&*/game.hasPlayer(target=>player.canUse({name:'sha'},target,false))&&player.countCards('h',card=>lib.skill.minixianzhu.subSkill.sha.filterCard(card,player));
+},
+filterCard:function(card,player){
+return get.type(card)=='equip'&&get.subtype(card)=='equip1';
+},
+filterTarget:function(card,player,target){
+return player.canUse({name:'sha',isCard:true},target,false);
+},
+usable:1,
+check:(card)=>1/(get.value(card)||0.5),
+prompt:'弃置一张手牌中的武器牌，视为对一名其他角色使用一张无视距离且不计入次数的【杀】',
+content:function(){
+player.useCard({name:'sha',isCard:true},target,false);
+},
+},
+},
+},
+minichaixie:{
+audio:'dcchaixie',
+trigger:{
+player:['loseAfter'],
+global:['equipAfter','addJudgeAfter','gainAfter','loseAsyncAfter','addToExpansionAfter'],
+},
+forced:true,
+filter:function(event,player){
+var evt=event.getl(player);
+if(!evt||!evt.es||!evt.es.length) return false;
+for(var card of evt.es){
+if(card.name=='minidagongche'){
+for(var i=1;i<=3;i++){
+if(card.storage['大攻车选项'+get.cnNumber(i,true)]) return true;
+}
+}
+}
+return false;
+},
+content:function(){
+var num=0;
+var evt=trigger.getl(player);
+for(var card of evt.es){
+if(card.name=='minidagongche'){
+for(var i=1;i<=3;i++){
+var key='大攻车选项'+get.cnNumber(i,true);
+if(card.storage[key]) num+=card.storage[key];
+}
+}
+}
+player.draw(num);
+},
+},
+minidagongche_skill:{
+trigger:{player:'phaseUseBegin'},
+direct:true,
+filter:function(event,player){
+var cardx={
+name:'sha',
+isCard:true,
+storage:{minidagongche:true},
+};
+return player.hasUseTarget(cardx);
+},
+equipSkill:true,
+content:function(){
+var card={
+name:'sha',
+isCard:true,
+storage:{minidagongche:true},
+};
+lib.skill.miniwanglu.broadcast(player);
+player.chooseUseTarget(card,'大攻车：是否视为使用【杀】？',false).logSkill='minidagongche_skill';
+},
+mod:{
+targetInRange:function(card,player,target){
+if(card.storage&&card.storage.minidagongche){
+var cardx=player.getEquip('minidagongche');
+if(cardx&&cardx.storage.大攻车选项一) return true;
+}
+},
+selectTarget:function(card,player,range){
+if(card.storage&&card.storage.minidagongche&&range[1]!=-1){
+var cardx=player.getEquip('minidagongche');
+if(cardx&&cardx.storage.大攻车选项二) range[1]+=cardx.storage.大攻车选项二;
+}
+},
+canBeDiscarded:function(card){
+if(card.name=='minidagongche'&&get.position(card)=='e'){
+for(var i=1;i<=3;i++){
+if(card.storage['大攻车选项'+get.cnNumber(i,true)]) return;
+}
+return false;
+}
+},
+},
+ai:{
+unequip:true,
+skillTagFilter:function(player,tag,arg){
+if(!arg||!arg.card||!arg.card.storage||!arg.card.storage.minidagongche) return false;
+var card=player.getEquip('minidagongche');
+if(!card||!card.storage.大攻车选项一) return false;
+},
+},
+group:'minidagongche_skill_discard',
+subSkill:{
+discard:{
+trigger:{source:'damageSource'},
+equipSkill:true,
+forced:true,
+filter:function(event,player){
+if(!event.card||!event.card.storage||!event.card.storage.minidagongche) return false;
+if(event.getParent().type!='card') return false;
+return event.player.hasCard(function(card){
+return lib.filter.canBeDiscarded(card,event.player,player);
+},'he');
+},
+logTarget:'player',
+content:function(){
+var num=1;
+var cardx=player.getEquip('minidagongche');
+if(cardx&&cardx.storage.大攻车选项三) num+=cardx.storage.大攻车选项三;
+player.discardPlayerCard(trigger.player,true,num,'he');
+},
 },
 },
 },
@@ -30993,6 +31268,7 @@ Mbaby_dingfeng:'欢杀丁奉',
 Mbaby_dc_sunru:'欢杀孙茹',
 Mbaby_xuezong:'欢杀薛综',
 Mbaby_sb_huanggai:'SP欢杀黄盖',
+Mbaby_zhangfen:'欢杀张奋',
 minizhiheng:'制衡',
 minizhiheng_info:'出牌阶段结束时，你可以弃置任意张手牌并将手牌数补至四张。',
 minirezhiheng:'制衡',
@@ -31162,6 +31438,19 @@ minisbkurou:'苦肉',
 minisbkurou_info:'出牌阶段，你可以失去1点体力，然后你的手牌上限和体力上限+1直到你的下个回合开始，然后当你使用【桃】时，你重置此技能。',
 minisbzhaxiang:'诈降',
 minisbzhaxiang_info:'锁定技。①当你失去1点体力后，你摸三张牌。②回合结束时，你摸X张牌。③你于每回合使用的前X张【杀】无距离和次数限制且不可被响应。（X为你已损失体力值的一半，向上取整）',
+miniwanglu:'望橹',
+miniwanglu_info:'锁定技。准备阶段，若你的装备区内：有【大攻车】，则你获得一个额外的出牌阶段；没有【大攻车】，则你将一张【大攻车】置入装备区。',
+miniwanglu_faq:'关于大攻车',
+miniwanglu_faq_info:'<br><li>花色：♠<br><li>点数：9<br><li>类别：武器<br><li>攻击范围：2<br><li>装备效果：出牌阶段开始时，你可以视为使用一张【杀】，且当此【杀】对目标角色造成伤害后，你弃置其一张牌。若此【大攻车】未被强化，则其他角色无法弃置你装备区内的【大攻车】。当此牌离开你的装备区后，销毁之。',
+minixianzhu:'陷筑',
+minixianzhu_info:'①出牌阶段限一次，你可以弃置一张手牌中的武器牌，然后视为对一名角色使用一张无距离且不计入次数的【杀】。②当你使用【杀】造成伤害后，你可以强化你装备区内的【大攻车】（每张【大攻车】最多被强化五次）。',
+minixianzhu_faq:'关于强化大攻车',
+minixianzhu_faq_info:'<br>从以下选项中任选一项：<br><li>⒈通过【大攻车】使用【杀】无视距离和防具；<br><li>⒉通过【大攻车】使用的【杀】可以额外选择1个目标（可叠加）；<br><li>⒊通过【大攻车】使用的【杀】造成伤害后的弃置牌数+1（可叠加）。',
+minichaixie:'拆械',
+minichaixie_info:'锁定技。当你的【大攻车】被销毁后，你摸X张牌（X为此【大攻车】被强化过的次数）。',
+minidagongche:'大攻车',
+minidagongche_skill:'大攻车',
+minidagongche_info:'出牌阶段开始时，你可以视为使用一张【杀】，且当此【杀】对目标角色造成伤害后，你弃置其一张牌。若此【大攻车】未被强化，则其他角色无法弃置你装备区内的【大攻车】。当此牌离开你的装备区后，销毁之。',
 //群
 Mbaby_zuoci:'欢杀左慈',
 Mbaby_gaoshun:'欢杀高顺',
