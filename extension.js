@@ -1504,7 +1504,7 @@ if(!Object.keys(rank.rarity).some(rarity=>rank.rarity[rarity].includes(name))) r
 }
 for(var name of Object.keys(lib.characterPack['huodongcharacter'])){
 if(!Object.keys(rank.rarity).some(rarity=>rank.rarity[rarity].includes(name))){
-if(['Chuodong','CDanJi','CSCS','CSCS2'].some(pack=>lib.characterSort.huodongcharacter[pack].includes(name))) rank.rarity.legend.push(name);
+if(['Chuodong','CDanJi','CSCS'].some(pack=>lib.characterSort.huodongcharacter[pack].includes(name))) rank.rarity.legend.push(name);
 else rank.rarity.rare.push(name);
 }
 }
