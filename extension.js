@@ -45021,11 +45021,11 @@ var list=[];
 for(var target of game.filterPlayer2()){
 if(player==target) continue;
 target.getAllHistory('useSkill',function(evt){
-if(evt.skill=='bilibili_zhiyou'||evt.type!='player'||!evt.sourceSkill) return false;
+if(evt.skill=='bilibili_zhiyou'||evt.type!='player') return false;
 var skill=evt.sourceSkill||evt.skill;
 if(!target.getStockSkills(true,true).includes(skill)) return false;
 if(player.getStorage('bilibili_zhiyou').includes(skill)) return false;
-if(get.skillCategoriesOf(skill,player).length) return false;
+//if(get.skillCategoriesOf(skill,player).length) return false;
 if(!list.includes(skill)) list.push(skill);
 });
 }
@@ -45034,7 +45034,7 @@ return list;
 unique:true,
 enable:'phaseUse',
 filter:function(event,player){
-if(player.hasSkill('bilibili_zhiyou_remove')) return false;
+//if(player.hasSkill('bilibili_zhiyou_remove')) return false;
 return lib.skill.bilibili_zhiyou.getList(player).length;
 },
 usable:1,
@@ -45055,7 +45055,7 @@ return get.skillRank(b,'in')-get.skillRank(a,'in');
 if(result.control){
 player.addSkillLog(result.control);
 //player.addSkill('bilibili_zhiyou_remove');
-//player.markAuto('bilibili_zhiyou',[result.control]);
+player.markAuto('bilibili_zhiyou',[result.control]);
 //player.storage.bilibili_zhiyou_remove=result.control;
 }
 },
@@ -47155,7 +47155,7 @@ bolgongxin:'攻心',
 bolgongxin3:'攻心',
 bolgongxin_info:'出牌阶段限一次，你可以观看一名其他角色的手牌，然后你可以展示其中一张牌并选择一项：1.弃置此牌；2.将此牌置于牌堆顶。若该角色手牌中的花色数因此减少，其不能响应你本回合使用的下一张牌。',
 bilibili_zhiyou:'致优',
-bilibili_zhiyou_info:'出牌阶段限一次，若你未拥有因〖致优〗获得的技能，你可以从其他游戏角色已发动过但未你未因〖致优〗选择的随机三个武将牌上的无标签技能中选择获得其中一个。',
+bilibili_zhiyou_info:'出牌阶段限一次，你可以从其他角色已发动过但未你未因〖致优〗选择的随机三个武将牌上的技能中选择获得其中一个。',
 bilibili_guanli:'管理',
 bilibili_guanli_info:'锁定技。①你对未因〖致优〗获得过其武将牌上的技能的角色使用牌无距离和次数限制。②摸牌阶段，你多摸X张牌（X为你因〖致优〗获得过其武将牌上的技能的游戏角色数）③你因〖致优〗获得过其武将牌上的技能的角色于摸牌阶段多摸三张牌，然后交给你两张牌。',
 bilibili_guanli_append:'<span style="font-family:yuanli">你高考复习要暂时退坑了，这次肯定要整一个大的</span>',
