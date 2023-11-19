@@ -39014,13 +39014,11 @@ return event.name!='phase'||game.phaseNumber==0;
 forced:true,
 content:function(){
 var list=['wushuangfangtianji','shufazijinguan'];
-list.push(['hongmianbaihuapao','linglongshimandai'].randomGet());
-for(var i of list){
-var card=game.createCard2(i,lib.suit.randomGet(),get.rand(1,13));
-//player.$gain2(card,false);
-//game.delayx();
-player.equip(card);
-}
+list.add(['hongmianbaihuapao','linglongshimandai'].randomGet());
+list=list.map(name=>game.createCard2(name,lib.suit.randomGet(),get.rand(1,13)));
+player.$gain2(list,false);
+game.delayx();
+list.forEach(card=>player.equip(card));
 },
 },
 BTdunshi:{
