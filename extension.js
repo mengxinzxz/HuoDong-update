@@ -17534,17 +17534,17 @@ audio:'huguan',
 audioname2:{Mbaby_wangyue:'huguan_wangyue'},
 trigger:{global:'useCard'},
 filter:function(event,player){
-if(get.color(event.card,event.player)!='red') return false;
+if(get.color(event.card)!='red') return false;
 var evt=event.getParent('phaseUse');
 if(!evt||evt.player!=event.player) return false;
-return event.player.getHistory('useCard',function(event){
-return get.color(evt.card,event.player)=='red'&&event.getParent('phaseUse')==evt;
+return event.player.getHistory('useCard',function(evtx){
+return get.color(evtx.card)=='red'&&evtx.getParent('phaseUse')==evt;
 }).indexOf(event)==0;
 },
 direct:true,
 content:function(){
 'step 0'
-player.chooseControl(lib.suit,'cancel2').set('prompt',get.prompt2('huguan',trigger.player)).set('ai',function(){
+player.chooseControl(lib.suit,'cancel2').set('prompt',get.prompt2('minihuguan',trigger.player)).set('ai',function(){
 var player=_status.event.player,target=_status.event.getTrigger().player;
 var list=lib.suit.slice(0);
 var att=get.attitude(player,trigger.player);
@@ -17622,7 +17622,7 @@ audio:'xinfu_jijie',
 trigger:{global:['gainAfter','loseAsyncAfter']},
 filter:function(event,player){
 if(player.hasSkill('minijijie_used')) return false;
-return game.hasPlayer(current=>current.isPhaseUsing()&&event.getg(current)>1);
+return game.hasPlayer(current=>current.isPhaseUsing()&&event.getg(current).length>1);
 },
 prompt2:'发动【机捷】',
 content:function(){
@@ -17971,9 +17971,7 @@ var name=(tag=='respondSha'?'sha':'shan');
 return !player.storage.youlong2.includes(name);
 },
 order:1,
-result:{
-player:1,
-},
+result:{player:1},
 },
 subSkill:{
 true:{charlotte:true},
@@ -18000,10 +17998,11 @@ for(var i of evt.cards2) suits.add(get.suit(i,evt.hs.includes(i)?evt.player:fals
 }
 });
 suits.sort((a,b)=>lib.suit.indexOf(a)-lib.suit.indexOf(b));
+event.suits=suits;
 suits.forEach(suit=>str+=get.translation(suit));
 player.chooseCardTarget({
 prompt:get.prompt('miniyaopei',trigger.player),
-prompt2:'<span class="text center"><li>操作提示：选择要弃置的牌，并选择执行摸牌选项的角色，另一名角色执行回复体力的选项。<br><li>'+str+'</span>',
+prompt2:'<span class="text center"><li>操作提示：选择要弃置的牌，若其本阶段未弃置过此花色的牌，再选择执行摸牌选项的角色，另一名角色执行回复体力的选项。<br><li>'+str+'</span>',
 suits:suits,
 position:'he',
 filterCard:function(card,player){
@@ -18016,6 +18015,10 @@ return target==player||target==_status.event.getTrigger().player;
 selectTarget:function(){
 if(!ui.selected.cards.length||_status.event.suits.includes(get.suit(ui.selected.cards[0]))) return -1;
 return 1;
+},
+filterOk:function(){
+if(!ui.selected.cards.length) return false;
+return _status.event.suits.includes(get.suit(ui.selected.cards[0]))||ui.selected.targets.length;
 },
 ai1:function(card){
 var player=_status.event.player,source=_status.event.getTrigger().player;
@@ -18034,7 +18037,7 @@ if(result.bool){
 var target=trigger.player;
 player.logSkill('miniyaopei',target);
 player.discard(result.cards);
-if(result.targets){
+if(!event.suits.some(suit=>get.suit(result.cards[0],player)==suit)){
 if(player==result.targets[0]){
 if(target.isDamaged()&&target.hp<player.hp&&(get.mode()!='identity'||player.identity!='nei')) player.addExpose(0.15);
 target.recover();
@@ -31718,7 +31721,7 @@ minichanni_info:'出牌阶段限一次，你可将任意张手牌交给一名其
 mininifu:'匿伏',
 mininifu_info:'锁定技，一名角色的回合结束时，你将手牌摸至三张。',
 minihuaiyi:'怀异',
-minihuaiyi_info:'出牌阶段限一次，你可以展示所有手牌，然后弃置任意张花色相同的手牌，并重铸剩余此花色的手牌，然后你可以获得至多X名角色的各一张牌（X为你本次弃置的牌数）。',
+minihuaiyi_info:'出牌阶段限一次，你可以展示所有手牌，然后弃置任意张颜色相同的手牌，并重铸剩余此颜色的手牌，然后你可以获得至多X名角色的各一张牌（X为你本次弃置的牌数）。',
 minimubing:'募兵',
 minimubing_info:'出牌阶段限一次，你可以观看牌堆顶的四张牌，然后你可以弃置任意张手牌，获得任意张展示的牌（你弃置的牌点数和不得小于你获得的牌的点数之和），将其余牌置入弃牌堆。',
 miniziqu:'资取',
