@@ -16,6 +16,7 @@ game.bolShowNewPack=function(){
 var HuoDong_update=[
 '/setPlayer/',
 'bugfix',
+'调整扩展更新公告显示时机',
 '名人堂武将平衡性调整',
 '删除扩展内置序列帧特效显示',
 '名称修改写法简化',
@@ -62,21 +63,14 @@ if(hidden) ui.auto.show();
 game.resume();
 });
 };
-lib.skill._HuoDongWuJiang_changeLog={
-charlotte:true,
-ruleSkill:true,
-trigger:{global:[/*'chooseButtonBefore',*/'gameStart','gameDrawAfter','phaseBefore']},
-filter:function(event,player){
-//if(event.name=='chooseButton'&&event.parent.name!='chooseCharacter') return false;
-return !lib.config.extension_活动武将_HDversion||lib.config.extension_活动武将_HDversion!=lib.extensionPack.活动武将.version;
-},
-direct:true,
-priority:114+514-1919-810+Infinity,
-content:function(){
+var version=lib.config.extension_活动武将_HDversion;
+if(!version||version!=lib.extensionPack.活动武将.version){
+lib.game.showChangeLog=function(){
 game.saveConfig('extension_活动武将_HDversion',lib.extensionPack.活动武将.version);
 game.bolShowNewPack();
-},
+lib.init.onfree();
 };
+}
 
 //检测扩展是否存在的简化写法
 game.TrueHasExtension=function(ext){
