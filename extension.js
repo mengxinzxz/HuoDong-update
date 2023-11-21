@@ -16,18 +16,10 @@ game.bolShowNewPack=function(){
 var HuoDong_update=[
 '/setPlayer/',
 'bugfix',
-'调整扩展更新公告显示时机',
-'名人堂武将平衡性调整',
-'删除扩展内置序列帧特效显示',
-'名称修改写法简化',
-'添加欢杀武将：伊籍、公孙渊、牛马老仙、王桃、薛综、张奋',
 'To be continued...',
 ];
 //更新武将
 var HuoDong_players=[
-'bilibili_Emptycity','bilibili_shengxunyu','bilibili_Firewin','bilibili_suixingsifeng',
-'Mbaby_xf_yiji','Mbaby_gongsunyuan','Mbaby_re_nanhualaoxian','Mbaby_wangtao','Mbaby_xuezong',
-'Mbaby_zhangfen',
 ];
 //加载
 var dialog=ui.create.dialog(
@@ -21434,7 +21426,6 @@ game.log(player,'清空了','#g【诫训】','的发动次数');
 }
 },
 onremove:true,
-derivation:'minijiexunx',
 intro:{content:'已发动#次'},
 },
 //孙茹
@@ -47463,7 +47454,7 @@ intro:'新人制作扩展，希望大家支持。'+
 author:'萌新（转型中）',
 diskURL:'',
 forumURL:'',
-version:'0.0.9',
+version:'0.1.0',
 //新人制作扩展，希望大家支持。
 //新人技术不足，希望大家包涵。
 //壹、贰、叁、肆、伍、陆、柒、捌、玖、拾
