@@ -18612,7 +18612,7 @@ return target.getCards('e',cardx=>get.subtype(card)==get.subtype(cardx)&&owner.c
 'step 3'
 if(result.bool){
 if(get.owner(result.links[0])!=targets[0]) result.links.reverse();
-game.log(player,'令',targets[0],'和',targets[1],'交换了'+get.translation(result.links[0])+'和'+get.translation(result.links[1]));
+game.log(player,'令',targets[0],'和',targets[1],'交换了',result.links[0],'和',result.links[1]);
 event.links=result.links;
 game.loseAsync({
 player:targets[0],
