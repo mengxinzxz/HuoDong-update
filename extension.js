@@ -18525,6 +18525,12 @@ else player.discard(result.cards);
 },
 },
 miniganlu:{
+moveCheck:function(player,target){
+if(target==player) return false;
+return player.countCards('e',card=>{
+return target.countCards('e',cardx=>get.subtype(card)==get.subtype(cardx)&&player.canEquip(cardx,true)&&target.canEquip(card,true));
+});
+},
 audio:'ganlu',
 trigger:{player:'phaseUseBegin'},
 direct:true,
@@ -18532,13 +18538,8 @@ content:function(){
 'step 0'
 var list=[];
 if(player.canMoveCard(null,true)) list.push('移动牌');
-if(game.hasPlayer(function(current){
-var es=current.getCards('e');
-for(var i=0;i<es.length;i++){
-if(game.hasPlayer(function(current2){
-return current!=current2&&!current2.isMin()&&!current2.canEquip(es[i]);
-})) return true;
-}
+if(game.hasPlayer(current1=>{
+return game.hasPlayer(current2=>lib.skill.miniganlu.moveCheck(current1,current2));
 })) list.push('交换牌');
 list.push('摸牌');
 list.push('cancel2');
@@ -18548,7 +18549,7 @@ player.chooseControl(list).set('choiceList',[
 '摸一张牌',
 ]).set('prompt','请选择你要执行的选项').set('ai',function(){
 var player=_status.event.player;
-if(player.canMoveCard(null,true)) return '移动牌';
+if(player.canMoveCard(true,true)) return '移动牌';
 return '摸牌';
 });
 'step 1'
@@ -18566,25 +18567,16 @@ event.finish();
 break;
 case '交换牌':
 player.chooseCardTarget({
-prompt:'请选择两名角色，交换他们装备区的一张副类别相同的一张牌',
+prompt:'甘露：请选择两名角色，交换他们装备区的一张副类别相同的一张牌',
 filterCard:false,
+selectCard:-1,
 filterTarget:function(card,player,target){
-if(!ui.selected.targets.length){
-for(var i=1;i<7;i++){
-if(game.hasPlayer(function(current){
-return current!=target&&current.getEquips(i).length&&target.getEquips(i).length;
-})) return true;
-}
-return false;
-}
-else{
-for(var j=1;j<7;j++){
-if(ui.selected.targets[0].getEquips(j).length&&target.getEquips(j).length) return true;
-}
-return false;
-}
+if(!ui.selected.targets.length) return game.hasPlayer(current=>lib.skill.miniganlu.moveCheck(target,current));
+return lib.skill.miniganlu.moveCheck(ui.selected.targets[0],target);
 },
 selectTarget:2,
+complexSelect:true,
+complexTarget:true,
 forced:true,
 });
 break;
@@ -18592,30 +18584,47 @@ break;
 }
 else event.finish();
 'step 2'
-var list=[];
-result.targets.sortBySeat();
-player.logSkill('miniganlu',result.targets);
-for(var i=1;i<7;i++){
-if(result.targets[0].getEquips(i).length&&result.targets[1].getEquips(i).length) list.push('equip'+i);
+var list=[],targets=result.targets;
+event.targets=targets;
+player.logSkill('miniganlu',targets);
+player.chooseButton([
+'###甘露###<div class="text center">请选择'+get.translation(targets[0])+'和'+get.translation(targets[1])+'交换的装备牌</div>',
+'<div class="text center">'+get.translation(targets[0])+'</div>',
+targets[0].getCards('e'),
+'<div class="text center">'+get.translation(targets[1])+'</div>',
+targets[1].getCards('e')
+],2,true).set('filterButton',button=>{
+var targets=_status.event.targets;
+if(!ui.selected.buttons.length){
+if(targets[0].getCards('e',card=>{
+return targets[1].countCards('e',cardx=>get.subtype(card)==get.subtype(cardx)&&targets[0].canEquip(cardx,true)&&targets[1].canEquip(card,true));
+}).includes(button.link)) return true;
+if(targets[1].getCards('e',card=>{
+return targets[0].countCards('e',cardx=>get.subtype(card)==get.subtype(cardx)&&targets[1].canEquip(cardx,true)&&targets[0].canEquip(card,true));
+}).includes(button.link)) return true;
+return false;
 }
-player.chooseControl(list).set('prompt','请选择一个装备类别');
-event.target1=result.targets[0];
-event.target2=result.targets[1];
+var card=ui.selected.buttons[0].link;
+var owner=get.owner(card);
+var target=targets.find(target=>target!=owner);
+return target.getCards('e',cardx=>get.subtype(card)==get.subtype(cardx)&&owner.canEquip(cardx,true)&&target.canEquip(card,true)).includes(button.link);
+}).set('targets',targets);
 'step 3'
-var num=undefined,target1=event.target1,target2=event.target2;
-for(var i=1;i<7;i++){
-if('equip'+i==result.control) num=i;
+if(result.bool){
+if(get.owner(result.links[0])!=targets[0]) result.links.reverse();
+game.log(player,'令',targets[0],'和',targets[1],'交换了'+get.translation(result.links[0])+'和'+get.translation(result.links[1]));
+event.links=result.links;
+game.loseAsync({
+player:targets[0],
+target:targets[1],
+cards1:event.links[0],
+cards2:event.links[1],
+}).setContent('swapHandcardsx');
 }
-game.log(player,'令',target1,'和',target2,'交换了'+get.translation(result.control)+'牌');
-var card1=target1.getEquips(num),card2=target2.getEquips(num);
-target1.discard(card1);
-target2.discard(card2);
-target1.lose(card1,ui.ordering,'visible');
-target2.lose(card2,ui.ordering,'visible');
-target1.$give(card1,target2,false);
-target2.$give(card2,target1,false);
-target1.equip(card2);
-target2.equip(card1);
+else event.finish();
+'step 4'
+if(get.position(event.links[1],true)=='o') targets[0].equip(event.links[1]);
+if(get.position(event.links[0],true)=='o') targets[1].equip(event.links[0]);
 },
 },
 minibuyi:{
