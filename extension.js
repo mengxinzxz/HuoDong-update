@@ -18584,7 +18584,7 @@ break;
 }
 else event.finish();
 'step 2'
-var list=[],targets=result.targets;
+var targets=result.targets;
 event.targets=targets;
 player.logSkill('miniganlu',targets);
 player.chooseButton([
