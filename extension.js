@@ -36296,6 +36296,8 @@ gain_list:[
 ],
 }).setContent('gaincardMultiple');
 'step 3'
+game.delayx();
+'step 4'
 var card1=cards[0][0];
 var card2=cards[1][0];
 if(get.color(card1,player)==get.color(card2,target)) player.recover();
@@ -36568,7 +36570,7 @@ filter:function(event,player){
 return event.card.name=='sha';
 },
 check:function(event,player){
-return get.attitude(player,target)<0;
+return get.attitude(player,event.target)<0;
 },
 logTarget:'target',
 content:function(){
@@ -36590,7 +36592,7 @@ trigger.getParent().directHit.add(trigger.target);
 ai:{
 directHit_ai:true,
 skillTagFilter:function(player,tag,arg){
-if(arg.card.name!='sha'||arg.target.countDiscardableCards(arg,target,'e')) return false;
+if(!arg||!arg.card||arg.card.name!='sha'||!arg.target||arg.target.countDiscardableCards(arg.target,'e')) return false;
 },
 },
 },
