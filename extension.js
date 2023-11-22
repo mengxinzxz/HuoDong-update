@@ -36736,9 +36736,7 @@ return event.targets&&event.targets.some(target=>target.isIn()&&cards.some(card=
 direct:true,
 content:function(){
 'step 0'
-var targets=trigger.targets.filter(function(current){
-return current!=player&&current.isIn();
-});
+var targets=trigger.targets.filter(target=>target.isIn()&&cards.some(card=>player.canUse(card,target,false)));
 var cards=trigger.cards.filterInD();
 event.cards=cards;
 if(targets.length==1){
@@ -36760,6 +36758,7 @@ var target=event.target||result.targets[0];
 player.logSkill('wechatmiaobi',target);
 target.addSkill('wechatmiaobi_effect');
 target.addToExpansion(player,'give',cards).gaintag.add('wechatmiaobi_effect');
+target.markSkill('wechatmiaobi_effect');
 var list=target.getStorage('wechatmiaobi_effect').find(list=>list[0]==player);
 if(!list) target.markAuto('wechatmiaobi_effect',[[player,cards]]);
 else target.storage.wechatmiaobi_effect[target.getStorage('wechatmiaobi_effect').indexOf(list)]=[player,list[1].concat(cards)];
@@ -36778,6 +36777,8 @@ var targets=storage.map(list=>list[0]).sortBySeat();
 while(targets.length){
 var target=targets.shift();
 var list=player.getStorage('wechatmiaobi_effect').find(list=>list[0]==target);
+player.unmarkAuto('wechatmiaobi_effect',[list]);
+player.markSkill('wechatmiaobi_effect');
 var cards=list[1],result;
 if(target.isIn()) target.line(player);
 if(!target.isIn()||!player.countCards('he',card=>get.type2(card)=='trick')) result={index:1};
