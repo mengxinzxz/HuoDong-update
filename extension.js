@@ -36769,7 +36769,7 @@ player.getHistory('custom').push({wechatmiaobi_name:trigger.card.name});
 subSkill:{
 effect:{
 charlotte:true,
-trigger:{player:'phaseZhunBeiBegin'},
+trigger:{player:'phaseZhunbeiBegin'},
 forced:true,
 popup:false,
 content:function*(event,map){
