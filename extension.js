@@ -36779,10 +36779,9 @@ while(targets.length){
 var target=targets.shift();
 var list=player.getStorage('wechatmiaobi_effect').find(list=>list[0]==target);
 var cards=list[1],result;
+if(target.isIn()) target.line(player);
 if(!target.isIn()||!player.countCards('he',card=>get.type2(card)=='trick')) result={index:1};
-else{
-target.line(player);
-result=yield player.chooseControl().set('choiceList',[
+else result=yield player.chooseControl().set('choiceList',[
 '交给'+get.translation(target)+'一张锦囊牌，然后移去'+get.translation(cards),
 '令'+get.translation(target)+(cards.length>1?'依次':'')+'对你使用'+get.translation(cards),
 ]).set('ai',()=>{
@@ -36792,7 +36791,6 @@ var cards=_status.event.cards.filter(card=>target.canUse(card,player,false));
 if(cards.reduce((num,card)=>num+get.effect(target,card,player,player),0)<=0) return 1;
 return 0;
 }).set('target',target).set('cards',cards);
-}
 if(result.bool){
 var result2=player.chooseCard('妙笔：交给'+get.translation(target)+'一张锦囊牌',(card,player)=>get.type2(card)=='trick','he',true);
 if(result2.bool) player.give(result2.cards,target);
