@@ -36297,7 +36297,7 @@ gain_list:[
 }).setContent('gaincardMultiple');
 'step 3'
 var card1=cards[0][0];
-var card2=carss[1][0];
+var card2=cards[1][0];
 if(get.color(card1,player)==get.color(card2,target)) player.recover();
 else{
 player.line(target);
