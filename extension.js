@@ -36361,20 +36361,24 @@ return '获得谋略值进度：'+((storage||0)%3)+'/3';
 wechatyanshi:{
 audio:'ext:活动武将/audio/skill:2',
 enable:'phaseUse',
+filter:function(event,player){
+return ui.cardPile.childNodes.length>0;
+},
 usable:1,
 chooseButton:{
 dialog:function(event,player){
-return ui.create.dialog('###鬻爵###'+lib.translate.yujue_info);
+return ui.create.dialog('###演势###'+lib.translate.wechatyanshi_info);
 },
-chooseControl:['牌堆顶','牌堆底','cancel2'],
+chooseControl:()=>['牌堆顶','牌堆底','cancel2'],
 check:function(event,player){
-for(var i=5;i>0;i--){
-if(player.hasEmptySlot(i)) return ('equip'+i);
-}
-return 'cancel2';
+var card1=get.cards(1,true)[0];
+var card2=get.bottomCards(1,true)[0];
+if(player.hasValueTarget(card1)&&player.getCardUsable(card1)>0) return '牌堆顶';
+if(player.hasValueTarget(card2)&&player.getCardUsable(card2)>0) return '牌堆底';
+return get.value(card1)>=get.value(card2)?'牌堆顶':'牌堆底';
 },
 backup:function(result){
-var next=get.copy(lib.skill.wechat.yanshi.subSkill.draw);
+var next=get.copy(lib.skill.wechatyanshi.subSkill.draw);
 next.position=result.control;
 return next;
 },
@@ -36387,7 +36391,9 @@ subSkill:{
 draw:{
 audio:'wechatyanshi',
 content:function(){
+var position=lib.skill.wechatyanshi_backup.position;
 player.addTempSkill('wechatyanshi_effect','phaseUseAfter');
+player.popup(position);
 var next=player.draw();
 if(position=='牌堆底') next.bottom=true;
 next.gaintag=['wechatyanshi_effect'];
@@ -37159,6 +37165,7 @@ wechat_zhugeliang:'极诸葛亮',
 wechatsangu:'三顾',
 wechatsangu_info:'锁定技，当你每三次成为牌的目标后，你获得3点'+get.MouLveInform()+'，然后你占卜3。',
 wechatyanshi:'演势',
+wechatyanshi_backup:'演势',
 wechatyanshi_info:'出牌阶段限一次，你可以从牌堆顶或牌堆底摸一张牌，且你于本阶段使用此牌时重置〖演势〗。',
 wechat_sp_pangde:'SP微信庞德',
 wechatjuesi:'决死',
