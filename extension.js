@@ -36761,7 +36761,7 @@ player.logSkill('wechatmiaobi',target);
 target.addSkill('wechatmiaobi_effect');
 target.addToExpansion(player,'give',cards).gaintag.add('wechatmiaobi_effect');
 var list=target.getStorage('wechatmiaobi_effect').find(list=>list[0]==player);
-if(!list) target.markAuto('wechatmiaobi_effect',[player,cards]);
+if(!list) target.markAuto('wechatmiaobi_effect',[[player,cards]]);
 else target.storage.wechatmiaobi_effect[target.getStorage('wechatmiaobi_effect').indexOf(list)]=[player,list[1].concat(cards)];
 player.getHistory('custom').push({wechatmiaobi_name:trigger.card.name});
 }
@@ -36773,14 +36773,16 @@ trigger:{player:'phaseZhunbeiBegin'},
 forced:true,
 popup:false,
 content:function*(event,map){
-var player=map.player;
-var targets=player.getStorage('wechatmiaobi_effect').map(list=>list[0]).sortBySeat();
+var player=map.player,storage=player.getStorage('wechatmiaobi_effect').slice();
+var targets=storage.map(list=>list[0]).sortBySeat();
 while(targets.length){
 var target=targets.shift();
-var cards=player.getStorage('wechatmiaobi_effect').find(list=>list[0]==target)[1];
-var result;
+var list=player.getStorage('wechatmiaobi_effect').find(list=>list[0]==target);
+var cards=list[1],result;
 if(!target.isIn()||!player.countCards('he',card=>get.type2(card)=='trick')) result={index:1};
-else result=yield player.chooseControl().set('choiceList',[
+else{
+target.line(player);
+result=yield player.chooseControl().set('choiceList',[
 '交给'+get.translation(target)+'一张锦囊牌，然后移去'+get.translation(cards),
 '令'+get.translation(target)+(cards.length>1?'依次':'')+'对你使用'+get.translation(cards),
 ]).set('ai',()=>{
@@ -36790,9 +36792,11 @@ var cards=_status.event.cards.filter(card=>target.canUse(card,player,false));
 if(cards.reduce((num,card)=>num+get.effect(target,card,player,player),0)<=0) return 1;
 return 0;
 }).set('target',target).set('cards',cards);
+}
 if(result.bool){
 var result2=player.chooseCard('妙笔：交给'+get.translation(target)+'一张锦囊牌',(card,player)=>get.type2(card)=='trick','he',true);
 if(result2.bool) player.give(result2.cards,target);
+player.loseToDiscardpile(cards);
 }
 else{
 while(cards.length){
