@@ -16,6 +16,7 @@ game.bolShowNewPack=function(){
 var HuoDong_update=[
 '/setPlayer/',
 'bugfix',
+'修复开启座位号显示后换位不更新座位号显示的bug',
 '更新微信三国杀极诸葛亮、极司马懿、极马超、赵云、极曹操的技能',
 '添加微信三国杀武将祖茂、关索、极黄月英',
 'To be continued...',
@@ -1673,23 +1674,23 @@ lib.skill.wusheng.audioname2.bolx_jsp_guanyu='wusheng_jsp_guanyu';
 lib.skill.wusheng.audioname2.wechat_guansuo='wusheng_guansuo';
 lib.skill.duanchang.audioname2={Mmiao_caiwenji:'minimiaoduanchang'};
 lib.skill.juxiang1.audioname2={Mmiao_zhurong:'minimiaojuxiang'};
-lib.skill.dangxian.audioname2.wechat_guansuo='dangxian_guansuo';
+lib.skill.dangxian.audioname2={wechat_guansuo:'dangxian_guansuo'};
 lib.skill.rezhiman.audioname2.wechat_guansuo='zhiman_guansuo';
 
-//技能修正
-//范强张达
+//技能修改
+//范疆张达
 lib.skill.juesheng.subSkill.counter.direct=true;
 //谋黄忠
-if(game.HasExtension('十周年UI')) lib.skill.sbliegong.intro.markcount=()=>undefined;
 lib.skill.sbliegong.subSkill.block.direct=true;
 lib.skill.sbliegong.subSkill.count.direct=true;
 lib.skill.sbliegong.subSkill.count.locked=false;
+//十周年花色美化显示
+if(game.HasExtension('十周年UI')){
+//谋黄忠
+lib.skill.sbliegong.intro.markcount=()=>undefined;
 lib.skill._wanjunqushou_count={
 charlotte:true,
 trigger:{player:'sbliegong_countAfter'},
-filter:function(event,player){
-return player.storage.sbliegong&&game.HasExtension('十周年UI');
-},
 direct:true,
 content:function(){
 player.storage.sbliegong.sort((a,b)=>lib.suit.indexOf(b)-lib.suit.indexOf(a));
@@ -1699,12 +1700,12 @@ if(player.marks[skill]) player.marks[skill].firstChild.innerHTML=player.getStora
 },
 };
 //界吕蒙
-if(game.HasExtension('十周年UI')) lib.skill.rebotu.subSkill.mark.intro.markcount=()=>undefined;
+lib.skill.rebotu.subSkill.mark.intro.markcount=()=>undefined;
 lib.skill._botu_count={
 charlotte:true,
 trigger:{player:'rebotu_markEnd'},
 filter:function(event,player){
-return player.storage.rebotu_mark&&game.HasExtension('十周年UI');
+return player.storage.rebotu_mark;
 },
 direct:true,
 firstDo:true,
@@ -1716,16 +1717,11 @@ if(player.marks[skill]) player.marks[skill].firstChild.innerHTML=player.getStora
 },
 };
 //留赞
-if(game.HasExtension('十周年UI')){
 lib.skill.refenyin.subSkill.mark.intro.markcount=()=>undefined;
 lib.skill.iwasawa_refenyin.subSkill.mark.intro.markcount=()=>undefined;
-}
 lib.skill._refenyin_count={
 charlotte:true,
 trigger:{player:['refenyinBegin','iwasawa_refenyinBegin']},
-filter:function(event,player){
-return game.HasExtension('十周年UI');
-},
 direct:true,
 lastDo:true,
 content:function(){
@@ -1754,12 +1750,12 @@ if(player.marks[skill]) player.marks[skill].firstChild.innerHTML=player.getStora
 },
 };
 //陈式
-if(game.HasExtension('十周年UI')) lib.skill.qingbei.subSkill.effect.intro.markcount=()=>undefined;
+lib.skill.qingbei.subSkill.effect.intro.markcount=()=>undefined;
 lib.skill._qingbeiSuit={
 charlotte:true,
 trigger:{player:'qingbeiEnd'},
 filter:function(event,player){
-return player.hasSkill('qingbei_effect')&&player.getStorage('qingbei_effect').length&&game.HasExtension('十周年UI');
+return player.hasSkill('qingbei_effect')&&player.getStorage('qingbei_effect').length;
 },
 direct:true,
 firstDo:true,
@@ -1771,6 +1767,34 @@ if(player.marks[skill]) player.marks[skill].firstChild.innerHTML=suits.reduce((s
 },player,'qingbei_effect');
 },
 };
+lib.skill._junktaoluan_mark={
+charlotte:true,
+trigger:{player:'useCardBefore'},
+filter:function(event,player){
+return event.skill=='junktaoluan_backup'&&player.storage.junktaoluan2;
+},
+direct:true,
+firstDo:true,
+content:function(){
+player.addTempSkill('junktaoluan6');
+player.markSkill('junktaoluan6');
+player.storage.junktaoluan2.sort((a,b)=>lib.suit.indexOf(b)-lib.suit.indexOf(a));
+game.broadcastAll(function(player,skill){
+var suits=player.getStorage('junktaoluan2').slice();
+suits.sort((a,b)=>lib.suit.indexOf(b)-lib.suit.indexOf(a));
+if(player.marks[skill]) player.marks[skill].firstChild.innerHTML=suits.reduce((str,suit)=>str+=get.translation(suit),'');
+},player,'junktaoluan6');
+}
+};
+lib.skill.junktaoluan6={
+charlotte:true,
+intro:{
+//markcount:(s,p)=>p.getStorage('junktaoluan2').length,
+content:(s,p)=>('本回合已使用'+get.translation(p.getStorage('junktaoluan2'))+'花色的牌'),
+},
+};
+lib.translate.junktaoluan6='滔乱';
+}
 //唐咨
 lib.skill.xinfu_xingzhao.intro={
 content:function(storage,player){
@@ -2284,9 +2308,15 @@ direct:true,
 priority:1145141919810,
 content:function(){
 game.firstPlayer=true;
-for(var i of game.players){
+game.players.forEach(i=>{
 if(i.getSeatNum()!=0) i.setNickname(get.cnNumber(i.getSeatNum(),true)+'号位');
-}
+});
+var originSwapSeat=game.swapSeat;
+game.swapSeat=function(player1,player2,prompt,behind,noanimate){
+originSwapSeat.apply(this,arguments);
+if(player1.getSeatNum()!=0) player1.setNickname(get.cnNumber(player1.getSeatNum(),true)+'号位');
+if(player2.getSeatNum()!=0) player2.setNickname(get.cnNumber(player2.getSeatNum(),true)+'号位');
+};
 },
 };
 //弃牌阶段相关技能
@@ -32490,6 +32520,7 @@ return lib.skill.ollongdan.mod.aiValue.apply(this,arguments);
 },
 locked:false,
 audio:'longdan_sha',
+audioname2:{wechat_zhaoxiang:'fanghun'},
 enable:['chooseToUse','chooseToRespond'],
 position:'hs',
 prompt:'将【杀】/【闪】当作【闪】/【杀】使用或打出',
@@ -34001,9 +34032,6 @@ if(card.name=='tao') return 0;
 //父魂、母魂、蜀魂
 //三魂聚顶武将[doge]
 wechatfanghun:{
-group:['wechatfanghun_longdan','wechatfanghun_fengpo'],
-derivation:['ollongdan','wechatfengpo'],
-intro:{name:'梅影',content:'mark'},
 audio:'fanghun',
 trigger:{global:'phaseBefore',player:'enterGame'},
 filter:function(event,player){
@@ -34012,63 +34040,36 @@ return event.name!='phase'||game.phaseNumber==0;
 forced:true,
 locked:false,
 content:function(){
-player.addSkillLog('ollongdan');
-game.broadcastAll(function(list){
-game.expandSkills(list);
-for(var i of list){
-var info=lib.skill[i];
-if(!info) continue;
-if(!info.audioname2) info.audioname2={};
-info.audioname2.wechat_zhaoxiang='fanghun';
-}
-},['ollongdan']);
+player.addSkillLog('wechatlongdan');
 },
+intro:{name:'梅影',content:'mark'},
+derivation:['wechatlongdan','wechatfengpo'],
+group:['wechatfanghun_longdan','wechatfanghun_fengpo'],
 subSkill:{
 longdan:{
 audio:'fanghun',
-trigger:{player:['useCardAfter','respondAfter']},
+trigger:{player:'logSkill'},
 filter:function(event,player){
-return event.skill=='ollongdan'&&!player.hasMark('wechatfanghun');
+return event.skill=='wechatlongdan'&&!player.hasMark('wechatfanghun');
 },
 forced:true,
 locked:false,
 content:function(){
 player.addMark('wechatfanghun',1);
+player.when('logSkill').filter(event=>event.skill=='wechatfanghun_fengpo').then(()=>player.removeMark('wechatfanghun',1));
 },
 },
 fengpo:{
-shaRelated:true,
 audio:'fanghun',
-trigger:{player:'useCardToPlayered'},
+inherit:'wechatfengpo',
 filter:function(event,player){
 if(!player.hasMark('wechatfanghun')) return false;
-if(event.targets.length!=1||!['sha','juedou'].includes(event.card.name)) return false;
-if(!['sha','juedou'].includes(event.card.name)) return false;
-if(player!=_status.currentPhase) return false;
-return player.getHistory('useCard',function(evt){
-return ['sha','juedou'].includes(evt.card.name);
-}).indexOf(event.getParent())==0;
+return lib.skill.wechatfengpo.filter(event,player);
 },
-logTarget:'target',
 prompt:function(event,player){
 return get.prompt('wechatfengpo',event.target)+'（发动后失去“梅影”标记）';
 },
 prompt2:()=>lib.translate.wechatfengpo_info,
-content:function(){
-'step 0'
-player.viewHandcards(trigger.target);
-player.chooseControl('摸牌','加伤').set('prompt','请选择一项');
-'step 1'
-var num=Math.max(1,trigger.target.countCards('h',{suit:'diamond'}));
-if(result.control=='摸牌') player.draw(num);
-else{
-var trigger2=trigger.getParent();
-if(typeof trigger2.baseDamage!='number') trigger2.baseDamage=1;
-trigger2.baseDamage+=num;
-}
-'step 2'
-player.removeMark('wechatfanghun',1);
-},
 },
 },
 },
@@ -34078,9 +34079,7 @@ unique:true,
 audio:'fuhan',
 trigger:{player:'phaseZhunbeiBegin'},
 filter:function(event,player){
-return player.getAllHistory('useSkill',function(evt){
-return lib.translate[evt.skill]&&lib.translate[evt.skill]=='凤魄';
-}).length;
+return player.getAllHistory('useSkill',evt.skill=='wechatfanghun_fengpo').length;
 },
 skillAnimation:true,
 animationColor:'fire',
@@ -34092,26 +34091,11 @@ player.awakenSkill('wechatfuhan');
 'step 1'
 player.loseMaxHp();
 'step 2'
-var list=[];
-for(var i of lib.skill.wechatfuhan.derivation){
-if(!player.hasSkill(i)) list.push(i);
-}
-if(list.length) player.chooseControl(list).set('prompt','选择获得一项技能');
+var list=lib.skill.wechatfuhan.derivation.filter(skill=>!player.hasSkill(skill));
+if(list.length) player.chooseControl(list).set('prompt','扶汉：选择获得一项技能');
 else event.finish();
 'step 3'
-if(result.control){
-var list=[result.control];
-player.addSkillLog(result.control);
-game.broadcastAll(function(list){
-game.expandSkills(list);
-for(var i of list){
-var info=lib.skill[i];
-if(!info) continue;
-if(!info.audioname2) info.audioname2={};
-info.audioname2.wechat_zhaoxiang='fanghun';
-}
-},list);
-}
+if(result.control) player.addSkillLog(result.control);
 },
 },
 wechattunjiang:{
@@ -34277,12 +34261,13 @@ return !list.includes(card.name);
 //谋略值
 wechatmoulvenum:{
 changeNum:function(num,player){
-if(num==0||typeof num!='number') return;
-if(typeof player.storage.wechatmoulvenum!='number') player.storage.wechatmoulvenum=0;
+if(typeof num!='number'||num==0) return;
+var numx=player.countMark('wechatmoulvenum');
+if(num>0&&numx>=5) return;
+if(num<0&&!numx) return;
 game.addGlobalSkill('wechatmiaoji');
-player.storage.wechatmoulvenum+=num;
-if(player.storage.wechatmoulvenum>5) player.storage.wechatmoulvenum=5;
-player[player.storage.wechatmoulvenum?'markSkill':'unmarkSkill']('wechatmoulvenum');
+num=Math[num>0?'min':'max'](num,(num>0?5:0)-numx);
+player[num>0?'addMark':'removeMark']('wechatmoulvenum',Math.abs(num),false);
 game.log(player,(num>0?'获得了':'失去了'),(num>0?('#g'+num):('#y'+(-num))),'点','谋略值');
 },
 marktext:'谋',
@@ -34291,33 +34276,23 @@ name:'谋略值',
 content:'当前拥有#点谋略值',
 },
 getMax:5,
-getNum:function(player){
-if(typeof player.storage.wechatmoulvenum!='number') return 0;
-return player.storage.wechatmoulvenum;
-},
 },
 //极郭嘉
 wechatdingce:{
 audio:'ext:活动武将/audio/skill:2',
 trigger:{global:['phaseBefore','phaseEnd'],player:['phaseZhunbeiBegin','enterGame']},
 filter:function(event,player,name){
-if(event.name!='phaseZhunbei'&&lib.skill.wechatmoulvenum.getNum(player)>=lib.skill.wechatmoulvenum.getMax) return false;
+if(event.name!='phaseZhunbei'&&player.countMark('wechatmoulvenum')>=lib.skill.wechatmoulvenum.getMax) return false;
 switch(name){
 case 'phaseBefore': case 'enterGame':
 return name!='phaseBefore'||game.phaseNumber==0;
 break;
 case 'phaseZhunbeiBegin':
-return lib.skill.wechatmoulvenum.getNum(player)>player.countCards('h');
+return player.countMark('wechatmoulvenum')>player.countCards('h');
 break;
 case 'phaseEnd':
-var num=0;
-player.getHistory('useCard',function(evt){
-num+=evt.cards.length;
-});
-player.getHistory('respond',function(evt){
-num+=evt.cards.length;
-});
-return num>=player.hp&&player.hp>0;
+if(!player.getHp()) return false;
+return player.getHistory('useCard').reduce((num,evt)=>num+evt.cards.length,0)+player.getHistory('respond').reduce((num,evt)=>num+evt.cards.length,0)>=player.getHp();
 break;
 }
 return false;
@@ -34348,12 +34323,12 @@ player.storage.wechatsuanlve_mark3=history.card.nature;
 },
 hiddenCard:function(player,name){
 if(!player.storage.wechatsuanlve_mark2) return false;
-return name==player.storage.wechatsuanlve_mark2&&player.countCards('hes')&&!player.hasSkill('wechatsuanlve_used')&&lib.skill.wechatmoulvenum.getNum(player)>player.countMark('wechatsuanlve_count');
+return name==player.storage.wechatsuanlve_mark2&&player.countCards('hes')&&!player.hasSkill('wechatsuanlve_used')&&player.countMark('wechatmoulvenum')>player.countMark('wechatsuanlve_count');
 },
 audio:'ext:活动武将/audio/skill:2',
 enable:'chooseToUse',
 filter:function(event,player){
-if(!player.storage.wechatsuanlve_mark2||player.hasSkill('wechatsuanlve_used')||!player.countCards('hes')||lib.skill.wechatmoulvenum.getNum(player)<=player.countMark('wechatsuanlve_count')) return false;
+if(!player.storage.wechatsuanlve_mark2||player.hasSkill('wechatsuanlve_used')||!player.countCards('hes')||player.countMark('wechatmoulvenum')<=player.countMark('wechatsuanlve_count')) return false;
 return event.filterCard({name:player.storage.wechatsuanlve_mark2,nature:player.storage.wechatsuanlve_mark3},player,event);
 },
 chooseButton:{
@@ -34400,7 +34375,7 @@ respondShan:true,
 skillTagFilter:function(player,tag,target){
 var name=player.storage.wechatsuanlve_mark2;
 if(target=='respond') return false;
-if(!name||player.hasSkill('wechatsuanlve_used')||!player.countCards('hes')||lib.skill.wechatmoulvenum.getNum(player)<=player.countMark('wechatsuanlve_count')) return false;
+if(!name||player.hasSkill('wechatsuanlve_used')||!player.countCards('hes')||player.countMark('wechatmoulvenum')<=player.countMark('wechatsuanlve_count')) return false;
 if(tag=='save'){
 if(name=='tao'||target==player) return true;
 return false;
@@ -34457,7 +34432,7 @@ wechat_zhugeliang:{audio:'ext:活动武将/audio/skill:2'},
 enable:'chooseToUse',
 hiddenCard:function(player,name){
 if(player.hasSkill('wechatmiaoji_used')) return false;
-var num=lib.skill.wechatmoulvenum.getNum(player);
+var num=player.countMark('wechatmoulvenum');
 if(num>=1&&name=='guohe') return true;
 if(num>=2&&name=='wuxie') return true;
 if(num>=3&&name=='wuzhong') return true;
@@ -34465,7 +34440,7 @@ return false;
 },
 filter:function(event,player){
 if(player.hasSkill('wechatmiaoji_used')) return false;
-var num=lib.skill.wechatmoulvenum.getNum(player);
+var num=player.countMark('wechatmoulvenum');
 if(!num) return false;
 var list=['guohe','wuxie','wuzhong'];
 for(var namex of list){
@@ -34476,7 +34451,7 @@ return false;
 },
 chooseButton:{
 dialog:function(event,player){
-var list=[],num=lib.skill.wechatmoulvenum.getNum(player);
+var list=[],num=player.countMark('wechatmoulvenum');
 var listx=['guohe','wuxie','wuzhong'];
 for(var namex of listx){
 if(num<listx.indexOf(namex)+1) continue;
@@ -36326,7 +36301,7 @@ player.removeSkill('wechatsangu_count');
 audio:'ext:活动武将/audio/skill:2',
 trigger:{target:'useCardToTargeted'},
 filter:function(event,player){
-if(lib.skill.wechatmoulvenum.getNum(player)>=lib.skill.wechatmoulvenum.getMax) return false;
+//if(player.countMark('wechatmoulvenum')>=lib.skill.wechatmoulvenum.getMax) return false;
 return game.getAllGlobalHistory('useCard',evt=>evt.targets&&evt.targets.includes(player)).indexOf(event.getParent())%3==2;
 },
 forced:true,
