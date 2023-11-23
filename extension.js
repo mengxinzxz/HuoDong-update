@@ -16,6 +16,7 @@ game.bolShowNewPack=function(){
 var HuoDong_update=[
 '/setPlayer/',
 'bugfix',
+'限定扩展内置部分十周年UI下的花色美化为仅使用十周年选项标记时生效，且游戏内更改选项须重启生效',
 '修复开启座位号显示后换位不更新座位号显示的bug',
 '更新微信三国杀极诸葛亮、极司马懿、极马超、赵云、极曹操的技能',
 '添加微信三国杀武将祖茂、关索、极黄月英',
@@ -1677,15 +1678,8 @@ lib.skill.juxiang1.audioname2={Mmiao_zhurong:'minimiaojuxiang'};
 lib.skill.dangxian.audioname2={wechat_guansuo:'dangxian_guansuo'};
 lib.skill.rezhiman.audioname2.wechat_guansuo='zhiman_guansuo';
 
-//技能修改
-//范疆张达
-lib.skill.juesheng.subSkill.counter.direct=true;
-//谋黄忠
-lib.skill.sbliegong.subSkill.block.direct=true;
-lib.skill.sbliegong.subSkill.count.direct=true;
-lib.skill.sbliegong.subSkill.count.locked=false;
 //十周年花色美化显示
-if(game.HasExtension('十周年UI')){
+if(game.HasExtension('十周年UI')&&lib.config.extension_十周年UI_playerMarkStyle&&lib.config.extension_十周年UI_playerMarkStyle=='decade'){
 //谋黄忠
 lib.skill.sbliegong.intro.markcount=()=>undefined;
 lib.skill._wanjunqushou_count={
@@ -1795,13 +1789,20 @@ content:(s,p)=>('本回合已使用'+get.translation(p.getStorage('junktaoluan2'
 };
 lib.translate.junktaoluan6='滔乱';
 }
+
+//技能修改
+//范疆张达
+lib.skill.juesheng.subSkill.counter.direct=true;
+//谋黄忠
+lib.skill.sbliegong.subSkill.block.direct=true;
+lib.skill.sbliegong.subSkill.count.direct=true;
+lib.skill.sbliegong.subSkill.count.locked=false;
 //唐咨
 lib.skill.xinfu_xingzhao.intro={
 content:function(storage,player){
-var num=game.countPlayer(function(current){
-return current.isDamaged();
-}),str='';
+var num=game.countPlayer(current=>current.isDamaged());
 if(num==0) return '<li>当你造成伤害时，此伤害+1';
+var str='';
 if(num>=1) str+='<li>视为拥有技能〖恂恂〗';
 if(num>=2) str+='<br><li>使用装备牌时摸一张牌';
 if(num>=3) str+='<br><li>跳过判定阶段和弃牌阶段';
