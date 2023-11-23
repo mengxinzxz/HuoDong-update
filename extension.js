@@ -22609,7 +22609,7 @@ if(time>0) game.delay(0,time);
 game.broadcastAll('closeDialog',event.videoId);
 player.gain(event.cardsx,'gain2','log');
 player.addTempSkill('shuangxiong2');
-player.storage.shuangxiong=get.color(event.cardsx[0]);
+player.markAuto('shuangxiong2',[get.color(event.cardsx[0])]);
 },
 },
 minishuangxiong2:{
@@ -40641,7 +40641,7 @@ var target=player.storage.old_jiebing2,cards=player.getCards('hes',function(card
 return player.storage.old_jiebing.includes(card);
 });
 player.removeGaintag('old_jiebing');
-if(target.iIn()) target.gain(cards,player,'giveAuto');
+if(target.isIn()) target.gain(cards,player,'giveAuto');
 },
 ai:{nokeep:true},
 },
