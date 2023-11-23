@@ -1845,19 +1845,19 @@ if(target==player.storage.meibu_range) return true;
 };
 //贾诩
 lib.skill.weimu.filter=function(event,player){
-var info=get.info(event.card.name);
 if(event.player==player) return false;
 if(get.color(event.card)!='black'||get.type(event.card)!='trick') return false;
-return info.selectTarget&&info.selectTarget==-1&&!info.toself;
+var info=get.info(event.card.name);
+return info&&info.selectTarget&&info.selectTarget==-1&&!info.toself;
 };
 lib.skill._reweimu={
 charlotte:true,
 trigger:{global:'useCard1'},
 filter:function(event,player){
-var info=get.info(event.card.name);
 if(!player.hasSkill('reweimu')||event.player==player) return false;
 if(get.color(event.card)!='black'||get.type(event.card)!='trick') return false;
-return info.selectTarget&&info.selectTarget==-1&&!info.toself;
+var info=get.info(event.card.name);
+return info&&info.selectTarget&&info.selectTarget==-1&&!info.toself;
 },
 priority:15,
 direct:true,
