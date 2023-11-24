@@ -19,13 +19,14 @@ var HuoDong_update=[
 '限定扩展内置部分十周年UI下的花色美化为仅使用十周年选项标记时生效，且游戏内更改选项须重启生效',
 '修复开启座位号显示后换位不更新座位号显示的bug',
 '更新微信三国杀极诸葛亮、极司马懿、极马超、赵云、极曹操的技能',
+'添加换了三国杀武将谋黄盖、朱儁',
 '添加微信三国杀武将祖茂、关索、极黄月英',
 'To be continued...',
 ];
 //更新武将
 var HuoDong_players=[
 'wechat_zhugeliang','wechat_simayi','wechat_re_machao','wechat_zhaoyun','wechat_re_caocao',
-'wechat_zumao','wechat_guansuo','wechat_re_huangyueying',
+'wechat_zumao','wechat_guansuo','wechat_re_huangyueying','Mbaby_sb_huanggai','Mbaby_zhujun',
 ];
 //加载
 var dialog=ui.create.dialog(
@@ -9934,7 +9935,7 @@ Mbaby_panjun:['male','wu',3,['miniguanwei','minigongqing'],[]],
 Mbaby_dingfeng:['male','wu',4,['miniduanbing','minifenxun'],[]],
 Mbaby_dc_sunru:['female','wu',3,['minixiecui','youxu'],['MXdelete']],
 Mbaby_xuezong:['male','wu',3,['minifunan','minijiexun'],[]],
-Mbaby_sb_huanggai:['male','wu',4,['minisbkurou','minisbzhaxiang'],['MXdelete']],
+Mbaby_sb_huanggai:['male','wu',4,['minisbkurou','minisbzhaxiang'],[]],
 Mbaby_zhangfen:['male','wu',4,['miniwanglu','minixianzhu','minichaixie'],[]],
 //群
 Mbaby_gaoshun:['male','qun',4,['minixianzhen','minijinjiu'],[]],
@@ -9993,7 +9994,7 @@ Mbaby_gongsunyuan:['male','qun',4,['minihuaiyi'],[]],
 Mbaby_sp_zhangliao:['male','qun',4,['minimubing','miniziqu','minidiaoling'],[]],
 Mbaby_sp_ol_zhanghe:['male','qun',4,['minizhouxuan'],[]],
 Mbaby_change:['female','shen','1/4',['minidaoyao','minibenyue'],[]],
-Mbaby_zhujun:['male','qun',4,['minigongjian','kuimang','jsrgjuxiang'],['MXdelete']],
+Mbaby_zhujun:['male','qun',4,['minigongjian','kuimang','jsrgjuxiang'],[]],
 //神
 Mbaby_shen_zhugeliang:['male','shen',3,['miniqixing','minikuangfeng','minidawu'],['shu']],
 Mbaby_shen_lvbu:['male','shen',6,['miniwuqian','minishenfen'],['qun']],
@@ -30845,7 +30846,7 @@ Mbaby_yinfuren:'欢杀尹夫人',
 Mbaby_sp_caoren:'SP欢杀曹仁',
 Mbaby_guojia:'欢杀郭嘉',
 Mbaby_caohong:'欢杀曹洪',
-Mbaby_sb_caocao:'SP欢杀曹操',
+Mbaby_sb_caocao:'欢杀谋曹操',
 miniluoshen:'洛神',
 miniluoshen_info:'准备阶段，你可以进行一次判定并获得判定牌，若判定结果为黑色，你可重复此流程。',
 miniqiaobian:'巧变',
@@ -31302,7 +31303,7 @@ Mbaby_panjun:'欢杀潘濬',
 Mbaby_dingfeng:'欢杀丁奉',
 Mbaby_dc_sunru:'欢杀孙茹',
 Mbaby_xuezong:'欢杀薛综',
-Mbaby_sb_huanggai:'SP欢杀黄盖',
+Mbaby_sb_huanggai:'欢杀谋黄盖',
 Mbaby_zhangfen:'欢杀张奋',
 minizhiheng:'制衡',
 minizhiheng_info:'出牌阶段结束时，你可以弃置任意张手牌并将手牌数补至四张。',
@@ -31978,6 +31979,7 @@ for(var i in MiNikill.character){
 if(MiNikill.translate[i]){
 if(MiNikill.translate[i].indexOf('欢杀神')==0) MiNikill.translate[i+'_prefix']='欢杀神';
 else if(MiNikill.translate[i].indexOf('SP欢杀神')==0) MiNikill.translate[i+'_prefix']='SP欢杀神';
+else if(MiNikill.translate[i].indexOf('欢杀谋')==0) MiNikill.translate[i+'_prefix']='欢杀谋';
 else if(MiNikill.translate[i].indexOf('欢杀')==0) MiNikill.translate[i+'_prefix']='欢杀';
 else if(MiNikill.translate[i].indexOf('SP欢杀')==0) MiNikill.translate[i+'_prefix']='SP欢杀';
 else if(MiNikill.translate[i].indexOf('喵')==0) MiNikill.translate[i+'_prefix']='喵';
@@ -32006,6 +32008,9 @@ getSpan:(prefix,name)=>`${get.prefixSpan('欢杀')}${get.prefixSpan('神')}`,
 });
 lib.namePrefix.set('SP欢杀神',{
 getSpan:(prefix,name)=>`${get.prefixSpan('SP')}${get.prefixSpan('欢杀')}${get.prefixSpan('神')}`,
+});
+lib.namePrefix.set('欢杀谋',{
+getSpan:(prefix,name)=>`${get.prefixSpan('欢杀')}${get.prefixSpan('谋')}`,
 });
 lib.config.all.characters.push('MiNikill');
 lib.config.all.sgscharacters.push('MiNikill');
