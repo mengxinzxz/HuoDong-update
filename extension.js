@@ -32971,7 +32971,7 @@ if(result.bool){
 if(typeof result.links[0]!='string') result.links.reverse();
 var card=result.links[1],choice=result.links[0];
 player.showCards(card,get.translation(player)+'对'+get.translation(target)+'发动了【攻心】');
-if(choice=='获得此牌') target.discard(card);
+if(choice=='获得此牌') player.gain([card],target,'giveAuto');
 else target.lose(card,ui.cardPile,'visible','insert');
 }
 },
