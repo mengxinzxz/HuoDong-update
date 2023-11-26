@@ -404,7 +404,7 @@ game.saveExtensionConfig('活动配件','enable',true);
 game.reload();
 },1000);
 }
-else if(!game.TrueHasExtension('活动配件')||pjNum!='0.0.9'){//配件版本precPeiJian
+else if(!game.TrueHasExtension('活动配件')||pjNum!='0.1.0'){//配件版本precPeiJian
 alert((!game.TrueHasExtension('活动配件')?'检测到未安装活动配件，将为您自动安装':'配件版本与现版本不一致，正在您自动更新活动配件')+'\n若长时间未完成导入，请将活动配件进行万能导入\n活动配件位于活动武将扩展文件的最外层');
 window.HuoDongOpenLoading=function(){
 var dialog=ui.create.div('.HuoDong-loading',document.body);
@@ -47192,7 +47192,7 @@ bolshuchen:'疏陈',
 bolshuchen_info:'当一名角色进入濒死状态时，你可以消耗至多3点'+get.RenWangInform()+'并摸等量张牌，然后你可以交给其至多等量张牌。',
 bolxiezheng:'挟政',
 bolxiezheng_info:'弃牌阶段结束时，你可以消耗1点'+get.RenWangInform()+'并令一名角色弃置X张牌（X为本阶段你弃置的牌数）。',
-bol_zhangzhongjing:'TW张机',
+bol_zhangzhongjing:'废案张机',
 bolliaoyi:'疗疫',
 bolliaoyi_info:'出牌阶段开始时，你可以令一名角色获得从牌堆或弃牌堆中获得其上个回合开始至现在失去过的牌的类型的牌各一张。',
 bolbinglun:'病论',
