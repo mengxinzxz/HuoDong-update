@@ -36759,7 +36759,7 @@ var cards=_status.event.cards.filter(card=>target.canUse(card,player,false));
 if(cards.reduce((num,card)=>num+get.effect(target,card,player,player),0)<=0) return 1;
 return 0;
 }).set('target',target).set('cards',cards);
-if(result.bool){
+if(result.index==0){
 var result2=player.chooseCard('妙笔：交给'+get.translation(target)+'一张锦囊牌',(card,player)=>get.type2(card)=='trick','he',true);
 if(result2.bool) player.give(result2.cards,target);
 player.loseToDiscardpile(cards);
