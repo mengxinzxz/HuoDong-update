@@ -36696,14 +36696,14 @@ audio:'ext:活动武将/audio/skill:2',
 trigger:{player:'useCardAfter'},
 filter:function(event,player){
 if(player.getHistory('custom',evt=>evt.wechatmiaobi_name==event.card.name).length) return false;
+if(!player.isPhaseUsing()||get.type(event.card)!='trick'||!event.targets||!event.targets.length) return false;
 var cards=event.cards.filterInD();
-if(!player.isPhaseUsing()||get.type(event.card)!='trick'||!cards.length) return false;
-return event.targets&&event.targets.some(target=>target.isIn()&&cards.some(card=>player.canUse(card,target,false)));
+return cards.length&&event.targets.some(target=>target.isIn());
 },
 direct:true,
 content:function(){
 'step 0'
-var targets=trigger.targets.filter(target=>target.isIn()&&cards.some(card=>player.canUse(card,target,false)));
+var targets=trigger.targets.filter(target=>target.isIn());
 var cards=trigger.cards.filterInD();
 event.cards=cards;
 if(targets.length==1){
@@ -36724,8 +36724,7 @@ if(result.bool){
 var target=event.target||result.targets[0];
 player.logSkill('wechatmiaobi',target);
 target.addSkill('wechatmiaobi_effect');
-target.addToExpansion(player,'give',cards).gaintag.add('wechatmiaobi_effect');
-target.markSkill('wechatmiaobi_effect');
+target.addToExpansion(cards,player,'give').gaintag.add('wechatmiaobi_effect');
 var list=target.getStorage('wechatmiaobi_effect').find(list=>list[0]==player);
 if(!list) target.markAuto('wechatmiaobi_effect',[[player,cards]]);
 else target.storage.wechatmiaobi_effect[target.getStorage('wechatmiaobi_effect').indexOf(list)]=[player,list[1].concat(cards)];
@@ -36745,7 +36744,6 @@ while(targets.length){
 var target=targets.shift();
 var list=player.getStorage('wechatmiaobi_effect').find(list=>list[0]==target);
 player.unmarkAuto('wechatmiaobi_effect',[list]);
-player.markSkill('wechatmiaobi_effect');
 var cards=list[1],result;
 if(target.isIn()) target.line(player);
 if(!target.isIn()||!player.countCards('he',card=>get.type2(card)=='trick')) result={index:1};
@@ -36760,7 +36758,7 @@ if(cards.reduce((num,card)=>num+get.effect(target,card,player,player),0)<=0) ret
 return 0;
 }).set('target',target).set('cards',cards);
 if(result.index==0){
-var result2=player.chooseCard('妙笔：交给'+get.translation(target)+'一张锦囊牌',(card,player)=>get.type2(card)=='trick','he',true);
+var result2=yield player.chooseCard('妙笔：交给'+get.translation(target)+'一张锦囊牌',(card,player)=>get.type2(card)=='trick','he',true);
 if(result2.bool) player.give(result2.cards,target);
 player.loseToDiscardpile(cards);
 }
