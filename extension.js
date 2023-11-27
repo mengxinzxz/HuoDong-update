@@ -38139,7 +38139,12 @@ var num=player.getStorage('gz_huashen').length;
 if(num>=2) event.goto(3);
 'step 1'
 var characters=lib.skill.gz_huashen.getCharacter(player).randomGets(5);
-player.chooseButton([get.prompt('gz_huashen'),'<div class="text center">选择至多两张武将牌作为“化身”牌</div>',[characters,'character']],[1,2]).set('ai',function(button){
+player.chooseButton([
+get.prompt('gz_huashen'),
+'<div class="text center">选择至多两张武将牌作为“化身”牌</div>',
+[characters,
+(item,type,position,noclick,node,player)=>lib.skill.gz_huashen.$createButton(item,type,position,noclick,node,player)],
+],[1,2]).set('ai',function(button){
 return get.rank(button.link,true);
 });
 'step 2'
@@ -38150,7 +38155,12 @@ event.goto(5);
 }
 else event.finish();
 'step 3'
-player.chooseButton([get.prompt('gz_huashen'),'<div class="text center">替换一张“化身”牌</div>',[player.getStorage('gz_huashen'),'character']]).set('ai',function(button){
+player.chooseButton([
+get.prompt('gz_huashen'),
+'<div class="text center">替换一张“化身”牌</div>',
+[player.getStorage('gz_huashen'),
+(item,type,position,noclick,node,player)=>lib.skill.gz_huashen.$createButton(item,type,position,noclick,node,player)],
+]).set('ai',function(button){
 return get.rank(button.link,true);
 });
 'step 4'
@@ -38162,6 +38172,47 @@ lib.skill.gz_huashen.addVisitors(lib.skill.gz_huashen.getCharacter(player).rando
 else event.finish();
 'step 5'
 game.delayx();
+},
+ai:{threaten:5},
+$createButton:function(item,type,position,noclick,node,player){
+node=ui.create.buttonPresets.character(item,'character',position,noclick);
+const info=lib.character[item];
+const skills=info[3].filter(function(skill){
+var info=get.info(skill);
+return !get.skillCategoriesOf(skill,player).length&&info&&(!info.unique||info.gainable);
+});
+if(skills.length){
+const skillstr=skills.map(i=>`[${get.translation(i)}]`).join('<br>');
+const skillnode=ui.create.caption(
+`<div class="text" data-nature=${get.groupnature(info[1],'raw')
+}m style="font-family: ${(lib.config.name_font||'xinwei')
+},xinwei">${skillstr}</div>`,node);
+skillnode.style.left='2px';
+skillnode.style.bottom='2px';
+}
+node._customintro=function(uiintro,evt){
+const character=node.link,characterInfo=get.character(node.link);
+let capt=get.translation(character);
+if(characterInfo){
+capt+=`&nbsp;&nbsp;${get.translation(characterInfo[0])}`;
+let charactergroup;
+const charactergroups=get.is.double(character,true);
+if(charactergroups) charactergroup=charactergroups.map(i=>get.translation(i)).join('/');
+else charactergroup=get.translation(characterInfo[1]);
+capt+=`&nbsp;&nbsp;${charactergroup}`;
+}
+uiintro.add(capt);
+if(lib.characterTitle[node.link]) uiintro.addText(get.colorspan(lib.characterTitle[node.link]));
+for(let i=0;i<skills.length;i++){
+if(lib.translate[skills[i]+'_info']){
+let translation=lib.translate[skills[i]+'_ab']||get.translation(skills[i]).slice(0,2);
+if(lib.skill[skills[i]]&&lib.skill[skills[i]].nobracket) uiintro.add('<div><div class="skilln">'+get.translation(skills[i])+'</div><div>'+get.skillInfoTranslation(skills[i])+'</div></div>');
+else uiintro.add('<div><div class="skill">【'+translation+'】</div><div>'+get.skillInfoTranslation(skills[i])+'</div></div>');
+if(lib.translate[skills[i]+'_append']) uiintro._place_text=uiintro.add('<div class="text">'+lib.translate[skills[i]+'_append']+'</div>');
+}
+}
+}
+return node;
 },
 getCharacter:function(player){
 if(!_status.characterlist) lib.skill.pingjian.initList();
@@ -38176,11 +38227,11 @@ return !get.skillCategoriesOf(skill,player).length&&info&&(!info.unique||info.ga
 getSkills:function(characters,player){
 var skills=[];
 for(var name of characters){
-if(Array.isArray(lib.character[name])){
-for(var skill of lib.character[name][3]){
+if(Array.isArray(lib.character[name])&&lib.character[name][3]){
+skills.addArray(lib.character[name][3].filter(skill=>{
 var info=get.info(skill);
-if(!get.skillCategoriesOf(skill,player).length&&info&&(!info.unique||info.gainable)) skills.add(skill);
-}
+return info&&!get.skillCategoriesOf(skill,player).length&&(!info.unique||info.gainable);
+}));
 }
 }
 return skills;
@@ -38241,9 +38292,8 @@ intro:{
 mark:function(dialog,storage,player){
 if(!storage||!storage.length) return '当前没有“化身”';
 if(player.isUnderControl(true)){
-dialog.addSmall([storage,'character']);
-var skills=lib.skill.gz_huashen.getSkills(storage,player);
-if(skills.length) dialog.addText('<li>当前可用技能：'+get.translation(skills),false);
+dialog.addText('<li>当前可用“化身”牌',false);
+dialog.addSmall([storage,(item,type,position,noclick,node,player)=>lib.skill.gz_huashen.$createButton(item,type,position,noclick,node,player)]);
 }
 else return '共有'+get.cnNumber(storage.length)+'张“化身”';
 },
@@ -46761,9 +46811,9 @@ bilibili_dengji_info:'觉醒技，准备阶段，若你武将牌上的「储」�
 bilibili_tianxing:'天行',
 bilibili_tianxing_info:'觉醒技，准备阶段，若你武将牌上的「储」数不小于3，则你减1点体力上限并获得所有「储」，然后失去技能〖储元〗，选择获得以下技能中的一个：〖仁德〗/〖制衡〗/〖乱击〗/〖放权〗。',
 gz_huashen:'化身',
-gz_huashen_info:'准备阶段，若你的“化身”牌数：小于2，你可以观看剩余武将牌堆中的五张牌，然后将其中至多两张武将牌置于武将牌上，称为“化身”牌；大于等于2，你可以用剩余武将牌堆顶的一张牌替换一张“化身”牌。你可以于相应的时机明置并发动“化身”牌的技能，然后你于技能结算完成后将此技能对应的“化身”牌放回剩余武将牌堆。',
+gz_huashen_info:'准备阶段，若你的“化身”牌数：小于2，你可以观看剩余武将牌堆中的五张牌，然后将其中至多两张武将牌置于武将牌上，称为“化身”牌；大于等于2，你可以用剩余武将牌堆顶的一张牌替换一张“化身”牌。你可以于相应的时机明置并发动“化身”牌的一个无标签技能，然后你于技能结算完成后将此技能对应的“化身”牌放回剩余武将牌堆。',
 gz_xinsheng:'新生',
-gz_xinsheng_info:'当你受到1点伤害后，你可以获得一张新的“化身”牌。',
+gz_xinsheng_info:'当你受到1点伤害后，你可以随机获得一张“化身”牌。',
 bilibili_jinfan:'锦帆',
 bilibili_sheque:'射却',
 bilibili_jinfan_info:'锁定技。①弃牌阶段开始时，你将一张与武将牌上的“铃”花色均不同的牌作为“铃”置于武将牌上。②每回合每种花色限一次，当你使用或打出与“铃”花色相同的牌时，你摸一张牌。',
