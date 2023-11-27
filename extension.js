@@ -9996,7 +9996,7 @@ Mbaby_sp_ol_zhanghe:['male','qun',4,['minizhouxuan'],[]],
 Mbaby_change:['female','shen','1/4',['minidaoyao','minibenyue'],[]],
 Mbaby_zhujun:['male','qun',4,['minigongjian','kuimang','jsrgjuxiang'],[]],
 //神
-Mbaby_shen_zhugeliang:['male','shen',3,['miniqixing','minikuangfeng','minidawu'],['shu']],
+Mbaby_shen_zhugeliang:['male','shen',3,['qixing','minikuangfeng','minidawu'],['shu']],
 Mbaby_shen_lvbu:['male','shen',6,['miniwuqian','minishenfen'],['qun']],
 Mbaby_shen_lvmeng:['male','shen',3,['minishelie','minigongxin'],['wu']],
 Mbaby_shen_guanyu:['male','shen',5,['miniwushen','miniwuhun'],['shu']],
@@ -27048,131 +27048,57 @@ else player.gain(card,target,'give');
 },
 ai:{expose:0.25},
 },
-miniqixing:{
-unique:true,
-audio:'qixing',
-trigger:{global:'phaseBefore',player:['enterGame','phaseDrawEnd']},
-filter:function(event,player){
-if(event.name=='phaseDraw') return player.getStorage('miniqixing').length&&player.countCards('h');
-return event.name!='phase'||game.phaseNumber==0;
-},
-direct:true,
-content:function(){
-'step 0'
-if(trigger.name!='phaseDraw'){
-player.logSkill('miniqixing');
-player.markAuto('miniqixing',game.cardsGotoSpecial(get.cards(7)).cards);
-}
-'step 1'
-var cards=player.getStorage('miniqixing');
-if(!cards.length||!player.countCards('h')){event.finish();return;}
-var next=player.chooseToMove('七星：是否交换“星”和手牌？');
-next.set('list',[
-[get.translation(player)+'（你）的星',cards],
-['手牌区',player.getCards('h')],
-]);
-next.set('filterMove',function(from,to){
-return typeof to!='number';
-});
-next.set('processAI',function(list){
-var player=_status.event.player,cards=list[0][1].concat(list[1][1]).sort(function(a,b){
-return get.useful(a)-get.useful(b);
-}),cards2=cards.splice(0,player.getStorage('miniqixing').length);
-return [cards2,cards];
-});
-'step 2'
-if(result.bool){
-var pushs=result.moved[0],gains=result.moved[1];
-pushs.removeArray(player.getStorage('miniqixing'));
-gains.removeArray(player.getCards('h'));
-if(!pushs.length||pushs.length!=gains.length) return;
-if(trigger.name!='phaseDraw') player.logSkill('miniqixing');
-player.lose(pushs,ui.special,'toStorage');
-player.markAuto('miniqixing',pushs);
-player.unmarkAuto('miniqixing',gains);
-player.gain(gains,'draw','fromStorage');
-}
-},
-mark:true,
-intro:{
-onunmark:function(storage,player){
-if(storage&&storage.length){
-player.$throw(storage,1000);
-game.cardsDiscard(storage);
-game.log(storage,'被置入了弃牌堆');
-storage.length=0;
-}
-},
-mark:function(dialog,content,player){
-if(content&&content.length){
-if(player==game.me||player.isUnderControl()){
-dialog.addAuto(content);
-}
-else return '共有'+get.cnNumber(content.length)+'张星';
-}
-},
-content:function(content,player){
-if(content&&content.length){
-if(player==game.me||player.isUnderControl()) return get.translation(content);
-return '共有'+get.cnNumber(content.length)+'张星';
-}
-}
-},
-},
 minikuangfeng:{
 audio:'kuangfeng',
 trigger:{player:'phaseUseEnd'},
 filter:function(event,player){
-return player.storage.miniqixing&&player.storage.miniqixing.length;
+return player.getExpansions('qixing').length;
 },
 direct:true,
 content:function(){
 'step 0'
-player.chooseTarget([1,Math.min(game.players.length,player.getStorage('miniqixing').length)],get.prompt2('minikuangfeng')).set('ai',function(target){
+var num=Math.min(game.countPlayer(),player.getExpansions('qixing').length);
+player.chooseTarget(get.prompt2('minikuangfeng'),[1,num]).set('ai',target=>{
 var player=_status.event.player;
-var eff=get.damageEffect(target,player,player);
-if(target.hp==1||!ui.selected.targets.length) return eff;
-return 0;
-});
+return get.damageEffect(target,player,player);
+}).set('animate',false);
 'step 1'
 if(result.bool){
-event.targets=result.targets.sortBySeat();
-player.chooseButton(['请选择要移去的“星”',player.getStorage('miniqixing')],true,result.targets.length).set('ai',function(button){
-return -get.value(button.link);
-});
+var targets=result.targets.sortBySeat();
+event.targets=targets;
+player.chooseButton(['请选择要移去的“星”',player.getExpansions('qixing')],targets.length,true).set('ai',button=>-get.value(button.link));
 }
 else event.finish();
 'step 2'
-var cards=result.links;
-player.logSkill('minikuangfeng',targets);
-player.$throw(cards,2000);
-player.unmarkAuto('miniqixing',cards);
-game.cardsDiscard(cards);
+if(result.bool) player.loseToDiscardpile(result.links);
+else event.finish();
+'step 3'
 for(var i of targets) i.damage();
 },
+ai:{combo:'qixing'},
 },
 minidawu:{
 audio:'dawu',
 trigger:{player:'phaseJieshuBegin'},
 filter:function(event,player){
-return player.storage.miniqixing&&player.storage.miniqixing.length;
+return player.getExpansions('qixing').length;
 },
 direct:true,
 content:function(){
 'step 0'
-player.chooseButton([get.prompt('minidawu'),player.getStorage('miniqixing')]).set('ai',function(button){
+player.chooseButton([get.prompt('minidawu'),player.getExpansions('qixing')]).set('ai',button=>{
+var player=_status.event.player;
+if(!game.hasPlayer(current=>get.attitude(current,player)<0)) return 0;
 return 1/Math.max(0.01,get.value(button.link));
 });
 'step 1'
 if(result.bool){
-var cards=result.links;
 player.logSkill('minidawu');
-player.$throw(cards,2000);
-player.unmarkAuto('miniqixing',cards);
-game.cardsDiscard(cards);
+player.loseToDiscardpile(result.links);
 player.addTempSkill('minidawu_damage',{player:'phaseBegin'});
 }
 },
+ai:{combo:'qixing'},
 subSkill:{
 damage:{
 charlotte:true,
@@ -31789,8 +31715,6 @@ minishelie:'涉猎',
 minishelie_info:'锁定技，摸牌阶段，你放弃摸牌，改为亮出牌堆顶的五张牌，并获得其中不同花色的牌各一张。',
 minigongxin:'攻心',
 minigongxin_info:'每回合限一次，当你使用牌指定其他角色为唯一目标后，或成为其他角色使用牌的唯一目标后，你可观看对方的手牌。然后你可以展示其中的一张红色牌并选择一项：①获得此牌。②将此牌置于牌堆顶。',
-miniqixing:'七星',
-miniqixing_info:'游戏开始时，你将牌堆顶的七张牌置于你的武将牌上，称之为“星”，然后你可用任意数量的手牌等量交换这些“星”。摸牌阶段结束后，你可用任意数量的手牌等量交换这些“星”。',
 minikuangfeng:'狂风',
 minikuangfeng_info:'出牌阶段结束时，你可选择任意名角色并将等量的“星”置入弃牌堆，然后对这些角色各造成1点伤害。',
 minidawu:'大雾',
