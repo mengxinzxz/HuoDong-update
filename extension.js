@@ -38226,14 +38226,18 @@ return !get.skillCategoriesOf(skill,player).length&&info&&(!info.unique||info.ga
 },
 getSkills:function(characters,player){
 var skills=[];
-for(var name of characters){
+character.forEach(name=>{
 if(Array.isArray(lib.character[name])&&lib.character[name][3]){
-skills.addArray(lib.character[name][3].filter(skill=>{
+var skillx=lib.character[name][3].filter(skill=>{
 var info=get.info(skill);
 return info&&!get.skillCategoriesOf(skill,player).length&&(!info.unique||info.gainable);
-}));
+});
+if(skillx.length){
+skills.addArray(skillx);
+skillx.forEach(skill=>lib.skill.rehuashen.createAudio(name,skill,'old_zuoci'));
 }
 }
+});
 return skills;
 },
 addVisitors:function(characters,player){
