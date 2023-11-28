@@ -37153,7 +37153,7 @@ bilibili_suixingsifeng:['female','key',4,['bilibili_daili','bilibili_duoyang','b
 bilibili_Emptycity:['male','key',4,['bilibili_zhiyou','bilibili_guanli'],[]],
 bilibili_thunderlei:['male','key','2/4/3',['bilibili_Thunder','bilibili_qianxi'],[]],
 bilibili_zhengxuan:['male','qun',3,['bilibili_zhengjing'],['character:zhengxuan']],
-bilibili_lonelypatients:['male','key',4,['bilibili_meihua','bilibili_gongyou','bilibili_qianyin'],[]],
+bilibili_lonelypatients:['male','key',4,['bilibili_meihua','bilibili_gongyou'/*,'bilibili_qianyin'*/],[]],
 //千里走单骑
 DJ_caiyang:['male','qun',1,['yinka','zhuixi'],['character:caiyang']],
 DJ_pujing:['male','qun',1,['yinka'],['character:pujing']],
