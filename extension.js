@@ -13618,7 +13618,7 @@ target:function(player,target){
 var att=get.attitude(player,target);
 var num=get.sgn(att);
 var ref=get.recoverEffect(player,player,player);
-var def=game.filterPlayer.reduce((list,current)=>{
+var def=game.filterPlayer().reduce((list,current)=>{
 return list.push(get.damageEffect(current,player,player));
 },[]).sort((a,b)=>b-a)[0];
 var sum=get.sgn(player.hp-target.hp)+get.sgn(player.countCards('h')-target.countCards('h'))+
