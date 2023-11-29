@@ -29127,8 +29127,8 @@ if(result.bool){
 var link=result.links[0];
 if(get.position(link)=='e'){
 event.count++;
-targets[1].equip(link);
 targets[0].$give(link,targets[1],false);
+targets[1].equip(link);
 }
 game.delay();
 }
