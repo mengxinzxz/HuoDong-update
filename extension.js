@@ -2345,14 +2345,6 @@ return current.group==player.storage.yaohu;
 if(player.hasSkill('sbxueyi')&&game.hasPlayer(current=>player!=current&&current.group=='qun')) player.logSkill('sbxueyi');
 },
 };
-//获取手中的花色数
-lib.element.player.getSuitNum=function(position){
-var player=this,list=[];
-if(!position) position='h';
-return player.getCards(position).reduce(function(arr,card){
-return arr.add(get.suit(card,player)),arr;
-},[]).length;
-};
 //增减技能函数
 if(!game.HasExtension('OLUI')){
 //addSkill函数
@@ -38226,7 +38218,7 @@ return !get.skillCategoriesOf(skill,player).length&&info&&(!info.unique||info.ga
 },
 getSkills:function(characters,player){
 var skills=[];
-character.forEach(name=>{
+characters.forEach(name=>{
 if(Array.isArray(lib.character[name])&&lib.character[name][3]){
 var skillx=lib.character[name][3].filter(skill=>{
 var info=get.info(skill);
@@ -40263,7 +40255,7 @@ forced:true,
 popup:false,
 content:function(){
 var num=player.countMark('shen_sunquan_skill_count');
-var skills=(lib.config.extension_活动武将_ShenSunQuan?lib.skill.bolyuheng.getList():lib.skill.bolyuheng.skillList);
+var skills=(lib.config.extension_活动武将_ShenSunQuan?lib.skill.bolyuheng.getList():lib.skill.junkyuheng.derivation);
 skills=skills.filter(function(skill){
 return !player.hasSkill(skill);
 });
@@ -42629,8 +42621,6 @@ return lib.skill.old_fenchai.getTargets(target).includes(player);
 },
 //神孙权
 bolyuheng:{
-//限制技能库
-skillList:['olbingyi','shenxing','xiashu','old_anxu','rezhiheng','xinanguo','lanjiang','xinfu_guanwei','dimeng','xindiaodu','olhongyuan','jiexun','xingxue','bizheng','xinfu_youdi'],
 derivation:'bolyuheng_faq',
 //全扩技能库
 getList:function(){
@@ -42680,22 +42670,18 @@ forced:true,
 keepSkill:true,
 content:function(){
 'step 0'
-player.chooseToDiscard('he',true,[1,player.getSuitNum('he')],function(card,player){
-if(!ui.selected.cards.length) return true;
-var suit=get.suit(card,player);
-for(var i of ui.selected.cards){
-if(get.suit(i,player)==suit) return false;
-}
-return true;
+player.chooseToDiscard('he',true,[1,player.getCards('he').reduce((list,card)=>list.add(get.suit(card,player)),[]).length],function(card,player){
+return !ui.selected.cards.reduce((list,card)=>list.add(get.suit(card,player)),[]).includes(get.suit(card,player));
 }).set('complexCard',true).set('ai',function(card){
-var list=(lib.config.extension_活动武将_ShenSunQuan?lib.skill.bolyuheng.getList():lib.skill.bolyuheng.skillList);
+var player=_status.event.player;
+var list=(lib.config.extension_活动武将_ShenSunQuan?lib.skill.bolyuheng.getList():lib.skill.junkyuheng.derivation);
 if(ui.selected.cards.length>=list.length) return 0;
 if(!player.hasValueTarget(card)) return 5;
 return 1/(get.value(card)||0.5);
 });
 'step 1'
 if(result.bool){
-var list=(lib.config.extension_活动武将_ShenSunQuan?lib.skill.bolyuheng.getList():lib.skill.bolyuheng.skillList).slice(0);
+var list=(lib.config.extension_活动武将_ShenSunQuan?lib.skill.bolyuheng.getList():lib.skill.junkyuheng.derivation).slice(0);
 list=list.filter(function(skill){
 return !player.hasSkill(skill);
 });
