@@ -29041,7 +29041,7 @@ player.chooseButton([
 var player=_status.event.player,choice=[];
 for(var i of ['equip2','equip6','equip1']){
 if(game.hasPlayer(function(target){
-if(current==player||get.attitude(player,target)>=0) return false;
+if(get.attitude(player,target)>0) return false;
 return target.countCards('e',function(card){
 return game.hasPlayer(function(current){
 return current.canEquip(card)&&get.subtype(card)==i&&get.value(card,target)>0&&get.attitude(player,current)>0&&get.value(card,current)>0;
