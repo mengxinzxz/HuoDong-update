@@ -45565,13 +45565,9 @@ trigger:{player:['loseBefore','gainBefore','addJudgeBefore','addToExpansionBefor
 filter:function(event,player){
 if(event.name.indexOf('lose')==0){
 var evt=event.getl(player);
-return evt&&evt.player==player&&evt.cards&&evt.cards.filter(function(card){
-return card.bilibili_meihua;
-}).length;
+return evt&&evt.player==player&&evt.cards&&evt.cards.some(card=>card.bilibili_meihua);
 }
-return event.cards.filter(function(card){
-return card.bilibili_meihua;
-}).length;
+return event.cards.some(card=>card.bilibili_meihua);
 },
 direct:true,
 firstDo:true,
