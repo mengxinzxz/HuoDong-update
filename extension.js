@@ -32477,7 +32477,7 @@ filter:function(event,player){
 if(_status.currentPhase==player) return false;
 return player.hasHistory('lose',evt=>{
 if(evt.getParent()!=event) return false;
-return event.cards.every(card=>evt.hs.includes(card));
+return event.cards.some(card=>evt.hs.includes(card));
 });
 },
 frequent:true,
