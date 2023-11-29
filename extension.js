@@ -46504,57 +46504,6 @@ player.update();
 game.log(player,'交换了','#g体力上限','和','#y体力值');
 },
 },
-//新服22专属
-boldingpan:{
-audio:'dingpan',
-inherit:'dingpan',
-filter:function(event,player){
-var target=game.findPlayer(function(x){
-var num=x.getFriends().length;
-return !game.hasPlayer(function(y){
-return x!=y&&y.getFriends().length>num;
-});
-});
-return (player.getStat().skill.boldingpan||0)<(target?target.getFriends(true).length:1);
-},
-},
-bolfenxin:{
-audio:'fenxin',
-trigger:{global:'damageEnd'},
-filter:function(event,player){
-if(event.player==player||!['fenxin_fan','fenxin_zhong','fenxin_nei'].some(skill=>!player.hasSkill(skill))) return false;
-return !player.getHistory('useSkill',evt=>evt.skill=='bolfenxin'&&evt.targets[0]==event.player).length;
-},
-forced:true,
-logTarget:'player',
-content:function(){
-'step 0'
-player.chooseButton([
-'焚心：请选择〖竭缘〗的升级方式',
-[[
-['fenxin_fan','发动〖竭缘〗增加伤害无体力值限制'],
-['fenxin_zhong','发动〖竭缘〗减少伤害无体力值限制'],
-['fenxin_nei','将〖竭缘〗中的黑色手牌和红色手牌改为一张牌'],
-].filter(list=>!player.hasSkill(list[0])),'textbutton']
-],true).set('ai',function(button){
-return ['fenxin_fan','fenxin_zhong','fenxin_nei'].indexOf(button.link)+1;
-});
-'step 1'
-if(result.bool){
-player.addSkill(result.links);
-player.markSkill('bolfenxin');
-}
-},
-onunmark:true,
-intro:{
-mark:function(dialog,content,player){
-if(player.hasSkill('fenxin_fan')) dialog.addText('发动〖竭缘〗增加伤害无体力值限制');
-if(player.hasSkill('fenxin_zhong')) dialog.addText('发动〖竭缘〗减少伤害无体力值限制');
-if(player.hasSkill('fenxin_nei')) dialog.addText('将〖竭缘〗中的黑色手牌和红色手牌改为一张牌');
-},
-},
-ai:{combo:'jieyuan'},
-},
 //贱·陈珪
 bolyingtu:{
 audio:'dcyingtu',
@@ -47179,10 +47128,6 @@ biliscs_lisong:'栗嵩',
 biliscs_duangui:'段珪',
 biliscs_guosheng:'郭胜',
 biliscs_gaowang:'高望',
-boldingpan:'定叛',
-boldingpan_info:'出牌阶段限X次，你可以令一名装备区里有牌的角色摸一张牌，然后其选择一项：1.令你弃置其装备区里的一张牌；2.获得其装备区里的所有牌，然后你对其造成1点伤害。（X为场上存活的最大阵营角色数）',
-bolfenxin:'焚心',
-bolfenxin_info:'锁定技，一名其他角色首次受到伤害后，你须选择未选择过的一项：1.你发动〖竭缘〗减少伤害时无视体力值限制；2.你发动〖竭缘〗增加伤害时无视体力值限制；3.你发动〖竭缘〗选择的牌时无颜色限制，且可以选择装备区的牌。',
 bolyingtu:'营图',
 bolyingtu_info:'①当你的上家于摸牌阶段外获得牌后，你可以获得其等量的牌，然后将等量的牌交给你的下家。②当你的下家使用【杀】或【决斗】指定第一个目标时，若目标角色不包含你和你的上家，则你可以取消此牌的所有目标，然后将此牌目标改为你的上家。',
 bolcongshi:'从势',
