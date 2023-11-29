@@ -38281,7 +38281,7 @@ trigger:{player:'triggerInvisible'},
 filter:function(event,player){
 if(event.revealed) return false;
 var info=get.info(event.skill);
-if(info.charlotte) return false;
+if(info&&info.charlotte) return false;
 var skills=lib.skill.gz_huashen.getSkills(player.getStorage('gz_huashen'),player);
 game.expandSkills(skills);
 return skills.includes(event.skill);
