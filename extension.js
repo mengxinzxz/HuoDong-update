@@ -2615,9 +2615,9 @@ if(lib.config.background_audio) game.playAudio('..','extension','活动武将/au
 },
 };
 //skillAnimation技能配音播放
+var originTrySkillAnimate=lib.element.player.trySkillAnimate;
 lib.element.player.trySkillAnimate=function(name,popname,checkShow){
-if(!game.online&&lib.config.skill_animation_type!='off'&&lib.skill[name]&&lib.skill[name].skillAnimation){
-if(lib.config.extension_活动武将_HDskillAnimateAudio){
+if(!game.online&&lib.config.skill_animation_type!='off'&&lib.skill[name]&&lib.skill[name].skillAnimation&&lib.config.extension_活动武将_HDskillAnimateAudio){
 game.broadcastAll(function(){
 if(ui.backgroundMusic) ui.backgroundMusic.pause();
 game.playAudio('..','extension','活动武将/audio/effect','spell_'+(lib.skill[name].juexingji?'wake':'limit'));
@@ -2626,27 +2626,7 @@ setTimeout(function(){
 if(ui.backgroundMusic) ui.backgroundMusic.play();
 },4000);
 }
-if(lib.config.skill_animation_type=='default'){
-checkShow=checkShow||'main';
-}
-else{
-checkShow=false;
-}
-if(lib.skill[name].textAnimation){
-checkShow=false;
-}
-this.$skill(lib.skill[name].animationStr||lib.translate[name],lib.skill[name].skillAnimation,lib.skill[name].animationColor,checkShow);
-return;
-}
-var player=this;
-game.broadcast(function(player,name,popname){
-player.trySkillAnimate(name,popname);
-},player,name,popname);
-if(lib.animate.skill[name]) lib.animate.skill[name].apply(this,arguments);
-else{
-if(popname!=name) this.popup(popname,'water',false);
-else this.popup(get.skillTranslation(name,this),'water',false);
-}
+originTrySkillAnimate.apply(this,arguments);
 };
 //对局BGM
 game.bol_playAudio=function(){
