@@ -26925,7 +26925,6 @@ targets.sort((a,b)=>get.effect(b,card,player,player)-get.effect(a,card,player,pl
 list.push([targets[0],get.effect(targets[0],card,player,player)]);
 });
 list.sort((a,b)=>b[1]-a[1]);
-if(target==list[0][0]&&target.group==player.group) return 0;
 if(list[0][0].group!=target.group) return get.sgn(att-0.5)+(att>=0?1.5:0);
 return 3*(get.sgn(att+0.5)+(att>0?1:0))+(list[0][0]==target?1:0);
 },
