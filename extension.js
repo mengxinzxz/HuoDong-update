@@ -19,7 +19,7 @@ var HuoDong_update=[
 '限定扩展内置部分十周年UI下的花色美化为仅使用十周年选项标记时生效，且游戏内更改选项须重启生效',
 '修复开启座位号显示后换位不更新座位号显示的bug',
 '更新微信三国杀极诸葛亮、极司马懿、极马超、赵云、极曹操的技能',
-'添加换了三国杀武将谋黄盖、朱儁',
+'添加换了三国杀武将谋黄盖、朱儁、吕布',
 '添加微信三国杀武将祖茂、关索、极黄月英',
 'To be continued...',
 ];
@@ -27,6 +27,7 @@ var HuoDong_update=[
 var HuoDong_players=[
 'wechat_zhugeliang','wechat_simayi','wechat_re_machao','wechat_zhaoyun','wechat_re_caocao',
 'wechat_zumao','wechat_guansuo','wechat_re_huangyueying','Mbaby_sb_huanggai','Mbaby_zhujun',
+'Mbaby_lvbu',
 ];
 //加载
 var dialog=ui.create.dialog(
@@ -9922,7 +9923,7 @@ Mbaby_liru:['male','qun',3,['xinjuece','minimieji','xinfencheng'],[]],
 Mbaby_dongzhuo:['male','qun',8,['minijiuchi','roulin','minibenghuai','baonue'],['zhu']],
 Mbaby_zhangjiao:['male','qun',3,['minileiji','xinguidao','minihuangtian'],['zhu']],
 Mbaby_huatuo:['male','qun',3,['minijijiu','minireqingnang'],[]],
-Mbaby_lvbu:['male','qun',5,['wushuang'],['unseen']],
+Mbaby_lvbu:['male','qun',5,['miniwushuang','miniwuchang'],[]],
 Mbaby_sp_diaochan:['female','qun',3,['minilihun','minibiyue'],[]],
 Mbaby_huaxiong:['male','qun',6,['miniyaowu','miniyangwei'],[]],
 Mbaby_yuji:['male','qun',4,['miniguhuo'],[]],
@@ -24979,7 +24980,7 @@ minizhendu:{
 audio:'zhendu',
 trigger:{global:'phaseUseBegin'},
 filter:function(event,player){
-return event.player.isIn()&&player.countCards('h')&&event.player.hasUseTarget({name:'jiu'},null,true);
+return event.player.isIn()&&player.countCards('he')&&event.player.hasUseTarget({name:'jiu'},null,true);
 },
 direct:true,
 preHidden:true,
@@ -26822,6 +26823,115 @@ if(get.type(i,evt.player)=='basic'&&get.position(i,true)=='d') cards.add(i);
 });
 if(cards.length) player.gain(cards,'gain2');
 }
+},
+},
+//吕布
+miniwushuang:{
+mod:{
+selectTarget:function(card,player,range){
+if(card.name=='sha'&&range[1]!=-1) range[1]++;
+},
+},
+audio:'wushuang',
+inherit:'wushuang',
+init:function(){
+lib.skill.wushuang1.ai.skillTagFilter=function(player,tag,arg){
+if(player.hasSkill('miniwuchang')||arg.card.name!='sha'||arg.target.countCards('h','shan')>1) return false;
+};
+lib.skill.wushuang2.ai.skillTagFilter=function(player,tag,arg){
+if(player.hasSkill('miniwuchang')||arg.card.name!='juedou'||Math.floor(arg.target.countCards('h','sha')/2)>player.countCards('h','sha')) return false;
+};
+},
+},
+miniwuchang:{
+audio:'ext:活动武将/audio/skill:2',
+trigger:{source:'damageBegin1'},
+filter:function(event,player){
+if(event.player.group!=player.group) return false;
+if(event.getParent().type!='card'||!['sha','juedou'].includes(event.card.name)) return false;
+var history=event.player.getHistory('useCard').concat(event.player.getHistory('respond'));
+return !history.some(evt=>evt.respondTo&&evt.respondTo[1]==event.card);
+},
+logTarget:'player',
+prompt2:(event,player)=>'令即将对'+get.translation(event.player)+'造成的伤害+1，然后你变更至其他势力',
+check:(event,player)=>get.attitude(player,event.player)<0&&get.damageEffect(event.player,player,player)>0&&!event.player.hasSkillTag('filterDamage',true,{player:player,card:event.card}),
+content:function(){
+trigger.num++;
+player.addTempSkill('miniwuchang_change');
+trigger['miniwuchang_'+player.playerid]=trigger.player.group;
+},
+group:'miniwuchang_draw',
+subSkill:{
+change:{
+charlotte:true,
+trigger:{global:['damageAfter','damageZero','damageCancelled']},
+filter:function(event,player){
+return event['miniwuchang_'+player.playerid];
+},
+forced:true,
+popup:false,
+content:function(){
+'step 0'
+var list=lib.group.slice();
+list.removeArray([/*'shen',*/trigger['miniwuchang_'+player.playerid]]);
+player.chooseControl(list).set('prompt','无常：请选择你要变更的势力').set('ai',()=>{
+var player=_status.event.player;
+var aim=_status.event.getTrigger().player;
+var list=_status.event.list;
+var list2=list.filter(group=>game.hasPlayer(target=>target!=aim&&target.group==group&&get.attitude(player,target)<0));
+if(list2.length){
+list2.sort((a,b)=>game.countPlayer(target=>target!=aim&&target.group==b&&get.attitude(player,target)<0)-game.countPlayer(target=>target!=aim&&target.group==a&&get.attitude(player,target)<0));
+return list2[0];
+}
+else return list.randomGet();
+}).set('list',list);
+'step 1'
+if(result.control){
+var group=result.control;
+player.popup(group+'2',get.groupnature(group,'raw'));
+player.changeGroup(group);
+}
+},
+},
+draw:{
+audio:'miniwuchang',
+enable:'phaseUse',
+filterTarget:lib.filter.notMe,
+prompt:'令一名其他角色摸一张牌，然后你将势力变更至与其相同并从牌堆中获得一张【杀】',
+usable:1,
+content:function(){
+'step 0'
+target.draw();
+if(target.group!=player.group) player.changeGroup(target.group);
+'step 1'
+var card=get.cardPile2(card=>card.name=='sha');
+if(card) player.gain(card,'gain2');
+},
+ai:{
+order:function(item,player){
+var bool=player.countCards('hs',card=>get.name(card)=='juedou'&&player.hasValueTarget(card));
+return get.order({name:bool?'juedou':'sha'},player)+0.3;
+},
+result:{
+target:function(player,target){
+var cards=player.getCards('hs',card=>['sha','juedou'].includes(get.name(card))&&player.hasValueTarget(card));
+var att=get.sgn(get.attitude(player,target));
+if(!cards.length) return 1;
+var list=[];
+cards.forEach(card=>{
+var bool=(card.name!='sha'||player.getCardUsable('sha')>0);
+var targets=game.filterPlayer(current=>bool&&player.canUse(card,current)&&get.effect(current,card,player,player)>0&&get.attitude(player,current)<0);
+targets.sort((a,b)=>get.effect(b,card,player,player)-get.effect(a,card,player,player));
+list.push([targets[0],get.effect(targets[0],card,player,player)]);
+});
+list.sort((a,b)=>b[1]-a[1]);
+if(target==list[0][0]&&target.group==player.group) return 0;
+if(list[0][0].group!=target.group) return get.sgn(att-0.5)+(att>=0?1.5:0);
+return 3*(get.sgn(att+0.5)+(att>0?1:0))+(list[0][0]==target?1:0);
+},
+},
+},
+},
 },
 },
 //神
@@ -31653,6 +31763,10 @@ miniguanghan:'广寒',
 miniguanghan_info:'锁定技。一名角色受到伤害后，该角色的非你上家和非你下家依次选择一项：①弃置一张牌；②失去等量的体力。',
 minigongjian:'攻坚',
 minigongjian_info:'每回合限一次，当有角色使用【杀】指定第一个目标后，若此【杀】的目标和本局游戏内被使用的上一张【杀】的目标有交集，则你可以依次弃置交集中所有角色的至多两张牌，然后获得以此法弃置的所有基本牌。',
+miniwushuang:'无双',
+miniwushuang_info:'锁定技。①你使用【杀】可以额外指定一个目标。②当你使用【杀】或【决斗】指定目标后，你令此牌需要依次使用或打出两张【闪】或【杀】响应。',
+miniwuchang:'无常',
+miniwuchang_info:'①当你使用【杀】或【决斗】对与你势力相同的角色造成伤害时，若其未响应过此牌，则你可以令此伤害+1，然后你变更为其他势力。②出牌阶段限一次，你可以令一名其他角色摸一张牌，然后你变更势力至与其相同并从牌堆中获得一张【杀】。',
 //神
 Mbaby_shen_lvbu:'欢杀神吕布',
 Mbaby_shen_guanyu:'欢杀神关羽',
