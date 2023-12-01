@@ -13922,7 +13922,7 @@ if(player.getUseValue({name:'jiu'})<=0) return 0;
 if(player.countCards('h','sha')) return player.getUseValue({name:'jiu'});
 return 0;
 }
-return player.getUseValue({name:button.link[2],nature:button.link[3]})/4;
+return player.getUseValue({name:button.link[2],nature:button.link[3],isCard:true});
 },
 backup:function(links,player){
 return {
@@ -13951,9 +13951,9 @@ if(player&&_status.event.type=='phase'){
 var max=0,add=false;
 var list=lib.inpile.filter(name=>get.type(name)=='basic');
 if(list.includes('sha')) add=true;
-list=list.map(namex=>{name:namex});
+list=list.map(namex=>{return {name:namex,isCard:true}});
 if(add){
-lib.inpile_nature.forEach(naturex=>list.push({name:'sha',nature:naturex}));
+lib.inpile_nature.forEach(naturex=>list.push({name:'sha',nature:naturex,isCard:true}));
 }
 for(var card of list){
 if(player.getUseValue(card)>0){
@@ -18114,7 +18114,6 @@ return 3.2;
 }
 var name=button.link[2];
 var evt=_status.event.getParent();
-if(get.type(name)=='basic'){
 if(name=='shan') return 2;
 if(evt.type=='dying'){
 if(get.attitude(player,evt.dying)<2) return false;
@@ -18123,16 +18122,6 @@ return 1.9;
 }
 if(evt.type=='phase') return player.getUseValue({name:name,nature:button.link[3],isCard:true});
 return 1;
-}
-if(!['chuqibuyi','shuiyanqijunx','juedou','nanman','wanjian','shunshou','zhujinqiyuan'].includes(name)) return 0;
-var card={name:name,isCard:true};
-if(['shunshou','zhujinqiyuan'].includes(card.name)){
-if(!game.hasPlayer(function(current){
-return get.attitude(player,current)!=0&&get.distance(player,current)<=1&&player.canUse(card,current)&&get.effect(current,card,player,player)>0;
-})) return 0;
-return player.getUseValue(card)-7;
-}
-return player.getUseValue(card)-4;
 },
 backup:function(links,player){
 if(!links[1]) links=[6,links[0]];
@@ -18194,7 +18183,25 @@ if(!((_status.connectMode&&player.countCards('he'))||player.countCards('he',card
 var name=(tag=='respondSha'?'sha':'shan');
 return !player.storage.youlong2.includes(name);
 },
-order:1,
+order:function(item,player){
+if(player&&_status.event.type=='phase'){
+var max=0,add=false;
+var type=player.storage.miniyoulong?'basic':'trick';
+var list=lib.inpile.filter(name=>get.type(name)==type&&!player.storage.youlong2.includes(name));
+if(list.includes('sha')) add=true;
+list=list.map(namex=>{return {name:namex,isCard:true}});
+if(add) lib.inpile_nature.forEach(naturex=>list.push({name:'sha',nature:naturex,isCard:true}));
+for(var card of list){
+if(player.getUseValue(card)>0){
+var temp=get.order(card);
+if(temp>max) max=temp;
+}
+}
+if(max>0) max+=0.3;
+return max;
+}
+return 1;
+},
 result:{player:1},
 },
 subSkill:{
@@ -27680,11 +27687,11 @@ getTarget:function(player,target){
 var history=player.actionHistory;
 for(var i=history.length-2;i>=0;i--){
 for(var evt of history[i].useSkill){
-if(evt.skill=='minixiongzheng') return !evt.targets.includes(target);
+if(evt.skill=='minixiongzheng') return evt.targets.includes(target);
 }
 if(history[i].isRound) break;
 }
-return true;
+return false;
 },
 subSkill:{
 effect:{audio:'twxiongzheng'},
@@ -27696,11 +27703,11 @@ onunmark:true,
 charlotte:true,
 onremove:true,
 trigger:{global:'damage'},
-firstDo:true,
-direct:true,
 filter:function(event,player){
 return event.player==player.storage.minixiongzheng_target&&get.itemtype(event.source)=='player';
 },
+direct:true,
+firstDo:true,
 content:function(){
 player.markAuto('minixiongzheng_mark',[trigger.source]);
 },
