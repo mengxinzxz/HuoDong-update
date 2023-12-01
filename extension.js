@@ -20,7 +20,7 @@ var HuoDong_update=[
 '修复开启座位号显示后换位不更新座位号显示的bug',
 '添加微信三国杀武将祖茂、关索、极黄月英',
 '更新微信三国杀极诸葛亮、极司马懿、极马超、赵云、极曹操的技能',
-'添加欢乐三国杀武将谋黄盖、朱儁、吕布',
+'添加欢乐三国杀武将谋黄盖、朱儁、吕布、王悦',
 '更新欢乐三国杀徐盛的技能',
 'To be continued...',
 ];
@@ -28,7 +28,7 @@ var HuoDong_update=[
 var HuoDong_players=[
 'wechat_zhugeliang','wechat_simayi','wechat_re_machao','wechat_zhaoyun','wechat_re_caocao',
 'wechat_zumao','wechat_guansuo','wechat_re_huangyueying','Mbaby_sb_huanggai','Mbaby_zhujun',
-'Mbaby_lvbu','Mbaby_xusheng',
+'Mbaby_lvbu','Mbaby_xusheng','Mbaby_wangyue',
 ];
 //加载
 var dialog=ui.create.dialog(
@@ -9749,8 +9749,8 @@ MiNi_wu:['Mbaby_sunxiu','Mbaby_yufan','Mbaby_zhangfen','Mbaby_xuezong','Mbaby_dc
 MiNi_qun:['Mbaby_sp_kongrong','Mbaby_tw_mateng','Mbaby_zhujun','Mbaby_gongsunyuan','Mbaby_sp_zhangliao','Mbaby_sp_ol_zhanghe','Mbaby_guotufengji','Mbaby_yanfuren','Mbaby_tangji','Mbaby_caojie','Mbaby_liangxing','Mbabysp_zhenji','Mbaby_caoxing','Mbaby_sp_menghuo','Mbaby_wangrong','Mbaby_hetaihou','Mbaby_sp_taishici','Mbaby_zhangji','Mbaby_dongbai','Mbaby_beimihu','Mbaby_chunyuqiong','Mbaby_zhangqiying','Mbaby_fuhuanghou','Mbaby_liuxie','Mbaby_quyi','Mbaby_jsp_huangyueying','Mbaby_sp_machao','Mbaby_lijue','Mbaby_panfeng','Mbaby_liuzhang','Mbaby_jiaxu','Mbaby_zhangbao','Mbaby_zhangliang','Mbaby_gaoshun','Mbaby_caifuren','Mbaby_xuyou','Mbaby_gongsunzan','Mbaby_pangde','Mbaby_jushou','Mbaby_liru','Mbaby_dongzhuo','Mbaby_zhangjiao','Mbaby_huatuo','Mbaby_lvbu','Mbaby_diaochan','Mbaby_sp_diaochan','Mbaby_huaxiong','Mbaby_yuji','Mbaby_yanwen','Mbaby_caiwenji','Mbaby_liubiao','Mbaby_yuanshao','Mbaby_yuanshu','Mbaby_chengong','Mbaby_zuoci'],
 MiNi_shen:['Mbaby_shen_taishici','Mbaby_shen_diaochan','Mbaby_shen_daxiaoqiao','Mbaby_shen_zhenji','Mbaby_shen_guojia','Mbaby_shen_huatuo','Mbaby_shen_dianwei','Mbaby_shen_lvbu','Mbaby_shen_zhugeliang','Mbaby_shen_lvmeng','Mbaby_shen_zhouyu','Mbaby_shen_guanyu','Mbaby_shen_liubei','Mbaby_shen_caocao','Mbaby_shen_zhangliao','Mbaby_shen_sunquan','Mbaby_shen_simayi','Mbaby_shen_zhaoyun','Mbaby_shen_ganning','Mbaby_shen_luxun'],
 MiNi_change:['Mbaby_re_nanhualaoxian','Mbaby_re_sunyi','Mbaby_zhaoxiang','Mbaby_xushao','Mbaby_shen_zhangjiao','Mbaby_baosanniang'],
-MiNi_shengzhiyifa:['Mbaby_sunwukong','Mbaby_dalanmao','Mbaby_libai','Mbaby_change'],
-MiNi_sbCharacter:['Mbaby_sb_yuanshao','Mbaby_sb_caocao','Mbaby_sb_huanggai'],
+MiNi_shengzhiyifa:['Mbaby_sunwukong','Mbaby_dalanmao','Mbaby_libai','Mbaby_change','Mbaby_nvwa'],
+MiNi_sbCharacter:['Mbaby_sb_yujin','Mbaby_sb_yuanshao','Mbaby_sb_caocao','Mbaby_sb_huanggai'],
 MiNi_miaoKill:['Mmiao_caiwenji','Mmiao_diaochan','Mmiao_caifuren','Mmiao_zhangxingcai','Mmiao_zhurong','Mmiao_huangyueying','Mmiao_daqiao','Mmiao_wangyi','Mmiao_zhangchunhua','Mmiao_zhenji','Mmiao_sunshangxiang','Mmiao_xiaoqiao'],
 },
 },
@@ -9808,6 +9808,7 @@ Mbaby_caohong:['male','wei',4,['miniyuanhu','twjuezhu'],[]],
 Mbaby_sb_caocao:['male','wei',4,['minisbjianxiong','sbqingzheng','sbhujia'],['zhu','MXdelete']],
 Mbaby_zhugedan:['male','wei',4,['minigongao','minijuyi'],['MXdelete']],
 Mbaby_bianfuren:['female','wei',3,['miniwanwei','minifuding','miniyuejian'],['MXdelete']],
+Mbaby_sb_yujin:['male','wei',4,['minixiayuan','minijieyue'],['MXdelete']],
 //蜀
 Mbaby_guanyu:['male','shu',4,['minirewusheng','minituodao','jsrgguanjue'],[]],
 Mbaby_zhugeliang:['male','shu',3,['miniguanxing','minikongcheng'],[]],
@@ -9861,7 +9862,7 @@ Mbaby_ganfuren:['female','shu',3,['minishushen','minihuangsi'],[]],
 Mbaby_liuyong:['male','shu',3,['zhuning','minifengxiang'],[]],
 Mbaby_mizhu:['male','shu',3,['miniziyuan','minijugu'],[]],
 Mbaby_mifuren:['female','shu',3,['miniguixiu','minicunsi'],[]],
-Mbaby_wangyue:['female','shu',3,['minihuguan','minimingluan'],['MXdelete']],
+Mbaby_wangyue:['female','shu',3,['minihuguan','minimingluan'],[]],
 Mbaby_xf_yiji:['male','shu',3,['minijijie','minijiyuan'],[]],
 Mbabysp_zhangfei:['male','shu',4,['minisppaoxiao','minixvhe'],[]],
 Mbaby_wolongfengchu:['male','shu',4,['miniyoulong','luanfeng'],['MXdelete']],
@@ -9974,7 +9975,6 @@ Mbaby_yanfuren:['female','qun',3,['minichanni','mininifu'],[]],
 Mbaby_gongsunyuan:['male','qun',4,['minihuaiyi'],[]],
 Mbaby_sp_zhangliao:['male','qun',4,['minimubing','miniziqu','minidiaoling'],[]],
 Mbaby_sp_ol_zhanghe:['male','qun',4,['minizhouxuan'],[]],
-Mbaby_change:['female','shen','1/4',['minidaoyao','minibenyue'],[]],
 Mbaby_zhujun:['male','qun',4,['minigongjian','kuimang','jsrgjuxiang'],[]],
 Mbaby_sb_yuanshao:['male','qun',4,['minisbluanji','minisbxueyi'],['zhu','MXdelete']],
 Mbaby_tw_mateng:['male','qun',4,['miniyuma','minixiongzheng','miniluannian'],['zhu','MXdelete']],
@@ -10001,7 +10001,9 @@ Mbaby_shen_daxiaoqiao:['female','shen',4,['minishuangshu','minipingting','miniyi
 Mbaby_shen_diaochan:['female','shen',3,['minimeihun','minihuoxin'],['die_audio','qun']],
 Mbaby_sunwukong:['male','shen',4,['mini72bian','miniruyi','miniqitian'],['die_audio']],
 Mbaby_dalanmao:['male','shen',4,['minizuzhou','minimoyu','minisanlian'],[]],
+Mbaby_change:['female','shen','1/4',['minidaoyao','minibenyue'],[]],
 Mbaby_shen_taishici:['male','shen',4,['minidulie','minichongwei','minipowei'],[]],
+Mbaby_nvwa:['female','shen','68/158',['minibutian','minilianshi','minituantu'],['MXdelete']],
 //喵
 Mmiao_caiwenji:['female','qun',3,['minimiaobeige','minimiaoduanchang','minidoumao'],['die_audio']],
 Mmiao_diaochan:['female','qun',3,['minimiaolijian','minimiaobiyue','minidoumao'],['die_audio']],
@@ -10081,6 +10083,22 @@ return str;
 },
 destroy:true,
 ai:{basic:{equipValue:114514+1919810}},
+},
+minijieyue_junling1:{
+type:'junling',
+vanish:true,
+},
+minijieyue_junling2:{
+type:'junling',
+vanish:true,
+},
+minijieyue_junling3:{
+type:'junling',
+vanish:true,
+},
+minijieyue_junling4:{
+type:'junling',
+vanish:true,
 },
 },
 skill:{
@@ -13862,6 +13880,7 @@ var player=map.player;
 var target=map.trigger.player;
 var result=yield player.chooseCard(get.prompt2('miniwanwei',target),'he',[1,5]).set('ai',cardx=>{
 var player=_status.event.player,target=_status.event.target;
+if(get.attitude(player,target)<=0) return 0;
 var sum=target.countCards('hs',card=>target.canSaveCard(card,target))+target.hp;
 if(player.countCards('hs',card=>target.canSaveCard(card,target))+sum<=0) return 0;
 if(target.canSaveCard(cardx,target)&&ui.selected.cards.filter(card=>target.canSaveCard(card,target)).length+sum>0) return 12-get.value(cardx);
@@ -14010,6 +14029,244 @@ return player.countCards('h')>player.getHandcardLimit();
 },
 forced:true,
 content:function(){},
+},
+//于禁
+minixiayuan:{
+audio:'sbxiayuan',
+trigger:{global:'dying'},
+filter:function(event,player){
+return event.player!=player&&!player.hasSkill('minixiayuan_used')&&player.countCards('he');
+},
+direct:true,
+content:function*(event,map){
+var player=map.player;
+var target=map.trigger.player;
+var result=yield player.chooseToDiscard(get.prompt2('minixiayuan',target),'he',[1,2]).set('ai',card=>{
+var player=_status.event.player,target=_status.event.target;
+if(get.attitude(player,target)<=0) return 0;
+return 7-get.value(card);
+}).set('target',target).set('logSkill',['minixiayuan',target]);
+if(result.bool){
+player.addTempSkill('minixiayuan_used','roundStart');
+target.recover(result.cards.length);
+}
+},
+subSkill:{used:{charlotte:true}},
+},
+minijieyue:{
+derivation:['minijieyue_faq','minijieyue_junling1','minijieyue_junling2','minijieyue_junling3','minijieyue_junling4'],
+getJunLingEffect:(player,target,junling)=>{
+var att=get.attitude(player,target);
+switch(junling){
+case 'minijieyue_junling1':
+return game.filterPlayer().map(aim=>get.damageEffect(aim,target,player)*(2-get.sgn(att))).sort((a,b)=>b-a)[0];
+break;
+case 'minijieyue_junling2':
+if(att>0) return 0;
+var num=0;
+if(target.countCards('h',card=>get.value(card)>=7&&lib.filter.cardDiscardable(card,target))){
+player.addSkill('minijieyue_checkh');
+num+=get.effect(target,{name:'guohe_copy2'},player,player);
+player.removeSkill('minijieyue_checkh');
+}
+if(target.countCards('e',card=>get.value(card)>=7&&lib.filter.cardDiscardable(card,target))){
+player.addSkill('minijieyue_checke');
+num+=get.effect(target,{name:'guohe_copy2'},player,player);
+player.removeSkill('minijieyue_checke');
+}
+return num;
+break;
+case 'minijieyue_junling3':
+if(att>0) return 0;
+return Math.max(0,3-target.getHp());
+break;
+case 'minijieyue_junling4':
+if(att>0) return 0;
+return Math.sqrt(target.countCards('h'));
+break;
+}
+},
+audio:'sbjieyue',
+trigger:{player:'phaseZhunbeiBegin'},
+direct:true,
+content:function(){
+'step 0'
+player.chooseTarget(get.prompt2('minijieyue'),lib.filter.notMe).set('ai',target=>{
+var player=_status.event.player;
+return function(player,target){
+var max=0;
+for(var i=1;i<=4;i++){
+var temp=lib.skill.minijieyue.getJunLingEffect(player,target,'minijieyue_junling'+i);
+if(temp>max) max=temp;
+}
+return max;
+}(player,target);
+});
+'step 1'
+if(result.bool){
+var target=result.targets[0];
+event.target=target;
+player.logSkill('minijieyue',target);
+target.draw();
+event.cards=[1,2,3,4].randomGets(2).sort((a,b)=>a-b).map(num=>'minijieyue_junling'+num);
+}
+else event.finish();
+'step 2'
+player.chooseButton(['###节钺###请选择'+get.translation(target)+'执行的军令',[cards,'vcard']],true).set('ai',button=>{
+var player=_status.event.player,target=_status.event.target;
+return lib.skill.minijieyue.getJunLingEffect(player,target,button.link[2]);
+}).set('target',target);
+'step 3'
+if(result.bool){
+var junling=result.links[0][2];
+event.junling=junling;
+game.log(player,'选择了','#y'+get.translation(junling));
+if(event.junling=='minijieyue_junling1'){
+player.chooseTarget('军令一：请选择'+get.translation(target)+'造成伤害的目标',true).set('ai',aim=>{
+var player=_status.event.player,target=_status.event.target;
+return get.damageEffect(aim,target,player);
+}).set('target',target);
+}
+}
+'step 4'
+if(event.junling=='minijieyue_junling1'){
+if(result.bool) event.aim=result.targets[0];
+else{
+event._result={bool:false};
+return;
+}
+}
+var str=[
+'对'+event.aim+'造成1点伤害',
+'随机弃置一张手牌和装备牌',
+'本回合不能回复体力',
+'本回合不能使用或打出手牌且所有非锁定技失效',
+][parseInt(event.junling.slice('minijieyue_junling'.length))-1];
+target.chooseBool('节钺：是否执行'+get.translation(event.junling)+'？',str).set('choice',function(){
+switch(event.junling){
+case 'minijieyue_junling1':
+return get.damageEffect(event.aim,target,target)>=0;
+break;
+case 'minijieyue_junling2':
+if(!target.countCards('h')||!target.countCards('e')) return true;
+var cards1=target.getCards('h',card=>get.value(card)>=7&&lib.filter.cardDiscardable(card,target));
+var cards2=target.getCards('e',card=>get.value(card)>=7&&lib.filter.cardDiscardable(card,target));
+return cards1.length*2<target.countCards('h',card=>lib.filter.cardDiscardable(card,target))&&cards2.length*2<target.countCards('e',card=>lib.filter.cardDiscardable(card,target));
+break;
+case 'minijieyue_junling3': case 'minijieyue_junling4':
+if(target.hp>3) return true;
+return !target.countCards('hes',card=>{
+if(target.canSaveCard(card,target)) return true;
+if(event.junling=='minijieyue_junling4'&&(get.name(card)=='wuxie'||get.name(card)=='caochuanjiejian')) return true;
+return false;
+});
+break;
+default:
+return false;
+break;
+}
+}());
+'step 5'
+if(result.bool){
+game.log(target,'#g执行','#y'+get.translation(event.junling));
+switch(event.junling){
+case 'minijieyue_junling1':
+target.line(event.aim);
+event.aim.damage(1,target);
+break;
+case 'minijieyue_junling2':
+var cards=[];
+var cards1=target.getCards('h',card=>lib.filter.cardDiscardable(card,target));
+var cards2=target.getCards('e',card=>lib.filter.cardDiscardable(card,target));
+if(cards1.length) cards.push(cards1.randomGet());
+if(cards2.length) cards.push(cards2.randomGet());
+if(cards.length) target.discard(cards).discarder=target;
+break;
+case 'minijieyue_junling3':
+target.addTempSkill('minijieyue_junling3');
+break;
+case 'minijieyue_junling4':
+target.addTempSkill('minijieyue_junling4');
+target.addTempSkill('fengyin');
+break;
+}
+player.draw();
+}
+else{
+game.log(target,'#y不执行','#g'+get.translation(event.junling));
+player.draw(3);
+target.addTempSkill('minijieyue_damage');
+target.addMark('minijieyue_damage',1,false);
+}
+target.addExpose(0.15);
+},
+subSkill:{
+checkh:{
+charlotte:true,
+global:'minijieyue_check1',
+},
+checke:{
+charlotte:true,
+global:'minijieyue_check2',
+},
+check1:{
+mod:{
+canBeDiscarded:function(card,player,target){
+if(player.hasSkill('minijieyue_checkh')&&get.position(card)=='h') return false;
+},
+},
+},
+check2:{
+mod:{
+canBeDiscarded:function(card,player,target){
+if(player.hasSkill('minijieyue_checke')&&get.position(card)=='e') return false;
+},
+},
+},
+junling3:{
+charlotte:true,
+mark:true,
+intro:'令',
+intro:{content:'不能回复体力'},
+trigger:{player:'recoverBefore'},
+forced:true,
+content:function(){
+trigger.cancel();
+},
+ai:{
+threaten:10,
+effect:{
+target:function(card,player,target){
+if(get.tag(card,'recover')) return 'zeroplayertarget';
+},
+},
+},
+},
+junling4:{
+charlotte:true,
+mark:true,
+intro:'令',
+intro:{content:'不能使用或打出手牌'},
+trigger:{player:'recoverBefore'},
+mod:{
+cardEnabled2:function(card){
+if(get.position(card)=='h') return false;
+},
+},
+ai:{threaten:10},
+},
+damage:{
+charlotte:true,
+onremove:true,
+trigger:{player:'damageBegin3'},
+forced:true,
+content:function(){
+trigger.num+=player.countMark('minijieyue_damage');
+},
+ai:{threaten:10},
+intro:{content:'受到的伤害+#'},
+},
+},
 },
 //蜀
 miniwusheng:{
@@ -26233,14 +26490,12 @@ player.markAuto('minishouxi',[name]);
 else event.finish();
 'step 2'
 var name=event.name;
-trigger.player.chooseToDiscard(function(card){
-return card.name==_status.event.name;
-}).set('ai',function(card){
-if(_status.event.att<0){
-return 10-get.value(card);
-}
+trigger.player.chooseToDiscard('he',function(card,player){
+return get.name(card)==_status.event.name;
+},'守玺：请弃置一张【'+get.translation(name)+'】，否则此【杀】对'+get.translation(player)+'无效且'+get.translation(player)+'从牌堆中获得一张【'+get.translation(name)+'】').set('ai',function(card){
+if(_status.event.att<0) return 10-get.value(card);
 return 0;
-}).set('att',get.attitude(trigger.player,player)).set('name',name).set('dialog',['守玺：请弃置一张【'+get.translation(name)+'】，否则此【杀】对'+get.translation(player)+'无效且'+get.translation(player)+'从牌堆中获得一张【'+get.translation(name)+'】',[event.vcard,'vcard']]);
+}).set('att',get.attitude(trigger.player,player)).set('name',name);
 'step 3'
 if(result.bool) trigger.player.gainPlayerCard(player);
 else{
@@ -30543,6 +30798,118 @@ if(card) player.gain(card,'gain2');
 },
 },
 },
+//女娲
+minibutian:{
+audio:'ext:活动武将/audio/skill:2',
+trigger:{
+source:'damageSource',
+global:['roundStart','phaseBefore'],
+player:['damageEnd','changeHp','gainMaxHpEnd','loseMaxHpEnd','enterGame'],
+},
+filter:function(event,player,name){
+var num=Math.floor(player.getDamagedHp()/5);
+if(name=='damageEnd') return num>0;
+if(name=='roundStart') return game.roundNumber>1&&num>0;
+if(name=='damageSource') return event.player!=player&&player.isDamaged()&&num>0;
+if(name=='phaseBefore'&&game.phaseNumber>0) return false;
+return player.isHealthy();
+},
+forced:true,
+content:function(){
+var num=Math.floor(player.getDamagedHp()/5);
+var name=event.triggername;
+if(name=='damageSource') player.recover(num);
+else if(name=='damageEnd'||name=='roundStart') player.loseHp(num);
+else{
+var targets=game.filterPlayer(current=>current!=player).sortBySeat();
+if(targets.length){
+player.$fullscreenpop('补天','fire');
+targets.forEach(target=>{
+player.line(target);
+target.die();
+});
+}
+}
+},
+},
+minilianshi:{
+mod:{maxHandcardBase:(player,num)=>5},
+audio:'ext:活动武将/audio/skill:2',
+trigger:{
+player:'loseAfter',
+global:['cardsDiscardAfter','loseAsyncAfter'],
+},
+filter:function(event,player){
+if(event.name.indexOf('lose')==0) return event.type=='discard'&&event.getl(player).cards2.filter(card=>get.position(card,true)=='d'&&!player.getStorage('minilianshi').includes(get.suit(card,player))).length>0;
+if(!event.cards.filterInD('d').some(card=>!player.getStorage('minilianshi').includes(get.suit(card,player)))) return false;
+var evt=event.getParent();
+if(evt.name!='orderingDiscard') return false;
+var evtx=(evt.relatedEvent||evt.getParent());
+var history=player.getHistory('useCard').concat(player.getHistory('respond'));
+return evtx.player==player&&history.some(evtxx=>evtx.getParent()==(evtxx.relatedEvent||evtxx.getParent()));
+},
+forced:true,
+content:function(){
+'step 0'
+var cards;
+if(trigger.name.indexOf('lose')==0) cards=trigger.getl(player).cards2.filter(card=>get.position(card,true)=='d');
+else cards=trigger.cards.filterInD('d');
+event.cards=cards;
+var suits=cards.reduce((list,card)=>list.add(get.suit(card,player)),[]);
+suits=suits.filter(suit=>!player.getStorage('minilianshi').includes(suit));
+player.markAuto('minilianshi',suits);
+player.storage.minilianshi.sort((a,b)=>lib.suit.indexOf(b)-lib.suit.indexOf(a));
+if((!_status.connectMode&&game.HasExtension('十周年UI')&&lib.config.extension_十周年UI_playerMarkStyle&&lib.config.extension_十周年UI_playerMarkStyle=='decade')){
+game.broadcastAll(function(player,skill){
+if(player.marks[skill]) player.marks[skill].firstChild.innerHTML=player.getStorage(skill).reduce((str,suit)=>str+=get.translation(suit),'');
+},player,'minilianshi');
+}
+'step 1'
+if(player.getStorage('minilianshi').length>=4){
+player.draw();
+if(player.isDamaged()) player.recover(get.number(cards[cards.length-1],player));
+player.unmarkSkill('minilianshi');
+delete player.storage.minilianshi;
+}
+},
+intro:{
+markcount:(storage)=>{
+if((!_status.connectMode&&game.HasExtension('十周年UI')&&lib.config.extension_十周年UI_playerMarkStyle&&lib.config.extension_十周年UI_playerMarkStyle=='decade')) return 0;
+return storage.length;
+},
+content:storage=>'已记录花色：$',
+},
+},
+minituantu:{
+audio:'ext:活动武将/audio/skill:2',
+enable:'phaseUse',
+filter:function(event,player){
+return player.countCards('h')&&ui.discardPile.childElementCount>0;
+},
+usable:1,
+content:function(){
+var names=player.getCards('h').reduce((list,card)=>list.add(get.name(card)),[]);
+var cards=[];
+names.forEach(name=>{
+var card=get.discardPile(card=>!cards.includes(card)&&card.name==name);
+if(card) cards.push(card);
+});
+if(cards.length) player.gain(cards,'gain2');
+else player.chat('颗粒无收~~');
+},
+ai:{
+order:function(item,player){
+var names=player.getCards('h').reduce((list,card)=>list.add(get.name(card)),[]);
+var cards=[];
+names.forEach(name=>{
+var card=get.discardPile(card=>!cards.includes(card)&&card.name==name);
+if(card) cards.push(card);
+});
+return cards.length;
+},
+result:{player:1},
+},
+},
 //喵
 //核心逗猫
 minidoumao:{
@@ -31738,6 +32105,15 @@ miniyanxiao_card_info:'判定阶段开始时，获得此牌和判定区内的所
 minilingren_basic:' ',
 minilingren_trick:' ',
 minilingren_equip:' ',
+junling:'军令',
+minijieyue_junling1:'军令一',
+minijieyue_junling1_info:'执行者对发起者指定的一名角色造成1点伤害。',
+minijieyue_junling2:'军令二',
+minijieyue_junling2_info:'执行者随机弃置一张手牌区和装备区的牌。',
+minijieyue_junling3:'军令三',
+minijieyue_junling3_info:'执行者本回合不能回复体力。',
+minijieyue_junling4:'军令四',
+minijieyue_junling4_info:'执行者本回合不能使用或打出手牌，且本回合非锁定技失效。',
 //魏
 Mbaby_caoang:'欢杀曹昂',
 Mbaby_caopi:'欢杀曹丕',
@@ -31795,6 +32171,7 @@ Mbaby_caohong:'欢杀曹洪',
 Mbaby_sb_caocao:'欢杀谋曹操',
 Mbaby_zhugedan:'欢杀诸葛诞',
 Mbaby_bianfuren:'欢杀卞夫人',
+Mbaby_sb_yujin:'欢杀谋于禁',
 miniluoshen:'洛神',
 miniluoshen_info:'准备阶段，你可以进行一次判定并获得判定牌，若判定结果为黑色，你可重复此流程。',
 miniqiaobian:'巧变',
@@ -31963,6 +32340,12 @@ minifuding:'抚定',
 minifuding_info:'当你需要使用基本牌时，若你本回合未使用过基本牌，则你可以视为使用之。',
 miniyuejian:'约俭',
 miniyuejian_info:'锁定技，你的手牌上限+X（X为你已损失的体力值）。',
+minixiayuan:'狭援',
+minixiayuan_info:'每轮限一次，一名其他角色进入濒死状态时，你可以弃置至多两张牌并令其回复等量的体力。',
+minijieyue:'节钺',
+minijieyue_info:'准备阶段，你可以令一名其他角色摸一张牌，然后选择一个军令令其选择是否执行。若其执行，你摸一张牌；若其不执行，你摸三张牌，且其本回合受到的伤害+1。',
+minijieyue_faq:'关于军令',
+minijieyue_faq_info:'<br>系统随机对发起者展示两个军令，发起者须选择其中一个军令，令执行者选择是否执行。',
 //蜀
 Mbaby_guanyu:'欢杀关羽',
 Mbaby_zhugeliang:'欢杀诸葛亮',
@@ -32797,6 +33180,7 @@ Mbaby_sunwukong:'欢杀孙悟空',
 Mbaby_dalanmao:'欢杀大懒猫',
 Mbaby_change:'欢杀嫦娥',
 Mbaby_shen_taishici:'欢杀神太史慈',
+Mbaby_nvwa:'欢杀女娲',
 miniwuqian:'无前',
 miniwuqian_info:'锁定技，当你于回合内第一次使用【杀】或【决斗】指定目标后，则你令此牌无视目标角色的防具且视为具有〖无双〗效果。',
 minishenfen:'神愤',
@@ -32899,6 +33283,12 @@ minipowei:'破围',
 minipowei_info:'觉醒技。一名角色的回合结束时，若场上角色均没有“围”标记，你获得技能〖神著〗，然后摸Y张牌（Y为本轮移去的“围”数）。',
 minishenzhu:'神著',
 minishenzhu_info:'锁定技。①回合开始时，你从牌堆或弃牌堆获得一张【杀】。②当你使用有对应实体牌的非转化【杀】结算结束后，你选择一项：1.摸一张牌，且本回合使用【杀】的次数上限+1。2.摸三张牌，且本回合不能再使用【杀】。',
+minibutian:'补天',
+minibutian_info:'锁定技。①当你对其他角色造成伤害后，你回复X点体力。②当你受到伤害后或非首轮开始时，你失去X点体力。③游戏开始时，或你的体力值或体力上限变化后，若你未受伤，则你令场上所有其他角色死亡。（X为你已损失体力值的1/5，向下取整）',
+minilianshi:'炼石',
+minilianshi_info:'锁定技。①你的手牌上限始终为5。②当你使用、打出和弃置的牌进入弃牌堆后，你记录这些牌的花色，然后若你已记录四种花色，则你回复1点体力并摸Y张牌，然后清除花色记录（Y为这些牌中的最后一张牌的点数）。',
+minituantu:'抟土',
+minituantu_info:'出牌阶段限一次，你可以从弃牌堆中获得你手牌中有的牌名的牌各一张。',
 //喵
 Mmiao_caiwenji:'喵蔡琰',
 Mmiao_diaochan:'喵貂蝉',
