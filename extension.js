@@ -14168,7 +14168,7 @@ break;
 }());
 'step 5'
 if(result.bool){
-game.log(target,'#g执行','#y'+get.translation(event.junling));
+game.log(target,'#g选择执行','#y'+get.translation(event.junling));
 switch(event.junling){
 case 'minijieyue_junling1':
 target.line(event.aim);
@@ -14193,7 +14193,8 @@ break;
 player.draw();
 }
 else{
-game.log(target,'#y不执行','#g'+get.translation(event.junling));
+target.chat('拒绝');
+game.log(target,'#y拒绝执行','#g'+get.translation(event.junling));
 player.draw(3);
 target.addTempSkill('minijieyue_damage');
 target.addMark('minijieyue_damage',1,false);
@@ -30895,7 +30896,7 @@ var card=get.discardPile(card=>!cards.includes(card)&&card.name==name);
 if(card) cards.push(card);
 });
 if(cards.length) player.gain(cards,'gain2');
-else player.chat('颗粒无收~~');
+else player.chat('无牌可得？！');
 },
 ai:{
 order:function(item,player){
