@@ -45618,7 +45618,7 @@ player.die().set('source',trigger.player);
 event.finish();
 return;
 }
-trigger.player.chooseCard('交给'+get.translation(player)+'三张牌以示对其的关爱',true,'he',3);
+trigger.player.chooseCard('交给'+get.translation(player)+'三张牌以示对其的关爱',true,'he',3,(card,player)=>get.name(card).indexOf('bilibili_duoyang_')==-1);
 'step 1'
 if(result.bool){
 trigger.player.give(result.cards,player);
@@ -46132,6 +46132,9 @@ return event.name!='phase'||game.phaseNumber==0;
 forced:true,
 content:function(){
 game.addGlobalSkill('bilibili_duoyangx');
+game.addGlobalSkill('bilibili_duoyangx_jianxiong');
+game.addGlobalSkill('bilibili_duoyangx_rende');
+game.addGlobalSkill('bilibili_duoyangx_zhiheng');
 var names=['caocao','liubei','sunquan'];
 var skills=['jianxiong','rende','zhiheng'];
 var cards=[];
@@ -46159,8 +46162,14 @@ if(['bilibili_duoyang_jianxiong','bilibili_duoyang_rende','bilibili_duoyang_zhih
 cardDiscardable:function(card,player,name){
 if(name=='phaseDiscard'&&['bilibili_duoyang_jianxiong','bilibili_duoyang_rende','bilibili_duoyang_zhiheng'].includes(get.name(card))) return false;
 },
+canBeDiscarded:function(card){
+if(['bilibili_duoyang_jianxiong','bilibili_duoyang_rende','bilibili_duoyang_zhiheng'].includes(get.name(card))) return false;
 },
-group:['bilibili_duoyangx_jianxiong','bilibili_duoyangx_rende','bilibili_duoyangx_zhiheng'],
+canBeGained:function(card){
+if(['bilibili_duoyang_jianxiong','bilibili_duoyang_rende','bilibili_duoyang_zhiheng'].includes(get.name(card))) return false;
+},
+},
+//group:['bilibili_duoyangx_jianxiong','bilibili_duoyangx_rende','bilibili_duoyangx_zhiheng'],
 subSkill:{
 jianxiong:{
 audio:'jianxiong',
@@ -48551,7 +48560,7 @@ bilibili_daili_info:'锁定技，新的一轮开始时，你移去所有“统�
 bilibili_duoyang:'多样',
 bilibili_duoyangx:'多样',
 bilibili_duoyang_info:'锁定技，游戏开始时，你获得“曹操”、“刘备”、“孙权”卡牌各一张。',
-bilibili_duoyang_append:'〖多样〗衍生武将卡功能：<br>衍生武将卡无主动使用方法，不计入手牌上限，当“曹操”/“刘备”/“孙权”处于你的手牌区时，你视为拥有技能〖奸雄〗/〖仁德〗/〖制衡〗。',
+bilibili_duoyang_append:'〖多样〗衍生武将卡功能：<br>衍生武将卡无主动使用方法，不计入手牌上限，不可被弃置或获得，当“曹操”/“刘备”/“孙权”处于你的手牌区时，你视为拥有技能〖奸雄〗/〖仁德〗/〖制衡〗。',
 bilibili_duoyang_faq:'〖多样〗衍生武将卡功能',
 bilibili_duoyang_faq_info:'<br>衍生武将卡无主动使用方法，不计入手牌上限，当“曹操”/“刘备”/“孙权”处于你的手牌区时，你视为拥有技能〖奸雄〗/〖仁德〗/〖制衡〗。',
 bilibili_liaoxing:'瞭星',
