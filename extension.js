@@ -1588,16 +1588,12 @@ lib.skill.jiewei.audio='xinjiewei';
 lib.skill.liangying.audio=false;
 lib.skill.juntun.audio='ext:活动武将/audio/skill:true';
 lib.skill.jiaojie.audio='ext:活动武将/audio/skill:true';
-lib.skill.youdi.audio=2;
 lib.skill.new_juexiang.audio='juexiang';
 lib.skill.polu.subSkill.damage.audio='polu';
 lib.skill.reyixiang.subSkill.card.audio='yixiang';
 lib.skill.reyixiang.subSkill.card.audioname=['re_taoqian'];
 lib.skill.jishi.subSkill.draw.audio='jishi';
 lib.skill.xinhuangtian.audio='huangtian2';
-lib.skill.huangtian2.audioname=['zhangjiao','re_zhangjiao'];
-lib.skill.xinhuangtian.audioname=['zhangjiao','re_zhangjiao'];
-lib.skill.xinhuangtian2.audioname=['zhangjiao','re_zhangjiao'];
 lib.skill.dcfuxue.subSkill.draw.audio='dcfuxue';
 lib.skill.sbhuangtian.subSkill.mark.audio='sbhuangtian';
 lib.skill.fengxiang.subSkill.draw.audio='fengxiang';
@@ -1630,6 +1626,7 @@ if(!lib.skill[skill].audioname) lib.skill[skill].audioname=[];
 lib.skill[skill].audioname.addArray(list);
 });
 };
+game.HDsetAudioname(['huangtian2','xinhuangtian','xinhuangtian2'],['zhangjiao','re_zhangjiao']);
 
 //武将配音audioname2添加
 game.HDsetAudioname2=function(skills,map){
