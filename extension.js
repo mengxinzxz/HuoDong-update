@@ -24245,11 +24245,7 @@ filterCard:false,
 },
 guidao_sp_zhangjiao:{audio:2},
 minileiji:{
-mod:{
-maxHandcard:function(player,num){
-return num+2;
-},
-},
+mod:{maxHandcard:(player,num)=>num+2},
 audio:'releiji',
 trigger:{player:['useCard','respond']},
 filter:function(event,player){
@@ -24377,7 +24373,7 @@ minihuangtian4:{
 audio:'huangtian2',
 trigger:{global:['useCardAfter','responseAfter']},
 filter:function(event,player){
-return event.player!=player&&event.card.isCard&&event.card.name=='shan'&&event.cards.filterInD().length>0&&event.player.group=='qun';
+return event.card.name=='shan'&&event.player!=player&&event.cards.filterInD().length>0&&event.player.group=='qun';
 },
 prompt2:function(event,player){
 return '获得'+get.translation(event.cards.filterInD());
@@ -24419,9 +24415,7 @@ if(!current.inRange(player)) return 1;
 return 0.6;
 });
 }
-list.sort(function(a,b){
-return getn(b)-getn(a);
-});
+list.sort((a,b)=>getn(b)-getn(a));
 return list[0];
 }());
 'step 1'
@@ -24514,8 +24508,6 @@ content:function(){},
 minikuangfu:{
 audio:'xinkuangfu',
 enable:'phaseUse',
-usable:1,
-delay:false,
 filterTarget:function(card,player,target){
 if(player==target) return player.countCards('e',function(card){
 return lib.filter.cardDiscardable(card,player);
@@ -24527,6 +24519,8 @@ return game.hasPlayer(function(current){
 return current.countCards('e');
 });
 },
+usable:1,
+delay:false,
 content:function(){
 'step 0'
 if(player==target) player.chooseToDiscard('e',true);
@@ -33056,7 +33050,7 @@ minixiusheng_info:'锁定技，准备阶段，你移去场上所有的“生”�
 minihuaibi:'怀璧',
 minihuaibi_info:'主公技，锁定技，你的手牌上限+X（X场上的“生”标记数）；有“生”标记的角色对你造成伤害后，你摸一张牌。',
 minikuangfu:'狂斧',
-minikuangfu_info:'出牌阶段限一次，你可以弃置场上的一张装备牌，然后视为使用一张无对应实体牌的【杀】（无视距离且不计入次数限制），然后若此【杀】造成了伤害，你摸两张牌。',
+minikuangfu_info:'出牌阶段限一次，你可以弃置场上的一张装备牌，然后视为使用一张无对应实体牌的【杀】（无视距离且不计入次数限制）。若此【杀】造成了伤害，你摸两张牌。',
 minilihun:'离魂',
 minilihun_info:'出牌阶段限一次，你可以选择一名其他角色，你将武将牌翻面并获得其所有手牌。出牌阶段结束时，你交给其X张牌。（X为该角色的体力值）',
 minizhuiji:'追击',
