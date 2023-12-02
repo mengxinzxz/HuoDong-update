@@ -45677,7 +45677,6 @@ content:function(){
 if(Math.random()<0.01*0.02){
 trigger.player.line(player);
 trigger.player.chat('关爱个der');
-trigger.player.chat('马上让萌新把你禁言');
 player.die().set('source',trigger.player);
 event.finish();
 return;
