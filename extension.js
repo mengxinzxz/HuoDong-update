@@ -1171,24 +1171,41 @@ window.rkbg.innerHTML = '仁' + '<b><font color=\"#FF5500\">' + _status.renku.le
 }
 
 //将键社神武将移至DIY包
-if(lib.config.extension_活动武将_keymove){
-delete lib.characterSort.extra.extra_key;
-delete lib.characterPack.extra.key_kagari;
-delete lib.characterPack.extra.key_shiki;
-delete lib.characterPack.extra.db_key_hina;
-delete lib.character.key_kagari;
-delete lib.character.key_shiki;
-delete lib.character.db_key_hina;
-lib.characterSort.diy.bilibili_key=['key_kagari','key_shiki','db_key_hina'];
-lib.characterPack.diy.key_kagari=['female','shen',3,['kagari_zongsi'],[]];
-lib.characterPack.diy.key_shiki=['female','shen','3/5',['shiki_omusubi'],[]];
-lib.characterPack.diy.db_key_hina=['female','key',3,['hina_shenshi','hina_xingzhi'],['doublegroup:key:shen']];
-lib.translate.bilibili_key='论外';
-if(lib.config.characters.includes('diy')){
-lib.character.key_kagari=['female','shen',3,['kagari_zongsi'],[]];
-lib.character.key_shiki=['female','shen','3/5',['shiki_omusubi'],[]];
-lib.character.db_key_hina=['female','key',3,['hina_shenshi','hina_xingzhi'],['doublegroup:key:shen']];
+//快捷添加/删除武将
+//by-活动配件
+game.HDdeleteCharacter=function(name){
+if(lib.character[name]) delete lib.character[name];
+var packs=Object.keys(lib.characterPack).filter(pack=>lib.characterPack[pack][name]);
+if(packs.length){
+for(var pack of packs) delete lib.characterPack[pack][name];
 }
+};
+game.HDaddCharacter=function(name,character,packss){
+game.HDdeleteCharacter(name);
+if(!packss) lib.character[name]=character;//未定义武将包或武将包为空则直接添加武将
+var packs=packss.split(':');
+if(!packs.length) lib.character[name]=character;
+else{
+for(var pack of packs) lib.characterPack[pack][name]=character;
+if(packs.some(p=>lib.config.characters.contains(p))) lib.character[name]=character;
+}
+};
+//移动武将所在武将包
+game.HDmoveCharacter=function(name,packss){
+var nameinfo=undefined;
+if(lib.character[name]) nameinfo=lib.character[name];
+else{
+var pack=Object.keys(lib.characterPack).find(pack=>lib.characterPack[pack][name]);
+if(pack) nameinfo=lib.characterPack[pack][name];
+}
+if(nameinfo) game.HDaddCharacter(name,nameinfo,packss);
+};
+if(lib.config.extension_活动武将_keymove){
+lib.characterSort.diy.bilibili_key=['key_kagari','key_shiki','db_key_hina'];
+lib.translate.bilibili_key='论外';
+game.HDmoveCharacter('key_kagari','diy');
+game.HDmoveCharacter('key_shiki','diy');
+game.HDmoveCharacter('db_key_hina','diy');
 }
 
 //precGuoZhan(分界线，便于我搜过来)
@@ -1200,8 +1217,7 @@ if(lib.config.extension_活动武将_keymove){
 delete lib.characterPack.mode_guozhan.gz_key_ushio;
 delete lib.character.gz_key_ushio;
 lib.characterSort.diy.bilibili_key.push('key_ushio');
-lib.characterPack.diy.key_ushio=['female','key',3,['ushio_huanxin','ushio_xilv'],['doublegroup:key:wei:shu:wu:qun:jin']];
-if(lib.config.characters.includes('diy')) lib.character.key_ushio=['female','key',3,['ushio_huanxin','ushio_xilv'],['doublegroup:key:wei:shu:wu:qun:jin']];
+game.HDaddCharacter('key_ushio',['female','key',3,['ushio_huanxin','ushio_xilv'],['doublegroup:key:wei:shu:wu:qun:jin']],'diy');
 lib.translate.key_ushio='冈崎汐';
 }
 //------------------------------删除武将------------------------------//
@@ -1560,9 +1576,6 @@ lib.translate[name3]=str.slice(0,num)+name[1]+str.slice(num+name[0].length,str.l
 
 //precA
 //技能修饰调整
-//万 恶 之 源
-lib.skill.bolNoAudio={audio:false};
-
 //引用国战配音
 if(!lib.skill.yigui) lib.skill.yigui={audio:2};
 if(!lib.skill.gzshilu) lib.skill.gzshilu={audio:2};
@@ -1607,80 +1620,129 @@ lib.skill.scfuhai.subSkill.usea.audio='scfuhai';
 lib.skill.scfuhai.subSkill.die.audio='scfuhai';
 lib.skill.tianzuo.subSkill.remove.audio='tianzuo';
 //武将配音audioname添加
-lib.skill.biyue.audioname=['sp_diaochan'];
 
 //武将配音audioname2添加
-lib.skill.qiaoshui.audioname2={
-re_jianyong:'reqiaoshui',
-xin_jianyong:'xinqiaoshui'
+game.HDsetAudioname2=function(skills,map){
+if(!Array.isArray(skills)) skills=[skills];
+skills.forEach(skill=>{
+if(!lib.skill[skill]) return;
+if(!lib.skill[skill].audioname2) lib.skill[skill].audioname2={};
+for(var i in map) lib.skill[skill].audioname2[i]=map[i];
+});
 };
-lib.skill.rebiyue.audioname2={sp_diaochan:'biyue_sp_diaochan'};
-lib.skill.xiaoji.audioname2={Mbaby_sp_sunshangxiang:'xiaoji_sp_sunshangxiang'};
-lib.skill.reluanwu.audioname2={Mbaby_jiaxu:'luanwu_re_jiaxu'};
-lib.skill.yaowu.audioname2={FD_huaxiong:'bolNoAudio'};
-lib.skill.yinghun.audioname2.FD_sunjian='bolNoAudio';
-lib.skill.gzyinghun.audioname2.FD_sunjian='bolNoAudio';
-lib.skill.gzyinghun.audioname2.Mbaby_sunce='yinghun_sunce';
-lib.skill.rezhiman.audioname2={Mbaby_guansuo:'zhiman_guansuo'};
-lib.skill.reyingzi.audioname2={
+game.HDsetAudioname2('rebiyue',{
+sp_diaochan:'biyue',
+});
+game.HDsetAudioname2('xiaoji',{
+Mbaby_sp_sunshangxiang:'xiaoji_sp_sunshangxiang',
+});
+game.HDsetAudioname2('reluanwu',{
+Mbaby_jiaxu:'luanwu_re_jiaxu',
+});
+game.HDsetAudioname2('yaowu',{
+FD_huaxiong:'bolNoAudio',
+});
+game.HDsetAudioname2('yinghun',{
+FD_sunjian:'bolNoAudio',
+});
+game.HDsetAudioname2('gzyinghun',{
+FD_sunjian:'bolNoAudio',
+Mbaby_sunce:'yinghun_sunce',
+});
+game.HDsetAudioname2('rezhiman',{
+Mbaby_guansuo:'zhiman_guansuo',
+wechat_guansuo:'zhiman_guansuo',
+});
+game.HDsetAudioname2('reyingzi',{
 Mbaby_sunce:'reyingzi_sunce',
 Mbaby_re_sunyi:'reyingzi_re_sunyi',
-};
-lib.skill.rejizhi.audioname2={
+});
+game.HDsetAudioname2('rejizhi',{
 Mbaby_lukang:'rejizhi_lukang',
 old_shen_simayi:'jilue_jizhi',
-};
-lib.skill.new_repaoxiao.audioname2.wechat_xiahouba='paoxiao_xiahouba';
-lib.skill.new_repaoxiao.audioname2.Mbaby_xiahouba='paoxiao_xiahouba';
-lib.skill.new_repaoxiao.audioname2.Mbaby_guanzhang='paoxiao_guanzhang';
-lib.skill.reyicong.audioname2={jsp_zhaoyun:'yicong_jsp_zhaoyun'};
-lib.skill.yicong.audioname2={oldx_zhaoyun:'yicong_jsp_zhaoyun'};
-lib.skill.yicong_jsp_zhaoyun={audio:2};
-lib.skill.new_rejianxiong.audioname2={
+});
+game.HDsetAudioname2('new_repaoxiao',{
+wechat_xiahouba:'paoxiao_xiahouba',
+Mbaby_xiahouba:'paoxiao_xiahouba',
+Mbaby_guanzhang:'paoxiao_guanzhang',
+});
+game.HDsetAudioname2('reyicong',{
+jsp_zhaoyun:'yicong_jsp_zhaoyun',
+});
+game.HDsetAudioname2('yicong',{
+oldx_zhaoyun:'yicong_jsp_zhaoyun',
+});
+game.HDsetAudioname2('new_rejianxiong',{
 old_shen_caopi:'rejianxiong_shen_caopi',
 qin_lvbuwei:'bolNoAudio',
-};
-lib.skill.rerende.audioname2={
+});
+game.HDsetAudioname2('rerende',{
 old_shen_caopi:'rerende_shen_caopi',
 qin_lvbuwei:'bolNoAudio',
-};
-lib.skill.rezhiheng.audioname2={
+});
+game.HDsetAudioname2('rezhiheng',{
 old_shen_caopi:'rezhiheng_shen_caopi',
 qin_lvbuwei:'bolNoAudio',
 old_shen_simayi:'jilue_zhiheng',
-};
-lib.skill.olluanji.audioname2={old_shen_caopi:'olluanji_shen_caopi'};
-lib.skill.olfangquan.audioname2={old_shen_caopi:'olfangquan_shen_caopi'};
-lib.skill.rejijiang.audioname2={Mbaby_liushan:'jijiang1_liushan'};
-lib.skill.rejijiang1.audioname2={Mbaby_liushan:'jijiang1_liushan'};
-lib.skill.guidao.audioname2={Mbaby_zhangjiao:'guidao_sp_zhangjiao'};
-lib.skill.yijin.audioname2={bilibili_litiansuo:'bolNoAudio'};
-lib.skill.clandaojie.audioname2={
+});
+game.HDsetAudioname2('olluanji',{
+old_shen_caopi:'olluanji_shen_caopi',
+});
+game.HDsetAudioname2('olfangquan',{
+old_shen_caopi:'olfangquan_shen_caopi',
+});
+game.HDsetAudioname2(['rejijiang','rejijiang1'],{
+Mbaby_liushan:'jijiang1_liushan',
+});
+game.HDsetAudioname2('guidao',{
+Mbaby_zhangjiao:'guidao_sp_zhangjiao',
+});
+game.HDsetAudioname2('yijin',{
+bilibili_litiansuo:'bolNoAudio',
+});
+game.HDsetAudioname2('clandaojie',{
 old_zu_xunshu:'clandaojie_clan_xunshu',
 old_zu_xunchen:'clandaojie_clan_xunchen',
 old_zu_xuncai:'clandaojie_clan_xuncai',
 old_zu_xuncan:'clandaojie_clan_xuncan',
 oldx_zu_xuncai:'clandaojie_clan_xuncai',
-};
-lib.skill.fangzhu.audioname2={old_shen_simayi:'jilue_fangzhu'};
-lib.skill.reguicai.audioname2={old_shen_simayi:'jilue_guicai'};
-lib.skill.rewansha.audioname2={old_shen_simayi:'wansha_shen_simayi'};
-lib.skill.retianxiang.audioname2={decade_daxiaoqiao:'tianxiang_daxiaoqiao'};
-lib.skill.liuli.audioname2={decade_daxiaoqiao:'liuli_daxiaoqiao'};
-lib.skill.retiaoxin.audioname2={
+});
+game.HDsetAudioname2('fangzhu',{
+old_shen_simayi:'jilue_fangzhu',
+});
+game.HDsetAudioname2('reguicai',{
+old_shen_simayi:'jilue_guicai',
+});
+game.HDsetAudioname2('rewansha',{
+old_shen_simayi:'wansha_shen_simayi',
+});
+game.HDsetAudioname2('retiaoxin',{
 wechat_sp_jiangwei:'tiaoxin_sp_jiangwei',
 wechat_xiahouba:'tiaoxin_xiahouba',
-};
-lib.skill.relianying.audioname2={wechat_lukang:'rejizhi_lukang'};
-lib.skill.qingguo.audioname2={re_zhenji:'reqingguo'};
-lib.skill.shangshi.audioname2={re_zhangchunhua:'reshangshi'};
-lib.skill.wusheng.audioname2.bol_jsp_guanyu='wusheng_jsp_guanyu';
-lib.skill.wusheng.audioname2.bolx_jsp_guanyu='wusheng_jsp_guanyu';
-lib.skill.wusheng.audioname2.wechat_guansuo='wusheng_guansuo';
-lib.skill.duanchang.audioname2={Mmiao_caiwenji:'minimiaoduanchang'};
-lib.skill.juxiang1.audioname2={Mmiao_zhurong:'minimiaojuxiang'};
-lib.skill.dangxian.audioname2={wechat_guansuo:'dangxian_guansuo'};
-lib.skill.rezhiman.audioname2.wechat_guansuo='zhiman_guansuo';
+});
+game.HDsetAudioname2('relianying',{
+wechat_lukang:'rejizhi_lukang',
+});
+game.HDsetAudioname2('qingguo',{
+re_zhenji:'reqingguo',
+});
+game.HDsetAudioname2('shangshi',{
+re_zhangchunhua:'reshangshi',
+});
+game.HDsetAudioname2('wusheng',{
+bol_jsp_guanyu:'wusheng_jsp_guanyu',
+bolx_jsp_guanyu:'wusheng_jsp_guanyu',
+wechat_guansuo:'wusheng_guansuo',
+});
+game.HDsetAudioname2('duanchang',{
+Mmiao_caiwenji:'minimiaoduanchang',
+});
+game.HDsetAudioname2(['juxiang','juxiang1'],{
+Mmiao_zhurong:'minimiaojuxiang',
+});
+game.HDsetAudioname2('dangxian',{
+wechat_guansuo:'dangxian_guansuo',
+});
 
 //十周年花色美化显示
 if(game.HasExtension('十周年UI')&&lib.config.extension_十周年UI_playerMarkStyle&&lib.config.extension_十周年UI_playerMarkStyle=='decade'){
@@ -22934,10 +22996,9 @@ return -10;
 },
 },
 },
-biyue_sp_diaochan:{audio:2},
 minibiyue:{
 audio:'biyue',
-audioname2:{Mbaby_sp_diaochan:'biyue_sp_diaochan'},
+audioname2:{Mbaby_sp_diaochan:'biyue'},
 trigger:{player:'phaseJieshuBegin'},
 frequent:true,
 content:function(){
@@ -48177,6 +48238,8 @@ targets.forEach(target=>trigger.card.bolcongshi[target.playerid]=targetx.filter(
 },
 },
 },
+bolNoAudio:{audio:false},//万 恶 之 源
+yicong_jsp_zhaoyun:{audio:2},
 },
 dynamicTranslate:{
 bilibili_xueji:function(player){
