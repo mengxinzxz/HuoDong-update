@@ -1619,7 +1619,17 @@ lib.skill.fuping.subSkill.mark.audio='fuping';
 lib.skill.scfuhai.subSkill.usea.audio='scfuhai';
 lib.skill.scfuhai.subSkill.die.audio='scfuhai';
 lib.skill.tianzuo.subSkill.remove.audio='tianzuo';
+
 //武将配音audioname添加
+game.HDsetAudioname=function(skills,list){
+if(!Array.isArray(skills)) skills=[skills];
+if(!Array.isArray(list)) list=[list];
+skills.forEach(skill=>{
+if(!lib.skill[skill]) return;
+if(!lib.skill[skill].audioname) lib.skill[skill].audioname=[];
+lib.skill[skill].audioname.addArray(list);
+});
+};
 
 //武将配音audioname2添加
 game.HDsetAudioname2=function(skills,map){
