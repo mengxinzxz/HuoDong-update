@@ -13952,6 +13952,7 @@ var result=yield player.chooseCard(get.prompt2('miniwanwei',target),'he',[1,5]).
 var player=_status.event.player,target=_status.event.target;
 if(get.attitude(player,target)<=0) return 0;
 var sum=target.countCards('hs',card=>target.canSaveCard(card,target))+target.hp;
+if(player.hasSkill('minifuding')&&!player.hasSkill('minifuding_used')&&!get.is.blocked('minifuding',player)) sum++;
 if(player.countCards('hs',card=>target.canSaveCard(card,target))+sum<=0) return 0;
 if(target.canSaveCard(cardx,target)&&ui.selected.cards.filter(card=>target.canSaveCard(card,target)).length+sum>0) return 12-get.value(cardx);
 return 7-get.value(cardx);
@@ -28133,7 +28134,7 @@ var target=result.targets[0];
 player.logSkill('minilirang',target);
 player.storage.minilirang=target;
 player.markSkill('minilirang');
-playr.when({global:'die'}).filter((event,player)=>event.player==player.storage.minilirang).then(()=>{
+player.when({global:'die'}).filter((event,player)=>event.player==player.storage.minilirang).then(()=>{
 player.unmarkSkill('minilirang');
 delete player.storage.minilirang;
 });
