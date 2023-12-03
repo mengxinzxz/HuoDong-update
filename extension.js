@@ -39778,7 +39778,9 @@ return info&&!get.skillCategoriesOf(skill,player).length&&(!info.unique||info.ga
 });
 if(skillx.length){
 skills.addArray(skillx);
-skillx.forEach(skill=>lib.skill.rehuashen.createAudio(name,skill,'old_zuoci'));
+game.broadcastAll(function(player,name){
+player.tempname.add(name);
+},player,name);
 }
 }
 });
@@ -39807,6 +39809,9 @@ player.addInvisibleSkill(skills);
 },
 removeVisitors:function(characters,player){
 game.log(player,'移去了','#g“化身”','#y'+get.translation(characters));
+game.broadcastAll(function(player,names){
+player.tempname.removeArray(names);
+},player,characters);
 game.broadcastAll(function(player,list){
 var cards=[];
 for(var card of list){
