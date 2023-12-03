@@ -39717,7 +39717,7 @@ else event.finish();
 'step 5'
 game.delayx();
 },
-ai:{threaten:5},
+//ai:{threaten:5},
 $createButton:function(item,type,position,noclick,node,player){
 node=ui.create.buttonPresets.character(item,'character',position,noclick);
 const info=lib.character[item];
