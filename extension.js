@@ -27884,6 +27884,7 @@ trigger:{source:'damageSource'},
 filter:function(event,player){
 return event.card&&event.card.name=='wanjian'&&event.player.isIn()&&event.player.countCards('he');
 },
+usable:3,
 prompt2:(event,player)=>'弃置'+get.translation(event.player)+'的一张牌',
 check:(event,player)=>get.effect(event.player,{name:'guohe_copy2'},player,player)>0,
 logTarget:'player',
