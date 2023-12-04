@@ -1927,7 +1927,7 @@ lib.skill._reweimu={
 charlotte:true,
 trigger:{global:'useCard1'},
 filter:function(event,player){
-if(!player.hasSkill('reweimu')||event.player==player) return false;
+if(!player.hasSkill('reweimu')||event.player==player||get.is.blocked('reweimu',player)) return false;
 if(get.color(event.card)!='black'||get.type(event.card)!='trick') return false;
 var info=get.info(event.card.name);
 return info&&info.selectTarget&&info.selectTarget==-1&&!info.toself;
@@ -1941,7 +1941,7 @@ lib.skill._xianghai={
 charlotte:true,
 trigger:{player:['useCard1','respond']},
 filter:function(event,player){
-if(!player.hasSkill('xianghai')) return false;
+if(!player.hasSkill('xianghai')||get.is.blocked('xianghai',player)) return false;
 return event.card.name=='jiu'&&!event.skill&&event.cards&&event.cards.length==1&&get.type(event.cards[0])=='equip';
 },
 priority:15,
@@ -1951,20 +1951,22 @@ content:function(){player.logSkill('xianghai')},
 //刘辩
 lib.skill._dushi={
 charlotte:true,
+sourceSkill:'dushi',
+audio:'dushi',
 trigger:{player:'dying'},
 filter:function(event,player){
-return player.hasSkill('dushi');
+return player.hasSkill('dushi')&&!get.is.blocked('dushi',player);
 },
 priority:15,
-direct:true,
-content:function(){player.logSkill('dushi')},
+forced:true,
+content:function(){},
 };
 //暴怒战神
 lib.skill._shenji={
 charlotte:true,
 trigger:{player:'useCard1'},
 filter:function(event,player){
-if(!player.hasSkill('shenji')) return false;
+if(!player.hasSkill('shenji')||get.is.blocked('shenji',player)) return false;
 return event.card.name=='sha'&&(event.targets.length>1||player.countUsed('sha',true)>1);
 },
 priority:15,
@@ -2149,6 +2151,12 @@ lib.translate[cardname]=get.rawName2(name);
 return game.createCard(cardname,' ',' ');
 }),'nobroadcast');
 },player,list);
+};
+//许靖
+var content=''+lib.skill.dccaixia.content;
+eval('lib.skill.dccaixia.content='+content.replace("player.addMark('dccaixia_clear',num)","player.addMark('dccaixia_clear',num,false)"));
+lib.skill.dccaixia.subSkill.clear.content=function(){
+player.removeMark('dccaixia_clear',1,false);
 };
 
 //precG
@@ -3280,6 +3288,7 @@ animate:'giveAuto',
 
 //precT
 //添加翻译或描述优化/修复
+lib.translate._dushi='毒誓';
 lib.translate.weipo='横虑';
 lib.translate.spshicai2_mark='牌堆顶';
 lib.translate.dcliuzhuan_tag='流转';
@@ -3294,6 +3303,7 @@ lib.translate.olpaoxiao_info='锁定技。①你使用【杀】无次数限制�
 lib.translate.sbliegong_info='若你的装备区内没有武器牌，则你手牌区内所有【杀】的属性视为无属性。当你使用牌时或成为其他角色使用牌的目标后，若此牌有花色且你未记录此牌的花色，你记录此牌的花色。当你使用【杀】指定唯一目标后，若〖烈弓〗存在记录花色，则你可亮出牌堆顶的X张牌（X为〖烈弓〗记录过的花色数-1），令此【杀】的伤害值基数+Y（Y为亮出牌中被〖烈弓〗记录过花色的牌的数量），且目标角色不能使用〖烈弓〗记录过花色的牌响应此【杀】。此【杀】使用结算结束后，你清除〖烈弓〗记录的的花色。';
 lib.translate.tairan_info='锁定技，回合结束时，你将体力回复至体力上限，并将手牌摸至体力上限（获得的牌称为“泰然”牌）。然后你的下一个出牌阶段开始时，你失去上次以此法回复的体力值的体力，弃置所有“泰然”牌。';
 lib.translate.shuiyanqijunx_info='出牌阶段，对一名'+((get.mode()=='single'&&['normal2'])?'':'装备区里有牌的')+'其他角色使用。目标角色选择一项：1、弃置装备区里的所有牌；2、受到你对其造成的1点雷电伤害。';
+lib.translate.dccaixia_info='当你造成或受到伤害后，你可以摸至多X张牌，然后你不能发动〖才暇〗直到你使用等量张牌（X为本局游戏人数且至多为5）。';
 };
 //设定势力+颜色显示
 game.bolAddGroupNature=function(name,mapping,gradient,push){
@@ -9093,7 +9103,7 @@ return event.player!=player&&event.player.countCards('he');
 },
 forced:true,
 content:function(){
-trigger.player.discard(trigger.player.getCards('he').randomGets([1,2,3].randomGet()));
+trigger.player.discard(trigger.player.getCards('he').randomGets(get.rand(1,3)));
 },
 },
 cike_lingshou:{
@@ -25510,7 +25520,8 @@ return player!=target&&target.countCards('e')<=player.countCards('e');
 mark:false,
 content:function(){
 'step 0'
-var list=[1,2,3,4,5,6,7,8,9,10,11,12,13].map((i)=>get.strNumber(i));
+var list=Array.from({length:13}).map((_,i)=>i+1);
+list=list.map((i)=>get.strNumber(i));
 target.chooseControl(list).set('ai',function(){
 return get.rand(0,12);
 }).set('prompt','掠命：请选择一个点数').set('prompt2','若'+get.translation(player)+'的判定点数与你选择的点数相同，则对你造成2点伤害，否则其随机获得你区域里的一张牌');
@@ -39420,9 +39431,9 @@ var list=[];
 for(var i=1;i<6;i++){
 if(player.hasEmptySlot(i)) list.push('equip'+i);
 }
-var suitList=['spade', 'heart', 'club', 'diamond'].randomGet();
+var suitList=lib.suit.randomGet();
 var typeList=list.randomGet();
-var numberList=[1,2,3,4,5,6,7,8,9,10,11,12,13].randomGet();
+var numberList=Array.from({length:13}).map((_,i)=>i+1).randomGet();
 var skills=lib.character[trigger.player.name][3]
 var card={
 type:'equip',
@@ -39443,7 +39454,7 @@ ai:{},
 };
 var List=[];
 if(typeList=='equip1'){
-disList=[1,2,3,4,5].randomGet();
+disList=Array.from({length:5}).map((_,i)=>i+1).randomGet();
 card.distance.attackFrom=-disList
 List.push('<li>攻击范围：'+disList)
 }
@@ -40237,7 +40248,7 @@ caidan:function(player){
 var cards=[];
 var list=['小杀','小桃','小闪','小酒','小乐','小蛮','小击','小粮','小有','小拆','小箭','小牵'];
 var list3=['sha','tao','shan','jiu','lebu','nanman','juedou','bingliang','wuzhong','guohe','wanjian','shunshou'];
-var nums=[0,1,2,3,4,5,6,7,8,9,10,11].removeArray(player.old_shenzhuCaiDan||[]);
+var nums=Array.from({length:12}).map((_,i)=>i).removeArray(player.old_shenzhuCaiDan||[]);
 nums=nums.randomGets(player.name2?2:1);
 player.old_shenzhuCaiDan=nums;
 nums.sort((a,b)=>a-b);
