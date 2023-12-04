@@ -15,20 +15,10 @@ game.bolShowNewPack=function(){
 //更新告示
 var HuoDong_update=[
 '/setPlayer/',
-'bugfix',
-'限定扩展内置部分十周年UI下的花色美化为仅使用十周年选项标记时生效，且游戏内更改选项须重启生效',
-'修复开启座位号显示后换位不更新座位号显示的bug',
-'添加微信三国杀武将祖茂、关索、极黄月英',
-'更新微信三国杀极诸葛亮、极司马懿、极马超、赵云、极曹操的技能',
-'添加欢乐三国杀武将谋黄盖、朱儁、吕布、王悦',
-'更新欢乐三国杀徐盛的技能',
 'To be continued...',
 ];
 //更新武将
 var HuoDong_players=[
-'wechat_zhugeliang','wechat_simayi','wechat_re_machao','wechat_zhaoyun','wechat_re_caocao',
-'wechat_zumao','wechat_guansuo','wechat_re_huangyueying','Mbaby_sb_huanggai','Mbaby_zhujun',
-'Mbaby_lvbu','Mbaby_xusheng','Mbaby_wangyue',
 ];
 //加载
 var dialog=ui.create.dialog(
@@ -49185,7 +49175,7 @@ intro:'新人制作扩展，希望大家支持。'+
 author:'萌新（转型中）',
 diskURL:'',
 forumURL:'',
-version:'0.1.0',
+version:'0.1.1',
 //新人制作扩展，希望大家支持。
 //新人技术不足，希望大家包涵。
 //壹、贰、叁、肆、伍、陆、柒、捌、玖、拾
