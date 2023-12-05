@@ -2148,6 +2148,10 @@ eval('lib.skill.dccaixia.content='+content.replace("player.addMark('dccaixia_cle
 lib.skill.dccaixia.subSkill.clear.content=function(){
 player.removeMark('dccaixia_clear',1,false);
 };
+//南华老仙
+lib.skill.jsrgshoushu.trigger={global:'roundStart'};
+var filter=''+lib.skill.jsrgshoushu.filter;
+eval('lib.skill.jsrgshoushu.filter='+filter.replace("event.name!='phase'||game.phaseNumber==0","true"));
 
 //precG
 //全局机制
@@ -3294,6 +3298,7 @@ lib.translate.sbliegong_info='若你的装备区内没有武器牌，则你手�
 lib.translate.tairan_info='锁定技，回合结束时，你将体力回复至体力上限，并将手牌摸至体力上限（获得的牌称为“泰然”牌）。然后你的下一个出牌阶段开始时，你失去上次以此法回复的体力值的体力，弃置所有“泰然”牌。';
 lib.translate.shuiyanqijunx_info='出牌阶段，对一名'+((get.mode()=='single'&&['normal2'])?'':'装备区里有牌的')+'其他角色使用。目标角色选择一项：1、弃置装备区里的所有牌；2、受到你对其造成的1点雷电伤害。';
 lib.translate.dccaixia_info='当你造成或受到伤害后，你可以摸至多X张牌，然后你不能发动〖才暇〗直到你使用等量张牌（X为本局游戏人数且至多为5）。';
+lib.translate.jsrgshoushu_info='锁定技。①一轮游戏开始时，若场上没有【太平要术】，你可以从游戏外将【太平要术】置于一名角色的装备区内。②当【太平要术】离开一名角色的装备区后，你令此牌销毁。';
 };
 //设定势力+颜色显示
 game.bolAddGroupNature=function(name,mapping,gradient,push){
@@ -21011,7 +21016,7 @@ return card.name==result.links[0][2]&&(get.nature(card)==result.links[0][3]||!re
 });
 if(card) player.gain(card,'gain2');
 else{
-player.chat('杯具');
+player.popup('杯具');
 game.log('但是牌堆中已经没有','#y'+get.translation(result.links[0][2]),'了！')
 }
 },
