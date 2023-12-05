@@ -15,6 +15,7 @@ game.bolShowNewPack=function(){
 //更新告示
 var HuoDong_update=[
 '/setPlayer/',
+'bugfix+技能效果调整',
 'To be continued...',
 ];
 //更新武将
@@ -10049,7 +10050,7 @@ Mbaby_yanfuren:['female','qun',3,['minichanni','mininifu'],[]],
 Mbaby_gongsunyuan:['male','qun',4,['minihuaiyi'],[]],
 Mbaby_sp_zhangliao:['male','qun',4,['minimubing','miniziqu','minidiaoling'],[]],
 Mbaby_sp_ol_zhanghe:['male','qun',4,['minizhouxuan'],[]],
-Mbaby_zhujun:['male','qun',4,['minigongjian','kuimang','jsrgjuxiang'],[]],
+Mbaby_zhujun:['male','qun',4,['minigongjian','kuimang','minizjjuxiang'],[]],
 Mbaby_sb_yuanshao:['male','qun',4,['minisbluanji','minisbxueyi'],['zhu','MXdelete']],
 Mbaby_tw_mateng:['male','qun',4,['miniyuma','minixiongzheng','miniluannian'],['zhu','MXdelete']],
 Mbaby_sp_kongrong:['male','qun',3,['minilirang','minizhengyi'],['MXdelete']],
@@ -22208,6 +22209,8 @@ content:function(){
 player.addTempSkill('minisbzhaxiang_count');
 player.addMark('minisbzhaxiang_count',1,false);
 trigger.directHit.addArray(game.filterPlayer());
+trigger.addCount=false;
+if(player.stat[player.stat.length-1].card.sha>0) player.stat[player.stat.length-1].card.sha--;
 },
 ai:{
 directHit_ai:true,
@@ -22219,9 +22222,9 @@ mod:{
 targetInRange:function(card,player){
 if(card.name=='sha'&&player.countMark('minisbzhaxiang_count')<Math.ceil(player.getDamagedHp()/2)) return true;
 },
-cardUsable:function(card,player){
-if(card.name=='sha'&&player.countMark('minisbzhaxiang_count')<Math.ceil(player.getDamagedHp()/2)) return Infinity;
-},
+//cardUsable:function(card,player){
+//if(card.name=='sha'&&player.countMark('minisbzhaxiang_count')<Math.ceil(player.getDamagedHp()/2)) return Infinity;
+//},
 },
 },
 count:{
@@ -26528,66 +26531,52 @@ minishouxi:{
 audio:'shouxi',
 trigger:{target:'useCardToTargeted'},
 filter:function(event,player){
-var list=lib.inpile.filter(function(i){
+if(event.card.name!='sha'||!event.player.isIn()) return false;
+return lib.inpile.some(i=>{
 if(player.getStorage('minishouxi').includes(i)) return false;
 var type=get.type2(i);
 return type=='basic'||type=='trick';
 });
-if(!list.length) return false;
-return event.card.name=='sha'&&event.player.isIn();
 },
 direct:true,
-content:function(){
-'step 0'
-var list=lib.inpile.filter(function(i){
+content:function*(event,map){
+var player=map.player,trigger=map.trigger;
+var target=trigger.player,list=lib.inpile.filter(i=>{
 if(player.getStorage('minishouxi').includes(i)) return false;
 var type=get.type2(i);
 return type=='basic'||type=='trick';
-});
-for(var i=0;i<list.length;i++){
-list[i]=[get.type(list[i]),'',list[i]];
-}
-player.chooseButton([get.prompt('minishouxi',trigger.player),[list,'vcard']]).set('ai',function(button){
+}).map(name=>[get.type(name),'',name]);
+var result=yield player.chooseButton([get.prompt('minishouxi',target),[list,'vcard']]).set('ai',button=>{
+if(_status.event.num>0) return 0;
 return 1+Math.random();
-});
-'step 1'
+}).set('num',get.effect(player,trigger.card,target,player));
 if(result.bool){
-player.logSkill('minishouxi');
-var name=result.links[0][2];
-event.vcard=result.links;
-event.name=name;
+player.logSkill('minishouxi',target);
+var name=result.links[0][2],str=get.translation(name);
 player.markAuto('minishouxi',[name]);
-}
-else event.finish();
-'step 2'
-var name=event.name;
-trigger.player.chooseToDiscard('he',function(card,player){
+player.popup(str);
+game.log(player,'声明了','#g【'+str+'】');
+var result2=yield target.chooseToDiscard('he',(card,player)=>{
 return get.name(card)==_status.event.name;
-},'守玺：请弃置一张【'+get.translation(name)+'】，否则此【杀】对'+get.translation(player)+'无效且'+get.translation(player)+'从牌堆中获得一张【'+get.translation(name)+'】').set('ai',function(card){
-if(_status.event.att<0) return 10-get.value(card);
-return 0;
-}).set('att',get.attitude(trigger.player,player)).set('name',name);
-'step 3'
-if(result.bool) trigger.player.gainPlayerCard(player);
+}).set('ai',card=>10-get.value(card)*(_status.event.att<0?1:0)).set('att',get.attitude(target,player)).set('name',name).set('dialog',['###守玺###弃置一张【'+str+'】，否则此【杀】对'+get.translation(player)+'无效且'+get.translation(player)+'从牌堆中获得一张【'+str+'】',[result.links,'vcard']]);
+if(result2.bool) target.gainPlayerCard(player);
 else{
 trigger.excluded.push(player);
-var card=get.cardPile2(function(card){
-return card.name==event.name;
-});
+var card=get.cardPile2(card=>card.name==name);
 if(card) player.gain(card,'gain2');
+}
 }
 },
 ai:{
 effect:{
 target:function(card,player,target,current){
-var list=lib.inpile.filter(function(i){
+if(!card.name!='sha'||get.effect(target,card,player,target)>0) return;
+var list=lib.inpile.filter(i=>{
 if(target.getStorage('minishouxi').includes(i)) return false;
 var type=get.type2(i);
 return type=='basic'||type=='trick';
 });
-if(card.name=='sha'&&get.attitude(player,target)<0&&!player.countCards('h',function(card){
-return list.includes(card.name);
-})) return 0.2;
+if(!player.countCards('he',cardx=>lib.filter.cardDiscardable(cardx,player)&&list.includes(cardx.name))) return 0.2;
 },
 },
 },
@@ -27758,6 +27747,49 @@ if(get.type(i,evt.player)=='basic'&&get.position(i,true)=='d') cards.add(i);
 }
 });
 if(cards.length) player.gain(cards,'gain2');
+}
+},
+},
+minizjjuxiang:{
+inherit:'jsrgjuxiang',
+checkx:function(event,player){
+var target=_status.currentPhase;
+if(!target||get.attitude(player,target)<=0) return false;
+var evt=event.getParent('phaseDiscard'),evt2=event.getParent('phaseJieshu');
+if(evt&&evt.name=='phaseDiscard'||evt2&&evt.name=='phaseJieshu') return false;
+if(target.getCardUsable({name:'sha'})>=target.countCards('hs','sha')) return false;
+if(!target.hasValueTarget({name:'sha'})) return false;
+return true;
+},
+direct:true,
+content:function(){
+'step 0'
+var target=_status.currentPhase;
+var str='弃置任意张此次获得的牌';
+if(target&&target.isIn()){
+event.target=target;
+str+='，令'+get.translation(target)+'本回合使用【杀】的次数+X（X为你以此法弃置的花色数）';
+}
+player.chooseToDiscard(get.prompt('minizjjuxiang'),str,(card,player)=>_status.event.cards.includes(card)).set('ai',card=>{
+if(!_status.event.goon) return 0;
+var player=_status.event.player,target=_status.currentPhase;
+if(ui.selected.cards.some(cardx=>get.suit(cardx,player)==get.suit(card,player))) return 0;
+var num=target.countCards('hs',card=>card.name=='sha')-target.getCardUsable({name:'sha'});
+if(ui.selected.cards.length<num) return 7-get.value(card);
+return 0;
+}).set('cards',trigger.getg(player).filter(i=>player.getCards('h').includes(i))).set('complexCard',true).set('goon',lib.skill.minizjjuxiang.checkx(trigger,player)).logSkill='minizjjuxiang';
+'step 1'
+if(result.bool){
+if(target&&target.isIn()){
+var num=result.cards.reduce((list,card)=>list.add(get.suit(card,player)),[]).length;
+target.addTempSkill('jsrgjuxiang_sha');
+target.addMark('jsrgjuxiang_sha',num,false);
+var evt=trigger.getParent('phaseUse');
+if(evt&&evt.name=='phaseUse'&&!evt.skill){
+evt.player.addTempSkill('jsrgjuxiang_buff','phaseUseAfter');
+evt.player.addMark('jsrgjuxiang_buff',num,false);
+}
+}
 }
 },
 },
@@ -32893,7 +32925,7 @@ minijiexun_info:'结束阶段，你可以选择一种花色，然后令一名角
 minisbkurou:'苦肉',
 minisbkurou_info:'出牌阶段，你可以失去1点体力，然后你的手牌上限和体力上限+1直到你的下个回合开始，然后当你使用【桃】时，你重置此技能。',
 minisbzhaxiang:'诈降',
-minisbzhaxiang_info:'锁定技。①当你失去1点体力后，你摸三张牌。②回合结束时，你摸X张牌。③你于每回合使用的前X张【杀】无距离和次数限制且不可被响应。（X为你已损失体力值的一半，向上取整）',
+minisbzhaxiang_info:'锁定技。①当你失去1点体力后，你摸三张牌。②回合结束时，你摸X张牌。③你于每回合使用的前X张【杀】无距离限制、不计入次数限制且不可被响应。（X为你已损失体力值的一半，向上取整）',
 miniwanglu:'望橹',
 miniwanglu_info:'锁定技。准备阶段，若你的装备区内：有【大攻车】，则你获得一个额外的出牌阶段；没有【大攻车】，则你将一张【大攻车】置入装备区。',
 miniwanglu_faq:'关于大攻车',
@@ -33210,6 +33242,8 @@ miniguanghan:'广寒',
 miniguanghan_info:'锁定技。一名角色受到伤害后，该角色的非你上家和非你下家依次选择一项：①弃置一张牌；②失去等量的体力。',
 minigongjian:'攻坚',
 minigongjian_info:'每回合限一次，当有角色使用【杀】指定第一个目标后，若此【杀】的目标和本局游戏内被使用的上一张【杀】的目标有交集，则你可以依次弃置交集中所有角色的至多两张牌，然后获得以此法弃置的所有基本牌。',
+minizjjuxiang:'拒降',
+minizjjuxiang_info:'当你不于摸牌阶段得到牌后，你可以弃置其中任意张牌，令当前回合角色于此回合额定的出牌阶段内使用【杀】的次数上限+X（X为你以此法弃置的牌的花色数）。',
 miniwushuang:'无双',
 miniwushuang_info:'锁定技。①你使用【杀】可以额外指定一个目标。②当你使用【杀】或【决斗】指定目标后，你令此牌需要依次使用或打出两张【闪】或【杀】响应。',
 miniwuchang:'无常',
