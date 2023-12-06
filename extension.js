@@ -1606,6 +1606,7 @@ lib.skill.fuping.subSkill.mark.audio='fuping';
 lib.skill.scfuhai.subSkill.usea.audio='scfuhai';
 lib.skill.scfuhai.subSkill.die.audio='scfuhai';
 lib.skill.tianzuo.subSkill.remove.audio='tianzuo';
+lib.skill.dcbianzhuang.subSkill.refresh.audio='dcbianzhuang';
 
 //武将配音audioname添加
 game.HDsetAudioname=function(skills,list){
@@ -1740,6 +1741,9 @@ Mmiao_zhurong:'minimiaojuxiang',
 });
 game.HDsetAudioname2('dangxian',{
 wechat_guansuo:'dangxian_guansuo',
+});
+game.HDsetAudioname2('xingshuai',{
+re_caorui:'rexingshuai',
 });
 
 //十周年花色美化显示
@@ -1887,6 +1891,7 @@ player.recover(num);
 'step 1'
 if(player.countCards('h')<player.maxHp) player.drawTo(player.maxHp).gaintag=['tairan'];
 };
+lib.translate.tairan_info='锁定技，回合结束时，你将体力回复至体力上限，并将手牌摸至体力上限（获得的牌称为“泰然”牌）。然后你的下一个出牌阶段开始时，你失去上次以此法回复的体力值的体力，弃置所有“泰然”牌。';
 //魅步
 lib.skill.meibu.content=function(){
 var target=trigger.player;
@@ -1907,6 +1912,7 @@ if(target==player.storage.meibu_range) return true;
 },
 },
 };
+lib.translate.meibu_info='其他角色的出牌阶段开始时，若你不在其攻击范围内，你可以令该角色的锦囊牌均视为【杀】直到回合结束。若如此做，本回合你视为在其攻击范围内。';
 //贾诩
 lib.skill.weimu.filter=function(event,player){
 if(event.player==player) return false;
@@ -1952,6 +1958,7 @@ priority:15,
 forced:true,
 content:function(){},
 };
+lib.translate._dushi='毒誓';
 //暴怒战神
 lib.skill._shenji={
 charlotte:true,
@@ -1968,6 +1975,7 @@ content:function(){player.logSkill('shenji')},
 lib.card.shuiyanqijunx.filterTarget=function(card,player,target){
 return target!=player&&(get.mode()=='single'&&['normal2']||target.countCards('e'));
 };
+lib.translate.shuiyanqijunx_info='出牌阶段，对一名'+((get.mode()=='single'&&['normal2'])?'':'装备区里有牌的')+'其他角色使用。目标角色选择一项：1、弃置装备区里的所有牌；2、受到你对其造成的1点雷电伤害。';
 //族吴苋
 lib.skill.clanyirong.prompt=function(){
 var player=_status.event.player;
@@ -1992,6 +2000,7 @@ if(num1<num2) player.draw(num2-num1);
 'step 1'
 lib.skill.chenliuwushi.change(player,-1);
 };
+lib.translate.clanyirong_info='出牌阶段限两次。你可以将你的手牌数摸至/弃至你的手牌上限，然后你的手牌上限-1/+1。';
 //族吴班
 lib.skill.clanzhanding.subSkill.effect.content=function(){
 if(player.hasHistory('sourceDamage',evt=>evt.card==trigger.card)){
@@ -2003,6 +2012,7 @@ trigger.addCount=false;
 player.getStat().card.sha--;
 }
 };
+lib.translate.clanzhanding_info='你可以将任意张牌当做【杀】使用并你令你的手牌上限-1。你以此法使用的【杀】结算结束后，若你因此【杀】造成过伤害，则你将手牌摸至手牌上限，否则你令此【杀】不计入次数限制。';
 //王粲
 delete lib.skill.xinfu_denglou.marktext;
 //神张角
@@ -2149,10 +2159,36 @@ eval('lib.skill.dccaixia.content='+content.replace("player.addMark('dccaixia_cle
 lib.skill.dccaixia.subSkill.clear.content=function(){
 player.removeMark('dccaixia_clear',1,false);
 };
+lib.translate.dccaixia_info='当你造成或受到伤害后，你可以摸至多X张牌，然后你不能发动〖才暇〗直到你使用等量张牌（X为本局游戏人数且至多为5）。';
 //南华老仙
 lib.skill.jsrgshoushu.trigger={global:'roundStart'};
 var filter=''+lib.skill.jsrgshoushu.filter;
 eval('lib.skill.jsrgshoushu.filter='+filter.replace("event.name!='phase'||game.phaseNumber==0","true"));
+lib.translate.jsrgshoushu_info='锁定技。①一轮游戏开始时，若场上没有【太平要术】，你可以从游戏外将【太平要术】置于一名角色的装备区内。②当【太平要术】离开一名角色的装备区后，你令此牌销毁。';
+//经典孙权
+lib.skill.dczhiheng.subSkill.add.direct=true;
+lib.skill.dczhiheng.subSkill.add.filter=function(event,player){
+if(event.player==player) return false;
+return !player.getStorage('dczhiheng_hit').includes(event.player);
+};
+lib.skill.dczhiheng.init=function(player){
+var history=player.getHistory('sourceDamage',evt=>evt.player!=player);
+if(history.length){
+player.addTempSkill('dczhiheng_hit');
+player.markAuto('dczhiheng_hit',history.reduce((list,evt)=>list.add(evt.player),[]));
+}
+};
+//经典曹操
+lib.skill.dcjianxiong.init=function(player){
+player.markSkill('dcjianxiong');
+};
+//许靖
+var content=''+lib.skill.dcbianzhuang.subSkill.refresh.content;
+eval('lib.skill.dcbianzhuang.subSkill.refresh.content='+content.replace(
+"delete stat.dcbianzhuang;",
+"delete stat.dcbianzhuang;"+
+"game.log(player,'重置了技能','#g【变装】');"
+));
 
 //precG
 //全局机制
@@ -2837,7 +2873,8 @@ delete player.storage.olchuanwu_restore;
 },
 },
 },
-},
+};
+lib.translate.olchuanwu_info='锁定技。当你造成或受到伤害后，你失去武将牌上的前X个技能直到回合结束，然后你摸等同于你此次失去的技能数的牌（X为你的攻击范围）。';
 //诸葛瑾
 lib.skill.olhongyuan={
 audio:'hongyuan',
@@ -2946,7 +2983,8 @@ else event.finish();
 'step 2'
 if(result.bool) player.useCard({name:event.bilibili},result.cards,'rezhuhai',trigger.player,false);
 },
-},
+};
+lib.translate.rezhuhai_info='其他角色的回合结束时，若其本回合内造成过伤害，则你可以将一张手牌当作【杀】或【过河拆桥】对其使用。';
 //蔡阳YYDS!!!
 lib.skill.yinka={
 group:'yinka_view',
@@ -3111,7 +3149,8 @@ else delete player.storage.spshicai2;
 },
 },
 },
-},
+};
+lib.translate.spshicai2_mark='牌堆顶';
 //淳于琼
 lib.skill.reliangying={
 audio:2,
@@ -3279,27 +3318,16 @@ giver:player,
 animate:'giveAuto',
 }).setContent('gaincardMultiple');
 },
-},
+};
 
 //precT
-//添加翻译或描述优化/修复
-lib.translate._dushi='毒誓';
+//描述优化/修复
 lib.translate.weipo='横虑';
-lib.translate.spshicai2_mark='牌堆顶';
 lib.translate.dcliuzhuan_tag='流转';
-lib.translate.olchuanwu_info='锁定技。当你造成或受到伤害后，你失去武将牌上的前X个技能直到回合结束，然后你摸等同于你此次失去的技能数的牌（X为你的攻击范围）。';
-lib.translate.clanyirong_info='出牌阶段限两次。你可以将你的手牌数摸至/弃至你的手牌上限，然后你的手牌上限-1/+1。';
-lib.translate.clanzhanding_info='你可以将任意张牌当做【杀】使用并你令你的手牌上限-1。你以此法使用的【杀】结算结束后，若你因此【杀】造成过伤害，则你将手牌摸至手牌上限，否则你令此【杀】不计入次数限制。';
 lib.translate.dcliuzhuan_info='锁定技，其他角色的回合内，其于摸牌阶段外获得的牌无法对你使用，这些牌本回合进入弃牌堆后，你获得之。';
-lib.translate.rezhuhai_info='其他角色的回合结束时，若其本回合内造成过伤害，则你可以将一张手牌当作【杀】或【过河拆桥】对其使用。';
-lib.translate.meibu_info='其他角色的出牌阶段开始时，若你不在其攻击范围内，你可以令该角色的锦囊牌均视为【杀】直到回合结束。若如此做，本回合你视为在其攻击范围内。';
 lib.translate.zunwei_info='出牌阶段限一次，你可以：①将体力值回复至与一名其他角色相同；②将手牌数摸至与一名其他角色相同（至多摸五张）；③为空装备栏使用牌堆中的装备牌直至你装备区里的牌数与一名其他角色相等。（每个选项每局限选择一次）';
 lib.translate.olpaoxiao_info='锁定技。①你使用【杀】无次数限制。②当你使用的【杀】被【闪】抵消后，你令本回合下一次因【杀】造成的伤害+X（X为造成伤害前的抵消次数）。';
 lib.translate.sbliegong_info='若你的装备区内没有武器牌，则你手牌区内所有【杀】的属性视为无属性。当你使用牌时或成为其他角色使用牌的目标后，若此牌有花色且你未记录此牌的花色，你记录此牌的花色。当你使用【杀】指定唯一目标后，若〖烈弓〗存在记录花色，则你可亮出牌堆顶的X张牌（X为〖烈弓〗记录过的花色数-1），令此【杀】的伤害值基数+Y（Y为亮出牌中被〖烈弓〗记录过花色的牌的数量），且目标角色不能使用〖烈弓〗记录过花色的牌响应此【杀】。此【杀】使用结算结束后，你清除〖烈弓〗记录的的花色。';
-lib.translate.tairan_info='锁定技，回合结束时，你将体力回复至体力上限，并将手牌摸至体力上限（获得的牌称为“泰然”牌）。然后你的下一个出牌阶段开始时，你失去上次以此法回复的体力值的体力，弃置所有“泰然”牌。';
-lib.translate.shuiyanqijunx_info='出牌阶段，对一名'+((get.mode()=='single'&&['normal2'])?'':'装备区里有牌的')+'其他角色使用。目标角色选择一项：1、弃置装备区里的所有牌；2、受到你对其造成的1点雷电伤害。';
-lib.translate.dccaixia_info='当你造成或受到伤害后，你可以摸至多X张牌，然后你不能发动〖才暇〗直到你使用等量张牌（X为本局游戏人数且至多为5）。';
-lib.translate.jsrgshoushu_info='锁定技。①一轮游戏开始时，若场上没有【太平要术】，你可以从游戏外将【太平要术】置于一名角色的装备区内。②当【太平要术】离开一名角色的装备区后，你令此牌销毁。';
 };
 //设定势力+颜色显示
 game.bolAddGroupNature=function(name,mapping,gradient,push){
