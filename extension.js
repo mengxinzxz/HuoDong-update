@@ -1973,9 +1973,9 @@ content:function(){player.logSkill('shenji')},
 };
 //水淹七军
 lib.card.shuiyanqijunx.filterTarget=function(card,player,target){
-return target!=player&&(get.mode()=='single'&&['normal2']||target.countCards('e'));
+return target!=player&&((get.mode()=='single'&&_status.mode&&_status.mode=='normal')||target.countCards('e'));
 };
-lib.translate.shuiyanqijunx_info='出牌阶段，对一名'+((get.mode()=='single'&&['normal2'])?'':'装备区里有牌的')+'其他角色使用。目标角色选择一项：1、弃置装备区里的所有牌；2、受到你对其造成的1点雷电伤害。';
+lib.translate.shuiyanqijunx_info='出牌阶段，对一名'+((get.mode()=='single'&&_status.mode&&_status.mode=='normal')?'':'装备区里有牌的')+'其他角色使用。目标角色选择一项：1、弃置装备区里的所有牌；2、受到你对其造成的1点雷电伤害。';
 //族吴苋
 lib.skill.clanyirong.prompt=function(){
 var player=_status.event.player;
