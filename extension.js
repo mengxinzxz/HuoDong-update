@@ -35309,9 +35309,12 @@ content:function(){
 'step 0'
 player[player.storage.wechatxiangzhi?'recover':'draw']();
 'step 1'
-for(var target of player.getStorage('wechatjielie_targets').sortBySeat()){
+var targets=player.getStorage('wechatjielie_targets').filter(i=>i.isIn()).sortBySeat();
+if(targets.length){
+targets.forEach(target=>{
 player.line(target);
 target[player.storage.wechatxiangzhi?'recover':'draw']();
+});
 }
 },
 ai:{
