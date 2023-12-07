@@ -33627,7 +33627,7 @@ wechat_re_caocao:['male','wei',4,['wechatdelu','wechatzhujiu'],['die_audio']],
 wechat_zhugeliang:['male','shu',3,['wechatsangu','wechatyanshi'],['die_audio']],
 wechat_simayi:['male','wei',3,['wechatyinren','wechatduoquan'],['die_audio']],
 wechat_re_machao:['male','qun',4,['wechatqipao','wechatzhuixi'],['die_audio']],
-wechat_re_huangyueying:['female','shu',3,['wechatmiaobi','wechathuixin'],['die_audio']],
+wechat_re_huangyueying:['female','shu',3,['wechatmiaobi','wechatrehuixin'],['die_audio']],
 },
 characterIntro:{
 },
@@ -33737,6 +33737,7 @@ delete _status.wechatjifeng_notrick;
 });
 },
 audio:'dawu',
+audioname2:{wechat_re_huangyueying:'wechatjifeng_wechat_re_huangyueying'},
 enable:'phaseUse',
 usable:1,
 filterCard:true,
@@ -33756,6 +33757,9 @@ player:function(player,target){
 if(_status.wechatjifeng_notrick) return 0;
 return 1;
 },
+},
+subSkill:{
+wechat_re_huangyueying:{audio:'ext:活动武将/audio/skill:2'},
 },
 },
 wechattianfa:{
@@ -35596,12 +35600,12 @@ prompt2:()=>lib.translate.wechatfengpo_info,
 },
 },
 wechatfuhan:{
-derivation:['new_yijue','olpaoxiao','retieji','xinliegong'],
+derivation:['new_yijue','new_repaoxiao','retieji','xinliegong'],
 unique:true,
 audio:'fuhan',
 trigger:{player:'phaseZhunbeiBegin'},
 filter:function(event,player){
-return player.getAllHistory('useSkill',evt.skill=='wechatfanghun_fengpo').length;
+return player.getAllHistory('useSkill',evt=>evt.skill=='wechatfanghun_fengpo').length;
 },
 skillAnimation:true,
 animationColor:'fire',
@@ -35802,19 +35806,16 @@ getMax:5,
 //极郭嘉
 wechatdingce:{
 audio:'ext:活动武将/audio/skill:2',
-trigger:{global:['phaseBefore','phaseEnd'],player:['phaseZhunbeiBegin','enterGame']},
+trigger:{global:['phaseBefore','phaseEnd'],player:['enterGame']},
 filter:function(event,player,name){
-if(event.name!='phaseZhunbei'&&player.countMark('wechatmoulvenum')>=lib.skill.wechatmoulvenum.getMax) return false;
+if(player.countMark('wechatmoulvenum')>=lib.skill.wechatmoulvenum.getMax) return false;
 switch(name){
 case 'phaseBefore': case 'enterGame':
 return name!='phaseBefore'||game.phaseNumber==0;
 break;
-case 'phaseZhunbeiBegin':
-return player.countMark('wechatmoulvenum')>player.countCards('h');
 break;
 case 'phaseEnd':
-if(!player.getHp()) return false;
-return player.getHistory('useCard').reduce((num,evt)=>num+evt.cards.length,0)+player.getHistory('respond').reduce((num,evt)=>num+evt.cards.length,0)>=player.getHp();
+return player.getHistory('useCard').length;
 break;
 }
 return false;
@@ -35822,17 +35823,7 @@ return false;
 forced:true,
 locked:false,
 content:function(){
-switch(event.triggername){
-case 'phaseBefore': case 'enterGame':
-lib.skill.wechatmoulvenum.changeNum(3,player);
-break;
-case 'phaseZhunbeiBegin':
-player.draw();
-break;
-case 'phaseEnd':
-lib.skill.wechatmoulvenum.changeNum(player.hp,player);
-break;
-}
+lib.skill.wechatmoulvenum.changeNum(event.triggername!='phaseEnd'?3:player.getHistory('useCard').reduce((list,evt)=>list.add(get.type2(evt.card)),[]).length,player);
 },
 },
 wechatsuanlve:{
@@ -36438,6 +36429,7 @@ kuanggu_re_weiyan:{audio:2},
 //黄月英
 wechatjizhi:{
 audio:'jizhi',
+audioname2:{wechat_re_huangyueying:'wechatjizhi_wechat_re_huangyueying'},
 trigger:{player:'useCard'},
 filter:function(event){
 return get.type2(event.card)=='trick';
@@ -36449,6 +36441,9 @@ player.draw().gaintag=['wechatjizhi'];
 player.addTempSkill('wechatjizhi2')
 },
 ai:{noautowuxie:true},
+subSkill:{
+wechat_re_huangyueying:{audio:'ext:活动武将/audio/skill:2'},
+},
 },
 wechatjizhi2:{
 charlotte:true,
@@ -37709,7 +37704,8 @@ if(player.hasSkillTag('noCompareSource')) return false;
 return game.hasPlayer(target=>lib.skill.wechatdelu.filterTarget(null,player,target));
 },
 filterTarget:function(card,player,target){
-return target!=player&&target.getHp()<=player.getHp()&&target.countCards('h')&&!target.hasSkillTag('noCompareTarget');
+return player.canCompare(target);
+//return target!=player&&target.getHp()<=player.getHp()&&target.countCards('h')&&!target.hasSkillTag('noCompareTarget');
 },
 usable:1,
 selectTarget:[1,Infinity],
@@ -37717,7 +37713,7 @@ multitarget:true,
 multiline:true,
 content:function(){
 'step 0'
-player.draw();
+//player.draw();
 player.addTempSkill('wechatdelu_compare');
 'step 1'
 player.chooseToCompare(targets,function(card){
@@ -37890,6 +37886,7 @@ audio:'wechatyanshi',
 content:function(){
 var position=lib.skill.wechatyanshi_backup.position;
 player.addTempSkill('wechatyanshi_effect','phaseUseAfter');
+player.storage.wechatyanshi_effect=position;
 player.popup(position);
 var next=player.draw();
 if(position=='牌堆底') next.bottom=true;
@@ -37899,10 +37896,12 @@ next.gaintag=['wechatyanshi_effect'];
 effect:{
 charlotte:true,
 onremove:function(player){
+delete player.storage.wechatyanshi_effect;
 player.removeGaintag('wechatyanshi_effect');
 },
 trigger:{player:'useCard'},
 filter:function(event,player){
+if(!player.hasSkill('wechatyanshi')||get.is.blocked('wechatyanshi',player)) return false;
 return player.getHistory('lose',function(evt){
 if(evt.getParent()!=event) return false;
 for(var i in evt.gaintag_map){
@@ -37911,12 +37910,21 @@ if(evt.gaintag_map[i].includes('wechatyanshi_effect')) return true;
 return false;
 }).length;
 },
-forced:true,
-popup:false,
+direct:true,
 content:function(){
-delete player.getStat('skill').wechatyanshi;
-player.popup('演势');
-game.log(player,'重置了技能','#g【演势】');
+'step 0'
+var position=player.storage.wechatyanshi_effect=='牌堆顶'?'牌堆底':'牌堆顶';
+event.position=position;
+player.chooseToDiscard(get.prompt('wechatyanshi'),'弃置一张牌并发动【演势】（从'+position+'摸牌）','he').set('ai',card=>7-get.value(card)).logSkill='wechatyanshi';
+'step 1'
+if(result.bool){
+var position=event.position;
+player.storage.wechatyanshi_effect=position;
+player.popup(position);
+var next=player.draw();
+if(position=='牌堆底') next.bottom=true;
+next.gaintag=['wechatyanshi_effect'];
+}
 },
 },
 },
@@ -37977,7 +37985,15 @@ var list=lib.inpile.reduce((list,name)=>{
 return list.add(get.type2(name));
 },[]);
 if(!list.length){event.finish();return;}
-player.chooseControl(list).set('prompt','请选择一种类别').set('ai',function(){
+var next=player.chooseControl(list);
+var str='夺权：请选择一种牌的类别';
+var str2=get.translation(target)+'于其下个出牌阶段使用第一张牌时，若此牌与你选择的类型相同，则你令此牌无效，且此牌对应的实体牌进入弃牌堆后，你可以使用之';
+if(target.countCards('h')) next.set('dialog',['###'+str+'###'+str2,[target.getCards('h'),'vcard']]);
+else{
+next.set('prompt',str);
+next.set('prompt2',str2);
+}
+next.set('ai',function(){
 var player=_status.event.player;
 var target=_status.event.target;
 var cards=target.getCards('h',function(card){
@@ -37989,7 +38005,8 @@ map[get.type(cards[i],'trick')]=true;
 if(map.equip) return 'equip';
 if(map.trick) return 'trick';
 return 0;
-}).set('target',target);
+});
+next.set('target',target);
 }
 else event.finish();
 'step 2'
@@ -38013,7 +38030,6 @@ return player.isPhaseUsing();
 },
 direct:true,
 content:function(){
-'step 0'
 var target=game.findPlayer(target=>player.storage.wechatduoquan_effect[target.playerid]&&player.storage.wechatduoquan_effect[target.playerid].includes(get.type2(trigger.card)));
 if(target){
 target.logSkill('wechatduoquan_effect',player);
@@ -38022,7 +38038,6 @@ trigger.all_excluded=true;
 target.addTempSkill('wechatduoquan_gain');
 trigger.wechatduoquan_effect=target;
 }
-'step 1'
 player.removeSkill('wechatduoquan_effect');
 },
 mod:{
@@ -38059,8 +38074,18 @@ return evtx.getParent()==(evtxx.relatedEvent||evtxx.getParent())&&evtxx.wechatdu
 },
 forced:true,
 popup:false,
-content:function(){
-player.gain(trigger.cards.filterInD('d'),'gain2');
+content:function*(event,map){
+var player=map.player,cards=map.trigger.cards.filterInD('d').slice();
+while(cards.length){
+var result=yield player.chooseButton(['是否使用其中的牌？',cards]).set('ai',button=>_status.event.player.getUseValue(button.link));
+if(result.bool){
+cards.removeArray(result.links);
+player.$gain2(result.links[0],false);
+game.delayx();
+player.chooseUseTarget(true,result.links[0],false);
+}
+else break;
+}
 },
 },
 },
@@ -38102,7 +38127,7 @@ if(!arg||!arg.card||arg.card.name!='sha'||!arg.target||arg.target.countDiscardab
 wechatzhuixi:{
 mod:{
 globalFrom:function(from,to){
-if(!to.countCards('e')) return -Infinity;
+if(!to.countCards('e',card=>get.type(card)=='equip3'||get.type(card)=='equip4')) return -Infinity;
 },
 },
 audio:'ext:活动武将/audio/skill:2',
@@ -38344,6 +38369,19 @@ mod:{targetInRange:()=>true},
 },
 },
 },
+wechatrehuixin:{
+audio:'wechathuixin',
+trigger:{player:'phaseBegin'},
+forced:true,
+locked:false,
+content:function(){
+var skill=lib.skill.wechatrehuixin.derivation[player.countCards('e')%2];
+player.addTempSkill(skill);
+player.popup(skill);
+game.log(player,'获得了技能','【'+get.translation(skill)+'】');
+},
+derivation:['wechatjifeng','wechatjizhi'],
+},
 },
 dynamicTranslate:{
 wechatxiangzhi:function(player){
@@ -38523,7 +38561,7 @@ wechatjianxiong_info:'你的回合内，当你使用牌造成伤害后，你可�
 wechatmoulvenum:'谋略值',
 wechat_guojia:'极郭嘉',
 wechatdingce:'定策',
-wechatdingce_info:'①游戏开始时，你获得3点'+get.MouLveInform()+'。②准备阶段，若你的'+get.MouLveInform()+'不小于你的手牌数，你摸一张牌。③一名角色的回合结束时，若你本回合使用和打出的牌数之和不小于X，则你获得X点'+get.MouLveInform()+'（X为你的体力值）。',
+wechatdingce_info:'①游戏开始时，你获得3点'+get.MouLveInform()+'。②一名角色的回合结束时，你获得X点'+get.MouLveInform()+'（X为你本回合使用的牌的类型数）。',
 wechatsuanlve:'算略',
 wechatsuanlve_info:'每回合限一次，你可以失去1+X点'+get.MouLveInform()+'，将一张牌当作你本回合使用的上一张基本牌或普通锦囊牌使用（X为你本轮发动〖算略〗的次数）。',
 wechatmiaoji:'妙计',
@@ -38653,7 +38691,7 @@ wechatshouxi:'守玺',
 wechatshouxi_info:'当你成为【杀】的目标后，你可声明一种牌的类别，使用者须选择一项：①弃置一张你声明的类别的牌；②令此【杀】对你无效。',
 wechat_re_caocao:'极曹操',
 wechatdelu:'得鹿',
-wechatdelu_info:'出牌阶段限一次，你可以摸一张牌，然后与任意名体力值不大于你的角色进行同时拼点，且你的拼点点数+X（X为此次参与拼点的角色数）。拼点赢的角色依次获得所有拼点没赢的角色区域内的一张牌。',
+wechatdelu_info:'出牌阶段限一次，你可以与任意名体力值不大于你的角色进行同时拼点，且你的拼点点数+X（X为此次参与拼点的角色数）。拼点赢的角色依次获得所有拼点没赢的角色区域内的一张牌。',
 wechatzhujiu:'煮酒',
 wechatzhujiu_info:'出牌阶段限一次，你可以与一名其他角色交换一张手牌，若这两张手牌的颜色：相同，你回复1点体力；不相同，你对其造成1点伤害。',
 wechat_zhugeliang:'极诸葛亮',
@@ -38661,7 +38699,7 @@ wechatsangu:'三顾',
 wechatsangu_info:'锁定技，当你每三次成为牌的目标后，你获得3点'+get.MouLveInform()+'，然后你占卜3。',
 wechatyanshi:'演势',
 wechatyanshi_backup:'演势',
-wechatyanshi_info:'出牌阶段限一次，你可以从牌堆顶或牌堆底摸一张牌，且你于本阶段使用此牌时重置〖演势〗。',
+wechatyanshi_info:'出牌阶段限一次，你可以从牌堆顶或牌堆底摸一张牌，且当你于本阶段使用此牌时，你可以弃置一张牌并发动从另一端摸牌的〖演势〗。',
 wechat_sp_pangde:'SP微信庞德',
 wechatjuesi:'决死',
 wechatjuesi_info:'出牌阶段，你可以弃置一张【杀】并令一名其他角色弃置一张牌，若弃置的牌不是【杀】且你的体力值不大于该角色，你视为对其使用【决斗】。',
@@ -38672,12 +38710,12 @@ wechatyinren_jianxiong:'奸雄',
 wechatyinren_xingshang:'行殇',
 wechatyinren_mingjian:'明鉴',
 wechatduoquan:'夺权',
-wechatduoquan_info:'结束阶段，你可以选择一名其他角色并选择一个牌的类型，其下个出牌阶段使用第一张牌时，若此牌与你选择的类型相同，则你令此牌无效，且此牌对应的实体牌进入弃牌堆后，你获得之。。',
+wechatduoquan_info:'结束阶段，你可以选择一名其他角色，观看其手牌并并选择一个牌的类型，其于其下个出牌阶段使用第一张牌时，若此牌与你选择的类型相同，则你令此牌无效，且此牌对应的实体牌进入弃牌堆后，你可以使用之。',
 wechat_re_machao:'极马超',
 wechatqipao:'弃袍',
 wechatqipao_info:'当你使用【杀】指定目标后，你可以令其选择一项：①弃置其装备区所有牌（至少一张）；②本回合非锁定技失效且不能响应此牌。',
 wechatzhuixi:'追袭',
-wechatzhuixi_info:'①结束阶段，若场上所有其他角色均在你的攻击范围内，你可以视为使用一张【杀】。②你与装备区没有牌的角色的距离视为1。',
+wechatzhuixi_info:'①结束阶段，若场上所有其他角色均在你的攻击范围内，你可以视为使用一张【杀】。②你与装备区没有坐骑牌的角色的距离视为1。',
 wechat_yj_jushou:'微信沮授',
 wechatjianying:'渐营',
 wechatjianying_info:'当你使用与你使用的上一张牌点数或花色相同的牌时，你可以摸一张牌。出牌阶段限一次，你可以将一张牌当做任意基本牌使用（若你于此阶段内使用的上一张牌有花色，则此牌的花色视为上一张牌的花色）。',
@@ -38692,6 +38730,8 @@ wechatmiaobi:'妙笔',
 wechatmiaobi_info:'当你于出牌阶段使用普通锦囊牌结算完毕后，你可以将此牌对应的所有实体牌置于一名目标角色的武将牌上（每回合每种牌名限一次）。其下个回合开始时，其选择一项：①交给你一张锦囊牌，然后将你置于其武将牌上的“妙笔”牌置入弃牌堆；②你依次对其使用所有你置于其武将牌上的“妙笔”牌（无距离限制，不能使用的“妙笔”牌置入弃牌堆）。',
 wechathuixin:'慧心',
 wechathuixin_info:'①当你于回合内使用锦囊牌结算完毕后，你于本回合使用牌无距离限制。②当你于回合外使用锦囊牌时，你摸一张牌。',
+wechatrehuixin:'慧心',
+wechatrehuixin_info:'回合开始时，若你装备区里的牌数为奇数/偶数，你获得〖祭风〗/〖集智〗直到回合结束。',
 },
 };
 for(var i in WeChatkill.character){
