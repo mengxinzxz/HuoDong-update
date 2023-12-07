@@ -35141,97 +35141,62 @@ return game.filterPlayer(function(current){
 return event.targets.includes(current)&&!player.getStorage('wechatshendao_mark').includes(current);
 }).sortBySeat();
 },
-content:function(){
-'step 0'
+content:function*(event,map){
+var player=map.player;
 player.addTempSkill('wechatshendao_mark',{player:'phaseUseAfter'});
-player.markAuto('wechatshendao_mark',lib.skill.wechatshendao.logTarget(trigger,player));
+player.markAuto('wechatshendao_mark',lib.skill.wechatshendao.logTarget(map.trigger,player));
 player.storage.wechatshendao_mark.sortBySeat();
-'step 1'
 switch(player.getStorage('wechatshendao_mark').length){
 case 1:
-player.chooseControl('basic','trick','equip','cancel2').set('prompt','神道：是否选择获得一种类型的牌？').set('ai',function(){
+var list=lib.inpile.reduce((list,name)=>list.add(get.type2(name)),[]);
+if(list.length){
+var result=yield player.chooseControl(list,'cancel2').set('prompt','神道：是否选择获得一种类型的牌？').set('ai',function(){
 var player=_status.event.player;
-if(player.hp<=3&&!player.countCards('h',{name:['shan','tao']})) return 'basic';
-if(player.countCards('he',{type:'equip'})<2) return 'equip';
-return 'trick';
+var types=_status.event.controls.filter(i=>i!='cancel2');
+if(player.hp<2&&!player.countCards('h',{name:['shan','tao']})&&types.includes('basic')) return 'basic';
+if(player.countCards('he',{type:'equip'})<2&&types.includes('equip')) return 'equip';
+if(types.includes('trick')) return 'trick';
+return types.randomGet();
 });
-break;
-case 2:
-player.chooseTarget('神道：是否视为对一名角色使用一张普通锦囊牌？',function(card,player,target){
-for(var name of lib.inpile){
-var info=lib.card[name];
-if(!info||info.type!='trick') continue;
-if(!player.canUse(name,target)) continue;
-return true;
-}
-return false;
-}).set('ai',function(target){
-var player=_status.event.player,list=[];
-for(var name of lib.inpile){
-var info=lib.card[name];
-if(!info||info.type!='trick') continue;
-if(!player.canUse(name,target)) continue;
-var eff=get.effect(target,{name:name},player,player)
-if(eff>0) list.push(eff);
-}
-list.sort().reverse();
-if(!list.length) return 0;
-return list[0];
-});
-event.goto(3);
-break;
-case 3:
-var targets=player.getStorage('wechatshendao_mark').filter(target=>target.isIn());
-player.chooseBool('神道：是否对'+get.translation(list.sortBySeat())+'各造成1点伤害？').set('choice',targets.reduce((num,target)=>num+get.damageEffect(target,player,player),0)>0);
-event.goto(5);
-break;
-default:
-event.finish();
-break;
-}
-'step 2'
 if(result.control!='cancel2'){
 player.popup(result.control);
 game.log(player,'声明了','#y'+get.translation(result.control)+'牌');
 var card=get.cardPile(card=>get.type2(card)==result.control);
 if(card) player.gain(card,'gain2');
 }
-event.finish();
-'step 3'
+}
+break;
+case 2:
+var result=yield player.chooseTarget('神道：是否视为对一名角色使用一张普通锦囊牌？',function(card,player,target){
+return lib.inpile.some(name=>get.type(name)=='trick'&&player.canUse({name:name,isCard:true},target));
+}).set('ai',target=>{
+var player=_status.event.player;
+var list=lib.inpile.filter(name=>get.type(name)=='trick'&&player.canUse({name:name,isCard:true},target));
+list=list.map(name=>get.effect(target,{name:name},player,player)).sort((a,b)=>b-a);
+return list[0];
+}).set('animate',false);
 if(result.bool){
 var target=result.targets[0];
-event.target=target;
 player.line(target);
-var list=[];
-for(var name of lib.inpile){
-var info=lib.card[name];
-if(!info||info.type!='trick') continue;
-list.push(name);
+var list=lib.inpile.filter(name=>get.type(name)=='trick'&&player.canUse({name:name,isCard:true},target));
+var result2=yield player.chooseButton(['神道：视为对'+get.translation(target)+'使用一张普通锦囊牌',[list,'vcard']],true).set('ai',button=>{
+var player=_status.event.player,target=_status.event.target;
+return get.effect(target,{name:button.link[2]},player,player);
+}).set('target',target);
+if(result2.bool) player.useCard({name:result2.links[0][2],isCard:true},target,false);
 }
-if(!list.length) event.finish();
-else{
-list=list.filter(function(name){
-return player.canUse(name,target);
-});
-if(list.length) player.chooseButton(['视为对'+get.translation(target)+'使用一张普通锦囊牌',[list,'vcard']],true).set('ai',function(button){
-var evt=_status.event.getParent();
-return get.effect(evt.target,{name:button.link[2]},evt.player,evt.player);
-});
-else event.finish();
-}
-}
-else event.finish();
-'step 4'
+break;
+case 3:
+var targets=player.getStorage('wechatshendao_mark').filter(target=>target.isIn()).sortBySeat();
+if(targets.length){
+var result=yield player.chooseBool('神道：是否对'+get.translation(targets)+'各造成1点伤害？').set('choice',targets.reduce((num,target)=>num+get.damageEffect(target,player,player),0)>0);
 if(result.bool){
-var name=result.links[0][2];
-player.useCard({name:name,isCard:true},target,false);
-}
-event.finish();
-'step 5'
-if(result.bool){
-var targets=player.getStorage('wechatshendao_mark').filter(target=>target.isIn());
 player.line(targets);
 targets.forEach(target=>target.damage());
+}
+}
+break;
+default: break;
 }
 },
 subSkill:{
