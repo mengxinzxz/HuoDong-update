@@ -35144,9 +35144,7 @@ return event.targets.includes(current)&&!player.getStorage('wechatshendao_mark')
 content:function(){
 'step 0'
 player.addTempSkill('wechatshendao_mark',{player:'phaseUseAfter'});
-player.markAuto('wechatshendao_mark',game.filterPlayer(function(current){
-return trigger.targets.includes(current)&&!list.includes(current);
-}));
+player.markAuto('wechatshendao_mark',lib.skill.wechatshendao.logTarget(trigger,player));
 player.storage.wechatshendao_mark.sortBySeat();
 'step 1'
 switch(player.getStorage('wechatshendao_mark').length){
