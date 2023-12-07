@@ -44129,7 +44129,7 @@ old_shangshen:{
 audio:'clanshangshen',
 trigger:{global:'damageEnd'},
 filter:function(event,player){
-return event.nature&&event.player.isIn();
+return event.hasNature()&&event.player.isIn();
 },
 check:function(event,player){
 return player.countCards('j')||(get.attitude(player,event.player)>0&&event.player.countCards('h')<4);
@@ -44155,9 +44155,11 @@ str+='</div>';
 var next=choiceList.add(str);
 next.firstChild.addEventListener(lib.config.touchscreen?'touchend':'click',ui.click.button);
 next.firstChild.link=i;
-for(var j in lib.element.button){
-next[j]=lib.element.button[j];
-}
+//for(var j in lib.element.button){
+//next[j]=lib.element.button[j];
+//}
+//还是手搓带劲儿
+Object.setPrototypeOf(next,lib.element.Button.prototype);
 choiceList.buttons.add(next.firstChild);
 }
 return choiceList;
@@ -44174,8 +44176,10 @@ var next=player.chooseButton();
 next.set('dialog',event.videoId);
 next.set('forced',true);
 next.set('selectButton',2);
-next.set('ai',function(button){
+next.set('target',target);
+next.set('ai',button=>{
 var player=_status.event.player;
+var target=_status.event.target;
 switch(button.link){
 case 0:
 if(player.countCards('j')) return 3;
