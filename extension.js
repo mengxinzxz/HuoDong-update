@@ -15,6 +15,7 @@ game.bolShowNewPack=function(){
 //更新告示
 var HuoDong_update=[
 '/setPlayer/',
+'删除易冲突的扩展覆写式扩展花色美化显示',
 'bugfix+技能效果调整',
 'To be continued...',
 ];
@@ -1745,118 +1746,6 @@ wechat_guansuo:'dangxian_guansuo',
 game.HDsetAudioname2('xingshuai',{
 re_caorui:'rexingshuai',
 });
-
-//十周年花色美化显示
-if(game.HasExtension('十周年UI')&&lib.config.extension_十周年UI_playerMarkStyle&&lib.config.extension_十周年UI_playerMarkStyle=='decade'){
-//谋黄忠
-lib.skill.sbliegong.intro.markcount=()=>undefined;
-lib.skill._wanjunqushou_count={
-charlotte:true,
-trigger:{player:'sbliegong_countAfter'},
-direct:true,
-content:function(){
-player.storage.sbliegong.sort((a,b)=>lib.suit.indexOf(b)-lib.suit.indexOf(a));
-game.broadcastAll(function(player,skill){
-if(player.marks[skill]) player.marks[skill].firstChild.innerHTML=player.getStorage(skill).reduce((str,suit)=>str+=get.translation(suit),'');
-},player,'sbliegong');
-},
-};
-//界吕蒙
-lib.skill.rebotu.subSkill.mark.intro.markcount=()=>undefined;
-lib.skill._botu_count={
-charlotte:true,
-trigger:{player:'rebotu_markEnd'},
-filter:function(event,player){
-return player.storage.rebotu_mark;
-},
-direct:true,
-firstDo:true,
-content:function(){
-player.storage.rebotu_mark.sort((a,b)=>lib.suit.indexOf(b)-lib.suit.indexOf(a));
-game.broadcastAll(function(player,skill){
-if(player.marks[skill]) player.marks[skill].firstChild.innerHTML=player.getStorage(skill).reduce((str,suit)=>str+=get.translation(suit),'');
-},player,'rebotu_mark');
-},
-};
-//留赞
-lib.skill.refenyin.subSkill.mark.intro.markcount=()=>undefined;
-lib.skill.iwasawa_refenyin.subSkill.mark.intro.markcount=()=>undefined;
-lib.skill._refenyin_count={
-charlotte:true,
-trigger:{player:['refenyinBegin','iwasawa_refenyinBegin']},
-direct:true,
-lastDo:true,
-content:function(){
-'step 0'
-var suits=[];
-game.getGlobalHistory('cardMove',function(evt){
-if(suits.length>=4) return;
-if(evt.name=='lose'){
-if(evt.position==ui.discardPile){
-for(var i of evt.cards) suits.add(get.suit(i,false));
-}
-}
-else{
-if(evt.name=='cardsDiscard'){
-for(var i of evt.cards) suits.add(get.suit(i,false));
-}
-}
-});
-player.storage[trigger.name+'_mark']=suits.sort((a,b)=>lib.suit.indexOf(b)-lib.suit.indexOf(a));
-player.addTempSkill(trigger.name+'_mark');
-player.markSkill(trigger.name+'_mark');
-'step 1'
-game.broadcastAll(function(player,skill){
-if(player.marks[skill]) player.marks[skill].firstChild.innerHTML=player.getStorage(skill).reduce((str,suit)=>str+=get.translation(suit),'');
-},player,trigger.name+'_mark');
-},
-};
-//陈式
-lib.skill.qingbei.subSkill.effect.intro.markcount=()=>undefined;
-lib.skill._qingbeiSuit={
-charlotte:true,
-trigger:{player:'qingbeiEnd'},
-filter:function(event,player){
-return player.hasSkill('qingbei_effect')&&player.getStorage('qingbei_effect').length;
-},
-direct:true,
-firstDo:true,
-content:function(){
-game.broadcastAll(function(player,skill){
-var suits=player.getStorage(skill).slice();
-suits.sort((a,b)=>lib.suit.indexOf(b)-lib.suit.indexOf(a));
-if(player.marks[skill]) player.marks[skill].firstChild.innerHTML=suits.reduce((str,suit)=>str+=get.translation(suit),'');
-},player,'qingbei_effect');
-},
-};
-lib.skill._junktaoluan_mark={
-charlotte:true,
-trigger:{player:'useCardBefore'},
-filter:function(event,player){
-return event.skill=='junktaoluan_backup'&&player.storage.junktaoluan2;
-},
-direct:true,
-firstDo:true,
-content:function(){
-player.addTempSkill('junktaoluan6');
-player.markSkill('junktaoluan6');
-player.storage.junktaoluan2.sort((a,b)=>lib.suit.indexOf(b)-lib.suit.indexOf(a));
-game.broadcastAll(function(player,skill){
-var suits=player.getStorage('junktaoluan2').slice();
-suits.sort((a,b)=>lib.suit.indexOf(b)-lib.suit.indexOf(a));
-if(player.marks[skill]) player.marks[skill].firstChild.innerHTML=suits.reduce((str,suit)=>str+=get.translation(suit),'');
-},player,'junktaoluan6');
-}
-};
-lib.skill.junktaoluan6={
-charlotte:true,
-intro:{
-//markcount:(s,p)=>p.getStorage('junktaoluan2').length,
-content:(s,p)=>('本回合已使用'+get.translation(p.getStorage('junktaoluan2'))+'花色的牌'),
-},
-};
-lib.translate.junktaoluan6='滔乱';
-}
 
 //技能修改
 //范疆张达
