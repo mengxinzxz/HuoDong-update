@@ -2049,11 +2049,6 @@ lib.skill.dccaixia.subSkill.clear.content=function(){
 player.removeMark('dccaixia_clear',1,false);
 };
 lib.translate.dccaixia_info='当你造成或受到伤害后，你可以摸至多X张牌，然后你不能发动〖才暇〗直到你使用等量张牌（X为本局游戏人数且至多为5）。';
-//南华老仙
-lib.skill.jsrgshoushu.trigger={global:'roundStart'};
-var filter=''+lib.skill.jsrgshoushu.filter;
-eval('lib.skill.jsrgshoushu.filter='+filter.replace("event.name!='phase'||game.phaseNumber==0","true"));
-lib.translate.jsrgshoushu_info='锁定技。①一轮游戏开始时，若场上没有【太平要术】，你可以从游戏外将【太平要术】置于一名角色的装备区内。②当【太平要术】离开一名角色的装备区后，你令此牌销毁。';
 //经典孙权
 lib.skill.dczhiheng.subSkill.add.direct=true;
 lib.skill.dczhiheng.subSkill.add.filter=function(event,player){
