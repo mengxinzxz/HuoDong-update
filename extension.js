@@ -2039,12 +2039,24 @@ player.markAuto('dczhiheng_hit',history.reduce((list,evt)=>list.add(evt.player),
 lib.skill.dcjianxiong.init=function(player){
 player.markSkill('dcjianxiong');
 };
-//许靖
+//朱铁雄
 var content=''+lib.skill.dcbianzhuang.subSkill.refresh.content;
 eval('lib.skill.dcbianzhuang.subSkill.refresh.content='+content.replace(
 "delete stat.dcbianzhuang;",
 "delete stat.dcbianzhuang;"+
 "game.log(player,'重置了技能','#g【变装】');"
+));
+//神张飞
+lib.skill.shencai.init=(player)=>player.markSkill('shencai');
+lib.skill.shencai.intro={
+markcount:(storage,player)=>player.countMark('shencai')+1,
+content:(storage,player)=>'当前最大发动次数：'+(player.countMark('shencai')+1),
+};
+var content=''+lib.skill.xunshi.content;
+eval('lib.skill.xunshi.content='+content.replace(
+" player.addMark('shencai',1,false);",
+"{player.addMark('shencai',1,false);"+
+"game.log(player,'#g【神裁】','发动次数','#y+1');}"
 ));
 
 //precG
