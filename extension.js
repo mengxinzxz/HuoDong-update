@@ -4,10 +4,11 @@ return {
 name:"活动武将",
 editable:false,
 content:function(config,pack){
-//删除扩展
-delete lib.extensionMenu['extension_活动武将'].delete;
-
 //js/css文件的添加
+window.HDPJ_import=function(pack){
+pack(lib,game,ui,get,ai,_status);
+};
+lib.init.js(lib.assetURL+'extension/活动武将/extension_peijian.js');
 lib.init.css(lib.assetURL+'extension/活动武将','extension');
 
 //更新公告
@@ -15,6 +16,7 @@ game.bolShowNewPack=function(){
 //更新告示
 var HuoDong_update=[
 '/setPlayer/',
+'合并活动武将和活动配件',
 '删除易冲突的扩展覆写式扩展花色美化显示',
 'bugfix+技能效果调整',
 'To be continued...',
@@ -72,6 +74,15 @@ return lib.config.extensions&&lib.config.extensions.includes(ext);
 game.HasExtension=function(ext){
 return game.TrueHasExtension(ext)&&lib.config['extension_'+ext+'_enable'];
 };
+
+//删除活动配件
+if(game.TrueHasExtension('活动配件')){
+alert('本版本开始不需要再使用活动配件，即将为您删除活动配件扩展并重启游戏');
+setTimeout(function(){
+game.removeExtension('活动配件');
+game.reload();
+},1000);
+}
 
 //十周年UI美化素材
 if(game.HasExtension('十周年UI')&&game.getFileList&&game.readFile&&game.writeFile){
@@ -385,44 +396,6 @@ alert('检测到官方武将包'+get.translation(openCharacterPack)+'被隐藏�
 setTimeout(function(){
 game.reload();
 },2000);
-}
-
-//活动配件检测
-if(lib.config.extensions){
-var pjNum=((game.HasExtension('活动配件')&&lib.extensionPack['活动配件'].version)?lib.extensionPack['活动配件'].version:'0');
-//更新配件版本
-if(game.TrueHasExtension('活动配件')&&!game.HasExtension('活动配件')){
-alert('检测到未开启活动配件，即将为您开启活动配件并重启游戏');
-setTimeout(function(){
-game.saveExtensionConfig('活动配件','enable',true);
-game.reload();
-},1000);
-}
-else if(!game.TrueHasExtension('活动配件')||pjNum!='0.1.1'){//配件版本precPeiJian
-alert((!game.TrueHasExtension('活动配件')?'检测到未安装活动配件，将为您自动安装':'配件版本与现版本不一致，正在您自动更新活动配件')+'\n若长时间未完成导入，请将活动配件进行万能导入\n活动配件位于活动武将扩展文件的最外层');
-window.HuoDongOpenLoading=function(){
-var dialog=ui.create.div('.HuoDong-loading',document.body);
-var text=ui.create.div('.HuoDong-loading-text',dialog);
-dialog.subViews={text};
-return dialog;
-};
-game.DaoRuPeiJian=function(){
-var loading=window.HuoDongOpenLoading();
-loading.subViews.text.innerHTML='正在导入配件，请稍后。。。。。。';
-var fileToLoad='extension/活动武将/活动配件.zip';
-if(game.readFile){
-game.readFile(fileToLoad,function(data){
-game.importExtension(data,function(){
-alert('配件导入完成，游戏即将重启');
-game.reload();
-});
-});
-}
-};
-setTimeout(function(){
-game.DaoRuPeiJian();
-},1000);
-}
 }
 
 //precBoss
@@ -1164,7 +1137,6 @@ window.rkbg.innerHTML = '仁' + '<b><font color=\"#FF5500\">' + _status.renku.le
 
 //将键社神武将移至DIY包
 //快捷添加/删除武将
-//by-活动配件
 game.HDdeleteCharacter=function(name){
 if(lib.character[name]) delete lib.character[name];
 var packs=Object.keys(lib.characterPack).filter(pack=>lib.characterPack[pack][name]);
@@ -2077,6 +2049,7 @@ eval('lib.skill.dcbianzhuang.subSkill.refresh.content='+content.replace(
 //precG
 //全局机制
 },precontent:function(bilibilicharacter){
+//判断是否有XX扩展
 game.TrueHasExtension=function(ext){
 return lib.config.extensions&&lib.config.extensions.includes(ext);
 };
@@ -48678,8 +48651,8 @@ bol_fuhuanghou:'TW伏寿',
 for(var i in huodongcharacter.character){
 if(huodongcharacter.characterSort.huodongcharacter.Cothers.includes(i)) huodongcharacter.character[i][4].push('unseen');
 huodongcharacter.character[i][4].push(((lib.device||lib.node)?'ext:':'db:extension-')+'活动武将/image/character/'+i+'.jpg');
-if(!lib.config.extension_活动配件_DanJi&&i.indexOf('DJ_')==0) delete huodongcharacter.character[i];
-if(!lib.config.extension_活动配件_SCS&&i.indexOf('biliscs_')!=-1) delete huodongcharacter.character[i];
+if(!lib.config.extension_活动武将_DanJi&&i.indexOf('DJ_')==0) delete huodongcharacter.character[i];
+if(!lib.config.extension_活动武将_SCS&&i.indexOf('biliscs_')!=-1) delete huodongcharacter.character[i];
 }
 return huodongcharacter;
 });
@@ -49073,65 +49046,37 @@ name:'卞夫人修改',
 intro:'开启此选项后，国战卞夫人【挽危】调整为OL/十周年版本（重启生效）',
 init:false,
 },
-FenJieXianZ:{
+FenJieXianE:{
 clear:true,
-name:'<li>关于扩展',
+name:'<li>扩展彩蛋',
 },
-DaoRuPeiJian:{
-name:'导入【活动配件】',
-clear:true,
-onclick:function(){
-alert('导入配件中');
-window.HuoDongOpenLoading=function(){
-var dialog=ui.create.div('.HuoDong-loading',document.body);
-var text=ui.create.div('.HuoDong-loading-text',dialog);
-dialog.subViews={text};
-return dialog;
-};
-game.DaoRuPeiJian=function(){
-var loading=window.HuoDongOpenLoading();
-loading.subViews.text.innerHTML='正在导入配件，请稍后。。。。。。';
-var fileToLoad='extension/活动武将/活动配件.zip';
-if(game.readFile){
-game.readFile(fileToLoad,function(data){
-game.importExtension(data,function(){
-alert('配件导入完成，游戏即将重启');
-game.reload();
-});
-});
-}
-};
-setTimeout(function(){
-game.DaoRuPeiJian();
-},1000);
+ShenLvBu:{
+name:'彩蛋·神吕布',
+intro:'开启此选项后，在正常模式中可以使用：最强神话、暴怒战神、神鬼无前',
+init:false,
 },
+XvXiang:{
+name:'彩蛋·虚像',
+intro:'开启此选项后，线下包的五个虚拟偶像将获得技能【虚像】',
+init:false,
 },
-DeleteHuoDong:{
-name:'删除扩展',
-clear:true,
-onclick:function(){
-if(this.innerHTML=='<span>确认删除</span>'){
-game.removeExtension('活动武将');
-game.removeExtension('活动配件');
-game.reload();
-}
-else{
-this.innerHTML='<span>确认删除</span>';
-var that=this;
-setTimeout(function(){
-that.innerHTML='<span>删除扩展</span>';
-},1000);
-}
+DanJi:{
+name:'彩蛋·千里走单骑',
+intro:'开启此选项后，在正常模式中可以使用：蔡阳，普净，胡班（位于活动武将“其他武将”包）',
+init:false,
 },
+SCS:{
+name:'彩蛋·十常侍',
+intro:'开启此选项后，在正常模式中可以使用十常侍单人版（位于活动武将“其他武将”包）',
+init:false,
 },
 },package:{
 intro:'新人制作扩展，希望大家支持。'+
 '<br>新人技术不足，希望大家包涵。'+
 '<br><a href="https://github.com/mengxinzxz/HuoDong-update.git">点击前往活动武将Github仓库</a>'+
-'<br>本扩展需同活动配件一起使用，进入游戏后，若没有此扩展/配件版本不同于现版本则会自动导入。若无法导入请万能导入活动配件。'+
-//'<br><li>欢迎大家进群支持活动武将'+
+'<br><li>欢迎大家进群支持活动武将'+
 //入群二维码图片
-//'<br><img style=width:238px src='+lib.assetURL+'extension/活动武将/HuoDong_QQ.png>',
+'<br><img style=width:238px src='+lib.assetURL+'extension/活动武将/HuoDong_QQ.png>'+
 '',
 author:'萌新（转型中）',
 diskURL:'',
