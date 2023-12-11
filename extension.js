@@ -44035,8 +44035,8 @@ logTarget:'player',
 forced:true,
 content:function(){
 'step 0'
-//0.02%几率直接击杀熏鱼
-if(Math.random()<0.01*0.02){
+//2%几率直接击杀熏鱼
+if(Math.random()<0.02){
 trigger.player.line(player);
 trigger.player.chat('关爱个der');
 player.die().set('source',trigger.player);
