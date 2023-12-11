@@ -16,14 +16,13 @@ game.bolShowNewPack=function(){
 //更新告示
 var HuoDong_update=[
 '/setPlayer/',
-'合并活动武将和活动配件',
-'删除易冲突的扩展覆写式扩展花色美化显示',
-'调整翻译覆写的位置和修改技能一起，防止出现两个部分只加载了其中一部分导致描述与效果不符的bug',
-'bugfix+技能效果调整',
+'bugfix',
+'添加欢杀武将：孙休',
 'To be continued...',
 ];
 //更新武将
 var HuoDong_players=[
+'Mbaby_sunxiu'
 ];
 //加载
 var dialog=ui.create.dialog(
@@ -9718,7 +9717,7 @@ characterSort:{
 MiNikill:{
 MiNi_wei:['Mbaby_caohong','Mbaby_guojia','Mbaby_sp_caoren','Mbaby_yinfuren','Mbaby_sp_jiaxu','Mbaby_wenqin','Mbaby_kuailiangkuaiyue','Mbaby_jsp_guanyu','Mbaby_wangji','Mbaby_chenqun','Mbaby_xiahoulingnv','Mbaby_wenyang','Mbaby_sp_pangde','Mbaby_caocao','Mbaby_caozhang','Mbaby_dufuren','Mbaby_simayi','Mbaby_yangxiu','Mbaby_zhangchangpu','Mbaby_zhonghui','Mbaby_sp_jiangwei','Mbaby_caoxiu','Mbaby_xunyou','Mbaby_lidian','Mbaby_zhongyao','Mbaby_caozhen','Mbaby_guohuanghou','Mbaby_xinxianying','Mbaby_xiahouyuan','Mbaby_xizhicai','Mbaby_caorui','Mbaby_xunyu','Mbaby_dengai','Mbaby_caozhi','Mbaby_sp_caiwenji','Mbaby_caoying','Mbaby_caopi','Mbaby_caoang','Mbaby_guojia','Mbaby_zhenji','Mbaby_caoren','Mbaby_wangyi','Mbaby_zhangchunhua','Mbaby_xiahoudun','Mbaby_xuzhu','Mbaby_zhangliao','Mbaby_guohuai','Mbaby_dianwei','Mbaby_zhanghe','Mbaby_yujin','Mbaby_xuhuang'],
 MiNi_shu:['Mbaby_wangtao','Mbabysp_zhangfei','Mbaby_wangyue','Mbaby_xf_yiji','Mbaby_mizhu','Mbaby_mifuren','Mbaby_liuyong','Mbaby_ganfuren','Mbaby_sunqian','Mbaby_lvkai','Mbaby_zhoucang','Mbaby_huangyueying','Mbaby_yangwan','Mbaby_liuchen','Mbaby_liyan','Mbaby_chendao','Mbaby_yanyan','Mbaby_xiahouba','Mbaby_huaman','Mbaby_sp_zhugeliang','Mbaby_zhugeguo','Mbaby_jianyong','Mbaby_wangping','Mbaby_mayunlu','Mbaby_guansuo','Mbaby_xiahoushi','Mbaby_shamoke','Mbaby_wuxian','Mbaby_zhugezhan','Mbaby_qinmi','Mbaby_guanyinping','Mbaby_guanyu','Mbaby_zhugeliang','Mbaby_liubei','Mbaby_machao','Mbaby_zhurong','Mbaby_zhangfei','Mbaby_zhaoyun','Mbaby_huangzhong','Mbaby_weiyan','Mbaby_liaohua','Mbaby_pangtong','Mbaby_menghuo','Mbaby_jiangwei','Mbaby_liushan','Mbaby_fazheng','Mbaby_madai','Mbaby_guanping','Mbaby_liufeng','Mbaby_wuyi','Mbaby_zhangxingcai','Mbaby_dongyun','Mbaby_sp_sunshangxiang','Mbaby_xushu','Mbaby_masu'],
-MiNi_wu:['Mbaby_zhangfen','Mbaby_xuezong','Mbaby_dingfeng','Mbaby_panjun','Mbaby_sundeng','Mbaby_luji','Mbaby_zhoufang','Mbaby_zhangxuan','Mbaby_yanjun','Mbaby_zhuhuan','Mbaby_luyusheng','Mbaby_re_jsp_pangtong','Mbaby_sunhao','Mbabysp_daqiao','Mbaby_lukang','Mbaby_buzhi','Mbaby_xushi','Mbaby_zhugeke','Mbaby_zhoufei','Mbaby_zhangzhang','Mbaby_sunliang','Mbaby_ol_sunjian','Mbaby_zhuzhi','Mbaby_bulianshi','Mbaby_chengpu','Mbaby_daqiao','Mbaby_ganning','Mbaby_huanggai','Mbaby_lusu','Mbaby_luxun','Mbaby_lvmeng','Mbaby_sunce','Mbaby_sunluban','Mbaby_sunluyu','Mbaby_sunquan','Mbaby_sunshangxiang','Mbaby_taishici','Mbaby_wuguotai','Mbaby_xiaoqiao','Mbaby_xusheng','Mbaby_zhoutai','Mbaby_zhouyu','Mbaby_zhugejin','Mbaby_zumao','Mbabysp_xiaoqiao'],
+MiNi_wu:['Mbaby_sunxiu','Mbaby_zhangfen','Mbaby_xuezong','Mbaby_dingfeng','Mbaby_panjun','Mbaby_sundeng','Mbaby_luji','Mbaby_zhoufang','Mbaby_zhangxuan','Mbaby_yanjun','Mbaby_zhuhuan','Mbaby_luyusheng','Mbaby_re_jsp_pangtong','Mbaby_sunhao','Mbabysp_daqiao','Mbaby_lukang','Mbaby_buzhi','Mbaby_xushi','Mbaby_zhugeke','Mbaby_zhoufei','Mbaby_zhangzhang','Mbaby_sunliang','Mbaby_ol_sunjian','Mbaby_zhuzhi','Mbaby_bulianshi','Mbaby_chengpu','Mbaby_daqiao','Mbaby_ganning','Mbaby_huanggai','Mbaby_lusu','Mbaby_luxun','Mbaby_lvmeng','Mbaby_sunce','Mbaby_sunluban','Mbaby_sunluyu','Mbaby_sunquan','Mbaby_sunshangxiang','Mbaby_taishici','Mbaby_wuguotai','Mbaby_xiaoqiao','Mbaby_xusheng','Mbaby_zhoutai','Mbaby_zhouyu','Mbaby_zhugejin','Mbaby_zumao','Mbabysp_xiaoqiao'],
 MiNi_qun:['Mbaby_zhujun','Mbaby_gongsunyuan','Mbaby_sp_zhangliao','Mbaby_sp_ol_zhanghe','Mbaby_guotufengji','Mbaby_yanfuren','Mbaby_tangji','Mbaby_caojie','Mbaby_liangxing','Mbabysp_zhenji','Mbaby_caoxing','Mbaby_sp_menghuo','Mbaby_wangrong','Mbaby_hetaihou','Mbaby_sp_taishici','Mbaby_zhangji','Mbaby_dongbai','Mbaby_beimihu','Mbaby_chunyuqiong','Mbaby_zhangqiying','Mbaby_fuhuanghou','Mbaby_liuxie','Mbaby_quyi','Mbaby_jsp_huangyueying','Mbaby_sp_machao','Mbaby_lijue','Mbaby_panfeng','Mbaby_liuzhang','Mbaby_jiaxu','Mbaby_zhangbao','Mbaby_zhangliang','Mbaby_gaoshun','Mbaby_caifuren','Mbaby_xuyou','Mbaby_gongsunzan','Mbaby_pangde','Mbaby_jushou','Mbaby_liru','Mbaby_dongzhuo','Mbaby_zhangjiao','Mbaby_huatuo','Mbaby_lvbu','Mbaby_diaochan','Mbaby_sp_diaochan','Mbaby_huaxiong','Mbaby_yuji','Mbaby_yanwen','Mbaby_caiwenji','Mbaby_liubiao','Mbaby_yuanshao','Mbaby_yuanshu','Mbaby_chengong','Mbaby_zuoci'],
 MiNi_shen:['Mbaby_shen_taishici','Mbaby_shen_diaochan','Mbaby_shen_daxiaoqiao','Mbaby_shen_zhenji','Mbaby_shen_guojia','Mbaby_shen_huatuo','Mbaby_shen_dianwei','Mbaby_shen_lvbu','Mbaby_shen_zhugeliang','Mbaby_shen_lvmeng','Mbaby_shen_zhouyu','Mbaby_shen_guanyu','Mbaby_shen_liubei','Mbaby_shen_caocao','Mbaby_shen_zhangliao','Mbaby_shen_sunquan','Mbaby_shen_simayi','Mbaby_shen_zhaoyun','Mbaby_shen_ganning','Mbaby_shen_luxun'],
 MiNi_change:['Mbaby_re_nanhualaoxian','Mbaby_re_sunyi','Mbaby_zhaoxiang','Mbaby_xushao','Mbaby_shen_zhangjiao','Mbaby_baosanniang'],
@@ -9883,6 +9882,7 @@ Mbaby_dingfeng:['male','wu',4,['miniduanbing','minifenxun'],[]],
 Mbaby_xuezong:['male','wu',3,['minifunan','minijiexun'],[]],
 Mbaby_sb_huanggai:['male','wu',4,['minisbkurou','minisbzhaxiang'],[]],
 Mbaby_zhangfen:['male','wu',4,['miniwanglu','minixianzhu','minichaixie'],[]],
+Mbaby_sunxiu:['male','wu',3,['miniyanzhu','minixingxue','minizhaofu'],['zhu']],
 //群
 Mbaby_gaoshun:['male','qun',4,['minixianzhen','minijinjiu'],[]],
 Mbaby_caifuren:['female','qun',3,['minireqieting','minirexianzhou'],[]],
@@ -21619,6 +21619,143 @@ player.discardPlayerCard(trigger.player,true,num,'he');
 },
 },
 },
+miniyanzhu:{
+audio:'yanzhu',
+enable:'phaseUse',
+filterTarget:lib.filter.notMe,
+usable:1,
+content:function(){
+'step 0'
+if(!target.countCards('e')||player.storage.miniyanzhu) event._result={index:0};
+else target.chooseControl().set('prompt',get.translation(player)+'发动了【宴诛】，请选择一项').set('choiceList',[
+'弃置一张牌，并令下次受到的伤害+1直到下回合开始',
+'将装备区内的所有牌交给'+get.translation(player)+'并令其发动【宴诛】无法选择此项',
+]).set('ai',function(){
+if(_status.event.player.countCards('e')>=3) return 0;
+return 1;
+});
+'step 1'
+if(result.index==1){
+target.give(target.getCards('e'),player);
+player.storage.miniyanzhu=true;
+}
+else{
+if(target.countCards('he')>0) target.chooseToDiscard('he',true);
+target.addTempSkill('reyanzhu2',{player:'phaseBegin'});
+target.addMark('reyanzhu2',1,false);
+}
+},
+ai:{
+order:6,
+result:{
+target:function(player,target){
+if(player.storage.miniyanzhu) return -1;
+var ne=target.countCards('e');
+if(!ne) return -2;
+if(ne>=2) return -ne;
+return 0;
+},
+},
+},
+},
+minixingxue:{
+audio:'xingxue',
+trigger:{player:'phaseJieshuBegin'},
+filter:function(event,player){
+return player.maxHp>0;
+},
+direct:true,
+content:function(){
+'step 0'
+player.chooseTarget([1,player.maxHp],get.prompt2('minixingxue')).set('ai',function(target){
+var att=get.attitude(_status.event.player,target);
+if(target.countCards('he')) return att;
+return att/10;
+});
+'step 1'
+if(result.bool){
+var targets=result.targets.sortBySeat();
+event.targets=result.targets;
+player.logSkill('minixingxue',targets);
+event.targets2=event.targets.slice(0);
+}
+else event.finish();
+'step 2'
+if(event.targets.length){
+var target=event.targets.shift();
+target.draw();
+event.current=target;
+}
+else event.finish();
+'step 3'
+if(event.current&&event.current.countCards('he')){
+if(event.targets2.length==1) event.current.chooseCard('选择一张牌置于牌堆顶','he',true);
+else event.current.chooseCardTarget({
+prompt:'将一张牌置于牌堆顶，或交给其他目标角色',
+filterCard:true,
+position:'he',
+filterTarget:function(card,player,target){
+return target!=player&&_status.event.getParent().targets2.contains(target);
+},
+forced:true,
+selectTarget:[0,1],
+ai1:(card)=>6-get.value(card),
+ai2:(target)=>get.attitude(_status.event.player,target),
+});
+}
+else event.goto(2);
+'step 4'
+if(result&&result.cards){
+if(!result.targets||!result.targets.length){
+event.current.lose(result.cards,ui.cardPile,'insert');
+event.current.$throw(result.cards.length,1000);
+}
+else event.current.give(result.cards,result.targets[0]);
+}
+'step 5'
+event.goto(2);
+},
+},
+minizhaofu:{
+zhuSkill:true,
+audio:'zhaofu',
+enable:'phaseUse',
+filterTarget:lib.filter.notMe,
+selectTarget:[1,2],
+usable:1,
+content:function(){
+target.addTempSkill('minizhaofu_effect','roundStart');
+},
+ai:{
+order:9,
+result:{
+target:function(player,target){
+var targets=game.filterPlayer(function(current){
+return current.group=='wu'&&get.attitude(player,current)>0;
+});
+if(targets.length){
+for(var targetx of targets){
+if(!targetx.inRange(target)) return -1;
+}
+return -0.5;
+}
+return 0;
+},
+},
+},
+subSkill:{
+effect:{
+charlotte:true,
+mark:true,
+intro:{content:'已视为在所有吴势力角色的攻击范围内'},
+mod:{
+inRangeOf:function(from,to){
+if(from.group=='wu') return true;
+},
+},
+},
+},
+},
 //群
 miniqieting:{
 audio:'qieting',
@@ -31277,6 +31414,12 @@ minichaixie_info:'锁定技。当你的【大攻车】被销毁后，你摸X张�
 minidagongche:'大攻车',
 minidagongche_skill:'大攻车',
 minidagongche_info:'出牌阶段开始时，你可以视为使用一张【杀】，且当此【杀】对目标角色造成伤害后，你弃置其一张牌。若此【大攻车】未被强化，则其他角色无法弃置你装备区内的【大攻车】。当此牌离开你的装备区后，销毁之。',
+miniyanzhu:'宴诛',
+miniyanzhu_info:'出牌阶段限一次，你可以令一名其他角色选择一项：弃置一张牌并令下一次受到的伤害+1直到其下回合开始，或将装备区里的所有牌交给你并令你发动〖宴诛〗无法选择此项。',
+minixingxue:'兴学',
+minixingxue_info:'结束阶段开始时，你可以令至多X名角色依次摸一张牌并将一张牌置于牌堆顶或交给一名其他目标角色（X为你的体力上限）。',
+minizhaofu:'诏缚',
+minizhaofu_info:'主公技，出牌阶段限一次，你可选择至多两名其他角色，这些角色本轮视为在所有吴势力角色的攻击范围内。',
 //群
 Mbaby_zuoci:'欢杀左慈',
 Mbaby_gaoshun:'欢杀高顺',
@@ -47501,7 +47644,7 @@ intro:'新人制作扩展，希望大家支持。'+
 author:'萌新（转型中）',
 diskURL:'',
 forumURL:'',
-version:'0.1.1',
+version:'0.1.2',
 //新人制作扩展，希望大家支持。
 //新人技术不足，希望大家包涵。
 //壹、贰、叁、肆、伍、陆、柒、捌、玖、拾
