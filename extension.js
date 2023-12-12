@@ -38140,7 +38140,7 @@ game.log(player,'成功完成使命');
 player.awakenSkill('fh_mibei');
 var list=['basic','equip','trick'],cards=[];
 for(var i of list){
-var card=get.cardPile2(card=>get.type(card)==i);
+var card=get.fh_cardPile(card=>get.type(card)==i);
 if(card) cards.push(card);
 }
 if(cards.length) player.gain(cards,'gain2');
@@ -38504,7 +38504,7 @@ fh_xingqi_info:'当你使用非延时锦囊牌时，你从将一张额外牌堆�
 fh_zifu:'自缚',
 fh_zifu_info:'锁定技，出牌阶段结束时，若你本阶段内未使用牌，则你移去所有“备”且本回合的手牌上限-1。',
 fh_mibei:'秘备',
-fh_mibei_info:'使命技。①使命：当你使用的牌结算完成后，若你的“备”中包含的基本牌，锦囊牌，装备牌数量均不少于两张，则你从牌堆中获得这三种类型的牌各一张并获得技能〖谋立〗。②失败：结束阶段开始时，若你没有“备”，且你于本回合的准备阶段开始时也没有“备”，则你减1点体力上限。',
+fh_mibei_info:'使命技。①使命：当你使用的牌结算完成后，若你的“备”中包含的基本牌，锦囊牌，装备牌数量均不少于两张，则你从额外牌堆中随机获得这三种类型的牌各一张并获得技能〖谋立〗。②失败：结束阶段开始时，若你没有“备”，且你于本回合的准备阶段开始时也没有“备”，则你减1点体力上限。',
 fh_mouli:'谋立',
 fh_mouli_info:'出牌阶段限一次，你可以令一名其他角色获得你的一张“备”。',
 fh_guixiu:'闺秀',
