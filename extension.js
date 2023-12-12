@@ -38092,7 +38092,7 @@ return get.value(card,player)*player.getUseValue(card);
 'step 1'
 if(result.bool){
 player.logSkill('fh_xingqi');
-player.gain(result.links,'gain2').gaintag.add('fh_tag');
+player.gain(result.links,'gain2');
 }
 },
 },
@@ -38193,7 +38193,7 @@ var card={name:button.link[2]},player=_status.event.player;
 return get.value(card,player);
 });
 'step 1'
-if(result.bool) target.gain(result.links,'gain2').gaintag.add('fh_tag');
+if(result.bool) target.gain(result.links,'gain2');
 },
 ai:{
 combo:'fh_xingqi',
@@ -38412,10 +38412,7 @@ var target=result.targets[0];
 var card=result.cards[0];
 player.logSkill('fh_mingfa',target);
 player.showCards([card],get.translation(player)+'发动了【明伐】');
-var result2=yield player.chooseToCompare(target).set('fixedResult',fixedResult?((fixedResult)=>{
-fixedResult[player.playerid]=card;
-return fixedResult;
-})(fixedResult):{[player.playerid]:card});
+var result2=yield player.chooseToCompare(target).set('fixedResult',{[player.playerid]:card});
 if(result2.bool){
 player.gainPlayerCard(target,'he',true);
 player.draw();
@@ -38432,11 +38429,11 @@ content:function*(event,map){
 var player=map.player,target=event.target;
 player.awakenSkill('fh_rongbei');
 var num=1;
-while(!target.hasEmptySlot(num)){
-num++;
-if(num>5) break;
+while(target.hasEmptySlot(num)){
 var card=get.fh_cardPile((card)=>get.subtype(card)=='equip'+num&&target.canUse(card,target));
 if(card) target.chooseUseTarget(card,true,'nopopup');
+num++;
+if(num>5) break;
 }
 },
 ai:{
@@ -38524,9 +38521,15 @@ fh_rongbei_info:'限定技，出牌阶段，你可选择一名有空装备栏的
 };
 for(var i in MX_feihongyinxue.character){
 MX_feihongyinxue.character[i][4].push('character:'+i.slice(6));
-MX_feihongyinxue.translate[i+'_ab']=MX_feihongyinxue.translate[i].slice(2);
+//MX_feihongyinxue.translate[i+'_ab']=MX_feihongyinxue.translate[i].slice(2);
+MX_feihongyinxue.translate[i+'_prefix']=MX_feihongyinxue.translate[i].slice(0,2);
 }
 return MX_feihongyinxue;
+});
+lib.namePrefix.set('飞鸿',{
+color:'#ff6a6a',
+nature:'IndianRed1',
+showName:'鸿',
 });
 lib.config.all.characters.push('MX_feihongyinxue');
 lib.config.all.sgscharacters.push('MX_feihongyinxue');
@@ -38643,8 +38646,11 @@ popup:false,
 content:function(){
 var cards=[];
 cards[trigger.name=='equip'?'add':'addArray'](trigger.name=='equip'?trigger.card:trigger.getg(player).filter(card=>card.fh_extra));
-_status.fh_cardPile.removeArray(cards);
-game.log('#g额外牌堆','失去了',cards);
+var cardx=cards.filter(card=>_status.fh_cardPile.includes(card));
+if(cardx.length){
+_status.fh_cardPile.removeArray(cardx);
+game.log('#g额外牌堆','失去了',cardx);
+}
 game.broadcastAll(cards=>{
 cards.forEach(card=>card.addGaintag('fh_tag'));
 },cards);
@@ -38658,10 +38664,10 @@ charlotte:true,
 ruleSkill:true,
 trigger:{
 player:'loseAfter',
-global:['cardsDiscardAfter','loseAsyncAfter'],
+global:['cardsDiscardAfter','equipAfter','addJudgeAfter','gainAfter','loseAsyncAfter','addToExpansionAfter'],
 },
 filter:function(event,player){
-if(event.name.indexOf('lose')==0) return event.getl(player).cards.filter(card=>get.position(card,true)=='d'&&card.fh_extra).length>0;
+if(event.name!='cardsDiscard') return event.getl(player).cards.filter(card=>get.position(card,true)=='d'&&card.fh_extra).length>0;
 if(!event.cards.filterInD('d').some(card=>card.fh_extra)) return false;
 var evt=event.getParent();
 if(evt.name!='orderingDiscard') return false;
@@ -38675,7 +38681,7 @@ forced:true,
 popup:false,
 content:function(){
 var cards;
-if(trigger.name.indexOf('lose')==0) cards=trigger.getl(player).cards.filter(card=>get.position(card,true)=='d'&&card.fh_extra);
+if(trigger.name!='cardsDiscard') cards=trigger.getl(player).cards.filter(card=>get.position(card,true)=='d'&&card.fh_extra);
 else cards=trigger.cards.filterInD('d');
 cards=cards.filter(card=>card.fh_extra);
 _status.fh_cardPile.addArray(cards);
