@@ -37167,7 +37167,7 @@ characterSort:{
 MX_feihongyinxue:{
 fh_zhi:['mx_fh_sp_bianfuren','mx_fh_sp_chenzhen','mx_fh_feiyi','mx_fh_luotong','mx_fh_sp_sunshao','mx_fh_sp_duyu','mx_fh_sp_xunchen'],
 fh_xin:['mx_fh_wangling','mx_fh_sp_mifuren','mx_fh_zhouchu','mx_fh_wujing','mx_fh_sp_yanghu'],
-fh_ren:['mx_fh_caizhenji','mx_fh_sp_huaxin'],
+fh_ren:['mx_fh_caizhenji','mx_fh_sp_huaxin','mx_fh_xiangchong'],
 fh_yong:[],
 fh_yan:[],
 },
@@ -37187,6 +37187,7 @@ mx_fh_wujing:['male','wu',4,['fh_heji','liubing'],[]],
 mx_fh_sp_yanghu:['male','qun',3,['fh_mingfa','fh_rongbei'],[]],
 mx_fh_caizhenji:['female','wei',3,['sheyi','fh_tianyin'],[]],
 mx_fh_sp_huaxin:['male','wei',3,['fh_yuanqing','shuchen'],[]],
+mx_fh_xiangchong:['male','shu',4,['fh_guying','muzhen'],[]],
 },
 skill:{
 //卞夫人
@@ -37533,13 +37534,15 @@ return 0;
 },
 fh_xianming:{
 audio:'qinzheng',
-trigger:{global:['gainAfter','loseAsyncAfter','equipAfter']},
+trigger:{global:['gainAfter','loseAsyncAfter','equipAfter','addToExpansionAfter','addJudgeAfter','cardsGotoSpecialAfter']},
 filter:function(event,player){
-if(event.name=='equip'&&!event.card.fh_extra&&event.card.type=='basic') return false;//直接获取原类型
-if(event.getg&&!game.hasPlayer(target=>event.getg(target).some(card=>card.fh_extra&&card.type=='basic'))) return false;
-return !get.fh_cardPile(card=>get.type(card)=='basic');
+if(get.fh_cardPile(card=>get.type(card)=='basic')) return false;
+if(event.name=='equip') return event.card.fh_extra&&event.card.type=='basic';//直接获取原类型
+if(event.getg) return game.hasPlayer(target=>event.getg(target).some(card=>card.fh_extra&&card.type=='basic'));
+return event.cards.some(card=>card.fh_extra&&card.type=='basic');
 },
 usable:1,
+frequent:true,
 content:function(){
 player.draw(2);
 player.recover();
@@ -38502,12 +38505,57 @@ init:function(player){
 player.storage.renku=true;
 },
 },
+//向宠
+fh_guying:{
+onremove:true,
+audio:'fh_guying',
+trigger:{player:'loseAfter',global:'loseAsyncAfter'},
+filter:function(event,player){
+return lib.skill.guying.filter(event,player);
+},
+usable:1,
+forced:true,
+logTarget:()=>_status.currentPhase,
+content:function*(event,map){
+var player=map.player,trigger=map.trigger;
+if(trigger.delay===false) game.delayx();
+var target=_status.currentPhase;
+var card=trigger.getl(player).cards2[0];
+player.addMark('fh_guying',1,false);
+player.when('phaseZhunbeiBegin').filter((event,player)=>player.countMark('fh_guying')).then(()=>{
+var num=player.countMark('fh_guying');
+player.removeMark('fh_guying',num,false);
+player.chooseToDiscard('he',num,true);
+});
+var addIndex=0,choiceList=[],str=get.translation(player);
+if(target.countCards('he')>0) choiceList.push('交给'+str+'一张牌');
+else addIndex++;
+if(get.position(card)=='d') choiceList.push('令'+str+'收回'+get.translation(card));
+if(choiceList.length==1) event._result={index:0};
+var result=yield target.chooseControl().set('ai',function(){
+var player=_status.event.player,evt=_status.event.getParent();
+if(get.value(evt.card,evt.player)*get.attitude(player,evt.player)>0) return 0;
+return Math.random()>(get.value(evt.card,evt.player)/6)?1:0;
+}).set('choiceList',choiceList);
+if(result.index+addIndex==0){
+var result2=target.chooseCard('he',true,'固营：将一张牌交给'+get.translation(player));
+if(result2.bool) target.give(result2.cards,player);
+}
+else{
+player.gain(card,'gain2');
+player.when('fh_guyingEnd').vars({card:card}).then(()=>{
+if(player.isIn()&&player.getCards('h').contains(card)&&get.type(card,player)=='equip') player.chooseUseTarget(card,true,'nopopup');
+});
+}
+},
+intro:{content:'已发动过#次'},
+},
 },
 translate:{
 fh_zhi:'<span style="font-family: yuanli">本包前言：</span>'+
 '<br><span style="font-family: yuanli">2023年活动武将年底大活，打开</span>'+
 '<br><span style="font-family: yuanli">此包后游戏将会加入额外牌堆机</span>'+
-'<br><span style="font-family: yuanli">制，此包建议单独开启</span>'+
+'<br><span style="font-family: yuanli">制</span>'+
 '<br>'+
 '飞鸿·智',
 fh_xin:'飞鸿·信',
@@ -38576,10 +38624,13 @@ fh_rongbei:'戎备',
 fh_rongbei_info:'限定技，出牌阶段，你可选择一名有空装备栏的角色，为其每个空置装备栏从额外牌堆中随机置入一张对应副类别的装备。',
 mx_fh_caizhenji:'飞鸿蔡贞姬',
 mx_fh_sp_huaxin:'飞鸿华歆',
+mx_fh_xiangchong:'飞鸿向宠',
 fh_tianyin:'天音',
 fh_tianyin_info:'结束阶段，你可以亮出牌堆顶的四张牌，然后选择获得其中任意张本回合你未使用过的类别的牌。',
 fh_yuanqing:'渊清',
 fh_yuanqing_info:'锁定技，出牌阶段结束时，你随机从额外牌堆中将你本阶段使用过的牌类型的各一张牌置于仁库中。',
+fh_guying:'固营',
+fh_guying_info:'锁定技，每回合限一次，当你于回合外因使用/打出/弃置而失去牌后，若牌数为1，则你令当前回合角色选择一项：①随机交给你一张牌。②令你获得本次失去的牌，若为装备牌，则你使用之。准备阶段，你弃置你发动〖固营〗的次数张牌，然后清空〖固营〗的发动次数。',
 },
 };
 for(var i in MX_feihongyinxue.character){
