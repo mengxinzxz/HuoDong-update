@@ -37397,7 +37397,7 @@ player.logSkill('fh_shengxi');
 if(result.links[0]=='摸一张牌') player.draw();
 else{
 var card=get.fh_cardPile(result.links[0][2]);
-if(card) player.fh_gain(card);
+if(card) player.gain(card,'gain2');
 }
 }
 },
@@ -37414,7 +37414,7 @@ prompt2:'从额外牌堆中获得一张【调剂盐梅】',
 frequent:true,
 content:function(){
 var card=get.fh_cardPile('tiaojiyanmei');
-if(card) player.fh_gain(card);
+if(card) player.gain(card,'gain2');
 },
 }
 },
@@ -37507,7 +37507,7 @@ if(result2.bool){
 var target=result2.targets[0];
 map.add(target);
 cards.removeArray(result.links);
-target.fh_gain(result.links);
+target.gain(result.links,'gain2');
 }
 else break;
 }
@@ -37531,6 +37531,12 @@ return 0;
 },
 fh_xianming:{
 audio:'qinzheng',
+trigger:{global:['gainAfter','loseAsyncAfter','equipAfter']},
+filter:function(event,player){
+if(event.name=='equip'&&!event.card.fh_extra&&event.card.type=='basic') return false;//直接获取原类型
+if(event.getg&&!game.hasPlayer(target=>event.getg(target).some(card=>card.fh_extra&&card.type=='basic'))) return false;
+return !get.fh_cardPile(card=>get.type(card)=='basic');
+},
 usable:1,
 content:function(){
 player.draw(2);
@@ -37661,7 +37667,7 @@ if(get.zhinangs().some(name=>get.fh_cardPile(name))){
 var result2=yield player.chooseButton(['罪辞：请选择令'+get.translation(target)+'获得的智囊',[get.zhinangs().filter(name=>get.fh_cardPile(name)),'vcard']]).set('ai',button=>1+Math.random());
 if(result2.bool){
 var card=get.fh_cardPile(result2.links[0][2]);
-if(card) target.fh_gain(card);
+if(card) target.gain(card,'gain2');
 }
 }
 }
@@ -37859,7 +37865,7 @@ if(cards.length){
 var result=yield player.chooseButton(['危迫：请选择令'+get.translation(target)+'获得的牌',[cards,'vcard']]).set('ai',button=>1+Math.random());
 if(result.bool){
 var card=get.fh_cardPile(result.links[0][2]);
-if(card) target.fh_gain(card);
+if(card) target.gain(card,'gain2');
 }
 }
 },
@@ -38265,7 +38271,7 @@ for(var i of types){
 var card=get.fh_cardPile(card=>get.type2(card)==i);
 if(card) cards.push(card);
 }
-if(cards.length) player.fh_gain(cards);
+if(cards.length) player.gain(cards,'gain2');
 }
 }
 },
@@ -38332,7 +38338,7 @@ var card=get.fh_cardPile(card=>card=>player.canEquip(card)&&get.subtype(card)=='
 if(card){
 player.$gain2(card);
 game.delayx();
-player.fh_equip(card);
+player.equip(card);
 break;
 }
 }
@@ -38429,8 +38435,8 @@ var num=1;
 while(!target.hasEmptySlot(num)){
 num++;
 if(num>5) break;
-var card=get.fh_cardPile((card)=>get.subtype(card)=='equip'+num&&target.canEquip(card));
-if(card) target.fh_equip(card);
+var card=get.fh_cardPile((card)=>get.subtype(card)=='equip'+num&&target.canUse(card,target));
+if(card) target.chooseUseTarget(card,true,'nopopup');
 }
 },
 ai:{
@@ -38530,7 +38536,6 @@ if(lib.config.characters.includes('MX_feihongyinxue')){
 lib.arenaReady.push(()=>{
 if(!_status.fh_cardPile){
 _status.fh_cardPile=[];
-_status.fh_cardPile_return=[];
 var cardList=[
 //基本牌
 ['club',4,'sha'],
@@ -38620,37 +38625,30 @@ if(filter(_status.fh_cardPile[i])) return _status.fh_cardPile[i];
 }
 return false;
 };
-//获得额外牌堆的牌
-//单人获得
-lib.element.player.fh_gain=function(cards){
-var player=this;
-if(!Array.isArray(cards)) cards=[cards];
+//移除额外牌堆的牌
+lib.skill._fh_remove={
+ruleSkill:true,
+charlotte:true,
+trigger:{
+player:['gainEnd','equipEnd'],
+global:'loseAsyncEnd',
+},
+filter:function(event,player){
+if(event.name=='equip') return event.card.fh_extra;
+return event.getg&&event.getg(player).some(card=>card.fh_extra);
+},
+priority:114514,
+forced:true,
+popup:false,
+content:function(){
+var cards=[];
+cards[trigger.name=='equip'?'add':'addArray'](trigger.name=='equip'?trigger.card:trigger.getg(player).filter(card=>card.fh_extra));
 _status.fh_cardPile.removeArray(cards);
-_status.fh_cardPile_return.addArray(cards);
-player.gain(cards,'gain2').set('fromFH',true).gaintag.add('fh_tag');
-};
-//同时获得
-game.fh_gain=function(player,targets,cards){
-var map=[];
-if(!Array.isArray(targets)) targets=[targets];//基本用不上
-if(!Array.isArray(cards)) cards=[cards];//同上，基本用不上
-for(var i=0;i<Math.min(targets.length,cards.length);i++){
-map.push(targets[i],cards[i]);
-}
-game.loseAsync({
-gain_list:map,
-player:player,
-cards:cards,
-giver:player,
-animate:'give',
-}).setContent('gaincardMultiple').set('fromFH',true);
-};
-//使用装备
-lib.element.player.fh_equip=function(card){
-var player=this;
-_status.fh_cardPile.remove(card);
-_status.fh_cardPile_return.add(card);
-player.equip(card).set('fromFH',true);
+game.log('#g额外牌堆','失去了',cards);
+game.broadcastAll(cards=>{
+cards.forEach(card=>card.addGaintag('fh_tag'));
+},cards);
+},
 };
 lib.skill.fh_tag={charlotte:true};
 lib.translate.fh_tag='额外牌堆';
@@ -38662,19 +38660,17 @@ trigger:{player:'loseAfter',global:'loseAsyncAfter'},
 filter:function(event,player){
 if(event.name=='lose'&&event.position!=ui.discardPile) return false;
 var evt=event.getl(player);
-return evt&&evt.cards.some(card=>_status.fh_cardPile_return.includes(card));
+return evt&&evt.cards.some(card=>card.fh_extra);
 },
 forceDie:true,
 priority:-1919810,
 forced:true,
 popup:false,
 content:function(){
-var evt=trigger.getl(player);
-var cards=evt.cards.filter(card=>_status.fh_cardPile_return.includes(card));
-_status.fh_cardPile_return.removeArray(cards);
+var cards=trigger.getl(player).filter(card=>card.fh_extra);
 _status.fh_cardPile.addArray(cards);
 game.cardsGotoSpecial(cards);
-game.log(cards,'被放回了额外牌堆');
+game.log(cards,'被放回了','#g额外牌堆');
 }
 };
 }
