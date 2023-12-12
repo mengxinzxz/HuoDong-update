@@ -38633,11 +38633,12 @@ lib.skill._fh_remove={
 ruleSkill:true,
 charlotte:true,
 trigger:{
-player:['gainEnd','equipEnd'],
+player:['gainEnd','equipEnd','addToExpansionEnd','addJudgeEnd'],
 global:'loseAsyncEnd',
 },
 filter:function(event,player){
 if(event.name=='equip') return event.card.fh_extra;
+if(event.name=='addToExpansion'||event.name=='addJudge') return event.cards.some(card=>card.fh_extra);
 return event.getg&&event.getg(player).some(card=>card.fh_extra);
 },
 priority:114514,
@@ -38645,7 +38646,9 @@ forced:true,
 popup:false,
 content:function(){
 var cards=[];
-cards[trigger.name=='equip'?'add':'addArray'](trigger.name=='equip'?trigger.card:trigger.getg(player).filter(card=>card.fh_extra));
+if(trigger.name=='equip') cards.push(trigger.card);
+else if(trigger.name=='addToExpansion'||trigger.name=='addJudge') cards.addArray(trigger.cards.some(card=>card.fh_extra));
+else cards.addArray(trigger.getg(player).filter(card=>card.fh_extra));
 var cardx=cards.filter(card=>_status.fh_cardPile.includes(card));
 if(cardx.length){
 _status.fh_cardPile.removeArray(cardx);
