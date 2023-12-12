@@ -38458,15 +38458,15 @@ var cards=get.cards(4);
 var cards2=[];
 var videoId=lib.status.videoId++;
 game.broadcastAll(function(player,id,cards){
-var dialog=ui.create.dialog((player==game.me&&!_status.auto)?'【天音】选择获得其中本回合未使用过的类型的牌各一张':'天音',cards);
+var dialog=ui.create.dialog((player==game.me&&!_status.auto)?'###天音###请选择任意张本回合未使用过的类别的牌获得':'天音',cards);
 dialog.videoId=id;
 },player,videoId,cards);
 var time=get.utc();
 game.addVideo('showCards',player,['天音',get.cardsInfo(cards)]);
 game.addVideo('delay',null,2);
-var types=player.getHistory('useCard').reduce((list,evt)=>list.add(get.type2(evt.card),[]));
+var types=player.getHistory('useCard').reduce((list,evt)=>list.add(get.type2(evt.card)),[]);
 var result=yield player.chooseButton([1,4]).set('types',types).set('filterButton',button=>{
-return !types.includes(get.type2(button.link));
+return !_status.event.types.includes(get.type2(button.link));
 }).set('dialog',videoId).set('ai',button=>get.value(button.link,_status.event.player));
 if(result.bool){
 cards2.addArray(result.links);
@@ -38475,7 +38475,7 @@ game.cardsDiscard(cards);
 }
 var time=1000-(get.utc()-time);
 if(time>0) game.delay(0,time);
-if(cards2.length) player.gain(card2,'gain2');
+if(cards2.length) player.gain(cards2,'gain2');
 },
 },
 //华歆
