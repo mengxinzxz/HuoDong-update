@@ -38485,10 +38485,10 @@ inherit:'yuanqing',
 content:function(){
 var map=[],cards=[];
 player.getHistory('useCard',evt=>{
-if(evt.getParent('phaseUse')==trigger) map.add(get.type2(evt.card,));
+if(evt.getParent('phaseUse')==trigger) map.add(get.type2(evt.card));
 });
 map.forEach(type=>{
-var card=get.fh_cardPile(card=>get.type2(card)==card);
+var card=get.fh_cardPile(card=>get.type2(card)==type);
 if(card) cards.push(card);
 });
 if(cards.length){
@@ -38696,8 +38696,8 @@ lib.skill._fh_remove={
 ruleSkill:true,
 charlotte:true,
 trigger:{
-player:['gainEnd','equipEnd','addToExpansionEnd','addJudgeEnd','cardsGotoSpecialEnd'],
-global:'loseAsyncEnd',
+player:['gainEnd','equipEnd','addToExpansionEnd','addJudgeEnd'],
+global:['loseAsyncEnd','cardsGotoSpecialEnd'],
 },
 filter:function(event,player){
 if(event.name=='equip') return event.card.fh_extra;
