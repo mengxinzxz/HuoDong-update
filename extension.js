@@ -38647,7 +38647,7 @@ popup:false,
 content:function(){
 var cards=[];
 if(trigger.name=='equip') cards.push(trigger.card);
-else if(trigger.name=='addToExpansion'||trigger.name=='addJudge') cards.addArray(trigger.cards.some(card=>card.fh_extra));
+else if(trigger.name=='addToExpansion'||trigger.name=='addJudge') cards.addArray(trigger.cards.filter(card=>card.fh_extra));
 else cards.addArray(trigger.getg(player).filter(card=>card.fh_extra));
 var cardx=cards.filter(card=>_status.fh_cardPile.includes(card));
 if(cardx.length){
