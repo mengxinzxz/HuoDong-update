@@ -37167,7 +37167,7 @@ characterSort:{
 MX_feihongyinxue:{
 fh_zhi:['mx_fh_sp_bianfuren','mx_fh_sp_chenzhen','mx_fh_feiyi','mx_fh_luotong','mx_fh_sp_sunshao','mx_fh_sp_duyu','mx_fh_sp_xunchen'],
 fh_xin:['mx_fh_wangling','mx_fh_sp_mifuren','mx_fh_zhouchu','mx_fh_wujing','mx_fh_sp_yanghu'],
-fh_ren:[],
+fh_ren:['mx_fh_caizhenji','mx_fh_sp_huaxin'],
 fh_yong:[],
 fh_yan:[],
 },
@@ -37185,6 +37185,8 @@ mx_fh_sp_mifuren:['female','shu',3,['fh_guixiu','qingyu'],[]],
 mx_fh_zhouchu:['male','wu',4,['xianghai','fh_chuhai'],[]],
 mx_fh_wujing:['male','wu',4,['fh_heji','liubing'],[]],
 mx_fh_sp_yanghu:['male','qun',3,['fh_mingfa','fh_rongbei'],[]],
+mx_fh_caizhenji:['female','wei',3,['sheyi','fh_tianyin'],[]],
+mx_fh_sp_huaxin:['male','wei',3,['fh_yuanqing','shuchen'],[]],
 },
 skill:{
 //卞夫人
@@ -38445,6 +38447,61 @@ return (target.hasSkillTag('noe')?2:1)*(5-target.countCards('e')-target.countDis
 },
 },
 },
+//蔡贞姬
+fh_tianyin:{
+audio:'tianyin',
+trigger:{player:'phaseJieshuBegin'},
+frequent:true,
+content:function*(event,map){
+var player=map.player;
+var cards=get.cards(4);
+var cards2=[];
+var videoId=lib.status.videoId++;
+game.broadcastAll(function(player,id,cards){
+var dialog=ui.create.dialog((player==game.me&&!_status.auto)?'【天音】选择获得其中本回合未使用过的类型的牌各一张':'天音',cards);
+dialog.videoId=id;
+},player,videoId,cards);
+var time=get.utc();
+game.addVideo('showCards',player,['天音',get.cardsInfo(cards)]);
+game.addVideo('delay',null,2);
+var types=player.getHistory('useCard').reduce((list,evt)=>list.add(get.type2(evt.card),[]));
+var result=yield player.chooseButton([1,4]).set('types',types).set('filterButton',button=>{
+return !types.includes(get.type2(button.link));
+}).set('dialog',videoId).set('ai',button=>get.value(button.link,_status.event.player));
+if(result.bool){
+cards2.addArray(result.links);
+cards.removeArray(cards2);
+game.cardsDiscard(cards);
+}
+var time=1000-(get.utc()-time);
+if(time>0) game.delay(0,time);
+if(cards2.length) player.gain(card2,'gain2');
+},
+},
+//华歆
+fh_yuanqing:{
+audio:'yuanqing',
+inherit:'yuanqing',
+content:function(){
+var map=[],cards=[];
+player.getHistory('useCard',evt=>{
+if(evt.getParent('phaseUse')==trigger) map.add(get.type2(evt.card,));
+});
+map.forEach(type=>{
+var card=get.fh_cardPile(card=>get.type2(card)==card);
+if(card) cards.push(card);
+});
+if(cards.length){
+player.$gain2(cards,false);
+game.cardsGotoSpecial(cards,'toRenku');
+game.log(player,'将',cards,'置入了仁库');
+game.delayx();
+}
+},
+init:function(player){
+player.storage.renku=true;
+},
+},
 },
 translate:{
 fh_zhi:'<span style="font-family: yuanli">本包前言：</span>'+
@@ -38517,6 +38574,12 @@ fh_mingfa:'明伐',
 fh_mingfa_info:'①出牌阶段开始时，你可以展示一张手牌并用此牌牌与一名其他角色拼点。若你赢，你获得对方一张牌并摸一张牌；若你没赢，你本回合不能使用牌指定其他角色为目标。②你的拼点牌亮出后，你令此牌的点数+2。',
 fh_rongbei:'戎备',
 fh_rongbei_info:'限定技，出牌阶段，你可选择一名有空装备栏的角色，为其每个空置装备栏从额外牌堆中随机置入一张对应副类别的装备。',
+mx_fh_caizhenji:'飞鸿蔡贞姬',
+mx_fh_sp_huaxin:'飞鸿华歆',
+fh_tianyin:'天音',
+fh_tianyin_info:'结束阶段，你可以亮出牌堆顶的四张牌，然后选择获得其中任意张本回合你未使用过的类别的牌。',
+fh_yuanqing:'渊清',
+fh_yuanqing_info:'锁定技，出牌阶段结束时，你随机从额外牌堆中将你本阶段使用过的牌类型的各一张牌置于仁库中。',
 },
 };
 for(var i in MX_feihongyinxue.character){
@@ -38633,13 +38696,13 @@ lib.skill._fh_remove={
 ruleSkill:true,
 charlotte:true,
 trigger:{
-player:['gainEnd','equipEnd','addToExpansionEnd','addJudgeEnd'],
+player:['gainEnd','equipEnd','addToExpansionEnd','addJudgeEnd','cardsGotoSpecialEnd'],
 global:'loseAsyncEnd',
 },
 filter:function(event,player){
 if(event.name=='equip') return event.card.fh_extra;
-if(event.name=='addToExpansion'||event.name=='addJudge') return event.cards.some(card=>card.fh_extra);
-return event.getg&&event.getg(player).some(card=>card.fh_extra);
+if(event.getg) return event.getg(player).some(card=>card.fh_extra);
+return event.cards.some(card=>card.fh_extra);
 },
 priority:114514,
 forced:true,
@@ -38647,8 +38710,8 @@ popup:false,
 content:function(){
 var cards=[];
 if(trigger.name=='equip') cards.push(trigger.card);
-else if(trigger.name=='addToExpansion'||trigger.name=='addJudge') cards.addArray(trigger.cards.filter(card=>card.fh_extra));
-else cards.addArray(trigger.getg(player).filter(card=>card.fh_extra));
+else if(trigger.getg) cards.addArray(trigger.getg(player).filter(card=>card.fh_extra));
+else cards.addArray(trigger.cards.filter(card=>card.fh_extra));
 var cardx=cards.filter(card=>_status.fh_cardPile.includes(card));
 if(cardx.length){
 _status.fh_cardPile.removeArray(cardx);
@@ -38656,7 +38719,7 @@ game.log('#g额外牌堆','失去了',cardx);
 }
 game.broadcastAll(cards=>{
 cards.forEach(card=>card.addGaintag('fh_tag'));
-},cards);
+},cards.filter(card=>get.owner(card)));
 },
 };
 lib.skill.fh_tag={charlotte:true};
