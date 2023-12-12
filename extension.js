@@ -37390,7 +37390,7 @@ next=player.chooseButton([
 ],true);
 }
 next.set('ai',card=>{
-if(card.link[2]) return (Math.random()+1.5)*get.value({name:card.link[2]},_status.event.player);
+if(card.link[2]) return (Math.random()+1.5);
 if(card.link=='摸一张牌') return 1;
 return 0;
 });
@@ -37537,9 +37537,9 @@ audio:'qinzheng',
 trigger:{global:['gainAfter','loseAsyncAfter','equipAfter','addToExpansionAfter','addJudgeAfter','cardsGotoSpecialAfter']},
 filter:function(event,player){
 if(get.fh_cardPile(card=>get.type(card)=='basic')) return false;
-if(event.name=='equip') return event.card.fh_extra&&event.card.type=='basic';//直接获取原类型
-if(event.getg) return game.hasPlayer(target=>event.getg(target).some(card=>card.fh_extra&&card.type=='basic'));
-return event.cards.some(card=>card.fh_extra&&card.type=='basic');
+if(event.name=='equip') return event.card.fh_extra&&get.type(event.card)=='basic';
+if(event.getg) return game.hasPlayer(target=>event.getg(target).some(card=>card.fh_extra&&get.type(card)=='basic'));
+return event.cards.some(card=>card.fh_extra&&get.type(card)=='basic');
 },
 usable:1,
 frequent:true,
@@ -37760,6 +37760,8 @@ dialog:function(event,player){
 var list=[];
 for(var name of lib.inpile){
 if(player.getStorage('fh_miewu_used').includes(name)) continue;
+var type=get.type(name);
+if(!(type=='basic'||type=='trick')) continue;
 if(event.filterCard({name:name},player,event)) list.push([get.translation(get.type(name)),'',name]);
 if(name=='sha'){
 for(var j of lib.inpile_nature){
@@ -37860,7 +37862,7 @@ return target!=player&&target.countCards('hej',card=>get.position(card)=='h'||li
 usable:1,
 content:function*(event,map){
 var player=map.player,target=event.target;
-var num=target.getCards('hej',card=>lib.filter.cardDiscardable(card,player)).reduce((list,card)=>list.add(get.position(card)),[]);
+var num=target.getCards('hej',card=>lib.filter.cardDiscardable(card,player)).reduce((list,card)=>list.add(get.position(card)),[]).length;
 yield player.discardPlayerCard(target,'hej',num).set('filterButton',button=>{
 return !ui.selected.buttons.some(but=>get.position(but.link)==get.position(button.link));
 });
@@ -38090,9 +38092,9 @@ direct:true,
 content:function(){
 'step 0'
 player.removeSkill('fh_mibei_mark');
-player.chooseButton(['星启：是否获得一张牌？',player.getExpansions('fh_xingqi')]).set('ai',function(button){
-var card={name:button.link[2]},player=_status.event.player;
-return get.value(card,player)*player.getUseValue(card);
+player.chooseButton(['星启：是否获得一张牌？',player.getExpansions('fh_xingqi')]).set('ai',button=>{
+var player=_status.event.player;
+return get.value(button.link,player)*player.getUseValue(button.link);
 });
 'step 1'
 if(result.bool){
@@ -38508,7 +38510,7 @@ player.storage.renku=true;
 //向宠
 fh_guying:{
 onremove:true,
-audio:'fh_guying',
+audio:'guying',
 trigger:{player:'loseAfter',global:'loseAsyncAfter'},
 filter:function(event,player){
 return lib.skill.guying.filter(event,player);
@@ -38533,12 +38535,12 @@ else addIndex++;
 if(get.position(card)=='d') choiceList.push('令'+str+'收回'+get.translation(card));
 if(choiceList.length==1) event._result={index:0};
 var result=yield target.chooseControl().set('ai',function(){
-var player=_status.event.player,evt=_status.event.getParent();
+var player=_status.event.player,evt=_status.event.evt;
 if(get.value(evt.card,evt.player)*get.attitude(player,evt.player)>0) return 0;
 return Math.random()>(get.value(evt.card,evt.player)/6)?1:0;
-}).set('choiceList',choiceList);
+}).set('choiceList',choiceList).set('evt',{card:card,player:player});
 if(result.index+addIndex==0){
-var result2=target.chooseCard('he',true,'固营：将一张牌交给'+get.translation(player));
+var result2=yield target.chooseCard('he',true,'固营：将一张牌交给'+get.translation(player));
 if(result2.bool) target.give(result2.cards,player);
 }
 else{
@@ -38630,7 +38632,7 @@ fh_tianyin_info:'结束阶段，你可以亮出牌堆顶的四张牌，然后选
 fh_yuanqing:'渊清',
 fh_yuanqing_info:'锁定技，出牌阶段结束时，你随机从额外牌堆中将你本阶段使用过的牌类型的各一张牌置于仁库中。',
 fh_guying:'固营',
-fh_guying_info:'锁定技，每回合限一次，当你于回合外因使用/打出/弃置而失去牌后，若牌数为1，则你令当前回合角色选择一项：①随机交给你一张牌。②令你获得本次失去的牌，若为装备牌，则你使用之。准备阶段，你弃置你发动〖固营〗的次数张牌，然后清空〖固营〗的发动次数。',
+fh_guying_info:'锁定技，每回合限一次，当你于回合外因使用/打出/弃置而失去牌后，若牌数为1，则你令当前回合角色选择一项：①交给你一张牌。②令你获得本次失去的牌，若为装备牌，则你使用之。准备阶段，你弃置你发动〖固营〗的次数张牌，然后清空〖固营〗的发动次数。',
 },
 };
 for(var i in MX_feihongyinxue.character){
