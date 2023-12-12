@@ -38656,18 +38656,28 @@ lib.translate.fh_tag='额外牌堆';
 lib.skill._fh_lose_trigger={
 charlotte:true,
 ruleSkill:true,
-trigger:{player:'loseAfter',global:'loseAsyncAfter'},
+trigger:{
+player:'loseAfter',
+global:['cardsDiscardAfter','loseAsyncAfter'],
+},
 filter:function(event,player){
-if(event.name=='lose'&&event.position!=ui.discardPile) return false;
-var evt=event.getl(player);
-return evt&&evt.cards.some(card=>card.fh_extra);
+if(event.name.indexOf('lose')==0) return event.getl(player).cards.filter(card=>get.position(card,true)=='d'&&card.fh_extra).length>0;
+if(!event.cards.filterInD('d').some(card=>card.fh_extra)) return false;
+var evt=event.getParent();
+if(evt.name!='orderingDiscard') return false;
+var evtx=(evt.relatedEvent||evt.getParent());
+var history=player.getHistory('useCard').concat(player.getHistory('respond'));
+return evtx.player==player&&history.some(evtxx=>evtx.getParent()==(evtxx.relatedEvent||evtxx.getParent()));
 },
 forceDie:true,
 priority:-1919810,
 forced:true,
 popup:false,
 content:function(){
-var cards=trigger.getl(player).filter(card=>card.fh_extra);
+var cards;
+if(trigger.name.indexOf('lose')==0) cards=trigger.getl(player).cards.filter(card=>get.position(card,true)=='d'&&card.fh_extra);
+else cards=trigger.cards.filterInD('d');
+cards=cards.filter(card=>card.fh_extra);
 _status.fh_cardPile.addArray(cards);
 game.cardsGotoSpecial(cards);
 game.log(cards,'被放回了','#g额外牌堆');
