@@ -37911,7 +37911,7 @@ usable:1,
 content:function*(event,map){
 var player=map.player,target=event.target;
 var num=target.getCards('hej',card=>lib.filter.cardDiscardable(card,player)).reduce((list,card)=>list.add(get.position(card)),[]).length;
-yield player.discardPlayerCard(target,'hej',num).set('filterButton',button=>{
+yield player.discardPlayerCard(target,'hej',num,true).set('filterButton',button=>{
 return !ui.selected.buttons.some(but=>get.position(but.link)==get.position(button.link));
 });
 var cards=['binglinchengxiax'].addArray(get.zhinangs());
@@ -38919,7 +38919,7 @@ if(!_status.renku.some(card=>target.hasUseTarget(card))) event.finish();
 target.chooseButton(['引戈：是否使用一张仁库牌',_status.renku]).set('filterButton',button=>_status.event.player.hasUseTarget(button.link)).set('ai',button=>{
 var player=_status.event.player;
 var target=_status.event.target;
-if(get.tag(button.link,'damage')&&player.canUse(button.link,current,false)){
+if(get.tag(button.link,'damage')&&player.canUse(button.link,target,false)){
 if(get.effect(target,button.link,player,player)>0) return player.getUseValue(button.link)/10;
 if(get.effect(target,button.link,player,player)>0&&game.hasPlayer(current=>{
 if(current==target) return false;
@@ -39019,7 +39019,7 @@ game.cardsGotoSpecial(cards,'toRenku');
 player.when('fh_shirenEnd').then(()=>game.delayx()).then(()=>{
 player.chooseButton(true,['施仁：请选择获得一张牌',_status.renku]).set('ai',button=>{
 var player=_status.event.player;
-if(_status.event.keys.includes(button.link.name)) return _status.event.keys.indexOf(button.link.name)+114514;
+if(_status.event.key.includes(button.link.name)) return _status.event.key.indexOf(button.link.name)+114514;
 return get.value(button.link,player);
 }).set('key',key);
 }).then(()=>{
