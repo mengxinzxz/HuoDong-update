@@ -37167,7 +37167,7 @@ characterSort:{
 MX_feihongyinxue:{
 fh_zhi:['mx_fh_sp_bianfuren','mx_fh_sp_chenzhen','mx_fh_feiyi','mx_fh_luotong','mx_fh_sp_sunshao','mx_fh_sp_duyu','mx_fh_sp_xunchen'],
 fh_xin:['mx_fh_wangling','mx_fh_sp_mifuren','mx_fh_zhouchu','mx_fh_wujing','mx_fh_sp_yanghu'],
-fh_ren:['mx_fh_caizhenji','mx_fh_sp_huaxin','mx_fh_xiangchong','mx_fh_sp_xujing','mx_fh_qiaogong','mx_fh_sp_zhangwen','mx_fh_zhangzhongjing'],
+fh_ren:['mx_fh_caizhenji','mx_fh_sp_huaxin','mx_fh_xiangchong','mx_fh_sp_xujing','mx_fh_qiaogong','mx_fh_sp_zhangwen','mx_fh_liuzhang','mx_fh_zhangzhongjing'],
 fh_yong:[],
 fh_yan:[],
 },
@@ -37191,6 +37191,7 @@ mx_fh_xiangchong:['male','shu',4,['fh_guying','muzhen'],[]],
 mx_fh_sp_xujing:['male','shu',3,['fh_boming','fh_ejian'],[]],
 mx_fh_qiaogong:['male','wu',3,['fh_yizhu','gonghuan'],[]],
 mx_fh_sp_zhangwen:['male','wu',3,['gebo','fh_songshu'],[]],
+mx_fh_liuzhang:['male','qun',3,['fh_yinge','fh_shiren','fh_juyi'],['zhu']],
 mx_fh_zhangzhongjing:['male','qun',3,['fh_jishi','fh_liaoyi','fh_binglun'],[]],
 },
 skill:{
@@ -38618,7 +38619,8 @@ logTarget:'player',
 content:function*(event,map){
 var player=map.player,trigger=map.trigger,target=trigger.player;
 target.showHandcards(get.translation(player)+'发动了【恶荐】');
-var type=get.type2(trigger.cards[0]);
+var card=trigger.cards[0];
+var type=get.type2(card);
 if(!player.getStorage('fh_ejian').length){
 player.when({global:'phaseAfter'}).then(()=>{
 player.unmarkSkill('fh_ejian');
@@ -38845,6 +38847,207 @@ if(player==game.me) ui.updatehl();
 },
 },
 },
+//刘璋
+fh_yinge:{
+audio:'xiusheng',
+enable:'phaseUse',
+filter:function(event,player){
+return game.hasPlayer(target=>lib.skill.fh_yinge.filterTarget(null,player,target));
+},
+filterTarget:function(card,player,target){
+return target!=player&&target.countCards('h');
+},
+usable:1,
+content:function(){
+'step 0'
+player.addSkill('fh_yinge_buff');
+target.chooseCard('引戈：将一张手牌置入仁库，然后可以使用一张仁库牌',true);
+'step 1'
+if(result.bool){
+target.$throw(result.cards,1000);
+game.log(target,'将',result.cards,'置入了仁库');
+target.lose(result.cards,ui.special,'toRenku');
+}
+else event.finish();
+'step 2'
+game.delayx();
+if(!_status.renku.some(card=>target.hasUseTarget(card))) event.finish();
+'step 3'
+target.chooseButton(['引戈：是否使用一张仁库牌',_status.renku]).set('filterButton',button=>_status.event.player.hasUseTarget(button.link)).set('ai',button=>{
+var player=_status.event.player;
+var target=_status.event.target;
+if(get.tag(button.link,'damage')&&player.canUse(button.link,current,false)){
+if(get.effect(target,button.link,player,player)>0) return player.getUseValue(button.link)/10;
+if(get.effect(target,button.link,player,player)>0&&game.hasPlayer(current=>{
+if(current==target) return false;
+return player.canUse(button.link,current)&&get.effect(current,button.link,player,player)>0;
+})) return 3*player.getUseValue(button.link);
+}
+return player.getUseValue(button.link);
+}).set('target',player);
+'step 4'
+if(result.bool){
+var card=result.links[0];
+target.$gain2(card,false);
+game.delayx();
+target.chooseUseTarget(true,card,false);
+}
+},
+ai:{
+order:7,
+result:{
+target:function(player,target){
+if(game.hasPlayer(target=>get.attitude(player,target)>0)) return target.countCards('h');
+return -1/target.countCards('h');
+},
+},
+},
+subSkill:{
+buff:{
+charlotte:true,
+trigger:{global:'useCard2'},
+filter:function(event,player){
+if(!event.targets||event.targets.includes(player)||!get.tag(event.card,'damage')) return false;
+return event.getParent(2).name=='fh_yinge'&&event.getParent(2).player==player&&event.getParent(2).targets[0]==event.player;
+},
+forced:true,
+popup:false,
+content:function(){
+'step 0'
+game.delayx();
+'step 1'
+trigger.player.line(player);
+trigger.targets.push(player);
+game.log(player,'成为了',trigger.card,'的额外目标');
+},
+group:'fh_yinge_buff2',
+},
+buff2:{
+charlotte:true,
+trigger:{global:'useCardBefore'},
+filter:function(event,player){
+return event.cards&&event.getParent(2).name=='fh_yinge'&&event.getParent(2).player==player&&event.getParent(2).targets[0]==event.player;
+},
+forced:true,
+popup:false,
+firstDo:true,
+content:function(){
+trigger.fromRenku=true;
+_status.renku.removeArray(trigger.cards);
+game.updateRenku();
+trigger.player.when('useCard1').filter(evt=>evt==trigger).then(()=>player.$throw(trigger.cards,1000));
+},
+},
+},
+},
+fh_shiren:{
+audio:'yinlang',
+trigger:{target:'useCardToTargeted'},
+filter:function(event,player){
+return get.tag(event.card,'damage')&&event.player!=player;
+},
+direct:true,
+content:function*(event,map){
+var player=map.player,trigger=map.trigger;
+var key=['jiu','tao'];
+if(get.type(trigger.card)=='trick') key.push('wuxie');
+switch (trigger.card.name){
+case 'sha':case 'wanjian':key.push('shan'); break;
+case 'juedou':case 'nanman':case 'jiedao':key.push('sha'); break;
+}
+key.push('caochuan');
+var result=yield player.chooseControl('选项一','选项二','cancel2').set('choiceList',[
+'将牌堆顶的两张牌置入仁库，然后获得仁库的一张牌',
+'摸两张牌，然后将一张手牌置入仁库',
+]).set('ai',()=>{
+var player=_status.event.player;
+var cards=_status.renku.slice();
+if(cards.length+2>6) cards=cards.slice(cards.length-4,6);
+if(cards.some(card=>_status.event.key.includes(card.name))) return 0;
+return 1;
+}).set('key',key).set('prompt',get.prompt2('fh_shiren'));
+if(result.control!='cancel2'){
+var then1,then2,then3;
+player.logSkill('fh_shiren');
+if(result.index==0){
+var cards=get.cards(2);
+player.$gain2(cards,false);
+game.cardsGotoSpecial(cards,'toRenku');
+player.when('fh_shirenEnd').then(()=>game.delayx()).then(()=>{
+player.chooseButton(true,['施仁：请选择获得一张牌',_status.renku]).set('ai',button=>{
+var player=_status.event.player;
+if(_status.event.keys.includes(button.link.name)) return _status.event.keys.indexOf(button.link.name)+114514;
+return get.value(button.link,player);
+}).set('key',key);
+}).then(()=>{
+if(result.bool){
+var cards=result.links;
+_status.renku.removeArray(cards);
+game.updateRenku();
+player.gain(cards,'gain2','fromRenku');
+}
+}).vars({key:key});
+}
+else{
+player.draw(2);
+player.when('fh_shirenEnd').then(()=>player.chooseCard('h',true,'将一张手牌置于仁库中')).then(()=>{
+if(result.bool){
+player.$throw(result.cards,1000);
+game.log(player,'将',result.cards,'置入了仁库');
+player.lose(result.cards,ui.special,'toRenku');
+}
+else event.finish();
+}).then(()=>game.delayx());
+}
+}
+},
+},
+fh_juyi:{
+audio:'huaibi',
+trigger:{global:'phaseDiscardBegin'},
+filter:function(event,player){
+return event.player!=player&&event.player.group=='qun'&&event.player.countCards('h');
+},
+zhuSkill:true,
+direct:true,
+content:function*(event,map){
+var player=map.player,target=map.trigger.player;
+player.addSkill('fh_juyi_buff');
+var result=yield target.chooseCard(get.prompt('fh_juyi'),'将一张手牌置入仁库，然后'+get.translation(player)+'获得溢出的仁库牌').set('ai',card=>{
+var player=_status.event.player;
+var target=_status.event.target;
+if(get.attitude(player,target)<=0) return 0;
+if(player.needsToDiscard()) return 15-get.value(card);
+return 4-get.value(card);
+}).set('target',player);
+if(result.bool){
+target.logSkill('fh_juyi',player);
+target.$throw(result.cards,1000);
+game.log(target,'将',result.cards,'置入了仁库');
+target.lose(result.cards,ui.special,'toRenku');
+player.when('fh_juyiEnd').then(()=>game.delayx());
+}
+},
+subSkill:{
+buff:{
+charlotte:true,
+trigger:{global:'cardsDiscardAfter'},
+filter:function(event,player){
+if(!event.fromRenku||!event.outRange) return false;
+if(!event.cards.filterInD('d').length) return false;
+return event.getParent(2).name=='fh_juyi'&&event.getParent(2).player==player;
+},
+forced:true,
+popup:false,
+content:function(){
+'step 0'
+game.delayx();
+'step 1'
+player.gain(trigger.cards.filterInD('d'),'gain2');
+},
+},
+},
+},
 //张仲景
 fh_jishi:{
 audio:'jishi',
@@ -38856,7 +39059,7 @@ audio:'jishi',
 trigger:{global:['gainAfter','cardsDiscardAfter','useCard','respond']},
 filter:function(event,player){
 if(!event.cards||!event.cards.length) return false;
-return event.fromRenku==true&&!event.outRange;
+return event.fromRenku&&!event.outRange;
 },
 forced:true,
 content:function(){
@@ -39051,6 +39254,7 @@ mx_fh_xiangchong:'飞鸿向宠',
 mx_fh_sp_xujing:'飞鸿许靖',
 mx_fh_qiaogong:'飞鸿桥公',
 mx_fh_sp_zhangwen:'飞鸿张温',
+mx_fh_liuzhang:'飞鸿刘璋',
 mx_fh_zhangzhongjing:'飞鸿张机',
 fh_tianyin:'天音',
 fh_tianyin_info:'结束阶段，你可以亮出牌堆顶的四张牌，然后选择获得其中任意张本回合你未使用过的类别的牌。',
@@ -39067,6 +39271,12 @@ visible_yizhu:'invisible',
 fh_yizhu_info:'结束阶段，你可以将至多两张花色各不相同的红色牌成为“遗珠”随机插入牌堆前X张牌的任意位置（X为游戏角色数，且这些牌对所有角色可见），一名角色获得“遗珠”牌后，你可以与其各摸一张牌。',
 fh_songshu:'颂蜀',
 fh_songshu_info:'一名角色的出牌阶段开始时，你可以将一张牌置入仁库，然后若仁库的牌数大于等于其手牌数，则其本回合只能使用或打出仁库的牌。',
+fh_yinge:'引戈',
+fh_yinge_info:'出牌阶段限一次，你可以令一名其他角色将一张手牌置入仁库，然后其可以使用仁库的一张牌，若其以此法使用伤害牌，则你成为此牌的额外目标。',
+fh_shiren:'施仁',
+fh_shiren_info:'当你成为其他角色使用伤害牌的目标后，你可以选择一项：①将牌堆顶两张牌置入仁库，然后获得仁库的一张牌。②摸两张牌，然后将一张手牌置入仁库。',
+fh_juyi:'据益',
+fh_juyi_info:'主公技，其他群势力角色的弃牌阶段开始时，其可以将一张手牌置入仁库，然后你获得因此溢出的仁库牌。',
 fh_jishi:'济世',
 fh_jishi_info:'锁定技。①当你使用的牌结算完成后，若你未因此牌造成过伤害，则你将此牌置于仁库中。②当有牌不因溢出而离开仁库时，你摸一张牌。',
 fh_liaoyi:'疗疫',
@@ -39246,7 +39456,7 @@ cards=cards.filter(card=>card.fh_extra);
 _status.fh_cardPile.addArray(cards);
 game.cardsGotoSpecial(cards)._triggered=null;
 game.log(cards,'被放回了','#g额外牌堆');
-}
+},
 };
 }
 else lib.config.characters.remove('MX_feihongyinxue');
