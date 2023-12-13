@@ -37468,8 +37468,7 @@ lose_list:[
 ],
 discarder:player,
 }).setContent('discardMultiple');
-player.draw(suits);
-target.draw(types);
+game.asyncDraw([player,target],[suits,types]);
 }
 }
 },
@@ -38152,7 +38151,7 @@ if(card) cards.push(card);
 }
 if(cards.length) player.gain(cards,'gain2');
 'step 1'
-player.addSkill('fh_mouli');
+player.addSkillLog('fh_mouli');
 },
 group:['fh_mibei_fail','fh_mibei_silent'],
 derivation:'fh_mouli',
@@ -38196,8 +38195,8 @@ usable:1,
 content:function(){
 'step 0'
 target.chooseButton(['谋立：是否获得一张牌？',player.getExpansions('fh_xingqi')],true).set('ai',button=>{
-var card={name:button.link[2]},player=_status.event.player;
-return get.value(card,player);
+var player=_status.event.player;
+return get.value(button.link,player);
 });
 'step 1'
 if(result.bool) target.gain(result.links,'gain2');
@@ -38334,14 +38333,14 @@ inherit:'chuhai2',
 filter:function(event,player){
 if(event.player!=player.storage.fh_chuhai_buff) return false;
 for(var i=1;i<6;i++){
-if(player.hasEmptySlot(i)&&get.fh_cardPile(card=>card=>player.canEquip(card)&&get.subtype(card)=='equip'+i)) return true;
+if(player.hasEmptySlot(i)&&get.fh_cardPile(card=>get.type(card)=='equip'&&get.subtype(card)=='equip'+i&&player.canEquip(card))) return true;
 }
 return false;
 },
 content:function(){
 for(var i=1;i<6;i++){
 if(player.hasEmptySlot(i)){
-var card=get.fh_cardPile(card=>card=>player.canEquip(card)&&get.subtype(card)=='equip'+i);
+var card=get.fh_cardPile(card=>get.type(card)=='equip'&&get.subtype(card)=='equip'+i&&player.canEquip(card));
 if(card){
 player.$gain2(card);
 game.delayx();
@@ -38804,7 +38803,7 @@ if(trigger.name!='cardsDiscard') cards=trigger.getl(player).cards.filter(card=>g
 else cards=trigger.cards.filterInD('d');
 cards=cards.filter(card=>card.fh_extra);
 _status.fh_cardPile.addArray(cards);
-game.cardsGotoSpecial(cards);
+game.cardsGotoSpecial(cards)._triggered=null;
 game.log(cards,'被放回了','#g额外牌堆');
 }
 };
