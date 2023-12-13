@@ -37231,11 +37231,11 @@ direct:true,
 content:function*(event,map){
 var player=map.player;
 var result=yield player.chooseToUse(get.prompt('fh_yinyueqiang_skill'),{name:'sha'}).set('aidelay',true).set('noButton',true).set('filterTarget',function(card,player,target){
-var target=_status.event.targets;
+var targets=_status.event.targets;
 if(!targets.includes(target)&&!ui.selected.targets.some(targetx=>targets.includes(target))) return false;
 return lib.filter.filterTarget.apply(this,arguments);
-}).set('targets',game.filterPlayer(current=>current.getHistory('gain').length)).logSkill='yinyueqiang';
-if(result.bool) game.delay();
+}).set('targets',game.filterPlayer(current=>current.getHistory('gain').length)).logSkill='fh_yinyueqiang_skill';
+if(result.bool) game.delayx();
 },
 },
 //卞夫人
@@ -39935,7 +39935,7 @@ fh_qiexie_info:'锁定技，准备阶段，你在剩余武将牌堆中随机观�
 },
 };
 for(var i in MX_feihongyinxue.character){
-MX_feihongyinxue.character[i][4].push('character:'+i.slice(6));
+MX_feihongyinxue.character[i][4].addArray(['character:'+i.slice(6),'die_audio:'+i.slice(6)]);
 //MX_feihongyinxue.translate[i+'_ab']=MX_feihongyinxue.translate[i].slice(2);
 var trans=MX_feihongyinxue.translate[i];
 if(trans.indexOf('飞鸿神')==0) MX_feihongyinxue.translate[i+'_prefix']=trans.slice(0,3);
