@@ -37168,7 +37168,7 @@ MX_feihongyinxue:{
 fh_zhi:['mx_fh_sp_bianfuren','mx_fh_sp_chenzhen','mx_fh_feiyi','mx_fh_luotong','mx_fh_sp_sunshao','mx_fh_sp_duyu','mx_fh_sp_xunchen'],
 fh_xin:['mx_fh_wangling','mx_fh_sp_mifuren','mx_fh_zhouchu','mx_fh_wujing','mx_fh_sp_yanghu'],
 fh_ren:['mx_fh_caizhenji','mx_fh_sp_huaxin','mx_fh_xiangchong','mx_fh_sp_xujing','mx_fh_qiaogong','mx_fh_sp_zhangwen','mx_fh_liuzhang','mx_fh_zhangzhongjing'],
-fh_yong:[],
+fh_yong:['mx_fh_sp_wangshuang'],
 fh_yan:[],
 },
 },
@@ -37193,6 +37193,7 @@ mx_fh_qiaogong:['male','wu',3,['fh_yizhu','gonghuan'],[]],
 mx_fh_sp_zhangwen:['male','wu',3,['gebo','fh_songshu'],[]],
 mx_fh_liuzhang:['male','qun',3,['fh_yinge','fh_shiren','fh_juyi'],['zhu']],
 mx_fh_zhangzhongjing:['male','qun',3,['fh_jishi','fh_liaoyi','fh_binglun'],[]],
+mx_fh_sp_wangshuang:['male','wei',4,['yiyong','fh_shanxie'],[]],
 },
 skill:{
 //卞夫人
@@ -39176,12 +39177,30 @@ return Math.min(1,game.countPlayer(target=>target.isDamaged()&&get.recoverEffect
 },
 },
 },
+//王双
+fh_shanxie:{
+audio:'shanxie',
+enable:'phaseUse',
+filter:function(event,player){
+return get.fh_cardPile(card=>get.type(card)=='equip'&&get.subtype(card)=='equip1');
+},
+usable:1,
+content:function(){
+var card=get.fh_cardPile(card=>get.type(card)=='equip'&&get.subtype(card)=='equip1');
+if(card) player.gain(card,'gain2');
+},
+ai:{
+order:9,
+result:{player:1},
+},
+group:['shanxie_exclude','shanxie_shan'],
+},
 },
 translate:{
 fh_zhi:'<span style="font-family: yuanli">本包前言：</span>'+
 '<br><span style="font-family: yuanli">2023年活动武将年底大活，打开</span>'+
 '<br><span style="font-family: yuanli">此包后游戏将会加入额外牌堆机</span>'+
-'<br><span style="font-family: yuanli">制</span>'+
+'<br><span style="font-family: yuanli">制，此包建议单独开启</span>'+
 '<br>'+
 '飞鸿·智',
 fh_xin:'飞鸿·信',
@@ -39283,6 +39302,9 @@ fh_liaoyi:'疗疫',
 fh_liaoyi_info:'其他角色的回合开始时，若其：①手牌数小于体力值且仁库内牌数大于等于X，则你可令其从仁库中获得X张牌；②手牌数大于体力值，则你可以令其将X张牌置于仁库中（X为其手牌数与体力值之差且至多为2）。',
 fh_binglun:'病论',
 fh_binglun_info:'出牌阶段限一次，你可以将仁库中的一张牌置于弃牌堆并令一名角色回复1点体力。',
+mx_fh_sp_wangshuang:'飞鸿王双',
+fh_shanxie:'擅械',
+fh_shanxie_info:'出牌阶段限一次，你可从额外牌堆中随机获得一张武器牌。其他角色使用【闪】响应你使用的【杀】时，若此【闪】没有点数或点数小于等于你攻击范围的两倍，则你令此【闪】无效。',
 },
 };
 for(var i in MX_feihongyinxue.character){
