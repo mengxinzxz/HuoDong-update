@@ -37169,7 +37169,7 @@ fh_zhi:['mx_fh_sp_bianfuren','mx_fh_sp_chenzhen','mx_fh_feiyi','mx_fh_luotong','
 fh_xin:['mx_fh_wangling','mx_fh_sp_mifuren','mx_fh_zhouchu','mx_fh_wujing','mx_fh_sp_yanghu'],
 fh_ren:['mx_fh_caizhenji','mx_fh_sp_huaxin','mx_fh_xiangchong','mx_fh_sp_xujing','mx_fh_qiaogong','mx_fh_sp_zhangwen','mx_fh_liuzhang','mx_fh_zhangzhongjing'],
 fh_yong:['mx_fh_sp_wangshuang'],
-fh_yan:[],
+fh_yan:['mx_fh_sp_cuiyan','mx_fh_sp_jiangwan','mx_fh_liuba','mx_fh_sp_lvfan','mx_fh_sp_huangfusong'],
 },
 },
 character:{
@@ -37194,6 +37194,11 @@ mx_fh_sp_zhangwen:['male','wu',3,['gebo','fh_songshu'],[]],
 mx_fh_liuzhang:['male','qun',3,['fh_yinge','fh_shiren','fh_juyi'],['zhu']],
 mx_fh_zhangzhongjing:['male','qun',3,['fh_jishi','fh_liaoyi','fh_binglun'],[]],
 mx_fh_sp_wangshuang:['male','wei',4,['yiyong','fh_shanxie'],[]],
+mx_fh_sp_cuiyan:['male','wei',3,['fh_yajun','spzundi'],[]],
+mx_fh_sp_jiangwan:['male','shu',3,['spzhenting','fh_jincui'],[]],
+mx_fh_liuba:['male','shu',3,['duanbi','fh_tongduo'],[]],
+mx_fh_sp_lvfan:['male','wu',3,['fh_diaodu','mbdiancai','spyanji'],[]],
+mx_fh_sp_huangfusong:['male','qun',4,['spzhengjun','fh_shiji','sptaoluan'],[]],
 },
 skill:{
 //卞夫人
@@ -39195,6 +39200,251 @@ result:{player:1},
 },
 group:['shanxie_exclude','shanxie_shan'],
 },
+//崔琰
+fh_yajun:{
+audio:'spyajun',
+group:'spyajun_draw',
+trigger:{player:'phaseUseBegin'},
+filter:function(event,player){
+return game.hasPlayer(current=>player.canCompare(current));
+},
+direct:true,
+content:function*(event,map){
+var player=map.player;
+var result=yield player.chooseTarget(get.prompt('fh_yajun'),'与一名角色拼点',(card,player,target)=>{
+return player.canCompare(target);
+}).set('ai',target=>{
+return -get.attitude(_status.event.player,target)*Math.sqrt(5-Math.min(4,target.countCards('h')))*(target.hasSkillTag('noh')?0.5:1);
+});
+if(result.bool){
+var target=result.targets[0];
+player.logSkill('spyajun',target);
+var result2=yield player.chooseToCompare(target);
+if(result2.bool){
+var cards=[result2.player,result2.target].filterInD('d');
+if(cards.length){
+var result3=yield player.chooseButton(['是否将一张牌置于牌堆顶？',cards]).set('ai',button=>{
+if(get.color(button.link)=='black') return 1;
+return 0;
+});
+if(result3.bool){
+var card=result3.links[0];
+card.fix();
+player.$throw([card],1000);
+ui.cardPile.insertBefore(card,ui.cardPile.firstChild);
+game.updateRoundNumber();
+game.log(player,'将',card,'置于牌堆顶');
+}
+}
+}
+else{
+player.addMark('spyajun_less',1,false);
+player.addTempSkill('spyajun_less');
+}
+}
+},
+},
+//蒋琬
+fh_jincui:{
+audio:'spjincui',
+inherit:'spjincui',
+content:function(){
+'step 0'
+player.awakenSkill('fh_jincui');
+game.broadcastAll(function(target1,target2){
+game.swapSeat(target1,target2);
+},player,target);
+'step 1'
+var num=lib.skill.fh_jincui.getSeatNum(player,target);
+if(num>0) player.loseHp(num);
+},
+getSeatNum:function(player,target){
+var left=0,right=0,current_left=player,current_right=player;
+while(current_left!=target){
+left++;
+current_left=current_left.getPrevious();
+}
+while(current_right!=target){
+right++;
+current_right=current_right.getPrevious();
+}
+return Math.min(left,right,player.getHp())
+},
+ai:{
+order:5,
+result:{
+player:function(player,target){
+if(player.hasUnknown()) return 0;
+var num=0,current=player.next;
+var num2=lib.skill.fh_jincui.getSeatNum(player,target);
+var num3=player.countCards('hs',card=>player.canSaveCard(card,player));
+while(true){
+num-=get.sgn(get.attitude(player,current));
+if(current==target) break;
+current=current.next;
+}
+while(true){
+if(current==player) break;
+num+=get.sgn(get.attitude(player,current))*1.1;
+current=current.next;
+}
+if(num<num2-num3) return 0;
+return num+1-num2+num3;
+},
+},
+},
+},
+//刘巴
+fh_tongduo:{
+audio:'tongduo',
+trigger:{target:'useCardToTargeted'},
+filter:function(event,player){
+return player!=event.player&&event.targets.length==1&&game.hasPlayer(function(current){
+return current.countCards('he')>0;
+});
+},
+usable:1,
+direct:true,
+content:function(){
+'step 0'
+player.chooseTarget(get.prompt('fh_tongduo'),'<span class="text center">'+
+'令一名角色重铸一张牌'+
+'<br>※若此牌为红桃牌或锦囊牌，则其额外摸一张牌'+
+'<br>※若此牌为【无中生有】，你重置【锻币】'+
+'</span>'
+,function(card,player,target){
+return target.hasCard(lib.filter.cardRecastable,'he');
+}).set('ai',function(target){
+return get.attitude(_status.event.player,target)*Math.min(3,Math.floor(target.countCards('h',lib.filter.cardRecastable)/2));
+});
+'step 1'
+if(result.bool){
+var target=result.targets[0];
+event.target=target;
+player.logSkill('fh_tongduo',target);
+}
+else{
+player.storage.counttrigger.fh_tongduo--;
+event.finish();
+}
+'step 2'
+if(!target.hasCard(lib.filter.cardRecastable,'he')) event.finish();
+else target.chooseCard('he',true,'请重铸一张牌',lib.filter.cardRecastable).set('ai',card=>{
+var player=_status.event.player;
+var source=_status.event.source;
+var num=get.sgn(get.attitude(player,source));
+if(source.awakenedSkills.includes('duanbi')&&source.hasSkill('tongduo',null,false,false)&&get.name(card)=='wuzhong'){
+if(num==1) return 10;
+return 0;
+}
+if(get.suit(card)=='heart'||get.type2(card)=='trick') return 8-get.value(card);
+return lib.skill.zhiheng.check(card);
+}).set('source',player);
+'step 3'
+if(result.bool){
+target.recast(result.cards);
+var card=result.cards[0];
+if(get.suit(card)=='heart'||get.type2(card)=='trick') target.draw();
+if(get.name(card,target)=='wuzhong'&&player.awakenedSkills.includes('duanbi')&&player.hasSkill('tongduo',null,false,false)){
+player.restoreSkill('duanbi');
+player.popup('锻币');
+game.log(player,'重置了技能','#g【锻币】');
+if(typeof player.getStat('skill').duanbi=='number'&&player.getStat('skill').duanbi>0) delete player.getStat('skill').duanbi;
+}
+}
+},
+},
+//吕范
+fh_diaodu:{
+audio:'spdiaodu',
+trigger:{player:'phaseZhunbeiBegin'},
+filter:function(event,player){
+return player.canMoveCard(null,true);
+},
+direct:true,
+content:function(){
+'step 0'
+player.chooseTarget(get.prompt2('fh_diaodu'),function(card,player,target){
+return target.countCards('e',function(card){
+return game.hasPlayer(function(current){
+return current!=target&&current.canEquip(card);
+});
+});
+}).set('ai',function(target){
+var player=_status.event.player,att=get.attitude(player,target);
+if(att>0){
+if(target.hasCard(function(card){
+if(get.value(card,target)<=0&&game.hasPlayer(function(current){
+return current!=target&&current.canEquip(card,false)&&get.effect(current,card,player,player)>0;
+})) return true;
+return false;
+},'e')) return 2*att;
+}
+else if(att<0){
+if(target.hasCard(function(card){
+if(get.value(card,target)>=4.5&&game.hasPlayer(function(current){
+return current!=target&&current.canEquip(card)&&get.effect(current,card,player,player)>0;
+})) return true;
+return false;
+},'e')) return -att;
+}
+return 0;
+})
+'step 1'
+if(result.bool){
+var target=result.targets[0];
+event.target=target;
+player.logSkill('mbdiaodu',target);
+}
+else event.finish();
+'step 2'
+var es=target.getCards('e',function(card){
+return game.hasPlayer(function(current){
+return current!=target&&current.canEquip(card);
+})
+});
+if(es.length==1) event._result={bool:true,links:es};
+else player.chooseButton(['移动'+get.translation(target)+'的一张装备牌',es],true).set('ai',function(button){
+var player=_status.event.player,target=_status.event.getParent().target,card=button.link;
+if(game.hasPlayer(function(current){
+return current!=target&&current.canEquip(card)&&get.effect(current,card,player,player)>0;
+})) return -get.value(card,target)*get.attitude(player,target);
+return 0;
+});
+'step 3'
+if(result.bool){
+event.card=result.links[0];
+player.chooseTarget('请选择'+get.translation(event.card)+'的移动目标',true,function(card,player,target){
+return target.canEquip(_status.event.card);
+}).set('card',event.card).set('ai',function(target){
+var evt=_status.event;
+return get.effect(target,evt.getParent().card,evt.player,evt.player);
+});
+}
+else event.finish();
+'step 4'
+if(result.bool){
+var target2=result.targets[0];
+target.line(target2);
+target.$give(card,target2);
+game.delay(0.5);
+target2.equip(card);
+}
+else event.finish();
+'step 5'
+target.draw();
+},
+},
+fh_shiji:{
+audio:'spshiji',
+inherit:'spshiji',
+content:function*(event,map){
+var player=map.player,target=map.trigger.player;
+var num=target.countCards('h',{color:'red'});
+var result=yield player.discardPlayerCard(target,'h',[Math.min(1,num),Infinity]).set('filterButton',button=>get.color(button.link)=='red').set('visible',true).set('forced',num>0);
+if(result.bool) player.draw(result.cards.length);
+},
+},
 },
 translate:{
 fh_zhi:'<span style="font-family: yuanli">本包前言：</span>'+
@@ -39305,6 +39555,21 @@ fh_binglun_info:'出牌阶段限一次，你可以将仁库中的一张牌置于
 mx_fh_sp_wangshuang:'飞鸿王双',
 fh_shanxie:'擅械',
 fh_shanxie_info:'出牌阶段限一次，你可从额外牌堆中随机获得一张武器牌。其他角色使用【闪】响应你使用的【杀】时，若此【闪】没有点数或点数小于等于你攻击范围的两倍，则你令此【闪】无效。',
+mx_fh_sp_cuiyan:'飞鸿崔琰',
+mx_fh_sp_jiangwan:'飞鸿蒋琬',
+mx_fh_liuba:'飞鸿刘巴',
+mx_fh_sp_lvfan:'飞鸿吕范',
+mx_fh_sp_huangfusong:'飞鸿皇甫嵩',
+fh_yajun:'雅俊',
+fh_yajun_info:'摸牌阶段，你多摸一张牌。出牌阶段开始时，你可以用与一名角色角色拼点：若你赢，则你可将其中一张拼点牌置于牌堆顶；若你没赢，你本回合的手牌上限-1。',
+fh_jincui:'尽瘁',
+fh_jincui_info:'限定技。出牌阶段，你可以和一名其他角色交换位置，然后失去X点体力（X为你与其的座次距离且X最大为你的体力值）。',
+fh_tongduo:'统度',
+fh_tongduo_info:'每回合限一次，当你成为其他角色使用牌的唯一目标后，你可令一名角色重铸一张牌：若此牌为红桃牌或锦囊牌，则其额外摸一张牌；若此牌为【无中生有】，你重置【锻币】。',
+fh_diaodu:'调度',
+fh_diaodu_info:'准备阶段，你可以移动一名角色装备区内的一张牌，然后其摸一张牌。',
+fh_shiji:'势击',
+fh_shiji_info:'当你对其他角色造成属性伤害时，若你的手牌数不为全场唯一最多，则你可以观看其手牌并弃置其中任意红色牌，然后摸等量的牌。',
 },
 };
 for(var i in MX_feihongyinxue.character){
