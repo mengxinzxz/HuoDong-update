@@ -37228,13 +37228,14 @@ if(!player.getHistory('lose',evt=>evt.hs&&evt.hs.length).length) return false;
 return player.hasSha()||(_status.connectMode&&player.countCards('h')>0);
 },
 direct:true,
-content:function*(event,map){
-var player=map.player;
-var result=yield player.chooseToUse(get.prompt('fh_yinyueqiang_skill'),{name:'sha'}).set('aidelay',true).set('noButton',true).set('filterTarget',function(card,player,target){
+content:function(){
+'step 0'
+player.chooseToUse(get.prompt('fh_yinyueqiang_skill'),{name:'sha'}).set('aidelay',true).set('noButton',true).set('filterTarget',function(card,player,target){
 var targets=_status.event.targets;
 if(!targets.includes(target)&&!ui.selected.targets.some(targetx=>targets.includes(target))) return false;
 return lib.filter.filterTarget.apply(this,arguments);
 }).set('targets',game.filterPlayer(current=>current.getHistory('gain').length)).logSkill='fh_yinyueqiang_skill';
+'step 1'
 if(result.bool) game.delayx();
 },
 },
