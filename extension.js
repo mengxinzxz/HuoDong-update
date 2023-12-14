@@ -36973,7 +36973,7 @@ fh_yong:['mx_fh_sp_wangshuang'],
 fh_yan:['mx_fh_sp_cuiyan','mx_fh_sp_jiangwan','mx_fh_liuba','mx_fh_sp_lvfan','mx_fh_sp_huangfusong'],
 fh_shen:['mx_fh_shen_guojia','mx_fh_shen_xunyu','mx_fh_shen_taishici','mx_fh_shen_dianwei'],
 fh_std_sh:['mx_fh_re_huangyueying','mx_fh_re_zhenji','mx_fh_gz_huangzhong','mx_fh_zhoutai','mx_fh_ol_sp_zhugeliang','mx_fh_re_taishici','mx_fh_yanwen','mx_fh_guanqiujian'],
-fh_yijiang:['mx_fh_dc_sunziliufang','mx_fh_liyan','mx_fh_dc_huanghao','mx_fh_re_sundeng','mx_fh_xinxianying','mx_fh_wuxian','mx_fh_caojie','mx_fh_jikang','mx_fh_zhugeshang','mx_fh_lukai','mx_fh_kebineng','mx_fh_xin_lingtong','mx_fh_dc_xushu','mx_fh_re_liaohua','mx_fh_zhuzhi'],
+fh_yijiang:['mx_fh_dc_sunziliufang','mx_fh_liyan','mx_fh_dc_huanghao','mx_fh_re_sundeng','mx_fh_xinxianying','mx_fh_wuxian','mx_fh_caojie','mx_fh_jikang','mx_fh_zhugeshang','mx_fh_lukai','mx_fh_kebineng','mx_fh_xin_lingtong','mx_fh_dc_xushu','mx_fh_re_liaohua','mx_fh_re_zhuhuan','mx_fh_zhuzhi'],
 },
 },
 character:{
@@ -37029,6 +37029,7 @@ mx_fh_guanqiujian:['male','wei',4,['fh_zhengrong','fh_hongju'],[]],
 mx_fh_xin_lingtong:['male','wu',4,['fh_xuanfeng','yongjin'],['tempname:xin_lingtong']],
 mx_fh_dc_xushu:['male','shu',4,['fh_zhuhai','fh_qianxin'],[]],
 mx_fh_re_liaohua:['male','shu',4,['fh_dangxian','xinfuli'],[]],
+mx_fh_re_zhuhuan:['male','wu',4,['refenli','fh_pingkou'],[]],
 mx_fh_zhuzhi:['male','wu',4,['fh_anguo'],[]],
 },
 card:{
@@ -41364,6 +41365,47 @@ if(card) player.gain(card,'gain2');
 },
 },
 dangxian_re_liaohua:{audio:2},
+//朱桓
+fh_pingkou:{
+audio:'repingkou',
+inherit:'repingkou',
+content:function(){
+'step 0'
+player.chooseTarget(get.prompt2('fh_pingkou'),'对至多'+get.cnNumber(num)+'名其他角色各造成1点伤害。若你选择的角色数小于最大角色数，则你可以令其中一名目标角色弃置其装备区内的一张牌',lib.filter.notMe,[1,player.getHistory('skipped').length]).set('ai',target=>{
+var player=_status.event.player;
+return get.damageEffect(target,player,player);
+});
+'step 1'
+if(result.bool){
+player.logSkill('fh_pingkou',result.targets);
+event.targets=result.targets.slice().sortBySeat();
+event.targets.forEach(target=>target.damage());
+if(event.targets.length==player.getHistory('skipped').length) event.finish();
+}
+else event.finish();
+'step 2'
+var targets2=targets.filter(target=>target.countDiscardableCards(target,'e')>0);
+if(targets2.length>0){
+player.chooseTarget('是否令一名目标角色弃置其装备区内的一张牌？',function(card,player,target){
+return _status.event.targets.contains(target);
+}).set('ai',target=>{
+var att=get.attitude(player,target),eff=0;
+target.getCards('e',card=>{
+var val=get.value(card,target);
+eff=Math.max(eff,-val*att);
+});
+return eff;
+}).set('targets',targets2);
+}
+else event.finish();
+'step 3'
+if(result.bool){
+var target=result.targets[0];
+player.line(target,'green');
+target.discardPlayerCard(target,'e',true);
+}
+},
+},
 //朱治
 fh_anguo:{
 inherit:'anguo',
@@ -41631,6 +41673,7 @@ mx_fh_guanqiujian:'飞鸿毌丘俭',
 mx_fh_xin_lingtong:'飞鸿凌统',
 mx_fh_dc_xushu:'飞鸿徐庶',
 mx_fh_re_liaohua:'飞鸿廖化',
+mx_fh_re_zhuhuan:'飞鸿朱桓',
 mx_fh_zhuzhi:'飞鸿朱治',
 fh_jizhi:'集智',
 fh_jizhi_info:'当你使用非转化锦囊牌时，你可以摸一张牌，然后你可以弃置一张基本牌，令本回合你的手牌上限+1。',
@@ -41668,6 +41711,8 @@ fh_jianyan:'荐言',
 fh_jianyan_info:'出牌阶段限两次，你可选择一种牌的类别并从额外牌堆中随机展示一张此类别的牌，然后你将此牌交给一名男性角色。',
 fh_dangxian:'当先',
 fh_dangxian_info:'锁定技，回合开始时，你进行一个额外的出牌阶段并从额外牌堆中获得一张【杀】。',
+fh_pingkou:'平寇',
+fh_pingkou_info:'回合结束时，你可以对至多X名其他角色各造成1点伤害（X为你本回合跳过的阶段数）。若你选择的角色数小于X，则你可以令其中一名角色弃置其装备区内的一张牌。',
 fh_anguo:'安国',
 fh_anguo_info:'出牌阶段限一次，你可以选择一名其他角色，若其手牌数为全场最少，其摸一张牌；体力值为全场最低，回复1点体力；装备区内牌数为全场最少，从额外牌堆种随机使用一张装备牌。然后若该角色有未执行的效果且你满足条件，你执行之。',
 },
