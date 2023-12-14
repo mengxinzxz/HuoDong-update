@@ -36972,7 +36972,7 @@ fh_ren:['mx_fh_caizhenji','mx_fh_sp_huaxin','mx_fh_xiangchong','mx_fh_sp_xujing'
 fh_yong:['mx_fh_sp_wangshuang'],
 fh_yan:['mx_fh_sp_cuiyan','mx_fh_sp_jiangwan','mx_fh_liuba','mx_fh_sp_lvfan','mx_fh_sp_huangfusong'],
 fh_shen:['mx_fh_shen_guojia','mx_fh_shen_xunyu','mx_fh_shen_taishici','mx_fh_shen_dianwei'],
-fh_std_sh:['mx_fh_re_huangyueying','mx_fh_re_zhenji','mx_fh_gz_huangzhong','mx_fh_zhoutai'],
+fh_std_sh:['mx_fh_re_huangyueying','mx_fh_re_zhenji','mx_fh_gz_huangzhong','mx_fh_zhoutai','mx_fh_ol_sp_zhugeliang','mx_fh_ol_re_taishici'],
 fh_yijiang:['mx_fh_dc_sunziliufang','mx_fh_liyan','mx_fh_dc_huanghao','mx_fh_re_sundeng','mx_fh_xinxianying','mx_fh_wuxian','mx_fh_caojie','mx_fh_jikang','mx_fh_zhugeshang','mx_fh_lukai','mx_fh_kebineng'],
 },
 },
@@ -37022,6 +37022,8 @@ mx_fh_re_huangyueying:['female','shu',3,['fh_jizhi','reqicai'],[]],
 mx_fh_re_zhenji:['female','wei',3,['qingguo','fh_luoshen'],[]],
 mx_fh_gz_huangzhong:['male','shu',4,['fh_liegong'],['die_audio:huangzhong']],
 mx_fh_zhoutai:['male','wu',4,['fh_buqu','fh_fenji'],[]],
+mx_fh_ol_sp_zhugeliang:['male','shu',3,['bazhen','olhuoji','olkanpo','fh_cangzhuo'],[]],
+mx_fh_ol_re_taishici:['male','wu',3,['tianyi','fh_hanzhan'],[]],
 },
 card:{
 fh_yinyueqiang:{
@@ -40813,6 +40815,82 @@ if(targets.length>0) event.goto(1);
 onremove:true,
 intro:{content:'本回合已对$发动过技能'},
 },
+//卧龙诸葛
+fh_cangzhuo:{
+init:function(player){
+game.broadcastAll(function(player){
+player.tempname.add('ol_sp_zhugeliang');
+},player);
+},
+audio:'cangzhuo',
+trigger:{player:'phaseDiscardBegin'},
+filter:function(event,player){
+return !player.getHistory('useCard',evt=>get.type2(evt.card)=='trick').length;
+},
+direct:true,
+content:function*(event,map){
+var player=map.player;
+var result=yield player.chooseCard(get.prompt2('fh_cangzhuo'),(card)=>get.type2(card)=='trick').set('ai',card=>{
+var player=_status.event.player;
+if(ui.selected.cards.length>=player.needsToDiscard()) return 0;
+return 1/(get.value(card)||0.5);
+},[1,Infinity]).set('complexCard',true);
+if(result.bool){
+player.logSkill('fh_cangzhuo');
+player.showCards(result.cards,get.translation(player)+'发动了【藏拙】');
+player.addGaintag(result.cards,'fh_cangzhuo_effect');
+player.addTempSkill('fh_cangzhuo_effect','phaseDiscardAfter');
+}
+},
+subSkill:{
+effect:{
+charlotte:true,
+onremove:function(player){
+player.removeGaintag('fh_cangzhuo_effect');
+},
+mod:{
+ignoredHandcard:function(card,player){
+if(card.hasGaintag('fh_cangzhuo_effect')) return true;
+},
+cardDiscardable:function(card,player,name){
+if(name=='phaseDiscard'&&card.hasGaintag('fh_cangzhuo_effect')) return false;
+},
+},
+},
+},
+},
+//太史慈
+fh_hanzhan:{
+init:function(player){
+game.broadcastAll(function(player){
+player.tempname.add('re_taishici');
+},player);
+},
+audio:'hanzhan',
+inherit:'hanzhan',
+direct:true,
+content:function*(event,map){
+var player=map.player,trigger=map.trigger;
+var targets=player==trigger.player?(trigger.targets?trigger.targets.slice(0):[trigger.target]):[trigger.player];
+if(!trigger.fixedResult) trigger.fixedResult={};
+while(targets.length){
+var target=targets.shift();
+var result=yield player.choosePlayerCard(target,'h').set('prompt',get.prompt('fh_hanzhan',target)).set('prompt2','选择'+get.translation(target)+'的一张手牌作为其频点牌').set('ai',button=>{
+var player=_status.event.player;
+var target=_status.event.target;
+if(get.attitude(player,target)>0) return 0;
+return get.value(button.link)/(get.number(button.link)+1);
+}).set('target',target);
+if(result.bool){
+player.logSkill('fh_hanzhan',target);
+trigger.fixedResult[target.playerid]=result.cards[0];
+}
+}
+},
+group:'fh_hanzhan_gain',
+subfrequent:['gain'],
+subSkill:{gain:{inherit:'hanzhan_gain'}},
+},
 },
 dynamicTranslate:{
 fh_bushi:function(player){
@@ -41022,6 +41100,8 @@ mx_fh_re_huangyueying:'飞鸿黄月英',
 mx_fh_re_zhenji:'飞鸿甄姬',
 mx_fh_gz_huangzhong:'飞鸿黄忠',
 mx_fh_zhoutai:'飞鸿周泰',
+mx_fh_ol_sp_zhugeliang:'飞鸿卧龙',
+mx_fh_ol_re_taishici:'飞鸿太史慈',
 fh_jizhi:'集智',
 fh_jizhi_info:'当你使用非转化锦囊牌时，你可以摸一张牌，然后你可以弃置一张基本牌，令本回合你的手牌上限+1。',
 fh_luoshen:'洛神',
@@ -41032,6 +41112,10 @@ fh_buqu:'不屈',
 fh_buqu_info:'锁定技，当你不以此法进入濒死状态时，你重置〖奋激〗并将体力回复至1点，然后将牌堆顶的一张牌称为“创”，然后若“创”因此有重复点数的牌，则你移去此牌并失去1点体力。你的手牌上限+X（X为你的“创”数）。',
 fh_fenji:'奋激',
 fh_fenji_info:'每名角色每回合限一次，一名角色的手牌被另一名角色弃置或获得后，你可以失去1点体力，令其摸两张牌。',
+fh_cangzhuo:'藏拙',
+fh_cangzhuo_info:'弃牌阶段开始时，若你本回合没有使用过锦囊牌，则你可以展示任意张锦囊牌，令这些牌于本阶段不计入手牌上限。',
+fh_hanzhan:'酣战',
+fh_hanzhan_info:'当你发起拼点时，或成为拼点的目标时，你可以选择对方的一张手牌作为其拼点牌。当你拼点结束后，你可以获得本次拼点的拼点牌中点数最大的【杀】。',
 },
 };
 for(var i in MX_feihongyinxue.character){
