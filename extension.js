@@ -39706,7 +39706,7 @@ audio:'dcqinqing',
 inherit:'dcqinqing',
 content:function*(event,map){
 var player=map.player
-player.chooseTarget(get.prompt2('fh_qinqing'),function(card,player,target){
+var result=yield player.chooseTarget(get.prompt2('fh_qinqing'),function(card,player,target){
 var zhu=game.filterPlayer(current=>current.getSeatNum()==1)[0];
 return target!=player&&target.inRange(zhu)&&target.countDiscardableCards(player,'he')>0;
 },[1,Infinity]).set('ai',function(target){
@@ -40559,6 +40559,7 @@ return 0;
 discard:false,
 lose:false,
 delay:false,
+usable:1,
 content:function(){
 player.showCards(cards,get.translation(player)+'发动了【寇旌】');
 player.addGaintag(cards,'kousheng');
@@ -40905,12 +40906,12 @@ player.markAuto('shuangxiong2',[get.color(card,target)]);
 fh_xiayong:{
 trigger:{player:'phaseJieshuBegin'},
 filter:function(event,player){
-var history=player.getHistory('useCard',evt=>evt.card.name=='sha'&&evt.card.name=='juedou');
+var history=player.getHistory('useCard',evt=>evt.card.name=='sha'||evt.card.name=='juedou');
 if(!history.length) return false;
 return !history.some(evtx=>!player.getHistory('sourceDamage',evt=>evt.card&&evt.card==evtx.card).length);
 },
 prompt2:function(event,player){
-var history=player.getHistory('useCard',evt=>evt.card.name=='sha'&&evt.card.name=='juedou');
+var history=player.getHistory('useCard',evt=>evt.card.name=='sha'||evt.card.name=='juedou');
 return '摸'+get.cnNumber(history.reduce((sum,evtx)=>{
 var historyx=player.getHistory('sourceDamage',evt=>evt.card&&evt.card==evtx.card);
 return sum+historyx.reduce((num,evt)=>num+=evt.num,0);
@@ -40918,7 +40919,7 @@ return sum+historyx.reduce((num,evt)=>num+=evt.num,0);
 },
 frequent:true,
 content:function(){
-var history=player.getHistory('useCard',evt=>evt.card.name=='sha'&&evt.card.name=='juedou');
+var history=player.getHistory('useCard',evt=>evt.card.name=='sha'||evt.card.name=='juedou');
 player.draw(history.reduce((sum,evtx)=>{
 var historyx=player.getHistory('sourceDamage',evt=>evt.card&&evt.card==evtx.card);
 return sum+historyx.reduce((num,evt)=>num+=evt.num,0);
