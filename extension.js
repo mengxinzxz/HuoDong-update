@@ -38499,7 +38499,7 @@ delete player.storage.fh_ejian;
 player.markAuto('fh_ejian',[target]);
 if(!target.countCards('he',cardx=>cardx!=card&&get.type2(cardx)==type)) return;
 var result;
-if(!target.countCards('h',cardx=>cardx!=card&&get.type2(cardx)==type)) result={index:1};
+if(!target.countCards('h',cardx=>get.type2(cardx)==type)) result={index:1};
 else result=yield target.chooseControl().set('choiceList',[
 '弃置所有'+get.translation(type)+'手牌',
 '受到1点伤害，令'+get.translation(player)+'重置【博名】记录',
@@ -41508,7 +41508,7 @@ fh_guying_info:'锁定技，每回合限一次，当你于回合外因使用/打
 fh_boming:'博名',
 fh_boming_info:'出牌阶段限两次，你可以展示一张牌并将其交给一名其他角色。结束阶段，你摸X张牌（X为本局游戏因〖博名〗得到牌的角色数）。',
 fh_ejian:'恶荐',
-fh_ejian_info:'锁定技，每名角色每回合限一次，其他角色因〖博名〗而得到了你的牌后，你令其展示手牌，若其拥有与此牌类型相同的其他牌，则你令其选择一项：①并弃置所有与此牌类别相同的手牌；②受到1点伤害，令你重置因〖博名〗得到牌的角色记录。',
+fh_ejian_info:'锁定技，每名角色每回合限一次，其他角色因〖博名〗而得到了你的牌后，你令其展示手牌，若其拥有与此牌类型相同的其他牌，则你令其选择一项：①弃置所有与此牌类别相同的手牌；②受到1点伤害，令你重置因〖博名〗得到牌的角色记录。',
 fh_yizhu:'遗珠',
 visible_yizhu:'invisible',
 fh_yizhu_info:'结束阶段，你可以将至多两张花色各不相同的红色牌成为“遗珠”随机插入牌堆前X张牌的任意位置（X为游戏角色数，且这些牌对所有角色可见），一名角色获得“遗珠”牌后，你可以与其各摸一张牌。',
