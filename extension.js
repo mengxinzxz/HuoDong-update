@@ -29834,7 +29834,7 @@ var suits=cards.reduce((list,card)=>list.add(get.suit(card,player)),[]);
 suits=suits.filter(suit=>!player.getStorage('minilianshi').includes(suit));
 player.markAuto('minilianshi',suits);
 player.storage.minilianshi.sort((a,b)=>lib.suit.indexOf(b)-lib.suit.indexOf(a));
-if((!_status.connectMode&&game.HasExtension('十周年UI')&&lib.config.extension_十周年UI_playerMarkStyle&&lib.config.extension_十周年UI_playerMarkStyle=='decade')){
+if(!_status.connectMode&&game.HasExtension('十周年UI')&&lib.config.extension_十周年UI_playerMarkStyle&&lib.config.extension_十周年UI_playerMarkStyle=='decade'){
 game.broadcastAll(function(player,skill){
 if(player.marks[skill]) player.marks[skill].firstChild.innerHTML=player.getStorage(skill).reduce((str,suit)=>str+=get.translation(suit),'');
 },player,'minilianshi');
@@ -29849,7 +29849,7 @@ delete player.storage.minilianshi;
 },
 intro:{
 markcount:(storage)=>{
-if((!_status.connectMode&&game.HasExtension('十周年UI')&&lib.config.extension_十周年UI_playerMarkStyle&&lib.config.extension_十周年UI_playerMarkStyle=='decade')) return 0;
+if(!_status.connectMode&&game.HasExtension('十周年UI')&&lib.config.extension_十周年UI_playerMarkStyle&&lib.config.extension_十周年UI_playerMarkStyle=='decade') return 0;
 return storage.length;
 },
 content:'已记录花色：$',
