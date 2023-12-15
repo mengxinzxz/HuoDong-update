@@ -29796,9 +29796,9 @@ var name=event.triggername;
 if(name=='damageSource') player.recover(num);
 else if(name=='damageEnd'||name=='roundStart') player.loseHp(num);
 else{
+player.$fullscreenpop('补天','fire');
 var targets=game.filterPlayer(current=>current!=player).sortBySeat();
 if(targets.length){
-player.$fullscreenpop('补天','fire');
 targets.forEach(target=>{
 player.line(target);
 target.die();
@@ -29852,7 +29852,7 @@ markcount:(storage)=>{
 if((!_status.connectMode&&game.HasExtension('十周年UI')&&lib.config.extension_十周年UI_playerMarkStyle&&lib.config.extension_十周年UI_playerMarkStyle=='decade')) return 0;
 return storage.length;
 },
-content:storage=>'已记录花色：$',
+content:'已记录花色：$',
 },
 },
 minituantu:{
