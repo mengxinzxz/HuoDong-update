@@ -13618,20 +13618,19 @@ return str;
 },
 content:function(){
 'step 0'
-if(get.itemtype(trigger.cards)=='cards'&&trigger.cards.some(i=>get.position(i,true)=='o')){
-player.gain(trigger.cards,'gain2');
-}
+if(get.itemtype(trigger.cards)=='cards'&&trigger.cards.some(i=>get.position(i,true)=='o')) player.gain(trigger.cards,'gain2');
 var num=player.countMark('sbjianxiong');
 if(2-num>0) player.draw(2-num,'nodelay');
 'step 1'
-var controls=['获得标记'];
+var controls=[];
+if(player.countMark('sbjianxiong')<2) controls.push('获得标记');
 if(player.hasMark('sbjianxiong')) controls.push('失去标记');
 player.chooseControl(controls,'cancel2').set('prompt','是否获得或失去1枚“治世”标记？').set('ai',()=>{
 if(_status.event.controls.includes('失去标记')){
 var player=_status.event.player,current=_status.currentPhase;
 if(get.distance(current,player,'absolute')>3&&player.hp<=2) return '失去标记';
 }
-return Math.random()<0.5?'获得标记':'cancel2';
+return (_status.event.controls.includes('获得标记')&&Math.random()<0.5)?'获得标记':'cancel2';
 });
 'step 2'
 if(result.control!='cancel2') player[result.control=='失去标记'?'removeMark':'addMark']('sbjianxiong',1);
@@ -13641,16 +13640,20 @@ minisbqingzheng:{
 audio:'sbqingzheng',
 enable:'phaseUse',
 filter:function(event,player){
-return player.countCards('h')>0;
+return lib.suit.filter(suitx=>player.countCards('h',{suit:suitx})).length>=(3-player.countMark('sbjianxiong'));
 },
 usable:1,
 chooseButton:{
 dialog:function(event,player){
 return ui.create.dialog(
-'###清正###<div class="text center">'+lib.translate.minisbqingzheng_info+'</div>',
+'###清正###<div class="text center">弃置'+get.cnNumber(3-player.countMark('sbjianxiong'))+'种花色的所有手牌并观看一名有手牌的其他角色的手牌，你弃置其中一种花色的所有牌。若其被弃置的牌数小于你以此法弃置的牌数，你对其造成1点伤害，然后你可获得或失去1枚“治世”标记。</div>',
 [lib.suit.map(i=>['','','lukai_'+i]),'vcard'],'hidden');
 },
 select:()=>3-_status.event.player.countMark('sbjianxiong'),
+filter:function(button){
+var player=_status.event.player;
+return player.countCards('h',card=>get.suit(card,player)==button.link.slice(6));
+},
 check:function(button){
 var player=_status.event.player;
 return player.countMark('sbjianxiong')*15-player.getCards('h',{suit:button.link[2].slice(6)}).map(i=>get.value(i)).reduce((p,c)=>p+c,0);
@@ -13697,14 +13700,15 @@ target.discard(cards2,'notBySelf').set('discarder',player);
 'step 3'
 if(event.cards2.length<cards.length) target.damage();
 'step 4'
-var controls=['获得标记'];
+var controls=[];
+if(player.countMark('sbjianxiong')<2) controls.push('获得标记');
 if(player.hasMark('sbjianxiong')) controls.push('失去标记');
 player.chooseControl(controls,'cancel2').set('prompt','是否获得或失去1枚“治世”标记？').set('ai',()=>{
 if(_status.event.controls.includes('失去标记')){
 var player=_status.event.player,current=_status.currentPhase;
 if(get.distance(current,player,'absolute')>3&&player.hp<=2) return '失去标记';
 }
-return Math.random()<0.5?'获得标记':'cancel2';
+return (_status.event.controls.includes('获得标记')&&Math.random()<0.5)?'获得标记':'cancel2';
 });
 'step 5'
 if(result.control!='cancel2') player[result.control=='失去标记'?'removeMark':'addMark']('sbjianxiong',1);
@@ -13720,6 +13724,7 @@ return 1-att/2+Math.sqrt(target.countCards('h'));
 },
 }
 },
+prompt:'请选择【清正】的目标',
 },
 ai:{
 combo:'minisbjianxiong',
@@ -31307,6 +31312,7 @@ miniyuanhu_info:'①出牌阶段限两次，你可将一张装备牌置入一名
 minisbjianxiong:'奸雄',
 minisbjianxiong_info:'游戏开始时，你可获得至多2枚“治世”标记。当你受到伤害后，你可获得伤害牌，摸2-X张牌（X为你的“治世”标记数），然后你可获得或失去1枚“治世”标记。',
 minisbqingzheng:'清正',
+minisbqingzheng_backup:'清正',
 minisbqingzheng_info:'出牌阶段限一次，你可以弃置3-X种花色的所有手牌（X为你的“治世”标记数）并观看一名有手牌的其他角色的手牌，你弃置其中一种花色的所有牌。若其被弃置的牌数小于你以此法弃置的牌数，你对其造成1点伤害，然后你可获得或失去1枚“治世”标记。',
 //蜀
 Mbaby_guanyu:'欢杀关羽',
