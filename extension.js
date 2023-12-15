@@ -13639,92 +13639,36 @@ if(result.control!='cancel2') player[result.control=='失去标记'?'removeMark'
 },
 minisbqingzheng:{
 audio:'sbqingzheng',
-trigger:{player:'phaseUseBegin'},
+enable:'phaseUse',
 filter:function(event,player){
 return player.countCards('h')>0;
 },
-direct:true,
-content:function(){
-'step 0'
-var num=3-player.countMark('sbjianxiong');
-var prompt='###'+get.prompt('minisbqingzheng')+'###弃置'+get.cnNumber(num)+'种花色的所有牌';
-var next=player.chooseButton([prompt,[lib.suit.map(i=>['','','lukai_'+i]),'vcard']],num);
-next.set('filterButton',button=>{
-var player=_status.event.player;
-var cards=player.getCards('h',{suit:button.link[2].slice(6)});
-return cards.length>0&&cards.filter(card=>lib.filter.cardDiscardable(card,player,'minisbqingzheng')).length==cards.length;
-});
-next.set('ai',button=>{
+usable:1,
+chooseButton:{
+dialog:function(event,player){
+return ui.create.dialog(
+'###清正###<div class="text center">'+lib.translate.minisbqingzheng_info+'</div>',
+[lib.suit.map(i=>['','','lukai_'+i]),'vcard'],'hidden');
+},
+select:()=>3-_status.event.player.countMark('sbjianxiong'),
+check:function(button){
 var player=_status.event.player;
 return player.countMark('sbjianxiong')*15-player.getCards('h',{suit:button.link[2].slice(6)}).map(i=>get.value(i)).reduce((p,c)=>p+c,0);
-});
-next.set('custom',{
-replace:{
-button:function(button){
-if(!_status.event.isMine()) return;
-if(button.classList.contains('selectable')==false) return;
-var cards=_status.event.player.getCards('h',{suit:button.link[2].slice(6)});
-if(cards.length){
-var chosen=cards.filter(i=>ui.selected.cards.contains(i)).length==cards.length;
-if(chosen){
-ui.selected.cards.removeArray(cards);
-cards.forEach(card=>{
-card.classList.remove('selected');
-card.updateTransform(false);
-});
-}else{
-ui.selected.cards.addArray(cards);
-cards.forEach(card=>{
-card.classList.add('selected');
-card.updateTransform(true);
-});
-}
-}
-if(button.classList.contains('selected')){
-ui.selected.buttons.remove(button);
-button.classList.remove('selected');
-if(_status.multitarget||_status.event.complexSelect){
-game.uncheck();
-game.check();
-}
-}
-else{
-button.classList.add('selected');
-ui.selected.buttons.add(button);
-}
-var custom=_status.event.custom;
-if(custom&&custom.add&&custom.add.button){
-custom.add.button();
-}
-game.check();
-}
 },
-add:next.custom.add
-});
-'step 1'
-if(result.bool){
-var cards=result.cards;
-if(!cards.length){
-var suits=result.links.map(i=>i[2].slice(6));
-cards=player.getCards('h',card=>suits.contains(get.suit(card,player)));
-}
-event.cards=cards;
-if(!cards.length) event.finish();
-else player.chooseTarget('清正：观看一名其他角色的手牌并弃置其中一种花色的所有牌',(card,player,target)=>{
+backup:function(links,player){
+return {
+audio:'sbqingzheng',
+suits:links.map(i=>i[2].slice(6)),
+filterTarget:function(card,player,target){
 return target!=player&&target.countCards('h');
-}).set('ai',target=>{
-var player=_status.event.player,att=get.attitude(player,target);
-if(att>=0) return 0;
-return 1-att/2+Math.sqrt(target.countCards('h'));
-});
-}
-else event.finish();
-'step 2'
-if(result.bool){
-var target=result.targets[0];
-event.target=target;
-player.logSkill('minisbqingzheng',target);
+},
+content:function(){
+'step 0'
+var suits=lib.skill.minisbqingzheng_backup.suits;
+var cards=player.getCards('h',card=>suits.includes(get.suit(card,player)));
+event.cards=cards;
 player.discard(cards);
+'step 1'
 var list=[];
 var dialog=['清正：弃置'+get.translation(target)+'一种花色的所有牌'];
 for(var suit of lib.suit.concat('none')){
@@ -13739,20 +13683,16 @@ player.chooseControl(list).set('dialog',dialog).set('ai',()=>{
 return _status.event.control;
 }).set('control',(()=>{
 var getv=(cards)=>cards.map(i=>get.value(i)).reduce((p,c)=>p+c,0);
-return list.sort((a,b)=>{
-return getv(target.getCards('h',{suit:b}))-getv(target.getCards('h',{suit:a}));
-})[0];
+return list.sort((a,b)=>getv(target.getCards('h',{suit:b}))-getv(target.getCards('h',{suit:a})))[0];
 })());
 }
-}
-else event.finish();
-'step 3'
+'step 2'
 var cards2=target.getCards('h',{suit:result.control});
 event.cards2=cards2;
 target.discard(cards2,'notBySelf').set('discarder',player);
-'step 4'
+'step 3'
 if(event.cards2.length<cards.length) target.damage();
-'step 5'
+'step 4'
 var controls=['获得标记'];
 if(player.hasMark('sbjianxiong')) controls.push('失去标记');
 player.chooseControl(controls,'cancel2').set('prompt','是否获得或失去1枚“治世”标记？').set('ai',()=>{
@@ -13762,10 +13702,35 @@ if(get.distance(current,player,'absolute')>3&&player.hp<=2) return '失去标记
 }
 return Math.random()<0.5?'获得标记':'cancel2';
 });
-'step 6'
+'step 5'
 if(result.control!='cancel2') player[result.control=='失去标记'?'removeMark':'addMark']('sbjianxiong',1);
 },
-ai:{combo:'minisbjianxiong'},
+ai:{
+result:{
+target:function(player,target){
+var att=get.attitude(player,target);
+if(att>=0) return 0;
+return 1-att/2+Math.sqrt(target.countCards('h'));
+},
+},
+},
+}
+},
+},
+ai:{
+combo:'minisbjianxiong',
+order:function(item,player){
+var getNum=function(player,target){
+var att=get.attitude(player,target);
+if(att>=0) return 0;
+return 1-att/2+Math.sqrt(target.countCards('h'));
+};
+var targets=game.filterPlayer(current=>current!=player&&current.countCards('h'));
+targets.sort((a,b)=>getNum(player,b)-getNum(player,a));
+return targets[0].countCards('h')+3;
+},
+result:{player:1},
+},
 },
 //蜀
 miniwusheng:{
@@ -31338,7 +31303,7 @@ miniyuanhu_info:'①出牌阶段限两次，你可将一张装备牌置入一名
 minisbjianxiong:'奸雄',
 minisbjianxiong_info:'游戏开始时，你可获得至多2枚“治世”标记。当你受到伤害后，你可获得伤害牌，摸2-X张牌（X为你的“治世”标记数），然后你可获得或失去1枚“治世”标记。',
 minisbqingzheng:'清正',
-minisbqingzheng_info:'出牌阶段开始时，你可以弃置3-X种花色的所有手牌（X为你的“治世”标记数），并观看一名有手牌的其他角色的手牌，你弃置其中一种花色的所有牌。若其被弃置的牌数小于你以此法弃置的牌数，你对其造成1点伤害，然后你可获得或失去1枚“治世”标记。',
+minisbqingzheng_info:'出牌阶段限一次，你可以弃置3-X种花色的所有手牌（X为你的“治世”标记数）并观看一名有手牌的其他角色的手牌，你弃置其中一种花色的所有牌。若其被弃置的牌数小于你以此法弃置的牌数，你对其造成1点伤害，然后你可获得或失去1枚“治世”标记。',
 //蜀
 Mbaby_guanyu:'欢杀关羽',
 Mbaby_zhugeliang:'欢杀诸葛亮',
