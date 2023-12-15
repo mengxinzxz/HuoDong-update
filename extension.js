@@ -18,12 +18,12 @@ var HuoDong_update=[
 '/setPlayer/',
 'bugfix',
 '修复配件文件添加的武将同名替换会把没有开启的武将调用出来的bug',
-'添加欢杀武将：孙休',
+'添加欢杀武将：孙休，孙茹，龙凤，曹操，女娲',
 'To be continued...',
 ];
 //更新武将
 var HuoDong_players=[
-'Mbaby_sunxiu'
+'Mbaby_sunxiu','Mbaby_dc_sunru','Mbaby_wolongfengchu','Mbaby_sb_caocao','Mbaby_nvwa',
 ];
 //加载
 var dialog=ui.create.dialog(
@@ -9530,13 +9530,13 @@ connect:true,
 characterSort:{
 MiNikill:{
 MiNi_wei:['Mbaby_caohong','Mbaby_guojia','Mbaby_sp_caoren','Mbaby_yinfuren','Mbaby_sp_jiaxu','Mbaby_wenqin','Mbaby_kuailiangkuaiyue','Mbaby_jsp_guanyu','Mbaby_wangji','Mbaby_chenqun','Mbaby_xiahoulingnv','Mbaby_wenyang','Mbaby_sp_pangde','Mbaby_caocao','Mbaby_caozhang','Mbaby_dufuren','Mbaby_simayi','Mbaby_yangxiu','Mbaby_zhangchangpu','Mbaby_zhonghui','Mbaby_sp_jiangwei','Mbaby_caoxiu','Mbaby_xunyou','Mbaby_lidian','Mbaby_zhongyao','Mbaby_caozhen','Mbaby_guohuanghou','Mbaby_xinxianying','Mbaby_xiahouyuan','Mbaby_xizhicai','Mbaby_caorui','Mbaby_xunyu','Mbaby_dengai','Mbaby_caozhi','Mbaby_sp_caiwenji','Mbaby_caoying','Mbaby_caopi','Mbaby_caoang','Mbaby_guojia','Mbaby_zhenji','Mbaby_caoren','Mbaby_wangyi','Mbaby_zhangchunhua','Mbaby_xiahoudun','Mbaby_xuzhu','Mbaby_zhangliao','Mbaby_guohuai','Mbaby_dianwei','Mbaby_zhanghe','Mbaby_yujin','Mbaby_xuhuang'],
-MiNi_shu:['Mbaby_wangtao','Mbabysp_zhangfei','Mbaby_wangyue','Mbaby_xf_yiji','Mbaby_mizhu','Mbaby_mifuren','Mbaby_liuyong','Mbaby_ganfuren','Mbaby_sunqian','Mbaby_lvkai','Mbaby_zhoucang','Mbaby_huangyueying','Mbaby_yangwan','Mbaby_liuchen','Mbaby_liyan','Mbaby_chendao','Mbaby_yanyan','Mbaby_xiahouba','Mbaby_huaman','Mbaby_sp_zhugeliang','Mbaby_zhugeguo','Mbaby_jianyong','Mbaby_wangping','Mbaby_mayunlu','Mbaby_guansuo','Mbaby_xiahoushi','Mbaby_shamoke','Mbaby_wuxian','Mbaby_zhugezhan','Mbaby_qinmi','Mbaby_guanyinping','Mbaby_guanyu','Mbaby_zhugeliang','Mbaby_liubei','Mbaby_machao','Mbaby_zhurong','Mbaby_zhangfei','Mbaby_zhaoyun','Mbaby_huangzhong','Mbaby_weiyan','Mbaby_liaohua','Mbaby_pangtong','Mbaby_menghuo','Mbaby_jiangwei','Mbaby_liushan','Mbaby_fazheng','Mbaby_madai','Mbaby_guanping','Mbaby_liufeng','Mbaby_wuyi','Mbaby_zhangxingcai','Mbaby_dongyun','Mbaby_sp_sunshangxiang','Mbaby_xushu','Mbaby_masu'],
-MiNi_wu:['Mbaby_sunxiu','Mbaby_zhangfen','Mbaby_xuezong','Mbaby_dingfeng','Mbaby_panjun','Mbaby_sundeng','Mbaby_luji','Mbaby_zhoufang','Mbaby_zhangxuan','Mbaby_yanjun','Mbaby_zhuhuan','Mbaby_luyusheng','Mbaby_re_jsp_pangtong','Mbaby_sunhao','Mbabysp_daqiao','Mbaby_lukang','Mbaby_buzhi','Mbaby_xushi','Mbaby_zhugeke','Mbaby_zhoufei','Mbaby_zhangzhang','Mbaby_sunliang','Mbaby_ol_sunjian','Mbaby_zhuzhi','Mbaby_bulianshi','Mbaby_chengpu','Mbaby_daqiao','Mbaby_ganning','Mbaby_huanggai','Mbaby_lusu','Mbaby_luxun','Mbaby_lvmeng','Mbaby_sunce','Mbaby_sunluban','Mbaby_sunluyu','Mbaby_sunquan','Mbaby_sunshangxiang','Mbaby_taishici','Mbaby_wuguotai','Mbaby_xiaoqiao','Mbaby_xusheng','Mbaby_zhoutai','Mbaby_zhouyu','Mbaby_zhugejin','Mbaby_zumao','Mbabysp_xiaoqiao'],
+MiNi_shu:['Mbaby_wolongfengchu','Mbaby_wangtao','Mbabysp_zhangfei','Mbaby_wangyue','Mbaby_xf_yiji','Mbaby_mizhu','Mbaby_mifuren','Mbaby_liuyong','Mbaby_ganfuren','Mbaby_sunqian','Mbaby_lvkai','Mbaby_zhoucang','Mbaby_huangyueying','Mbaby_yangwan','Mbaby_liuchen','Mbaby_liyan','Mbaby_chendao','Mbaby_yanyan','Mbaby_xiahouba','Mbaby_huaman','Mbaby_sp_zhugeliang','Mbaby_zhugeguo','Mbaby_jianyong','Mbaby_wangping','Mbaby_mayunlu','Mbaby_guansuo','Mbaby_xiahoushi','Mbaby_shamoke','Mbaby_wuxian','Mbaby_zhugezhan','Mbaby_qinmi','Mbaby_guanyinping','Mbaby_guanyu','Mbaby_zhugeliang','Mbaby_liubei','Mbaby_machao','Mbaby_zhurong','Mbaby_zhangfei','Mbaby_zhaoyun','Mbaby_huangzhong','Mbaby_weiyan','Mbaby_liaohua','Mbaby_pangtong','Mbaby_menghuo','Mbaby_jiangwei','Mbaby_liushan','Mbaby_fazheng','Mbaby_madai','Mbaby_guanping','Mbaby_liufeng','Mbaby_wuyi','Mbaby_zhangxingcai','Mbaby_dongyun','Mbaby_sp_sunshangxiang','Mbaby_xushu','Mbaby_masu'],
+MiNi_wu:['Mbaby_dc_sunru','Mbaby_sunxiu','Mbaby_zhangfen','Mbaby_xuezong','Mbaby_dingfeng','Mbaby_panjun','Mbaby_sundeng','Mbaby_luji','Mbaby_zhoufang','Mbaby_zhangxuan','Mbaby_yanjun','Mbaby_zhuhuan','Mbaby_luyusheng','Mbaby_re_jsp_pangtong','Mbaby_sunhao','Mbabysp_daqiao','Mbaby_lukang','Mbaby_buzhi','Mbaby_xushi','Mbaby_zhugeke','Mbaby_zhoufei','Mbaby_zhangzhang','Mbaby_sunliang','Mbaby_ol_sunjian','Mbaby_zhuzhi','Mbaby_bulianshi','Mbaby_chengpu','Mbaby_daqiao','Mbaby_ganning','Mbaby_huanggai','Mbaby_lusu','Mbaby_luxun','Mbaby_lvmeng','Mbaby_sunce','Mbaby_sunluban','Mbaby_sunluyu','Mbaby_sunquan','Mbaby_sunshangxiang','Mbaby_taishici','Mbaby_wuguotai','Mbaby_xiaoqiao','Mbaby_xusheng','Mbaby_zhoutai','Mbaby_zhouyu','Mbaby_zhugejin','Mbaby_zumao','Mbabysp_xiaoqiao'],
 MiNi_qun:['Mbaby_zhujun','Mbaby_gongsunyuan','Mbaby_sp_zhangliao','Mbaby_sp_ol_zhanghe','Mbaby_guotufengji','Mbaby_yanfuren','Mbaby_tangji','Mbaby_caojie','Mbaby_liangxing','Mbabysp_zhenji','Mbaby_caoxing','Mbaby_sp_menghuo','Mbaby_wangrong','Mbaby_hetaihou','Mbaby_sp_taishici','Mbaby_zhangji','Mbaby_dongbai','Mbaby_beimihu','Mbaby_chunyuqiong','Mbaby_zhangqiying','Mbaby_fuhuanghou','Mbaby_liuxie','Mbaby_quyi','Mbaby_jsp_huangyueying','Mbaby_sp_machao','Mbaby_lijue','Mbaby_panfeng','Mbaby_liuzhang','Mbaby_jiaxu','Mbaby_zhangbao','Mbaby_zhangliang','Mbaby_gaoshun','Mbaby_caifuren','Mbaby_xuyou','Mbaby_gongsunzan','Mbaby_pangde','Mbaby_jushou','Mbaby_liru','Mbaby_dongzhuo','Mbaby_zhangjiao','Mbaby_huatuo','Mbaby_lvbu','Mbaby_diaochan','Mbaby_sp_diaochan','Mbaby_huaxiong','Mbaby_yuji','Mbaby_yanwen','Mbaby_caiwenji','Mbaby_liubiao','Mbaby_yuanshao','Mbaby_yuanshu','Mbaby_chengong','Mbaby_zuoci'],
 MiNi_shen:['Mbaby_shen_taishici','Mbaby_shen_diaochan','Mbaby_shen_daxiaoqiao','Mbaby_shen_zhenji','Mbaby_shen_guojia','Mbaby_shen_huatuo','Mbaby_shen_dianwei','Mbaby_shen_lvbu','Mbaby_shen_zhugeliang','Mbaby_shen_lvmeng','Mbaby_shen_zhouyu','Mbaby_shen_guanyu','Mbaby_shen_liubei','Mbaby_shen_caocao','Mbaby_shen_zhangliao','Mbaby_shen_sunquan','Mbaby_shen_simayi','Mbaby_shen_zhaoyun','Mbaby_shen_ganning','Mbaby_shen_luxun'],
 MiNi_change:['Mbaby_re_nanhualaoxian','Mbaby_re_sunyi','Mbaby_zhaoxiang','Mbaby_xushao','Mbaby_shen_zhangjiao','Mbaby_baosanniang'],
-MiNi_shengzhiyifa:['Mbaby_sunwukong','Mbaby_dalanmao','Mbaby_libai','Mbaby_change'],
-MiNi_sbCharacter:['Mbaby_sb_huanggai'],
+MiNi_shengzhiyifa:['Mbaby_sunwukong','Mbaby_dalanmao','Mbaby_libai','Mbaby_change','Mbaby_nvwa'],
+MiNi_sbCharacter:['Mbaby_sb_caocao','Mbaby_sb_huanggai'],
 MiNi_miaoKill:['Mmiao_caiwenji','Mmiao_diaochan','Mmiao_caifuren','Mmiao_zhangxingcai','Mmiao_zhurong','Mmiao_huangyueying','Mmiao_daqiao','Mmiao_wangyi','Mmiao_zhangchunhua','Mmiao_zhenji','Mmiao_sunshangxiang','Mmiao_xiaoqiao'],
 },
 },
@@ -9591,6 +9591,7 @@ Mbaby_yinfuren:['female','wei',3,['dcyingyu','miniyongbi'],[]],
 Mbaby_sp_caoren:['male','wei',4,['miniweikui','minilizhan'],[]],
 Mbaby_guojia:['male','wei',3,['tiandu','new_reyiji','minishenglun'],[]],
 Mbaby_caohong:['male','wei',4,['miniyuanhu','twjuezhu'],[]],
+Mbaby_sb_caocao:['male','wei',4,['minisbjianxiong','minisbqingzheng','sbhujia'],['zhu']],
 //蜀
 Mbaby_guanyu:['male','shu',4,['minirewusheng','minituodao','jsrgguanjue'],[]],
 Mbaby_zhugeliang:['male','shu',3,['miniguanxing','minikongcheng'],[]],
@@ -9648,6 +9649,7 @@ Mbaby_wangyue:['female','shu',3,['minihuguan','minimingluan'],[]],
 Mbaby_xf_yiji:['male','shu',3,['minijijie','minijiyuan'],[]],
 Mbabysp_zhangfei:['male','shu',4,['minisppaoxiao','minixvhe'],[]],
 Mbaby_wangtao:['female','shu',3,['minihuguan','miniyaopei'],[]],
+Mbaby_wolongfengchu:['male','shu',4,['miniyoulong','miniluanfeng'],[]],
 //吴
 Mbaby_bulianshi:['female','wu',3,['minianxu','zhuiyi'],[]],
 Mbaby_chengpu:['male','wu',4,['minilihuo','minichunlao'],[]],
@@ -9697,6 +9699,7 @@ Mbaby_xuezong:['male','wu',3,['minifunan','minijiexun'],[]],
 Mbaby_sb_huanggai:['male','wu',4,['minisbkurou','minisbzhaxiang'],[]],
 Mbaby_zhangfen:['male','wu',4,['miniwanglu','minixianzhu','minichaixie'],[]],
 Mbaby_sunxiu:['male','wu',3,['miniyanzhu','minixingxue','minizhaofu'],['zhu']],
+Mbaby_dc_sunru:['female','wu',3,['minixiecui','youxu'],[]],
 //群
 Mbaby_gaoshun:['male','qun',4,['minixianzhen','minijinjiu'],[]],
 Mbaby_caifuren:['female','qun',3,['minireqieting','minirexianzhou'],[]],
@@ -9778,6 +9781,7 @@ Mbaby_sunwukong:['male','shen',4,['mini72bian','miniruyi','miniqitian'],['die_au
 Mbaby_dalanmao:['male','shen',4,['minizuzhou','minimoyu','minisanlian'],[]],
 Mbaby_change:['female','shen','1/4',['minidaoyao','minibenyue'],[]],
 Mbaby_shen_taishici:['male','shen',4,['minidulie','minichongwei','minipowei'],[]],
+Mbaby_nvwa:['female','shen','68/158',['minibutian','minilianshi','minituantu'],[]],
 //喵
 Mmiao_caiwenji:['female','qun',3,['minimiaobeige','minimiaoduanchang','minidoumao'],['die_audio']],
 Mmiao_diaochan:['female','qun',3,['minimiaolijian','minimiaobiyue','minidoumao'],['die_audio']],
@@ -9793,12 +9797,11 @@ Mmiao_sunshangxiang:['female','wu',3,['minimiaojieyin','minimiaoxiaoji','minidou
 Mmiao_xiaoqiao:['female','wu',3,['minimiaotianxiang','minimiaohongyan','minidoumao'],['die_audio']],
 },
 characterIntro:{
-Mbaby_dalanmao:'任何邪恶终将绳之以法',
 Mbaby_change:'嫦娥，中国古代神话中的人物，又名恒我、恒娥、姮娥、常娥、素娥，羿之妻，因偷吃了不死药而飞升至月宫。嫦娥的故事最早出现在商朝卦书 《归藏》。而嫦娥奔月的完整故事最早记载于西汉《淮南子·览冥训》。东汉时期，嫦娥与羿的夫妻关系确立，而嫦娥在进入月宫后变成了捣药的蟾蜍。南北朝以后，嫦娥的形象回归为女儿身。汉画像中，嫦娥人头蛇身，头梳高髻，身着宽袖长襦，身后长尾上饰有倒钩状细短羽毛。南北朝以后，嫦娥的形象被描绘成绝世美女。南朝陈后主陈叔宝曾把宠妃张丽华比作嫦娥。唐朝诗人白居易曾用嫦娥夸赞邻家少女不可多得的容貌。',
+Mbaby_nvwa:'女娲，中国上古神话中的创世女神。又称娲皇、女阴，史记女娲氏，是华夏民族人文先始，是福佑社稷之正神。相传女娲造人，一日中七十化变，以黄泥仿照自己抟土造人，创造人类社会并建立婚姻制度；因世间天塌地陷，于是熔彩石以补苍天，斩鳌足以立四极，留下了女娲补天的神话传说。女娲不但是补天救世的英雄和抟土造人的女神，还是一个创造万物的自然之神，神通广大化生万物，每天至少能创造出七十样东西。她开世造物，因此被称为大地之母，是被民间广泛而又长久崇拜的创世神和始母神。',
 },
 characterTitle:{
 Mbaby_shen_zhangjiao:'承欢杀神张角之原画<br>载OL神张角之内核',
-Mbaby_dalanmao:'任何邪恶终将绳之以法',
 },
 card:{
 miniyanxiao_card:{
@@ -13582,6 +13585,173 @@ if(card) player.gain(card,'gain2');
 },
 },
 },
+},
+//谋曹操
+minisbjianxiong:{
+audio:'sbjianxiong',
+inherit:'sbjianxiong',
+filter:function(event,player){
+return get.itemtype(event.cards)=='cards'&&event.cards.some(i=>get.position(i,true)=='o')||2-player.countMark('sbjianxiong')>0;
+},
+prompt2:function(event,player){
+var gain=get.itemtype(event.cards)=='cards'&&event.cards.some(i=>get.position(i,true)=='o'),draw=2-player.countMark('sbjianxiong');
+var str='';
+if(gain) str+='获得'+get.translation(event.cards);
+if(gain&&draw>0) str+='并';
+if(draw>0) str+='摸'+get.cnNumber(1-player.countMark('sbjianxiong'))+'张牌';
+if(player.countMark('sbjianxiong')) str+='，然后可以弃1枚“治世”标记';
+return str;
+},
+content:function(){
+'step 0'
+if(get.itemtype(trigger.cards)=='cards'&&trigger.cards.some(i=>get.position(i,true)=='o')){
+player.gain(trigger.cards,'gain2');
+}
+var num=player.countMark('sbjianxiong');
+if(2-num>0) player.draw(2-num,'nodelay');
+'step 1'
+var controls=['获得标记'];
+if(player.hasMark('sbjianxiong')) controls.push('失去标记');
+player.chooseControl(controls,'cancel2').set('prompt','是否获得或失去1枚“治世”标记？').set('ai',()=>{
+if(_status.event.controls.includes('失去标记')){
+var player=_status.event.player,current=_status.currentPhase;
+if(get.distance(current,player,'absolute')>3&&player.hp<=2) return '失去标记';
+}
+return Math.random()<0.5?'获得标记':'cancel2';
+});
+'step 2'
+if(result.control!='cancel2') player[result.control=='失去标记'?'removeMark':'addMark']('sbjianxiong',1);
+},
+},
+minisbqingzheng:{
+audio:'sbqingzheng',
+trigger:{player:'phaseUseBegin'},
+filter:function(event,player){
+return player.countCards('h')>0;
+},
+direct:true,
+content:function(){
+'step 0'
+var num=3-player.countMark('sbjianxiong');
+var prompt='###'+get.prompt('minisbqingzheng')+'###弃置'+get.cnNumber(num)+'种花色的所有牌';
+var next=player.chooseButton([prompt,[lib.suit.map(i=>['','','lukai_'+i]),'vcard']],num);
+next.set('filterButton',button=>{
+var player=_status.event.player;
+var cards=player.getCards('h',{suit:button.link[2].slice(6)});
+return cards.length>0&&cards.filter(card=>lib.filter.cardDiscardable(card,player,'minisbqingzheng')).length==cards.length;
+});
+next.set('ai',button=>{
+var player=_status.event.player;
+return player.countMark('sbjianxiong')*15-player.getCards('h',{suit:button.link[2].slice(6)}).map(i=>get.value(i)).reduce((p,c)=>p+c,0);
+});
+next.set('custom',{
+replace:{
+button:function(button){
+if(!_status.event.isMine()) return;
+if(button.classList.contains('selectable')==false) return;
+var cards=_status.event.player.getCards('h',{suit:button.link[2].slice(6)});
+if(cards.length){
+var chosen=cards.filter(i=>ui.selected.cards.contains(i)).length==cards.length;
+if(chosen){
+ui.selected.cards.removeArray(cards);
+cards.forEach(card=>{
+card.classList.remove('selected');
+card.updateTransform(false);
+});
+}else{
+ui.selected.cards.addArray(cards);
+cards.forEach(card=>{
+card.classList.add('selected');
+card.updateTransform(true);
+});
+}
+}
+if(button.classList.contains('selected')){
+ui.selected.buttons.remove(button);
+button.classList.remove('selected');
+if(_status.multitarget||_status.event.complexSelect){
+game.uncheck();
+game.check();
+}
+}
+else{
+button.classList.add('selected');
+ui.selected.buttons.add(button);
+}
+var custom=_status.event.custom;
+if(custom&&custom.add&&custom.add.button){
+custom.add.button();
+}
+game.check();
+}
+},
+add:next.custom.add
+});
+'step 1'
+if(result.bool){
+var cards=result.cards;
+if(!cards.length){
+var suits=result.links.map(i=>i[2].slice(6));
+cards=player.getCards('h',card=>suits.contains(get.suit(card,player)));
+}
+event.cards=cards;
+if(!cards.length) event.finish();
+else player.chooseTarget('清正：观看一名其他角色的手牌并弃置其中一种花色的所有牌',(card,player,target)=>{
+return target!=player&&target.countCards('h');
+}).set('ai',target=>{
+var player=_status.event.player,att=get.attitude(player,target);
+if(att>=0) return 0;
+return 1-att/2+Math.sqrt(target.countCards('h'));
+});
+}
+else event.finish();
+'step 2'
+if(result.bool){
+var target=result.targets[0];
+event.target=target;
+player.logSkill('minisbqingzheng',target);
+player.discard(cards);
+var list=[];
+var dialog=['清正：弃置'+get.translation(target)+'一种花色的所有牌'];
+for(var suit of lib.suit.concat('none')){
+if(target.countCards('h',{suit:suit})){
+dialog.push('<div class="text center">'+get.translation(suit+'2')+'牌</div>');
+dialog.push(target.getCards('h',{suit:suit}));
+list.push(suit);
+}
+}
+if(list.length){
+player.chooseControl(list).set('dialog',dialog).set('ai',()=>{
+return _status.event.control;
+}).set('control',(()=>{
+var getv=(cards)=>cards.map(i=>get.value(i)).reduce((p,c)=>p+c,0);
+return list.sort((a,b)=>{
+return getv(target.getCards('h',{suit:b}))-getv(target.getCards('h',{suit:a}));
+})[0];
+})());
+}
+}
+else event.finish();
+'step 3'
+var cards2=target.getCards('h',{suit:result.control});
+event.cards2=cards2;
+target.discard(cards2,'notBySelf').set('discarder',player);
+'step 4'
+if(event.cards2.length<cards.length) target.damage();
+'step 5'
+var controls=['获得标记'];
+if(player.hasMark('sbjianxiong')) controls.push('失去标记');
+player.chooseControl(controls,'cancel2').set('prompt','是否获得或失去1枚“治世”标记？').set('ai',()=>{
+if(_status.event.controls.includes('失去标记')){
+var player=_status.event.player,current=_status.currentPhase;
+if(get.distance(current,player,'absolute')>3&&player.hp<=2) return '失去标记';
+}
+return Math.random()<0.5?'获得标记':'cancel2';
+});
+'step 6'
+if(result.control!='cancel2') player[result.control=='失去标记'?'removeMark':'addMark']('sbjianxiong',1);
+},
+ai:{combo:'minisbjianxiong'},
 },
 //蜀
 miniwusheng:{
@@ -17672,6 +17842,244 @@ player.recover();
 }
 },
 },
+//龙凤
+miniyoulong:{
+zhuanhuanji:true,
+marktext:'☯',
+mark:true,
+intro:{
+content:function(storage,player){
+var str=player.storage.miniyou_luanfeng?'':'每回合限一次，';
+return str+(storage?'你可以弃置一张非基本牌，视为使用一张未以此法使用过的基本牌。':'你可以废除你的一个装备栏，视为使用一张未以此法使用过的普通锦囊牌。');
+},
+},
+init:function(player){
+player.storage.miniyoulong=false;
+if(!player.storage.miniyoulong2) player.storage.miniyoulong2=[];
+},
+hiddenCard:function(player,name){
+if(!player.storage.miniyoulong2) player.storage.miniyoulong2=[];
+if(player.storage.miniyoulong2.includes(name)) return false;
+if(player.hasSkill('miniyoulong_'+(player.storage.miniyoulong||false))) return false;
+var type=get.type(name);
+if(player.storage.miniyoulong) return type=='basic'&&((_status.connectMode&&player.countCards('he'))||player.countCards('he',card=>get.type(card)!='basic'&&lib.filter.cardDiscardable(card,player)));
+return type=='trick'&&player.hasEnabledSlot();
+},
+audio:'youlong',
+enable:'chooseToUse',
+filter:function(event,player){
+if(!player.hasEnabledSlot()) return false;
+if(player.hasSkill('miniyoulong_'+(player.storage.miniyoulong||false))) return false;
+var type=player.storage.miniyoulong?'basic':'trick';
+if(type=='basic'&&!player.countCards('he',card=>get.type(card)!='basic'&&lib.filter.cardDiscardable(card,player))) return false;
+if(type=='trick'&&!player.hasEnabledSlot()) return false;
+for(var name of lib.inpile){
+if(player.storage.miniyoulong2.includes(name)) continue;
+if(get.type(name)!=type) continue;
+if(event.filterCard({name:name,isCard:true},player,event)) return true;
+}
+return false;
+},
+chooseButton:{
+dialog:function(event,player){
+var dialog=ui.create.dialog('游龙','hidden');
+var type=player.storage.miniyoulong?'basic':'trick';
+if(type=='trick'){
+const equips=[];
+for(let i=1;i<6;i++){
+if(!player.hasEnabledSlot(i)) continue;
+equips.push([i,get.translation('equip'+i)]);
+}
+if(equips.length>0) dialog.add([equips,'tdnodes']);
+}
+var list=[];
+for(var name of lib.inpile){
+if(player.storage.miniyoulong2.includes(name)) continue;
+if(get.type(name)!=type) continue;
+if(event.filterCard({name:name,isCard:true},player,event)){
+list.push([type,'',name]);
+if(name=='sha'){
+for(var j of lib.inpile_nature) list.push(['基本','','sha',j]);
+}
+}
+}
+dialog.add([list,'vcard']);
+return dialog;
+},
+filter:function(button){
+if(ui.selected.buttons.length&&typeof button.link==typeof ui.selected.buttons[0].link) return false;
+return true;
+},
+select:()=>_status.event.player.storage.miniyoulong?1:2,
+check:function(button){
+var player=_status.event.player;
+if(typeof button.link=='number'){
+var card=player.getEquip(button.link);
+if(card){
+var val=get.value(card);
+if(val>0) return 0;
+return 5-val;
+}
+switch(button.link){
+case 3:return 4.5;break;
+case 4:return 4.4;break;
+case 5:return 4.3;break;
+case 2:return (3-player.hp)*1.5;break;
+case 1:{
+if(game.hasPlayer(function(current){
+return (get.realAttitude||get.attitude)(player,current)<0&&get.distance(player,current)>1;
+})) return 0;
+return 3.2;
+}
+}
+}
+var name=button.link[2];
+var evt=_status.event.getParent();
+if(name=='shan') return 2;
+if(evt.type=='dying'){
+if(get.attitude(player,evt.dying)<2) return false;
+if(name=='jiu') return 2.1;
+return 1.9;
+}
+if(evt.type=='phase') return player.getUseValue({name:name,nature:button.link[3],isCard:true});
+return 1;
+},
+backup:function(links,player){
+if(!links[1]) links=[6,links[0]];
+else if(typeof links[1]=='number') links.reverse();
+var equip=links[0];
+var name=links[1][2];
+var nature=links[1][3];
+var next={
+viewAs:{
+name:name,
+nature:nature,
+isCard:true,
+},
+popname:true,
+precontent:function(){
+var skill='miniyoulong_'+(player.storage.miniyoulong||false);
+player.logSkill('miniyoulong');
+if(skill=='miniyoulong_false') player.disableEquip(lib.skill.miniyoulong_backup.equip);
+else{
+player.discard(event.result.cards);
+event.result.card={name:event.result.card.name,nature:event.result.card.nature};
+event.result.cards=[];
+}
+delete event.result.skill;
+if(!player.storage.miniyou_luanfeng) player.addTempSkill(skill);
+player.changeZhuanhuanji('miniyoulong');
+player.storage.miniyoulong2.add(event.result.card.name);
+},
+};
+if(player.storage.miniyoulong){
+next.filterCard=(card,player)=>get.type(card)!='basic'&&lib.filter.cardDiscardable(card,player);
+next.ignoreMod=true;
+next.check=(card)=>7-get.value(card);
+}
+else{
+next.equip=equip;
+next.filterCard=()=>false;
+next.selectCard=-1;
+}
+return next;
+},
+prompt:function(links,player){
+if(!links[1]) links=[6,links[0]];
+else if(typeof links[1]=='number') links.reverse();
+var equip='equip'+links[0];
+var name=links[1][2];
+var nature=links[1][3];
+if(player.storage.miniyoulong) return '弃置一张非基本牌，视为使用'+(get.translation(nature)||'')+get.translation(name);
+return '废除自己的'+get.translation(equip)+'栏，视为使用'+(get.translation(nature)||'')+get.translation(name);
+},
+},
+ai:{
+respondSha:true,
+respondShan:true,
+skillTagFilter:function(player,tag,arg){
+if(arg=='respond') return false;
+if(!player.storage.miniyoulong||player.hasSkill('miniyoulong_true')) return false;
+if(!((_status.connectMode&&player.countCards('he'))||player.countCards('he',card=>get.type(card)!='basic'&&lib.filter.cardDiscardable(card,player)))) return false;
+var name=(tag=='respondSha'?'sha':'shan');
+return !player.storage.miniyoulong2.includes(name);
+},
+order:function(item,player){
+if(player&&_status.event.type=='phase'){
+var max=0,add=false;
+var type=player.storage.miniyoulong?'basic':'trick';
+var list=lib.inpile.filter(name=>get.type(name)==type&&!player.storage.miniyoulong2.includes(name));
+if(list.includes('sha')) add=true;
+list=list.map(namex=>{return {name:namex,isCard:true}});
+if(add) lib.inpile_nature.forEach(naturex=>list.push({name:'sha',nature:naturex,isCard:true}));
+for(var card of list){
+if(player.getUseValue(card)>0){
+var temp=get.order(card);
+if(temp>max) max=temp;
+}
+}
+if(max>0) max+=0.3;
+return max;
+}
+return 1;
+},
+result:{player:1},
+},
+subSkill:{
+true:{charlotte:true},
+false:{charlotte:true},
+},
+},
+miniluanfeng:{
+audio:'luanfeng',
+trigger:{global:'dying'},
+filter:function(event,player){
+return event.player.maxHp>=player.maxHp&&event.player.hp<1;
+},
+limited:true,
+skillAnimation:true,
+animationColor:'soil',
+logTarget:'player',
+check:function(event,player){
+if(get.attitude(player,event.player)<4) return false;
+if(player.countCards('h',function(card){
+var mod2=game.checkMod(card,player,'unchanged','cardEnabled2',player);
+if(mod2!='unchanged') return mod2;
+var mod=game.checkMod(card,player,event.player,'unchanged','cardSavable',player);
+if(mod!='unchanged') return mod;
+var savable=get.info(card).savable;
+if(typeof savable=='function') savable=savable(card,player,event.player);
+return savable;
+})>=1-event.player.hp) return false;
+if(event.player==player||event.player==get.zhu(player)) return true;
+return !player.hasUnknown();
+},
+content:function(){
+'step 0'
+player.awakenSkill('miniluanfeng');
+trigger.player.recover(3-trigger.player.hp);
+'step 1'
+var list=[player,trigger.player];
+while(list.length){
+var target=list.shift();
+for(var i=1;i<6;i++){
+for(var j=0;j<target.countDisabledSlot(i);j++){
+list.push(i);
+}
+}
+if(list.length>0) target.enableEquip(list);
+}
+'step 2'
+player.drawTo(6);
+trigger.player.drawTo(6);
+'step 3'
+player.storage.miniyoulong2=[];
+player.storage.miniyou_luanfeng=true;
+player.removeSkill('miniyoulong_true');
+player.removeSkill('miniyoulong_false');
+game.delayx();
+},
+},
 //吴
 //孙权
 minizhiheng:{
@@ -21569,6 +21977,57 @@ if(from.group=='wu') return true;
 },
 },
 },
+},
+//孙茹
+minixiecui:{
+audio:'xiecui',
+trigger:{global:'damageBegin1'},
+filter:function(event,player){
+var source=event.source;
+if(!source||source!=_status.currentPhase||event.getParent().type!='card') return false;
+return !source.hasHistory('sourceDamage',function(evt){
+return evt.getParent().type=='card';
+});
+},
+logTarget:'source',
+prompt2:function(event,player){
+var source=trigger.source;
+var str=('令'+get.translation(event.player)+'即将受到的');
+str+=(''+event.num+'点');
+if(lib.linked.includes(event.nature)){
+str+=(get.translation(event.nature)+'属性');
+}
+str+='伤害+1';
+if(source.group.countCards('h')>source.getHp()){
+var cards=event.cards.filterInD();
+if(cards.length){
+str+=('；然后'+get.translation(event.source)+'获得'+get.translation(cards)+'，且本回合的手牌上限+1');
+}
+}
+return str;
+},
+check:function(event,player){
+var source=trigger.source;
+var att=get.attitude(player,event.player);
+if(att<0){
+if(source.group.countCards('h')<=source.getHp()||!event.cards.filterInD().length) return true;
+return get.attitude(player,source)>0;
+}
+return false;
+},
+content:function(){
+trigger.num++;
+var source=trigger.source;
+if(source.group.countCards('h')>source.getHp()){
+var cards=trigger.cards.filterInD();
+if(cards.length>0){
+source.gain(cards,'gain2');
+source.addMark('xiecui_effect',1,false);
+source.addTempSkill('xiecui_effect');
+}
+}
+},
+ai:{threaten:2},
 },
 //群
 miniqieting:{
@@ -29326,6 +29785,118 @@ if(card) player.gain(card,'gain2');
 },
 },
 },
+//女娲
+minibutian:{
+audio:'ext:活动武将/audio/skill:2',
+trigger:{
+source:'damageSource',
+global:['roundStart','phaseBefore'],
+player:['damageEnd','changeHp','gainMaxHpEnd','loseMaxHpEnd','enterGame'],
+},
+filter:function(event,player,name){
+var num=Math.floor(player.getDamagedHp()/5);
+if(name=='damageEnd') return num>0;
+if(name=='roundStart') return game.roundNumber>1&&num>0;
+if(name=='damageSource') return event.player!=player&&player.isDamaged()&&num>0;
+if(name=='phaseBefore'&&game.phaseNumber>0) return false;
+return player.isHealthy();
+},
+forced:true,
+content:function(){
+var num=Math.floor(player.getDamagedHp()/5);
+var name=event.triggername;
+if(name=='damageSource') player.recover(num);
+else if(name=='damageEnd'||name=='roundStart') player.loseHp(num);
+else{
+var targets=game.filterPlayer(current=>current!=player).sortBySeat();
+if(targets.length){
+player.$fullscreenpop('补天','fire');
+targets.forEach(target=>{
+player.line(target);
+target.die();
+});
+}
+}
+},
+},
+minilianshi:{
+mod:{maxHandcardBase:(player,num)=>5},
+audio:'ext:活动武将/audio/skill:2',
+trigger:{
+player:'loseAfter',
+global:['cardsDiscardAfter','loseAsyncAfter'],
+},
+filter:function(event,player){
+if(event.name.indexOf('lose')==0) return event.type=='discard'&&event.getl(player).cards2.filter(card=>get.position(card,true)=='d'&&!player.getStorage('minilianshi').includes(get.suit(card,player))).length>0;
+if(!event.cards.filterInD('d').some(card=>!player.getStorage('minilianshi').includes(get.suit(card,player)))) return false;
+var evt=event.getParent();
+if(evt.name!='orderingDiscard') return false;
+var evtx=(evt.relatedEvent||evt.getParent());
+var history=player.getHistory('useCard').concat(player.getHistory('respond'));
+return evtx.player==player&&history.some(evtxx=>evtx.getParent()==(evtxx.relatedEvent||evtxx.getParent()));
+},
+forced:true,
+content:function(){
+'step 0'
+var cards;
+if(trigger.name.indexOf('lose')==0) cards=trigger.getl(player).cards2.filter(card=>get.position(card,true)=='d');
+else cards=trigger.cards.filterInD('d');
+event.cards=cards;
+var suits=cards.reduce((list,card)=>list.add(get.suit(card,player)),[]);
+suits=suits.filter(suit=>!player.getStorage('minilianshi').includes(suit));
+player.markAuto('minilianshi',suits);
+player.storage.minilianshi.sort((a,b)=>lib.suit.indexOf(b)-lib.suit.indexOf(a));
+if((!_status.connectMode&&game.HasExtension('十周年UI')&&lib.config.extension_十周年UI_playerMarkStyle&&lib.config.extension_十周年UI_playerMarkStyle=='decade')){
+game.broadcastAll(function(player,skill){
+if(player.marks[skill]) player.marks[skill].firstChild.innerHTML=player.getStorage(skill).reduce((str,suit)=>str+=get.translation(suit),'');
+},player,'minilianshi');
+}
+'step 1'
+if(player.getStorage('minilianshi').length>=4){
+player.draw();
+if(player.isDamaged()) player.recover(get.number(cards[cards.length-1],player));
+player.unmarkSkill('minilianshi');
+delete player.storage.minilianshi;
+}
+},
+intro:{
+markcount:(storage)=>{
+if((!_status.connectMode&&game.HasExtension('十周年UI')&&lib.config.extension_十周年UI_playerMarkStyle&&lib.config.extension_十周年UI_playerMarkStyle=='decade')) return 0;
+return storage.length;
+},
+content:storage=>'已记录花色：$',
+},
+},
+minituantu:{
+audio:'ext:活动武将/audio/skill:2',
+enable:'phaseUse',
+filter:function(event,player){
+return player.countCards('h')&&ui.discardPile.childElementCount>0;
+},
+usable:1,
+content:function(){
+var names=player.getCards('h').reduce((list,card)=>list.add(get.name(card)),[]);
+var cards=[];
+names.forEach(name=>{
+var card=get.discardPile(card=>!cards.includes(card)&&card.name==name);
+if(card) cards.push(card);
+});
+if(cards.length) player.gain(cards,'gain2');
+else player.chat('无牌可得？！');
+},
+ai:{
+order:function(item,player){
+var names=player.getCards('h').reduce((list,card)=>list.add(get.name(card)),[]);
+var cards=[];
+names.forEach(name=>{
+var card=get.discardPile(card=>!cards.includes(card)&&card.name==name);
+if(card) cards.push(card);
+});
+return cards.length;
+},
+result:{player:1},
+},
+},
 //喵
 //核心逗猫
 minidoumao:{
@@ -30500,6 +31071,19 @@ str+='，或将装备区里的所有牌交给你并令你发动〖宴诛〗无�
 if(bool) str+='</span>';
 return str+'。';
 },
+miniyoulong:function(player){
+var storage=player.storage.miniyoulong;
+var str='转换技';
+if(player.storage.miniyou_luanfeng) str+='，每回合每项各限一次';
+str+='。';
+if(!storage) str+='<span class="bluetext">';
+str+='阴，你可以废除你的一个装备栏，视为使用一张未以此法使用过的普通锦囊牌；';
+if(!storage) str+='</span>';
+if(storage) str+='<span class="bluetext">';
+str+='阳，你可以弃置一张非基本牌，视为使用一张未以此法使用过的基本牌。';
+if(storage) str+='</span>';
+return str;
+},
 },
 translate:{
 MiNi_wei:'欢乐三国杀·魏国',
@@ -30580,6 +31164,7 @@ Mbaby_yinfuren:'欢杀尹夫人',
 Mbaby_sp_caoren:'SP欢杀曹仁',
 Mbaby_guojia:'欢杀郭嘉',
 Mbaby_caohong:'欢杀曹洪',
+Mbaby_sb_caocao:'欢杀谋曹操',
 miniluoshen:'洛神',
 miniluoshen_info:'准备阶段，你可以进行一次判定并获得判定牌，若判定结果为黑色，你可重复此流程。',
 miniqiaobian:'巧变',
@@ -30736,6 +31321,10 @@ minishenglun:'胜论',
 minishenglun_info:'出牌阶段限一次，你可以选择至多两名其他角色，然后你依次与目标角色依次比较你与其的：体力、手牌数、已装备武器牌数、已装备防具牌数、已装备坐骑牌数（你对应的数值比其大则获得1枚“胜”标记，否则获得1枚“负”标记）。当你的“胜”/“负”标记数达到10后，你回复1点体力/对一名角色造成1点伤害，然后发动〖遗计〗并失去所有的“胜”/“负”标记。',
 miniyuanhu:'援护',
 miniyuanhu_info:'①出牌阶段限两次，你可将一张装备牌置入一名角色的装备区内并摸一张牌，若此牌为：武器牌，你弃置与其距离为1的另一名角色区域的一张牌；防具牌，其摸一张牌；坐骑牌，其回复1点体力。②回合结束时，若你本回合未发动过〖援护①〗，则你从牌堆中获得一张装备牌。',
+minisbjianxiong:'奸雄',
+minisbjianxiong_info:'游戏开始时，你可获得至多2枚“治世”标记。当你受到伤害后，你可获得伤害牌，摸2-X张牌（X为你的“治世”标记数），然后你可获得或失去1枚“治世”标记。',
+minisbqingzheng:'清正',
+minisbqingzheng_info:'出牌阶段开始时，你可以弃置3-X种花色的所有手牌（X为你的“治世”标记数），并观看一名有手牌的其他角色的手牌，你弃置其中一种花色的所有牌。若其被弃置的牌数小于你以此法弃置的牌数，你对其造成1点伤害，然后你可获得或失去1枚“治世”标记。',
 //蜀
 Mbaby_guanyu:'欢杀关羽',
 Mbaby_zhugeliang:'欢杀诸葛亮',
@@ -30794,6 +31383,7 @@ Mbaby_wangyue:'欢杀王悦',
 Mbaby_xf_yiji:'欢杀伊籍',
 Mbabysp_zhangfei:'SP欢杀张飞',
 Mbaby_wangtao:'欢杀王桃',
+Mbaby_wolongfengchu:'欢杀卧龙凤雏',
 miniwusheng:'武圣',
 miniwusheng_info:'锁定技。①你使用红色【杀】造成的伤害+1。②回合开始时，你从牌堆或弃牌堆中获得一张红色【杀】。',
 miniguanxing:'观星',
@@ -30984,6 +31574,10 @@ minituodao:'拖刀',
 minituodao_info:'锁定技，当你使用或打出【闪】时，你令你使用的下一张【杀】的伤害基数+1。',
 miniyaopei:'摇佩',
 miniyaopei_info:'其他角色的弃牌阶段结束时，若其本阶段弃置过牌，则你可以弃置一张牌。若此牌与其本阶段弃置的任意牌的花色相同，你回复1点体力并摸两张牌；否则你选择一项：①其摸两张牌，你回复1点体力。②其回复1点体力，你摸两张牌。',
+miniyoulong:'游龙',
+miniyoulong_info:'转换技，每回合每项各限一次。阴，你可以废除你的一个装备栏，视为使用一张未以此法使用过的普通锦囊牌；阳，你可以弃置一张非基本牌，视为使用一张未以此法使用过的基本牌。',
+miniluanfeng:'鸾凤',
+miniluanfeng_info:'限定技，一名角色进入濒死状态时，若其体力上限不小于你，你可令其回复至3点体力，恢复你与其被废除的装备栏，令其手牌补至6张，取消〖游龙〗的回合限制并重置〖游龙〗使用过的牌名。',
 //吴
 Mbaby_bulianshi:'欢杀步练师',
 Mbaby_chengpu:'欢杀程普',
@@ -31033,6 +31627,7 @@ Mbaby_xuezong:'欢杀薛综',
 Mbaby_sb_huanggai:'欢杀谋黄盖',
 Mbaby_zhangfen:'欢杀张奋',
 Mbaby_sunxiu:'欢杀孙休',
+Mbaby_dc_sunru:'欢杀孙茹',
 minizhiheng:'制衡',
 minizhiheng_info:'出牌阶段结束时，你可以弃置任意张手牌并将手牌数补至四张。',
 minirezhiheng:'制衡',
@@ -31221,6 +31816,8 @@ minixingxue:'兴学',
 minixingxue_info:'结束阶段开始时，你可以令至多X名角色依次摸一张牌并将一张牌置于牌堆顶或交给一名其他目标角色（X为你的体力上限）。',
 minizhaofu:'诏缚',
 minizhaofu_info:'主公技，出牌阶段限一次，你可选择至多两名其他角色，这些角色本轮视为在所有吴势力角色的攻击范围内。',
+minixiecui:'撷翠',
+minixiecui_info:'一名角色于其回合内第一次使用牌造成伤害时，你可以令此伤害+1。然后若其手牌数大于其体力值，则该角色获得此伤害牌对应的实体牌且其本回合的手牌上限+1。',
 //群
 Mbaby_zuoci:'欢杀左慈',
 Mbaby_gaoshun:'欢杀高顺',
@@ -31543,6 +32140,7 @@ Mbaby_sunwukong:'欢杀孙悟空',
 Mbaby_dalanmao:'欢杀大懒猫',
 Mbaby_change:'欢杀嫦娥',
 Mbaby_shen_taishici:'欢杀神太史慈',
+Mbaby_nvwa:'欢杀女娲',
 miniwuqian:'无前',
 miniwuqian_info:'锁定技，当你于回合内第一次使用【杀】或【决斗】指定目标后，则你令此牌无视目标角色的防具且视为具有〖无双〗效果。',
 minishenfen:'神愤',
@@ -31645,6 +32243,12 @@ minipowei:'破围',
 minipowei_info:'觉醒技。一名角色的回合结束时，若场上角色均没有“围”标记，你获得技能〖神著〗，然后摸Y张牌（Y为本轮移去的“围”数）。',
 minishenzhu:'神著',
 minishenzhu_info:'锁定技。①回合开始时，你从牌堆或弃牌堆获得一张【杀】。②当你使用有对应实体牌的非转化【杀】结算结束后，你选择一项：1.摸一张牌，且本回合使用【杀】的次数上限+1。2.摸三张牌，且本回合不能再使用【杀】。',
+minibutian:'补天',
+minibutian_info:'锁定技。①当你对其他角色造成伤害后，你回复X点体力。②当你受到伤害后或非首轮开始时，你失去X点体力。③游戏开始时，或你的体力值或体力上限变化后，若你未受伤，则你令场上所有其他角色死亡。（X为你已损失体力值的1/5，向下取整）',
+minilianshi:'炼石',
+minilianshi_info:'锁定技。①你的手牌上限始终为5。②当你使用、打出和弃置的牌进入弃牌堆后，你记录这些牌的花色，然后若你已记录四种花色，则你摸一张牌并回复Y点体力，然后清除花色记录（Y为这些牌中的最后一张牌的点数）。',
+minituantu:'抟土',
+minituantu_info:'出牌阶段限一次，你可以从弃牌堆中获得你手牌中有的牌名的牌各一张。',
 //喵
 Mmiao_caiwenji:'喵蔡琰',
 Mmiao_diaochan:'喵貂蝉',
