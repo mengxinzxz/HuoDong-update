@@ -13686,6 +13686,10 @@ var getv=(cards)=>cards.map(i=>get.value(i)).reduce((p,c)=>p+c,0);
 return list.sort((a,b)=>getv(target.getCards('h',{suit:b}))-getv(target.getCards('h',{suit:a})))[0];
 })());
 }
+else{
+event.cards2=[];
+event.goto(3);
+}
 'step 2'
 var cards2=target.getCards('h',{suit:result.control});
 event.cards2=cards2;
