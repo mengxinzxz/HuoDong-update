@@ -234,6 +234,12 @@ lib.characterReplace.lingju.add('decade_lingju');
 lib.characterReplace.buzhi=['decade_buzhi','buzhi'];
 lib.characterReplace.fuhuanghou.add('bol_fuhuanghou');
 
+//筛选武将同名替换
+Object.keys(lib.characterReplace).forEach(name=>{
+if(!lib.character[name]) delete lib.characterReplace[name];
+else lib.characterReplace[name]=lib.characterReplace[name].filter(namex=>lib.character[namex]);
+});
+
 //神将
 if(!game.HasExtension('OLUI')) game.HDaddCharacter('shen_sunquan',['male','shen',4,['bolyuheng','boldili'],['wu']],'extra');
 game.HDaddCharacter('tw_shen_lvmeng',['male','shen',3,['bolshelie','bolgongxin'],['wu']],'extra');

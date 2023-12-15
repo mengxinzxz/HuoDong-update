@@ -17,6 +17,7 @@ game.bolShowNewPack=function(){
 var HuoDong_update=[
 '/setPlayer/',
 'bugfix',
+'修复配件文件添加的武将同名替换会把没有开启的武将调用出来的bug',
 '添加欢杀武将：孙休',
 'To be continued...',
 ];
