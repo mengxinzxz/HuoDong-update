@@ -13724,7 +13724,7 @@ return 1-att/2+Math.sqrt(target.countCards('h'));
 },
 }
 },
-prompt:'请选择【清正】的目标',
+prompt:()=>'请选择【清正】的目标',
 },
 ai:{
 combo:'minisbjianxiong',
