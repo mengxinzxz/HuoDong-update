@@ -27107,12 +27107,13 @@ return true;
 },
 miniwuhun:{
 audio:'wuhun2',
-group:['miniwuhun_mark','miniwuhun_die','wuhun22','wuhun23'],
+group:['miniwuhun_mark','miniwuhun_die'],
 trigger:{player:'damageEnd'},
-forced:true,
 filter:function(event,player){
-return event.source!=undefined;
+return event.source&&event.source.isIn();
 },
+forced:true,
+logTarget:'source',
 content:function(){
 trigger.source.addMark('miniwuhun_mark',trigger.num);
 },
@@ -27169,7 +27170,7 @@ content:'mark',
 },
 },
 ai:{
-threaten:0.1,
+threaten:0.01,
 notemp:true,
 },
 },
