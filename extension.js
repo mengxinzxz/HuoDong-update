@@ -17,12 +17,26 @@ game.bolShowNewPack=function(){
 var HuoDong_update=[
 '/setPlayer/',
 'bugfix',
-'修复配件文件添加的武将同名替换会把没有开启的武将调用出来的bug',
+'添加飞鸿印雪全系列共52个技能不同但并非完全削弱和需要摆脱线上机制的武将',
 '添加欢杀武将：孙休，孙茹，龙凤，曹操，女娲',
+'修复配件文件添加的武将同名替换会把没有开启的武将调用出来的bug',
 'To be continued...',
 ];
 //更新武将
 var HuoDong_players=[
+//飞鸿
+'mx_fh_sp_bianfuren','mx_fh_sp_chenzhen','mx_fh_feiyi','mx_fh_luotong','mx_fh_sp_sunshao',
+'mx_fh_sp_duyu','mx_fh_sp_xunchen','mx_fh_wangling','mx_fh_sp_mifuren','mx_fh_zhouchu',
+'mx_fh_wujing','mx_fh_sp_yanghu','mx_fh_caizhenji','mx_fh_sp_huaxin','mx_fh_xiangchong',
+'mx_fh_sp_xujing','mx_fh_qiaogong','mx_fh_sp_zhangwen','mx_fh_liuzhang','mx_fh_zhangzhongjing',
+'mx_fh_sp_wangshuang','mx_fh_sp_cuiyan','mx_fh_sp_jiangwan','mx_fh_liuba','mx_fh_sp_lvfan',
+'mx_fh_shen_guojia','mx_fh_shen_xunyu','mx_fh_shen_taishici','mx_fh_shen_dianwei',
+'mx_fh_re_huangyueying','mx_fh_re_zhenji','mx_fh_gz_huangzhong','mx_fh_zhoutai',
+'mx_fh_ol_sp_zhugeliang','mx_fh_re_taishici','mx_fh_yanwen','mx_fh_guanqiujian',
+'mx_fh_dc_sunziliufang','mx_fh_liyan','mx_fh_dc_huanghao','mx_fh_re_sundeng','mx_fh_xinxianying',
+'mx_fh_wuxian','mx_fh_caojie','mx_fh_jikang','mx_fh_zhugeshang','mx_fh_lukai','mx_fh_kebineng',
+'mx_fh_xin_lingtong','mx_fh_dc_xushu','mx_fh_re_liaohua','mx_fh_zhuzhi',
+//宝宝杀
 'Mbaby_sunxiu','Mbaby_dc_sunru','Mbaby_wolongfengchu','Mbaby_sb_caocao','Mbaby_nvwa',
 ];
 //加载
@@ -37566,7 +37580,7 @@ fh_yong:['mx_fh_sp_wangshuang'],
 fh_yan:['mx_fh_sp_cuiyan','mx_fh_sp_jiangwan','mx_fh_liuba','mx_fh_sp_lvfan'],
 fh_shen:['mx_fh_shen_guojia','mx_fh_shen_xunyu','mx_fh_shen_taishici','mx_fh_shen_dianwei'],
 fh_std_sh:['mx_fh_re_huangyueying','mx_fh_re_zhenji','mx_fh_gz_huangzhong','mx_fh_zhoutai','mx_fh_ol_sp_zhugeliang','mx_fh_re_taishici','mx_fh_yanwen','mx_fh_guanqiujian'],
-fh_yijiang:['mx_fh_dc_sunziliufang','mx_fh_liyan','mx_fh_dc_huanghao','mx_fh_re_sundeng','mx_fh_xinxianying','mx_fh_wuxian','mx_fh_caojie','mx_fh_jikang','mx_fh_zhugeshang','mx_fh_lukai','mx_fh_kebineng','mx_fh_xin_lingtong','mx_fh_dc_xushu','mx_fh_re_liaohua','mx_fh_re_zhuhuan','mx_fh_zhuzhi'],
+fh_yijiang:['mx_fh_dc_sunziliufang','mx_fh_liyan','mx_fh_dc_huanghao','mx_fh_re_sundeng','mx_fh_xinxianying','mx_fh_wuxian','mx_fh_caojie','mx_fh_jikang','mx_fh_zhugeshang','mx_fh_lukai','mx_fh_kebineng','mx_fh_xin_lingtong','mx_fh_dc_xushu','mx_fh_re_liaohua','mx_fh_zhuzhi'],
 },
 },
 character:{
@@ -42211,7 +42225,6 @@ mx_fh_guanqiujian:'飞鸿毌丘俭',
 mx_fh_xin_lingtong:'飞鸿凌统',
 mx_fh_dc_xushu:'飞鸿徐庶',
 mx_fh_re_liaohua:'飞鸿廖化',
-mx_fh_re_zhuhuan:'飞鸿朱桓',
 mx_fh_zhuzhi:'飞鸿朱治',
 fh_jizhi:'集智',
 fh_jizhi_info:'当你使用非转化锦囊牌时，你可以摸一张牌，然后你可以弃置一张基本牌，令本回合你的手牌上限+1。',
