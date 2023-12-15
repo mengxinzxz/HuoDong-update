@@ -13652,7 +13652,7 @@ return ui.create.dialog(
 select:()=>3-_status.event.player.countMark('sbjianxiong'),
 filter:function(button){
 var player=_status.event.player;
-return player.countCards('h',card=>get.suit(card,player)==button.link.slice(6));
+return player.countCards('h',card=>get.suit(card,player)==button.link[2].slice(6));
 },
 check:function(button){
 var player=_status.event.player;
