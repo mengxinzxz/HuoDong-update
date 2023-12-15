@@ -25332,7 +25332,7 @@ var name=result.links[0][2],str=get.translation(name);
 player.markAuto('minishouxi',[name]);
 player.popup(str);
 game.log(player,'声明了','#g【'+str+'】');
-var result2=yield target.chooseToDiscard('he',(card)=>get.name(card)==_status.event.name).set('ai',card=>10-get.value(card)*(_status.event.att<0?1:0)).set('att',get.attitude(target,player)).set('name',name).set('dialog',['###守玺###弃置一张【'+str+'】，否则此【杀】对'+get.translation(player)+'无效且'+get.translation(player)+'从牌堆中获得一张【'+str+'】',[result.links,'vcard']]);
+var result2=yield target.chooseToDiscard('he',(card)=>get.name(card)==_status.event.namex).set('ai',card=>10-get.value(card)*(_status.event.att<0?1:0)).set('att',get.attitude(target,player)).set('namex',name).set('dialog',['###守玺###弃置一张【'+str+'】，否则此【杀】对'+get.translation(player)+'无效且'+get.translation(player)+'从牌堆中获得一张【'+str+'】',[result.links,'vcard']]);
 if(result2.bool) target.gainPlayerCard(player);
 else{
 trigger.getParent().excluded.add(player);
@@ -35854,11 +35854,11 @@ var name=result.links[0][2];
 player.popup(name);
 game.log(player,'声明了','#y'+get.translation(name)+'牌');
 var result2=yield trigger.player.chooseToDiscard('守玺：弃置一张'+get.translation(name)+'牌，或令【杀】对'+get.translation(player)+'无效',function(card){
-return get.type2(card)==_status.event.name;
+return get.type2(card)==_status.event.namex;
 },'he').set('ai',function(card){
 if(_status.event.eff>0) return 10-get.value(card);
 return 0;
-}).set('eff',get.effect(player,trigger.card,trigger.player,trigger.player)).set('name',name);
+}).set('eff',get.effect(player,trigger.card,trigger.player,trigger.player)).set('namex',name);
 if(!result2.bool) trigger.getParent().excluded.add(player);
 }
 },
@@ -39920,7 +39920,7 @@ var result=yield player.chooseButton([get.prompt2('fh_shouxi'),[['basic','trick'
 var trigger=_status.event.getTrigger();
 var name=button.link[2],target=trigger.player;
 if(get.effect(player,trigger.card,target,player)>0) return 0;
-if(!target.getDiscardableCards(target,'h').some(card=>get.type2(card)==get.type2(trigger.card))) return 2+Math.random();
+if(!target.getDiscardableCards(target,'h').some(card=>get.type2(card)==name)) return 2+Math.random();
 return 1+Math.random();
 });
 if(result.bool){
@@ -39929,8 +39929,8 @@ var name=result.links[0][2];
 player.popup(name);
 game.log(player,'声明了','#y'+get.translation(name)+'牌');
 var result2=yield trigger.player.chooseToDiscard('守玺：是否弃置一张手牌中的'+get.translation(name)+'牌？',function(card,player){
-return get.type2(card)==_status.event.name;
-}).set('ai',card=>Math.max(0,_status.event.eff)*(10-get.value(card))).set('eff',get.effect(player,trigger.card,trigger.player,trigger.player)).set('name',name);
+return get.type2(card)==_status.event.namex;
+}).set('ai',card=>Math.max(0,_status.event.eff)*(10-get.value(card))).set('eff',get.effect(player,trigger.card,trigger.player,trigger.player)).set('namex',name);
 if(result2.bool) trigger.player.gainPlayerCard(player,'h');
 else trigger.getParent().excluded.add(player);
 }
