@@ -27125,38 +27125,27 @@ animationColor:'soil',
 trigger:{player:['die','dyingAfter']},
 filter:function(event,player){
 if(event.name=='dying'&&!player.isIn()) return false;
-return game.hasPlayer(function(current){
-return current!=player&&current.hasMark('miniwuhun_mark');
-});
+return game.hasPlayer(current=>current!=player&&current.hasMark('miniwuhun_mark'));
 },
 forced:true,
 forceDie:true,
 content:function(){
 'step 0'
-var num=0;
-for(var i=0;i<game.players.length;i++){
-var current=game.players[i];
-if(current!=player&&current.countMark('miniwuhun_mark')>num){
-num=current.countMark('miniwuhun_mark');
-}
-}
+var num=game.findPlayer(target=>target!=player&&!game.hasPlayer(current=>current!=player&&current.countMark('miniwuhun_mark')<player.countMark('miniwuhun_mark'))).countMark('miniwuhun_mark');
 player.chooseTarget('请选择【武魂】的目标',true,function(card,player,target){
 return target!=player&&target.countMark('miniwuhun_mark')==_status.event.num;
 }).set('ai',function(target){
 return -get.attitude(_status.event.player,target);
 }).set('forceDie',true).set('num',num);
 'step 1'
-if(result.bool&&result.targets&&result.targets.length){
+if(result.bool){
 var target=result.targets[0];
 event.target=target;
 player.line(target,{color:[255, 255, 0]});
 game.delay(2);
 }
 'step 2'
-target.judge(function(card){
-if(['tao','taoyuan'].includes(card.name)) return 10;
-return -10;
-});
+target.judge(card=>['tao','taoyuan'].includes(card.name)?10:-10);
 'step 3'
 if(!result.bool) target.loseHp(5);
 },
@@ -27180,28 +27169,26 @@ trigger:{player:'phaseUseBegin'},
 direct:true,
 content:function(){
 'step 0'
-player.chooseTarget(get.prompt2('miniyeyan'),lib.filter.notMe).set('ai',function(target){
-if(get.attitude(player,target)<0&&target.hp==1) return 2;
-if(get.attitude(player,target)<0) return 1;
-return 0;
+player.chooseTarget(get.prompt2('miniyeyan'),lib.filter.notMe).set('ai',target=>{
+var player=_status.event.player;
+return get.damageEffect(target,player,player);
 });
 'step 1'
 if(result.bool){
 player.logSkill('miniyeyan',result.targets[0]);
 result.targets[0].damage('fire');
 }
-else event.finish();
 },
 },
 miniqinyin:{
 audio:'qinyin',
 trigger:{player:'phaseDiscardEnd'},
-direct:true,
 filter:function(event,player){
 return player.getHistory('lose',function(evt){
 return evt.type=='discard'&&evt.getParent('phaseDiscard')==event;
 }).length;
 },
+direct:true,
 content:function(){
 'step 0'
 event.forceDie=true;
