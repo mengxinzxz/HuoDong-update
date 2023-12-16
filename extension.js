@@ -21979,7 +21979,7 @@ return evt.getParent().type=='card';
 },
 logTarget:'source',
 prompt2:function(event,player){
-var source=trigger.source;
+var source=event.source;
 var str=('令'+get.translation(event.player)+'即将受到的');
 str+=(''+event.num+'点');
 if(lib.linked.includes(event.nature)){
@@ -21995,7 +21995,7 @@ str+=('；然后'+get.translation(event.source)+'获得'+get.translation(cards)+
 return str;
 },
 check:function(event,player){
-var source=trigger.source;
+var source=event.source;
 var att=get.attitude(player,event.player);
 if(att<0){
 if(source.group.countCards('h')<=source.getHp()||!event.cards.filterInD().length) return true;
@@ -31806,7 +31806,7 @@ minixingxue_info:'结束阶段开始时，你可以令至多X名角色依次摸�
 minizhaofu:'诏缚',
 minizhaofu_info:'主公技，出牌阶段限一次，你可选择至多两名其他角色，这些角色本轮视为在所有吴势力角色的攻击范围内。',
 minixiecui:'撷翠',
-minixiecui_info:'一名角色于其回合内第一次使用牌造成伤害时，你可以令此伤害+1。然后若其手牌数大于其体力值，则该角色获得此伤害牌对应的实体牌且其本回合的手牌上限+1。',
+minixiecui_info:'一名角色于其回合内第一次使用牌造成伤害时，你可以令此伤害+1。然后若其手牌数大于其体力值，则该角色获得伤害牌且其本回合的手牌上限+1。',
 //群
 Mbaby_zuoci:'欢杀左慈',
 Mbaby_gaoshun:'欢杀高顺',
