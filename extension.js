@@ -21986,7 +21986,7 @@ if(lib.linked.includes(event.nature)){
 str+=(get.translation(event.nature)+'属性');
 }
 str+='伤害+1';
-if(source.group.countCards('h')>source.getHp()){
+if(source.countCards('h')>source.getHp()){
 var cards=event.cards.filterInD();
 if(cards.length){
 str+=('；然后'+get.translation(event.source)+'获得'+get.translation(cards)+'，且本回合的手牌上限+1');
@@ -21998,7 +21998,7 @@ check:function(event,player){
 var source=event.source;
 var att=get.attitude(player,event.player);
 if(att<0){
-if(source.group.countCards('h')<=source.getHp()||!event.cards.filterInD().length) return true;
+if(source.countCards('h')<=source.getHp()||!event.cards.filterInD().length) return true;
 return get.attitude(player,source)>0;
 }
 return false;
@@ -22006,7 +22006,7 @@ return false;
 content:function(){
 trigger.num++;
 var source=trigger.source;
-if(source.group.countCards('h')>source.getHp()){
+if(source.countCards('h')>source.getHp()){
 var cards=trigger.cards.filterInD();
 if(cards.length>0){
 source.gain(cards,'gain2');
