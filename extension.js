@@ -27023,14 +27023,16 @@ if(card.name=='sha'&&range[1]!=-1) range[1]++;
 },
 },
 audio:'wushuang',
-trigger:{player:'useCardToPlayered'},
+trigger:{player:'useCardToPlayered',target:'useCardToTargeted'},
 filter:function(event,player){
-return event.card.name=='sha'||event.card.name=='juedou';
+return (event.card.name=='sha'&&event.player==player)||event.card.name=='juedou';
 },
 forced:true,
-logTarget:'target',
+logTarget:function(event,player){
+return player==event.player?event.target:event.player
+},
 content:function(){
-var target=trigger.target;
+var target=lib.skill.miniwushuang.logTarget(trigger.player);
 if(trigger.card.name=='sha'){
 var id=target.playerid;
 var map=trigger.getParent().customArgs;
@@ -27039,7 +27041,7 @@ if(typeof map[id].shanRequired=='number') map[id].shanRequired++;
 else map[id].shanRequired=2;
 }
 else{
-var id=target.playerid;
+var id=id=(player==target?player:target)['playerid'];
 var idt=target.playerid;
 var map=trigger.getParent().customArgs;
 if(!map[idt]) map[idt]={};
