@@ -23133,19 +23133,27 @@ delete player.storage.miniluanji2;
 minixueyi:{
 unique:true,
 audio:'xueyi',
+enable:'chooseToUse',
 trigger:{global:'phaseBefore',player:'enterGame'},
 filter:function(event,player){
-if(!game.hasPlayer(function(current){
-return current.group=='qun';
-})) return false
+if(event.name=='chooseToUse'){
+if(!player.hasMark('minixueyi')) return false;
+if(event.type=='dying') return player==event.dying;
+if(event.parent.name=='phaseUse') return true;
+return false;
+}
+if(!game.hasPlayer(current=>current.group=='qun')) return false
 return event.name!='phase'||game.phaseNumber==0;
 },
 forced:true,
 zhuSkill:true,
 content:function(){
-player.addMark('minixueyi',game.countPlayer(function(current){
-return current.group=='qun';
-}));
+if(player.hasMark('minixueyi')){
+player.removeMark('minixueyi',1);
+player.recover();
+player.draw();
+}
+else player.addMark('minixueyi',game.countPlayer(current=>current.group=='qun'));
 },
 marktext:'裔',
 intro:{
@@ -23156,27 +23164,6 @@ mod:{
 maxHandcard:function(player,num){
 return num+(player.countMark('minixueyi')*2);
 },
-},
-group:'minixueyi_draw',
-},
-minixueyi_draw:{
-audio:'xueyi',
-enable:'chooseToUse',
-filter:function(event,player){
-if(!player.hasMark('minixueyi')) return false;
-if(event.type=='dying'){
-if(player!=event.dying) return false;
-return true;
-}
-else if(event.parent.name=='phaseUse'){
-return true;
-}
-return false;
-},
-content:function(){
-player.removeMark('minixueyi',1);
-player.recover();
-player.draw();
 },
 ai:{
 order:7,
