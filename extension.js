@@ -27023,14 +27023,39 @@ if(card.name=='sha'&&range[1]!=-1) range[1]++;
 },
 },
 audio:'wushuang',
-inherit:'wushuang',
-init:function(){
-lib.skill.wushuang1.ai.skillTagFilter=function(player,tag,arg){
-if(player.hasSkill('miniwuchang')||arg.card.name!='sha'||arg.target.countCards('h','shan')>1) return false;
-};
-lib.skill.wushuang2.ai.skillTagFilter=function(player,tag,arg){
-if(player.hasSkill('miniwuchang')||arg.card.name!='juedou'||Math.floor(arg.target.countCards('h','sha')/2)>player.countCards('h','sha')) return false;
-};
+trigger:{player:'useCardToPlayered'},
+filter:function(event,player){
+return event.card.name=='sha'||event.card.name=='juedou';
+},
+forced:true,
+logTarget:'target',
+content:function(){
+var target=trigger.target;
+if(trigger.card.name=='sha'){
+var id=target.playerid;
+var map=trigger.getParent().customArgs;
+if(!map[id]) map[id]={};
+if(typeof map[id].shanRequired=='number') map[id].shanRequired++;
+else map[id].shanRequired=2;
+}
+else{
+var id=target.playerid;
+var idt=target.playerid;
+var map=trigger.getParent().customArgs;
+if(!map[idt]) map[idt]={};
+if(!map[idt].shaReq) map[idt].shaReq={};
+if(!map[idt].shaReq[id]) map[idt].shaReq[id]=1;
+map[idt].shaReq[id]++;
+}
+},
+ai:{
+directHit_ai:true,
+skillTagFilter(player,tag,arg){
+//if(player.hasSkill('miniwuchang')&&arg.target.group==player.group) return false;
+if(arg.card.name!='sha'&&arg.card.name!='shan') return false;
+if(arg.card.name=='sha'&&arg.target.countCards('hs',{name:'shan'})>1) return false;
+if(arg.card.name=='juedou'&&Math.floor(arg.target.countCards('hs',{name:'sha'})/2)>player.countCards('hs',{name:'sha'})) return false;
+},
 },
 },
 miniwuchang:{
