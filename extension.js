@@ -27027,12 +27027,12 @@ trigger:{player:'useCardToPlayered',target:'useCardToTargeted'},
 filter:function(event,player){
 return (event.card.name=='sha'&&event.player==player)||event.card.name=='juedou';
 },
-forced:true,
 logTarget:function(event,player){
 return player==event.player?event.target:event.player
 },
+forced:true,
 content:function(){
-var target=lib.skill.miniwushuang.logTarget(trigger.player);
+var target=lib.skill.miniwushuang.logTarget(trigger,player);
 if(trigger.card.name=='sha'){
 var id=target.playerid;
 var map=trigger.getParent().customArgs;
@@ -27100,7 +27100,7 @@ if(list2.length){
 list2.sort((a,b)=>game.countPlayer(target=>target!=aim&&target.group==b&&get.attitude(player,target)<0)-game.countPlayer(target=>target!=aim&&target.group==a&&get.attitude(player,target)<0));
 return list2[0];
 }
-else return list.randomGet();
+return list.randomGet();
 }).set('list',list);
 'step 1'
 if(result.control){
