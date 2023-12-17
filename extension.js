@@ -21982,7 +21982,7 @@ prompt2:function(event,player){
 var source=event.source;
 var str=('令'+get.translation(event.player)+'即将受到的');
 str+=(''+event.num+'点');
-if(lib.linked.includes(event.nature)){
+if(event.hasNature('linked')){
 str+=(get.translation(event.nature)+'属性');
 }
 str+='伤害+1';
