@@ -33048,22 +33048,30 @@ trigger:{player:'phaseUseBegin'},
 filter:function(event,player){
 return player.countCards('h');
 },
-direct:true,
-content:function(){
-'step 0'
-player.chooseToDiscard('h',get.prompt('wechatxiaohu'),'弃置一张手牌并从牌堆中获得一张【杀】').set('ai',function(card){
+filterCard:lib.filter.cardDiscardable,
+check:function(card){
 var player=_status.event.player;
 if(card.name=='sha') return 0;
 if(!player.countCards('hs',{name:'sha'})) return 7-get.value(card);
 return 4.5-get.value(card);
-}).logSkill='wechatxiaohu';
-'step 1'
-if(result.bool){
-var card=get.cardPile2(function(card){
-return card.name=='sha';
-});
+},
+content:function(){
+//'step 0'
+//player.chooseToDiscard('h',get.prompt('wechatxiaohu'),'弃置一张手牌并从牌堆中获得一张【杀】').set('ai',function(card){
+//var player=_status.event.player;
+//if(card.name=='sha') return 0;
+//if(!player.countCards('hs',{name:'sha'})) return 7-get.value(card);
+//return 4.5-get.value(card);
+//}).logSkill='wechatxiaohu';
+//'step 1'
+//if(result.bool){
+var card=get.cardPile2(card=>card.name=='sha');
 if(card) player.gain(card,'gain2');
-}
+//}
+},
+ai:{
+order:(item,player)=>get.order({name:'sha'})+0.3,
+result:{player:1},
 },
 },
 _wechatxiaohu:{
@@ -37024,7 +37032,8 @@ audio:'zhengnan',
 inherit:'zhengnan',
 trigger:{global:'dying'},
 filter:function(event,player){
-return lib.skill.regongao.filter(event,player);
+if(player==event.player) return false;
+return !player.getAllHistory('useSkill',evt=>evt.skill=='wechatzhengnan'&&evt.targets[0]==event.player).length;
 },
 },
 //极黄月英
@@ -37228,7 +37237,7 @@ wechatwushen_info:'你可以将一张红色牌当作【杀】使用。你使用�
 wechat_lvbu:'极吕布',
 wechatxiaohu:'虓虎',
 _wechatxiaohu:'虓虎',
-wechatxiaohu_info:'你使用【杀】可以额外指定一个目标；出牌阶段开始时，你可以弃置一张手牌并从牌堆中获得一张【杀】。',
+wechatxiaohu_info:'你使用【杀】可以额外指定一个目标；出牌阶段限一次，你可以弃置一张手牌并从牌堆中获得一张【杀】。',
 wechat_yangxiu:'微信杨修',
 wechatdanlao:'啖酪',
 wechatdanlao_info:'出牌阶段限一次，你可以摸X张牌（X为场上存活角色数），然后你可以将这些牌任意分配给其他角色。结算完成后，本次未以此法获得牌的角色可以视为对你使用一张【杀】（无距离限制，且使用须合法）。',
