@@ -140,7 +140,7 @@ lib.rank[i].addArray(rank[i]);
 }
 if(rank.rarity&&lib.rank.rarity){
 for(var i in rank.rarity){
-if(lib.rank.rarity[i]) lib.rank.rarity[i]=[];
+if(!lib.rank.rarity[i]) lib.rank.rarity[i]=[];
 lib.rank.rarity[i].addArray(rank.rarity[i]);
 }
 }

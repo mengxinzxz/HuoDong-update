@@ -1325,16 +1325,14 @@ if(lib.characterSort.NianShouCharacter.NianShouCharacter2019.includes(name)) ran
 }
 }
 var addRank=function(rank){
-if(!lib.rank)return;
+if(!lib.rank) return;
 for(var i in rank){
 if(i=='rarity') continue;
 lib.rank[i].addArray(rank[i]);
 }
 if(rank.rarity&&lib.rank.rarity){
 for(var i in rank.rarity){
-if(lib.rank.rarity[i]===undefined){
-lib.rank.rarity[i]=[];
-}
+if(!lib.rank.rarity[i]) lib.rank.rarity[i]=[];
 lib.rank.rarity[i].addArray(rank.rarity[i]);
 }
 }
