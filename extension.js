@@ -4,6 +4,35 @@ return {
 name:"活动武将",
 editable:false,
 content:function(config,pack){
+//快捷添加/删除武将
+game.HDdeleteCharacter=function(name){
+if(lib.character[name]) delete lib.character[name];
+var packs=Object.keys(lib.characterPack).filter(pack=>lib.characterPack[pack][name]);
+if(packs.length){
+for(var pack of packs) delete lib.characterPack[pack][name];
+}
+};
+game.HDaddCharacter=function(name,character,packss){
+game.HDdeleteCharacter(name);
+if(!packss) lib.character[name]=character;//未定义武将包或武将包为空则直接添加武将
+var packs=packss.split(':');
+if(!packs.length) lib.character[name]=character;
+else{
+for(var pack of packs) lib.characterPack[pack][name]=character;
+if(packs.some(p=>lib.config.characters.contains(p))) lib.character[name]=character;
+}
+};
+//移动武将所在武将包
+game.HDmoveCharacter=function(name,packss){
+var nameinfo=undefined;
+if(lib.character[name]) nameinfo=lib.character[name];
+else{
+var pack=Object.keys(lib.characterPack).find(pack=>lib.characterPack[pack][name]);
+if(pack) nameinfo=lib.characterPack[pack][name];
+}
+if(nameinfo) game.HDaddCharacter(name,nameinfo,packss);
+};
+
 //js/css文件的添加
 window.HDPJ_import=function(pack){
 pack(lib,game,ui,get,ai,_status);
@@ -958,43 +987,6 @@ window.rkbg.innerHTML = '仁' + '<b><font color=\"#FF5500\">' + _status.renku.le
 }
 }
 }
-}
-
-//将键社神武将移至DIY包
-//快捷添加/删除武将
-game.HDdeleteCharacter=function(name){
-if(lib.character[name]) delete lib.character[name];
-var packs=Object.keys(lib.characterPack).filter(pack=>lib.characterPack[pack][name]);
-if(packs.length){
-for(var pack of packs) delete lib.characterPack[pack][name];
-}
-};
-game.HDaddCharacter=function(name,character,packss){
-game.HDdeleteCharacter(name);
-if(!packss) lib.character[name]=character;//未定义武将包或武将包为空则直接添加武将
-var packs=packss.split(':');
-if(!packs.length) lib.character[name]=character;
-else{
-for(var pack of packs) lib.characterPack[pack][name]=character;
-if(packs.some(p=>lib.config.characters.contains(p))) lib.character[name]=character;
-}
-};
-//移动武将所在武将包
-game.HDmoveCharacter=function(name,packss){
-var nameinfo=undefined;
-if(lib.character[name]) nameinfo=lib.character[name];
-else{
-var pack=Object.keys(lib.characterPack).find(pack=>lib.characterPack[pack][name]);
-if(pack) nameinfo=lib.characterPack[pack][name];
-}
-if(nameinfo) game.HDaddCharacter(name,nameinfo,packss);
-};
-if(lib.config.extension_活动武将_keymove){
-lib.characterSort.diy.bilibili_key=['key_kagari','key_shiki','db_key_hina'];
-lib.translate.bilibili_key='论外';
-game.HDmoveCharacter('key_kagari','diy');
-game.HDmoveCharacter('key_shiki','diy');
-game.HDmoveCharacter('db_key_hina','diy');
 }
 
 //precGuoZhan(分界线，便于我搜过来)
@@ -23266,12 +23258,7 @@ loseTo:'cardPile',
 insert:true,
 content:function(){
 'step 0'
-game.broadcastAll(function(player){
-var cardx=ui.create.card();
-cardx.classList.add('infohidden');
-cardx.classList.add('infoflip');
-player.$throw(cardx,1000,'nobroadcast');
-},player);
+player.$throw(1,1000);
 game.log(player,'将一张牌置于了牌堆顶');
 game.delayx();
 'step 1'

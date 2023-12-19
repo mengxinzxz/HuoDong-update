@@ -1,34 +1,6 @@
 'use strict';
 //活动配件
 var HDPJ=function(lib,game,ui,get,ai,_status){
-//快捷添加/删除武将
-game.HDdeleteCharacter=function(name){
-if(lib.character[name]) delete lib.character[name];
-var packs=Object.keys(lib.characterPack).filter(pack=>lib.characterPack[pack][name]);
-if(packs.length){
-for(var pack of packs) delete lib.characterPack[pack][name];
-}
-};
-game.HDaddCharacter=function(name,character,packss){
-game.HDdeleteCharacter(name);
-if(!packss) lib.character[name]=character;//未定义武将包或武将包为空则直接添加武将
-var packs=packss.split(':');
-if(!packs.length) lib.character[name]=character;
-else{
-for(var pack of packs) lib.characterPack[pack][name]=character;
-if(packs.some(p=>lib.config.characters.contains(p))) lib.character[name]=character;
-}
-};
-//配件武将暂时用不上这个函数
-game.HDmoveCharacter=function(name,packss){
-var nameinfo=undefined;
-if(lib.character[name]) nameinfo=lib.character[name];
-else{
-var pack=Object.keys(lib.characterPack).find(pack=>lib.characterPack[pack][name]);
-if(pack) nameinfo=lib.characterPack[pack][name];
-}
-if(nameinfo) game.HDaddCharacter(name,nameinfo,packss);
-};
 //设置稀有度
 if(lib.rank){
 //平凡升阶
@@ -161,16 +133,14 @@ rank.rarity.rare.add(name);
 }
 }
 var addRank=function(rank){
-if(!lib.rank)return;
+if(!lib.rank) return;
 for(var i in rank){
 if(i=='rarity') continue;
 lib.rank[i].addArray(rank[i]);
 }
 if(rank.rarity&&lib.rank.rarity){
 for(var i in rank.rarity){
-if(lib.rank.rarity[i]===undefined){
-lib.rank.rarity[i]=[];
-}
+if(lib.rank.rarity[i]) lib.rank.rarity[i]=[];
 lib.rank.rarity[i].addArray(rank.rarity[i]);
 }
 }
@@ -374,6 +344,7 @@ game.HDaddCharacter('old_yuanji',['female','wu',3,['dcmengchi','dcjiexing'],['ex
 
 //DIY
 lib.characterSort.diy.diy_fakenews.addArray(['bol_zhangzhongjing','bol_sp_huaxin','bfake_zuoci','bfake_yangfu','bfake_chengpu','bfake_sundeng','old_shen_sunquan','old_shen_ganning','bfake_jiananfeng','bfake_chengui']);
+if(lib.config.extension_活动武将_keymove) lib.characterSort.diy.bilibili_key=['key_kagari','key_shiki','db_key_hina'];
 game.HDdeleteCharacter('ol_guohuai');
 game.HDaddCharacter('bfake_yangfu',['male','wei',4,['old_jiebing','old_kuzhan'],['ext:活动武将/image/character/bfake_yangfu.jpg']],'diy');
 game.HDaddCharacter('bfake_zuoci',['male','qun',3,['BThuashen','BTxinsheng'],['ext:活动武将/image/character/bfake_zuoci.jpg']],'diy');
@@ -386,6 +357,11 @@ game.HDaddCharacter('bfake_chengui',['male','qun',3,['bolyingtu','bolcongshi'],[
 if(lib.config.connect_nickname=='萌新（转型中）'){
 game.HDaddCharacter('bol_sp_huaxin',['male','wei',3,['bolyuanqing','bolshuchen','bolxiezheng'],[]],'diy');
 game.HDaddCharacter('bol_zhangzhongjing',['male','qun',3,['bolliaoyi','bolbinglun'],[]],'diy');
+}
+if(lib.config.extension_活动武将_keymove){
+game.HDmoveCharacter('key_kagari','diy');
+game.HDmoveCharacter('key_shiki','diy');
+game.HDmoveCharacter('db_key_hina','diy');
 }
 
 if(get.mode()!='boss'&&(!lib.config.plays||!lib.config.plays.boss)){
@@ -582,6 +558,7 @@ lib.translate.bilibili_buchong_szn2='武将补充·十周年服';
 lib.translate.bilibili_buchong_mobile='武将补充·移动服';
 lib.translate.bilibili_buchong_mobile2='武将补充·移动服';
 lib.translate.bilibili_buchong_tw='武将补充·海外服';
+lib.translate.bilibili_key='论外';
 
 lib.characterTitle.bol_sunluban='测试专用，问题居多<br>仅供参考，娱乐为上';
 lib.characterTitle.old_sb_liubei='任何邪恶终将绳之以法';
