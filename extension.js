@@ -22747,7 +22747,7 @@ player.gain(lib.skill.minishuangxiong.subSkill.jianxiong.getCards(trigger,player
 getCards:function(event,player){
 var evt=event.getParent();
 var cards=evt[player==evt.player?'targetCards':'playerCards'].slice();
-return cards.filter(card=>get.position(card)=='d').length;
+return cards.filter(card=>get.position(card)=='d');
 },
 },
 },
