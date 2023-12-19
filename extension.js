@@ -22682,77 +22682,74 @@ ai:{threaten:0.8},
 },
 minishuangxiong:{
 audio:'shuangxiong',
+group:['minishuangxiong_effect','minishuangxiong_jianxiong'],
+subSkill:{
+effect:{
+audio:'shuangxiong1',
 trigger:{player:'phaseDrawBegin1'},
-group:'minishuangxiong2',
 filter:function(event,player){
 return !event.numFixed;
 },
-content:function(){
-'step 0'
+prompt2:()=>'放弃摸牌，展示牌堆顶的三张牌并选择获得其中一种颜色的所有牌，本回合你可以将与这些牌颜色不同的一张手牌当作【决斗】使用。',
+content:function*(event,map){
+var player=map.player,trigger=map.trigger;
 trigger.changeToZero();
-event.cards=get.cards(3);
-event.videoId=lib.status.videoId++;
+var cards=get.cards(3,true);
+var videoId=lib.status.videoId++;
 game.broadcastAll(function(player,id,cards){
-var str;
-if(player==game.me&&!_status.auto) str='【双雄】选择获得其中一种颜色的牌';
-else str='双雄';
+var str=('双雄'+((player==game.me&&!_status.auto)?'：获得其中一种颜色的牌':''));
 var dialog=ui.create.dialog(str,cards);
 dialog.videoId=id;
-},player,event.videoId,event.cards);
-event.time=get.utc();
-game.addVideo('showCards',player,['双雄',get.cardsInfo(event.cards)]);
+},player,videoId,cards);
+var time=get.utc();
+game.addVideo('showCards',player,['双雄',get.cardsInfo(cards)]);
 game.addVideo('delay',null,2);
-'step 1'
-player.chooseControl('红色','黑色').set('ai',function(){
-var player=_status.event.player;
-var n1=0,n2=0;
-for(var i of _status.event.cards){
-if(get.color(i,player)=='red') n1++;
-else n2++;
-}
-if(n1>=n2) return '红色';
-return '黑色';
+var result,list=cards.reduce((list,card)=>list.add(get.color(card)),[]);
+if(list.length==1) result={control:list[0]};
+else{
+//加大颜色兼容性
+var colors=['red','black','none'];
+list.sort((a,b)=>colors.indexOf(b)-colors.indexOf(a));
+if(list.includes('none')) list[list.indexOf('none')]='none2';
+list.reverse();
+result=yield player.chooseControl(list).set('ai',()=>{
+var getNum=(cards,color)=>cards.reduce((num,card)=>num+(get.color(card)==color?1:0),0);
+var controls=_status.event.controls.slice();
+controls.sort((a,b)=>getNum(_status.event.cards,b)-getNum(_status.event.cards,a));
+return controls[0];
 }).set('cards',cards);
-'step 2'
-event.cardsx=[];
-var color=(result.control=='红色'?'red':'black');
-for(var j of event.cards){
-if(color==get.color(j)) event.cardsx.push(j);
-else game.cardsDiscard(j);
 }
-var time=1000-(get.utc()-event.time);
+var color=result.control;
+if(color=='none2') color='none';
+cards=cards.filter(card=>get.color(card)==color);
+time=1000-(get.utc()-time);
 if(time>0) game.delay(0,time);
-'step 3'
-game.broadcastAll('closeDialog',event.videoId);
-player.gain(event.cardsx,'gain2','log');
+game.broadcastAll('closeDialog',videoId);
+if(cards.length){
+player.gain(cards,'gain2');
 player.addTempSkill('shuangxiong2');
-player.markAuto('shuangxiong2',[get.color(event.cardsx[0])]);
+player.markAuto('shuangxiong2',[get.color(cards[0])]);
+}
 },
 },
-minishuangxiong2:{
+jianxiong:{
+audio:'shuangxiong',
 trigger:{player:'damageEnd'},
 filter:function(event,player){
 var evt=event.getParent();
 if(!evt||evt.name!='juedou') return false;
-var cards=evt[player==evt.player?'targetCards':'playerCards'].slice(0);
-return cards.some(card=>get.position(card)=='d');
+return lib.skill.minishuangxiong.subSkill.jianxiong.getCards(event,player).length;
 },
-usable:3,
-direct:true,
+prompt:(event,player)=>'获得'+get.translation(lib.skill.minishuangxiong.subSkill.jianxiong.getCards(event,player)),
 content:function(){
-'step 0'
-var evt=trigger.getParent();
-var cards=evt[player==evt.player?'targetCards':'playerCards'].slice(0);
-cards=cards.filter(card=>get.position(card)=='d');
-event.cards=cards;
-player.chooseBool(get.prompt('minishuangxiong'),'获得'+get.translation(event.cards));
-'step 1'
-if(result.bool){
-var skill=['minishuangxiong','shuangxiong2'].randomGet();
-player.logSkill(skill);
-player.gain(cards,'gain2','log');
-}
-else player.storage.counttrigger.minishuangxiong2--;
+player.gain(lib.skill.minishuangxiong.subSkill.jianxiong.getCards(trigger,player),'gain2');
+},
+getCards:function(event,player){
+var evt=event.getParent();
+var cards=evt[player==evt.player?'targetCards':'playerCards'].slice();
+return cards.filter(card=>get.position(card)=='d').length;
+},
+},
 },
 },
 minixianzhen:{
@@ -31938,7 +31935,7 @@ minihuangtian2:'黄天',
 minihuangtian4:'黄天',
 minihuangtian_info:'主公技。①其他群势力角色的出牌阶段限一次，其可以交给你一张【闪】或【闪电】或黑桃手牌。②每回合限一次，你可以获得其他群势力角色使用或打出的【闪】。',
 minishuangxiong:'双雄',
-minishuangxiong_info:'摸牌阶段，你可以放弃摸牌，改为展示牌堆顶的三张牌并选择获得其中一种颜色的所有牌。然后，你本回合内可以将与这些牌颜色不同的一张手牌当作【决斗】使用。每回合限三次，当你受到【决斗】造成的伤害时，你可以获得对方于此决斗中打出的所有【杀】。',
+minishuangxiong_info:'摸牌阶段，你可以放弃摸牌，展示牌堆顶的三张牌并选择获得其中一种颜色的所有牌，本回合你可以将与这些牌颜色不同的一张手牌当作【决斗】使用。当你受到【决斗】造成的伤害后，你可以获得对方于此牌结算过程中打出的所有【杀】。',
 miniyinlang:'引狼',
 miniyinlang_info:'出牌阶段结束时，你可以选择场上的一个势力。若如此做，你与场上与你选择势力相同的角色各获得1枚“生”标记。有“生”标记的角色使用牌无法指定没有“生”的角色为目标。',
 minixiusheng:'休生',
@@ -33073,8 +33070,9 @@ ai:{
 order:(item,player)=>get.order({name:'sha'})+0.3,
 result:{player:1},
 },
-},
-_wechatxiaohu:{
+group:'wechatxiaohu_log',
+subSkill:{
+log:{
 charlotte:true,
 forceaudio:true,
 audio:'shenji',
@@ -33087,6 +33085,8 @@ priority:15,
 forced:true,
 locked:false,
 content:function(){},
+},
+},
 },
 wechatdanlao:{
 audio:'danlao',
