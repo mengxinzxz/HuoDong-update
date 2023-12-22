@@ -17495,7 +17495,7 @@ charlotte:true,
 onremove:true,
 mod:{
 cardDiscardable:function(card,player){
-if(player.getStorage('huguan_add').includes(get.suit(card,player))&&get.position(card)=='h') return false;
+if(player.getStorage('minihuguan_add').includes(get.suit(card,player))&&get.position(card)=='h') return false;
 }
 },
 intro:{content:'本回合不能弃置$花色的手牌'},
