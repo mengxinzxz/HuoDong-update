@@ -18127,7 +18127,7 @@ var player=_status.event.player;
 if(get.position(card)=='h'&&!player.countCards('h','du')&&(player.hp>2||!player.countCards('h',function(card){
 return get.value(card)>=8;
 }))) return 1;
-return 6-get.value(card)
+return 6-get.value(card);
 },
 position:'he',
 discard:false,
