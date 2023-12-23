@@ -191,51 +191,6 @@ onclick:function(bool){
 game.bolShowNewPack();
 },
 };
-//名称
-lib.extensionMenu['extension_活动武将'].HDshowName={
-name:'昵称显示',
-intro:'打开此选项后，玩家武将牌上显示联机昵称',
-init:true,
-onclick:function(bool){
-game.saveConfig('extension_活动武将_HDshowNamen',bool);
-if(!bool&&ui._bol_show){
-game._bol_show=true;
-game.broadcastAll(function(){
-ui._bol_show.delete();
-});
-}
-if(bool&&game._bol_show){
-game.broadcastAll(function(){
-var push='<span style="-webkit-animation:bol_author 20s infinite;animation:bol_author 20s infinite;">'+lib.config.connect_nickname+'</span>';
-ui._bol_show=ui.create.div('.bol_authorShow','<MARQUEE class="bol_authorShow1" direction=up behavior=alternate scrollAmount=0>'+push+'</MARQUEE>',game.me);
-});
-}
-},
-};
-lib.skill._bol_show={
-trigger:{global:['chooseButtonBefore','gameStart','gameDrawAfter','phaseBefore']},
-filter:function(event,player){
-if(event.name=='chooseButton'&&event.parent.name!='chooseCharacter') return false;
-return !game._bol_anthorShow&&lib.config.extension_活动武将_HDshowName;
-},
-forced:true,
-priority:114-514+19-19+810,
-content:function(){
-game._bol_anthorShow=true;
-game.broadcastAll(function(){
-var push='<span style="-webkit-animation:bol_author 20s infinite;animation:bol_author 20s infinite;">'+lib.config.connect_nickname+'</span>';
-ui._bol_show=ui.create.div('.bol_authorShow','<MARQUEE class="bol_authorShow1" direction=up behavior=alternate scrollAmount=0>'+push+'</MARQUEE>',game.me);
-});
-},
-};
-var style=document.createElement('style');
-style.innerHTML="@keyframes bol_author{"
-for(var i=1;i<=20;i++){
-var rand1=Math.floor(Math.random()*255),rand2=Math.floor(Math.random()*255),rand3=Math.floor(Math.random()*255),rand4=Math.random();
-style.innerHTML+=i*5+'%{text-shadow: black 0 0 1px,rgba('+rand1+', '+rand2+', '+rand3+', 0.6) 0 0 2px,rgba('+rand1+', '+rand2+', '+rand3+', 0.6) 0 0 5px,rgba('+rand1+', '+rand2+', '+rand3+', 0.6) 0 0 10px,rgba('+rand1+', '+rand2+', '+rand3+', 0.6) 0 0 10px,rgba('+rand1+', '+rand2+', '+rand3+', 0.6) 0 0 20px,rgba('+rand1+', '+rand2+', '+rand3+', 0.6) 0 0 20px}';
-}
-style.innerHTML+="}";
-document.head.appendChild(style);
 }
 
 //官方武将包保护机制
