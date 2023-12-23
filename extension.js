@@ -18114,34 +18114,9 @@ onChooseToUse:function(event){
 if(event.type=='phase'&&!game.online&&!event.minirezhiheng_num){
 var evtx=event.getParent('phaseUse');
 var num=1,player=event.player;
-if(player.getHistory('gain',function(evt){
-return evt.getParent('phaseUse')==evtx&&evt.getParent(3).skill=='minirezhiheng';
-}).length){
-num++;
-var history=player.getHistory('gain',function(evt){
-return evt.getParent('phaseUse')==evtx&&evt.getParent(3).skill=='minirezhiheng';
-})[0];
-for(var i of history.cards){
-if(get.type(i)=='delay'){
-num--;
-break;
-}
-}
-}
-if(player.getHistory('gain',function(evt){
-return evt.getParent('phaseUse')==evtx&&evt.getParent(3).skill=='minirezhiheng';
-}).length>1){
-num++;
-var history=player.getHistory('gain',function(evt){
-return evt.getParent('phaseUse')==evtx&&evt.getParent(3).skill=='minirezhiheng';
-})[1];
-for(var i of history.cards){
-if(get.type(i)!='basic'){
-num--;
-break;
-}
-}
-}
+var history=player.getHistory('gain',evt=>evt.getParent('phaseUse')==evtx&&evt.getParent(3).skill=='minirezhiheng');
+if(history[0]&&!history[0].cards.some(card=>get.type(card)=='delay')) num++;
+if(history[1]&&!history[1].cards.some(card=>get.type(card)!='basic')) num++;
 event.set('minirezhiheng_num',num);
 }
 },
@@ -18160,19 +18135,10 @@ lose:false,
 delay:false,
 content:function(){
 'step 0'
-player.discard(cards);
-var num=1;
-var hs=player.getCards('h');
-if(!hs.length) num=0;
-else{
-for(var i=0;i<hs.length;i++){
-if(!cards.includes(hs[i])){
-num=0;
-break;
-}
-}
-}
+var num=1,hs=player.getCards('h');
+if(!hs.length||hs.some(i=>!cards.includes(i))) num=0;
 event.num=num;
+player.discard(cards);
 'step 1'
 player.draw(num+cards.length);
 },
