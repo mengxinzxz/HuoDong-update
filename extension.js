@@ -36739,8 +36739,8 @@ next.set('target',target);
 else event.finish();
 'step 2'
 player.logSkill('wechatduoquan',target);
-player.popup(result.control);
-game.log(player,'选择了','#g'+get.translation(result.control)+'牌');
+//player.popup(result.control);
+//game.log(player,'选择了','#g'+get.translation(result.control)+'牌');
 target.addSkill('wechatduoquan_effect',{player:'phaseUseAfter'});
 if(!target.storage.wechatduoquan_effect) target.storage.wechatduoquan_effect={};
 if(!target.storage.wechatduoquan_effect[player.playerid]) target.storage.wechatduoquan_effect[player.playerid]=[];
@@ -37439,7 +37439,7 @@ wechatyinren_jianxiong:'奸雄',
 wechatyinren_xingshang:'行殇',
 wechatyinren_mingjian:'明鉴',
 wechatduoquan:'夺权',
-wechatduoquan_info:'结束阶段，你可以选择一名其他角色，观看其手牌并并选择一个牌的类型，其于其下个出牌阶段使用第一张牌时，若此牌与你选择的类型相同，则你令此牌无效，且此牌对应的实体牌进入弃牌堆后，你可以使用之。',
+wechatduoquan_info:'结束阶段，你可以选择一名其他角色，观看其手牌并并选择一个牌的类型（不公开），其于其下个出牌阶段使用第一张牌时，若此牌与你选择的类型相同，则你令此牌无效，且此牌对应的实体牌进入弃牌堆后，你可以使用之。',
 wechat_re_machao:'极马超',
 wechatqipao:'弃袍',
 wechatqipao_info:'当你使用【杀】指定目标后，你可以令其选择一项：①弃置其装备区所有牌（至少一张）；②本回合非锁定技失效且不能响应此牌。',
