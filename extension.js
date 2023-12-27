@@ -47,7 +47,7 @@ var HuoDong_update=[
 '/setPlayer/',
 'bugfix',
 '添加飞鸿印雪全系列共52个技能不同但并非完全削弱和需要摆脱线上机制的武将',
-'添加欢杀武将：孙休，孙茹，龙凤，曹操，女娲',
+'添加欢杀武将：孙休，孙茹，龙凤，曹操，女娲，陆逊',
 '修复配件文件添加的武将同名替换会把没有开启的武将调用出来的bug',
 'To be continued...',
 ];
@@ -66,7 +66,7 @@ var HuoDong_players=[
 'mx_fh_wuxian','mx_fh_caojie','mx_fh_jikang','mx_fh_zhugeshang','mx_fh_lukai','mx_fh_kebineng',
 'mx_fh_xin_lingtong','mx_fh_dc_xushu','mx_fh_re_liaohua','mx_fh_zhuzhi',
 //宝宝杀
-'Mbaby_sunxiu','Mbaby_dc_sunru','Mbaby_wolongfengchu','Mbaby_sb_caocao','Mbaby_nvwa',
+'Mbaby_sunxiu','Mbaby_dc_sunru','Mbaby_wolongfengchu','Mbaby_sb_caocao','Mbaby_nvwa','Mbaby_luxun',
 ];
 //加载
 var dialog=ui.create.dialog(
@@ -9617,7 +9617,7 @@ Mbaby_daqiao:['female','wu',3,['miniguose','miniwanrong','liuli'],[]],
 Mbaby_ganning:['male','wu',4,['miniqixi','minifenwei'],[]],
 Mbaby_huanggai:['male','wu',4,['kurou','minizhaxiang'],[]],
 Mbaby_lusu:['male','wu',3,['minihaoshi','dimeng'],[]],
-Mbaby_luxun:['male','wu',3,['miniqianxun','lianying'],[]],
+Mbaby_luxun:['male','wu',3,['minireqianxun','minilianying'],[]],
 Mbaby_lvmeng:['male','wu',4,['minikeji','miniqinxue'],[]],
 Mbaby_sunce:['male','wu',4,['minijiang','minihunzi','minizhiba'],['zhu']],
 Mbaby_sunluban:['female','wu',3,['minizenhui','minijiaojin'],[]],
@@ -18361,6 +18361,109 @@ if(result.bool){
 player.line(result.targets[0]);
 result.targets[0].gain(result.cards,player,'giveAuto');
 }
+},
+},
+minireqianxun:{
+audio:'reqianxun',
+trigger:{target:'useCardToBegin',player:'judgeBefore'},
+filter:function(event,player){
+if(!player.countCards('h')||!player.getHp()) return false;
+if(event.name=='judge') return event.getParent().name=='phaseJudge';
+if(event.card&&get.type(event.card)=='trick') return true;
+},
+direct:true,
+content:function*(event,map){
+var num=Math.min(player.countCards('h'),player.getHp());
+var result=yield player.chooseCard(get.prompt('minireqianxun'),'将至多'+get.cnNumber(num)+'张手牌置于武将牌上',[1,num]).set('ai',card=>1/(get.value(card)||0.5));
+if(result.bool){
+var cards=result.cards;
+player.logSkill('minireqianxun');
+player.addSkill('minireqianxun2');
+player.addToExpansion(cards,'giveAuto',player).gaintag.add('minireqianxun2');
+}
+},
+ai:{
+effect:function(card,player,target){
+if(!target.hasFriend()) return;
+var type=get.type(card);
+var nh=Math.min(target.countCards(),game.countPlayer(i=>get.attitude(target,i)>0));
+if(type=='trick'){
+if(!get.tag(card,'multitarget')||get.info(card).singleCard){
+if(get.tag(card,'damage')) return [1.5,nh-1];
+return [1,nh];
+}
+}
+else if(type=='delay') return [0.5,0.5];
+},
+},
+},
+minireqianxun2:{
+charlotte:true,
+audio:'reqianxun',
+trigger:{global:'phaseEnd'},
+forced:true,
+content:function(){
+var cards=player.getExpansions('minireqianxun2');
+if(cards.length) player.gain(cards,'draw');
+player.removeSkill('minireqianxun2');
+},
+intro:{
+mark:function(dialog,storage,player){
+var cards=player.getExpansions('minireqianxun2');
+if(player.isUnderControl(true)) dialog.addAuto(cards);
+else return '共有'+get.cnNumber(cards.length)+'张牌';
+},
+markcount:'expansion',
+},
+},
+minilianying:{
+audio:'relianying',
+trigger:{
+player:'loseAfter',
+global:['equipAfter','addJudgeAfter','gainAfter','loseAsyncAfter','addToExpansionAfter'],
+},
+filter:function(event,player){
+if(player.countCards('h')) return false;
+var evt=event.getl(player);
+return evt&&evt.hs&&evt.hs.length;
+},
+frequent:true,
+content:function(){
+'step 0'
+player.draw(2);
+player.chooseCardTarget({
+prompt:'连营：是否将一张手牌交给一名其他角色？',
+filterCard:true,
+filterTarget:lib.filter.notMe,
+ai1:function(card){
+if(card.name=='du') return 10;
+var player=_status.event.player;
+if(!game.hasPlayer(function(current){
+return get.attitude(player,current)>0&&!current.hasSkillTag('nogain');
+})) return 0;
+return 1/Math.max(0.1,get.value(card));
+},
+ai2:function(target){
+var player=_status.event.player,att=get.attitude(player,target);
+if(ui.selected.cards[0].name=='du') return -att;
+if(target.hasSkillTag('nogain')) att/=6;
+return att;
+},
+});
+'step 1'
+if(result.bool){
+player.line(result.targets[0]);
+result.targets[0].gain(result.cards,player,'giveAuto');
+}
+},
+ai:{
+threaten:0.8,
+effect:{
+target:function(card){
+if(card.name=='guohe'||card.name=='liuxinghuoyu') return 0.5;
+},
+},
+noh:true,
 },
 },
 minitianyi:{
@@ -31583,6 +31686,10 @@ minifanjian:'反间',
 minifanjian_info:'出牌阶段开始时，你可以令一名其他角色摸一张牌，然后你对其造成1点伤害。',
 miniqianxun:'谦逊',
 miniqianxun_info:'锁定技，当你成为锦囊牌的唯一目标时，你摸一张牌，然后可以交给一名其他角色一张手牌。',
+minireqianxun:'谦逊',
+minireqianxun_info:'当一张锦囊牌对你生效时，你可以将至多X张手牌置于武将牌上（X为你的体力值）。回合结束时，你获得这些牌。',
+minilianying:'连营',
+minilianying_info:'当你失去最后的手牌时，你可以摸两张牌，然后可以交给一名其他角色一张手牌。',
 minitianyi:'天义',
 minitianyi_info:'出牌阶段开始时，你可以选择一项：①本回合使用【杀】的次数上限+1，且使用【杀】造成伤害后回复1点体力；②摸一张牌，本回合使用【杀】无距离限制且无视目标角色的防具。',
 minihaoshi:'好施',
