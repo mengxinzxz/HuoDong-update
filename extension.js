@@ -26900,19 +26900,20 @@ direct:true,
 content:function(){
 'step 0'
 var target=_status.currentPhase;
+var cards=trigger.getg(player).filter(i=>player.getCards('h').includes(i)).slice();
 var str='弃置任意张此次获得的牌';
 if(target&&target.isIn()){
 event.target=target;
 str+='，令'+get.translation(target)+'本回合使用【杀】的次数+X（X为你以此法弃置的花色数）';
 }
-player.chooseToDiscard(get.prompt('minizjjuxiang'),str,(card,player)=>_status.event.cards.includes(card)).set('ai',card=>{
+player.chooseToDiscard(get.prompt('minizjjuxiang'),str,(card,player)=>_status.event.cards.includes(card),[1,cards.length]).set('ai',card=>{
 if(!_status.event.goon) return 0;
 var player=_status.event.player,target=_status.currentPhase;
 if(ui.selected.cards.some(cardx=>get.suit(cardx,player)==get.suit(card,player))) return 0;
 var num=target.countCards('hs',card=>card.name=='sha')-target.getCardUsable({name:'sha'});
 if(ui.selected.cards.length<num) return 7-get.value(card);
 return 0;
-}).set('cards',trigger.getg(player).filter(i=>player.getCards('h').includes(i))).set('complexCard',true).set('goon',lib.skill.minizjjuxiang.checkx(trigger,player)).logSkill='minizjjuxiang';
+}).set('cards',cards).set('complexCard',true).set('goon',lib.skill.minizjjuxiang.checkx(trigger,player)).logSkill='minizjjuxiang';
 'step 1'
 if(result.bool){
 if(target&&target.isIn()){
