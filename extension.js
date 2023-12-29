@@ -47,7 +47,7 @@ var HuoDong_update=[
 '/setPlayer/',
 'bugfix',
 '添加飞鸿印雪全系列共52个技能不同但并非完全削弱和需要摆脱线上机制的武将',
-'添加欢杀武将：孙休，孙茹，龙凤，曹操，女娲，陆逊',
+'添加欢杀武将：孙休，孙茹，龙凤，曹操，女娲，陆逊，神周瑜(改)，孔融，来莺儿',
 '修复配件文件添加的武将同名替换会把没有开启的武将调用出来的bug',
 'To be continued...',
 ];
@@ -67,6 +67,7 @@ var HuoDong_players=[
 'mx_fh_xin_lingtong','mx_fh_dc_xushu','mx_fh_re_liaohua','mx_fh_zhuzhi',
 //宝宝杀
 'Mbaby_sunxiu','Mbaby_dc_sunru','Mbaby_wolongfengchu','Mbaby_sb_caocao','Mbaby_nvwa','Mbaby_luxun',
+'Mbaby_kongrong','Mbaby_sp_kongrong','Mbaby_laiyinger',
 ];
 //加载
 var dialog=ui.create.dialog(
@@ -9491,7 +9492,7 @@ MiNikill:{
 MiNi_wei:['Mbaby_zhugedan','Mbaby_caohong','Mbaby_guojia','Mbaby_sp_caoren','Mbaby_yinfuren','Mbaby_sp_jiaxu','Mbaby_wenqin','Mbaby_kuailiangkuaiyue','Mbaby_jsp_guanyu','Mbaby_wangji','Mbaby_chenqun','Mbaby_xiahoulingnv','Mbaby_wenyang','Mbaby_sp_pangde','Mbaby_caocao','Mbaby_caozhang','Mbaby_dufuren','Mbaby_simayi','Mbaby_yangxiu','Mbaby_zhangchangpu','Mbaby_zhonghui','Mbaby_sp_jiangwei','Mbaby_caoxiu','Mbaby_xunyou','Mbaby_lidian','Mbaby_zhongyao','Mbaby_caozhen','Mbaby_guohuanghou','Mbaby_xinxianying','Mbaby_xiahouyuan','Mbaby_xizhicai','Mbaby_caorui','Mbaby_xunyu','Mbaby_dengai','Mbaby_caozhi','Mbaby_sp_caiwenji','Mbaby_caoying','Mbaby_caopi','Mbaby_caoang','Mbaby_guojia','Mbaby_zhenji','Mbaby_caoren','Mbaby_wangyi','Mbaby_zhangchunhua','Mbaby_xiahoudun','Mbaby_xuzhu','Mbaby_zhangliao','Mbaby_guohuai','Mbaby_dianwei','Mbaby_zhanghe','Mbaby_yujin','Mbaby_xuhuang'],
 MiNi_shu:['Mbaby_wolongfengchu','Mbaby_wangtao','Mbabysp_zhangfei','Mbaby_wangyue','Mbaby_xf_yiji','Mbaby_mizhu','Mbaby_mifuren','Mbaby_liuyong','Mbaby_ganfuren','Mbaby_sunqian','Mbaby_lvkai','Mbaby_zhoucang','Mbaby_huangyueying','Mbaby_yangwan','Mbaby_liuchen','Mbaby_liyan','Mbaby_chendao','Mbaby_yanyan','Mbaby_xiahouba','Mbaby_huaman','Mbaby_sp_zhugeliang','Mbaby_zhugeguo','Mbaby_jianyong','Mbaby_wangping','Mbaby_mayunlu','Mbaby_guansuo','Mbaby_xiahoushi','Mbaby_shamoke','Mbaby_wuxian','Mbaby_zhugezhan','Mbaby_qinmi','Mbaby_guanyinping','Mbaby_guanyu','Mbaby_zhugeliang','Mbaby_liubei','Mbaby_machao','Mbaby_zhurong','Mbaby_zhangfei','Mbaby_zhaoyun','Mbaby_huangzhong','Mbaby_weiyan','Mbaby_liaohua','Mbaby_pangtong','Mbaby_menghuo','Mbaby_jiangwei','Mbaby_liushan','Mbaby_fazheng','Mbaby_madai','Mbaby_guanping','Mbaby_liufeng','Mbaby_wuyi','Mbaby_zhangxingcai','Mbaby_dongyun','Mbaby_sp_sunshangxiang','Mbaby_xushu','Mbaby_masu'],
 MiNi_wu:['Mbaby_dc_sunru','Mbaby_sunxiu','Mbaby_zhangfen','Mbaby_xuezong','Mbaby_dingfeng','Mbaby_panjun','Mbaby_sundeng','Mbaby_luji','Mbaby_zhoufang','Mbaby_zhangxuan','Mbaby_yanjun','Mbaby_zhuhuan','Mbaby_luyusheng','Mbaby_re_jsp_pangtong','Mbaby_sunhao','Mbabysp_daqiao','Mbaby_lukang','Mbaby_buzhi','Mbaby_xushi','Mbaby_zhugeke','Mbaby_zhoufei','Mbaby_zhangzhang','Mbaby_sunliang','Mbaby_ol_sunjian','Mbaby_zhuzhi','Mbaby_bulianshi','Mbaby_chengpu','Mbaby_daqiao','Mbaby_ganning','Mbaby_huanggai','Mbaby_lusu','Mbaby_luxun','Mbaby_lvmeng','Mbaby_sunce','Mbaby_sunluban','Mbaby_sunluyu','Mbaby_sunquan','Mbaby_sunshangxiang','Mbaby_taishici','Mbaby_wuguotai','Mbaby_xiaoqiao','Mbaby_xusheng','Mbaby_zhoutai','Mbaby_zhouyu','Mbaby_zhugejin','Mbaby_zumao','Mbabysp_xiaoqiao'],
-MiNi_qun:['Mbaby_zhujun','Mbaby_gongsunyuan','Mbaby_sp_zhangliao','Mbaby_sp_ol_zhanghe','Mbaby_guotufengji','Mbaby_yanfuren','Mbaby_tangji','Mbaby_caojie','Mbaby_liangxing','Mbabysp_zhenji','Mbaby_caoxing','Mbaby_sp_menghuo','Mbaby_wangrong','Mbaby_hetaihou','Mbaby_sp_taishici','Mbaby_zhangji','Mbaby_dongbai','Mbaby_beimihu','Mbaby_chunyuqiong','Mbaby_zhangqiying','Mbaby_fuhuanghou','Mbaby_liuxie','Mbaby_quyi','Mbaby_jsp_huangyueying','Mbaby_sp_machao','Mbaby_lijue','Mbaby_panfeng','Mbaby_liuzhang','Mbaby_jiaxu','Mbaby_zhangbao','Mbaby_zhangliang','Mbaby_gaoshun','Mbaby_caifuren','Mbaby_xuyou','Mbaby_gongsunzan','Mbaby_pangde','Mbaby_jushou','Mbaby_liru','Mbaby_dongzhuo','Mbaby_zhangjiao','Mbaby_huatuo','Mbaby_lvbu','Mbaby_diaochan','Mbaby_sp_diaochan','Mbaby_huaxiong','Mbaby_yuji','Mbaby_yanwen','Mbaby_caiwenji','Mbaby_liubiao','Mbaby_yuanshao','Mbaby_yuanshu','Mbaby_chengong','Mbaby_zuoci'],
+MiNi_qun:['Mbaby_laiyinger','Mbaby_sp_kongrong','Mbaby_zhujun','Mbaby_gongsunyuan','Mbaby_sp_zhangliao','Mbaby_sp_ol_zhanghe','Mbaby_guotufengji','Mbaby_yanfuren','Mbaby_tangji','Mbaby_caojie','Mbaby_liangxing','Mbabysp_zhenji','Mbaby_caoxing','Mbaby_sp_menghuo','Mbaby_wangrong','Mbaby_hetaihou','Mbaby_sp_taishici','Mbaby_zhangji','Mbaby_dongbai','Mbaby_beimihu','Mbaby_chunyuqiong','Mbaby_zhangqiying','Mbaby_fuhuanghou','Mbaby_liuxie','Mbaby_quyi','Mbaby_jsp_huangyueying','Mbaby_sp_machao','Mbaby_lijue','Mbaby_panfeng','Mbaby_liuzhang','Mbaby_jiaxu','Mbaby_zhangbao','Mbaby_zhangliang','Mbaby_gaoshun','Mbaby_caifuren','Mbaby_xuyou','Mbaby_gongsunzan','Mbaby_pangde','Mbaby_jushou','Mbaby_liru','Mbaby_dongzhuo','Mbaby_zhangjiao','Mbaby_huatuo','Mbaby_lvbu','Mbaby_diaochan','Mbaby_sp_diaochan','Mbaby_huaxiong','Mbaby_yuji','Mbaby_yanwen','Mbaby_caiwenji','Mbaby_liubiao','Mbaby_yuanshao','Mbaby_yuanshu','Mbaby_chengong','Mbaby_zuoci'],
 MiNi_shen:['Mbaby_shen_taishici','Mbaby_shen_diaochan','Mbaby_shen_daxiaoqiao','Mbaby_shen_zhenji','Mbaby_shen_guojia','Mbaby_shen_huatuo','Mbaby_shen_dianwei','Mbaby_shen_lvbu','Mbaby_shen_zhugeliang','Mbaby_shen_lvmeng','Mbaby_shen_zhouyu','Mbaby_shen_guanyu','Mbaby_shen_liubei','Mbaby_shen_caocao','Mbaby_shen_zhangliao','Mbaby_shen_sunquan','Mbaby_shen_simayi','Mbaby_shen_zhaoyun','Mbaby_shen_ganning','Mbaby_shen_luxun'],
 MiNi_change:['Mbaby_re_nanhualaoxian','Mbaby_re_sunyi','Mbaby_zhaoxiang','Mbaby_xushao','Mbaby_shen_zhangjiao','Mbaby_baosanniang'],
 MiNi_shengzhiyifa:['Mbaby_sunwukong','Mbaby_dalanmao','Mbaby_libai','Mbaby_change','Mbaby_nvwa'],
@@ -9717,6 +9718,8 @@ Mbaby_gongsunyuan:['male','qun',4,['minihuaiyi'],[]],
 Mbaby_sp_zhangliao:['male','qun',4,['minimubing','miniziqu','minidiaoling'],[]],
 Mbaby_sp_ol_zhanghe:['male','qun',4,['minizhouxuan'],[]],
 Mbaby_zhujun:['male','qun',4,['minigongjian','kuimang','minizjjuxiang'],[]],
+Mbaby_sp_kongrong:['male','qun',3,['minilirang','minizhengyi'],[]],
+Mbaby_laiyinger:['female','qun',3,['minixiaowu','huaping'],[]],
 //神
 Mbaby_shen_zhugeliang:['male','shen',3,['qixing','minikuangfeng','minidawu'],['shu']],
 Mbaby_shen_lvbu:['male','shen',6,['miniwuqian','minishenfen'],['qun']],
@@ -27167,6 +27170,106 @@ return 3*(get.sgn(att+0.5)+(att>0?1:0))+(list[0][0]==target?1:0);
 },
 },
 },
+//孔融
+minilirang:{
+audio:'splirang',
+trigger:{global:'phaseBefore',player:['enterGame','phaseZhunbeiBegin']},
+filter:function(event,player){
+var target=player.storage.minilirang;
+if(target&&target.isIn()) return false;
+return event.name!='phase'||game.phaseNumber==0;
+},
+direct:true,
+content:function(){
+'step 0'
+player.chooseTarget(get.prompt('minilirang'),'选择一名其他角色，其摸牌阶段额外摸一张牌，你获得其弃牌阶段弃置的牌',lib.filter.notMe).set('ai',target=>get.attitude(_status.event.player,target));
+'step 1'
+if(result.bool){
+var target=result.targets[0];
+player.logSkill('minilirang',target);
+player.storage.minilirang=target;
+player.markSkill('minilirang');
+player.when({global:'die'}).filter((event,player)=>event.player==player.storage.minilirang).then(()=>{
+player.unmarkSkill('minilirang');
+delete player.storage.minilirang;
+});
+player.addExpose(0.3);
+}
+},
+group:['minilirang_yingzi','minilirang_guzheng'],
+intro:{content:'已指定$为“礼让”角色'},
+subSkill:{
+yingzi:{
+audio:'splirang',
+trigger:{global:'phaseDrawBegin2'},
+filter:function(event,player){
+var target=player.storage.minilirang;
+return target&&target==event.player&&!event.numFixed;
+},
+forced:true,
+locked:false,
+logTarget:'player',
+content:function(){
+trigger.num++;
+},
+},
+guzheng:{
+audio:'splirang',
+trigger:{global:'phaseDiscardEnd'},
+filter:function(event,player){
+var target=player.storage.minilirang;
+return target&&target==event.player&&lib.skill.twlijian.getCards(event).length;
+},
+forced:true,
+locked:false,
+logTarget:'player',
+content:function(){
+player.gain(lib.skill.twlijian.getCards(trigger),'gain2');
+},
+},
+},
+},
+minizhengyi:{
+audio:'spmingshi',
+trigger:{global:'damageBegin4'},
+filter:function(event,player){
+var target=player.storage.minilirang;
+if(!target||!target.isIn()) return false;
+var list=event.minizhengyi||[];
+var list2=[player,target];
+return list2.includes(event.player)&&list2.some(current=>event.player!=current&&!list.includes(current));
+},
+direct:true,
+content:function*(event,map){
+var player=map.player,trigger=map.trigger;
+var target=player.storage.minilirang;
+var current=trigger.player==player?target:player;
+var result=yield current.chooseBool('争义：是否代替'+get.translation(trigger.player)+'承受本次伤害并摸一张牌？').set('choice',lib.skill.twgonghuan.check(trigger,current));
+if(result.bool){
+current.logSkill('minizhengyi',trigger.player);
+game.log(current,'为',trigger.player,'承受了此次伤害');
+var list=trigger.minizhengyi?trigger.minizhengyi.slice():[];
+list.addArray([player,target]);
+trigger.cancel();
+current.draw();
+current.damage(trigger.source?trigger.source:'nosource',trigger.nature,trigger.num).set('card',trigger.card).set('cards',trigger.cards).minizhengyi=list;
+}
+},
+},
+minixiaowu:{
+audio:'xiaowu',
+inherit:'xiaowu',
+contentAfter:function(){
+var targetsx=event.getParent()._xiaowu_targets;
+var num1=targets.length-targetsx.length;
+var num2=num1-targetsx.length;
+if(num1>0) player.addMark('shawu',Math.ceil(num1/2));
+if(num2<0){
+player.line(targetsx,'fire');
+for(var i of targetsx) i.damage();
+}
+},
+},
 //神
 miniwuqian:{
 derivation:'wushuang',
@@ -31891,6 +31994,8 @@ Mbaby_gongsunyuan:'欢杀公孙渊',
 Mbaby_sp_zhangliao:'SP欢杀张辽',
 Mbaby_sp_ol_zhanghe:'SP欢杀张郃',
 Mbaby_zhujun:'欢杀朱儁',
+Mbaby_sp_kongrong:'欢杀孔融',
+Mbaby_laiyinger:'欢杀来莺儿',
 miniweidi:'伪帝',
 miniweidi_info:'弃牌阶段结束时，你可以将其中一张弃置的牌交给一名其他角色。',
 minimingce:'明策',
@@ -32129,6 +32234,12 @@ miniwushuang:'无双',
 miniwushuang_info:'锁定技。①你使用【杀】可以额外指定一个目标。②当你使用【杀】或【决斗】指定目标后，你令此牌需要依次使用或打出两张【闪】或【杀】响应。',
 miniwuchang:'无常',
 miniwuchang_info:'①当你使用【杀】或【决斗】对与你势力相同的角色造成伤害时，若其未响应过此牌，则你可以令此伤害+1，然后你变更为其他势力。②出牌阶段限一次，你可以令一名其他角色摸一张牌，然后你变更势力至与其相同并从牌堆中获得一张【杀】。',
+minilirang:'礼让',
+minilirang_info:'游戏开始时/准备阶段，若场上没有你选择的存活“礼让”角色，你可以选择一名其他角色作为“礼让”角色。“礼让”角色的摸牌阶段额外摸一张牌，“礼让”角色的弃牌阶段结束时，你获得本阶段进入弃牌堆的所有牌。',
+minizhengyi:'争义',
+minizhengyi_info:'若场上有你选择的存活“礼让”角色，则当你或其受到伤害时，另一名角色可以代替承受本次伤害并摸一张牌（不嵌套触发）。',
+minixiaowu:'绡舞',
+minixiaowu_info:'出牌阶段限一次，你可以选择任意名座位连续且包含你的上家/下家的角色。这些角色依次选择一项：⒈令你摸一张牌；⒉其摸一张牌。然后你获得X枚“沙”（X为选择选项一的角色数的一半，向上取整），且若选择选项二的角色数大于选项一的角色数，则你对这些角色依次造成1点伤害。',
 //神
 Mbaby_shen_lvbu:'欢杀神吕布',
 Mbaby_shen_guanyu:'欢杀神关羽',
