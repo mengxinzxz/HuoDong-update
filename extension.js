@@ -12,7 +12,7 @@ if(packs.length) packs.forEach(pack=>delete lib.characterPack[pack][name]);
 };
 game.HDaddCharacter=function(name,character,packss){
 game.HDdeleteCharacter(name);
-if(!packss||typeof packss!='string'||packss=='') lib.character[name]=character;
+if(!packss) lib.character[name]=character;
 else{
 var packs=packss.split(':').filter(p=>lib.config.all.characters.includes(p));
 packs.forEach(pack=>lib.characterPack[pack][name]=character);
