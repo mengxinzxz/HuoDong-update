@@ -27684,58 +27684,32 @@ direct:true,
 content:function(){
 'step 0'
 event.forceDie=true;
-var recover=0,lose=0,players=game.filterPlayer();
-for(var i=0;i<players.length;i++){
-if(players[i].hp<players[i].maxHp){
-if(get.attitude(player,players[i])>0){
-if(players[i].hp<2){
-lose--;
-recover+=0.5;
-}
-lose--;
-recover++;
-}
-else if(get.attitude(player,players[i])<0){
-if(players[i].hp<2){
-lose++;
-recover-=0.5;
-}
-lose++;
-recover--;
-}
-}
-else{
-if(get.attitude(player,players[i])>0){
-lose--;
-}
-else if(get.attitude(player,players[i])<0){
-lose++;
-}
-}
-}
-player.chooseControl('失去体力','回复体力','cancel2').set('ai',function(){
-if(lose>recover&&lose>0) return 0;
-if(lose<recover&&recover>0) return 1;
-return 2;
+var list=['失去体力','回复体力','摸牌','cancel2'];
+player.chooseControl(list).set('ai',function(){
+var player=_status.event.player;
+var list=[
+game.filterPlayer().reduce((sum,target)=>sum+get.effect(target,{name:'losehp'},player,player),0),
+player.getUseValue({name:'taoyuan'}),
+player.getUseValue({name:'wugu'}),
+0,
+];
+var num=list.slice().sort((a,b)=>b-a)[0];
+return _status.event.controls[list.indexOf(num)];
 }).set('prompt',get.prompt2('miniqinyin'));
 'step 1'
 if(result.control!='cancel2'){
 player.logSkill('miniqinyin');
-event.bool=(result.control=='回复体力');
-if(event.bool) game.playAudio('skill','qinyin1');
-else game.playAudio('skill','qinyin2');
-event.num=0;
-event.players=game.filterPlayer();
+if(result.control=='失去体力') game.playAudio('skill','qinyin2');
+else game.playAudio('skill','qinyin1');
+if(result.control=='摸牌') game.asyncDraw(game.filterPlayer());
+else{
+game.filterPlayer().forEach(target=>target[result.control=='失去体力'?'loseHp':'recover']());
+event.finish();
+}
 }
 else event.finish();
 'step 2'
-if(event.num<event.players.length){
-var target=event.players[event.num];
-if(event.bool) target.recover();
-else target.loseHp();
-event.num++;
-event.redo();
-}
+game.delayx();
 },
 ai:{expose:0.2},
 },
@@ -32201,7 +32175,7 @@ miniwushen_info:'你可以将红桃手牌视为【杀】使用或打出；你使
 miniwuhun:'武魂',
 miniwuhun_info:'锁定技，当你受到伤害后，伤害来源获得X个“梦魇”标记（X为伤害点数）。锁定技，当你死亡或脱离濒死时，你选择一名“梦魇”标记数量最多的其他角色，令该角色进行判定：若判定结果不为【桃】或【桃园结义】，则该角色失去5点体力。',
 miniqinyin:'琴音',
-miniqinyin_info:'弃牌阶段结束时，若你于此阶段内弃置过牌，则你可以选择一项：1. 令所有角色各回复1点体力；2. 令所有角色各失去1点体力。',
+miniqinyin_info:'弃牌阶段结束时，若你于此阶段内弃置过牌，则你可以选择一项：1. 令所有角色各回复1点体力；2. 令所有角色各失去1点体力；3.令所有角色各摸一张牌。',
 miniyeyan:'业炎',
 miniyeyan_info:'出牌阶段开始时，你可以对一名其他角色造成1点火焰伤害。',
 minilongnu:'龙怒',
