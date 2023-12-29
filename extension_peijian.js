@@ -206,8 +206,7 @@ lib.characterReplace.fuhuanghou.add('bol_fuhuanghou');
 
 //筛选武将同名替换
 Object.keys(lib.characterReplace).forEach(name=>{
-if(!lib.character[name]) delete lib.characterReplace[name];
-else lib.characterReplace[name]=lib.characterReplace[name].filter(namex=>lib.character[namex]);
+lib.characterReplace[name]=lib.characterReplace[name].filter(namex=>lib.character[namex]&&!lib.filter.characterDisabled(namex));
 });
 
 //神将
