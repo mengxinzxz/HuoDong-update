@@ -8,18 +8,15 @@ content:function(config,pack){
 game.HDdeleteCharacter=function(name){
 if(lib.character[name]) delete lib.character[name];
 var packs=Object.keys(lib.characterPack).filter(pack=>lib.characterPack[pack][name]);
-if(packs.length){
-for(var pack of packs) delete lib.characterPack[pack][name];
-}
+if(packs.length) packs.forEach(pack=>delete lib.characterPack[pack][name]);
 };
 game.HDaddCharacter=function(name,character,packss){
 game.HDdeleteCharacter(name);
-if(!packss) lib.character[name]=character;//未定义武将包或武将包为空则直接添加武将
-var packs=packss.split(':');
-if(!packs.length) lib.character[name]=character;
+if(!packss||typeof packss!='string'||packss=='') lib.character[name]=character;
 else{
-for(var pack of packs) lib.characterPack[pack][name]=character;
-if(packs.some(p=>lib.config.characters.contains(p))) lib.character[name]=character;
+var packs=packss.split(':').filter(p=>lib.config.all.characters.includes(p));
+packs.forEach(pack=>lib.characterPack[pack][name]=character);
+if(packs.some(p=>lib.config.characters.includes(p))) lib.character[name]=character;
 }
 };
 //移动武将所在武将包
