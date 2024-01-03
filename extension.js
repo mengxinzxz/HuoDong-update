@@ -18037,7 +18037,6 @@ list.push(i);
 if(list.length>0) target.enableEquip(list);
 }
 'step 2'
-player.drawTo(6);
 trigger.player.drawTo(6);
 'step 3'
 player.storage.miniyoulong2=[];
@@ -18378,6 +18377,7 @@ if(event.card&&get.type(event.card)=='trick') return true;
 },
 direct:true,
 content:function*(event,map){
+var player=map.player;
 var num=Math.min(player.countCards('h'),player.getHp());
 var result=yield player.chooseCard(get.prompt('minireqianxun'),'将至多'+get.cnNumber(num)+'张手牌置于武将牌上',[1,num]).set('ai',card=>1/(get.value(card)||0.5));
 if(result.bool){
