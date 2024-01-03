@@ -17806,7 +17806,7 @@ if(!player.storage.miniyoulong2) player.storage.miniyoulong2=[];
 },
 hiddenCard:function(player,name){
 var list=get.inpileVCardList(info=>info[0]=='basic'||info[0]=='trick');
-if(!list.some(name=>!player.storage.miniyoulong2.some(cardx=>cardx.name==name[2]&&cardx.nature==name[3]))) return false;
+if(!list.some(name2=>name2[2]==name&&!player.storage.miniyoulong2.some(cardx=>cardx.name==name2[2]&&cardx.nature==name2[3]))) return false;
 if(player.hasSkill('miniyoulong_'+(player.storage.miniyoulong||false))) return false;
 var type=get.type(name);
 if(player.storage.miniyoulong) return type=='basic'&&((_status.connectMode&&player.countCards('he'))||player.countCards('he',card=>get.type(card)!='basic'&&lib.filter.cardDiscardable(card,player)));
