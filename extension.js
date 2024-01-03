@@ -17805,7 +17805,6 @@ player.storage.miniyoulong=false;
 if(!player.storage.miniyoulong2) player.storage.miniyoulong2=[];
 },
 hiddenCard:function(player,name){
-if(!player.storage.miniyoulong2) player.storage.miniyoulong2=[];
 if(player.storage.miniyoulong2.includes(name)) return false;
 if(player.hasSkill('miniyoulong_'+(player.storage.miniyoulong||false))) return false;
 var type=get.type(name);
@@ -17815,7 +17814,6 @@ return type=='trick'&&player.hasEnabledSlot();
 audio:'youlong',
 enable:'chooseToUse',
 filter:function(event,player){
-if(!player.hasEnabledSlot()) return false;
 if(player.hasSkill('miniyoulong_'+(player.storage.miniyoulong||false))) return false;
 var type=player.storage.miniyoulong?'basic':'trick';
 if(type=='basic'&&!player.countCards('he',card=>get.type(card)!='basic'&&lib.filter.cardDiscardable(card,player))) return false;
