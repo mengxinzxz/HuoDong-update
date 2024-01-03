@@ -17805,7 +17805,8 @@ player.storage.miniyoulong=false;
 if(!player.storage.miniyoulong2) player.storage.miniyoulong2=[];
 },
 hiddenCard:function(player,name){
-if(player.storage.miniyoulong2.includes(name)) return false;
+var list=get.inpileVCardList(info=>info[0]=='basic'||info[0]=='trick');
+if(!list.some(name=>!player.storage.miniyoulong2.some(cardx=>cardx.name==name[2]&&cardx.nature==name[3]))) return false;
 if(player.hasSkill('miniyoulong_'+(player.storage.miniyoulong||false))) return false;
 var type=get.type(name);
 if(player.storage.miniyoulong) return type=='basic'&&((_status.connectMode&&player.countCards('he'))||player.countCards('he',card=>get.type(card)!='basic'&&lib.filter.cardDiscardable(card,player)));
@@ -17815,39 +17816,28 @@ audio:'youlong',
 enable:'chooseToUse',
 filter:function(event,player){
 if(player.hasSkill('miniyoulong_'+(player.storage.miniyoulong||false))) return false;
-var type=player.storage.miniyoulong?'basic':'trick';
+var list=get.inpileVCardList(info=>info[0]=='basic'||info[0]=='trick'),type=player.storage.miniyoulong?'basic':'trick';
 if(type=='basic'&&!player.countCards('he',card=>get.type(card)!='basic'&&lib.filter.cardDiscardable(card,player))) return false;
 if(type=='trick'&&!player.hasEnabledSlot()) return false;
-for(var name of lib.inpile){
-if(player.storage.miniyoulong2.includes(name)) continue;
-if(get.type(name)!=type) continue;
-if(event.filterCard({name:name,isCard:true},player,event)) return true;
-}
-return false;
+return list.some(name=>name[0]==type&&!player.storage.miniyoulong2.some(cardx=>cardx.name==name[2]&&cardx.nature==name[3])&&event.filterCard({name:name[2],nature:name[3]},player,event));
 },
 chooseButton:{
 dialog:function(event,player){
 var dialog=ui.create.dialog('游龙','hidden');
-var type=player.storage.miniyoulong?'basic':'trick';
+var list2=get.inpileVCardList(info=>info[0]=='basic'||info[0]=='trick'),type=player.storage.miniyoulong?'basic':'trick';
 if(type=='trick'){
-const equips=[];
+var equips=[];
 for(let i=1;i<6;i++){
 if(!player.hasEnabledSlot(i)) continue;
 equips.push([i,get.translation('equip'+i)]);
 }
 if(equips.length>0) dialog.add([equips,'tdnodes']);
 }
-var list=[];
-for(var name of lib.inpile){
-if(player.storage.miniyoulong2.includes(name)) continue;
-if(get.type(name)!=type) continue;
-if(event.filterCard({name:name,isCard:true},player,event)){
-list.push([type,'',name]);
-if(name=='sha'){
-for(var j of lib.inpile_nature) list.push(['基本','','sha',j]);
-}
-}
-}
+var list=list2.filter(name=>name[0]==type&&!player.storage.miniyoulong2.some(cardx=>cardx.name==name[2]&&cardx.nature==name[3])&&event.filterCard({name:name[2],nature:name[3]},player,event));
+list=list.map(card=>{
+card[0]=get.translation(card[0]);
+return card;
+});
 dialog.add([list,'vcard']);
 return dialog;
 },
@@ -17886,7 +17876,7 @@ if(get.attitude(player,evt.dying)<2) return false;
 if(name=='jiu') return 2.1;
 return 1.9;
 }
-if(evt.type=='phase') return player.getUseValue({name:name,nature:button.link[3],isCard:true});
+if(evt.type=='phase') return player.getUseValue({name:name,nature:button.link[3]});
 return 1;
 },
 backup:function(links,player){
@@ -17914,7 +17904,7 @@ event.result.cards=[];
 delete event.result.skill;
 if(!player.storage.miniyou_luanfeng) player.addTempSkill(skill);
 player.changeZhuanhuanji('miniyoulong');
-player.storage.miniyoulong2.add(event.result.card.name);
+player.storage.miniyoulong2.add({name:event.result.card.name,nature:event.result.card.nature});
 },
 };
 if(player.storage.miniyoulong){
@@ -17946,17 +17936,16 @@ skillTagFilter:function(player,tag,arg){
 if(arg=='respond') return false;
 if(!player.storage.miniyoulong||player.hasSkill('miniyoulong_true')) return false;
 if(!((_status.connectMode&&player.countCards('he'))||player.countCards('he',card=>get.type(card)!='basic'&&lib.filter.cardDiscardable(card,player)))) return false;
+var list=get.inpileVCardList(info=>info[0]=='basic'&&!player.storage.miniyoulong2.some(card=>card.name==info[2]&&card.nature==info[3]));
 var name=(tag=='respondSha'?'sha':'shan');
-return !player.storage.miniyoulong2.includes(name);
+return list.some(name2=>name2[2]==name);
 },
 order:function(item,player){
 if(player&&_status.event.type=='phase'){
-var max=0,add=false;
-var type=player.storage.miniyoulong?'basic':'trick';
-var list=lib.inpile.filter(name=>get.type(name)==type&&!player.storage.miniyoulong2.includes(name));
-if(list.includes('sha')) add=true;
-list=list.map(namex=>{return {name:namex,isCard:true}});
-if(add) lib.inpile_nature.forEach(naturex=>list.push({name:'sha',nature:naturex,isCard:true}));
+var list=get.inpileVCardList(info=>info[0]=='basic'||info[0]=='trick');
+var max=0,type=player.storage.miniyoulong?'basic':'trick';
+list=list.filter(name=>name[0]==type&&!player.storage.miniyoulong2.some(card=>card.name==name[2]&&card.nature==name[3]));
+list=list.map(namex=>{return {name:namex[2],nature:namex[3]}});
 for(var card of list){
 if(player.getUseValue(card)>0){
 var temp=get.order(card);
@@ -31339,7 +31328,7 @@ return str+'。';
 miniyoulong:function(player){
 var storage=player.storage.miniyoulong;
 var str='转换技';
-if(player.storage.miniyou_luanfeng) str+='，每回合每项各限一次';
+if(!player.storage.miniyou_luanfeng) str+='，每回合每项各限一次';
 str+='。';
 if(!storage) str+='<span class="bluetext">';
 str+='阴，你可以废除你的一个装备栏，视为使用一张未以此法使用过的普通锦囊牌；';
