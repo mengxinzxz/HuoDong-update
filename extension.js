@@ -43,33 +43,12 @@ game.bolShowNewPack=function(){
 var HuoDong_update=[
 '/setPlayer/',
 'bugfix',
-'修复部分身份换将弹窗bug',
-'添加飞鸿印雪全系列共52个技能不同但并非完全削弱和需要摆脱线上机制的武将',
-'添加欢杀武将：孙休，孙茹，龙凤，曹操，女娲，陆逊，神周瑜(改)，孔融，来莺儿',
-'添加微杀武将：赵襄(改)，二张，陈登，陶谦，阚泽，薛综，顾雍',
-'修复配件文件添加的武将同名替换会把没有开启的武将调用出来的bug',
+'添加欢杀武将：虞翻，丁奉(改)',
 'To be continued...',
 ];
 //更新武将
 var HuoDong_players=[
-//飞鸿
-'mx_fh_sp_bianfuren','mx_fh_sp_chenzhen','mx_fh_feiyi','mx_fh_luotong','mx_fh_sp_sunshao',
-'mx_fh_sp_duyu','mx_fh_sp_xunchen','mx_fh_wangling','mx_fh_sp_mifuren','mx_fh_zhouchu',
-'mx_fh_wujing','mx_fh_sp_yanghu','mx_fh_caizhenji','mx_fh_sp_huaxin','mx_fh_xiangchong',
-'mx_fh_sp_xujing','mx_fh_qiaogong','mx_fh_sp_zhangwen','mx_fh_liuzhang','mx_fh_zhangzhongjing',
-'mx_fh_sp_wangshuang','mx_fh_sp_cuiyan','mx_fh_sp_jiangwan','mx_fh_liuba','mx_fh_sp_lvfan',
-'mx_fh_shen_guojia','mx_fh_shen_xunyu','mx_fh_shen_taishici','mx_fh_shen_dianwei',
-'mx_fh_re_huangyueying','mx_fh_re_zhenji','mx_fh_gz_huangzhong','mx_fh_zhoutai',
-'mx_fh_ol_sp_zhugeliang','mx_fh_re_taishici','mx_fh_yanwen','mx_fh_guanqiujian',
-'mx_fh_dc_sunziliufang','mx_fh_liyan','mx_fh_dc_huanghao','mx_fh_re_sundeng','mx_fh_xinxianying',
-'mx_fh_wuxian','mx_fh_caojie','mx_fh_jikang','mx_fh_zhugeshang','mx_fh_lukai','mx_fh_kebineng',
-'mx_fh_xin_lingtong','mx_fh_dc_xushu','mx_fh_re_liaohua','mx_fh_zhuzhi',
-//宝宝杀
-'Mbaby_sunxiu','Mbaby_dc_sunru','Mbaby_wolongfengchu','Mbaby_sb_caocao','Mbaby_nvwa','Mbaby_luxun',
-'Mbaby_shen_zhouyu','Mbaby_sp_kongrong','Mbaby_laiyinger',
-//微信杀
-'wechat_zhaoxiang','wechat_zhangzhang','wechat_chendeng','wechat_taoqian','wechat_kanze',
-'wechat_xuezong','wechat_guyong',
+'Mbaby_yufan','Mbaby_dingfeng',
 ];
 //加载
 var dialog=ui.create.dialog(
@@ -9493,7 +9472,7 @@ characterSort:{
 MiNikill:{
 MiNi_wei:['Mbaby_zhugedan','Mbaby_caohong','Mbaby_guojia','Mbaby_sp_caoren','Mbaby_yinfuren','Mbaby_sp_jiaxu','Mbaby_wenqin','Mbaby_kuailiangkuaiyue','Mbaby_jsp_guanyu','Mbaby_wangji','Mbaby_chenqun','Mbaby_xiahoulingnv','Mbaby_wenyang','Mbaby_sp_pangde','Mbaby_caocao','Mbaby_caozhang','Mbaby_dufuren','Mbaby_simayi','Mbaby_yangxiu','Mbaby_zhangchangpu','Mbaby_zhonghui','Mbaby_sp_jiangwei','Mbaby_caoxiu','Mbaby_xunyou','Mbaby_lidian','Mbaby_zhongyao','Mbaby_caozhen','Mbaby_guohuanghou','Mbaby_xinxianying','Mbaby_xiahouyuan','Mbaby_xizhicai','Mbaby_caorui','Mbaby_xunyu','Mbaby_dengai','Mbaby_caozhi','Mbaby_sp_caiwenji','Mbaby_caoying','Mbaby_caopi','Mbaby_caoang','Mbaby_guojia','Mbaby_zhenji','Mbaby_caoren','Mbaby_wangyi','Mbaby_zhangchunhua','Mbaby_xiahoudun','Mbaby_xuzhu','Mbaby_zhangliao','Mbaby_guohuai','Mbaby_dianwei','Mbaby_zhanghe','Mbaby_yujin','Mbaby_xuhuang'],
 MiNi_shu:['Mbaby_wolongfengchu','Mbaby_wangtao','Mbabysp_zhangfei','Mbaby_wangyue','Mbaby_xf_yiji','Mbaby_mizhu','Mbaby_mifuren','Mbaby_liuyong','Mbaby_ganfuren','Mbaby_sunqian','Mbaby_lvkai','Mbaby_zhoucang','Mbaby_huangyueying','Mbaby_yangwan','Mbaby_liuchen','Mbaby_liyan','Mbaby_chendao','Mbaby_yanyan','Mbaby_xiahouba','Mbaby_huaman','Mbaby_sp_zhugeliang','Mbaby_zhugeguo','Mbaby_jianyong','Mbaby_wangping','Mbaby_mayunlu','Mbaby_guansuo','Mbaby_xiahoushi','Mbaby_shamoke','Mbaby_wuxian','Mbaby_zhugezhan','Mbaby_qinmi','Mbaby_guanyinping','Mbaby_guanyu','Mbaby_zhugeliang','Mbaby_liubei','Mbaby_machao','Mbaby_zhurong','Mbaby_zhangfei','Mbaby_zhaoyun','Mbaby_huangzhong','Mbaby_weiyan','Mbaby_liaohua','Mbaby_pangtong','Mbaby_menghuo','Mbaby_jiangwei','Mbaby_liushan','Mbaby_fazheng','Mbaby_madai','Mbaby_guanping','Mbaby_liufeng','Mbaby_wuyi','Mbaby_zhangxingcai','Mbaby_dongyun','Mbaby_sp_sunshangxiang','Mbaby_xushu','Mbaby_masu'],
-MiNi_wu:['Mbaby_dc_sunru','Mbaby_sunxiu','Mbaby_zhangfen','Mbaby_xuezong','Mbaby_dingfeng','Mbaby_panjun','Mbaby_sundeng','Mbaby_luji','Mbaby_zhoufang','Mbaby_zhangxuan','Mbaby_yanjun','Mbaby_zhuhuan','Mbaby_luyusheng','Mbaby_re_jsp_pangtong','Mbaby_sunhao','Mbabysp_daqiao','Mbaby_lukang','Mbaby_buzhi','Mbaby_xushi','Mbaby_zhugeke','Mbaby_zhoufei','Mbaby_zhangzhang','Mbaby_sunliang','Mbaby_ol_sunjian','Mbaby_zhuzhi','Mbaby_bulianshi','Mbaby_chengpu','Mbaby_daqiao','Mbaby_ganning','Mbaby_huanggai','Mbaby_lusu','Mbaby_luxun','Mbaby_lvmeng','Mbaby_sunce','Mbaby_sunluban','Mbaby_sunluyu','Mbaby_sunquan','Mbaby_sunshangxiang','Mbaby_taishici','Mbaby_wuguotai','Mbaby_xiaoqiao','Mbaby_xusheng','Mbaby_zhoutai','Mbaby_zhouyu','Mbaby_zhugejin','Mbaby_zumao','Mbabysp_xiaoqiao'],
+MiNi_wu:['Mbaby_yufan','Mbaby_dc_sunru','Mbaby_sunxiu','Mbaby_zhangfen','Mbaby_xuezong','Mbaby_dingfeng','Mbaby_panjun','Mbaby_sundeng','Mbaby_luji','Mbaby_zhoufang','Mbaby_zhangxuan','Mbaby_yanjun','Mbaby_zhuhuan','Mbaby_luyusheng','Mbaby_re_jsp_pangtong','Mbaby_sunhao','Mbabysp_daqiao','Mbaby_lukang','Mbaby_buzhi','Mbaby_xushi','Mbaby_zhugeke','Mbaby_zhoufei','Mbaby_zhangzhang','Mbaby_sunliang','Mbaby_ol_sunjian','Mbaby_zhuzhi','Mbaby_bulianshi','Mbaby_chengpu','Mbaby_daqiao','Mbaby_ganning','Mbaby_huanggai','Mbaby_lusu','Mbaby_luxun','Mbaby_lvmeng','Mbaby_sunce','Mbaby_sunluban','Mbaby_sunluyu','Mbaby_sunquan','Mbaby_sunshangxiang','Mbaby_taishici','Mbaby_wuguotai','Mbaby_xiaoqiao','Mbaby_xusheng','Mbaby_zhoutai','Mbaby_zhouyu','Mbaby_zhugejin','Mbaby_zumao','Mbabysp_xiaoqiao'],
 MiNi_qun:['Mbaby_laiyinger','Mbaby_sp_kongrong','Mbaby_zhujun','Mbaby_gongsunyuan','Mbaby_sp_zhangliao','Mbaby_sp_ol_zhanghe','Mbaby_guotufengji','Mbaby_yanfuren','Mbaby_tangji','Mbaby_caojie','Mbaby_liangxing','Mbabysp_zhenji','Mbaby_caoxing','Mbaby_sp_menghuo','Mbaby_wangrong','Mbaby_hetaihou','Mbaby_sp_taishici','Mbaby_zhangji','Mbaby_dongbai','Mbaby_beimihu','Mbaby_chunyuqiong','Mbaby_zhangqiying','Mbaby_fuhuanghou','Mbaby_liuxie','Mbaby_quyi','Mbaby_jsp_huangyueying','Mbaby_sp_machao','Mbaby_lijue','Mbaby_panfeng','Mbaby_liuzhang','Mbaby_jiaxu','Mbaby_zhangbao','Mbaby_zhangliang','Mbaby_gaoshun','Mbaby_caifuren','Mbaby_xuyou','Mbaby_gongsunzan','Mbaby_pangde','Mbaby_jushou','Mbaby_liru','Mbaby_dongzhuo','Mbaby_zhangjiao','Mbaby_huatuo','Mbaby_lvbu','Mbaby_diaochan','Mbaby_sp_diaochan','Mbaby_huaxiong','Mbaby_yuji','Mbaby_yanwen','Mbaby_caiwenji','Mbaby_liubiao','Mbaby_yuanshao','Mbaby_yuanshu','Mbaby_chengong','Mbaby_zuoci'],
 MiNi_shen:['Mbaby_shen_taishici','Mbaby_shen_diaochan','Mbaby_shen_daxiaoqiao','Mbaby_shen_zhenji','Mbaby_shen_guojia','Mbaby_shen_huatuo','Mbaby_shen_dianwei','Mbaby_shen_lvbu','Mbaby_shen_zhugeliang','Mbaby_shen_lvmeng','Mbaby_shen_zhouyu','Mbaby_shen_guanyu','Mbaby_shen_liubei','Mbaby_shen_caocao','Mbaby_shen_zhangliao','Mbaby_shen_sunquan','Mbaby_shen_simayi','Mbaby_shen_zhaoyun','Mbaby_shen_ganning','Mbaby_shen_luxun'],
 MiNi_change:['Mbaby_re_nanhualaoxian','Mbaby_re_sunyi','Mbaby_zhaoxiang','Mbaby_xushao','Mbaby_shen_zhangjiao','Mbaby_baosanniang'],
@@ -9663,6 +9642,7 @@ Mbaby_sb_huanggai:['male','wu',4,['minisbkurou','minisbzhaxiang'],[]],
 Mbaby_zhangfen:['male','wu',4,['miniwanglu','minixianzhu','minichaixie'],[]],
 Mbaby_sunxiu:['male','wu',3,['miniyanzhu','minixingxue','minizhaofu'],['zhu']],
 Mbaby_dc_sunru:['female','wu',3,['minixiecui','youxu'],[]],
+Mbaby_yufan:['male','wu',3,['minizongxuan','minizhiyan'],[]],
 //群
 Mbaby_gaoshun:['male','qun',4,['minixianzhen','minijinjiu'],[]],
 Mbaby_caifuren:['female','qun',3,['minireqieting','minirexianzhou'],[]],
@@ -18026,15 +18006,15 @@ content:function(){
 player.awakenSkill('miniluanfeng');
 trigger.player.recover(3-trigger.player.hp);
 'step 1'
-var list=[player,trigger.player];
-while(list.length){
-var target=list.shift();
+var targets=[player,trigger.player];
+while(targets.length){
+var target=targets.shift(),list=[];
 for(var i=1;i<6;i++){
 for(var j=0;j<target.countDisabledSlot(i);j++){
 list.push(i);
 }
 }
-if(list.length>0) target.enableEquip(list);
+if(list.length) target.enableEquip(list);
 }
 'step 2'
 trigger.player.drawTo(6);
@@ -21406,7 +21386,9 @@ return game.hasPlayer(current=>get.distance(player,current)<=1&&current.getHisto
 forced:true,
 locked:false,
 content:function(){
-player.draw(game.countPlayer(current=>get.distance(player,current)<=1&&current.getHistory('damage').length));
+player.draw(game.filterPlayer(current=>get.distance(player,current)<=1&&current.getHistory('damage').length).reduce((sum,target)=>{
+return sum+target.getHistory('damage').reduce((num,evt)=>num+evt.num,0);
+},0));
 },
 },
 },
@@ -22064,6 +22046,180 @@ source.addTempSkill('xiecui_effect');
 }
 },
 ai:{threaten:2},
+},
+//虞翻
+minizongxuan:{
+audio:'zongxuan',
+trigger:{
+player:'loseAfter',
+global:'loseAsyncAfter',
+},
+filter:function(event,player){
+if(event.type!='discard') return false;
+var evt=event.getl(player);
+if(!evt||!evt.cards2) return false;
+for(var i=0;i<evt.cards2.length;i++){
+if(get.position(evt.cards2[i])=='d'){
+return true;
+}
+}
+return false;
+},
+check:function(trigger,player){
+if(trigger.getParent(3).name=='phaseDiscard') return true;
+if(!game.hasPlayer(function(current){
+return current!=player&&get.attitude(player,current)>0&&!current.hasSkillTag('nogain');
+})) return false;
+var cards=trigger.getl(player).cards2;
+for(var i=0;i<cards.length;i++){
+if(get.position(cards[i],true)=='d'&&get.type2(cards[i],false)=='trick'){
+return true;
+}
+}
+return false;
+},
+content:function(){
+'step 0'
+var cards=[],cards2=trigger.getl(player).cards2;
+for(var i=0;i<cards2.length;i++){
+if(get.position(cards2[i],true)=='d'){
+cards.push(cards2[i]);
+}
+}
+var next=player.chooseToMove('纵玄：将任意张牌置于牌堆顶',true);
+next.set('list',[
+['本次弃置的牌（请将要给出的牌也留在这里）',cards],
+['牌堆顶'],
+]);
+next.set('filterOk',function(moved){
+if(moved[0].length==1) return true;
+return moved[1].length>0;
+});
+next.set('processAI',function(list){
+var cards=list[0][1].slice(0),player=_status.event.player;
+var result=[[],[]];
+if(game.hasPlayer(function(current){
+return current!=player&&get.attitude(player,current)>0&&!current.hasSkillTag('nogain');
+})){
+var max_val=0;
+var max_card=false;
+for(var i of cards){
+var val=get.value(i,'raw');
+if(val>max_val){
+max_card=i;
+max_val=val;
+}
+}
+if(max_card){
+result[0].push(max_card);
+cards.remove(max_card);
+}
+}
+if(cards.length){
+var max_val=0;
+var max_card=false;
+var equip=game.hasPlayer(function(current){
+return current.isDamaged()&&get.recoverEffect(current,player,player)>0;
+})
+for(var i of cards){
+var val=get.value(i);
+var type=get.type2(i,false);
+if(type=='basic') val+=3;
+if(type=='equip'&&equip) val+=9;
+if(max_val==0||val>max_val){
+max_card=i;
+max_val=val;
+}
+}
+if(max_card){
+result[1].push(max_card);
+cards.remove(max_card);
+}
+result[0].addArray(cards);
+}
+return result;
+})
+'step 1'
+if(result.bool){
+var cards=result.moved[1].slice(0);
+event.cards=cards;
+var list=result.moved[0].slice(0);
+if(list.length&&game.hasPlayer((current)=>(current!=player))){
+var next=player.chooseButton([(cards.length?'是否':'')+'将其中一张牌交给一名其他角色，然后你摸一张牌'+(cards.length?'？':''),list]).set('ai',function(button){
+if(_status.event.goon) return Math.max(0.1,get.value(button.link,'raw'));
+return 0;
+}).set('goon',game.hasPlayer(function(current){
+return current!=player&&get.attitude(player,current)>0&&!current.hasSkillTag('nogain');
+}));
+if(!result.moved[1].length) next.set('forced',true);
+}
+else event.goto(4);
+}
+else event.finish();
+'step 2'
+if(result.bool){
+var card=result.links[0];
+event.card=card;
+player.chooseTarget('令一名其他角色获得'+get.translation(card),lib.filter.notMe,true).set('ai',function(target){
+var card=_status.event.card,player=_status.event.player;
+var eff=Math.max(0.1,get.value(card,target))*get.attitude(player,target);
+if(target.hasSkill('nogain')) eff/=10;
+return eff;
+}).set('card',card);
+}
+else event.goto(4);
+'step 3'
+if(result.bool){
+var target=result.targets[0];
+player.line(target,'green');
+target.gain(card,'gain2');
+player.draw();
+}
+'step 4'
+if(cards.length){
+game.log(player,'将',cards,'置于了牌堆顶');
+while(cards.length) ui.cardPile.insertBefore(cards.pop().fix(),ui.cardPile.firstChild);
+}
+},
+},
+minizhiyan:{
+audio:'zhiyan',
+trigger:{player:'phaseJieshuBegin'},
+direct:true,
+content:function(){
+'step 0'
+player.chooseTarget(get.prompt('zhiyan'),'令一名角色摸一张牌并展示之。若为非装备牌则你摸一张牌；若为装备牌则其使用此牌并回复1点体力').set('ai',function(target){
+return get.attitude(_status.event.player,target)*(target.isDamaged()?2:1);
+});
+'step 1'
+if(result.bool){
+event.target=result.targets[0];
+player.logSkill('minizhiyan',result.targets);
+event.bool=false;
+event.target.draw('visible');
+}
+else{
+event.finish();
+}
+'step 2'
+var card=result[0];
+if(get.type(card)=='equip'){
+if(target.getCards('h').contains(card)&&target.hasUseTarget(card)){
+event.target.chooseUseTarget(card,true,'nopopup');
+game.delay();
+}
+}
+else{
+player.draw();
+event.finish();
+}
+'step 3'
+target.recover();
+},
+ai:{
+expose:0.2,
+threaten:1.2
+},
 },
 //群
 miniqieting:{
@@ -31745,6 +31901,7 @@ Mbaby_sb_huanggai:'欢杀谋黄盖',
 Mbaby_zhangfen:'欢杀张奋',
 Mbaby_sunxiu:'欢杀孙休',
 Mbaby_dc_sunru:'欢杀孙茹',
+Mbaby_yufan:'欢杀虞翻',
 minizhiheng:'制衡',
 minizhiheng_info:'出牌阶段结束时，你可以弃置任意张手牌并将手牌数补至四张。',
 minirezhiheng:'制衡',
@@ -31909,7 +32066,7 @@ minigongqing_info:'锁定技，当你受到伤害时，若伤害来源的攻击�
 miniduanbing:'短兵',
 miniduanbing_info:'①你使用【杀】可以额外选择一名距离为1的角色为目标。②当你于一回合首次使用【杀】指定与你距离不小于1的角色后，你令其需额外使用一张【闪】响应此【杀】。',
 minifenxun:'奋迅',
-minifenxun_info:'①出牌阶段限一次，你可以选择一名其他角色，本回合你计算与其的距离视为1。②回合结束时，你摸X张牌（X为本回合距离你1以内的受到过伤害的角色数）。',
+minifenxun_info:'①出牌阶段限一次，你可以选择一名其他角色，本回合你计算与其的距离视为1。②回合结束时，你摸X张牌（X为本回合距离你1以内的角色受到过伤害数之和）。',
 minifunan:'复难',
 minifunan_info:'其他角色使用或打出牌响应你使用的牌时，你可获得其使用或打出的牌。',
 minijiexun:'诫训',
@@ -31939,6 +32096,10 @@ minizhaofu:'诏缚',
 minizhaofu_info:'主公技，出牌阶段限一次，你可选择至多两名其他角色，这些角色本轮视为在所有吴势力角色的攻击范围内。',
 minixiecui:'撷翠',
 minixiecui_info:'一名角色于其回合内第一次使用牌造成伤害时，你可以令此伤害+1。然后若其手牌数大于其体力值，则该角色获得伤害牌且其本回合的手牌上限+1。',
+minizongxuan:'纵玄',
+minizongxuan_info:'当你的牌因弃置而进入弃牌堆后，你可以令一名其他角色获得其中的一张，然后你摸一张牌。然后你可将其中的任意张剩余牌置于牌堆顶。',
+minizhiyan:'直言',
+minizhiyan_info:'结束阶段开始时，你可令一名角色正面朝上摸一张牌。若此牌不为装备牌，则你摸一张牌。若此牌为装备牌，则其使用此装备牌，然后回复1点体力。',
 //群
 Mbaby_zuoci:'欢杀左慈',
 Mbaby_gaoshun:'欢杀高顺',
@@ -37502,8 +37663,8 @@ enable:'phaseUse',
 filter:function(event,player){
 return player.countCards('he')>=(player.getStat('skill').wechatshenxing||0);
 },
-selectCard:()=>_status.event.player.getStat('skill').reshenxing||0,
-prompt:()=>'弃置'+get.cnNumber(_status.event.player.getStat('skill').reshenxing||0)+'张牌并摸一张牌',
+selectCard:()=>_status.event.player.getStat('skill').wechatshenxing||0,
+prompt:()=>'弃置'+get.cnNumber(_status.event.player.getStat('skill').wevhatshenxing||0)+'张牌并摸一张牌',
 check:function(card){
 var num=_status.event.player.countCards('h',{color:get.color(card)});
 if(get.position(card)=='e') num++;
@@ -53301,7 +53462,7 @@ intro:'新人制作扩展，希望大家支持。'+
 author:'萌新（转型中）',
 diskURL:'',
 forumURL:'',
-version:'0.1.2',
+version:'0.1.3',
 //新人制作扩展，希望大家支持。
 //新人技术不足，希望大家包涵。
 //壹、贰、叁、肆、伍、陆、柒、捌、玖、拾
