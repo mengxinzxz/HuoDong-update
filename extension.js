@@ -17975,18 +17975,7 @@ skillAnimation:true,
 animationColor:'soil',
 logTarget:'player',
 check:function(event,player){
-if(get.attitude(player,event.player)<4) return false;
-if(player.countCards('h',function(card){
-var mod2=game.checkMod(card,player,'unchanged','cardEnabled2',player);
-if(mod2!='unchanged') return mod2;
-var mod=game.checkMod(card,player,event.player,'unchanged','cardSavable',player);
-if(mod!='unchanged') return mod;
-var savable=get.info(card).savable;
-if(typeof savable=='function') savable=savable(card,player,event.player);
-return savable;
-})>=1-event.player.hp) return false;
-if(event.player==player||event.player==get.zhu(player)) return true;
-return !player.hasUnknown();
+return lib.skill.xinwanlan.check(event,player);
 },
 content:function(){
 'step 0'
