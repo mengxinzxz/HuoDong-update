@@ -41534,7 +41534,7 @@ next.set('list',[
 var list2=list.map(function(i){
 return get.translation(i[2].slice(6));
 });
-return '使用'+list2[0]+'牌无次数限制；使用或打出'+list2[1]+'时摸一张牌；<br>成为'+list2[2]+'牌目标后可弃一张'+list2[3]+'牌无效';
+return '使用'+list2[0]+'牌无次数限制；使用或打出'+list2[1]+'时摸一张牌；<br>成为'+list2[2]+'牌目标后可弃一张'+list2[3]+'牌无效并获得之';
 }],
 ]);
 next.set('processAI',function(){
@@ -41577,7 +41577,7 @@ marktext:'筮',
 intro:{
 content:function(storage,player){
 var list=lib.skill.fh_bushi.getBushi(player).map((i)=>get.translation(i));
-return '<li>你使用'+list[0]+'牌无次数限制。<br><li>当你使用或打出'+list[1]+'牌时，你摸一张牌。<br><li>当你成为'+list[2]+'牌的目标后，你可以弃置一张'+list[3]+'花色的牌，令此牌对你无效。';
+return '<li>你使用'+list[0]+'牌无次数限制。<br><li>当你使用或打出'+list[1]+'牌时，你摸一张牌。<br><li>当你成为'+list[2]+'牌的目标后，你可以弃置一张'+list[3]+'花色的牌，令此牌对你无效并获得之。';
 },
 },
 group:['fh_bushi_unlimit','fh_bushi_draw','fh_bushi_defend'],
@@ -41628,14 +41628,19 @@ return lib.filter.cardDiscardable(card,player)&&get.suit(card)==list[3];
 direct:true,
 content:function(){
 'step 0'
-player.chooseToDiscard('he',get.prompt('fh_bushi'),'弃置一张牌，令'+get.translation(trigger.card)+'对你无效',function(card,player){
+var str='弃置一张牌，令'+get.translation(trigger.card)+'对你无效';
+if(trigger.cards.filterInD().length) str+='并获得'+get.translation(trigger.cards.filterInD());
+player.chooseToDiscard('he',get.prompt('fh_bushi'),str,function(card,player){
 return get.suit(card)==lib.skill.fh_bushi.getBushi(player)[3];
 }).set('ai',function(card){
 if(_status.event.eff>=0) return false;
 return -_status.event.eff*1.1-get.value(card);
 }).set('eff',get.effect(player,trigger.card,trigger.player,player)).logSkill=['fh_bushi_defend',trigger.player];
 'step 1'
-if(result.bool) trigger.excluded.add(player);
+if(result.bool){
+trigger.excluded.add(player);
+if(trigger.cards.filterInD().length) player.gain(trigger.cards.filterInD(),'gain2');
+}
 },
 },
 },
@@ -41819,71 +41824,33 @@ if(cards.length) player.loseToDiscardpile(cards);
 },
 fh_fenji:{
 audio:'fenji',
-trigger:{global:['gainAfter','loseAfter','loseAsyncAfter']},
+trigger:{global:['loseAfter','equipAfter','addJudgeAfter','gainAfter','loseAsyncAfter','addToExpansionAfter'],},
 filter:function(event,player){
+if(event.getParent().name=='useCard'||event.getParent().name=='respond') return false;
 var storage=player.getStorage('fh_fenji');
-if(event.name=='lose'){
-if(event.type!='discard'||!event.player.isIn()||storage.includes(event.player)) return false;
-if((event.discarder||event.getParent(2).player)==event.player) return false;
-return event.getl(event.player).hs.length;
-}
-else if(event.name=='gain'){
-if(event.giver||event.getParent().name=='gift') return false;
-var cards=event.getg(event.player);
-if(!cards.length) return false;
-return game.hasPlayer(function(current){
-if(current==event.player||storage.includes(current)) return false;
-var hs=event.getl(current).hs;
-return hs.some(i=>cards.includes(i));
+return game.hasPlayer(target=>{
+if(event.name=='gain'&&event.player==target) return false;
+var evt=event.getl(target);
+return evt&&evt.hs&&evt.hs.length;
 });
-}
-else if(event.type=='gain'){
-if(event.giver||!event.player||!event.player.isIn()||storage.includes(event.player)) return false;
-var hs=event.getl(event.player);
-return game.hasPlayer(current=>{
-if(current==event.player) return false;
-var cards=event.getg(current);
-return cards.some(i=>hs.includes(i));
-});
-}
-else if(event.type=='discard'){
-if(!event.discarder) return false;
-return game.hasPlayer(current=>!storage.includes(current)&&current!=event.discarder&&event.getl(current).hs.length>0);
-}
-return false;
 },
 direct:true,
 content:function(){
 'step 0'
-var targets=[],storage=player.getStorage('fh_fenji');
-if(trigger.name=='gain'){
-var cards=trigger.getg(trigger.player);
-targets.addArray(game.filterPlayer(current=>{
-if(current==trigger.player||storage.includes(current)) return false;
-var hs=trigger.getl(current).hs;
-return hs.some(i=>cards.includes(i));
-}));
-}
-else if(trigger.name=='loseAsync'&&trigger.type=='discard'){
-targets.addArray(game.filterPlayer(function(current){
-if(storage.includes(current)) return false;
-return current!=trigger.discarder&&trigger.getl(current).hs.length>0;
-}));
-}
-else targets.push(trigger.player);
-event.targets.sortBySeat();
-if(!event.targets.length) event.finish();
+var storage=player.getStorage('fh_fenji');
+var targets=game.filterPlayer(target=>{
+if(trigger.name=='gain'&&trigger.player==target) return false;
+var evt=trigger.getl(target);
+return evt&&evt.hs&&evt.hs.length;
+}).sortBySeat();
+event.targets=targets;
 'step 1'
 var target=targets.shift();
 event.target=target;
-if(target.isIn()) player.chooseBool(get.prompt('fh_fenji',target),'失去1点体力，令该角色摸两张牌').set('ai',function(){
+player.chooseBool(get.prompt('fh_fenji',target),'失去1点体力，令该角色摸两张牌').set('ai',function(){
 var evt=_status.event.getParent();
 return get.attitude(evt.player,evt.target)>4;
 });
-else{
-if(targets.length>0) event.goto(1);
-else event.finish();
-}
 'step 2'
 if(result.bool){
 if(!player.getStorage('fh_fenji').length){
@@ -41897,12 +41864,12 @@ player.markAuto('fh_fenji',[target]);
 player.loseHp();
 }
 else{
-if(targets.length>0) event.goto(1);
+if(targets.length) event.goto(1);
 else event.finish();
 }
 'step 3'
 target.draw(2);
-if(targets.length>0) event.goto(1);
+if(targets.length) event.goto(1);
 },
 onremove:true,
 intro:{content:'本回合已对$发动过技能'},
@@ -42502,7 +42469,7 @@ game.updateRoundNumber();
 dynamicTranslate:{
 fh_bushi:function(player){
 var list=lib.skill.fh_bushi.getBushi(player).map((i)=>get.translation(i));
-return '你使用'+list[0]+'牌无次数限制。当你使用或打出'+list[1]+'牌时，你摸一张牌。当你成为'+list[2]+'牌的目标后，你可以弃置一张'+list[3]+'花色的牌，令此牌对你无效。准备阶段，你可调整此技能中四种花色的对应顺序。';
+return '你使用'+list[0]+'牌无次数限制。当你使用或打出'+list[1]+'牌时，你摸一张牌。当你成为'+list[2]+'牌的目标后，你可以弃置一张'+list[3]+'花色的牌，令此牌对你无效并获得之。准备阶段，你可调整此技能中四种花色的对应顺序。';
 },
 fh_zhengrong:function(player){
 var storage=player.storage.fh_zhengrong;
@@ -42710,7 +42677,7 @@ fh_juexiang_he_info:'当你回复体力后，你可以令一名其他角色回�
 fh_sangu:'三顾',
 fh_sangu_info:'一名角色的出牌阶段开始时，若其手牌数大于等于其体力上限，则你可以观看牌堆顶的三张牌并亮出其中任意张牌名各不相同的牌，然后其于本阶段可以将一张手牌当作本阶段未以此法转化过的牌名的牌使用。',
 fh_bushi:'卜筮',
-fh_bushi_info:'你使用♠牌无次数限制。当你使用或打出♥牌时，你摸一张牌。当你成为♣牌的目标后，你可以弃置一张♦花色的牌，令此牌对你无效。准备阶段，你可调整此技能中四种花色的对应顺序。',
+fh_bushi_info:'你使用♠牌无次数限制。当你使用或打出♥牌时，你摸一张牌。当你成为♣牌的目标后，你可以弃置一张♦花色的牌，令此牌对你无效并获得之。准备阶段，你可调整此技能中四种花色的对应顺序。',
 fh_kousheng:'寇旌',
 fh_kousheng_info:'出牌阶段限一次，你可以展示任意张手牌，这些牌视为无次数限制的【杀】直到回合结束，其他角色受到这些牌造成的伤害后，其可以用所有手牌交换这些牌。',
 mx_fh_re_huangyueying:'飞鸿黄月英',
@@ -42734,7 +42701,7 @@ fh_liegong_info:'你使用【杀】无距离限制。当你使用【杀】指定
 fh_buqu:'不屈',
 fh_buqu_info:'锁定技，当你不以此法进入濒死状态时，你重置〖奋激〗并将体力回复至1点，然后将牌堆顶的一张牌称为“创”，然后若“创”因此有重复点数的牌，则你移去此牌并失去1点体力。你的手牌上限+X（X为你的“创”数）。',
 fh_fenji:'奋激',
-fh_fenji_info:'每名角色每回合限一次，一名角色的手牌被另一名角色弃置或获得后，你可以失去1点体力，令其摸两张牌。',
+fh_fenji_info:'每名角色每回合限一次，一名角色不因使用或打出失去手牌后，你可以失去1点体力，令其摸两张牌。',
 fh_cangzhuo:'藏拙',
 fh_cangzhuo_info:'弃牌阶段开始时，若你本回合没有使用过锦囊牌，则你可以展示任意张锦囊牌，令这些牌于本阶段不计入手牌上限。',
 fh_hanzhan:'酣战',
