@@ -9726,7 +9726,7 @@ Mbaby_sunwukong:['male','shen',4,['mini72bian','miniruyi','miniqitian'],['die_au
 Mbaby_dalanmao:['male','shen',4,['minizuzhou','minimoyu','minisanlian'],[]],
 Mbaby_change:['female','shen','1/4',['minidaoyao','minibenyue'],[]],
 Mbaby_shen_taishici:['male','shen',4,['minidulie','minichongwei','minipowei'],[]],
-Mbaby_nvwa:['female','shen','68/158',['minibutian','minilianshi','minituantu'],[]],
+Mbaby_nvwa:['female','shen','69/159',['minibutian','minilianshi','minituantu'],[]],
 //喵
 Mmiao_caiwenji:['female','qun',3,['minimiaobeige','minimiaoduanchang','minidoumao'],['die_audio']],
 Mmiao_diaochan:['female','qun',3,['minimiaolijian','minimiaobiyue','minidoumao'],['die_audio']],
