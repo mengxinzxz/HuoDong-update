@@ -30066,24 +30066,19 @@ minilianshi:{
 mod:{maxHandcardBase:(player,num)=>5},
 audio:'ext:活动武将/audio/skill:2',
 trigger:{
-player:'loseAfter',
-global:['cardsDiscardAfter','loseAsyncAfter'],
+player:['useCard','respond','loseAfter'],
+global:['loseAsyncAfter'],
 },
 filter:function(event,player){
 if(event.name.indexOf('lose')==0) return event.type=='discard'&&event.getl(player).cards2.filter(card=>get.position(card,true)=='d'&&!player.getStorage('minilianshi').includes(get.suit(card,player))).length>0;
-if(!event.cards.filterInD('d').some(card=>!player.getStorage('minilianshi').includes(get.suit(card,player)))) return false;
-var evt=event.getParent();
-if(evt.name!='orderingDiscard') return false;
-var evtx=(evt.relatedEvent||evt.getParent());
-var history=player.getHistory('useCard').concat(player.getHistory('respond'));
-return evtx.player==player&&history.some(evtxx=>evtx.getParent()==(evtxx.relatedEvent||evtxx.getParent()));
+return event.cards&&event.cards.some(card=>!player.getStorage('minilianshi').includes(get.suit(card,player))&&lib.suit.includes(get.suit(card,player)));
 },
 forced:true,
 content:function(){
 'step 0'
 var cards;
 if(trigger.name.indexOf('lose')==0) cards=trigger.getl(player).cards2.filter(card=>get.position(card,true)=='d');
-else cards=trigger.cards.filterInD('d');
+else cards=trigger.cards;
 event.cards=cards;
 var suits=cards.reduce((list,card)=>list.add(get.suit(card,player)),[]);
 suits=suits.filter(suit=>!player.getStorage('minilianshi').includes(suit));
@@ -32511,7 +32506,7 @@ minishenzhu_info:'锁定技。①回合开始时，你从牌堆或弃牌堆获�
 minibutian:'补天',
 minibutian_info:'锁定技。①当你对其他角色造成伤害后，你回复X点体力。②当你受到伤害后或非首轮开始时，你失去X点体力。③游戏开始时，或你的体力值或体力上限变化后，若你未受伤，则你令场上所有其他角色死亡。（X为你已损失体力值的1/5，向下取整）',
 minilianshi:'炼石',
-minilianshi_info:'锁定技。①你的手牌上限始终为5。②当你使用、打出和弃置的牌进入弃牌堆后，你记录这些牌的花色，然后若你已记录四种花色，则你摸一张牌并回复Y点体力，然后清除花色记录（Y为这些牌中的最后一张牌的点数）。',
+minilianshi_info:'锁定技。①你的手牌上限始终为5。②当你使用、打出或弃置牌时，你记录这些牌的花色，然后若你已记录四种花色，则你摸一张牌并回复Y点体力，然后清除花色记录（Y为这些牌中的最后一张牌的点数）。',
 minituantu:'抟土',
 minituantu_info:'出牌阶段限一次，你可以从弃牌堆中获得你手牌中有的牌名的牌各一张。',
 //喵
