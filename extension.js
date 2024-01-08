@@ -6,17 +6,24 @@ editable:false,
 content:function(config,pack){
 //快捷添加/删除武将
 game.HDdeleteCharacter=function(name){
+if(_status.characterlist) _status.characterlist.remove(name);
 if(lib.character[name]) delete lib.character[name];
 var packs=Object.keys(lib.characterPack).filter(pack=>lib.characterPack[pack][name]);
 if(packs.length) packs.forEach(pack=>delete lib.characterPack[pack][name]);
 };
 game.HDaddCharacter=function(name,character,packss){
 game.HDdeleteCharacter(name);
-if(!packss) lib.character[name]=character;
+if(!packss){
+lib.character[name]=character;
+if(_status.characterlist) _status.characterlist.add(name);
+}
 else{
 var packs=packss.split(':').filter(p=>lib.config.all.characters.includes(p));
 packs.forEach(pack=>lib.characterPack[pack][name]=character);
-if(packs.some(p=>lib.config.characters.includes(p))) lib.character[name]=character;
+if(packs.some(p=>lib.config.characters.includes(p))){
+lib.character[name]=character;
+if(_status.characterlist) _status.characterlist.add(name);
+}
 }
 };
 //移动武将所在武将包
