@@ -28788,9 +28788,7 @@ global:'minishenwei_damage',
 audio:'ext:活动武将/audio/skill:2',
 trigger:{player:'phaseZhunbeiBegin'},
 filter:function(event,player){
-return game.hasPlayer(function(current){
-return !current.hasMark('minishenwei');
-});
+return game.hasPlayer(current=>!current.hasMark('minishenwei'));
 },
 direct:true,
 content:function(){
@@ -28805,9 +28803,9 @@ return (get.attitude(player,target)-4)*num;
 });
 'step 1'
 if(result.bool){
-var target=result.targets[0];
-player.logSkill('minishenwei',target);
-target.addMark('minishenwei',1);
+var targets=result.targets.slice().sortBySeat();
+player.logSkill('minishenwei',targets);
+targets.forEach(target=>target.addMark('minishenwei',1));
 }
 },
 marktext:'卫',
