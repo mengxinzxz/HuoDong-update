@@ -15663,9 +15663,6 @@ trigger.targets.addArray(event.targets);
 },
 },
 minidaiyan:{
-init:function(player){
-game.addGlobalSkill('bolliaoyi_check');
-},
 getList:function(player){
 var list=[],history=player.actionHistory;
 for(var i=history.length-2;i>=0;i--){
@@ -41279,9 +41276,6 @@ player.addTempSkill('recaishi3');
 },
 //吴苋
 fh_daiyan:{
-init:function(player){
-game.addGlobalSkill('bolliaoyi_check');
-},
 getList:function(player){
 var list=[],history=player.actionHistory;
 for(var i=history.length-2;i>=0;i--){
@@ -52087,10 +52081,6 @@ ai:{renwang_gain:true},
 },
 //张仲景
 bolliaoyi:{
-init:function(player){
-//每个回合无论是否跳过都会有History，在此仅检测翻面
-game.addGlobalSkill('bolliaoyi_check');
-},
 getList:function(player){
 var types=[],history=player.actionHistory,bool=false;
 for(var i=history.length-1;i>=0;i--){
@@ -52165,26 +52155,6 @@ if(cards.length) target.gain(cards,'gain2');
 }
 },
 ai:{expose:0.25},
-subSkill:{
-check:{
-charlotte:true,
-trigger:{player:['_turnoverEnd','phaseBeforeEnd']},
-filter:function(event,player){
-if(event.name=='_turnoverEnd') return player.phaseSkipped||player.isOut();
-return player.isTurnedOver()&&!event._noTurnOver;
-},
-lastDo:true,
-priority:-Infinity,
-direct:true,
-content:function(){
-var players=game.players.slice(0).concat(game.dead);
-players.forEach(target=>{
-target.getHistory().isSkipped=true;
-target.getStat().isSkipped=true;
-});
-},
-},
-},
 },
 bolbinglun:{
 init:function(player){
