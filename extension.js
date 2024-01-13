@@ -11118,6 +11118,7 @@ return 0.9;
 },
 },
 minicaishi:{
+audio:'caishi',
 trigger:{player:'phaseDrawEnd'},
 direct:true,
 isSame:function(event){
@@ -11661,7 +11662,7 @@ trigger.gaintag.add('minizhengbing');
 },
 },
 miniqice:{
-audio:'qice_backup',
+audio:'qice',
 enable:'phaseUse',
 filter:function(event,player){
 return player.countCards('hs');
@@ -11684,7 +11685,7 @@ return player.getUseValue({name:button.link[2]});
 },
 backup:function(links,player){
 return {
-audio:'qice_backup',
+audio:'qice',
 filterCard:true,
 selectCard:[1,Infinity],
 check:function(card){
@@ -13302,7 +13303,7 @@ ai:{threaten:1.5},
 },
 //郭嘉
 minishenglun:{
-audio:'ext:活动武将/audio/skill:2',
+audio:'ext:活动武将/audio/skill:true',
 enable:'phaseUse',
 filterTarget:lib.filter.notMe,
 selectTarget:[1,2],
