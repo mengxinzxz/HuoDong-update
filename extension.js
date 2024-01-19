@@ -9714,7 +9714,7 @@ Mbaby_sp_zhangliao:['male','qun',4,['minimubing','miniziqu','minidiaoling'],[]],
 Mbaby_sp_ol_zhanghe:['male','qun',4,['minizhouxuan'],[]],
 Mbaby_zhujun:['male','qun',4,['minigongjian','kuimang','minizjjuxiang'],[]],
 Mbaby_sp_kongrong:['male','qun',3,['minilirang','minizhengyi'],[]],
-Mbaby_laiyinger:['female','qun',3,['minixiaowu','huaping'],[]],
+Mbaby_laiyinger:['female','qun',3,['minixiaowu','minihuaping'],[]],
 Mbaby_sb_yuanshao:['male','qun',4,['minisbluanji','minisbxueyi'],['zhu']],
 //神
 Mbaby_shen_zhugeliang:['male','shen',3,['qixing','minikuangfeng','minidawu'],['shu']],
@@ -13357,9 +13357,7 @@ target:function(player,target){
 var att=get.attitude(player,target);
 var num=get.sgn(att);
 var ref=get.recoverEffect(player,player,player);
-var def=game.filterPlayer().reduce((list,current)=>{
-return list.push(get.damageEffect(current,player,player));
-},[]).sort((a,b)=>b-a)[0];
+var def=game.filterPlayer().reduce((list,current)=>list.push(get.damageEffect(current,player,player)),[]).sort((a,b)=>b-a)[0];
 var sum=get.sgn(player.hp-target.hp)+get.sgn(player.countCards('h')-target.countCards('h'))+
 get.sgn(player.countCards('e',card=>get.subtype(card)=='equip1')-target.countCards('e',card=>get.subtype(card)=='equip1'))+
 get.sgn(player.countCards('e',card=>get.subtype(card)=='equip2')-target.countCards('e',card=>get.subtype(card)=='equip2'))+
@@ -28338,6 +28336,26 @@ for(var i of targetsx) i.damage();
 }
 },
 },
+minihuaping:{
+audio:'huaping',
+inherit:'huaping',
+content:function(){
+player.awakenSkill('minihuaping');
+var skills=trigger.player.getSkills(null,false,false).filter(function(i){
+var info=get.info(i);
+return info&&!info.charlotte;
+});
+if(skills.length){
+for(var i of skills) player.addSkillLog(i);
+}
+player.removeSkill('minixiaowu');
+var num=player.countMark('shawu');
+if(num>0){
+player.removeMark('shawu',num);
+player.draw(num);
+}
+},
+},
 //谋袁绍
 minisbluanji:{
 audio:'sbluanji',
@@ -33373,6 +33391,8 @@ minizhengyi:'争义',
 minizhengyi_info:'若场上有你选择的存活“礼让”角色，则当你或其受到伤害时，另一名角色可以代替承受本次伤害并摸一张牌（不嵌套触发）。',
 minixiaowu:'绡舞',
 minixiaowu_info:'出牌阶段限一次，你可以选择任意名座位连续且包含你的上家/下家的角色。这些角色依次选择一项：⒈令你摸一张牌；⒉其摸一张牌。然后你获得X枚“沙”（X为选择选项一的角色数的一半，向上取整），且若选择选项二的角色数大于选项一的角色数，则你对这些角色依次造成1点伤害。',
+minihuaping:'化萍',
+minihuaping_info:'限定技。①一名其他角色死亡时，你可获得其当前拥有的所有不带有「Charlotte」标签的技能，然后你失去〖绡舞〗，移去所有“沙”并摸等量的牌。②当你死亡时，你可令一名其他角色获得〖沙舞〗和你的所有“沙”。',
 minisbluanji:'乱击',
 minisbluanji_info:'①出牌阶段限一次。你可以将两张手牌当【万箭齐发】使用。②每回合限三次，当其他角色因响应你使用的【万箭齐发】而打出【闪】时，你摸一张牌。③每回合限三次，当你使用【万箭齐发】造成伤害后，你可以弃置受伤角色的一张牌。',
 minisbxueyi:'血裔',
