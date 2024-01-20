@@ -16736,7 +16736,7 @@ if(player.isMinHp()) player.recover();
 },
 //夏侯霸
 minibaobian:{
-derivation:['minitiaoxin','new_repaoxiao','minishensu'],
+derivation:['minitiaoxin','minisppaoxiao','minishensu'],
 audio:'baobian',
 trigger:{player:'damageEnd'},
 filter:function(event,player){
@@ -17957,6 +17957,10 @@ if(get.name(card,player)=='sha') return true;
 },
 },
 audio:'paoxiao',
+audioname2:{
+Mbaby_xiahouba:'paoxiao_xiahouba',
+Mbaby_guanzhang:'paoxiao_guanzhang',
+},
 trigger:{player:'useCard'},
 filter:function(event,player){
 if(event.card.name!='sha') return false;
@@ -18390,7 +18394,7 @@ game.delayx();
 minifuhun:{
 audio:'fuhun',
 inherit:'fuhun',
-derivation:['minirewusheng','new_repaoxiao'],
+derivation:['minirewusheng','minisppaoxiao'],
 check:function(card){
 if(_status.event.player.hasSkill('minirewusheng')&&get.color(card)=='red') return 0;
 if(_status.event.name=='chooseToRespond'){
@@ -18406,7 +18410,7 @@ skillTagFilter:function(player){
 if(player.countCards('hs')<2) return false;
 },
 order:function(item,player){
-if(player.hasSkill('minirewusheng')&&player.hasSkill('new_repaoxiao')) return 1;
+if(player.hasSkill('minirewusheng')&&player.hasSkill('minisppaoxiao')) return 1;
 if(player.countCards('hs')<4) return 1;
 return 4;
 },
