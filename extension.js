@@ -50,13 +50,10 @@ game.bolShowNewPack=function(){
 var HuoDong_update=[
 '/setPlayer/',
 'bugfix',
-'添加欢杀武将：虞翻，丁奉(改)，卞夫人，谋袁绍，全琮，谋于禁，关兴张苞，谋刘备',
 'To be continued...',
 ];
 //更新武将
 var HuoDong_players=[
-'Mbaby_yufan','Mbaby_dingfeng','Mbaby_bianfuren','Mbaby_sb_yuanshao','Mbaby_quancong',
-'Mbaby_sb_yujin','Mbaby_guanzhang','Mbaby_sb_liubei',
 ];
 //加载
 var dialog=ui.create.dialog(
@@ -13357,7 +13354,10 @@ target:function(player,target){
 var att=get.attitude(player,target);
 var num=get.sgn(att);
 var ref=get.recoverEffect(player,player,player);
-var def=game.filterPlayer().reduce((list,current)=>list.push(get.damageEffect(current,player,player)),[]).sort((a,b)=>b-a)[0];
+var def=game.filterPlayer().reduce((list,current)=>{
+list.push(get.damageEffect(current,player,player));
+return list;
+},[]).sort((a,b)=>b-a)[0];
 var sum=get.sgn(player.hp-target.hp)+get.sgn(player.countCards('h')-target.countCards('h'))+
 get.sgn(player.countCards('e',card=>get.subtype(card)=='equip1')-target.countCards('e',card=>get.subtype(card)=='equip1'))+
 get.sgn(player.countCards('e',card=>get.subtype(card)=='equip2')-target.countCards('e',card=>get.subtype(card)=='equip2'))+
@@ -54400,7 +54400,7 @@ intro:'新人制作扩展，希望大家支持。'+
 author:'萌新（转型中）',
 diskURL:'',
 forumURL:'',
-version:'0.1.3',
+version:'0.1.4',
 //新人制作扩展，希望大家支持。
 //新人技术不足，希望大家包涵。
 //壹、贰、叁、肆、伍、陆、柒、捌、玖、拾
