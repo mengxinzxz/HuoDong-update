@@ -26881,6 +26881,7 @@ if(card) player.gain(card,'gain2');
 ai:{
 effect:{
 target:function(card,player,target,current){
+if(_status.event.name=='minishouxi') return;
 if(card.name!='sha'||get.effect(target,card,player,target)>0) return;
 var list=lib.inpile.filter(i=>{
 if(target.getStorage('minishouxi').includes(i)) return false;
