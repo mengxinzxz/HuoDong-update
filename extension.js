@@ -22306,9 +22306,9 @@ maxHandcard:function(player,num){
 return num+player.countMark('minisbkurou_effect');
 },
 },
-trigger:{player:'useCard'},
+trigger:{player:'recoverEnd'},
 filter:function(event,player){
-return player.isPhaseUsing()&&event.card.name=='tao'&&player.getStat('skill').minisbkurou;
+return player.isPhaseUsing()&&player.getStat('skill').minisbkurou;
 },
 forced:true,
 content:function(){
@@ -32836,7 +32836,7 @@ minifuhun_info:'①你可以将两张手牌当做【杀】使用或打出。②�
 minisbrende:'仁德',
 minisbrende_info:'①出牌阶段每名角色限一次，你可以将任意张牌交给一名其他角色，然后你获得等量“仁望”标记（至多为10）。②每回合限一次，你可以移去2/3枚“仁望”，视为使用或打出一张基本牌/普通锦囊牌。③出牌阶段开始时，你获得3枚“仁望”。',
 minisbzhangwu:'章武',
-minisbzhangwu_info:'限定技，出牌阶段，你可以令所有于本局游戏成为过〖仁德①〗目标的其他角色依次交给你X张牌，然后你回复3点体力并失去〖仁德〗（X为游戏轮数-1，且至多为3）。',
+minisbzhangwu_info:'限定技，出牌阶段，你可以令所有于本局游戏成为过〖仁德①〗目标的其他角色依次交给你X张牌，然后你回复3点体力，本回合〖仁德〗失效（X为游戏轮数-1，且至多为3）。',
 minisbjijiang:'激将',
 minisbjijiang_info:'主公技，出牌阶段结束时，你可以选择一名其他蜀势力角色A和一名在A攻击范围内的角色B。A选择一项：1.视为对B使用一张【杀】；2.下一个出牌阶段开始前，跳过此阶段。',
 //吴
@@ -33061,7 +33061,7 @@ minifunan_info:'其他角色使用或打出牌响应你使用的牌时，你可�
 minijiexun:'诫训',
 minijiexun_info:'结束阶段，你可以选择一种花色，然后令一名角色摸等同于场上此花色牌数张牌，然后其弃置X张牌（X为此前〖诫训〗的发动次数）。若其因此法弃置了所有牌，则清空〖诫训〗的发动次数。',
 minisbkurou:'苦肉',
-minisbkurou_info:'出牌阶段，你可以失去1点体力，然后你的手牌上限和体力上限+1直到你的下个回合开始，然后当你使用【桃】时，你重置此技能。',
+minisbkurou_info:'出牌阶段，你可以失去1点体力，然后你的手牌上限和体力上限+1直到你的下个回合开始，然后当你回复体力后，你重置此技能。',
 minisbzhaxiang:'诈降',
 minisbzhaxiang_info:'锁定技。①当你失去1点体力后，你摸三张牌。②回合结束时，你摸X张牌。③你于每回合使用的前X张【杀】无距离限制、不计入次数限制且不可被响应。（X为你已损失体力值的一半，向上取整）',
 miniwanglu:'望橹',
