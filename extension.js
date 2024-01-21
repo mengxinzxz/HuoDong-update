@@ -18434,7 +18434,7 @@ player.removeSkill(skills);
 player.addSkillLog(skills);
 player.storage.minifuhun=true;
 }
-else player.addTempSkill(skills);
+else skills.forEach(skill=>player.addTempSkill(skill));
 },
 },
 },
