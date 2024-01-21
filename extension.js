@@ -37850,8 +37850,7 @@ if(player.hasSkillTag('noCompareSource')) return false;
 return game.hasPlayer(target=>lib.skill.wechatdelu.filterTarget(null,player,target));
 },
 filterTarget:function(card,player,target){
-return player.canCompare(target);
-//return target!=player&&target.getHp()<=player.getHp()&&target.countCards('h')&&!target.hasSkillTag('noCompareTarget');
+return player.canCompare(target)&&target.getHp()<=player.getHp();
 },
 usable:1,
 selectTarget:[1,Infinity],
