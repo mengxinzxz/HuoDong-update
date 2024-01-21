@@ -18043,7 +18043,7 @@ viewAs:{name:'sha'},
 viewAsFilter:function(player){
 if(!player.countCards('hes',{color:'red'})) return false;
 },
-prompt:'武圣：将一张红色牌当作【杀】使用或打出',
+prompt:'将一张红色牌当作【杀】使用或打出',
 check:function(card){
 var val=get.value(card);
 if(_status.event.name=='chooseToRespond') return 1/Math.max(0.1,val);
@@ -31107,7 +31107,10 @@ minituantu:{
 audio:'ext:活动武将/audio/skill:2',
 enable:'phaseUse',
 filter:function(event,player){
-return player.countCards('h')&&ui.discardPile.childElementCount>0;
+return player.countCards('h')&&event.minituantu;
+},
+onChooseToUse:function(event){
+if(!game.online&&!event.minituantu) event.set('minituantu',ui.discardPile.childElementCount);
 },
 usable:1,
 content:function(){
@@ -37998,7 +38001,10 @@ wechatyanshi:{
 audio:'ext:活动武将/audio/skill:2',
 enable:'phaseUse',
 filter:function(event,player){
-return ui.cardPile.childNodes.length>0;
+return event.wechatyanshi;
+},
+onChooseToUse:function(event){
+if(!game.online&&!event.wechatyanshi) event.set('wechatyanshi',ui.cardPile.childNodes.length);
 },
 usable:1,
 chooseButton:{
