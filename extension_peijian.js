@@ -343,7 +343,6 @@ game.HDaddCharacter('old_yuanji',['female','wu',3,['dcmengchi','dcjiexing'],['ex
 
 //DIY
 lib.characterSort.diy.diy_fakenews.addArray(['bol_zhangzhongjing','bol_sp_huaxin','bfake_zuoci','bfake_yangfu','bfake_chengpu','bfake_sundeng','old_shen_sunquan','old_shen_ganning','bfake_jiananfeng','bfake_chengui']);
-if(lib.config.extension_活动武将_keymove) lib.characterSort.diy.bilibili_key=['key_kagari','key_shiki','db_key_hina'];
 game.HDdeleteCharacter('ol_guohuai');
 game.HDaddCharacter('bfake_yangfu',['male','wei',4,['old_jiebing','old_kuzhan'],['ext:活动武将/image/character/bfake_yangfu.jpg']],'diy');
 game.HDaddCharacter('bfake_zuoci',['male','qun',3,['BThuashen','BTxinsheng'],['ext:活动武将/image/character/bfake_zuoci.jpg']],'diy');
@@ -356,11 +355,6 @@ game.HDaddCharacter('bfake_chengui',['male','qun',3,['bolyingtu','bolcongshi'],[
 if(lib.config.connect_nickname=='萌新（转型中）'){
 game.HDaddCharacter('bol_sp_huaxin',['male','wei',3,['bolyuanqing','bolshuchen','bolxiezheng'],[]],'diy');
 game.HDaddCharacter('bol_zhangzhongjing',['male','qun',3,['bolliaoyi','bolbinglun'],[]],'diy');
-}
-if(lib.config.extension_活动武将_keymove){
-game.HDmoveCharacter('key_kagari','diy');
-game.HDmoveCharacter('key_shiki','diy');
-game.HDmoveCharacter('db_key_hina','diy');
 }
 
 if(get.mode()!='boss'&&(!lib.config.plays||!lib.config.plays.boss)){
@@ -557,7 +551,6 @@ lib.translate.bilibili_buchong_szn2='武将补充·十周年服';
 lib.translate.bilibili_buchong_mobile='武将补充·移动服';
 lib.translate.bilibili_buchong_mobile2='武将补充·移动服';
 lib.translate.bilibili_buchong_tw='武将补充·海外服';
-lib.translate.bilibili_key='论外';
 
 lib.characterTitle.bol_sunluban='测试专用，问题居多<br>仅供参考，娱乐为上';
 lib.characterTitle.old_sb_liubei='任何邪恶终将绳之以法';

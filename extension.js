@@ -931,6 +931,15 @@ window.rkbg.innerHTML = '仁' + '<b><font color=\"#FF5500\">' + _status.renku.le
 }
 }
 
+//移动key武将
+if(lib.config.extension_活动武将_keymove){
+lib.characterSort.diy.bilibili_key=['key_kagari','key_shiki','db_key_hina'];
+lib.translate.bilibili_key='论外';
+game.HDmoveCharacter('key_kagari','diy');
+game.HDmoveCharacter('key_shiki','diy');
+game.HDmoveCharacter('db_key_hina','diy');
+}
+
 //precGuoZhan(分界线，便于我搜过来)
 game.bolLoadGuoZhan=function(){
 //国战武将技能修复
@@ -18720,9 +18729,7 @@ if(count==0) event.finish();
 else if(count<=num) event._result={bool:true,cards:cards};
 else target.chooseCard('章武：交给'+get.translation(player)+get.cnNumber(num)+'张牌',true,'he',num);
 'step 1'
-if(result.bool){
-target.give(result.cards,player);
-}
+if(result.bool) target.give(result.cards,player);
 },
 contentAfter:function(){
 player.recover(3);
