@@ -1034,7 +1034,7 @@ gz_wujing:['male','wu',4,['donggui','fengyang_old'],['gzskin']],
 };
 if(!lib.config.extension_活动武将_HD_gzbianfuren) delete character_guozhan.gz_bianfuren;
 for(var i in character_guozhan){
-if(character_guozhan[i][3].some(skill=>!lib.skill[skill])) continue;
+//if(character_guozhan[i][3].some(skill=>!lib.skill[skill])) continue;
 lib.characterPack.mode_guozhan[i]=character_guozhan[i];
 lib.character[i]=character_guozhan[i];
 }
@@ -1060,40 +1060,32 @@ player.$draw(cards,'nobroadcast');
 lib.skill.yigui.group=['yigui_init','yigui_refrain','yigui_gzshan','yigui_gzwuxie'];
 lib.translate.yigui_info='当你首次明置此武将牌时，你将剩余武将牌堆的两张牌置于武将牌上，称为“魂”；你可以展示一张武将牌上的“魂”并将其置入剩余武将牌堆，视为使用一张本回合内未以此法使用过的基本牌或普通锦囊牌。（此牌指定的目标或响应的牌的使用者须为未确定势力的角色或野心家或与此“魂”势力相同的角色）';
 //法正
+if(lib.config.extension_活动武将_HD_gzfazheng){
 lib.skill.gzxuanhuo.subSkill.others={
-audio:'rexuanhuo',
 forceaudio:true,
-enable:'phaseUse',
+audio:'rexuanhuo',
 filter:function(event,player){
-return (!player.isUnseen())&&player.countCards('h')&&(player.countCards('he')>=2||!lib.config.extension_活动武将_HD_gzfazheng)&&game.hasPlayer(function(current){
-return current!=player&&current.hasSkill('gzxuanhuo')&&player.isFriendOf(current);
+return !player.isUnseen()&&player.countCards('h')&&player.countCards('he')>=2&&game.hasPlayer(target=>{
+return lib.skill.gzxuanhuo.subSkill.others.filterTarget(null,player,target);
 });
 },
+enable:'phaseUse',
+filterTarget:function(card,player,target){
+return target!=player&&target.hasSkill('gzxuanhuo')&&player.isFriendOf(target);
+},
+selectTarget:function(){
+var targets=game.filterPlayer(target=>lib.skill.gzxuanhuo.subSkill.others.filterTarget(null,_status.event.player,target));
+return targets.length>1?1:-1;
+},
 prompt:function(){
-var player=_status.event.player,list=[];
-for(var current of game.players){
-if(current!=player&&current.hasSkill('gzxuanhuo')&&player.isFriendOf(current)) list.push(current);
-}
-if(lib.config.extension_活动武将_HD_gzfazheng&&list.length) return '弃置一张手牌并交给'+get.translation(list)+(list.length>1?'中的一人':'')+'一张牌，然后获得以下技能中的一个：〖武圣〗〖咆哮〗〖龙胆〗〖铁骑〗〖烈弓〗〖狂骨〗';
-return '弃置一张手牌，然后获得以下技能中的一个：〖武圣〗〖咆哮〗〖龙胆〗〖铁骑〗〖烈弓〗〖狂骨〗';
+var targets=game.filterPlayer(target=>lib.skill.gzxuanhuo.subSkill.others.filterTarget(null,_status.event.player,target));
+return '弃置一张手牌并交给'+get.translation(targets)+(targets.length>1?'中的一人':'')+'一张牌，然后获得以下技能中的一个：〖武圣〗〖咆哮〗〖龙胆〗〖铁骑〗〖烈弓〗〖狂骨〗';
 },
 filterCard:function(card){
 return ui.selected.cards.length||get.position(card)=='h';
 },
-selectCard:lib.config.extension_活动武将_HD_gzfazheng?2:1,
+selectCard:2,
 position:'he',
-filterTarget:function(card,player,target){
-if(lib.config.extension_活动武将_HD_gzfazheng) return target!=player&&target.hasSkill('gzxuanhuo')&&player.isFriendOf(target);
-return false;
-},
-selectTarget:function(){
-var player=_status.event.player,list=[];
-for(var current of game.players){
-if(current!=player&&current.hasSkill('gzxuanhuo')&&player.isFriendOf(current)) list.push(current);
-}
-if(lib.config.extension_活动武将_HD_gzfazheng&&list.length) return 1;
-return -1;
-},
 check:function(card){
 var player=_status.event.player;
 if(player.hasSkill('gzpaoxiao',true)||player.getEquip('zhuge')) return 0;
@@ -1111,7 +1103,8 @@ player.discard(cards[0]);
 if(target) target.gain(cards[1],player,'giveAuto');
 'step 1'
 var list=['new_rewusheng','gzpaoxiao','new_longdan','new_tieji','liegong','xinkuanggu'];
-player.chooseControl(list).set('ai',function(){
+player.chooseControl(list).set('ai',()=>{
+var list=_status.event.controls.slice();
 if(list.includes('gzpaoxiao')) return 'gzpaoxiao';
 return list.randomGet();
 }).set('prompt','选择并获得一项技能直到回合结束');
@@ -1126,7 +1119,8 @@ order:8,
 result:{player:1},
 },
 };
-if(lib.config.extension_活动武将_HD_gzfazheng) lib.translate.gzxuanhuo_info='与你势力相同的其他角色的出牌阶段限一次，其可弃置一张手牌并交给你一张牌，然后选择获得以下一项技能直到回合结束：〖武圣〗、〖咆哮〗、〖龙胆〗、〖铁骑〗、〖烈弓〗、〖狂骨〗。';
+lib.translate.gzxuanhuo_info='与你势力相同的其他角色的出牌阶段限一次，其可弃置一张手牌并交给你一张牌，然后选择获得以下一项技能直到回合结束：〖武圣〗、〖咆哮〗、〖龙胆〗、〖铁骑〗、〖烈弓〗、〖狂骨〗。';
+}
 //唐咨
 lib.skill.gzxingzhao.derivation='xunxun';
 lib.skill.gzxingzhao.subSkill.use={
