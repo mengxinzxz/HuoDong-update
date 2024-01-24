@@ -1135,7 +1135,7 @@ return player.countCards('h')>event.source.countCards('h')?event.source:player;
 },
 forced:true,
 content:function(){
-lib.skill.gzxingzhao_use.logTarget(trigger,player).draw();
+lib.skill.gzxingzhao.subSkill.use.logTarget(trigger,player).draw();
 },
 };
 if(game.HasExtension('十周年UI')){
@@ -28146,7 +28146,7 @@ ai:{
 directHit_ai:true,
 skillTagFilter(player,tag,arg){
 //if(player.hasSkill('miniwuchang')&&arg.target.group==player.group) return false;
-if(arg.card.name!='sha'&&arg.card.name!='shan') return false;
+if(!arg||!arg.card||!arg.target) return false;
 if(arg.card.name=='sha'&&arg.target.countCards('hs',{name:'shan'})>1) return false;
 if(arg.card.name=='juedou'&&Math.floor(arg.target.countCards('hs',{name:'sha'})/2)>player.countCards('hs',{name:'sha'})) return false;
 },
