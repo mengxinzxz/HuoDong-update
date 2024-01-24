@@ -50,10 +50,13 @@ game.bolShowNewPack=function(){
 var HuoDong_update=[
 '/setPlayer/',
 'bugfix',
+'添加武将微信星黄忠',
+'微信阚泽，微信赵襄技能调整',
 'To be continued...',
 ];
 //更新武将
 var HuoDong_players=[
+'wechat_kanze','wechat_zhaoxiang','wechat_yj_huangzhong',
 ];
 //加载
 var dialog=ui.create.dialog(
@@ -33656,7 +33659,7 @@ name:'WeChatkill',
 connect:true,
 characterSort:{
 WeChatkill:{
-wechat_standard:['wechat_zhangzhang','wechat_chendeng','wechat_taoqian','wechat_kanze','wechat_xuezong','wechat_guyong','wechat_guansuo','wechat_zumao','wechat_yj_jushou','wechat_sp_pangde','wechat_caojie','wechat_zhuling','wechat_caizhenji','wechat_guohuanghou','wechat_yanyan','wechat_liaohua','wechat_liuyao','wechat_quancong','wechat_xiahouba','wechat_sp_jiangwei','wechat_caoxiu','wechat_yuanshao','wechat_sundeng','wechat_re_xushu','wechat_caopi','wechat_caozhang','wechat_buzhi','wechat_sp_taishici','wechat_masu','wechat_caifuren','wechat_jianyong','wechat_lukang','wechat_caozhi','wechat_huangyueying','wechat_weiyan','wechat_gaoshun','wechat_sunliang','wechat_wangping','wechat_sp_caiwenji','wechat_caochong','wechat_huangzhong','wechat_xiahouyuan','wechat_pangde','wechat_sunshangxiang','wechat_xuchu','wechat_guanyu','wechat_caocao','wechat_shenpei','wechat_jiaxu','wechat_caoren','wechat_liuqi','wechat_zhaoxiang','wechat_caiwenji','wechat_menghuo','wechat_re_yuanshu','wechat_huaxiong','wechat_xiahoushi','wechat_xushu','wechat_zhaoyun','wechat_zhangfei','wechat_machao','wechat_yangxiu','wechat_lvmeng','wechat_zhoutai','wechat_bianfuren','wechat_sunluban','wechat_wuguotai','wechat_liubiao','wechat_liuchen','wechat_luxun','wechat_pangtong','wechat_zhangxingcai','wechat_zuoci','wechat_mayunlu'],
+wechat_standard:['wechat_yj_huangzhong','wechat_zhangzhang','wechat_chendeng','wechat_taoqian','wechat_kanze','wechat_xuezong','wechat_guyong','wechat_guansuo','wechat_zumao','wechat_yj_jushou','wechat_sp_pangde','wechat_caojie','wechat_zhuling','wechat_caizhenji','wechat_guohuanghou','wechat_yanyan','wechat_liaohua','wechat_liuyao','wechat_quancong','wechat_xiahouba','wechat_sp_jiangwei','wechat_caoxiu','wechat_yuanshao','wechat_sundeng','wechat_re_xushu','wechat_caopi','wechat_caozhang','wechat_buzhi','wechat_sp_taishici','wechat_masu','wechat_caifuren','wechat_jianyong','wechat_lukang','wechat_caozhi','wechat_huangyueying','wechat_weiyan','wechat_gaoshun','wechat_sunliang','wechat_wangping','wechat_sp_caiwenji','wechat_caochong','wechat_huangzhong','wechat_xiahouyuan','wechat_pangde','wechat_sunshangxiang','wechat_xuchu','wechat_guanyu','wechat_caocao','wechat_shenpei','wechat_jiaxu','wechat_caoren','wechat_liuqi','wechat_zhaoxiang','wechat_caiwenji','wechat_menghuo','wechat_re_yuanshu','wechat_huaxiong','wechat_xiahoushi','wechat_xushu','wechat_zhaoyun','wechat_zhangfei','wechat_machao','wechat_yangxiu','wechat_lvmeng','wechat_zhoutai','wechat_bianfuren','wechat_sunluban','wechat_wuguotai','wechat_liubiao','wechat_liuchen','wechat_luxun','wechat_pangtong','wechat_zhangxingcai','wechat_zuoci','wechat_mayunlu'],
 wechat_extra:['wechat_shen_zhugeliang','wechat_shen_lvmeng','wechat_shen_guanyu'],
 wechat_zhiyin:['wechat_guojia','wechat_lvbu','wechat_daqiao','wechat_xiaoqiao','wechat_re_caocao','wechat_zhugeliang','wechat_simayi','wechat_re_machao','wechat_re_huangyueying'],
 },
@@ -33685,7 +33688,7 @@ wechat_zhangxingcai:['female','shu',3,['wechatshenxian','wechatqiangwu'],[]],
 wechat_zuoci:['male','qun',3,['wechatyigui','wechatshendao'],[]],
 wechat_mayunlu:['female','shu',4,['wechatfengpo','mashu'],[]],
 wechat_caiwenji:['female','qun',3,['wechatbeige','wechatduanchang'],[]],
-wechat_zhaoxiang:['female','shu',4,['refanghun','wechatrefuhan'],[]],
+wechat_zhaoxiang:['female','shu',4,['wechatrefanghun','wechatrefuhan'],[]],
 wechat_liuqi:['male','qun',3,['spwenji','wechattunjiang'],[]],
 wechat_caoren:['male','wei',4,['wechatjushou'],[]],
 wechat_jiaxu:['male','qun',3,['wechatwansha','wechatluanwu','weimu'],[]],
@@ -33737,6 +33740,7 @@ wechat_taoqian:['male','qun',3,['zhaohuo','wechatyixiang','yirang'],[]],
 wechat_kanze:['male','wu',3,['xiashu','wechatkuanshi'],[]],
 wechat_xuezong:['male','wu',3,['minifunan','wechatjiexun'],[]],
 wechat_guyong:['male','wu',3,['wechatshenxing','bingyi'],[]],
+wechat_yj_huangzhong:['male','qun',4,['wechatshidi','spyishi','spqishe'],[]],
 //神武将
 wechat_shen_zhugeliang:['male','shen',3,['wechatqixing','wechatjifeng','wechattianfa'],['shu']],
 wechat_shen_lvmeng:['male','shen',3,['shelie','wechatregongxin'],['wu']],
@@ -35723,6 +35727,27 @@ else event.finish();
 'step 3'
 if(result.control) player.addSkillLog(result.control);
 },
+},
+wechatrefanghun:{
+mod:{
+aiValue:function(player,card,num){
+if(card.name!='sha'&&card.name!='shan') return;
+var geti=function(){
+var cards=player.getCards('hs',function(card){
+return card.name=='sha'||card.name=='shan';
+});
+if(cards.includes(card)){
+return cards.indexOf(card);
+}
+return cards.length;
+};
+return Math.max(num,[7,5,5,3][Math.min(geti(),3)]);
+},
+},
+locked:false,
+audio:'fanghun',
+inherit:'fanghun',
+trigger:{player:'useCardToPlayered'},
 },
 wechatrefuhan:{
 unique:true,
@@ -38683,6 +38708,53 @@ return 1;
 result:{player:1},
 },
 },
+//星黄忠
+wechatshidi:{
+audio:'spshidi',
+trigger:{
+player:'useCard',
+target:'useCardToTargeted',
+},
+filter:function(event,player){
+if(event.card.name!='sha') return false;
+var color=get.color(event.card),target=_status.currentPhase;
+return (event.name=='useCard'&&target==player&&color=='black')||(event.name!='useCard'&&(!target||target!=player)&&color=='red');
+},
+forced:true,
+content:function(){
+trigger.directHit.addArray(trigger.name=='useCard'?game.players:[player]);
+},
+mod:{
+globalFrom:function(from,to,distance){
+if(_status.currentPhase&&_status.currentPhase==player) return distance-1;
+},
+globalTo:function(from,to,distance){
+if(!_status.currentPhase||_status.currentPhase!=player) return distance+1;
+},
+aiOrder:function(player,card,num){
+if(_status.currentPhase&&_status.currentPhase==player&&card.name=='sha'&&get.color(card)=='black') return num+0.1;
+},
+},
+ai:{
+directHit_ai:true,
+skillTagFilter:function(player,tag,arg){
+if(!arg||!arg.card||!arg.target||(arg.card.name!='sha')) return false;
+return _status.currentPhase&&_status.currentPhase==player&&get.color(arg.card)=='black';
+},
+},
+global:'wechatshidi_ai',
+subSkill:{
+ai:{
+ai:{
+directHit_ai:true,
+skillTagFilter:function(player,tag,arg){
+if(!arg||!arg.card||!arg.target||(arg.card.name!='sha')) return false;
+return (!_status.currentPhase||_status.currentPhase!=arg.target)&&get.color(arg.card)=='red';
+},
+},
+},
+},
+},
 },
 dynamicTranslate:{
 wechatxiangzhi:function(player){
@@ -38840,6 +38912,8 @@ wechatfanghun_fengpo:'凤魄',
 wechatfanghun_info:'游戏开始时，你获得技能〖龙胆〗。当你发动〖龙胆〗后，你获得“梅影”标记。若你有“梅影”标记，你可以发动〖凤魄〗，然后失去“梅影”标记。',
 wechatfuhan:'扶汉',
 wechatfuhan_info:'觉醒技，准备阶段，若你已发动过〖凤魄〗，则你减1点体力上限，然后从〖义绝〗、〖咆哮〗、〖铁骑〗、〖烈弓〗中选择一个技能获得。',
+wechatrefanghun:'芳魂',
+wechatrefanghun_info:'当你使用【杀】指定目标后，你获得1个“梅影”标记；你可以移去1个“梅影”标记来发动〖龙胆〗并摸一张牌。',
 wechatrefuhan:'扶汉',
 wechatrefuhan_info:'限定技，准备阶段，你可以移去所有"梅影"标记并摸等量的牌（至多摸五张），然后从五张未登场的蜀势力武将牌中选择一名获得其所有技能，然后若你的体力值为全场最低，你回复1点体力。',
 wechat_liuqi:'微信刘琦',
@@ -39053,12 +39127,16 @@ wechatjiexun_info:'结束阶段，你可令一名其他角色摸等同于场上�
 wechat_guyong:'微信顾雍',
 wechatshenxing:'慎行',
 wechatshenxing_info:'出牌阶段，你可以弃置X张牌，然后摸一张牌（X为你本阶段发动过〖慎行〗的次数）。',
+wechat_yj_huangzhong:'微信☆黄忠',
+wechatshidi:'势敌',
+wechatshidi_info:'锁定技。①你的回合内，你至其他角色的距离-1，且你使用的黑色【杀】不可被响应。②你的回合外，其他角色至你的距离+1，且你不可响应红色【杀】。',
 },
 };
 for(var i in WeChatkill.character){
 if(WeChatkill.translate[i]){
 if(WeChatkill.translate[i].indexOf('微信神')==0) WeChatkill.translate[i+'_prefix']='微信神';
 else if(WeChatkill.translate[i].indexOf('SP微信神')==0) WeChatkill.translate[i+'_prefix']='SP微信神';
+else if(WeChatkill.translate[i].indexOf('微信☆')==0) WeChatkill.translate[i+'_prefix']='微信☆';
 else if(WeChatkill.translate[i].indexOf('微信')==0) WeChatkill.translate[i+'_prefix']='微信';
 else if(WeChatkill.translate[i].indexOf('SP微信')==0) WeChatkill.translate[i+'_prefix']='SP微信';
 else if(WeChatkill.translate[i].indexOf('极')==0) WeChatkill.translate[i+'_prefix']='极';
@@ -39084,6 +39162,9 @@ getSpan:(prefix,name)=>`${get.prefixSpan('微信')}${get.prefixSpan('神')}`,
 });
 lib.namePrefix.set('SP微信神',{
 getSpan:(prefix,name)=>`${get.prefixSpan('SP')}${get.prefixSpan('微信')}${get.prefixSpan('神')}`,
+});
+lib.namePrefix.set('微信☆',{
+getSpan:(prefix,name)=>`${get.prefixSpan('微信')}${get.prefixSpan('☆')}`,
 });
 lib.config.all.characters.push('WeChatkill');
 lib.config.all.sgscharacters.push('WeChatkill');
