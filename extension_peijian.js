@@ -391,8 +391,8 @@ getSpan:(prefix,name)=>`${get.prefixSpan('废案')}${get.prefixSpan('神')}`,
 });
 
 //手杀前缀
-lib.translate.re_sunben='手杀孙策';
-lib.translate.re_sunben_prefix='手杀';
+lib.translate.re_sunben='手杀界孙策';
+lib.translate.re_sunben_prefix='手杀界';
 lib.translate.shenpei='手杀审配';
 lib.translate.shenpei_prefix='手杀';
 //新杀前缀
