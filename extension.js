@@ -39233,7 +39233,7 @@ wechatshidi:'势敌',
 wechatshidi_info:'锁定技。①你的回合内，你至其他角色的距离-1，且你使用的黑色【杀】不可被响应。②你的回合外，其他角色至你的距离+1，且你不可响应红色【杀】。',
 wechat_caiyong:'微信蔡邕',
 wechattongbo:'通博',
-wechattongbo_info:'摸牌阶段摸牌后，你可以用任意张牌替换等量的“书”，然后若你的“书”包含四种花色，你将所有“书”交给任意名其他角色。',
+wechattongbo_info:'摸牌阶段摸牌后，你可以用任意张牌替换等量的“书”，然后若你的“书”包含四种花色，你将所有“书”任意分配给任意角色。',
 },
 };
 for(var i in WeChatkill.character){
