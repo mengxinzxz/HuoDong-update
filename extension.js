@@ -38739,7 +38739,7 @@ if(_status.currentPhase&&_status.currentPhase==player&&card.name=='sha'&&get.col
 ai:{
 directHit_ai:true,
 skillTagFilter:function(player,tag,arg){
-if(!arg||!arg.card||!arg.target||(arg.card.name!='sha')) return false;
+if(!arg||!arg.card||!arg.target||arg.card.name!='sha') return false;
 return _status.currentPhase&&_status.currentPhase==player&&get.color(arg.card)=='black';
 },
 },
@@ -38749,7 +38749,7 @@ ai:{
 ai:{
 directHit_ai:true,
 skillTagFilter:function(player,tag,arg){
-if(!arg||!arg.card||!arg.target||(arg.card.name!='sha')) return false;
+if(!arg||!arg.card||!arg.target||arg.card.name!='sha') return false;
 return (!_status.currentPhase||_status.currentPhase!=arg.target)&&arg.target.hasSkill('wechatshidi')&&get.color(arg.card)=='red';
 },
 },
