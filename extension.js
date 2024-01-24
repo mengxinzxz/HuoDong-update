@@ -13908,7 +13908,7 @@ trigger:{player:'phaseZhunbeiBegin'},
 direct:true,
 content:function(){
 'step 0'
-player.chooseTarget(get.prompt2('minijieyue'),lib.filter.notMe).set('ai',target=>{
+player.chooseTarget(get.prompt2('minijieyue')).set('ai',target=>{
 var player=_status.event.player;
 return function(player,target){
 var max=0;
@@ -13965,7 +13965,7 @@ case 'minijieyue_junling1':
 return get.damageEffect(event.aim,target,target)>=0;
 break;
 case 'minijieyue_junling2':
-if(!target.countCards('h')||!target.countCards('e')) return true;
+if(!target.countCards('he')) return true;
 var cards1=target.getCards('h',card=>get.value(card)>=7&&lib.filter.cardDiscardable(card,target));
 var cards2=target.getCards('e',card=>get.value(card)>=7&&lib.filter.cardDiscardable(card,target));
 return cards1.length*2<target.countCards('h',card=>lib.filter.cardDiscardable(card,target))&&cards2.length*2<target.countCards('e',card=>lib.filter.cardDiscardable(card,target));
@@ -13994,10 +13994,10 @@ break;
 case 'minijieyue_junling2':
 var cards=[];
 var cards1=target.getCards('h',card=>lib.filter.cardDiscardable(card,target));
-var cards2=target.getCards('e',card=>lib.filter.cardDiscardable(card,target));
 if(cards1.length) cards.push(cards1.randomGet());
+var cards2=target.getCards('he',card=>get.type(card)=='equip'&&!cards.includes(card)&&lib.filter.cardDiscardable(card,target));
 if(cards2.length) cards.push(cards2.randomGet());
-if(cards.length) target.discard(cards).discarder=target;
+if(cards.length) target.discard(cards);
 break;
 case 'minijieyue_junling3':
 target.addTempSkill('minijieyue_junling3');
@@ -32581,7 +32581,7 @@ miniyuejian_info:'你的手牌上限+X（X为你的体力上限）。当你需�
 minixiayuan:'狭援',
 minixiayuan_info:'每轮限一次，一名其他角色进入濒死状态时，你可以弃置至多两张牌并令其回复等量的体力。',
 minijieyue:'节钺',
-minijieyue_info:'准备阶段，你可以令一名其他角色摸一张牌，然后选择一个军令令其选择是否执行。若其执行，你摸一张牌；若其不执行，你摸三张牌，且其本回合受到的伤害+1。',
+minijieyue_info:'准备阶段，你可以令一名角色摸一张牌，然后选择一个军令令其选择是否执行。若其执行，你摸一张牌；若其不执行，你摸三张牌，且其本回合受到的伤害+1。',
 minijieyue_faq:'关于军令',
 minijieyue_faq_info:'<br>系统随机对发起者展示两个军令，发起者须选择其中一个军令，令执行者选择是否执行。',
 //蜀
