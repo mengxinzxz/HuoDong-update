@@ -38593,8 +38593,11 @@ if(get.attitude(player,target)>0) return 1/Math.sqrt(target.getHp()+1);
 if(result.bool){
 var target=result.targets[0];
 player.logSkill('wechatkuanshi');
-target.storage.wechatkuanshi_effect=player;
 target.addSkill('wechatkuanshi_effect');
+target.markAuto('wechatkuanshi_effect',[player]);
+player.when('phaseBegin').then(()=>target.unmarkAuto('wechatkuanshi_effect',[player])).then(()=>{
+if(!target.getStorage('wechatkuanshi_effect').length) target.removeSkill('wechatkuanshi_effect');
+}).vars({target:target});
 }
 },
 subSkill:{
@@ -38609,20 +38612,12 @@ return player.getHistory('damage').length;
 forced:true,
 content:function(){
 trigger.cancel();
-player.storage.wechatkuanshi_effect.skip('phaseDraw');
 player.removeSkill('wechatkuanshi_effect');
 },
-group:'wechatkuanshi_remove',
-},
-remove:{
-charlotte:true,
-trigger:{global:['phaseZhunbeiBegin','dieAfter']},
-filter:function(event,player){
-return event.player==player.storage.wechatkuanshi_effect;
-},
-silent:true,
-content:function(){
-player.removeSkill('wechatkuanshi_effect');
+mark:true,
+intro:{
+markcount:()=>0,
+content:'下次受到本回合非本次受到伤害时防止此伤害',
 },
 },
 },
@@ -39051,7 +39046,7 @@ wechatyixiang:'义襄',
 wechatyixiang_info:'每名角色的回合限一次，当你成为一名角色使用牌的目标后，若该角色的体力值大于等于你的体力值，则你可以从牌堆随机获得一张你没有的基本牌。',
 wechat_kanze:'微信阚泽',
 wechatkuanshi:'宽释',
-wechatkuanshi_info:'结束阶段，你可以选择一名角色。直到你的下回合开始，该角色于一个回合内非第一次受到伤害时，防止此伤害，然后你跳过下个回合的摸牌阶段。',
+wechatkuanshi_info:'结束阶段，你可以选择一名角色。直到你的下回合开始，该角色于一个回合内非第一次受到伤害时，防止此伤害。',
 wechat_xuezong:'微信薛综',
 wechatjiexun:'诫训',
 wechatjiexun_info:'结束阶段，你可令一名其他角色摸等同于场上方块牌数的牌，然后弃置X张牌（X为此前该技能发动过的次数），若其因此法弃置了所有牌，你失去1点体力。',
