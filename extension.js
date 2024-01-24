@@ -50,13 +50,13 @@ game.bolShowNewPack=function(){
 var HuoDong_update=[
 '/setPlayer/',
 'bugfix',
-'添加武将微信星黄忠',
+'添加武将微信星黄忠，微信蔡邕',
 '微信阚泽，微信赵襄技能调整',
 'To be continued...',
 ];
 //更新武将
 var HuoDong_players=[
-'wechat_kanze','wechat_zhaoxiang','wechat_yj_huangzhong',
+'wechat_kanze','wechat_zhaoxiang','wechat_yj_huangzhong','wechat_caiyong',
 ];
 //加载
 var dialog=ui.create.dialog(
@@ -33659,7 +33659,7 @@ name:'WeChatkill',
 connect:true,
 characterSort:{
 WeChatkill:{
-wechat_standard:['wechat_yj_huangzhong','wechat_zhangzhang','wechat_chendeng','wechat_taoqian','wechat_kanze','wechat_xuezong','wechat_guyong','wechat_guansuo','wechat_zumao','wechat_yj_jushou','wechat_sp_pangde','wechat_caojie','wechat_zhuling','wechat_caizhenji','wechat_guohuanghou','wechat_yanyan','wechat_liaohua','wechat_liuyao','wechat_quancong','wechat_xiahouba','wechat_sp_jiangwei','wechat_caoxiu','wechat_yuanshao','wechat_sundeng','wechat_re_xushu','wechat_caopi','wechat_caozhang','wechat_buzhi','wechat_sp_taishici','wechat_masu','wechat_caifuren','wechat_jianyong','wechat_lukang','wechat_caozhi','wechat_huangyueying','wechat_weiyan','wechat_gaoshun','wechat_sunliang','wechat_wangping','wechat_sp_caiwenji','wechat_caochong','wechat_huangzhong','wechat_xiahouyuan','wechat_pangde','wechat_sunshangxiang','wechat_xuchu','wechat_guanyu','wechat_caocao','wechat_shenpei','wechat_jiaxu','wechat_caoren','wechat_liuqi','wechat_zhaoxiang','wechat_caiwenji','wechat_menghuo','wechat_re_yuanshu','wechat_huaxiong','wechat_xiahoushi','wechat_xushu','wechat_zhaoyun','wechat_zhangfei','wechat_machao','wechat_yangxiu','wechat_lvmeng','wechat_zhoutai','wechat_bianfuren','wechat_sunluban','wechat_wuguotai','wechat_liubiao','wechat_liuchen','wechat_luxun','wechat_pangtong','wechat_zhangxingcai','wechat_zuoci','wechat_mayunlu'],
+wechat_standard:['wechat_caiyong','wechat_yj_huangzhong','wechat_zhangzhang','wechat_chendeng','wechat_taoqian','wechat_kanze','wechat_xuezong','wechat_guyong','wechat_guansuo','wechat_zumao','wechat_yj_jushou','wechat_sp_pangde','wechat_caojie','wechat_zhuling','wechat_caizhenji','wechat_guohuanghou','wechat_yanyan','wechat_liaohua','wechat_liuyao','wechat_quancong','wechat_xiahouba','wechat_sp_jiangwei','wechat_caoxiu','wechat_yuanshao','wechat_sundeng','wechat_re_xushu','wechat_caopi','wechat_caozhang','wechat_buzhi','wechat_sp_taishici','wechat_masu','wechat_caifuren','wechat_jianyong','wechat_lukang','wechat_caozhi','wechat_huangyueying','wechat_weiyan','wechat_gaoshun','wechat_sunliang','wechat_wangping','wechat_sp_caiwenji','wechat_caochong','wechat_huangzhong','wechat_xiahouyuan','wechat_pangde','wechat_sunshangxiang','wechat_xuchu','wechat_guanyu','wechat_caocao','wechat_shenpei','wechat_jiaxu','wechat_caoren','wechat_liuqi','wechat_zhaoxiang','wechat_caiwenji','wechat_menghuo','wechat_re_yuanshu','wechat_huaxiong','wechat_xiahoushi','wechat_xushu','wechat_zhaoyun','wechat_zhangfei','wechat_machao','wechat_yangxiu','wechat_lvmeng','wechat_zhoutai','wechat_bianfuren','wechat_sunluban','wechat_wuguotai','wechat_liubiao','wechat_liuchen','wechat_luxun','wechat_pangtong','wechat_zhangxingcai','wechat_zuoci','wechat_mayunlu'],
 wechat_extra:['wechat_shen_zhugeliang','wechat_shen_lvmeng','wechat_shen_guanyu'],
 wechat_zhiyin:['wechat_guojia','wechat_lvbu','wechat_daqiao','wechat_xiaoqiao','wechat_re_caocao','wechat_zhugeliang','wechat_simayi','wechat_re_machao','wechat_re_huangyueying'],
 },
@@ -33741,6 +33741,7 @@ wechat_kanze:['male','wu',3,['xiashu','wechatkuanshi'],[]],
 wechat_xuezong:['male','wu',3,['minifunan','wechatjiexun'],[]],
 wechat_guyong:['male','wu',3,['wechatshenxing','bingyi'],[]],
 wechat_yj_huangzhong:['male','qun',4,['wechatshidi','spyishi','spqishe'],[]],
+wechat_caiyong:['male','qun',3,['bizhuan','wechattongbo'],[]],
 //神武将
 wechat_shen_zhugeliang:['male','shen',3,['wechatqixing','wechatjifeng','wechattianfa'],['shu']],
 wechat_shen_lvmeng:['male','shen',3,['shelie','wechatregongxin'],['wu']],
@@ -38755,6 +38756,106 @@ return (!_status.currentPhase||_status.currentPhase!=arg.target)&&get.color(arg.
 },
 },
 },
+//蔡邕
+wechattongbo:{
+audio:'tongbo',
+trigger:{player:'phaseDrawEnd'},
+filter:function(event,player){
+return player.getExpansions('bizhuan').length>0&&player.countCards('he')>0;
+},
+direct:true,
+content:function(){
+'step 0'
+var four=false;
+var nofour=!player.hasFriend();
+var expansions=player.getExpansions('bizhuan');
+if(expansions.length==4){
+var suits=['club','spade','heart','diamond'];
+var list=player.getCards('he').concat(expansions);
+for(var i=0;i<list.length;i++){
+suits.remove(get.suit(list[i]));
+if(suits.length==0){
+four=true;
+break;
+}
+}
+}
+var next=player.chooseToMove('通博：是否交换“书”和手牌？').set('four',four).set('suits2',suits2).set('nofour',nofour);
+next.set('list',[
+[get.translation(player)+'（你）的“书”',expansions],
+['你的牌',player.getCards('he')],
+]);
+next.set('filterMove',(from,to)=>to!='number');
+next.set('processAI',list=>{
+var player=_status.event.player,cards=list[0][1].concat(list[1][1]),cards2=[];
+if(_status.event.four){
+var sorted=[[],[],[],[]];
+for(var i of cards){
+var index=lib.suit.indexOf(get.suit(i,false));
+if(sorted[index]) sorted[index].push(i);
+}
+if(_status.event.nofour){
+sorted.sort((a,b)=>a.length-b.length);
+var cards3=cards.slice().sort((a,b)=>get.useful(a)-get.useful(b));
+cards3.removeArray(sorted[0]);
+cards2=cards3.slice(0,4);
+cards.removeArray(cards2);
+}
+else{
+for(var i of sorted){
+cards2.push(i.randomGet());
+cards.remove(cards2);
+}
+}
+}
+else{
+cards.sort((a,b)=>get.useful(a)-get.useful(b));
+cards2=cards.splice(0,player.getExpansions('bizhuan').length);
+}
+return [cards2,cards];
+});
+'step 1'
+if(result.bool){
+var pushs=result.moved[0],gains=result.moved[1];
+pushs.removeArray(player.getExpansions('bizhuan'));
+gains.removeArray(player.getCards('he'));
+if(!pushs.length||pushs.length!=gains.length){
+event.finish();
+return;
+}
+player.logSkill('wechattongbo');
+player.addToExpansion(pushs,'give',player).gaintag.add('bizhuan');
+player.gain(gains,'gain2');
+}
+'step 2'
+if(lib.suit.some(suit=>!player.getExpansions('bizhuan').some(card=>get.suit(card)==suit))) event.finish();
+'step 3'
+event.cards=player.getExpansions('bizhuan').slice();
+if(event.cards.length>1) player.chooseCardButton('将所有“书”交给任意名角色',true,event.cards,[1,event.cards.length]).set('ai',()=>ui.selected.buttons.length?0:1);
+else if(event.cards.length==1) event._result={links:event.cards.slice(0),bool:true};
+else event.finish();
+'step 4'
+if(result.bool){
+event.cards.removeArray(result.links);
+event.togive=result.links.slice(0);
+player.chooseTarget('将'+get.translation(result.links)+'交给一名角色',true).set('ai',target=>{
+var att=get.attitude(_status.event.player,target);
+if(_status.event.enemy) return -att;
+else if(att>0) return att/(1+target.countCards('h'));
+else return att/100;
+}).set('enemy',get.value(event.togive[0],player,'raw')<0);
+}
+else event.finish();
+'step 5'
+if(result.targets.length){
+result.targets[0].gain(event.togive,'draw').giver=player;
+player.line(result.targets[0],'green');
+game.log(result.targets[0],'获得了'+get.cnNumber(event.togive.length)+'张','#g“书”');
+if(event.cards.length) event.goto(3);
+}
+},
+ai:{combo:'bizhuan'},
+},
 },
 dynamicTranslate:{
 wechatxiangzhi:function(player){
@@ -39130,6 +39231,9 @@ wechatshenxing_info:'出牌阶段，你可以弃置X张牌，然后摸一张牌�
 wechat_yj_huangzhong:'微信☆黄忠',
 wechatshidi:'势敌',
 wechatshidi_info:'锁定技。①你的回合内，你至其他角色的距离-1，且你使用的黑色【杀】不可被响应。②你的回合外，其他角色至你的距离+1，且你不可响应红色【杀】。',
+wechat_caiyong:'微信蔡邕',
+wechattongbo:'通博',
+wechattongbo_info:'摸牌阶段摸牌后，你可以用任意张牌替换等量的“书”，然后若你的“书”包含四种花色，你将所有“书”交给任意名其他角色。',
 },
 };
 for(var i in WeChatkill.character){
