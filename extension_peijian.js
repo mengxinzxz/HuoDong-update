@@ -398,6 +398,9 @@ lib.translate.shenpei_prefix='手杀';
 //新杀前缀
 lib.translate.dc_zhuling='新杀朱灵';
 lib.translate.dc_zhuling_prefix='新杀';
+//其他前缀
+lib.translate.jsrg_sunlubansunluyu='合孙鲁班孙鲁育';
+lib.translate.jsrg_sunlubansunluyu_ab='合大小虎';
 //取消前缀
 lib.translate.sp_shenpei='审配';
 delete lib.translate.sp_shenpei_prefix;
