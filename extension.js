@@ -1806,12 +1806,11 @@ lib.skill.dcjianxiong.init=function(player){
 player.markSkill('dcjianxiong');
 };
 //朱铁雄
-var content=''+lib.skill.dcbianzhuang.subSkill.refresh.content;
-eval('lib.skill.dcbianzhuang.subSkill.refresh.content='+content.replace(
-"delete stat.dcbianzhuang;",
-"delete stat.dcbianzhuang;"+
-"game.log(player,'重置了技能','#g【变装】');"
-));
+lib.skill.dcbianzhuang.subSkill.refresh.content=function(){
+var stat=player.getStat('skill');
+delete stat.dcbianzhuang;
+game.log(player,'重置了技能','#g【变装】');
+};
 //神张飞
 lib.skill.shencai.init=(player)=>player.markSkill('shencai');
 lib.skill.shencai.intro={
