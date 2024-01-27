@@ -50,14 +50,10 @@ game.bolShowNewPack=function(){
 var HuoDong_update=[
 '/setPlayer/',
 'bugfix',
-'添加武将微信星黄忠，微信蔡邕，欢杀马腾',
-'微信阚泽，微信赵襄，欢杀诸葛亮技能调整',
 'To be continued...',
 ];
 //更新武将
 var HuoDong_players=[
-'wechat_kanze','wechat_zhaoxiang','wechat_yj_huangzhong','wechat_caiyong',
-'Mbaby_tw_mateng','Mbaby_zhugeliang',
 ];
 //加载
 var dialog=ui.create.dialog(
@@ -54934,7 +54930,7 @@ intro:'新人制作扩展，希望大家支持。'+
 author:'萌新（转型中）',
 diskURL:'',
 forumURL:'',
-version:'0.1.4',
+version:'0.1.5',
 //新人制作扩展，希望大家支持。
 //新人技术不足，希望大家包涵。
 //壹、贰、叁、肆、伍、陆、柒、捌、玖、拾
