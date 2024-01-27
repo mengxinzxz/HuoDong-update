@@ -18910,37 +18910,19 @@ direct:true,
 content:function(){
 'step 0'
 player.chooseTarget(get.prompt2('minisbjijiang'),2).set('filterTarget',(card,player,target)=>{
-if(!ui.selected.targets.length) return true;
-var current=ui.selected.targets[0];
-if(current.group=='shu'&&current!=player) return current.inRange(target);
-return target.group=='shu'&&target.inRange(current)&&target!=player;
-}).set('targetprompt',target=>{
+if(!ui.selected.targets.length) return target.group=='shu'&&target!=player&&game.hasPlayer(currentx=>target.inRange(currentx));
+return ui.selected.targets[0].inRange(target);
+}).set('targetprompt',['进行选择','出杀对象']).set('ai',target=>{
 var player=_status.event.player;
-if(target.group=='shu'&&target!=player&&!ui.selected.targets.some(i=>{
-return i!=target&&i.group=='shu';
-})) return '进行选择';
-return '出杀对象';
-}).set('ai',target=>{
-var player=_status.event.player;
-if(ui.selected.targets.length){
-var current=ui.selected.targets[0];
-if(current.group=='shu'&&current!=player){
-return -get.attitude(player,target);
-}
-return Math.abs(get.attitude(player,current));
-}
-else{
-if(target.group=='shu'&&target!=player&&game.hasPlayer(current=>{
-return get.attitude(player,current)<0;
-})) return 10;
-return 1;
-}
-})
+if(ui.selected.targets.length) return get.effect(target,{name:'sha'},player,ui.selected.targets[0],player);
+var targets=game.filterPlayer(current=>target.inRange(current));
+if(targets.some(currentx=>get.effect(currentx,{name:'sha'},target,player)>0)) return 2-Math.abs(get.attitude(player,target));
+return 0;
+}).set('complexSelect',true);
 'step 1'
 if(result.bool){
 var targets=result.targets;
 event.targets=targets;
-if(targets[0].group!='shu'||targets[0].hp<player.hp||targets[0]==player) targets.reverse();
 player.logSkill('minisbjijiang',targets,false);
 player.line2(targets);
 var choiceList=[
