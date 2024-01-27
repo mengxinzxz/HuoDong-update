@@ -34703,7 +34703,9 @@ if(card.name=='sha'&&num[1]!=-1) num[1]++;
 },
 },
 audio:'shenji',
-trigger:{player:'phaseUseBegin'},
+//trigger:{player:'phaseUseBegin'},
+enable:'phaseUse',
+usable:1,
 filter:function(event,player){
 return player.countCards('h');
 },
@@ -39273,7 +39275,6 @@ wechatwushen:'武神',
 wechatwushen_info:'你可以将一张红色牌当作【杀】使用。你使用方块【杀】无距离限制，使用红桃【杀】无次数限制。',
 wechat_lvbu:'极吕布',
 wechatxiaohu:'虓虎',
-_wechatxiaohu:'虓虎',
 wechatxiaohu_info:'你使用【杀】可以额外指定一个目标；出牌阶段限一次，你可以弃置一张手牌并从牌堆中获得一张【杀】。',
 wechat_yangxiu:'微信杨修',
 wechatdanlao:'啖酪',
