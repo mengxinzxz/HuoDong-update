@@ -239,7 +239,9 @@ game.HDaddCharacter('luyi',['female','qun',3,['dcyaoyi','dcshoutan','dcfuxue'],[
 //文德武备
 game.HDaddCharacter('ol_huaxin',['male','wei',3,['caozhao','olxibing'],['ext:活动武将/image/character/ol_huaxin.jpg']],'yingbian');
 game.HDaddCharacter('chengjichengcui',['male','wei',6,['oltousui','olchuming'],[]],'yingbian');//初生势力改动
-game.HDaddCharacter('clan_wuqiao',['male','qun',4,['clanqiajue','clanmuyin'],['clan:陈留吴氏']],'yingbian');//初生势力改动
+
+//门阀士族
+game.HDaddCharacter('clan_wuqiao',['male','qun',4,['clanqiajue','clanmuyin'],['clan:陈留吴氏']],'clan');//初生势力改动
 
 //移动服
 lib.characterSort.mobile.bilibili_buchong_mobile=['old_zhangqiying','old_zhaoxiang','junk_xuyou'];
