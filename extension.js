@@ -19005,7 +19005,6 @@ if(player==event.player||player.isHealthy()||!_status.currentPhase||_status.curr
 return event.player.group=='wu'&&event.getParent().name!='minijiuyuan'&&player.hasZhuSkill('minijiuyuan',event.player);
 },
 direct:true,
-locked:true,
 zhuSkill:true,
 content:function(){
 'step 0'
@@ -19031,6 +19030,7 @@ if(!player.hasZhuSkill('minijiuyuan',event.player)) return false;
 return event.player!=player&&event.player.group=='wu';
 },
 forced:true,
+locked:false,
 content:function(){
 trigger.baseDamage++;
 },
@@ -19364,25 +19364,24 @@ noh:true,
 minitianyi:{
 audio:'tianyi',
 trigger:{player:'phaseUseBegin'},
-check:function(event,player){
-return true;
-},
+direct:true,
 content:function(){
 'step 0'
-player.chooseControl().set('choiceList',[
+player.chooseControl('选项一','选项二','cancel2').set('choiceList',[
 '本回合使用【杀】的次数上限+1，且使用【杀】造成伤害后回复1点体力',
 '摸一张牌，本回合使用【杀】无距离限制且无视防具'
-]).set('ai',function(){
-if((player.countCards('h',function(card){
+]).set('ai',()=>{
+if((player.countCards('h',card=>{
 return get.name(card,player)=='sha'&&player.hasUseTarget(card);
 })-player.getCardUsable('sha'))>1) return 0;
 return 1;
-});
+}).set('prompt',get.prompt('minitianyi'));
 'step 1'
-player.popup('选项'+get.cnNumber(result.index+1,true));
-game.log(player,'选择了','#g【天义】','的选项'+get.cnNumber(result.index+1,true));
+if(result.control!='cancel2'){
+player.logSkill('minitianyi');
 if(result.index==1) player.draw();
 player.addTempSkill('minitianyi_'+result.index);
+}
 },
 subSkill:{
 '0':{
@@ -33241,7 +33240,7 @@ minizhiheng_info:'出牌阶段结束时，你可以弃置任意张手牌并将�
 minirezhiheng:'制衡',
 minirezhiheng_info:'出牌阶段限一次，你可以弃置任意张牌并摸等量张牌。若你以此法弃置了全部手牌，则你额外摸一张牌。若本阶段你第一次发动〖制衡〗获得的牌未包含延时锦囊牌，则本阶段你可以额外发动一次〖制衡〗。若本阶段你第二次发动〖制衡〗获得的牌均为基本牌，则本阶段你可以额外发动一次〖制衡〗。',
 minijiuyuan:'救援',
-minijiuyuan_info:'主公技，锁定技。①其他吴势力角色对你使用的【桃】的回复值+1。②其他吴势力角色于其回合内回复体力时，可以改为令你回复1点体力，然后其摸一张牌。',
+minijiuyuan_info:'主公技。①其他吴势力角色对你使用的【桃】的回复值+1。②其他吴势力角色于其回合内回复体力时，可以改为令你回复1点体力，然后其摸一张牌。',
 miniqixi:'奇袭',
 miniqixi_info:'你可以将一张黑色牌当作【过河拆桥】使用。出牌阶段开始时，你可以弃置一名角色的一张牌。',
 minifenwei:'奋威',
