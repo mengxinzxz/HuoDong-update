@@ -39071,10 +39071,10 @@ trigger.directHit.addArray(trigger.name=='useCard'?game.players:[player]);
 },
 mod:{
 globalFrom:function(from,to,distance){
-if(_status.currentPhase&&_status.currentPhase==player) return distance-1;
+if(_status.currentPhase&&_status.currentPhase==from) return distance-1;
 },
 globalTo:function(from,to,distance){
-if(!_status.currentPhase||_status.currentPhase!=player) return distance+1;
+if(!_status.currentPhase||_status.currentPhase!=to) return distance+1;
 },
 aiOrder:function(player,card,num){
 if(_status.currentPhase&&_status.currentPhase==player&&card.name=='sha'&&get.color(card)=='black') return num+0.1;
