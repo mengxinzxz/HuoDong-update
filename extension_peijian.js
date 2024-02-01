@@ -89,7 +89,8 @@ common:[
 ],
 //平凡
 junk:[
-'old_sb_liubei'
+'old_sb_liubei',
+'old_ol_sb_guanyu'
 ],
 },
 //出场率
@@ -203,6 +204,7 @@ lib.characterReplace.jsp_guanyu.addArray(['bol_jsp_guanyu','bolx_jsp_guanyu']);
 lib.characterReplace.lingju.add('decade_lingju');
 lib.characterReplace.buzhi=['decade_buzhi','buzhi'];
 lib.characterReplace.fuhuanghou.add('bol_fuhuanghou');
+lib.characterReplace.ol_sb_guanyu=['ol_sb_guanyu','old_ol_sb_guanyu'];
 
 //筛选武将同名替换
 Object.keys(lib.characterReplace).forEach(name=>{
@@ -272,14 +274,8 @@ game.HDaddCharacter('bol_mazhong',['male','shu',4,['bolfuman'],['ext:活动武�
 game.HDaddCharacter('bol_jsp_guanyu',['male','wei',4,['wusheng','boldanji'],['ext:活动武将/image/character/bol_jsp_guanyu.jpg']],'tw');
 game.HDaddCharacter('bol_fuhuanghou',['female','qun',3,['rezhuikong','xinqiuyuan'],['ext:活动武将/image/character/bol_fuhuanghou.jpg']],'tw');
 
-//联动卡
-game.HDaddCharacter('nezha',['male','qun',2,['dcsantou','dcfaqi'],[]],'collab');
-game.HDaddCharacter('sunwukong',['male','qun',3,['dcjinjing','dccibei','dcruyi'],[]],'collab');
-game.HDaddCharacter('longwang',['male','qun',3,['dclonggong','dcsitian'],[]],'collab');
-game.HDaddCharacter('taoshen',['male','qun',3,['dcnutao'],[]],'collab');
-
 //怀旧包
-lib.characterSort.old.bilibili_buchong_fre=['old_zhugejin','old_zhanghe','old_ol_xiaoqiao'];
+lib.characterSort.old.bilibili_buchong_fre=['old_zhugejin','old_zhanghe','old_ol_xiaoqiao','old_ol_sb_guanyu'];
 lib.characterSort.old.bilibili_buchong_shenhua=['old_zhoufei','lusu','yuanshao','old_dengai'];
 lib.characterSort.old.bilibili_buchong_yijiang=['old_yj_jushou','ol_manchong'];
 lib.characterSort.old.bilibili_buchong_refresh=['oldx_zhangfei','oldx_guanyu','oldx_zhaoyun','oldx_yujin'];
@@ -324,6 +320,7 @@ game.HDaddCharacter('old_xushao',['male','qun',3,['oldpingjian'],['ext:活动武
 game.HDaddCharacter('old_huaman',['female','shu',3,['hmmanyi','old_mansi','old_souying','old_zhanyuan'],['ext:活动武将/image/character/old_huaman.jpg']],'old');
 game.HDaddCharacter('old_ol_xiaoqiao',['female','wu',3,['oltianxiang','rehongyan'],['ext:活动武将/image/character/old_ol_xiaoqiao.jpg']],'old');
 game.HDaddCharacter('old_zhanghe',['male','wei',4,['qiaobian','bilibili_zhiyinxian'],['ext:活动武将/image/character/old_zhanghe.jpg']],'old');
+game.HDaddCharacter('old_ol_sb_guanyu',['male','shu',4,['olsbfumeng','olsbguidao'],['ext:活动武将/image/character/old_ol_sb_guanyu.jpg']],'old');
 game.HDaddCharacter('old_zhugejin',['male','wu',3,['olhongyuan','bolhuanshi','olmingzhe'],['ext:活动武将/image/character/old_zhugejin.jpg']],'old');
 game.HDaddCharacter('old_sp_sunshao',['male','wu',3,['refubi','rezuici'],['ext:活动武将/image/character/old_sp_sunshao.jpg']],'old');
 game.HDaddCharacter('old_liuzhang',['male','qun',3,['xiusheng','yinlang','huaibi'],['zhu','ext:活动武将/image/character/old_liuzhang.jpg']],'old');
@@ -506,6 +503,7 @@ lib.translate.old_huaman='旧花鬘';
 lib.translate.old_huaman_prefix='旧';
 lib.translate.old_ol_xiaoqiao='小乔';
 lib.translate.old_zhanghe='张郃';
+lib.translate.old_ol_sb_guanyu='关羽';
 lib.translate.old_zhugejin='诸葛瑾';
 lib.translate.ol_maliang='旧马良';
 lib.translate.ol_maliang_prefix='旧';
