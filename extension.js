@@ -9718,7 +9718,7 @@ Mbaby_sp_kongrong:['male','qun',3,['minilirang','minizhengyi'],[]],
 Mbaby_laiyinger:['female','qun',3,['minixiaowu','minihuaping'],[]],
 Mbaby_sb_yuanshao:['male','qun',4,['minisbluanji','minisbxueyi'],['zhu']],
 Mbaby_tw_mateng:['male','qun',4,['miniyuma','minixiongzheng','miniluannian'],['zhu']],
-Mbaby_dc_huangchengyan:['male','qun',3,['dcjiezhen','minizecai','dcyinshi']],
+Mbaby_dc_huangchengyan:['male','qun',3,['dcjiezhen','minizecai','dcyinshi'],[]],
 Mbaby_simahui:['male','qun',3,['minijianjie','xinfu_chenghao','miniyinshi'],[]],
 //神
 Mbaby_shen_zhugeliang:['male','shen',3,['qixing','minikuangfeng','minidawu'],['shu']],
