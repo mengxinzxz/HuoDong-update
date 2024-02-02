@@ -50,10 +50,12 @@ game.bolShowNewPack=function(){
 var HuoDong_update=[
 '/setPlayer/',
 'bugfix',
+'添加欢杀武将：黄承彦、司马徽',
 'To be continued...',
 ];
 //更新武将
 var HuoDong_players=[
+'Mbaby_dc_huangchengyan','Mbaby_simahui',
 ];
 //加载
 var dialog=ui.create.dialog(
@@ -9480,7 +9482,7 @@ MiNikill:{
 MiNi_wei:['Mbaby_bianfuren','Mbaby_zhugedan','Mbaby_caohong','Mbaby_guojia','Mbaby_sp_caoren','Mbaby_yinfuren','Mbaby_sp_jiaxu','Mbaby_wenqin','Mbaby_kuailiangkuaiyue','Mbaby_jsp_guanyu','Mbaby_wangji','Mbaby_chenqun','Mbaby_xiahoulingnv','Mbaby_wenyang','Mbaby_sp_pangde','Mbaby_caocao','Mbaby_caozhang','Mbaby_dufuren','Mbaby_simayi','Mbaby_yangxiu','Mbaby_zhangchangpu','Mbaby_zhonghui','Mbaby_sp_jiangwei','Mbaby_caoxiu','Mbaby_xunyou','Mbaby_lidian','Mbaby_zhongyao','Mbaby_caozhen','Mbaby_guohuanghou','Mbaby_xinxianying','Mbaby_xiahouyuan','Mbaby_xizhicai','Mbaby_caorui','Mbaby_xunyu','Mbaby_dengai','Mbaby_caozhi','Mbaby_sp_caiwenji','Mbaby_caoying','Mbaby_caopi','Mbaby_caoang','Mbaby_guojia','Mbaby_zhenji','Mbaby_caoren','Mbaby_wangyi','Mbaby_zhangchunhua','Mbaby_xiahoudun','Mbaby_xuzhu','Mbaby_zhangliao','Mbaby_guohuai','Mbaby_dianwei','Mbaby_zhanghe','Mbaby_yujin','Mbaby_xuhuang'],
 MiNi_shu:['Mbaby_guanzhang','Mbaby_wolongfengchu','Mbaby_wangtao','Mbabysp_zhangfei','Mbaby_wangyue','Mbaby_xf_yiji','Mbaby_mizhu','Mbaby_mifuren','Mbaby_liuyong','Mbaby_ganfuren','Mbaby_sunqian','Mbaby_lvkai','Mbaby_zhoucang','Mbaby_huangyueying','Mbaby_yangwan','Mbaby_liuchen','Mbaby_liyan','Mbaby_chendao','Mbaby_yanyan','Mbaby_xiahouba','Mbaby_huaman','Mbaby_sp_zhugeliang','Mbaby_zhugeguo','Mbaby_jianyong','Mbaby_wangping','Mbaby_mayunlu','Mbaby_guansuo','Mbaby_xiahoushi','Mbaby_shamoke','Mbaby_wuxian','Mbaby_zhugezhan','Mbaby_qinmi','Mbaby_guanyinping','Mbaby_guanyu','Mbaby_zhugeliang','Mbaby_liubei','Mbaby_machao','Mbaby_zhurong','Mbaby_zhangfei','Mbaby_zhaoyun','Mbaby_huangzhong','Mbaby_weiyan','Mbaby_liaohua','Mbaby_pangtong','Mbaby_menghuo','Mbaby_jiangwei','Mbaby_liushan','Mbaby_fazheng','Mbaby_madai','Mbaby_guanping','Mbaby_liufeng','Mbaby_wuyi','Mbaby_zhangxingcai','Mbaby_dongyun','Mbaby_sp_sunshangxiang','Mbaby_xushu','Mbaby_masu'],
 MiNi_wu:['Mbaby_quancong','Mbaby_yufan','Mbaby_dc_sunru','Mbaby_sunxiu','Mbaby_zhangfen','Mbaby_xuezong','Mbaby_dingfeng','Mbaby_panjun','Mbaby_sundeng','Mbaby_luji','Mbaby_zhoufang','Mbaby_zhangxuan','Mbaby_yanjun','Mbaby_zhuhuan','Mbaby_luyusheng','Mbaby_re_jsp_pangtong','Mbaby_sunhao','Mbabysp_daqiao','Mbaby_lukang','Mbaby_buzhi','Mbaby_xushi','Mbaby_zhugeke','Mbaby_zhoufei','Mbaby_zhangzhang','Mbaby_sunliang','Mbaby_ol_sunjian','Mbaby_zhuzhi','Mbaby_bulianshi','Mbaby_chengpu','Mbaby_daqiao','Mbaby_ganning','Mbaby_huanggai','Mbaby_lusu','Mbaby_luxun','Mbaby_lvmeng','Mbaby_sunce','Mbaby_sunluban','Mbaby_sunluyu','Mbaby_sunquan','Mbaby_sunshangxiang','Mbaby_taishici','Mbaby_wuguotai','Mbaby_xiaoqiao','Mbaby_xusheng','Mbaby_zhoutai','Mbaby_zhouyu','Mbaby_zhugejin','Mbaby_zumao','Mbabysp_xiaoqiao'],
-MiNi_qun:['Mbaby_tw_mateng','Mbaby_laiyinger','Mbaby_sp_kongrong','Mbaby_zhujun','Mbaby_gongsunyuan','Mbaby_sp_zhangliao','Mbaby_sp_ol_zhanghe','Mbaby_guotufengji','Mbaby_yanfuren','Mbaby_tangji','Mbaby_caojie','Mbaby_liangxing','Mbabysp_zhenji','Mbaby_caoxing','Mbaby_sp_menghuo','Mbaby_wangrong','Mbaby_hetaihou','Mbaby_sp_taishici','Mbaby_zhangji','Mbaby_dongbai','Mbaby_beimihu','Mbaby_chunyuqiong','Mbaby_zhangqiying','Mbaby_fuhuanghou','Mbaby_liuxie','Mbaby_quyi','Mbaby_jsp_huangyueying','Mbaby_sp_machao','Mbaby_lijue','Mbaby_panfeng','Mbaby_liuzhang','Mbaby_jiaxu','Mbaby_zhangbao','Mbaby_zhangliang','Mbaby_gaoshun','Mbaby_caifuren','Mbaby_xuyou','Mbaby_gongsunzan','Mbaby_pangde','Mbaby_jushou','Mbaby_liru','Mbaby_dongzhuo','Mbaby_zhangjiao','Mbaby_huatuo','Mbaby_lvbu','Mbaby_diaochan','Mbaby_sp_diaochan','Mbaby_huaxiong','Mbaby_yuji','Mbaby_yanwen','Mbaby_caiwenji','Mbaby_liubiao','Mbaby_yuanshao','Mbaby_yuanshu','Mbaby_chengong','Mbaby_zuoci'],
+MiNi_qun:['Mbaby_dc_huangchengyan','Mbaby_simahui','Mbaby_tw_mateng','Mbaby_laiyinger','Mbaby_sp_kongrong','Mbaby_zhujun','Mbaby_gongsunyuan','Mbaby_sp_zhangliao','Mbaby_sp_ol_zhanghe','Mbaby_guotufengji','Mbaby_yanfuren','Mbaby_tangji','Mbaby_caojie','Mbaby_liangxing','Mbabysp_zhenji','Mbaby_caoxing','Mbaby_sp_menghuo','Mbaby_wangrong','Mbaby_hetaihou','Mbaby_sp_taishici','Mbaby_zhangji','Mbaby_dongbai','Mbaby_beimihu','Mbaby_chunyuqiong','Mbaby_zhangqiying','Mbaby_fuhuanghou','Mbaby_liuxie','Mbaby_quyi','Mbaby_jsp_huangyueying','Mbaby_sp_machao','Mbaby_lijue','Mbaby_panfeng','Mbaby_liuzhang','Mbaby_jiaxu','Mbaby_zhangbao','Mbaby_zhangliang','Mbaby_gaoshun','Mbaby_caifuren','Mbaby_xuyou','Mbaby_gongsunzan','Mbaby_pangde','Mbaby_jushou','Mbaby_liru','Mbaby_dongzhuo','Mbaby_zhangjiao','Mbaby_huatuo','Mbaby_lvbu','Mbaby_diaochan','Mbaby_sp_diaochan','Mbaby_huaxiong','Mbaby_yuji','Mbaby_yanwen','Mbaby_caiwenji','Mbaby_liubiao','Mbaby_yuanshao','Mbaby_yuanshu','Mbaby_chengong','Mbaby_zuoci'],
 MiNi_shen:['Mbaby_shen_taishici','Mbaby_shen_diaochan','Mbaby_shen_daxiaoqiao','Mbaby_shen_zhenji','Mbaby_shen_guojia','Mbaby_shen_huatuo','Mbaby_shen_dianwei','Mbaby_shen_lvbu','Mbaby_shen_zhugeliang','Mbaby_shen_lvmeng','Mbaby_shen_zhouyu','Mbaby_shen_guanyu','Mbaby_shen_liubei','Mbaby_shen_caocao','Mbaby_shen_zhangliao','Mbaby_shen_sunquan','Mbaby_shen_simayi','Mbaby_shen_zhaoyun','Mbaby_shen_ganning','Mbaby_shen_luxun'],
 MiNi_change:['Mbaby_re_nanhualaoxian','Mbaby_re_sunyi','Mbaby_zhaoxiang','Mbaby_xushao','Mbaby_shen_zhangjiao','Mbaby_baosanniang'],
 MiNi_shengzhiyifa:['Mbaby_sunwukong','Mbaby_dalanmao','Mbaby_libai','Mbaby_change','Mbaby_nvwa'],
@@ -9716,6 +9718,8 @@ Mbaby_sp_kongrong:['male','qun',3,['minilirang','minizhengyi'],[]],
 Mbaby_laiyinger:['female','qun',3,['minixiaowu','minihuaping'],[]],
 Mbaby_sb_yuanshao:['male','qun',4,['minisbluanji','minisbxueyi'],['zhu']],
 Mbaby_tw_mateng:['male','qun',4,['miniyuma','minixiongzheng','miniluannian'],['zhu']],
+Mbaby_dc_huangchengyan:['male','qun',3,['dcjiezhen','minizecai','dcyinshi']],
+Mbaby_simahui:['male','qun',3,['minijianjie','xinfu_chenghao','miniyinshi'],[]],
 //神
 Mbaby_shen_zhugeliang:['male','shen',3,['qixing','minikuangfeng','minidawu'],['shu']],
 Mbaby_shen_lvbu:['male','shen',6,['miniwuqian','minishenfen'],['qun']],
@@ -28740,6 +28744,268 @@ expose:0.25,
 },
 },
 },
+minizecai:{
+audio:'dczecai',
+content:function*(event,map){
+const player=map.player,targetx=lib.skill.dczecai.getMax();
+const trigger=map.trigger;
+let str='令一名其他角色于本轮内获得〖集智〗';
+if(targetx) str+=('；若选择的目标为'+get.translation(targetx)+'，则其获得一个额外的回合');
+const result=yield player.chooseTarget(get.prompt('dczecai'),str).set('ai',target=>{
+const player=get.event('player'),targetx=get.event('targetx');
+if(target!=targetx) return 0;
+return get.attitude(player,target);
+}).set('targetx',targetx);
+if(result.bool){
+const target=result.targets[0];
+player.logSkill('minizecai',target);
+player.awakenSkill('minizecai');
+target.addAdditionalSkill('dczecai_effect','rejizhi');
+target.addTempSkill('dczecai_effect','roundStart');
+if(target==targetx){
+const evt=trigger._trigger;
+target.insertPhase();
+if(evt.player!=target&&!evt._finished){
+evt.finish();
+evt._triggered=5;
+evt.player.insertPhase();
+}
+}
+}
+},
+},
+minijianjie:{
+audio:'xinfu_jianjie',
+trigger:{player:'phaseZhunbeiBegin'},
+filter(event,player){
+return player.phaseNumber<=1;
+},
+forced:true,
+locked:false,
+async content(event,trigger,player){
+const {result:{bool,targets}}=await player.chooseTarget('荐杰：选择一名角色获得“龙印”',true).set('ai',target=>get.attitude(get.event('player'),target));
+if(bool){
+const target=targets[0];
+player.line(target,'fire');
+lib.skill.minijianjie.addMark('huoji',player,target);
+await game.asyncDelayx();
+if(game.hasPlayer(current=>current!=target)){
+const {result:{bool,targets}}=await player.chooseTarget('荐杰：选择一名角色获得“凤印”',(card,player,target)=>{
+return target!=get.event('target');
+},true).set('ai',target=>get.attitude(get.event('player'),target)).set('target',target);
+if(bool){
+const targetx=targets[0];
+player.line(target,'thunder');
+lib.skill.minijianjie.addMark('lianhuan',player,targetx);
+await game.asyncDelayx();
+}
+}
+}
+},
+group:['minijianjie_use','minijianjie_die'],
+derivation:['minijianjie_huoji','minijianjie_lianhuan','minijianjie_yeyan'],
+hasMark(mark,player,target){
+if(!target) return player.getStorage('minijianjie_'+mark).length>0;
+return target.getStorage('minijianjie_'+mark).includes(player);
+},
+addMark(mark,player,target){
+mark='minijianjie_'+mark;
+target.addAdditionalSkill(`${mark}_${player.playerid}`,mark);
+target.markAuto(mark,[player]);
+game.log(player,'令',target,'获得了',`#g“${mark=='minijianjie_huoji'?'龙印':'凤印'}”`);
+},
+removeMark(mark,player,target,log){
+if(lib.skill.minijianjie.hasMark(mark,player,target,log)){
+mark='minijianjie_'+mark;
+target.removeAdditionalSkill(`${mark}_${player.playerid}`);
+target.unmarkAuto(mark,[player]);
+if(log) game.log(target,'移去了',player,'给予的',`#g“${mark=='minijianjie_huoji'?'龙印':'凤印'}”`);
+else game.log(player,'移去了',target,'的',`#g“${mark=='minijianjie_huoji'?'龙印':'凤印'}”`);
+}
+},
+subSkill:{
+use:{
+audio:'xinfu_jianjie',
+enable:'phaseUse',
+filter(event,player){
+if(player.phaseNumber<=1) return false;
+const skill=lib.skill.minijianjie;
+return game.hasPlayer(current=>skill.hasMark('huoji',player,current)||skill.hasMark('lianhuan',player,current));
+},
+filterTarget(card,player,target){
+if(ui.selected.targets.length) return true;
+const skill=lib.skill.minijianjie;
+return skill.hasMark('huoji',player,target)||skill.hasMark('lianhuan',player,target);
+},
+selectTarget:2,
+complexSelect:true,
+complexTarget:true,
+multitarget:true,
+prompt:'出牌阶段限一次，你可以移动场上的“龙印”或“凤印”',
+targetprompt:['失去印','获得印'],
+usable:1,
+async content(event,trigger,player){
+const targets=event.targets;
+const skill=lib.skill.minijianjie,bool1=skill.hasMark('huoji',player,targets[0]),bool2=skill.hasMark('lianhuan',player,targets[0]);
+let skill2;
+if(bool1&&bool2){
+const {result:{control}}=await player.chooseControl('龙印','凤印').set('prompt','选择要移动的“印”');
+if(control) skill2=control;
+}
+else skill2=(bool1?'龙印':'凤印');
+if(skill2){
+skill2.removeMark(mark,player,targets[0]);
+skill2.addMark(mark,player,targets[1]);
+await game.asyncDelayx();
+}
+},
+ai:{
+order:8,
+expose:0.25,
+result:{
+target(player,target){
+if(!ui.selected.targets.length) return get.attitude(player,target)<0?-999:-3;
+return target.countCards('h')+1;
+},
+},
+},
+},
+die:{
+audio:'xinfu_jianjie',
+trigger:{global:'die'},
+filter(event,player){
+const skill=lib.skill.minijianjie;
+return skill.hasMark('huoji',player,event.player)||skill.hasMark('lianhuan',player,event.player);
+},
+forced:true,
+logTarget:'player',
+async content(event,trigger,player){
+if(lib.skill.minijianjie.hasMark('huoji',player,trigger.player)){
+const {result:{bool,targets}}=await player.chooseTarget('荐杰：选择一名角色获得“龙印”',true).set('ai',target=>get.attitude(get.event('player'),target));
+if(bool){
+const target=targets[0];
+player.line(target,'fire');
+lib.skill.minijianjie.addMark('huoji',player,target);
+await game.asyncDelayx();
+}
+}
+if(lib.skill.minijianjie.hasMark('lianhuan',player,trigger.player)){
+const {result:{bool,targets}}=await player.chooseTarget('荐杰：选择一名角色获得“凤印”',true).set('ai',target=>get.attitude(get.event('player'),target));
+if(bool){
+const target=targets[0];
+player.line(target,'thunder');
+lib.skill.minijianjie.addMark('lianhuan',player,target);
+await game.asyncDelayx();
+}
+}
+},
+},
+huoji:{
+marktext:'龙',
+intro:{
+name:'龙印',
+content:'<li>①出牌阶段限三次，你可以将一张红色牌当作【火攻】使用。②当你使用【火攻】需要弃牌时，你可以观看牌堆顶的四张牌，选择其中一张符合要求的牌作为需要弃置的牌，然后将其余的牌放回牌堆顶。<br><li>若你同时拥有“凤印”，则你视为拥有技能〖业炎〗。（发动〖业炎〗时，弃置所有“龙印”和“凤印”）',
+},
+charlotte:true,
+inherit:'minihuoji',
+filter(event,player){
+const storage=player.getStorage('minijianjie_huoji');
+if(!storage.some(source=>source.isIn()&&source.hasSkill('minijianjie'))) return false;
+return lib.skill.minihuoji.filter(event,player);
+},
+group:['minijianjie_yeyan','minijianjie_viewAs'],
+},
+viewAs:{
+inherit:'rehuoji',
+audio:'huoji',
+viewAsFilter(player){
+const storage=player.getStorage('minijianjie_huoji');
+if(!storage.some(source=>source.isIn()&&source.hasSkill('minijianjie'))) return false;
+return player.hasCard(card=>get.color(card)=='red','she');
+},
+usable:3,
+},
+lianhuan:{
+marktext:'凤',
+intro:{
+name:'凤印',
+content:'<li>出牌阶段限三次。你可以将一张♣牌当作【铁索连环】使用或重铸。<br><li>若你同时拥有“龙印”，则你视为拥有技能〖业炎〗。（发动〖业炎〗时，弃置所有“龙印”和“凤印”）',
+},
+inherit:'lianhuan',
+charlotte:true,
+filter(event,player){
+const storage=player.getStorage('minijianjie_lianhuan');
+if(!storage.some(source=>{
+return source.isIn()&&source.hasSkill('minijianjie');
+})) return false;
+if(!player.hasCard(card=>get.suit(card)=='club','she')) return false;
+return event.type=='phase'||event.filterCard({name:'tiesuo'},player,event);
+},
+usable:3,
+group:'minijianjie_yeyan',
+},
+yeyan:{
+inherit:'yeyan',
+filter(event,player){
+const huoji=player.getStorage('minijianjie_huoji'),lianhuan=player.getStorage('minijianjie_lianhuan');
+return huoji.length>0&&lianhuan.some(source=>huoji.includes(source)&&source.isIn()&&source.hasSkill('minijianjie'));
+},
+contentBefore(){
+player.awakenSkill('minijianjie_yeyan');
+player.addTempSkill('minijianjie_effect','minijianjie_yeyanAfter');
+},
+ai:{fireAttack:true},
+},
+effect:{
+charlotte:true,
+trigger:{player:'loseHpBefore'},
+filter(event,player){
+return event.getParent().name=='minijianjie_yeyan';
+},
+firstDo:true,
+forced:true,
+content(){
+trigger.cancel();
+const skill=lib.skill.minijianjie,huoji=player.getStorage('minijianjie_huoji').slice(),lianhuan=player.getStorage('minijianjie_lianhuan').slice();
+huoji.forEach(source=>skill.removeMark('huoji',source,player,true));
+lianhuan.forEach(source=>skill.removeMark('lianhuan',source,player,true));
+},
+},
+},
+},
+miniyinshi:{
+audio:'xinfu_yinshi',
+trigger:{player:'damageBegin4'},
+filter(event,player){
+const skill=lib.skill.minijianjie;
+if(skill.hasMark('huoji',player)&&skill.hasMark('lianhuan',player)) return false;
+if(!player.hasEmptySlot(2)) return false;
+return event.hasNature()||get.type(event.card,'trick')=='trick';
+},
+forced:true,
+async content(event,trigger,player){
+trigger.cancel();
+},
+ai:{
+notrick:true,
+nofire:true,
+nothunder:true,
+effect:{
+target(card,player,target,current){
+const skill=lib.skill.minijianjie;
+if(skill.hasMark('huoji',target)&&skill.hasMark('lianhuan',target)) return false;
+if(player==target&&get.subtype(card)=='equip2'){
+if(get.equipValue(card)<=8) return 0;
+}
+if(!target.hasEmptySlot(2)) return;
+if(get.tag(card,'natureDamage')) return 'zerotarget';
+if(get.type(card)=='trick'&&get.tag(card,'damage')){
+return 'zeroplayertarget';
+}
+},
+},
+},
+},
 //神
 miniwuqian:{
 derivation:'wushuang',
@@ -33496,6 +33762,8 @@ Mbaby_sp_kongrong:'欢杀孔融',
 Mbaby_laiyinger:'欢杀来莺儿',
 Mbaby_sb_yuanshao:'欢杀谋袁绍',
 Mbaby_tw_mateng:'欢杀马腾',
+Mbaby_dc_huangchengyan:'欢杀黄承彦',
+Mbaby_simahui:'欢杀司马徽',
 miniweidi:'伪帝',
 miniweidi_info:'弃牌阶段结束时，你可以将其中一张弃置的牌交给一名其他角色。',
 minimingce:'明策',
@@ -33750,6 +34018,19 @@ minixiongzheng:'雄争',
 minixiongzheng_info:'一轮游戏开始时，①若你上一轮发动过〖雄争〗且选择过“雄争”角色，你可以选择一项：1.视为对任意名上一轮内未对“雄争”角色造成过伤害的角色依次使用一张【杀】；2.令任意名上一轮对“雄争”角色造成过伤害的角色摸两张牌。②你可以选择一名上一轮发动过〖雄争〗未选择过的角色，称为“雄争”角色。',
 miniluannian:'乱年',
 miniluannian_info:'主公技。其他群势力角色的出牌阶段限一次。其可以弃置X张牌并对“雄争”角色造成1点伤害（X为所有角色于本轮发动〖乱年〗的次数+1）。',
+minizecai:'择才',
+minizecai_info:'限定技，非首轮游戏开始时，你可令一名角色获得〖集智〗直到下一轮游戏开始；若其是上一轮内使用过锦囊牌数量唯一最多的角色，则其获得一个额外的回合。',
+minijianjie:'荐杰',
+minijianjie_info:'①你的第一个准备阶段，你令一名角色获得“龙印”，然后令另一名角色获得“凤印”。②出牌阶段限一次。若当前回合不是你的第一个回合，则你可以移动场上的“龙印”或“凤印”。③拥有“龙印”或“凤印”的其他角色死亡时，你转移该角色的“龙印”和“凤印”。④拥有“龙印”/“凤印”的角色视为拥有〖火计〗/〖连环〗，且同时拥有这两种标记的角色视为拥有〖业炎〗。',
+minijianjie_huoji:'火计',
+minijianjie_viewAs:'火计',
+minijianjie_huoji_info:'①出牌阶段限三次，你可以将一张红色牌当作【火攻】使用。②当你使用【火攻】需要弃牌时，你可以观看牌堆顶的四张牌，选择其中一张符合要求的牌作为需要弃置的牌，然后将其余的牌放回牌堆顶。',
+minijianjie_lianhuan:'连环',
+minijianjie_lianhuan_info:'出牌阶段限三次。你可以将一张♣牌当作【铁索连环】使用或重铸。',
+minijianjie_yeyan:'业炎',
+minijianjie_yeyan_info:'限定技，出牌阶段，你可以对至多三名角色造成至多共3点火焰伤害（你可以任意分配每名目标角色受到的伤害点数），若你将对一名角色分配2点或更多的火焰伤害，你须先弃置四张不同花色的手牌和你的“龙印”和“凤印”。',
+miniyinshi:'隐士',
+miniyinshi_info:'锁定技，若你没有“龙印”或“凤印”，且你有空置的防具栏，则防止你受到的属性伤害和锦囊牌造成的伤害。',
 //神
 Mbaby_shen_lvbu:'欢杀神吕布',
 Mbaby_shen_guanyu:'欢杀神关羽',
