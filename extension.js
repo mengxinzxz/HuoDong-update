@@ -28976,6 +28976,7 @@ return event.getParent().name=='minijianjie_yeyan';
 },
 firstDo:true,
 forced:true,
+popup:false,
 content(){
 trigger.cancel();
 const skill=lib.skill.minijianjie,huoji=player.getStorage('minijianjie_huoji').slice(),lianhuan=player.getStorage('minijianjie_lianhuan').slice();
