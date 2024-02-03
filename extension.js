@@ -26114,10 +26114,10 @@ intro:{content:'手牌上限+#'},
 //许劭
 minipingjian:{
 getList:function(){
-return Object.keys(lib.characterPack.MiNikill).filter(function(i){
+return Object.keys(lib.characterPack.MiNikill).filter(i=>{
 if(!lib.characterPack.MiNikill[i][4]) return true;
 return !lib.characterPack.MiNikill[i][4].includes('unseen');
-});
+}).concat(_status.extra_pingjianList||[]);
 },
 init:function(player){
 player.addSkill('minipingjian_remove');
@@ -28831,6 +28831,24 @@ if(log) game.log(target,'移去了',player,'给予的',`#g“${mark=='minijianji
 else game.log(player,'移去了',target,'的',`#g“${mark=='minijianjie_huoji'?'龙印':'凤印'}”`);
 }
 },
+getBigFire(player){
+if(player.getDiscardableCards(player,'h').reduce((list,card)=>list.add(get.suit(card,player)),[]).length<4) return false;
+const targets=game.filterPlayer(target=>get.damageEffect(target,player,player,'fire')&&target.hp<=3&&!target.hasSkillTag('filterDamage',null,{player:player}));
+if(!targets.length) return false;
+if(targets.length==1||targets.some(target=>get.attitude(player,target)<0&&target.identity&&target.identity.indexOf('zhu')!=-1)){
+let suits=player.getDiscardableCards(player,'h').reduce((map,card)=>{
+const suit=get.suit(card,player);
+if(!map[suit]) map[suit]=[];
+return map;
+},{}),cards=[];
+Object.keys(suits).forEach(i=>{
+suits[i].addArray(player.getDiscardableCards(player,'h').filter(card=>get.suit(card)==i));
+cards.add(suits[i].sort((a,b)=>get.value(a)-get.value(b))[0]);
+});
+return true;
+}
+return false;
+},
 subSkill:{
 use:{
 audio:'xinfu_jianjie',
@@ -28962,11 +28980,31 @@ filter(event,player){
 const huoji=player.getStorage('minijianjie_huoji'),lianhuan=player.getStorage('minijianjie_lianhuan');
 return huoji.length>0&&lianhuan.some(source=>huoji.includes(source)&&source.isIn()&&source.hasSkill('minijianjie'));
 },
+check(card){
+if(!lib.skill.minijianjie.getBigFire(get.event('player'))) return -1;
+return 1/(get.value(card)||0.5);
+},
 contentBefore(){
 player.awakenSkill('minijianjie_yeyan');
 player.addTempSkill('minijianjie_effect','minijianjie_yeyanAfter');
 },
-ai:{fireAttack:true},
+ai:{
+order:1,
+fireAttack:true,
+result:{
+target(player,target){
+if(player.hasUnknown()) return 0;
+const att=get.sgn(get.attitude(player,target));
+const targets=game.filterPlayer(target=>get.damageEffect(target,player,player,'fire')&&(!lib.skill.minijianjie.getBigFire(player)||(target.hp<=3&&!target.hasSkillTag('filterDamage',null,{player:player}))));
+if(!targets.includes(target)) return 0;
+if(lib.skill.minijianjie.getBigFire(player)){
+if(ui.selected.targets.length) return 0;
+if(!(targets.length==1||(att<0&&target.identity&&target.identity.indexOf('zhu')!=-1))) return 0;
+}
+return att*get.damageEffect(target,player,player,'fire');
+},
+},
+},
 },
 effect:{
 charlotte:true,
