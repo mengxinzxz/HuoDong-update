@@ -9746,8 +9746,8 @@ Mbaby_dalanmao:['male','shen',4,['minizuzhou','minimoyu','minisanlian'],[]],
 Mbaby_change:['female','shen','1/4',['minidaoyao','minibenyue'],[]],
 Mbaby_shen_taishici:['male','shen',4,['minidulie','minichongwei','minipowei'],[]],
 Mbaby_nvwa:['female','shen','69/159',['minibutian','minilianshi','minituantu'],[]],
-Mbaby_tunxingmengli:['female','shen',3,['minitunxing','minimengli'],['InitFilter:noZhuHp']],
-Mbaby_tunxingmenglix:['female','shen',3,['minitunxing','minimengli'],['InitFilter:noZhuHp']],
+Mbaby_tunxingmengli:['female','shen',4,['minitunxing','minimengli'],['InitFilter:noZhuHp']],
+Mbaby_tunxingmenglix:['female','shen',4,['minitunxing','minimengli'],['InitFilter:noZhuHp']],
 //喵
 Mmiao_caiwenji:['female','qun',3,['minimiaobeige','minimiaoduanchang','minidoumao'],['die_audio']],
 Mmiao_diaochan:['female','qun',3,['minimiaolijian','minimiaobiyue','minidoumao'],['die_audio']],
@@ -9771,7 +9771,7 @@ Mbaby_tunxingmengli:()=>false,
 },
 characterTitle:{
 Mbaby_shen_zhangjiao:'承欢杀神张角之原画<br>载OL神张角之内核',
-Mbaby_tunxingmengli:'白狸形态',
+Mbaby_tunxingmengli:'白狸形态（默认禁选）',
 Mbaby_tunxingmenglix:'黑狸形态',
 },
 card:{
@@ -31776,6 +31776,7 @@ return !info||(!info.zhuSkill&&!info.juexingji);
 if(skills.length) player.addAdditionalSkill('minitunxing',skills);
 }
 },
+derivation:'minitunxing_faq',
 },
 minimengli:{
 audio:2,
@@ -34224,6 +34225,8 @@ minituantu:'抟土',
 minituantu_info:'出牌阶段限一次，你可以从弃牌堆中获得你手牌中有的牌名的牌各一张。',
 minitunxing:'吞星',
 minitunxing_info:'锁定技，游戏开始时或你发动〖梦狸〗后，你从随机三张主公武将牌中选择一张，然后获得此武将牌上所有主公技和觉醒技外的技能直到你下次发动此技能。',
+minitunxing_faq:'〖吞星〗将池',
+minitunxing_faq_info:'活动武将扩展页面自定义欢杀〖评鉴〗将池的全部武将（未自定义将池/联机模式默认为欢乐三国杀全武将）。',
 minitunxing_append:'<span style="font-family:yuanli">〖吞星〗将池：<br>活动武将扩展页面自定义欢杀〖评鉴〗将池的全部武将（未自定义将池/联机模式默认为欢乐三国杀全武将）。</span>',
 minimengli:'梦狸',
 minimengli_info:'锁定技，当你的体力值发生变化后，若你变化前和变化后的体力值与3的大小关系不同，则若你有吞星梦狸·白/吞星梦狸·黑的武将牌且你的体力值大于/小于等于3，则你将武将牌切换为吞星梦狸·黑/吞星梦狸·白，然后你摸一张牌。',
