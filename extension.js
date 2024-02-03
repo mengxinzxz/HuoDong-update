@@ -13917,7 +13917,7 @@ trigger:{player:'phaseZhunbeiBegin'},
 direct:true,
 content:function(){
 'step 0'
-player.chooseTarget(get.prompt2('minijieyue')).set('ai',target=>{
+player.chooseTarget(get.prompt2('minijieyue'),lib.filter.notMe).set('ai',target=>{
 var player=_status.event.player;
 return function(player,target){
 var max=0;
@@ -33239,7 +33239,7 @@ miniyuejian_info:'你的手牌上限+X（X为你的体力上限）。当你需�
 minixiayuan:'狭援',
 minixiayuan_info:'每轮限一次，一名其他角色进入濒死状态时，你可以弃置至多两张牌并令其回复等量的体力。',
 minijieyue:'节钺',
-minijieyue_info:'准备阶段，你可以令一名角色摸一张牌，然后选择一个军令令其选择是否执行。若其执行，你摸一张牌；若其不执行，你摸三张牌，且其本回合受到的伤害+1。',
+minijieyue_info:'准备阶段，你可以令一名其他角色摸一张牌，然后选择一个军令令其选择是否执行。若其执行，你摸一张牌；若其不执行，你摸三张牌，且其本回合受到的伤害+1。',
 minijieyue_faq:'关于军令',
 minijieyue_faq_info:'<br>系统随机对发起者展示两个军令，发起者须选择其中一个军令，令执行者选择是否执行。',
 //蜀
