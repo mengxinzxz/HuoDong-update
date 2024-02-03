@@ -28754,12 +28754,13 @@ expose:0.25,
 },
 minizecai:{
 audio:'dczecai',
+derivation:'minirejizhi',
 content:function*(event,map){
 const player=map.player,targetx=lib.skill.dczecai.getMax();
 const trigger=map.trigger;
 let str='令一名其他角色于本轮内获得〖集智〗';
 if(targetx) str+=('；若选择的目标为'+get.translation(targetx)+'，则其获得一个额外的回合');
-const result=yield player.chooseTarget(get.prompt('dczecai'),str).set('ai',target=>{
+const result=yield player.chooseTarget(get.prompt('minizecai'),str).set('ai',target=>{
 const player=get.event('player'),targetx=get.event('targetx');
 if(target!=targetx) return 0;
 return get.attitude(player,target);
@@ -28768,7 +28769,7 @@ if(result.bool){
 const target=result.targets[0];
 player.logSkill('minizecai',target);
 player.awakenSkill('minizecai');
-target.addAdditionalSkill('dczecai_effect','rejizhi');
+target.addAdditionalSkill('dczecai_effect','minirejizhi');
 target.addTempSkill('dczecai_effect','roundStart');
 if(target==targetx){
 const evt=trigger._trigger;
