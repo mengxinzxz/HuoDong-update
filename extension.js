@@ -28855,15 +28855,15 @@ usable:1,
 async content(event,trigger,player){
 const targets=event.targets;
 const skill=lib.skill.minijianjie,bool1=skill.hasMark('huoji',player,targets[0]),bool2=skill.hasMark('lianhuan',player,targets[0]);
-let skill2;
+let mark;
 if(bool1&&bool2){
 const {result:{control}}=await player.chooseControl('龙印','凤印').set('prompt','选择要移动的“印”');
-if(control) skill2=control;
+if(control) mark=control;
 }
-else skill2=(bool1?'龙印':'凤印');
-if(skill2){
-skill2.removeMark(mark,player,targets[0]);
-skill2.addMark(mark,player,targets[1]);
+else mark=(bool1?'龙印':'凤印');
+if(mark){
+skill.removeMark(mark,player,targets[0]);
+skill.addMark(mark,player,targets[1]);
 await game.asyncDelayx();
 }
 },
