@@ -16621,7 +16621,7 @@ return check;
 }).set('ai',button=>1+Math.random());
 'step 1'
 if(result.bool){
-player.logSkill('minihuoji');
+player.logSkill(event.name);
 trigger.getParent().dialog.close();
 game.addVideo('cardDialog',null,trigger.getParent().videoId);
 game.broadcast('closeDialog',trigger.getParent().videoId);
@@ -28862,6 +28862,7 @@ if(control) mark=control;
 }
 else mark=(bool1?'龙印':'凤印');
 if(mark){
+mark=(mark=='龙印'?'huoji':'lianhuan');
 skill.removeMark(mark,player,targets[0]);
 skill.addMark(mark,player,targets[1]);
 await game.asyncDelayx();
@@ -28912,10 +28913,11 @@ huoji:{
 marktext:'龙',
 intro:{
 name:'龙印',
-content:'<li>①出牌阶段限三次，你可以将一张红色牌当作【火攻】使用。②当你使用【火攻】需要弃牌时，你可以观看牌堆顶的四张牌，选择其中一张符合要求的牌作为需要弃置的牌，然后将其余的牌放回牌堆顶。<br><li>若你同时拥有“凤印”，则你视为拥有技能〖业炎〗。（发动〖业炎〗时，弃置所有“龙印”和“凤印”）',
+content:'<li>①出牌阶段限三次，你可以将一张红色牌当作【火攻】使用。②当你使用【火攻】需要弃牌时，你可以观看牌堆顶的四张牌，选择其中一张符合要求的牌作为需要弃置的牌，然后将其余的牌放回牌堆顶。<br><li>若你同时拥有“凤印”，则你视为拥有技能〖业炎〗。',
 },
 charlotte:true,
 inherit:'minihuoji',
+audio:false,
 filter(event,player){
 const storage=player.getStorage('minijianjie_huoji');
 if(!storage.some(source=>source.isIn()&&source.hasSkill('minijianjie'))) return false;
@@ -28925,7 +28927,7 @@ group:['minijianjie_yeyan','minijianjie_viewAs'],
 },
 viewAs:{
 inherit:'rehuoji',
-audio:'huoji',
+audio:false,
 viewAsFilter(player){
 const storage=player.getStorage('minijianjie_huoji');
 if(!storage.some(source=>source.isIn()&&source.hasSkill('minijianjie'))) return false;
@@ -28937,10 +28939,11 @@ lianhuan:{
 marktext:'凤',
 intro:{
 name:'凤印',
-content:'<li>出牌阶段限三次。你可以将一张♣牌当作【铁索连环】使用或重铸。<br><li>若你同时拥有“龙印”，则你视为拥有技能〖业炎〗。（发动〖业炎〗时，弃置所有“龙印”和“凤印”）',
+content:'<li>出牌阶段限三次。你可以将一张♣牌当作【铁索连环】使用或重铸。<br><li>若你同时拥有“龙印”，则你视为拥有技能〖业炎〗。',
 },
 inherit:'lianhuan',
 charlotte:true,
+audio:false,
 filter(event,player){
 const storage=player.getStorage('minijianjie_lianhuan');
 if(!storage.some(source=>{
@@ -28954,6 +28957,7 @@ group:'minijianjie_yeyan',
 },
 yeyan:{
 inherit:'yeyan',
+audio:false,
 filter(event,player){
 const huoji=player.getStorage('minijianjie_huoji'),lianhuan=player.getStorage('minijianjie_lianhuan');
 return huoji.length>0&&lianhuan.some(source=>huoji.includes(source)&&source.isIn()&&source.hasSkill('minijianjie'));
