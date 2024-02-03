@@ -50,12 +50,13 @@ game.bolShowNewPack=function(){
 var HuoDong_update=[
 '/setPlayer/',
 'bugfix',
-'添加欢杀武将：黄承彦、司马徽',
+'添加欢杀武将：黄承彦、司马徽、吞星梦狸',
 'To be continued...',
 ];
 //更新武将
 var HuoDong_players=[
-'Mbaby_dc_huangchengyan','Mbaby_simahui',
+'Mbaby_dc_huangchengyan','Mbaby_simahui','Mbaby_tunxingmengli',
+'Mbaby_tunxingmenglix',
 ];
 //加载
 var dialog=ui.create.dialog(
@@ -9485,7 +9486,7 @@ MiNi_wu:['Mbaby_quancong','Mbaby_yufan','Mbaby_dc_sunru','Mbaby_sunxiu','Mbaby_z
 MiNi_qun:['Mbaby_dc_huangchengyan','Mbaby_simahui','Mbaby_tw_mateng','Mbaby_laiyinger','Mbaby_sp_kongrong','Mbaby_zhujun','Mbaby_gongsunyuan','Mbaby_sp_zhangliao','Mbaby_sp_ol_zhanghe','Mbaby_guotufengji','Mbaby_yanfuren','Mbaby_tangji','Mbaby_caojie','Mbaby_liangxing','Mbabysp_zhenji','Mbaby_caoxing','Mbaby_sp_menghuo','Mbaby_wangrong','Mbaby_hetaihou','Mbaby_sp_taishici','Mbaby_zhangji','Mbaby_dongbai','Mbaby_beimihu','Mbaby_chunyuqiong','Mbaby_zhangqiying','Mbaby_fuhuanghou','Mbaby_liuxie','Mbaby_quyi','Mbaby_jsp_huangyueying','Mbaby_sp_machao','Mbaby_lijue','Mbaby_panfeng','Mbaby_liuzhang','Mbaby_jiaxu','Mbaby_zhangbao','Mbaby_zhangliang','Mbaby_gaoshun','Mbaby_caifuren','Mbaby_xuyou','Mbaby_gongsunzan','Mbaby_pangde','Mbaby_jushou','Mbaby_liru','Mbaby_dongzhuo','Mbaby_zhangjiao','Mbaby_huatuo','Mbaby_lvbu','Mbaby_diaochan','Mbaby_sp_diaochan','Mbaby_huaxiong','Mbaby_yuji','Mbaby_yanwen','Mbaby_caiwenji','Mbaby_liubiao','Mbaby_yuanshao','Mbaby_yuanshu','Mbaby_chengong','Mbaby_zuoci'],
 MiNi_shen:['Mbaby_shen_taishici','Mbaby_shen_diaochan','Mbaby_shen_daxiaoqiao','Mbaby_shen_zhenji','Mbaby_shen_guojia','Mbaby_shen_huatuo','Mbaby_shen_dianwei','Mbaby_shen_lvbu','Mbaby_shen_zhugeliang','Mbaby_shen_lvmeng','Mbaby_shen_zhouyu','Mbaby_shen_guanyu','Mbaby_shen_liubei','Mbaby_shen_caocao','Mbaby_shen_zhangliao','Mbaby_shen_sunquan','Mbaby_shen_simayi','Mbaby_shen_zhaoyun','Mbaby_shen_ganning','Mbaby_shen_luxun'],
 MiNi_change:['Mbaby_re_nanhualaoxian','Mbaby_re_sunyi','Mbaby_zhaoxiang','Mbaby_xushao','Mbaby_shen_zhangjiao','Mbaby_baosanniang'],
-MiNi_shengzhiyifa:['Mbaby_sunwukong','Mbaby_dalanmao','Mbaby_libai','Mbaby_change','Mbaby_nvwa'],
+MiNi_shengzhiyifa:['Mbaby_sunwukong','Mbaby_dalanmao','Mbaby_libai','Mbaby_change','Mbaby_nvwa','Mbaby_tunxingmengli','Mbaby_tunxingmenglix'],
 MiNi_sbCharacter:['Mbaby_sb_liubei','Mbaby_sb_caocao','Mbaby_sb_huanggai','Mbaby_sb_yuanshao','Mbaby_sb_yujin'],
 MiNi_miaoKill:['Mmiao_caiwenji','Mmiao_diaochan','Mmiao_caifuren','Mmiao_zhangxingcai','Mmiao_zhurong','Mmiao_huangyueying','Mmiao_daqiao','Mmiao_wangyi','Mmiao_zhangchunhua','Mmiao_zhenji','Mmiao_sunshangxiang','Mmiao_xiaoqiao'],
 },
@@ -9745,6 +9746,8 @@ Mbaby_dalanmao:['male','shen',4,['minizuzhou','minimoyu','minisanlian'],[]],
 Mbaby_change:['female','shen','1/4',['minidaoyao','minibenyue'],[]],
 Mbaby_shen_taishici:['male','shen',4,['minidulie','minichongwei','minipowei'],[]],
 Mbaby_nvwa:['female','shen','69/159',['minibutian','minilianshi','minituantu'],[]],
+Mbaby_tunxingmengli:['female','shen',3,['minitunxing','minimengli'],['InitFilter:noZhuHp']],
+Mbaby_tunxingmenglix:['female','shen',3,['minitunxing','minimengli'],['InitFilter:noZhuHp']],
 //喵
 Mmiao_caiwenji:['female','qun',3,['minimiaobeige','minimiaoduanchang','minidoumao'],['die_audio']],
 Mmiao_diaochan:['female','qun',3,['minimiaolijian','minimiaobiyue','minidoumao'],['die_audio']],
@@ -9763,8 +9766,13 @@ characterIntro:{
 Mbaby_change:'嫦娥，中国古代神话中的人物，又名恒我、恒娥、姮娥、常娥、素娥，羿之妻，因偷吃了不死药而飞升至月宫。嫦娥的故事最早出现在商朝卦书 《归藏》。而嫦娥奔月的完整故事最早记载于西汉《淮南子·览冥训》。东汉时期，嫦娥与羿的夫妻关系确立，而嫦娥在进入月宫后变成了捣药的蟾蜍。南北朝以后，嫦娥的形象回归为女儿身。汉画像中，嫦娥人头蛇身，头梳高髻，身着宽袖长襦，身后长尾上饰有倒钩状细短羽毛。南北朝以后，嫦娥的形象被描绘成绝世美女。南朝陈后主陈叔宝曾把宠妃张丽华比作嫦娥。唐朝诗人白居易曾用嫦娥夸赞邻家少女不可多得的容貌。',
 Mbaby_nvwa:'女娲，中国上古神话中的创世女神。又称娲皇、女阴，史记女娲氏，是华夏民族人文先始，是福佑社稷之正神。相传女娲造人，一日中七十化变，以黄泥仿照自己抟土造人，创造人类社会并建立婚姻制度；因世间天塌地陷，于是熔彩石以补苍天，斩鳌足以立四极，留下了女娲补天的神话传说。女娲不但是补天救世的英雄和抟土造人的女神，还是一个创造万物的自然之神，神通广大化生万物，每天至少能创造出七十样东西。她开世造物，因此被称为大地之母，是被民间广泛而又长久崇拜的创世神和始母神。',
 },
+characterFilter:{
+Mbaby_tunxingmengli:()=>false,
+},
 characterTitle:{
 Mbaby_shen_zhangjiao:'承欢杀神张角之原画<br>载OL神张角之内核',
+Mbaby_tunxingmengli:'白狸形态',
+Mbaby_tunxingmenglix:'黑狸形态',
 },
 card:{
 miniyanxiao_card:{
@@ -31738,6 +31746,52 @@ return cards.length;
 result:{player:1},
 },
 },
+minitunxing:{
+onremove(player){
+if(player.additionalSkills&&player.additionalSkills.minitunxing&&player.additionalSkills.minitunxing.length) player.removeAdditionalSkill('minitunxing');
+},
+audio:'ext:活动武将/audio/skill:2',
+trigger:{
+global:'phaseBefore',
+player:['enterGame','logSkill'],
+},
+filter(event,player){
+if(event.name=='logSkill'&&event.skill!='minimengli') return false;
+return event.name!='phase'||game.phaseNumber==0;
+},
+forced:true,
+async content(event,trigger,player){
+lib.skill.minitunxing.onremove(player);
+const list=((!_status.connectMode&&lib.config.extension_活动武将_PingJianName)?lib.config.extension_活动武将_PingJianName:lib.skill.minipingjian.getList()).filter(name=>{
+if(!lib.character[name]) return false;
+return lib.character[name][4]&&lib.character[name][4].includes('zhu');
+}).randomGets(3);
+if(!list.length) return;
+const {result:{bool,links}}=await player.chooseButton(['###吞星：请选择获得一张武将牌###获得此武将牌上的所有主公技和觉醒技外的技能',[list,'character']],true).set('ai',button=>1+Math.random());
+if(bool){
+const name=links[0],skills=get.character(name,3).filter(skill=>{
+const info=get.info(skill);
+return !info||(!info.zhuSkill&&!info.juexingji);
+});
+if(skills.length) player.addAdditionalSkill('minitunxing',skills);
+}
+},
+},
+minimengli:{
+audio:2,
+trigger:{player:'changeHp'},
+filter(event,player){
+return get.sgn(player.hp-3.5)!=get.sgn(player.hp-3.5-event.num);
+},
+forced:true,
+async content(event,trigger,player){
+const name=('Mbaby_tunxingmengli'+(player.hp>3?'x':''));
+for(const namex of [player.name,player.name1,player.name2]){
+if(namex&&lib.character[namex]&&namex.indexOf('Mbaby_tunxingmengli')==0&&namex!=name) player.reinit(namex,name);
+}
+await player.draw();
+},
+},
 //喵
 //核心逗猫
 minidoumao:{
@@ -34058,6 +34112,8 @@ Mbaby_dalanmao:'欢杀大懒猫',
 Mbaby_change:'欢杀嫦娥',
 Mbaby_shen_taishici:'欢杀神太史慈',
 Mbaby_nvwa:'欢杀女娲',
+Mbaby_tunxingmengli:'吞星梦狸',
+Mbaby_tunxingmenglix:'吞星梦狸',
 miniwuqian:'无前',
 miniwuqian_info:'锁定技，当你于回合内第一次使用【杀】或【决斗】指定目标后，则你令此牌无视目标角色的防具且视为具有〖无双〗效果。',
 minishenfen:'神愤',
@@ -34166,6 +34222,11 @@ minilianshi:'炼石',
 minilianshi_info:'锁定技。①你的手牌上限始终为5。②当你使用、打出或弃置牌时，你记录这些牌的花色，然后若你已记录四种花色，则你摸一张牌并回复Y点体力，然后清除花色记录（Y为这些牌中的最后一张牌的点数）。',
 minituantu:'抟土',
 minituantu_info:'出牌阶段限一次，你可以从弃牌堆中获得你手牌中有的牌名的牌各一张。',
+minitunxing:'吞星',
+minitunxing_info:'锁定技，游戏开始时或你发动〖梦狸〗后，你从随机三张主公武将牌中选择一张，然后获得此武将牌上所有主公技和觉醒技外的技能直到你下次发动此技能。',
+minitunxing_append:'<span style="font-family:yuanli">〖吞星〗将池：<br>活动武将扩展页面自定义欢杀〖评鉴〗将池的全部武将（未自定义将池/联机模式默认为欢乐三国杀全武将）。</span>',
+minimengli:'梦狸',
+minimengli_info:'锁定技，当你的体力值发生变化后，若你变化前和变化后的体力值与3的大小关系不同，则若你有吞星梦狸·白/吞星梦狸·黑的武将牌且你的体力值大于/小于等于3，则你将武将牌切换为吞星梦狸·黑/吞星梦狸·白，然后你摸一张牌。',
 //喵
 Mmiao_caiwenji:'喵蔡琰',
 Mmiao_diaochan:'喵貂蝉',
