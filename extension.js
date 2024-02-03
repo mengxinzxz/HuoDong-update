@@ -42632,9 +42632,10 @@ if(result.bool){
 var list=result.links;
 _status.characterlist.removeArray(list);
 game.addVideo('skill',player,['qiexie',[list]])
-game.broadcastAll(function(list){
+game.broadcastAll(function(player,list){
+player.tempname.addArray(list);
 for(var name of list) lib.skill.qiexie.createCard(name);
-},list);
+},player,list);
 var cards=list.map(function(name){
 var card=game.createCard('qiexie_'+name,'none',get.infoMaxHp(lib.character[name][2]));
 return card;
