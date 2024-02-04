@@ -114,22 +114,22 @@ d:[
 ],
 };
 for(var name of Object.keys(lib.characterPack['extra'])){
-if(!Object.keys(rank.rarity).some(rarity=>rank.rarity[rarity].contains(name))){
+if(!Object.keys(rank.rarity).some(rarity=>rank.rarity[rarity].includes(name))){
 rank.rarity.legend.add(name);
 }
 }
 for(var name of Object.keys(lib.characterPack['sb'])){
-if(!Object.keys(rank.rarity).some(rarity=>rank.rarity[rarity].contains(name))){
+if(!Object.keys(rank.rarity).some(rarity=>rank.rarity[rarity].includes(name))){
 rank.rarity.legend.add(name);
 }
 }
 for(var name of Object.keys(lib.characterPack['sp'])){
-if(!Object.keys(rank.rarity).some(rarity=>rank.rarity[rarity].contains(name))){
-if(lib.characterSort.sp.sp_qifu.contains(name)) rank.rarity.legend.add(name);
+if(!Object.keys(rank.rarity).some(rarity=>rank.rarity[rarity].includes(name))){
+if(lib.characterSort.sp.sp_qifu.includes(name)) rank.rarity.legend.add(name);
 }
 }
 for(var name of Object.keys(lib.characterPack['yingbian'])){
-if(!Object.keys(rank.rarity).some(rarity=>rank.rarity[rarity].contains(name))){
+if(!Object.keys(rank.rarity).some(rarity=>rank.rarity[rarity].includes(name))){
 rank.rarity.rare.add(name);
 }
 }
