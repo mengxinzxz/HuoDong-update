@@ -28934,17 +28934,6 @@ intro:{
 name:'龙印',
 content:'<li>①出牌阶段限三次，你可以将一张红色牌当作【火攻】使用。②当你使用【火攻】需要弃牌时，你可以观看牌堆顶的四张牌，选择其中一张符合要求的牌作为需要弃置的牌，然后将其余的牌放回牌堆顶。<br><li>若你同时拥有“凤印”，则你视为拥有技能〖业炎〗。',
 },
-charlotte:true,
-inherit:'minihuoji',
-audio:false,
-filter(event,player){
-const storage=player.getStorage('minijianjie_huoji');
-if(!storage.some(source=>source.isIn()&&source.hasSkill('minijianjie'))) return false;
-return lib.skill.minihuoji.filter(event,player);
-},
-group:['minijianjie_yeyan','minijianjie_viewAs'],
-},
-viewAs:{
 inherit:'rehuoji',
 audio:false,
 viewAsFilter(player){
@@ -28953,6 +28942,18 @@ if(!storage.some(source=>source.isIn()&&source.hasSkill('minijianjie'))) return 
 return player.hasCard(card=>get.color(card)=='red','she');
 },
 usable:3,
+group:['minijianjie_yeyan','minijianjie_viewAs'],
+},
+viewAs:{
+charlotte:true,
+inherit:'minihuoji',
+audio:false,
+filter(event,player){
+const storage=player.getStorage('minijianjie_huoji');
+if(!storage.some(source=>source.isIn()&&source.hasSkill('minijianjie'))) return false;
+return lib.skill.minihuoji.filter(event,player);
+},
+group:'minijianjie_yeyan',
 },
 lianhuan:{
 marktext:'凤',
