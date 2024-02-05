@@ -1640,8 +1640,6 @@ player.getStat().card.sha--;
 }
 };
 lib.translate.clanzhanding_info='你可以将任意张牌当做【杀】使用并你令你的手牌上限-1。你以此法使用的【杀】结算结束后，若你因此【杀】造成过伤害，则你将手牌摸至手牌上限，否则你令此【杀】不计入次数限制。';
-//王粲
-delete lib.skill.xinfu_denglou.marktext;
 //神张角
 delete lib.skill.yizhao.intro.markcount;
 lib.skill.yizhao.filter=function(event,player){
