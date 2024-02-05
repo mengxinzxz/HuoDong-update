@@ -44488,7 +44488,8 @@ fh_zhi:'<span style="font-family: yuanli">本包前言：</span>'+
 '<br><span style="font-family: yuanli">2023年活动武将年底大活，开启</span>'+
 '<br><span style="font-family: yuanli">此包游戏将会加入额外牌堆机制</span>'+
 '<br><span style="font-family: yuanli">，游戏牌堆会加入一张方片12的</span>'+
-'<br><span style="font-family: yuanli">银月枪，此包建议单独开启使用</span>'+
+'<br><span style="font-family: yuanli">'+get.bolInformX('银月枪','其他角色的回合结束时，若你本回合失去过手牌，则你可以对一名攻击范围内本回合获得过牌的角色使用一张【杀】。')+'，此包建议单独开启使</span>'+
+'<br><span style="font-family: yuanli">用</span>'+
 '<br>'+
 '<br>'+
 '飞鸿·智',
