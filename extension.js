@@ -49996,93 +49996,57 @@ ai:{combo:'old_sankuang'},
 },
 //荀采
 old_lieshi:{
-hiddenCard:function(player,name){
-if(!player.countCards('ej')) return false;
-var list=[];
-for(var name of lib.inpile){
-if(get.type(name)!='delay') continue;
-}
-for(var i of list){
-if(game.hasPlayer(function(current){
-return current.countCards('j',function(card){
-return card.name==i;
-});
-})) list.remove(i);
-}
-if(list.includes(name)&&lib.inpile.includes(name)) return true;
+hiddenCard(player,name){
+return lib.inpile.filter(name=>get.type(name)=='delay'&&!game.hasPlayer(target=>{
+return target.hasJudge(name);
+})&&player.countCards('ej',card=>game.hasPlayer(target=>{
+return player.canUse(get.autoViewAs({name:name},[card]),target);
+}))).includes(name);
 },
 audio:'clanlieshi',
 enable:'chooseToUse',
-filter:function(event,player){
-if(!player.countCards('ej')||event.old_lieshi) return false;
-var list=[];
-for(var name of lib.inpile){
-if(get.type(name)!='delay') continue;
-if(event.filterCard({name:name},player,event)) list.push(name);
-}
-for(var i of list){
-if(game.hasPlayer(function(current){
-return current.countCards('j',function(card){
-return card.name==i;
-});
-})) list.remove(i);
-}
-return list.length;
+filter(event,player){
+if(event.old_lieshi) return false;
+return lib.inpile.some(name=>lib.skill.old_lieshi.hiddenCard(player,name));
 },
 chooseButton:{
-dialog:function(event,player){
-var list=[];
-for(var name of lib.inpile){
-if(get.type(name)!='delay') continue;
-if(event.filterCard({name:name},player,event)) list.push(name);
-}
-for(var i of list){
-if(game.hasPlayer(function(current){
-return current.countCards('j',function(card){
-return card.name==i;
-});
-})) list.remove(i);
-}
+dialog(event,player){
+const list=lib.inpile.filter(name=>lib.skill.old_lieshi.hiddenCard(player,name));
 return ui.create.dialog('烈誓',[list,'vcard']);
 },
-filter:function(button,player){
-var evt=_status.event.getParent();
-return evt.filterCard({
-name:button.link[2],
-},player,evt);
+filter(button,player){
+const evt=_status.event.getParent();
+return evt.filterCard({name:button.link[2]},player,evt);
 },
-check:function(button){
+check(button){
 return _status.event.player.getUseValue({name:button.link[2]});
 },
-backup:function(links){
+backup(links,player){
 return {
 viewAs:{name:links[0][2]},
 filterCard:()=>false,
 selectCard:-1,
-precontent:function(){
-'step 0'
-player.choosePlayerCard(player,'ej','请选择'+get.translation(event.result.card)+'转化的卡牌').set('ai',function(button){
+*precontent(event,map){
+const player=map.player;
+const result=yield player.choosePlayerCard(player,'ej','请选择'+get.translation(event.result.card)+'转化的卡牌').set('ai',button=>{
 return get.value(button.link)*(get.position(button.link)=='e'?-1:1);
 });
-'step 1'
 if(result.cards){
 player.logSkill('old_lieshi');
+player.addTempSkill('old_lieshi_end');
 event.result.cards=result.cards;
 }
 else{
-var evt=event.getParent();
+const evt=event.getParent();
 evt.old_lieshi=true;
 evt.goto(0);
 delete evt.openskilldialog;
 return;
 }
 },
-onuse:function(event,player){
-player.addTempSkill('old_lieshi_end');
-},
 }
 },
-prompt:function(links){
+prompt(links,player){
 return '请选择'+get.translation(links[0][2])+'的目标';
 },
 },
@@ -50094,44 +50058,40 @@ subSkill:{
 end:{
 charlotte:true,
 trigger:{player:'useCardAfter'},
-filter:function(event,player){
+filter(event,player){
 return event.skill=='old_lieshi_backup';
 },
 direct:true,
-content:function(){
-'step 0'
-var target=trigger.targets[0];
-event.target=target;
+*content(event,map){
+const player=map.player,trigger=map.trigger,target=trigger.targets[0];
+const bool=player.storage.old_huanyin;
 player.line(target);
-if(player.storage.old_huanyin){event.goto();return;}
-var list=['受到1点火属性伤害','弃置所有【闪】','弃置所有【杀】'],choice=[];
-if(player.storage.old_huanyin){
-list.reverse();
+let choiceList=['受到1点火属性伤害','弃置所有【闪】','弃置所有【杀】'],choice=[];
+if(bool){
+choiceList.reverse();
 if(player.countCards('h',{name:'sha'})) choice.push('选项一');
-else list[0]='<span style="opacity:0.5">'+list[0]+'（无法执行）</span>';
+else choiceList[0]='<span style="opacity:0.5">'+choiceList[0]+'（无法执行）</span>';
 if(player.countCards('h',{name:'shan'})) choice.push('选项二');
-else list[1]='<span style="opacity:0.5">'+list[1]+'（无法执行）</span>';
+else choiceList[1]='<span style="opacity:0.5">'+choiceList[1]+'（无法执行）</span>';
 choice.push('选项三');
 }
 else{
 choice.push('选项一');
 if(player.countCards('h',{name:'shan'})) choice.push('选项二');
-else list[1]='<span style="opacity:0.5">'+list[1]+'（无法执行）</span>';
+else choiceList[1]='<span style="opacity:0.5">'+choiceList[1]+'（无法执行）</span>';
 if(player.countCards('h',{name:'sha'})) choice.push('选项三');
-else list[2]='<span style="opacity:0.5">'+list[2]+'（无法执行）</span>';
+else choiceList[2]='<span style="opacity:0.5">'+choiceList[2]+'（无法执行）</span>';
 }
-if(choice.length==1) event._result={bool:true,control:choice[0]};
-else player.chooseControl(choice).set('choiceList',list).set('ai',function(){
-var choice=_status.event.choice,player=_status.event.player;
-if(!player.storage.old_huanyin) return choice[choice.length-1];
-return choice[choice.length-2];
-}).set('prompt','请选择一项执行，然后'+get.translation(target)+'执行后一项').set('choice',choice);
-'step 1'
-var index=['选项一','选项二','选项三'].indexOf(result.control);
-var list=[[player,index],[target,index+1]];
-var bool=player.storage.old_huanyin;
-for(var CT of list){
-var current=CT[0],num=CT[1];
+if(choice.length){
+const result=yield player.chooseControl(choice).set('choiceList',choiceList).set('ai',()=>{
+if(get.event('controls').length==1) return get.event('controls')[0];
+var choice=get.event('choice'),player=get.event('player');
+return choice[choice.length-player.storage.old_huanyin?2:1];
+}).set('prompt','烈誓：请选择一项执行，然后'+get.translation(target)+'执行后一项').set('choice',choice);
+const index=['选项一','选项二','选项三'].indexOf(result.control);
+const list=[[player,index],[target,index+1]];
+for(const CT of list){
+const current=CT[0],num=CT[1];
 if(num<=2){
 switch(num){
 case 0:
@@ -50147,6 +50107,11 @@ else current.discard(current.getCards('h',{name:'sha'}));
 break;
 }
 }
+}
+}
+else{
+player.chat('无法执行？！');
+game.log('但',player,'无法执行其中的任何选项！');
 }
 },
 },
