@@ -320,7 +320,7 @@ game.HDaddCharacter('old_xushao',['male','qun',3,['oldpingjian'],['ext:活动武
 game.HDaddCharacter('old_huaman',['female','shu',3,['hmmanyi','old_mansi','old_souying','old_zhanyuan'],['ext:活动武将/image/character/old_huaman.jpg']],'old');
 game.HDaddCharacter('old_ol_xiaoqiao',['female','wu',3,['oltianxiang','rehongyan'],['ext:活动武将/image/character/old_ol_xiaoqiao.jpg']],'old');
 game.HDaddCharacter('old_zhanghe',['male','wei',4,['qiaobian','bilibili_zhiyinxian'],['ext:活动武将/image/character/old_zhanghe.jpg']],'old');
-game.HDaddCharacter('old_ol_sb_guanyu',['male','shu',4,['olsbfumeng','olsbguidao'],['ext:活动武将/image/character/old_ol_sb_guanyu.jpg']],'old');
+game.HDaddCharacter('old_ol_sb_guanyu',['male','shu',4,['olsbfumeng','olsbguidao'],['ext:活动武将/image/character/old_ol_sb_guanyu.jpg','die_audio']],'old');
 game.HDaddCharacter('old_zhugejin',['male','wu',3,['olhongyuan','bolhuanshi','olmingzhe'],['ext:活动武将/image/character/old_zhugejin.jpg']],'old');
 game.HDaddCharacter('old_sp_sunshao',['male','wu',3,['refubi','rezuici'],['ext:活动武将/image/character/old_sp_sunshao.jpg']],'old');
 game.HDaddCharacter('old_liuzhang',['male','qun',3,['xiusheng','yinlang','huaibi'],['zhu','ext:活动武将/image/character/old_liuzhang.jpg']],'old');
