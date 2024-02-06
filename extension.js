@@ -2783,174 +2783,6 @@ else delete player.storage.spshicai2;
 },
 };
 lib.translate.spshicai2_mark='牌堆顶';
-//淳于琼
-lib.skill.reliangying={
-audio:2,
-trigger:{player:'phaseDiscardBegin'},
-direct:true,
-content:function(){
-'step 0'
-var map={};
-var list=[];
-for(var i=1;i<=player.countMark('recangchu');i++){
-var cn=get.cnNumber(i,true);
-map[cn]=i;
-list.push(cn);
-}
-list.push('cancel2');
-event.map=map;
-player.chooseControl(list).set('prompt',get.prompt('reliangying')).set('prompt2','摸至多'+get.cnNumber(player.countMark('recangchu'))+'张牌，然后交给等量的角色各一张牌').set('ai',function(){
-var player=_status.event.player;
-var num=Math.min(player.countMark('recangchu'),game.countPlayer(function(current){
-return get.attitude(player,current)>0;
-}));
-if(num>0) return get.cnNumber(num,true);
-return 'cancel2';
-});
-'step 1'
-event.list=[];
-if(result.control=='cancel2'){event.finish();return;}
-player.logSkill('reliangying');
-var num=event.map[result.control]||1;
-event.num=num;
-player.draw(num);
-'step 2'
-var num=Math.min(event.num,player.countCards('he'),game.players.length-1);
-var next=player.chooseCardTarget({
-prompt:'粮营：将'+get.cnNumber(num-1)+'至'+get.cnNumber(num)+'张牌交给其他角色',
-position:'he',
-animate:false,
-filterCard:function(card){
-for(var CT of _status.event.list){
-if(CT.card==card) return false;
-}
-return true;
-},
-filterTarget:function(card,player,target){
-for(var CT of _status.event.list){
-if(CT.target==target) return false;
-}
-return target!=player;
-},
-ai1:function(card){
-if(card.name=='shan') return 1;
-return Math.random();
-},
-ai2:function(target){
-var player=_status.event.player;
-return get.attitude(player,target);
-},
-});
-next.set('list',event.list);
-if(num-event.list.length>1) next.set('forced',true);
-'step 3'
-if(result.bool){
-var num=Math.min(event.num,player.countCards('he'),game.players.length-1);
-var CT={
-target:result.targets[0],
-card:result.cards[0],
-};
-player.addGaintag(result.cards,'olsujian_given');
-event.list.push(CT);
-if(num-event.list.length>=1) event.goto(2);
-}
-else if(!event.list.length) event.finish();
-'step 4'
-var list=[];
-var cards=[];
-for(var obj of event.list){
-cards.push(obj.card);
-list.push([obj.target,obj.card]);
-player.line(obj.target);
-}
-game.loseAsync({
-gain_list:list,
-player:player,
-cards:cards,
-giver:player,
-animate:'giveAuto',
-}).setContent('gaincardMultiple');
-},
-},
-lib.skill.sushou={
-audio:2,
-trigger:{player:'phaseDiscardBegin'},
-frequent:true,
-content:function(){
-'step 0'
-var num=1;
-if(player.countMark('cangchu')>0){
-num+=player.countMark('cangchu');
-}
-player.draw(num);
-if(!game.hasPlayer(function(target){
-return player.getFriends().includes(target);
-})){
-event.finish();
-return;
-}
-event.list=[];
-'step 1'
-player.chooseCardTarget({
-prompt:'宿守：你可以交给友方角色各一张牌',
-selectCard:1,
-filterCard:function(card){
-for(var i=0;i<_status.event.list.length;i++){
-if(_status.event.list[i].card==card) return false;
-}
-return true;
-},
-position:'he',
-selectTarget:1,
-animate:false,
-filterTarget:function(card,player,target){
-if(!player.getFriends().includes(target)) return false;
-for(var i=0;i<_status.event.list.length;i++){
-if(_status.event.list[i].target==target) return false;
-}
-return true;
-},
-ai1:function(card){
-if(card.name=='shan') return 1;
-return Math.random();
-},
-ai2:function(target){
-var player=_status.event.player;
-return get.attitude(player,target);
-},
-}).set('list',event.list);
-'step 2'
-if(result.bool){
-var CT={
-target:result.targets[0],
-card:result.cards[0],
-};
-player.addGaintag(result.cards,'olsujian_given');
-event.list.push(CT);
-if(game.hasPlayer(function(target){
-for(var i=0;i<event.list.length;i++){
-if(event.list[i].target==target) return false;
-}
-return player.getFriends().includes(target);
-})) event.goto(1);
-}
-'step 3'
-var list=[];
-var cards=[];
-for(var obj of event.list){
-cards.push(obj.card);
-list.push([obj.target,obj.card]);
-player.line(obj.target);
-}
-game.loseAsync({
-gain_list:list,
-player:player,
-cards:cards,
-giver:player,
-animate:'giveAuto',
-}).setContent('gaincardMultiple');
-},
-};
 
 //precT
 //描述优化/修复
@@ -23293,12 +23125,13 @@ if(!player.storage.miniyaoming_kanon) player.storage.miniyaoming_kanon={'摸牌'
 minishenxing:{
 audio:'reshenxing',
 enable:'phaseUse',
+usable:20,
 async content(event,trigger,player){
 const num=Math.min(2,player.getStat('skill').minishenxing-1);
 await player.draw();
 if(num){
 await player.chooseToDiscard('he',num,true);
-if(!player.countCards('he')) player.tempBanSkill('minishenxing','phaseUseAfter',false);
+if(!player.countDiscardableCards(player,'he')) player.tempBanSkill('minishenxing','phaseUseAfter',false);
 }
 },
 ai:{
@@ -33859,7 +33692,7 @@ minizhiyan_info:'结束阶段开始时，你可令一名角色正面朝上摸一
 miniyaoming:'邀名',
 miniyaoming_info:'①每回合每项限两次。当你造成或受到伤害时，你可以：⒈令一名角色摸一张牌；⒉弃置一名其他角色的一张手牌；⒊令一名角色摸两张牌，然后弃置两张牌。②回合结束时，若你本回合未发动过〖邀名①〗，则你可以发动〖邀名①〗。',
 minishenxing:'慎行',
-minishenxing_info:'出牌阶段，你可以摸一张牌，然后弃置X张牌（X为你本阶段此前发动此技能的次数，且X至多为2）。若你因此弃置所有牌，则本阶段此技能失效。',
+minishenxing_info:'出牌阶段限20次，你可以摸一张牌，然后弃置X张牌（X为你本阶段此前发动此技能的次数，且X至多为2）。然后若你没有可弃置的牌，则本阶段此技能失效。',
 //群
 Mbaby_zuoci:'欢杀左慈',
 Mbaby_gaoshun:'欢杀高顺',
