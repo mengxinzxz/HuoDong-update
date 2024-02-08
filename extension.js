@@ -31938,7 +31938,7 @@ return card.minihuanshu&&!card.minihuanhua;
 },
 selectCard:2,
 check(card){
-if(ui.selected.cards[0].suit==card.suit) return 5+get.useful(card)*get.value(card);
+if(ui.selected.cards.length&&ui.selected.cards[0].suit==card.suit) return 5+get.useful(card)*get.value(card);
 return get.useful(card)*get.value(card);
 },
 complexCard:true,
