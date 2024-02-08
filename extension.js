@@ -31968,7 +31968,7 @@ limited:true,
 audio:2,
 enable:'phaseUse',
 async content(event,trigger,player){
-const num=Math.max(1,player.getDamagedHp());
+const num=Math.max(1,player.getDamagedHp()*2);
 player.awakenSkill('minihuanjing');
 await lib.skill.minihuanshu.GainContent(num,1,player);
 player.addTempSkill('minihuanjing_effect');
@@ -34461,7 +34461,7 @@ minihuanhua:'幻化',
 minihuanhua_tag:'已选择',
 minihuanhua_info:'每回合限两次，出牌阶段，你可选择一张未被〖幻化〗定向转化过的“幻术”牌和一张未被〖幻化〗选择过的非“幻术”牌，你将前者的牌名、属性、花色和点数转化为和后者一致，若两张牌的花色相同，你获得一张“幻术”牌。',
 minihuanjing:'幻境',
-minihuanjing_info:'限定技，出牌阶段，你可令本回合发动〖幻化〗的次数+X且你发动〖幻化〗可以选择“幻术”牌为转化目标卡牌，然后你获得X张“幻术”牌。（X为你已损失的体力值且X至少为1）',
+minihuanjing_info:'限定技，出牌阶段，你可令本回合发动〖幻化〗的次数+X且你发动〖幻化〗可以选择“幻术”牌为转化目标卡牌，然后你获得X张“幻术”牌。（X为你已损失的体力值的两倍且X至少为1）',
 //喵
 Mmiao_caiwenji:'喵蔡琰',
 Mmiao_diaochan:'喵貂蝉',
