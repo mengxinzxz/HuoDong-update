@@ -31949,6 +31949,7 @@ delay:false,
 async content(event,trigger,player){
 const cards=event.cards,suit=cards[0].suit;
 cards[0].minihuanhua=true;
+player.addGaintag([cards[1]],'minihuanhua_tag');
 game.addVideo('skill',player,['minihuanhua',[false,get.cardInfo(cards[0])]]);
 game.broadcastAll(cards=>{
 cards[0].init([cards[1].suit,cards[1].number,cards[1].name,cards[1].nature]);
