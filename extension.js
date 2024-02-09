@@ -28868,6 +28868,7 @@ yeyan:{
 inherit:'yeyan',
 audio:false,
 filter(event,player){
+if(player.storage.minijianjie_yeyan) return false;
 const huoji=player.getStorage('minijianjie_huoji'),lianhuan=player.getStorage('minijianjie_lianhuan');
 return huoji.length>0&&lianhuan.some(source=>huoji.includes(source)&&source.isIn()&&source.hasSkill('minijianjie'));
 },
@@ -31908,7 +31909,7 @@ content(){
 const cards=trigger.getg(player).filter(card=>card.minihuanshu);
 if(player.hasSkill('minihuanshu',null,false,false)){
 game.broadcastAll(cards=>{
-for(const card of cards) card.classList.add('glow');
+for(const card of cards) card.classList.add(card.minihuanhua?'minihuanhua-glow':'minihuanshu-glow');
 },cards);
 }
 else{
@@ -31953,6 +31954,8 @@ player.addGaintag([cards[1]],'minihuanhua_tag');
 game.addVideo('skill',player,['minihuanhua',[false,get.cardInfo(cards[0])]]);
 game.broadcastAll(cards=>{
 cards[0].init([cards[1].suit,cards[1].number,cards[1].name,cards[1].nature]);
+cards[0].classList.remove('minihuanshu-glow');
+cards[0].classList.add('minihuanhua-glow');
 },cards);
 if(suit==cards[1].suit) await lib.skill.minihuanshu.GainContent(1,1,player);
 },
@@ -34443,7 +34446,7 @@ minihuanshu_faq_info:(()=>{
 const list=[
 '“幻术”牌为本局游戏牌组中随机一张牌的镜像，此牌可进行常规牌可进行的任何一般操作。',
 '“幻术”牌不计入手牌上限，一名角色最多持有其体力上限两倍的“幻术”牌，超出的部分改为摸等量的牌',
-'“幻术”牌于手牌中时会具有幻术特效与常规牌进行高亮区分，其他角色无法识别处于“幻术”牌持有区域内的牌是否为“幻术”牌。',
+'已/未被〖幻化〗定向转化过的“幻术”牌呈现金/深蓝色与常规牌进行区分，其他角色无法识别处于“幻术”牌持有区域内的牌是否为“幻术”牌。',
 '无〖幻术〗技能的角色获得“幻术”牌后，“幻术”牌会被销毁。',
 ];
 return '<br><li>'+list.join('<br><li>');
@@ -34452,7 +34455,7 @@ minihuanshu_append:(()=>{
 const list=[
 '“幻术”牌为本局游戏牌组中随机一张牌的镜像，此牌可进行常规牌可进行的任何一般操作。',
 '一名角色最多持有其体力上限两倍的“幻术”牌，超出的部分改为摸等量的牌',
-'“幻术”牌于手牌中时会具有幻术特效与常规牌进行高亮区分，其他角色无法识别处于“幻术”牌持有区域内的牌是否为“幻术”牌。',
+'已/未被〖幻化〗定向转化过的“幻术”牌呈现金/深蓝色与常规牌进行区分，其他角色无法识别处于“幻术”牌持有区域内的牌是否为“幻术”牌。',
 '无〖幻术〗技能的角色获得“幻术”牌后，“幻术”牌会被销毁。',
 ];
 return '<span style="font-family: yuanli">关于“幻术”牌<br><li>'+list.join('<br><li>')+'</span>';
