@@ -31928,14 +31928,20 @@ minihuanhua:{
 audio:2,
 enable:'phaseUse',
 onChooseToUse(event){
-if(!game.online&&event.type=='phase'&&!event.minihuanhua_count) event.set('minihuanhua_count',event.player.getHistory('useSkill',evt=>evt.skill=='minihuanhua').length);
+if(!game.online&&event.type=='phase'&&!event.minihuanhua_count){
+const player=event.player;
+event.set('minihuanhua_count',[
+player.getHistory('useSkill',evt=>evt.skill=='minihuanhua').length,player.getCards('h',card=>card.minihuanshu&&!card.minihuanhua),
+player.getCards('h',card=>(player.countMark('minihuanjing_effect')||!card.minihuanshu)&&!card.hasGaintag('minihuanhua_tag'))
+]);
+}
 },
 filter(event,player){
-return event.minihuanhua_count<2+player.countMark('minihuanjing_effect')&&player.countCards('h',card=>card.minihuanshu&&!card.minihuanhua)&&player.countCards('h',card=>(player.countMark('minihuanjing_effect')||!card.minihuanshu)&&!card.hasGaintag('minihuanhua_tag'));
+const count=event.minihuanhua_count;
+return count[0]<2+player.countMark('minihuanjing_effect')&&count[1].length&&count[2].length;
 },
 filterCard(card,player){
-if(ui.selected.cards.length) return (player.countMark('minihuanjing_effect')||!card.minihuanshu)&&!card.hasGaintag('minihuanhua_tag');
-return card.minihuanshu&&!card.minihuanhua;
+return (get.event('minihuanhua_count')[1+ui.selected.cards.length]||[]).includes(card);
 },
 selectCard:2,
 check(card){
