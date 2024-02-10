@@ -50,14 +50,10 @@ game.bolShowNewPack=function(){
 var HuoDong_update=[
 '/setPlayer/',
 'bugfix',
-'添加欢杀武将：黄承彦、司马徽、吞星梦狸、马良、顾雍、神左慈、邹氏',
 'To be continued...',
 ];
 //更新武将
 var HuoDong_players=[
-'Mbaby_dc_huangchengyan','Mbaby_simahui','Mbaby_tunxingmengli',
-'Mbaby_tunxingmenglix','Mbaby_maliang','Mbaby_re_guyong',
-'Mbaby_shen_zuoci','Mbaby_zoushi',
 ];
 //加载
 var dialog=ui.create.dialog(
@@ -13715,7 +13711,7 @@ target.recover(result.cards.length);
 subSkill:{used:{charlotte:true}},
 },
 minijieyue:{
-derivation:['minijieyue_faq','minijieyue_junling1','minijieyue_junling2','minijieyue_junling3','minijieyue_junling4'],
+derivation:['minijieyue_junling1','minijieyue_junling2','minijieyue_junling3','minijieyue_junling4'],
 getJunLingEffect:(player,target,junling)=>{
 var att=get.attitude(player,target);
 switch(junling){
@@ -13769,7 +13765,7 @@ var target=result.targets[0];
 event.target=target;
 player.logSkill('minijieyue',target);
 target.draw();
-event.cards=[1,2,3,4].randomGets(2).sort((a,b)=>a-b).map(num=>'minijieyue_junling'+num);
+event.cards=[1,2,3,4]/*.randomGets(2).sort((a,b)=>a-b)*/.map(num=>'minijieyue_junling'+num);
 }
 else event.finish();
 'step 2'
@@ -31840,16 +31836,16 @@ await player.draw();
 minihuanshu:{
 audio:2,
 trigger:{
-global:['roundStart','huanshuDistoryed'],
+global:['roundStart','loseAfter'],
 player:['damageEnd','phaseUseBegin'],
 },
 filter(event,player){
-if(event.name=='huanshuDistoryed') return true;
+if(event.name=='lose') return event.HuanShuDestroy;
 return event.name!='phaseUse'||player.countCards('h',card=>card.minihuanshu&&!card.minihuanhua);
 },
 forced:true,
 async content(event,trigger,player){
-if(trigger.name=='huanshuDistoryed') await player.draw(trigger.cards.length);
+if(trigger.name=='lose') await player.draw(trigger.cards.length);
 else if(trigger.name=='phaseUse'){
 const cards=player.getCards('h',card=>card.minihuanshu&&!card.minihuanhua);
 for(const card of cards){
@@ -31870,19 +31866,27 @@ async GainContent(length,num,player){
 game.addGlobalSkill('minihuanshu_gain');
 while(num>0&&player.hasSkill('minihuanshu')){
 num--;
+let gains=[],count=0;
 const sum=Math.min(length,player.maxHp*2-player.countCards('h',card=>card.minihuanshu));
 if(sum>0){
-let gains=[],count=0;
 while(sum-count>0){
 count++;
 const cardy=lib.card.list.randomGet();
-let gainCard=game.createCard2(cardy[2],cardy[0],cardy[1],cardy[3]);
-gainCard.minihuanshu=true;
-gains.push(gainCard);
+if(cardy) gains.push(game.createCard2(cardy[2],cardy[0],cardy[1],cardy[3]));
+else break;
 }
-if(gains.length) await player.gain(gains,'gain2');
+if(gains.length){
+game.broadcastAll(cards=>{
+for(const card of cards){
+card.minihuanshu=true;
+card.classList.add('minihuanshu-glow');
 }
-if(length-sum>0) await player.draw(length-sum);
+},gains);
+await player.gain(gains,'draw');
+game.log(player,'获得了','#y'+get.cnNumber(gains.length)+'张','#g“幻化”牌');
+}
+}
+if(length-gains.length>0) await player.draw(length-gains.length);
 }
 },
 derivation:'minihuanshu_faq',
@@ -31899,6 +31903,7 @@ if(name=='phaseDiscard'&&card.minihuanshu) return false;
 },
 trigger:{player:'gainAfter',global:'loseAsyncAfter'},
 filter(event,player){
+if(player.hasSkill('minihuanshu',null,false,false)) return false;
 return event.getg(player).some(card=>card.minihuanshu);
 },
 forced:true,
@@ -31907,19 +31912,8 @@ firstDo:true,
 forceDie:true,
 content(){
 const cards=trigger.getg(player).filter(card=>card.minihuanshu);
-if(player.hasSkill('minihuanshu',null,false,false)){
-game.broadcastAll(cards=>{
-for(const card of cards) card.classList.add(card.minihuanhua?'minihuanhua-glow':'minihuanshu-glow');
-},cards);
-}
-else{
-game.cardsGotoSpecial(cards);
 game.log(cards,'被销毁了');
-var next=game.createEvent('huanshuDistoryed');
-next.player=player;
-next.cards=cards;
-next.setContent('emptyEvent');
-}
+player.lose(cards,ui.special).set('HuanShuDestroy',true);
 },
 },
 },
@@ -31955,10 +31949,10 @@ discard:false,
 delay:false,
 async content(event,trigger,player){
 const cards=event.cards,suit=cards[0].suit;
-cards[0].minihuanhua=true;
 player.addGaintag([cards[1]],'minihuanhua_tag');
 game.addVideo('skill',player,['minihuanhua',[false,get.cardInfo(cards[0])]]);
 game.broadcastAll(cards=>{
+cards[0].minihuanhua=true;
 cards[0].init([cards[1].suit,cards[1].number,cards[1].name,cards[1].nature]);
 cards[0].classList.remove('minihuanshu-glow');
 cards[0].classList.add('minihuanhua-glow');
@@ -33438,8 +33432,6 @@ minixiayuan:'狭援',
 minixiayuan_info:'每轮限一次，一名其他角色进入濒死状态时，你可以弃置至多两张牌并令其回复等量的体力。',
 minijieyue:'节钺',
 minijieyue_info:'准备阶段，你可以令一名其他角色摸一张牌，然后选择一个军令令其选择是否执行。若其执行，你摸一张牌；若其不执行，你摸三张牌，且其本回合受到的伤害+1。',
-minijieyue_faq:'关于军令',
-minijieyue_faq_info:'<br>系统随机对发起者展示两个军令，发起者须选择其中一个军令，令执行者选择是否执行。',
 //蜀
 Mbaby_guanyu:'欢杀关羽',
 Mbaby_zhugeliang:'欢杀诸葛亮',
@@ -34452,7 +34444,7 @@ minihuanshu_faq_info:(()=>{
 const list=[
 '“幻术”牌为本局游戏牌组中随机一张牌的镜像，此牌可进行常规牌可进行的任何一般操作。',
 '“幻术”牌不计入手牌上限，一名角色最多持有其体力上限两倍的“幻术”牌，超出的部分改为摸等量的牌',
-'已/未被〖幻化〗定向转化过的“幻术”牌呈现金/深蓝色与常规牌进行区分，其他角色无法识别处于“幻术”牌持有区域内的牌是否为“幻术”牌。',
+'已/未被〖幻化〗定向转化过的“幻术”牌呈现金/深蓝色与常规牌进行区分。',
 '无〖幻术〗技能的角色获得“幻术”牌后，“幻术”牌会被销毁。',
 ];
 return '<br><li>'+list.join('<br><li>');
@@ -34461,7 +34453,7 @@ minihuanshu_append:(()=>{
 const list=[
 '“幻术”牌为本局游戏牌组中随机一张牌的镜像，此牌可进行常规牌可进行的任何一般操作。',
 '一名角色最多持有其体力上限两倍的“幻术”牌，超出的部分改为摸等量的牌',
-'已/未被〖幻化〗定向转化过的“幻术”牌呈现金/深蓝色与常规牌进行区分，其他角色无法识别处于“幻术”牌持有区域内的牌是否为“幻术”牌。',
+'已/未被〖幻化〗定向转化过的“幻术”牌呈现金/深蓝色与常规牌进行区分。',
 '无〖幻术〗技能的角色获得“幻术”牌后，“幻术”牌会被销毁。',
 ];
 return '<span style="font-family: yuanli">关于“幻术”牌<br><li>'+list.join('<br><li>')+'</span>';
@@ -55482,7 +55474,7 @@ intro:'新人制作扩展，希望大家支持。'+
 author:'萌新（转型中）',
 diskURL:'',
 forumURL:'',
-version:'0.1.5',
+version:'0.1.6',
 //新人制作扩展，希望大家支持。
 //新人技术不足，希望大家包涵。
 //壹、贰、叁、肆、伍、陆、柒、捌、玖、拾
