@@ -18838,6 +18838,7 @@ else player.draw(2);
 group:'minisbtieji_mouyi',
 subSkill:{
 mouyi:{
+audio:'sbtieji',
 trigger:{
 player:['chooseToDuibenAfter','mini_chooseToMouYiAfter'],
 target:['chooseToDuibenAfter','mini_chooseToMouYiAfter'],
@@ -18849,7 +18850,6 @@ return event.result&&(event.player==player)===event.result.bool;
 forced:true,
 locked:false,
 async content(event,trigger,player){
-game.trySkillAudio(['1','_true1','_true2'].map(name=>'sbtieji'+name).randomGet(),player);
 player.addTempSkill('shenzhu_more');
 player.addMark('shenzhu_more',1,false);
 const {result:{bool}}=await player.chooseToDiscard('h','铁骑：是否弃置一张手牌并获得一张【杀】？').set('ai',card=>{
@@ -18911,7 +18911,7 @@ else player.chooseButton(['谋弈：请选择一种策略',[[['','','db_def2'],[
 event.mes=result.links[0][2];
 target.chooseButton(['谋弈：请选择一种策略',[[['','','db_atk1'],['','','db_atk2']],'vcard']],true).set('ai',event.ai);
 'step 3';
-event.tes = result.links[0][2];
+event.tes=result.links[0][2];
 'step 4';
 game.broadcast(()=>ui.arena.classList.add('thrownhighlight'));
 ui.arena.classList.add('thrownhighlight');
