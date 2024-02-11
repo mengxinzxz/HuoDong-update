@@ -2506,60 +2506,6 @@ delete player.storage.olchuanwu_restore;
 },
 };
 lib.translate.olchuanwu_info='锁定技。当你造成或受到伤害后，你失去武将牌上的前X个技能直到回合结束，然后你摸等同于你此次失去的技能数的牌（X为你的攻击范围）。';
-//诸葛瑾
-lib.skill.olhongyuan={
-audio:'hongyuan',
-trigger:{player:'gainAfter',global:'loseAsyncAfter'},
-filter:function(event,player){
-var cards=event.getg(player);
-return player.countCards('he')&&cards.length>=2&&!player.hasSkill('olhongyuan_blocker',null,null,false);
-},
-direct:true,
-content:function(){
-'step 0'
-event.list=[];
-'step 1'
-player.chooseCardTarget({
-prompt:get.prompt2('olhongyuan'),
-filterCard:true,
-position:'he',
-filterTarget:function(card,player,target){
-return target!=player&&!_status.event.list.includes(target);
-},
-ai1:function(card){
-var player=_status.event.player;
-var num=game.countPlayer(function(current){
-return current!=player&&get.attitude(player,current)>0&&!current.hasSkillTag('nogain');
-});
-if(num<=ui.selected.cards.length) return -get.value(card);
-if(!player.hasSkill('olmingzhe')) return 4-Math.max(player.getUseValue(card),get.value(card,player));
-if(ui.selected.cards.length&&get.color(card)=='red') return 6-get.value(card);
-return 4-Math.max(player.getUseValue(card),get.value(card,player));
-},
-ai2:function(target){
-var player=_status.event.player,att=get.attitude(player,target);
-var card=ui.selected.cards[0];
-if(!card) return att;
-var val=get.value(card,target);
-if(val<0) return -att*Math.sqrt(-val);
-return att*Math.sqrt(val+2);
-},
-}).set('list',event.list);
-'step 2'
-if(result.bool){
-player.line(result.targets);
-if(!event.list.length) player.logSkill('olhongyuan');
-event.list.addArray(result.targets);
-player.addTempSkill('olhongyuan_blocker',['phaseZhunbeiBefore','phaseJudgeBefore','phaseDrawBefore','phaseUseBefore','phaseDiscardBefore','phaseJieshuBefore','phaseBefore']);
-result.targets[0].gain(result.cards,player,'give');
-if(player.countCards('he')&&event.list.length<2&&game.hasPlayer(function(current){
-return current!=player&&!event.list.includes(current);
-})) event.goto(1);
-}
-},
-ai:{threaten:0.8},
-subSkill:{blocker:{charlotte:true}},
-},
 //徐庶
 lib.skill.rezhuhai={
 audio:2,
