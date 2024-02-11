@@ -18825,7 +18825,7 @@ trigger.directHit.add(target);
 const {result}=await player.mini_chooseToMouYi(target).set('namelist',[
 '出阵迎战','拱卫中军','直取敌营','扰阵疲敌'
 ]).set('ai',button=>{
-var source=get.event().getParent().player,target=get.event().getParent().target;
+const source=get.event().getParent().player,target=get.event().getParent().target;
 if(!target.countCards('he')&&button.link[2]=='db_def2') return 10;
 if(!target.countCards('he')&&get.attitude(target,source)<=0&&button.link[2]=='db_atk1') return 10;
 return 1+Math.random();
