@@ -34851,7 +34851,7 @@ wechat_guojia:['male','wei',3,['wechatdingce','wechatsuanlve'],['die_audio']],
 wechat_re_caocao:['male','wei',4,['wechatdelu','wechatzhujiu'],['die_audio']],
 wechat_zhugeliang:['male','shu',3,['wechatsangu','wechatyanshi'],['die_audio']],
 wechat_simayi:['male','wei',3,['wechatyinren','wechatduoquan'],['die_audio']],
-wechat_re_machao:['male','qun',4,['wechatqipao','wechatzhuixi'],['die_audio']],
+wechat_re_machao:['male','qun',4,['wechatqipao','wechatzhuixi'],['die_audio','doublegroup:shu:qun']],
 wechat_re_huangyueying:['female','shu',3,['wechatmiaobi','wechatrehuixin'],['die_audio']],
 },
 characterIntro:{
@@ -36866,25 +36866,10 @@ var num=player.storage.fanghun;
 player.removeMark('fanghun',num);
 player.draw(Math.min(5,num));
 'step 1'
-if(_status.characterlist){
-list=[];
-for(var i=0;i<_status.characterlist.length;i++){
-var name=_status.characterlist[i];
-if(lib.character[name][1]=='shu') list.push(name);
-}
-}
-else if(_status.connectMode){
-list=get.charactersOL(function(i){
-return lib.character[i][1]!='shu';
-});
-}
-else{
-list=get.gainableCharacters(function(info){
-return info[1]=='shu';
-});
-}
-var players=game.players.concat(game.dead);
-for(var i=0;i<players.length;i++){
+if(!_status.characterlist) lib.skill.pingjian.initList();
+let list=_status.characterlist.filter(name=>get.character(name,1)=='shu'||(get.is.double(name,true)||[]).includes('shu'));
+const players=game.players.slice().concat(game.dead);
+for(let i=0;i<players.length;i++){
 list.remove(players[i].name);
 list.remove(players[i].name1);
 list.remove(players[i].name2);
