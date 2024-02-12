@@ -1437,13 +1437,6 @@ Mbaby_zhangjiao:'guidao_sp_zhangjiao',
 game.HDsetAudioname2('yijin',{
 bilibili_litiansuo:'bolNoAudio',
 });
-game.HDsetAudioname2('clandaojie',{
-old_zu_xunshu:'clandaojie_clan_xunshu',
-old_zu_xunchen:'clandaojie_clan_xunchen',
-old_zu_xuncai:'clandaojie_clan_xuncai',
-old_zu_xuncan:'clandaojie_clan_xuncan',
-oldx_zu_xuncai:'clandaojie_clan_xuncai',
-});
 game.HDsetAudioname2('fangzhu',{
 old_shen_simayi:'jilue_fangzhu',
 });
@@ -1843,14 +1836,9 @@ direct:true,
 priority:-Infinity,
 lasrDo:true,
 content:function(){
-var name=trigger.player.name;
 game.broadcastAll(function(name){
-//旧版宗族武将阵亡配音播报
-if(name.indexOf('old_zu_')==0) game.playAudio('die','clan_'+name.slice(7));
-else if(name.indexOf('oldx_zu_')==0) game.playAudio('die','clan_'+name.slice(8));
-//普通扩展武将阵亡配音播报
-else game.playAudio('..','extension','活动武将/audio/die',name);
-},name);
+game.playAudio('..','extension','活动武将/audio/die',name);
+},trigger.player.name);
 },
 };
 //困难年兽体力上限和体力值为所有其他角色的体力上限和
@@ -49950,10 +49938,6 @@ zhiman_guansuo:{audio:2},
 reyingzi_sunce:{audio:2},
 yinghun_sunce:{audio:2},
 shensu1_xiahouba:{audio:2},
-clandaojie_clan_xunshu:{audio:2},
-clandaojie_clan_xunchen:{audio:2},
-clandaojie_clan_xuncai:{audio:2},
-clandaojie_clan_xuncan:{audio:2},
 //荀淑
 old_shenjun:{
 audio:'clanshenjun',
