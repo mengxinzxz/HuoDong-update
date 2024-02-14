@@ -2102,6 +2102,47 @@ next.setContent('emptyEvent');
 return skill;
 };
 }
+//PR获得技能/失去技能时机添加
+if(!lib.element.content.changeSkills){
+lib.element.player.addSkills=function(skill){
+if(!skill) return;
+return this.changeSkills(Array.isArray(skill)?skill:[skill],[]);
+};
+lib.element.player.removeSkills=function(skill){
+if(!skill) return;
+return this.changeSkills([],Array.isArray(skill)?skill:[skill]);
+}
+lib.element.player.changeSkills=function(addSkill=[],removeSkill=[]){
+const next=game.createEvent('changeSkills', false);
+next.player=this;
+next.addSkill=addSkill.unique();
+next.removeSkill=removeSkill.unique();
+next.setContent('changeSkills');
+return next;
+}
+lib.element.content.changeSkills=async function(event,trigger,player){
+//去重检查
+event.addSkill.unique();
+event.removeSkill.unique();
+const duplicatedSkills = event.addSkill.filter(skill => event.removeSkill.includes(skill));
+if(duplicatedSkills.length){
+event.addSkill.removeArray(duplicatedSkills);
+event.removeSkill.removeArray(duplicatedSkills);
+}
+if(!event.addSkill.length&&!event.removeSkill.length) return;
+//手动触发时机
+await event.trigger('changeSkillsBefore');
+await event.trigger('changeSkillsBegin');
+//处理失去和获得的技能
+if(event.$handle) event.$handle(player,event.addSkill,event.removeSkill,event);
+else{
+if(event.addSkill.length) player.addSkillLog(event.addSkill);
+if(event.removeSkill.length) player.removeSkillLog(event.removeSkill);
+}
+await event.trigger('changeSkillsEnd');
+await event.trigger('changeSkillsAfter');
+};
+}
 //失去体力上限配音
 lib.skill._bilibili_loseMaxHp={
 charlotte:true,
@@ -4203,10 +4244,12 @@ return game.dieYinShou==true;
 },
 forced:true,
 content:function(){
+'step 0'
 player.awakenSkill('NShundunyang');
 player.gainMaxHp();
 player.recover();
-player.addSkillLog('NShuihun');
+'step 1'
+player.addSkills('NShuihun');
 },
 subSkill:{
 die:{
@@ -4237,10 +4280,12 @@ return game.dieYangShou==true;
 },
 forced:true,
 content:function(){
+'step 0'
 player.awakenSkill('NShundunyin');
 player.gainMaxHp();
 player.recover();
-player.addSkillLog('NSnuyan');
+'step 1'
+player.addSkills('NSnuyan');
 },
 subSkill:{
 die:{
@@ -5616,10 +5661,12 @@ return player.countCards('h')>=player.hp*3;
 },
 derivation:['qin_zhongfu','new_rejianxiong','rerende','rezhiheng'],
 content:function(){
+'step 0'
 player.awakenSkill('qin_baixiang');
 var num=player.maxHp-player.hp;
 if(num>0) player.recover(num);
-player.addSkillLog('qin_zhongfu');
+'step 1'
+player.addSkills('qin_zhongfu');
 },
 ai:{
 maixie:true,
@@ -7330,11 +7377,11 @@ return player.getFriends().includes(current);
 });
 },
 forced:true,
-content:function(){
-var list=lib.skill.ZGbingyi.logTarget(trigger,player);
-for(var target of list){
-target.addSkillLog('ZGduzhen');
-target.drawTo(target.getHandcardLimit());
+async content(event,trigger,player){
+const list=lib.skill.ZGbingyi.logTarget(trigger,player);
+for(const target of list){
+await target.addSkills('ZGduzhen');
+await target.drawTo(target.getHandcardLimit());
 }
 },
 },
@@ -7697,8 +7744,8 @@ forced:true,
 content:function(){
 player.addMark('kuiba_wenjia',1);
 var num=player.countMark('kuiba_wenjia');
-if(num==1) player.addSkillLog('xinfu_wuniang');
-if(num==2) player.addSkillLog('wushuang');
+if(num==1) player.addSkills('xinfu_wuniang');
+if(num==2) player.addSkills('wushuang');
 },
 subSkill:{
 yingzi:{
@@ -11596,7 +11643,7 @@ player.loseMaxHp();
 'step 2'
 if(player.hp<3) player.recover(3-player.hp);
 'step 3'
-player.addSkillLog('minitiaoxin');
+player.addSkills('minitiaoxin');
 },
 },
 //钟会
@@ -12304,10 +12351,12 @@ juexingji:true,
 skillAnimation:true,
 animationColor:'water',
 content:function(){
+'step 0'
 player.awakenSkill('minichoujue');
 player.storage.choujue=true;
 player.loseMaxHp();
-player.addSkillLog('minibeishui');
+'step 1'
+player.addSkills('minibeishui');
 },
 },
 minibeishui:{
@@ -12322,10 +12371,12 @@ juexingji:true,
 skillAnimation:'epic',
 animationColor:'thunder',
 content:function(){
+'step 0'
 player.awakenSkill('minibeishui');
 player.storage.beishui=true;
 player.loseMaxHp();
-player.addSkillLog('qingjiao');
+'step 1'
+player.addSkills('qingjiao');
 },
 },
 //夏侯令女
@@ -12686,7 +12737,7 @@ content:function(){
 player.awakenSkill('minidanji');
 if(player.isDamaged()) player.recover(player.maxHp-player.hp);
 'step 1'
-player.addSkillLog(lib.skill.minidanji.derivation);
+player.addSkills(lib.skill.minidanji.derivation);
 },
 },
 mininuzhan:{
@@ -12822,7 +12873,8 @@ content:function(){
 player.awakenSkill('minihuiqi');
 'step 1'
 player.recover();
-player.addSkillLog('minixieju');
+'step 2'
+player.addSkills('minixieju');
 },
 },
 minixieju:{
@@ -13491,8 +13543,7 @@ player.awakenSkill('minijuyi');
 'step 1'
 player.drawTo(player.maxHp);
 'step 2'
-player.addSkillLog('minibenghuai');
-player.addSkillLog('reweizhong');
+player.addSkills(lib.skill.minijuyi.derivation);
 },
 derivation:['minibenghuai','reweizhong'],
 },
@@ -14883,7 +14934,8 @@ player.awakenSkill('minizhiji');
 player.chooseDrawRecover(2,true);
 'step 1'
 player.loseMaxHp();
-player.addSkillLog('miniguanxing');
+'step 2'
+player.addSkills('miniguanxing');
 },
 },
 minihuoshou:{
@@ -14991,8 +15043,10 @@ player.awakenSkill('miniruoyu');
 player.gainMaxHp();
 'step 1'
 player.recover();
-player.addSkillLog('minijijiang');
-if(player.isZhu) event.trigger('zhuUpdate');
+'step 2'
+player.addSkills('minijijiang');
+'step 3'
+if(player.isZhu2()) event.trigger('zhuUpdate');
 },
 },
 minixuanhuo:{
@@ -15373,10 +15427,13 @@ return evt.skill=='miniliangzhu';
 },
 forced:true,
 content:function(){
+'step 1'
 player.awakenSkill('minifanxiang');
 player.gainMaxHp();
 player.recover();
-for(var i of lib.skill.minifanxiang.derivation) player.addSkillLog(i);
+'step 2'
+player.addSkills(lib.skill.minifanxiang.derivation);
+'step 3'
 player.removeSkill('miniliangzhu');
 },
 },
@@ -15957,7 +16014,7 @@ if(event.list.includes('minidangxian')) return 'minidangxian';
 return 0;
 });
 'step 2'
-player.addSkillLog(result.control);
+player.addSkills(result.control);
 },
 intro:{content:'已因$发动过技能'},
 },
@@ -16418,11 +16475,13 @@ filter:function(event,player){
 return player.hp<1;
 },
 content:function(){
+'step 0'
 player.awakenSkill('minixushen');
-player.addSkillLog('decadezhennan');
 player.addTempSkill('minixushen2');
 trigger.minixushen=true;
 player.recover();
+'step 1'
+player.addSkills('decadezhennan');
 },
 },
 minixushen2:{
@@ -16530,8 +16589,8 @@ return get.attitude(player,target);
 if(result.bool){
 var target=result.targets[0];
 player.line(target,'fire');
-player.addSkillLog('hmxili');
-target.addSkillLog('hmxili');
+player.addSkills('hmxili');
+target.addSkills('hmxili');
 player.removeSkill('mansi');
 }
 },
@@ -16645,9 +16704,7 @@ switchToAuto();
 }
 'step 2'
 var map=event.result||result;
-if(map&&map.skills&&map.skills.length){
-for(var i of map.skills) player.addSkillLog(i);
-}
+if(map&&map.skills&&map.skills.length) player.addSkills(map.skills);
 game.broadcastAll(function(list){
 game.expandSkills(list);
 for(var i of list){
@@ -16676,7 +16733,7 @@ forced:true,
 content:function(){
 for(var i of lib.skill.minibaobian.derivation){
 if(!player.hasSkill(i,null,null,false)){
-player.addSkillLog(i);
+player.addSkills(i);
 break;
 }
 }
@@ -17666,9 +17723,9 @@ animationColor:'orange',
 content:function(){
 'step 0'
 player.awakenSkill('minicunsi');
-target.addSkillLog('miniyongjue');
-'step 1'
 player.storage.miniguixiu=true;
+'step 1'
+target.addSkills('miniyongjue');
 'step 2'
 var num=player.hp;
 player.loseHp(num);
@@ -18358,7 +18415,7 @@ content:function(){
 var skills=lib.skill.minifuhun.derivation.slice();
 if(player.getHistory('sourceDamage',evt=>evt.card&&evt.card.name=='sha').length>1){
 player.removeSkill(skills);
-player.addSkillLog(skills);
+player.addSkills(skills);
 player.storage.minifuhun=true;
 }
 else skills.forEach(skill=>player.addTempSkill(skill));
@@ -19681,11 +19738,11 @@ filter:function(event,player){
 return player.countCards('h')>=player.hp*3;
 },
 content:function(){
+'step 0'
 var num=player.maxHp-player.hp;
 player.awakenSkill('miniqinxue');
 if(num>0) player.loseMaxHp(num);
-player.removeSkill('minikeji');
-player.addSkillLog('minigongxin');
+player.changeSkills(['minigongxin'],['minikeji']);
 },
 },
 minitianxiang:{
@@ -19792,8 +19849,7 @@ content:function(){
 player.awakenSkill('minihunzi');
 player.loseMaxHp();
 'step 1'
-player.addSkillLog('reyingzi');
-player.addSkillLog('miniyinghun');
+player.addSkills(['reyingzi','miniyinghun']);
 },
 },
 minihunzi_old:{
@@ -19814,8 +19870,7 @@ content:function(){
 player.awakenSkill('minihunzi_old');
 player.loseMaxHp();
 'step 1'
-player.addSkillLog('reyingzi');
-player.addSkillLog('miniyinghun');
+player.addSkills(['reyingzi','miniyinghun']);
 },
 ai:{
 threaten:function(player,target){
@@ -21913,7 +21968,7 @@ if(event.type!='dying') return false;
 if(player!=event.dying) return false;
 return true;
 },
-content:function(){
+async content(event,trigger,player){
 player.awakenSkill('minisyxiongyi');
 if(!_status.characterlist) lib.skill.pingjian.initList();
 var hp=1-player.hp;
@@ -21923,8 +21978,8 @@ _status.characterlist.remove('Mbaby_xushi');
 _status.characterlist.add('Mbaby_re_sunyi');
 player.reinit('Mbaby_re_sunyi','Mbaby_xushi',false);
 }
-else player.addSkillLog('minihunzi_old');
-if(hp>0) player.recover(hp);
+else await player.addSkills('minihunzi_old');
+if(hp>0) await player.recover(hp);
 },
 ai:{
 order:1,
@@ -26572,8 +26627,7 @@ content:function(){
 player.awakenSkill('miniqitian');
 player.loseMaxHp();
 'step 1'
-player.addSkillLog('minihuoyan');
-player.addSkillLog('minijindouyun');
+player.addSkills(['minihuoyan','minijindouyun']);
 },
 },
 minihuoyan:{
@@ -28073,9 +28127,12 @@ juexingji:true,
 skillAnimation:true,
 animationColor:'silver',
 content:function(){
+'step 0'
 player.awakenSkill('minibenyue');
+'step 1'
 if(player.maxHp<15) player.gainMaxHp(15-player.maxHp);
-player.addSkillLog('miniguanghan');
+'step 2'
+player.addSkills('miniguanghan');
 },
 },
 miniguanghan:{
@@ -28428,9 +28485,7 @@ var skills=trigger.player.getSkills(null,false,false).filter(function(i){
 var info=get.info(i);
 return info&&!info.charlotte;
 });
-if(skills.length){
-for(var i of skills) player.addSkillLog(i);
-}
+if(skills.length) player.addSkills(skills);
 player.removeSkill('minixiaowu');
 var num=player.countMark('shawu');
 if(num>0){
@@ -29157,7 +29212,7 @@ return evt2&&evt2.name=='minilianji'&&evt2.player==player;
 },
 content(){
 player.awakenSkill('minimoucheng');
-player.addSkillLog('xinjingong');
+player.addSkills('xinjingong');
 },
 },
 //神
@@ -30733,7 +30788,7 @@ if(result.bool){
 var target=result.targets[0];
 player.line(target,'green');
 target.storage.minizuoxing=player;
-target.addSkillLog('minizuoxing');
+target.addSkills('minizuoxing');
 }
 },
 },
@@ -31753,7 +31808,7 @@ animationColor:'metal',
 content:function(){
 'step 0'
 player.awakenSkill('minipowei');
-player.addSkillLog('minishenzhu');
+player.addSkills('minishenzhu');
 'step 1'
 var num=0;
 game.countPlayer2(current=>{
@@ -32171,7 +32226,7 @@ event.target=target;
 player.logSkill('minidoumao',target);
 player.discard(result.cards);
 player.removeSkill('minidoumao');
-target.addSkillLog('minidoumao');
+target.addSkills('minidoumao');
 }
 else event.finish();
 'step 2'
@@ -36704,7 +36759,7 @@ return event.name!='phase'||game.phaseNumber==0;
 forced:true,
 locked:false,
 content:function(){
-player.addSkillLog('wechatlongdan');
+player.addSkills('wechatlongdan');
 },
 intro:{name:'梅影',content:'mark'},
 derivation:['wechatlongdan','wechatfengpo'],
@@ -36759,7 +36814,7 @@ var list=lib.skill.wechatfuhan.derivation.filter(skill=>!player.hasSkill(skill))
 if(list.length) player.chooseControl(list).set('prompt','扶汉：选择获得一项技能');
 else event.finish();
 'step 3'
-if(result.control) player.addSkillLog(result.control);
+player.addSkills(result.control);
 },
 },
 wechatrefanghun:{
@@ -38134,7 +38189,7 @@ player.loseMaxHp();
 'step 1'
 if(player.hp<3) player.recover(3-player.hp);
 'step 2'
-player.addSkillLog('retiaoxin');
+player.addSkills('retiaoxin');
 },
 },
 //曹休
@@ -39152,7 +39207,7 @@ return player.countCards('h')<=player.getHandcardLimit()+1;
 content:function(){
 trigger.cancel();
 player.skip('phaseDiscard');
-player.addSkillLog('wechatyinren_'+lib.skill.wechatyinren.derivation.filter(skill=>!player.hasSkill('wechatyinren_'+skill))[0]);
+player.addSkills('wechatyinren_'+lib.skill.wechatyinren.derivation.filter(skill=>!player.hasSkill('wechatyinren_'+skill))[0]);
 },
 subSkill:{
 new_rejianxiong:{inherit:'new_rejianxiong'},
@@ -40929,10 +40984,12 @@ juexingji:true,
 skillAnimation:true,
 animationColor:'gray',
 content:function(){
+'step 0'
 player.awakenSkill('fh_sanchen');
 player.gainMaxHp();
 player.recover();
-player.addSkillLog('fh_miewu');
+'step 1'
+player.addSkills('fh_miewu');
 },
 ai:{combo:'fh_wuku'},
 derivation:'fh_miewu',
@@ -41358,7 +41415,7 @@ if(card) cards.push(card);
 }
 if(cards.length) player.gain(cards,'gain2');
 'step 1'
-player.addSkillLog('fh_mouli');
+player.addSkills('fh_mouli');
 },
 group:['fh_mibei_fail','fh_mibei_silent'],
 derivation:'fh_mouli',
@@ -42713,7 +42770,7 @@ if(result.bool){
 var target=result.targets[0];
 player.line(target,'green');
 target.storage.zuoxing=player;
-target.addSkillLog('zuoxing');
+target.addSkills('zuoxing');
 }
 },
 },
@@ -42850,7 +42907,7 @@ return !game.hasPlayer(current=>current.hasMark('dulie'));
 content:function(){
 game.log(player,'成功完成使命');
 player.awakenSkill('fh_powei');
-player.addSkillLog('shenzhu');
+player.addSkills('shenzhu');
 },
 },
 fail:{
@@ -44354,7 +44411,7 @@ game.log(player,'将',pushs,'作为“荣”置于武将牌上');
 player.gain(gains,'gain2');
 }
 'step 3'
-player.addSkillLog('fh_qingce');
+player.addSkills('fh_qingce');
 },
 },
 fh_qingce:{
@@ -44571,9 +44628,11 @@ forced:true,
 skillAnimation:true,
 animationColor:'orange',
 content:function(){
+'step 0'
 player.awakenSkill('fh_qianxin');
 player.loseMaxHp();
-player.addSkillLog('fh_jianyan');
+'step 1'
+player.addSkills('fh_jianyan');
 },
 derivation:'fh_jianyan',
 },
@@ -46149,7 +46208,7 @@ if(!player.hasSkill('rerende')) return 'rerende';
 return 'olfangquan';
 });
 'step 1'
-player.addSkillLog(result.control);
+player.addSkills(result.control);
 },
 },
 //国战左慈
@@ -46691,7 +46750,7 @@ return current.hasMark('olddulie');
 content:function(){
 game.log(player,'成功完成使命');
 player.awakenSkill('oldpowei');
-player.addSkillLog('old_shenzhu');
+player.addSkills('old_shenzhu');
 },
 },
 fail:{
@@ -47327,7 +47386,7 @@ player.chooseButton([
 'step 1'
 if(result.bool){
 player.line(target);
-target.addSkillLog(result.links[0]);
+target.addSkills(result.links[0]);
 }
 },
 chooseButton:{
@@ -47480,7 +47539,7 @@ next.setContent(lib.skill.BTdunshi.contentx);
 else event.goto(3);
 'step 2'
 game.broadcastAll('closeDialog',event.videoId);
-target.addSkillLog(result.control);
+target.addSkills(result.control);
 'step 3'
 var storage=player.storage.BTdunshi;
 if(event.links.includes(1)){
@@ -47804,7 +47863,7 @@ lib.skill.BThuashen.addFuckShens(player,trigger.num,'BThuashen');
 'step 1'
 if(player.countMark('BTxinsheng')>=2&&player.storage.BThuashen.character.length>=game.players.length&&!player.hasSkill('BThuanhua')){
 player.$fullscreenpop('新生','thunder');
-player.addSkillLog('BThuanhua');
+player.addSkills('BThuanhua');
 }
 },
 },
@@ -48143,7 +48202,7 @@ if(result.bool){
 var target=result.targets[0];
 player.line(target,'green');
 target.storage.old_zuoxing=player;
-target.addSkillLog('old_zuoxing');
+target.addSkills('old_zuoxing');
 }
 },
 },
@@ -48305,17 +48364,13 @@ return;
 switch(event.triggername){
 case 'phaseBegin':
 var gains=skills.randomGets(num);
-for(var gain of gains){
-player.storage.shen_sunquan_skill.push(gain);
-player.addSkillLog(gain);
-}
+player.storage.shen_sunquan_skill.addArray(gains);
+player.addSkills(gain);
 break;
 case 'useCardAfter':
 var gains=skills.randomGets(num);
-for(var gain of gains){
-player.storage.shen_sunquan_skill.push(gain);
-player.addSkillLog(gain);
-}
+player.storage.shen_sunquan_skill.addArray(gains);
+player.addSkills(gain);
 var removes=player.storage.shen_sunquan_skill.randomGets(num);
 for(var remove of removes){
 player.storage.shen_sunquan_skill.remove(remove);
@@ -48520,8 +48575,7 @@ player.removeMark('xinfanghun',player.countMark('xinfanghun'));
 player.gainMaxHp();
 player.recover();
 'step 1'
-player.removeSkill('xinfanghun');
-player.addSkillLog('ollongdan');
+player.changeSkills(['ollongdan'],['xinfanghun']);
 'step 2'
 var list=[];
 for(var i of lib.skill.xinfuhan.derivation){
@@ -48532,7 +48586,7 @@ else event.finish();
 'step 3'
 var list=['ollongdan'];
 if(result.control){
-player.addSkillLog(result.control);
+player.addSkills(result.control);
 list.push(result.control);
 }
 game.broadcastAll(function(list){
@@ -48660,7 +48714,7 @@ player.popup('使命成功','wood');
 game.log(player,'成功完成使命');
 'step 1'
 player.unmarkSkill('old_kuzhan_mark');
-player.addSkillLog('old_tuidi');
+player.addSkills('old_tuidi');
 },
 subSkill:{
 end:{
@@ -49900,7 +49954,7 @@ player.awakenSkill('boss_yz_kunshou');
 if(player.hp<5) player.recover(5-player.hp);
 player.drawTo(5);
 'step 2'
-player.addSkillLog('benghuai');
+player.addSkills('benghuai');
 },
 },
 },
@@ -49929,7 +49983,8 @@ content:function(){
 player.awakenSkill('wzdanji');
 'step 1'
 player.loseMaxHp();
-player.addSkillLog('mashu');
+'step 2'
+player.addSkills('mashu');
 },
 },
 wusheng_guansuo:{audio:2},
@@ -50781,9 +50836,7 @@ game.log(player,'失去了以下技能：','#g'+get.translation(skills));
 player.removeSkill(skills.slice(0));
 }
 var list=lib.skill.boldili.derivation;
-for(var i=0;i<Math.min(skills.length,list.length);i++){
-player.addSkillLog(list[i]);
-}
+player.addSkills(list.slice(0,Math.min(skills.length,list.length)));
 },
 },
 //张郃【机先】
@@ -53059,10 +53112,8 @@ return get.skillRank(b,'in')-get.skillRank(a,'in');
 });
 'step 1'
 if(result.control){
-player.addSkillLog(result.control);
-//player.addSkill('bilibili_zhiyou_remove');
+player.addSkills(result.control);
 player.markAuto('bilibili_zhiyou',[result.control]);
-//player.storage.bilibili_zhiyou_remove=result.control;
 }
 },
 ai:{
@@ -53230,7 +53281,7 @@ content:function(){
 game.delay();
 'step 1'
 var skill=lib.card[trigger.card.name].bilibili_ThunderSkill;
-if(!player.hasSkill(skill)) player.addSkillLog(skill);
+if(!player.hasSkill(skill)) player.addSkills(skill);
 else player.draw(3);
 'step 2'
 if(trigger.cards.filterInD()&&trigger.cards.filterInD().length){
@@ -54257,8 +54308,8 @@ content:function(){
 player.awakenSkill('boldanji');
 player.loseMaxHp();
 'step 1'
-player.addSkillLog('mashu');
-player.addSkillLog('nuzhan');
+player.addSkills(['mashu','nuzhan']);
+'step 2'
 player.addSkill('boldanji_effect');
 },
 subSkill:{
