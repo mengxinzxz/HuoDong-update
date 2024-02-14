@@ -2493,7 +2493,7 @@ content:function(){
 var skills=player.getStockSkills(false,true);
 var num=Math.min(player.getAttackRange(),skills.length);
 skills=skills.slice(0,num);
-player.removeSkill(skills);
+player.removeSkills(skills);
 player.addTempSkill('olchuanwu_restore');
 player.markAuto('olchuanwu_restore',skills.filter(skill=>!player.getStorage('olchuanwu_restore').includes(skill)));
 var str='';
@@ -2517,7 +2517,7 @@ return player.getStockSkills(true,true).indexOf(skill);
 };
 return getNum(a)-getNum(b);
 });
-player.addSkill(skills);
+player.addSkills(skills);
 game.broadcastAll(function(player,skills){
 lib.skill.olchuanwu.unshiftArray(player.skills,skills);
 },player,skills);
@@ -3798,9 +3798,10 @@ trigger:{player:'dieBegin'},
 forced:true,
 content:function(){
 'step 0'
-player.removeSkill('YJjinzhu');
-if(player.hp<3) player.recover(3-player.hp);
+player.removeSkills('YJjinzhu');
 'step 1'
+if(player.hp<3) player.recover(3-player.hp);
+'step 2'
 trigger.cancel();
 },
 },
@@ -8374,7 +8375,7 @@ return list.randomGet();
 });
 'step 1'
 game.broadcastAll('closeDialog',event.videoId);
-var skills=['cike_biandao','cike_yingyue','cike_huti']
+var skills=['cike_biandao','cike_yingyue','cike_huti'];
 skills.remove(result.control);
 player.removeSkill(skills);
 player.popup(result.control);
@@ -8409,7 +8410,7 @@ return 'cike_xuefa';
 });
 'step 1'
 game.broadcastAll('closeDialog',event.videoId);
-var skills=['cike_yirong','cike_qingsuo','cike_xuefa']
+var skills=['cike_yirong','cike_qingsuo','cike_xuefa'];
 skills.remove(result.control);
 player.removeSkill(skills);
 player.popup(result.control);
@@ -8448,7 +8449,7 @@ return list.randomGet();
 });
 'step 1'
 game.broadcastAll('closeDialog',event.videoId);
-var skills=['cike_biandao','cike_yingyue','cike_huti']
+var skills=['cike_biandao','cike_yingyue','cike_huti'];
 skills.remove(result.control);
 player.removeSkill(skills);
 player.popup(result.control);
@@ -8483,7 +8484,7 @@ return 'cike_xuefa';
 });
 'step 1'
 game.broadcastAll('closeDialog',event.videoId);
-var skills=['cike_yirong','cike_qingsuo','cike_xuefa']
+var skills=['cike_yirong','cike_qingsuo','cike_xuefa'];
 skills.remove(result.control);
 player.removeSkill(skills);
 player.popup(result.control);
@@ -15434,7 +15435,7 @@ player.recover();
 'step 2'
 player.addSkills(lib.skill.minifanxiang.derivation);
 'step 3'
-player.removeSkill('miniliangzhu');
+player.removeSkills('miniliangzhu');
 },
 },
 miniwujian:{
@@ -16591,7 +16592,7 @@ var target=result.targets[0];
 player.line(target,'fire');
 player.addSkills('hmxili');
 target.addSkills('hmxili');
-player.removeSkill('mansi');
+player.removeSkills('mansi');
 }
 },
 },
@@ -26883,7 +26884,7 @@ if(num>=2) player.draw();
 if(num>=3) player.recover();
 if(num>=4){
 player.draw(2);
-player.removeSkill('sppanqin');
+player.removeSkills('sppanqin');
 }
 player.addTempSkill('minihuoshou',{player:'phaseBegin'});
 },
@@ -28485,8 +28486,7 @@ var skills=trigger.player.getSkills(null,false,false).filter(function(i){
 var info=get.info(i);
 return info&&!info.charlotte;
 });
-if(skills.length) player.addSkills(skills);
-player.removeSkill('minixiaowu');
+player.changeSkills(skills,['minixiaowu']);
 var num=player.countMark('shawu');
 if(num>0){
 player.removeMark('shawu',num);
@@ -32225,7 +32225,7 @@ var target=result.targets[0];
 event.target=target;
 player.logSkill('minidoumao',target);
 player.discard(result.cards);
-player.removeSkill('minidoumao');
+player.removeSkills('minidoumao');
 target.addSkills('minidoumao');
 }
 else event.finish();
@@ -37798,8 +37798,7 @@ player.loseMaxHp();
 'step 1'
 var num=player.maxHp-player.countCards('h');
 if(num>0) player.draw(num);
-player.removeSkill('wechatjueyan');
-player.addSkill('drlt_huairou');
+player.changeSkills(['drlt_huairou'],['wechatjueyan']);
 },
 },
 //简雍
@@ -41575,8 +41574,7 @@ content:function(){
 player.awakenSkill('fh_chuhai');
 game.log(player,'成功完成使命');
 if(player.isDamaged()) player.recover(player.maxHp-player.hp);
-player.removeSkill('xianghai');
-player.addSkill('zhangming');
+player.changeSkills(['zhangming'],['xianghai']);
 },
 },
 fail:{
@@ -46199,7 +46197,9 @@ player.awakenSkill('bilibili_tianxing');
 player.loseMaxHp();
 player.gain(player.storage.bilibili_chuyuan,'gain2','fromStorage');
 player.unmarkAuto('bilibili_chuyuan',player.storage.bilibili_chuyuan);
-player.removeSkill('bilibili_chuyuan');
+'step 1'
+player.removeSkills('bilibili_chuyuan');
+'step 2'
 player.chooseControl('rerende','rezhiheng','olluanji','olfangquan').set('prompt','选择获得一个技能').set('ai',function(){
 var player=_status.event.player;
 if(!player.hasSkill('luanji')&&!player.hasSkill('olluanji')&&player.getUseValue({name:'wanjian'})>4) return 'olluanji';
@@ -46207,7 +46207,7 @@ if(!player.hasSkill('rezhiheng')) return 'rezhiheng';
 if(!player.hasSkill('rerende')) return 'rerende';
 return 'olfangquan';
 });
-'step 1'
+'step 3'
 player.addSkills(result.control);
 },
 },
@@ -48351,42 +48351,30 @@ return true;
 },
 forced:true,
 popup:false,
-content:function(){
-var num=player.countMark('shen_sunquan_skill_count');
-var skills=(lib.config.extension_活动武将_ShenSunQuan?lib.skill.bolyuheng.getList():lib.skill.junkyuheng.derivation);
-skills=skills.filter(function(skill){
-return !player.hasSkill(skill);
-});
-if(!skills.length&&!player.storage.shen_sunquan_skill.length&&trigger.name!='phaseEnd'){
-event.finish();
-return;
-}
+async content(event,trigger,player){
+const num=player.countMark('shen_sunquan_skill_count');
+const skills=(lib.config.extension_活动武将_ShenSunQuan?lib.skill.bolyuheng.getList():lib.skill.junkyuheng.derivation).filter(skill=>!player.hasSkill(skill));
+if(!skills.length&&!player.storage.shen_sunquan_skill.length&&trigger.name!='phaseEnd') return;
+const gainSkills=async function(player,num,skills){
+const gains=skills.randomGets(num);
+player.storage.shen_sunquan_skill.addArray(gains);
+player.addSkills(gain);
+};
+const loseSkills=async function(player,num,skills){
+const removes=player.storage.shen_sunquan_skill.randomGets(num);
+player.storage.shen_sunquan_skill.removeArray(removes);
+player.removeSkills(removes);
+};
 switch(event.triggername){
 case 'phaseBegin':
-var gains=skills.randomGets(num);
-player.storage.shen_sunquan_skill.addArray(gains);
-player.addSkills(gain);
+await gainSkills(player,num,skills);
 break;
 case 'useCardAfter':
-var gains=skills.randomGets(num);
-player.storage.shen_sunquan_skill.addArray(gains);
-player.addSkills(gain);
-var removes=player.storage.shen_sunquan_skill.randomGets(num);
-for(var remove of removes){
-player.storage.shen_sunquan_skill.remove(remove);
-player.removeSkill(remove);
-player.popup(remove);
-game.log(player,'失去了技能','#g【'+get.translation(remove)+'】');
-}
+await gainSkills(player,num,skills);
+await loseSkills(player,num,skills);
 break;
 case 'phaseEnd':
-var removes=player.storage.shen_sunquan_skill.randomGets(num);
-for(var remove of removes){
-player.storage.shen_sunquan_skill.remove(remove);
-player.removeSkill(remove);
-player.popup(remove);
-game.log(player,'失去了技能','#g【'+get.translation(remove)+'】');
-}
+await loseSkills(player,num,skills);
 break;
 }
 },
@@ -48981,9 +48969,9 @@ return 5-get.attitude(_status.event.player,target);
 if(result.bool){
 var target=result.targets[0];
 player.line(target,'fire');
-player.addSkill('old_xili');
-target.addSkill('old_xili');
-player.removeSkill('old_mansi');
+player.addSkills('old_xili');
+target.addSkills('old_xili');
+player.removeSkills('old_mansi');
 }
 },
 },
@@ -50831,12 +50819,10 @@ default: return 0;
 next.set('skills',skills);
 'step 2'
 if(result.bool){
-var skills=result.links;
-game.log(player,'失去了以下技能：','#g'+get.translation(skills));
-player.removeSkill(skills.slice(0));
-}
-var list=lib.skill.boldili.derivation;
+var skills=result.links,list=lib.skill.boldili.derivation;
+player.removeSkills(skills.slice(0));
 player.addSkills(list.slice(0,Math.min(skills.length,list.length)));
+}
 },
 },
 //张郃【机先】
@@ -51743,7 +51729,7 @@ if(result.cards) player.gain(result.cards,target,'give');
 if(targets.length) event.goto(1);
 else{
 player.gainMaxHp();
-player.removeSkill('old_rende');
+player.removeSkills('old_rende');
 }
 },
 ai:{
