@@ -2075,35 +2075,8 @@ return current.group==player.storage.yaohu;
 if(player.hasSkill('sbxueyi')&&game.hasPlayer(current=>player!=current&&current.group=='qun')) player.logSkill('sbxueyi');
 },
 };
-//增减技能函数
-if(!game.HasExtension('OLUI')){
-//addSkill函数
-var originAddSkill=lib.element.player.addSkill;
-lib.element.player.addSkill=function(skill){
-originAddSkill.apply(this,arguments);
-if(_status.gameDrawed){
-var next=game.createEvent('addSkill');
-next.player=this;
-if(!Array.isArray(skill)) next.skill=skill;
-next.setContent('emptyEvent');
-}
-return skill;
-};
-//removeSkill函数
-var originRemoveSkill=lib.element.player.removeSkill;
-lib.element.player.removeSkill=function(skill){
-originRemoveSkill.apply(this,arguments);
-if(_status.gameDrawed){
-var next=game.createEvent('removeSkill');
-next.player=this;
-if(!Array.isArray(skill)) next.skill=skill;
-next.setContent('emptyEvent');
-}
-return skill;
-};
-}
 //PR获得技能/失去技能时机添加
-if(!lib.element.content.changeSkills){
+if(!lib.element.player.changeSkills){
 lib.element.player.addSkills=function(skill){
 if(!skill) return;
 return this.changeSkills(Array.isArray(skill)?skill:[skill],[]);
@@ -2113,18 +2086,15 @@ if(!skill) return;
 return this.changeSkills([],Array.isArray(skill)?skill:[skill]);
 }
 lib.element.player.changeSkills=function(addSkill=[],removeSkill=[]){
-const next=game.createEvent('changeSkills', false);
+const next=game.createEvent('changeSkills',false);
 next.player=this;
-next.addSkill=addSkill.unique();
-next.removeSkill=removeSkill.unique();
-next.setContent('changeSkills');
-return next;
-}
-lib.element.content.changeSkills=async function(event,trigger,player){
+next.addSkill=addSkill.slice().unique();
+next.removeSkill=removeSkill.slice().unique();
+next.setContent(async function(event,trigger,player){
 //去重检查
 event.addSkill.unique();
 event.removeSkill.unique();
-const duplicatedSkills = event.addSkill.filter(skill => event.removeSkill.includes(skill));
+const duplicatedSkills=event.addSkill.filter(skill=>event.removeSkill.includes(skill));
 if(duplicatedSkills.length){
 event.addSkill.removeArray(duplicatedSkills);
 event.removeSkill.removeArray(duplicatedSkills);
@@ -2141,6 +2111,118 @@ if(event.removeSkill.length) player.removeSkillLog(event.removeSkill);
 }
 await event.trigger('changeSkillsEnd');
 await event.trigger('changeSkillsAfter');
+});
+return next;
+};
+lib.element.event.trigger = function(name) {
+if (_status.video) return;
+if ((this.name === 'gain' || this.name === 'lose') && !_status.gameDrawed) return;
+if (name === 'gameDrawEnd') _status.gameDrawed = true;
+if (name === 'gameStart') {
+lib.announce.publish('gameStart', {});
+if (_status.brawl && _status.brawl.gameStart) _status.brawl.gameStart();
+if (lib.config.show_cardpile) ui.cardPileButton.style.display = '';
+_status.gameStarted = true;
+game.showHistory();
+}
+if (!lib.hookmap[name] && !lib.config.compatiblemode) return;
+if (!game.players || !game.players.length) return;
+const event = this;
+let start = [_status.currentPhase, event.source, event.player, game.me, game.players[0]].find(i => get.itemtype(i) == 'player');
+if (!start) return;
+if (!game.players.includes(start) && !game.dead.includes(start)) start = game.findNext(start);
+const firstDo = {
+player: "firstDo",
+todoList: [],
+doneList: [],
+};
+const lastDo = {
+player: "lastDo",
+todoList: [],
+doneList: [],
+};
+const doingList = [];
+const roles = ['player', 'source', 'target', 'global'];
+const playerMap = game.players.concat(game.dead).sortBySeat(start);
+let player = start;
+let allbool = false;
+do {
+const doing = {
+player: player,
+todoList: [],
+doneList: [],
+listAdded: {},
+addList(skill) {
+if (!skill) return;
+if (Array.isArray(skill)) return skill.forEach(i => this.addList(i));
+if (this.listAdded[skill]) return;
+this.listAdded[skill] = true;
+
+const info = lib.skill[skill];
+const list = info.firstDo ? firstDo.todoList : info.lastDo ? lastDo.todoList : this.todoList;
+list.push({
+skill: skill,
+player: this.player,
+priority: get.priority(skill),
+});
+if (typeof list.player == 'string') list.sort((a, b) => (b.priority - a.priority) || (playerMap.indexOf(a) - playerMap.indexOf(b)));
+else list.sort((a, b) => b.priority - a.priority);
+allbool = true;
+}
+};
+
+const notemp = player.skills.slice();
+for (const j in player.additionalSkills) {
+if (!j.startsWith('hidden:')) notemp.addArray(player.additionalSkills[j]);
+}
+Object.keys(player.tempSkills).filter(skill => {
+if (notemp.includes(skill)) return false;
+const expire = player.tempSkills[skill];
+if (typeof expire === 'function') return expire(event, player, name);
+if (get.objtype(expire) === 'object') return roles.some(role => {
+if (role !== 'global' && player !== event[role]) return false;
+if (Array.isArray(expire[role])) return expire[role].includes(name);
+return expire[role] === name;
+});
+}).forEach(skill => {
+delete player.tempSkills[skill];
+player.removeSkill(skill);
+});
+
+if (lib.config.compatiblemode) {
+doing.addList(game.expandSkills(player.getSkills('invisible').concat(lib.skill.global)).filter(skill => {
+const info = get.info(skill);
+if (!info || !info.trigger) return false;
+return roles.some(role => {
+if (info.trigger[role] === name) return true;
+if (Array.isArray(info.trigger[role]) && info.trigger[role].includes(name)) return true;
+});
+}));
+}
+else roles.forEach(role => {
+doing.addList(lib.hook.globalskill[role + '_' + name]);
+doing.addList(lib.hook[player.playerid + '_' + role + '_' + name]);
+});
+delete doing.listAdded;
+delete doing.addList;
+doingList.push(doing);
+player = player.nextSeat;
+} while (player && player !== start);
+doingList.unshift(firstDo);
+doingList.push(lastDo);
+// console.log(name,event.player,doingList.map(i=>({player:i.player,todoList:i.todoList.slice(),doneList:i.doneList.slice()})))
+
+if (allbool) {
+const next = game.createEvent('arrangeTrigger', false, event);
+next.setContent('arrangeTrigger');
+next.doingList = doingList;
+next._trigger = event;
+next.triggername = name;
+next.playerMap = playerMap;
+event._triggering = next;
+return next;
+}
+return null;
 };
 }
 //失去体力上限配音
@@ -50671,36 +50753,15 @@ bolyuheng:{
 derivation:'bolyuheng_faq',
 //全扩技能库
 getList:function(){
-var list;
-if(_status.characterlist){
-list=[];
-for(var i=0;i<_status.characterlist.length;i++){
-var name=_status.characterlist[i];
-if(lib.character[name][1]=='wu') list.push(name);
-}
-}
-else if(_status.connectMode){
-list=get.charactersOL(function(i){
-return lib.character[i][1]!='wu';
-});
-}
-else{
-list=get.gainableCharacters(function(info){
-return info[1]=='wu';
-});
-}
-var players=game.players.concat(game.dead);
-for(var i=0;i<players.length;i++){
-list.remove(players[i].name);
-list.remove(players[i].name1);
-list.remove(players[i].name2);
-}
-//list=list.randomGets(Math.max(4,game.countPlayer()));
-var skills=[];
-for(var i of list){
-skills.addArray((lib.character[i][3]||[]).filter(function(skill){
+if(!_status.characterlist) lib.skill.pingjian.initList();
+let list=_status.characterlist.filter(name=>get.character(name,1)=='shu'||(get.is.double(name,true)||[]).includes('shu'));
+const players=game.players.concat(game.dead);
+for(const player of players) list.removeArray([player.name,player.name1,player.name2]);
+let skills=[];
+for(const i of list){
+skills.addArray((lib.character[i][3]||[]).filter(skill=>{
 var info=get.info(skill);
-return info&&!info.zhuSkill&&!info.hiddenSkill&&!info.charlotte;
+return info&&!info.zhuSkill&&!info.hiddenSkill&&!info.charlotte&&!info.groupSkill&&!info.limited&&!info.juexingji;
 }));
 }
 return skills;
@@ -50728,16 +50789,12 @@ return 1/(get.value(card)||0.5);
 });
 'step 1'
 if(result.bool){
-var list=(lib.config.extension_活动武将_ShenSunQuan?lib.skill.bolyuheng.getList():lib.skill.junkyuheng.derivation).slice(0);
-list=list.filter(function(skill){
-return !player.hasSkill(skill);
-});
-var skills=list.randomGets(Math.min(list.length,result.cards.length));
-if(player.additionalSkills.bolyuheng&&player.additionalSkills.bolyuheng.length){
-skills.addArray(player.additionalSkills.bolyuheng);
-}
+const list=(lib.config.extension_活动武将_ShenSunQuan?lib.skill.bolyuheng.getList():lib.skill.junkyuheng.derivation).filter(skill=>!player.hasSkill(skill));
+const skills=list.randomGets(Math.min(list.length,result.cards.length));
+player.changeSkills(skills,[]).set('$handle',(player,skills)=>{
 player.addAdditionalSkill('bolyuheng',skills);
 game.log(player,'获得了以下技能：','#g'+get.translation(skills));
+});
 }
 },
 subSkill:{
@@ -50749,9 +50806,12 @@ return player.additionalSkills.bolyuheng&&player.additionalSkills.bolyuheng.leng
 },
 forced:true,
 content:function(){
-player.draw(player.additionalSkills.bolyuheng.length);
-game.log(player,'失去了以下技能：','#g'+get.translation(player.additionalSkills.bolyuheng));
-player.removeAdditionalSkill('bolyuheng');
+const skills=player.additionalSkills.bolyuheng;
+player.draw(skills.length);
+player.changeSkills([],skills).set('$handle',(player,addSkills,removeSkills)=>{
+game.log(player,'失去了以下技能：','#g'+get.translation(removeSkills));
+player.removeAdditionalSkill('junkyuheng');
+});
 },
 },
 },
@@ -50760,11 +50820,14 @@ boldili:{
 derivation:['junkshengzhi','junkquandao','junkchigang'],
 juexingji:true,
 audio:'dili',
-trigger:{global:'phaseBefore',player:['enterGame','loseMaxHpEnd','gainMaxHpEnd','addSkill','removeSkill']},
+trigger:{
+global:'phaseBefore',
+player:['enterGame','loseMaxHpEnd','gainMaxHpEnd','changeSkillsAfter'],
+},
 filter:function(event,player){
 if(event.name=='phase'&&game.phaseNumber>0) return false;
-var skills=player.getSkills(null,false,false).filter(function(i){
-var info=get.info(i);
+const skills=player.getSkills(null,false,false).filter(i=>{
+const info=get.info(i);
 return info&&!info.charlotte;
 });
 return skills.length>player.maxHp;
@@ -50777,7 +50840,7 @@ content:function(){
 player.awakenSkill('boldili');
 player.loseMaxHp();
 'step 1'
-var skills=player.getSkills(null,false,false).filter(function(i){
+var skills=player.getSkills(null,false,false).filter(i=>{
 if(i=='boldili') return false;
 var info=get.info(i);
 return info&&!info.charlotte;
@@ -50820,6 +50883,7 @@ next.set('skills',skills);
 'step 2'
 if(result.bool){
 var skills=result.links,list=lib.skill.boldili.derivation;
+game.log(player,'失去了以下技能：','#g'+get.translation(skills));
 player.removeSkills(skills.slice(0));
 player.addSkills(list.slice(0,Math.min(skills.length,list.length)));
 }
@@ -55002,7 +55066,7 @@ bolyuheng_info:'锁定技。①回合开始时，你须弃置任意张花色不�
 bolyuheng_faq:'FAQ',
 bolyuheng_faq_info:'非全扩技能库如下：<br>制衡、缔盟、慎行、下书、弘援、观微、安恤、秉壹、兴学、澜疆、安国、戒训、调度、弼政、诱敌',
 boldili:'帝力',
-boldili_info:'觉醒技，当你拥有的技能数大于你的体力上限时，你减1点体力上限，选择失去任意个其他技能，然后获得〖圣质〗、〖权道〗、〖持纲〗的前等量个。',
+boldili_info:'觉醒技，游戏开始时/当你增加或减少体力上限后/当你获得或失去技能后，若你拥有的技能数大于你的体力上限时，你减1点体力上限，选择失去任意个其他技能，然后获得〖圣质〗、〖权道〗、〖持纲〗的前等量个。',
 bilibili_zhiyinxian:'机先',
 bilibili_zhiyinxian_info:'其他角色的回合开始时，你可以令其跳过本回合的一个阶段（不能选择准备阶段和结束阶段和你已选择过的阶段）。当你杀死角色后，你可以选择一个你已选择过的时机，然后你视为未选择过此时机。',
 bolhuanshi:'缓释',
