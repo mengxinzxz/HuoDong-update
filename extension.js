@@ -50638,20 +50638,18 @@ skills=skills.slice(0,num);
 await player.removeSkills(skills);
 if(!player.storage.bolchuanwu_restore){
 player.when({global:'phaseAfter'}).then(()=>{
-const skills=player.getStorage('bolchuanwu_restore');
-const getNum=function(skill){
-if(!player.getStockSkills(true,true).includes(skill)) return skills.length;
-return player.getStockSkills(true,true).indexOf(skill);
+player.addSkills(player.getStorage('bolchuanwu_restore'));
+}).then(()=>{
+game.broadcastAll(player=>{
+player.skills.sort((a,b)=>{
+const getNum=function(skill,player){
+const skills=player.getStockSkills(true,true);
+return skills.includes(skill)?skills.indexOf(skill):skills.length;
 };
-skills.sort((a,b)=>getNum(a)-getNum(b));
-player.addSkills(skills);
-game.broadcastAll((player,skills)=>{
-player.skills.removeArray(skills);
-for(let i=skills.length-1;i>=0;i--){
-player.skills.unshift(skills[i]);
-}
+return getNum(a,player)-getNum(b,player);
+});
 player.update();
-},player,skills);
+},player);
 delete player.storage.bolchuanwu_restore;
 });
 }
