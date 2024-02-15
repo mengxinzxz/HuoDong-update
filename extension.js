@@ -40626,9 +40626,6 @@ player.recover();
 },
 //孙邵
 fh_dingyi:{
-init:function(player){
-game.addGlobalSkill('fh_dingyi_dying');
-},
 audio:'mjdingyi',
 trigger:{global:'roundStart'},
 frequent:true,
@@ -40697,7 +40694,7 @@ if(!game.hasPlayer(target=>!target.hasSkill('fh_dingyi'))) return false;
 var card=player.getExpansions('fh_dingyi_buff')[0];
 if(!card) return false;
 if(event.name=='phaseDraw') return !event.numFixed&&get.suit(card)=='diamond';
-return event.fh_dingyi_dying&&get.suit(card)=='heart';
+return game.getGlobalHistory('everything',evt=>evt.name=='dying').indexOf(event)==0&&get.suit(card)=='heart';
 },
 forced:true,
 content:function(){
@@ -40711,17 +40708,6 @@ markcount:'expansion',
 onremove:function(player,skill){
 var cards=player.getExpansions(skill);
 if(cards.length) player.loseToDiscardpile(cards);
-},
-},
-dying:{
-charlotte:true,
-trigger:{player:'dyingAfter'},
-firstDo:true,
-forced:true,
-popup:false,
-usable:1,
-content:function(){
-trigger.fh_dingyi_dying=true;
 },
 },
 },
