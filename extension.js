@@ -50664,6 +50664,7 @@ trigger:{global:'phaseJieshuBegin'},
 filter(event,player){
 if(event.player==player||!event.player.getHistory('sourceDamage').length||!event.player.isIn()) return false;
 return player.hasCard(card=>{
+if(_status.connectMode) return true;
 return ['sha','juedou'].some(name=>game.checkMod(card,player,'unchanged','cardEnabled2',player)!==false&&player.canUse(get.autoViewAs({name:name},[card]),event.player,false));
 },'hs');
 },
