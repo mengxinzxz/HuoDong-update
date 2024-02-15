@@ -16332,7 +16332,7 @@ else event._result={control:target.name};
 }
 else event.goto(4);
 'step 3'
-target.reinit(result.control,'Mbaby_guansuo');
+target.reinitCharacter(result.control,'Mbaby_guansuo');
 if(target.name=='Mbaby_guansuo'&&target.group!='shu') target.changeGroup('shu');
 if(_status.characterlist){
 _status.characterlist.add(result.control);
@@ -21792,7 +21792,7 @@ if((player.name1=='Mbaby_re_sunyi'||player.name2=='Mbaby_re_sunyi')&&_status.cha
 hp+=2;
 _status.characterlist.remove('Mbaby_xushi');
 _status.characterlist.add('Mbaby_re_sunyi');
-player.reinit('Mbaby_re_sunyi','Mbaby_xushi',false);
+player.reinitCharacter('Mbaby_re_sunyi','Mbaby_xushi');
 }
 else await player.addSkills('minihunzi_old');
 if(hp>0) await player.recover(hp);
@@ -47098,7 +47098,7 @@ return get.rank(button.link,true)-lib.character[button.link][2];
 'step 1'
 var num=player.storage.fanghun2;
 num=Math.min(num,game.players.length+game.dead.length);
-player.reinit('old_zhaoxiang',result.links[0],num);
+player.reinitCharacter('old_zhaoxiang',result.links[0],num);
 },
 },
 boljingjia:{
