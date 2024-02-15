@@ -50778,91 +50778,56 @@ player.storage.bilibili_zhiyinxian.remove(result.control);
 },
 },
 bolhuanshi:{
-audio:'huanshi',
-trigger:{global:'judge'},
-filter:function(event,player){
-return player.countCards('he')>0;
+inherit:'olhuanshi',
+prompt2:function(event,player){
+return get.translation(event.player)+'的'+event.judgestr+'判定为'+get.translation(event.player.judging[0])+'。你可以令其观看你的牌，其选择一张牌进行改判。然后你可以重铸任意张牌。';
 },
-check:function(event,player){
-if(get.attitude(player,event.player)<=0) return false;
-var cards=player.getCards('he');
-var judge=event.judge(event.player.judging[0]);
-for(var i=0;i<cards.length;i++){
-var judge2=event.judge(cards[i]);
-if(judge2>judge) return true;
-if(_status.currentPhase!=player&&judge2==judge&&get.color(cards[i])=='red'&&get.useful(cards[i])<5) return true;
-}
-return false;
-},
-logTarget:'player',
-content:function(){
-'step 0'
-var target=trigger.player;
-var judge=trigger.judge(target.judging[0]);
-var attitude=get.attitude(target,player);
-target.choosePlayerCard('请选择代替判定的牌','he','visible',true,player).set('ai',function(button){
-var card=button.link;
-var judge=_status.event.judge;
-var attitude=_status.event.attitude;
-var result=trigger.judge(card)-judge;
-var player=_status.event.player;
-if(result>0){
-return 20+result;
-}
+async content(event,trigger,player){
+const target=trigger.player,judge=trigger.judge(target.judging[0]),attitude=get.attitude(target,player);
+const {result:{bool,links}}=await target.choosePlayerCard('请选择代替判定的牌','he','visible',true,player).set('ai',button=>{
+const card=button.link,judge=get.event('judge'),attitude=get.event('attitude');
+const trigger=get.event().getTrigger(),player=get.event('player'),result=trigger.judge(card)-judge;
+if(result>0) return 20+result;
 if(result==0){
 if(_status.currentPhase==player) return 0;
-if(attitude>=0) return get.color(card)=='red'?7:-get.value(card);
-else return get.color(card)=='black'?10:0+get.value(card);
+if(attitude>=0) return get.color(card)=='red'?7:0-get.value(card);
+return get.color(card)=='black'?10:0+get.value(card);
 }
 if(attitude>=0) return get.color(card)=='red'?0:-10+result;
-else return get.color(card)=='black'?0:-10+result;
-}).set('filterButton',function(button){
-var player=_status.event.target;
-var card=button.link;
-var mod2=game.checkMod(card,player,'unchanged','cardEnabled2',player);
+return get.color(card)=='black'?0:-10+result;
+}).set('filterButton',button=>{
+const player=get.event('player'),card=button.link;
+const mod2=game.checkMod(card,player,'unchanged','cardEnabled2',player);
 if(mod2!='unchanged') return mod2;
-var mod=game.checkMod(card,player,'unchanged','cardRespondable',player);
+const mod=game.checkMod(card,player,'unchanged','cardRespondable',player);
 if(mod!='unchanged') return mod;
 return true;
 }).set('judge',judge).set('attitude',attitude);
-'step 1'
-if(result.bool){
-event.card=result.links[0];
-player.respond(event.card,'highlight').nopopup=true;
+if(bool){
+const card=links[0];
+await player.respond(card,'highlight','noOrdering').set('nopopup',true);
+if(target.judging[0].clone){
+target.judging[0].clone.classList.remove('thrownhighlight');
+game.broadcast(card=>{
+if(card.clone) card.clone.classList.remove('thrownhighlight');
+},target.judging[0]);
+game.addVideo('deletenode',player,get.cardsInfo([target.judging[0].clone]));
 }
-else event.finish();
-'step 2'
-if(result.bool){
-if(trigger.player.judging[0].clone){
-trigger.player.judging[0].clone.classList.remove('thrownhighlight');
-game.broadcast(function(card){
-if(card.clone){
-card.clone.classList.remove('thrownhighlight');
-}
-},trigger.player.judging[0]);
-game.addVideo('deletenode',player,get.cardsInfo([trigger.player.judging[0].clone]));
-}
-game.cardsDiscard(trigger.player.judging[0]);
-trigger.player.judging[0]=event.card;
-trigger.orderingCards.add(event.card);
-game.log(trigger.player,'的判定牌改为',event.card);
-game.delay(2);
-}
-'step 3'
-if(!player.countCards('he')) event.finish();
-else player.chooseCard('he','是否重铸任意张牌',[1,Infinity],lib.filter.cardRecastable).set('ai',function(card){
-var player=_status.event.player;
-if(player.hasSkill('bolmingzhe')&&get.color(card)=='red'&&card.name!='tao'&&card.namt!='wuxie') return 1;
+game.cardsDiscard(target.judging[0]);
+target.judging[0]=card;
+trigger.orderingCards.add(card);
+game.log(target,'的判定牌改为',card);
+await game.asyncDelay(2);
+if(player.countCards('h')){
+const {result:{bool,cards}}=await player.chooseCard('是否重铸任意张手牌？',[1,player.countCards('h')],lib.filter.cardRecastable).set('ai',card=>{
+const player=get.event('player'),cards=ui.selected.cards;
+if(!player.hasSkill('olmingzhe')) return 5-get.value(card);
+if(!cards.some(i=>get.color(i,player)=='red')&&get.color(card,player)=='red') return 7.5-get.value(card);
 return 5-get.value(card);
-});
-'step 4'
-if(result.bool) player.recast(result.cards);
-},
-ai:{
-rejudge:true,
-tag:{
-rejudge:1,
-},
+}).set('complexCard',true);
+if(bool) await player.recast(result.cards);
+}
+}
 },
 },
 //荀采
