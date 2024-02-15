@@ -42,7 +42,6 @@ window.HDPJ_import=function(pack){
 pack(lib,game,ui,get,ai,_status);
 };
 lib.init.js(lib.assetURL+'extension/活动武将/extension_peijian.js');
-lib.init.js(lib.assetURL+'extension/活动武将/extension_test.js');
 lib.init.css(lib.assetURL+'extension/活动武将','extension');
 
 //更新公告
