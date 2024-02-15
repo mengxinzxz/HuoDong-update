@@ -1112,7 +1112,12 @@ return list.randomGet();
 }).set('prompt','选择并获得一项技能直到回合结束');
 'step 2'
 player.popup(result.control);
-player.addTempSkill('fz_'+result.control);
+player.changeSkills(['fz_'+result.control],[]).set('$handle',(player,skills)=>{
+const skill=skills[0];
+player(skill);
+player.popup(skill);
+game.log(player,'获得了技能','【'+get.translation(skill)+'】');
+});
 game.log(player,'获得了技能','#g【'+get.translation(result.control)+'】');
 game.delay();
 },
@@ -5501,9 +5506,12 @@ trigger:{player:'phaseZhunbeiBegin'},
 forced:true,
 content:function(){
 var skill=['new_rejianxiong','rerende','rezhiheng'].randomGet();
+player.changeSkills([skill],[]).set('$handle',(player,skills)=>{
+const skill=skills[0];
 player.addTempSkill(skill,{player:'phaseBegin'});
 player.popup(skill);
-game.log(player,'获得了技能','#g【'+get.translation(skill)+'】');
+game.log(player,'获得了技能','【'+get.translation(skill)+'】');
+});
 },
 },
 qin_shanwu:{
@@ -7043,7 +7051,12 @@ content:function(){
 player.judge();
 'step 1'
 if(result.color=='red') trigger.num++;
-else player.addTempSkill('rewansha');
+else player.changeSkills(['rewansha'],[]).set('$handle',(player,skills)=>{
+const skill=skills[0];
+player.addTempSkill(skill);
+player.popup(skill);
+game.log(player,'获得了技能','【'+get.translation(skill)+'】');
+});
 },
 },
 ZGbingyi:{
@@ -7521,7 +7534,12 @@ var player=_status.event.player;
 if(get.position(card,true)=='o') player.gain(card,'gain2');
 });
 'step 1'
-player.addTempSkill(result.color=='red'?'new_yijue':'tianyi');
+player.changeSkills([result.color=='red'?'new_yijue':'tianyi'],[]).set('$handle',(player,skills)=>{
+const skill=skills[0];
+player.addTempSkill(skill);
+player.popup(skill);
+game.log(player,'获得了技能','【'+get.translation(skill)+'】');
+});
 },
 },
 kuiba_linyao:{
@@ -9620,8 +9638,13 @@ card:trigger.card,
 }
 if(event.num>1) player.draw(2);
 if(event.num>2){
-player.addTempSkill('minijianxiong',{player:'phaseBegin'});
-player.addTempSkill('minixingshang',{player:'phaseBegin'});
+player.changeSkills(['minijianxiong','minixingshang'],[]).set('$handle',(player,skills)=>{
+player.addTempSkill(skills,{player:'phaseBegin'});
+for(const skill of skills){
+player.popup(skill);
+game.log(player,'获得了技能','【'+get.translation(skill)+'】');
+}
+});
 }
 },
 },
@@ -18234,7 +18257,15 @@ player.removeSkill(skills);
 player.addSkills(skills);
 player.storage.minifuhun=true;
 }
-else skills.forEach(skill=>player.addTempSkill(skill));
+else{
+player.changeSkills(skills,[]).set('$handle',(player,skills)=>{
+player.addTempSkill(skills);
+for(const skill of skills){
+player.popup(skill);
+game.log(player,'获得了技能','【'+get.translation(skill)+'】');
+}
+});
+}
 },
 },
 },
@@ -20356,7 +20387,14 @@ derivation:['minitianxiang','olhongyan'],
 trigger:{player:'minixingwuAfter'},
 forced:true,
 content:function(){
-for(var i of lib.skill.miniluoyan.derivation) player.addTempSkill(i,{player:'phaseUseBegin'});
+const skills=lib.skill.miniluoyan.derivation.slice();
+player.changeSkills(skills,[]).set('$handle',(player,skills)=>{
+player.addTempSkill(skills,{player:'phaseUseBegin'});
+for(const skill of skills){
+player.popup(skill);
+game.log(player,'获得了技能','【'+get.translation(skill)+'】');
+}
+});
 },
 },
 minihuimou:{
@@ -21066,7 +21104,12 @@ return get.type2(card,player)=='trick'&&player.hasUseTarget(card,false);
 if(result.control=='equip3_4'){
 player.disableEquip(3,4);
 player.recover();
-player.addTempSkill('minirejizhi');
+player.changeSkills(['minirejizhi'],[]).set('$handle',(player,skills)=>{
+const skill=skills[0];
+player.addTempSkill(skill);
+player.popup(skill);
+game.log(player,'获得了技能','【'+get.translation(skill)+'】');
+});
 }
 else player.disableEquip(result.control);
 if(result.control=='equip2') player.draw(3);
@@ -25993,7 +26036,12 @@ if(skills.length) player.chooseControl(skills).set('dialog',['请选择要发动
 else event.finish();
 'step 1'
 player.markAuto('minipingjian',[result.control]);
-player.addTempSkill(result.control);
+player.changeSkills([result.control],[]).set('$handle',(player,skills)=>{
+const skill=skills[0];
+player.addTempSkill(skill);
+player.popup(skill);
+game.log(player,'选择了技能','【'+get.translation(skill)+'】');
+});
 player.storage.minipingjian_remove[result.control]=(trigger.name=='damage'?trigger:'phaseJieshu');
 },
 },
@@ -26063,7 +26111,12 @@ if(skills.length) player.chooseControl(skills).set('dialog',['请选择要发动
 else event.finish();
 'step 1'
 player.markAuto('minipingjian',[result.control]);
-player.addTempSkill(result.control);
+player.changeSkills([result.control],[]).set('$handle',(player,skills)=>{
+const skill=skills[0];
+player.addTempSkill(skill);
+player.popup(skill);
+game.log(player,'选择了技能','【'+get.translation(skill)+'】');
+});
 player.storage.minipingjian_remove[result.control]='phaseUse';
 },
 ai:{
@@ -26693,6 +26746,7 @@ if(max==0&&ui.selected.length>0) return 0;
 return 7-ui.selected.cards.length-get.value(card);
 },
 content:function(){
+'step 0'
 var num=Math.min(cards.length,4-player.countMark('spmanwang'));
 if(num>=1) player.addSkill('sppanqin');
 if(num>=2) player.draw();
@@ -26701,7 +26755,13 @@ if(num>=4){
 player.draw(2);
 player.removeSkills('sppanqin');
 }
-player.addTempSkill('minihuoshou',{player:'phaseBegin'});
+'step 1'
+player.changeSkills(['minihuoshou'],[]).set('$handle',(player,skills)=>{
+const skill=skills[0];
+player.addTempSkill(skill,{player:'phaseBegin'});
+player.popup(skill);
+game.log(player,'获得了技能','【'+get.translation(skill)+'】');
+});
 },
 ai:{
 order:2,
@@ -37506,7 +37566,7 @@ frequent:true,
 preHidden:true,
 content:function(){
 player.draw().gaintag=['wechatjizhi'];
-player.addTempSkill('wechatjizhi2')
+player.addTempSkill('wechatjizhi2');
 },
 ai:{noautowuxie:true},
 subSkill:{
@@ -37580,7 +37640,14 @@ if(result.control=='equip3_4') player.disableEquip(3,4);
 else player.disableEquip(result.control);
 player.addTempSkill('drlt_jueyan'+['1','3','2'][['equip1','equip2','equip3_4'].indexOf(result.control)]);
 if(result.control=='equip2') player.draw(3);
-if(result.control=='equip3_4') player.addTempSkill('relianying');
+if(result.control=='equip3_4'){
+player.changeSkills(['relianying'],[]).set('$handle',(player,skills)=>{
+const skill=skills[0];
+player.addTempSkill(skill);
+player.popup(skill);
+game.log(player,'获得了技能','【'+get.translation(skill)+'】');
+});
+}
 },
 ai:{
 order:13,
@@ -39439,9 +39506,12 @@ forced:true,
 locked:false,
 content:function(){
 var skill=lib.skill.wechatrehuixin.derivation[player.countCards('e')%2];
+player.changeSkills([skill],[]).set('$handle',(player,skills)=>{
+const skill=skills[0];
 player.addTempSkill(skill);
 player.popup(skill);
 game.log(player,'获得了技能','【'+get.translation(skill)+'】');
+});
 },
 derivation:['wechatjifeng','wechatjizhi'],
 },
