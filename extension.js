@@ -25968,10 +25968,8 @@ intro:{content:'手牌上限+#'},
 //许劭
 minipingjian:{
 getList:function(){
-return Object.keys(lib.characterPack.MiNikill).filter(i=>{
-if(!lib.characterPack.MiNikill[i][4]) return true;
-return !lib.characterPack.MiNikill[i][4].includes('unseen');
-}).concat(_status.extra_pingjianList||[]);
+const list=Object.keys(lib.characterPack.MiNikill).concat(_status.extra_pingjianList||[]);
+return list.filter(i=>!get.character(i,4)||!get.character(i,4).includes('unseen'));
 },
 init:function(player){
 player.addSkill('minipingjian_remove');
