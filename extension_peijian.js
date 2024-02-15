@@ -219,6 +219,7 @@ game.HDaddCharacter('tw_shen_lvmeng',['male','shen',3,['bolshelie','bolgongxin']
 game.HDaddCharacter('re_zhenji',['female','wei',3,['reluoshen','qingguo'],[]],'refresh');
 game.HDaddCharacter('re_zhangchunhua',['female','wei',3,['rejueqing','shangshi'],[]],'refresh');
 game.HDaddCharacter('re_caorui',['male','wei',3,['huituo','remingjian','xingshuai'],['zhu']],'refresh');
+game.HDaddCharacter('dc_xushu',['male','shu',4,['bolzhuhai','xsqianxin'],[]],'refresh');
 
 //一将成名
 game.HDaddCharacter('guohuai',['male','wei',3,['rejingce'],[]],'yijiang');
@@ -228,6 +229,7 @@ game.HDaddCharacter('zhugejin',['male','wu',3,['huanshi','olhongyuan','olmingzhe
 game.HDaddCharacter('maliang',['male','shu',3,['zishu','xinyingyuan'],[]],'sp');
 game.HDaddCharacter('sp_zhaoyun',['male','qun',3,['longdan','chongzhen'],[]],'sp');
 lib.translate.chongzhen_info='当你发动〖龙胆〗时，你可以获得对方的一张手牌。';
+game.HDaddCharacter('zhanghua',['male','jin',3,['olbihun','oljianhe','bolchuanwu'],[]],'sp');
 
 //系列专属包
 lib.characterSort.sp2.sp_decade.addArray(['decade_buzhi','decade_lingju','junk_zhangrang']);

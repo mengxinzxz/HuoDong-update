@@ -2407,123 +2407,6 @@ game.bol_playAudiox();
 //precS
 if(bilibilicharacter.enable){
 //技能修复+描述优化
-//张华
-lib.skill.olchuanwu={
-//放个置于最前方的函数以后好用
-unshiftArray:function(list1,list2){
-list1.removeArray(list2);
-for(var i=list2.length-1;i>=0;i--){
-list1.unshift(list2[i]);
-}
-},
-audio:2,
-trigger:{player:'damageEnd',source:'damageSource'},
-filter:function(event,player){
-return player.getAttackRange()>0&&player.getStockSkills(false,true).length;
-},
-forced:true,
-content:function(){
-var skills=player.getStockSkills(false,true);
-var num=Math.min(player.getAttackRange(),skills.length);
-skills=skills.slice(0,num);
-player.removeSkills(skills);
-player.addTempSkill('olchuanwu_restore');
-player.markAuto('olchuanwu_restore',skills.filter(skill=>!player.getStorage('olchuanwu_restore').includes(skill)));
-var str='';
-for(var i of skills){
-str+='【'+get.translation(i)+'】、';
-player.popup(i);
-}
-str=str.slice(0,-1);
-game.log(player,'失去了技能','#g'+str);
-player.draw(num);
-},
-subSkill:{
-restore:{
-charlotte:true,
-onremove:function(player){
-var skills=player.getStorage('olchuanwu_restore');
-skills.sort(function(a,b){
-var getNum=function(skill){
-if(!player.getStockSkills(true,true).includes(skill)) return skills.length;
-return player.getStockSkills(true,true).indexOf(skill);
-};
-return getNum(a)-getNum(b);
-});
-player.addSkills(skills);
-game.broadcastAll(function(player,skills){
-lib.skill.olchuanwu.unshiftArray(player.skills,skills);
-},player,skills);
-player.update();
-var str='';
-for(var i of skills){
-str+='【'+get.translation(i)+'】、';
-player.popup(i);
-}
-str=str.slice(0,-1);
-game.log(player,'恢复了技能','#g'+str);
-delete player.storage.olchuanwu_restore;
-},
-},
-},
-};
-lib.translate.olchuanwu_info='锁定技。当你造成或受到伤害后，你失去武将牌上的前X个技能直到回合结束，然后你摸等同于你此次失去的技能数的牌（X为你的攻击范围）。';
-//徐庶
-lib.skill.rezhuhai={
-audio:2,
-trigger:{global:'phaseJieshuBegin'},
-filter:function(event,player){
-if(event.player==player||!event.player.getHistory('sourceDamage').length||!event.player.isIn()) return false;
-for(var card of player.getCards('h')){
-if(game.checkMod(card,player,'unchanged','cardEnabled2',player)!==false&&player.canUse(get.autoViewAs({name:'sha'},[card]),event.player,false)) return true;
-if(game.checkMod(card,player,'unchanged','cardEnabled2',player)!==false&&player.canUse(get.autoViewAs({name:'guohe'},[card]),event.player,false)) return true;
-}
-return false;
-},
-direct:true,
-content:function(){
-'step 0'
-var target=trigger.player;
-var choiceList=['将一张手牌当作【杀】对其使用','将一张手牌当作【过河拆桥】对其使用'];
-var bool=false,boolx=false,hs=player.getCards('h');
-for(var i of hs){
-if(game.checkMod(i,player,'unchanged','cardEnabled2',player)!==false&&player.canUse(get.autoViewAs({name:'sha'},[i]),target,false)) bool=true;
-if(game.checkMod(i,player,'unchanged','cardEnabled2',player)!==false&&player.canUse(get.autoViewAs({name:'guohe'},[i]),target,false)) boolx=true;
-if(bool&&boolx) break;
-}
-var choices=[];
-if(bool) choices.push('选项一');
-else choiceList[0]='<span style="opacity:0.5">'+choiceList[0]+'</span>';
-if(boolx) choices.push('选项二');
-else choiceList[1]='<span style="opacity:0.5">'+choiceList[1]+'</span>';
-choices.push('cancel2');
-player.chooseControl(choices).set('choiceList',choiceList).set('prompt',get.prompt('rezhuhai',target)).set('ai',function(){
-var choices=_status.event.controls;
-var eff1=0,eff2=0;
-var player=_status.event.player,target=_status.event.getTrigger().player;
-if(choices.includes('选项一')) eff1=get.effect(target,{name:'sha'},player,player);
-if(choices.includes('选项二')) eff2=get.effect(target,{name:'guohe'},player,player);
-if(eff1>0&&(player.hasSkill('xsqianxin')&&player.isDamaged()||eff1>eff2)) return '选项一';
-if(eff2>0) return '选项二';
-return 'cancel2';
-});
-'step 1'
-if(result.control!='cancel2'){
-event.bilibili=(result.control=='选项一'?'sha':'guohe');
-player.chooseCard('h',true,function(card,player){
-if(!game.checkMod(card,player,'unchanged','cardEnabled2',player)) return false;
-return player.canUse(get.autoViewAs({name:event.bilibili},[card]),_status.event.getTrigger().player,false);
-},'选择一张手牌当作【'+get.translation(event.bilibili)+'】对'+get.translation(trigger.player)+'使用').set('ai',function(card){
-var player=_status.event.player;
-return get.effect(_status.event.getTrigger().player,get.autoViewAs({name:event.bilibili},[hs]),player,player)/Math.max(1,get.value(card));
-});
-}
-else event.finish();
-'step 2'
-if(result.bool) player.useCard({name:event.bilibili},result.cards,'rezhuhai',trigger.player,false);
-},
-};
-lib.translate.rezhuhai_info='其他角色的回合结束时，若其本回合内造成过伤害，则你可以将一张手牌当作【杀】或【过河拆桥】对其使用。';
 //蔡阳YYDS!!!
 lib.skill.yinka={
 group:'yinka_view',
@@ -50740,6 +50623,88 @@ player.addSkills(list.slice(0,Math.min(skills.length,list.length)));
 }
 },
 },
+//张华
+bolchuanwu:{
+audio:'olchuanwu',
+trigger:{player:'damageEnd',source:'damageSource'},
+filter(event,player){
+return player.getAttackRange()>0&&player.getStockSkills(false,true).length;
+},
+forced:true,
+async content(event,trigger,player){
+let skills=player.getStockSkills(false,true);
+const num=Math.min(player.getAttackRange(),skills.length);
+skills=skills.slice(0,num);
+await player.removeSkills(skills);
+if(!player.storage.bolchuanwu_restore){
+player.when({global:'phaseAfter'}).then(()=>{
+const skills=player.getStorage('bolchuanwu_restore');
+const getNum=function(skill){
+if(!player.getStockSkills(true,true).includes(skill)) return skills.length;
+return player.getStockSkills(true,true).indexOf(skill);
+};
+skills.sort((a,b)=>getNum(a)-getNum(b));
+player.addSkills(skills);
+game.broadcastAll((player,skills)=>{
+player.skills.removeArray(skills);
+for(let i=skills.length-1;i>=0;i--){
+player.skills.unshift(skills[i]);
+}
+player.update();
+},player,skills);
+delete player.storage.bolchuanwu_restore;
+});
+}
+player.markAuto('bolchuanwu_restore',skills.filter(skill=>!player.getStorage('bolchuanwu_restore').includes(skill)));
+await player.draw(num);
+},
+},
+//徐庶
+bolzhuhai:{
+audio:'rezhuhai',
+trigger:{global:'phaseJieshuBegin'},
+filter(event,player){
+if(event.player==player||!event.player.getHistory('sourceDamage').length||!event.player.isIn()) return false;
+return player.hasCard(card=>{
+return ['sha','juedou'].some(name=>game.checkMod(card,player,'unchanged','cardEnabled2',player)!==false&&player.canUse(get.autoViewAs({name:name},[card]),event.player,false));
+},'hs');
+},
+direct:true,
+async content(event,trigger,player){
+const target=trigger.player;
+let choices=[],choiceList=['将一张手牌当作【杀】对其使用','将一张手牌当作【过河拆桥】对其使用'];
+if(player.hasCard(card=>{
+return game.checkMod(card,player,'unchanged','cardEnabled2',player)!==false&&player.canUse(get.autoViewAs({name:'sha'},[card]),target,false);
+},'hs')) choices.push('选项一');
+else choiceList[0]='<span style="opacity:0.5">'+choiceList[0]+'</span>';
+if(player.hasCard(card=>{
+return game.checkMod(card,player,'unchanged','cardEnabled2',player)!==false&&player.canUse(get.autoViewAs({name:'juedou'},[card]),target,false);
+},'hs')) choices.push('选项二');
+else choiceList[1]='<span style="opacity:0.5">'+choiceList[1]+'</span>';
+choices.push('cancel2');
+const {result:{control}}=await player.chooseControl(choices).set('choiceList',choiceList)
+.set('prompt',get.prompt('bolzhuhai',target)).set('ai',()=>{
+const player=get.event('player'),target=get.event('target'),choices=get.event('controls');
+let eff1=0,eff2=0;
+if(choices.includes('选项一')) eff1=get.effect(target,{name:'sha'},player,player);
+if(choices.includes('选项二')) eff2=get.effect(target,{name:'guohe'},player,player);
+if(eff1>0&&(player.hasSkill('xsqianxin')&&player.isDamaged()||eff1>eff2)) return '选项一';
+if(eff2>0) return '选项二';
+return 'cancel2';
+}).set('target',target);
+if(control!='cancel2'){
+const name=(control=='选项一'?'sha':'guohe');
+const {result:{bool,cards}}=await player.chooseCard('hs',true,(card,player)=>{
+if(!game.checkMod(card,player,'unchanged','cardEnabled2',player)) return false;
+return player.canUse(get.autoViewAs({name:get.event('namex')},[card]),get.event('target'),false);
+},'将一张手牌当作【'+get.translation(name)+'】对'+get.translation(target)+'使用').set('ai',card=>{
+const player=get.event('player'),target=get.event('target');
+return get.effect(target,get.autoViewAs({name:get.event('namex')},[card]),player,player)/Math.max(1,get.value(card));
+}).set('namex',name).set('target',target);
+if(bool) player.useCard({name:name},cards,'bolzhuhai',target,false);
+}
+},
+},
 //张郃【机先】
 //只因先
 bilibili_zhiyinxian:{
@@ -54918,6 +54883,10 @@ bolyuheng_faq:'FAQ',
 bolyuheng_faq_info:'非全扩技能库如下：<br>制衡、缔盟、慎行、下书、弘援、观微、安恤、秉壹、兴学、澜疆、安国、戒训、调度、弼政、诱敌',
 boldili:'帝力',
 boldili_info:'觉醒技，游戏开始时/当你增加或减少体力上限后/当你获得或失去技能后，若你拥有的技能数大于你的体力上限时，你减1点体力上限，选择失去任意个其他技能，然后获得〖圣质〗、〖权道〗、〖持纲〗的前等量个。',
+bolchuanwu:'穿屋',
+bolchuanwu_info:'锁定技。当你造成或受到伤害后，你失去武将牌上的前X个技能直到回合结束，然后你摸等同于你此次失去的技能数的牌（X为你的攻击范围）。',
+bolzhuhai:'诛害',
+bolzhuhai_info:'其他角色的回合结束时，若其本回合内造成过伤害，则你可以将一张手牌当作【杀】或【过河拆桥】对其使用。',
 bilibili_zhiyinxian:'机先',
 bilibili_zhiyinxian_info:'其他角色的回合开始时，你可以令其跳过本回合的一个阶段（不能选择准备阶段和结束阶段和你已选择过的阶段）。当你杀死角色后，你可以选择一个你已选择过的时机，然后你视为未选择过此时机。',
 bolhuanshi:'缓释',
