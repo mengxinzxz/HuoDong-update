@@ -40694,7 +40694,7 @@ if(!game.hasPlayer(target=>!target.hasSkill('fh_dingyi'))) return false;
 var card=player.getExpansions('fh_dingyi_buff')[0];
 if(!card) return false;
 if(event.name=='phaseDraw') return !event.numFixed&&get.suit(card)=='diamond';
-return game.getGlobalHistory('everything',evt=>evt.name&&evt.player==player=='dying').indexOf(event)==0&&get.suit(card)=='heart';
+return game.getGlobalHistory('everything',evt=>evt.name=='dying'&&evt.player==player).indexOf(event)==0&&get.suit(card)=='heart';
 },
 forced:true,
 content:function(){
