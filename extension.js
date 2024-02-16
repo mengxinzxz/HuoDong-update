@@ -50691,8 +50691,8 @@ skills=skills.slice(0,num);
 await player.removeSkills(skills);
 if(!player.storage.bolchuanwu_restore){
 player.when({global:'phaseAfter'}).then(()=>{
-player.addSkills(player.getStorage('bolchuanwu_restore'));
-}).then(()=>{
+player.changeSkills(player.getStorage('bolchuanwu_restore'),[]).set('$handle',(player,skills)=>{
+player.addSkillLog(skills);
 game.broadcastAll(player=>{
 player.skills.sort((a,b)=>{
 const getNum=function(skill,player){
@@ -50701,10 +50701,10 @@ return skills.includes(skill)?skills.indexOf(skill):skills.length;
 };
 return getNum(a,player)-getNum(b,player);
 });
-player.update();
 },player);
-delete player.storage.bolchuanwu_restore;
+player.update();
 });
+}).then(()=>delete player.storage.bolchuanwu_restore);
 }
 player.markAuto('bolchuanwu_restore',skills.filter(skill=>!player.getStorage('bolchuanwu_restore').includes(skill)));
 await player.draw(num);
