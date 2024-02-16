@@ -31600,9 +31600,6 @@ result:{player:1},
 },
 },
 minitunxing:{
-onremove(player){
-if(player.additionalSkills&&player.additionalSkills.minitunxing&&player.additionalSkills.minitunxing.length) player.removeAdditionalSkills('minitunxing');
-},
 audio:'ext:活动武将/audio/skill:2',
 trigger:{
 global:'phaseBefore',
@@ -31614,7 +31611,7 @@ return event.name!='phase'||game.phaseNumber==0;
 },
 forced:true,
 async content(event,trigger,player){
-await lib.skill.minitunxing.onremove(player);
+if(player.additionalSkills.minitunxing&&player.additionalSkills.minitunxing.length) await player.removeAdditionalSkills('minitunxing');
 const list=((!_status.connectMode&&lib.config.extension_活动武将_PingJianName)?lib.config.extension_活动武将_PingJianName:lib.skill.minipingjian.getList()).filter(name=>{
 if(!lib.character[name]) return false;
 return lib.character[name][4]&&lib.character[name][4].includes('zhu');
@@ -50354,9 +50351,7 @@ group:'bolyuheng_remove',
 audio:'yuheng',
 trigger:{player:'phaseBegin'},
 filter:function(event,player){
-return player.hasCard(function(card){
-return lib.filter.cardDiscardable(card,player,'bolyuheng');
-},'he');
+return player.hasCard(card=>lib.filter.cardDiscardable(card,player,'bolyuheng'),'he');
 },
 forced:true,
 keepSkill:true,
