@@ -298,7 +298,7 @@ break;
 lib.boss.boss_taowu.randchoice=function(name,list){
 if(Math.random()>1/3) return name;
 else{
-var arr=['shen_caocao','shen_simayi','shen_guanyu','shen_zhugeliang','shen_zhaoyun','shen_zhouyu','shen_lvmeng','shen_lvbu','shen_liubei','shen_luxun','shen_ganning','ol_zhangliao','shen_zhenji','shen_caopi','key_kagari','key_shiki','db_key_hina','shen_sunquan','Mbaby_shen_zhangjiao'].filter(function(name){
+var arr=['shen_caocao','shen_simayi','shen_guanyu','shen_zhugeliang','shen_zhaoyun','shen_zhouyu','shen_lvmeng','shen_lvbu','shen_liubei','shen_luxun','shen_ganning','ol_zhangliao','shen_zhenji','shen_caopi','key_kagari','key_shiki','db_key_hina','shen_sunquan','junk_zhangjiao'].filter(function(name){
 return lib.character[name]&&(!lib.character[name][4]||!lib.character[name][4].includes('unseen'));
 });
 arr.removeArray(list);
@@ -348,7 +348,7 @@ game.uncheck();
 game.check();
 });
 control.backup1=ui.create.div('.buttons');
-control.backup2=ui.create.buttons(['shen_caocao','shen_simayi','shen_guanyu','shen_zhugeliang','shen_zhaoyun','shen_zhouyu','shen_lvmeng','shen_lvbu','shen_liubei','shen_luxun','shen_ganning','ol_zhangliao','shen_zhenji','shen_caopi','key_kagari','key_shiki','db_key_hina','shen_sunquan','Mbaby_shen_zhangjiao'].filter(function(name){
+control.backup2=ui.create.buttons(['shen_caocao','shen_simayi','shen_guanyu','shen_zhugeliang','shen_zhaoyun','shen_zhouyu','shen_lvmeng','shen_lvbu','shen_liubei','shen_luxun','shen_ganning','ol_zhangliao','shen_zhenji','shen_caopi','key_kagari','key_shiki','db_key_hina','shen_sunquan','junk_zhangjiao'].filter(function(name){
 return lib.character[name]&&(!lib.character[name][4]||!lib.character[name][4].includes('unseen'));
 }),'character',control.backup1);
 return control;
@@ -460,7 +460,7 @@ case 'shen_sunquan':{
 game.players[i].equip(game.createCard2('changandajian_equip4','heart',10));
 break;
 }
-case 'Mbaby_shen_zhangjiao':{
+case 'junk_zhangjiao':{
 game.players[i].equip(game.createCard2('bol_sanshou','diamond',12));
 break;
 }
@@ -9101,7 +9101,7 @@ MiNi_shu:['Mbaby_guanzhang','Mbaby_wolongfengchu','Mbaby_wangtao','Mbabysp_zhang
 MiNi_wu:['Mbaby_re_guyong','Mbaby_quancong','Mbaby_yufan','Mbaby_dc_sunru','Mbaby_sunxiu','Mbaby_zhangfen','Mbaby_xuezong','Mbaby_dingfeng','Mbaby_panjun','Mbaby_sundeng','Mbaby_luji','Mbaby_zhoufang','Mbaby_zhangxuan','Mbaby_yanjun','Mbaby_zhuhuan','Mbaby_luyusheng','Mbaby_re_jsp_pangtong','Mbaby_sunhao','Mbabysp_daqiao','Mbaby_lukang','Mbaby_buzhi','Mbaby_xushi','Mbaby_zhugeke','Mbaby_zhoufei','Mbaby_zhangzhang','Mbaby_sunliang','Mbaby_ol_sunjian','Mbaby_zhuzhi','Mbaby_bulianshi','Mbaby_chengpu','Mbaby_daqiao','Mbaby_ganning','Mbaby_huanggai','Mbaby_lusu','Mbaby_luxun','Mbaby_lvmeng','Mbaby_sunce','Mbaby_sunluban','Mbaby_sunluyu','Mbaby_sunquan','Mbaby_sunshangxiang','Mbaby_taishici','Mbaby_wuguotai','Mbaby_xiaoqiao','Mbaby_xusheng','Mbaby_zhoutai','Mbaby_zhouyu','Mbaby_zhugejin','Mbaby_zumao','Mbabysp_xiaoqiao'],
 MiNi_qun:['Mbaby_wangyun','Mbaby_zoushi','Mbaby_dc_huangchengyan','Mbaby_simahui','Mbaby_tw_mateng','Mbaby_laiyinger','Mbaby_sp_kongrong','Mbaby_zhujun','Mbaby_gongsunyuan','Mbaby_sp_zhangliao','Mbaby_sp_ol_zhanghe','Mbaby_guotufengji','Mbaby_yanfuren','Mbaby_tangji','Mbaby_caojie','Mbaby_liangxing','Mbabysp_zhenji','Mbaby_caoxing','Mbaby_sp_menghuo','Mbaby_wangrong','Mbaby_hetaihou','Mbaby_sp_taishici','Mbaby_zhangji','Mbaby_dongbai','Mbaby_beimihu','Mbaby_chunyuqiong','Mbaby_zhangqiying','Mbaby_fuhuanghou','Mbaby_liuxie','Mbaby_quyi','Mbaby_jsp_huangyueying','Mbaby_sp_machao','Mbaby_lijue','Mbaby_panfeng','Mbaby_liuzhang','Mbaby_jiaxu','Mbaby_zhangbao','Mbaby_zhangliang','Mbaby_gaoshun','Mbaby_caifuren','Mbaby_xuyou','Mbaby_gongsunzan','Mbaby_pangde','Mbaby_jushou','Mbaby_liru','Mbaby_dongzhuo','Mbaby_zhangjiao','Mbaby_huatuo','Mbaby_lvbu','Mbaby_diaochan','Mbaby_sp_diaochan','Mbaby_huaxiong','Mbaby_yuji','Mbaby_yanwen','Mbaby_caiwenji','Mbaby_liubiao','Mbaby_yuanshao','Mbaby_yuanshu','Mbaby_chengong','Mbaby_zuoci'],
 MiNi_shen:['Mbaby_shen_zuoci','Mbaby_shen_taishici','Mbaby_shen_diaochan','Mbaby_shen_daxiaoqiao','Mbaby_shen_zhenji','Mbaby_shen_guojia','Mbaby_shen_huatuo','Mbaby_shen_dianwei','Mbaby_shen_lvbu','Mbaby_shen_zhugeliang','Mbaby_shen_lvmeng','Mbaby_shen_zhouyu','Mbaby_shen_guanyu','Mbaby_shen_liubei','Mbaby_shen_caocao','Mbaby_shen_zhangliao','Mbaby_shen_sunquan','Mbaby_shen_simayi','Mbaby_shen_zhaoyun','Mbaby_shen_ganning','Mbaby_shen_luxun'],
-MiNi_change:['Mbaby_re_nanhualaoxian','Mbaby_re_sunyi','Mbaby_zhaoxiang','Mbaby_xushao','Mbaby_shen_zhangjiao','Mbaby_baosanniang'],
+MiNi_change:['Mbaby_re_nanhualaoxian','Mbaby_re_sunyi','Mbaby_zhaoxiang','Mbaby_xushao','Mbaby_baosanniang'],
 MiNi_shengzhiyifa:['Mbaby_sunwukong','Mbaby_dalanmao','Mbaby_libai','Mbaby_change','Mbaby_nvwa','Mbaby_tunxingmengli','Mbaby_tunxingmenglix'],
 MiNi_sbCharacter:['Mbaby_sb_liubei','Mbaby_sb_caocao','Mbaby_sb_huanggai','Mbaby_sb_yuanshao','Mbaby_sb_yujin','Mbaby_sb_machao'],
 MiNi_miaoKill:['Mmiao_caiwenji','Mmiao_diaochan','Mmiao_caifuren','Mmiao_zhangxingcai','Mmiao_zhurong','Mmiao_huangyueying','Mmiao_daqiao','Mmiao_wangyi','Mmiao_zhangchunhua','Mmiao_zhenji','Mmiao_sunshangxiang','Mmiao_xiaoqiao'],
@@ -9358,7 +9358,6 @@ Mbaby_shen_dianwei:['male','shen',5,['minishenwei','minielai','minikuangxi'],['w
 Mbaby_shen_huatuo:['male','shen',1,['minijishi','minitaoxian','minishenzhen'],['qun']],
 Mbaby_shen_guojia:['male','shen',3,['reshuishi','minigjtianyi','minihuishi'],['wei']],
 Mbaby_shen_zhenji:['female','shen',3,['minishenfu','miniqixian','minifeifu'],['wei']],
-Mbaby_shen_zhangjiao:['male','shen',3,['yizhao','minisijun','tianjie'],['qun']],
 Mbaby_shen_daxiaoqiao:['female','shen',4,['minishuangshu','minipingting','miniyizheng'],['wu']],
 Mbaby_shen_diaochan:['female','shen',3,['minimeihun','minihuoxin'],['die_audio','qun']],
 Mbaby_sunwukong:['male','shen',4,['mini72bian','miniruyi','miniqitian'],['die_audio']],
@@ -9391,7 +9390,6 @@ characterFilter:{
 Mbaby_tunxingmengli:()=>false,
 },
 characterTitle:{
-Mbaby_shen_zhangjiao:'承欢杀神张角之原画<br>载OL神张角之内核',
 Mbaby_tunxingmengli:'白狸形态（默认禁选）',
 Mbaby_tunxingmenglix:'黑狸形态',
 },
@@ -30885,57 +30883,6 @@ if(get.tag(card,'respondShan')&&current<0) return 0.6
 },
 },
 },
-minisijun:{
-audio:'sijun',
-trigger:{player:'phaseZhunbeiBegin'},
-filter:function(event,player){
-return player.countMark('yizhao')>ui.cardPile.childNodes.length;
-},
-check:function(event,player){
-return ui.cardPile.childNodes.length;
-},
-content:function(){
-'step 0'
-player.removeMark('yizhao',player.countMark('yizhao'));
-if(!ui.cardPile.childNodes.length) event.finish();
-'step 1'
-var pile=Array.from(ui.cardPile.childNodes);
-if(pile.length<3) return;
-var bool=false,max=Math.pow(2,Math.min(100,pile.length)),index;
-for(var i=0;i<max;i++){
-var num=0;
-index=i.toString(2);
-while(index.length<pile.length){
-index=('0'+index);
-}
-for(var k=0;k<index.length;k++){
-if(index[k]=='1') num+=get.number(pile[k]);
-if(num>36) break;
-}
-if(num==36){
-bool=true;
-break;
-}
-}
-if(bool){
-var cards=[];
-for(var k=0;k<index.length;k++){
-if(index[k]=='1') cards.push(pile[k]);
-}
-player.gain(cards,'gain2');
-event.finish();
-}
-'step 2'
-var total=0,cards=[];
-for(var i=0;i<ui.cardPile.childNodes.length;i++){
-var card=ui.cardPile.childNodes[i];
-total+=get.number(card);
-cards.push(card);
-if(total>=36) break;
-}
-if(cards.length) player.gain(cards,'gain2');
-},
-},
 //神二乔
 minishuangshu:{
 audio:'ext:活动武将/audio/skill:2',
@@ -34207,8 +34154,6 @@ Mbaby_shen_dianwei:'欢杀神典韦',
 Mbaby_shen_huatuo:'欢杀神华佗',
 Mbaby_shen_guojia:'欢杀神郭嘉',
 Mbaby_shen_zhenji:'欢杀神甄宓',
-Mbaby_shen_zhangjiao:'OL神张角',
-Mbaby_shen_zhangjiao_prefix:'OL神',
 Mbaby_shen_daxiaoqiao:'欢杀神大乔小乔',
 Mbaby_shen_diaochan:'欢杀神貂蝉',
 Mbaby_sunwukong:'欢杀孙悟空',
@@ -34299,8 +34244,6 @@ miniqixian2:'七弦',
 miniqixian_info:'锁定技，你的手牌上限视为7。出牌阶段结束时，你可以将一张牌移出游戏，此牌于回合结束后归还。',
 minifeifu:'飞凫',
 minifeifu_info:'你可以将一张黑色牌当作【闪】使用或打出。',
-minisijun:'肆军',
-minisijun_info:'准备阶段，若“黄”数大于牌堆的牌数，你可以移去所有“黄”，然后从牌堆中随机获得任意张点数之和为36的牌。',
 minishuangshu:'双姝',
 minishuangshu_pingting:'双姝·娉婷',
 minishuangshu_yizheng:'双姝·移筝',

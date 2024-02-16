@@ -34,7 +34,8 @@ legend:[
 'old_shen_xunyu',
 'old_shen_ganning',
 'old_shen_taishici',
-'old_shen_sunce'
+'old_shen_sunce',
+'junk_zhangjiao',
 ],
 //史诗
 epic:[
@@ -212,8 +213,10 @@ lib.characterReplace[name]=lib.characterReplace[name].filter(namex=>lib.characte
 });
 
 //神将
-if(!game.HasExtension('OLUI')) game.HDaddCharacter('shen_sunquan',['male','shen',4,['bolyuheng','boldili'],['wu']],'extra');
+lib.characterSort.extra.extra_ol.addArray(['junk_zhangjiao']);
+game.HDaddCharacter('shen_sunquan',['male','shen',4,['bolyuheng','boldili'],['wu']],'extra');
 game.HDaddCharacter('tw_shen_lvmeng',['male','shen',3,['bolshelie','bolgongxin'],['wu']],'extra');
+game.HDmoveCharacter('junk_zhangjiao','extra');
 
 //界限突破
 game.HDaddCharacter('re_zhenji',['female','wei',3,['reluoshen','qingguo'],[]],'refresh');
