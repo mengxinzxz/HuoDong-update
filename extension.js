@@ -47221,6 +47221,20 @@ character:[],
 shown:[],
 map:{},
 }
+player.when('dieBegin').then(()=>{
+const name=player.name?player.name:player.name1;
+if(name){
+const sex=get.character(name,0);
+const group=get.character(name,1);
+if(player.sex!=sex){
+game.broadcastAll((player,sex)=>{
+player.sex=sex;
+},player,sex);
+game.log(player,'将性别变为了','#y'+get.translation(sex)+'性');
+}
+if(player.group!=group) player.changeGroup(group);
+}
+});
 },
 unique:true,
 audio:'huashen2',
@@ -47331,9 +47345,7 @@ break;
 }
 var func=function(id,prompt){
 var dialog=get.idDialog(id);
-if(dialog){
-dialog.content.childNodes[0].innerHTML=prompt;
-}
+if(dialog) dialog.content.childNodes[0].innerHTML=prompt;
 }
 if(player.isOnline2()) player.send(func,event.videoId,prompt);
 else if(event.isMine()) func(event.videoId,prompt);
@@ -47344,26 +47356,15 @@ var func=function(card,id){
 var dialog=get.idDialog(id);
 if(dialog){
 for(var i=0;i<dialog.buttons.length;i++){
-if(dialog.buttons[i].link==card){
-dialog.buttons[i].classList.add('selectedx');
-}
-else{
-dialog.buttons[i].classList.add('unselectable');
+dialog.buttons[i].classList.add(dialog.buttons[i].link==card?'selectedx':'unselectable');
 }
 }
 }
-}
-if(player.isOnline2()){
-player.send(func,event.card,event.videoId);
-}
-else if(event.isMine()){
-func(event.card,event.videoId);
-}
+if(player.isOnline2()) player.send(func,event.card,event.videoId);
+else if(event.isMine()) func(event.card,event.videoId);
 var list=player.storage.BThuashen.map[event.card].slice(0);
 list.push('返回');
-player.chooseControl(list).set('choice',event.aiChoice).set('ai',function(){
-return _status.event.choice;
-});
+player.chooseControl(list).set('choice',event.aiChoice).set('ai',()=>_status.event.choice);
 }
 else{
 lib.skill.BThuashen.removeFuckShen(player,result.links.slice(0),'BThuashen');
@@ -47384,24 +47385,16 @@ dialog.buttons[i].classList.remove('unselectable');
 }
 }
 }
-if(player.isOnline2()){
-player.send(func,event.videoId);
-}
-else if(event.isMine()){
-func(event.videoId);
-}
+if(player.isOnline2()) player.send(func,event.videoId);
+else if(event.isMine()) func(event.videoId);
 event._result={control:'更换技能'};
 event.goto(1);
 return;
 }
-if(player.isOnline2()){
-player.send('closeDialog',event.videoId);
-}
+if(player.isOnline2()) player.send('closeDialog',event.videoId);
 event.dialog.close();
 delete _status.noclearcountdown;
-if(!_status.noclearcountdown){
-game.stopCountChoose();
-}
+if(!_status.noclearcountdown) game.stopCountChoose();
 if(event.control!='更换技能') return;
 if(player.storage.BThuashen.current!=event.card){
 player.storage.BThuashen.current=event.card;
@@ -47414,8 +47407,6 @@ if(!player.additionalSkills.BThuashen||!player.additionalSkills.BThuashen.includ
 player.addAdditionalSkills('BThuashen',link);
 player.flashAvatar('BThuashen',event.card);
 player.storage.BThuashen.shown.push(event.card);
-game.log(player,'获得了技能','#g【'+get.translation(link)+'】');
-player.popup(link);
 player.syncStorage('BThuashen');
 player.updateMarks('BThuashen');
 }
