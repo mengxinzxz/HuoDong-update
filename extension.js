@@ -31807,6 +31807,31 @@ card.init([card2[0],card2[1],card2[2],card2[3]]);
 else await lib.skill.minihuanshu.GainContent(2,(trigger.num||1),player);
 },
 async GainContent(length,num,player){
+if(!_status.Mbaby_zuoci_card_css){
+_status.Mbaby_zuoci_card_css=true;
+game.broadcastAll(()=>{
+/*神左慈幻术卡牌颜色*/
+lib.init.sheet([
+'.card.minihuanshu-glow:before{',
+'opacity:0.2;',
+'box-shadow:rgba(0,0,0,0.2) 0 0 0 1px,rgb(255,109,12) 0 0 5px,rgb(255,0,0) 0 0 10px;',
+'background-color:#0000FF;',
+'-webkit-filter:blur(5px);',
+'filter:blur(5px);',
+'}'
+].join(''));
+/*神左慈幻化卡牌颜色*/
+lib.init.sheet([
+'.card.minihuanhua-glow:before{',
+'opacity:0.2;',
+'box-shadow:rgba(0,0,0,0.2) 0 0 0 1px,rgb(255,109,12) 0 0 5px,rgb(255,0,0) 0 0 10px;',
+'background-color:yellow;',
+'-webkit-filter:blur(5px);',
+'filter:blur(5px);',
+'}'
+].join(''));
+});
+}
 game.addGlobalSkill('minihuanshu_gain');
 while(num>0&&player.hasSkill('minihuanshu')){
 num--;
