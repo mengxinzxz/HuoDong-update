@@ -28616,6 +28616,7 @@ expose:0.25,
 },
 minizecai:{
 audio:'dczecai',
+inherit:'dczecai',
 derivation:'minirejizhi',
 content:function*(event,map){
 const player=map.player,targetx=lib.skill.dczecai.getMax();
@@ -31231,133 +31232,45 @@ trigger.getParent().triggeredTargets4=trigger.getParent().triggeredTargets4.conc
 },
 },
 miniyizheng:{
-canMove:function(type){
-return game.hasPlayer(function(target){
-return target.countCards('e',function(card){
-return game.hasPlayer(function(current){
-return current!=target&&current.canEquip(card)&&get.subtype(card)==type;
-});
-});
-});
-},
 audio:'ext:活动武将/audio/skill:2',
 trigger:{player:'phaseUseEnd'},
-filter:function(event,player){
-if(!player.canMoveCard(null,true)) return false;
-return [1,2,3,4].some(num=>lib.skill.miniyizheng.canMove('equip'+num));
+filter(event,player){
+return game.hasPlayer(target=>{
+return target.hasCard(card=>lib.skill.miniyizheng.filterCardx(card,player),'e');
+});
 },
-direct:true,
-content:function(){
-'step 0'
-var choiceList=[];
-if(lib.skill.miniyizheng.canMove('equip1')) choiceList.push(['equip1','移动一张武器牌']);
-if(lib.skill.miniyizheng.canMove('equip2')) choiceList.push(['equip2','移动一张防具牌']);
-if([3,4].some(num=>lib.skill.miniyizheng.canMove('equip'+num))) choiceList.push(['equip6','移动一张坐骑牌']);
-player.chooseButton([
-'###'+get.prompt('miniyizheng')+'###'+'选择移动至多'+get.cnNumber(player.hasSkill('minishuangshu_yizheng')?2:1)+'种副类别的装备牌',[choiceList,'textbutton']
-]).set('ai',function(button){
-var player=_status.event.player,choice=[];
-for(var i of ['equip2','equip6','equip1']){
-if(game.hasPlayer(function(target){
-if(get.attitude(player,target)>0) return false;
-return target.countCards('e',function(card){
-return game.hasPlayer(function(current){
-return current.canEquip(card)&&get.subtype(card)==i&&get.value(card,target)>0&&get.attitude(player,current)>0&&get.value(card,current)>0;
+check(event,player){
+return game.hasPlayer(target=>{
+return target.hasCard(card=>lib.skill.miniyizheng.filterCardx(card,player,true),'e');
 });
-});
-})&&!choice.includes(['equip3','equip4'].includes(i)?'equip6':i)) choice.push(['equip3','equip4'].includes(i)?'equip6':i);
+},
+filterCardx(card,player=get.event('player'),ai){
+if(!Array.from({length:3}).map((_,i)=>i).includes(lib.skill.miniyizheng.filterType(card))) return false;
+return player.canMoveCard(ai||null,true,card);
+},
+filterType(card){
+if(get.type(card)!='equip'||!get.subtype(card)) return -1;
+const num=parseInt(get.subtype(card).slice(5));
+return [3,4].includes(num)?0:num;
+},
+async content(event,trigger,player){
+let moveCard=[],moveType=[],filter=(card,player)=>{
+if(moveCard.some(cardx=>lib.skill.miniyizheng.filterType(cardx)==lib.skill.miniyizheng.filterType(card))) return false;
+return lib.skill.miniyizheng.filterCardx(card,player);
+},limit=(1+player.hasSkill('minishuangshu_yizheng')?1:0);
+while(moveCard.length<limit&&game.hasPlayer(target=>target.hasCard((card,player)=>filter,'e'))){
+const forced=(!moveCard.length);
+const {result:{bool,card}}=await player.moveCard(filter,'nojudge')
+.set('prompt','移筝：'+(forced?'请':'是否')+'移动场上的一张牌'+(forced?'':'？')).set('forced',forced)
+.set('prompt2','还可移动'+get.cnNumber(limit-moveCard.length)+'张'+(moveType.length?('非'+get.translation(moveType)):'')+'牌');
+if(bool){
+moveCard.push(card);
+moveType.push(get.subtype(card));
 }
-if(choice.includes(button.link)) return 3-choice.indexOf(button.link);
-return -1;
-}).set('selectButton',[1,player.hasSkill('minishuangshu_yizheng')?2:1]);
-'step 1'
-if(result.bool){
-result.links.sort(function(a,b){
-return ['equip1','equip2','equip6'].indexOf(a)-['equip1','equip2','equip6'].indexOf(b);
-});
-player.logSkill('miniyizheng');
-event.choiceList=result.links;
-event.count=0;
-event.list=[];
+else break;
 }
-else event.finish();
-'step 2'
-var subtype=event.choiceList.shift();
-event.list.push(subtype);
-if(subtype=='equip6'){
-event.list.addArray(['equip3','equip4']);
-event.list.remove('equip6');
-}
-'step 3'
-player.chooseTarget(2,function(card,player,target){
-if(ui.selected.targets.length){
-var from=ui.selected.targets[0];
-return target!=from&&from.countCards('e',card=>target.canEquip(card)&&_status.event.list.includes(get.subtype(card)));
-}
-return _status.event.list.some(type=>lib.skill.miniyizheng.canMove(type));
-}).set('ai',function(target){
-var player=_status.event.player;
-if(!ui.selected.targets.length){
-var getMoveValue=function(player,types){
-var cards=player.getCards('e',function(card){
-return game.hasPlayer(function(current){
-return current!=player&&current.canEquip(card)&&types.includes(get.subtype(card));
-});
-});
-cards.sort((a,b)=>get.value(b,player)-get.value(a,player));
-return get.value(cards[0],player);
-};
-return (1-get.sgn(get.attitude(player,target)))*getMoveValue(target,_status.event.list);
-}
-var from=ui.selected.targets[0];
-var cards=from.getCards('e',function(card){
-return game.hasPlayer(function(current){
-return current!=from&&current.canEquip(card)&&types.includes(get.subtype(card));
-});
-});
-cards.sort((a,b)=>get.value(b,from)-get.value(a,from));
-return get.sgn(get.attitude(player,target))*get.value(cards[0],target);
-}).set('multitarget',true).set('targetprompt',['被移走','移动目标']).set('prompt','请选择移动的目标').set('prompt2','将一名角色装备区中的'+get.translation(event.list[0])+'移动到另一名角色的装备区中').set('list',event.list);
-'step 4'
-if(result.bool){
-player.line2(result.targets,'green');
-event.targets=result.targets;
-}
-else event.goto(8);
-'step 5'
-game.delay();
-'step 6'
-var cards=targets[0].getCards('e',function(card){
-return event.list.includes(get.subtype(card))&&targets[1].canEquip(card);
-});
-if(cards.length==1) event._result={bool:true,links:cards};
-else player.choosePlayerCard('e',true,targets[0]).set('filterButton',function(button){
-return _status.event.cards.includes(button.link);
-}).set('ai',function(button){
-var player=_status.event.player;
-var targets=_status.event.targets;
-var from=targets[0],to=targets[1];
-if(get.sgn(get.attitude(player,from))*get.value(button.link,from)>0) return 1/114514;
-return get.sgn(get.attitude(player,to))*get.value(button.link,to);
-}).set('cards',cards).set('targets',result.targets);
-'step 7'
-if(result.bool){
-var link=result.links[0];
-if(get.position(link)=='e'){
-event.count++;
-targets[0].$give(link,targets[1],false);
-targets[1].equip(link);
-}
-game.delay();
-}
-'step 8'
-if(event.choiceList.length){
-event.list=[];
-event.goto(2);
-}
-'step 9'
-switch(event.count){
-case 1: player.recover(); break;
+switch(moveCard.length){
+case 1: await player.recover(); break;
 case 2: player.addTempSkill('miniyizheng_draw',{player:'phaseBegin'}); break;
 }
 },
@@ -33158,7 +33071,7 @@ minipingting:function(player){
 return '出牌阶段开始时，你可以选择以下选项中的至多'+get.cnNumber(2+player.hasSkill('minishuangshu_pingting')?1:0)+'项：⒈本阶段使用的第一张牌无距离限制。⒉本阶段使用第二张牌指定目标后获得此牌对应的所有实体牌。⒊本阶段使用的第三张牌结算完毕后摸两张牌。⒋本阶段使用的第四张牌额外结算一次。';
 },
 miniyizheng:function(player){
-return '出牌阶段结束时，你可以选择以下选项中的至多'+get.cnNumber(1+player.hasSkill('minishuangshu_yizheng')?1:0)+'项：⒈移动场上的一张武器牌。⒉移动场上的一张防具牌。⒊移动场上的一张坐骑牌。然后若你于本次技能结算中移动了：一张牌，你回复1点体力；两张牌，直到你的下回合开始，当你失去一张牌时，摸一张牌。';
+return '出牌阶段结束时，你可以移动场上至多'+get.cnNumber(1+player.hasSkill('minishuangshu_yizheng')?1:0)+'张装备牌（只能移动武器、防具和坐骑牌，且一次技能结算中每种副类别的装备限移动一次），然后若你于本次技能结算中移动了：一张装备牌，你回复1点体力；两张装备牌，直到你的下回合开始，当你失去一张牌时，摸一张牌。';
 },
 minimanwang:function(player){
 var num=4-player.countMark('spmanwang');
@@ -34445,7 +34358,7 @@ minishuangshu_info:'准备阶段，你可以展示牌堆顶的两张牌。若其
 minipingting:'娉婷',
 minipingting_info:'出牌阶段开始时，你可以选择以下选项中的至多两项：⒈本阶段使用的第一张牌无距离限制。⒉本阶段使用第二张牌指定目标后获得此牌对应的所有实体牌。⒊本阶段使用的第三张牌结算完毕后摸两张牌。⒋本阶段使用的第四张牌额外结算一次。',
 miniyizheng:'移筝',
-miniyizheng_info:'出牌阶段结束时，你可以选择以下选项中的至多一项：⒈移动场上的一张武器牌。⒉移动场上的一张防具牌。⒊移动场上的一张坐骑牌。然后若你于本次技能结算中移动了：一张装备牌，你回复1点体力；两张装备牌，直到你的下回合开始，当你失去一张牌时，摸一张牌。',
+miniyizheng_info:'出牌阶段结束时，你可以移动场上至多一张装备牌（只能移动武器、防具和坐骑牌，且一次技能结算中每种副类别的装备限移动一次），然后若你于本次技能结算中移动了：一张装备牌，你回复1点体力；两张装备牌，直到你的下回合开始，当你失去一张牌时，摸一张牌。',
 minimeihun:'魅魂',
 minimeihun_info:'结束阶段，或你于当前回合首次成为【杀】的目标后，你可以选择一名其他角色，然后声明一个花色，令其交给你所有你此花色的牌，若其没有此花色的牌，则你观看其手牌并获得其中一张。',
 minihuoxin:'惑心',
