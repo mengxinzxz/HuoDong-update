@@ -31029,10 +31029,12 @@ if(get.suit(i,false)=='heart') bool2=true;
 if(bool1){
 game.log(player,'强化了技能','#g【娉婷】');
 player.addTempSkill('minishuangshu_pingting');
+player.addMark('minishuangshu_pingting',1,false);
 }
 if(bool2){
 game.log(player,'强化了技能','#g【移筝】');
 player.addTempSkill('minishuangshu_yizheng');
+player.addMark('minishuangshu_yizheng',1,false);
 }
 if(!bool1&&!bool2) player.gain(cards,'gain2');
 else game.cardsDiscard(cards);
@@ -31040,15 +31042,15 @@ else game.cardsDiscard(cards);
 subSkill:{
 pingting:{
 charlotte:true,
-mark:true,
+onremove:true,
 marktext:'婷',
-intro:{content:'本回合发动【双姝】可多选择一项'},
+intro:{content:'本回合发动【双姝】可多选择#项'},
 },
 yizheng:{
 charlotte:true,
-mark:true,
+onremove:true,
 marktext:'筝',
-intro:{content:'本回合发动【移筝】可多选择一项'},
+intro:{content:'本回合发动【移筝】可多选择#项'},
 },
 },
 },
@@ -31059,7 +31061,7 @@ direct:true,
 content:function(){
 'step 0'
 player.chooseButton([
-'###'+get.prompt('minipingting')+'###'+'选择并于本阶段获得下列至多'+get.cnNumber(player.hasSkill('minishuangshu_pingting')?3:2)+'项效果',[[
+'###'+get.prompt('minipingting')+'###'+'选择并于本阶段获得下列至多'+get.cnNumber(Math.min(4,2+player.countMark('minishuangshu_pingting')))+'项效果',[[
 ['distance','本阶段使用的第一张牌无距离限制'],
 ['return','本阶段使用第二张牌指定目标后获得此牌'],
 ['draw','本阶段使用的第三张牌结算完成后摸两张牌'],
@@ -31257,7 +31259,7 @@ async content(event,trigger,player){
 let moveCard=[],moveType=[],filter=(card,player)=>{
 if(moveCard.some(cardx=>lib.skill.miniyizheng.filterType(cardx)==lib.skill.miniyizheng.filterType(card))) return false;
 return lib.skill.miniyizheng.filterCardx(card,player);
-},limit=(1+player.hasSkill('minishuangshu_yizheng')?1:0);
+},limit=Math.min(3,1+player.countMark('minishuangshu_yizheng'));
 while(moveCard.length<limit&&game.hasPlayer(target=>target.hasCard((card,player)=>filter,'e'))){
 const forced=(!moveCard.length);
 const {result:{bool,card}}=await player.moveCard(filter,'nojudge')
@@ -33068,10 +33070,10 @@ minijiaozhao:function(player){
 return [lib.translate.minijiaozhao_info,lib.translate.minijiaozhao_1_info,lib.translate.minijiaozhao_2_info][player.countMark('minidanxin')];
 },
 minipingting:function(player){
-return '出牌阶段开始时，你可以选择以下选项中的至多'+get.cnNumber(2+player.hasSkill('minishuangshu_pingting')?1:0)+'项：⒈本阶段使用的第一张牌无距离限制。⒉本阶段使用第二张牌指定目标后获得此牌对应的所有实体牌。⒊本阶段使用的第三张牌结算完毕后摸两张牌。⒋本阶段使用的第四张牌额外结算一次。';
+return '出牌阶段开始时，你可以选择以下选项中的至多'+get.cnNumber(2+player.countMark('minishuangshu_pingting'))+'项：⒈本阶段使用的第一张牌无距离限制。⒉本阶段使用第二张牌指定目标后获得此牌对应的所有实体牌。⒊本阶段使用的第三张牌结算完毕后摸两张牌。⒋本阶段使用的第四张牌额外结算一次。';
 },
 miniyizheng:function(player){
-return '出牌阶段结束时，你可以移动场上至多'+get.cnNumber(1+player.hasSkill('minishuangshu_yizheng')?1:0)+'张装备牌（只能移动武器、防具和坐骑牌，且一次技能结算中每种副类别的装备限移动一次），然后若你于本次技能结算中移动了：一张装备牌，你回复1点体力；两张装备牌，直到你的下回合开始，当你失去一张牌时，摸一张牌。';
+return '出牌阶段结束时，你可以移动场上至多'+get.cnNumber(1+player.countMark('minishuangshu_yizheng'))+'张装备牌（只能移动武器、防具和坐骑牌，且一次技能结算中每种副类别的装备限移动一次），然后若你于本次技能结算中移动了：一张装备牌，你回复1点体力；两张装备牌，直到你的下回合开始，当你失去一张牌时，摸一张牌。';
 },
 minimanwang:function(player){
 var num=4-player.countMark('spmanwang');
@@ -34354,7 +34356,7 @@ minisijun_info:'准备阶段，若“黄”数大于牌堆的牌数，你可以�
 minishuangshu:'双姝',
 minishuangshu_pingting:'双姝·娉婷',
 minishuangshu_yizheng:'双姝·移筝',
-minishuangshu_info:'准备阶段，你可以展示牌堆顶的两张牌。若其中包含：方片牌，本回合发动〖娉婷〗可选择的选项上限数+1；红桃牌，本回合发动〖移筝〗可选择的选项上限数+1；只有黑色牌，你获得展示的牌。',
+minishuangshu_info:'准备阶段，你可以展示牌堆顶的两张牌。若其中包含：方片牌，本回合发动〖娉婷〗可选择的选项上限+1；红桃牌，本回合发动〖移筝〗可移动装备牌上限+1；只有黑色牌，你获得展示的牌。',
 minipingting:'娉婷',
 minipingting_info:'出牌阶段开始时，你可以选择以下选项中的至多两项：⒈本阶段使用的第一张牌无距离限制。⒉本阶段使用第二张牌指定目标后获得此牌对应的所有实体牌。⒊本阶段使用的第三张牌结算完毕后摸两张牌。⒋本阶段使用的第四张牌额外结算一次。',
 miniyizheng:'移筝',
