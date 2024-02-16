@@ -1811,12 +1811,6 @@ lib.skill.shencai.intro={
 markcount:(storage,player)=>player.countMark('shencai')+1,
 content:(storage,player)=>'当前最大发动次数：'+(player.countMark('shencai')+1),
 };
-var content=''+lib.skill.xunshi.content;
-eval('lib.skill.xunshi.content='+content.replace(
-" player.addMark('shencai',1,false);",
-"{player.addMark('shencai',1,false);"+
-"game.log(player,'#g【神裁】','发动次数','#y+1');}"
-));
 
 //precG
 //全局机制
