@@ -50597,7 +50597,7 @@ const skills=player.additionalSkills.bolyuheng;
 player.draw(skills.length);
 player.changeSkills([],skills).set('$handle',(player,addSkills,removeSkills)=>{
 game.log(player,'失去了以下技能：','#g'+get.translation(removeSkills));
-player.removeAdditionalSkill('junkyuheng');
+player.removeAdditionalSkill('bolyuheng');
 });
 },
 },
