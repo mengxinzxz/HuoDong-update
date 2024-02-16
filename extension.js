@@ -48948,7 +48948,7 @@ next.set('list',[['牌堆顶',cards]]);
 next.set('processAI',function(list){
 var check=function(card){
 var player=_status.event.player;
-var target=(_status.event.name=='phaseZhunbeiBegin'?player:player.next);
+var target=(_status.event.namex=='phaseZhunbeiBegin'?player:player.next);
 var att=get.attitude(player,target);
 var judge=player.getCards('j')[cards.length];
 if(judge) return get.judge(judge)(card)*att;
@@ -48960,7 +48960,7 @@ return check(b)*att-check(a)*att;
 });
 return [cards];
 });
-next.set('name',event.triggername);
+next.set('namex',event.triggername);
 'step 1'
 if(result.bool){
 var list=result.moved[0].slice(0);
