@@ -48144,25 +48144,35 @@ result:{player:1},
 //邓士载
 bilibili_zhenggong:{
 audio:'ext:活动武将/audio/skill:true',
-trigger:{global:'phaseBefore'},
+trigger:{global:'phaseBeginStart'},
 filter:function(event,player){
 return event.player!=player&&!player.isTurnedOver();
 },
 check:function(event,player){
-if(game.roundNumber<=1&&!game.hasPlayer(function(current){
-return get.attitude(player,current)<0
-})) return false;
+if(game.roundNumber<=1&&!game.hasPlayer(current=>get.attitude(player,current)<0)) return false;
 return true;
 },
 content:function(){
-'step 0'
-player.phase('bilibili_zhenggong');
-'step 1'
-player.turnOver();
-},
-ai:{
-expose:0.2,
+const target=trigger.player,players=game.players.slice().concat(game.dead);
+const next=player.insertPhase();
+player.when('phaseAfter').filter(evt=>evt==next).then(()=>player.turnOver());
+if(!trigger._finished){
+trigger.finish();
+trigger.untrigger(true);
+trigger._triggered=5;
+for(const current of players){
+current.getHistory().isSkipped=true;
+current.getStat().isSkipped=true;
 }
+const evt=target.insertPhase();
+delete evt.skill;
+game.broadcastAll(player=>{
+player.classList.remove('glow_phase');
+delete _status.currentPhase;
+},target);
+}
+},
+ai:{expose:0.2},
 },
 bilibili_toudu:{
 audio:'ext:活动武将/audio/skill:true',
@@ -54774,7 +54784,7 @@ old_tianyi_info:'觉醒技，准备阶段，若场上的所有存活角色均于
 old_zuoxing:'佐幸',
 old_zuoxing_info:'准备阶段，若令你获得〖佐幸〗的角色存活且体力上限大于1，则你可以令其减1点体力上限。若如此做，你于本回合获得如下效果：出牌阶段限一次，你可以视为使用一张普通锦囊牌。',
 bilibili_zhenggong:'争功',
-bilibili_zhenggong_info:'其他角色的回合开始前，若你的武将牌正面朝上，你可以获得一个额外的回合，此回合结束后，你将武将牌翻面。 ',
+bilibili_zhenggong_info:'其他角色的回合开始时，若你的武将牌正面朝上，你可以进行一个额外的回合。此回合结束后，你将武将牌翻面。 ',
 bilibili_toudu:'偷渡',
 bilibili_toudu_info:'当你受到伤害后，若你的武将牌背面朝上，你可以弃置一张手牌，将你的武将牌翻面，然后视为使用一张无距离限制的【杀】。',
 shen_sunquan_skill:'驭衡',
