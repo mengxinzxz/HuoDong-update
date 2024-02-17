@@ -9708,7 +9708,7 @@ Mbaby_dalanmao:['male','shen',4,['minizuzhou','minimoyu','minisanlian'],[]],
 Mbaby_change:['female','shen','1/4',['minidaoyao','minibenyue'],[]],
 Mbaby_shen_taishici:['male','shen',4,['minidulie','minichongwei','minipowei'],['wu']],
 Mbaby_nvwa:['female','shen','69/159',['minibutian','minilianshi','minituantu'],[]],
-Mbaby_tunxingmengli:['female','shen',4,['minitunxing','minimengli'],[]],
+Mbaby_tunxingmengli:['female','shen',4,['minitunxing','minimengli'],['unseen']],
 Mbaby_tunxingmenglix:['female','shen',4,['minitunxing','minimengli'],[]],
 Mbaby_shen_zuoci:['male','shen',3,['minihuanshu','minihuanhua','minihuanjing'],['qun','die_audio']],
 //喵
@@ -9728,6 +9728,8 @@ Mmiao_xiaoqiao:['female','wu',3,['minimiaotianxiang','minimiaohongyan','minidoum
 characterIntro:{
 Mbaby_change:'嫦娥，中国古代神话中的人物，又名恒我、恒娥、姮娥、常娥、素娥，羿之妻，因偷吃了不死药而飞升至月宫。嫦娥的故事最早出现在商朝卦书 《归藏》。而嫦娥奔月的完整故事最早记载于西汉《淮南子·览冥训》。东汉时期，嫦娥与羿的夫妻关系确立，而嫦娥在进入月宫后变成了捣药的蟾蜍。南北朝以后，嫦娥的形象回归为女儿身。汉画像中，嫦娥人头蛇身，头梳高髻，身着宽袖长襦，身后长尾上饰有倒钩状细短羽毛。南北朝以后，嫦娥的形象被描绘成绝世美女。南朝陈后主陈叔宝曾把宠妃张丽华比作嫦娥。唐朝诗人白居易曾用嫦娥夸赞邻家少女不可多得的容貌。',
 Mbaby_nvwa:'女娲，中国上古神话中的创世女神。又称娲皇、女阴，史记女娲氏，是华夏民族人文先始，是福佑社稷之正神。相传女娲造人，一日中七十化变，以黄泥仿照自己抟土造人，创造人类社会并建立婚姻制度；因世间天塌地陷，于是熔彩石以补苍天，斩鳌足以立四极，留下了女娲补天的神话传说。女娲不但是补天救世的英雄和抟土造人的女神，还是一个创造万物的自然之神，神通广大化生万物，每天至少能创造出七十样东西。她开世造物，因此被称为大地之母，是被民间广泛而又长久崇拜的创世神和始母神。',
+Mbaby_tunxingmengli:'据《王子年拾遗记》记载：蜀先主甘后；生而体貌特异，年至十八，玉质柔肌，态媚容冶…河南献玉人高三尺…甘后与玉人洁白齐润，观者殆相乱惑。刘备非常喜爱这尊玉雕，“夕则用后而玩玉人”。白玉美人怀抱一只白玉狸猫，甘夫人常对玉人倾诉渴望为刘备诞下一子的心愿，然而久盼未果。偶有一日，在梦中化身成一只饥肠辘辘、失去理智的白玉狸猫，闯入到幻境当中，吞掉了幻境中的启明星。事后，梦醒的甘夫人发现已怀有身孕，甚是欣喜。而白玉美人怀抱的玉狸猫则留在了幻境中，化身为吞星梦狸守护着幻境里的星星。',
+Mbaby_tunxingmenglix:'据《王子年拾遗记》记载：蜀先主甘后；生而体貌特异，年至十八，玉质柔肌，态媚容冶…河南献玉人高三尺…甘后与玉人洁白齐润，观者殆相乱惑。刘备非常喜爱这尊玉雕，“夕则用后而玩玉人”。白玉美人怀抱一只白玉狸猫，甘夫人常对玉人倾诉渴望为刘备诞下一子的心愿，然而久盼未果。偶有一日，在梦中化身成一只饥肠辘辘、失去理智的白玉狸猫，闯入到幻境当中，吞掉了幻境中的启明星。事后，梦醒的甘夫人发现已怀有身孕，甚是欣喜。而白玉美人怀抱的玉狸猫则留在了幻境中，化身为吞星梦狸守护着幻境里的星星。',
 },
 characterFilter:{
 Mbaby_tunxingmengli:()=>false,
