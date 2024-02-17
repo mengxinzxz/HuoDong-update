@@ -1139,16 +1139,6 @@ content:function(){
 lib.skill.gzxingzhao.subSkill.use.logTarget(trigger,player).draw();
 },
 };
-if(game.HasExtension('十周年UI')){
-lib.skill.gzxingzhao.subSkill.xunxun={
-trigger:{player:'phaseDrawBegin1'},
-filter:function(event,player){
-return lib.skill.gzxingzhao.getNum()>0;
-},
-prompt2:lib.translate.xunxun_info,
-content:decadeUI.skill.xunxun.content,
-};
-}
 lib.translate.gzxingzhao_info='锁定技，你根据场上存在受伤角色的势力数获得以下效果：1个或以上，你视为拥有〖恂恂〗；2个或以上，当你受到伤害后，你与伤害来源两者中手牌数唯一最少的角色摸一张牌；3个或以上，你的手牌上限+4；4个或以上，当你失去装备区的牌后，你摸一张牌。';
 };
 if(get.mode()=='guozhan') game.bolLoadGuoZhan();
