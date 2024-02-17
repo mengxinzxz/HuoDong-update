@@ -22,7 +22,10 @@ if(packs.some(p=>lib.config.characters.includes(p))) lib.character[name]=charact
 //移动武将所在武将包
 game.HDmoveCharacter=function(name,packss){
 var nameinfo=get.character(name);
-if(nameinfo) game.HDaddCharacter(name,nameinfo,packss);
+if(nameinfo){
+if(!nameinfo[4]) nameinfo[4]=[];
+game.HDaddCharacter(name,nameinfo,packss);
+}
 };
 
 //js/css文件的添加
@@ -1211,6 +1214,7 @@ epic:[
 'bfake_sundeng',
 'bfake_chengpu',
 'old_zhugejin',
+'junk_lidian',
 ],
 //稀有
 rare:[
@@ -1572,10 +1576,12 @@ re_caorui:'rexingshuai',
 //precCI
 //武将信息
 //----------------孙笨の专属正名区·始----------------
-lib.characterIntro.re_sunben='孙策（175年—200年5月5日），字伯符，吴郡富春（今浙江省杭州市富阳区）人。破虏将军孙坚长子、吴大帝孙权长兄。东汉末年割据江东一带的军阀，汉末群雄之一，孙吴政权的奠基者之一。《三国演义》称其武勇犹如霸王项羽，绰号“小霸王”。孙策为继承父亲孙坚的遗业而屈事袁术。兴平二年（195年），孙策征得袁术许可，东渡长江，进攻樊能、于糜，又在当利口袭击张英。并以曲阿为据点，与扬州刺史刘繇进行决战，大败刘繇。建安元年（196年），率兵进攻会稽王朗和吴郡严白虎。建安二年（197年），袁术僭越称帝后，孙策与袁术决裂；同年夏，被朝廷任命为骑都尉，袭父爵乌程侯，兼任会稽太守。建安三年（198年），朝廷任命孙策为讨逆将军，并封为吴侯。建安四年（199年），孙策击败庐江太守刘勋及刘表部将黄祖。建安五年（200年）初，在夺取豫章郡后统一江东；同年4月，正当孙策准备发兵北上之时，在丹徒狩猎时为许贡三门客所伤，不久后身亡，年仅二十六岁。其弟孙权接掌孙策势力，并于称帝后，追谥孙策为长沙桓王。';
-lib.characterIntro.sunce='孙策（175年—200年5月5日），字伯符，吴郡富春（今浙江省杭州市富阳区）人。破虏将军孙坚长子、吴大帝孙权长兄。东汉末年割据江东一带的军阀，汉末群雄之一，孙吴政权的奠基者之一。《三国演义》称其武勇犹如霸王项羽，绰号“小霸王”。孙策为继承父亲孙坚的遗业而屈事袁术。兴平二年（195年），孙策征得袁术许可，东渡长江，进攻樊能、于糜，又在当利口袭击张英。并以曲阿为据点，与扬州刺史刘繇进行决战，大败刘繇。建安元年（196年），率兵进攻会稽王朗和吴郡严白虎。建安二年（197年），袁术僭越称帝后，孙策与袁术决裂；同年夏，被朝廷任命为骑都尉，袭父爵乌程侯，兼任会稽太守。建安三年（198年），朝廷任命孙策为讨逆将军，并封为吴侯。建安四年（199年），孙策击败庐江太守刘勋及刘表部将黄祖。建安五年（200年）初，在夺取豫章郡后统一江东；同年4月，正当孙策准备发兵北上之时，在丹徒狩猎时为许贡三门客所伤，不久后身亡，年仅二十六岁。其弟孙权接掌孙策势力，并于称帝后，追谥孙策为长沙桓王。';
+const sunbenIntro='孙策（175年—200年5月5日），字伯符，吴郡富春（今浙江省杭州市富阳区）人。破虏将军孙坚长子、吴大帝孙权长兄。东汉末年割据江东一带的军阀，汉末群雄之一，孙吴政权的奠基者之一。《三国演义》称其武勇犹如霸王项羽，绰号“小霸王”。孙策为继承父亲孙坚的遗业而屈事袁术。兴平二年（195年），孙策征得袁术许可，东渡长江，进攻樊能、于糜，又在当利口袭击张英。并以曲阿为据点，与扬州刺史刘繇进行决战，大败刘繇。建安元年（196年），率兵进攻会稽王朗和吴郡严白虎。建安二年（197年），袁术僭越称帝后，孙策与袁术决裂；同年夏，被朝廷任命为骑都尉，袭父爵乌程侯，兼任会稽太守。建安三年（198年），朝廷任命孙策为讨逆将军，并封为吴侯。建安四年（199年），孙策击败庐江太守刘勋及刘表部将黄祖。建安五年（200年）初，在夺取豫章郡后统一江东；同年4月，正当孙策准备发兵北上之时，在丹徒狩猎时为许贡三门客所伤，不久后身亡，年仅二十六岁。其弟孙权接掌孙策势力，并于称帝后，追谥孙策为长沙桓王。';
+lib.characterIntro.re_sunben=sunbenIntro;
+lib.characterIntro.sunce=sunbenIntro;
 //----------------孙笨の专属正名区·末----------------
-//官方遗漏武将介绍补充
+//遗漏武将介绍补充
+lib.characterIntro.lidian=lib.characterIntro.re_lidian;
 lib.characterIntro.wolongfengchu=lib.characterIntro.zhugeliang+'<br>'+lib.characterIntro.pangtong;
 
 //precCR
@@ -1665,12 +1671,12 @@ game.HDaddCharacter('duanwei',['male','qun',4,['junklangmie'],[]],'sp2');
 //限定专属
 game.HDaddCharacter('luyi',['female','qun',3,['dcyaoyi','dcshoutan','dcfuxue'],[]],'xianding');
 
-//文德武备
+//OL专属
+lib.characterSort.onlyOL.bilibili_buchong_onlyOL=['junk_lidian'];
 game.HDaddCharacter('ol_huaxin',['male','wei',3,['caozhao','olxibing'],['ext:活动武将/image/character/ol_huaxin.jpg']],'yingbian');
 game.HDaddCharacter('chengjichengcui',['male','wei',6,['oltousui','olchuming'],[]],'yingbian');
-
-//门阀士族
 game.HDaddCharacter('clan_wuqiao',['male','qun',4,['clanqiajue','clanmuyin'],['clan:陈留吴氏','ext:活动武将/image/character/clan_wuqiao.jpg']],'clan');
+game.HDmoveCharacter('junk_lidian','onlyOL');
 
 //移动服
 lib.characterSort.mobile.bilibili_buchong_mobile=['old_zhangqiying','old_zhaoxiang','junk_xuyou'];
@@ -1705,7 +1711,7 @@ game.HDaddCharacter('bol_fuhuanghou',['female','qun',3,['rezhuikong','xinqiuyuan
 lib.characterSort.old.bilibili_buchong_fre=['old_zhugejin','old_zhanghe','old_ol_xiaoqiao','old_ol_sb_guanyu'];
 lib.characterSort.old.bilibili_buchong_shenhua=['old_zhoufei','lusu','yuanshao','old_dengai'];
 lib.characterSort.old.bilibili_buchong_yijiang=['old_yj_jushou','ol_manchong'];
-lib.characterSort.old.bilibili_buchong_refresh=['oldx_zhangfei','oldx_guanyu','oldx_zhaoyun','oldx_yujin'];
+lib.characterSort.old.bilibili_buchong_refresh=['oldx_zhangfei','oldx_guanyu','oldx_zhaoyun','oldx_yujin','junk_liubei','junk_huangyueying'];
 lib.characterSort.old.bilibili_buchong_sp=['old_zhangbao','ol_maliang','old_sunluyu','old_baosanniang','old_pangtong','old_gaolan'];
 lib.characterSort.old.bilibili_buchong_szn2=['old_yuanji','old_xushao','old_huaman','junk_duanwei'];
 lib.characterSort.old.bilibili_buchong_mobile2=['old_bulianshi','old_sb_ganning','old_sb_liubei','old_sp_maojie','old_zhouchu','old_xunchen','old_sp_kongrong','old_zhangzhongjing','oldx_zhangzhongjing','old_zhangyì','old_yj_ganning','old_jiakui','old_qiaozhou','old_yj_zhanghe','old_yanghuiyu','old_liuzhang','old_sp_sunshao','old_zhaoxiang','old_wangling','old_sp_huaxin','old_sp_mifuren'];
@@ -1767,6 +1773,8 @@ game.HDaddCharacter('oldx_guanyu',['male','shu',4,['wusheng','bilibili_yishi'],[
 game.HDaddCharacter('oldx_zhaoyun',['male','shu',4,['longdan','yicong'],['character:zhaoyun']],'old');
 game.HDaddCharacter('oldx_yujin',['male','wei',4,['bilibili_zhengjun'],['character:yujin']],'old');
 game.HDaddCharacter('old_yuanji',['female','wu',3,['dcmengchi','dcjiexing'],['ext:活动武将/image/character/old_yuanji.jpg']],'old');
+game.HDmoveCharacter('junk_liubei','old');
+game.HDmoveCharacter('junk_huangyueying','old');
 
 //DIY
 lib.characterSort.diy.diy_fakenews.addArray(['bol_zhangzhongjing','bol_sp_huaxin','bfake_zuoci','bfake_yangfu','bfake_chengpu','bfake_sundeng','old_shen_sunquan','old_shen_ganning','bfake_jiananfeng','bfake_chengui']);
@@ -2301,6 +2309,7 @@ bilibili_buchong_szn2:'武将补充·十周年服',
 bilibili_buchong_mobile:'武将补充·移动服',
 bilibili_buchong_mobile2:'武将补充·移动服',
 bilibili_buchong_tw:'武将补充·海外服',
+bilibili_buchong_onlyOL:'武将补充·OL',
 
 //技能翻译
 weipo:'横虑',
