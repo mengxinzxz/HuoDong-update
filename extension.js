@@ -50374,8 +50374,8 @@ return player.additionalSkills.bolyuheng&&player.additionalSkills.bolyuheng.leng
 forced:true,
 content:function(){
 const skills=player.additionalSkills.bolyuheng;
-player.draw(skills.length);
 player.removeAdditionalSkills('bolyuheng');
+player.draw(skills.length);
 },
 },
 },
