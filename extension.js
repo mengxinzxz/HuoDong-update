@@ -1038,7 +1038,8 @@ player.$draw(cards,'nobroadcast');
 },player,list);
 };
 lib.skill.yigui.group=['yigui_init','yigui_refrain','yigui_gzshan','yigui_gzwuxie'];
-lib.translate.yigui_info='当你首次明置此武将牌时，你将剩余武将牌堆的两张牌置于武将牌上，称为“魂”；你可以展示一张武将牌上的“魂”并将其置入剩余武将牌堆，视为使用一张本回合内未以此法使用过的基本牌或普通锦囊牌。（此牌指定的目标或响应的牌的使用者须为未确定势力的角色或野心家或与此“魂”势力相同的角色）';
+const yiguiInfo=lib.translate.yigui_info;
+lib.translate.yigui_info=yiguiInfo.slice(0,yiguiInfo.indexOf('（'))+'（此牌指定或响应的角色须为未确定势力的角色或野心家或与此“魂”势力相同的角色）';
 //法正
 if(lib.config.extension_活动武将_HD_gzfazheng){
 lib.skill.gzxuanhuo.subSkill.others={
@@ -2113,6 +2114,12 @@ lib.skill.shencai.intro={
 markcount:(storage,player)=>player.countMark('shencai')+1,
 content:(storage,player)=>'当前最大发动次数：'+(player.countMark('shencai')+1),
 };
+//YYDSの蔡阳
+lib.skill.yinka.charlotte=true;
+lib.skill.yinka.trigger={global:['drawBegin','judgeBegin']};
+lib.skill.yinka.firstDo=true;
+lib.skill.yinka.group='yinka_view';
+lib.skill.yinka.subSkill={view:{ai:{viewHandcard:true,skillTagFilter:(player,arg,target)=>target!=player}}};
 
 //precT
 //翻译
@@ -2907,176 +2914,6 @@ game.bol_playAudiox();
 };
 //----------------游戏播报·末----------------
 
-//precE
-if(bilibilicharacter.enable){
-//技能修复+描述优化
-//蔡阳YYDS!!!
-lib.skill.yinka={
-group:'yinka_view',
-charlotte:true,
-trigger:{global:['drawBegin','judgeBegin']},
-filter:function(){
-return ui.cardPile.childNodes.length>0;
-},
-direct:true,
-firstDo:true,
-content:function(){
-'step 0'
-if(trigger.name=='judge') player.chooseButton(['印卡：'+get.translation(trigger.player)+(player==trigger.player?'（你）':'')+'即将进行判定，请选择要置于牌堆'+(trigger.bottom?'底':'顶')+'的牌',Array.from(ui.cardPile.childNodes)],1).set('ai',function(botton){
-var player=_status.event.player,js=trigger.player.getCards('j');
-if(js.length){
-var judge=get.judge(js[0]);
-if(judge&&(judge(button.link)+0.01)*get.attitude(player,trigger.player)>0) return 20-get.value(button.link);
-}
-return 0;
-});
-else player.chooseButton(['印卡：'+get.translation(trigger.player)+(player==trigger.player?'（你）':'')+'即将从牌堆'+(trigger.bottom?'底':'顶')+'摸'+get.cnNumber(trigger.num)+'张牌，请选择要置于牌堆'+(trigger.bottom?'底':'顶')+'的牌（先选择的在上）',Array.from(ui.cardPile.childNodes)],[1,trigger.num]).set('ai',function(button){
-var player=_status.event.player;
-var att=get.attitude(player,trigger.player);
-if(att>1) return get.value(button.link);
-return 20-get.value(button.link);
-});
-'step 1'
-if(result.bool){
-while(result.links.length){
-if(trigger.bottom){
-var card=result.links.shift();
-ui.cardPile.removeChild(card);
-ui.cardPile.appendChild(card);
-}
-else{
-var card=result.links.pop();
-ui.cardPile.removeChild(card);
-ui.cardPile.insertBefore(card,ui.cardPile.firstChild);
-}
-}
-}
-},
-ai:{isLuckyStar:true},
-subSkill:{
-view:{
-ai:{
-viewHandcard:true,
-skillTagFilter:function(player,arg,target){
-return target!=player;
-},
-},
-},
-},
-},
-//许攸
-lib.skill.spshicai={
-onremove:function(player){
-player.removeSkill('spshicai2');
-},
-audio:2,
-enable:'phaseUse',
-position:'he',
-filter:function(event,player){
-if(player.countCards('h',function(card){
-return card.hasGaintag('spshicai');
-})) return false;
-return player.countCards('he');
-},
-filterCard:true,
-prompt:function(){
-var str='弃置一张牌，然后获得';
-if(get.itemtype(_status.pileTop)=='card') str+=get.translation(_status.pileTop);
-else str+='牌堆顶的一张牌';
-return str;
-},
-check:function(card){
-var player=_status.event.player;
-var cardx=_status.pileTop;
-if(get.itemtype(cardx)!='card') return 0;
-var val=player.getUseValue(cardx,null,true);
-if(!val) return 0;
-var val2=player.getUseValue(card,null,true);
-return (val-val2)/Math.max(0.1,get.value(card));
-},
-content:function(){
-var card=get.cards()[0];
-player.gain(card,'draw').gaintag.add('spshicai');
-game.log(player,'获得了牌堆顶的一张牌');
-},
-group:'spshicai_mark',
-ai:{
-order:7,
-result:{player:1},
-},
-mod:{
-aiOrder:function(player,card,num){
-if(get.itemtype(card)=='card'&&card.hasGaintag('spshicai')) return num+3;
-},
-},
-},
-lib.skill.spshicai2={
-charlotte:true,
-mod:{
-cardEnabled2:function(card,player){
-if(card.spshicai_top) return false;
-},
-},
-group:'spshicai2_update',
-init:function(player){
-var card=ui.cardPile.childNodes[0];
-if(card){
-var fake=game.createCard(card);
-fake.spshicai_top=card;
-player.loseToSpecial([fake],'spshicai2_mark').set('visible',true)._triggered=null;
-player.storage.spshicai2=card;
-fake.classList.add('glow');
-var hs=player.getCards('hs');
-}
-},
-onremove:function(player){
-delete player.storage.spshicai2;
-var hs=player.getCards('s',function(card){
-return card.spshicai_top;
-});
-if(hs.length) player.lose(hs)._triggered=null;
-player.removeGaintag('spshicai');
-},
-mark:true,
-intro:{
-mark:function(dialog,content,player){
-if(player!=game.me) return get.translation(player)+'观看牌堆中...';
-if(get.itemtype(_status.pileTop)!='card') return '牌堆顶无牌';
-dialog.add([_status.pileTop]);
-},
-},
-subSkill:{
-mark:{},
-update:{
-charlotte:true,
-trigger:{global:['gainBegin','useSkillAfter','logSkill','useCard','respond','judge','judgeEnd']},
-filter:function(event,player){
-return !_status.pileTop||_status.pileTop!=player.storage.spshicai2;
-},
-direct:true,
-priority:8,
-content:function(){
-'step 0'
-var hs=player.getCards('s',function(card){
-return card.spshicai_top;
-});
-if(hs.length) player.lose(hs)._triggered=null;
-'step 1'
-var card=ui.cardPile.childNodes[0];
-if(card){
-var fake=game.createCard(card);
-fake.spshicai_top=card;
-player.loseToSpecial([fake],'spshicai2_mark').set('visible',true)._triggered=null;
-player.storage.spshicai2=card;
-fake.classList.add('glow');
-}
-else delete player.storage.spshicai2;
-},
-},
-},
-};
-lib.translate.spshicai2_mark='牌堆顶';
-};
 //设定势力+颜色显示
 game.bolAddGroupNature=function(name,mapping,gradient,push){
 var n,t;
