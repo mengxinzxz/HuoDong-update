@@ -9715,7 +9715,7 @@ Mbaby_shen_taishici:['male','shen',4,['minidulie','minichongwei','minipowei'],['
 Mbaby_nvwa:['female','shen','69/159',['minibutian','minilianshi','minituantu'],[]],
 Mbaby_tunxingmengli:['female','shen',4,['minitunxing','minimengli'],[]],
 Mbaby_tunxingmenglix:['female','shen',4,['minitunxing','minimengli'],[]],
-Mbaby_shen_zuoci:['male','shen',3,['minihuanshu','minihuanhua','minihuanjing'],['qun']],
+Mbaby_shen_zuoci:['male','shen',3,['minihuanshu','minihuanhua','minihuanjing'],['qun','die_audio']],
 //喵
 Mmiao_caiwenji:['female','qun',3,['minimiaobeige','minimiaoduanchang','minidoumao'],['die_audio']],
 Mmiao_diaochan:['female','qun',3,['minimiaolijian','minimiaobiyue','minidoumao'],['die_audio']],
@@ -31977,7 +31977,7 @@ if(skills.length) await player.addAdditionalSkills('minitunxing',skills);
 derivation:'minitunxing_faq',
 },
 minimengli:{
-audio:2,
+audio:'ext:活动武将/audio/skill:2',
 trigger:{player:'changeHp'},
 filter(event,player){
 return get.sgn(player.hp-3.5)!=get.sgn(player.hp-3.5-event.num);
@@ -31993,7 +31993,7 @@ await player.draw();
 },
 //神左慈
 minihuanshu:{
-audio:2,
+audio:'ext:活动武将/audio/skill:2',
 trigger:{
 global:['roundStart','loseAfter'],
 player:['damageEnd','phaseUseBegin'],
@@ -32103,7 +32103,7 @@ player.lose(cards,ui.special).set('HuanShuDestroy',true);
 },
 },
 minihuanhua:{
-audio:2,
+audio:'ext:活动武将/audio/skill:2',
 enable:'phaseUse',
 onChooseToUse(event){
 if(!game.online&&event.type=='phase'&&!event.minihuanhua_count){
@@ -32152,7 +32152,7 @@ subSkill:{tag:{}},
 minihuanjing:{
 unique:true,
 limited:true,
-audio:2,
+audio:'ext:活动武将/audio/skill:2',
 enable:'phaseUse',
 async content(event,trigger,player){
 const num=Math.max(1,player.getDamagedHp()*2);
