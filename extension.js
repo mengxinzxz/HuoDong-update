@@ -25983,7 +25983,7 @@ if(skills.length) player.chooseControl(skills).set('dialog',['请选择要发动
 else event.finish();
 'step 1'
 player.markAuto('minipingjian',[result.control]);
-player.addTempSkills(result.control);
+player.addTempSkill(result.control);
 player.storage.minipingjian_remove[result.control]=(trigger.name=='damage'?trigger:'phaseJieshu');
 },
 },
@@ -26053,7 +26053,7 @@ if(skills.length) player.chooseControl(skills).set('dialog',['请选择要发动
 else event.finish();
 'step 1'
 player.markAuto('minipingjian',[result.control]);
-player.addTempSkills(result.control);
+player.addTempSkill(result.control);
 player.storage.minipingjian_remove[result.control]='phaseUse';
 },
 ai:{
@@ -26079,7 +26079,7 @@ var skills=Object.keys(player.storage.minipingjian_remove).filter(function(skill
 if(trigger.name!='damage') return player.storage.minipingjian_remove[skill]==trigger.name;
 return player.storage.minipingjian_remove[skill]==trigger;
 });
-player.removeSkills(skills);
+player.removeSkill(skills);
 for(var skill of skills) delete player.storage.minipingjian_remove[skill];
 },
 },
@@ -26096,7 +26096,7 @@ firstDo:true,
 priority:Infinity,
 content:function(){
 var skill=trigger.sourceSkill||trigger.skill;
-player.removeSkills(skill);
+player.removeSkill(skill);
 delete player.storage.minipingjian_remove[skill];
 },
 },
