@@ -41,12 +41,10 @@ game.bolShowNewPack=function(){
 var HuoDong_update=[
 '/setPlayer/',
 'bugfix',
-'添加欢杀武将谋马超、王允',
 'To be continued...',
 ];
 //更新武将
 var HuoDong_players=[
-'Mbaby_sb_machao','Mbaby_wangyun',
 ];
 //加载
 var dialog=ui.create.dialog(
@@ -1263,7 +1261,6 @@ junk:[
 'FD_baolvejun',
 //原活动配件武将
 'old_sb_liubei',
-'old_ol_sb_guanyu',
 ],
 },
 //出场率
@@ -1632,7 +1629,6 @@ lib.characterReplace.jsp_guanyu.addArray(['bol_jsp_guanyu','bolx_jsp_guanyu']);
 lib.characterReplace.lingju.add('decade_lingju');
 lib.characterReplace.buzhi=['decade_buzhi','buzhi'];
 lib.characterReplace.fuhuanghou.add('bol_fuhuanghou');
-lib.characterReplace.ol_sb_guanyu=['ol_sb_guanyu','old_ol_sb_guanyu'];
 //筛选武将同名替换
 Object.keys(lib.characterReplace).forEach(name=>{
 lib.characterReplace[name]=lib.characterReplace[name].filter(namex=>lib.character[namex]&&!lib.filter.characterDisabled(namex));
@@ -1708,7 +1704,7 @@ game.HDaddCharacter('bol_jsp_guanyu',['male','wei',4,['wusheng','boldanji'],['ex
 game.HDaddCharacter('bol_fuhuanghou',['female','qun',3,['rezhuikong','xinqiuyuan'],['ext:活动武将/image/character/bol_fuhuanghou.jpg']],'tw');
 
 //怀旧包
-lib.characterSort.old.bilibili_buchong_fre=['old_zhugejin','old_zhanghe','old_ol_xiaoqiao','old_ol_sb_guanyu'];
+lib.characterSort.old.bilibili_buchong_fre=['old_zhugejin','old_zhanghe','old_ol_xiaoqiao','junk_guanyu'];
 lib.characterSort.old.bilibili_buchong_shenhua=['old_zhoufei','lusu','yuanshao','old_dengai'];
 lib.characterSort.old.bilibili_buchong_yijiang=['old_yj_jushou','ol_manchong'];
 lib.characterSort.old.bilibili_buchong_refresh=['oldx_zhangfei','oldx_guanyu','oldx_zhaoyun','oldx_yujin','junk_liubei','junk_huangyueying'];
@@ -1753,7 +1749,6 @@ game.HDaddCharacter('old_xushao',['male','qun',3,['oldpingjian'],['ext:活动武
 game.HDaddCharacter('old_huaman',['female','shu',3,['hmmanyi','old_mansi','old_souying','old_zhanyuan'],['ext:活动武将/image/character/old_huaman.jpg']],'old');
 game.HDaddCharacter('old_ol_xiaoqiao',['female','wu',3,['oltianxiang','rehongyan'],['ext:活动武将/image/character/old_ol_xiaoqiao.jpg']],'old');
 game.HDaddCharacter('old_zhanghe',['male','wei',4,['qiaobian','bilibili_zhiyinxian'],['ext:活动武将/image/character/old_zhanghe.jpg']],'old');
-game.HDaddCharacter('old_ol_sb_guanyu',['male','shu',4,['olsbfumeng','olsbguidao'],['ext:活动武将/image/character/old_ol_sb_guanyu.jpg','die_audio']],'old');
 game.HDaddCharacter('old_zhugejin',['male','wu',3,['olhongyuan','bolhuanshi','olmingzhe'],['ext:活动武将/image/character/old_zhugejin.jpg']],'old');
 game.HDaddCharacter('old_sp_sunshao',['male','wu',3,['refubi','rezuici'],['ext:活动武将/image/character/old_sp_sunshao.jpg']],'old');
 game.HDaddCharacter('old_liuzhang',['male','qun',3,['xiusheng','yinlang','huaibi'],['zhu','ext:活动武将/image/character/old_liuzhang.jpg']],'old');
@@ -1775,6 +1770,7 @@ game.HDaddCharacter('oldx_yujin',['male','wei',4,['bilibili_zhengjun'],['charact
 game.HDaddCharacter('old_yuanji',['female','wu',3,['dcmengchi','dcjiexing'],['ext:活动武将/image/character/old_yuanji.jpg']],'old');
 game.HDmoveCharacter('junk_liubei','old');
 game.HDmoveCharacter('junk_huangyueying','old');
+game.HDmoveCharacter('junk_guanyu','old');
 
 //DIY
 lib.characterSort.diy.diy_fakenews.addArray(['bol_zhangzhongjing','bol_sp_huaxin','bfake_zuoci','bfake_yangfu','bfake_chengpu','bfake_sundeng','old_shen_sunquan','old_shen_ganning','bfake_jiananfeng','bfake_chengui']);
@@ -2256,7 +2252,6 @@ old_huaman:'旧花鬘',
 old_huaman_prefix:'旧',
 old_ol_xiaoqiao:'小乔',
 old_zhanghe:'张郃',
-old_ol_sb_guanyu:'关羽',
 old_zhugejin:'诸葛瑾',
 ol_maliang:'旧马良',
 ol_maliang_prefix:'旧',
@@ -29304,7 +29299,11 @@ return 0;
 minilianji:{
 audio:'lianji',
 inherit:'xinlianji',
-filterTarget:true,
+filterTarget(card,player,target){
+const cardx=new lib.element.VCard({name:'sha',isCard:true});
+if(!ui.selected.targets.length) return target!=player&&game.hasPlayer(current=>target.canUse(cardx,current,false));
+return ui.selected.targets[0].canUse(cardx,target,false);
+},
 filterCard:false,
 async content(event,trigger,player){
 const targets=event.targets,sha=new lib.element.VCard({name:'sha',isCard:true});
@@ -34478,7 +34477,7 @@ minihuoshui_info:'出牌阶段限三次，你可以选择一名其他角色并�
 miniqingcheng:'倾城',
 miniqingcheng_info:'出牌阶段限一次，你可以与一名手牌数小于等于X的其他角色交换手牌（X为你的手牌数和已损失体力值之和）。',
 minilianji:'连计',
-minilianji_info:'出牌阶段限一次，你可以令一名角色使用牌堆中的一张随机武器牌，令其视为对你指定的一名角色使用一张【杀】，然后你将其装备区里的武器牌交给任意角色。',
+minilianji_info:'出牌阶段限一次，你可以令一名其他角色使用牌堆中的一张随机武器牌，令其视为对你指定的一名角色使用一张【杀】，然后你将其装备区里的武器牌交给任意角色。',
 minimoucheng:'谋逞',
 minimoucheng_info:'觉醒技，回合开始时，若有角色因你发动〖连计〗使用【杀】而造成过伤害，则你获得〖矜功〗。',
 //神
@@ -55630,7 +55629,7 @@ intro:'新人制作扩展，希望大家支持。'+
 author:'萌新（转型中）',
 diskURL:'',
 forumURL:'',
-version:'0.1.6',
+version:'0.1.7',
 //新人制作扩展，希望大家支持。
 //新人技术不足，希望大家包涵。
 //壹、贰、叁、肆、伍、陆、柒、捌、玖、拾
