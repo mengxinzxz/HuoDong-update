@@ -943,7 +943,7 @@ game.HDmoveCharacter('db_key_hina','diy');
 }
 
 //precGuoZhan(分界线，便于我搜过来)
-game.bolLoadGuoZhan=function(){
+if(get.mode()=='guozhan'){
 //国战武将技能修复
 if(get.config('onlyguozhan')){
 //------------------------------删除武将------------------------------//
@@ -1140,8 +1140,7 @@ lib.skill.gzxingzhao.subSkill.use.logTarget(trigger,player).draw();
 },
 };
 lib.translate.gzxingzhao_info='锁定技，你根据场上存在受伤角色的势力数获得以下效果：1个或以上，你视为拥有〖恂恂〗；2个或以上，当你受到伤害后，你与伤害来源两者中手牌数唯一最少的角色摸一张牌；3个或以上，你的手牌上限+4；4个或以上，当你失去装备区的牌后，你摸一张牌。';
-};
-if(get.mode()=='guozhan') game.bolLoadGuoZhan();
+}
 
 //设置稀有度
 if(lib.rank){
