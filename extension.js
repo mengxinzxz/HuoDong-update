@@ -31964,7 +31964,7 @@ if(!lib.character[name]) return false;
 return lib.character[name][4]&&lib.character[name][4].includes('zhu');
 }).randomGets(3);
 if(!list.length) return;
-const {result:{bool,links}}=await player.chooseButton(['###吞星：请选择获得一张武将牌###获得此武将牌上的所有主公技和觉醒技外的技能',[list,'character']],true).set('ai',button=>1+Math.random());
+const {result:{bool,links}}=await player.chooseButton(['###吞星：请选择获得一张武将牌###<div class="text center">获得此武将牌上的所有主公技和觉醒技外的技能</div>',[list,'character']],true).set('ai',button=>1+Math.random());
 if(bool){
 const name=links[0],skills=get.character(name,3).filter(skill=>{
 const info=get.info(skill);
