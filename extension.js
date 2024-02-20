@@ -31481,10 +31481,10 @@ return lib.skill.miniyizheng.filterCardx(card,player);
 },limit=Math.min(3,1+player.countMark('minishuangshu_yizheng'));
 while(moveCard.length<limit&&game.hasPlayer(target=>target.hasCard((card,player)=>filter,'e'))){
 const forced=(!moveCard.length);
-const {result:{bool,card}}=await player.moveCard(filter,'nojudge')
+const {result:{card}}=await player.moveCard(filter,'nojudge')
 .set('prompt','移筝：'+(forced?'请':'是否')+'移动场上的一张牌'+(forced?'':'？')).set('forced',forced)
 .set('prompt2','还可移动'+get.cnNumber(limit-moveCard.length)+'张'+(moveType.length?('非'+get.translation(moveType)):'')+'牌');
-if(bool){
+if(card){
 moveCard.push(card);
 moveType.push(get.subtype(card));
 }
