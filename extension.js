@@ -28496,11 +28496,15 @@ var att=get.sgn(get.attitude(player,target));
 if(!cards.length) return 1;
 var list=[];
 cards.forEach(card=>{
-var bool=(card.name!='sha'||player.getCardUsable('sha')>0);
-var targets=game.filterPlayer(current=>bool&&player.canUse(card,current)&&get.effect(current,card,player,player)>0&&get.attitude(player,current)<0);
+if(card.name!='sha'||player.getCardUsable('sha')>0){
+var targets=game.filterPlayer(current=>player.canUse(card,current)&&get.effect(current,card,player,player)>0&&get.attitude(player,current)<0);
+if(targets.length){
 targets.sort((a,b)=>get.effect(b,card,player,player)-get.effect(a,card,player,player));
 list.push([targets[0],get.effect(targets[0],card,player,player)]);
+}
+}
 });
+if(!list.length) return 3*(get.sgn(att+0.5)+(att>0?1:0));
 list.sort((a,b)=>b[1]-a[1]);
 if(list[0][0].group!=target.group) return get.sgn(att-0.5)+(att>=0?1.5:0);
 return 3*(get.sgn(att+0.5)+(att>0?1:0))+(list[0][0]==target?1:0);
