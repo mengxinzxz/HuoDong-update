@@ -28884,29 +28884,29 @@ minizecai:{
 audio:'dczecai',
 inherit:'dczecai',
 derivation:'minirejizhi',
-content:function*(event,map){
-const player=map.player,targetx=lib.skill.dczecai.getMax();
-const trigger=map.trigger;
-let str='令一名其他角色于本轮内获得〖集智〗';
+async content(event,trigger,player){
+const targetx=lib.skill.dczecai.getMax();
+let str='令一名角色于本轮内获得〖集智〗';
 if(targetx) str+=('；若选择的目标为'+get.translation(targetx)+'，则其获得一个额外的回合');
-const result=yield player.chooseTarget(get.prompt('minizecai'),str).set('ai',target=>{
-const player=get.event('player'),targetx=get.event('targetx');
-if(target!=targetx) return 0;
+const {result:{bool,targets}}=await player.chooseTarget(get.prompt('minizecai'),str).set('ai',target=>{
+const player=get.event('player');
+if(target!=get.event('targetx')) return 0;
 return get.attitude(player,target);
 }).set('targetx',targetx);
-if(result.bool){
-const target=result.targets[0];
+if(bool){
+const target=targets[0];
 player.logSkill('minizecai',target);
 player.awakenSkill('minizecai');
-target.addAdditionalSkills('dczecai_effect','minirejizhi');
-target.addTempSkill('dczecai_effect','roundStart');
+target.addAdditionalSkills('minizecai_effect','minirejizhi');
+target.addTempSkill('minizecai_effect','roundStart');
 if(target==targetx){
-const evt=trigger._trigger;
+const evt=trigger;
 target.insertPhase();
 if(evt.player!=target&&!evt._finished){
 evt.finish();
 evt._triggered=5;
-evt.player.insertPhase();
+const evtx=evt.player.insertPhase();
+delete evtx.skill;
 }
 }
 }
@@ -45238,7 +45238,7 @@ bilibili_suixingsifeng:['female','key',4,['bilibili_daili','bilibili_duoyang','b
 bilibili_Emptycity:['male','key',4,['bilibili_zhiyou','bilibili_guanli'],[]],
 bilibili_thunderlei:['male','key','2/4/3',['bilibili_Thunder','bilibili_qianxi'],[]],
 bilibili_zhengxuan:['male','qun',3,['bilibili_zhengjing'],['character:zhengxuan']],
-bilibili_lonelypatients:['male','key',4,['bilibili_meihua','bilibili_gongyou'/*,'bilibili_qianyin'*/],[]],
+bilibili_lonelypatients:['male','key',4,['bilibili_meihua','bilibili_gongyou','bilibili_qianyin'],[]],
 //千里走单骑
 DJ_caiyang:['male','qun',1,['yinka','zhuixi'],['character:caiyang']],
 DJ_pujing:['male','qun',1,['yinka'],['character:pujing']],
@@ -53774,7 +53774,7 @@ content:function(){
 if(trigger.name!='phase'){
 player.logSkill('bilibili_qianyin');
 player.insertPhase();
-var evt=trigger._trigger;
+var evt=trigger;
 if(evt.player!=player&&!evt._finished){
 evt.finish();
 evt.untrigger(true);
