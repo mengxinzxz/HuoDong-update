@@ -40369,7 +40369,7 @@ lib.translate['WeChatkill_character_config']='<span style="font-family: xingkai"
 game.import('character',function(){
 var MX_feihongyinxue={
 name:'MX_feihongyinxue',
-connect:true,
+//connect:true,
 characterSort:{
 MX_feihongyinxue:{
 fh_zhi:['mx_fh_sp_bianfuren','mx_fh_sp_chenzhen','mx_fh_feiyi','mx_fh_luotong','mx_fh_sp_sunshao','mx_fh_sp_duyu','mx_fh_sp_xunchen'],
@@ -40432,7 +40432,7 @@ mx_fh_re_taishici:['male','wu',3,['tianyi','fh_hanzhan'],['tempname:re_taishici'
 mx_fh_yanwen:['male','qun',4,['fh_shuangxiong','fh_xiayong'],[]],
 mx_fh_guanqiujian:['male','wei',4,['fh_zhengrong','fh_hongju'],[]],
 mx_fh_xin_lingtong:['male','wu',4,['fh_xuanfeng','yongjin'],['tempname:xin_lingtong']],
-mx_fh_dc_xushu:['male','shu',4,['fh_zhuhai','fh_qianxin'],[]],
+mx_fh_dc_xushu:['male','shu',4,['bolzhuhai','fh_qianxin'],[]],
 mx_fh_re_liaohua:['male','shu',4,['fh_dangxian','xinfuli'],[]],
 mx_fh_zhuzhi:['male','wu',4,['fh_anguo'],[]],
 },
@@ -44566,60 +44566,6 @@ expose:0.2,
 },
 xuanfeng_xin_lingtong:{audio:2},
 //徐庶
-fh_zhuhai:{
-audio:'rezhuhai',
-trigger:{global:'phaseJieshuBegin'},
-filter:function(event,player){
-if(event.player==player||!event.player.getHistory('sourceDamage').length||!event.player.isIn()) return false;
-for(var card of player.getCards('h')){
-if(game.checkMod(card,player,'unchanged','cardEnabled2',player)!==false&&player.canUse(get.autoViewAs({name:'sha'},[card]),event.player,false)) return true;
-if(game.checkMod(card,player,'unchanged','cardEnabled2',player)!==false&&player.canUse(get.autoViewAs({name:'guohe'},[card]),event.player,false)) return true;
-}
-return false;
-},
-direct:true,
-content:function(){
-'step 0'
-var target=trigger.player;
-var choiceList=['将一张手牌当作【杀】对其使用','将一张手牌当作【过河拆桥】对其使用'];
-var bool=false,boolx=false,hs=player.getCards('h');
-for(var i of hs){
-if(game.checkMod(i,player,'unchanged','cardEnabled2',player)!==false&&player.canUse(get.autoViewAs({name:'sha'},[i]),target,false)) bool=true;
-if(game.checkMod(i,player,'unchanged','cardEnabled2',player)!==false&&player.canUse(get.autoViewAs({name:'guohe'},[i]),target,false)) boolx=true;
-if(bool&&boolx) break;
-}
-var choices=[];
-if(bool) choices.push('选项一');
-else choiceList[0]='<span style="opacity:0.5">'+choiceList[0]+'</span>';
-if(boolx) choices.push('选项二');
-else choiceList[1]='<span style="opacity:0.5">'+choiceList[1]+'</span>';
-choices.push('cancel2');
-player.chooseControl(choices).set('choiceList',choiceList).set('prompt',get.prompt('fh_zhuhai',target)).set('ai',function(){
-var choices=_status.event.controls;
-var eff1=0,eff2=0;
-var player=_status.event.player,target=_status.event.getTrigger().player;
-if(choices.includes('选项一')) eff1=get.effect(target,{name:'sha'},player,player);
-if(choices.includes('选项二')) eff2=get.effect(target,{name:'guohe'},player,player);
-if(eff1>0&&(player.hasSkill('fh_qianxin')&&player.isDamaged()||eff1>eff2)) return '选项一';
-if(eff2>0) return '选项二';
-return 'cancel2';
-});
-'step 1'
-if(result.control!='cancel2'){
-event.bilibili=(result.control=='选项一'?'sha':'guohe');
-player.chooseCard('h',true,function(card,player){
-if(!game.checkMod(card,player,'unchanged','cardEnabled2',player)) return false;
-return player.canUse(get.autoViewAs({name:event.bilibili},[card]),_status.event.getTrigger().player,false);
-},'选择一张手牌当作【'+get.translation(event.bilibili)+'】对'+get.translation(trigger.player)+'使用').set('ai',function(card){
-var player=_status.event.player;
-return get.effect(_status.event.getTrigger().player,get.autoViewAs({name:event.bilibili},[hs]),player,player)/Math.max(1,get.value(card));
-});
-}
-else event.finish();
-'step 2'
-if(result.bool) player.useCard({name:event.bilibili},result.cards,'fh_zhuhai',trigger.player,false);
-},
-},
 fh_qianxin:{
 unique:true,
 audio:'xsqianxin',
@@ -44910,7 +44856,7 @@ mx_fh_shen_dianwei:'飞鸿神典韦',
 fh_shuishi:'慧识',
 fh_shuishi_info:'出牌阶段限一次，你可进行重复判定牌直到有已有判定花色的牌，然后你可以将所有判定牌交给一名角色。',
 fh_tianyi:'天翊',
-fh_tianyi_info:'觉醒技，准备阶段，若场上的所有存活角色均于本局游戏内受到过伤害，则你加将体力上限增加至10点，然后令一名角色获得技能〖佐幸〗。',
+fh_tianyi_info:'觉醒技，准备阶段，若场上的所有存活角色均于本局游戏内受到过伤害，则你将体力上限增加至10点，然后令一名角色获得技能〖佐幸〗。',
 fh_sghuishi:'辉逝',
 fh_sghuishi_info:'限定技，当你进入濒死状态时，你可以选择一名角色。若其有未发动的觉醒技，则你令其中一个技能无视发动条件；否则其摸四张牌。',
 fh_lingce:'灵策',
@@ -44947,7 +44893,7 @@ fh_caishi_info:'摸牌阶段结束时，你可以展示你于本阶段内因摸�
 fh_daiyan:'怠宴',
 fh_daiyan_info:'结束阶段，你可以令一名其他角色获得你从额外牌堆中选择的一张基本牌，然后若其于你的上回合也成为过此技能的目标，则其失去1点体力。',
 fh_shouxi:'守玺',
-fh_shouxi_info:'当你成为其他角色使用【杀】或普通锦囊牌的目标后，你可声明一种牌的类别并令使用者选择一项。：①弃置一张你声明的类别的手牌，然后其可以获得你的一张手牌；②令此牌对你无效。',
+fh_shouxi_info:'当你成为其他角色使用【杀】或普通锦囊牌的目标后，你可声明一种牌的类别并令使用者选择一项：①弃置一张你声明的类别的手牌，然后其可以获得你的一张手牌；②令此牌对你无效。',
 fh_huimin:'惠民',
 fh_huimin_info:'结束阶段，你可以选择任意名手牌数小于体力值的角色并摸等量的牌，然后交给这些角色各一张手牌。',
 fh_qingxian:'清弦',
@@ -45008,8 +44954,6 @@ fh_qingce_backup:'清侧',
 fh_qingce_info:'出牌阶段，你可以将一张“荣”置入弃牌堆，然后弃置场上的一张牌。',
 fh_xuanfeng:'旋风',
 fh_xuanfeng_info:'当你于弃牌阶段弃置过至少两张牌，或当你失去装备区里的牌后，你可以选择一项：①弃置至多两名其他角色的共计两张牌。②若此时处于你的回合内且场上没有处于濒死状态的角色，你可以对一名其他角色造成1点伤害。',
-fh_zhuhai:'诛害',
-fh_zhuhai_info:'其他角色的回合结束时，若其本回合内造成过伤害，则你可以将一张手牌当作【杀】或【过河拆桥】对其使用。',
 fh_qianxin:'潜心',
 fh_qianxin_info:'觉醒技，当你造成伤害后，若你已受伤，则你减1点体力上限并获得〖荐言〗。',
 fh_jianyan:'荐言',
@@ -50870,7 +50814,7 @@ const player=get.event('player'),target=get.event('target'),choices=get.event('c
 let eff1=0,eff2=0;
 if(choices.includes('选项一')) eff1=get.effect(target,{name:'sha'},player,player);
 if(choices.includes('选项二')) eff2=get.effect(target,{name:'guohe'},player,player);
-if(eff1>0&&(player.hasSkill('xsqianxin')&&player.isDamaged()||eff1>eff2)) return '选项一';
+if(eff1>0&&((player.hasSkill('xsqianxin')||player.hasSkill('fh_qianxin'))&&player.isDamaged()||eff1>eff2)) return '选项一';
 if(eff2>0) return '选项二';
 return 'cancel2';
 }).set('target',target);
