@@ -19939,7 +19939,7 @@ return get.order({name:'sha'},player)-0.01;
 },
 unequip:true,
 unequip_ai:true,
-skillTagFilter:function(player,tag,arg){
+skillTagFilter(player,tag,arg){
 if(!arg||!arg.card||!arg.card.storage||!arg.card.storage.minisbduojing) return false;
 },
 result:{target:-1},
@@ -33425,6 +33425,14 @@ if(!storage) str+='</span>';
 if(storage) str+='<span class="bluetext">';
 str+='阳，你可以弃置一张非基本牌，视为使用一张未以此法使用过的基本牌。';
 if(storage) str+='</span>';
+return str;
+},
+minikeji(player){
+let str='弃牌阶段开始时，';
+if(player.hasSkill('minisbduojing_keji',null,false,false)) str+='<span style="text-decoration:line-through;">';
+str+='若你于本回合的出牌阶段内没有过使用或打出过【杀】，则';
+if(player.hasSkill('minisbduojing_keji',null,false,false)) str+='</span>';
+str+='你可以跳过此阶段并摸一张牌。';
 return str;
 },
 },
