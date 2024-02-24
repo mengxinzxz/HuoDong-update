@@ -40,7 +40,9 @@ game.bolShowNewPack=function(){
 //更新告示
 var HuoDong_update=[
 '/setPlayer/',
+'整合@Howard-Zhou-77的Pull Requests',
 'bugfix',
+'添加欢杀武将：谋吕蒙',
 'To be continued...',
 ];
 //更新武将
@@ -9446,7 +9448,7 @@ MiNi_qun:['Mbaby_wangyun','Mbaby_zoushi','Mbaby_dc_huangchengyan','Mbaby_simahui
 MiNi_shen:['Mbaby_shen_zuoci','Mbaby_shen_taishici','Mbaby_shen_diaochan','Mbaby_shen_daxiaoqiao','Mbaby_shen_zhenji','Mbaby_shen_guojia','Mbaby_shen_huatuo','Mbaby_shen_dianwei','Mbaby_shen_lvbu','Mbaby_shen_zhugeliang','Mbaby_shen_lvmeng','Mbaby_shen_zhouyu','Mbaby_shen_guanyu','Mbaby_shen_liubei','Mbaby_shen_caocao','Mbaby_shen_zhangliao','Mbaby_shen_sunquan','Mbaby_shen_simayi','Mbaby_shen_zhaoyun','Mbaby_shen_ganning','Mbaby_shen_luxun'],
 MiNi_change:['Mbaby_re_nanhualaoxian','Mbaby_re_sunyi','Mbaby_zhaoxiang','Mbaby_xushao','Mbaby_baosanniang'],
 MiNi_shengzhiyifa:['Mbaby_sunwukong','Mbaby_dalanmao','Mbaby_libai','Mbaby_change','Mbaby_nvwa','Mbaby_tunxingmengli','Mbaby_tunxingmenglix'],
-MiNi_sbCharacter:['Mbaby_sb_liubei','Mbaby_sb_caocao','Mbaby_sb_huanggai','Mbaby_sb_yuanshao','Mbaby_sb_yujin','Mbaby_sb_machao'],
+MiNi_sbCharacter:['Mbaby_sb_liubei','Mbaby_sb_caocao','Mbaby_sb_huanggai','Mbaby_sb_yuanshao','Mbaby_sb_yujin','Mbaby_sb_machao','Mbaby_sb_lvmeng'],
 MiNi_miaoKill:['Mmiao_caiwenji','Mmiao_diaochan','Mmiao_caifuren','Mmiao_zhangxingcai','Mmiao_zhurong','Mmiao_huangyueying','Mmiao_daqiao','Mmiao_wangyi','Mmiao_zhangchunhua','Mmiao_zhenji','Mmiao_sunshangxiang','Mmiao_xiaoqiao'],
 },
 },
@@ -9619,6 +9621,7 @@ Mbaby_dc_sunru:['female','wu',3,['minixiecui','youxu'],[]],
 Mbaby_yufan:['male','wu',3,['minizongxuan','minizhiyan'],[]],
 Mbaby_quancong:['male','wu',4,['miniyaoming'],[]],
 Mbaby_re_guyong:['male','wu',3,['minishenxing','rebingyi'],[]],
+Mbaby_sb_lvmeng:['male','wu',4,['minikeji','minisbduojing'],[]],
 //群
 Mbaby_gaoshun:['male','qun',4,['minixianzhen','minijinjiu'],[]],
 Mbaby_caifuren:['female','qun',3,['minireqieting','minirexianzhou'],[]],
@@ -19856,16 +19859,14 @@ subSkill:{damage:{audio:'decadepojun',inherit:'repojun3'}},
 },
 minikeji:{
 audio:'keji',
+audioname2:{Mbaby_sb_lvmeng:'sbkeji'},
 trigger:{player:'phaseDiscardBefore'},
-frequent:true,
 filter:function(event,player){
-if(player.getHistory('skipped').includes('phaseUse')) return true;
-var history=player.getHistory('useCard').concat(player.getHistory('respond'));
-for(var i=0;i<history.length;i++){
-if(history[i].card.name=='sha'&&history[i].isPhaseUsing()) return false;
-}
-return true;
+if(player.hasSkill('minisbduojing_keji')) return true;
+const history=player.getHistory('useCard').concat(player.getHistory('respond'));
+return !history.some(evt=>evt.card.name=='sha'&&evt.isPhaseUsing());
 },
+frequent:true,
 content:function(){
 trigger.cancel();
 player.draw();
@@ -19889,6 +19890,66 @@ var num=player.maxHp-player.hp;
 player.awakenSkill('miniqinxue');
 if(num>0) player.loseMaxHp(num);
 player.changeSkills(['minigongxin'],['minikeji']);
+},
+},
+//谋吕蒙
+minisbduojing:{
+audio:'sbduojing',
+enable:'phaseUse',
+usable:2,
+filterTarget:lib.filter.notMe,
+async content(event,trigger,player){
+const target=event.target;
+const {result}=await player.mini_chooseToMouYi(target).set('namelist',[
+'白衣渡江×','休养生息×','休养生息','白衣渡江'
+]).set('ai',button=>{
+const source=get.event().getParent().player,target=get.event().getParent().target;
+if(get.effect(target,{name:'sha',storage:{minisbduojing:true}},source,source)<0&&(button.link[2]=='db_atk2'||button.link[2]=='db_def1')) return 10;
+if(get.effect(target,{name:'shunshou_copy2'},source,source)<0&&(button.link[2]=='db_atk1'||button.link[2]=='db_def2')) return 10;
+return 1+Math.random();
+});
+if(result.bool){
+if(result.player=='db_def1'){
+await player.gainPlayerCard(target,'he',true);
+await player.recover();
+const num=player.getDamagedHp();
+if(num>0){
+await player.draw(num);
+await player.chooseToDiscard(num,'he',true);
+}
+}
+else{
+const card=new lib.element.VCard({name:'sha',storage:{minisbduojing:true}});
+if(player.canUse(card,target,false)) await player.useCard(card,target,false);
+player.addTempSkill('shenzhu_more');
+player.addMark('shenzhu_more',1,false);
+player.addTempSkill('minisbduojing_keji');
+}
+}
+},
+init(){
+if(!_status.miniMouYi){
+_status.miniMouYi=true;
+lib.skill.minisbtieji.initMouYi();
+}
+},
+ai:{
+order(item,player){
+return get.order({name:'sha'},player)-0.01;
+},
+unequip:true,
+unequip_ai:true,
+skillTagFilter:function(player,tag,arg){
+if(!arg||!arg.card||!arg.card.storage||!arg.card.storage.minisbduojing) return false;
+},
+result:{target:-1},
+},
+subSkill:{
+keji:{
+charlotte:true,
+mark:true,
+intro:{content:'本回合无视【克己】发动条件'},
+},
 },
 },
 minitianxiang:{
@@ -33944,6 +34005,7 @@ Mbaby_dc_sunru:'欢杀孙茹',
 Mbaby_yufan:'欢杀虞翻',
 Mbaby_quancong:'欢杀全琮',
 Mbaby_re_guyong:'欢杀顾雍',
+Mbaby_sb_lvmeng:'欢杀谋吕蒙',
 minizhiheng:'制衡',
 minizhiheng_info:'出牌阶段结束时，你可以弃置任意张手牌并将手牌数补至四张。',
 minirezhiheng:'制衡',
@@ -34027,6 +34089,8 @@ minikeji:'克己',
 minikeji_info:'弃牌阶段开始时，若你于本回合的出牌阶段内没有过使用或打出过【杀】，则你可以跳过此阶段并摸一张牌。',
 miniqinxue:'勤学',
 miniqinxue_info:'觉醒技，结束阶段，若你的手牌数不小于你的体力值的三倍，则你调整体力上限与体力值一致，失去技能〖克己〗并获得技能〖攻心〗。',
+minisbduojing:'夺荆',
+minisbduojing_info:'出牌阶段限两次，你可以与一名其他角色谋弈。若你赢，且你选择的选项为：“休养生息”，获得其一张牌，回复1点体力，然后若X大于0，你摸X张牌并弃置等量的牌（X为你已损失的体力值）；“白衣渡江”，视为对其使用一张不计次数且无视距离和防具的【杀】，且本回合可额外使用一张【杀】，且本回合无视〖克己〗发动条件。',
 minitianxiang:'天香',
 minitianxiang2:'天香',
 minitianxiang_info:'当你即将受到伤害时，你可以弃置一张红桃手牌并将伤害转移给一名其他角色，然后你选择一项：①令其摸一张牌：②令其摸X张牌（X为其损失的体力值）。',
