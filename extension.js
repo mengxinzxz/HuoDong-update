@@ -20146,7 +20146,7 @@ filterTarget:lib.filter.notMe,
 async content(event,trigger,player){
 const target=event.target;
 const {result}=await player.mini_chooseToMouYi(target).set('namelist',[
-'白衣渡江×','休养生息×','休养生息','白衣渡江'
+'半渡而击','扰袭敌营','休养生息','白衣渡江'
 ]).set('ai',button=>{
 const source=get.event().getParent().player,target=get.event().getParent().target;
 if(get.effect(target,{name:'sha',storage:{minisbduojing:true}},source,source)<0&&(button.link[2]=='db_atk2'||button.link[2]=='db_def1')) return 10;
