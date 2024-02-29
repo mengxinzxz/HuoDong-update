@@ -18528,6 +18528,7 @@ player.storage.miniyoulong2.add({name:event.result.card.name,nature:event.result
 if(player.storage.miniyoulong){
 next.filterCard=(card,player)=>get.type(card)!='basic'&&lib.filter.cardDiscardable(card,player);
 next.ignoreMod=true;
+next.position='he';
 next.check=(card)=>7-get.value(card);
 }
 else{
