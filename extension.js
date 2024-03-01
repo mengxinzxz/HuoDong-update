@@ -40,18 +40,11 @@ game.bolShowNewPack=function(){
 //更新告示
 var HuoDong_update=[
 '/setPlayer/',
-'整合@Howard-Zhou-77的Pull Requests',
 'bugfix',
-'添加欢杀武将：谋吕蒙、乐进、谋黄忠',
-'添加微信杀武将：黄皓、韩当、王朗、徐盛、虞翻',
-'修改微信杀武将：极郭嘉、极诸葛亮、夏侯霸、极曹操、关索、SP蔡文姬、孙鲁班',
 'To be continued...',
 ];
 //更新武将
 var HuoDong_players=[
-'Mbaby_sb_lvmeng','Mbaby_yuejin','Mbaby_sb_huangzhong','wechat_huanghao','wechat_handang',
-'wechat_wanglang','wechat_xusheng','wechat_yufan','wechat_guojia','wechat_zhugeliang','wechat_xiahouba',
-'wechat_re_caocao','wechat_guansuo','wechat_sp_caiwenji','wechat_sunluban',
 ];
 //加载
 var dialog=ui.create.dialog(
@@ -35188,7 +35181,7 @@ wechat_wanglang:['male','wei',3,['gushe','wechatjici'],[]],
 wechat_huanghao:['male','shu',3,['wechatqinqing','wechathuisheng'],[]],
 //神武将
 wechat_shen_zhugeliang:['male','shen',3,['wechatqixing','wechatjifeng','wechattianfa'],['shu']],
-wechat_shen_lvmeng:['male','shen',3,['shelie','wechatregongxin'],['wu']],
+wechat_shen_lvmeng:['male','shen',3,['shelie','wechatgongxin'],['wu']],
 wechat_shen_guanyu:['male','shen',5,['wechatwushen'],['shu']],
 //只因武将
 wechat_lvbu:['male','qun',4,['wushuang','wechatxiaohu'],[]],
@@ -36024,45 +36017,6 @@ if(player.storage.wechatjilei2.includes(get.suit(card))) return false;
 },
 wechatgongxin:{
 audio:'gongxin',
-enable:'phaseUse',
-filterTarget:function(card,player,target){
-return target!=player&&target.countCards('h');
-},
-usable:1,
-content:function(){
-'step 0'
-event.videoId=lib.status.videoId++;
-var cards=target.getCards('h');
-if(player.isOnline2()){
-player.send(function(cards,id){
-ui.create.dialog('攻心',cards).videoId=id;
-},cards,event.videoId);
-}
-event.dialog=ui.create.dialog('攻心',cards);
-event.dialog.videoId=event.videoId;
-if(!event.isMine()){
-event.dialog.style.display='none';
-}
-player.chooseButton().set('filterButton',function(button){
-return get.suit(button.link)=='heart';
-}).set('dialog',event.videoId);
-'step 1'
-if(player.isOnline2()) player.send('closeDialog',event.videoId);
-event.dialog.close();
-if(result.bool) player.gain(result.links,target,'giveAuto');
-},
-ai:{
-order:12,
-expose:0.4,
-result:{
-target:function(player,target){
-return -target.countCards('h');
-},
-},
-},
-},
-wechatregongxin:{
-audio:'gongxin',
 inherit:'gongxin',
 content:function(){
 'step 0'
@@ -36074,7 +36028,7 @@ cards,
 ]).set('filterButton',function(button){
 var type=typeof button.link;
 if(ui.selected.buttons.length&&type==typeof ui.selected.buttons[0].link) return false;
-return type=='string'||get.color(button.link,get.owner(button.link))=='red';
+return type=='string'||get.suit(button.link,get.owner(button.link))=='heart';
 });
 'step 1'
 if(result.bool){
@@ -40702,9 +40656,7 @@ wechatjilei2_bg:'肋',
 wechatjilei_info:'当你受到有来源的伤害后，你可以声明一种花色。若如此做，你令伤害来源不能使用、打出或弃置此花色的手牌直到其下个回合开始。',
 wechat_shen_lvmeng:'微信神吕蒙',
 wechatgongxin:'攻心',
-wechatgongxin_info:'出牌阶段限一次，你可以观看一名其他角色的手牌，然后获得其中的一张红桃牌。',
-wechatregongxin:'攻心',
-wechatregongxin_info:'出牌阶段限一次，你可以观看一名其他角色的手牌，然后你可以展示其中的一张红色牌并选择一项：1.获得此牌；2.将此牌置于牌堆顶。',
+wechatgongxin_info:'出牌阶段限一次，你可以观看一名其他角色的手牌，然后你可以展示其中的一张红桃牌并选择一项：1.获得此牌；2.将此牌置于牌堆顶。',
 wechat_zhoutai:'微信周泰',
 wechatbuqu:'不屈',
 wechatbuqux:'创',
@@ -56275,7 +56227,7 @@ intro:'新人制作扩展，希望大家支持。'+
 author:'萌新（转型中）',
 diskURL:'',
 forumURL:'',
-version:'0.1.7',
+version:'0.1.8',
 //新人制作扩展，希望大家支持。
 //新人技术不足，希望大家包涵。
 //壹、贰、叁、肆、伍、陆、柒、捌、玖、拾
