@@ -41,10 +41,12 @@ game.bolShowNewPack=function(){
 var HuoDong_update=[
 '/setPlayer/',
 'bugfix',
+'添加欢乐三国杀武将：张春华、蒋干、谋赵云、小闪',
 'To be continued...',
 ];
 //更新武将
 var HuoDong_players=[
+'Mbaby_zhangchunhua','Mbaby_jianggan','Mbaby_sb_zhaoyun','Mbaby_xiaoshan'
 ];
 //加载
 var dialog=ui.create.dialog(
@@ -9445,7 +9447,7 @@ MiNi_wu:['Mbaby_re_guyong','Mbaby_quancong','Mbaby_yufan','Mbaby_dc_sunru','Mbab
 MiNi_qun:['Mbaby_wangyun','Mbaby_zoushi','Mbaby_dc_huangchengyan','Mbaby_simahui','Mbaby_tw_mateng','Mbaby_laiyinger','Mbaby_sp_kongrong','Mbaby_zhujun','Mbaby_gongsunyuan','Mbaby_sp_zhangliao','Mbaby_sp_ol_zhanghe','Mbaby_guotufengji','Mbaby_yanfuren','Mbaby_tangji','Mbaby_caojie','Mbaby_liangxing','Mbabysp_zhenji','Mbaby_caoxing','Mbaby_sp_menghuo','Mbaby_wangrong','Mbaby_hetaihou','Mbaby_sp_taishici','Mbaby_zhangji','Mbaby_dongbai','Mbaby_beimihu','Mbaby_chunyuqiong','Mbaby_zhangqiying','Mbaby_fuhuanghou','Mbaby_liuxie','Mbaby_quyi','Mbaby_jsp_huangyueying','Mbaby_sp_machao','Mbaby_lijue','Mbaby_panfeng','Mbaby_liuzhang','Mbaby_jiaxu','Mbaby_zhangbao','Mbaby_zhangliang','Mbaby_gaoshun','Mbaby_caifuren','Mbaby_xuyou','Mbaby_gongsunzan','Mbaby_pangde','Mbaby_jushou','Mbaby_liru','Mbaby_dongzhuo','Mbaby_zhangjiao','Mbaby_huatuo','Mbaby_lvbu','Mbaby_diaochan','Mbaby_sp_diaochan','Mbaby_huaxiong','Mbaby_yuji','Mbaby_yanwen','Mbaby_caiwenji','Mbaby_liubiao','Mbaby_yuanshao','Mbaby_yuanshu','Mbaby_chengong','Mbaby_zuoci'],
 MiNi_shen:['Mbaby_shen_zuoci','Mbaby_shen_taishici','Mbaby_shen_diaochan','Mbaby_shen_daxiaoqiao','Mbaby_shen_zhenji','Mbaby_shen_guojia','Mbaby_shen_huatuo','Mbaby_shen_dianwei','Mbaby_shen_lvbu','Mbaby_shen_zhugeliang','Mbaby_shen_lvmeng','Mbaby_shen_zhouyu','Mbaby_shen_guanyu','Mbaby_shen_liubei','Mbaby_shen_caocao','Mbaby_shen_zhangliao','Mbaby_shen_sunquan','Mbaby_shen_simayi','Mbaby_shen_zhaoyun','Mbaby_shen_ganning','Mbaby_shen_luxun'],
 MiNi_change:['Mbaby_re_nanhualaoxian','Mbaby_re_sunyi','Mbaby_zhaoxiang','Mbaby_xushao','Mbaby_baosanniang'],
-MiNi_shengzhiyifa:['Mbaby_sunwukong','Mbaby_dalanmao','Mbaby_libai','Mbaby_change','Mbaby_nvwa','Mbaby_tunxingmengli','Mbaby_tunxingmenglix'],
+MiNi_shengzhiyifa:['Mbaby_sunwukong','Mbaby_dalanmao','Mbaby_libai','Mbaby_change','Mbaby_nvwa','Mbaby_tunxingmengli','Mbaby_tunxingmenglix','Mbaby_xiaoshan'],
 MiNi_sbCharacter:['Mbaby_sb_zhaoyun','Mbaby_sb_liubei','Mbaby_sb_caocao','Mbaby_sb_huanggai','Mbaby_sb_yuanshao','Mbaby_sb_yujin','Mbaby_sb_machao','Mbaby_sb_lvmeng','Mbaby_sb_huangzhong'],
 MiNi_miaoKill:['Mmiao_caiwenji','Mmiao_diaochan','Mmiao_caifuren','Mmiao_zhangxingcai','Mmiao_zhurong','Mmiao_huangyueying','Mmiao_daqiao','Mmiao_wangyi','Mmiao_zhangchunhua','Mmiao_zhenji','Mmiao_sunshangxiang','Mmiao_xiaoqiao'],
 },
@@ -9689,6 +9691,7 @@ Mbaby_dc_huangchengyan:['male','qun',3,['dcjiezhen','minizecai','dcyinshi'],[]],
 Mbaby_simahui:['male','qun',3,['minijianjie','xinfu_chenghao','miniyinshi'],[]],
 Mbaby_zoushi:['female','qun',3,['minihuoshui','miniqingcheng'],[]],
 Mbaby_wangyun:['male','qun',4,['minilianji','minimoucheng'],['clan:太原王氏']],
+Mbaby_xiaoshan:['female','qun',4,['minishanshan','minianshi'],[]],
 //神
 Mbaby_shen_zhugeliang:['male','shen',3,['qixing','minikuangfeng','minidawu'],['shu']],
 Mbaby_shen_lvbu:['male','shen',6,['miniwuqian','minishenfen'],['qun']],
@@ -19458,7 +19461,7 @@ for(var name of lib.inpile){
 if(get.type(name)!='basic') continue;
 if(player.hasCard({type:'basic'},'hs')){
 if(event.filterCard({name:name},player,event)) return true;
-if(marked&&name=='sha'){
+if(name=='sha'){
 for(var nature of lib.inpile_nature){
 if(event.filterCard({name:name,nature:nature},player,event)) return true;
 }
@@ -19475,7 +19478,7 @@ for(var name of lib.inpile){
 if(get.type(name)!='basic') continue;
 if(player.hasCard({type:'basic'},'hs')){
 if(event.filterCard({name:name},player,event)) list.push(['基本','',name]);
-if(marked&&name=='sha'){
+if(name=='sha'){
 for(var nature of lib.inpile_nature){
 if(event.filterCard({name:name,nature:nature},player,event)) list.push(['基本','',name,nature]);
 }
@@ -19571,6 +19574,7 @@ minisbshilve:{
 audio:'sbjizhu',
 trigger:{player:['useCard','respond']},
 filter(event,player){
+if(event.card.name!='sha'&&event.card.name!='shan') return false;
 const target=lib.skill.chongzhen.logTarget(event,player);
 return target&&event.skill&&event.skill=='minisblongdan_backup';
 },
@@ -29951,6 +29955,201 @@ player.awakenSkill('minimoucheng');
 player.addSkills('xinjingong');
 },
 },
+//小闪
+minishanshan:{
+audio:'ext:活动武将/audio/skill:2',
+trigger:{target:'useCardToTargeted'},
+filter(event,player){
+if(event.player==event.target) return false;
+if(event.card.name!='sha'&&get.type(event.card)!='trick') return false;
+return player.hasShan()||_status.connectMode;
+},
+direct:true,
+async content(event,trigger,player){
+const {result:{bool}}=await player.chooseToRespond(get.prompt('minishanshan'),(card,player)=>{
+return get.name(card)=='shan';
+}).set('prompt2','打出一张【闪】令'+get.translation(trigger.card)+'无效，然后你摸一张牌').set('ai',card=>{
+const trigger=get.event().getTrigger();
+return -get.effect(player,trigger.card,trigger.target,player);
+}).set('logSkill','minishanshan');
+if(bool){
+trigger.getParent().excluded.add(player);
+await player.draw();
+}
+},
+group:'minishanshan_qingguo',
+subSkill:{
+qingguo:{
+audio:'minishanshan',
+inherit:'reqingguo',
+mod:{
+aiValue(player,card,num){
+if(get.name(card)!='shan'&&get.type(card)!='equip') return;
+var cards=player.getCards('hs',card=>{
+return get.name(card)=='shan'||get.type(card)=='equip';
+});
+cards.sort((a,b)=>(get.name(b)=='shan'?1:2)-(get.name(a)=='shan'?1:2));
+var geti=function(){
+if(cards.includes(card)) return cards.indexOf(card);
+return cards.length;
+};
+if(get.name(card)=='shan') return Math.min(num,[6,4,3][Math.min(geti(),2)])*0.6;
+return Math.max(num,[6.5,4,3][Math.min(geti(),2)]);
+},
+aiUseful(){
+return lib.skill.minishanshan.subSkill.qingguo.mod.aiValue.apply(this,arguments);
+},
+},
+filterCard(card){
+return get.type(card)=='equip';
+},
+viewAsFilter(player){
+if(!player.countCards('hes',{type:'equip'})) return false;
+},
+prompt:'将一张装备牌当作【闪】使用或打出',
+ai:{
+order:0.001,
+respondShan:true,
+skillTagFilter(player){
+if(!player.countCards('hes',{type:'equip'})) return false;
+},
+effect:{
+target(card,player,target,current){
+if(get.tag(card,'respondShan')&&current<0) return 0.7;
+},
+},
+},
+},
+},
+},
+minianshi:{
+audio:'ext:活动武将/audio/skill:2',
+trigger:{global:'roundStart'},
+forced:true,
+async content(event,trigger,player){
+const num=Array.from({length:5}).map((_,i)=>i+1).filter(num=>!player.getStorage('minianshi_effect').includes(num)).randomGet();
+if(!num) return;
+player.addTempSkill('minianshi_effect','roundStart');
+player.markAuto('minianshi_effect',[num]);
+if(num==2){
+player.when({global:'roundStart'})
+.filter(evt=>evt!=trigger)
+.assign({firstDo:true,priority:114514})
+.then(()=>{
+player.removeSkill('minianshi_effect');
+const targets=game.filterPlayer(target=>{
+const history=target.actionHistory;
+for(let i=history.length-2;i>=0;i--){
+const historyx=history[i].useCard.concat(history[i].respond);
+if(historyx.some(evt=>evt.card.name=='shan')) return false;
+if(history[i].lose.some(evt=>evt.type!='discard'&&evt.cards2&&evt.cards2.some(card=>get.name(card,target)=='shan'||get.name(card,false)=='shan'))) return false;
+if(history[i].isRound) break;
+}
+return true;
+}).sortBySeat();
+if(targets.length){
+player.logSkill('minianshi_effect',targets);
+for(const target of targets) target.damage(1,'thunder');
+}
+});
+}
+},
+subSkill:{
+effect:{
+intro:{
+markcount:()=>0,
+content(storage,player){
+const list=[
+'一名角色使用或打出【闪】时，其弃置所有手牌',
+'下一轮开始时，所有未于本轮使用、打出或弃置过【闪】的角色各受到你对其造成的1点雷属性伤害',
+'一名角色的装备区的牌数发生变化后，其弃置所有装备牌',
+'一名角色使用或打出【桃】或【酒】后，其本回合无法使用或打出手牌',
+'一名角色使用单目标锦囊牌指定目标时，你摸一张牌',
+];
+const nums=Array.from({length:5}).map((_,i)=>i+1).filter(num=>storage.includes(num));
+let str='';
+for(const i of nums){
+if(!player.isUnderControl(true)&&!storage.includes('showed_'+parseFloat(i))) continue;
+str+='<li>';
+str+=list[i-1];
+str+='<br>';
+}
+if(str=='') return '这是小闪的秘密哦';
+return str.slice(0,-4);
+},
+},
+charlotte:true,
+onremove:true,
+trigger:{global:['loseAfter','equipAfter','addJudgeAfter','gainAfter','loseAsyncAfter','addToExpansionAfter','useCardToPlayer','useCard','respond']},
+filter(event,player){
+const storage=player.getStorage('minianshi_effect');
+if(event.name=='useCard'||event.name=='respond'){
+if(storage.includes(1)&&event.card.name=='shan'&&event.player.countCards('h')) return true;
+if(storage.includes(4)&&(event.card.name=='tao'||event.card.name=='jiu')) return true;
+return false;
+}
+if(event.name=='useCardToPlayer'){
+if(!storage.includes(5)||get.type2(event.card)!='trick') return false;
+const info=get.info(event.card);
+return info&&!info.notarget&&(info.toself||info.singleCard||!info.selectTarget||info.selectTarget==1);
+}
+if(!storage.includes(3)) return false;
+if(event.name=='equip'){
+if(!event.player.countCards('e')) return false;
+const evt=event.getl(event.player);
+return !evt||evt.cards.length!=1;
+}
+return game.hasPlayer(target=>{
+if(!target.countCards('e')) return false;
+const evt=event.getl(target);
+return evt&&evt.es.length;
+});
+},
+logTarget(event,player){
+if(event.name=='useCard'||event.name=='respond'||event.name=='useCardToPlayer'||event.name=='equip') return event.player;
+return game.filterPlayer(target=>{
+if(!target.countCards('e')) return false;
+const evt=event.getl(target);
+return evt&&evt.es.length;
+}).sortBySeat();
+},
+forced:true,
+async content(event,trigger,player){
+const storage=player.getStorage('minianshi_effect');
+if(trigger.name=='useCard'||trigger.name=='respond'){
+if(trigger.card.name=='shan'&&trigger.player.countCards('h')){
+player.markAuto('minianshi_effect',['showed_1']);
+trigger.player.discard(trigger.player.getCards('h'));
+}
+if(trigger.card.name=='tao'||trigger.card.name=='jiu'){
+player.markAuto('minianshi_effect',['showed_4']);
+trigger.player.addTempSkill('minianshi_ban');
+}
+}
+else if(trigger.name=='useCardToPlayer'){
+player.markAuto('minianshi_effect',['showed_5']);
+player.draw();
+}
+else{
+player.markAuto('minianshi_effect',['showed_3']);
+let targets=lib.skill.minianshi.subSkill.effect.logTarget(trigger,player);
+if(!Array.isArray(targets)) targets=[targets];
+for(const target of targets) target.discard(target.getCards('e'));
+}
+},
+},
+ban:{
+mod:{
+cardEnabled2(card){
+if(get.position(card)=='h') return false;
+},
+},
+charlotte:true,
+mark:true,
+intro:{content:'不能使用或打出手牌'},
+},
+},
+},
 //神
 miniwuqian:{
 derivation:'wushuang',
@@ -34298,6 +34497,7 @@ Mbaby_guanzhang:'欢杀关兴张苞',
 Mbaby_sb_liubei:'欢杀谋刘备',
 Mbaby_sb_machao:'欢杀谋马超',
 Mbaby_sb_huangzhong:'欢杀谋黄忠',
+Mbaby_sb_zhaoyun:'欢杀谋赵云',
 miniwusheng:'武圣',
 miniwusheng_info:'锁定技。①你使用红色【杀】造成的伤害+1。②回合开始时，你从牌堆或弃牌堆中获得一张红色【杀】。',
 miniguanxing:'观星',
@@ -34511,7 +34711,7 @@ minisbliegong_info:'若你的装备区内没有武器牌，则你手牌区内所
 minisblongdan:'龙胆',
 minisblongdan_info:'蓄力技（1/3）。①你可以消耗1点蓄力值，将【杀】当做【闪】或将【闪】当做【杀】使用或打出，然后若你以此法使用牌，你摸一张牌。②一名角色的回合结束时，你获得1点蓄力值。',
 minisbshilve:'识略',
-minisbshilve_info:'当你发动〖龙胆〗时，你可以和对方进行谋弈。若你赢，且你选择的选项为：“偃旗息鼓”，从牌堆或弃牌堆获得一张非基本牌；“胆壮心雄”，你获得1点蓄力值。',
+minisbshilve_info:'当你发动〖龙胆〗使用或打出【杀】或【闪】时，你可以和对方进行谋弈。若你赢，且你选择的选项为：“偃旗息鼓”，从牌堆或弃牌堆获得一张非基本牌；“胆壮心雄”，你获得1点蓄力值。',
 //吴
 Mbaby_bulianshi:'欢杀步练师',
 Mbaby_chengpu:'欢杀程普',
@@ -34835,6 +35035,7 @@ Mbaby_dc_huangchengyan:'欢杀黄承彦',
 Mbaby_simahui:'欢杀司马徽',
 Mbaby_zoushi:'欢杀邹氏',
 Mbaby_wangyun:'欢杀王允',
+Mbaby_xiaoshan:'欢杀小闪',
 miniweidi:'伪帝',
 miniweidi_info:'弃牌阶段结束时，你可以将其中一张弃置的牌交给一名其他角色。',
 minimingce:'明策',
@@ -35110,6 +35311,10 @@ minilianji:'连计',
 minilianji_info:'出牌阶段限一次，你可以令一名其他角色使用牌堆中的一张随机武器牌，令其视为对你指定的一名角色使用一张【杀】，然后你将其装备区里的武器牌交给任意角色。',
 minimoucheng:'谋逞',
 minimoucheng_info:'觉醒技，回合开始时，若有角色因你发动〖连计〗使用【杀】而造成过伤害，则你获得〖矜功〗。',
+minishanshan:'闪闪',
+minishanshan_info:'①当你成为其他角色使用【杀】或普通锦囊牌的目标后，你可以打出一张【闪】令此牌对你无效，然后你摸一张牌。②你可以将一张装备牌当作【闪】使用或打出。',
+minianshi:'暗示',
+minianshi_info:'锁定技，一轮游戏开始时，你随机获得以下一个效果（仅对你可见）：①一名角色于本轮使用或打出【闪】时，其弃置所有手牌；②下一轮开始时，所有未于本轮使用、打出或弃置过【闪】的角色各受到你对其造成的1点雷属性伤害；③一名角色的装备区的牌数于本轮发生变化后，其弃置所有装备牌；④一名角色于本轮使用或打出【桃】或【酒】后，其本回合无法使用或打出手牌；⑤一名角色于本轮使用单目标锦囊牌指定目标时，你摸一张牌。',
 //神
 Mbaby_shen_lvbu:'欢杀神吕布',
 Mbaby_shen_guanyu:'欢杀神关羽',
@@ -41428,8 +41633,7 @@ return event.player!=player&&!player.hasSkill('fh_fuding_used')&&player.countCar
 },
 direct:true,
 content:function*(event,map){
-var player=map.player;
-var target=map.trigger.player;
+var player=map.player,target=map.trigger.player;
 var result=yield player.chooseCard(get.prompt2('fh_fuding',target),'he',[1,5]).set('ai',cardx=>{
 var player=_status.event.player,target=_status.event.target;
 if(get.attitude(player,target)<=0) return 0;
