@@ -14283,7 +14283,7 @@ return att;
 });
 if(bool){
 player.line(targets[0]);
-targets[0].gain(cards,player,'giveAuto');
+await targets[0].gain(cards,player,'giveAuto');
 }
 }
 }
