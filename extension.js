@@ -14249,6 +14249,7 @@ filter(event,player){
 return !player.hasSkill('minidaoshu_used');
 },
 async content(event,trigger,player){
+const target=event.target;
 const {result:{control}}=await player.chooseControl(lib.suit).set('prompt','请选择一个花色').set('ai',()=>lib.suit.randomGet());
 const suit=control;
 player.popup(suit+2);
