@@ -9691,7 +9691,7 @@ Mbaby_dc_huangchengyan:['male','qun',3,['dcjiezhen','minizecai','dcyinshi'],[]],
 Mbaby_simahui:['male','qun',3,['minijianjie','xinfu_chenghao','miniyinshi'],[]],
 Mbaby_zoushi:['female','qun',3,['minihuoshui','miniqingcheng'],[]],
 Mbaby_wangyun:['male','qun',4,['minilianji','minimoucheng'],['clan:太原王氏']],
-Mbaby_xiaoshan:['female','qun',4,['minishanshan','minianshi'],[]],
+Mbaby_xiaoshan:['female','qun',4,['minishanshan','minianshi'],['die_audio']],
 //神
 Mbaby_shen_zhugeliang:['male','shen',3,['qixing','minikuangfeng','minidawu'],['shu']],
 Mbaby_shen_lvbu:['male','shen',6,['miniwuqian','minishenfen'],['qun']],
@@ -30080,6 +30080,7 @@ return str.slice(0,-4);
 },
 charlotte:true,
 onremove:true,
+audio:'minianshi',
 trigger:{global:['loseAfter','equipAfter','addJudgeAfter','gainAfter','loseAsyncAfter','addToExpansionAfter','useCardToPlayer','useCard','respond']},
 filter(event,player){
 const storage=player.getStorage('minianshi_effect');
