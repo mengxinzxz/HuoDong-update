@@ -11711,27 +11711,27 @@ trigger.gaintag.add('minizhengbing');
 },
 miniqice:{
 audio:'qice',
-enable:'phaseUse',
-filter:function(event,player){
-return player.countCards('hs');
+inherit:'qice',
+filter(event,player){
+const hs=player.getCards('h');
+if(!hs.length) return false;
+if(hs.every(card=>{
+const mod2=game.checkMod(card,player,'unchanged','cardEnabled2',player);
+return mod2===false;
+})) return false;
+return lib.inpile.some(name=>{
+if(get.type(name)!='trick') return false;
+const card=get.autoViewAs({name},hs);
+return event.filterCard(card,player,event);
+});
 },
-usable:1,
-chooseButton:{
-dialog:function(player){
-var list=[];
-for(var i=0;i<lib.inpile.length;i++){
-if(get.type(lib.inpile[i])=='trick') list.push(['锦囊','',lib.inpile[i]]);
-}
-return ui.create.dialog(get.translation('miniqice'),[list,'vcard']);
-},
-filter:function(button,player){
-return lib.filter.filterCard({name:button.link[2]},player,_status.event.getParent());
-},
-check:function(button){
-var player=_status.event.player;
-return player.getUseValue({name:button.link[2]});
-},
-backup:function(links,player){
+chooseButton:(()=>{
+let chooseButton=get.info('qice').chooseButton;
+chooseButton.filter=function(button,player){
+const event=get.event().getParent();
+return player.hasCard(card=>event.filterCard(get.autoViewAs({name:button.link[2]},[card]),player,event),'h');
+};
+chooseButton.backup=function(links,player){
 return {
 audio:'qice',
 filterCard:true,
@@ -11745,15 +11745,12 @@ position:'hs',
 popname:true,
 viewAs:{name:links[0][2]},
 }
-},
-prompt:function(links,player){
+};
+chooseButton.prompt=function(links,player){
 return '将任意张手牌当作'+get.translation(links[0][2])+'使用';
-}
-},
-ai:{
-order:1,
-result:{player:1},
-},
+};
+return chooseButton;
+}),
 },
 minizhiyu:{
 audio:'zhiyu',
@@ -17409,7 +17406,7 @@ for(var i=0;i<hs.length;i++){
 var mod2=game.checkMod(hs[i],player,'unchanged','cardEnabled2',player);
 if(mod2===false) return false;
 }
-return event.filterCard(get.autoViewAs({name:'juedou'},hs))
+return event.filterCard(get.autoViewAs({name:'juedou'},hs));
 },
 viewAs:{name:'juedou'},
 onuse:function(links,player){
@@ -18571,7 +18568,7 @@ if(player.hasSkill('miniyoulong_'+(player.storage.miniyoulong||false))) return f
 var list=get.inpileVCardList(info=>info[0]=='basic'||info[0]=='trick'),type=player.storage.miniyoulong?'basic':'trick';
 if(type=='basic'&&!player.countCards('he',card=>get.type(card)!='basic'&&lib.filter.cardDiscardable(card,player))) return false;
 if(type=='trick'&&!player.hasEnabledSlot()) return false;
-return list.some(name=>name[0]==type&&!player.storage.miniyoulong2.some(cardx=>cardx.name==name[2]&&cardx.nature==name[3])&&event.filterCard({name:name[2],nature:name[3]},player,event));
+return list.some(name=>name[0]==type&&!player.storage.miniyoulong2.some(cardx=>cardx.name==name[2]&&cardx.nature==name[3])&&event.filterCard(get.autoViewAs({name:name[2],nature:name[3]},'unsure'),player,event));
 },
 chooseButton:{
 dialog:function(event,player){
@@ -18585,7 +18582,7 @@ equips.push([i,get.translation('equip'+i)]);
 }
 if(equips.length>0) dialog.add([equips,'tdnodes']);
 }
-var list=list2.filter(name=>name[0]==type&&!player.storage.miniyoulong2.some(cardx=>cardx.name==name[2]&&cardx.nature==name[3])&&event.filterCard({name:name[2],nature:name[3]},player,event));
+var list=list2.filter(name=>name[0]==type&&!player.storage.miniyoulong2.some(cardx=>cardx.name==name[2]&&cardx.nature==name[3])&&event.filterCard(get.autoViewAs({name:name[2],nature:name[3]},'unsure'),player,event));
 list=list.map(card=>{
 card[0]=get.translation(card[0]);
 return card;
@@ -18815,17 +18812,17 @@ for(var name of lib.inpile){
 if(get.type(name)=='basic'){
 if(player.countMark('minisbrende')<2) continue;
 var card={name:name,isCard:true};
-if(event.filterCard(card,player,event)) return true;
+if(event.filterCard(get.autoViewAs(card,'unsure'),player,event)) return true;
 if(name=='sha'){
 for(var nature of lib.inpile_nature){
 card.nature=nature;
-if(event.filterCard(card,player,event)) return true;
+if(event.filterCard(get.autoViewAs(card,'unsure'),player,event)) return true;
 }
 }
 }
 if(get.type(name)=='trick'){
 if(player.countMark('minisbrende')<3) continue;
-if(event.filterCard({name:name,isCard:true},player,event)) return true;
+if(event.filterCard(get.autoViewAs(card,'unsure'),player,event)) return true;
 }
 }
 return false;
@@ -18880,17 +18877,17 @@ for(var name of lib.inpile){
 if(get.type(name)=='basic'){
 if(player.countMark('minisbrende')<2) continue;
 var card={name:name,isCard:true};
-if(event.filterCard(card,player,event)) cards.push(['基本','',name]);
+if(event.filterCard(get.autoViewAs(card,'unsure'),player,event)) cards.push(['基本','',name]);
 if(name=='sha'){
 for(var nature of lib.inpile_nature){
 card.nature=nature;
-if(event.filterCard(card,player,event)) cards.push(['基本','',name,nature]);
+if(event.filterCard(get.autoViewAs(card,'unsure'),player,event)) cards.push(['基本','',name,nature]);
 }
 }
 }
 if(get.type(name)=='trick'){
 if(player.countMark('minisbrende')<3) continue;
-if(event.filterCard({name:name,isCard:true},player,event)) cards.push(['锦囊','',name]);
+if(event.filterCard(get.autoViewAs(card,'unsure'),player,event)) cards.push(['锦囊','',name]);
 }
 }
 dialog.add([cards,'vcard'])
@@ -18976,11 +18973,11 @@ if(player.countMark('minisbrende')<2||player.hasSkill('minisbrende_used')) retur
 for(var name of lib.inpile){
 if(get.type(name)!='basic') continue;
 var card={name:name,isCard:true};
-if(event.filterCard(card,player,event)) return false;
+if(event.filterCard(get.autoViewAs(card,'unsure'),player,event)) return false;
 if(name=='sha'){
 for(var nature of lib.inpile_nature){
 card.nature=nature;
-if(event.filterCard(card,player,event)) return false;
+if(event.filterCard(get.autoViewAs(card,'unsure'),player,event)) return false;
 }
 }
 }
@@ -19464,10 +19461,10 @@ if(event.type=='wuxie'||!player.hasMark('charge')) return false;
 for(var name of lib.inpile){
 if(get.type(name)!='basic') continue;
 if(player.hasCard({type:'basic'},'hs')){
-if(event.filterCard({name:name},player,event)) return true;
+if(event.filterCard(get.autoViewAs({name:name},'unsure'),player,event)) return true;
 if(name=='sha'){
 for(var nature of lib.inpile_nature){
-if(event.filterCard({name:name,nature:nature},player,event)) return true;
+if(event.filterCard(get.autoViewAs({name:name,nature:nature},'unsure'),player,event)) return true;
 }
 }
 }
@@ -19481,10 +19478,10 @@ var list=[];
 for(var name of lib.inpile){
 if(get.type(name)!='basic') continue;
 if(player.hasCard({type:'basic'},'hs')){
-if(event.filterCard({name:name},player,event)) list.push(['基本','',name]);
+if(event.filterCard(get.autoViewAs({name:name},'unsure'),player,event)) list.push(['基本','',name]);
 if(name=='sha'){
 for(var nature of lib.inpile_nature){
-if(event.filterCard({name:name,nature:nature},player,event)) list.push(['基本','',name,nature]);
+if(event.filterCard(get.autoViewAs({name:name,nature:nature},'unsure'),player,event)) list.push(['基本','',name,nature]);
 }
 }
 }
@@ -29831,7 +29828,7 @@ if(!storage.some(source=>{
 return source.isIn()&&source.hasSkill('minijianjie');
 })) return false;
 if(!player.hasCard(card=>get.suit(card)=='club','she')) return false;
-return event.type=='phase'||event.filterCard({name:'tiesuo'},player,event);
+return event.type=='phase'||event.filterCard(get.autoViewAs({name:'tiesuo'},'unsure'),player,event);
 },
 usable:3,
 group:'minijianjie_yeyan',
@@ -36277,8 +36274,8 @@ if(name=='shan'&&filter({name:'sha',cards:[card]},player,event)) return true;
 return false;
 },
 filter:function(event,player){
-if(event.filterCard({name:'sha'},player,event)&&player.countCards('hs','shan')) return true;
-if(event.filterCard({name:'shan'},player,event)&&player.countCards('hs','sha')) return true;
+if(event.filterCard(get.autoViewAs({name:'sha'},'unsure'),player,event)&&player.countCards('hs','shan')) return true;
+if(event.filterCard(get.autoViewAs({name:'shan'},'unsure'),player,event)&&player.countCards('hs','sha')) return true;
 return false;
 },
 selectCard:function(){
@@ -37074,10 +37071,7 @@ if(mod2===false) return false;
 for(var i of lib.inpile){
 var card={name:i,isCard:true};
 var info=get.info(card,false);
-if((!info.notarget&&(info.toself||info.singleCard||!info.selectTarget||info.selectTarget==1))&&get.type(i)=='trick'&&event.filterCard({
-name:i,
-cards:cards,
-},player,event)) return true;
+if((!info.notarget&&(info.toself||info.singleCard||!info.selectTarget||info.selectTarget==1))&&get.type(i)=='trick'&&event.filterCard(get.autoViewAs({name:i},cards),player,event)) return true;
 }
 return false;
 },
@@ -37089,10 +37083,7 @@ var list=[];
 for(var i of lib.inpile){
 var card={name:i,isCard:true};
 var info=get.info(card,false);
-if((!info.notarget&&(info.toself||info.singleCard||!info.selectTarget||info.selectTarget==1))&&get.type(i)=='trick'&&event.filterCard({
-name:i,
-cards:cards,
-},player,event)){
+if((!info.notarget&&(info.toself||info.singleCard||!info.selectTarget||info.selectTarget==1))&&get.type(i)=='trick'&&event.filterCard(get.autoViewAs({name:i},cards),player,event)){
 list.push(['锦囊','',i]);
 }
 }
@@ -38097,7 +38088,7 @@ audio:'ext:活动武将/audio/skill:2',
 enable:'chooseToUse',
 filter:function(event,player){
 if(!player.storage.wechatsuanlve_mark2||player.hasSkill('wechatsuanlve_used')||!player.countCards('hes')||player.countMark('wechatmoulvenum')<=player.countMark('wechatsuanlve_count')) return false;
-return event.filterCard({name:player.storage.wechatsuanlve_mark2,nature:player.storage.wechatsuanlve_mark3},player,event);
+return event.filterCard(get.autoViewAs({name:player.storage.wechatsuanlve_mark2,nature:player.storage.wechatsuanlve_mark3},'unsure'),player,event);
 },
 chooseButton:{
 dialog:function(event,player){
@@ -40478,10 +40469,10 @@ filter:function(event,player){
 if(!player.countCards('he')) return false;
 for(var i of lib.inpile){
 if(i!='du'&&get.type(i,false)=='basic'){
-if(event.filterCard({name:i},player,event)) return true;
+if(event.filterCard(get.autoViewAs({name:i},'unsure'),player,event)) return true;
 if(i=='sha'){
 for(var j of lib.inpile_nature){
-if(event.filterCard({name:i,nature:j},player,event)) return true;
+if(event.filterCard(get.autoViewAs({name:i,nature:j},'unsure'),player,event)) return true;
 }
 }
 }
@@ -40504,10 +40495,10 @@ var list=[];
 var suit=event.wechatjianying_suit||'',str=get.translation(suit);
 for(var i of lib.inpile){
 if(i!='du'&&get.type(i,false)=='basic'){
-if(event.filterCard({name:i},player,event)) list.push(['基本',str,i]);
+if(event.filterCard(get.autoViewAs({name:i},'unsure'),player,event)) list.push(['基本',str,i]);
 if(i=='sha'){
 for(var j of lib.inpile_nature){
-if(event.filterCard({name:i,nature:j},player,event)) list.push(['基本',str,i,j]);
+if(event.filterCard(get.autoViewAs({name:i,nature:j},'unsure'),player,event)) list.push(['基本',str,i,j]);
 }
 }
 }
@@ -42303,10 +42294,10 @@ for(var name of lib.inpile){
 if(player.getStorage('fh_miewu_used').includes(i)) continue;
 var type=get.type(name);
 if(type=='basic'||type=='trick'){
-if(event.filterCard({name:name},player,event)) return true;
+if(event.filterCard(get.autoViewAs({name:name},'unsure'),player,event)) return true;
 if(name=='sha'){
 for(var j of lib.inpile_nature){
-if(event.filterCard({name:name,nature:j},player,event)) return true;
+if(event.filterCard(get.autoViewAs({name:name,nature:j},'unsure'),player,event)) return true;
 }
 }
 }
@@ -42320,10 +42311,10 @@ for(var name of lib.inpile){
 if(player.getStorage('fh_miewu_used').includes(name)) continue;
 var type=get.type(name);
 if(!(type=='basic'||type=='trick')) continue;
-if(event.filterCard({name:name},player,event)) list.push([get.translation(get.type(name)),'',name]);
+if(event.filterCard(get.autoViewAs({name:name},'unsure'),player,event)) list.push([get.translation(get.type(name)),'',name]);
 if(name=='sha'){
 for(var j of lib.inpile_nature){
-if(event.filterCard({name:name,nature:j},player,event)) list.push(['基本','','sha',j]);
+if(event.filterCard(get.autoViewAs({name:name,nature:j},'unsure'),player,event)) list.push(['基本','','sha',j]);
 }
 }
 }
@@ -45011,7 +45002,7 @@ enable:'chooseToUse',
 filter:function(event,player){
 for(var name of lib.inpile){
 if(!player.getStorage('fh_sangu_viewAs').includes(name)) continue;
-if(event.filterCard({name:name},player,event)) return true;
+if(event.filterCard(get.autoViewAs({name:name},'unsure'),player,event)) return true;
 }
 return false;
 },
@@ -45020,7 +45011,7 @@ dialog:function(event,player){
 var list=[];
 for(var name of lib.inpile){
 if(!player.getStorage('fh_sangu_viewAs').includes(name)) continue;
-if(event.filterCard({name:name},player,event)) list.push([get.translation(get.type(name)),'',name]);
+if(event.filterCard(get.autoViewAs({name:name},'unsure'),player,event)) list.push([get.translation(get.type(name)),'',name]);
 }
 return ui.create.dialog('三顾',[list,'vcard'],'hidden');
 },
@@ -48300,10 +48291,10 @@ filter:function(event,player){
 return !player.hasSkill('bilibili_taoluan3')&&player.countCards('hes',card=>lib.inpile.some(name=>{
 if(player.getStorage('bilibili_taoluan').includes(name)) return false;
 if(get.type(name)!='basic'&&get.type(name)!='trick') return false;
-if(event.filterCard({name:name,isCard:true,cards:[card]})) return true;
+if(event.filterCard(get.autoViewAs({name:name},[card]))) return true;
 if(name=='sha'){
 for(var nature of lib.inpile_nature){
-if(event.filterCard({name:name,nature:nature,isCard:true,cards:[card]})) return true;
+if(event.filterCard(get.autoViewAs({name:name},[card]))) return true;
 }
 }
 return false;
@@ -49108,9 +49099,9 @@ var storage=player.storage.BThuashen;
 if(!storage||storage.character.length<=(storage.current?1:0)) return false;
 for(var i of lib.inpile){
 if(get.type({name:i})!='basic'&&get.type({name:i})!='trick') continue;
-if(event.filterCard({name:i},player,event)) return true;
+if(event.filterCard(get.autoViewAs({name:i},'unsure'),player,event)) return true;
 if(i=='sha'){
-for(var j of lib.inpile_nature) if(event.filterCard({name:i,nature:j},player,event)) return true;
+for(var j of lib.inpile_nature) if(event.filterCard(get.autoViewAs({name:i,nature:j},'unsure'),player,event)) return true;
 }
 }
 return false;
@@ -50573,8 +50564,8 @@ return false;
 },
 filter:function(event,player){
 var filter=event.filterCard;
-if(filter({name:'sha'},player,event)&&player.countCards('hs','shan')) return true;
-if(filter({name:'shan'},player,event)&&player.countCards('hs','sha')) return true;
+if(filter(get.autoViewAs({name:'sha'},'unsure'),player,event)&&player.countCards('hs','shan')) return true;
+if(filter(get.autoViewAs({name:'shan'},'unsure'),player,event)&&player.countCards('hs','sha')) return true;
 return false;
 },
 ai:{
