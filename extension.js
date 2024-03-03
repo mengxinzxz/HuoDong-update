@@ -23874,12 +23874,11 @@ player:['damageEnd','phaseEnd'],
 source:'damageSource',
 },
 filter:function(event,player){
-player.addTempSkill('miniyaoming_kanon');
+const storage=player.storage.miniyaoming_kanon||{'摸牌':0,'弃牌':0,'制衡':0};
 if(event.name=='phase'&&player.getHistory('useSkill',evt=>evt.skill=='miniyaoming').length) return false;
 return game.hasPlayer(target=>{
 return ['摸牌','弃牌','制衡'].some(control=>{
-var num=player.storage.miniyaoming_kanon[control];
-if(num>1) return false;
+if(storage[control]>1) return false;
 if(control=='弃牌'&&(target==player||!target.countCards('h'))) return false;
 return true;
 });
@@ -23888,6 +23887,7 @@ return true;
 direct:true,
 content:function(){
 'step 0'
+player.addTempSkill('miniyaoming_kanon');
 var func=function(){
 game.countPlayer(target=>{
 var list=['摸牌','弃牌','制衡'].filter(control=>{
