@@ -11725,8 +11725,11 @@ const card=get.autoViewAs({name},hs);
 return event.filterCard(card,player,event);
 });
 },
-chooseButton:(()=>{
-let chooseButton=get.info('qice').chooseButton;
+chooseButton:{},
+init(_,skill){
+if(_status.miniqice_finished) return;
+_status.miniqice_finished=true;
+let chooseButton={},info=get.info('qice').chooseButton;
 chooseButton.filter=function(button,player){
 const event=get.event().getParent();
 return player.hasCard(card=>event.filterCard(get.autoViewAs({name:button.link[2]},[card]),player,event),'h');
@@ -11749,8 +11752,13 @@ viewAs:{name:links[0][2]},
 chooseButton.prompt=function(links,player){
 return '将任意张手牌当作'+get.translation(links[0][2])+'使用';
 };
-return chooseButton;
-}),
+for(const i in info){
+if(!chooseButton[i]) chooseButton[i]=info[i];
+}
+game.broadcastAll((skill,chooseButton)=>{
+lib.skill[skill].chooseButton=chooseButton;
+},skill,chooseButton);
+},
 },
 minizhiyu:{
 audio:'zhiyu',
