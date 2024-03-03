@@ -41,12 +41,13 @@ game.bolShowNewPack=function(){
 var HuoDong_update=[
 '/setPlayer/',
 'bugfix',
-'添加欢乐三国杀武将：张春华、蒋干、谋赵云、小闪',
+'添加欢乐三国杀武将：张春华、蒋干、谋赵云、小闪、全惠解',
 'To be continued...',
 ];
 //更新武将
 var HuoDong_players=[
-'Mbaby_zhangchunhua','Mbaby_jianggan','Mbaby_sb_zhaoyun','Mbaby_xiaoshan'
+'Mbaby_zhangchunhua','Mbaby_jianggan','Mbaby_sb_zhaoyun','Mbaby_xiaoshan',
+'Mbaby_quanhuijie',
 ];
 //加载
 var dialog=ui.create.dialog(
@@ -9446,7 +9447,7 @@ MiNi_shu:['Mbaby_guanzhang','Mbaby_wolongfengchu','Mbaby_wangtao','Mbabysp_zhang
 MiNi_wu:['Mbaby_re_guyong','Mbaby_quancong','Mbaby_yufan','Mbaby_dc_sunru','Mbaby_sunxiu','Mbaby_zhangfen','Mbaby_xuezong','Mbaby_dingfeng','Mbaby_panjun','Mbaby_sundeng','Mbaby_luji','Mbaby_zhoufang','Mbaby_zhangxuan','Mbaby_yanjun','Mbaby_zhuhuan','Mbaby_luyusheng','Mbaby_re_jsp_pangtong','Mbaby_sunhao','Mbabysp_daqiao','Mbaby_lukang','Mbaby_buzhi','Mbaby_xushi','Mbaby_zhugeke','Mbaby_zhoufei','Mbaby_zhangzhang','Mbaby_sunliang','Mbaby_ol_sunjian','Mbaby_zhuzhi','Mbaby_bulianshi','Mbaby_chengpu','Mbaby_daqiao','Mbaby_ganning','Mbaby_huanggai','Mbaby_lusu','Mbaby_luxun','Mbaby_lvmeng','Mbaby_sunce','Mbaby_sunluban','Mbaby_sunluyu','Mbaby_sunquan','Mbaby_sunshangxiang','Mbaby_taishici','Mbaby_wuguotai','Mbaby_xiaoqiao','Mbaby_xusheng','Mbaby_zhoutai','Mbaby_zhouyu','Mbaby_zhugejin','Mbaby_zumao','Mbabysp_xiaoqiao'],
 MiNi_qun:['Mbaby_wangyun','Mbaby_zoushi','Mbaby_dc_huangchengyan','Mbaby_simahui','Mbaby_tw_mateng','Mbaby_laiyinger','Mbaby_sp_kongrong','Mbaby_zhujun','Mbaby_gongsunyuan','Mbaby_sp_zhangliao','Mbaby_sp_ol_zhanghe','Mbaby_guotufengji','Mbaby_yanfuren','Mbaby_tangji','Mbaby_caojie','Mbaby_liangxing','Mbabysp_zhenji','Mbaby_caoxing','Mbaby_sp_menghuo','Mbaby_wangrong','Mbaby_hetaihou','Mbaby_sp_taishici','Mbaby_zhangji','Mbaby_dongbai','Mbaby_beimihu','Mbaby_chunyuqiong','Mbaby_zhangqiying','Mbaby_fuhuanghou','Mbaby_liuxie','Mbaby_quyi','Mbaby_jsp_huangyueying','Mbaby_sp_machao','Mbaby_lijue','Mbaby_panfeng','Mbaby_liuzhang','Mbaby_jiaxu','Mbaby_zhangbao','Mbaby_zhangliang','Mbaby_gaoshun','Mbaby_caifuren','Mbaby_xuyou','Mbaby_gongsunzan','Mbaby_pangde','Mbaby_jushou','Mbaby_liru','Mbaby_dongzhuo','Mbaby_zhangjiao','Mbaby_huatuo','Mbaby_lvbu','Mbaby_diaochan','Mbaby_sp_diaochan','Mbaby_huaxiong','Mbaby_yuji','Mbaby_yanwen','Mbaby_caiwenji','Mbaby_liubiao','Mbaby_yuanshao','Mbaby_yuanshu','Mbaby_chengong','Mbaby_zuoci'],
 MiNi_shen:['Mbaby_shen_zuoci','Mbaby_shen_taishici','Mbaby_shen_diaochan','Mbaby_shen_daxiaoqiao','Mbaby_shen_zhenji','Mbaby_shen_guojia','Mbaby_shen_huatuo','Mbaby_shen_dianwei','Mbaby_shen_lvbu','Mbaby_shen_zhugeliang','Mbaby_shen_lvmeng','Mbaby_shen_zhouyu','Mbaby_shen_guanyu','Mbaby_shen_liubei','Mbaby_shen_caocao','Mbaby_shen_zhangliao','Mbaby_shen_sunquan','Mbaby_shen_simayi','Mbaby_shen_zhaoyun','Mbaby_shen_ganning','Mbaby_shen_luxun'],
-MiNi_change:['Mbaby_re_nanhualaoxian','Mbaby_re_sunyi','Mbaby_zhaoxiang','Mbaby_xushao','Mbaby_baosanniang'],
+MiNi_change:['Mbaby_re_nanhualaoxian','Mbaby_re_sunyi','Mbaby_zhaoxiang','Mbaby_xushao','Mbaby_baosanniang','Mbaby_quanhuijie'],
 MiNi_shengzhiyifa:['Mbaby_sunwukong','Mbaby_dalanmao','Mbaby_libai','Mbaby_change','Mbaby_nvwa','Mbaby_tunxingmengli','Mbaby_tunxingmenglix','Mbaby_xiaoshan'],
 MiNi_sbCharacter:['Mbaby_sb_zhaoyun','Mbaby_sb_liubei','Mbaby_sb_caocao','Mbaby_sb_huanggai','Mbaby_sb_yuanshao','Mbaby_sb_yujin','Mbaby_sb_machao','Mbaby_sb_lvmeng','Mbaby_sb_huangzhong'],
 MiNi_miaoKill:['Mmiao_caiwenji','Mmiao_diaochan','Mmiao_caifuren','Mmiao_zhangxingcai','Mmiao_zhurong','Mmiao_huangyueying','Mmiao_daqiao','Mmiao_wangyi','Mmiao_zhangchunhua','Mmiao_zhenji','Mmiao_sunshangxiang','Mmiao_xiaoqiao'],
@@ -9626,6 +9627,7 @@ Mbaby_yufan:['male','wu',3,['minizongxuan','minizhiyan'],[]],
 Mbaby_quancong:['male','wu',4,['miniyaoming'],[]],
 Mbaby_re_guyong:['male','wu',3,['minishenxing','rebingyi'],[]],
 Mbaby_sb_lvmeng:['male','wu',4,['minikeji','minisbduojing'],[]],
+Mbaby_quanhuijie:['female','wu',3,['dchuishu','dcyishu','miniligong'],[]],
 //群
 Mbaby_gaoshun:['male','qun',4,['minixianzhen','minijinjiu'],[]],
 Mbaby_caifuren:['female','qun',3,['minireqieting','minirexianzhou'],[]],
@@ -16973,16 +16975,17 @@ player.removeSkills('mansi');
 },
 },
 minifuhan:{
-derivation:'minifuhan_faq',
 inherit:'refuhan',
+Mbaby_characterlist:true,
 content:function(){
 'step 0'
 if(player.storage.fanghun) player.draw(player.storage.fanghun);
 player.removeMark('fanghun',player.storage.fanghun);
 player.awakenSkill('minifuhan');
 'step 1'
+if(!_status.characterlist) lib.skill.pingjian.initList();
 var EditList=((!_status.connectMode&&lib.config.extension_活动武将_PingJianName)?lib.config.extension_活动武将_PingJianName:lib.skill.minipingjian.getList()).filter(i=>lib.character[i]);
-var list=EditList.filter(i=>lib.character[i][1]=='shu');
+var list=EditList.filter(i=>_status.characterlist.includes(i)&&(lib.character[i][1]=='shu'||(get.is.double(i,true)||[]).includes('wu')));
 var players=game.players.concat(game.dead);
 for(var i=0;i<players.length;i++){
 list.remove(players[i].name);
@@ -21661,7 +21664,7 @@ if(player!=_status.currentPhase&&get.type(name)=='basic'&&lib.inpile.includes(na
 filter:function(event,player){
 if(event.responded||player==_status.currentPhase||event.miniaocai) return false;
 for(var i of lib.inpile){
-if(get.type(i)=='basic'&&event.filterCard({name:i},player,event)) return true;
+if(get.type(i)=='basic'&&event.filterCard(get.autoViewAs({name:i},'unsure'),player,event)) return true;
 }
 return false;
 },
@@ -24003,6 +24006,132 @@ if(num==1) return 1;
 return 0;
 },
 result:{player:1},
+},
+},
+miniligong:{
+audio:'dcligong',
+inherit:'dcligong',
+filter(event,player){
+var list=lib.skill.dchuishu.getList(player);
+return list.some(i=>i>=5);
+},
+Mbaby_characterlist:true,
+content(){
+'step 0'
+player.awakenSkill('dcligong');
+player.gainMaxHp();
+player.recover();
+'step 1'
+player.removeSkills('dcyishu');
+'step 2'
+if(!_status.characterlist) lib.skill.pingjian.initList();
+let EditList=((!_status.connectMode&&lib.config.extension_活动武将_PingJianName)?lib.config.extension_活动武将_PingJianName:lib.skill.minipingjian.getList()).filter(i=>lib.character[i]);
+let list=EditList.filter(name=>_status.characterlist.includes(name)&&(get.character(name,1)=='wu'||(get.is.double(name,true)||[]).includes('wu'))&&['female','double'].includes(get.character(name,0)));
+var players=game.players.concat(game.dead);
+for(var i=0;i<players.length;i++){
+list.remove(players[i].name);
+list.remove(players[i].name1);
+list.remove(players[i].name2);
+}
+list=list.filter(i=>{
+return (lib.character[i][3]||[]).some(skill=>{
+var info=get.info(skill);
+return info&&!info.charlotte;
+});
+}).randomGets(4);
+var skills=[];
+for(var i of list){
+skills.addArray((lib.character[i][3]||[]).filter(skill=>{
+var info=get.info(skill);
+return info&&!info.charlotte;
+}));
+}
+if(!list.length||!skills.length){
+event.result={
+bool:false,
+skills:[],
+};
+return;
+}
+if(player.isUnderControl()) game.swapPlayerAuto(player);
+var switchToAuto=function(){
+_status.imchoosing=false;
+event._result={
+bool:true,
+skills:skills.randomGets(2),
+};
+if(event.dialog) event.dialog.close();
+if(event.control) event.control.close();
+};
+var chooseButton=function(list,skills){
+var event=_status.event;
+if(!event._result) event._result={};
+event._result.skills=[];
+var rSkill=event._result.skills;
+var dialog=ui.create.dialog('请选择获得至多两个技能',[list,'character'],'hidden');
+event.dialog=dialog;
+var table=document.createElement('div');
+table.classList.add('add-setting');
+table.style.margin='0';
+table.style.width='100%';
+table.style.position='relative';
+for(var i=0;i<skills.length;i++){
+var td=ui.create.div('.shadowed.reduce_radius.pointerdiv.tdnode');
+td.link=skills[i];
+table.appendChild(td);
+td.innerHTML='<span>'+get.translation(skills[i])+'</span>';
+td.addEventListener(lib.config.touchscreen?'touchend':'click',function(){
+if(_status.dragged) return;
+if(_status.justdragged) return;
+_status.tempNoButton=true;
+setTimeout(function(){
+_status.tempNoButton=false
+},500);
+var link=this.link;
+if(!this.classList.contains('bluebg')){
+if(rSkill.length>=2) return;
+rSkill.add(link);
+this.classList.add('bluebg');
+}
+else{
+this.classList.remove('bluebg');
+rSkill.remove(link);
+}
+});
+}
+dialog.content.appendChild(table);
+dialog.add('　　');
+dialog.open();
+
+event.switchToAuto=function(){
+event.dialog.close();
+event.control.close();
+game.resume();
+_status.imchoosing=false;
+};
+event.control=ui.create.control('ok',function(link){
+event.dialog.close();
+event.control.close();
+game.resume();
+_status.imchoosing=false;
+});
+for(var i=0;i<event.dialog.buttons.length;i++){
+event.dialog.buttons[i].classList.add('selectable');
+}
+game.pause();
+game.countChoose();
+};
+if(event.isMine()) chooseButton(list,skills);
+else if(event.isOnline()){
+event.player.send(chooseButton,list,skills);
+event.player.wait();
+game.pause();
+}
+else switchToAuto();
+'step 3'
+var map=event.result||result;
+if(map.skills&&map.skills.length) player.changeSkills(map.skills,['dchuishu']);
+else player.draw(3);
 },
 },
 //群
@@ -26864,6 +26993,7 @@ getList:function(){
 const list=Object.keys(lib.characterPack.MiNikill).concat(_status.extra_pingjianList||[]);
 return list.filter(i=>!get.character(i,4)||!get.character(i,4).includes('unseen'));
 },
+Mbaby_characterlist:true,
 init:function(player){
 player.addSkill('minipingjian_remove');
 if(!player.storage.minipingjian_remove) player.storage.minipingjian_remove={};
@@ -26871,7 +27001,6 @@ if(!player.storage.minipingjian_remove) player.storage.minipingjian_remove={};
 onremove:function(player){
 player.removeSkill('minipingjian_remove');
 },
-derivation:'minipingjian_faq',
 group:'minipingjian_use',
 audio:'pingjian',
 trigger:{player:['damageEnd','phaseJieshuBegin']},
@@ -34626,10 +34755,7 @@ minisouying_info:'每回合限一次，当你对其他角色（或其他角色�
 minizhanyuan:'战缘',
 minizhanyuan_info:'觉醒技，你的回合内，当你因〖蛮嗣〗累计获得超过7张牌后，你可以选择一名其他角色。若如此做，你与其获得技能〖系力〗，然后你失去技能〖蛮嗣〗',
 minifuhan:'扶汉',
-minifuhan_info:'限定技，回合开始时，你可以移去所有"梅影"标记并摸等量的牌，然后从X张蜀势力武将牌中选择并获得至多两个技能（限定技、觉醒技、隐匿技、使命技、主公技除外）。若此时你是体力值最低的角色，你回复1点体力（X为场上角色数，且X至少为4）。',
-minifuhan_append:'<span style="font-family:yuanli">欢杀〖扶汉〗将池：<br>活动武将扩展页面自定义欢杀〖评鉴〗将池的全部蜀国武将（未自定义将池/联机模式默认为欢乐三国杀全武将）。</span>',
-minifuhan_faq:'欢杀〖扶汉〗将池',
-minifuhan_faq_info:'<br>活动武将扩展页面自定义欢杀〖评鉴〗将池中的全部蜀国武将（未自定义将池/联机模式默认为欢乐三国杀全武将）。',
+minifuhan_info:'限定技，回合开始时，你可以移去所有"梅影"标记并摸等量的牌，然后从欢杀将池中的随机X张存在于武将牌堆的蜀势力武将牌中选择并获得至多两个技能（限定技、觉醒技、隐匿技、使命技、主公技除外）。若此时你是体力值最低的角色，你回复1点体力（X为场上角色数，且X至少为4）。',
 minibaobian:'豹变',
 minibaobian_info:'锁定技，当你受到伤害后，你获得以下未获得的第一个技能：〖挑衅〗、〖咆哮〗、〖神速〗。',
 minijuzhan:'拒战',
@@ -34768,6 +34894,7 @@ Mbaby_yufan:'欢杀虞翻',
 Mbaby_quancong:'欢杀全琮',
 Mbaby_re_guyong:'欢杀顾雍',
 Mbaby_sb_lvmeng:'欢杀谋吕蒙',
+Mbaby_quanhuijie:'欢杀全惠解',
 minizhiheng:'制衡',
 minizhiheng_info:'出牌阶段结束时，你可以弃置任意张手牌并将手牌数补至四张。',
 minirezhiheng:'制衡',
@@ -34972,6 +35099,8 @@ miniyaoming:'邀名',
 miniyaoming_info:'①每回合每项限两次。当你造成或受到伤害时，你可以：⒈令一名角色摸一张牌；⒉弃置一名其他角色的一张手牌；⒊令一名角色摸两张牌，然后弃置两张牌。②回合结束时，若你本回合未发动过〖邀名①〗，则你可以发动〖邀名①〗。',
 minishenxing:'慎行',
 minishenxing_info:'出牌阶段限20次，你可以摸一张牌，然后弃置X张牌（X为你本阶段此前发动此技能的次数，且X至多为2）。然后若你没有可弃置的牌，则本阶段此技能失效。',
+miniligong:'离宫',
+miniligong_info:'觉醒技。准备阶段，若〖慧淑〗的中括号内有不小于5的数字，则你加1点体力上限，回复1点体力并失去〖易数〗。系统随机检索四张存在于欢杀将池中的吴势力女性武将牌，然后你选择一项：⒈摸三张牌。⒉失去〖慧淑〗，然后获得这些武将牌上的任意两个技能。',
 //群
 Mbaby_zuoci:'欢杀左慈',
 Mbaby_gaoshun:'欢杀高顺',
@@ -35176,10 +35305,10 @@ minijixu:'击虚',
 minijixu_info:'出牌阶段限一次，若你有手牌，你可以令至多四名其他角色猜测你的手牌中是否有【杀】。所有角色猜测结束后，你依次弃置所有猜错的角色的一张牌并视为对其使用一张【杀】，然后你摸X张牌且本回合的手牌上限+X（X为猜对的角色数+1）。',
 minipingjian:'评荐',
 minipingjian_use:'评荐',
-minipingjian_info:'结束阶段开始时/当你受到伤害后/出牌阶段限一次，你可以令系统从“欢杀〖评鉴〗将池”中随机检索出三张拥有发动时机为结束阶段开始时/当你受到伤害后/出牌阶段的技能的武将牌。然后你可以选择尝试发动其中一个技能。每个技能每局只能选择一次。',
-minipingjian_append:'<span style="font-family:yuanli">欢杀〖评鉴〗将池：<br>活动武将扩展页面自定义欢杀〖评鉴〗将池（未自定义将池/联机模式则默认为欢乐三国杀全武将）。</span>',
-minipingjian_faq:'欢杀〖评鉴〗将池',
-minipingjian_faq_info:'<br>活动武将扩展页面自定义欢杀〖评鉴〗将池（未自定义将池/联机模式则默认为欢乐三国杀全武将）。',
+minipingjian_info:'结束阶段开始时/当你受到伤害后/出牌阶段限一次，你可以令系统从欢杀将池中随机检索出三张拥有发动时机为结束阶段开始时/当你受到伤害后/出牌阶段的技能的武将牌。然后你可以选择尝试发动其中一个技能。每个技能每局只能选择一次。',
+Mbaby_characterlist_append:'<span style="font-family:yuanli">欢杀将池：<br>活动武将扩展页面自定义欢杀将池（未自定义将池/联机模式默认为欢乐三国杀全武将）。</span>',
+Mbaby_characterlist_faq:'欢杀将池',
+Mbaby_characterlist_faq_info:'<br>活动武将扩展页面自定义欢杀将池（未自定义将池/联机模式默认为欢乐三国杀全武将）。',
 minirelijian:'离间',
 minirelijian_info:'出牌阶段限两次，你可以弃置一张牌并选择两名角色（不能选择本回合因你发动〖离间〗受到伤害的角色），视为一名角色对另一名角色使用一张【决斗】（不可被【无懈可击】响应）。',
 minirebiyue:'闭月',
@@ -35552,6 +35681,12 @@ minimiaohongyan:'红颜',
 minimiaohongyan_info:'锁定技。①你的黑桃牌视为红桃牌。②没有技能〖逗猫〗的角色的红桃判定牌生效后，你回复1点体力并摸一张牌。',
 },
 };
+for(var skill in MiNikill.skill){
+if(MiNikill.skill[skill].Mbaby_characterlist){
+MiNikill.skill[skill].derivation='Mbaby_characterlist_faq';
+MiNikill.translate[skill+'_append']=MiNikill.translate.Mbaby_characterlist_append;
+}
+}
 for(var i in MiNikill.character){
 if(MiNikill.translate[i]){
 if(MiNikill.translate[i].indexOf('欢杀神')==0) MiNikill.translate[i+'_prefix']='欢杀神';
@@ -56433,13 +56568,13 @@ game.check();
 },
 },
 edit_PingJianName:{
-name:'编辑欢杀【评鉴】将池',
+name:'编辑欢杀将池',
 clear:true,
 onclick:function(){
 var container=ui.create.div('.popup-container.editor');
 var node=container;
 var map=lib.config.extension_活动武将_PingJianName||lib.skill.minipingjian.getList();
-var str='//编辑欢杀【评鉴】将池';
+var str='//编辑欢杀将池，此将池仅影响欢乐三国杀武将包中的角色发动技能的武将筛选范围，不会涉及禁将层面';
 str+='\nPingJianName=[\n';
 for(var i=0;i<map.length;i++){
 str+='"'+map[i]+'",';
@@ -56501,13 +56636,13 @@ else lib.codeMirrorReady(node,editor);
 },
 },
 reset_PingJianName:{
-name:'重置欢杀【评鉴】将池',
+name:'重置欢杀将池',
 clear:true,
 onclick:function(){
-if(confirm('是否重置已编辑的欢杀【评鉴】将池？')){
+if(confirm('是否重置已编辑的欢杀将池？')){
 if(confirm('该操作不可撤销！是否确认重置？')){
 game.saveConfig('extension_活动武将_PingJianName',null);
-alert('自定义欢杀【评鉴】将池已重置');
+alert('自定义欢杀将池已重置');
 }
 }
 },
