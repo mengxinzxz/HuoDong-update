@@ -24443,10 +24443,12 @@ content:'使用$花色的牌无距离和次数限制',
 },
 mod:{
 cardUsable:function(card,player){
-if(player.getStorage('minichenglve_use').includes(get.suit(card,player))) return Infinity;
+const suit=get.suit(card);
+if(suit=='unsure'||player.getStorage('minichenglve_use').includes(suit)) return Infinity;
 },
 targetInRange:function(card,player){
-if(player.getStorage('minichenglve_use').includes(get.suit(card,player))) return true;
+const suit=get.suit(card);
+if(suit=='unsure'||player.getStorage('minichenglve_use').includes(suit)) return true;
 },
 },
 },
@@ -35097,7 +35099,7 @@ miniyaoming_info:'①每回合每项限两次。当你造成或受到伤害时�
 minishenxing:'慎行',
 minishenxing_info:'出牌阶段限20次，你可以摸一张牌，然后弃置X张牌（X为你本阶段此前发动此技能的次数，且X至多为2）。然后若你没有可弃置的牌，则本阶段此技能失效。',
 miniligong:'离宫',
-miniligong_info:'觉醒技。准备阶段，若〖慧淑〗的中括号内有不小于5的数字，则你加1点体力上限，回复1点体力并失去〖易数〗。系统随机检索四张存在于欢杀将池中的吴势力女性武将牌，然后你选择一项：⒈摸三张牌。⒉失去〖慧淑〗，然后获得这些武将牌上的任意两个技能。',
+miniligong_info:'觉醒技，准备阶段，若〖慧淑〗的中括号内有不小于5的数字，则你加1点体力上限，回复1点体力并失去〖易数〗。系统随机检索四张存在于欢杀将池中的吴势力女性武将牌，然后你选择一项：⒈摸三张牌。⒉失去〖慧淑〗，然后获得这些武将牌上的任意两个技能。',
 //群
 Mbaby_zuoci:'欢杀左慈',
 Mbaby_gaoshun:'欢杀高顺',
@@ -36396,20 +36398,17 @@ if(get.attitude(player,arg.target)>0||arg.card.name!='sha'||!ui.cardPile.firstCh
 },
 wechatwushen:{
 mod:{
-targetInRange:function(card){
-if(get.suit(card)=='diamond'&&card.name=='sha') return true;
+cardUsable:function(card,player){
+if(card.name=='sha'&&['heart','unsure'].includes(get.suit(card))) return Infinity;
 },
-cardUsable:function(card){
-if(card.name=='sha'&&(get.color(card)=='none'||get.suit(card)=='heart')) return Infinity;
+targetInRange:function(card,player){
+if(card.name=='sha'&&['diamond','unsure'].includes(get.suit(card))) return true;
 },
 },
 audio:'wushen',
 enable:'chooseToUse',
 filterCard:function(card,player){
 return get.color(card)=='red';
-},
-selectCard:function(){
-return _status.event.skill=='wechatwushen'?1:Infinity;
 },
 position:'hes',
 viewAs:{name:'sha'},
@@ -45151,7 +45150,8 @@ subSkill:{
 unlimit:{
 mod:{
 cardUsable:function(card,player){
-if(get.suit(card)==lib.skill.fh_bushi.getBushi(player)[0]) return Infinity;
+const suit=get.suit(card);
+if(suit=='unsure'||suit==lib.skill.fh_bushi.getBushi(player)[0]) return Infinity;
 },
 },
 trigger:{player:'useCard1'},
@@ -53111,7 +53111,7 @@ playerEnabled:function(card,player,target){
 var evtx=_status.event.getParent('phaseUse');
 if(!evtx||evtx.player!=player||!game.hasPlayer(function(current){
 return current!=player&&current.hasSkill('boljiaozong');
-})||get.color(card,player)!='red'||player.getHistory('useCard',function(evt){
+})||(get.color(card)!='red'&&get.color(card)!='unsure')||player.getHistory('useCard',function(evt){
 return evt.getParent('phaseUse')==evtx&&get.color(evt.card,player)=='red';
 }).length) return;
 if(target==player||!target.hasSkill('boljiaozong')) return false;
@@ -53120,7 +53120,7 @@ selectTarget:function(card,player,num){
 var evtx=_status.event.getParent('phaseUse');
 if(!evtx||evtx.player!=player||!game.hasPlayer(function(current){
 return current!=player&&current.hasSkill('boljiaozong');
-})||get.color(card,player)!='red'||player.getHistory('useCard',function(evt){
+})||(get.color(card)!='red'&&get.color(card)!='unsure')||player.getHistory('useCard',function(evt){
 return evt.getParent('phaseUse')==evtx&&get.color(evt.card,player)=='red';
 }).length) return;
 if(num[1]!=-1) num[1]=-1;
@@ -53129,7 +53129,7 @@ targetInRange:function(card,player,target){
 var evtx=_status.event.getParent('phaseUse');
 if(!evtx||evtx.player!=player||!game.hasPlayer(function(current){
 return current!=player&&current.hasSkill('boljiaozong');
-})||get.color(card,player)!='red'||player.getHistory('useCard',function(evt){
+})||(get.color(card)!='red'&&get.color(card)!='unsure')||player.getHistory('useCard',function(evt){
 return evt.getParent('phaseUse')==evtx&&get.color(evt.card,player)=='red';
 }).length) return;
 if(target!=player&&target.hasSkill('boljiaozong')) return true;
