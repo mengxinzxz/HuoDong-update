@@ -19585,7 +19585,7 @@ return lib.skill.chongzhen.logTarget(event,player);
 async content(event,trigger,player){
 const target=lib.skill.chongzhen.logTarget(trigger,player);
 const {result}=await player.mini_chooseToMouYi(target).set('namelist',[
-'胆壮心雄×','偃旗息鼓×','偃旗息鼓','胆壮心雄'
+'暂避锋芒','趁虚而入','偃旗息鼓','胆壮心雄'
 ]).set('ai',button=>{
 const source=get.event().getParent().player,target=get.event().getParent().target;
 const att=get.attitude(source,target);
