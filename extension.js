@@ -2397,6 +2397,16 @@ event.trigger('roundEnd');//End时机常用于技能结算
 event.trigger('roundAfter');//After时机常用于效果清除
 },
 },
+//闪闪节
+lib.arenaReady.push(()=>{
+if(lib.config.extension_活动武将_HD_shanshan){
+for(var i=0;i<lib.card.list.length;i++){
+if(lib.card.list[i][2]!='shan'||lib.card.list[i][0]!='diamond') continue;
+if([5,6,7].includes(lib.card.list[i][1])) lib.card.list[i][2]='bol_shanshan';
+}
+game.log('三张','#g【闪闪】','已加入牌堆');
+}
+});
 //合纵抗秦、官渡之战模式特殊规则
 lib.skill._hzkq_shijian={
 charlotte:true,
@@ -2514,35 +2524,6 @@ var card2=get.cardPile2(function(card2){
 return card2.name=='qin_zhenlongchangjian';
 });
 if(card2) player.equip(card2);
-},
-};
-//闪闪节
-lib.skill._bol_shanshan_put={
-charlotte:true,
-ruleSkill:true,
-trigger:{global:['gameStart','gameDrawBegin','gameDrawAfter','phaseBefore','roundStart']},
-filter:function(event,player){
-return !game.shanshanPut&&lib.config.extension_活动武将_HD_shanshan;
-},
-direct:true,
-priority:114514+1919810,
-content:function(){
-'step 0'
-game.shanshanPut=true;
-var list=[5,6,7];
-for(var i=0;i<ui.cardPile.childNodes.length;i++){
-var card=ui.cardPile.childNodes[i];
-if(card.name=='shan'&&get.suit(card)=='diamond'&&list.includes(get.number(card))){
-var cardx=game.createCard2('bol_shanshan','diamond',get.number(card));
-ui.cardPile.insertBefore(cardx,ui.cardPile.childNodes[get.rand(0,ui.cardPile.childNodes.length)]);
-card.remove();
-list.remove(get.number(card));
-game.log(card,'已被','#g移出','牌堆');
-game.log(cardx,'已','#g加入','牌堆');
-game.updateRoundNumber();
-}
-if(!list.length) break;
-}
 },
 };
 //座位号显示
@@ -56542,8 +56523,8 @@ intro:'将神武将包中的键社武将和国战多势力武将冈崎汐移至D
 init:true,
 },
 HD_shanshan:{
-name:'闪闪节特殊卡牌',
-intro:'将牌堆中的一张方片5，一张方片6，一张方片7的【闪】替换为OL闪闪节特殊卡牌【闪闪】（重启生效，【闪闪】视为特殊卡牌，不视为牌堆的组成部分）',
+name:'牌堆加入【闪闪】',
+intro:'将牌堆中的一张方片5，一张方片6，一张方片7的【闪】替换为【闪闪】',
 init:false,
 },
 ShenZhangJiao:{
