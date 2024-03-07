@@ -41,15 +41,10 @@ game.bolShowNewPack=function(){
 var HuoDong_update=[
 '/setPlayer/',
 'bugfix',
-'部分技能效果调整+写法优化',
-'添加欢乐三国杀武将：张春华、蒋干、谋赵云、小闪、全惠解',
-'添加微信三国杀武将：公孙渊',
 'To be continued...',
 ];
 //更新武将
 var HuoDong_players=[
-'Mbaby_zhangchunhua','Mbaby_jianggan','Mbaby_sb_zhaoyun','Mbaby_xiaoshan',
-'Mbaby_quanhuijie','wechat_gongsunyuan',
 ];
 //加载
 var dialog=ui.create.dialog(
@@ -10374,7 +10369,7 @@ trigger.player.loseHp(trigger.num);
 },
 minireshangshi:{
 inherit:'minishangshi',
-group:'minishangshi_zhiheng',
+group:'minireshangshi_zhiheng',
 subSkill:{
 zhiheng:{
 audio:'shangshi',
@@ -10396,8 +10391,8 @@ player.logSkill('minireshangshi_zhiheng');
 const cardx=player.getCards('h');
 await player.discard(cards);
 if(!cards.some(card=>!cardx.includes(card))&&!cardx.some(card=>!cards.includes(card))){
-player.addTempSkill('dcduliang2',{player:'phaseAfter'});
-player.addMark('dcduliang2',1,false);
+player.addTempSkill('minireshangshi_effect',{player:'phaseAfter'});
+player.addMark('minireshangshi_effect',1,false);
 }
 },
 },
@@ -18797,9 +18792,9 @@ maxNum:10,
 filter:function(event,player){
 if(player.hasSkill('minisbrende_used')) return false;
 for(var name of lib.inpile){
+var card={name:name,isCard:true};
 if(get.type(name)=='basic'){
 if(player.countMark('minisbrende')<2) continue;
-var card={name:name,isCard:true};
 if(event.filterCard(get.autoViewAs(card,'unsure'),player,event)) return true;
 if(name=='sha'){
 for(var nature of lib.inpile_nature){
@@ -18862,9 +18857,9 @@ dialog.content.appendChild(table);
 }
 var cards=[];
 for(var name of lib.inpile){
+var card={name:name,isCard:true};
 if(get.type(name)=='basic'){
 if(player.countMark('minisbrende')<2) continue;
-var card={name:name,isCard:true};
 if(event.filterCard(get.autoViewAs(card,'unsure'),player,event)) cards.push(['基本','',name]);
 if(name=='sha'){
 for(var nature of lib.inpile_nature){
@@ -18903,7 +18898,8 @@ return (isUse?('移去'+(get.type(links[0][2])=='basic'?'2':'3')+'枚“仁望�
 }
 },
 hiddenCard:function(player,name){
-return get.type(name)=='basic'&&player.countMark('minisbrende')>1&&player.hasSkill('minisbrende_used');
+const list=['basic','trick'],num=list.indexOf(get.type(name));
+return num!=-1&&player.countMark('minisbrende')>1+num&&!player.hasSkill('minisbrende_used');
 },
 marktext:'仁',
 intro:{
@@ -56910,7 +56906,7 @@ intro:'新人制作扩展，希望大家支持。'+
 author:'萌新（转型中）',
 diskURL:'',
 forumURL:'',
-version:'0.1.8',
+version:'0.1.9',
 //新人制作扩展，希望大家支持。
 //新人技术不足，希望大家包涵。
 //壹、贰、叁、肆、伍、陆、柒、捌、玖、拾
