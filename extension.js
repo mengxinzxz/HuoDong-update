@@ -36243,12 +36243,14 @@ enable:['chooseToUse','chooseToRespond'],
 position:'hs',
 prompt:'将【杀】/【闪】当作【闪】/【杀】使用或打出',
 viewAs:function(cards,player){
+if(cards.length){
 var name=false;
 switch(get.name(cards[0],player)){
 case 'sha':name='shan';break;
 case 'shan':name='sha';break;
 }
 if(name) return {name:name,storage:{wechatlongdan:true}};
+}
 return null;
 },
 check:(card)=>1,
@@ -50560,12 +50562,14 @@ enable:['chooseToUse','chooseToRespond'],
 position:'hs',
 prompt:'将【杀】当作【闪】，或将【闪】当作的【杀】使用或打出，然后你的下个弃牌阶段的手牌上限-1',
 viewAs:function(cards,player){
+if(cards.length){
 var name=false;
 switch(get.name(cards[0],player)){
 case 'sha':name='shan';break;
 case 'shan':name='sha';break;
 }
 if(name) return {name:name};
+}
 return null;
 },
 onuse:function(links,player){
