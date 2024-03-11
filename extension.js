@@ -2658,12 +2658,9 @@ this.remove();
 })
 };
 get.bolInformX=function(str1,str2){
-var temp='',numx=1;
-while(numx!=10000){
-temp+=get.rand(1,9)/numx;
-numx=numx*10;
-}
-return "<a id='"+temp+"' style='color:unset' href=\"javascript:get.bolskillTips('"+str2+"','"+temp+"');\">"+str1+"※</a>";
+if(_status.bolInform_temp) delete _status.bolInform_temp;
+_status.bolInform_temp=Math.random().toString(36).slice(-8);
+return "<a id='"+_status.bolInform_temp+"' style='color:unset' href=\"javascript:get.bolskillTips('"+str2+"','"+_status.bolInform_temp+"');\">"+str1+"※</a>";
 };
 get.YunLvInform=()=>get.bolInformX('韵律技','韵律技分为平和仄两种状态，韵律技初始默认状态为平，满足转韵条件时韵律技会转成另一种状态并重置技能的发动次数');
 get.RenWangInform=()=>get.bolInformX('仁望值','拥有涉及仁望值技能的角色于游戏开始时获得1点仁望值，且其出牌阶段结束时，其根据以下满足的条件数增加等量的仁望值：①本阶段有角色获得过累计两张牌；②本阶段有角色回复过体力；③本阶段未对其他角色造成过伤害。一名角色的仁望值上限为5。');
