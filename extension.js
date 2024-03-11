@@ -14326,7 +14326,9 @@ onremove(player,skill){
 const cards=player.getExpansions(skill);
 if(cards.length) player.loseToDiscardpile(cards);
 },
+marktext:'伏',
 intro:{
+name:'伏兵',
 content:'expansion',
 markcount:'expansion',
 mark(dialog,content,player){
