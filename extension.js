@@ -33023,6 +33023,9 @@ if(skills.length) await player.addAdditionalSkills('minitunxing',skills);
 }
 },
 derivation:'minitunxing_faq',
+onremove(player){
+if(player.additionalSkills.minitunxing&&player.additionalSkills.minitunxing.length) player.removeAdditionalSkills('minitunxing');
+},
 },
 minimengli:{
 audio:'ext:活动武将/audio/skill:2',
