@@ -1661,7 +1661,7 @@ lib.translate.chongzhen_info='当你发动〖龙胆〗时，你可以获得对�
 game.HDaddCharacter('zhanghua',['male','jin',3,['olbihun','oljianhe','bolchuanwu'],[]],'sp');
 
 //系列专属包
-lib.characterSort.sp2.sp_decade.addArray(['decade_buzhi','decade_lingju','junk_zhangrang']);
+lib.characterSort.sp2.sp2_waitforsort.addArray(['junk_zhangrang']);
 game.HDaddCharacter('junk_zhangrang',['male','qun',3,['junktaoluan'],[]],'sp2');
 game.HDaddCharacter('licaiwei',['female','qun',3,['yijiao','qibie'],[]],'sp2');
 game.HDaddCharacter('duanwei',['male','qun',4,['junklangmie'],[]],'sp2');
