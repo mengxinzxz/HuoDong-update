@@ -40,7 +40,6 @@ game.bolShowNewPack=function(){
 //更新告示
 var HuoDong_update=[
 '/setPlayer/',
-'bugfix',
 'To be continued...',
 ];
 //更新武将
@@ -37936,20 +37935,8 @@ player.addSkills(result.control);
 },
 },
 wechatrefanghun:{
-mod:{
-aiValue:function(player,card,num){
-if(card.name!='sha'&&card.name!='shan') return;
-var geti=function(){
-var cards=player.getCards('hs',function(card){
-return card.name=='sha'||card.name=='shan';
-});
-if(cards.includes(card)){
-return cards.indexOf(card);
-}
-return cards.length;
-};
-return Math.max(num,[7,5,5,3][Math.min(geti(),3)]);
-},
+get mod(){
+return get.info('refanghun').mod||{};
 },
 locked:false,
 audio:'fanghun',
@@ -37959,7 +37946,7 @@ trigger:{player:'useCardToPlayered'},
 wechatrefuhan:{
 unique:true,
 audio:'fuhan',
-trigger:{player:'phaseZhunbeiBegin'},
+trigger:{player:'phaseBegin'},
 filter:function(event,player){
 return player.countMark('fanghun')>0;
 },
@@ -37989,7 +37976,7 @@ if(result.bool){
 var name=result.links[0];
 player.flashAvatar('wechatrefuhan',name);
 game.log(player,'获得了','#y'+get.translation(name),'的所有技能');
-player.addSkill(lib.character[name][3])
+player.addSkills(lib.character[name][3]);
 }
 'step 3'
 if(player.isMinHp()&&player.isDamaged()) player.recover();
@@ -40158,7 +40145,7 @@ var targetx=[player].addArray(targets).sortBySeat(player);
 targetx.remove(result.winner);
 for(var target of targetx){
 const cards=target.getGainableCards(result.winner,'hej');
-if(cards.length) result.winner.gain(cards.randonGet(),target,'giveAuto');
+if(cards.length) result.winner.gain(cards.randomGet(),target,'giveAuto');
 }
 }
 },
@@ -41551,7 +41538,7 @@ wechatfuhan_info:'觉醒技，准备阶段，若你已发动过〖凤魄〗，�
 wechatrefanghun:'芳魂',
 wechatrefanghun_info:'当你使用【杀】指定目标后，你获得1个“梅影”标记；你可以移去1个“梅影”标记来发动〖龙胆〗并摸一张牌。',
 wechatrefuhan:'扶汉',
-wechatrefuhan_info:'限定技，准备阶段，你可以移去所有"梅影"标记并摸等量的牌（至多摸五张），然后从五张未登场的蜀势力武将牌中选择一名获得其所有技能，然后若你的体力值为全场最低，你回复1点体力。',
+wechatrefuhan_info:'限定技，回合开始时，你可以移去所有"梅影"标记并摸等量的牌（至多摸五张），然后从五张未登场的蜀势力武将牌中选择一名获得其所有技能，然后若你的体力值为全场最低，你回复1点体力。',
 wechat_liuqi:'微信刘琦',
 wechattunjiang:'屯江',
 wechattunjiang_info:'结束阶段，若你未于本回合的出牌阶段内使用牌指定过其他角色为目标，则你可以摸X张牌（X为场上的存活角色数-1）。',
@@ -53383,7 +53370,7 @@ if(info.group){
 var group=Array.isArray(info.group)?info.group:[info.group];
 for(var sk of group){
 var fo=get.info(sk);
-if(sk.indexOf('_')==0||!fo||fo.equipSkill||fo.charlotte||fo.silent||fo.popup===false||sk=='bolchouyou2') continue;
+if(typeof sk!='string'||sk.indexOf('_')==0||!fo||fo.equipSkill||fo.charlotte||fo.silent||fo.popup===false||sk=='bolchouyou2') continue;
 if(!get.is.locked(sk)) lib.skill.bolchouyou2.trigger.global.push(sk+'Before');
 }
 }
