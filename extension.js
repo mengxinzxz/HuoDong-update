@@ -45,7 +45,6 @@ var HuoDong_update=[
 ];
 //更新武将
 var HuoDong_players=[
-'Mbaby_chengyu',
 ];
 //加载
 var dialog=ui.create.dialog(
