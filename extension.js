@@ -41,6 +41,7 @@ game.bolShowNewPack=function(){
 var HuoDong_update=[
 '/setPlayer/',
 'bugfix',
+'欢杀吞星梦狸使用Player.changeSkin机制',
 '添加欢杀武将：程昱',
 'To be continued...',
 ];
