@@ -24134,7 +24134,7 @@ return list.some(i=>i>=5);
 Mbaby_characterlist:true,
 content(){
 'step 0'
-player.awakenSkill('dcligong');
+player.awakenSkill('miniligong');
 player.gainMaxHp();
 player.recover();
 'step 1'
