@@ -41,8 +41,6 @@ game.bolShowNewPack=function(){
 var HuoDong_update=[
 '/setPlayer/',
 'bugfix',
-'欢杀吞星梦狸使用Player.changeSkin机制',
-'添加欢杀武将：程昱',
 'To be continued...',
 ];
 //更新武将
@@ -14188,7 +14186,7 @@ marktext:'果',
 intro:{content:'使用【杀】对$造成的伤害+1'},
 trigger:{player:'useCardToTargeted'},
 filter(event,player){
-return event.card.name=='sha'&&player.getStorage('minixiaoguo_buff1').includes(event.target);
+return event.card.name=='sha'&&player.getStorage('minixiaoguo_buff2').includes(event.target);
 },
 forced:true,
 logTarget:'target',
@@ -57052,7 +57050,7 @@ intro:'新人制作扩展，希望大家支持。'+
 author:'萌新（转型中）',
 diskURL:'',
 forumURL:'',
-version:'0.1.9',
+version:'0.2.0',
 //新人制作扩展，希望大家支持。
 //新人技术不足，希望大家包涵。
 //壹、贰、叁、肆、伍、陆、柒、捌、玖、拾
