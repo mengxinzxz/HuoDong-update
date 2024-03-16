@@ -48002,48 +48002,13 @@ forceDie:true,
 priority:12,
 forced:true,
 popup:false,
-content:function(){
-'step 0'
-if(!get.info(trigger.skill).silent){
-var info=get.info(trigger.skill);
-var event=trigger,trigger=event._trigger;
-var str;
-var check=info.check;
-if(info.prompt) str=info.prompt;
-else{
-if(typeof info.logTarget=='string') str=get.prompt(event.skill,trigger[info.logTarget],player);
-else if(typeof info.logTarget=='function'){
-var logTarget=info.logTarget(trigger,player);
-if(get.itemtype(logTarget).indexOf('player')==0) str=get.prompt(event.skill,logTarget,player);
-}
-else str=get.prompt(event.skill,null,player);
-}
-if(typeof str=='function') str=str(trigger,player);
-var next=player.chooseBool('化身：'+str);
-next.set('yes',!info.check||info.check(trigger,player));
-next.set('hsskill',event.skill);
-next.set('forceDie',true);
-next.set('ai',function(){
-return _status.event.yes;
-});
-if(typeof info.prompt2=='function') next.set('prompt2',info.prompt2(trigger,player));
-else if(typeof info.prompt2=='string') next.set('prompt2',info.prompt2);
-else if(info.prompt2!=false){
-if(lib.dynamicTranslate[event.skill]) next.set('prompt2',lib.dynamicTranslate[event.skill](player,event.skill));
-else if(lib.translate[event.skill+'_info']) next.set('prompt2',lib.translate[event.skill+'_info']);
-}
-if(trigger.skillwarn){
-if(next.prompt2) next.set('prompt2','<span class="thundertext">'+trigger.skillwarn+'。</span>'+next.prompt2);
-else next.set('prompt2',trigger.skillwarn);
-}
-}
-else event.finish();
-'step 1'
-if(result.bool) trigger.revealed=true;
-else{
-trigger.untrigger();
-trigger.cancelled=true;
-}
+get content(){
+let content=lib.skill.sbpingjian.subSkill.trigger.content;
+content=content.toString().replaceAll('评鉴','化身');
+content=new Function('return '+content)();
+delete this.content;
+this.content=content;
+return content;
 },
 },
 flash:{
