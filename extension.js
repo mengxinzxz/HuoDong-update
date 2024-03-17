@@ -41,7 +41,7 @@ game.bolShowNewPack=function(){
 var HuoDong_update=[
 '/setPlayer/',
 'bugfix',
-'部分武将分包调整',
+'部分武将分包调整，部分武将技能调整',
 '添加欢杀武将：谋徐晃、张鲁、张嶷、张宁',
 'To be continued...',
 ];
@@ -20485,11 +20485,12 @@ audio:'decadepojun',
 trigger:{player:'useCardToPlayered'},
 direct:true,
 filter:function(event,player){
-return event.card.name=='sha'&&event.target.hp>0&&event.target.countCards('he');
+return event.card.name=='sha'&&event.target.getHp()>0&&event.target.countCards('he');
 },
 content:function(){
 'step 0'
-var next=player.choosePlayerCard(trigger.target,'he',[1,Math.min(trigger.target.hp,trigger.target.countCards('he'))],get.prompt(event.name,trigger.target));
+const num=Math.min(trigger.target.getHp()+(event.name=='minirepojun'?1:0),trigger.target.countCards('he'));
+var next=player.choosePlayerCard(trigger.target,'he',[1,num],get.prompt(event.name,trigger.target));
 next.set('ai',function(button){
 if(!_status.event.goon) return 0;
 var val=get.value(button.link);
@@ -20565,6 +20566,9 @@ else return '共有'+get.cnNumber(cards.length)+'张牌';
 },
 minirepojun:{
 inherit:'minipojun',
+filter(event,player){
+return event.card.name=='sha'&&event.target.hp>0&&event.target.countCards('he');
+},
 group:'minirepojun_damage',
 subSkill:{damage:{audio:'decadepojun',inherit:'repojun3'}},
 },
@@ -35235,7 +35239,7 @@ minipojun:'破军',
 minipojun2:'破军',
 minipojun_info:'当你使用【杀】指定目标时，你可以将其至多X张牌移出游戏直至回合结束（X为其体力值），然后若其中有：装备牌，你弃置其中的一张；【闪】，你摸一张牌。',
 minirepojun:'破军',
-minirepojun_info:'①当你使用【杀】指定目标后，你可以将其至多X张牌移出游戏直至回合结束（X为其体力值），然后若其中有：装备牌，你弃置其中的一张；【闪】，你摸一张牌。②你使用【杀】对手牌数和装备区牌数均不大于你的角色造成的伤害+1。',
+minirepojun_info:'①当你使用【杀】指定目标后，你可以将其至多X+1张牌移出游戏直至回合结束（X为其体力值），然后若其中有：装备牌，你弃置其中的一张；【闪】，你摸一张牌。②你使用【杀】对手牌数和装备区牌数均不大于你的角色造成的伤害+1。',
 minianxu:'安恤',
 minianxu_info:'出牌阶段开始和结束时，你可以获得一名手牌数最多的其他角色的一张手牌，然后若此牌的花色为黑桃，该角色摸一张牌。',
 minilihuo:'疠火',
