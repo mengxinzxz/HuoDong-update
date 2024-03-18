@@ -1736,7 +1736,7 @@ game.HDaddCharacter('old_zhangbao',['male','qun',3,['old_zhoufu','old_yingbing']
 game.HDaddCharacter('old_sunluyu',['female','wu',3,['meibu','mumu'],['ext:活动武将/image/character/old_sunluyu.jpg']],'old');
 game.HDaddCharacter('old_pangtong',['male','qun',3,['manjuan','zuixiang'],['character:sp_pangtong','die_audio:sp_pangtong']],'old');
 game.HDaddCharacter('ol_manchong',['male','wei',3,['xinjunxing','yuce'],['ext:活动武将/image/character/ol_manchong.jpg']],'old');
-game.HDaddCharacter('old_xushao',['male','qun',3,[],['ext:活动武将/image/character/old_xushao.jpg']],'old');
+game.HDaddCharacter('old_xushao',['male','qun',3,[],['unseen','ext:活动武将/image/character/old_xushao.jpg']],'old');
 game.HDaddCharacter('old_sp_sunshao',['male','wu',3,['refubi','rezuici'],['ext:活动武将/image/character/old_sp_sunshao.jpg']],'old');
 game.HDaddCharacter('old_liuzhang',['male','qun',3,['xiusheng','yinlang','huaibi'],['zhu','ext:活动武将/image/character/old_liuzhang.jpg']],'old');
 game.HDaddCharacter('old_wangling',['male','wei',4,['mouli','zifu'],['ext:活动武将/image/character/old_wangling.jpg']],'old');
@@ -49709,7 +49709,6 @@ game.log('本回合中位数为','#g'+list[1]);
 count:{onremove:true,charlotte:true},
 },
 },
-//爆料款许劭
 //保留所有设定的旧美羊羊
 oldhongyi:{
 inherit:'hongyi',
