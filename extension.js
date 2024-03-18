@@ -42,6 +42,7 @@ var HuoDong_update=[
 '/setPlayer/',
 'bugfix',
 '部分武将分包调整，部分武将技能调整',
+'强制性覆盖无名杀晋势力为其他势力加原画→开关控制',
 '添加欢杀武将：谋徐晃、张鲁、张嶷、张宁',
 'To be continued...',
 ];
@@ -924,6 +925,14 @@ game.HDmoveCharacter('key_shiki','diy');
 game.HDmoveCharacter('db_key_hina','diy');
 }
 
+//特殊势力变更
+if(lib.config.extension_活动武将_HD_yrnsm){
+game.HDaddCharacter('chengjichengcui',['male','wei',6,['oltousui','olchuming'],[]],'yingbian');
+game.HDaddCharacter('clan_wuqiao',['male','qun',4,['clanqiajue','clanmuyin'],['clan:陈留吴氏','ext:活动武将/image/character/clan_wuqiao.jpg']],'clan');
+game.HDaddCharacter('wangyan',['male','qun',3,['yangkuang','cihuang','sanku'],['ext:活动武将/image/character/wangyan.jpg']],'sp');
+game.HDaddCharacter('clan_wanglun',['male','wei',3,['clanqiuxin','clanjianyuan','clanzhongliu'],['clan:太原王氏','ext:活动武将/image/character/clan_wanglun.jpg']],'clan');
+}
+
 //precGuoZhan(分界线，便于我搜过来)
 if(get.mode()=='guozhan'){
 //国战武将技能修复
@@ -1618,8 +1627,6 @@ game.HDaddCharacter('luyi',['female','qun',3,['dcyaoyi','dcshoutan','dcfuxue'],[
 //OL专属
 lib.characterSort.onlyOL.bilibili_buchong_onlyOL=['junk_lidian'];
 game.HDaddCharacter('ol_huaxin',['male','wei',3,['caozhao','olxibing'],['ext:活动武将/image/character/ol_huaxin.jpg']],'yingbian');
-game.HDaddCharacter('chengjichengcui',['male','wei',6,['oltousui','olchuming'],[]],'yingbian');
-game.HDaddCharacter('clan_wuqiao',['male','qun',4,['clanqiajue','clanmuyin'],['clan:陈留吴氏','ext:活动武将/image/character/clan_wuqiao.jpg']],'clan');
 game.HDmoveCharacter('junk_lidian','onlyOL');
 
 //移动服
@@ -56111,6 +56118,11 @@ init:true,
 HD_REname:{
 name:'名称还原',
 intro:'开启此选项后，游戏内部分武将的名称翻译将调整为和官服一致（重启生效）',
+init:false,
+},
+HD_yrnsm:{
+name:'OL删晋还原',
+intro:'开启此选项后，无名杀部分晋武将势力和原画将调整为和OL一致',
 init:false,
 },
 Boss_TZ_level:{
