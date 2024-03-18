@@ -41938,7 +41938,7 @@ lib.translate['WeChatkill_character_config']='<span style="font-family: xingkai"
 game.import('character',function(){
 var MX_feihongyinxue={
 name:'MX_feihongyinxue',
-//connect:true,
+connect:false,
 characterSort:{
 MX_feihongyinxue:{
 fh_zhi:['mx_fh_sp_bianfuren','mx_fh_sp_chenzhen','mx_fh_feiyi','mx_fh_luotong','mx_fh_sp_sunshao','mx_fh_sp_duyu','mx_fh_sp_xunchen'],
@@ -46721,6 +46721,7 @@ game.import('character',function(){
 var huodongcharacter={
 name:'huodongcharacter',
 connect:true,
+connectBanned:['bilibili_zhengxuan'],
 characterSort:{
 huodongcharacter:{
 CLongZhou:['lz_sufei','lz_tangzi','lz_liuqi','lz_huangquan'],
@@ -47159,7 +47160,7 @@ return dialog;
 audio:'zhengjing',
 enable:'phaseUse',
 filter:function(event,player){
-return !player.hasSkill('zhengjing3')&&!player.isOnline()&&!player.isOnline2();
+return !player.hasSkill('zhengjing3');
 },
 usable:1,
 content:function(){
@@ -47289,17 +47290,6 @@ ai:{
 order:10,
 result:{player:1},
 threaten:3.2,
-},
-group:'bilibili_zhengjing_ol',
-subSkill:{
-ol:{
-audio:'zhengjing',
-inherit:'zhengjing',
-filter:function(event,player){
-return !player.hasSkill('zhengjing3')&&player.isOnline();
-},
-prompt:()=>lib.translate.bilibili_zhengjing_info,
-},
 },
 },
 //SP许攸
