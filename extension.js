@@ -1164,9 +1164,7 @@ legend:[
 'oldx_zhangzhongjing',
 'old_shen_caopi',
 'old_shen_simayi',
-'old_shen_sunquan',
 'old_shen_xunyu',
-'old_shen_ganning',
 'old_shen_taishici',
 'old_shen_sunce',
 'junk_zhangjiao',
@@ -1188,7 +1186,6 @@ epic:[
 'bol_sunjian',
 'FD_dongyue',
 //原活动配件武将
-'bol_zhangzhongjing',
 'ol_maliang',
 'old_jiakui',
 'old_qiaozhou',
@@ -1204,10 +1201,6 @@ epic:[
 'old_zhangyì',
 'old_yanghuiyu',
 'old_zhangqiying',
-'bfake_yangfu',
-'bfake_zuoci',
-'bfake_sundeng',
-'bfake_chengpu',
 'junk_lidian',
 ],
 //稀有
@@ -1229,7 +1222,6 @@ rare:[
 'lz_huangquan',
 'FD_feixiongjunzuo',
 //原活动配件武将
-'bol_sp_huaxin',
 'old_yuanji',
 'junk_duanwei',
 'junk_xuyou',
@@ -1281,63 +1273,34 @@ c:[
 d:[
 ],
 };
-//活动武将包武将
-for(var name of Object.keys(lib.characterPack['MiNikill'])){
-if(!Object.keys(rank.rarity).some(rarity=>rank.rarity[rarity].includes(name))) rank.rarity.legend.push(name);
+//块级修改
+const mx_rarity={
+legend:['decadeQiHuan','decadeZhuoGui','MiNikill','MX_feihongyinxue','decadeKuiBa','HD_chaoshikong','extra'],
+epic:['WeChatkill','hezongkangqincharacter'],
+rare:['yingbian'],
+junk:['sb'],
+};
+for(const i in mx_rarity){
+for(const j of mx_rarity[i]){
+for(const name of Object.keys(lib.characterPack[j])){
+if(!Object.keys(rank.rarity).some(rarity=>rank.rarity[rarity].includes(name))) rank.rarity[i].add(name);
 }
-for(var name of Object.keys(lib.characterPack['WeChatkill'])){
-if(!Object.keys(rank.rarity).some(rarity=>rank.rarity[rarity].includes(name))) rank.rarity.rare.push(name);
 }
-for(var name of Object.keys(lib.characterPack['MX_feihongyinxue'])){
-if(!Object.keys(rank.rarity).some(rarity=>rank.rarity[rarity].includes(name))) rank.rarity.legend.push(name);
 }
-for(var name of Object.keys(lib.characterPack['huodongcharacter'])){
+for(const name of Object.keys(lib.characterPack['huodongcharacter'])){
 if(!Object.keys(rank.rarity).some(rarity=>rank.rarity[rarity].includes(name))){
-if(['Chuodong','CDanJi','CSCS'].some(pack=>lib.characterSort.huodongcharacter[pack].includes(name))) rank.rarity.legend.push(name);
-else rank.rarity.rare.push(name);
+if(['Chuodong','CDanJi','CSCS'].some(pack=>lib.characterSort.huodongcharacter[pack].includes(name))) rank.rarity['legend'].push(name);
+else rank.rarity['rare'].push(name);
 }
 }
-for(var name of Object.keys(lib.characterPack['hezongkangqincharacter'])){
-if(!Object.keys(rank.rarity).some(rarity=>rank.rarity[rarity].includes(name))) rank.rarity.epic.push(name);
-}
-for(var name of Object.keys(lib.characterPack['decadeQiHuan'])){
-if(!Object.keys(rank.rarity).some(rarity=>rank.rarity[rarity].includes(name))) rank.rarity.legend.push(name);
-}
-for(var name of Object.keys(lib.characterPack['decadeZhuoGui'])){
-if(!Object.keys(rank.rarity).some(rarity=>rank.rarity[rarity].includes(name))) rank.rarity.legend.push(name);
-}
-for(var name of Object.keys(lib.characterPack['decadeKuiBa'])){
-if(!Object.keys(rank.rarity).some(rarity=>rank.rarity[rarity].includes(name))) rank.rarity.legend.push(name);
-}
-for(var name of Object.keys(lib.characterPack['HD_chaoshikong'])){
-if(!Object.keys(rank.rarity).some(rarity=>rank.rarity[rarity].includes(name))) rank.rarity.legend.push(name);
-}
-for(var name of Object.keys(lib.characterPack['NianShouCharacter'])){
+for(const name of Object.keys(lib.characterPack['NianShouCharacter'])){
 if(!Object.keys(rank.rarity).some(rarity=>rank.rarity[rarity].includes(name))){
-if(lib.characterSort.NianShouCharacter.NianShouCharacter2018.includes(name)) rank.rarity.legend.push(name);
-if(lib.characterSort.NianShouCharacter.NianShouCharacter2019.includes(name)) rank.rarity.legend.push(name);
+if(lib.characterSort.NianShouCharacter.NianShouCharacter2018.includes(name)) rank.rarity['legend'].push(name);
+if(lib.characterSort.NianShouCharacter.NianShouCharacter2019.includes(name)) rank.rarity['legend'].push(name);
 }
 }
-//原活动配件修改
-for(var name of Object.keys(lib.characterPack['extra'])){
-if(!Object.keys(rank.rarity).some(rarity=>rank.rarity[rarity].includes(name))){
-rank.rarity.legend.add(name);
-}
-}
-for(var name of Object.keys(lib.characterPack['sb'])){
-if(!Object.keys(rank.rarity).some(rarity=>rank.rarity[rarity].includes(name))){
-rank.rarity.junk.add(name);
-}
-}
-for(var name of Object.keys(lib.characterPack['sp'])){
-if(!Object.keys(rank.rarity).some(rarity=>rank.rarity[rarity].includes(name))){
-if(lib.characterSort.sp.sp_qifu.includes(name)) rank.rarity.legend.add(name);
-}
-}
-for(var name of Object.keys(lib.characterPack['yingbian'])){
-if(!Object.keys(rank.rarity).some(rarity=>rank.rarity[rarity].includes(name))){
-rank.rarity.rare.add(name);
-}
+for(const name of lib.characterSort['diy'].diy_trashbin){
+if(!Object.keys(rank.rarity).some(rarity=>rank.rarity[rarity].includes(name))) rank.rarity['junk'].add(name);
 }
 //总置
 var addRank=function(rank){
@@ -1705,7 +1668,6 @@ game.HDaddCharacter('old_yj_zhanghe',['male','qun',4,['zhilve'],['ext:活动武�
 //怀旧包
 lib.characterSort.old.bilibili_buchong_shenhua=['old_zhoufei','lusu','yuanshao','old_dengai'];
 lib.characterSort.old.bilibili_buchong_yijiang=['old_yj_jushou','ol_manchong'];
-lib.characterSort.old.bilibili_buchong_refresh=['oldx_zhangfei','oldx_guanyu','oldx_zhaoyun','oldx_yujin','junk_liubei','junk_huangyueying'];
 lib.characterSort.old.bilibili_buchong_sp=['old_zhangbao','old_sunluyu','old_pangtong'];
 lib.characterSort.old.bilibili_buchong_szn2=['old_yuanji','old_xushao','junk_duanwei'];
 lib.characterSort.old.bilibili_buchong_mobile2=['old_sb_ganning','old_zhouchu','old_xunchen','old_sp_kongrong','old_zhangzhongjing','oldx_zhangzhongjing','old_zhangyì','old_yj_ganning','old_yanghuiyu','old_liuzhang','old_sp_sunshao','old_wangling','old_sp_huaxin','old_sp_mifuren'];
@@ -1746,22 +1708,15 @@ game.HDaddCharacter('old_sp_mifuren',['female','shu',3,['spguixiu','spcunsi'],['
 game.HDaddCharacter('old_zhouchu',['male','wu',4,['xianghai','chuhai'],['ext:活动武将/image/character/old_zhouchu.jpg']],'old');
 game.HDaddCharacter('old_sb_ganning',['male','wu',4,['old_qixi','old_fenwei'],['ext:活动武将/image/character/old_sb_ganning.jpg']],'old');
 game.HDaddCharacter('junk_duanwei',['male','qun',4,['langmie'],[]],'old');
-game.HDaddCharacter('oldx_zhangfei',['male','shu',4,['paoxiao','bilibili_tannang'],['character:zhangfei']],'old');
-game.HDaddCharacter('oldx_guanyu',['male','shu',4,['wusheng','bilibili_yishi'],['character:guanyu']],'old');
-game.HDaddCharacter('oldx_zhaoyun',['male','shu',4,['longdan','yicong'],['character:zhaoyun']],'old');
-game.HDaddCharacter('oldx_yujin',['male','wei',4,['bilibili_zhengjun'],['character:yujin']],'old');
 game.HDaddCharacter('old_yuanji',['female','wu',3,['dcmengchi','dcjiexing'],['ext:活动武将/image/character/old_yuanji.jpg']],'old');
-game.HDmoveCharacter('junk_liubei','old');
-game.HDmoveCharacter('junk_huangyueying','old');
 
 //DIY
-lib.characterSort.diy.diy_fakenews.addArray(['bol_zhangzhongjing','bol_sp_huaxin','bfake_zuoci','bfake_yangfu','bfake_chengpu','bfake_sundeng','old_shen_sunquan','old_shen_ganning','bfake_jiananfeng','bfake_chengui']);
-lib.characterSort.diy.diy_trashbin.addArray(['old_ol_xiaoqiao','old_zhanghe','old_zhugejin']);
+lib.characterSort.diy.diy_trashbin.addArray(['bol_zhangzhongjing','bol_sp_huaxin','bfake_zuoci','bfake_yangfu','bfake_chengpu','bfake_sundeng','old_shen_sunquan','old_shen_ganning','bfake_jiananfeng','bfake_chengui','old_ol_xiaoqiao','old_zhanghe','old_zhugejin','oldx_zhangfei','oldx_guanyu','oldx_zhaoyun','oldx_yujin']);
 game.HDdeleteCharacter('ol_guohuai');
 game.HDaddCharacter('bfake_yangfu',['male','wei',4,['old_jiebing','old_kuzhan'],['ext:活动武将/image/character/bfake_yangfu.jpg']],'diy');
 game.HDaddCharacter('bfake_zuoci',['male','qun',3,['BThuashen','BTxinsheng'],['ext:活动武将/image/character/bfake_zuoci.jpg']],'diy');
 game.HDaddCharacter('bfake_chengpu',['male','wu',4,['bolkuangbi'],['ext:活动武将/image/character/bfake_sundeng.jpg']],'diy');
-game.HDaddCharacter('bfake_sundeng',['male','wei',4,['old_jiebing','old_kuzhan'],['ext:活动武将/image/character/bfake_yangfu.jpg']],'diy');
+game.HDaddCharacter('bfake_sundeng',['male','wei',4,['old_jiebing','old_kuzhan'],['ext:活动武将/image/character/bfake_sundeng.jpg']],'diy');
 game.HDaddCharacter('old_shen_sunquan',['male','shen',4,['shen_sunquan_skill'],['wu','ext:活动武将/image/character/old_shen_sunquan.jpg']],'diy');
 game.HDaddCharacter('old_shen_ganning',['male','shen',1,['old_jieying','old_tongling'],['wu','ext:活动武将/image/character/old_shen_ganning.jpg']],'diy');
 game.HDaddCharacter('bfake_jiananfeng',['female','jin',8,['bolduliao','bolhuidu','bolfushou'],['ext:活动武将/image/character/bfake_jiananfeng.jpg']],'diy');
@@ -1773,6 +1728,10 @@ game.HDaddCharacter('bol_zhangzhongjing',['male','qun',3,['bolliaoyi','bolbinglu
 game.HDaddCharacter('old_ol_xiaoqiao',['female','wu',3,['oltianxiang','rehongyan'],['ext:活动武将/image/character/old_ol_xiaoqiao.jpg']],'diy');
 game.HDaddCharacter('old_zhanghe',['male','wei',4,['qiaobian','bilibili_zhiyinxian'],['ext:活动武将/image/character/old_zhanghe.jpg']],'diy');
 game.HDaddCharacter('old_zhugejin',['male','wu',3,['olhongyuan','bolhuanshi','olmingzhe'],['ext:活动武将/image/character/old_zhugejin.jpg']],'diy');
+game.HDaddCharacter('oldx_zhangfei',['male','shu',4,['paoxiao','bilibili_tannang'],['character:zhangfei']],'diy');
+game.HDaddCharacter('oldx_guanyu',['male','shu',4,['wusheng','bilibili_yishi'],['character:guanyu']],'diy');
+game.HDaddCharacter('oldx_zhaoyun',['male','shu',4,['longdan','yicong'],['character:zhaoyun']],'diy');
+game.HDaddCharacter('oldx_yujin',['male','wei',4,['bilibili_zhengjun'],['character:yujin']],'diy');
 
 //precS
 //技能修改
@@ -2273,7 +2232,6 @@ bol_fuhuanghou_prefix:'TW',
 //武将分包翻译
 bilibili_buchong_shenhua:'武将补充·神话再临',
 bilibili_buchong_yijiang:'武将补充·一将成名',
-bilibili_buchong_refresh:'武将补充·界限突破',
 bilibili_buchong_menfashizu:'武将补充·门阀士族',
 bilibili_buchong_extra:'武将补充·神武将',
 bilibili_buchong_sp:'武将补充·SP',
