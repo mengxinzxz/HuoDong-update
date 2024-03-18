@@ -48199,7 +48199,7 @@ var num=nums[i];
 var name=list3[num];
 game.log(player,'得到了','#g'+list[num],'的庇护');
 game.broadcastAll(function(player,i,list,num){
-player.node[i==0?'avatar':'avatar2'].setBackgroundImage('extension/活动武将/image/备用素材/'+list[num]+'.jpg');
+player.node[i==0?'avatar':'avatar2'].setBackgroundImage('extension/活动武将/image/default/'+list[num]+'.jpg');
 player.node[i==0?'name':'name2'].innerHTML=list[num];
 },player,i,list,num);
 var card=get.cardPile(function(card){
@@ -53780,11 +53780,11 @@ if(!player.hasSkillTag('jueqing')&&get.tag(card,'damage')) return 0;
 },
 },
 subSkill:{
-xiaosha:{audio:'ext:活动武将/texiao/subaudio/xvxiang:true'},
-xiaotao:{audio:'ext:活动武将/texiao/subaudio/xvxiang:true'},
-xiaoshan:{audio:'ext:活动武将/texiao/subaudio/xvxiang:true'},
-xiaojiu:{audio:'ext:活动武将/texiao/subaudio/xvxiang:true'},
-xiaole:{audio:'ext:活动武将/texiao/subaudio/xvxiang:true'},
+xiaosha:{audio:'ext:活动武将/audio/skill:true'},
+xiaotao:{audio:'ext:活动武将/audio/skill:true'},
+xiaoshan:{audio:'ext:活动武将/audio/skill:true'},
+xiaojiu:{audio:'ext:活动武将/audio/skill:true'},
+xiaole:{audio:'ext:活动武将/audio/skill:true'},
 },
 },
 //TW神吕蒙
