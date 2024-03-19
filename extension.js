@@ -13560,10 +13560,12 @@ return ui.create.dialog(
 [lib.suit.map(i=>['','','lukai_'+i]),'vcard'],'hidden');
 },
 select:()=>3-_status.event.player.countMark('sbjianxiong'),
+/*
 filter:function(button){
 var player=_status.event.player;
 return player.countCards('h',card=>get.suit(card,player)==button.link[2].slice(6));
 },
+*/
 check:function(button){
 var player=_status.event.player;
 return player.countMark('sbjianxiong')*15-player.getCards('h',{suit:button.link[2].slice(6)}).map(i=>get.value(i)).reduce((p,c)=>p+c,0);
@@ -13575,12 +13577,17 @@ suits:links.map(i=>i[2].slice(6)),
 filterTarget:function(card,player,target){
 return target!=player&&target.countCards('h');
 },
+filterCard:()=>false,
+selectCard:-1,
 content:function(){
 'step 0'
 var suits=lib.skill.minisbqingzheng_backup.suits;
+const popup=suits.slice().sort((a,b)=>lib.suit.indexOf(a)-lib.suit.indexOf(b)).reduce((str,suit)=>str+get.translation(suit),'');
+player.popup(popup);
+game.log(player,'选择了花色','#g'+popup);
 var cards=player.getCards('h',card=>suits.includes(get.suit(card,player)));
 event.cards=cards;
-player.discard(cards);
+if(cards.length) player.discard(cards);
 'step 1'
 var list=[];
 var dialog=['清正：弃置'+get.translation(target)+'一种花色的所有牌'];
@@ -13627,25 +13634,27 @@ ai:{
 result:{
 target:function(player,target){
 var att=get.attitude(player,target);
-if(att>=0) return 0;
-return 1-att/2+Math.sqrt(target.countCards('h'));
+return att>0?0:(1-(get.sgn(get.effect(target,{name:'guohe_copy2'},player,player))*Math.sqrt(target.countCards('h'))));
 },
 },
 },
 }
 },
-prompt:()=>'请选择【清正】的目标',
+prompt(links,player){
+const popup=links.slice().map(i=>i[2].slice(6)).sort((a,b)=>lib.suit.indexOf(a)-lib.suit.indexOf(b)).reduce((str,suit)=>str+get.translation(suit),'');
+return '###清正###弃置'+popup+'花色的所有手牌并观看一名有手牌的其他角色的手牌，你弃置其中一种花色的所有牌。若其被弃置的牌数小于你以此法弃置的牌数，你对其造成1点伤害，然后你可获得或失去1枚“治世”标记';
+},
 },
 ai:{
 combo:'minisbjianxiong',
 order:function(item,player){
 var getNum=function(player,target){
-var att=get.attitude(player,target);
-if(att>=0) return 0;
-return 1-att/2+Math.sqrt(target.countCards('h'));
+return get.attitude(player,target)>0?0:(get.sgn(get.effect(target,{name:'guohe_copy2'},player,player))*Math.sqrt(target.countCards('h')));
 };
 var targets=game.filterPlayer(current=>current!=player&&current.countCards('h'));
+if(!targets.length) return 0;
 targets.sort((a,b)=>getNum(player,b)-getNum(player,a));
+if(getNum(player,targets[0])<=0) return 0;
 return targets[0].countCards('h')+3;
 },
 result:{player:1},
