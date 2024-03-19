@@ -1583,10 +1583,13 @@ lib.characterReplace.jsp_guanyu.addArray(['bol_jsp_guanyu','bolx_jsp_guanyu']);
 lib.characterReplace.lingju.add('decade_lingju');
 lib.characterReplace.buzhi=['decade_buzhi','buzhi'];
 lib.characterReplace.fuhuanghou.add('bol_fuhuanghou');
+lib.characterReplace.yj_jushou.add('old_yj_jushou');
+/*
 //筛选武将同名替换
 Object.keys(lib.characterReplace).forEach(name=>{
 lib.characterReplace[name]=lib.characterReplace[name].filter(namex=>lib.character[namex]&&!lib.filter.characterDisabled(namex));
 });
+*/
 
 //precC
 //武将补充/修改
@@ -1678,7 +1681,7 @@ game.HDaddCharacter('old_clan_xuncan',['male','wei',3,['old_yunshen','old_shangs
 game.HDaddCharacter('oldx_clan_xuncai',['female','qun',3,['oldx_lieshi','oldx_dianzhan','clanhuanyin','clandaojie'],['clan:颍川荀氏','tempname:clan_xuncai']],'old');
 game.HDaddCharacter('lusu',['male','wu',3,['haoshi','redimeng'],['ext:活动武将/image/character/lusu.jpg']],'old');
 game.HDaddCharacter('yuanshao',['male','qun',4,['oldluanji','xueyi'],['ext:活动武将/image/character/yuanshao.jpg','zhu']],'old');
-game.HDaddCharacter('old_yj_jushou',['male','qun',3,['jianying','oldshibei'],['unseen','ext:活动武将/image/character/old_yj_jushou.jpg']],'old');
+game.HDaddCharacter('old_yj_jushou',['male','qun',3,['jianying','oldshibei'],['ext:活动武将/image/character/old_yj_jushou.jpg']],'old');
 game.HDaddCharacter('old_shen_xunyu',['male','shen',3,['old_tianzuo','old_lingce','old_dinghan'],['wei','ext:活动武将/image/character/old_shen_xunyu.jpg']],'old');
 game.HDaddCharacter('old_shen_simayi',['male','shen',3,['reguicai','fangzhu','rewansha','rezhiheng','rejizhi'],['wei','ext:活动武将/image/character/old_shen_simayi.jpg']],'old');
 game.HDaddCharacter('old_shen_taishici',['male','shen',4,['olddulie','oldpowei','dangmo'],['wu','ext:活动武将/image/character/old_shen_taishici.jpg']],'old');
