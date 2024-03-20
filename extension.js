@@ -14354,10 +14354,15 @@ await target.damage();
 },
 //徐晃
 minisbduanliang:{
-audio:'sbduanliang',
+audio:['1','_true1','_true2','_false'].map(i=>'sbduanliang'+i+'.mp3'),
+group:'minisbduanliang_effect',
+subSkill:{
+effect:{
+audio:'sbduanliang1.mp3',
 enable:'phaseUse',
 usable:2,
 filterTarget:lib.filter.notMe,
+prompt:()=>lib.translate.minisbduanliang_info,
 async content(event,trigger,player){
 const target=event.target;
 player.removeGaintag('minisbduanliang_tag');
@@ -14381,14 +14386,16 @@ if(player.canUse(juedou,target,false)) await player.useCard(juedou,target,false)
 }
 }
 },
+get ai(){
+return get.info('sbduanliang').ai||{};
+},
+},
+},
 init(){
 if(!_status.miniMouYi){
 _status.miniMouYi=true;
 lib.skill.minisbtieji.initMouYi();
 }
-},
-get ai(){
-return get.info('sbduanliang').ai||{};
 },
 },
 //蜀
@@ -19245,8 +19252,13 @@ else targets[0].addSkill('sbjijiang_skip');
 },
 //谋马超
 minisbtieji:{
-audio:'sbtieji',
+audio:['1','_true1','_true2','_false'].map(i=>'sbtieji'+i+'.mp3'),
+group:['minisbtieji_effect','minisbtieji_mouyi'],
+subSkill:{
+effect:{
+audio:'sbtieji1.mp3',
 inherit:'sbtieji',
+prompt2:()=>lib.translate.sbtieji_info,
 async content(event,trigger,player){
 const target=trigger.target;
 target.addTempSkill('fengyin');
@@ -19264,10 +19276,9 @@ if(result.player=='db_def1') player.gainPlayerCard(target,'he',true);
 else player.draw(2);
 }
 },
-group:'minisbtieji_mouyi',
-subSkill:{
+},
 mouyi:{
-audio:'sbtieji',
+audio:'sbtieji1.mp3',
 trigger:{
 player:['chooseToDuibenAfter','mini_chooseToMouYiAfter'],
 target:['chooseToDuibenAfter','mini_chooseToMouYiAfter'],
