@@ -2830,23 +2830,14 @@ game.bol_playAudiox();
 
 //设定势力+颜色显示
 game.bolAddGroupNature=function(name,mapping,gradient,push){
-var n,t;
-if(!name) return;
-if(typeof name=="string"){
-n=name;
-t=name
-}
-else if(Array.isArray(name)&&name.length==2&&typeof name[0]=="string"){
+var n;
+if(!name||!Array.isArray(name)) return;
 n=name[0];
-t=name[1]
-}
-else return;
 if(!mapping||!Array.isArray(mapping)||mapping.length!=3) mapping=[199,21,133];
 var y="("+mapping[0]+","+mapping[1]+","+mapping[2];
 var y1=y+",1)",y2=y+")";
 var s=document.createElement('style');
-var l;
-l=".player .identity[data-color='diy"+n+"'],";
+var l=".player .identity[data-color='diy"+n+"'],";
 l+="div[data-nature='diy"+n+"'],";
 l+="span[data-nature='diy"+n+"'] {text-shadow: black 0 0 1px,rgba"+y1+" 0 0 2px,rgba"+y1+" 0 0 5px,rgba"+y1+" 0 0 10px,rgba"+y1+" 0 0 10px}";
 l+="div[data-nature='diy"+n+"m'],";
@@ -2867,11 +2858,11 @@ tenUi.innerHTML+=".player>.camp-zone[data-camp='"+n+"']>.camp-name {text-shadow:
 document.head.appendChild(tenUi);
 }
 if(push===true) lib.group.add(n);
-lib.translate[n]=t;
+if(!_status.mx_group) _status.mx_group='夏商周秦汉晋南北隋唐宋元明清';
+lib.translate[n]=name[1];
+lib.translate[n+'2']=(name[2]?name[2]:(name[1]+(_status.mx_group.includes(name[1])?'朝':'国')));
 lib.groupnature[n]="diy"+n;
 };
-//势力颜色
-game.bolAddGroupNature(['daqin','秦'],[255,165,0]);
 //武将包和卡包
 if(bilibilicharacter.enable){
 //武将包
@@ -5867,8 +5858,6 @@ for(var i of targets) i.damage();
 },
 },
 translate:{
-daqin:'秦',
-daqin2:'秦朝',
 hezong_jun:'合纵抗秦·BOSS',
 hezong_bing:'合纵抗秦·兵卒',
 qin_yingzheng:'嬴政',
@@ -6001,6 +5990,7 @@ hezongkangqincharacter.character[i][4].push(((lib.device||lib.node)?'ext:':'db:e
 }
 return hezongkangqincharacter;
 });
+game.bolAddGroupNature(['daqin','秦'],[255,165,0]);
 //lib.config.all.characters.push('hezongkangqincharacter');
 lib.config.all.sgscharacters.push('hezongkangqincharacter');
 if(!lib.config.characters.includes('hezongkangqincharacter')) lib.config.characters.remove('hezongkangqincharacter');
@@ -15361,7 +15351,6 @@ if(result.targets.includes(player)) player.draw();
 },
 tiaoxin_ol_jiangwei:{audio:2},
 tiaoxin_sp_jiangwei:{audio:2},
-tiaoxin_xiahouba:{audio:2},
 guanxing_ol_jiangwei:{audio:2},
 minitiaoxin:{
 audio:'tiaoxin_ol_jiangwei',
@@ -21445,7 +21434,6 @@ audio:'anguo',
 inherit:'xinanguo',
 filterTarget:true,
 },
-yinghun_ol_sunjian:{audio:2},
 miniyinghun:{
 audio:'yinghun',
 audioname2:{
@@ -42288,7 +42276,6 @@ if(card) player.gain(card,'gain2');
 }
 },
 },
-shengxi_feiyi:{audio:2},
 //陈震
 fh_shameng:{
 audio:'shameng',
@@ -50974,12 +50961,8 @@ player.loseMaxHp();
 player.addSkills('mashu');
 },
 },
-wusheng_guansuo:{audio:2},
-dangxian_guansuo:{audio:2},
-zhiman_guansuo:{audio:2},
 reyingzi_sunce:{audio:2},
 yinghun_sunce:{audio:2},
-shensu1_xiahouba:{audio:2},
 //荀淑
 old_shenjun:{
 audio:'clanshenjun',
