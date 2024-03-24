@@ -40,15 +40,11 @@ game.bolShowNewPack=function(){
 //更新告示
 var HuoDong_update=[
 '/setPlayer/',
-'bugfix',
-'部分武将分包调整，部分武将技能调整',
-'强制性覆盖无名杀晋势力为其他势力加原画→开关控制',
-'添加欢杀武将：谋徐晃、张鲁、张嶷、张宁',
+'新系列：NBA牢星球员宿舍',
 'To be continued...',
 ];
 //更新武将
 var HuoDong_players=[
-'Mbaby_sb_xuhuang','Mbaby_zhanglu','Mbaby_zhangyi','Mbaby_zhangning',
 ];
 //加载
 var dialog=ui.create.dialog(
@@ -1297,7 +1293,7 @@ if(!Object.keys(rank.rarity).some(rarity=>rank.rarity[rarity].includes(name))) r
 }
 for(const name of Object.keys(lib.characterPack['huodongcharacter'])){
 if(!Object.keys(rank.rarity).some(rarity=>rank.rarity[rarity].includes(name))){
-if(['Chuodong','CDanJi','CSCS'].some(pack=>lib.characterSort.huodongcharacter[pack].includes(name))) rank.rarity['legend'].push(name);
+if(['Chuodong','CDanJi','CSCS','Csxydormitory'].some(pack=>lib.characterSort.huodongcharacter[pack].includes(name))) rank.rarity['legend'].push(name);
 else rank.rarity['rare'].push(name);
 }
 }
@@ -46732,6 +46728,7 @@ huodongcharacter:{
 CLongZhou:['lz_sufei','lz_tangzi','lz_liuqi','lz_huangquan'],
 CZHengHuo:['bilibili_zhengxuan','bilibili_sp_xuyou','old_zuoci'],
 Chuodong:['bilibili_shengxunyu','bilibili_Firewin','bilibili_jinglingqiu','bilibili_suixingsifeng','bilibili_Emptycity','bilibili_thunderlei','bilibili_lonelypatients'],
+Csxydormitory:['sxy_shengxunyu'],
 Cothers:['bilibili_adong','bilibili_zhangrang','bilibili_litiansuo','decade_huangwudie','bilibili_huanggai','bilibili_ekeshaoge','bilibili_guanning','bilibili_wangwang','bilibili_zhouxiaomei','diy_lvmeng'],
 CDanJi:['DJ_caiyang','DJ_pujing','DJ_huban'],
 CSCS:['biliscs_shichangshi','biliscs_zhangrang','biliscs_zhaozhong','biliscs_sunzhang','biliscs_bilan','biliscs_xiayun','biliscs_hankui','biliscs_lisong','biliscs_duangui','biliscs_guosheng','biliscs_gaowang'],
@@ -46778,6 +46775,8 @@ biliscs_lisong:['male','qun',1,['scskuiji'],['character:scs_lisong']],
 biliscs_duangui:['male','qun',1,['scschihe'],['character:scs_duangui']],
 biliscs_guosheng:['male','qun',1,['scsniqu'],['character:scs_guosheng']],
 biliscs_gaowang:['male','qun',1,['scsmiaoyu'],['character:scs_gaowang']],
+//NBA牢星球员宿舍
+sxy_shengxunyu:['male','mx_dom','3/Infinity',['dom_chouxiang'],[((lib.device||lib.node)?'ext:':'db:extension-')+'活动武将/image/character/bilibili_shengxunyu.jpg']],
 },
 characterIntro:{
 ekeshaoge:'俄何烧戈，羌将。正始八年，陇西、南安、金城、西平诸羌饿何、烧戈、伐同、蛾遮塞等相结叛乱，攻围城邑，南招蜀兵，凉州名胡治无戴复叛应之。讨蜀护军夏侯霸督诸军屯为翅。郭淮退姜维，维遁退。进讨叛羌，斩饿何、烧戈，降服者万馀落。',
@@ -55458,6 +55457,60 @@ targets.forEach(target=>trigger.card.bolcongshi[target.playerid]=targetx.filter(
 },
 bolNoAudio:{audio:false},//万 恶 之 源
 yicong_jsp_zhaoyun:{audio:2},
+//NBA牢星球员宿舍
+dom_chouxiang:{
+dormSkill:true,
+mod:{
+cardUsableTarget(card,player,target){
+if(target!=player&&target.group=='mx_dom') return true;
+},
+targetInRange(card,player,target){
+if(target!=player&&target.group=='mx_dom') return true;
+},
+},
+trigger:{player:['useCard','useSkill','logSkillBegin']},
+filter(event,player){
+return (event.targets||event.target)&&(event.targets||[event.target]).some(i=>i!=player&&i.group=='mx_dom');
+},
+logTarget(event,player){
+return (event.targets||[event.target]).filter(i=>i!=player&&i.group=='mx_dom');
+},
+forced:true,
+async content(event,trigger,player){
+let loser=[];
+const targets=(trigger.targets||[trigger.target]).filter(i=>i!=player&&i.group=='mx_dom');
+const list=[player].concat(targets);
+await game.asyncDraw(list);
+if(!player.countCards('h')||player.hasSkillTag('noCompareSource')) loser.push(player);
+const losers=targets.filter(i=>!player.canCompare(i));
+loser.addArray(losers);
+if(targets.some(i=>player.canCompare(i))){
+const {result:{winner}}=await player.chooseToCompare(targets.filter(i=>player.canCompare(i)),card=>{
+return get.number(card);
+}).setContent('chooseToCompareMeanwhile');
+loser.addArray(list.filter(i=>!winner||winner!=i));
+}
+if(loser.length){
+loser.sortBySeat();
+player.when({global:['useCardAfter','useSkillAfter','logSkill']})
+.filter(evt=>evt==event)
+.then(()=>{
+loser.forEach(i=>i.addTempSkill('diaohulishan','roundStart'));
+var cards=Array.from(ui.ordering.childNodes);
+while(cards.length){
+cards.shift().discard();
+}
+var evt=_status.event.getParent('phase');
+if(evt){
+game.resetSkills();
+_status.event=evt;
+_status.event.finish();
+_status.event.untrigger(true);
+}
+}).vars({loser:loser});
+}
+},
+},
 },
 dynamicTranslate:{
 bilibili_xueji:function(player){
@@ -55519,6 +55572,7 @@ Chuodong:'<span style="font-family: yuanli">名人堂前言：</span>'+
 '<br><span style="font-family: yuanli">作用的人。</span>'+
 '<br>'+
 '活动群名人堂',
+Csxydormitory:'NBA牢星球员宿舍',
 Cothers:'自嗨',
 CDanJi:'彩蛋·千里走单骑',
 CSCS:'彩蛋·十常侍',
@@ -55893,6 +55947,11 @@ bolyingtu_info:'①当你的上家于摸牌阶段外获得牌后，你可以获�
 bolcongshi:'从势',
 bolcongshi_info:'锁定技。①体力值最大的角色对你的上家和下家使用牌无距离限制。②有角色使用因〖从势①〗增加距离的牌对你的上家或下家造成伤害后，你回复1点体力。',
 bol_fuhuanghou:'TW伏寿',
+sxy_shengxunyu:'宿舍熏鱼',
+sxy_shengxunyu_ab:'生熏鱼',
+dom_chouxiang:'抽象',
+dom_chouxiang_info:'锁定技，你对其他宿舍成员使用牌无距离和次数限制；当你使用牌或发动技能时，若其中包含其他宿舍成员，则你和这些角色各摸一张牌，然后进行同时拼点，不能拼点和拼点没赢的角色于此牌或技能结算完毕后于本轮移出游戏。',
+dom_chouxiang_append:'<span style="font-family:yuanli">抽象对抽象，不抽象的陪牢大打复活赛</span>',
 },
 };
 for(var i in huodongcharacter.character){
@@ -55903,6 +55962,7 @@ if(!lib.config.extension_活动武将_SCS&&i.indexOf('biliscs_')!=-1) delete huo
 }
 return huodongcharacter;
 });
+game.bolAddGroupNature(['mx_dom','宿','宿舍'],[255,215,0]);
 //lib.config.all.characters.push('huodongcharacter');
 lib.config.all.sgscharacters.push('huodongcharacter');
 if(!lib.config.characters.includes('huodongcharacter')) lib.config.characters.remove('huodongcharacter');
@@ -56333,7 +56393,7 @@ intro:'新人制作扩展，希望大家支持。'+
 author:'萌新（转型中）',
 diskURL:'',
 forumURL:'',
-version:'0.2.0',
+version:'0.2.1',
 //新人制作扩展，希望大家支持。
 //新人技术不足，希望大家包涵。
 //壹、贰、叁、肆、伍、陆、柒、捌、玖、拾
