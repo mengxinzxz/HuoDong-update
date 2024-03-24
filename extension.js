@@ -55572,7 +55572,13 @@ Chuodong:'<span style="font-family: yuanli">名人堂前言：</span>'+
 '<br><span style="font-family: yuanli">作用的人。</span>'+
 '<br>'+
 '活动群名人堂',
-Csxydormitory:'NBA牢星球员宿舍',
+Csxydormitory:'<span style="font-family: yuanli">宿舍系列前言：</span>'+
+'<br><span style="font-family: yuanli">萌新特设2024年diy系列，收录</span>'+
+'<br><span style="font-family: yuanli">以生熏鱼为首的寝室群的人物传</span>'+
+'<br><span style="font-family: yuanli">记，此包名称为群聊名称，请勿</span>'+
+'<br><span style="font-family: yuanli">过度解读</span>'+
+'<br>'+
+'NBA牢星球员宿舍',
 Cothers:'自嗨',
 CDanJi:'彩蛋·千里走单骑',
 CSCS:'彩蛋·十常侍',
@@ -55951,7 +55957,7 @@ sxy_shengxunyu:'宿舍熏鱼',
 sxy_shengxunyu_ab:'生熏鱼',
 dom_chouxiang:'抽象',
 dom_chouxiang_info:'锁定技，你对其他宿舍成员使用牌无距离和次数限制；当你使用牌或发动技能时，若其中包含其他宿舍成员，则你和这些角色各摸一张牌，然后进行同时拼点，不能拼点和拼点没赢的角色于此牌或技能结算完毕后于本轮移出游戏。',
-dom_chouxiang_append:'<span style="font-family:yuanli">抽象对抽象，不抽象的陪牢大打复活赛</span>',
+dom_chouxiang_append:'<span style="font-family:yuanli">抽象对抽象，不抽象的陪'+get.bolInformX('牢大','仅娱乐，请勿过度解读')+'打复活赛</span>',
 },
 };
 for(var i in huodongcharacter.character){
