@@ -55573,9 +55573,9 @@ Chuodong:'<span style="font-family: yuanli">名人堂前言：</span>'+
 '<br>'+
 '活动群名人堂',
 Csxydormitory:'<span style="font-family: yuanli">宿舍系列前言：</span>'+
-'<br><span style="font-family: yuanli">萌新特设2024年diy系列，收录</span>'+
-'<br><span style="font-family: yuanli">以生熏鱼为首的寝室群的人物传</span>'+
-'<br><span style="font-family: yuanli">记，此包名称为群聊名称，请勿</span>'+
+'<br><span style="font-family: yuanli">萌新特设2024年diy系列，收录以</span>'+
+'<br><span style="font-family: yuanli">生熏鱼为首的寝室群的人物传记</span>'+
+'<br><span style="font-family: yuanli">，此包名称为群聊名称，请不要</span>'+
 '<br><span style="font-family: yuanli">过度解读</span>'+
 '<br>'+
 'NBA牢星球员宿舍',
