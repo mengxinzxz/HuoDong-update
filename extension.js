@@ -49526,7 +49526,7 @@ if(!skills.length&&!player.storage.shen_sunquan_skill.length&&trigger.name!='pha
 const gainSkills=async function(player,num,skills){
 const gains=skills.randomGets(num);
 player.storage.shen_sunquan_skill.addArray(gains);
-player.addSkills(gain);
+player.addSkills(gains);
 };
 const loseSkills=async function(player,num,skills){
 const removes=player.storage.shen_sunquan_skill.randomGets(num);
