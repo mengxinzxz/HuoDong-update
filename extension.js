@@ -41,10 +41,12 @@ game.bolShowNewPack=function(){
 var HuoDong_update=[
 '/setPlayer/',
 '新系列：NBA牢星球员宿舍',
+'欢杀庞统',
 'To be continued...',
 ];
 //更新武将
 var HuoDong_players=[
+'Mbaby_pangtong',
 ];
 //加载
 var dialog=ui.create.dialog(
@@ -9416,7 +9418,7 @@ Mbaby_zhaoyun:['male','shu',4,['ollongdan','miniyajiao'],[]],
 Mbaby_huangzhong:['male','shu',4,['miniliegong'],[]],
 Mbaby_weiyan:['male','shu',4,['minikuanggu','miniqimou'],[]],
 Mbaby_liaohua:['male','shu',4,['minidangxian','minifuli'],[]],
-Mbaby_pangtong:['male','shu',3,['minilianhuan','oldniepan'],[]],
+Mbaby_pangtong:['male','shu',3,['minirelianhuan','mininiepan'],['tempname:ol_pangtong','die_audio:ol_pangtong']],
 Mbaby_menghuo:['male','shu',5,['minihuoshou','zaiqi'],[]],
 Mbaby_jiangwei:['male','shu',4,['minitiaoxin','minizhiji'],[]],
 Mbaby_liushan:['male','shu',4,['xiangle','minifangquan','miniruoyu'],['zhu']],
@@ -15345,6 +15347,83 @@ if(result.targets.includes(player)) player.draw();
 }
 },
 },
+minirelianhuan:{
+audio:'xinlianhuan',
+audioname:['ol_pangtong'],
+trigger:{player:['phaseUseBegin','useCard2','useCardToPlayered']},
+filter(event,player,name){
+const card=new lib.element.VCard({name:'tiesuo'});
+if(event.name=='phaseUse') return player.hasUseTarget(card,false);
+if(event.card.name!='tiesuo') return false;
+if(name=='useCard2') return game.hasPlayer(current=>!event.targets.includes(current)&&lib.filter.targetEnabled2(event.card,player,current)&&lib.filter.targetInRange(event.card,player,current));
+return event.target!=player&&!event.target.isLinked()&&event.target.countCards('h');
+},
+direct:true,
+async content(event,trigger,player){
+const card=new lib.element.VCard({name:'tiesuo'});
+if(trigger.name=='phaseUse') player.chooseUseTarget('###'+get.prompt('minirelianhuan')+'###视为使用【铁索连环】',card,false).set('logSkill','minirelianhuan');
+else if(event.triggername=='useCardToPlayered'){
+const target=trigger.target;
+player.logSkill('minirelianhuan',target);
+const cards=target.getDiscardableCards(player,'h');
+if(cards.length) await target.discard(cards.randomGet()).set('discarder',player);
+}
+else{
+const {result:{bool,targets}}=await player.chooseTarget(get.prompt('minirelianhuan'),(card,player,target)=>{
+const trigger=get.event().getTrigger();
+if(trigger.targets.includes(target)) return false;
+return lib.filter.targetEnabled2(trigger.card,player,target)&&lib.filter.targetInRange(trigger.card,player,target);
+},[1,Infinity]).set('prompt2','为'+get.translation(trigger.card)+'选择任意额外目标').set('ai',target=>{
+const player=get.event('player'),trigger=get.event().getTrigger();
+return get.effect(target,trigger.card,player,player)*(trigger.targets.includes(target)?-1:1);
+});
+if(bool){
+player.logSkill('minirelianhuan',targets);
+trigger.targets.addArray(targets);
+if(targets.includes(player)) await player.draw();
+}
+}
+},
+},
+mininiepan:{
+unique:true,
+limited:true,
+audio:'olniepan',
+enable:'chooseToUse',
+filter(event,player){
+return event.type=='dying'&&event.dying==player;
+},
+skillAnimation:true,
+animationColor:'orange',
+async content(event,trigger,player){
+player.awakenSkill('miniolniepan');
+await player.discard(player.getCards('hej'));
+await player.link(false);
+await player.turnOver(false);
+await player.draw(3);
+if(player.hp<3) await player.recover(3-player.hp);
+const map={'八阵':'minibazhen','火计＆看破':['minihuoji','olkanpo']};
+const {result:{control}}=await player.chooseControl(Object.keys(map)).set('prompt','涅槃：请选择获得其中一个选项的技能').set('ai',()=>{
+return Object.keys(get.event('map')).randomGet();
+}).set('map',map);
+if(control) await player.addSkills(map[control]);
+},
+derivation:['minibazhen','minihuoji','olkanpo'],
+ai:{
+order:1,
+save:true,
+skillTagFilter(player,tag,target){
+if(player!=target||player.storage.mininiepan) return false;
+},
+result:{
+player(player){
+if(player.hp<=0) return 10;
+if(player.hp<=2&&player.countCards('he')<=1) return 10;
+return 0;
+}
+},
+},
+},
 tiaoxin_ol_jiangwei:{audio:2},
 tiaoxin_sp_jiangwei:{audio:2},
 guanxing_ol_jiangwei:{audio:2},
@@ -16885,6 +16964,7 @@ game.log(player,'获得了一张牌');
 },
 minibazhen:{
 audio:'bazhen',
+audioname:['ol_pangtong'],
 group:'bazhen_bagua',
 trigger:{player:'judgeEnd'},
 filter:function(event,player){
@@ -16896,8 +16976,8 @@ player.draw();
 },
 },
 minihuoji:{
-group:'minihuoji_viewAs',
 audio:'huoji',
+audioname:['ol_pangtong'],
 trigger:{player:'chooseToDiscardBegin'},
 filter:function(event){
 return event.getParent().name=='huogong';
@@ -16931,7 +17011,8 @@ trigger.getParent()._result={bool:true};
 game.updateRoundNumber();
 },
 ai:{fireAttack:true},
-subSkill:{viewAs:{inherit:'rehuoji',audio:'huoji'}},
+group:'minihuoji_viewAs',
+subSkill:{viewAs:{inherit:'rehuoji',audio:'huoji',audioname:['ol_pangtong']}},
 },
 minixushen:{
 derivation:'decadezhennan',
@@ -34900,6 +34981,10 @@ minifuli:'伏枥',
 minifuli_info:'限定技，当你处于濒死状态时，你可以将体力回复至X点并将手牌数摸至X张，然后若X大于3，你翻面（X为全场势力数）。',
 minilianhuan:'连环',
 minilianhuan_info:'出牌阶段开始时，你可以选择至多两名角色，这些角色重置或横置其武将牌，然后若你也是【连环】的目标角色，则你摸一张牌。',
+minirelianhuan:'连环',
+minirelianhuan_info:'①出牌阶段开始时，你可以视为使用【铁索连环】。②你使用【铁索连环】可以额外指定任意名目标，若以此法指定的目标包含你，则你摸一张牌。③当你使用【铁索连环】指定未横置的其他角色后，你随机弃置其一张手牌。',
+mininiepan:'涅槃',
+mininiepan_info:'限定技，当你处于濒死状态时，你可以弃置你区域内的所有牌并复原你的武将牌，然后摸三张牌并将体力回复至3点。然后你选择一项：①获得技能〖八阵〗；②获得技能〖火计〗〖看破〗。',
 minihuoshou:'祸首',
 minihuoshou_info:'锁定技，【南蛮入侵】对你无效；当其他角色使用【南蛮入侵】时，你代替其成为此牌的伤害来源并摸一张牌。',
 minitiaoxin:'挑衅',
