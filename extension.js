@@ -46877,6 +46877,7 @@ jiananfeng:'贾南风（257年－300年5月13日），小名峕，字南风，�
 babybao:'活动群资深元老，隐藏自身实力的高校研究生，为萌新负责提供图片/配音素材、进行武将测试、管理小群'+'<span style="text-decoration:line-through;">'+'反正不要拿respect当作职务'+'</span>'+'等职务。',
 },
 characterTitle:{
+sxy_shengxunyu:(()=>new Date().getDay()>5?'周末复活赛打赢ing':'工作日打复活赛ing')(),
 },
 characterFilter:{
 bilibili_sp_xuyou:function(mode){
@@ -46884,6 +46885,9 @@ return !lib.characterFilter.sp_xuyou(mode);
 },
 lz_tangzi:function(mode){
 return mode!='identity'&&mode!='guozhan';
+},
+sxy_shengxunyu(){
+return new Date().getDay()>5;
 },
 },
 perfectPair:{
