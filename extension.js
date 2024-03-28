@@ -34060,6 +34060,7 @@ if(card) player.gain(card,'gain2');
 minimiaoguose:{
 audio:'ext:活动武将/audio/skill:2',
 inherit:'sbguose',
+usable:4,
 content:function(){
 'step 0'
 if(target.hasJudge('lebu')) target.discard(target.getJudge('lebu'));
