@@ -15396,7 +15396,7 @@ return event.type=='dying'&&event.dying==player;
 skillAnimation:true,
 animationColor:'orange',
 async content(event,trigger,player){
-player.awakenSkill('miniolniepan');
+player.awakenSkill('mininiepan');
 await player.discard(player.getCards('hej'));
 await player.link(false);
 await player.turnOver(false);
