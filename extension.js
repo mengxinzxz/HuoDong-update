@@ -41,12 +41,12 @@ game.bolShowNewPack=function(){
 var HuoDong_update=[
 '/setPlayer/',
 '新系列：NBA牢星球员宿舍',
-'欢杀庞统',
+'欢杀庞统、极鲁肃、极袁绍、极许褚、欢杀神邓艾',
 'To be continued...',
 ];
 //更新武将
 var HuoDong_players=[
-'Mbaby_pangtong',
+'Mbaby_pangtong','wechat_lusu','wechat_re_yuanshao','wechat_re_xuzhu','Mbaby_shen_dengai',
 ];
 //加载
 var dialog=ui.create.dialog(
@@ -9341,7 +9341,7 @@ MiNi_wei:['Mbaby_chengyu','Mbaby_jianggan','Mbaby_yuejin','Mbaby_bianfuren','Mba
 MiNi_shu:['Mbaby_zhangyi','Mbaby_guanzhang','Mbaby_wolongfengchu','Mbaby_wangtao','Mbabysp_zhangfei','Mbaby_wangyue','Mbaby_xf_yiji','Mbaby_mizhu','Mbaby_mifuren','Mbaby_liuyong','Mbaby_ganfuren','Mbaby_sunqian','Mbaby_lvkai','Mbaby_zhoucang','Mbaby_huangyueying','Mbaby_yangwan','Mbaby_liuchen','Mbaby_liyan','Mbaby_chendao','Mbaby_yanyan','Mbaby_xiahouba','Mbaby_huaman','Mbaby_sp_zhugeliang','Mbaby_zhugeguo','Mbaby_jianyong','Mbaby_wangping','Mbaby_mayunlu','Mbaby_guansuo','Mbaby_xiahoushi','Mbaby_shamoke','Mbaby_wuxian','Mbaby_zhugezhan','Mbaby_qinmi','Mbaby_guanyinping','Mbaby_guanyu','Mbaby_zhugeliang','Mbaby_liubei','Mbaby_machao','Mbaby_zhurong','Mbaby_zhangfei','Mbaby_zhaoyun','Mbaby_huangzhong','Mbaby_weiyan','Mbaby_liaohua','Mbaby_pangtong','Mbaby_menghuo','Mbaby_jiangwei','Mbaby_liushan','Mbaby_fazheng','Mbaby_madai','Mbaby_guanping','Mbaby_liufeng','Mbaby_wuyi','Mbaby_zhangxingcai','Mbaby_dongyun','Mbaby_sp_sunshangxiang','Mbaby_xushu','Mbaby_masu'],
 MiNi_wu:['Mbaby_re_guyong','Mbaby_quancong','Mbaby_yufan','Mbaby_dc_sunru','Mbaby_sunxiu','Mbaby_zhangfen','Mbaby_xuezong','Mbaby_dingfeng','Mbaby_panjun','Mbaby_sundeng','Mbaby_luji','Mbaby_zhoufang','Mbaby_zhangxuan','Mbaby_yanjun','Mbaby_zhuhuan','Mbaby_luyusheng','Mbaby_re_jsp_pangtong','Mbaby_sunhao','Mbabysp_daqiao','Mbaby_lukang','Mbaby_buzhi','Mbaby_xushi','Mbaby_zhugeke','Mbaby_zhoufei','Mbaby_zhangzhang','Mbaby_sunliang','Mbaby_ol_sunjian','Mbaby_zhuzhi','Mbaby_bulianshi','Mbaby_chengpu','Mbaby_daqiao','Mbaby_ganning','Mbaby_huanggai','Mbaby_lusu','Mbaby_luxun','Mbaby_lvmeng','Mbaby_sunce','Mbaby_sunluban','Mbaby_sunluyu','Mbaby_sunquan','Mbaby_sunshangxiang','Mbaby_taishici','Mbaby_wuguotai','Mbaby_xiaoqiao','Mbaby_xusheng','Mbaby_zhoutai','Mbaby_zhouyu','Mbaby_zhugejin','Mbaby_zumao','Mbabysp_xiaoqiao'],
 MiNi_qun:['Mbaby_zhangning','Mbaby_zhanglu','Mbaby_wangyun','Mbaby_zoushi','Mbaby_dc_huangchengyan','Mbaby_simahui','Mbaby_tw_mateng','Mbaby_laiyinger','Mbaby_sp_kongrong','Mbaby_zhujun','Mbaby_gongsunyuan','Mbaby_sp_zhangliao','Mbaby_sp_ol_zhanghe','Mbaby_guotufengji','Mbaby_yanfuren','Mbaby_tangji','Mbaby_caojie','Mbaby_liangxing','Mbabysp_zhenji','Mbaby_caoxing','Mbaby_sp_menghuo','Mbaby_wangrong','Mbaby_hetaihou','Mbaby_sp_taishici','Mbaby_zhangji','Mbaby_dongbai','Mbaby_beimihu','Mbaby_chunyuqiong','Mbaby_zhangqiying','Mbaby_fuhuanghou','Mbaby_liuxie','Mbaby_quyi','Mbaby_jsp_huangyueying','Mbaby_sp_machao','Mbaby_lijue','Mbaby_panfeng','Mbaby_liuzhang','Mbaby_jiaxu','Mbaby_zhangbao','Mbaby_zhangliang','Mbaby_gaoshun','Mbaby_caifuren','Mbaby_xuyou','Mbaby_gongsunzan','Mbaby_pangde','Mbaby_jushou','Mbaby_liru','Mbaby_dongzhuo','Mbaby_zhangjiao','Mbaby_huatuo','Mbaby_lvbu','Mbaby_diaochan','Mbaby_sp_diaochan','Mbaby_huaxiong','Mbaby_yuji','Mbaby_yanwen','Mbaby_caiwenji','Mbaby_liubiao','Mbaby_yuanshao','Mbaby_yuanshu','Mbaby_chengong','Mbaby_zuoci'],
-MiNi_shen:['Mbaby_shen_zuoci','Mbaby_shen_taishici','Mbaby_shen_diaochan','Mbaby_shen_daxiaoqiao','Mbaby_shen_zhenji','Mbaby_shen_guojia','Mbaby_shen_huatuo','Mbaby_shen_dianwei','Mbaby_shen_lvbu','Mbaby_shen_zhugeliang','Mbaby_shen_lvmeng','Mbaby_shen_zhouyu','Mbaby_shen_guanyu','Mbaby_shen_liubei','Mbaby_shen_caocao','Mbaby_shen_zhangliao','Mbaby_shen_sunquan','Mbaby_shen_simayi','Mbaby_shen_zhaoyun','Mbaby_shen_ganning','Mbaby_shen_luxun'],
+MiNi_shen:['Mbaby_shen_dengai','Mbaby_shen_zuoci','Mbaby_shen_taishici','Mbaby_shen_diaochan','Mbaby_shen_daxiaoqiao','Mbaby_shen_zhenji','Mbaby_shen_guojia','Mbaby_shen_huatuo','Mbaby_shen_dianwei','Mbaby_shen_lvbu','Mbaby_shen_zhugeliang','Mbaby_shen_lvmeng','Mbaby_shen_zhouyu','Mbaby_shen_guanyu','Mbaby_shen_liubei','Mbaby_shen_caocao','Mbaby_shen_zhangliao','Mbaby_shen_sunquan','Mbaby_shen_simayi','Mbaby_shen_zhaoyun','Mbaby_shen_ganning','Mbaby_shen_luxun'],
 MiNi_change:['Mbaby_re_nanhualaoxian','Mbaby_re_sunyi','Mbaby_zhaoxiang','Mbaby_xushao','Mbaby_baosanniang','Mbaby_quanhuijie'],
 MiNi_shengzhiyifa:['Mbaby_sunwukong','Mbaby_dalanmao','Mbaby_libai','Mbaby_change','Mbaby_nvwa','Mbaby_tunxingmenglix','Mbaby_xiaoshan'],
 MiNi_sbCharacter:['Mbaby_sb_xuhuang','Mbaby_sb_zhaoyun','Mbaby_sb_liubei','Mbaby_sb_caocao','Mbaby_sb_huanggai','Mbaby_sb_yuanshao','Mbaby_sb_yujin','Mbaby_sb_machao','Mbaby_sb_lvmeng','Mbaby_sb_huangzhong'],
@@ -9620,6 +9620,7 @@ Mbaby_shen_taishici:['male','shen',4,['minidulie','minichongwei','minipowei'],['
 Mbaby_nvwa:['female','shen','69/159',['minibutian','minilianshi','minituantu'],[]],
 Mbaby_tunxingmenglix:['female','shen',4,['minitunxing','minimengli'],[]],
 Mbaby_shen_zuoci:['male','shen',3,['minihuanshu','minihuanhua','minihuanjing'],['qun','die_audio']],
+Mbaby_shen_dengai:['male','shen',4,['dctuoyu','minixianjin','dcqijing'],['wei']],
 //喵
 Mmiao_caiwenji:['female','qun',3,['minimiaobeige','minimiaoduanchang','minidoumao'],['die_audio']],
 Mmiao_diaochan:['female','qun',3,['minimiaolijian','minimiaobiyue','minidoumao'],['die_audio']],
@@ -33403,6 +33404,63 @@ intro:{content:'<li>本回合可额外发动#次【幻化】<br><li>本回合发
 },
 },
 },
+//神邓艾
+minixianjin:{
+init(player){
+var num=game.getAllGlobalHistory('changeHp',evt=>{
+return evt.getParent().name=='damage'&&(evt.getParent().player==player||(evt.getParent().source&&evt.getParent().source==player));
+}).concat(game.getAllGlobalHistory('changeHp',evt=>{
+return evt.getParent().name=='damage'&&evt.getParent().player==player&&evt.getParent().source&&evt.getParent().source==player;
+})).length;
+if(num) player.addMark('minixianjin',num,false);
+},
+onremove:true,
+audio:'dcxianjin',
+trigger:{
+player:'damageEnd',
+source:'damageSource',
+},
+filter(event,player){
+return player.countMark('minixianjin')%2==0;
+},
+forced:true,
+content(){
+'step 0'
+var tags=['dctuoyu_fengtian','dctuoyu_qingqu','dctuoyu_junshan'];
+tags.removeArray(player.getStorage('dctuoyu'));
+if(!tags.length){
+player.draw(player.isMaxHandcard()?1:3);
+event.finish();
+}
+else if(tags.length==1){
+event._result={control:tags[0]};
+}
+else player.chooseControl(tags).set('prompt','险峻：选择激活一个副区域标签');
+'step 1'
+var control=result.control;
+game.log(player,'激活了副区域','#y'+get.translation(control));
+player.markAuto('dctuoyu',[control]);
+player.popup(get.translation(control+'_tag'));
+player.draw(player.getStorage('dctuoyu').length)
+},
+group:'minixianjin_mark',
+intro:{content:'已造成或受到#次伤害'},
+subSkill:{
+mark:{
+charlotte:true,
+trigger:{
+player:'damageEnd',
+source:'damageSource',
+},
+forced:true,
+popup:false,
+firstDo:true,
+content(){
+player.addMark('minixianjin',1,false);
+},
+},
+},
+},
 //喵
 //核心逗猫
 minidoumao:{
@@ -35800,6 +35858,7 @@ Mbaby_shen_taishici:'欢杀神太史慈',
 Mbaby_nvwa:'欢杀女娲',
 Mbaby_tunxingmenglix:'吞星梦狸',
 Mbaby_shen_zuoci:'欢杀神左慈',
+Mbaby_shen_dengai:'欢杀神邓艾',
 miniwuqian:'无前',
 miniwuqian_info:'锁定技，当你于回合内第一次使用【杀】或【决斗】指定目标后，则你令此牌无视目标角色的防具且视为具有〖无双〗效果。',
 minishenfen:'神愤',
@@ -35939,6 +35998,8 @@ minihuanhua_tag:'已选择',
 minihuanhua_info:'每回合限两次，出牌阶段，你可选择一张未被〖幻化〗定向转化过的“幻术”牌和一张未被〖幻化〗选择过的非“幻术”牌，你将前者的牌名、属性、花色和点数转化为和后者一致，若两张牌的花色相同，你获得一张“幻术”牌。',
 minihuanjing:'幻境',
 minihuanjing_info:'限定技，出牌阶段，你可令本回合发动〖幻化〗的次数+X且你发动〖幻化〗可以选择“幻术”牌为转化目标卡牌，然后你获得X张“幻术”牌。（X为你已损失的体力值的两倍且X至少为1）',
+minixianjin:'险进',
+minixianjin_info:'锁定技，当你每造成或受到两次伤害后，你激活一个副区域标签并摸X张牌（X为你已激活的副区域数）。',
 //喵
 Mmiao_caiwenji:'喵蔡琰',
 Mmiao_diaochan:'喵貂蝉',
@@ -36060,9 +36121,9 @@ name:'WeChatkill',
 connect:true,
 characterSort:{
 WeChatkill:{
-wechat_standard:['wechat_gongsunyuan','wechat_xusheng','wechat_yufan','wechat_handang','wechat_wanglang','wechat_huanghao','wechat_caiyong','wechat_yj_huangzhong','wechat_zhangzhang','wechat_chendeng','wechat_taoqian','wechat_kanze','wechat_xuezong','wechat_guyong','wechat_guansuo','wechat_zumao','wechat_yj_jushou','wechat_sp_pangde','wechat_caojie','wechat_zhuling','wechat_caizhenji','wechat_guohuanghou','wechat_yanyan','wechat_liaohua','wechat_liuyao','wechat_quancong','wechat_xiahouba','wechat_sp_jiangwei','wechat_caoxiu','wechat_yuanshao','wechat_sundeng','wechat_re_xushu','wechat_caopi','wechat_caozhang','wechat_buzhi','wechat_sp_taishici','wechat_masu','wechat_caifuren','wechat_jianyong','wechat_lukang','wechat_caozhi','wechat_huangyueying','wechat_weiyan','wechat_gaoshun','wechat_sunliang','wechat_wangping','wechat_sp_caiwenji','wechat_caochong','wechat_huangzhong','wechat_xiahouyuan','wechat_pangde','wechat_sunshangxiang','wechat_xuchu','wechat_guanyu','wechat_caocao','wechat_shenpei','wechat_jiaxu','wechat_caoren','wechat_liuqi','wechat_zhaoxiang','wechat_caiwenji','wechat_menghuo','wechat_re_yuanshu','wechat_huaxiong','wechat_xiahoushi','wechat_xushu','wechat_zhaoyun','wechat_zhangfei','wechat_machao','wechat_yangxiu','wechat_lvmeng','wechat_zhoutai','wechat_bianfuren','wechat_sunluban','wechat_wuguotai','wechat_liubiao','wechat_liuchen','wechat_luxun','wechat_pangtong','wechat_zhangxingcai','wechat_zuoci','wechat_mayunlu'],
+wechat_standard:['wechat_gongsunyuan','wechat_xusheng','wechat_yufan','wechat_handang','wechat_wanglang','wechat_huanghao','wechat_caiyong','wechat_yj_huangzhong','wechat_zhangzhang','wechat_chendeng','wechat_taoqian','wechat_kanze','wechat_xuezong','wechat_guyong','wechat_guansuo','wechat_zumao','wechat_yj_jushou','wechat_sp_pangde','wechat_caojie','wechat_zhuling','wechat_caizhenji','wechat_guohuanghou','wechat_yanyan','wechat_liaohua','wechat_liuyao','wechat_quancong','wechat_xiahouba','wechat_sp_jiangwei','wechat_caoxiu','wechat_yuanshao','wechat_sundeng','wechat_re_xushu','wechat_caopi','wechat_caozhang','wechat_buzhi','wechat_sp_taishici','wechat_masu','wechat_caifuren','wechat_jianyong','wechat_lukang','wechat_caozhi','wechat_huangyueying','wechat_weiyan','wechat_gaoshun','wechat_sunliang','wechat_wangping','wechat_sp_caiwenji','wechat_caochong','wechat_huangzhong','wechat_xiahouyuan','wechat_pangde','wechat_sunshangxiang','wechat_xuzhu','wechat_guanyu','wechat_caocao','wechat_shenpei','wechat_jiaxu','wechat_caoren','wechat_liuqi','wechat_zhaoxiang','wechat_caiwenji','wechat_menghuo','wechat_re_yuanshu','wechat_huaxiong','wechat_xiahoushi','wechat_xushu','wechat_zhaoyun','wechat_zhangfei','wechat_machao','wechat_yangxiu','wechat_lvmeng','wechat_zhoutai','wechat_bianfuren','wechat_sunluban','wechat_wuguotai','wechat_liubiao','wechat_liuchen','wechat_luxun','wechat_pangtong','wechat_zhangxingcai','wechat_zuoci','wechat_mayunlu'],
 wechat_extra:['wechat_shen_zhugeliang','wechat_shen_lvmeng','wechat_shen_guanyu'],
-wechat_zhiyin:['wechat_guojia','wechat_lvbu','wechat_daqiao','wechat_xiaoqiao','wechat_re_caocao','wechat_zhugeliang','wechat_simayi','wechat_re_machao','wechat_re_huangyueying'],
+wechat_zhiyin:['wechat_re_xuzhu','wechat_re_yuanshao','wechat_lusu','wechat_guojia','wechat_lvbu','wechat_daqiao','wechat_xiaoqiao','wechat_re_caocao','wechat_zhugeliang','wechat_simayi','wechat_re_machao','wechat_re_huangyueying'],
 },
 },
 character:{
@@ -36096,7 +36157,7 @@ wechat_jiaxu:['male','qun',3,['wechatwansha','wechatluanwu','weimu'],[]],
 wechat_shenpei:['male','qun','2/3',['wechatshouye','wechatliezhi'],[]],
 wechat_caocao:['male','wei',4,['wechatjianxiong'],[]],
 wechat_guanyu:['male','shu',4,['new_rewusheng','wechatqinglong'],[]],
-wechat_xuchu:['male','wei',4,['wechatluoyi'],[]],
+wechat_xuzhu:['male','wei',4,['wechatluoyi'],[]],
 wechat_sunshangxiang:['female','wu',3,['wechatjieyin','xiaoji'],[]],
 wechat_pangde:['male','qun',4,['mashu','wechatmengjin'],[]],
 wechat_xiahouyuan:['male','wei',4,['wechatshensu'],[]],
@@ -36163,6 +36224,9 @@ wechat_zhugeliang:['male','shu',3,['wechatsangu','wechatyanshi'],['die_audio']],
 wechat_simayi:['male','wei',3,['wechatyinren','wechatduoquan'],['die_audio']],
 wechat_re_machao:['male','qun',4,['wechatqipao','wechatzhuixi'],['die_audio','doublegroup:shu:qun']],
 wechat_re_huangyueying:['female','shu',3,['wechatmiaobi','wechatrehuixin'],['die_audio']],
+wechat_lusu:['male','wu',3,['wechatlvyuan','wechathezong'],['die_audio']],
+wechat_re_yuanshao:['male','qun',4,['wechathongtu','wechatmengshou'],['die_audio']],
+wechat_re_xuzhu:['male','wei',4,['wechathuhou','wechatwuwei'],['die_audio']],
 },
 characterIntro:{
 },
@@ -41581,6 +41645,357 @@ return cards.length+(cards.length?0.1:0);
 result:{player:1},
 },
 },
+//极鲁肃
+wechatlvyuan:{
+audio:'ext:活动武将/audio/skill:2',
+trigger:{player:'phaseJieshuBegin'},
+filter(event,player){
+return player.hasCard(card=>_status.connectMode||lib.filter.cardDiscardable(card,player),'h');
+},
+direct:true,
+async content(event,trigger,player){
+const colors=['red','black','none'].filter(color=>player.hasCard(card=>{
+return lib.filter.cardDiscardable(card,player)&&get.color(card)==color;
+},'h')).map(color=>color=='none'?'none2':color);
+const {result:{control}}=await player.chooseControl(colors,'cancel2').set('prompt',get.prompt2('wechatlvyuan')).set('ai',()=>{
+const player=get.event('player'),colors=get.event('controls').slice().filter(i=>i!='cancel2');
+const getNum=function(color,player){
+color=(color=='none2'?'none':color);
+return player.getCards('h',card=>lib.filter.cardDiscardable(card,player)&&get.color(card)==color).reduce((sum,card)=>{
+return sum+get.info('zhiheng').check(card);
+},0);
+};
+const color=colors.sort((a,b)=>getNum(b,player)-getNum(a,player))[0];
+return getNum(color,player)>=0?color:'cancel2';
+});
+if(control!='cancel2'){
+player.logSkill('wechatlvyuan');
+const choice=(control=='none2'?'none':control);
+const cards=player.getCards('h',card=>lib.filter.cardDiscardable(card,player)&&get.color(card)==choice);
+await player.discard(cards);
+await player.draw(cards.length);
+player.addTempSkill('wechatlvyuan_effect',{player:'phaseBegin'});
+player.markAuto('wechatlvyuan_effect',[choice]);
+}
+},
+subSkill:{
+effect:{
+charlotte:true,
+onremove:true,
+intro:{
+markcount:()=>0,
+content(storage){
+if(storage.length==1) return '失去一张非'+get.translation(storage)+'手牌时，摸一张牌';
+return '失去一张手牌时，摸一张牌';
+},
+},
+trigger:{
+player:'loseAfter',
+global:['equipAfter','addJudgeAfter','gainAfter','loseAsyncAfter','addToExpansionAfter'],
+},
+filter(event,player){
+const evt=event.getl(player),storage=player.getStorage('wechatlvyuan_effect');
+return evt&&evt.player==player&&evt.hs&&evt.hs.some(card=>storage.length!=1||get.color(card,player)!=storage[0]);
+},
+forced:true,
+content(){
+const evt=trigger.getl(player),storage=player.getStorage('wechatlvyuan_effect');
+player.draw(trigger.hs.filter(card=>storage.length!=1||get.color(card,player)!=storage[0]).length);
+},
+},
+},
+},
+wechathezong:{
+audio:'ext:活动武将/audio/skill:2',
+trigger:{global:'roundStart'},
+filter(event,player){
+return game.countPlayer()>1;
+},
+direct:true,
+async content(event,trigger,player){
+const {result:{bool,targets}}=await player.chooseTarget(get.prompt2('wechathezong'),lib.filter.notMe).set('ai',target=>{
+const player=get.event('player'),att=get.attitude(player,target);
+return get.sgn(att)*(target.countCards('h')+1);
+});
+if(bool){
+const target=targets[0];
+player.logSkill('wechathezong',target);
+player.addTempSkill('wechathezong_effect','roundStart');
+player.markAuto('wechathezong_effect',[target]);
+}
+},
+subSkill:{
+effect:{
+charlotte:true,
+onremove:true,
+intro:{content:'已与$组成合纵关系'},
+trigger:{global:['useCardAfter','useCardToTarget']},
+filter(event,player,name){
+if(event.card.name!='sha'||!event.targets||event.targets.length!=1) return false;
+const list=[player].concat(player.getStorage('wechathezong_effect'));
+if(name=='useCardAfter') return list.includes(event.player)&&!list.includes(event.targets[0]);
+return list.includes(event.target)&&!list.includes(event.player);
+},
+logTarget(event,player,name){
+const list=[player].concat(player.getStorage('wechathezong_effect'));
+return (name=='useCardAfter'?event.player:event.target)==player?list.filter(i=>i!=player):[player];
+},
+forced:true,
+async content(event,trigger,player){
+const name=event.triggername,aim=(name=='useCardAfter'?trigger.targets[0]:trigger.target);
+const targets=get.info('wechathezong').subSkill.effect.logTarget(trigger,player,name).sortBySeat();
+for(const target of targets){
+if(name=='useCardAfter'){
+let {result:{bool}}=await target.chooseToUse(function(card,player,event){
+if(get.name(card)!='sha') return false;
+return lib.filter.filterCard.apply(this,arguments);//使用apply不能用箭头函数
+},'合纵：对'+get.translation(aim)+'使用一张【杀】，或弃置一张牌').set('filterTarget',function(card,player,target){
+if(target!=get.event('sourcex')&&!ui.selected.targets.includes(get.event('sourcex'))) return false;
+return lib.filter.filterTarget.apply(this,arguments);
+}).set('sourcex',aim).set('targetRequired',true).set('complexSelect',true);
+if(!bool) await target.chooseToDiscard('he',true);
+}
+else{
+let {result:{bool,cards}}=await target.chooseCard('合纵：交给'+get.translation(aim)+'一张【闪】，或成为'+get.translation(trigger.card)+'的额外目标',(card,player)=>{
+return get.name(card)=='shan';
+}).set('ai',card=>{
+const player=get.event('player'),aim=get.event('aim'),trigger=get.event().getTrigger();
+if(get.attitude(player,aim)<=0||get.effect(aim,trigger.card,trigger.player,player)>0) return -1;
+return 1+Math.random();
+}).set('aim',aim);
+if(bool) await target.give(cards,aim);
+else{
+trigger.getParent().targets.add(target);
+trigger.getParent().triggeredTargets2.push(target);
+game.log(target,'成为了',trigger.card,'的额外目标');
+}
+}
+}
+},
+},
+},
+},
+//极袁绍
+wechathongtu:{
+audio:'ext:活动武将/audio/skill:2',
+enable:'phaseUse',
+filter(event,player){
+return !game.hasPlayer(target=>target!=player&&!player.canCompare(target));
+},
+filterTarget:lib.filter.notMe,
+selectTarget:-1,
+usable:1,
+multitarget:true,
+multiline:true,
+async content(event,trigger,player){
+const {result:{winner}}=await player.chooseToCompare(event.targets,card=>get.number(card)).setContent('chooseToCompareMeanwhile');
+if(winner){
+const card=new lib.element.VCard({name:'wanjian'});
+if(winner.hasUseTarget(card)){
+player.when({global:'useCardAfter'})
+.filter(evt=>evt.card.name=='wanjian'&&evt.getParent(2)==event)
+.then(()=>{
+const num=game.countPlayer2(target=>target.getHistory('damage',evt=>evt.card&&evt.card==trigger.card).length);
+if(num) player.draw(num);
+});
+await winner.chooseUseTarget(true,card,false);
+}
+}
+else delete player.getStat('skill').wechathongtu;
+},
+ai:{
+order:9,
+result:{player:1},
+},
+},
+wechatmengshou:{
+getNum(player){
+let num=0;
+const history=player.actionHistory;
+for(let i=history.length-1;i>=0;i--){
+num+=history[i].sourceDamage.reduce((sum,evt)=>sum+evt.num,0);
+if(history[i].isRound) break;
+}
+return num;
+},
+audio:'ext:活动武将/audio/skill:2',
+trigger:{player:'damageBegin4'},
+filter(event,player){
+const getNum=get.info('wechatmengshou').getNum;
+return event.source&&event.source!=player&&getNum(player)>=getNum(event.source);
+},
+check(event,player){
+return get.damageEffect(player,event.source,player)<=0;
+},
+usable:1,
+logTarget:'source',
+content(){
+trigger.cancel();
+},
+ai:{
+effect:{
+target(card,player,target){
+if(!player||!target||player==target) return;
+const count=target.storage.counttrigger,getNum=get.info('wechatmengshou').getNum;
+if((count&&count.wechatmengshou&&count.wechatmengshou>0)||player.hasSkillTag('jueqing')||getNum(target)<getNum(player)) return;
+if(player._wechatmengshou_temp) return;
+if(_status.event.getParent('useCard',true)||_status.event.getParent('_wuxie',true)) return;
+if(get.tag(card,'damage')){
+if(target.getHistory('damage').length>0) return [1,-2];
+else{
+if(get.attitude(player,target)>0&&target.hp>1) return 0;
+if(get.attitude(player,target)<0&&!player.hasSkillTag('damageBonus')){
+if(card.name=='sha') return;
+var sha=false;
+player._wechatmengshou_temp=true;
+var num=player.countCards('h',function(card){
+if(card.name=='sha'){
+if(sha) return false;
+else sha=true;
+}
+return get.tag(card,'damage')&&player.canUse(card,target)&&get.effect(target,card,player,player)>0;
+});
+delete player._wechatmengshou_temp;
+if(player.hasSkillTag('damage')) num++;
+if(num<2){
+var enemies=player.getEnemies();
+if(enemies.length==1&&enemies[0]==target&&player.needsToDiscard()) return;
+return 0;
+}
+}
+}
+}
+},
+},
+},
+},
+//极许褚
+wechathuhou:{
+audio:'ext:活动武将/audio/skill:2',
+trigger:{player:'juedouBegin',target:'juedouBegin'},
+logTarget(event,player){
+return event.target==player?event.player:event.target;
+},
+forced:true,
+locked:false,
+content(){
+const target=get.info('wechathuhou').logTarget(trigger,player);
+target.addTempSkill('wechathuhou_debuff');
+target.markAuto('wechathuhou_debuff',[trigger]);
+},
+ai:{
+directHit_ai:true,
+skillTagFilter(player,tag,arg){
+if(!arg||!arg.card||!arg.target||arg.card.name!='juedou'||game.hasPlayer(target=>{
+return get.attitude(target,arg.target)>0&&target.countCards('hs',{name:'wuxie'});
+})) return false;
+},
+effect:{
+target(card,player,target){
+if(player._wechathuhou_temp||card.name!='juedou') return;
+player._wechathuhou_temp=true;
+const bool=(get.attitude(player,target)>0&&get.effect(target,card,player,player)>0);
+delete player._wechathuhou_temp;
+if(bool) return 0;
+},
+},
+},
+group:['wechathuhou_wusheng','wechathuhou_damage'],
+subSkill:{
+debuff:{
+charlotte:true,
+onremove:true,
+mod:{
+cardRespondable(card,player){
+const evt=_status.event,storage=player.getStorage('wechathuhou_debuff');
+if(evt.name=='chooseToRespond'&&storage.includes(evt.getParent())) return false;
+},
+},
+},
+wusheng:{
+audio:'wechathuhou',
+enable:['chooseToUse','chooseToRespond'],
+filterCard(card,player){
+return get.type(card)=='equip';
+},
+position:'hes',
+viewAs:{name:'sha'},
+viewAsFilter(player){
+if(!player.countCards('hes',{type:'equip'})) return false;
+},
+check(card){
+const val=get.value(card);
+if(_status.event.name=='chooseToRespond') return 1/Math.max(0.1,val);
+return 7.5-val;
+},
+prompt:'将一张装备牌当作【杀】使用或打出',
+ai:{
+respondSha:true,
+skillTagFilter(player){
+if(!player.countCards('hes',{type:'equip'})) return false;
+},
+},
+},
+damage:{
+audio:'wechathuhou',
+trigger:{source:'damageBegin1'},
+filter(event,player){
+const evt=event.getParent(),evtx=event.getParent(2);
+if(evtx.name!='useCard'||!['sha','juedou'].includes(evtx.card.name)) return false;
+if(evtx.cards&&evtx.cards.some(i=>get.type(i,false)=='equip')) return true;
+if(evt&&evt.name=='juedou'&&evt[player==evt.player?'playerCards':'targetCards'].some(i=>get.type(i,false)=='equip')) return true;
+return false;
+},
+forced:true,
+locked:false,
+logTarget:'player',
+content(){
+const evt=trigger.getParent(),evtx=trigger.getParent(2);
+if(evtx.cards) trigger.num+=evtx.cards.filter(i=>get.type(i,false)=='equip').length;
+if(evt&&evt.name=='juedou') trigger.num+=evt[player==evt.player?'playerCards':'targetCards'].filter(i=>get.type(i,false)=='equip').length;
+},
+},
+},
+},
+wechatwuwei:{
+audio:'ext:活动武将/audio/skill:2',
+trigger:{player:'phaseJieshuBegin'},
+direct:true,
+async content(event,trigger,player){
+const {result:{bool,targets}}=await player.chooseTarget(get.prompt2('wechatwuwei')).set('ai',target=>{
+const player=get.event('player');
+return get.effect(target,{name:'tao'},player,player)+0.1;
+});
+if(bool){
+const target=targets[0];
+player.logSkill('wechatwuwei',target);
+player.addTempSkill('wechatwuwei_effect',{player:'phaseBegin'});
+player.markAuto('wechatwuwei_effect',[target]);
+}
+},
+subSkill:{
+effect:{
+charlotte:true,
+onremove:true,
+intro:{content:'保卫$中...'},
+trigger:{global:'useCardToTargeted'},
+filter(event,player){
+if(event.card.storage&&event.card.storage.wechatwuwei_effect&&event.card.storage.wechatwuwei_effect.includes(player)) return false;
+return get.tag(event.card,'damage')&&event.target.getHp()<=player.getHp()&&player.getStorage('wechatwuwei_effect').includes(event.target);
+},
+forced:true,
+logTarget:'player',
+content(){
+trigger.getParent().excluded.add(trigger.target);
+game.log(trigger.card,'对',trigger.target,'无效');
+trigger.player.when('useCardAfter').filter(evt=>evt==trigger.getParent()).then(()=>{
+const card=new lib.element.VCard({name:'juedou',storage:{wechatwuwei_effect:[target]}});
+if(player.canUse(card,target,false)) player.useCard(card,target,false);
+}).vars({target:player});
+},
+},
+},
+},
 },
 dynamicTranslate:{
 wechatxiangzhi:function(player){
@@ -41771,7 +42186,7 @@ wechatmiaoji_info:'每回合限一次，你可以：①失去1点谋略值，视
 wechat_guanyu:'微信关羽',
 wechatqinglong:'青龙',
 wechatqinglong_info:'锁定技，若你的武器栏未被废除且你未装备武器牌，你视为装备【青龙偃月刀】。',
-wechat_xuchu:'微信许褚',
+wechat_xuzhu:'微信许褚',
 wechatluoyi:'裸衣',
 wechatluoyi_info:'当你使用【杀】或【决斗】造成伤害时，你可以弃置一张牌并令此伤害+1。',
 wechat_sunshangxiang:'微信孙尚香',
@@ -41982,6 +42397,21 @@ wechathuisheng_info:'当你受到其他角色对你造成的伤害时，你可�
 wechat_gongsunyuan:'微信公孙渊',
 wechathuaiyi:'怀异',
 wechathuaiyi_info:'出牌阶段限一次，你可以展示所有手牌并弃置一种颜色的所有手牌，然后你可以获得至多等同于你弃置牌数的角色的各一张牌。',
+wechat_lusu:'极鲁肃',
+wechatlvyuan:'虑远',
+wechatlvyuan_info:'结束阶段，你可以弃置一种颜色的所有手牌并摸等量的牌。若如此做，直到你的下个回合开始，当你失去此颜色外的一张手牌时，你摸一张牌。',
+wechathezong:'合纵',
+wechathezong_info:'一轮游戏开始时，你可以选择一名其他角色。若如此做，直到下一轮游戏开始：①当你/其使用指定除你们外的唯一目标的【杀】结算完毕后，除非其/你对相同目标使用一张【杀】，否则其/你弃置一张牌；②当你/其成为指定除你们中的唯一目标的【杀】时，除非其/你交给当你/其一张【闪】，否则其/你成为此牌的额外目标。',
+wechat_re_yuanshao:'极袁绍',
+wechathongtu:'鸿图',
+wechathongtu_info:'出牌阶段限一次，你可以与所有其他角色进行共同拼点。赢的角色视为使用一张【万箭齐发】，且此牌结算完毕后，你摸受到过此牌造成的伤害的角色数的牌；若不存在赢的角色，则此技能视为未发动过。',
+wechatmengshou:'盟首',
+wechatmengshou_info:'每回合限一次，当你受到其他角色造成的伤害时，若其本轮造成的伤害值不大于你，则你可以防止此伤害。',
+wechat_re_xuzhu:'极许褚',
+wechathuhou:'虎侯',
+wechathuhou_info:'①与你进行【决斗】流程结算的角色不能打出【杀】。②你可以将一张装备牌当作【杀】使用或【打出】。③以你为伤害来源的【杀】或【决斗】造成的伤害+X（X为此牌对应的实体牌与你使用【决斗】打出的牌中的装备牌数之和）。',
+wechatwuwei:'武卫',
+wechatwuwei_info:'结束阶段，你可以选择一名角色，若如此做，直到你的下个回合开始，其成为伤害类卡牌的目标后，若其体力值不大于你，则你令此牌对其无效，然后使用者于此牌结算完毕后视为对你使用【决斗】（你无法因此【决斗】触发〖武卫〗）。',
 },
 };
 for(var i in WeChatkill.character){
