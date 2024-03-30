@@ -41700,7 +41700,7 @@ return evt&&evt.player==player&&evt.hs&&evt.hs.some(card=>storage.length!=1||get
 forced:true,
 content(){
 const evt=trigger.getl(player),storage=player.getStorage('wechatlvyuan_effect');
-player.draw(trigger.hs.filter(card=>storage.length!=1||get.color(card,player)!=storage[0]).length);
+player.draw(evt.hs.filter(card=>storage.length!=1||get.color(card,player)!=storage[0]).length);
 },
 },
 },
