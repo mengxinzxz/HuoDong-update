@@ -33674,25 +33674,110 @@ trigger.source.chooseToDiscard('he',true,2);
 //喵貂蝉
 minimiaolijian:{
 audio:'ext:活动武将/audio/skill:2',
-inherit:'sblijian',
-filter:function(event,player){
-return !player.hasSkill('minidoumao')&&lib.skill.sblijian.filter(event,player)&&!player.getStat('skill').minimiaolijian_lijian;
+enable:'phaseUse',
+filter(event,player){
+return game.countPlayer(current=>current!=player)>1;
 },
+filterCard:true,
+selectCard(){
+const player=get.event('player'),goon=(!player.hasSkill('minidoumao'));
+return [goon?1:2,Infinity];
+},
+position:'he',
+filterTarget:lib.filter.notMe,
+selectTarget(){
+const player=get.event('player'),goon=(!player.hasSkill('minidoumao'));
+return ui.selected.cards.length+(goon?1:0);
+},
+filterOk(){
+const player=get.event('player'),goon=(!player.hasSkill('minidoumao'));
+return ui.selected.targets.length==ui.selected.cards.length+(goon?1:0);
+},
+check(card){
+let player=get.owner(card),targets=lib.skill.minimiaolijian.selectTargetAi(_status.event,player);
+if(ui.selected.cards.length<targets-1){
+if(player.hasSkill('sbbiyue')) return 4*targets-get.value(card);
+return 6+targets-get.value(card);
+}
+return 0;
+},
+multiline:true,
 usable:1,
-group:'minimiaolijian_lijian',
-subSkill:{
-lijian:{
-audio:'minimiaolijian',
-inherit:'sblijian',
-filter:function(event,player){
-return player.hasSkill('minidoumao')&&lib.skill.sblijian.filter(event,player)&&!player.getStat('skill').minimiaolijian;
+content(){
+var targetx=targets.slice().sortBySeat(target)[1];
+var card={name:'juedou',isCard:true};
+if(target.canUse(card,targetx)) target.useCard(card,targetx);
 },
-usable:1,
-selectCard:[2,Infinity],
-selectTarget:()=>ui.selected.cards.length,
-filterOk:()=>ui.selected.targets.length==ui.selected.cards.length,
-prompt:()=>lib.translate.minimiaolijian_info,
+ai:{
+threaten:3,
+order:7,
+result:{
+player(player,target){
+let targets=_status.event.getTempCache('minimiaolijian','targets');
+if(Array.isArray(targets)){
+for(let arr of targets){
+if(target===arr[0]&&!arr[2]) return 1;
+}
+}
+return 0;
 },
+target(player,target){
+let targets=_status.event.getTempCache('minimiaolijian','targets');
+if(Array.isArray(targets)){
+for(let arr of targets){
+if(target===arr[0]){
+if(arr[1]*arr[2]<0) return get.sgn(arr[2]);
+return arr[1];
+}
+}
+}
+return 0;
+},
+},
+},
+selectTargetAi(event,player){
+let cache=_status.event.getTempCache('minimiaolijian','targets');
+if(Array.isArray(cache)) return cache.length;
+let targets=[],cards=[0],sbbiyue=player.hasSkill('sbbiyue')?Math.max(0,3-game.countPlayer2(current=>{
+return current.getHistory('damage').length>0;
+})):0,alter=[null,1,1],temp;
+for(let i of game.players){
+if(player===i) continue;
+let vplayer=ui.create.player(i);
+temp=get.effect(i,new lib.element.VCard({name:'juedou',isCard:true}),vplayer,i);
+vplayer.remove();
+if(temp){
+let att=get.attitude(event.player,i);
+if(!att&&sbbiyue||att*temp>0) targets.push([i,temp,att]);
+else if(!alter[2]) continue;
+else if(!att||att>0&&temp>-15&&i.hp>2||att<0&&temp<15) alter=[i,temp,att];
+}
+}
+targets.sort((a,b)=>{
+if(Boolean(a[2])!==Boolean(b[2])) return Math.abs(b[2])-Math.abs(a[2]);
+return Math.abs(b[1])-Math.abs(a[1]);
+});
+if(targets.length<2&&alter[0]) targets.push(alter);
+targets=targets.slice(0,1+player.countCards('he',card=>{
+if(lib.filter.cardDiscardable(card,player,'minimiaolijian')){
+cards.push(get.value(card));
+return true;
+}
+return false;
+}));
+cards.sort((a,b)=>a-b);
+for(let i=0;i<targets.length;i++){
+if(Math.abs(targets[i][1])<cards[i]/(1+sbbiyue)){
+targets.splice(i,targets.length-i);
+break;
+}
+}
+if(targets.length<2){
+event.putTempCache('minimiaolijian','targets',[]);
+return 0;
+}
+event.putTempCache('minimiaolijian','targets',targets);
+return targets.length;
 },
 },
 minimiaobiyue:{
