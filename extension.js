@@ -4855,11 +4855,10 @@ return player.isIn()&&event.source==player&&event.player!=player&&event.player.h
 check:function(event,player){
 return get.attitude(player,event.player)<0;
 },
+logTarget:'player',
 content:function(){
-var list=[];
-for(var i=1;i<=5;i++){
-if(trigger.player.hasEnabledSlot(i)) list.add(i);
-}
+var list=Array.from({length:5}).map((_,i)=>i+1);
+list=list.filter(i=>trigger.player.hasEnabledSlot(i));
 trigger.player.disableEquip(list.randomGet());
 },
 },
