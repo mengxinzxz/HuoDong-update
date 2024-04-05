@@ -30537,8 +30537,8 @@ minicixiao:{
 audio:'cixiao',
 trigger:{player:'phaseZhunbeiBegin'},
 filter(event,player){
-return game.hasPlayer(function(current){
-return current.hasSkill('minipanshi',null,false,false);
+return game.hasPlayer(current=>{
+return !current.hasSkill('minipanshi',null,false,false);
 });
 },
 direct:true,
