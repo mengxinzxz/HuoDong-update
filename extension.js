@@ -30537,14 +30537,14 @@ minicixiao:{
 audio:'cixiao',
 trigger:{player:'phaseZhunbeiBegin'},
 filter(event,player){
-return game.hasPlayer(current=>{
-return !current.hasSkill('minipanshi',null,false,false);
+return game.hasPlayer(target=>{
+return target!=player&&!target.hasSkill('minipanshi',null,false,false);
 });
 },
 direct:true,
 async content(event,trigger,player){
 const {result:{bool,targets}}=await player.chooseTarget(get.prompt('minicixiao'),(card,player,target)=>{
-return !target.hasSkill('minipanshi',null,false,false);
+return target!=player&&!target.hasSkill('minipanshi',null,false,false);
 }).set('ai',target=>{
 var player=_status.event.player;
 var att=-get.attitude(player,target);
@@ -30553,9 +30553,9 @@ return att*target.countCards('h');
 if(bool){
 const source=targets[0],card=new lib.element.VCard({name:'sha'});
 player.logSkill('minicixiao',source);
-await target.addSkills('minipanshi');
+await source.addSkills('minipanshi');
 if(source.hasUseTarget(card,true)&&player.countCards('h')){
-const {result:{bool,targets}}=await player.chooseCardTarget({
+const {result:{bool,cards,targets}}=await player.chooseCardTarget({
 prompt:'是否交给'+get.translation(source)+'一张手牌并令其视为对其攻击范围内你选择的另一名角色使用一张【杀】？',
 filterCard:true,
 position:'h',
