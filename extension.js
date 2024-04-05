@@ -39,14 +39,10 @@ lib.init.css(lib.assetURL+'extension/活动武将','extension');
 game.bolShowNewPack=function(){
 //更新告示
 var HuoDong_update=[
-'/setPlayer/',
-'新系列：NBA牢星球员宿舍',
-'欢杀庞统、极鲁肃、极袁绍、极许褚、欢杀神邓艾',
 'To be continued...',
 ];
 //更新武将
 var HuoDong_players=[
-'Mbaby_pangtong','wechat_lusu','wechat_re_yuanshao','wechat_re_xuzhu','Mbaby_shen_dengai',
 ];
 //加载
 var dialog=ui.create.dialog(
@@ -945,89 +941,33 @@ lib.translate.key_ushio='冈崎汐';
 }
 //------------------------------删除武将------------------------------//
 
-//------------------------------线上还原+增改武将------------------------------//
+//------------------------------增改武将------------------------------//
 //国战武将补充
 lib.characterSort.mode_guozhan.bilibili_GuoZhan=[];
 lib.translate.bilibili_GuoZhan='国战补充';
 //技能
-var skill_guozhan={
-//杜预
-spwuku:{
-audio:2,
-trigger:{global:'useCard'},
-forced:true,
-preHidden:true,
-filter:function(event,player){
-if(get.type(event.card)!='equip') return false;
-return player.countMark('spwuku')<3;
-},
-content:function(){
-player.addMark('spwuku',1);
-},
-marktext:'库',
-intro:{content:'mark'},
-ai:{
-combo:'spsanchen',
-threaten:3.6,
-},
-},
-gzwuku:{
-audio:'spwuku',
-inherit:'spwuku',
-filter:function(event,player){
-if(get.type(event.card)!='equip') return false;
-if(event.player.isFriendOf(player)) return false;
-return player.countMark('spwuku')<2;
-},
-},
-//司马伷
-gznaxiang:{
-audio:'naxiang',
-inherit:'naxiang',
-},
+let change_pack={
+skill:{
 //卞夫人
 gzwanwei:{
 audio:'wanwei',
 inherit:'fuwei',
 },
-};
-for(var i in skill_guozhan){
-lib.skill[i]=skill_guozhan[i];
-}
-//动态翻译
-var dynamicTranslate_guozhan={
-};
-for(var i in dynamicTranslate_guozhan){
-lib.dynamicTranslate[i]=dynamicTranslate_guozhan[i];
-}
-//翻译
-var translate_guozhan={
-gzwuku:'武库',
-gzwuku_info:'锁定技，当有其他势力的角色使用装备牌时，若你的“武库”数小于2，则你获得一个“武库”。',
-spwuku_info_guozhan:'锁定技，当有角色使用装备牌时，若你的“武库”数小于3，则你获得一个“武库”。',
-gznaxiang:'纳降',
-gznaxiang_info:'锁定技，当你受到其他角色造成的伤害后，或你对其他角色造成伤害后，你对其发动〖才望〗时的“弃置”改为“获得”直到你的下回合开始。',
-gzwanwei:'挽危',
-};
-for(var i in translate_guozhan){
-lib.translate[i]=translate_guozhan[i];
-}
-//武将
-var character_guozhan={
-gz_sp_duyu:['male','qun',4,['gzwuku','spmiewu'],[]],
-gz_simazhou:['male','jin',4,['caiwang','gznaxiang'],[]],
-gz_dingfeng:['male','wu',4,['duanbing','fenxun'],['gzskin']],
+},
+dynamicTranslate:{
+
+},
+translate:{
+
+},
+character:{
 gz_bianfuren:['female','wei',3,['gzwanwei','gzyuejian'],[]],
-gz_lvfan:['male','wu',3,['gzdiaodu','gzdiancai'],[]],
 gz_re_xushu:['male','shu',4,['gzqiance','gzjujian'],['gzskin']],
-gz_gongsunyuan:['male','ye',4,['gzrehuaiyi','gzrezisui'],['gzskin']],
 gz_wujing:['male','wu',4,['donggui','fengyang_old'],['gzskin']],
+},
 };
-if(!lib.config.extension_活动武将_HD_gzbianfuren) delete character_guozhan.gz_bianfuren;
-for(var i in character_guozhan){
-//if(character_guozhan[i][3].some(skill=>!lib.skill[skill])) continue;
-lib.characterPack.mode_guozhan[i]=character_guozhan[i];
-lib.character[i]=character_guozhan[i];
+for(const i in change_pack){
+for(const j in change_pack[i]) lib[i][j]=change_pack[i][j];
 }
 }
 //------------------------------选项------------------------------//
@@ -57003,7 +56943,7 @@ intro:'新人制作扩展，希望大家支持。'+
 author:'萌新（转型中）',
 diskURL:'',
 forumURL:'',
-version:'0.2.1',
+version:'0.2.2',
 //新人制作扩展，希望大家支持。
 //新人技术不足，希望大家包涵。
 //壹、贰、叁、肆、伍、陆、柒、捌、玖、拾
