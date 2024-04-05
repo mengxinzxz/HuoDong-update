@@ -967,7 +967,13 @@ gz_wujing:['male','wu',4,['donggui','fengyang_old'],['gzskin']],
 },
 };
 for(const i in change_pack){
-for(const j in change_pack[i]) lib[i][j]=change_pack[i][j];
+for(const j in change_pack[i]){
+if(i=='character'){
+if(!change_pack[i][j][4]) change_pack[i][j][4]=[];
+lib.characterPack.mode_guozhan[j]=change_pack[i][j];
+}
+lib[i][j]=change_pack[i][j];
+}
 }
 }
 //------------------------------选项------------------------------//
