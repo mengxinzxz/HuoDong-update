@@ -3302,7 +3302,7 @@ FaDongCharacter.character[i][4].push(((lib.device||lib.node)?'ext:':'db:extensio
 }
 return FaDongCharacter;
 });
-//lib.config.all.characters.push('FaDongCharacter');
+lib.config.all.characters.push('FaDongCharacter');
 lib.config.all.sgscharacters.push('FaDongCharacter');
 if(!lib.config.characters.includes('FaDongCharacter')) lib.config.characters.remove('FaDongCharacter');
 lib.translate['FaDongCharacter_character_config']='<span style="font-family: xingkai">诸侯伐董</span>';
@@ -4394,7 +4394,7 @@ NianShouCharacter.character[i][4].push(((lib.device||lib.node)?'ext:':'db:extens
 }
 return NianShouCharacter;
 });
-//lib.config.all.characters.push('NianShouCharacter');
+lib.config.all.characters.push('NianShouCharacter');
 lib.config.all.sgscharacters.push('NianShouCharacter');
 if(!lib.config.characters.includes('NianShouCharacter')) lib.config.characters.remove('NianShouCharacter');
 lib.translate['NianShouCharacter_character_config']='<span style="font-family: xingkai">生肖&年兽</span>';
@@ -5938,7 +5938,7 @@ hezongkangqincharacter.character[i][4].push(((lib.device||lib.node)?'ext:':'db:e
 return hezongkangqincharacter;
 });
 game.bolAddGroupNature(['daqin','秦'],[255,165,0]);
-//lib.config.all.characters.push('hezongkangqincharacter');
+lib.config.all.characters.push('hezongkangqincharacter');
 lib.config.all.sgscharacters.push('hezongkangqincharacter');
 if(!lib.config.characters.includes('hezongkangqincharacter')) lib.config.characters.remove('hezongkangqincharacter');
 lib.translate['hezongkangqincharacter_character_config']='<span style="font-family: xingkai">合纵抗秦</span>';
@@ -6866,7 +6866,7 @@ decadeQiHuan.character[i][4].push(((lib.device||lib.node)?'ext:':'db:extension-'
 }
 return decadeQiHuan;
 });
-//lib.config.all.characters.push('decadeQiHuan');
+lib.config.all.characters.push('decadeQiHuan');
 lib.config.all.sgscharacters.push('decadeQiHuan');
 if(!lib.config.characters.includes('decadeQiHuan')) lib.config.characters.remove('decadeQiHuan');
 lib.translate['decadeQiHuan_character_config']='<span style="font-family: xingkai">戚宦之争</span>';
@@ -7602,7 +7602,7 @@ decadeZhuoGui.character[i][4].push(((lib.device||lib.node)?'ext:':'db:extension-
 }
 return decadeZhuoGui;
 });
-//lib.config.all.characters.push('decadeZhuoGui');
+lib.config.all.characters.push('decadeZhuoGui');
 lib.config.all.sgscharacters.push('decadeZhuoGui');
 if(!lib.config.characters.includes('decadeZhuoGui')) lib.config.characters.remove('decadeZhuoGui');
 lib.translate['decadeZhuoGui_character_config']='<span style="font-family: xingkai">捉鬼驱邪</span>';
@@ -8285,7 +8285,7 @@ decadeKuiBa.character[i][4].push(((lib.device||lib.node)?'ext:':'db:extension-')
 }
 return decadeKuiBa;
 });
-//lib.config.all.characters.push('decadeKuiBa');
+lib.config.all.characters.push('decadeKuiBa');
 lib.config.all.sgscharacters.push('decadeKuiBa');
 if(!lib.config.characters.includes('decadeKuiBa')) lib.config.characters.remove('decadeKuiBa');
 lib.translate['decadeKuiBa_character_config']='<span style="font-family: xingkai">十周年魁拔</span>';
@@ -9275,7 +9275,7 @@ HD_chaoshikong.character[i][4].push(((lib.device||lib.node)?'ext:':'db:extension
 }
 return HD_chaoshikong;
 });
-//lib.config.all.characters.push('HD_chaoshikong');
+lib.config.all.characters.push('HD_chaoshikong');
 lib.config.all.sgscharacters.push('HD_chaoshikong');
 if(!lib.config.characters.includes('HD_chaoshikong')) lib.config.characters.remove('HD_chaoshikong');
 lib.translate['HD_chaoshikong_character_config']='<span style="font-family: xingkai">超时空密探</span>';
@@ -36431,7 +36431,7 @@ getSpan:(prefix,name)=>`${get.prefixSpan('SP')}${get.prefixSpan('欢杀')}${get.
 lib.namePrefix.set('欢杀谋',{
 getSpan:(prefix,name)=>`${get.prefixSpan('欢杀')}${get.prefixSpan('谋')}`,
 });
-//lib.config.all.characters.push('MiNikill');
+lib.config.all.characters.push('MiNikill');
 lib.config.all.sgscharacters.push('MiNikill');
 if(!lib.config.characters.includes('MiNikill')) lib.config.characters.remove('MiNikill');
 lib.translate['MiNikill_character_config']='<span style="font-family: xingkai">欢乐三国杀</span>';
@@ -42769,7 +42769,7 @@ getSpan:(prefix,name)=>`${get.prefixSpan('SP')}${get.prefixSpan('微信')}${get.
 lib.namePrefix.set('微信☆',{
 getSpan:(prefix,name)=>`${get.prefixSpan('微信')}${get.prefixSpan('☆')}`,
 });
-//lib.config.all.characters.push('WeChatkill');
+lib.config.all.characters.push('WeChatkill');
 lib.config.all.sgscharacters.push('WeChatkill');
 if(!lib.config.characters.includes('WeChatkill')) lib.config.characters.remove('WeChatkill');
 lib.translate['WeChatkill_character_config']='<span style="font-family: xingkai">微信三国杀</span>';
@@ -47389,7 +47389,7 @@ showName:'鸿',
 lib.namePrefix.set('飞鸿神',{
 getSpan:()=>`${get.prefixSpan('飞鸿')}${get.prefixSpan('神')}`
 });
-//lib.config.all.characters.push('MX_feihongyinxue');
+lib.config.all.characters.push('MX_feihongyinxue');
 lib.config.all.sgscharacters.push('MX_feihongyinxue');
 if(lib.config.characters.includes('MX_feihongyinxue')){
 //飞鸿新机制
@@ -56810,7 +56810,7 @@ if(!lib.config.extension_活动武将_SCS&&i.indexOf('biliscs_')!=-1) delete huo
 return huodongcharacter;
 });
 game.bolAddGroupNature(['mx_dom','宿','宿舍'],[255,215,0]);
-//lib.config.all.characters.push('huodongcharacter');
+lib.config.all.characters.push('huodongcharacter');
 lib.config.all.sgscharacters.push('huodongcharacter');
 if(!lib.config.characters.includes('huodongcharacter')) lib.config.characters.remove('huodongcharacter');
 lib.translate['huodongcharacter_character_config']='<span style="font-family: xingkai">其他武将</span>';
@@ -56860,7 +56860,7 @@ for(var i in 武将包英文名.character){
 }
 return 武将包英文名;
 });
-//lib.config.all.characters.push('武将包英文名');
+lib.config.all.characters.push('武将包英文名');
 lib.config.all.sgscharacters.push('武将包英文名');
 if(!lib.config.characters.includes('武将包英文名')) lib.config.characters.remove('武将包英文名');
 lib.translate['武将包英文名_character_config']='武将包中文名';
