@@ -40,13 +40,15 @@ game.bolShowNewPack=function(){
 //更新告示
 var HuoDong_update=[
 '/setPlayer/',
-'新版适配',
+'合并@PZ157的Pull Request',
+'技能调整',
+'微信阮惠',
 '欢杀丁原、刘辩、庞德公',
 'To be continued...',
 ];
 //更新武将
 var HuoDong_players=[
-'Mbaby_ol_dingyuan','Mbaby_liubian','Mbaby_re_pangdegong',
+'Mbaby_ol_dingyuan','Mbaby_liubian','Mbaby_re_pangdegong','wechat_ruanhui',
 ];
 //加载
 var dialog=ui.create.dialog(
@@ -42318,121 +42320,121 @@ if(player.canUse(card,target,false)) player.useCard(card,target,false);
 },
 },
 wechatmingcha:{
-	audio:'mingcha',
-	trigger:{player:'phaseDrawBegin1'},
-	filter:(event)=>!event.numFixed,
-	forced:true,
-	locked:false,
-	content(){
-		'step 0'
-		var cards=game.cardsGotoOrdering(get.cards(2)).cards,cards2=cards.slice(0);
-		event.cards=cards.filter(function(i){
-			return get.number(i)<=8;
-		});
-		player.showCards(cards,get.translation(player)+'发动了【明察】');
-		'step 1'
-		player.chooseBool('是否放弃摸牌'+(cards.length?'并获得'+get.translation(cards):'')+'？').set('goon',function(){
-			let num=trigger.num;
-			if(game.hasPlayer(cur=>cur.countGainableCards(player,'he')&&get.attitude(_status.event.player,cur)<0)) num-=2;
-			return num>=0;
-		}()).set('ai',()=>_status.event.goon);
-		'step 2'
-		if(result.bool){
-			trigger.changeToZero();
-			player.gain(cards,'gain2');
-		}
-		else event.finish();
-		'step 3'
-		player.chooseTarget('是否随机获得其他角色的一张牌？',function(card,player,target){
-			return target!=player&&target.countCards('he')>0;
-		}).set('ai',function(target){
-			if(!target.getGainableCards(player,'he')) return 0.99;
-			return 1-get.attitude(player,target);
-		});
-		'step 4'
-		if(result.bool){
-			var target=result.targets[0],cards=target.getGainableCards(player,'he');
-			player.line(target,'green');
-			if(cards.length) player.gain(cards.randomGet(),target,'giveAuto','bySelf');
-		}
-	},
+audio:'mingcha',
+trigger:{player:'phaseDrawBegin1'},
+filter:(event)=>!event.numFixed,
+forced:true,
+locked:false,
+content(){
+'step 0'
+var cards=game.cardsGotoOrdering(get.cards(2)).cards,cards2=cards.slice(0);
+event.cards=cards.filter(function(i){
+return get.number(i)<=8;
+});
+player.showCards(cards,get.translation(player)+'发动了【明察】');
+'step 1'
+player.chooseBool('是否放弃摸牌'+(cards.length?'并获得'+get.translation(cards):'')+'？').set('goon',function(){
+let num=trigger.num;
+if(game.hasPlayer(cur=>cur.countGainableCards(player,'he')&&get.attitude(_status.event.player,cur)<0)) num-=2;
+return num>=0;
+}()).set('ai',()=>_status.event.goon);
+'step 2'
+if(result.bool){
+trigger.changeToZero();
+player.gain(cards,'gain2');
+}
+else event.finish();
+'step 3'
+player.chooseTarget('是否随机获得其他角色的一张牌？',function(card,player,target){
+return target!=player&&target.countCards('he')>0;
+}).set('ai',function(target){
+if(!target.getGainableCards(player,'he')) return 0.99;
+return 1-get.attitude(player,target);
+});
+'step 4'
+if(result.bool){
+var target=result.targets[0],cards=target.getGainableCards(player,'he');
+player.line(target,'green');
+if(cards.length) player.gain(cards.randomGet(),target,'giveAuto','bySelf');
+}
+},
 },
 wechatjingzhong:{
-	audio:'jingzhong',
-	mod:{
-		aiOrder(player,card,num){
-			if(num<=0||!player.isPhaseUsing()||!player.hasCard(i=>{
-				return lib.filter.cardDiscardable(i,player)&&get.color(i,player)==='black';
-			},'h')) return num;
-			let dis=player.needsToDiscard(null,false,true);
-			if(dis>2||dis<=0) return num;
-			if(dis===1) return 0;
-			if(get.color(card,player)==='black') return num/10;
-		}
-	},
-	trigger:{player:'phaseDiscardAfter'},
-	filter(event,player){
-		return player.hasHistory('lose',function(evt){
-			if(evt.type==='discard'&&evt.getParent('phaseDiscard')===event){
-				for(let i of evt.cards2){
-					if(get.color(i,player)==='black') return true;
-				}
-			}
-		});
-	},
-	direct:true,
-	locked:false,
-	content(){
-		'step 0'
-		player.chooseTarget(get.prompt('wechatjingzhong'),'获得一名其他角色下回合出牌阶段内使用的牌（每阶段限三次）',lib.filter.notMe).set('ai',target=>{
-			return Math.sqrt(target.countCards('h'))*get.threaten(target);
-		});
-		'step 1'
-		if(result.bool){
-			let target=result.targets[0];
-			player.logSkill('wechatjingzhong',target);
-			player.addSkill('wechatjingzhong_effect');
-			player.markAuto('wechatjingzhong_effect',[target]);
-			game.delayx();
-		}
-	},
-	subSkill:{
-		effect:{
-			mark:true,
-			intro:{content:'已指定$为目标'},
-			trigger:{global:'useCardAfter'},
-			filter(event,player){
-				if(!player.getStorage('wechatjingzhong_effect').includes(event.player)||!event.cards.filterInD().length) return false;
-				let evt=event.getParent('phaseUse');
-				if(!evt||evt.player!=event.player) return false;
-				return player.getHistory('useSkill',function(evtx){
-					return evtx.skill=='wechatjingzhong_effect'&&evtx.event.getParent('phaseUse')===evt;
-				}).length<3;
-			},
-			forced:true,
-			charlotte:true,
-			logTarget:'player',
-			content:function(){
-				player.gain(trigger.cards.filterInD(),'gain2');
-			},
-			group:'wechatjingzhong_remove',
-		},
-		remove:{
-			trigger:{global:'phaseAfter'},
-			filter(event,player){
-				return player.getStorage('wechatjingzhong_effect').includes(event.player);
-			},
-			forced:true,
-			charlotte:true,
-			popup:false,
-			firstDo:true,
-			content(){
-				var storage=player.getStorage('wechatjingzhong_effect');
-				storage.remove(trigger.player);
-				if(!storage.length) player.removeSkill('wechatjingzhong_effect');
-			},
-		},
-	},
+audio:'jingzhong',
+mod:{
+aiOrder(player,card,num){
+if(num<=0||!player.isPhaseUsing()||!player.hasCard(i=>{
+return lib.filter.cardDiscardable(i,player)&&get.color(i,player)==='black';
+},'h')) return num;
+let dis=player.needsToDiscard(null,false,true);
+if(dis>2||dis<=0) return num;
+if(dis===1) return 0;
+if(get.color(card,player)==='black') return num/10;
+}
+},
+trigger:{player:'phaseDiscardAfter'},
+filter(event,player){
+return player.hasHistory('lose',function(evt){
+if(evt.type==='discard'&&evt.getParent('phaseDiscard')===event){
+for(let i of evt.cards2){
+if(get.color(i,player)==='black') return true;
+}
+}
+});
+},
+direct:true,
+locked:false,
+content(){
+'step 0'
+player.chooseTarget(get.prompt('wechatjingzhong'),'获得一名其他角色下回合出牌阶段内使用的牌（每阶段限三次）',lib.filter.notMe).set('ai',target=>{
+return Math.sqrt(target.countCards('h'))*get.threaten(target);
+});
+'step 1'
+if(result.bool){
+let target=result.targets[0];
+player.logSkill('wechatjingzhong',target);
+player.addSkill('wechatjingzhong_effect');
+player.markAuto('wechatjingzhong_effect',[target]);
+game.delayx();
+}
+},
+subSkill:{
+effect:{
+mark:true,
+intro:{content:'已指定$为目标'},
+trigger:{global:'useCardAfter'},
+filter(event,player){
+if(!player.getStorage('wechatjingzhong_effect').includes(event.player)||!event.cards.filterInD().length) return false;
+let evt=event.getParent('phaseUse');
+if(!evt||evt.player!=event.player) return false;
+return player.getHistory('useSkill',function(evtx){
+return evtx.skill=='wechatjingzhong_effect'&&evtx.event.getParent('phaseUse')===evt;
+}).length<3;
+},
+forced:true,
+charlotte:true,
+logTarget:'player',
+content:function(){
+player.gain(trigger.cards.filterInD(),'gain2');
+},
+group:'wechatjingzhong_remove',
+},
+remove:{
+trigger:{global:'phaseAfter'},
+filter(event,player){
+return player.getStorage('wechatjingzhong_effect').includes(event.player);
+},
+forced:true,
+charlotte:true,
+popup:false,
+firstDo:true,
+content(){
+var storage=player.getStorage('wechatjingzhong_effect');
+storage.remove(trigger.player);
+if(!storage.length) player.removeSkill('wechatjingzhong_effect');
+},
+},
+},
 },
 },
 dynamicTranslate:{
