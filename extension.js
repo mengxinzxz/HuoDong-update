@@ -1260,6 +1260,9 @@ if(lib.characterSort.NianShouCharacter.NianShouCharacter2019.includes(name)) ran
 for(const name of lib.characterSort['diy'].diy_trashbin){
 if(!Object.keys(rank.rarity).some(rarity=>rank.rarity[rarity].includes(name))) rank.rarity['junk'].add(name);
 }
+for(const name of lib.characterSort['sp'].sp_qifu){
+if(!rank.rarity.legend.includes(name)) rank.rarity['legend'].add(name);
+}
 //总置
 var addRank=function(rank){
 if(!lib.rank) return;
@@ -42852,7 +42855,7 @@ wechathuhou:'虎侯',
 wechathuhou_info:'①与你进行【决斗】的角色不能打出【杀】。②你可以将一张装备牌当作【杀】使用或打出。③以你为伤害来源的【杀】或【决斗】造成的伤害+X（X为此牌对应的实体牌与你使用【决斗】打出的牌中的装备牌数之和）。',
 wechatwuwei:'武卫',
 wechatwuwei_info:'结束阶段，你可以选择一名角色，若如此做，直到你的下个回合开始，其成为伤害类卡牌的目标后，若其体力值不大于你，则你令此牌对其无效，然后使用者于此牌结算完毕后视为对你使用【决斗】（你无法因此【决斗】触发〖武卫〗）。',
-wechat_ruanhui:'阮慧',
+wechat_ruanhui:'微信阮慧',
 wechatmingcha:'明察',
 wechatmingcha_info:'摸牌阶段开始时，你亮出牌堆顶两张牌，然后你可以放弃摸牌并获得其中点数不大于8的牌。若你以此法获得了牌，你可以获得一名其他角色的随机一张牌。',
 wechatjingzhong:'敬重',
