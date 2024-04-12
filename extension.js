@@ -37773,7 +37773,7 @@ player.removeSkill('wechatqinwang3');
 },
 //孙鲁班
 wechatchanhui:{
-audio:'xinchanhui',
+audio:'xinzenhui',
 trigger:{player:'useCardToPlayer'},
 filter:function(event,player){
 if(!player.isPhaseUsing()) return false;
