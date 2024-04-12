@@ -29605,17 +29605,9 @@ var target=player.storage.minixiongzheng_target;
 delete player.storage.minixiongzheng_target;
 if(!target){event.goto(4);return;}
 event.target=target;
-var list=[],list2=[];
-var history=target.actionHistory;
-if(history.length<2){event.goto(4);return;}
-for(var i=history.length-2;i>=0;i--){
-for(var evt of history[i].damage){
-if(evt.source) list.add(evt.source);
-}
-if(history[i].isRound) break;
-}
+var list=target.getRoundHistory('damage',evt=>evt.source,1).reduce((list,evt)=>list.add(evt.source),[]).filter(i=>i.isIn());
 var list2=game.filterPlayer(i=>i!=player).removeArray(list);
-event.list=list; event.list2=list2;
+event.list=list;event.list2=list2;
 var choiceList=[
 '视为对任意名上一轮未对'+get.translation(target)+'造成过伤害的角色使用一张【杀】',
 '令任意名上一轮对'+get.translation(target)+'造成过伤害的角色摸两张牌'
@@ -29692,14 +29684,9 @@ game.delayx();
 }
 },
 getTarget:function(player,target){
-var history=player.actionHistory;
-for(var i=history.length-2;i>=0;i--){
-for(var evt of history[i].useSkill){
-if(evt.skill=='minixiongzheng') return evt.targets.includes(target);
-}
-if(history[i].isRound) break;
-}
-return false;
+return player.getRoundHistory('useSkill',evt=>{
+return evt.skill=='minixiongzheng'&&(evt.targets||[evt.target]).includes(target);
+},1).length;
 },
 subSkill:{
 effect:{audio:'twxiongzheng'},
@@ -29742,13 +29729,7 @@ onChooseToUse:function(event){
 if(!game.online){
 var num=1;
 game.countPlayer2(current=>{
-var history=current.actionHistory;
-for(var i=history.length-1;i>=0;i--){
-for(var evt of history[i].useSkill){
-if(evt.skill=='miniluannian_global') num++;
-}
-if(history[i].isRound) break;
-}
+num+=current.getRoundHistory('useSkill',evt=>evt.skill=='miniluannian_global').length;
 });
 event.set('miniluannian_num',num);
 }
@@ -30359,14 +30340,11 @@ player.when({global:'roundStart'})
 .then(()=>{
 player.removeSkill('minianshi_effect');
 const targets=game.filterPlayer(target=>{
-const history=target.actionHistory;
-for(let i=history.length-2;i>=0;i--){
-const historyx=history[i].useCard.concat(history[i].respond);
-if(historyx.some(evt=>evt.card.name=='shan')) return false;
-if(history[i].lose.some(evt=>evt.type!='discard'&&evt.cards2&&evt.cards2.some(card=>get.name(card,target)=='shan'||get.name(card,false)=='shan'))) return false;
-if(history[i].isRound) break;
-}
-return true;
+return !target.getRoundHistory('useCard',null,1).slice().concat(target.getRoundHistory('respond',null,1)).some(evt=>{
+return evt.card.name=='shan';
+})&&!target.getRoundHistory('lose',evt=>{
+return evt.type=='discard'&&evt.cards2&&evt.cards2.some(card=>get.name(card,target)=='shan'||get.name(card,false)=='shan');
+},1).length;
 }).sortBySeat();
 if(targets.length){
 player.logSkill('minianshi_effect',targets);
@@ -33321,11 +33299,7 @@ player.addSkills('minishenzhu');
 'step 1'
 var num=0;
 game.countPlayer2(current=>{
-var history=current.actionHistory;
-for(var i=history.length-1;i>=0;i--){
-num+=history[i].useSkill.filter(evt=>evt.skill=='minichongwei_remove').length;
-if(history[i].isRound) break;
-}
+num+=current.getRoundHistory('useSkill',evt=>evt.skill=='minichongwei_remove').length;
 });
 if(num) player.draw(num);
 },
@@ -37611,17 +37585,7 @@ intro:{content:'当你于每轮第一次受到伤害后，你可以弃置一张�
 audio:'buyi',
 trigger:{player:'damageEnd'},
 filter:function(event,player){
-var history=player.getHistory('damage');
-for(var i of history){
-if(i==event) break;
-return false;
-}
-var all=player.actionHistory;
-for(var i=all.length-2;i>=0;i--){
-if(all[i].damage.length) return false;
-if(all[i].isRound) break;
-}
-return true;
+return player.getRoundHistory('damage').indexOf(event)==0;
 },
 direct:true,
 content:function(){
@@ -39235,14 +39199,7 @@ wechatchenqing:{
 audio:'chenqing',
 trigger:{global:'dying'},
 filter:function(event,player){
-for(var i=player.actionHistory.length-1;i>=0;i--){
-var history=player.actionHistory[i].useSkill;
-for(var j=history.length-1;j>=0;j--){
-if(history[j].skill=='wechatchenqing') return false;
-}
-if(player.actionHistory[i].isRound) break;
-}
-return event.player.hp<=0;
+return !player.getRoundHistory('useSkill',evt=>evt.skill=='wechatchenqing').length&&event.player.hp<=0;
 },
 direct:true,
 content:function(){
@@ -42207,13 +42164,7 @@ result:{player:1},
 },
 wechatmengshou:{
 getNum(player){
-let num=0;
-const history=player.actionHistory;
-for(let i=history.length-1;i>=0;i--){
-num+=history[i].sourceDamage.reduce((sum,evt)=>sum+evt.num,0);
-if(history[i].isRound) break;
-}
-return num;
+return player.getRoundHistory('sourceDamage').reduce((sum,evt)=>sum+evt.num,0);
 },
 audio:'ext:活动武将/audio/skill:2',
 trigger:{player:'damageBegin4'},
@@ -43356,15 +43307,8 @@ return 1;
 group:'fh_yuejian_count',
 //联机の痛！！！！！！
 init:function(player){
-if(!player.hasSkill('fh_yuejian_used')){
-var history=player.actionHistory;
-for(var i=history.length-1;i>=0;i--){
-if(history[i].useCard.some(evt=>get.type(evt.card)=='basic')){
+if(!player.hasSkill('fh_yuejian_used')&&player.getRoundHistory('useCard',evt=>get.type(evt.card)=='basic').length){
 player.addTempSkill('fh_yuejian_used','roundStart');
-break;
-}
-if(history[i].isRound) break;
-}
 }
 },
 subSkill:{
@@ -52290,16 +52234,7 @@ return history[0].targets[0];
 audio:'clansankuang',
 trigger:{player:'useCardAfter'},
 filter:function(event,player){
-var card=event.card,type=get.type2(card);
-for(var i=player.actionHistory.length-1; i>=0; i--){
-var history=player.actionHistory[i].useCard;
-for(var evt of history){
-if(evt==event) continue;
-if(get.type2(evt.card)==type) return false;
-}
-if(player.actionHistory[i].isRound) break;
-}
-return true;
+return get.info('clansankuang').filter(event,player);
 },
 direct:true,
 locked:true,
@@ -52552,16 +52487,8 @@ audio:'clandianzhan',
 trigger:{player:'useCardAfter'},
 filter:function(event,player){
 if(!lib.suit.includes(get.suit(event.card))) return false;
-var card=event.card,suit=get.suit(card);
-for(var i=player.actionHistory.length-1; i>=0; i--){
-var history=player.actionHistory[i].useCard;
-for(var evt of history){
-if(evt==event) continue;
-if(get.suit(evt.card)==suit) return false;
-}
-if(player.actionHistory[i].isRound) break;
-}
-return true;
+const suit=get.suit(event.card);
+return player.getRoundHistory('useCard',evt=>get.suit(evt.card)==suit).indexOf(event)==0;
 },
 forced:true,
 filter_x:function(event,player){
@@ -53297,26 +53224,7 @@ oldx_dianzhan:{
 audio:'clandianzhan',
 trigger:{player:'useCardAfter'},
 filter:function(event,player){
-if(!lib.suit.includes(get.suit(event.card))) return false;
-var bool=true,boolx=true;
-for(var i=player.actionHistory.length-1;i>=0;i--){
-var history=player.actionHistory[i].useCard;
-for(var j=history.length-1;j>=0;j--){
-var evt=history[j];
-if(boolx&&event.card==evt.card){
-boolx=false;
-continue;
-}
-else if(!boolx&&event.card!=evt.card&&get.suit(evt.card)==get.suit(event.card)){
-bool=false;
-break;
-}
-}
-if(player.actionHistory[i].isRound) break;
-else if(!boolx&&bool) continue;
-else if(!boolx&&!bool) break;
-}
-return bool;
+return get.info('clandianzhan').filter(event,player);
 },
 forced:true,
 content:function(){
@@ -54501,22 +54409,12 @@ return lib.skill.bilibili_daili.checkx(player);
 },
 checkx:function(player){
 if(game.roundNumber<=1) return false;
-for(var current of game.filterPlayer2()){
-if(current==player) continue;
-var history=current.actionHistory;
-for(var i=history.length-2;i>=0;i--){
-for(var j=0;j<history[i].useCard.length;j++){
-var cardxx=history[i].useCard[j].cards;
-if(cardxx&&cardxx.length){
-for(var card of cardxx){
-if(get.type(card,null,false)=='basic'||get.type(card,null,false)=='trick') return true;
-}
-}
-}
-if(history[i].isRound) break;
-}
-}
-return false;
+return game.hasPlayer2(current=>{
+if(current==player) return false;
+return current.getRoundHistory('useCard',evt=>{
+return evt.cards&&evt.cards.some(card=>get.type(card,null,false)=='basic'||get.type(card,null,false)=='trick');
+},1).length;
+});
 },
 forced:true,
 content:function(){
@@ -54530,20 +54428,11 @@ if(!lib.skill.bilibili_daili.checkx(player)) event.finish();
 var cards=[];
 for(var current of game.filterPlayer2()){
 if(current==player) continue;
-var list=[];
-var history=current.actionHistory;
-for(var i=history.length-2;i>=0;i--){
-for(var j=0;j<history[i].useCard.length;j++){
-var cardxx=history[i].useCard[j].cards;
-if(cardxx&&cardxx.length){
-for(var card of cardxx){
-if(get.type(card,null,false)=='basic'||get.type(card,null,false)=='trick') list.push(card);
-}
-}
-}
-if(history[i].isRound) break;
-}
-if(list.length) cards.push(list.randomGet());
+var list=current.getRoundHistory('useCard',evt=>{
+return evt.cards&&evt.cards.some(card=>get.type(card,null,false)=='basic'||get.type(card,null,false)=='trick');
+},1).reduce((list,evt)=>{list.addArray(evt.cards);return list;},[]);
+list=list.filter(i=>!cards.includes(i));
+if(list.length) cards.add(list.randomGet());
 }
 for(var card of cards){
 cards[cards.indexOf(card)]=game.createCard2(card.name,card.suit,card.number,card.nature);
