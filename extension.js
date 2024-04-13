@@ -42175,17 +42175,17 @@ return event.source&&event.source!=player&&getNum(player)>=getNum(event.source);
 check(event,player){
 return get.damageEffect(player,event.source,player)<=0;
 },
-usable:1,
 logTarget:'source',
 content(){
+player.tempBanSkill('wechatmengshou','roundStart',false);
 trigger.cancel();
 },
 ai:{
 effect:{
 target(card,player,target){
 if(!player||!target||player==target) return;
-const count=target.storage.counttrigger,getNum=get.info('wechatmengshou').getNum;
-if((count&&count.wechatmengshou&&count.wechatmengshou>0)||player.hasSkillTag('jueqing')||getNum(target)<getNum(player)) return;
+const getNum=get.info('wechatmengshou').getNum;
+if(player.isTempBanned('wechatmengshou')||player.hasSkillTag('jueqing')||getNum(target)<getNum(player)) return;
 if(player._wechatmengshou_temp) return;
 if(_status.event.getParent('useCard',true)||_status.event.getParent('_wuxie',true)) return;
 if(get.tag(card,'damage')){
@@ -43006,10 +43006,10 @@ wechatlvyuan_info:'结束阶段，你可以弃置一种颜色的所有手牌并�
 wechathezong:'合纵',
 wechathezong_info:'一轮游戏开始时，你可以选择一名其他角色。若如此做，直到下一轮游戏开始：①当你/其使用指定除你们外的唯一目标的【杀】结算完毕后，除非其/你对相同目标使用一张【杀】，否则其/你弃置一张牌；②当你/其成为指定除你们中的唯一目标的【杀】时，除非其/你交给当你/其一张【闪】，否则其/你成为此牌的额外目标。',
 wechat_re_yuanshao:'极袁绍',
-wechathongtu:'鸿图',
+wechathongtu:'尊北',
 wechathongtu_info:'出牌阶段限一次，你可以与所有其他角色进行共同拼点。赢的角色视为使用一张【万箭齐发】，且此牌结算完毕后，你摸受到过此牌造成的伤害的角色数的牌；若不存在赢的角色，则此技能视为未发动过。',
 wechatmengshou:'盟首',
-wechatmengshou_info:'每回合限一次，当你受到其他角色造成的伤害时，若其本轮造成的伤害值不大于你，则你可以防止此伤害。',
+wechatmengshou_info:'每轮限一次，当你受到其他角色造成的伤害时，若其本轮造成的伤害值不大于你，则你可以防止此伤害。',
 wechat_re_xuzhu:'极许褚',
 wechathuhou:'虎侯',
 wechathuhou_info:'①与你进行【决斗】的角色不能打出【杀】。②你可以将一张装备牌当作【杀】使用或打出。③以你为伤害来源的【杀】或【决斗】造成的伤害+X（X为此牌对应的实体牌与你使用【决斗】打出的牌中的装备牌数之和）。',
