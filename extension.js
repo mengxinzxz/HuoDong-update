@@ -11069,11 +11069,12 @@ if(result.bool) player.recover();
 },
 },
 minijiaozhao:{
+init:function(player){
+if(!player.storage.minijiaozhao2) player.storage.minijiaozhao2=[[],[],[],[]];
+},
 onChooseToUse:function(event){
 if(!game.online&&!event.minijiaozhao_list){
-var player=event.player;
-if(!player.hasSkill('minijiaozhao2')) player.addTempSkill('minijiaozhao2',{player:'phaseUseAfter'});
-var list=[];
+var player=event.player,list=[];
 var storage1=player.storage.minijiaozhao2[2];
 var storage2=player.storage.minijiaozhao2[3];
 for(var name of lib.inpile){
@@ -11129,6 +11130,7 @@ return player.getUseValue({name:button.link[2],nature:button.link[3]});
 var card={name:result.links[0][2],nature:result.links[0][3]};
 player.storage.minijiaozhao2[0].push(cards[0]);
 player.storage.minijiaozhao2[1].push(card);
+player.updateMarks('minijiaozhao2');
 if(player.hasMark('minidanxin')) player.storage.minijiaozhao2[player.countMark('minidanxin')+1].push(get[player.countMark('minidanxin')<2?'type':'name'](card));
 var chosen=result.links[0][2];
 var nature=result.links[0][3];
@@ -11144,15 +11146,9 @@ ai:{
 order:8,
 result:{player:1},
 },
+group:'minijiaozhao2',
 },
 minijiaozhao2:{
-init:function(player){
-if(!player.storage.minijiaozhao2) player.storage.minijiaozhao2=[[],[],[],[]];
-},
-onremove:function(player){
-player.removeGaintag('minijiaozhao2');
-delete player.storage.minijiaozhao2;
-},
 getOriginalCard:function(player,card){
 var storage=player.storage.minijiaozhao2;
 return storage[0][storage[1].indexOf(storage[1].filter(function(cardx){
@@ -11207,6 +11203,16 @@ filterCard:lib.skill.minijiaozhao2.getOriginalCard(player,{name:links[0][2],natu
 selectCard:-1,
 popname:true,
 viewAs:{name:links[0][2],nature:links[0][3],storage:{minijiaozhao2:true}},
+precontent(){
+if(!player.storage.minijiaozhao3){
+player.storage.minijiaozhao3=true;
+player.when(['phaseUseBefore','phaseUseAfter']).then(()=>{
+delete player.storage.minijiaozhao3;
+player.removeGaintag('minijiaozhao2');
+player.storage.minijiaozhao2=[[],[],[],[]];
+});
+}
+},
 }
 },
 prompt:function(links,player){
