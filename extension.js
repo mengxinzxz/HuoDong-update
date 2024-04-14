@@ -26782,6 +26782,7 @@ player.logSkill('miniliangying');
 var num=event.map[result.control]||1;
 event.num=num;
 player.draw(num);
+if(_status.connectMode) game.broadcastAll(function(){_status.noclearcountdown=true});
 'step 2'
 var num=Math.min(event.num,player.countCards('he'),game.players.length-1);
 var next=player.chooseCardTarget({
@@ -26824,6 +26825,9 @@ if(num-event.list.length>=1) event.goto(2);
 }
 else if(!event.list.length>0) event.finish();
 'step 4'
+if(_status.connectMode){
+game.broadcastAll(function(){delete _status.noclearcountdown;game.stopCountChoose()});
+}
 var list=[];
 var cards=[];
 for(var obj of event.list){
