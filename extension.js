@@ -20586,7 +20586,7 @@ else return '共有'+get.cnNumber(cards.length)+'张牌';
 minirepojun:{
 inherit:'minipojun',
 filter(event,player){
-return event.card.name=='sha'&&event.target.hp>0&&event.target.countCards('he');
+return event.card.name=='sha'&&event.target.countCards('he');
 },
 group:'minirepojun_damage',
 subSkill:{damage:{audio:'decadepojun',inherit:'repojun3'}},
