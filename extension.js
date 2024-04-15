@@ -26381,11 +26381,7 @@ if(card.name=='sha') return [1,0.5];
 },
 minimizhao:{
 audio:'mizhao',
-enable:'phaseUse',
-usable:1,
-filter:function(event,player){
-return player.countCards('h');
-},
+inherit:'mizhao',
 check:function(card){
 var player=_status.event.player;
 if(ui.selected.cards.length&&!game.hasPlayer(function(current){
@@ -26393,47 +26389,7 @@ return get.attitude(player,current)>0;
 })) return -1;
 return 1/(get.value(card)||0.5);
 },
-filterCard:true,
 selectCard:[1,Infinity],
-filterTarget:lib.filter.notMe,
-discard:false,
-lose:false,
-delay:false,
-complexCard:true,
-content:function(){
-'step 0'
-event.target1=targets[0];
-targets[0].gain(cards,player,'giveAuto');
-'step 1'
-if(!game.hasPlayer(function(current){
-return current!=player&&target.canCompare(current);
-})) event.finish();
-'step 2'
-player.chooseTarget(true,'选择拼点目标',function(card,player,target){
-return _status.event.target1.canCompare(target)&&target!=player;
-}).set('ai',function(target){
-var player=_status.event.player;
-var eff=get.effect(target,{name:'sha'},_status.event.target1,player);
-var att=get.attitude(player,target);
-if(att>0){
-return eff-10;
-}
-return eff;
-}).set('target1',event.target1).set('forceDie',true);
-'step 3'
-if(result.bool){
-event.target2=result.targets[0];
-event.target1.line(event.target2);
-event.target1.chooseToCompare(event.target2);
-}
-else event.finish();
-'step 4'
-if(!result.tie){
-var list=[event.target1,event.target2];
-if(!result.bool) list.reverse();
-if(list[0].canUse({name:'sha',isCard:true},list[1],false)) list[0].useCard({name:'sha',isCard:true},list[1],false);
-}
-},
 ai:{
 order:1,
 result:{
