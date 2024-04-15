@@ -41139,7 +41139,7 @@ if(!arg||!arg.card||arg.card.name!='sha'||!arg.target||arg.target.countDiscardab
 wechatzhuixi:{
 mod:{
 globalFrom:function(from,to){
-if(!to.countCards('e',card=>get.type(card)=='equip3'||get.type(card)=='equip4')) return -Infinity;
+if(!to.countCards('e',card=>get.subtype(card)=='equip3'||get.subtype(card)=='equip4')) return -Infinity;
 },
 },
 audio:'ext:活动武将/audio/skill:2',
@@ -41388,7 +41388,7 @@ trigger:{player:'phaseBegin'},
 forced:true,
 locked:false,
 content:function(){
-player.addTempSkills(lib.skill.wechatrehuixin.derivation[player.countCards('e')%2]);
+player.addTempSkills(lib.skill.wechatrehuixin.derivation[(player.countCards('e')+1)%2]);
 },
 derivation:['wechatjifeng','wechatjizhi'],
 },
