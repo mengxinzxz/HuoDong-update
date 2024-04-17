@@ -41259,6 +41259,7 @@ filter:function(event,player){
 //if(player==event.player) return false;
 return !player.getAllHistory('useSkill',evt=>evt.skill=='wechatzhengnan'&&evt.targets[0]==event.player).length;
 },
+logTarget:'player',
 },
 //极黄月英
 wechatmiaobi:{
@@ -42503,7 +42504,7 @@ list:[
 ['xuanjian_card','令一名角色摸一张牌并回复1点体力，然后你摸一张牌'],
 ],
 subSkill:{
-backup:{audio:'dcquanjian'},
+backup:{},
 wolong:{
 audio:'pcaudio_wolong_card',
 filterTarget:true,
