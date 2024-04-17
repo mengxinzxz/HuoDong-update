@@ -40,16 +40,10 @@ game.bolShowNewPack=function(){
 //更新告示
 var HuoDong_update=[
 '/setPlayer/',
-'合并@PZ157的Pull Request',
-'技能调整',
-'微信阮惠、SP马超、庞德公',
-'欢杀丁原、刘辩、庞德公、阮瑀',
 'To be continued...',
 ];
 //更新武将
 var HuoDong_players=[
-'Mbaby_ol_dingyuan','Mbaby_liubian','Mbaby_re_pangdegong','wechat_ruanhui',
-'Mbaby_ruanyu','wechat_sp_machao','wechat_pangdegong',
 ];
 //加载
 var dialog=ui.create.dialog(
@@ -57437,7 +57431,7 @@ intro:'新人制作扩展，希望大家支持。'+
 author:'萌新（转型中）',
 diskURL:'',
 forumURL:'',
-version:'0.2.2',
+version:'0.2.3',
 //新人制作扩展，希望大家支持。
 //新人技术不足，希望大家包涵。
 //壹、贰、叁、肆、伍、陆、柒、捌、玖、拾
