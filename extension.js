@@ -40,7 +40,7 @@ game.bolShowNewPack=function(){
 //更新告示
 var HuoDong_update=[
 '/setPlayer/',
-'bugfix',
+'bugfix，技能调整',
 '添加微信三国杀武将：关银屏',
 'To be continued...',
 ];
@@ -18537,12 +18537,16 @@ if(!arg||!arg.card||arg.card.name!='sha'||!player.hasSkill('minisppaoxiao')) ret
 minixvhe:{
 audio:'retishen',
 trigger:{player:['shaMiss','useCard','respond']},
-filter:function(event,player,name){
+filter(event,player,name){
 return name=='shaMiss'||event.card.name=='shan';
 },
-forced:true,
-content:function(){
-player.draw();
+async cost(event,trigger,player){
+event.result={bool:true,targets:[event.triggername=='shaMiss'?trigger.target:lib.skill.chongzhen.logTarget(trigger,player)]};
+},
+locked:true,
+content(){
+player.draw('nodelay');
+event.targets[0].draw();
 },
 },
 //关羽
@@ -19905,22 +19909,22 @@ audio:'qixi',
 trigger:{player:'phaseUseBegin'},
 filter:function(event,player){
 return game.hasPlayer(function(target){
-return target.countDiscardableCards(player,'he');
+return target.countDiscardableCards(player,'hej');
 });
 },
 direct:true,
 content:function(){
 'step 0'
-player.chooseTarget(get.prompt('miniqixi'),'弃置一名角色的一张牌',function(card,player,target){
-return target.countDiscardableCards(player,'he');
+player.chooseTarget(get.prompt('miniqixi'),'弃置一名角色区域里的一张牌',function(card,player,target){
+return target.countDiscardableCards(player,'hej');
 }).set('ai',function(target){
 var player=_status.event.player;
-return get.effect(target,{name:'guohe_copy2'},player,player);
+return get.effect(target,{name:'guohe'},player,player);
 });
 'step 1'
 if(result.bool){
 player.logSkill('miniqixi',result.targets);
-player.discardPlayerCard(result.targets[0],'he',true);
+player.discardPlayerCard(result.targets[0],'hej',true);
 }
 },
 },
@@ -29518,16 +29522,28 @@ minisbluanji:{
 audio:'sbluanji',
 inherit:'sbluanji',
 filter:function(event,player){
-if(event.name=='chooseToUse') return player.countCards('hs')>1&&!player.hasSkill('minisbluanji_used');
-var evt=event.getParent(2),history=player.getHistory('gain',evtx=>evtx.getParent(2).name=='minisbluanji');
-return evt.name=='wanjian'&&evt.getParent().player==player&&event.player!=player&&history.length<3;
+if(event.name=='chooseToUse') return player.countCards('hs',card=>get.info('minisbluanji').filterCard(card,player))>1;
+const evt=event.getParent(2),history=player.getHistory('gain',evtx=>evtx.getParent(2).name=='minisbluanji');
+return evt.name=='wanjian'&&evt.getParent().player==player&&event.player!=player&&history.reduce((list,evt)=>{
+list.addArray(evt.cards);return list;
+},[]).length<3;
 },
+filterCard(card,player){
+return !player.getStorage('minisbluanji_used').includes(get.color(card));
+},
+check(card){
+const player=get.event('player'),eff=get.info('sbluanji').check(card);
+if(ui.selected.cards.length&&get.color(card)==get.color(ui.selected.cards[0])) return 2.5*eff;
+return eff;
+},
+complexCard:true,
 precontent:function(){
-player.addTempSkill('minisbluanji_used','phaseUseAfter');
+player.addTempSkill('minisbluanji_used');
+player.markAuto('minisbluanji_used',event.result.cards.map(i=>get.color(i,player)));
 },
 group:'minisbluanji_discard',
 subSkill:{
-used:{charlotte:true},
+used:{charlotte:true,onremove:true},
 discard:{
 audio:'sbluanji',
 trigger:{source:'damageSource'},
@@ -35491,7 +35507,7 @@ minijiyuan_info:'①当你交给一名其他角色牌时，你可令该角色摸
 minisppaoxiao:'咆哮',
 minisppaoxiao_info:'锁定技。①你使用【杀】无距离和次数限制。②你使用本回合第一次之后的【杀】造成的伤害+1，使用本回合第二次之后的【杀】无视防具且不可被响应。',
 minixvhe:'虚吓',
-minixvhe_info:'锁定技，当你使用的【杀】被【闪】抵消后，或你使用或打出【闪】时，你摸一张牌。',
+minixvhe_info:'锁定技，当你使用【杀】被【闪】抵消后，或你使用或打出【闪】时，你与对方各摸一张牌。',
 minirewusheng:'武圣',
 minirewusheng_info:'①回合开始时，你从牌堆或弃牌堆中获得一张红色牌。②你可以将一张红色牌当作【杀】使用或打出。③你使用的红色【杀】造成的伤害+1。',
 minituodao:'拖刀',
@@ -35582,7 +35598,7 @@ minirezhiheng_info:'出牌阶段限一次，你可以弃置任意张牌并摸等
 minijiuyuan:'救援',
 minijiuyuan_info:'主公技。①其他吴势力角色对你使用的【桃】的回复值+1。②其他吴势力角色于其回合内回复体力时，可以改为令你回复1点体力，然后其摸一张牌。',
 miniqixi:'奇袭',
-miniqixi_info:'你可以将一张黑色牌当作【过河拆桥】使用。出牌阶段开始时，你可以弃置一名角色的一张牌。',
+miniqixi_info:'你可以将一张黑色牌当作【过河拆桥】使用。出牌阶段开始时，你可以弃置一名角色区域里的一张牌。',
 minifenwei:'奋威',
 minifenwei_info:'限定技，当一名角色使用的锦囊牌指定了至少两名角色为目标时，你可以令此牌对其中任意名角色无效，然后你摸一张牌。当你失去最后的手牌后，你重置〖奋威〗。',
 miniwanrong:'国色',
@@ -36099,7 +36115,7 @@ minixiaowu_info:'出牌阶段限一次，你可以选择任意名座位连续且
 minihuaping:'化萍',
 minihuaping_info:'限定技。①一名其他角色死亡时，你可获得其当前拥有的所有不带有「Charlotte」标签的技能，然后你失去〖绡舞〗，移去所有“沙”并摸等量的牌。②当你死亡时，你可令一名其他角色获得〖沙舞〗和你的所有“沙”。',
 minisbluanji:'乱击',
-minisbluanji_info:'①出牌阶段限一次。你可以将两张手牌当【万箭齐发】使用。②每回合限三次，当其他角色因响应你使用的【万箭齐发】而打出【闪】时，你摸一张牌。③每回合限三次，当你使用【万箭齐发】造成伤害后，你可以弃置受伤角色的一张牌。',
+minisbluanji_info:'①出牌阶段，你可以将两张手牌当【万箭齐发】使用（每种颜色的牌每回合限以此法被转化一次）。②每回合限三次，当其他角色因响应你使用的【万箭齐发】而打出【闪】时，你摸一张牌。③每回合限三次，当你使用【万箭齐发】造成伤害后，你可以弃置受伤角色的一张牌。',
 minisbxueyi:'血裔',
 minisbxueyi_info:'主公技，锁定技。①你的手牌上限+2X（X为场上的群势力角色数）。②每回合限两次，当你使用牌指定群势力角色为目标后，你摸一张牌。',
 minixiongzheng:'雄争',
