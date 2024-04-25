@@ -48086,7 +48086,45 @@ if(types.length<2) return Math.min(1,0.4+(types.length+bool)*0.2);
 },
 //水 果 忍 者
 bilibili_zhengjing:{
-createDialog:function(cards){
+audio:'zhengjing',
+inherit:'zhengjing',
+content:function(){
+'step 0'
+var cardx={},cards=[],names=[],types=[];
+var num=[3,4,6].randomGet();
+event.num=num;//定下每张牌切的数量
+while(true){
+var card=get.cardPile(function(card){
+//判定类型是否补充完毕的辅助牌
+var card2=get.cardPile(function(card2){
+return card2.name!='du'&&!names.includes(card2.name)&&!types.includes(get.type2(card2));
+});
+//先填补每种类型的牌各一张，然后补充其他的牌
+return card.name!='du'&&!names.includes(card.name)&&(!types.includes(get.type2(card))||!card2);
+});
+if(card){
+cards.push(card);
+names.push(card.name);
+types.push(get.type2(card));
+if(get.mode()=='doudizhu'){
+if(cards.length==1&&!get.isLuckyStar(player)&&Math.random()<0.33) break;
+if(cards.length==2&&!get.isLuckyStar(player)&&Math.random()<0.5) break;
+if(cards.length>=3) break;
+}
+else{
+if(cards.length==3&&!get.isLuckyStar(player)&&Math.random()<0.33) break;
+if(cards.length==4&&!get.isLuckyStar(player)&&Math.random()<0.5) break;
+if(cards.length>=5) break;
+}
+}
+else break;
+};
+event.cards=cards;
+if(!cards.length){event.finish();return;};
+for(var i of names) cardx[i]=num;//切的牌
+cardx.du=names.length;//炸弹
+if(player==game.me&&!_status.auto){
+event.dialog=function(cards){
 var cards1=[];
 for(var i in cards){
 for(var j=0;j<cards[i];j++){
@@ -48336,53 +48374,7 @@ finish();
 };
 },650);
 return dialog;
-},
-audio:'zhengjing',
-enable:'phaseUse',
-filter:function(event,player){
-return !player.hasSkill('zhengjing3');
-},
-usable:1,
-content:function(){
-'step 0'
-var cardx={};
-var cards=[];
-var names=[];
-var types=[];
-var num=[3,4,6].randomGet();
-event.num=num;//定下每张牌切的数量
-while(true){
-var card=get.cardPile(function(card){
-//判定类型是否补充完毕的辅助牌
-var card2=get.cardPile(function(card2){
-return card2.name!='du'&&!names.includes(card2.name)&&!types.includes(get.type2(card2));
-});
-//先填补每种类型的牌各一张，然后补充其他的牌
-return card.name!='du'&&!names.includes(card.name)&&(!types.includes(get.type2(card))||!card2);
-});
-if(card){
-cards.push(card);
-names.push(card.name);
-types.push(get.type2(card));
-if(get.mode()=='doudizhu'){
-if(cards.length==1&&!get.isLuckyStar(player)&&Math.random()<0.33) break;
-if(cards.length==2&&!get.isLuckyStar(player)&&Math.random()<0.5) break;
-if(cards.length>=3) break;
-}
-else{
-if(cards.length==3&&!get.isLuckyStar(player)&&Math.random()<0.33) break;
-if(cards.length==4&&!get.isLuckyStar(player)&&Math.random()<0.5) break;
-if(cards.length>=5) break;
-}
-}
-else break;
-};
-event.cards=cards;
-if(!cards.length){event.finish();return;};
-for(var i of names) cardx[i]=num;//切的牌
-cardx.du=names.length;//炸弹
-if(player==game.me&&!_status.auto){
-event.dialog=lib.skill.bilibili_zhengjing.createDialog(cardx);
+}(cardx);
 event.switchToAuto=function(){
 event._result=event.skillai(event.list);
 game.resume();
