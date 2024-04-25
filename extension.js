@@ -47976,6 +47976,9 @@ return mode!='identity'&&mode!='guozhan';
 sxy_shengxunyu(){
 return new Date().getDay()>5;
 },
+bilibili_zhengxuan(){
+return !_status.connectMode;
+},
 },
 perfectPair:{
 },
