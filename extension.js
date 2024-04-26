@@ -49012,8 +49012,8 @@ return !get.skillCategoriesOf(skill,player).length&&info&&(!info.unique||info.ga
 getSkills:function(characters,player){
 var skills=[];
 characters.forEach(name=>{
-if(Array.isArray(lib.character[name])&&lib.character[name][3]){
-var skillx=lib.character[name][3].filter(skill=>{
+if(Array.isArray(get.character(name,3))){
+var skillx=get.character(name,3).filter(skill=>{
 var info=get.info(skill);
 return info&&!get.skillCategoriesOf(skill,player).length&&(!info.unique||info.gainable);
 });
@@ -49131,7 +49131,7 @@ popup:false,
 content:function(){
 var visitors=player.getStorage('gz_huashen').slice(0);
 var shows=visitors.filter(function(name){
-return Array.isArray(lib.character[name])&&lib.character[name][3].includes(trigger.sourceSkill);
+return (get.character(name,3)||[]).includes(trigger.sourceSkill);
 });
 for(var show of shows) player.flashAvatar('gz_huashen',show);
 },
@@ -49150,7 +49150,7 @@ popup:false,
 content:function(){
 var visitors=player.getStorage('gz_huashen').slice(0);
 var remove=visitors.filter(function(name){
-return Array.isArray(lib.character[name])&&lib.character[name][3].includes(trigger.sourceSkill);
+return (get.character(name,3)||[]).includes(trigger.sourceSkill);
 });
 lib.skill.gz_huashen.removeVisitors(remove,player);
 },
