@@ -48,7 +48,7 @@ var HuoDong_update=[
 ];
 //更新武将
 var HuoDong_players=[
-'wechat_guanyinping',
+'wechat_guanyinping','Mbaby_licaiwe','Mbaby_jiangfei','Mbaby_zhouyu'
 ];
 //加载
 var dialog=ui.create.dialog(
