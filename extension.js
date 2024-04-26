@@ -42253,11 +42253,14 @@ viewAsFilter(player){
 if(!player.countCards('hes',{type:'equip'})) return false;
 },
 check(card){
+if(ui.selected.cards.length) return 0;
 const val=get.value(card);
 if(_status.event.name=='chooseToRespond') return 1/Math.max(0.1,val);
 return 7.5-val;
 },
-prompt:'将一张装备牌当作【杀】使用或打出',
+complexCard:true,
+selectCard:[1,Infinity],
+prompt:'将任意张装备牌当作【杀】使用或打出',
 ai:{
 respondSha:true,
 skillTagFilter(player){
@@ -42271,8 +42274,12 @@ trigger:{source:'damageBegin1'},
 filter(event,player){
 const evt=event.getParent(),evtx=event.getParent(2);
 if(evtx.name!='useCard'||!['sha','juedou'].includes(evtx.card.name)) return false;
-if(evtx.cards&&evtx.cards.some(i=>get.type(i,false)=='equip')) return true;
-if(evt&&evt.name=='juedou'&&evt[player==evt.player?'playerCards':'targetCards'].some(i=>get.type(i,false)=='equip')) return true;
+if(evtx.skill=='wechathuhou_wusheng'&&(evtx.cards||[]).some(i=>get.type(i,false)=='equip')) return true;
+if(evt&&evt.name=='juedou'&&player.getHistory('respond',evtxx=>{
+return evtxx.getParent(2)==evt&&evtxx.skill=='wechathuhou_wusheng'&&(evtxx.cards||[]).length;
+}).reduce((list,evtxx)=>{
+list.addArray(evtxx.cards||[]);return list;
+},[]).some(i=>get.type(i,false)=='equip')) return true;
 return false;
 },
 forced:true,
@@ -42280,8 +42287,12 @@ locked:false,
 logTarget:'player',
 content(){
 const evt=trigger.getParent(),evtx=trigger.getParent(2);
-if(evtx.cards) trigger.num+=evtx.cards.filter(i=>get.type(i,false)=='equip').length;
-if(evt&&evt.name=='juedou') trigger.num+=evt[player==evt.player?'playerCards':'targetCards'].filter(i=>get.type(i,false)=='equip').length;
+if(evtx.skill=='wechathuhou_wusheng'&&evtx.cards) trigger.num+=evtx.cards.filter(i=>get.type(i,false)=='equip').length;
+if(evt&&evt.name=='juedou') trigger.num+=player.getHistory('respond',evtxx=>{
+return evtxx.getParent(2)==evt&&evtxx.skill=='wechathuhou_wusheng'&&(evtxx.cards||[]).length;
+}).reduce((list,evtxx)=>{
+list.addArray(evtxx.cards||[]);return list;
+},[]).filter(i=>get.type(i,false)=='equip').length;
 },
 },
 },
@@ -43054,7 +43065,7 @@ wechatmengshou:'盟首',
 wechatmengshou_info:'每轮限一次，当你受到其他角色造成的伤害时，若其本轮造成的伤害值不大于你，则你可以防止此伤害。',
 wechat_re_xuzhu:'极许褚',
 wechathuhou:'虎侯',
-wechathuhou_info:'①与你进行【决斗】的角色不能打出【杀】。②你可以将一张装备牌当作【杀】使用或打出。③以你为伤害来源的【杀】或【决斗】造成的伤害+X（X为此牌对应的实体牌与你使用【决斗】打出的牌中的装备牌数之和）。',
+wechathuhou_info:'①与你进行【决斗】的角色不能打出【杀】。②你可以将任意张装备牌当作【杀】使用或打出。③以你为伤害来源的【杀】或【决斗】造成的伤害+X（X为此牌对应的实体牌与你使用【决斗】打出的牌中因〖虎侯②〗转化的装备牌数之和）。',
 wechatwuwei:'武卫',
 wechatwuwei_info:'结束阶段，你可以选择一名角色，若如此做，直到你的下个回合开始，其成为伤害类卡牌的目标后，若其体力值不大于你，则你令此牌对其无效，然后使用者于此牌结算完毕后视为对你使用【决斗】（你无法因此【决斗】触发〖武卫〗）。',
 wechat_ruanhui:'微信阮慧',
