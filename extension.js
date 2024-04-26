@@ -42287,7 +42287,7 @@ locked:false,
 logTarget:'player',
 content(){
 const evt=trigger.getParent(),evtx=trigger.getParent(2);
-if(evtx.skill=='wechathuhou_wusheng'&&evtx.cards) trigger.num+=evtx.cards.filter(i=>get.type(i,false)=='equip').length;
+if(evtx.skill=='wechathuhou_wusheng'&&(evtx.cards||[]).length) trigger.num+=evtx.cards.filter(i=>get.type(i,false)=='equip').length;
 if(evt&&evt.name=='juedou') trigger.num+=player.getHistory('respond',evtxx=>{
 return evtxx.getParent(2)==evt&&evtxx.skill=='wechathuhou_wusheng'&&(evtxx.cards||[]).length;
 }).reduce((list,evtxx)=>{
