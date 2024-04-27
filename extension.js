@@ -35262,12 +35262,11 @@ if(Array.isArray(result)) map[targets[i].playerid]=result;
 }
 await game.asyncDelay();
 for(const target of targets){
-if(target.hasCard(card=>get.type2(card)=='trick'&&lib.filter.canBeGained(card,player,target),'he')){
 const result=await target.chooseToGive(player,{type:['trick','delay']},'he',true).forResult();
-if(result.bool) continue;
-}
+if(!result.bool||!result.cards||!result.cards.length){
 const cards=map[target.playerid].filter(i=>get.owner(i)==target);
 if(cards.length) await target.give(cards,player);
+}
 }
 },
 },
