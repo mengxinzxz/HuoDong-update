@@ -35225,7 +35225,7 @@ usable:1,
 ai:{fireAttack:true},
 mod:{
 selectTarget(card,player,num){
-if(card.name=='huoji'&&num[1]!=-1) num[1]=Infinity;
+if(card.name=='huogong'&&num[1]!=-1) num[1]=Infinity;
 },
 },
 locked:false,
