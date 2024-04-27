@@ -35106,10 +35106,10 @@ usable:1,
 async content(event,trigger,player){
 player.addTempSkill('mininianxinghan_timeOut');
 const extra=1;
-let list=[],groups=(lib.group||[]).filter(i=>get.mode()!='identity'||i!='shen').slice();
+let list=[],groups=(lib.group||[]).filter(i=>i!='shen').slice().concat(game.players.slice().concat(game.dead).reduce((list,i)=>list.add(i.group),[])).unique();
 if(!groups.length){
 player.popup('杯具');
-game.log('lib.group数组为空，无法进行','#g定乱','操作');
+game.log('没有势力可进行','#g定乱','操作');
 return;
 }
 for(let i=1;i<=2;i++){
@@ -35142,7 +35142,7 @@ const finalGroup=groups.sort((a,b)=>game.countPlayer(target=>target.group==b)-ga
 let list=Array.from({length:group.length+1}).map(object=>[]);
 list[group.indexOf(finalGroup)].add(game.createCard('group_'+finalGroup,' ',' '));
 return list;
-}).set('chooseTime','40').set('groups',groups).forResult();
+}).set('chooseTime',parseFloat(40+10*Math.max(0,groups.length-5))).set('groups',groups).forResult();
 if(result.bool){
 const resultGroup=result.moved.slice(0,-1).find(i=>i.every(card=>card.name.startsWith('group_')))[0].name.slice('group_'.length);
 player.popup('洗具·'+get.translation(resultGroup));
@@ -36779,7 +36779,7 @@ Mnian_zhugeliang:'念诸葛亮',
 mininianxinghan:'兴汉',
 mininianxinghan_info:'每回合限一次，回合开始时或当你受到伤害后，你可以进行“定乱”。若“定乱”成功，则你增加1点体力上限并回复1点体力，然后将场上的“定乱”势力角色均改为蜀势力。',
 mininianxinghan_faq:'关于“定乱”',
-mininianxinghan_faq_info:'<br>系统为lib.group下所有势力建立一个初始拥有X张【毒】的势力卡牌框（若为身份场则排除神势力），然后将这些势力的各X+1张对应势力卡牌随机分配至各个势力卡牌框中，玩家需要在40秒内将其中仅一个势力卡牌框的所有卡牌调整为此势力的牌，则“定乱”成功，“定乱”结果为你成功分配的这个势力。',
+mininianxinghan_faq_info:'<br>系统为lib.group下所有非神势力和场上角色的势力的并集S建立一个初始拥有X张【毒】的势力卡牌框，然后将这些势力的各X+1张对应势力卡牌随机分配至各个势力卡牌框中，玩家需要在[40+10*max(0,X-5)]秒内将其中仅一个势力卡牌框的所有卡牌调整为此势力的牌，则“定乱”成功，“定乱”结果为你成功分配的这个势力（X为S所含元素个数）。',
 mininianliaoyuan:'燎原',
 mininianliaoyuan_info:'①出牌阶段限一次，你可以视为使用【火攻】。②你使用【火攻】可以指定任意名角色。',
 mininianying_zgl:'念影',
