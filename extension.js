@@ -35105,6 +35105,7 @@ usable:1,
 //frequent:true,
 async content(event,trigger,player){
 player.addTempSkill('mininianxinghan_timeOut');
+const extra=1;
 let list=[],groups=(lib.group||[]).filter(i=>get.mode()!='identity'||i!='shen').slice();
 if(!groups.length){
 player.popup('杯具');
@@ -35120,7 +35121,7 @@ if(!lib.card['group_'+group]) game.broadcastAll(group=>lib.skill.mininianxinghan
 list.push([get.translation(group+'2'),[]]);
 }
 else{
-const groupPuts=lib.skill.mininianxinghan.putResult(groups.length,3);
+const groupPuts=lib.skill.mininianxinghan.putResult(groups.length,extra);
 for(let j=0;j<groupPuts.length;j++){
 if(j==0) list[k][1].addArray(Array.from({length:groups.length}).map(object=>game.createCard('du',' ',' ')));
 list[j][1].addArray(Array.from({length:groupPuts[j]}).map(object=>game.createCard('group_'+group,' ',' ')));
@@ -35132,8 +35133,8 @@ for(let l of list) l[1].randomSort();
 list.push(['垃圾桶（充当空白区）']);
 const result=await player.chooseToMove().set('list',list)
 .set('prompt','###定乱：在规定的时间内将一个势力的卡牌整理完毕###<div class="text center">使一个势力的区域只存在此势力的卡牌</div>').set('filterOk',moved=>{
-return Array.from({length:get.event('groups').length}).map((_,i)=>i).filter(i=>moved[i].length==get.event('groups').length+3&&moved[i].every(card=>card.name.startsWith('group_'))).length==1;
-}).set('processAI',()=>{
+return Array.from({length:get.event('groups').length}).map((_,i)=>i).filter(i=>moved[i].length==get.event('groups').length+get.event('extra')&&moved[i].every(card=>card.name.startsWith('group_'))).length==1;
+}).set('extra',extra).set('processAI',()=>{
 const player=get.event('player'),group=get.event('groups');
 let groups=group.slice();
 groups.remove('shu');
@@ -35196,18 +35197,10 @@ return;
 }
 const num=parseInt(trigger.chooseTime);
 ui.timer.show();
-let timer=ui.create.div('.timerbar',player);
-player.node.timer=timer;
-ui.create.div(player.node.timer);
-let bar=ui.create.div(player.node.timer);
-ui.refresh(bar);
-bar.style.transitionDuration=(num+'s');
-bar.style.transform='scale(0,1)';
 game.countDown(num,function(){
 _status.event.result={bool:false};
 ui.click.cancel();
 ui.timer.hide();
-for(const i of game.players.slice().concat(game.dead)) i.hideTimer();
 });
 },
 },
@@ -35238,15 +35231,14 @@ const skills=Object.keys(lib.skill).filter(i=>get.info(i)&&get.info(i).nianyingS
 if(!skills.length) return false;
 if(name=='phaseBegin') return !game.hasPlayer(target=>target.group!='shu');
 return game.hasPlayer2(current=>{
-if(!current.isIn()) return current.group=='shu';
 return current.getHistory('custom',evt=>evt.name=='changeGroup'&&evt.originGroup!=evt.group&&[evt.originGroup,evt.group].includes('shu')).length;
-});
+})||game.getGlobalHistory('everything',evt=>evt.name=='die'&&evt.player.group=='shu').length;
 },
 async cost(event,trigger,player){
-const skills=Object.keys(lib.skill).filter(i=>get.info(i)&&get.info(i).nianyingSkill&&get.info(i).nianyingFilter(event,player,name)).map(i=>[i,get.info(i).nianyingSkill[0],get.info(i).nianyingSkill[1]]);
+const skills=Object.keys(lib.skill).filter(i=>get.info(i)&&get.info(i).nianyingSkill&&get.info(i).nianyingFilter(trigger,player,name)).map(i=>[i,get.info(i).nianyingSkill[0],get.info(i).nianyingSkill[1]]);
 const result=await player.chooseControl(skills.slice().map(i=>i[1]),'cancel2')
 .set('prompt',get.prompt('mininianying_zgl')).set('prompt2','选择一项念影效果执行')
-.set('choiceList',skills.slice().map(i=>i[2])).set('ai',()=>get.event('controls').randomGet()).forResult();
+.set('choiceList',skills.slice().map(i=>i[1]+'——'+i[2])).set('ai',()=>get.event('controls').randomGet()).forResult();
 event.result={bool:(result.control!='cancel2'),cost_data:skills.find(i=>i[1]==result.control)};
 },
 async content(event,trigger,player){
@@ -35265,7 +35257,7 @@ const targets=game.filterPlayer(target=>target!=player&&target.group==player.gro
 player.line(targets);
 let map={};
 for(let i=0;i<targets.length;i++){
-const result=await targets[i].draw((i==targets.length-1)?'nodelay':'').forResult();
+const result=await targets[i].draw((i!=targets.length-1)?'nodelay':'').forResult();
 if(Array.isArray(result)) map[targets[i].playerid]=result;
 }
 await game.asyncDelay();
@@ -36788,11 +36780,11 @@ Mnian_zhugeliang:'念诸葛亮',
 mininianxinghan:'兴汉',
 mininianxinghan_info:'每回合限一次，回合开始时或当你受到伤害后，你可以进行“定乱”。若“定乱”成功，则你增加1点体力上限并回复1点体力，然后将场上的“定乱”势力角色均改为蜀势力。',
 mininianxinghan_faq:'关于“定乱”',
-mininianxinghan_faq_info:'<br>系统为lib.group下所有势力建立一个初始拥有X张【毒】的势力卡牌框（若为身份场则排除神势力），然后将这些势力的各X+3张对应势力卡牌随机分配至各个势力卡牌框中，玩家需要在40秒内将其中仅一个势力卡牌框的所有卡牌调整为此势力的牌，则“定乱”成功，“定乱”结果为你成功分配的这个势力。',
+mininianxinghan_faq_info:'<br>系统为lib.group下所有势力建立一个初始拥有X张【毒】的势力卡牌框（若为身份场则排除神势力），然后将这些势力的各X+1张对应势力卡牌随机分配至各个势力卡牌框中，玩家需要在40秒内将其中仅一个势力卡牌框的所有卡牌调整为此势力的牌，则“定乱”成功，“定乱”结果为你成功分配的这个势力。',
 mininianliaoyuan:'燎原',
 mininianliaoyuan_info:'①出牌阶段限一次，你可以视为使用【火攻】。②你使用【火攻】可以指定任意名角色。',
 mininianying_zgl:'念影',
-mininianying_zgl_info:'回合开始时，若场上角色均为蜀势力；一名角色的回合结束时，若本回合场上有蜀势力角色死亡/场上有原其他势力角色变更势力至蜀/场上有原蜀势力角色变更至其他势力。则你可以摸两张牌并选择一个存在“念影”效果的技能的“念影”效果执行。',
+mininianying_zgl_info:'回合开始时，若场上角色均为蜀势力；一名角色的回合结束时，若本回合场上有蜀势力角色死亡/场上有原其他势力角色变更势力至过蜀势力/场上有原蜀势力角色变更至过其他势力。则你可以摸两张牌并选择一个存在“念影”效果的技能的“念影”效果执行。',
 },
 };
 for(var skill in MiNikill.skill){
