@@ -9352,7 +9352,7 @@ Mbaby_sp_jiaxu:['male','wei',3,['zhenlue','minijianshu','miniyongdi'],[]],
 Mbaby_yinfuren:['female','wei',3,['dcyingyu','miniyongbi'],[]],
 Mbaby_sp_caoren:['male','wei',4,['miniweikui','minilizhan'],[]],
 Mbaby_guojia:['male','wei',3,['tiandu','new_reyiji','minishenglun'],[]],
-Mbaby_caohong:['male','wei',4,['miniyuanhu','twjuezhu'],[]],
+Mbaby_caohong:['male','wei',4,['miniyuanhu','minijuezhu'],[]],
 Mbaby_sb_caocao:['male','wei',4,['minisbjianxiong','minisbqingzheng','sbhujia'],['zhu']],
 Mbaby_zhugedan:['male','wei',4,['minigongao','minijuyi'],[]],
 Mbaby_bianfuren:['female','wei',3,['fh_fuding','miniyuejian'],[]],
@@ -13464,6 +13464,40 @@ if(card) player.gain(card,'gain2');
 },
 },
 },
+},
+minijuezhu:{
+unique:true,
+limited:true,
+audio:'twjuezhu',
+enable:'phaseUse',
+filter(event,player){
+return player.hasEnabledSlot(3)||player.hasEnabledSlot(4);
+},
+skillAnimation:true,
+animationColor:'water',
+filterTarget:true,
+async content(event,trigger,player){
+const target=event.target;
+player.awakenSkill('minijuezhu');
+let list=[],control;
+for(let i=3;i<=4;i++){
+if(player.hasEnabledSlot(i)) list.push('equip'+i);
+}
+if(list.length==1) control=list[0];
+else control=await player.chooseControl(list).set('prompt','决助：请选择废除一个坐骑栏').forResult('control');
+if(control){
+await player.disableEquip(control);
+player.addSkill('twjuezhu_restore');
+player.markAuto('twjuezhu_restore',[[target,control]]);
+}
+await target.addSkills('feiying');
+await target.disableJudge();
+},
+ai:{
+order:(item,player)=>player.hasUnknown()?0:10,
+result:{target:1},
+},
+derivation:'feiying',
 },
 //谋曹操
 minisbjianxiong:{
@@ -35376,6 +35410,8 @@ minishenglun:'胜论',
 minishenglun_info:'出牌阶段限一次，你可以选择至多两名其他角色，然后你依次与目标角色依次比较你与其的：体力、手牌数、已装备武器牌数、已装备防具牌数、已装备坐骑牌数（你对应的数值比其大则获得1枚“胜”标记，否则获得1枚“负”标记）。当你的“胜”/“负”标记数达到10后，你回复1点体力/对一名角色造成1点伤害，然后发动〖遗计〗并失去所有的“胜”/“负”标记。',
 miniyuanhu:'援护',
 miniyuanhu_info:'①出牌阶段限两次，你可将一张装备牌置入一名角色的装备区内并摸一张牌，若此牌为：武器牌，你弃置与其距离为1的另一名角色区域的一张牌；防具牌，其摸一张牌；坐骑牌，其回复1点体力。②回合结束时，若你本回合未发动过〖援护①〗，则你从牌堆中获得一张装备牌。',
+minijuezhu:'决助',
+minijuezhu_info:'限定技，出牌阶段，你可以选择一名角色并废除一个坐骑栏，令该角色获得〖飞影〗并废除判定区。若如此做，该角色死亡后，你恢复以此法废除的装备栏。',
 minisbjianxiong:'奸雄',
 minisbjianxiong_info:'游戏开始时，你可获得至多2枚“治世”标记。当你受到伤害后，你可获得伤害牌，摸2-X张牌（X为你的“治世”标记数），然后你可获得或失去1枚“治世”标记。',
 minisbqingzheng:'清正',
