@@ -43,12 +43,12 @@ var HuoDong_update=[
 'bugfix，技能调整，素材补充',
 '村规李采薇势力为双势力魏群',
 '添加微信三国杀武将：关银屏',
-'添加欢乐三国杀武将：李采薇、蒋琬费祎、周瑜',
+'添加欢乐三国杀武将：念诸葛亮、李采薇、蒋琬费祎、周瑜',
 'To be continued...',
 ];
 //更新武将
 var HuoDong_players=[
-'wechat_guanyinping','Mbaby_licaiwe','Mbaby_jiangfei','Mbaby_zhouyu'
+'wechat_guanyinping','Mnian_zhugeliang','Mbaby_licaiwe','Mbaby_jiangfei','Mbaby_zhouyu'
 ];
 //加载
 var dialog=ui.create.dialog(
@@ -9300,6 +9300,7 @@ MiNi_change:['Mbaby_re_nanhualaoxian','Mbaby_re_sunyi','Mbaby_zhaoxiang','Mbaby_
 MiNi_shengzhiyifa:['Mbaby_sunwukong','Mbaby_dalanmao','Mbaby_libai','Mbaby_change','Mbaby_nvwa','Mbaby_tunxingmenglix','Mbaby_xiaoshan'],
 MiNi_sbCharacter:['Mbaby_sb_xuhuang','Mbaby_sb_zhaoyun','Mbaby_sb_liubei','Mbaby_sb_caocao','Mbaby_sb_huanggai','Mbaby_sb_yuanshao','Mbaby_sb_yujin','Mbaby_sb_machao','Mbaby_sb_lvmeng','Mbaby_sb_huangzhong'],
 MiNi_miaoKill:['Mmiao_caiwenji','Mmiao_diaochan','Mmiao_caifuren','Mmiao_zhangxingcai','Mmiao_zhurong','Mmiao_huangyueying','Mmiao_daqiao','Mmiao_wangyi','Mmiao_zhangchunhua','Mmiao_zhenji','Mmiao_sunshangxiang','Mmiao_xiaoqiao'],
+MiNi_nianKill:['Mnian_zhugeliang'],
 },
 },
 character:{
@@ -9594,6 +9595,8 @@ Mmiao_zhangchunhua:['female','wei',3,['minimiaojueqing','minimiaoshangshi','mini
 Mmiao_zhenji:['female','wei',3,['minimiaoluoshen','minimiaoqingguo','minidoumao'],['die_audio']],
 Mmiao_sunshangxiang:['female','wu',3,['minimiaojieyin','minimiaoxiaoji','minidoumao'],['die_audio']],
 Mmiao_xiaoqiao:['female','wu',3,['minimiaotianxiang','minimiaohongyan','minidoumao'],['die_audio']],
+//念
+Mnian_zhugeliang:['male','shu',3,['mininianxinghan','mininianliaoyuan','mininianying_zgl'],['die_audio']],
 },
 characterIntro:{
 Mbaby_change:'嫦娥，中国古代神话中的人物，又名恒我、恒娥、姮娥、常娥、素娥，羿之妻，因偷吃了不死药而飞升至月宫。嫦娥的故事最早出现在商朝卦书 《归藏》。而嫦娥奔月的完整故事最早记载于西汉《淮南子·览冥训》。东汉时期，嫦娥与羿的夫妻关系确立，而嫦娥在进入月宫后变成了捣药的蟾蜍。南北朝以后，嫦娥的形象回归为女儿身。汉画像中，嫦娥人头蛇身，头梳高髻，身着宽袖长襦，身后长尾上饰有倒钩状细短羽毛。南北朝以后，嫦娥的形象被描绘成绝世美女。南朝陈后主陈叔宝曾把宠妃张丽华比作嫦娥。唐朝诗人白居易曾用嫦娥夸赞邻家少女不可多得的容貌。',
@@ -35093,6 +35096,189 @@ player.recover();
 player.draw();
 },
 },
+//念
+mininianxinghan:{
+audio:'ext:活动武将/audio/skill:2',
+trigger:{player:['phaseBegin','damageEnd']},
+usable:1,
+//整理棋子给点反应时间，就不自动发动了
+//frequent:true,
+async content(event,trigger,player){
+player.addTempSkill('mininianxinghan_timeOut');
+let list=[],groups=(lib.group||[]).filter(i=>get.mode()!='identity'||i!='shen').slice();
+if(!groups.length){
+player.popup('杯具');
+game.log('lib.group数组为空，无法进行','#g定乱','操作');
+return;
+}
+for(let i=1;i<=2;i++){
+for(let k=0;k<groups.length;k++){
+const group=groups[k];
+if(i==1){
+game.addVideo('skill',player,['mininianxinghan',[group]]);
+if(!lib.card['group_'+group]) game.broadcastAll(group=>lib.skill.mininianxinghan.video(group),group);
+list.push([get.translation(group+'2'),[]]);
+}
+else{
+const groupPuts=lib.skill.mininianxinghan.putResult(groups.length,3);
+for(let j=0;j<groupPuts.length;j++){
+if(j==0) list[k][1].addArray(Array.from({length:groups.length}).map(object=>game.createCard('du',' ',' ')));
+list[j][1].addArray(Array.from({length:groupPuts[j]}).map(object=>game.createCard('group_'+group,' ',' ')));
+}
+}
+}
+}
+for(let l of list) l[1].randomSort();
+list.push(['垃圾桶（充当空白区）']);
+const result=await player.chooseToMove().set('list',list)
+.set('prompt','###定乱：在规定的时间内将一个势力的卡牌整理完毕###<div class="text center">使一个势力的区域只存在此势力的卡牌</div>').set('filterOk',moved=>{
+return Array.from({length:get.event('groups').length}).map((_,i)=>i).filter(i=>moved[i].length==get.event('groups').length+3&&moved[i].every(card=>card.name.startsWith('group_'))).length==1;
+}).set('processAI',()=>{
+const player=get.event('player'),group=get.event('groups');
+let groups=group.slice();
+groups.remove('shu');
+const finalGroup=groups.sort((a,b)=>game.countPlayer(target=>target.group==b)-game.countPlayer(target=>target.group==a))[0];
+let list=Array.from({length:group.length+1}).map(object=>[]);
+list[group.indexOf(finalGroup)].add(game.createCard('group_'+finalGroup,' ',' '));
+return list;
+}).set('chooseTime','40').set('groups',groups).forResult();
+if(result.bool){
+const resultGroup=result.moved.slice(0,-1).find(i=>i.every(card=>card.name.startsWith('group_')))[0].name.slice('group_'.length);
+player.popup('洗具·'+get.translation(resultGroup));
+game.log(player,'#g定乱（'+(get.translation(resultGroup+'2')||get.translation(resultGroup))+'）','成功');
+await player.gainMaxHp();
+await player.recover();
+if(resultGroup=='shu') return;
+const targets=game.filterPlayer(target=>target.group==resultGroup);
+if(targets.length){
+player.line(targets);
+for(const t of targets) await t.changeGroup('shu');
+}
+}
+else{
+player.popup('杯具');
+game.log(player,'#g定乱','失败');
+}
+},
+derivation:'mininianxinghan_faq',
+ai:{threaten:5},
+video(group){
+const name='group_'+group;
+lib.card[name]={fullskin:true};
+lib.translate[name]=get.translation(group)+'势力';
+lib.translate[name+'_bg']=get.translation(group);
+},
+//返回由num个随机正整数组成的数组，这些数组的和等于num+extraNum
+putResult(num,extraNum){
+let list=[],sum=num+extraNum;
+for(let i=0;i<num;i++){
+const put=((i==num-1)?sum:get.rand(1,sum-(num-i-1)));
+list.push(put);
+sum-=put;
+}
+return list.randomSort();
+},
+subSkill:{
+timeOut:{
+trigger:{player:['chooseToMoveBegin','chooseToMoveEnd']},
+filter(event,player){
+if(_status.connectMode||!event.isMine()) return false;
+return event.getParent().name=='mininianxinghan'&&event.chooseTime;
+},
+charlotte:true,
+forced:true,
+popup:false,
+firstDo:true,
+content(){
+if(event.triggername.endsWith('End')){
+game.stopCountChoose();
+return;
+}
+const num=parseInt(trigger.chooseTime);
+ui.timer.show();
+let timer=ui.create.div('.timerbar',player);
+player.node.timer=timer;
+ui.create.div(player.node.timer);
+let bar=ui.create.div(player.node.timer);
+ui.refresh(bar);
+bar.style.transitionDuration=(num+'s');
+bar.style.transform='scale(0,1)';
+game.countDown(num,function(){
+_status.event.result={bool:false};
+ui.click.cancel();
+ui.timer.hide();
+for(const i of game.players.slice().concat(game.dead)) i.hideTimer();
+});
+},
+},
+},
+},
+mininianliaoyuan:{
+audio:'ext:活动武将/audio/skill:2',
+enable:'chooseToUse',
+filterCard:()=>false,
+selectCard:-1,
+check:()=>1,
+viewAs:{name:'huogong'},
+prompt:'出牌阶段限一次，你可以视为使用【火攻】。',
+usable:1,
+ai:{fireAttack:true},
+mod:{
+selectTarget(card,player,num){
+if(card.name=='huoji'&&num[1]!=-1) num[1]=Infinity;
+},
+},
+locked:false,
+},
+mininianying_zgl:{
+audio:'mininianying_Mnian_zhugeliang',
+trigger:{player:'phaseBegin',global:'phaseEnd'},
+filter(event,player,name){
+const skills=Object.keys(lib.skill).filter(i=>get.info(i)&&get.info(i).nianyingSkill&&get.info(i).nianyingFilter(event,player,name));
+if(!skills.length) return false;
+if(name=='phaseBegin') return !game.hasPlayer(target=>target.group!='shu');
+return game.hasPlayer2(current=>{
+if(!current.isIn()) return current.group=='shu';
+return current.getHistory('custom',evt=>evt.name=='changeGroup'&&evt.originGroup!=evt.group&&[evt.originGroup,evt.group].includes('shu')).length;
+});
+},
+async cost(event,trigger,player){
+const skills=Object.keys(lib.skill).filter(i=>get.info(i)&&get.info(i).nianyingSkill&&get.info(i).nianyingFilter(event,player,name)).map(i=>[i,get.info(i).nianyingSkill[0],get.info(i).nianyingSkill[1]]);
+const result=await player.chooseControl(skills.slice().map(i=>i[1]),'cancel2')
+.set('prompt',get.prompt('mininianying_zgl')).set('prompt2','选择一项念影效果执行')
+.set('choiceList',skills.slice().map(i=>i[2])).set('ai',()=>get.event('controls').randomGet()).forResult();
+event.result={bool:(result.control!='cancel2'),cost_data:skills.find(i=>i[1]==result.control)};
+},
+async content(event,trigger,player){
+await player.draw(2);
+const choice=event.cost_data;
+player.popup(choice[1]);
+game.log(player,'选择了','#g'+choice[1]);
+await lib.skill[choice[0]].nianyingContent(player);
+},
+nianyingSkill:['奖率三军','令场上所有与你势力相同的其他角色各摸一张牌，然后依次交给你一张锦囊牌（若其没有锦囊牌则将其本次获得的牌交给你）'],
+nianyingFilter(event,player,name){
+return game.hasPlayer(target=>target!=player&&target.group==player.group);
+},
+async nianyingContent(player){
+const targets=game.filterPlayer(target=>target!=player&&target.group==player.group);
+player.line(targets);
+let map={};
+for(let i=0;i<targets.length;i++){
+const result=await targets[i].draw((i==targets.length-1)?'nodelay':'').forResult();
+if(Array.isArray(result)) map[targets[i].playerid]=result;
+}
+await game.asyncDelay();
+for(const target of targets){
+if(target.hasCard(card=>get.type2(card)=='trick'&&lib.filter.canBeGained(card,player,target),'he')){
+const result=await target.chooseToGive(player,{type:['trick','delay']},'he',true).forResult();
+if(result.bool) continue;
+}
+const cards=map[target.playerid].filter(i=>get.owner(i)==target);
+if(cards.length) await target.give(cards,player);
+}
+},
+},
 },
 dynamicTranslate:{
 minizhongjian:function(player){
@@ -35172,6 +35358,7 @@ MiNi_change:'一样？不一样？',
 MiNi_shengzhiyifa:'欢乐三国杀·杂谈',
 MiNi_sbCharacter:'欢乐三国杀·谋攻篇',
 MiNi_miaoKill:'欢乐三国杀·喵系列',
+MiNi_nianKill:'欢乐三国杀·念系列',
 //牌
 miniyanxiao_card:'言笑',
 miniyanxiao_card_info:'判定阶段开始时，获得此牌和判定区内的所有牌。',
@@ -36596,12 +36783,31 @@ minimiaotianxiang2:'天香',
 minimiaotianxiang_info:'当你受到伤害时，你可以将一张红桃牌交给一名其他角色并将此伤害转移给其。若如此做，此伤害结算完毕后，若其拥有技能〖逗猫〗，你对其造成1点伤害；没有技能〖逗猫〗，你弃置其一张牌。',
 minimiaohongyan:'红颜',
 minimiaohongyan_info:'锁定技。①你的黑桃牌视为红桃牌。②没有技能〖逗猫〗的角色的红桃判定牌生效后，你回复1点体力并摸一张牌。',
+//念
+Mnian_zhugeliang:'念诸葛亮',
+mininianxinghan:'兴汉',
+mininianxinghan_info:'每回合限一次，回合开始时或当你受到伤害后，你可以进行“定乱”。若“定乱”成功，则你增加1点体力上限并回复1点体力，然后将场上的“定乱”势力角色均改为蜀势力。',
+mininianxinghan_faq:'关于“定乱”',
+mininianxinghan_faq_info:'<br>系统为lib.group下所有势力建立一个初始拥有X张【毒】的势力卡牌框（若为身份场则排除神势力），然后将这些势力的各X+3张对应势力卡牌随机分配至各个势力卡牌框中，玩家需要在40秒内将其中仅一个势力卡牌框的所有卡牌调整为此势力的牌，则“定乱”成功，“定乱”结果为你成功分配的这个势力。',
+mininianliaoyuan:'燎原',
+mininianliaoyuan_info:'①出牌阶段限一次，你可以视为使用【火攻】。②你使用【火攻】可以指定任意名角色。',
+mininianying_zgl:'念影',
+mininianying_zgl_info:'回合开始时，若场上角色均为蜀势力；一名角色的回合结束时，若本回合场上有蜀势力角色死亡/场上有原其他势力角色变更势力至蜀/场上有原蜀势力角色变更至其他势力。则你可以摸两张牌并选择一个存在“念影”效果的技能的“念影”效果执行。',
 },
 };
 for(var skill in MiNikill.skill){
+//特定化身将池添加注释
 if(MiNikill.skill[skill].Mbaby_characterlist){
 MiNikill.skill[skill].derivation='Mbaby_characterlist_faq';
 MiNikill.translate[skill+'_append']=MiNikill.translate.Mbaby_characterlist_append;
+}
+//念影效果添加注释
+if(MiNikill.skill[skill].nianyingSkill){
+if(!MiNikill.skill[skill].derivation) MiNikill.skill[skill].derivation=[];
+MiNikill.skill[skill].derivation.push(skill+'_faq');
+MiNikill.translate[skill+'_faq']='念影——'+MiNikill.skill[skill].nianyingSkill[0];
+MiNikill.translate[skill+'_faq_info']='<br>'+MiNikill.skill[skill].nianyingSkill[1];
+MiNikill.translate[skill+'_append']='<span style="font-family: yuanli"><li>念影——'+MiNikill.skill[skill].nianyingSkill[0]+'<br>'+MiNikill.skill[skill].nianyingSkill[1]+'</span>';
 }
 }
 for(var i in MiNikill.character){
@@ -36612,6 +36818,7 @@ else if(MiNikill.translate[i].indexOf('欢杀谋')==0) MiNikill.translate[i+'_pr
 else if(MiNikill.translate[i].indexOf('欢杀')==0) MiNikill.translate[i+'_prefix']='欢杀';
 else if(MiNikill.translate[i].indexOf('SP欢杀')==0) MiNikill.translate[i+'_prefix']='SP欢杀';
 else if(MiNikill.translate[i].indexOf('喵')==0) MiNikill.translate[i+'_prefix']='喵';
+else if(MiNikill.translate[i].indexOf('念')==0) MiNikill.translate[i+'_prefix']='念';
 }
 MiNikill.character[i][4].push(((lib.device||lib.node)?'ext:':'db:extension-')+'活动武将/image/character/'+i+'.jpg');
 }
@@ -36619,6 +36826,10 @@ return MiNikill;
 });
 lib.namePrefix.set('喵',{
 color:'#fdd559',
+nature:'soilmm',
+});
+lib.namePrefix.set('念',{
+color:'#bf3eff',
 nature:'soilmm',
 });
 lib.namePrefix.set('欢杀',{
