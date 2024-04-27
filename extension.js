@@ -40,7 +40,7 @@ game.bolShowNewPack=function(){
 //更新告示
 var HuoDong_update=[
 '/setPlayer/',
-'bugfix，技能调整',
+'bugfix，技能调整，素材补充',
 '村规李采薇势力为双势力魏群',
 '添加微信三国杀武将：关银屏',
 '添加欢乐三国杀武将：李采薇、蒋琬费祎、周瑜',
@@ -42262,6 +42262,7 @@ effect:{
 charlotte:true,
 onremove:true,
 intro:{content:'已与$组成合纵关系'},
+audio:'wechathezong',
 trigger:{global:['useCardAfter','useCardToTarget']},
 filter(event,player,name){
 if(event.card.name!='sha'||!event.targets||event.targets.length!=1) return false;
