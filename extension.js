@@ -35097,6 +35097,11 @@ player.draw();
 },
 },
 //念
+mininianying:{
+subSkill:{
+Mnian_zhugeliang:{audio:'ext:活动武将/audio/skill:2'},
+},
+},
 mininianxinghan:{
 audio:'ext:活动武将/audio/skill:2',
 trigger:{player:['phaseBegin','damageEnd']},
