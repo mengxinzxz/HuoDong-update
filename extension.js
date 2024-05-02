@@ -40,15 +40,11 @@ game.bolShowNewPack=function(){
 //更新告示
 var HuoDong_update=[
 '/setPlayer/',
-'bugfix，技能调整，素材补充',
-'村规李采薇势力为双势力魏群',
-'添加微信三国杀武将：关银屏',
-'添加欢乐三国杀武将：念诸葛亮、李采薇、蒋琬费祎、周瑜',
+'bugfix',
 'To be continued...',
 ];
 //更新武将
 var HuoDong_players=[
-'wechat_guanyinping','Mnian_zhugeliang','Mbaby_licaiwe','Mbaby_jiangfei','Mbaby_zhouyu'
 ];
 //加载
 var dialog=ui.create.dialog(
@@ -42034,7 +42030,7 @@ break;
 }
 }
 }
-var next=player.chooseToMove('通博：是否交换“书”和手牌？').set('four',four).set('suits2',suits2).set('nofour',nofour);
+var next=player.chooseToMove('通博：是否交换“书”和手牌？').set('four',four).set('nofour',nofour);
 next.set('list',[
 [get.translation(player)+'（你）的“书”',expansions],
 ['你的牌',player.getCards('he')],
@@ -57932,7 +57928,7 @@ intro:'新人制作扩展，希望大家支持。'+
 author:'萌新（转型中）',
 diskURL:'',
 forumURL:'',
-version:'0.2.3',
+version:'0.2.4',
 //新人制作扩展，希望大家支持。
 //新人技术不足，希望大家包涵。
 //壹、贰、叁、肆、伍、陆、柒、捌、玖、拾
