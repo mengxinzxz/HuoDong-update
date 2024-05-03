@@ -5967,7 +5967,7 @@ QH_xiayun:['male','qun',8,['QH_rehuanshi','QH_jifu'],['die_audio']],
 QH_guosheng:['male','qun',10,['QH_rehuanshi','QH_heimu','QH_heizhi'],['die_audio']],
 QH_hejin:['male','qun',20,['QH_zhenmou','QH_guiluan','QH_waixi','QH_quanba'],['die_audio']],
 QH_hetaihou:['female','qun',20,['QH_zunqin','QH_chuhuan','QH_nongquan','QH_shexie'],['die_audio']],
-QH_caocao:['male','wei',18,['rejianxiong','QH_lingba','GH_pozhan'],['character:caocao']],
+QH_caocao:['male','wei',18,['rejianxiong','QH_lingba','QH_pozhan'],['character:caocao']],
 QH_yuanshao:['male','qun',15,['luanji','QH_xueyi','qiluan'],['character:re_yuanshao']],
 QH_yuanshu:['male','qun',16,['drlt_yongsi','QH_wangzun','QH_weidi'],['character:yl_yuanshu']],
 QH_guotufengji:['male','qun',15,['rejigong','shifei','QH_chanmou'],['character:guotufengji']],
@@ -8324,7 +8324,7 @@ cike_liuyong:['male','shu',12,['cike_zhuning','cike_fengxiang','cike_jitong'],[]
 //吴国
 cike_sunquan:['male','wu',16,['rezhiheng','cike_jiuyuan'],[]],
 cike_sunce:['male','wu',12,['cike_zhiba','jiang','reyingzi','yinghun'],[]],
-cike_sunliang:['male','wu',20,['kuizhu','zhizheng','cike_lijun'],[]],
+cike_sunliang:['male','wu',20,['xinkuizhu','xinzhizheng','cike_lijun'],[]],
 cike_sunxiu:['male','wu',14,['reyanzhu','rexingxue','cike_zhaofu'],[]],
 cike_sunhao:['male','wu',18,['cike_canshi','chouhai','cike_guiming'],[]],
 //特殊
