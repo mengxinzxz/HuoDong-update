@@ -35101,13 +35101,15 @@ Mnian_zhugeliang:{audio:'ext:活动武将/audio/skill:2'},
 mininianxinghan:{
 audio:'ext:活动武将/audio/skill:2',
 trigger:{player:['phaseBegin','damageEnd']},
+filter(event,player){
+return lib.skill.mininianxinghan.filterGroup(player).length;
+},
 usable:1,
 //整理棋子给点反应时间，就不自动发动了
 //frequent:true,
 async content(event,trigger,player){
 player.addTempSkill('mininianxinghan_timeOut');
-const extra=1;
-let list=[],groups=(lib.group||[]).filter(i=>i!='shen').slice().concat(game.players.slice().concat(game.dead).reduce((list,i)=>list.add(i.group),[])).unique();
+let list=[],groups=lib.skill.mininianxinghan.filterGroup(player);
 if(!groups.length){
 player.popup('杯具');
 game.log('没有势力可进行','#g定乱','操作');
@@ -35122,9 +35124,9 @@ if(!lib.card['group_'+group]) game.broadcastAll(group=>lib.skill.mininianxinghan
 list.push([get.translation(group+'2'),[]]);
 }
 else{
-const groupPuts=lib.skill.mininianxinghan.putResult(groups.length,extra);
+const groupPuts=lib.skill.mininianxinghan.putResult(4,groups.length);
 for(let j=0;j<groupPuts.length;j++){
-if(j==0) list[k][1].addArray(Array.from({length:groups.length}).map(object=>game.createCard('du',' ',' ')));
+//if(j==0) list[k][1].addArray(Array.from({length:groups.length}).map(object=>game.createCard('du',' ',' ')));
 list[j][1].addArray(Array.from({length:groupPuts[j]}).map(object=>game.createCard('group_'+group,' ',' ')));
 }
 }
@@ -35134,8 +35136,9 @@ for(let l of list) l[1].randomSort();
 list.push(['垃圾桶（充当空白区）']);
 const result=await player.chooseToMove().set('list',list)
 .set('prompt','###定乱：在规定的时间内将一个势力的卡牌整理完毕###<div class="text center">使一个势力的区域只存在此势力的卡牌</div>').set('filterOk',moved=>{
-return Array.from({length:get.event('groups').length}).map((_,i)=>i).filter(i=>moved[i].length==get.event('groups').length+get.event('extra')&&moved[i].every(card=>card.name.startsWith('group_'))).length==1;
-}).set('extra',extra).set('processAI',()=>{
+const groups=get.event('groups');
+return Array.from({length:groups.length}).map((_,i)=>i).filter(i=>moved[i].length==4&&moved[i].every(card=>card.name.endsWith(groups[i]))).length==1;
+}).set('processAI',()=>{
 const player=get.event('player'),group=get.event('groups');
 let groups=group.slice();
 groups.remove('shu');
@@ -35145,12 +35148,13 @@ list[group.indexOf(finalGroup)].add(game.createCard('group_'+finalGroup,' ',' ')
 return list;
 }).set('chooseTime',parseFloat(40+10*Math.max(0,groups.length-5))).set('groups',groups).forResult();
 if(result.bool){
-const resultGroup=result.moved.slice(0,-1).find(i=>i.every(card=>card.name.startsWith('group_')))[0].name.slice('group_'.length);
+let resultGroup=Array.from({length:result.moved.length-1}).map((_,i)=>i).find(i=>result.moved[i].length==4&&result.moved[i].every(card=>card.name.endsWith(groups[i])));
+resultGroup=result.moved[resultGroup][0].name.slice('group_'.length);
 player.popup('洗具·'+get.translation(resultGroup));
 game.log(player,'#g定乱（'+(get.translation(resultGroup+'2')||get.translation(resultGroup))+'）','成功');
+player.markAuto('mininianxinghan',[resultGroup]);
 await player.gainMaxHp();
 await player.recover();
-if(resultGroup=='shu') return;
 const targets=game.filterPlayer(target=>target.group==resultGroup);
 if(targets.length){
 player.line(targets);
@@ -35164,21 +35168,31 @@ game.log(player,'#g定乱','失败');
 },
 derivation:'mininianxinghan_faq',
 ai:{threaten:5},
+intro:{content:'已“定乱”成功过$势力'},
 video(group){
 const name='group_'+group;
 lib.card[name]={fullskin:true};
 lib.translate[name]=get.translation(group)+'势力';
 lib.translate[name+'_bg']=get.translation(group);
 },
-//返回由num个随机正整数组成的数组，这些数组的和等于num+extraNum
-putResult(num,extraNum){
-let list=[],sum=num+extraNum;
-for(let i=0;i<num;i++){
-const put=((i==num-1)?sum:get.rand(1,sum-(num-i-1)));
+//返回由和为num个的maxNum个随机自然数组成的数组
+putResult(num,maxNum){
+if(typeof maxNum!='number'||typeof num!='number'){
+console.warn('你是故意找茬的是吧[doge]');
+return;
+}
+let list=[];
+for(let i=0;i<maxNum;i++){
+const put=((i==maxNum-1)?num:get.rand(0,num-(maxNum-i-1)));
 list.push(put);
-sum-=put;
+num-=put;
 }
 return list.randomSort();
+},
+filterGroup(player){
+let groups=(lib.group||[]).slice().concat(game.players.slice().concat(game.dead).reduce((list,i)=>list.add(i.group),[])).unique();
+groups.removeArray(['shu'].concat(player.getStorage('mininianxinghan')));
+return groups;
 },
 subSkill:{
 timeOut:{
@@ -36778,9 +36792,9 @@ minimiaohongyan_info:'锁定技。①你的黑桃牌视为红桃牌。②没有�
 //念
 Mnian_zhugeliang:'念诸葛亮',
 mininianxinghan:'兴汉',
-mininianxinghan_info:'每回合限一次，回合开始时或当你受到伤害后，你可以进行“定乱”。若“定乱”成功，则你增加1点体力上限并回复1点体力，然后将场上的“定乱”势力角色均改为蜀势力。',
+mininianxinghan_info:'每回合限一次，回合开始时或当你受到伤害后，若默认势力和场上的势力的并集存在非蜀势力和你此前未因“定乱”成功的势力，则你可以进行“定乱”。若“定乱”成功，则你增加1点体力上限并回复1点体力，然后将场上的“定乱”势力角色均改为蜀势力。',
 mininianxinghan_faq:'关于“定乱”',
-mininianxinghan_faq_info:'<br>系统为lib.group下所有非神势力和场上角色的势力的并集S建立一个初始拥有X张【毒】的势力卡牌框，然后将这些势力的各X+1张对应势力卡牌随机分配至各个势力卡牌框中，玩家需要在[40+10*max(0,X-5)]秒内将其中仅一个势力卡牌框的所有卡牌调整为此势力的牌，则“定乱”成功，“定乱”结果为你成功分配的这个势力（X为S所含元素个数）。',
+mininianxinghan_faq_info:'<br>系统为默认势力和场上的势力的并集存在非蜀势力和你此前未因“定乱”成功的势力各建立一个势力卡牌框，然后将这些势力的各四张对应势力卡牌随机分配至各个势力卡牌框中，玩家需要在[40+10*max(0,X-5)]秒内将其中仅一个势力卡牌框的所有卡牌调整为此势力的牌，则“定乱”成功，“定乱”结果为你成功分配的这个势力（X为S所含元素个数）。',
 mininianliaoyuan:'燎原',
 mininianliaoyuan_info:'①出牌阶段限一次，你可以视为使用【火攻】。②你使用【火攻】可以指定任意名角色。',
 mininianying_zgl:'念影',
