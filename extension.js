@@ -35141,10 +35141,11 @@ return Array.from({length:groups.length}).map((_,i)=>i).filter(i=>moved[i].lengt
 }).set('processAI',()=>{
 const player=get.event('player'),group=get.event('groups');
 let groups=group.slice();
-groups.remove('shu');
 const finalGroup=groups.sort((a,b)=>game.countPlayer(target=>target.group==b)-game.countPlayer(target=>target.group==a))[0];
 let list=Array.from({length:group.length+1}).map(object=>[]);
-list[group.indexOf(finalGroup)].add(game.createCard('group_'+finalGroup,' ',' '));
+for(let i=0;i<4;i++){
+list[group.indexOf(finalGroup)].push(game.createCard('group_'+finalGroup,' ',' '));
+}
 return list;
 }).set('chooseTime',parseFloat(40+10*Math.max(0,groups.length-5))).set('groups',groups).forResult();
 if(result.bool){
