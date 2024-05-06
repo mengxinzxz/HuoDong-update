@@ -52988,7 +52988,10 @@ else event.finish();
 'step 1'
 game.delayx();
 'step 2'
-if(!player.isLinked()&&trigger.targets&&trigger.targets.length==1) player.link(true);
+if(trigger.targets&&trigger.targets.length==1&&!trigger.targets[0].isLinked()){
+player.line(trigger.targets[0]);
+trigger.targets[0].link(true);
+}
 else event.finish();
 'step 3'
 game.delayx();
@@ -53195,13 +53198,13 @@ content:function(){
 trigger.player.chooseCard('he',[0,Math.ceil(trigger.player.countCards('h'))],get.prompt('old_fenchai'),'交给'+get.translation(player)+'至多'+get.cnNumber()+'张牌').set('ai',function(card){
 if(_status.event.goon) return get.value(card);
 return -1;
-}).set('goon',get.attitude(trigger.player,player)>0);
+}).set('goon',get.attitude(trigger.player,player)>0).set('forceDie',true);
 'step 1'
 if(result.bool){
 player.logSkill('old_fenchai');
 trigger.player.line(player);
 game.log(player,'收到了来自',trigger.player,'的呼唤');
-player.gain(result.cards,trigger.player,'giveAuto');
+player.gain(result.cards,trigger.player,'giveAuto').set('forceDie',true);
 }
 },
 subSkill:{
@@ -57086,8 +57089,8 @@ if(player.storage.old_huanyin) str='①弃置手牌中的所有【杀】；②�
 return '你可以将你场上的牌当作场上没有的延时锦囊牌使用并执行一项，然后令目标角色执行后一项：『 '+str+'』。';
 },
 old_dianzhan:function(player){
-var str='①重铸此花色的一张手牌；②若此牌仅指定一个目标，你横置；③摸一张牌';
-if(player.storage.old_huanyin) str='①摸一张牌；②若此牌仅指定一个目标，你横置；③重铸此花色的一张手牌';
+var str='①重铸此花色的一张手牌；②若此牌仅指定一个目标，你令其横置；③摸一张牌';
+if(player.storage.old_huanyin) str='①摸一张牌；②若此牌仅指定一个目标，你令其横置；③重铸此花色的一张手牌';
 return '锁定技，当你于每轮第一次使用一种花色的牌后，你依次执行以下选项直到你执行完所有选项或需要执行无法执行的选项：『'+str+'』。';
 },
 old_sankuang:function(player){
@@ -57318,7 +57321,7 @@ old_beishi_info:'锁定技，当你或第一次成为〖三恇〗的目标角色
 old_lieshi:'烈誓',
 old_lieshi_info:'你可以将你场上的牌当作场上没有的延时锦囊牌使用并执行一项，然后令目标角色执行后一项：『①受到1点火焰伤害；②弃置手牌中的所有【闪】；③弃置手牌中的所有【杀】』。',
 old_dianzhan:'点盏',
-old_dianzhan_info:'锁定技，当你于每轮第一次使用一种花色的牌后，你依次执行以下选项直到你执行完所有选项或需要执行无法执行的选项：『①重铸此花色的一张手牌；②若此牌仅指定一个目标，你横置；③摸一张牌』。',
+old_dianzhan_info:'锁定技，当你于每轮第一次使用一种花色的牌后，你依次执行以下选项直到你执行完所有选项或需要执行无法执行的选项：『①重铸此花色的一张手牌；②若此牌仅指定一个目标，你令其横置；③摸一张牌』。',
 old_huanyin:'还阴',
 old_huanyin_info:'锁定技，当你进入濒死状态时，你将〖烈誓〗和〖点盏〗描述『 』中的内容倒置，然后将手牌数补至四张。',
 old_yunshen:'熨身',
