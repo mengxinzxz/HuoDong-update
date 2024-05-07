@@ -912,15 +912,6 @@ window.rkbg.innerHTML = '仁' + '<b><font color=\"#FF5500\">' + _status.renku.le
 }
 }
 
-//移动key武将
-if(lib.config.extension_活动武将_keymove){
-lib.characterSort.diy.bilibili_key=['key_kagari','key_shiki','db_key_hina'];
-lib.translate.bilibili_key='论外';
-game.HDmoveCharacter('key_kagari','diy');
-game.HDmoveCharacter('key_shiki','diy');
-game.HDmoveCharacter('db_key_hina','diy');
-}
-
 //特殊势力变更
 if(lib.config.extension_活动武将_HD_yrnsm){
 game.HDaddCharacter('chengjichengcui',['male','wei',6,['oltousui','olchuming'],[]],'yingbian');
@@ -937,8 +928,8 @@ if(get.config('onlyguozhan')){
 if(lib.config.extension_活动武将_keymove){
 delete lib.characterPack.mode_guozhan.gz_key_ushio;
 delete lib.character.gz_key_ushio;
-lib.characterSort.diy.bilibili_key.push('key_ushio');
-game.HDaddCharacter('key_ushio',['female','key',3,['ushio_huanxin','ushio_xilv'],['doublegroup:key:wei:shu:wu:qun:jin']],'diy');
+lib.characterSort.key.key_clannad.push('key_ushio');
+game.HDaddCharacter('key_ushio',['female','key',3,['ushio_huanxin','ushio_xilv'],['doublegroup:key:wei:shu:wu:qun:jin']],'key');
 lib.translate.key_ushio='冈崎汐';
 }
 //------------------------------删除武将------------------------------//
@@ -57614,11 +57605,6 @@ FenJieXianA:{
 clear:true,
 name:'<li>功能杂项',
 },
-keymove:{
-name:'key社角色移动',
-intro:'将神武将包中的键社武将和国战多势力武将冈崎汐移至DIY包（重启生效）',
-init:true,
-},
 HD_shanshan:{
 name:'牌堆加入【闪闪】',
 intro:'将牌堆中的一张方片5，一张方片6，一张方片7的【闪】替换为【闪闪】',
@@ -57910,6 +57896,11 @@ HD_gzbianfuren:{
 name:'卞夫人修改',
 intro:'开启此选项后，国战卞夫人【挽危】调整为OL/十周年版本（重启生效）',
 init:false,
+},
+keymove:{
+name:'key社角色移动',
+intro:'将国战武将包中的key武将（冈崎汐）移至DIY包（重启生效）',
+init:true,
 },
 FenJieXianE:{
 clear:true,
