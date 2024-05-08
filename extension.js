@@ -40,7 +40,7 @@ game.bolShowNewPack=function(){
 //更新告示
 var HuoDong_update=[
 '/setPlayer/',
-'bugfix',
+'新版适配+bugfix',
 'To be continued...',
 ];
 //更新武将
