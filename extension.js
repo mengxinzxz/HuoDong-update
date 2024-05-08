@@ -1087,11 +1087,14 @@ legend:[
 'old_zuoci',
 'bilibili_guanning',
 'bilibili_litiansuo',
+'bilibili_kuangshen04',
 'diy_lvmeng',
 'golden_zuoci',
 'BT_puyuan',
 'lz_sufei',
 'FD_huaxiong',
+'bilibili_shen_guojia',
+'bilibili_re_xusheng',
 //原活动配件武将
 //SSS传说武将评级
 //DDDD
@@ -1359,6 +1362,10 @@ lib.skill[skill].audioname.addArray(list);
 });
 };
 game.HDsetAudioname(['huangtian2','xinhuangtian','xinhuangtian2'],['zhangjiao','re_zhangjiao']);
+game.HDsetAudioname(['dchuishu','dcyishu','yingzi','biyue'],'bilibili_zhouxiaomei');
+lib.skill.dchuishu.subSkill.effect.audioname=(lib.skill.dchuishu.subSkill.effect.audioname||[]).concat(['bilibili_zhouxiaomei']);
+game.HDsetAudioname('yijin','bilibili_litiansuo');
+game.HDsetAudioname(['reqimou','zhaxiang','zhaxiang2','tairan','tairan2'],'bilibili_kuangshen04');
 
 //武将配音audioname2添加
 game.HDsetAudioname2=function(skills,map){
@@ -1428,9 +1435,6 @@ Mbaby_liushan:'jijiang1_liushan',
 });
 game.HDsetAudioname2('guidao',{
 Mbaby_zhangjiao:'guidao_sp_zhangjiao',
-});
-game.HDsetAudioname2('yijin',{
-bilibili_litiansuo:'bolNoAudio',
 });
 game.HDsetAudioname2('fangzhu',{
 old_shen_simayi:'jilue_fangzhu',
@@ -48191,7 +48195,7 @@ var cardList=[
 ['spade',5,'jueying'],
 ['diamond',1,'zhuge'],
 ['spade',6,'qinggang'],
-['spade', 1,'guding'],
+['spade',1,'guding'],
 ['spade',2,'hanbing'],
 ['spade',2,'cixiong'],
 ['spade',5,'qinglong'],
@@ -48320,13 +48324,13 @@ CLongZhou:['lz_sufei','lz_tangzi','lz_liuqi','lz_huangquan'],
 CZHengHuo:['bilibili_zhengxuan','bilibili_sp_xuyou','old_zuoci'],
 Chuodong:['bilibili_shengxunyu','bilibili_Firewin','bilibili_jinglingqiu','bilibili_suixingsifeng','bilibili_Emptycity','bilibili_thunderlei','bilibili_lonelypatients'],
 Csxydormitory:['sxy_shengxunyu'],
-Cothers:['bilibili_adong','bilibili_zhangrang','bilibili_litiansuo','decade_huangwudie','bilibili_huanggai','bilibili_ekeshaoge','bilibili_guanning','bilibili_wangwang','bilibili_zhouxiaomei','diy_lvmeng'],
+Cothers:['bilibili_shen_guojia','bilibili_re_xusheng','bilibili_kuangshen04','bilibili_adong','bilibili_zhangrang','bilibili_litiansuo','decade_huangwudie','bilibili_huanggai','bilibili_ekeshaoge','bilibili_guanning','bilibili_wangwang','bilibili_zhouxiaomei','diy_lvmeng'],
 CDanJi:['DJ_caiyang','DJ_pujing','DJ_huban'],
 CSCS:['biliscs_shichangshi','biliscs_zhangrang','biliscs_zhaozhong','biliscs_sunzhang','biliscs_bilan','biliscs_xiayun','biliscs_hankui','biliscs_lisong','biliscs_duangui','biliscs_guosheng','biliscs_gaowang'],
 },
 },
 character:{
-bilibili_zhouxiaomei:['female','wu',3,['dchuishu','dcyishu'],[]],
+bilibili_zhouxiaomei:['female','wu',3,['dchuishu','dcyishu','yingzi','biyue'],[]],
 bilibili_zhangrang:['male','qun',3,['bilibili_taoluan'],[]],
 diy_lvmeng:['male','wu',4,['BTkongju','BThouqi'],[]],
 bilibili_wangwang:['female','shu',3,['huguan','yaopei','mingluan'],[]],
@@ -48350,6 +48354,9 @@ bilibili_Emptycity:['male','key',4,['bilibili_zhiyou','bilibili_guanli'],[]],
 bilibili_thunderlei:['male','key','2/4/3',['bilibili_Thunder','bilibili_qianxi'],[]],
 bilibili_zhengxuan:['male','qun',3,['bilibili_zhengjing'],['character:zhengxuan']],
 bilibili_lonelypatients:['male','key',4,['bilibili_meihua','bilibili_gongyou','bilibili_qianyin'],[]],
+'bilibili_kuangshen04':['male','shen','4/6',['BTmakeBug','BTtequ','BTguoshou','reqimou','zhaxiang','tairan'],['ext:活动萌扩/image/fd_kuangshen04.jpg']],
+bilibili_shen_guojia:['male','wei','9/9/5',['stianyi','resghuishi','bilibili_huishi'],['doublegroup:shen:wei']],
+bilibili_re_xusheng:['male','wu',4,['bilibili_pojun','kuangcai','bilibili_baodao'],[]],
 //千里走单骑
 DJ_caiyang:['male','qun',1,['yinka','zhuixi'],['character:caiyang']],
 DJ_pujing:['male','qun',1,['yinka'],['character:pujing']],
@@ -48381,6 +48388,7 @@ thunderlei:'雷，过去萌新的同行（现在比萌新厉害太多），负�
 lonelypatients:'lonely patients，活动群群主，美化大佬，前活动武将二群成员，因完成了活动武将第一次的全露头制作晋升二群管理，后来因合群人数需求成为活动群群主，现负责不定期活动武将的露头包制作。因群主平时较忙，故在群聊内见到群主的次数较为稀少。',
 jiananfeng:'贾南风（257年－300年5月13日），小名峕，字南风，平阳郡襄陵县（今山西省襄汾县）人，曹魏豫州刺史贾逵孙女，西晋太宰贾充之女，晋惠帝司马衷皇后。贾南风貌丑而性妒，因惠帝懦弱而一度专权，是西晋时期“八王之乱”的罪魁祸首，后死于赵王司马伦之手，而随后的八王之乱则引发了历史上著名的五胡乱华。',
 babybao:'活动群资深元老，隐藏自身实力的高校研究生，为萌新负责提供图片/配音素材、进行武将测试、管理小群'+'<span style="text-decoration:line-through;">'+'反正不要拿respect当作职务'+'</span>'+'等职务。',
+'kuangshen04':'狂神，无名杀究极更新者，但因为其过于超前的思想和当前时间线的发展完全脱轨而致其PR惨遭扑杀，遂黑化为狂神1103形态，别名牢狂，蠢蠢欲动，准备于未来继续打破历史。',
 },
 characterTitle:{
 sxy_shengxunyu:(()=>new Date().getDay()>5?'周末复活赛打赢ing':'工作日打复活赛ing')(),
@@ -48397,6 +48405,9 @@ return new Date().getDay()>5;
 },
 bilibili_zhengxuan(){
 return !_status.connectMode;
+},
+'bilibili_kuangshen04'(){
+return new Date().getDate()==8||new Date().getDate()==24;
 },
 },
 perfectPair:{
@@ -57049,6 +57060,300 @@ _status.event.untrigger(true);
 }
 },
 },
+//牢狂
+BTmakeBug:{
+charlotte:true,
+trigger:{player:'phaseEnd'},
+forced:true,
+async content(event,trigger,player){
+if(player.countCards('h')<7) await player.drawTo(7);
+const target=(game.me.isIn()&&!game.me.isFriendOf(player))?game.me:game.me.getEnemies().randomGet();
+let cards=player.getCards('h');
+if(!cards.length){
+player.chat('谁在阻止我提PR？');//[doge]
+game.over(game.me.isFriendOf(player));
+return;
+}
+const Original=cards.randomGet(),PR=lib.card.list.randomGet();
+const card=game.createCard(get.name(Original,false),PR[0],PR[1]);
+cards[cards.indexOf(Original)]=card;
+const {result:{bool,links}}=await target.chooseButton(['请猜测'+get.translation(player)+'伪装的手牌',cards],true).set('ai',button=>{
+const cards=get.event('cards').slice();
+const card=cards.find(card=>lib.card.list.some(cardx=>cardx[2]==get.name(card,false))&&!lib.card.list.some(cardx=>cardx[2]==get.name(card,false)&&cardx[0]==get.suit(card,false)&&cardx[0]==get.number(card,false)&&cardx[3]==get.nature(card,false)));
+return button.link==card?3:1+Math.random();
+}).set('cards',cards);
+if(bool){
+if(links[0]==card){
+target.popup('判断正确','wood');
+game.log(target,'猜测','#g正确');
+}
+else{
+target.popup('判断错误','fire');
+game.log(target,'猜测','#y错误');
+player.gain(lib.skill.BTmakeBug.getYing(2),'gain2');
+game.cardsGotoPile(lib.skill.BTmakeBug.getYing(20),()=>ui.cardPile.childNodes[get.rand(0,ui.cardPile.childNodes.length-1)]);
+}
+}
+},
+getYing(count){
+let cards=[];
+if(typeof count!='number') count=1;
+while(count--){
+let card=game.createCard2('ying','none',114514);
+cards.push(card);
+}
+return cards;
+},
+},
+BTtequ:{
+charlotte:true,
+enable:['chooseToUse','chooseToRespond'],
+filter(event,player){
+if(!player.countCards('hes',card=>get.card(name,player)=='ying')) return false;
+return get.inpileVCardList(info=>info[0]!='equip').some(info=>event.filterCard({name:info[2],nature:info[3]},player,event));
+},
+chooseButton:{
+dialog(event,player){
+var list=get.inpileVCardList(info=>info[0]!='equip').filter(info=>event.filterCard({name:info[2],nature:info[3]},player,event));
+return ui.create.dialog('特取',[list,'vcard']);
+},
+filter(button,player){
+return get.event().getParent().filterCard({name:button.link[2]},player,_status.event.getParent());
+},
+check(button){
+if(get.event().getParent().type!='phase') return 1;
+const player=get.event('player');
+return player.getUseValue({name:button.link[2],nature:button.link[3]});
+},
+backup(links,player){
+return {
+charlotte:true,
+filterCard(card,player){
+return get.name(card,player)=='ying';
+},
+popname:true,
+check(){return 1},
+position:'hes',
+viewAs:{name:links[0][2],nature:links[0][3]},
+}
+},
+prompt(links,player){
+return '将一张【影】当做'+(get.translation(links[0][3])||'')+get.translation(links[0][2])+'使用或打出';
+}
+},
+hiddenCard(player,name){
+if(!lib.inpile.includes(name)||!player.countCards('hes')) return false;
+const type=get.type2(name);
+return type=='basic'||type=='trick';
+},
+ai:{
+fireAttack:true,
+respondSha:true,
+respondShan:true,
+skillTagFilter(player){
+if(!player.countCards('hes')) return false;
+},
+order:10,
+result:{
+player(player){
+if(_status.event.dying) return get.attitude(player,_status.event.dying);
+return 1;
+},
+},
+},
+subSkill:{backup:{}},
+},
+BTguoshou:{
+init(){
+game.broadcastAll(()=>{
+if(lib.card.ying.destroy) delete lib.card.ying.destroy;
+lib.translate.ying_info='此牌堆已被牢狂污染';
+});
+},
+charlotte:true,
+trigger:{global:['useCard1','damageBefore']},
+filter(event,player){
+if(event.player==player) return false;
+if(event.name=='useCard') return event.player!=player&&get.tag(event.card,'damage');
+return !event.source||event.source!=player;
+},
+forced:true,
+logTarget:'player',
+async content(event,trigger,player){
+if(trigger.name=='useCard') trigger.customArgs.default.customSource=player;
+else trigger.source=player;
+},
+group:'BTguoshou_win',
+subSkill:{
+win:{
+charlotte:true,
+trigger:{global:['dieAfter','washCard']},
+filter(event,player){
+if(event.name=='die') return event.player==game.me;
+return Array.from(ui.cardPile.childNodes).filter(card=>card.name=='ying').length>=300;
+},
+forced:true,
+forceDie:true,
+async content(event,trigger,player){
+player.chat('我的PR已经深入了无名杀的骨髓！');//[doge]
+game.over(game.me.getFriends(true).includes(player));
+},
+},
+},
+},
+//知箸侠
+bilibili_huishi:{
+audio:'shuishi',
+inherit:'reshuishi',
+unique:true,
+limited:true,
+skillAnimation:true,
+animationColor:'thunder',
+content(){
+'step 0'
+player.awakenSkill('bilibili_huishi');
+event.cards=[];
+event.suits=[];
+'step 1'
+player.judge(result=>{
+var evt=_status.event.getParent('bilibili_huishi');
+if (evt && evt.suits && evt.suits.includes(get.suit(result))) return 0;
+return 1;
+})
+.set('callback',lib.skill.bilibili_huishi.callback).judge2=function(result){
+return result.bool?true:false;
+};
+'step 2'
+var cards=cards.filterInD();
+if(cards.length){
+player.chooseTarget('将'+get.translation(cards)+'交给一名角色',true).set('ai',target=>{
+var player=_status.event.player,att =get.attitude(player, target);
+if(at <=0) return att;
+if(target.countCards('h')+_status.event.num>=_status.event.max) att/=3;
+if(target.hasSkillTag('nogain')) att/=10;
+return att;
+}).set('num', cards.length).set('max',game.filterPlayer().reduce((num,i)=>{
+return Math.max(num, i.countCards('h'));
+},0));
+}
+else event.finish();
+'step 3'
+if(result.bool){
+var target=result.targets[0];
+event.target=target;
+player.line(target,'green');
+target.gain(cards,'gain2').giver=player;
+}
+else event.finish();
+'step 4'
+if(target.isMaxHandcard()) player.loseMaxHp();
+},
+callback(){
+'step 0'
+var evt=event.getParent(2);
+event.getParent().orderingCards.remove(event.judgeResult.card);
+evt.cards.push(event.judgeResult.card);
+if(event.getParent().result.bool&&player.maxHp<10) {
+evt.suits.push(event.getParent().result.suit);
+player.gainMaxHp();
+player.chooseBool('是否继续发动【慧识】？').set('frequentSkill','bilibili_huishi');
+}
+else event._result={bool:false};
+'step 1'
+if(result.bool) event.getParent(2).redo();
+},
+ai:{
+order:0.001,
+result:{player:1},
+},
+},
+//宝神
+bilibili_pojun:{
+audio:'repojun',
+group:'repojun_jiaozi',
+trigger:{player:'useCardToPlayered'},
+filter(event,player){
+return event.card.name=='sha'&&event.target.countGainableCards(player,'h');
+},
+logTarget:'target',
+prompt2(event,player){
+return '获得'+get.translation(event.target)+'的所有手牌';
+},
+content(){
+player.gain(trigger.target.getGainableCards(player,'h'),player,'giveAuto','bySelf');
+},
+group:'bilibili_pojun_jiaozi',
+subSkill:{
+jiaozi:{
+audio:'repojun',
+inherit:'jiaozi',
+locked:false,
+},
+},
+},
+bilibili_baodao:{
+charlotte:true,
+superCharlotte:true,
+trigger:{
+global:['gameStart','phaseBefore'],
+player:['enterGame'],
+},
+filter(event,player){
+if(event.name=='phase'&&game.phaseNumber>0) return false;
+return player.hasEquipableSlot(1)&&!player.getEquips('guding').length;
+},
+forced:true,
+popup:false,
+async content(event,trigger,player){
+const card=game.createCard2('guding','spade',1);
+await player.equip(card);
+while(get.cardPile('guding')){
+await game.cardsGotoSpecial([get.cardPile('guding')]);
+}
+for(const target of game.filterPlayer()){
+const cards=target.getCards('hejsx',i=>i!=card&&i.name=='guding');
+if(cards.length) await target.lose(cards,ui.special);
+}
+},
+mod:{
+canBeGained(card,source,player){
+if(player.getEquips('guding').includes(card)) return false;
+},
+canBeDiscarded(card,source,player){
+if(player.getEquips('guding').includes(card)) return false;
+},
+canBeReplaced(card,player){
+if(player.getEquips('guding').includes(card)) return false;
+},
+cardDiscardable(card,player){
+if(player.getEquips('guding').includes(card)) return false;
+},
+cardEnabled2(card,player){
+if(player.getEquips('guding').includes(card)) return false;
+},
+},
+group:'bilibili_baodao_blocker',
+subSkill:{
+blocker:{
+charlotte:true,
+superCharlotte:true,
+trigger:{player:['loseBefore','disableEquipBefore']},
+filter(event,player){
+if(event.name=='disableEquip') return event.slots.includes('equip1');
+var cards=player.getEquips('guding');
+return event.cards.some(card=>cards.includes(card));
+},
+forced:true,
+popup:false,
+content(){
+if(trigger.name=='lose') trigger.cards.removeArray(player.getEquips('guding'));
+else{
+while(trigger.slots.includes('equip1')) trigger.slots.remove('equip1');
+}
+},
+},
+},
+},
 },
 dynamicTranslate:{
 bilibili_xueji:function(player){
@@ -57147,6 +57452,7 @@ BT_puyuan:'蒲元',
 diy_liuhong:'刘宏',
 bilibili_zhouxiaomei:'周小妹',
 bilibili_zhangrang:'TW张让',
+bilibili_zhangrang_prefix:'TW',
 decade_huangwudie:'黄舞蝶',
 decadexiwu:'习武',
 decadexiwu_info:'锁定技，你使用【杀】无距离和次数限制且你使用【杀】造成的伤害+1。',
@@ -57195,6 +57501,7 @@ BThuanhua:'幻化',
 BThuanhua_backup:'幻化',
 BThuanhua_info:'出牌阶段限一次，你可以弃置一张未展示的化身牌，然后将一张手牌视为一张基本牌或普通锦囊牌使用。',
 bilibili_huanggai:'谋黄盖',
+bilibili_huanggai_prefix:'谋',
 bilibili_kurou:'苦肉',
 bilibili_kurou_info:'出牌阶段，你可以失去1点体力，然后摸一张牌。',
 bilibili_zhaxiang:'诈降',
@@ -57496,10 +57803,25 @@ sxy_shengxunyu_ab:'生熏鱼',
 dom_chouxiang:'抽象',
 dom_chouxiang_info:'锁定技，你对其他宿舍成员使用牌无距离和次数限制；当你使用牌或发动技能时，若其中包含其他宿舍成员，则你和这些角色各摸一张牌，然后进行同时拼点，不能拼点和拼点没赢的角色于此牌或技能结算完毕后于本轮移出游戏。',
 dom_chouxiang_append:'<span style="font-family:yuanli">抽象对抽象，不抽象的陪'+get.bolInformX('牢大','仅娱乐，请勿过度解读')+'打复活赛</span>',
+'bilibili_kuangshen04':'狂神1103',
+'bilibili_kuangshen04_ab':'牢狂',
+BTmakeBug:'PR',
+BTmakeBug_info:'锁定技，回合结束时，你将手牌数摸至七张，然后若你没有手牌，你结束本局游戏，否则你随机伪装你的一张手牌的花色点数，然后X须猜测其中哪一张为此伪装牌，若X猜错，你获得两张【影】，然后在牌堆中洗入20张【影】（洗入的【影】无花色且点数为114514，X为game.me，若game.me与你同阵容或game.me未存活则改为随机一名敌方角色）。',
+BTtequ:'特取',
+BTtequ_info:'你可以将一张【影】当任意基本牌或锦囊牌使用或打出。',
+BTguoshou:'锅首',
+BTguoshou_info:'锁定技。①你删除【影】进入弃牌堆销毁和洗牌不进入牌堆的机制。②所有对其他角色造成的无来源伤害或伤害来源不为你的伤害均将伤害来源改为你。③其他角色使用的所有伤害类卡牌的伤害来源改为你。④game.me阵亡后，或洗牌后牌堆中的【影】数不小于300张，你结束本局游戏。',
+bilibili_shen_guojia:'知箸侠',
+bilibili_huishi:'慧识',
+bilibili_huishi_info:'限定技，出牌阶段限一次，若你的体力上限小于10，你可进行判定牌不置入弃牌堆的判定。若判定结果与本次发动技能时的其他判定结果的花色均不相同且你的体力上限小于10，则你加1点体力上限，且可以重复此流程。然后你将所有位于处理区的判定牌交给一名角色。若其手牌数为全场最多，则你减1点体力上限。',
+bilibili_re_xusheng:'宝神',
+bilibili_pojun:'破军',
+bilibili_pojun_info:'当你使用【杀】指定一个目标后，你可以获得其所有手牌。若你的手牌数为全场唯一最多，则你造成和受到的伤害均+1。',
+bilibili_baodao:'宝刀',
 },
 };
 for(var i in huodongcharacter.character){
-if(huodongcharacter.characterSort.huodongcharacter.Cothers.includes(i)) huodongcharacter.character[i][4].push('unseen');
+if(huodongcharacter.characterSort.huodongcharacter.Cothers.includes(i)&&lib.config.connect_nickname!=='萌新（转型中）') huodongcharacter.character[i][4].push('unseen');
 huodongcharacter.character[i][4].push(((lib.device||lib.node)?'ext:':'db:extension-')+'活动武将/image/character/'+i+'.jpg');
 if(!lib.config.extension_活动武将_DanJi&&i.indexOf('DJ_')==0) delete huodongcharacter.character[i];
 if(!lib.config.extension_活动武将_SCS&&i.indexOf('biliscs_')!=-1) delete huodongcharacter.character[i];
