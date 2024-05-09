@@ -30824,7 +30824,9 @@ trigger:{player:'dyingAfter'},
 forced:true,
 forceDie:true,
 async content(event,trigger,player){
-await player.removeSkill('minidushi');
+if(player.isAlive()){
+await player.removeSkills('minidushi');
+}
 if(game.hasPlayer(target=>target!=player)){
 const {result:{bool,targets}}=await player.chooseTarget('请选择【毒逝】的目标','令一名其他角色获得技能【毒逝】',true,lib.filter.notMe).set('ai',target=>{
 return -get.attitude(_status.event.player,target);
@@ -30833,7 +30835,7 @@ if(bool){
 const target=targets[0];
 player.line(target);
 target.markSkill('minidushi');
-target.addSkills('minidushi');
+await target.addSkills('minidushi');
 }
 }
 },
