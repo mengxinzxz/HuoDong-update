@@ -57260,7 +57260,7 @@ event.suits=[];
 'step 1'
 player.judge(result=>{
 var evt=_status.event.getParent('bilibili_huishi');
-if (evt && evt.suits && evt.suits.includes(get.suit(result))) return 0;
+if(evt&&evt.suits&&evt.suits.includes(get.suit(result))) return 0;
 return 1;
 })
 .set('callback',lib.skill.bilibili_huishi.callback).judge2=function(result){
@@ -57271,12 +57271,12 @@ var cards=cards.filterInD();
 if(cards.length){
 player.chooseTarget('将'+get.translation(cards)+'交给一名角色',true).set('ai',target=>{
 var player=_status.event.player,att =get.attitude(player, target);
-if(at <=0) return att;
+if(att<=0) return att;
 if(target.countCards('h')+_status.event.num>=_status.event.max) att/=3;
 if(target.hasSkillTag('nogain')) att/=10;
 return att;
-}).set('num', cards.length).set('max',game.filterPlayer().reduce((num,i)=>{
-return Math.max(num, i.countCards('h'));
+}).set('num',cards.length).set('max',game.filterPlayer().reduce((num,i)=>{
+return Math.max(num,i.countCards('h'));
 },0));
 }
 else event.finish();
