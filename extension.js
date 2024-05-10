@@ -2018,8 +2018,9 @@ lib.skill.dctunchu.trigger={global:'gameDrawEnd'};
 lib.skill.dctunchu.filter=function(event,player){
 return player.countCards('h')<game.players.slice().concat(game.dead).length*4;
 };
-lib.skill.dctunchu.content=function(){
-player.gain(get.cards(game.players.slice().concat(game.dead).length*4-player.countCards('h')),'draw');
+lib.skill.dctunchu.content=async function(event,trigger,player){
+await player.gain(get.cards(game.players.slice().concat(game.dead).length*4-player.countCards('h')),'draw');
+player._start_cards=player.getCards('h');
 };
 lib.translate.dctunchu_info='锁定技。①分发起始手牌后，若你的手牌数小于X，则你将起始手牌数调整为X（X为游戏人数的四倍）。②你的手牌不能被弃置。③准备阶段，若你的手牌数大于你的体力上限，则你本回合至多使用三张牌。';
 
