@@ -14409,7 +14409,7 @@ var getv=function(list,target){
 var num=0;
 for(var i of list) num+=get.value(i,target);
 return num;
-},val=getv(hs,target)-getv(player.storage.xingzuo2,target);
+},val=getv(hs,target)-getv(player.storage.minixingzuo_effect,target);
 if(num<3) return att*Math.sqrt(Math.max(0,-val))*1.5;
 if(num==3) return -att*Math.sqrt(Math.max(0,val));
 return -att*Math.sqrt(Math.max(0,val));
