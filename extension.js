@@ -40,13 +40,11 @@ game.bolShowNewPack=function(){
 //更新告示
 var HuoDong_update=[
 '/setPlayer/',
-'新版适配+bugfix',
-'添加欢杀武将：黄祖',
+'自嗨包解禁',
 'To be continued...',
 ];
 //更新武将
 var HuoDong_players=[
-'Mbaby_dc_huangzu',
 ];
 //加载
 var dialog=ui.create.dialog(
@@ -48368,7 +48366,7 @@ CLongZhou:['lz_sufei','lz_tangzi','lz_liuqi','lz_huangquan'],
 CZHengHuo:['bilibili_zhengxuan','bilibili_sp_xuyou','old_zuoci'],
 Chuodong:['bilibili_shengxunyu','bilibili_Firewin','bilibili_jinglingqiu','bilibili_suixingsifeng','bilibili_Emptycity','bilibili_thunderlei','bilibili_lonelypatients'],
 Csxydormitory:['sxy_shengxunyu'],
-Cothers:['bilibili_shen_guojia','bilibili_re_xusheng','bilibili_kuangshen04','bilibili_adong','bilibili_zhangrang','bilibili_litiansuo','decade_huangwudie','bilibili_huanggai','bilibili_ekeshaoge','bilibili_guanning','bilibili_wangwang','bilibili_zhouxiaomei','diy_lvmeng'],
+Cothers:['bilibili_wangtao','bilibili_wangyue','bilibili_x_wangtao','bilibili_x_wangyue','bilibili_mx_xushao','bilibili_shen_guojia','bilibili_re_xusheng','bilibili_kuangshen04','bilibili_adong','bilibili_zhangrang','bilibili_litiansuo','decade_huangwudie','bilibili_huanggai','bilibili_ekeshaoge','bilibili_guanning','bilibili_wangwang','bilibili_zhouxiaomei','diy_lvmeng'],
 CDanJi:['DJ_caiyang','DJ_pujing','DJ_huban'],
 CSCS:['biliscs_shichangshi','biliscs_zhangrang','biliscs_zhaozhong','biliscs_sunzhang','biliscs_bilan','biliscs_xiayun','biliscs_hankui','biliscs_lisong','biliscs_duangui','biliscs_guosheng','biliscs_gaowang'],
 },
@@ -48378,6 +48376,10 @@ bilibili_zhouxiaomei:['female','wu',3,['dchuishu','dcyishu','yingzi','biyue'],[]
 bilibili_zhangrang:['male','qun',3,['bilibili_taoluan'],[]],
 diy_lvmeng:['male','wu',4,['BTkongju','BThouqi'],[]],
 bilibili_wangwang:['female','shu',3,['huguan','yaopei','mingluan'],[]],
+bilibili_wangtao:['female','shu',3,['huguan','yaopei','dualside'],['dualside:bilibili_x_wangyue','character:wangtao']],
+bilibili_wangyue:['female','shu',3,['huguan','mingluan','dualside'],['dualside:bilibili_x_wangtao','character:wangyue','tempname:wangyue']],
+bilibili_x_wangtao:['female','shu',3,['huguan','yaopei','dualside'],['unseen','character:wangtao']],
+bilibili_x_wangyue:['female','shu',3,['huguan','mingluan','dualside'],['unseen','character:wangyue','tempname:wangyue']],
 bilibili_guanning:['male','qun','3/7',['BTdunshi'],['forbidai']],
 bilibili_huanggai:['male','wu',4,['bilibili_kurou','bilibili_zhaxiang'],[]],
 bilibili_ekeshaoge:['male','qun',4,['bilibili_xueji','bilibili_hanran'],[]],
@@ -48401,6 +48403,7 @@ bilibili_lonelypatients:['male','key',4,['bilibili_meihua','bilibili_gongyou','b
 'bilibili_kuangshen04':['male','shen','4/6',['BTmakeBug','BTtequ','BTguoshou','reqimou','zhaxiang','tairan'],['ext:活动萌扩/image/fd_kuangshen04.jpg']],
 bilibili_shen_guojia:['male','wei','9/9/5',['stianyi','resghuishi','bilibili_huishi'],['doublegroup:shen:wei']],
 bilibili_re_xusheng:['male','wu',4,['bilibili_pojun','kuangcai','bilibili_baodao'],[]],
+bilibili_mx_xushao:['male','qun','1/6',['bilibili_pingjian'],['ext:活动武将/image/character/old_xushao.jpg','die_audio','InitFilter:noZhuHp']],
 //千里走单骑
 DJ_caiyang:['male','qun',1,['yinka','zhuixi'],['character:caiyang']],
 DJ_pujing:['male','qun',1,['yinka'],['character:pujing']],
@@ -57398,6 +57401,77 @@ while(trigger.slots.includes('equip1')) trigger.slots.remove('equip1');
 },
 },
 },
+//萌新自设许劭
+bilibili_pingjian:{
+audio:false,//狂神
+trigger:{
+global:'phaseBefore',
+player:['enterGame','subPlayerDie'],
+},
+filter(event,player){
+if(!(_status.characterlist||[]).some(name=>{
+const group=get.character(name).group;
+return lib.skill.bilibili_pingjian.groups.includes(group)&&!player.getStorage('bilibili_pingjianx').includes(group);
+})) return false;
+return event.name!='phase'||game.phaseNumber==0;
+},
+groups:['wei','shu','wu','qun','jin'],
+forced:true,
+charlotte:true,
+async content(event,trigger,player){
+await player.loseMaxHp();
+const list=_status.characterlist.slice();
+let characters=list.filter(name=>{
+const group=get.character(name).group;
+return lib.skill.bilibili_pingjian.groups.includes(group)&&!player.getStorage('bilibili_pingjianx').includes(group);
+}).map(name=>{
+return get.character(name).group;
+}).unique().sort((a,b)=>lib.group.indexOf(a)-lib.group.indexOf(b)).map(group=>{
+return list.filter(name=>get.character(name).group==group).randomGets(2);
+}).flat();
+const result=await player.chooseButton([
+'评鉴：请选择一张武将牌',
+'<div class="text center">将此武将牌作为随从牌，然后将武将牌替换为此随从牌</div>',
+[characters,'character'],
+],true).set('ai',button=>get.rank(button.link,true)).forResult();
+if(result.bool){
+const name=result.links[0],groupx=get.character(name).group;
+player.markAuto('bilibili_pingjianx',[groupx]);
+_status.characterlist.remove(name);
+player.storage.bilibili_pingjian=player.addSubPlayer({
+name:name,
+skills:get.character(name).skills,
+hp:2,
+maxHp:2,
+hs:get.cards(3),
+skill:'bilibili_pingjian',
+intro:'初始体力值和体力上限为2，手牌数为3',//主将视角
+intro2:'随从阵亡后切换为原武将牌',//随从视角
+onremove(player){
+_status.characterlist.add(player.storage.bilibili_pingjian);
+delete player.storage.bilibili_pingjian;
+player.group=player.storage.bilibili_pingjian_origin;
+player.node.name.dataset.nature=get.groupnature(player.storage.bilibili_pingjian_origin);
+delete player.storage.bilibili_pingjian_origin;
+}
+});
+game.broadcastAll((name1,name)=>{
+for(const str of ['','_prefix','_ab']){
+if(lib.translate[name+str]) lib.translate[name1+str]=lib.translate[name+str];
+}
+},player.storage.bilibili_pingjian,name);
+await player.callSubPlayer(player.storage.bilibili_pingjian);
+if(player.name==player.storage.bilibili_pingjian||player.name1==player.storage.bilibili_pingjian){
+player.storage.bilibili_pingjian_origin=player.group;
+player.group=groupx;
+player.node.name.dataset.nature=get.groupnature(groupx);
+}
+}
+},
+init(){
+if(!_status.characterlist) lib.skill.pingjian.initList();
+},
+},
 },
 dynamicTranslate:{
 bilibili_xueji:function(player){
@@ -57529,6 +57603,14 @@ old_tongling_info:'锁定技，当你成为一名角色使用牌指定的唯一�
 boljingjia:'精甲',
 boljingjia_info:'锁定技，游戏开始时，将本局游戏加入的装备牌置于你的装备栏中。',
 bilibili_wangwang:'王桃王悦',
+bilibili_wangtao:'双面王桃',
+bilibili_wangyue:'双面王悦',
+bilibili_x_wangtao:'双面王桃',
+bilibili_x_wangyue:'双面王悦',
+bilibili_wangtao_ab:'王桃',
+bilibili_wangyue_ab:'王悦',
+bilibili_x_wangtao_ab:'王桃',
+bilibili_x_wangyue_ab:'王悦',
 bilibili_guanning:'管宁',
 bilibili_guanning_ab:'辟静归元',
 BTdunshi:'遁世',
@@ -57862,10 +57944,14 @@ bilibili_re_xusheng:'宝神',
 bilibili_pojun:'破军',
 bilibili_pojun_info:'当你使用【杀】指定一个目标后，你可以获得其所有手牌。若你的手牌数为全场唯一最多，则你造成和受到的伤害均+1。',
 bilibili_baodao:'宝刀',
+bilibili_mx_xushao:'许劭',
+bilibili_mx_xushao_ab:'识人读心',
+bilibili_pingjian:'评鉴',
+bilibili_pingjian_info:'持衡技，锁定技。游戏开始时，或当你的随从武将牌阵亡后，你减1点体力上限，从随机每个势力的各随机两张武将牌中选择一张武将牌作为随从武将牌，然后你将武将牌替换为此随从。（每个势力的武将牌每局游戏只能选择一次）',
 },
 };
 for(var i in huodongcharacter.character){
-if(huodongcharacter.characterSort.huodongcharacter.Cothers.includes(i)&&lib.config.connect_nickname!=='萌新（转型中）') huodongcharacter.character[i][4].push('unseen');
+if(huodongcharacter.characterSort.huodongcharacter.Cothers.includes(i)/*&&lib.config.connect_nickname!=='萌新（转型中）'*/) huodongcharacter.character[i][4].push('unseen');
 huodongcharacter.character[i][4].push(((lib.device||lib.node)?'ext:':'db:extension-')+'活动武将/image/character/'+i+'.jpg');
 if(!lib.config.extension_活动武将_DanJi&&i.indexOf('DJ_')==0) delete huodongcharacter.character[i];
 if(!lib.config.extension_活动武将_SCS&&i.indexOf('biliscs_')!=-1) delete huodongcharacter.character[i];
