@@ -57441,6 +57441,7 @@ _status.characterlist.remove(name);
 player.storage.bilibili_pingjian=player.addSubPlayer({
 name:name,
 skills:get.character(name).skills,
+sex:get.character(name).sex,
 hp:2,
 maxHp:2,
 hs:get.cards(3),
