@@ -57951,7 +57951,7 @@ bilibili_pingjian_info:'持衡技，锁定技。游戏开始时，或当你的�
 },
 };
 for(var i in huodongcharacter.character){
-if(huodongcharacter.characterSort.huodongcharacter.Cothers.includes(i)/*&&lib.config.connect_nickname!=='萌新（转型中）'*/) huodongcharacter.character[i][4].push('unseen');
+//if(huodongcharacter.characterSort.huodongcharacter.Cothers.includes(i)&&lib.config.connect_nickname!=='萌新（转型中）') huodongcharacter.character[i][4].push('unseen');
 huodongcharacter.character[i][4].push(((lib.device||lib.node)?'ext:':'db:extension-')+'活动武将/image/character/'+i+'.jpg');
 if(!lib.config.extension_活动武将_DanJi&&i.indexOf('DJ_')==0) delete huodongcharacter.character[i];
 if(!lib.config.extension_活动武将_SCS&&i.indexOf('biliscs_')!=-1) delete huodongcharacter.character[i];
