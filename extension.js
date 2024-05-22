@@ -2011,7 +2011,8 @@ lib.skill.yinka.trigger={global:['drawBegin','judgeBegin']};
 lib.skill.yinka.firstDo=true;
 lib.skill.yinka.group='yinka_view';
 lib.skill.yinka.subSkill={view:{ai:{viewHandcard:true,skillTagFilter:(player,arg,target)=>target!=player}}};
-
+//星黄忠
+lib.skill.spshidi.intro.markcount=storage=>(storage||0)%2==0?'攻':'守';
 
 //precT
 //翻译
@@ -57410,6 +57411,7 @@ player:['enterGame','subPlayerDie'],
 },
 filter(event,player){
 if(!(_status.characterlist||[]).some(name=>{
+if(get.is.double(name)) return false;
 const group=get.character(name).group;
 return lib.skill.bilibili_pingjian.groups.includes(group)&&!player.getStorage('bilibili_pingjianx').includes(group);
 })) return false;
@@ -57422,6 +57424,7 @@ async content(event,trigger,player){
 await player.loseMaxHp();
 const list=_status.characterlist.slice();
 let characters=list.filter(name=>{
+if(get.is.double(name)) return false;
 const group=get.character(name).group;
 return lib.skill.bilibili_pingjian.groups.includes(group)&&!player.getStorage('bilibili_pingjianx').includes(group);
 }).map(name=>{
@@ -57435,38 +57438,25 @@ const result=await player.chooseButton([
 [characters,'character'],
 ],true).set('ai',button=>get.rank(button.link,true)).forResult();
 if(result.bool){
-const name=result.links[0],groupx=get.character(name).group;
-player.markAuto('bilibili_pingjianx',[groupx]);
+const name=result.links[0];
+player.markAuto('bilibili_pingjianx',[get.character(name).group]);
 _status.characterlist.remove(name);
-player.storage.bilibili_pingjian=player.addSubPlayer({
+const subPlayer=player.addSubPlayer({
 name:name,
 skills:get.character(name).skills,
 sex:get.character(name).sex,
 hp:2,
 maxHp:2,
 hs:get.cards(3),
+group:get.character(name).group,
 skill:'bilibili_pingjian',
 intro:'初始体力值和体力上限为2，手牌数为3',//主将视角
 intro2:'随从阵亡后切换为原武将牌',//随从视角
-onremove(player){
-_status.characterlist.add(player.storage.bilibili_pingjian);
-delete player.storage.bilibili_pingjian;
-player.group=player.storage.bilibili_pingjian_origin;
-player.node.name.dataset.nature=get.groupnature(player.storage.bilibili_pingjian_origin);
-delete player.storage.bilibili_pingjian_origin;
+onremove(player,name){
+_status.characterlist.add(name);
 }
 });
-game.broadcastAll((name1,name)=>{
-for(const str of ['','_prefix','_ab']){
-if(lib.translate[name+str]) lib.translate[name1+str]=lib.translate[name+str];
-}
-},player.storage.bilibili_pingjian,name);
-await player.callSubPlayer(player.storage.bilibili_pingjian);
-if(player.name==player.storage.bilibili_pingjian||player.name1==player.storage.bilibili_pingjian){
-player.storage.bilibili_pingjian_origin=player.group;
-player.group=groupx;
-player.node.name.dataset.nature=get.groupnature(groupx);
-}
+await player.callSubPlayer(subPlayer);
 }
 },
 init(){
