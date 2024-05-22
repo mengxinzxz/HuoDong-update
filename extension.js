@@ -57448,11 +57448,11 @@ skills:get.character(name).skills,
 sex:get.character(name).sex,
 hp:2,
 maxHp:2,
-hs:get.cards(3),
+hs:get.cards(4),
 group:get.character(name).group,
 skill:'bilibili_pingjian',
 image:['tempname:'+name,'character:'+name],
-intro:'初始体力值和体力上限为2，手牌数为3',//主将视角
+intro:'初始体力值和体力上限为2，手牌数为4',//主将视角
 intro2:'随从阵亡后切换为原武将牌',//随从视角
 onremove(player,name){
 _status.characterlist.add(name);
@@ -57949,7 +57949,7 @@ bilibili_baodao:'宝刀',
 bilibili_xushao:'萌设许劭',
 bilibili_xushao_prefix:'萌设',
 bilibili_pingjian:'评鉴',
-bilibili_pingjian_info:'持衡技，锁定技。游戏开始时，或当你的随从武将牌阵亡后，你减1点体力上限，从随机每个势力的各随机两张武将牌中选择一张武将牌作为随从武将牌，然后你将武将牌替换为此随从。（每个势力的武将牌每局游戏只能选择一次）',
+bilibili_pingjian_info:'持衡技，锁定技。游戏开始时，或当你的随从武将牌阵亡后，你减1点体力上限，从随机每个势力的各随机两张武将牌中选择一张武将牌作为随从武将牌，然后你将武将牌替换为此随从。（随从武将牌初始2血2上限4手牌，每个势力的武将牌每局游戏只能选择一次）',
 },
 };
 for(var i in huodongcharacter.character){
