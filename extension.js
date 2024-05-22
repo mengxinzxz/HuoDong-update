@@ -57451,7 +57451,6 @@ maxHp:2,
 hs:get.cards(4),
 group:get.character(name).group,
 skill:'bilibili_pingjian',
-image:['tempname:'+name,'character:'+name],
 intro:'初始体力值和体力上限为2，手牌数为4',//主将视角
 intro2:'随从阵亡后切换为原武将牌',//随从视角
 onremove(player,name){
