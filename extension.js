@@ -39,14 +39,11 @@ lib.init.css(lib.assetURL+'extension/活动武将','extension');
 game.bolShowNewPack=function(){
 //更新告示
 var HuoDong_update=[
-'/setPlayer/',
-'自嗨包解禁，技能调整',
-'添加欢杀武将：谋孙尚香，蒋钦，羊祜',
+//'/setPlayer/',
 'To be continued...',
 ];
 //更新武将
 var HuoDong_players=[
-'Mbaby_sb_sunshangxiang','Mbaby_jiangqing','Mbaby_dc_yanghu'
 ];
 //加载
 var dialog=ui.create.dialog(
@@ -58668,7 +58665,7 @@ intro:'新人制作扩展，希望大家支持。'+
 author:'萌新（转型中）',
 diskURL:'',
 forumURL:'',
-version:'0.2.5',
+version:'0.2.6',
 //新人制作扩展，希望大家支持。
 //新人技术不足，希望大家包涵。
 //壹、贰、叁、肆、伍、陆、柒、捌、玖、拾
