@@ -34136,7 +34136,7 @@ content(){
 var tags=['dctuoyu_fengtian','dctuoyu_qingqu','dctuoyu_junshan'];
 tags.removeArray(player.getStorage('dctuoyu'));
 if(!tags.length){
-player.draw(player.isMaxHandcard()?1:3);
+player.draw(3);
 event.finish();
 }
 else if(tags.length==1){
