@@ -40,6 +40,8 @@ game.bolShowNewPack=function(){
 //更新告示
 var HuoDong_update=[
 '/setPlayer/',
+'整合@xizifu 的Pull request',
+'整合Fire.win的素材',
 '添加欢杀武将：神陆逊；修改欢杀武将：甄姬',
 'To be continued...',
 ];
@@ -35799,6 +35801,8 @@ Mbaby_ruanyu:'欢杀阮瑀',
 Mbaby_dc_yanghu:'欢杀羊祜',
 miniluoshen:'洛神',
 miniluoshen_info:'准备阶段，你可以进行一次判定并获得判定牌，若判定结果为黑色，你可重复此流程。',
+minireluoshen:'洛神',
+minireluoshen_info:'①准备阶段，你可以进行一次判定并获得判定牌，若判定结果为黑色，你可重复此流程。②当你于每轮首次失去〖洛神①〗获得的红色牌后，你可以发动〖洛神①〗。',
 miniqiaobian:'巧变',
 miniqiaobian_info:'①你可以弃置一张手牌并跳过自己的一个阶段（准备阶段和结束阶段除外）。若你以此法跳过了摸牌阶段，则你可以获得至多两名其他角色的各一张手牌；若你以此法跳过了出牌阶段，则你可以移动场上的一张牌。②结束阶段，若你本回合至少跳过了三个阶段，则你摸两张牌。',
 minikangkai:'慷忾',
