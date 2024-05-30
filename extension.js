@@ -1691,19 +1691,6 @@ lib.skill.juesheng.subSkill.counter.direct=true;
 lib.skill.sbliegong.subSkill.block.direct=true;
 lib.skill.sbliegong.subSkill.count.direct=true;
 lib.skill.sbliegong.subSkill.count.locked=false;
-//唐咨
-lib.skill.xinfu_xingzhao.intro={
-content:function(storage,player){
-var num=game.countPlayer(current=>current.isDamaged());
-if(num==0) return '<li>当你造成伤害时，此伤害+1';
-var str='';
-if(num>=1) str+='<li>视为拥有技能〖恂恂〗';
-if(num>=2) str+='<br><li>使用装备牌时摸一张牌';
-if(num>=3) str+='<br><li>跳过判定阶段和弃牌阶段';
-if(num>=4) str+='<br><li>当你造成伤害时，此伤害+1';
-return str;
-},
-};
 //司马师
 lib.skill.tairan.content=function(){
 'step 0'
