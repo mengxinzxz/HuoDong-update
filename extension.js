@@ -43,11 +43,13 @@ var HuoDong_update=[
 '整合@xizifu 的Pull request',
 '整合Fire.win的素材',
 '添加欢杀武将：神陆逊；修改欢杀武将：甄姬',
+'添加微信武将：SP黄月英、公孙瓒；糅合微信标界魏延、标界赵云',
 'To be continued...',
 ];
 //更新武将
 var HuoDong_players=[
-'Mbaby_shen_luxun','Mbaby_zhenji',
+'Mbaby_shen_luxun','Mbaby_zhenji','wechat_jsp_huangyueying','wechat_re_gongsunzan',
+'wechat_weiyan','wechat_zhaoyun',
 ];
 //加载
 var dialog=ui.create.dialog(
@@ -37232,7 +37234,7 @@ name:'WeChatkill',
 connect:true,
 characterSort:{
 WeChatkill:{
-wechat_standard:['wechat_guanyinping','wechat_sp_machao','wechat_pangdegong','wechat_gongsunyuan','wechat_xusheng','wechat_yufan','wechat_handang','wechat_wanglang','wechat_huanghao','wechat_caiyong','wechat_yj_huangzhong','wechat_zhangzhang','wechat_chendeng','wechat_taoqian','wechat_kanze','wechat_xuezong','wechat_guyong','wechat_guansuo','wechat_zumao','wechat_yj_jushou','wechat_sp_pangde','wechat_caojie','wechat_zhuling','wechat_caizhenji','wechat_guohuanghou','wechat_yanyan','wechat_liaohua','wechat_liuyao','wechat_quancong','wechat_xiahouba','wechat_sp_jiangwei','wechat_caoxiu','wechat_yuanshao','wechat_sundeng','wechat_re_xushu','wechat_caopi','wechat_caozhang','wechat_buzhi','wechat_sp_taishici','wechat_masu','wechat_caifuren','wechat_jianyong','wechat_lukang','wechat_caozhi','wechat_huangyueying','wechat_weiyan','wechat_gaoshun','wechat_sunliang','wechat_wangping','wechat_sp_caiwenji','wechat_caochong','wechat_huangzhong','wechat_xiahouyuan','wechat_pangde','wechat_sunshangxiang','wechat_xuzhu','wechat_guanyu','wechat_caocao','wechat_shenpei','wechat_jiaxu','wechat_caoren','wechat_liuqi','wechat_zhaoxiang','wechat_caiwenji','wechat_menghuo','wechat_re_yuanshu','wechat_huaxiong','wechat_xiahoushi','wechat_xushu','wechat_zhaoyun','wechat_zhangfei','wechat_machao','wechat_yangxiu','wechat_lvmeng','wechat_zhoutai','wechat_bianfuren','wechat_sunluban','wechat_wuguotai','wechat_liubiao','wechat_liuchen','wechat_luxun','wechat_pangtong','wechat_zhangxingcai','wechat_zuoci','wechat_mayunlu','wechat_ruanhui'],
+wechat_standard:['wechat_jsp_huangyueying','wechat_re_gongsunzan','wechat_guanyinping','wechat_sp_machao','wechat_pangdegong','wechat_gongsunyuan','wechat_xusheng','wechat_yufan','wechat_handang','wechat_wanglang','wechat_huanghao','wechat_caiyong','wechat_yj_huangzhong','wechat_zhangzhang','wechat_chendeng','wechat_taoqian','wechat_kanze','wechat_xuezong','wechat_guyong','wechat_guansuo','wechat_zumao','wechat_yj_jushou','wechat_sp_pangde','wechat_caojie','wechat_zhuling','wechat_caizhenji','wechat_guohuanghou','wechat_yanyan','wechat_liaohua','wechat_liuyao','wechat_quancong','wechat_xiahouba','wechat_sp_jiangwei','wechat_caoxiu','wechat_yuanshao','wechat_sundeng','wechat_re_xushu','wechat_caopi','wechat_caozhang','wechat_buzhi','wechat_sp_taishici','wechat_masu','wechat_caifuren','wechat_jianyong','wechat_lukang','wechat_caozhi','wechat_huangyueying','wechat_weiyan','wechat_gaoshun','wechat_sunliang','wechat_wangping','wechat_sp_caiwenji','wechat_caochong','wechat_huangzhong','wechat_xiahouyuan','wechat_pangde','wechat_sunshangxiang','wechat_xuzhu','wechat_guanyu','wechat_caocao','wechat_shenpei','wechat_jiaxu','wechat_caoren','wechat_liuqi','wechat_zhaoxiang','wechat_caiwenji','wechat_menghuo','wechat_re_yuanshu','wechat_huaxiong','wechat_xiahoushi','wechat_xushu','wechat_zhaoyun','wechat_zhangfei','wechat_machao','wechat_yangxiu','wechat_lvmeng','wechat_zhoutai','wechat_bianfuren','wechat_sunluban','wechat_wuguotai','wechat_liubiao','wechat_liuchen','wechat_luxun','wechat_pangtong','wechat_zhangxingcai','wechat_zuoci','wechat_mayunlu','wechat_ruanhui'],
 wechat_extra:['wechat_shen_zhugeliang','wechat_shen_lvmeng','wechat_shen_guanyu'],
 wechat_zhiyin:['wechat_re_xuzhu','wechat_re_yuanshao','wechat_lusu','wechat_guojia','wechat_lvbu','wechat_daqiao','wechat_xiaoqiao','wechat_re_caocao','wechat_zhugeliang','wechat_simayi','wechat_re_machao','wechat_re_huangyueying'],
 },
@@ -37245,7 +37247,7 @@ wechat_huaxiong:['male','qun',6,['wechatyaowu'],[]],
 wechat_lvmeng:['male','wu',4,['wechatkeji'],[]],
 wechat_xiahoushi:['female','shu',3,['wechatqiaoshi','wechatyanyu'],[]],
 wechat_xushu:['male','shu',3,['wechatwuyan','wechatjujian'],[]],
-wechat_zhaoyun:['male','shu',4,['wechatlongdan','wechatyajiao','wechatqinggang'],[]],
+wechat_zhaoyun:['male','shu',4,['wechatlongdan','wechatyajiao','wechatqinggang'],['tempname:re_zhaoyun','die_audio:re_zhaoyun']],
 wechat_zhangfei:['male','shu',4,['paoxiao','wechatshemao'],[]],
 wechat_machao:['male','shu',4,['mashu','wechattieji'],[]],
 wechat_yangxiu:['male','wei',3,['wechatdanlao','wechatjilei'],[]],
@@ -37280,7 +37282,7 @@ wechat_sunliang:['male','wu',3,['minikuizhu','wechatchezheng'],[]],
 wechat_gaoshun:['male','qun',4,['xianzhen','minijinjiu'],[]],
 wechat_caozhi:['male','wei',3,['wechatluoying','wechatjiushi'],[]],
 wechat_huangyueying:['female','shu',3,['wechatjizhi','wechatqicai'],[]],
-wechat_weiyan:['male','shu',4,['wechatkuanggu'],[]],
+wechat_weiyan:['male','shu',4,['wechatkuanggu','qimou'],[]],
 wechat_lukang:['male','wu',4,['drlt_qianjie','wechatjueyan','drlt_huairou'],[]],
 wechat_jianyong:['male','shu',3,['wechatqiaoshui','wechatjyzongshi'],[]],
 wechat_caifuren:['female','qun',3,['xinqieting','rexianzhou'],[]],
@@ -37325,6 +37327,8 @@ wechat_ruanhui:['female','wei',3,['wechatmingcha','wechatjingzhong'],[]],
 wechat_sp_machao:['male','qun',4,['minizhuiji','wechatshichou'],[]],
 wechat_pangdegong:['male','qun',3,['wechatpingcai','xinfu_pdgyingshi'],[]],
 wechat_guanyinping:['female','shu',3,['wechatxuehen','wechathuxiao','wechatwuji'],[]],
+wechat_jsp_huangyueying:['female','qun',3,['jiqiao','wechatlinglong'],[]],
+wechat_re_gongsunzan:['male','qun',4,['yicong','wechatqiaomeng'],['tempname:re_gongsunzan']],
 //神武将
 wechat_shen_zhugeliang:['male','shen',3,['wechatqixing','wechatjifeng','wechattianfa'],['shu']],
 wechat_shen_lvmeng:['male','shen',3,['shelie','wechatgongxin'],['wu']],
@@ -37760,6 +37764,7 @@ return lib.skill.wechatlongdan.mod.aiValue.apply(this,arguments);
 },
 locked:false,
 audio:'longdan_sha',
+audioname:['re_zhaoyun'],
 audioname2:{wechat_zhaoxiang:'fanghun'},
 enable:['chooseToUse','chooseToRespond'],
 position:'hs',
@@ -43432,6 +43437,45 @@ player.changeSkills(['new_rewusheng'],['wechatxuehen']);
 },
 derivation:'new_rewusheng',
 },
+//黄月英
+wechatlinglong:{
+mod:{
+maxHandcard(player,num){
+if(!player.hasEmptySlot(3)||!player.hasEmptySlot(4)) return;
+return num+2;
+},
+},
+audio:'linglong',
+inherit:'twsaotao',
+filter(event,player){
+return lib.skill.twsaotao.filter(event,player)&&!player.countCards('e');
+},
+ai:{
+directHit_ai:true,
+skillTagFilter(player){
+return !player.countCards('e');
+},
+},
+group:'linglong_bagua',
+},
+//公孙瓒
+wechatqiaomeng:{
+audio:'qiaomeng',
+trigger:{player:'useCardToPlayered'},
+filter(event,player){
+return event.card.name=='sha'&&get.color(event.card)=='black'&&event.target.countCards('he');
+},
+async cost(event,trigger,player){
+const target=trigger.target;
+let result=await player.discardPlayerCard(target,'he',get.prompt2('wechatqiaomeng')).set('logSkill',['wechatqiaomeng',target]).forResult();
+event.result=result;
+},
+popup:false,
+async content(event,trigger,player){
+const cards=event.cards.filter(card=>get.type(card,false)=='equip'&&get.position(card,true)=='d');
+if(cards.length) await player.gain(cards,'gain2');
+},
+},
 },
 dynamicTranslate:{
 wechatxiangzhi:function(player){
@@ -43866,6 +43910,12 @@ wechathuxiao:'虎哮',
 wechathuxiao_info:'当你使用的【杀】被【闪】响应后，你令此【杀】不计入次数限制并摸一张牌。',
 wechatwuji:'武继',
 wechatwuji_info:'觉醒技，结束阶段，若你本回合至少造成了3点伤害，则你加1点体力上限并回复1点体力，失去技能〖雪恨〗并获得技能〖武圣〗。',
+wechat_jsp_huangyueying:'SP微信黄月英',
+wechatlinglong:'玲珑',
+wechatlinglong_info:'锁定技。若你的装备区没有：防具牌，你视为装备【八卦阵】；坐骑牌，你的手牌上限+2；牌，你使用【杀】或普通锦囊牌不可被响应。',
+wechat_re_gongsunzan:'微信公孙瓒',
+wechatqiaomeng:'趫猛',
+wechatqiaomeng_info:'当你使用黑色【杀】指定目标后，你可以弃置该角色的一张牌，然后若你弃置了装备牌，则你获得之。',
 },
 };
 for(var i in WeChatkill.character){
