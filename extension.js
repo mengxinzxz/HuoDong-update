@@ -39698,7 +39698,7 @@ enable:'chooseToUse',
 hiddenCard:function(player,name){
 if(player.hasSkill('wechatmiaoji_used')) return false;
 const list=lib.skill.wechatmiaoji.list;
-return list[name]&&list[name]>=player.countMark('wechatmoulvenum');
+return list[name]&&player.countMark('wechatmoulvenum')>=list[name];
 },
 filter:function(event,player){
 if(player.hasSkill('wechatmiaoji_used')) return false;
