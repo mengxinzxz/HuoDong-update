@@ -20485,15 +20485,14 @@ minireqianxun:{
 audio:'reqianxun',
 trigger:{target:'useCardToBegin',player:'judgeBefore'},
 filter:function(event,player){
-if(!player.countCards('h')||!player.getHp()) return false;
+if(!player.countCards('h')) return false;
 if(event.name=='judge') return event.getParent().name=='phaseJudge';
 if(event.card&&get.type(event.card)=='trick') return true;
 },
 direct:true,
 content:function*(event,map){
 var player=map.player;
-var num=Math.min(player.countCards('h'),player.getHp());
-var result=yield player.chooseCard(get.prompt('minireqianxun'),'将至多'+get.cnNumber(num)+'张手牌置于武将牌上',[1,num]).set('ai',card=>1/(get.value(card)||0.5));
+var result=yield player.chooseCard(get.prompt('minireqianxun'),'将任意张手牌置于武将牌上',[1,Infinity]).set('ai',card=>1/(get.value(card)||0.5));
 if(result.bool){
 var cards=result.cards;
 player.logSkill('minireqianxun');
@@ -36356,7 +36355,7 @@ minirefanjian_info:'出牌阶段限一次，你可以声明一个手牌中有的
 miniqianxun:'谦逊',
 miniqianxun_info:'锁定技，当你成为锦囊牌的唯一目标时，你摸一张牌，然后可以交给一名其他角色一张手牌。',
 minireqianxun:'谦逊',
-minireqianxun_info:'当一张锦囊牌对你生效时，你可以将至多X张手牌置于武将牌上（X为你的体力值）。回合结束时，你获得这些牌。',
+minireqianxun_info:'当一张锦囊牌对你生效时，你可以将任意张手牌置于武将牌上。回合结束时，你获得这些牌。',
 minilianying:'连营',
 minilianying_info:'当你失去最后的手牌时，你可以摸两张牌，然后可以交给一名其他角色一张手牌。',
 minitianyi:'天义',
@@ -37316,7 +37315,7 @@ wechat_kanze:['male','wu',3,['xiashu','wechatkuanshi'],[]],
 wechat_xuezong:['male','wu',3,['minifunan','wechatjiexun'],[]],
 wechat_guyong:['male','wu',3,['wechatshenxing','bingyi'],[]],
 wechat_yj_huangzhong:['male','qun',4,['wechatshidi','spyishi','spqishe'],[]],
-wechat_caiyong:['male','qun',3,['bizhuan','wechattongbo'],[]],
+wechat_caiyong:['male','qun',3,['wechatbizhuan','wechattongbo'],[]],
 wechat_xusheng:['male','wu',4,['wechatpojun'],[]],
 wechat_yufan:['male','wu',3,['zongxuan','wechatzhiyan'],[]],
 wechat_handang:['male','wu',3,['gongji','wechatjiefan'],[]],
@@ -41414,12 +41413,11 @@ content:function(){
 player.loseHp();
 switch(get.type(cards[0],'trick',cards[0].original=='h'?player:false)){
 case 'basic':
-player.addTempSkill('xinzhanyi_basic');
-player.addMark('xinzhanyi_basic1',1,false);
+player.addTempSkill('wechatzhanyi_basic');
 break;
 case 'trick':
 player.draw(3);
-player.addTempSkill('xinzhanyi_trick');
+player.addTempSkill('wechatzhanyi_trick');
 break;
 case 'equip':
 player.addTempSkill('wechatzhanyi_equip');
@@ -41427,8 +41425,50 @@ break;
 }
 },
 subSkill:{
+    basic:{
+        inherit:'xinzhanyi_basic',
+        group:['wechatzhanyi_basic1'],
+    },
+    basic1:{
+        trigger:{
+            player:"useCard",
+        },
+        filter:function (event, player) {
+            return get.type(event.card, false) == "basic" && event.skill=='xinzhanyi_basic_backup';
+        },
+        forced:true,
+        silent:true,
+        popup:false,
+        content:function () {
+            if (!trigger.baseDamage) trigger.baseDamage = 1;
+            trigger.baseDamage ++;
+            game.log(trigger.card, "的伤害值/回复值", "#y+1");
+        },
+    },
+    trick:{
+        mod:{
+            targetInRange:function (card, player, target, now) {
+                var type = get.type(card);
+                if (type == "trick" || type == "delay") return true;
+            },
+        },
+        audio:"zhanyi",
+        trigger:{
+            player:"useCard",
+        },
+        forced:true,
+        filter:function (event) {
+            return get.type(event.card) == "trick";
+        },
+        content:function () {
+            trigger.directHit.addArray(game.players);
+        },
+    },
 equip:{
 inherit:'xinzhanyi_equip',
+filter:function (event, player) {
+    return event.card.name == "sha" && event.target.countCards("he") > 0 ;
+},
 content:function(){
 'step 0'
 player.discardPlayerCard(trigger.target,'he',2,true);
@@ -42305,12 +42345,7 @@ player.logSkill('wechatjiexun',target);
 player.addMark('wechatjiexun',1,false);
 if(num1) yield target.draw(num1);
 if(num2){
-var result2=yield target.chooseCard(event.num2,true,'he','诫训：请弃置'+get.cnNumber(event.num2)+'张牌',(card,player)=>lib.filter.cardDiscardable(card,player));
-if(result2.bool){
-var cards=target.getCards('he');
-yield target.discard(result2.cards);
-if(!result2.cards.some(card=>!cards.includes(card))&&!cards.some(card=>!result2.cards.includes(card))) player.loseHp();
-}
+target.chooseToDiscard(num2,true,'he','诫训：请弃置'+get.cnNumber(num2)+'张牌');
 }
 }
 },
@@ -42390,18 +42425,47 @@ return (!_status.currentPhase||_status.currentPhase!=arg.target)&&arg.target.has
 },
 },
 //蔡邕
+wechatbizhuan:{
+    audio:'bizhuan',
+    trigger:{
+        player:'useCard',
+        target:'useCardToTargeted',
+    },
+    filter(event,player){
+        if(event.name!='useCard'&&event.player==event.target) return false;
+        if(player.getExpansions('wechatbizhuan').length>=4) return false;
+        return get.color(event.card)=='black';
+    },
+    marktext:'书',
+    intro:{
+        name:'辟撰(书)',
+        name2:'书',
+        content:'expansion',
+        markcount:'expansion',
+    },
+    frequent:true,
+    locked:false,
+    content(){
+        player.addToExpansion(get.cards(),'gain2').gaintag.add('wechatbizhuan');
+    },
+    mod:{
+        maxHandcard(player,num){
+            return num+player.getExpansions('wechatbizhuan').length;
+        },
+    },
+},
 wechattongbo:{
 audio:'tongbo',
 trigger:{player:'phaseDrawEnd'},
 filter:function(event,player){
-return player.getExpansions('bizhuan').length>0&&player.countCards('he')>0;
+return player.getExpansions('wechatbizhuan').length>0&&player.countCards('he')>0;
 },
 direct:true,
 content:function(){
 'step 0'
 var four=false;
 var nofour=!player.hasFriend();
-var expansions=player.getExpansions('bizhuan');
+var expansions=player.getExpansions('wechatbizhuan');
 if(expansions.length==4){
 var suits=['club','spade','heart','diamond'];
 var list=player.getCards('he').concat(expansions);
@@ -42443,27 +42507,27 @@ cards.remove(cards2);
 }
 else{
 cards.sort((a,b)=>get.useful(a)-get.useful(b));
-cards2=cards.splice(0,player.getExpansions('bizhuan').length);
+cards2=cards.splice(0,player.getExpansions('wechatbizhuan').length);
 }
 return [cards2,cards];
 });
 'step 1'
 if(result.bool){
 var pushs=result.moved[0],gains=result.moved[1];
-pushs.removeArray(player.getExpansions('bizhuan'));
+pushs.removeArray(player.getExpansions('wechatbizhuan'));
 gains.removeArray(player.getCards('he'));
 if(!pushs.length||pushs.length!=gains.length){
 event.finish();
 return;
 }
 player.logSkill('wechattongbo');
-player.addToExpansion(pushs,'give',player).gaintag.add('bizhuan');
+player.addToExpansion(pushs,'give',player).gaintag.add('wechatbizhuan');
 player.gain(gains,'gain2');
 }
 'step 2'
-if(lib.suit.some(suit=>!player.getExpansions('bizhuan').some(card=>get.suit(card)==suit))) event.finish();
+if(lib.suit.some(suit=>!player.getExpansions('wechatbizhuan').some(card=>get.suit(card)==suit))) event.finish();
 'step 3'
-event.cards=player.getExpansions('bizhuan').slice();
+event.cards=player.getExpansions('wechatbizhuan').slice();
 if(event.cards.length>1) player.chooseCardButton('将所有“书”交给任意名角色',true,event.cards,[1,event.cards.length]).set('ai',()=>ui.selected.buttons.length?0:1);
 else if(event.cards.length==1) event._result={links:event.cards.slice(0),bool:true};
 else event.finish();
@@ -42487,7 +42551,7 @@ game.log(result.targets[0],'获得了'+get.cnNumber(event.togive.length)+'张','
 if(event.cards.length) event.goto(3);
 }
 },
-ai:{combo:'bizhuan'},
+ai:{combo:'wechatbizhuan'},
 },
 //小宝
 wechatpojun:{
@@ -42766,134 +42830,122 @@ result:{player:1},
 },
 //极鲁肃
 wechatlvyuan:{
-audio:'ext:活动武将/audio/skill:2',
-trigger:{player:'phaseJieshuBegin'},
-filter(event,player){
-return player.hasCard(card=>_status.connectMode||lib.filter.cardDiscardable(card,player),'h');
-},
-direct:true,
-async content(event,trigger,player){
-const colors=['red','black','none'].filter(color=>player.hasCard(card=>{
-return lib.filter.cardDiscardable(card,player)&&get.color(card)==color;
-},'h')).map(color=>color=='none'?'none2':color);
-const {result:{control}}=await player.chooseControl(colors,'cancel2').set('prompt',get.prompt2('wechatlvyuan')).set('ai',()=>{
-const player=get.event('player'),colors=get.event('controls').slice().filter(i=>i!='cancel2');
-const getNum=function(color,player){
-color=(color=='none2'?'none':color);
-return player.getCards('h',card=>lib.filter.cardDiscardable(card,player)&&get.color(card)==color).reduce((sum,card)=>{
-return sum+get.info('zhiheng').check(card);
-},0);
-};
-const color=colors.sort((a,b)=>getNum(b,player)-getNum(a,player))[0];
-return getNum(color,player)>=0?color:'cancel2';
-});
-if(control!='cancel2'){
-player.logSkill('wechatlvyuan');
-const choice=(control=='none2'?'none':control);
-const cards=player.getCards('h',card=>lib.filter.cardDiscardable(card,player)&&get.color(card)==choice);
-await player.discard(cards);
-await player.draw(cards.length);
-player.addTempSkill('wechatlvyuan_effect',{player:'phaseBegin'});
-player.markAuto('wechatlvyuan_effect',[choice]);
-}
-},
-subSkill:{
-effect:{
-charlotte:true,
-onremove:true,
-intro:{
-markcount:()=>0,
-content(storage){
-if(storage.length==1) return '失去一张非'+get.translation(storage)+'手牌时，摸一张牌';
-return '失去一张手牌时，摸一张牌';
-},
-},
-trigger:{
-player:'loseAfter',
-global:['equipAfter','addJudgeAfter','gainAfter','loseAsyncAfter','addToExpansionAfter'],
-},
-filter(event,player){
-const evt=event.getl(player),storage=player.getStorage('wechatlvyuan_effect');
-return evt&&evt.player==player&&evt.hs&&evt.hs.some(card=>storage.length!=1||get.color(card,player)!=storage[0]);
-},
-forced:true,
-content(){
-const evt=trigger.getl(player),storage=player.getStorage('wechatlvyuan_effect');
-player.draw(evt.hs.filter(card=>storage.length!=1||get.color(card,player)!=storage[0]).length);
-},
-},
-},
+    audio:'ext:活动武将/audio/skill:2',
+    trigger:{player:'phaseJieshuBegin'},
+    filter(event,player){
+        return player.hasCard(card=>_status.connectMode||lib.filter.cardDiscardable(card,player),'he');
+    },
+    async cost(event,trigger,player){
+        event.result=await player.chooseToDiscard('he',[1,Infinity]).set('ai',card=>{
+            const player=get.player();
+            const list=ui.selected.cards.map(i=>get.color(i,player));
+            if(ui.selected.cards.length>3) return 0;
+            if(list.includes(get.color(card,player))) return 7-get.value(card);
+            return -get.value(card);
+        }).forResult();
+    },
+    async content(event,trigger,player){
+        const cards=event.cards,colors=cards.map(card=>get.color(card,player)).toUniqued().length;
+        await player.draw(cards.length);
+        if(colors.length!=1||cards.length<=1) return;
+        player.addTempSkill('wechatlvyuan_effect',{player:'phaseBegin'});
+        player.markAuto('wechatlvyuan_effect',[colors[0]]);
+    },
+    subSkill:{
+        effect:{
+            charlotte:true,
+            onremove:true,
+            intro:{
+                markcount:()=>0,
+                content(storage){
+                    if(storage.length==1) return '失去一张非'+get.translation(storage)+'牌时，摸一张牌';
+                    return '失去一张牌时，摸一张牌';
+                },
+            },
+            trigger:{
+                player:'loseAfter',
+                global:['equipAfter','addJudgeAfter','gainAfter','loseAsyncAfter','addToExpansionAfter'],
+            },
+            filter(event,player){
+                const evt=event.getl(player),storage=player.getStorage('wechatlvyuan_effect');
+                return evt&&evt.player==player&&evt.cards2&&evt.cards2.some(card=>storage.length!=1||get.color(card,player)!=storage[0]);
+            },
+            forced:true,
+            content(){
+                const evt=trigger.getl(player),storage=player.getStorage('wechatlvyuan_effect');
+                player.draw(evt.cards2.filter(card=>storage.length!=1||get.color(card,player)!=storage[0]).length);
+            },
+        }
+    }
 },
 wechathezong:{
-audio:'ext:活动武将/audio/skill:2',
-trigger:{global:'roundStart'},
-filter(event,player){
-return game.countPlayer()>1;
-},
-direct:true,
-async content(event,trigger,player){
-const {result:{bool,targets}}=await player.chooseTarget(get.prompt2('wechathezong'),lib.filter.notMe).set('ai',target=>{
-const player=get.event('player'),att=get.attitude(player,target);
-return get.sgn(att)*(target.countCards('h')+1);
-});
-if(bool){
-const target=targets[0];
-player.logSkill('wechathezong',target);
-player.addTempSkill('wechathezong_effect','roundStart');
-player.markAuto('wechathezong_effect',[target]);
-}
-},
-subSkill:{
-effect:{
-charlotte:true,
-onremove:true,
-intro:{content:'已与$组成合纵关系'},
-audio:'wechathezong',
-trigger:{global:['useCardAfter','useCardToTarget']},
-filter(event,player,name){
-if(event.card.name!='sha'||!event.targets||event.targets.length!=1) return false;
-const list=[player].concat(player.getStorage('wechathezong_effect'));
-if(name=='useCardAfter') return list.includes(event.player)&&!list.includes(event.targets[0]);
-return list.includes(event.target)&&!list.includes(event.player);
-},
-logTarget(event,player,name){
-const list=[player].concat(player.getStorage('wechathezong_effect'));
-return (name=='useCardAfter'?event.player:event.target)==player?list.filter(i=>i!=player):[player];
-},
-forced:true,
-async content(event,trigger,player){
-const name=event.triggername,aim=(name=='useCardAfter'?trigger.targets[0]:trigger.target);
-const targets=get.info('wechathezong').subSkill.effect.logTarget(trigger,player,name).sortBySeat();
-for(const target of targets){
-if(name=='useCardAfter'){
-let {result:{bool}}=await target.chooseToUse(function(card,player,event){
-if(get.name(card)!='sha') return false;
-return lib.filter.filterCard.apply(this,arguments);//使用apply不能用箭头函数
-},'合纵：对'+get.translation(aim)+'使用一张【杀】，或弃置一张牌').set('filterTarget',function(card,player,target){
-if(target!=get.event('sourcex')&&!ui.selected.targets.includes(get.event('sourcex'))) return false;
-return lib.filter.filterTarget.apply(this,arguments);
-}).set('sourcex',aim).set('targetRequired',true).set('complexSelect',true);
-if(!bool) await target.chooseToDiscard('he',true);
-}
-else{
-let {result:{bool,cards}}=await target.chooseCard('合纵：交给'+get.translation(aim)+'一张【闪】，或成为'+get.translation(trigger.card)+'的额外目标',(card,player)=>{
-return get.name(card)=='shan';
-}).set('ai',card=>{
-const player=get.event('player'),aim=get.event('aim'),trigger=get.event().getTrigger();
-if(get.attitude(player,aim)<=0||get.effect(aim,trigger.card,trigger.player,player)>0) return -1;
-return 1+Math.random();
-}).set('aim',aim);
-if(bool) await target.give(cards,aim);
-else{
-trigger.getParent().targets.add(target);
-trigger.getParent().triggeredTargets2.push(target);
-game.log(target,'成为了',trigger.card,'的额外目标');
-}
-}
-}
-},
-},
-},
+    audio:'ext:活动武将/audio/skill:2',
+    trigger:{global:'roundStart'},
+    filter(event,player){
+        return game.countPlayer()>1;
+    }, 
+    async cost(event,trigger,player){
+        event.result=await player.chooseTarget(get.prompt2('wechathezong'),2).set('ai',target=>{
+            const player=get.event('player'),att=get.attitude(player,target);
+            return get.sgn(att)*(target.countCards('h')+1);
+        }).forResult();
+    },
+    async content(event,trigger,player){
+        const targets=event.targets.sortBySeat();
+        targets[0].addSkill('wechathezong_effect','roundStart');
+        targets[0].markAuto('wechathezong_effect',[targets[1]]);
+    },
+    subSkill:{
+        effect:{
+            charlotte:true,
+            onremove:true,
+            intro:{content:'已与$组成合纵关系'},
+            audio:'wechathezong', 
+            trigger:{global:['useCardAfter','useCardToTarget']},
+            filter(event,player,name){
+                if(event.card.name!='sha'||!event.targets||event.targets.length!=1) return false;
+                const list=[player].concat(player.getStorage('wechathezong_effect'));
+                if(name=='useCardAfter') return list.includes(event.player)&&!list.includes(event.targets[0]);
+                return list.includes(event.target)&&!list.includes(event.player);
+            },
+            logTarget(event,player,name){
+                const list=[player].concat(player.getStorage('wechathezong_effect'));
+                return (name=='useCardAfter'?event.player:event.target)==player?list.filter(i=>i!=player):[player];
+            },
+            forced:true,
+            async content(event,trigger,player){
+                const name=event.triggername,aim=(name=='useCardAfter'?trigger.targets[0]:trigger.target);
+                const targets=get.info('wechathezong').subSkill.effect.logTarget(trigger,player,name).sortBySeat();
+                for(const target of targets){
+                    if(name=='useCardAfter'){
+                        let {result:{bool}}=await target.chooseToUse(function(card,player,event){
+                            if(get.name(card)!='sha') return false;
+                            return lib.filter.filterCard.apply(this,arguments);//使用apply不能用箭头函数
+                        },'合纵：对'+get.translation(aim)+'使用一张【杀】，或交给合纵角色一张牌').set('filterTarget',function(card,player,target){
+                            if(target!=get.event('sourcex')&&!ui.selected.targets.includes(get.event('sourcex'))) return false;
+                            return lib.filter.filterTarget.apply(this,arguments);
+                        }).set('sourcex',aim).set('targetRequired',true).set('complexSelect',true);
+                        if(!bool&&target.countCards('he')) await target.chooseToGive('he',true,player);
+                    }
+                    else{
+                        let {result:{bool,cards}}=await target.chooseCard('合纵：交给'+get.translation(aim)+'一张【闪】，或成为'+get.translation(trigger.card)+'的额外目标',(card,player)=>{
+                            return get.name(card)=='shan';
+                        }).set('ai',card=>{
+                            const player=get.event('player'),aim=get.event('aim'),trigger=get.event().getTrigger();
+                            if(get.attitude(player,aim)<=0||get.effect(aim,trigger.card,trigger.player,player)>0) return -1;
+                            return 1+Math.random();
+                        }).set('aim',aim);
+                            if(bool) await target.give(cards,aim);
+                        else{
+                            trigger.getParent().targets.add(target);
+                            trigger.getParent().triggeredTargets2.push(target);
+                            game.log(target,'成为了',trigger.card,'的额外目标');
+                        }
+                    }
+                }
+            }
+        }
+    }
 },
 //极袁绍
 wechathongtu:{
@@ -43786,7 +43838,7 @@ wechattianyin:'天音',
 wechattianyin_info:'结束阶段，你从牌堆中随机获得你本回合未使用过类型的牌各一张。然后若你未获得牌，你可以弃置一名其他角色的一张牌。',
 wechat_zhuling:'微信朱灵',
 wechatzhanyi:'战意',
-wechatzhanyi_info:'出牌阶段限一次，你可以弃置一张牌并失去1点体力，然后根据你弃置的牌获得以下效果直到回合结束：基本牌，你可以将一张基本牌当作【杀】、【酒】或【桃】使用，且你本回合第一次以此法使用的牌的回复值/伤害值+1；锦囊牌，摸三张牌且你使用的牌不能被【无懈可击】响应；装备牌，当你使用【杀】指定唯一目标后，你弃置其两张牌，然后你获得其中的一张牌。',
+wechatzhanyi_info:'出牌阶段限一次，你可以弃置一张牌并失去1点体力，然后根据你弃置的牌获得以下效果直到回合结束：基本牌，你可以将一张基本牌当作【杀】、【酒】或【桃】使用，且你本回合以此法使用的牌的回复值/伤害值+1；锦囊牌，摸三张牌且你使用的锦囊牌无距离限制且不能被响应；装备牌，当你使用【杀】指定目标后，你弃置其两张牌，然后你获得其中的一张牌。',
 wechat_caojie:'微信曹节',
 wechatshouxi:'守玺',
 wechatshouxi_info:'当你成为【杀】的目标后，你可声明一种牌的类别，使用者须选择一项：①弃置一张你声明的类别的牌；②令此【杀】对你无效。',
@@ -43847,7 +43899,7 @@ wechatkuanshi:'宽释',
 wechatkuanshi_info:'结束阶段，你可以选择一名角色。直到你的下回合开始，该角色于一个回合内非第一次受到伤害时，防止此伤害。',
 wechat_xuezong:'微信薛综',
 wechatjiexun:'诫训',
-wechatjiexun_info:'结束阶段，你可令一名其他角色摸等同于场上方块牌数的牌，然后弃置X张牌（X为此前该技能发动过的次数），若其因此法弃置了所有牌，你失去1点体力。',
+wechatjiexun_info:'结束阶段，你可令一名其他角色摸等同于场上方块牌数的牌，然后弃置X张牌（X为此前该技能发动过的次数）。',
 wechat_guyong:'微信顾雍',
 wechatshenxing:'慎行',
 wechatshenxing_info:'出牌阶段，你可以弃置X张牌，然后摸一张牌（X为你本阶段发动过〖慎行〗的次数）。',
@@ -43855,6 +43907,9 @@ wechat_yj_huangzhong:'微信☆黄忠',
 wechatshidi:'势敌',
 wechatshidi_info:'锁定技。①你的回合内，你至其他角色的距离-1，且你使用的黑色【杀】不可被响应。②你的回合外，其他角色至你的距离+1，且你不可响应红色【杀】。',
 wechat_caiyong:'微信蔡邕',
+wechatbizhuan:'辟撰',
+wechatbizhuan_bg:'书',
+wechatbizhuan_info:'①当你使用黑色牌时，或成为其他角色使用黑色牌的目标后，你可以将牌堆顶的一张牌置于武将牌上，称为“书”（你至多拥有四张“书”）。②你的手牌上限+X（X为“书”数）。',
 wechattongbo:'通博',
 wechattongbo_info:'摸牌阶段摸牌后，你可以用任意张牌替换等量的“书”，然后若你的“书”包含四种花色，你将所有“书”任意分配给任意角色。',
 wechat_xusheng:'微信徐盛',
@@ -43879,9 +43934,9 @@ wechathuaiyi:'怀异',
 wechathuaiyi_info:'出牌阶段限一次，你可以展示所有手牌并弃置一种颜色的所有手牌，然后你可以获得至多等同于你弃置牌数的角色的各一张牌。',
 wechat_lusu:'极鲁肃',
 wechatlvyuan:'虑远',
-wechatlvyuan_info:'结束阶段，你可以弃置一种颜色的所有手牌并摸等量的牌。若如此做，直到你的下个回合开始，当你失去此颜色外的一张手牌时，你摸一张牌。',
+wechatlvyuan_info:'结束阶段，你可以弃置任意张牌并摸等量的牌。若你弃置的牌数大于1，且颜色相同，则直到你的下个回合开始，当你失去与弃置牌颜色不同的牌时，你摸一张牌。',
 wechathezong:'合纵',
-wechathezong_info:'一轮游戏开始时，你可以选择一名其他角色。若如此做，直到下一轮游戏开始：①当你/其使用指定除你们外的唯一目标的【杀】结算完毕后，除非其/你对相同目标使用一张【杀】，否则其/你弃置一张牌；②当你/其成为指定除你们中的唯一目标的【杀】时，除非其/你交给当你/其一张【闪】，否则其/你成为此牌的额外目标。',
+wechathezong_info:'一轮游戏开始时，你可以选择两名角色。若如此做，直到下一轮游戏开始：①当这些角色使用指定除对方外的唯一目标的【杀】结算完毕后，除非另一名角色对相同目标使用一张【杀】，否则交给其一张牌；②当这些角色成为使用者不为对方的唯一目标的【杀】时，除非另一名角色交给其一张【闪】，否则其也成为此牌的额外目标。',
 wechat_re_yuanshao:'极袁绍',
 wechathongtu:'尊北',
 wechathongtu_info:'出牌阶段限一次，你可以与所有其他角色进行共同拼点。赢的角色视为使用一张【万箭齐发】，且此牌结算完毕后，你摸受到过此牌造成的伤害的角色数的牌；若不存在赢的角色，则此技能视为未发动过。',
