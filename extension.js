@@ -37257,7 +37257,7 @@ wechat_sunluban:['female','wu',3,['wechatchanhui','wechatjiaojin'],['die_audio:x
 wechat_wuguotai:['female','wu',3,['wechatganlu','buyi'],[]],
 wechat_liubiao:['male','qun',3,['wechatrezishou','wechatzongshi'],[]],
 wechat_liuchen:['male','shu',4,['zhanjue','wechatqinwang'],[]],
-wechat_luxun:['male','wu',3,['wechatreqianxun','lianying'],[]],
+wechat_luxun:['male','wu',3,['wechatreqianxun','relianying'],[]],
 wechat_pangtong:['male','shu',3,['lianhuan','wechatniepan','wechathuzhu'],[]],
 wechat_zhangxingcai:['female','shu',3,['wechatshenxian','wechatqiangwu'],[]],
 wechat_zuoci:['male','qun',3,['wechatyigui','wechatshendao'],[]],
