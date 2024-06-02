@@ -20485,14 +20485,15 @@ minireqianxun:{
 audio:'reqianxun',
 trigger:{target:'useCardToBegin',player:'judgeBefore'},
 filter:function(event,player){
-if(!player.countCards('h')) return false;
+if(!player.countCards('h')||!player.getHp()) return false;
 if(event.name=='judge') return event.getParent().name=='phaseJudge';
 if(event.card&&get.type(event.card)=='trick') return true;
 },
 direct:true,
 content:function*(event,map){
 var player=map.player;
-var result=yield player.chooseCard(get.prompt('minireqianxun'),'将任意张手牌置于武将牌上',[1,Infinity]).set('ai',card=>1/(get.value(card)||0.5));
+var num=Math.min(player.countCards('h'),player.getHp());
+var result=yield player.chooseCard(get.prompt('minireqianxun'),'将至多'+get.cnNumber(num)+'张手牌置于武将牌上',[1,num]).set('ai',card=>1/(get.value(card)||0.5));
 if(result.bool){
 var cards=result.cards;
 player.logSkill('minireqianxun');
@@ -36355,7 +36356,7 @@ minirefanjian_info:'出牌阶段限一次，你可以声明一个手牌中有的
 miniqianxun:'谦逊',
 miniqianxun_info:'锁定技，当你成为锦囊牌的唯一目标时，你摸一张牌，然后可以交给一名其他角色一张手牌。',
 minireqianxun:'谦逊',
-minireqianxun_info:'当一张锦囊牌对你生效时，你可以将任意张手牌置于武将牌上。回合结束时，你获得这些牌。',
+minireqianxun_info:'当一张锦囊牌对你生效时，你可以将至多X张手牌置于武将牌上（X为你的体力值）。回合结束时，你获得这些牌。',
 minilianying:'连营',
 minilianying_info:'当你失去最后的手牌时，你可以摸两张牌，然后可以交给一名其他角色一张手牌。',
 minitianyi:'天义',
@@ -37256,7 +37257,7 @@ wechat_sunluban:['female','wu',3,['wechatchanhui','wechatjiaojin'],['die_audio:x
 wechat_wuguotai:['female','wu',3,['wechatganlu','buyi'],[]],
 wechat_liubiao:['male','qun',3,['wechatrezishou','wechatzongshi'],[]],
 wechat_liuchen:['male','shu',4,['zhanjue','wechatqinwang'],[]],
-wechat_luxun:['male','wu',3,['wechatqianxun','lianying'],[]],
+wechat_luxun:['male','wu',3,['wechatreqianxun','relianying'],[]],
 wechat_pangtong:['male','shu',3,['lianhuan','wechatniepan','wechathuzhu'],[]],
 wechat_zhangxingcai:['female','shu',3,['wechatshenxian','wechatqiangwu'],[]],
 wechat_zuoci:['male','qun',3,['wechatyigui','wechatshendao'],[]],
@@ -38630,6 +38631,36 @@ result:{
 player:1,
 },
 },
+},
+wechatreqianxun:{
+    audio:'reqianxun',
+    inherit:'reqianxun',
+    async cost(event,trigger,player){
+        event.result=await player.chooseCard(get.prompt(event.name),'将任意张手牌置于武将牌上',[1,Infinity]).set('ai',card=>1/(get.value(card)||0.5)).forResult();
+    },
+    async content(event,trigger,player){
+        player.addToExpansion(event.cards,'giveAuto',player).gaintag.add(event.name+'2');
+        player.addSkill(event.name+'2');
+    },
+},
+wechatreqianxun2:{
+    charlotte:true,
+    audio:'reqianxun',
+    trigger:{global:'phaseEnd'},
+    forced:true,
+    content:function(){
+        var cards=player.getExpansions('wechatreqianxun2');
+        if(cards.length) player.gain(cards,'draw');
+        player.removeSkill('wechatreqianxun2');
+    },
+    intro:{
+        mark:function(dialog,storage,player){
+            var cards=player.getExpansions('wechatreqianxun2');
+            if(player.isUnderControl(true)) dialog.addAuto(cards);
+            else return '共有'+get.cnNumber(cards.length)+'张牌';
+        },
+        markcount:'expansion',
+    },
 },
 wechatniepan:{
 audio:'niepan',
@@ -43644,6 +43675,8 @@ wechatqinwang_info:'当你需要打出【杀】时，你可以选择一名其他
 wechat_luxun:'微信陆逊',
 wechatqianxun:'谦逊',
 wechatqianxun_info:'每名角色的回合限一次，若你的手牌数为1，你可以将所有手牌当作一张单体非延时锦囊牌使用。',
+wechatreqianxun:'谦逊',
+wechatreqianxun_info:'每当一张延时类锦囊牌或其他角色使用的普通锦囊牌生效时，若你是此牌的唯一目标，你可以将任意张手牌置于你的武将牌上，若如此做，此回合结束时，你获得你武将牌上的所有牌。',
 wechat_pangtong:'微信庞统',
 wechatniepan:'涅槃',
 wechatniepan_info:'限定技，当你处于濒死状态时，你可以弃置区域内的所有牌，复原武将牌，摸三张牌并将体力值回复至3，然后本局游戏你造成的伤害均视为火属性。',
