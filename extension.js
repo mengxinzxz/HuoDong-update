@@ -919,11 +919,13 @@ window.rkbg.innerHTML = '仁' + '<b><font color=\"#FF5500\">' + _status.renku.le
 }
 
 //特殊势力变更
+//特殊×出生√
 if(lib.config.extension_活动武将_HD_yrnsm){
 game.HDaddCharacter('chengjichengcui',['male','wei',6,['oltousui','olchuming'],[]],'yingbian');
 game.HDaddCharacter('clan_wuqiao',['male','qun',4,['clanqiajue','clanmuyin'],['clan:陈留吴氏','ext:活动武将/image/character/clan_wuqiao.jpg']],'clan');
 game.HDaddCharacter('wangyan',['male','qun',3,['yangkuang','cihuang','sanku'],['ext:活动武将/image/character/wangyan.jpg']],'sp');
 game.HDaddCharacter('clan_wanglun',['male','wei',3,['clanqiuxin','clanjianyuan','clanzhongliu'],['clan:太原王氏','ext:活动武将/image/character/clan_wanglun.jpg']],'clan');
+game.HDaddCharacter('ol_peixiu',['male','wei',3,['olmaozhu','oljinlan'],['ext:活动武将/image/character/ol_peixiu.jpg']],'sp');
 }
 
 //precGuoZhan(分界线，便于我搜过来)
