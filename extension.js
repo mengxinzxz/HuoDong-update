@@ -1282,7 +1282,7 @@ addRank(rank);
 if(lib.config.extension_活动武将_HD_REname){
 var list=Object.keys(lib.translate);
 var list2=['jsrg_zhenji','wolong_card','pcaudio_wolong_card'];//不修改名称的ID白名单
-var list3=['卧龙凤雏'];//不修改名称的translate白名单
+var list3=['卧龙凤雏','祭风卧龙'];//不修改名称的translate白名单
 [['张机','张仲景'],['蔡琰','蔡文姬'],['卧龙','卧龙诸葛'],
 ['严虎','严白虎'],['甄宓','甄姬'],['伏寿','伏皇后'],
 ['吉本','吉平']].forEach(name=>{
@@ -1592,7 +1592,6 @@ lib.characterSort.mobile.bilibili_buchong_mobile=['old_zhaoxiang','ol_maliang','
 game.HDaddCharacter('old_zhangqiying',['female','qun',3,['xinfu_falu','olddianhua','oldzhenyi'],['ext:活动武将/image/character/old_zhangqiying.jpg']],'mobile');
 game.HDaddCharacter('jiakui',['male','wei',4,['tongqu','xinwanlan'],[]],'mobile');
 game.HDaddCharacter('yangfu',['male','wei',3,['jiebing','bolhannan'],[]],'mobile');
-game.HDaddCharacter('yj_weiyan',['male','qun','4/4/1',['mbguli','mbaosi'],[]],'mobile');
 game.HDaddCharacter('xin_caozhen',['male','wei',4,['bolsidi'],[]],'mobile');
 game.HDaddCharacter('junk_xuyou',['male','qun',3,['nzry_chenglve','junkshicai','nzry_cunmu'],[]],'mobile');
 game.HDaddCharacter('old_bulianshi',['female','wu',3,['anxu','zhuiyi'],[]],'mobile');
