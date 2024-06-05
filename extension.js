@@ -38636,7 +38636,7 @@ wechatreqianxun:{
     audio:'reqianxun',
     inherit:'reqianxun',
     async cost(event,trigger,player){
-        event.result=await player.chooseCard(get.prompt(event.name),'将任意张手牌置于武将牌上',[1,Infinity]).set('ai',card=>1/(get.value(card)||0.5)).forResult();
+        event.result=await player.chooseCard(get.prompt(event.name.slice(0,-5)),'将任意张手牌置于武将牌上',[1,Infinity]).set('ai',card=>1/(get.value(card)||0.5)).forResult();
     },
     async content(event,trigger,player){
         player.addToExpansion(event.cards,'giveAuto',player).gaintag.add(event.name+'2');
