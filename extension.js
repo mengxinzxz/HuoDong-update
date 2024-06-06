@@ -43022,7 +43022,7 @@ if(name=='useCardAfter'){
 let {result:{bool}}=await target.chooseToUse(function(card,player,event){
 if(get.name(card)!='sha') return false;
 return lib.filter.filterCard.apply(this,arguments);
-},'合纵：对'+get.translation(aim)+'使用一张【杀】，或交给合纵角色一张牌').set('filterTarget',function(card,player,target){
+},'合纵：对'+get.translation(aim)+'使用一张【杀】，或交给'+get.translation(trigger.player)+'一张牌').set('filterTarget',function(card,player,target){
 if(target!=get.event('sourcex')&&!ui.selected.targets.includes(get.event('sourcex'))) return false;
 return lib.filter.filterTarget.apply(this,arguments);
 }).set('sourcex',aim).set('targetRequired',true).set('complexSelect',true);
