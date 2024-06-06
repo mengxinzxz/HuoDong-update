@@ -42917,14 +42917,15 @@ return player.hasCard(card=>_status.connectMode||lib.filter.cardDiscardable(card
 async cost(event,trigger,player){
 event.result=await player.chooseToDiscard('he',[1,Infinity]).set('ai',card=>{
 const player=get.player();
+if(!ui.selected.cards.length) return 5-get.value(card);
 const list=ui.selected.cards.map(i=>get.color(i,player));
-if(ui.selected.cards.length>3) return 0;
 if(list.includes(get.color(card,player))) return 7-get.value(card);
 return -get.value(card);
-}).forResult();
+}).set('prompt',get.prompt2('wechatlvyuan')).set('logSkill','wechatlvyuan').forResult();
 },
+popup:false,
 async content(event,trigger,player){
-const cards=event.cards,colors=cards.map(card=>get.color(card,player)).toUniqued().length;
+const cards=event.cards,colors=cards.map(card=>get.color(card,player)).toUniqued();
 await player.draw(cards.length);
 if(colors.length!=1||cards.length<=1) return;
 player.addTempSkill('wechatlvyuan_effect',{player:'phaseBegin'});
@@ -42971,14 +42972,33 @@ return get.sgn(att)*(target.countCards('h')+1);
 },
 async content(event,trigger,player){
 const targets=event.targets.sortBySeat();
-targets[0].addSkill('wechathezong_effect','roundStart');
+for(let i=0;i<targets.length;i++){
+const target=targets[i],friend=targets[1-i];
+const skill='wechathezong_mark_'+friend.playerid;
+if(!lib.skill[skill]){
+game.broadcastAll(skill=>{
+lib.skill[skill]={charlotte:true};
+lib.translate[skill]='合纵';
+},skill);
+}
+target.addSkill(skill);
+target.markSkillCharacter(skill,friend,'合纵','已与'+get.translation(friend)+'组成合纵关系');
+targets[0].addTempSkill('wechathezong_effect','roundStart');
 targets[0].markAuto('wechathezong_effect',[targets[1]]);
+}
 },
 subSkill:{
+mark:{charlotte:true,intro:{onunmark:true}},
 effect:{
 charlotte:true,
-onremove:true,
-intro:{content:'已与$组成合纵关系'},
+onremove(player,skill){
+const targets=[player].concat(player.getStorage(skill));
+delete player.storage[skill];
+for(const i of targets){
+const skills=i.skills.slice().filter(hezong=>hezong.startsWith('wechathezong_mark_'));
+if(skills.length) i.removeSkill(skills);
+}
+},
 audio:'wechathezong', 
 trigger:{global:['useCardAfter','useCardToTarget']},
 filter(event,player,name){
@@ -42987,14 +43007,16 @@ const list=[player].concat(player.getStorage('wechathezong_effect'));
 if(name=='useCardAfter') return event.getParent(2).name!='wechathezong_effect'&&list.includes(event.player)&&!list.includes(event.targets[0])&&event.targets.length==1&&event.targets[0].isIn();
 return list.includes(event.target)&&!list.includes(event.player);
 },
-logTarget(event,player,name){
+getTarget(event,player,name){
 const list=[player].concat(player.getStorage('wechathezong_effect'));
 return (name=='useCardAfter'?event.player:event.target)==player?list.filter(i=>i!=player):[player];
 },
 forced:true,
+popup:false,
 async content(event,trigger,player){
 const name=event.triggername,aim=(name=='useCardAfter'?trigger.targets[0]:trigger.target);
-const targets=get.info('wechathezong').subSkill.effect.logTarget(trigger,player,name).sortBySeat();
+const targets=get.info('wechathezong').subSkill.effect.getTarget(trigger,player,name).sortBySeat();
+trigger[name=='useCardAfter'?'player':'target'].logSkill('wechathezong_effect',targets);
 for(const target of targets){
 if(name=='useCardAfter'){
 let {result:{bool}}=await target.chooseToUse(function(card,player,event){
