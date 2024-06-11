@@ -42,6 +42,7 @@ var HuoDong_update=[
 '/setPlayer/',
 '整合@xizifu 的Pull request',
 '整合Fire.win的素材',
+'废案孙登，废案程普技能修复',
 '添加欢杀武将：神陆逊，吕岱；修改欢杀武将：甄姬',
 '添加微信武将：SP黄月英、公孙瓒；修改微信武将：赵云、蔡邕、极鲁肃、薛综、朱灵；糅合微信标界魏延',
 'To be continued...',
@@ -50,7 +51,7 @@ var HuoDong_update=[
 var HuoDong_players=[
 'Mbaby_shen_luxun','Mbaby_zhenji','wechat_jsp_huangyueying','wechat_re_gongsunzan',
 'wechat_weiyan','wechat_zhaoyun','wechat_caiyong','wechat_lusu','wechat_xuezong',
-'wechat_zhuling','Mbaby_lvdai'
+'wechat_zhuling','Mbaby_lvdai','bfake_sundeng','bfake_chengpu'
 ];
 //加载
 var dialog=ui.create.dialog(
@@ -1669,8 +1670,8 @@ lib.characterSort.diy.diy_trashbin.addArray(['bol_zhangzhongjing','bol_sp_huaxin
 game.HDdeleteCharacter('ol_guohuai');
 game.HDaddCharacter('bfake_yangfu',['male','wei',4,['old_jiebing','old_kuzhan'],['ext:活动武将/image/character/bfake_yangfu.jpg']],'diy');
 game.HDaddCharacter('bfake_zuoci',['male','qun',3,['BThuashen','BTxinsheng'],['ext:活动武将/image/character/bfake_zuoci.jpg']],'diy');
-game.HDaddCharacter('bfake_chengpu',['male','wu',4,['bolkuangbi'],['ext:活动武将/image/character/bfake_sundeng.jpg']],'diy');
-game.HDaddCharacter('bfake_sundeng',['male','wei',4,['old_jiebing','old_kuzhan'],['ext:活动武将/image/character/bfake_sundeng.jpg']],'diy');
+game.HDaddCharacter('bfake_chengpu',['male','wu',4,['bollihuo','bolchunlao'],['ext:活动武将/image/character/bfake_chengpu.jpg']],'diy');
+game.HDaddCharacter('bfake_sundeng',['male','wu',4,['bolkuangbi'],['ext:活动武将/image/character/bfake_sundeng.jpg']],'diy');
 game.HDaddCharacter('old_shen_sunquan',['male','shen',4,['shen_sunquan_skill'],['wu','ext:活动武将/image/character/old_shen_sunquan.jpg']],'diy');
 game.HDaddCharacter('old_shen_ganning',['male','shen',1,['old_jieying','old_tongling'],['wu','ext:活动武将/image/character/old_shen_ganning.jpg']],'diy');
 game.HDaddCharacter('bfake_jiananfeng',['female','jin',8,['bolduliao','bolhuidu','bolfushou'],['ext:活动武将/image/character/bfake_jiananfeng.jpg']],'diy');
