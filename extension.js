@@ -49042,7 +49042,8 @@ image:'ext:活动武将/image/card/huashen_unknown.jpg'
 },
 //吴起兵法
 bol_wuqibingfa:{
-fullimage:true,
+cardimage:'taigongyinfu',
+fullskin:true,
 type:'equip',
 subtype:'equip5',
 loseDelay:false,
@@ -49051,7 +49052,7 @@ card.fix();
 card.remove();
 card.destroyed=true;
 game.log(card,'被销毁了');
-player.addTempSkill('bol_wuqibingfax');
+player.addTempSkill('bol_wuqibingfa');
 },
 skills:[],
 ai:{
@@ -58101,7 +58102,7 @@ await player.removeSkills(player.getStockSkills(false,true)[0]);
 },
 derivation:'bol_wuqibingfa',
 },
-bol_wuqibingfax:{
+bol_wuqibingfa:{
 charlotte:true,
 equipSkill:true,
 trigger:{
@@ -58109,20 +58110,20 @@ player:'loseAfter',
 global:['equipAfter','addJudgeAfter','gainAfter','loseAsyncAfter','addToExpansionAfter'],
 },
 filter(event,player){
-if(!lib.skill.bol_wuqibingfax.countSkill(player)) return false;
+if(!lib.skill.bol_wuqibingfa.countSkill(player)) return false;
 const evt=event.getl(player);
 return evt&&evt.es.some(card=>card.name=='bol_wuqibingfa');
 },
 forced:true,
 async content(event,trigger,player){
-const num=Math.min(game.countPlayer(),lib.skill.bol_wuqibingfax.countSkill(player));
+const num=Math.min(game.countPlayer(),lib.skill.bol_wuqibingfa.countSkill(player));
 const {result:{bool,targets}}=await player.chooseTarget('请选择【吴起兵法】的目标','令'+get.cnNumber(num)+'名角色于本回合结束时将一张手牌当作【杀】使用',num).set('ai',target=>{
 const player=get.event().player,sha=new lib.element.VCard({name:'sha'});
 return get.attitude(player,target)*target.getUseValue(sha,true);
 });
 if(bool){
 player.line(targets);
-for(const i of targets.slice().sortBySeat()) i.addTempSkill('bol_wuqibingfax_sha');
+for(const i of targets.slice().sortBySeat()) i.addTempSkill('bol_wuqibingfa_sha');
 }
 },
 countSkill(player){
@@ -58144,12 +58145,12 @@ const next=player.chooseToUse(true);
 next.set('openskilldialog','###吴起兵法###将一张牌当作【杀】使用');
 next.set('norestore',true);
 next.set('addCount',false);
-next.set('_backupevent','bol_wuqibingfax_backup');
+next.set('_backupevent','bol_wuqibingfa_backup');
 next.set('custom',{
 add:{},
 replace:{window:function(){}}
 });
-next.backup('bol_wuqibingfax_backup');
+next.backup('bol_wuqibingfa_backup');
 },
 },
 backup:{
