@@ -58074,8 +58074,9 @@ if(result.bool){
 const choose=result.links[0],vcard=new lib.element.VCard({name:get.name(choose,player),nature:get.nature(choose,player),isCard:true});
 if(player.hasUseTarget(vcard,true)){
 const result2=await player.chooseUseTarget(vcard,false,'###纺残###视为使用'+get.translation(vcard)+'，或获得'+get.translation(choose)).forResult();
-if(!result2.bool) await player.gain(choose,'gain2');
+if(result2.bool) return;
 }
+await player.gain(choose,'gain2');
 }
 },
 getCards(){
@@ -58635,8 +58636,18 @@ player.line(result.targets);
 await result.targets[0].damage(1,'thunder');
 }
 },
+global:'boltianjie_ai',
 group:['boltianjie_judge'/*,'boltianjie_shandian'*/],
 subSkill:{
+ai:{
+ai:{
+effect:{
+target(card,player){
+if(card&&card.name=='shandian'&&game.hasPlayer(target=>get.attitude(player,target)>0&&target.hasSkill('boltianjie'))) return [1,2];
+},
+},
+},
+},
 judge:{
 trigger:{global:'shandianEnd'},
 filter(event,player){
