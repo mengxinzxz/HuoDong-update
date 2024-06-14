@@ -53,7 +53,7 @@ var HuoDong_players=[
 'Mbaby_shen_luxun','Mbaby_zhenji','wechat_jsp_huangyueying','wechat_re_gongsunzan',
 'wechat_weiyan','wechat_zhaoyun','wechat_caiyong','wechat_lusu','wechat_xuezong',
 'wechat_zhuling','Mbaby_lvdai','bfake_sundeng','bfake_chengpu','bfake_shen_jiaxu',
-'bfake_shen_zhangfei',
+'bfake_shen_zhangfei','bfake_shen_zhangjiao',
 ];
 //加载
 var dialog=ui.create.dialog(
@@ -1248,7 +1248,7 @@ if(!Object.keys(rank.rarity).some(rarity=>rank.rarity[rarity].includes(name))) r
 }
 for(const name of Object.keys(lib.characterPack['huodongcharacter'])){
 if(!Object.keys(rank.rarity).some(rarity=>rank.rarity[rarity].includes(name))){
-if(['Chuodong','CDanJi','CSCS','Csxydormitory'].some(pack=>lib.characterSort.huodongcharacter[pack].includes(name))) rank.rarity['legend'].push(name);
+if(['Chuodong','CDanJi','CSCS','Csxydormitory','CXuanDie'].some(pack=>lib.characterSort.huodongcharacter[pack].includes(name))) rank.rarity['legend'].push(name);
 else rank.rarity['rare'].push(name);
 }
 }
@@ -1668,7 +1668,7 @@ game.HDaddCharacter('junk_duanwei',['male','qun',4,['langmie'],[]],'old');
 game.HDaddCharacter('old_yuanji',['female','wu',3,['dcmengchi','dcjiexing'],['ext:活动武将/image/character/old_yuanji.jpg']],'old');
 
 //DIY
-lib.characterSort.diy.diy_trashbin.addArray(['bfake_shen_zhangfei','bfake_shen_jiaxu','bol_zhangzhongjing','bol_sp_huaxin','bfake_zuoci','bfake_yangfu','bfake_chengpu','bfake_sundeng','old_shen_sunquan','old_shen_ganning','bfake_jiananfeng','bfake_chengui','old_ol_xiaoqiao','old_zhanghe','old_zhugejin','oldx_zhangfei','oldx_guanyu','oldx_zhaoyun','oldx_yujin']);
+lib.characterSort.diy.diy_trashbin.addArray(['bol_zhangzhongjing','bol_sp_huaxin','bfake_zuoci','bfake_yangfu','bfake_chengpu','bfake_sundeng','old_shen_sunquan','old_shen_ganning','bfake_chengui','old_ol_xiaoqiao','old_zhanghe','old_zhugejin','oldx_zhangfei','oldx_guanyu','oldx_zhaoyun','oldx_yujin']);
 game.HDdeleteCharacter('ol_guohuai');
 game.HDaddCharacter('bfake_yangfu',['male','wei',4,['old_jiebing','old_kuzhan'],['ext:活动武将/image/character/bfake_yangfu.jpg']],'diy');
 game.HDaddCharacter('bfake_zuoci',['male','qun',3,['BThuashen','BTxinsheng'],['ext:活动武将/image/character/bfake_zuoci.jpg']],'diy');
@@ -1676,7 +1676,6 @@ game.HDaddCharacter('bfake_chengpu',['male','wu',4,['bollihuo','bolchunlao'],['e
 game.HDaddCharacter('bfake_sundeng',['male','wu',4,['bolkuangbi'],['ext:活动武将/image/character/bfake_sundeng.jpg']],'diy');
 game.HDaddCharacter('old_shen_sunquan',['male','shen',4,['shen_sunquan_skill'],['wu','ext:活动武将/image/character/old_shen_sunquan.jpg']],'diy');
 game.HDaddCharacter('old_shen_ganning',['male','shen',1,['old_jieying','old_tongling'],['wu','ext:活动武将/image/character/old_shen_ganning.jpg']],'diy');
-game.HDaddCharacter('bfake_jiananfeng',['female','jin',8,['bolduliao','bolhuidu','bolfushou'],['ext:活动武将/image/character/bfake_jiananfeng.jpg']],'diy');
 game.HDaddCharacter('bfake_chengui',['male','qun',3,['bolyingtu','bolcongshi'],['ext:活动武将/image/character/bfake_chengui.jpg']],'diy');
 if(lib.config.connect_nickname=='萌新（转型中）'){
 game.HDaddCharacter('bol_sp_huaxin',['male','wei',3,['bolyuanqing','bolshuchen','bolxiezheng'],[]],'diy');
@@ -1689,8 +1688,6 @@ game.HDaddCharacter('oldx_zhangfei',['male','shu',4,['paoxiao','bilibili_tannang
 game.HDaddCharacter('oldx_guanyu',['male','shu',4,['wusheng','bilibili_yishi'],['character:guanyu']],'diy');
 game.HDaddCharacter('oldx_zhaoyun',['male','shu',4,['longdan','yicong'],['character:zhaoyun']],'diy');
 game.HDaddCharacter('oldx_yujin',['male','wei',4,['bilibili_zhengjun'],['character:yujin']],'diy');
-game.HDaddCharacter('bfake_shen_jiaxu',['male','shen',3,['boljiandai','bolfangcan','boljuemei','bolluoshu'],['qun','character:le_shen_jiaxu']],'diy');
-game.HDaddCharacter('bfake_shen_zhangfei',['male','shen',4,['bolbaohe','bolrenhai','boltiandong'],['shu','character:shen_zhangfei']],'diy');
 
 //precS
 //技能修改
@@ -2164,8 +2161,6 @@ bol_sp_huaxin:'废案华歆',
 bol_sp_huaxin_prefix:'废案',
 bol_jsp_guanyu:'TW关羽',
 bol_jsp_guanyu_prefix:'TW',
-bfake_jiananfeng:'废案贾南风',
-bfake_jiananfeng_prefix:'废案',
 bfake_chengui:'废案陈珪',
 bfake_chengui_prefix:'废案',
 old_zhangzhongjing_prefix:'旧',
@@ -48908,6 +48903,7 @@ Csxydormitory:['sxy_shengxunyu'],
 Cothers:['bilibili_wangtao','bilibili_wangyue','bilibili_x_wangtao','bilibili_x_wangyue','bilibili_xushao','bilibili_shen_guojia','bilibili_re_xusheng','bilibili_kuangshen04','bilibili_adong','bilibili_zhangrang','bilibili_litiansuo','decade_huangwudie','bilibili_huanggai','bilibili_ekeshaoge','bilibili_guanning','bilibili_wangwang','bilibili_zhouxiaomei','diy_lvmeng'],
 CDanJi:['DJ_caiyang','DJ_pujing','DJ_huban'],
 CSCS:['biliscs_shichangshi','biliscs_zhangrang','biliscs_zhaozhong','biliscs_sunzhang','biliscs_bilan','biliscs_xiayun','biliscs_hankui','biliscs_lisong','biliscs_duangui','biliscs_guosheng','biliscs_gaowang'],
+CXuanDie:['bfake_jiananfeng','bfake_shen_zhangjiao','bfake_shen_zhangfei','bfake_shen_jiaxu'],
 },
 },
 character:{
@@ -48961,6 +48957,11 @@ biliscs_guosheng:['male','qun',1,['scsniqu'],['character:scs_guosheng']],
 biliscs_gaowang:['male','qun',1,['scsmiaoyu'],['character:scs_gaowang']],
 //NBA牢星球员宿舍
 sxy_shengxunyu:['male','mx_dom','3/Infinity',['dom_chouxiang'],[((lib.device||lib.node)?'ext:':'db:extension-')+'活动武将/image/character/bilibili_shengxunyu.jpg']],
+//蝶设堂
+bfake_jiananfeng:['female','jin',8,['bolduliao','bolhuidu','bolfushou'],[]],
+bfake_shen_jiaxu:['male','shen',3,['boljiandai','bolfangcan','boljuemei','bolluoshu'],['qun','character:le_shen_jiaxu']],
+bfake_shen_zhangfei:['male','shen',4,['bolbaohe','bolrenhai','boltiandong'],['shu','character:shen_zhangfei']],
+bfake_shen_zhangjiao:['male','shen',3,['bolyifu','boltianjie'],['qun','character:shen_zhangjiao']],
 },
 characterIntro:{
 ekeshaoge:'俄何烧戈，羌将。正始八年，陇西、南安、金城、西平诸羌饿何、烧戈、伐同、蛾遮塞等相结叛乱，攻围城邑，南招蜀兵，凉州名胡治无戴复叛应之。讨蜀护军夏侯霸督诸军屯为翅。郭淮退姜维，维遁退。进讨叛羌，斩饿何、烧戈，降服者万馀落。',
@@ -57228,9 +57229,8 @@ player.draw();
 },
 //贾南风
 bolduliao:{
-init:function(player){
-var skill='bolduliao'+player.playerid;
-lib.translate[skill]='毒獠·'+get.translation(player);
+init(player){
+if(!_status.gameDrawed) return;
 for(var target of game.players){
 if(!target.hasCard('hs')) continue;
 var history=game.getAllGlobalHistory('cardMove',function(evt){
@@ -57249,6 +57249,13 @@ target.addGaintag(target.getCard('hs',card=>evt.cards.includes(card)),skill);
 onremove:function(player){
 var skill='bolduliao'+player.playerid;
 for(var i of game.players) i.removeGaintag(skill);
+},
+initSkill(player){
+var skill='bolduliao'+player.playerid;
+game.broadcastAll(skill=>{
+lib.skill[skill]={};
+lib.translate[skill]='毒獠·'+get.translation(player);
+},skill);
 },
 getBool:function(event,player){
 if(event.name!='cardsDiscard') return event.type=='discard'&&event.player==player;
@@ -57308,6 +57315,7 @@ content:function(){
 if(trigger.name=='die') lib.skill.bolduliao.onremove(player);
 else{
 var skill='bolduliao'+player.playerid;
+if(!lib.skill[skill]) lib.skill.bolduliao.initSkill(player);
 for(var current of game.players){
 if(!trigger.getg(current).length) continue;
 var history=game.getAllGlobalHistory('cardMove',function(evt){
@@ -58360,7 +58368,7 @@ if(skills.length==1) result={control:skills[0]};
 else result=await player.chooseControl(skills).set('choiceList',skills.map(i=>{
 return '<div class="skill">【'+get.translation(lib.translate[i+'_ab']||get.translation(i).slice(0,2))+'】</div><div>'+get.skillInfoTranslation(i,player)+'</div>';
 })).set('displayIndex',false).set('prompt','人骇：选择获得一个技能').set('ai',()=>get.rand(0,1)).forResult();
-await player.addSkills(result.control);
+await player.addAdditionalSkills('bolrenhai_effect',[result.control],true);
 },
 },
 },
@@ -58404,7 +58412,7 @@ if(skills.length==1) result={control:skills[0]};
 else result=await player.chooseControl(skills).set('choiceList',skills.map(i=>{
 return '<div class="skill">【'+get.translation(lib.translate[i+'_ab']||get.translation(i).slice(0,2))+'】</div><div>'+get.skillInfoTranslation(i,player)+'</div>';
 })).set('displayIndex',false).set('prompt','人骇：选择获得一个技能').set('ai',()=>get.rand(0,1)).forResult();
-await player.addSkills(result.control);
+await player.addAdditionalSkills('bolrenhai_effect',[result.control],true);
 },
 },
 },
@@ -58448,7 +58456,10 @@ if(!Array.isArray(button.link[i])&&typeof button.link[i]=='object'&&button.link[
 }
 return false;
 }).set('ai',button=>{
-return get.event().getTrigger().num-Math.abs(get.event().getTrigger().num-button.link.num);
+const player=get.event().player,trigger=get.event().getTrigger();
+let num=trigger.num;
+if(num>1&&player.hasSkillTag('filterDamage',null,{player:trigger.player,card:trigger.card,})) num=1;
+return num-Math.abs(get.event().getTrigger().num-button.link.num);
 }).set('forced',!chooseED);
 if(bool){
 const control=links[0];
@@ -58480,7 +58491,7 @@ for(const target of game.filterPlayer()){
 const skills=(target.additionalSkills['bolrenhai_effect']||[]);
 if(skills.length){
 num+=skills.length;
-await target.removeadditionalSkills('bolrenhai_effect');
+await target.removeAdditionalSkills('bolrenhai_effect');
 target.removeSkill('bolrenhai_effect');
 }
 }
@@ -58497,6 +58508,155 @@ return player.isTurnedOver()?'翻面':'还原';
 }).forResult();
 if(result.control=='翻面') await player.turnOver();
 else lib.skill.bolrenhai.init(player,'bolrenhai',true);
+},
+},
+//神张角
+bolyifu:{
+trigger:{target:'useCardToTargeted'},
+filter(event,player){
+return event.card.storage&&event.card.storage.bolyifu;
+},
+forced:true,
+content(){
+player.draw();
+},
+global:'bolyifu_viewAs',
+subSkill:{
+viewAs_backup:{},
+viewAs:{
+onChooseToUse(event){
+if(!game.online&&!event.bolyifu){
+let list=[['锦囊','','shandian']],player=event.player,history=player.getHistory('useCard',evt=>get.type(evt.card)=='basic'||get.type(evt.card)=='trick');
+const evt=history[history.length-1];
+if(evt) list.add([get.translation(get.type(evt.card)),'',evt.card.name,evt.card.nature?evt.card.nature:undefined]);
+if(!evt||evt.card.name!='tiesuo') list.add(['锦囊','','tiesuo']);
+event.set('bolyifu',list);
+}
+},
+forceaudio:true,
+enable:'chooseToUse',
+filter(event,player){
+const list=(event.bolyifu||[]);
+if(!list.length) return false;
+return list.some(card=>player.hasCard(cardx=>get.type(cardx)=='basic'&&event.filterCard({name:card[2],nature:card[3],storage:{bolyifu:true},cards:[cardx]},player,event),'hes'));
+},
+chooseButton:{
+dialog(event,player){
+const list=event.bolyifu.filter(card=>player.hasCard(cardx=>get.type(cardx)=='basic'&&event.filterCard({name:card[2],nature:card[3],storage:{bolyifu:true},cards:[cardx]},player,event),'hes'));
+return ui.create.dialog('蚁附',[list,'vcard']);
+},
+check(button){
+if(get.event().getParent().type!='phase') return 1;
+const player=get.event('player');
+return player.getUseValue({name:button.link[2],nature:button.link[3],storage:{bolyifu:true}});
+},
+backup(links,player){
+return {
+filterCard(card){
+return get.type(card)=='basic'&&get.itemtype(card)=='card';
+},
+popname:true,
+check(card){
+return 7-get.value(card);
+},
+position:'hes',
+viewAs:{
+name:links[0][2],
+nature:links[0][3],
+storage:{bolyifu:true},
+},
+}
+},
+prompt(links,player){
+return '###蚁附###将一张基本牌当作'+(get.translation(links[0][3])||'')+'【'+get.translation(links[0][2])+'】使用';
+}
+},
+hiddenCard(player,name){
+if(!player.hasCard(card=>get.type(card)=='basic','hes')) return false;
+const history=player.getHistory('useCard',evt=>get.type(evt.card)=='basic'||get.type(evt.card)=='trick');
+const evt=history[history.length-1];
+if(evt&&evt.card.name==name) return true;
+return name=='shandian'||name=='tiesuo';
+},
+ai:{
+respondSha:true,
+respondShan:true,
+skillTagFilter(player,tag,arg){
+if(arg=='respond') return false;
+const name=(tag=='respondSha'?'sha':'shan');
+if(!lib.skill.bolyifu.subSkill.viewAs.hiddenCard(player,name)) return false;
+},
+order(item,player){
+if(player&&get.event().type=='phase'){
+let max=0;
+const names=(get.event().bolyifu||[]).map(namex=>{return {name:namex[2],nature:namex[3]}});
+if(!names.length) return 0;
+names.forEach(card=>{
+if(player.getUseValue(card)>0){
+let temp=get.order(card);
+if(temp>max) max=temp;
+}
+});
+if(max>0) max+=15;
+return max;
+}
+return 0.5;
+},
+result:{
+player(player){
+if(get.event().dying) return get.attitude(player,get.event().dying);
+return 1;
+},
+},
+},
+},
+},
+},
+boltianjie:{
+trigger:{global:'damageBegin'},
+filter(event,player){
+if(event._boltianjie) return false;
+return event.getParent().name=='shandian';
+},
+forced:true,
+async content(event,trigger,player){
+trigger.set('_boltianjie',true);
+trigger.cancel();
+const str=get.translation(trigger.player);
+const result=await player.chooseTarget('请选择【天劫】的目标','对你或'+str+'或'+str+'的上家或下家造成1点雷属性伤害',(card,player,target)=>{
+const aim=get.event().getTrigger().player;
+return [player,aim,aim.getPrevious(),aim.getNext()].includes(target);
+},true).set('ai',target=>{
+return get.damageEffect(target,get.event().player,get.event().player,'thunder');
+}).forResult();
+if(result.bool){
+player.line(result.targets);
+await result.targets[0].damage(1,'thunder');
+}
+},
+group:['boltianjie_judge'/*,'boltianjie_shandian'*/],
+subSkill:{
+judge:{
+trigger:{global:'shandianEnd'},
+filter(event,player){
+const name=event.getParent().name;
+if(name!='executeDelayCardEffect'&&name!='phaseJudge') return false;
+return event._result.card.name!='shan';
+},
+forced:true,
+logTarget:'player',
+content(){
+trigger.player.executeDelayCardEffect('shandian');
+},
+},
+shandian:{
+enable:'phaseUse',
+delay:0,
+direct:true,
+content(){
+player.executeDelayCardEffect('shandian');
+},
+},
 },
 },
 },
@@ -58577,6 +58737,7 @@ Csxydormitory:'<span style="font-family: yuanli">宿舍系列前言：</span>'+
 Cothers:'自嗨',
 CDanJi:'彩蛋·千里走单骑',
 CSCS:'彩蛋·十常侍',
+CXuanDie:'蝶设堂',
 huashen_unknown:' ',
 bilibili_zhengxuan:'郑玄',
 bilibili_zhengxuan_ab:'水果忍者',
@@ -58940,8 +59101,10 @@ bolbinglun:'病论',
 bolbinglun_info:'出牌阶段限一次，你可以失去至多3点'+get.RenWangInform()+'，令：⒈等量名角色各选择执行以下一项；⒉一名角色执行以下等量项。①将手牌数补至体力上限（至多摸五张）；②回复1点体力；③防止下一次受到的伤害直到回合开始。',
 boldanji:'单骑',
 boldanji_info:'觉醒技，准备阶段，若你的手牌数大于你的体力值且本局游戏的主公不为刘备，你减1点体力上限，然后获得〖马术〗和〖怒斩〗，且本局游戏中你每回合使用的第一张转化【杀】结算完毕后，你摸一张牌。',
+bfake_jiananfeng:'蝶设贾南风',
+bfake_jiananfeng_prefix:'蝶设',
 bolduliao:'毒獠',
-bolduliao_info:'锁定技，一名角色使用牌时，若此牌上次进入弃牌堆前在你的区域，则你令此牌无效，然后其对你造成1点伤害。',
+bolduliao_info:'锁定技，一名角色使用牌时，若此牌上次进入弃牌堆前在位于的区域，则你令此牌无效，然后其对你造成1点伤害。',
 bolhuidu:'秽妒',
 bolhuidu_info:'当你造成或受到伤害时，若伤害来源为：男性，其可以重铸任意张牌并防止此伤害；女性，你可以选择一个区域，令其重铸此区域的所有牌。',
 bolfushou:'覆手',
@@ -59015,6 +59178,12 @@ bolrenhai:'人骇',
 bolrenhai_info:'锁定技，当你对一名角色造成伤害时，其选择以下任意其可执行项（可重复选择）并减少对应序号的伤害：①进行【闪电】判定；②获得〖仇海〗或〖崩坏〗；③将本项并入邻项；④获得〖无谋〗或〖止息〗。',
 boltiandong:'天动',
 boltiandong_info:'锁定技，准备阶段，你令场上所有拥有因〖人骇〗获得技能的角色失去因〖人骇〗获得的技能，然后你随机获得牌堆中X张点数最大的牌（X为你本次移去的技能数），然后你选择一项：①将武将牌翻面；②复原〖人骇〗。',
+bfake_shen_zhangjiao:'蝶设神张角',
+bfake_shen_zhangjiao_prefix:'蝶设神',
+bolyifu:'蚁附',
+bolyifu_info:'锁定技。①一名角色可以将一张基本牌当作{天，【闪电】；地，【随机应变】；人，【铁索连环】}使用。②当你成为〖蚁附①〗转化的牌的目标后，你摸一张牌。',
+boltianjie:'天劫',
+boltianjie_info:'锁定技。①一名角色的【闪电】生效时，取消之，然后你对你或其或其上家或下家造成1点雷属性伤害。②一名角色的【闪电】判定牌生效后，若判定牌不为【闪】，则令其继续进行【闪电】判定。',
 },
 };
 for(var i in huodongcharacter.character){
