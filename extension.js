@@ -58336,7 +58336,7 @@ player.storage.bolrenhai=[
 {
 num:1,
 index:'①',
-text:'进行【闪电】判定',
+text:['进行【闪电】判定'],
 effect_1:{
 filter:()=>true,
 async content(player,source){
@@ -58347,7 +58347,7 @@ player.executeDelayCardEffect('shandian');
 {
 num:2,
 index:'②',
-text:'获得【仇海】或【崩坏】',
+text:['获得【仇海】或【崩坏】'],
 effect_2:{
 filter(player){
 return ['chouhai','benghuai'].some(skill=>!player.hasSkill(skill,null,false,false));
@@ -58367,7 +58367,7 @@ await player.addSkills(result.control);
 {
 num:3,
 index:'③',
-text:'将本项并入邻项',
+text:['将本项并入邻项'],
 effect_3:{
 filter(player,source){
 return source.storage.bolrenhai.length>1;
@@ -58378,9 +58378,9 @@ const index=source.storage.bolrenhai.indexOf(control);
 const nums=Array.from({length:source.storage.bolrenhai.length}).map((_,i)=>i).filter(num=>num==index+1||num==index-1);
 for(const num of nums){
 //source.storage.bolrenhai[num].num+=control.num;
-source.storage.bolrenhai[num].text+=('；'+control.text);
+source.storage.bolrenhai[num].text.addArray(control.text);
 for(const i in control){
-if(typeof control[i]=='object') source.storage.bolrenhai[num][i]=control[i];
+if(!Array.isArray(control[i])&&typeof control[i]=='object') source.storage.bolrenhai[num][i]=control[i];
 }
 }
 game.log(source,'将第'+get.cnNumber(index,true)+'项合并至第'+nums.map(i=>get.cnNumber(i,true))+'项');
@@ -58391,7 +58391,7 @@ source.storage.bolrenhai.remove(control);
 {
 num:4,
 index:'④',
-text:'获得【无谋】或【止息】',
+text:['获得【无谋】或【止息】'],
 effect_4:{
 filter(player){
 return ['wumou','new_zhixi'].some(skill=>!player.hasSkill(skill,null,false,false));
@@ -58428,10 +58428,10 @@ const {result:{bool,links}}=await target.chooseButton([
 '###人骇###<div class="text center">选择执行任意项并减免对应数值的伤害<br>当前剩余'+trigger.num+'点伤害</div>',
 [
 player.storage.bolrenhai.map(control=>{
-let list=[control,'减少'+control.num+'点伤害：'+control.text],noUse=true;
-const effects=Object.keys(control).filter(i=>typeof control[i]=='object');
+let list=[control,'减少'+control.num+'点伤害：'+control.text.join('、')],noUse=true;
+const effects=Object.keys(control).filter(i=>!Array.isArray(control[i])&&typeof control[i]=='object');
 for(const i in control){
-if(typeof control[i]=='object'&&control[i].filter(target,player)){
+if(!Array.isArray(control[i])&&typeof control[i]=='object'&&control[i].filter(target,player)){
 noUse=false;
 break;
 }
@@ -58444,7 +58444,7 @@ return list;
 ]).set('filterButton',button=>{
 const target=get.event().player,player=get.event().getParent().player;
 for(const i in button.link){
-if(typeof button.link[i]=='object'&&button.link[i].filter(target,player)) return true;
+if(!Array.isArray(button.link[i])&&typeof button.link[i]=='object'&&button.link[i].filter(target,player)) return true;
 }
 return false;
 }).set('ai',button=>{
@@ -58454,7 +58454,7 @@ if(bool){
 const control=links[0];
 target.popup(control.num);
 trigger.num-=control.num;
-game.log(target,'选择了','#y减少'+control.num+'点伤害：'+control.text);
+game.log(target,'选择了','#y减少'+control.num+'点伤害：'+control.text.join('、'));
 const nums=Array.from({length:4}).map((_,i)=>i+1).filter(i=>control['effect_'+i]&&control['effect_'+i].filter(target,player));
 if(!nums.length) continue;
 for(const num of nums){
@@ -58554,8 +58554,8 @@ bolrenhai(player){
 const storage=player.storage.bolrenhai;
 if(!storage) return lib.translate.bolrenhai_info;
 return '锁定技，当你对一名角色造成伤害时，其选择以下任意其可执行项（可重复选择）并减少对应序号的伤害：'+storage.reduce((str,control)=>{
-return str+(control.index+control.text+'。');
-},'').replaceAll('【','〖').replaceAll('】','〗');
+return str+(control.index+control.text.join('、')+'；');
+},'').replaceAll('【','〖').replaceAll('】','〗').slice(0,-1)+'。';
 },
 },
 translate:{
@@ -59012,7 +59012,7 @@ bfake_shen_zhangfei_prefix:'蝶设神',
 bolbaohe:'暴喝',
 bolbaohe_info:'锁定技。①你的锦囊牌均视为无次数限制的无属性【杀】。②你使用牌造成的伤害改为此牌对应的所有实体牌的牌名字数之和。',
 bolrenhai:'人骇',
-bolrenhai_info:'锁定技，当你对一名角色造成伤害时，其选择以下任意其可执行项（可重复选择）并减少对应序号的伤害：①进行【闪电】判定。②获得〖仇海〗或〖崩坏〗。③将本项并入邻项。④获得〖无谋〗或〖止息〗。',
+bolrenhai_info:'锁定技，当你对一名角色造成伤害时，其选择以下任意其可执行项（可重复选择）并减少对应序号的伤害：①进行【闪电】判定；②获得〖仇海〗或〖崩坏〗；③将本项并入邻项；④获得〖无谋〗或〖止息〗。',
 boltiandong:'天动',
 boltiandong_info:'锁定技，准备阶段，你令场上所有拥有因〖人骇〗获得技能的角色失去因〖人骇〗获得的技能，然后你随机获得牌堆中X张点数最大的牌（X为你本次移去的技能数），然后你选择一项：①将武将牌翻面；②复原〖人骇〗。',
 },
