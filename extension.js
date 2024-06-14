@@ -43,6 +43,7 @@ var HuoDong_update=[
 '整合@xizifu 的Pull request',
 '整合Fire.win的素材',
 '废案孙登，废案程普技能修复',
+'添加蝶设武将：神贾诩，神张飞',
 '添加欢杀武将：神陆逊，吕岱；修改欢杀武将：甄姬',
 '添加微信武将：SP黄月英、公孙瓒；修改微信武将：赵云、蔡邕、极鲁肃、薛综、朱灵；糅合微信标界魏延',
 'To be continued...',
@@ -51,7 +52,8 @@ var HuoDong_update=[
 var HuoDong_players=[
 'Mbaby_shen_luxun','Mbaby_zhenji','wechat_jsp_huangyueying','wechat_re_gongsunzan',
 'wechat_weiyan','wechat_zhaoyun','wechat_caiyong','wechat_lusu','wechat_xuezong',
-'wechat_zhuling','Mbaby_lvdai','bfake_sundeng','bfake_chengpu'
+'wechat_zhuling','Mbaby_lvdai','bfake_sundeng','bfake_chengpu','bfake_shen_jiaxu',
+'bfake_shen_zhangfei',
 ];
 //加载
 var dialog=ui.create.dialog(
@@ -1666,7 +1668,7 @@ game.HDaddCharacter('junk_duanwei',['male','qun',4,['langmie'],[]],'old');
 game.HDaddCharacter('old_yuanji',['female','wu',3,['dcmengchi','dcjiexing'],['ext:活动武将/image/character/old_yuanji.jpg']],'old');
 
 //DIY
-lib.characterSort.diy.diy_trashbin.addArray(['bol_zhangzhongjing','bol_sp_huaxin','bfake_zuoci','bfake_yangfu','bfake_chengpu','bfake_sundeng','old_shen_sunquan','old_shen_ganning','bfake_jiananfeng','bfake_chengui','old_ol_xiaoqiao','old_zhanghe','old_zhugejin','oldx_zhangfei','oldx_guanyu','oldx_zhaoyun','oldx_yujin']);
+lib.characterSort.diy.diy_trashbin.addArray(['bfake_shen_zhangfei','bfake_shen_jiaxu','bol_zhangzhongjing','bol_sp_huaxin','bfake_zuoci','bfake_yangfu','bfake_chengpu','bfake_sundeng','old_shen_sunquan','old_shen_ganning','bfake_jiananfeng','bfake_chengui','old_ol_xiaoqiao','old_zhanghe','old_zhugejin','oldx_zhangfei','oldx_guanyu','oldx_zhaoyun','oldx_yujin']);
 game.HDdeleteCharacter('ol_guohuai');
 game.HDaddCharacter('bfake_yangfu',['male','wei',4,['old_jiebing','old_kuzhan'],['ext:活动武将/image/character/bfake_yangfu.jpg']],'diy');
 game.HDaddCharacter('bfake_zuoci',['male','qun',3,['BThuashen','BTxinsheng'],['ext:活动武将/image/character/bfake_zuoci.jpg']],'diy');
@@ -1687,6 +1689,8 @@ game.HDaddCharacter('oldx_zhangfei',['male','shu',4,['paoxiao','bilibili_tannang
 game.HDaddCharacter('oldx_guanyu',['male','shu',4,['wusheng','bilibili_yishi'],['character:guanyu']],'diy');
 game.HDaddCharacter('oldx_zhaoyun',['male','shu',4,['longdan','yicong'],['character:zhaoyun']],'diy');
 game.HDaddCharacter('oldx_yujin',['male','wei',4,['bilibili_zhengjun'],['character:yujin']],'diy');
+game.HDaddCharacter('bfake_shen_jiaxu',['male','shen',3,['boljiandai','bolfangcan','boljuemei','bolluoshu'],['qun','character:le_shen_jiaxu']],'diy');
+game.HDaddCharacter('bfake_shen_zhangfei',['male','shen',4,['bolbaohe','bolrenhai','boltiandong'],['shu','character:shen_zhangfei']],'diy');
 
 //precS
 //技能修改
@@ -13001,7 +13005,7 @@ next.backup('minixieju_backup');
 subSkill:{
 backup:{
 filterCard:function(card,player){
-return get.color(card,player)=='black';
+return get.itemtype(card)=='card'&&get.color(card,player)=='black';
 },
 position:'hes',
 viewAs:{name:'sha'},
@@ -49035,6 +49039,28 @@ huashen_unknown:{
 fullimage:true,
 image:'ext:活动武将/image/card/huashen_unknown.jpg'
 },
+//吴起兵法
+bol_wuqibingfa:{
+fullimage:true,
+type:'equip',
+subtype:'equip5',
+loseDelay:false,
+onLose(){
+card.fix();
+card.remove();
+card.destroyed=true;
+game.log(card,'被销毁了');
+player.addTempSkill('bol_wuqibingfax');
+},
+skills:[],
+ai:{
+order:10,
+equipValue(card,player){
+return player.getEquips('bol_wuqibingfa').length?0:5;
+},
+basic:{equipValue:5},
+},
+},
 },
 skill:{
 //闪闪
@@ -57998,6 +58024,481 @@ init(){
 if(!_status.characterlist) lib.skill.pingjian.initList();
 },
 },
+//神贾诩
+boljiandai:{
+init(player){
+if(!player.isTurnedOver()){
+player.classList.toggle("turnedover");
+game.broadcast(function (player) {
+player.classList.toggle("turnedover");
+}, player);
+game.addVideo("turnOver", player, player.classList.contains("turnedover"));
+}
+},
+trigger:{player:'turnOverBefore'},
+filter(event,player){
+return player.isTurnedOver();
+},
+forced:true,
+content(){
+trigger.cancel();
+},
+},
+bolfangcan:{
+trigger:{global:'phaseEnd'},
+filter(event,player){
+const list=lib.skill.bolfangcan.getCards();
+return list[0].length==1||list[1].length==1;
+},
+forced:true,
+async content(event,trigger,player){
+const list=lib.skill.bolfangcan.getCards();
+let cards=[];
+for(const i of list){
+if(i.length==1) cards.addArray(i);
+}
+const result=await player.chooseButton(['###纺残###<div class="text center">获得或视为使用其中一张牌</div>',cards],true).set('ai',button=>{
+const player=get.event().player,card=button.link;
+return player.getUseValue(button.link,true)+get.value(card);
+}).forResult();
+if(result.bool){
+const choose=result.links[0],vcard=new lib.element.VCard({name:get.name(choose,player),nature:get.nature(choose,player),isCard:true});
+if(player.hasUseTarget(vcard,true)){
+const result2=await player.chooseUseTarget(vcard,false,'###纺残###视为使用'+get.translation(vcard)+'，或获得'+get.translation(choose)).forResult();
+if(!result2.bool) await player.gain(choose,'gain2');
+}
+}
+},
+getCards(){
+const history=game.getGlobalHistory('everything',evt=>evt.name=='lose'&&evt.position==ui.discardPile).slice().concat(game.getGlobalHistory('cardMove',evt=>evt.name=='cardsDiscard'));
+const cards=history.reduce((list,evt)=>list.addArray(evt.cards.filterInD('d')),[]);
+return [cards.filter(i=>get.type(i,false)=='trick'),cards.filter(i=>get.type(i,false)!='delay'&&get.tag(i,'damage'))];
+},
+},
+boljuemei:{
+trigger:{global:['recoverEnd','loseMaxHpEnd','dyingAfter']},
+filter(event,player){
+if(!event.player.isIn()||!player.canEquip(game.createCard('bol_wuqibingfa','none',0),true)) return false;
+return event.name=='dying'||event.player.isHealthy();
+},
+forced:true,
+async content(event,trigger,player){
+const wuqibingfa=game.createCard('bol_wuqibingfa','none',0);
+await player.equip(wuqibingfa);
+if(game.getAllGlobalHistory('everything',evt=>{
+return evt.name=='boljuemei'&&evt.player==player;
+}).indexOf(event)==1&&player.getStockSkills(false,true).length){
+await player.removeSkills(player.getStockSkills(false,true)[0]);
+};
+},
+derivation:'bol_wuqibingfa',
+},
+bol_wuqibingfax:{
+charlotte:true,
+equipSkill:true,
+trigger:{
+player:'loseAfter',
+global:['equipAfter','addJudgeAfter','gainAfter','loseAsyncAfter','addToExpansionAfter'],
+},
+filter(event,player){
+if(!lib.skill.bol_wuqibingfax.countSkill(player)) return false;
+const evt=event.getl(player);
+return evt&&evt.es.some(card=>card.name=='bol_wuqibingfa');
+},
+forced:true,
+async content(event,trigger,player){
+const num=Math.min(game.countPlayer(),lib.skill.bol_wuqibingfax.countSkill(player));
+const {result:{bool,targets}}=await player.chooseTarget('请选择【吴起兵法】的目标','令'+get.cnNumber(num)+'名角色于本回合结束时将一张手牌当作【杀】使用',num).set('ai',target=>{
+const player=get.event().player,sha=new lib.element.VCard({name:'sha'});
+return get.attitude(player,target)*target.getUseValue(sha,true);
+});
+if(bool){
+player.line(targets);
+for(const i of targets.slice().sortBySeat()) i.addTempSkill('bol_wuqibingfax_sha');
+}
+},
+countSkill(player){
+return player.getSkills(null,false,false).filter(i=>!(get.info(i)||{}).charlotte).length;
+},
+subSkill:{
+sha:{
+charlotte:true,
+mark:true,
+intro:{content:'本回合结束时，将一张手牌当作【杀】使用'},
+trigger:{global:'phaseEnd'},
+filter(event,player){
+return player.hasCard(card=>player.hasUseTarget(get.autoViewAs({name:'sha'},[card]),true),'hes');
+},
+forced:true,
+popup:false,
+content(){
+const next=player.chooseToUse(true);
+next.set('openskilldialog','###吴起兵法###将一张牌当作【杀】使用');
+next.set('norestore',true);
+next.set('addCount',false);
+next.set('_backupevent','bol_wuqibingfax_backup');
+next.set('custom',{
+add:{},
+replace:{window:function(){}}
+});
+next.backup('bol_wuqibingfax_backup');
+},
+},
+backup:{
+filterCard(card){
+return get.itemtype(card)=='card';
+},
+position:'hes',
+viewAs:{name:'sha'},
+filterTarget:lib.filter.filterTarget,
+check:card=>-get.value(card),
+log:false,
+precontent(){
+delete event.result.skill;
+},
+},
+},
+},
+bolluoshu:{
+initSkill(){
+let list,skills=[];
+if(get.mode()=='guozhan'){
+list=Object.keys(lib.characterPack.mode_guozhan).filter(i=>lib.character[i]);
+}
+else if(_status.connectMode) list=get.charactersOL();
+else list=Object.keys(lib.character).filter(i=>!lib.filter.characterDisabled2(i)&&!lib.filter.characterDisabled(i));
+for(const i of list){
+const iskills=(get.character(i).skills||[]);
+if(i.indexOf('gz_jun')==0||!iskills.length) continue;
+skills.addArray(iskills.filter(j=>{
+const info=(get.info(j)||{});
+return info.limited&&!info.combo&&!info.charlotte;
+}));
+}
+_status.bolluoshuList=skills;
+},
+trigger:{player:'phaseZhunbeiBegin'},
+forced:true,
+async content(event,trigger,player){
+if(!_status.bolluoshuList) lib.skill.bolluoshu.initSkill();
+let list=[],goon=player.hasSkill('bolfenfou',null,false,false);
+if(!goon) list.add('bolfenfou');
+list.addArray(_status.bolluoshuList.filter(skill=>!player.hasSkill(skill,null,false,false)).randomGets(goon?3:2));
+if(!list.length){
+player.popup('杯具');
+game.log('已经没有可以获得的技能了！');
+return;
+}
+const skill=await player.chooseControl(list).set('choiceList',list.map(i=>{
+return '<div class="skill">【'+get.translation(lib.translate[i+'_ab']||get.translation(i).slice(0,2))+'】</div><div>'+get.skillInfoTranslation(i,player)+'</div>';
+})).set('displayIndex',false).set('prompt','络殊：请选择你要获得的技能').set('ai',()=>{
+let list=get.event().controls.slice();
+return list.sort((a,b)=>get.skillRank(b,'in')-get.skillRank(a,'in'))[0];
+}).forResult('control');
+player.popup(skill);
+await player.addSkills(skill);
+},
+derivation:['bolfenfou','zhendu'],
+},
+bolfenfou:{
+limited:true,
+unique:true,
+trigger:{global:'roundStart'},
+logTarget:()=>game.filterPlayer().sortBySeat(),
+check:(_,player)=>!player.hasUnknown(),
+skillAnimation:true,
+anmiationColor:'fire',
+async content(event,trigger,player){
+player.awakenSkill('bolfenfou');
+const targets=game.filterPlayer().sortBySeat();
+let humans = targets.filter(current => current === game.me || current.isOnline());
+let locals = targets.slice();
+let choice = {};
+locals.removeArray(humans);
+const eventId = get.id();
+const send = (current, eventId) => {
+lib.skill.bolfenfou.chooseButton(current, eventId);
+game.resume();
+};
+event._global_waiting = true;
+let time = 10000;
+if (lib.configOL && lib.configOL.choose_timeout) time = parseInt(lib.configOL.choose_timeout) * 1000;
+targets.forEach(current => current.showTimer(time));
+if (humans.length > 0) {
+const solve = function (resolve, reject) {
+return function (result, player) {
+if (result && result.bool) {
+choice[player.playerid]=result.links;
+resolve();
+} else reject();
+};
+};
+await Promise.any(
+humans.map(current => {
+return new Promise(async (resolve, reject) => {
+if (current.isOnline()) {
+current.send(send, current, eventId);
+current.wait(solve(resolve, reject));
+}
+else {
+const next = lib.skill.bolfenfou.chooseButton(current, eventId);
+const solver = solve(resolve, reject);
+if (_status.connectMode) game.me.wait(solver);
+const result = await next.forResult();
+if (_status.connectMode) game.me.unwait(result, current);
+else solver(result, current);
+}
+});
+})
+).catch(() => {});
+game.broadcastAll("cancel", eventId);
+}
+if (locals.length > 0) {
+for (let current of locals) {
+const result = await lib.skill.bolfenfou.chooseButton(current).forResult();
+if (result && result.bool) {
+choice[current.playerid]=result.links;
+}
+}
+}
+delete event._global_waiting;
+for (let i of targets) i.hideTimer();
+for(const target of targets){
+const controls=choice[target.playerid].map(i=>{return {'turnOver':'翻面','draw':'摸牌','zhendu':'鸩毒'}[i]})
+target.popup(controls);
+game.log(target,'选择了','#y'+controls);
+if(choice[target.playerid].includes('turnOver')) await target.turnOver();
+if(choice[target.playerid].includes('draw')) await target.draw(2);
+if(choice[target.playerid].includes('zhendu')){
+await target.addAdditionalSkills('bolfenfou_zhendu','zhendu');
+target.addTempSkill('bolfenfou_zhendu','roundStart');
+}
+}
+},
+subSkill:{zhendu:{charlotte:true}},
+chooseButton(player,eventId){
+return player.chooseButton(2,[
+'###纷殕###<div class="text center">选择展示或弃置一张手牌</div>',
+[[
+['turnOver','将武将牌翻面'],
+['draw','摸两张牌'],
+['zhendu','本轮获得【鸩毒】']
+],'textbutton']
+],true).set('filterButton',button=>{
+const player=get.event().player;
+return button.link!='zhendu'||!player.hasSkill('zhendu',null,false,false);
+}).set('ai',button=>{
+const player=get.event().player,text=button.link;
+if(text=='turnOver') return (player.isTurnedOver()&&!player.hasSkill('boljiandai'))?100:1;
+if(text=='draw') return 50;
+return 20;
+}).set('id',eventId).set('_global_waiting',true);
+},
+},
+//神张飞
+bolbaohe:{
+mod:{
+cardname(card,player){
+if(get.itemtype(card)=='card'&&(get.type(card,null,false)=='trick'||get.type(card,null,false)=='delay')) return 'sha';
+},
+cardnature(card,player){
+if(get.itemtype(card)=='card'&&(get.type(card,null,false)=='trick'||get.type(card,null,false)=='delay')) return false;
+},
+cardUsable(card,player){
+if(card.name=='sha'&&(card.cards||[]).length==1&&(get.type(card.cards[0],null,false)=='trick'||get.type(card.cards[0],null,false)=='delay')) return Infinity;
+},
+},
+trigger:{source:'damageBegin1'},
+filter(event,player){
+const evt=event.getParent(2);
+return evt&&evt.name=='useCard';
+},
+forced:true,
+logTarget:'player',
+content(){
+const evt=trigger.getParent(2);
+trigger.num=(evt.cards||[]).reduce((sum,card)=>sum+get.cardNameLength(card),0)
+},
+ai:{
+effect:{
+player(card,player,target){
+if(!get.tag(card,'damage')) return;
+if(!(card.cards||[]).length) return 'zeroplayertarget';
+},
+},
+},
+},
+bolrenhai:{
+init(player,skill,reinit){
+if(!player.storage.bolrenhai||reinit){
+player.storage.bolrenhai_tiaozhengED=false;
+player.storage.bolrenhai=[
+{
+num:1,
+index:'①',
+text:'进行【闪电】判定',
+effect_1:{
+filter:()=>true,
+async content(player,source){
+player.executeDelayCardEffect('shandian');
+},
+},
+},
+{
+num:2,
+index:'②',
+text:'获得【仇海】或【崩坏】',
+effect_2:{
+filter(player){
+return ['chouhai','benghuai'].some(skill=>!player.hasSkill(skill,null,false,false));
+},
+async content(player,source,control){
+let result={};
+player.addSkill('bolrenhai_effect');
+const skills=['chouhai','benghuai'].filter(skill=>!player.hasSkill(skill,null,false,false));
+if(skills.length==1) result={control:skills[0]};
+else result=await player.chooseControl(skills).set('choiceList',skills.map(i=>{
+return '<div class="skill">【'+get.translation(lib.translate[i+'_ab']||get.translation(i).slice(0,2))+'】</div><div>'+get.skillInfoTranslation(i,player)+'</div>';
+})).set('displayIndex',false).set('prompt','人骇：选择获得一个技能').set('ai',()=>get.rand(0,1)).forResult();
+await player.addSkills(result.control);
+},
+},
+},
+{
+num:3,
+index:'③',
+text:'将本项并入邻项',
+effect_3:{
+filter(player,source){
+return source.storage.bolrenhai.length>1;
+},
+async content(player,source,control){
+source.storage.bolrenhai_tiaozhengED=true;
+const index=source.storage.bolrenhai.indexOf(control);
+const nums=Array.from({length:source.storage.bolrenhai.length}).map((_,i)=>i).filter(num=>num==index+1||num==index-1);
+for(const num of nums){
+//source.storage.bolrenhai[num].num+=control.num;
+source.storage.bolrenhai[num].text+=('；'+control.text);
+for(const i in control){
+if(typeof control[i]=='object') source.storage.bolrenhai[num][i]=control[i];
+}
+}
+game.log(source,'将第'+get.cnNumber(index,true)+'项合并至第'+nums.map(i=>get.cnNumber(i,true))+'项');
+source.storage.bolrenhai.remove(control);
+},
+},
+},
+{
+num:4,
+index:'④',
+text:'获得【无谋】或【止息】',
+effect_4:{
+filter(player){
+return ['wumou','new_zhixi'].some(skill=>!player.hasSkill(skill,null,false,false));
+},
+async content(player,source,control){
+let result={};
+player.addSkill('bolrenhai_effect');
+const skills=['wumou','new_zhixi'].filter(skill=>!player.hasSkill(skill,null,false,false));
+if(skills.length==1) result={control:skills[0]};
+else result=await player.chooseControl(skills).set('choiceList',skills.map(i=>{
+return '<div class="skill">【'+get.translation(lib.translate[i+'_ab']||get.translation(i).slice(0,2))+'】</div><div>'+get.skillInfoTranslation(i,player)+'</div>';
+})).set('displayIndex',false).set('prompt','人骇：选择获得一个技能').set('ai',()=>get.rand(0,1)).forResult();
+await player.addSkills(result.control);
+},
+},
+},
+];
+if(reinit){
+player.popup('人骇');
+game.log(player,'重置了技能','#g【人骇】');
+}
+}
+},
+trigger:{source:'damageBegin2'},
+filter(event,player){
+return event.num>0;
+},
+forced:true,
+logTarget:'player',
+async content(event,trigger,player){
+let chooseED=false,target=trigger.player;
+while(trigger.num>0){
+const {result:{bool,links}}=await target.chooseButton([
+'###人骇###<div class="text center">选择执行任意项并减免对应数值的伤害<br>当前剩余'+trigger.num+'点伤害</div>',
+[
+player.storage.bolrenhai.map(control=>{
+let list=[control,'减少'+control.num+'点伤害：'+control.text],noUse=true;
+const effects=Object.keys(control).filter(i=>typeof control[i]=='object');
+for(const i in control){
+if(typeof control[i]=='object'&&control[i].filter(target,player)){
+noUse=false;
+break;
+}
+}
+if(noUse) list[1]='<span style="opacity:0.5">'+list[1]+'（无法选择）</span>';
+return list;
+}),
+'textbutton',
+]
+]).set('filterButton',button=>{
+const target=get.event().player,player=get.event().getParent().player;
+for(const i in button.link){
+if(typeof button.link[i]=='object'&&button.link[i].filter(target,player)) return true;
+}
+return false;
+}).set('ai',button=>{
+return get.event().getTrigger().num-Math.abs(get.event().getTrigger().num-button.link.num);
+}).set('forced',!chooseED);
+if(bool){
+const control=links[0];
+target.popup(control.num);
+trigger.num-=control.num;
+game.log(target,'选择了','#y减少'+control.num+'点伤害：'+control.text);
+const nums=Array.from({length:4}).map((_,i)=>i+1).filter(i=>control['effect_'+i]&&control['effect_'+i].filter(target,player));
+if(!nums.length) continue;
+for(const num of nums){
+await control['effect_'+num].content(target,player,control);
+}
+}
+else break;
+}
+},
+derivation:['chouhai','benghuai','wumou','new_zhixi'],
+subSkill:{effect:{charlotte:true,onremove:true}},
+},
+boltiandong:{
+trigger:{player:'phaseZhunbeiBegin'},
+filter(event,player){
+return game.hasPlayer(target=>(target.additionalSkills['bolrenhai_effect']||[]).length);
+},
+forced:true,
+async content(event,trigger,player){
+let num=0,result;
+player.line(game.filterPlayer(target=>(target.additionalSkills['bolrenhai_effect']||[]).length));
+for(const target of game.filterPlayer()){
+const skills=(target.additionalSkills['bolrenhai_effect']||[]);
+if(skills.length){
+num+=skills.length;
+await target.removeadditionalSkills('bolrenhai_effect');
+target.removeSkill('bolrenhai_effect');
+}
+}
+let cards=Array.from(ui.cardPile.childNodes);
+if(cards.length){
+const max=cards.slice().map(card=>get.number(card,false)).unique().sort((a,b)=>b-a);
+cards=cards.filter(card=>get.number(card,false)==max).randomGets(num);
+await player.gain(cards,'gain2');
+}
+if(!player.storage.bolrenhai_tiaozhengED) result={control:'翻面'};
+else result=await player.chooseControl('翻面','还原').set('prompt','天动：将武将牌翻面，或还原【人骇】').set('ai',()=>{
+const player=get.event().player;
+return player.isTurnedOver()?'翻面':'还原';
+}).forResult();
+if(result.control=='翻面') await player.turnOver();
+else lib.skill.bolrenhai.init(player,'bolrenhai',true);
+},
+},
 },
 dynamicTranslate:{
 bilibili_xueji:function(player){
@@ -58048,6 +58549,13 @@ var bool=game.hasPlayer2(function(current){
 return current.name1=='bilibili_suixingsifeng'||current.name2=='bilibili_suixingsifeng';
 });
 return '你可以将X张牌当作【奇正相生】使用（X为你本回合发动〖彧态〗的次数+1'+(bool?'<span style="text-decoration: line-through;">':'')+'，且X至多为3'+(bool?'</span>':'')+'）。';
+},
+bolrenhai(player){
+const storage=player.storage.bolrenhai;
+if(!storage) return lib.translate.bolrenhai_info;
+return '锁定技，当你对一名角色造成伤害时，其选择以下任意其可执行项（可重复选择）并减少对应序号的伤害：'+storage.reduce((str,control)=>{
+return str+(control.index+control.text+'。');
+},'').replaceAll('【','〖').replaceAll('】','〗');
 },
 },
 translate:{
@@ -58483,6 +58991,30 @@ bilibili_xushao:'萌设许劭',
 bilibili_xushao_prefix:'萌设',
 bilibili_pingjian:'评鉴',
 bilibili_pingjian_info:'持衡技，锁定技。游戏开始时，或当你的随从武将牌阵亡后，你减1点体力上限，从随机每个势力的各随机两张武将牌中选择一张武将牌作为随从武将牌，然后你将武将牌替换为此随从。（随从武将牌初始2血2上限4手牌，每个势力的武将牌每局游戏只能选择一次）',
+bfake_shen_jiaxu:'蝶设神贾诩',
+bfake_shen_jiaxu_prefix:'蝶设神',
+boljiandai:'缄殆',
+boljiandai_info:'锁定技，你的武将牌始终背面朝下。',
+boljiandai_info_guozhan:'锁定技，你的武将牌始终叠置。',
+bolfangcan:'纺残',
+bolfangcan_info:'锁定技，一名角色的回合结束时，你视为使用本回合进入且位于弃牌堆中的唯一一张普通锦囊牌或伤害牌。',
+boljuemei:'绝殙',
+boljuemei_info:'锁定技，一名角色脱离受伤状态或濒死状态后，你装备【吴起兵法】，然后若你为偶数次发动此技能，则你失去武将牌上的首个技能。',
+bol_wuqibingfa:'吴起兵法',
+bol_wuqibingfa_info:'锁定技，当此牌离开装备区时，你销毁此牌，然后令X名角色于本回合结束时将一张牌当作【杀】使用。',
+bolluoshu:'络殊',
+bolluoshu_info:'锁定技，准备阶段，你从随机三个限定技中选择一个获得（若你未拥有〖纷殕〗，则选项必定包含〖纷殕〗）。',
+bolfenfou:'纷殕',
+bolfenfou_info:'限定技，一轮游戏开始时，你可以令场上所有角色同时选择两项：①将武将牌翻面；②摸两张牌；③于本轮获得〖鸩毒〗。',
+bolfenfou_info_guozhan:'限定技，一轮游戏开始时，你可以令场上所有角色同时选择两项：①叠置武将牌；②摸两张牌；③于本轮获得〖鸩毒〗。',
+bfake_shen_zhangfei:'蝶设神张飞',
+bfake_shen_zhangfei_prefix:'蝶设神',
+bolbaohe:'暴喝',
+bolbaohe_info:'锁定技。①你的锦囊牌均视为无次数限制的无属性【杀】。②你使用牌造成的伤害改为此牌对应的所有实体牌的牌名字数之和。',
+bolrenhai:'人骇',
+bolrenhai_info:'锁定技，当你对一名角色造成伤害时，其选择以下任意其可执行项（可重复选择）并减少对应序号的伤害：①进行【闪电】判定。②获得〖仇海〗或〖崩坏〗。③将本项并入邻项。④获得〖无谋〗或〖止息〗。',
+boltiandong:'天动',
+boltiandong_info:'锁定技，准备阶段，你令场上所有拥有因〖人骇〗获得技能的角色失去因〖人骇〗获得的技能，然后你随机获得牌堆中X张点数最大的牌（X为你本次移去的技能数），然后你选择一项：①将武将牌翻面；②复原〖人骇〗。',
 },
 };
 for(var i in huodongcharacter.character){
@@ -58498,6 +59030,14 @@ lib.namePrefix.set('萌设',{
 color:'#ff6a6a',
 nature:'MXpink',
 showName:'萌',
+});
+lib.namePrefix.set('蝶设',{
+color:'#ff6a6a',
+nature:'MXpink',
+showName:'蝶',
+});
+lib.namePrefix.set('蝶设神',{
+getSpan:(prefix,name)=>`${get.prefixSpan('蝶设')}${get.prefixSpan('神')}`,
 });
 //宿舍势力添加
 game.bolAddGroupNature(['mx_dom','宿','宿舍'],[255,215,0]);
