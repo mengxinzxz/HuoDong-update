@@ -43,7 +43,7 @@ var HuoDong_update=[
 '整合@xizifu 的Pull request',
 '整合Fire.win的素材',
 '废案孙登，废案程普技能修复',
-'添加蝶设武将：神贾诩，神张飞',
+'添加蝶设武将：神贾诩，神张飞，神张角',
 '添加欢杀武将：神陆逊，吕岱；修改欢杀武将：甄姬',
 '添加微信武将：SP黄月英、公孙瓒；修改微信武将：赵云、蔡邕、极鲁肃、薛综、朱灵；糅合微信标界魏延',
 'To be continued...',
@@ -58097,7 +58097,7 @@ const wuqibingfa=game.createCard('bol_wuqibingfa','none',0);
 await player.equip(wuqibingfa);
 if(game.getAllGlobalHistory('everything',evt=>{
 return evt.name=='boljuemei'&&evt.player==player;
-}).indexOf(event)==1&&player.getStockSkills(false,true).length){
+}).indexOf(event)%2==1&&player.getStockSkills(false,true).length){
 await player.removeSkills(player.getStockSkills(false,true)[0]);
 };
 },
@@ -58393,7 +58393,7 @@ for(const i in control){
 if(!Array.isArray(control[i])&&typeof control[i]=='object') source.storage.bolrenhai[num][i]=control[i];
 }
 }
-game.log(source,'将第'+get.cnNumber(index,true)+'项合并至第'+nums.map(i=>get.cnNumber(i,true))+'项');
+game.log(source,'将第'+get.cnNumber(index,true)+'项合并至第'+nums.map(i=>get.cnNumber(i+1,true))+'项');
 source.storage.bolrenhai.remove(control);
 },
 },
@@ -58465,7 +58465,7 @@ return num-Math.abs(get.event().getTrigger().num-button.link.num);
 }).set('forced',!chooseED);
 if(bool){
 const control=links[0];
-target.popup(control.num);
+target.popup('-'+control.num);
 trigger.num-=control.num;
 game.log(target,'选择了','#y减少'+control.num+'点伤害：'+control.text.join('、'));
 const nums=Array.from({length:4}).map((_,i)=>i+1).filter(i=>control['effect_'+i]&&control['effect_'+i].filter(target,player));
