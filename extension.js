@@ -58499,7 +58499,7 @@ target.removeSkill('bolrenhai_effect');
 }
 let cards=Array.from(ui.cardPile.childNodes);
 if(cards.length){
-const max=cards.slice().map(card=>get.number(card,false)).unique().sort((a,b)=>b-a);
+const max=cards.slice().map(card=>get.number(card,false)).unique().sort((a,b)=>b-a)[0];
 cards=cards.filter(card=>get.number(card,false)==max).randomGets(num);
 await player.gain(cards,'gain2');
 }
