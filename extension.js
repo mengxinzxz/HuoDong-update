@@ -58393,7 +58393,7 @@ for(const i in control){
 if(!Array.isArray(control[i])&&typeof control[i]=='object') source.storage.bolrenhai[num][i]=control[i];
 }
 }
-game.log(source,'将第'+get.cnNumber(index,true)+'项合并至第'+nums.map(i=>get.cnNumber(i+1,true))+'项');
+game.log(source,'将第'+get.cnNumber(index+1,true)+'项合并至第'+nums.map(i=>get.cnNumber(i+1,true))+'项');
 source.storage.bolrenhai.remove(control);
 },
 },
