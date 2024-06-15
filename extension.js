@@ -58108,7 +58108,7 @@ return evt&&evt.es.some(card=>card.name=='bol_wuqibingfa');
 forced:true,
 async content(event,trigger,player){
 const num=Math.min(game.countPlayer(),lib.skill.bol_wuqibingfa.countSkill(player));
-const {result:{bool,targets}}=await player.chooseTarget('请选择【吴起兵法】的目标','令'+get.cnNumber(num)+'名角色于本回合结束时将一张手牌当作【杀】使用',num).set('ai',target=>{
+const {result:{bool,targets}}=await player.chooseTarget('请选择【吴起兵法】的目标','令至多'+get.cnNumber(num)+'名角色于本回合结束时将一张手牌当作【杀】使用',[1,num],true).set('ai',target=>{
 const player=get.event().player,sha=new lib.element.VCard({name:'sha'});
 return get.attitude(player,target)*target.getUseValue(sha,true);
 });
@@ -59211,7 +59211,7 @@ bolfangcan_info:'锁定技，一名角色的回合结束时，你视为使用本
 boljuemei:'绝殙',
 boljuemei_info:'锁定技，一名角色脱离受伤状态或濒死状态后，你装备【吴起兵法】，然后若你为偶数次发动此技能，则你失去武将牌上的首个技能。',
 bol_wuqibingfa:'吴起兵法',
-bol_wuqibingfa_info:'锁定技，当此牌离开装备区时，你销毁此牌，然后令X名角色于本回合结束时将一张牌当作【杀】使用。',
+bol_wuqibingfa_info:'锁定技，当此牌离开装备区时，你销毁此牌，然后令至多X名角色于本回合结束时将一张牌当作【杀】使用（X为你拥有的技能数）。',
 bolluoshu:'络殊',
 bolluoshu_info:'锁定技，准备阶段，你从随机三个限定技中选择一个获得（若你未拥有〖纷殕〗，则选项必定包含〖纷殕〗）。',
 bolfenfou:'纷殕',
