@@ -48960,7 +48960,7 @@ sxy_shengxunyu:['male','mx_dom','3/Infinity',['dom_chouxiang'],[((lib.device||li
 //蝶设堂
 bfake_jiananfeng:['female','jin',8,['bolduliao','bolhuidu','bolfushou'],[]],
 bfake_shen_jiaxu:['male','shen',3,['boljiandai','bolfangcan','boljuemei','bolluoshu'],['qun','character:le_shen_jiaxu']],
-bfake_shen_zhangfei:['male','shen',4,['bolbaohe','bolrenhai','boltiandong'],['shu','character:shen_zhangfei']],
+bfake_shen_zhangfei:['male','shen',5,['bolbaohe','bolrenhai','boltiandong'],['shu','character:shen_zhangfei']],
 bfake_shen_zhangjiao:['male','shen',3,['bolyifu','boltianjie'],['qun','character:shen_zhangjiao']],
 },
 characterIntro:{
