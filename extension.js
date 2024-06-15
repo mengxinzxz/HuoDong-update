@@ -39,21 +39,11 @@ lib.init.css(lib.assetURL+'extension/活动武将','extension');
 game.bolShowNewPack=function(){
 //更新告示
 var HuoDong_update=[
-'/setPlayer/',
-'整合@xizifu 的Pull request',
-'整合Fire.win的素材',
-'废案孙登，废案程普技能修复',
-'添加蝶设武将：神贾诩，神张飞，神张角',
-'添加欢杀武将：神陆逊，吕岱；修改欢杀武将：甄姬',
-'添加微信武将：SP黄月英、公孙瓒；修改微信武将：赵云、蔡邕、极鲁肃、薛综、朱灵；糅合微信标界魏延',
+//'/setPlayer/',
 'To be continued...',
 ];
 //更新武将
 var HuoDong_players=[
-'Mbaby_shen_luxun','Mbaby_zhenji','wechat_jsp_huangyueying','wechat_re_gongsunzan',
-'wechat_weiyan','wechat_zhaoyun','wechat_caiyong','wechat_lusu','wechat_xuezong',
-'wechat_zhuling','Mbaby_lvdai','bfake_sundeng','bfake_chengpu','bfake_shen_jiaxu',
-'bfake_shen_zhangfei','bfake_shen_zhangjiao',
 ];
 //加载
 var dialog=ui.create.dialog(
@@ -58519,8 +58509,23 @@ filter(event,player){
 return event.card.storage&&event.card.storage.bolyifu;
 },
 forced:true,
+locked:false,
 content(){
 player.draw();
+},
+mark:true,
+marktext:'☯',
+zhuanhuanji:'number',
+intro:{
+markcount:(storage)=>(storage||0)%3+1,
+content(storage,player){
+return '转换技。①一名角色可以将一张基本牌当作【'+['闪电','随机应变','铁索连环'][(storage||0)%3]+'】使用。②当你成为〖蚁附①〗转化的牌的目标后，你摸一张牌。';
+},
+},
+map(name){
+let num={'shandian':0,'tiesuo':2}[name];
+if(typeof num!='number') num=1;
+return num;
 },
 global:'bolyifu_viewAs',
 subSkill:{
@@ -58540,11 +58545,13 @@ enable:'chooseToUse',
 filter(event,player){
 const list=(event.bolyifu||[]);
 if(!list.length) return false;
-return list.some(card=>player.hasCard(cardx=>get.type(cardx)=='basic'&&event.filterCard({name:card[2],nature:card[3],storage:{bolyifu:true},cards:[cardx]},player,event),'hes'));
+const nums=game.filterPlayer(target=>target.hasSkill('bolyifu')).map(target=>target.countMark('bolyifu')%3);
+return list.some(card=>nums.includes(lib.skill.bolyifu.map(card[2]))&&player.hasCard(cardx=>get.type(cardx)=='basic'&&event.filterCard({name:card[2],nature:card[3],storage:{bolyifu:true},cards:[cardx]},player,event),'hes'));
 },
 chooseButton:{
 dialog(event,player){
-const list=event.bolyifu.filter(card=>player.hasCard(cardx=>get.type(cardx)=='basic'&&event.filterCard({name:card[2],nature:card[3],storage:{bolyifu:true},cards:[cardx]},player,event),'hes'));
+const nums=game.filterPlayer(target=>target.hasSkill('bolyifu')).map(target=>target.countMark('bolyifu')%3);
+const list=event.bolyifu.filter(card=>nums.includes(lib.skill.bolyifu.map(card[2]))&&player.hasCard(cardx=>get.type(cardx)=='basic'&&event.filterCard({name:card[2],nature:card[3],storage:{bolyifu:true},cards:[cardx]},player,event),'hes'));
 return ui.create.dialog('蚁附',[list,'vcard']);
 },
 check(button){
@@ -58567,6 +58574,15 @@ name:links[0][2],
 nature:links[0][3],
 storage:{bolyifu:true},
 },
+async precontent(event,_,player){
+delete event.result.skill;
+let num=lib.skill.bolyifu.map(event.result.card.name);
+const targets=game.filterPlayer(target=>target.hasSkill('bolyifu')&&target.countMark('bolyifu')%3==num);
+for(const i of targets){
+await i.logSkill('bolyifu',player);
+i.changeZhuanhuanji('bolyifu');
+}
+},
 }
 },
 prompt(links,player){
@@ -58575,10 +58591,11 @@ return '###蚁附###将一张基本牌当作'+(get.translation(links[0][3])||'')
 },
 hiddenCard(player,name){
 if(!player.hasCard(card=>get.type(card)=='basic','hes')) return false;
+const nums=game.filterPlayer(target=>target.hasSkill('bolyifu')).map(target=>target.countMark('bolyifu')%3);
 const history=player.getHistory('useCard',evt=>get.type(evt.card)=='basic'||get.type(evt.card)=='trick');
 const evt=history[history.length-1];
-if(evt&&evt.card.name==name) return true;
-return name=='shandian'||name=='tiesuo';
+if(evt&&evt.card.name==name&&nums.includes(1)) return true;
+return (name=='shandian'&&nums.includes(0))||(name=='tiesuo'&&nums.includes(2));
 },
 ai:{
 respondSha:true,
@@ -58590,9 +58607,11 @@ if(!lib.skill.bolyifu.subSkill.viewAs.hiddenCard(player,name)) return false;
 },
 order(item,player){
 if(player&&get.event().type=='phase'){
-let max=0;
-const names=(get.event().bolyifu||[]).map(namex=>{return {name:namex[2],nature:namex[3]}});
+let max=0,nums=game.filterPlayer(target=>target.hasSkill('bolyifu')).map(target=>target.countMark('bolyifu')%3);
+let names=(get.event().bolyifu||[]);
+names=names.filter(card=>nums.includes(names.indexOf(card)));
 if(!names.length) return 0;
+names=names.map(namex=>{return {name:namex[2],nature:namex[3]}});
 names.forEach(card=>{
 if(player.getUseValue(card)>0){
 let temp=get.order(card);
@@ -58625,9 +58644,9 @@ async content(event,trigger,player){
 trigger.set('_boltianjie',true);
 trigger.cancel();
 const str=get.translation(trigger.player);
-const result=await player.chooseTarget('请选择【天劫】的目标','对你或'+str+'或'+str+'的上家或下家造成1点雷属性伤害',(card,player,target)=>{
+const result=await player.chooseTarget('请选择【天劫】的目标','对'+str+'或'+str+'的上家或下家造成1点雷属性伤害',(card,player,target)=>{
 const aim=get.event().getTrigger().player;
-return [player,aim,aim.getPrevious(),aim.getNext()].includes(target);
+return [aim,aim.getPrevious(),aim.getNext()].includes(target);
 },true).set('ai',target=>{
 return get.damageEffect(target,get.event().player,get.event().player,'thunder');
 }).forResult();
@@ -58728,6 +58747,22 @@ if(!storage) return lib.translate.bolrenhai_info;
 return '锁定技，当你对一名角色造成伤害时，其选择以下任意其可执行项（可重复选择）并减少对应序号的伤害：'+storage.reduce((str,control)=>{
 return str+(control.index+control.text.join('、')+'；');
 },'').replaceAll('【','〖').replaceAll('】','〗').slice(0,-1)+'。';
+},
+bolyifu(player){
+let str='{',count=player.countMark('bolyifu')%3;
+if(count==0) str+='<span class="bluetext">';
+str+='天，【闪电】';
+if(count==0) str+='</span>';
+str+='；';
+if(count==1) str+='<span class="bluetext">';
+str+='地，【随机应变】';
+if(count==1) str+='</span>';
+str+='；';
+if(count==2) str+='<span class="bluetext">';
+str+='人，【铁索连环】';
+if(count==2) str+='</span>';
+str+='}';
+return '转换技。①一名角色可以将一张基本牌当作'+str+'使用。②当你成为〖蚁附①〗转化的牌的目标后，你摸一张牌。';
 },
 },
 translate:{
@@ -59193,9 +59228,9 @@ boltiandong_info:'锁定技，准备阶段，你令场上所有拥有因〖人�
 bfake_shen_zhangjiao:'蝶设神张角',
 bfake_shen_zhangjiao_prefix:'蝶设神',
 bolyifu:'蚁附',
-bolyifu_info:'锁定技。①一名角色可以将一张基本牌当作{天，【闪电】；地，【随机应变】；人，【铁索连环】}使用。②当你成为〖蚁附①〗转化的牌的目标后，你摸一张牌。',
+bolyifu_info:'转换技。①一名角色可以将一张基本牌当作{天，【闪电】；地，【随机应变】；人，【铁索连环】}使用。②当你成为〖蚁附①〗转化的牌的目标后，你摸一张牌。',
 boltianjie:'天劫',
-boltianjie_info:'锁定技。①一名角色的【闪电】生效时，取消之，然后你对你或其或其上家或下家造成1点雷属性伤害。②一名角色的【闪电】判定牌生效后，若判定牌不为【闪】，则令其继续进行【闪电】判定。',
+boltianjie_info:'锁定技。①一名角色的【闪电】生效时，取消之，然后你对其或其上家或下家造成1点雷属性伤害。②一名角色的【闪电】判定牌生效后，若判定牌不为【闪】，则令其继续进行【闪电】判定。',
 },
 };
 for(var i in huodongcharacter.character){
@@ -59652,7 +59687,7 @@ intro:'新人制作扩展，希望大家支持。'+
 author:'萌新（转型中）',
 diskURL:'',
 forumURL:'',
-version:'0.2.6',
+version:'0.2.7',
 //新人制作扩展，希望大家支持。
 //新人技术不足，希望大家包涵。
 //壹、贰、叁、肆、伍、陆、柒、捌、玖、拾
