@@ -1601,7 +1601,7 @@ if(lib.config.extension_活动武将_XvXiang){
 for(var i of lib.characterSort.offline.offline_vtuber) lib.characterPack.offline[i][3].add('bilibili_xuxiang');
 }
 game.HDaddCharacter('bolx_jsp_guanyu',['male','wei',4,['wusheng','wzdanji'],['ext:活动武将/image/character/bolx_jsp_guanyu.jpg']],'offline');
-game.HDaddCharacter('bol_sunluban',['female','wu',3,['boljiaozong','bolchouyou'],['ext:活动武将/image/character/bol_sunluban.jpg','die_audio']],'offline');
+game.HDaddCharacter('bol_sunluban',['female','wu',3,['boljiaozong','bolchouyou'],['ext:活动武将/image/character/bol_sunluban.jpg']],'offline');
 
 //海外
 lib.characterSort.tw.bilibili_buchong_tw=['old_yj_zhanghe','old_qiaozhou','old_jiakui','bol_xin_sunluban','bol_mazhong','bol_jsp_guanyu','bol_fuhuanghou'];
@@ -1636,16 +1636,16 @@ game.HDaddCharacter('old_shen_simayi',['male','shen',3,['reguicai','fangzhu','re
 game.HDaddCharacter('old_shen_taishici',['male','shen',4,['olddulie','oldpowei','dangmo'],['wu','ext:活动武将/image/character/old_shen_taishici.jpg']],'old');
 game.HDaddCharacter('old_shen_sunce',['male','shen','1/6',['old_yingba','old_fuhai','old_pinghe'],['wu','ext:活动武将/image/character/old_shen_sunce.jpg']],'old');
 game.HDaddCharacter('old_zhangyì',['male','shu',4,['zhiyi'],['ext:活动武将/image/character/old_zhangyi.jpg']],'old');
-game.HDaddCharacter('old_xunchen',['male','qun',3,['jianzhan','reduoji'],['die_audio','ext:活动武将/image/character/old_xunchen.jpg']],'old');
+game.HDaddCharacter('old_xunchen',['male','qun',3,['jianzhan','reduoji'],['ext:活动武将/image/character/old_xunchen.jpg']],'old');
 game.HDaddCharacter('old_zhangzhongjing',['male','qun',3,['old_jishi','liaoyi','binglun'],['ext:活动武将/image/character/old_zhangzhongjing.jpg']],'old');
 game.HDaddCharacter('oldx_zhangzhongjing',['male','qun',3,['jishi','old_liaoyi','binglun'],['ext:活动武将/image/character/oldx_zhangzhongjing.jpg']],'old');
 game.HDaddCharacter('old_yanghuiyu',['female','wei',3,['oldhongyi','quanfeng'],['ext:活动武将/image/character/old_yanghuiyu.jpg']],'old');
 game.HDaddCharacter('old_zhoufei',['female','wu',3,['liangyin','kongsheng'],['ext:活动武将/image/character/old_zhoufei.jpg']],'old');
-game.HDaddCharacter('old_dengai',['male','wei',3,['bilibili_zhenggong','bilibili_toudu'],['die_audio','ext:活动武将/image/character/old_dengai.jpg']],'old');
+game.HDaddCharacter('old_dengai',['male','wei',3,['bilibili_zhenggong','bilibili_toudu'],['ext:活动武将/image/character/old_dengai.jpg']],'old');
 game.HDaddCharacter('old_yj_ganning',['male','qun',4,['bilibili_jinfan','bilibili_sheque'],['ext:活动武将/image/character/old_yj_ganning.jpg']],'old');
 game.HDaddCharacter('old_zhangbao',['male','qun',3,['old_zhoufu','old_yingbing'],['ext:活动武将/image/character/old_zhangbao.jpg']],'old');
 game.HDaddCharacter('old_sunluyu',['female','wu',3,['meibu','mumu'],['ext:活动武将/image/character/old_sunluyu.jpg']],'old');
-game.HDaddCharacter('old_pangtong',['male','qun',3,['manjuan','zuixiang'],['unseen','character:sp_pangtong','die_audio:sp_pangtong']],'old');
+game.HDaddCharacter('old_pangtong',['male','qun',3,['manjuan','zuixiang'],['unseen','character:sp_pangtong','die:sp_pangtong']],'old');
 game.HDaddCharacter('ol_manchong',['male','wei',3,['xinjunxing','yuce'],['ext:活动武将/image/character/ol_manchong.jpg']],'old');
 game.HDaddCharacter('old_xushao',['male','qun',3,[],['unseen','ext:活动武将/image/character/old_xushao.jpg']],'old');
 game.HDaddCharacter('old_sp_sunshao',['male','wu',3,['refubi','rezuici'],['ext:活动武将/image/character/old_sp_sunshao.jpg']],'old');
@@ -1653,7 +1653,7 @@ game.HDaddCharacter('old_liuzhang',['male','qun',3,['xiusheng','yinlang','huaibi
 game.HDaddCharacter('old_wangling',['male','wei',4,['mouli','zifu'],['ext:活动武将/image/character/old_wangling.jpg']],'old');
 game.HDaddCharacter('old_sp_huaxin',['male','wei',3,['hxrenshi','debao','buqi'],['ext:活动武将/image/character/old_sp_huaxin.jpg']],'old');
 game.HDaddCharacter('old_sp_kongrong',['male','qun',3,['spmingshi','splirang'],['ext:活动武将/image/character/old_sp_kongrong.jpg']],'old');
-game.HDaddCharacter('old_sp_mifuren',['female','shu',3,['spguixiu','spcunsi'],['die_audio','ext:活动武将/image/character/old_sp_mifuren.jpg']],'old');
+game.HDaddCharacter('old_sp_mifuren',['female','shu',3,['spguixiu','spcunsi'],['ext:活动武将/image/character/old_sp_mifuren.jpg']],'old');
 game.HDaddCharacter('old_zhouchu',['male','wu',4,['xianghai','chuhai'],['ext:活动武将/image/character/old_zhouchu.jpg']],'old');
 game.HDaddCharacter('old_sb_ganning',['male','wu',4,['old_qixi','old_fenwei'],['ext:活动武将/image/character/old_sb_ganning.jpg']],'old');
 game.HDaddCharacter('junk_duanwei',['male','qun',4,['langmie'],[]],'old');
@@ -2811,20 +2811,20 @@ FaDongCharacter3:['FD_sunjian','FD_huaxiong'],
 },
 },
 character:{
-FD_guosi:['male','qun',4,['bilibili_yanglie','bilibili_mojun'],['character:guosi','die_audio']],
-FD_lijue:['male','qun',6,['bilibili_yangwu','bilibili_mojun'],['character:lijue','die_audio']],
+FD_guosi:['male','qun',4,['bilibili_yanglie','bilibili_mojun'],['character:guosi']],
+FD_lijue:['male','qun',6,['bilibili_yangwu','bilibili_mojun'],['character:lijue']],
 FD_fanchou:['male','qun',4,['cxy_FanGong','bilibili_mojun'],['character:fanchou']],
-FD_dongyue:['male','qun',4,['bilibili_kuangxi','bilibili_mojun'],['die_audio']],
+FD_dongyue:['male','qun',4,['bilibili_kuangxi','bilibili_mojun'],[]],
 FD_niufudongxie:['double','qun',4,['bilibili_tunjun','cxy_JiaoXia','bilibili_mojun'],['character:tw_niufudongxie']],
-FD_zhangji:['male','qun',4,['cxy_JieLve','bilibili_mojun'],['character:zhangji','die_audio']],
+FD_zhangji:['male','qun',4,['cxy_JieLve','bilibili_mojun'],['character:zhangji']],
 FD_hubenjun:['male','qun',5,['bilibili_huying'],['forbidai']],
 FD_baolvejun:['male','qun',3,['cxy_BaoYing'],['forbidai']],
 FD_fengyaojun:['female','qun',3,['bilibili_fengying'],['forbidai']],
 FD_longxiangjun:['male','qun',4,['bilibili_longying'],['forbidai']],
 FD_feixiongjunzuo:['male','qun',4,['bilibili_jingqi'],['forbidai']],
 FD_feixiongjunyou:['male','qun',4,['cxy_RuiQi'],['forbidai']],
-FD_sunjian:['male','qun',6,['gzyinghun','bilibili_polu'],['die_audio']],
-FD_huaxiong:['male','qun',8,['bilibili_moqu','yaowu','bilibili_mojun'],['character:old_huaxiong','die_audio']],
+FD_sunjian:['male','qun',6,['gzyinghun','bilibili_polu'],[]],
+FD_huaxiong:['male','qun',8,['bilibili_moqu','yaowu','bilibili_mojun'],['character:old_huaxiong']],
 },
 characterIntro:{
 dongyue:'董越，武威郡姑臧人也，东汉末年人，董卓手下东中郎将，与贾诩是同乡。曾被董卓派往渑池驻扎，抵御关东反董联军的进攻，董卓死后董越被董卓女婿牛辅所杀。',
@@ -4395,7 +4395,7 @@ hezong_bing:['qin_nushou','qin_qibing','qin_bubing'],
 },
 },
 character:{
-qin_zhangyi:['male','daqin',4,['qin_lianheng','qin_xichu','qin_xiongbian','qin_qiaoshe'],['die_audio']],
+qin_zhangyi:['male','daqin',4,['qin_lianheng','qin_xichu','qin_xiongbian','qin_qiaoshe'],[]],
 qin_zhaogao:['male','daqin',3,['qin_zhilu','qin_gaizhao','qin_haizhong','qin_yuanli'],[]],
 qin_yingzheng:['male','daqin',5,['qin_yitong','qin_shihuang','qin_zulong','qin_fenshu'],[]],
 qin_shangyang:['male','daqin',4,['qin_bianfa','qin_limu','qin_kencao'],[]],
@@ -5941,16 +5941,16 @@ QH_huan_boss:['QH_zhangrang','QH_zhaozhong'],
 },
 },
 character:{
-QH_fengxu:['male','qun',10,['QH_rehuanshi','QH_leixi','QH_huangjie'],['die_audio']],
-QH_duangui:['male','qun',10,['QH_rehuanshi','QH_suxi','QH_chibi'],['die_audio']],
-QH_caojie:['male','qun',15,['QH_rehuanshi','QH_huangbao'],['die_audio']],
-QH_houlan:['male','qun',6,['QH_rehuanshi','QH_lancai','QH_jingshe'],['die_audio']],
-QH_jianshuo:['male','qun',20,['QH_rehuanshi','QH_jibing'],['die_audio']],
-QH_chengkuang:['male','qun',4,['QH_rehuanshi','QH_andu','QH_biri'],['die_audio']],
-QH_xiayun:['male','qun',8,['QH_rehuanshi','QH_jifu'],['die_audio']],
-QH_guosheng:['male','qun',10,['QH_rehuanshi','QH_heimu','QH_heizhi'],['die_audio']],
-QH_hejin:['male','qun',20,['QH_zhenmou','QH_guiluan','QH_waixi','QH_quanba'],['die_audio']],
-QH_hetaihou:['female','qun',20,['QH_zunqin','QH_chuhuan','QH_nongquan','QH_shexie'],['die_audio']],
+QH_fengxu:['male','qun',10,['QH_rehuanshi','QH_leixi','QH_huangjie'],[]],
+QH_duangui:['male','qun',10,['QH_rehuanshi','QH_suxi','QH_chibi'],[]],
+QH_caojie:['male','qun',15,['QH_rehuanshi','QH_huangbao'],[]],
+QH_houlan:['male','qun',6,['QH_rehuanshi','QH_lancai','QH_jingshe'],[]],
+QH_jianshuo:['male','qun',20,['QH_rehuanshi','QH_jibing'],[]],
+QH_chengkuang:['male','qun',4,['QH_rehuanshi','QH_andu','QH_biri'],[]],
+QH_xiayun:['male','qun',8,['QH_rehuanshi','QH_jifu'],[]],
+QH_guosheng:['male','qun',10,['QH_rehuanshi','QH_heimu','QH_heizhi'],[]],
+QH_hejin:['male','qun',20,['QH_zhenmou','QH_guiluan','QH_waixi','QH_quanba'],[]],
+QH_hetaihou:['female','qun',20,['QH_zunqin','QH_chuhuan','QH_nongquan','QH_shexie'],[]],
 QH_caocao:['male','wei',18,['rejianxiong','QH_lingba','QH_pozhan'],['character:caocao']],
 QH_yuanshao:['male','qun',15,['luanji','QH_xueyi','qiluan'],['character:re_yuanshao']],
 QH_yuanshu:['male','qun',16,['drlt_yongsi','QH_wangzun','QH_weidi'],['character:yl_yuanshu']],
@@ -5960,9 +5960,9 @@ QH_caoang:['male','wei',15,['kaikang','wushuang','feiying'],['character:caoang']
 QH_caoren:['male','wei',18,['xinjushou','xinjiewei','xinshensu'],['character:caoren']],
 QH_jushou:['male','qun',16,['jianying','shibei','zhaxiang'],['character:yj_jushou']],
 QH_xuyou:['male','qun',16,['nzry_chenglve','nzry_shicai','reyingzi'],['character:xuyou']],
-QH_zhangrang:['male','qun',20,['QH_rehuanshi','QH_huoluan','QH_yankong','QH_jiquan','QH_luanzheng'],['die_audio']],
-QH_zhaozhong:['male','qun',20,['QH_rehuanshi','QH_duanzheng','QH_lianhuo','QH_huangkong','QH_luanzheng'],['character:zhaozhong','die_audio']],
-QH_zuofeng:['male','qun',18,['QH_rehuanshi','QH_suohui','QH_huolu'],['die_audio']],
+QH_zhangrang:['male','qun',20,['QH_rehuanshi','QH_huoluan','QH_yankong','QH_jiquan','QH_luanzheng'],[]],
+QH_zhaozhong:['male','qun',20,['QH_rehuanshi','QH_duanzheng','QH_lianhuo','QH_huangkong','QH_luanzheng'],['character:zhaozhong']],
+QH_zuofeng:['male','qun',18,['QH_rehuanshi','QH_suohui','QH_huolu'],[]],
 },
 characterIntro:{
 fengxu:'封谞，东汉末年宦官，汉灵帝中平元年为中常侍，信黄巾道，189年逝世。',
@@ -8297,7 +8297,7 @@ cike_mitan:['male','qun',3,['cike_zhibi'],['unseen']],
 cike_caocao:['male','wei',16,['new_rejianxiong','cike_hujia','feiying'],[]],
 cike_caopi:['male','wei',10,['xingshang','fangzhu','cike_songwei','lxzhuixi','zhichi'],[]],
 cike_caorui:['male','wei',18,['huituo','mingjian','cike_xingshuai'],[]],
-cike_caomao:['male','wei',12,['cike_wenhui','cike_qintao','cike_xianggong'],['die_audio']],
+cike_caomao:['male','wei',12,['cike_wenhui','cike_qintao','cike_xianggong'],[]],
 cike_caosong:['male','wei',20,['cslilu','csyizheng','cike_taiwang'],[]],
 //蜀国
 cike_liubei:['male','shu',20,['rerende','cike_jijiang'],[]],
@@ -9336,7 +9336,7 @@ Mbaby_guojia:['male','wei',3,['tiandu','new_reyiji','minishenglun'],[]],
 Mbaby_caohong:['male','wei',4,['miniyuanhu','minijuezhu'],[]],
 Mbaby_sb_caocao:['male','wei',4,['minisbjianxiong','minisbqingzheng','sbhujia'],['zhu']],
 Mbaby_zhugedan:['male','wei',4,['minigongao','minijuyi'],[]],
-Mbaby_bianfuren:['female','wei',3,['fh_fuding','miniyuejian'],[]],
+Mbaby_bianfuren:['female','wei',3,['fh_fuding','miniyuejian'],['die:ol_bianfuren']],
 Mbaby_sb_yujin:['male','wei',4,['minixiayuan','minijieyue'],[]],
 Mbaby_yuejin:['male','wei',4,['minixiaoguo'],[]],
 Mbaby_jianggan:["male","wei",3,['miniweicheng','minidaoshu'],[]],
@@ -9356,7 +9356,7 @@ Mbaby_zhaoyun:['male','shu',4,['ollongdan','miniyajiao'],[]],
 Mbaby_huangzhong:['male','shu',4,['miniliegong'],[]],
 Mbaby_weiyan:['male','shu',4,['minikuanggu','miniqimou'],[]],
 Mbaby_liaohua:['male','shu',4,['minidangxian','minifuli'],[]],
-Mbaby_pangtong:['male','shu',3,['minirelianhuan','mininiepan'],['tempname:ol_pangtong','die_audio:ol_pangtong']],
+Mbaby_pangtong:['male','shu',3,['minirelianhuan','mininiepan'],['tempname:ol_pangtong','die:ol_pangtong']],
 Mbaby_menghuo:['male','shu',5,['minihuoshou','zaiqi'],[]],
 Mbaby_jiangwei:['male','shu',4,['minitiaoxin','minizhiji'],[]],
 Mbaby_liushan:['male','shu',4,['xiangle','minifangquan','miniruoyu'],['zhu']],
@@ -9430,7 +9430,7 @@ Mbaby_wuguotai:['female','wu',3,['miniganlu','minibuyi'],[]],
 Mbaby_xiaoqiao:['female','wu',3,['minitianxiang','olhongyan'],[]],
 Mbaby_xusheng:['male','wu',4,['minirepojun'],[]],
 Mbaby_zhoutai:['male','wu',4,['minirebuqu','fenji','miniqingchuang'],[]],
-Mbaby_zhouyu:['male','wu',3,['minireyingzi','minirefanjian'],['die_audio:sb_zhouyu']],
+Mbaby_zhouyu:['male','wu',3,['minireyingzi','minirefanjian'],['die:sb_zhouyu']],
 Mbaby_zhugejin:['male','wu',3,['huanshi','minihongyuan','mingzhe'],[]],
 Mbaby_zumao:['male','wu',4,['miniyinbing','minijuedi'],[]],
 Mbabysp_xiaoqiao:['female','wu',3,['minixingwu','miniluoyan','minihuimou'],[]],
@@ -9472,7 +9472,7 @@ Mbaby_lvdai:['male','wu',4,['miniqinguo'],[]],
 Mbaby_gaoshun:['male','qun',4,['minixianzhen','minijinjiu'],[]],
 Mbaby_caifuren:['female','qun',3,['minireqieting','minirexianzhou'],[]],
 Mbaby_lijue:['male','qun','5/6',['xinfu_langxi','xinfu_yisuan'],[]],
-Mbaby_zuoci:['male','qun',3,['minishendao','minixinsheng'],['die_audio']],
+Mbaby_zuoci:['male','qun',3,['minishendao','minixinsheng'],[]],
 Mbaby_xuyou:['male','qun',3,['minichenglve','nzry_shicai','nzry_cunmu'],[]],
 Mbaby_gongsunzan:['male','qun',4,['miniqiaomeng','miniyicong'],[]],
 Mbaby_pangde:['male','qun',4,['mashu','minijianchu'],[]],
@@ -9513,11 +9513,11 @@ Mbaby_hetaihou:['female','qun',3,['minizhendu','miniqiluan'],[]],
 Mbaby_wangrong:['female','qun',3,['miniminsi','minijijing','zhuide'],[]],
 Mbaby_sp_menghuo:['male','qun',4,['minimanwang'],[]],
 Mbaby_caoxing:['male','qun',4,['miniliushi','zhanwan'],[]],
-Mbabysp_zhenji:['female','qun',3,['minijinghong','minispluoshen'],['die_audio']],
+Mbabysp_zhenji:['female','qun',3,['minijinghong','minispluoshen'],[]],
 Mbaby_liangxing:['male','qun',4,['minilulve','lxzhuixi'],[]],
 Mbaby_caojie:['female','qun',3,['minishouxi','minihuimin'],[]],
 Mbaby_tangji:['female','qun',3,['minikangge','minijielie'],[]],
-Mbaby_libai:['male','qun',3,['minishixian'],['die_audio']],
+Mbaby_libai:['male','qun',3,['minishixian'],[]],
 Mbaby_guotufengji:['male','qun',3,['minijigong','minishifei'],[]],
 Mbaby_re_nanhualaoxian:['male','qun',4,['minijinghe','minigongxiu'],[]],
 Mbaby_yanfuren:['female','qun',3,['minichanni','mininifu'],[]],
@@ -9533,7 +9533,7 @@ Mbaby_dc_huangchengyan:['male','qun',3,['dcjiezhen','minizecai','dcyinshi'],[]],
 Mbaby_simahui:['male','qun',3,['minijianjie','xinfu_chenghao','miniyinshi'],[]],
 Mbaby_zoushi:['female','qun',3,['minihuoshui','miniqingcheng'],[]],
 Mbaby_wangyun:['male','qun',4,['minilianji','minimoucheng'],['clan:太原王氏']],
-Mbaby_xiaoshan:['female','qun',4,['minishanshan','minianshi'],['die_audio']],
+Mbaby_xiaoshan:['female','qun',4,['minishanshan','minianshi'],[]],
 Mbaby_zhanglu:['male','qun',3,['miniyishe','minibushi','minimidao'],[]],
 Mbaby_zhangning:['female','qun',3,['tianze','minidifa'],[]],
 Mbaby_ol_dingyuan:['male','qun',4,['minicixiao','xianshuai'],[]],
@@ -9550,40 +9550,40 @@ Mbaby_shen_zhouyu:['male','shen',4,['miniqinyin','miniyeyan'],['wu']],
 Mbaby_shen_caocao:['male','shen',3,['miniguixin','feiying'],['wei']],
 Mbaby_shen_liubei:['male','shen',6,['minilongnu','minijieying'],['shu']],
 Mbaby_shen_zhangliao:['male','shen',4,['miniduorui','minizhiti'],['wei']],
-Mbaby_shen_sunquan:['male','shen',4,['miniquantui','minishehu','minidingli'],['die_audio','wu']],
+Mbaby_shen_sunquan:['male','shen',4,['miniquantui','minishehu','minidingli'],['wu']],
 Mbaby_shen_simayi:['male','shen',3,['minirenjie','minijilve','lianpo'],['wei']],
 Mbaby_shen_zhaoyun:['male','shen',2,['minijuejing','minilonghun'],['shu']],
 Mbaby_shen_ganning:['male','shen','3/6',['minipoxi','drlt_jieying'],['wu']],
 Mbaby_shen_dianwei:['male','shen',5,['minishenwei','minielai','minikuangxi'],['wei']],
-Mbaby_shen_huatuo:['male','shen',1,['minijishi','minitaoxian','minishenzhen'],['die_audio','qun']],
+Mbaby_shen_huatuo:['male','shen',1,['minijishi','minitaoxian','minishenzhen'],['qun']],
 Mbaby_shen_guojia:['male','shen',3,['reshuishi','minigjtianyi','minihuishi'],['wei']],
 Mbaby_shen_zhenji:['female','shen',3,['minishenfu','miniqixian','minifeifu'],['wei']],
 Mbaby_shen_daxiaoqiao:['female','shen',4,['minishuangshu','minipingting','miniyizheng'],['wu']],
-Mbaby_shen_diaochan:['female','shen',3,['minimeihun','minihuoxin'],['die_audio','qun']],
-Mbaby_sunwukong:['male','shen',4,['mini72bian','miniruyi','miniqitian'],['die_audio']],
+Mbaby_shen_diaochan:['female','shen',3,['minimeihun','minihuoxin'],['qun']],
+Mbaby_sunwukong:['male','shen',4,['mini72bian','miniruyi','miniqitian'],[]],
 Mbaby_dalanmao:['male','shen',4,['minizuzhou','minimoyu','minisanlian'],[]],
 Mbaby_change:['female','shen','1/4',['minidaoyao','minibenyue'],[]],
 Mbaby_shen_taishici:['male','shen',4,['minidulie','minichongwei','minipowei'],['wu']],
 Mbaby_nvwa:['female','shen','69/159',['minibutian','minilianshi','minituantu'],[]],
 Mbaby_tunxingmenglix:['female','shen',4,['minitunxing','minimengli'],[]],
-Mbaby_shen_zuoci:['male','shen',3,['minihuanshu','minihuanhua','minihuanjing'],['qun','die_audio']],
+Mbaby_shen_zuoci:['male','shen',3,['minihuanshu','minihuanhua','minihuanjing'],['qun']],
 Mbaby_shen_dengai:['male','shen',4,['dctuoyu','minixianjin','dcqijing'],['wei']],
 Mbaby_shen_luxun:['male','shen',4,['nzry_junlve','minicuike','nzry_dinghuo'],['wu']],
 //喵
-Mmiao_caiwenji:['female','qun',3,['minimiaobeige','minimiaoduanchang','minidoumao'],['die_audio']],
-Mmiao_diaochan:['female','qun',3,['minimiaolijian','minimiaobiyue','minidoumao'],['die_audio']],
-Mmiao_caifuren:['female','qun',3,['minimiaoqieting','minimiaoxianzhou','minidoumao'],['die_audio']],
-Mmiao_zhangxingcai:['female','shu',3,['minimiaoshenxian','minimiaoqiangwu','minidoumao'],['die_audio']],
-Mmiao_zhurong:['female','shu',4,['minimiaojuxiang','minimiaolieren','minidoumao'],['die_audio']],
-Mmiao_huangyueying:['female','shu',3,['minimiaojizhi','minimiaoqicai','minidoumao'],['die_audio']],
-Mmiao_daqiao:['female','wu',3,['minimiaoguose','minimiaoliuli','minidoumao'],['die_audio']],
-Mmiao_wangyi:['female','wei',4,['minimiaozhenlie','minimiaomiji','minidoumao'],['die_audio']],
-Mmiao_zhangchunhua:['female','wei',3,['minimiaojueqing','minimiaoshangshi','minidoumao'],['die_audio']],
-Mmiao_zhenji:['female','wei',3,['minimiaoluoshen','minimiaoqingguo','minidoumao'],['die_audio']],
-Mmiao_sunshangxiang:['female','wu',3,['minimiaojieyin','minimiaoxiaoji','minidoumao'],['die_audio']],
-Mmiao_xiaoqiao:['female','wu',3,['minimiaotianxiang','minimiaohongyan','minidoumao'],['die_audio']],
+Mmiao_caiwenji:['female','qun',3,['minimiaobeige','minimiaoduanchang','minidoumao'],[]],
+Mmiao_diaochan:['female','qun',3,['minimiaolijian','minimiaobiyue','minidoumao'],[]],
+Mmiao_caifuren:['female','qun',3,['minimiaoqieting','minimiaoxianzhou','minidoumao'],[]],
+Mmiao_zhangxingcai:['female','shu',3,['minimiaoshenxian','minimiaoqiangwu','minidoumao'],[]],
+Mmiao_zhurong:['female','shu',4,['minimiaojuxiang','minimiaolieren','minidoumao'],[]],
+Mmiao_huangyueying:['female','shu',3,['minimiaojizhi','minimiaoqicai','minidoumao'],[]],
+Mmiao_daqiao:['female','wu',3,['minimiaoguose','minimiaoliuli','minidoumao'],[]],
+Mmiao_wangyi:['female','wei',4,['minimiaozhenlie','minimiaomiji','minidoumao'],[]],
+Mmiao_zhangchunhua:['female','wei',3,['minimiaojueqing','minimiaoshangshi','minidoumao'],[]],
+Mmiao_zhenji:['female','wei',3,['minimiaoluoshen','minimiaoqingguo','minidoumao'],[]],
+Mmiao_sunshangxiang:['female','wu',3,['minimiaojieyin','minimiaoxiaoji','minidoumao'],[]],
+Mmiao_xiaoqiao:['female','wu',3,['minimiaotianxiang','minimiaohongyan','minidoumao'],[]],
 //念
-Mnian_zhugeliang:['male','shu',3,['mininianxinghan','mininianliaoyuan','mininianying_zgl'],['die_audio']],
+Mnian_zhugeliang:['male','shu',3,['mininianxinghan','mininianliaoyuan','mininianying_zgl'],[]],
 },
 characterIntro:{
 Mbaby_change:'嫦娥，中国古代神话中的人物，又名恒我、恒娥、姮娥、常娥、素娥，羿之妻，因偷吃了不死药而飞升至月宫。嫦娥的故事最早出现在商朝卦书 《归藏》。而嫦娥奔月的完整故事最早记载于西汉《淮南子·览冥训》。东汉时期，嫦娥与羿的夫妻关系确立，而嫦娥在进入月宫后变成了捣药的蟾蜍。南北朝以后，嫦娥的形象回归为女儿身。汉画像中，嫦娥人头蛇身，头梳高髻，身着宽袖长襦，身后长尾上饰有倒钩状细短羽毛。南北朝以后，嫦娥的形象被描绘成绝世美女。南朝陈后主陈叔宝曾把宠妃张丽华比作嫦娥。唐朝诗人白居易曾用嫦娥夸赞邻家少女不可多得的容貌。',
@@ -18705,8 +18705,6 @@ inherit:'jie',
 },
 },
 },
-wusheng_guanzhang:{audio:2},
-paoxiao_guanzhang:{audio:2},
 minituodao:{
 audio:'ext:活动武将/audio/skill:2',
 trigger:{player:['useCard','respond']},
@@ -22594,7 +22592,6 @@ return -1;
 },
 },
 },
-rejizhi_lukang:{audio:2},
 minihuairou:{
 audio:'drlt_huairou',
 enable:'phaseUse',
@@ -26014,7 +26011,6 @@ next.setContent(lib.skill.benghuai.content);
 player.draw();
 },
 },
-benghuai_zhugedan:{audio:2},
 miniwansha:{
 audio:'wansha',
 global:'miniwansha2',
@@ -37248,6 +37244,7 @@ else if(MiNikill.translate[i].indexOf('SP欢杀')==0) MiNikill.translate[i+'_pre
 else if(MiNikill.translate[i].indexOf('喵')==0) MiNikill.translate[i+'_prefix']='喵';
 else if(MiNikill.translate[i].indexOf('念')==0) MiNikill.translate[i+'_prefix']='念';
 }
+if(i.startsWith('Mbaby_')&&!MiNikill.character[i][4].some(tag=>typeof tag=='string'&&tag.startsWith('die:'))) MiNikill.character[i][4].push('die:'+i.slice(6));
 MiNikill.character[i][4].push(((lib.device||lib.node)?'ext:':'db:extension-')+'活动武将/image/character/'+i+'.jpg');
 }
 return MiNikill;
@@ -37303,24 +37300,24 @@ wechat_huaxiong:['male','qun',6,['wechatyaowu'],[]],
 wechat_lvmeng:['male','wu',4,['wechatkeji'],[]],
 wechat_xiahoushi:['female','shu',3,['wechatqiaoshi','wechatyanyu'],[]],
 wechat_xushu:['male','shu',3,['wechatwuyan','wechatjujian'],[]],
-wechat_zhaoyun:['male','shu',4,['wechatlongdan','wechatyajiao'],['tempname:re_zhaoyun','die_audio:re_zhaoyun']],
+wechat_zhaoyun:['male','shu',4,['wechatlongdan','wechatyajiao'],['tempname:re_zhaoyun','die:re_zhaoyun']],
 wechat_zhangfei:['male','shu',4,['paoxiao','wechatshemao'],[]],
 wechat_machao:['male','shu',4,['mashu','wechattieji'],[]],
 wechat_yangxiu:['male','wei',3,['wechatdanlao','wechatjilei'],[]],
 wechat_zhoutai:['male','wu',4,['wechatbuqu','wechatfenji'],[]],
-wechat_bianfuren:['female','wei',3,['wechatwanwei','wechatyuejian'],[]],
-wechat_sunluban:['female','wu',3,['wechatchanhui','wechatjiaojin'],['die_audio:xin_sunluban']],
+wechat_bianfuren:['female','wei',3,['wechatwanwei','wechatyuejian'],['die:ol_bianfuren']],
+wechat_sunluban:['female','wu',3,['wechatchanhui','wechatjiaojin'],['die:xin_sunluban']],
 wechat_wuguotai:['female','wu',3,['wechatganlu','buyi'],[]],
 wechat_liubiao:['male','qun',3,['wechatrezishou','wechatzongshi'],[]],
 wechat_liuchen:['male','shu',4,['zhanjue','wechatqinwang'],[]],
-wechat_luxun:['male','wu',3,['wechatreqianxun','relianying'],['die_audio:re_luxun']],
+wechat_luxun:['male','wu',3,['wechatreqianxun','relianying'],['die:re_luxun']],
 wechat_pangtong:['male','shu',3,['lianhuan','wechatniepan','wechathuzhu'],[]],
 wechat_zhangxingcai:['female','shu',3,['wechatshenxian','wechatqiangwu'],[]],
 wechat_zuoci:['male','qun',3,['wechatyigui','wechatshendao'],[]],
 wechat_mayunlu:['female','shu',4,['wechatfengpo','mashu'],[]],
 wechat_caiwenji:['female','qun',3,['wechatbeige','wechatduanchang'],[]],
 wechat_zhaoxiang:['female','shu',4,['wechatrefanghun','wechatrefuhan'],[]],
-wechat_liuqi:['male','qun',3,['spwenji','wechattunjiang'],[]],
+wechat_liuqi:['male','qun',3,['spwenji','wechattunjiang'],['die:sp_liuqi']],
 wechat_caoren:['male','wei',4,['wechatjushou'],[]],
 wechat_jiaxu:['male','qun',3,['wechatwansha','wechatluanwu','weimu'],[]],
 wechat_shenpei:['male','qun','2/3',['wechatshouye','wechatliezhi'],[]],
@@ -37349,7 +37346,7 @@ wechat_caozhang:['male','wei',4,['wechatjiangchi'],[]],
 wechat_caopi:['male','wei',3,['xingshang','wechatfangzhu'],[]],
 wechat_sp_jiangwei:['male','wei',4,['wechatkunfen','wechatfengliang'],[]],
 wechat_caoxiu:['male','wei',4,['qianju','wechatqingxi'],[]],
-wechat_yuanshao:['male','qun',4,['wechatluanji'],[]],
+wechat_yuanshao:['male','qun',4,['wechatluanji'],['die:re_yuanshao']],
 wechat_sundeng:['male','wu',4,['wechatkuangbi'],[]],
 wechat_re_xushu:['male','shu',4,['wechatzhuhai','qianxin'],[]],
 wechat_xiahouba:['male','shu',4,['wechatrebaobian'],[]],
@@ -37390,18 +37387,18 @@ wechat_shen_zhugeliang:['male','shen',3,['wechatqixing','wechatjifeng','wechatti
 wechat_shen_lvmeng:['male','shen',3,['shelie','wechatgongxin'],['wu']],
 wechat_shen_guanyu:['male','shen',5,['wechatwushen'],['shu']],
 //只因武将
-wechat_lvbu:['male','qun',4,['wushuang','wechatxiaohu'],[]],
-wechat_daqiao:['female','wu',3,['wechatjielie','wechatxiangzhi'],['die_audio']],
-wechat_xiaoqiao:['female','wu',3,['wechattongxin','wechatzhaoyan'],['die_audio']],
-wechat_guojia:['male','wei',3,['wechatdingce','wechatsuanlve'],['die_audio']],
-wechat_re_caocao:['male','wei',4,['wechatdelu','wechatzhujiu'],['die_audio']],
-wechat_zhugeliang:['male','shu',3,['wechatsangu','wechatyanshi'],['die_audio']],
-wechat_simayi:['male','wei',3,['wechatyinren','wechatduoquan'],['die_audio']],
-wechat_re_machao:['male','qun',4,['wechatqipao','wechatzhuixi'],['die_audio','doublegroup:shu:qun']],
-wechat_re_huangyueying:['female','shu',3,['wechatmiaobi','wechatrehuixin'],['die_audio']],
-wechat_lusu:['male','wu',3,['wechatlvyuan','wechathezong'],['die_audio']],
-wechat_re_yuanshao:['male','qun',4,['wechathongtu','wechatmengshou'],['die_audio']],
-wechat_re_xuzhu:['male','wei',4,['wechathuhou','wechatwuwei'],['die_audio']],
+wechat_lvbu:['male','qun',4,['wushuang','wechatxiaohu'],['die:true']],
+wechat_daqiao:['female','wu',3,['wechatjielie','wechatxiangzhi'],['die:true']],
+wechat_xiaoqiao:['female','wu',3,['wechattongxin','wechatzhaoyan'],['die:true']],
+wechat_guojia:['male','wei',3,['wechatdingce','wechatsuanlve'],['die:true']],
+wechat_re_caocao:['male','wei',4,['wechatdelu','wechatzhujiu'],['die:true']],
+wechat_zhugeliang:['male','shu',3,['wechatsangu','wechatyanshi'],['die:true']],
+wechat_simayi:['male','wei',3,['wechatyinren','wechatduoquan'],['die:true']],
+wechat_re_machao:['male','qun',4,['wechatqipao','wechatzhuixi'],['doublegroup:shu:qun','die:true']],
+wechat_re_huangyueying:['female','shu',3,['wechatmiaobi','wechatrehuixin'],['die:true']],
+wechat_lusu:['male','wu',3,['wechatlvyuan','wechathezong'],['die:true']],
+wechat_re_yuanshao:['male','qun',4,['wechathongtu','wechatmengshou'],['die:true']],
+wechat_re_xuzhu:['male','wei',4,['wechathuhou','wechatwuwei'],['die:true']],
 },
 characterIntro:{
 },
@@ -44104,6 +44101,7 @@ else if(WeChatkill.translate[i].indexOf('微信')==0) WeChatkill.translate[i+'_p
 else if(WeChatkill.translate[i].indexOf('SP微信')==0) WeChatkill.translate[i+'_prefix']='SP微信';
 else if(WeChatkill.translate[i].indexOf('极')==0) WeChatkill.translate[i+'_prefix']='极';
 }
+if(i.startsWith('wechat_')&&!WeChatkill.character[i][4].some(tag=>typeof tag=='string'&&tag.startsWith('die:'))) WeChatkill.character[i][4].push('die:'+i.slice(7));
 WeChatkill.character[i][4].push(((lib.device||lib.node)?'ext:':'db:extension-')+'活动武将/image/character/'+i+'.jpg');
 }
 return WeChatkill;
@@ -44193,7 +44191,7 @@ mx_fh_lukai:['male','wu',4,['fh_bushi','lkzhongzhuang'],[]],
 mx_fh_kebineng:['male','qun',3,['fh_kousheng'],[]],
 mx_fh_re_huangyueying:['female','shu',3,['fh_jizhi','reqicai'],[]],
 mx_fh_re_zhenji:['female','wei',3,['qingguo','fh_luoshen'],['tempname:re_zhenji']],
-mx_fh_gz_huangzhong:['male','shu',4,['fh_liegong'],['die_audio:huangzhong']],
+mx_fh_gz_huangzhong:['male','shu',4,['fh_liegong'],['die:huangzhong']],
 mx_fh_zhoutai:['male','wu',4,['fh_buqu','fh_fenji'],[]],
 mx_fh_ol_sp_zhugeliang:['male','shu',3,['bazhen','olhuoji','olkanpo','fh_cangzhuo'],['tempname:ol_sp_zhugeliang']],
 mx_fh_re_taishici:['male','wu',3,['tianyi','fh_hanzhan'],['tempname:re_taishici']],
@@ -48726,7 +48724,7 @@ fh_anguo_info:'出牌阶段限一次，你可以选择一名其他角色，若�
 };
 for(var i in MX_feihongyinxue.character){
 MX_feihongyinxue.character[i][4].add('character:'+i.slice(6));
-if(!MX_feihongyinxue.character[i][4].some(tag=>tag.indexOf('die_audio:')==0)) MX_feihongyinxue.character[i][4].add('die_audio:'+i.slice(6));
+if(!MX_feihongyinxue.character[i][4].some(tag=>tag.indexOf('die:')==0)) MX_feihongyinxue.character[i][4].add('die:'+i.slice(6));
 //MX_feihongyinxue.translate[i+'_ab']=MX_feihongyinxue.translate[i].slice(2);
 var trans=MX_feihongyinxue.translate[i];
 if(trans.indexOf('飞鸿神')==0) MX_feihongyinxue.translate[i+'_prefix']=trans.slice(0,3);
@@ -48930,34 +48928,34 @@ bilibili_zhouxiaomei:['female','wu',3,['dchuishu','dcyishu','yingzi','biyue'],[]
 bilibili_zhangrang:['male','qun',3,['bilibili_taoluan'],[]],
 diy_lvmeng:['male','wu',4,['BTkongju','BThouqi'],[]],
 bilibili_wangwang:['female','shu',3,['huguan','yaopei','mingluan'],[]],
-bilibili_wangtao:['female','shu',3,['huguan','yaopei','dualside'],['dualside:bilibili_x_wangyue','character:wangtao']],
-bilibili_wangyue:['female','shu',3,['huguan','mingluan','dualside'],['dualside:bilibili_x_wangtao','character:wangyue','tempname:wangyue']],
-bilibili_x_wangtao:['female','shu',3,['huguan','yaopei','dualside'],['unseen','character:wangtao']],
-bilibili_x_wangyue:['female','shu',3,['huguan','mingluan','dualside'],['unseen','character:wangyue','tempname:wangyue']],
+bilibili_wangtao:['female','shu',3,['huguan','yaopei','dualside'],['dualside:bilibili_x_wangyue','character:wangtao','die:wangtao']],
+bilibili_wangyue:['female','shu',3,['huguan','mingluan','dualside'],['dualside:bilibili_x_wangtao','character:wangyue','tempname:wangyue','die:wangyue']],
+bilibili_x_wangtao:['female','shu',3,['huguan','yaopei','dualside'],['unseen','character:wangtao','die:wangtao']],
+bilibili_x_wangyue:['female','shu',3,['huguan','mingluan','dualside'],['unseen','character:wangyue','tempname:wangyue','die:wangyue']],
 bilibili_guanning:['male','qun','3/7',['BTdunshi'],['forbidai']],
 bilibili_huanggai:['male','wu',4,['bilibili_kurou','bilibili_zhaxiang'],[]],
 bilibili_ekeshaoge:['male','qun',4,['bilibili_xueji','bilibili_hanran'],[]],
 decade_huangwudie:['female','shu',3,['decadexiwu','decadehongzhuang'],[]],
 bilibili_litiansuo:['male','qun',4,['qin_jugu','yijin','twzhouhu','twharvestinori','twzuhuo','twzhouzu','twhuangjin','twguimen','twdidao'],[]],
-bilibili_sp_xuyou:['male','qun',3,['spshicai','bilibili_fushi'],['character:sp_xuyou']],
-lz_sufei:['male','qun',4,['lzlianpian'],['character:xf_sufei','doublegroup:qun:wu']],
-lz_liuqi:['male','shu',3,['spwenji','lztunjiang'],['doublegroup:shu:qun']],
-lz_tangzi:['male','wu',4,['lzxingzhao'],['doublegroup:wu:wei']],
-lz_huangquan:['male','wei',3,['lzdianhu','xinfu_jianji'],['character:xf_huangquan','doublegroup:wei:shu']],
+bilibili_sp_xuyou:['male','qun',3,['spshicai','bilibili_fushi'],['character:sp_xuyou','die:sp_xuyou']],
+lz_sufei:['male','qun',4,['lzlianpian'],['character:xf_sufei','doublegroup:qun:wu','die:xf_sufei']],
+lz_liuqi:['male','shu',3,['spwenji','lztunjiang'],['doublegroup:shu:qun','die:sp_liuqi']],
+lz_tangzi:['male','wu',4,['lzxingzhao'],['doublegroup:wu:wei','die:xf_tangzi']],
+lz_huangquan:['male','wei',3,['lzdianhu','xinfu_jianji'],['character:xf_huangquan','doublegroup:wei:shu','die:xf_huangquan']],
 bilibili_adong:['male','qun',4,['jueman','oljianman'],[]],
-old_zuoci:['male','qun',3,['gz_huashen','gz_xinsheng'],['die_audio']],
+old_zuoci:['male','qun',3,['gz_huashen','gz_xinsheng'],[]],
 bilibili_shengxunyu:['male','key',4,['bilibili_hehu','bilibili_jinyan','bilibili_yutai'],[]],
 bilibili_Firewin:['male','key',4,['jsrgfeiyang','jsrgbahu','bilibili_tixiang'],[]],
 bilibili_jinglingqiu:['male','key','3/4',['bilibili_tiyi','bilibili_zili'],[]],
 bilibili_suixingsifeng:['female','key',4,['bilibili_daili','bilibili_duoyang','bilibili_liaoxing'],[]],
 bilibili_Emptycity:['male','key',4,['bilibili_zhiyou','bilibili_guanli'],[]],
 bilibili_thunderlei:['male','key','2/4/3',['bilibili_Thunder','bilibili_qianxi'],[]],
-bilibili_zhengxuan:['male','qun',3,['bilibili_zhengjing'],['character:zhengxuan']],
+bilibili_zhengxuan:['male','qun',3,['bilibili_zhengjing'],['character:zhengxuan','die:zhengxuan']],
 bilibili_lonelypatients:['male','key',4,['bilibili_meihua','bilibili_gongyou'],[]],
 'bilibili_kuangshen04':['male','shen','4/6',['BTmakeBug','BTtequ','BTguoshou','reqimou','zhaxiang','tairan'],['ext:活动萌扩/image/fd_kuangshen04.jpg']],
 bilibili_shen_guojia:['male','wei','9/9/5',['stianyi','resghuishi','bilibili_huishi'],['doublegroup:shen:wei']],
 bilibili_re_xusheng:['male','wu',4,['bilibili_pojun','kuangcai','bilibili_baodao'],[]],
-bilibili_xushao:['male','qun','1/6',['bilibili_pingjian'],['ext:活动武将/image/character/old_xushao.jpg','die_audio','InitFilter:noZhuHp']],
+bilibili_xushao:['male','qun','1/6',['bilibili_pingjian'],['ext:活动武将/image/character/old_xushao.jpg','InitFilter:noZhuHp']],
 //千里走单骑
 DJ_caiyang:['male','qun',1,['yinka','zhuixi'],['character:caiyang']],
 DJ_pujing:['male','qun',1,['yinka'],['character:pujing']],
