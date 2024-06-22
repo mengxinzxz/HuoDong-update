@@ -58481,6 +58481,7 @@ if(num>1&&player.hasSkillTag('filterDamage',null,{player:trigger.player,card:tri
 return num-Math.abs(get.event().getTrigger().num-button.link.num);
 }).set('forced',!chooseED);
 if(bool){
+chooseED=true;
 const control=links[0];
 target.popup('-'+control.num);
 trigger.num-=control.num;
@@ -58543,16 +58544,12 @@ player.draw();
 mark:true,
 marktext:'☯',
 zhuanhuanji:'number',
+zhuanhuanLimit:3,
 intro:{
-markcount:(storage)=>(storage||0)%3+1,
+markcount:(storage)=>['天','地','人'][(storage||0)%3],
 content(storage,player){
 return '转换技。①一名角色可以将一张基本牌当作【'+['闪电','随机应变','铁索连环'][(storage||0)%3]+'】使用。②当你成为〖蚁附①〗转化的牌的目标后，你摸一张牌。';
 },
-},
-map(name){
-let num={'shandian':0,'tiesuo':2}[name];
-if(typeof num!='number') num=1;
-return num;
 },
 global:'bolyifu_viewAs',
 subSkill:{
@@ -58560,10 +58557,10 @@ viewAs_backup:{},
 viewAs:{
 onChooseToUse(event){
 if(!game.online&&!event.bolyifu){
-let list=[['锦囊','','shandian']],player=event.player,history=player.getHistory('useCard',evt=>get.type(evt.card)=='basic'||get.type(evt.card)=='trick');
+let list=[['延时锦囊','','shandian',undefined,0]],player=event.player,history=player.getHistory('useCard',evt=>get.type(evt.card)=='basic'||get.type(evt.card)=='trick');
 const evt=history[history.length-1];
-if(evt) list.add([get.translation(get.type(evt.card)),'',evt.card.name,evt.card.nature?evt.card.nature:undefined]);
-if(!evt||evt.card.name!='tiesuo') list.add(['锦囊','','tiesuo']);
+if(evt) list.push([get.translation(get.type(evt.card)),'',evt.card.name,evt.card.nature?evt.card.nature:undefined,1]);
+list.push(['锦囊','','tiesuo',undefined,2]);
 event.set('bolyifu',list);
 }
 },
@@ -58573,12 +58570,12 @@ filter(event,player){
 const list=(event.bolyifu||[]);
 if(!list.length) return false;
 const nums=game.filterPlayer(target=>target.hasSkill('bolyifu')).map(target=>target.countMark('bolyifu')%3);
-return list.some(card=>nums.includes(lib.skill.bolyifu.map(card[2]))&&player.hasCard(cardx=>get.type(cardx)=='basic'&&event.filterCard({name:card[2],nature:card[3],storage:{bolyifu:true},cards:[cardx]},player,event),'hes'));
+return list.some(card=>nums.includes(card[4])&&player.hasCard(cardx=>get.type(cardx)=='basic'&&event.filterCard({name:card[2],nature:card[3],storage:{bolyifu:true},cards:[cardx]},player,event),'hes'));
 },
 chooseButton:{
 dialog(event,player){
 const nums=game.filterPlayer(target=>target.hasSkill('bolyifu')).map(target=>target.countMark('bolyifu')%3);
-const list=event.bolyifu.filter(card=>nums.includes(lib.skill.bolyifu.map(card[2]))&&player.hasCard(cardx=>get.type(cardx)=='basic'&&event.filterCard({name:card[2],nature:card[3],storage:{bolyifu:true},cards:[cardx]},player,event),'hes'));
+const list=event.bolyifu.filter(card=>nums.includes(card[4])&&player.hasCard(cardx=>get.type(cardx)=='basic'&&event.filterCard({name:card[2],nature:card[3],storage:{bolyifu:true},cards:[cardx]},player,event),'hes'));
 return ui.create.dialog('蚁附',[list,'vcard']);
 },
 check(button){
@@ -58601,13 +58598,13 @@ name:links[0][2],
 nature:links[0][3],
 storage:{bolyifu:true},
 },
+index:links[0][4],
 async precontent(event,_,player){
 delete event.result.skill;
-let num=lib.skill.bolyifu.map(event.result.card.name);
-const targets=game.filterPlayer(target=>target.hasSkill('bolyifu')&&target.countMark('bolyifu')%3==num);
-for(const i of targets){
-await i.logSkill('bolyifu',player);
-i.changeZhuanhuanji('bolyifu');
+const target=game.findPlayer(target=>target.hasSkill('bolyifu')&&target.countMark('bolyifu')%3==lib.skill.bolyifu_viewAs_backup.index);
+if(target){
+await target.logSkill('bolyifu',player);
+target.changeZhuanhuanji('bolyifu');
 }
 },
 }
