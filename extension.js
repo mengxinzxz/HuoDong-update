@@ -40,6 +40,7 @@ game.bolShowNewPack=function(){
 //更新告示
 var HuoDong_update=[
 '/setPlayer/',
+'bugfix',
 '添加欢杀武将：阎柔',
 'To be continued...',
 ];
@@ -24781,12 +24782,12 @@ player.draw();
 miniqinguo:{
 inherit:'xinfu_qinguo',
 async content(event,trigger,player){
-const result=await player.chooseUseTarget({name:'sha'},get.prompt('xinfu_qinguo'),'视为使用一张【杀】，若此【杀】造成伤害，则你回复1点体力',false).set('logSkill','miniqinguo').forResult();
+const result=await player.chooseUseTarget({name:'sha'},get.prompt('xinfu_qinguo'),'视为使用一张【杀】，若此【杀】造成伤害，则你摸一张牌',false).set('logSkill','miniqinguo').forResult();
 if(result.bool&&game.hasPlayer2(target=>{
 return target.getHistory('damage',evt=>evt.getParent(4)==event).length;
-})&&player.isDamaged()) await player.recover();
+})&&player.isDamaged()) await player.draw();
 },
-group:'miniqingguo_recover',
+group:'miniqinguo_recover',
 subSkill:{
 recover:{
 audio:'qinguo_use',
@@ -36596,7 +36597,7 @@ minijianyi_info:'锁定技，其他角色的回合结束时，若弃牌堆中有
 minishangyi:'尚义',
 minishangyi_info:'出牌阶段限一次，你可以弃置一张牌并选择一名有手牌的其他角色，你令其观看你的手牌，然后你观看其手牌并选择一项：1.获得其中一张牌；2.与其交换一张手牌。若你以此法获得了其的黑色牌，或你与其交换的两张牌均为红色，你摸一张牌。',
 miniqinguo:'勤国',
-miniqinguo_info:'①当你使用的装备牌结算完毕时，你可以视为使用一张【杀】，若此【杀】造成伤害，则你回复1点体力。②当你因使用或失去装备牌导致装备区内牌的数量发生变化后，若你装备区内牌的数量大于等于你的体力值，则你可以回复1点体力。',
+miniqinguo_info:'①当你使用的装备牌结算完毕时，你可以视为使用一张【杀】，若此【杀】造成伤害，则你摸一张牌。②当你因使用或失去装备牌导致装备区内牌的数量发生变化后，若你装备区内牌的数量大于等于你的体力值，则你可以回复1点体力。',
 //群
 Mbaby_zuoci:'欢杀左慈',
 Mbaby_gaoshun:'欢杀高顺',
