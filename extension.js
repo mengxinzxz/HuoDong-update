@@ -37400,6 +37400,9 @@ wechat_re_huangyueying:['female','shu',3,['wechatmiaobi','wechatrehuixin'],['die
 wechat_lusu:['male','wu',3,['wechatlvyuan','wechathezong'],['die:true']],
 wechat_re_yuanshao:['male','qun',4,['wechathongtu','wechatmengshou'],['die:true']],
 wechat_re_xuzhu:['male','wei',4,['wechathuhou','wechatwuwei'],['die:true']],
+wechat_sunce:['male','wu',4,['wechatpingjiang','wechathonglve'],['zhu','die:true']],
+wechat_xunyu:['male','wei',3,['wechatshangjie','wechattunlang']],
+wechat_zhenfu:['female','wei',3,['wechatshenluo','wechatwenzhao','wechatchengxian']],
 },
 characterIntro:{
 },
@@ -43291,6 +43294,347 @@ if(player.canUse(card,target,false)) player.useCard(card,target,false);
 },
 },
 },
+//极孙笨
+wechatpingjiang:{
+audio:'ext:活动武将/audio/skill:2',
+enable:'phaseUse',
+usable:1,
+filter(event,player){
+if(player.hasSkillTag('noCompareSource')) return false;
+return game.hasPlayer(target=>player.canCompare(target));
+},
+filterTarget(card,player,target){
+return player.canCompare(target);
+},
+selectTarget:-1,
+multitarget:true,
+multiline:true,
+async content(event,trigger,player){
+const {result}=await player.chooseToCompare(event.targets,card=>get.number(card)).setContent('chooseToCompareMeanwhile');
+if(result.winner){
+let targetx=[player].addArray(event.targets).sortBySeat(player);
+targetx.remove(result.winner);
+const juedou=get.autoViewAs({name:'juedou'});
+const tragets=targetx.filter(current=>result.winner.canUse(juedou,current,false));
+if(tragets.length) await result.winner.useCard(juedou,tragets,false);
+}
+},
+ai:{
+order:7,
+result:{
+target(player,target){
+if(target.countCards('he')>1) return -3;
+return -1;
+},
+},
+},
+group:'wechatpingjiang_compare',
+subSkill:{
+compare:{
+charlotte:true,
+trigger:{
+player:'compare',
+},
+filter(event,player){
+return event.getParent().name=='wechatpingjiang'&&!event.iwhile&&player.isDamaged();
+},
+forced:true,
+popup:false,
+async content(event,trigger,player){
+const num=player.getDamagedHp();
+trigger.num1+=num;
+if(trigger.num1>13) trigger.num1=13;
+game.log(player,'的拼点牌点数+',num);
+},
+}
+}
+},
+wechathonglve:{
+audio:'ext:活动武将/audio/skill:2',
+enable:'phaseUse',
+usable:1,
+async content(event,trigger,player){
+await player.loseHp();
+player.addTempSkill('wechathonglve_buff',{player:'phaseBegin'});
+},
+ai:{
+order:8,
+result:{
+player(player){
+if((player.countCards('hs',{name:['jiu','tao']})+player.hp>0)&&!player.hasSkill('wechatgonglve_buff',null,null,false)) return 1;
+return get.effect(player,{name:'losehp'},player,player);
+},
+},
+},
+subSkill:{
+buff:{
+trigger:{
+player:'useCard',
+source:'damageBegin1',
+},
+filter(event,player){
+return  event.card&&(event.card.name=='juedou'||(get.color(event.card)=='red'&&event.card.name=='sha'))&&(event.name=='useCard'||player.isDamaged());
+},
+charlotte:true,
+forced:true,
+popup:false,
+async content(event,trigger,player){
+if(trigger.name=='useCard'){
+trigger.directHit.addArray(game.players);
+game.log(trigger.card,'不能被响应');
+}
+else trigger.num+=player.getDamagedHp();
+},
+ai:{
+threaten:1.5,
+directHit_ai:true,
+skillTagFilter(player,tag,arg){
+return arg.card.name=='juedou'||(get.color(arg.card)=='red'&&arg.card.name=='sha');
+},
+},
+}
+}
+},
+//极荀彧
+wechatshangjie:{
+audio:'ext:活动武将/audio/skill:2',
+enable:'chooseToUse',
+filter(event,player){
+if(event.type!='dying') return false;
+const evt=get.event().getParent('_save');
+return evt&&evt.dying&&evt.dying.isIn();
+},
+round:1,
+async content(event,trigger,player){
+const target=event.getParent('_save').dying;
+await target.recoverTo(1);
+const num=player.getHp()-target.getHp();
+if(num>0){
+await player.loseMaxHp(num);
+const cards=[];
+while(cards.length<num){
+const card=get.cardPile2(card=>!cards.includes(card)&&get.type2(card)=='trick');
+if(card) cards.push(card);
+else break;
+}
+if(cards.length) await player.gain(cards,'draw');
+}
+},
+ai:{
+order:1,
+save:true,
+result:{
+player(player){
+if (_status.event.dying) return get.attitude(player, _status.event.dying)*(player.getHp()-1);
+},
+},
+},
+},
+wechattunlang:{
+audio:'ext:活动武将/audio/skill:2',
+trigger:{
+global:'roundStart',
+},
+filter(event,player){
+return game.countPlayer()>1;
+},
+async cost(event,trigger,player){
+event.result=await player.chooseTarget(get.prompt2(event.name.slice(0,-5)),2).set('ai',target=>{
+const player=get.event('player'),att=get.attitude(player,target);
+return -att*(target.countCards('h')+1);
+}).forResult();
+},
+async content(event,trigger,player){
+const targets=event.targets.sortBySeat();
+for(let i=0;i<targets.length;i++){
+const target=targets[i],friend=targets[1-i];
+const skill='wechattunlang_mark_'+friend.playerid;
+if(!lib.skill[skill]){
+game.broadcastAll(skill=>{
+lib.skill[skill]={charlotte:true};
+lib.translate[skill]='吞狼';
+},skill);
+}
+target.addSkill(skill);
+target.markSkillCharacter(skill,friend,'吞狼','与'+get.translation(friend)+'虎狼相斗');
+targets[0].addTempSkill('wechattunlang_effect','roundStart');
+targets[0].markAuto('wechattunlang_effect',[targets[1]]);
+}
+},
+subSkill:{
+mark:{
+charlotte:true,
+intro:{
+onunmark:true,
+},
+},
+effect:{
+charlotte:true,
+onremove(player,skill){
+const targets=[player].concat(player.getStorage(skill));
+delete player.storage[skill];
+for(const i of targets){
+const skills=i.skills.slice().filter(tunlang=>tunlang.startsWith('wechattunlang_mark_'));
+if(skills.length) i.removeSkill(skills);
+}
+},
+trigger:{
+global:['useCardToPlayer','useCardToTarget'],
+},
+filter(event,player,name){
+if(event.card.name!='sha'||!event.targets||event.targets.length!=1) return false;
+const list=[player].concat(player.getStorage('wechattunlang_effect'));
+if(name=='useCardToPlayer') return list.includes(event.player)&&!list.includes(event.targets[0])&&event.targets.length==1&&event.targets[0].isIn();
+return list.includes(event.target)&&!list.includes(event.player);
+},
+getTarget(event,player,name){
+const list=[player].concat(player.getStorage('wechattunlang_effect'));
+return (name=='useCardToPlayer'?event.player:event.target)==player?list.filter(i=>i!=player):[player];
+},
+forced:true,
+popup:false,
+async content(event,trigger,player){
+const name=event.triggername;
+const targets=get.info(event.name).getTarget(trigger,player,name).sortBySeat();
+trigger[name=='useCardToPlayer'?'player':'target'].logSkill(event.name,targets);
+for(const target of targets){
+if(name=='useCardToPlayer'){
+trigger.getParent().targets.add(target);
+trigger.getParent().triggeredTargets1.push(target);
+game.log(target,'成为了',trigger.card,'的额外目标');
+}
+else{
+if(target.isIn()&&target.countCards('h')) await target.chooseToDiscard(true,'吞狼：请弃置一张手牌')
+}
+}
+},
+}
+}
+},
+//极甄宓
+wechatshenluo:{
+audio:'ext:活动武将/audio/skill:2',
+trigger:{
+player:'phaseZhunbeiBegin',
+},
+frequent:true,
+async content(event,trigger,player){
+event.num=0;
+while(true){
+const next=player.judge(card=>{
+return get.color(card)=='black'?1:-1;
+});
+next.set('callback',async event=>{
+const evt=event.getParent(2);
+if(event.judgeResult.color=='black'&&get.position(event.card,true)=='o'){
+await player.gain(event.card,'gain2');
+evt.num++;
+} 
+});
+next.judge2=result=>result.bool;
+const {result:{judge}}=await next;
+if(judge<0) break;
+}
+const num=Math.min(event.num,3-player.countMark('wechatshenluo'));
+if(num) player.addMark('wechatshenluo',num);
+},
+marktext:'昭',
+intro:{
+name:'昭',
+content:"mark",
+},
+},
+wechatwenzhao:{
+audio:'ext:活动武将/audio/skill:2',
+enable:'phaseUse',
+usable:1,
+filter(event,player){
+if(!player.countMark('wechatshenluo')) return false;
+return game.hasPlayer(target=>get.info('wechatwenzhao').filterTarget(null,player,target));
+},
+filterTarget(card,player,target){
+return target.countCards('h')&&target!=player;
+},
+selectTarget(){
+return [1,get.player().countMark('wechatshenluo')];
+},
+async content(event,trigger,player){
+const targets=event.targets.sortBySeat(),num=targets.length;
+while(targets.length){
+const target=targets.shift();
+if(!target.isIn()||!target.countCards('h')) continue;
+const cards=await target.chooseCard(true,'文昭：请展示一张手牌').set('ai',card=>{
+const val=get.event().goon?15:5;
+if(get.color(card)=='black') return val-get.value(card);
+return 7-get.value(card);
+}).set('goon',get.attitude(target,player)>0).forResultCards();
+await target.showCards(cards);
+if(get.color(cards[0],target)=='black') await player.gain(cards[0],target,'giveAuto','bySelf');
+if(get.color(cards[0],target)=='red') await target.discard(cards[0]);
+}
+player.removeMark('wechatshenluo',num);
+},
+ai:{
+order:9,
+result:{
+player:1,
+target:-1,
+},
+combo:'wechatshenluo',
+}
+},
+wechatchengxian:{
+audio:'ext:活动武将/audio/skill:2',
+trigger:{
+player:'phaseJudgeBegin',
+},
+frequent:true,
+async content(event,trigger,player){
+await player.removeAdditionalSkills(event.name);
+const num=player.countMark('wechatshenluo');
+if(num==0) await player.addAdditionalSkills(event.name,'guicai');
+if(num>1&&player.countCards('h',{color:'black'})){
+player.addTempSkill(event.name+'_hand');
+player.addMark(event.name+'_hand',player.countCards('h',{color:'black'}),false);
+}
+if(num>2) await player.addAdditionalSkills(event.name,'qingguo');
+if(num==3){
+player.addTempSkill(event.name+'_sha');
+player.addMark(event.name+'_sha',1,false);
+}
+},
+ai:{
+combo:'wechatshenluo',
+},
+derivation:['guicai','qingguo'],
+subSkill:{
+hand:{
+charlotte:true,
+onremove:true,
+marktext:'贤',
+intro:{
+content:'手牌上限+#',
+},
+mod:{
+maxHandcard(player,num){
+return num+player.countMark('wechatchengxian_hand');
+},
+},
+},
+sha:{
+charlotte:true,
+onremove:true,
+intro:{
+content:'使用【杀】的次数上限+#',
+},
+mod:{
+cardUsable(card,player,num){
+if(card.name=='sha') return num+player.countMark('wechatchengxian_sha');
+},
+},
+}
+}
+},
 //157的阮惠
 wechatmingcha:{
 audio:'mingcha',
@@ -44067,6 +44411,26 @@ wechathuhou:'虎侯',
 wechathuhou_info:'①与你进行【决斗】的角色不能打出【杀】。②你可以将任意张装备牌当作【杀】使用或打出。③以你为伤害来源的【杀】或【决斗】造成的伤害+X（X为此牌对应的实体牌与你使用【决斗】打出的牌中因〖虎侯②〗转化的装备牌数之和）。',
 wechatwuwei:'武卫',
 wechatwuwei_info:'结束阶段，你可以选择一名角色，若如此做，直到你的下个回合开始，其成为伤害类卡牌的目标后，若其体力值不大于你，则你令此牌对其无效，然后使用者于此牌结算完毕后视为对你使用【决斗】（你无法因此【决斗】触发〖武卫〗）。',
+wechat_sunce:'极孙策',
+wechat_sunce_prefix:'极',
+wechatpingjiang:'平江',
+wechatpingjiang_info:'①出牌阶段限一次，你可以所有角色进行同时拼点，拼点赢的角色视为对拼点没赢的角色使用一张【决斗】。②当你因发动〖平江①〗展示拼点牌时，你令此牌的点数+X（	X为你的已损失体力值）。',
+wechathonglve:'宏略',
+wechathonglve_info:'出牌阶段限一次，你可以失去1点体力。若如此做，直到你的下回合开始时，你使用【决斗】或红色【杀】不能被响应且对其他角色造成的伤害+X（X为你的已损失体力值）。',
+wechat_xunyu:'极荀彧',
+wechat_xunyu_prefix:'极',
+wechatshangjie:'尚节',
+wechatshangjie_info:'每轮限一次。当一名角色处于濒死状态时，你可以令其将体力值回复至1点，然后你减少X点体力上限并获得X张锦囊牌（X为你的体力值与该角色的体力值的差值）。',
+wechattunlang:'吞狼',
+wechattunlang_info:'每轮开始时，你可以令两名角色获得以下效果直到本轮结束：①当这些角色使用【杀】指定除对方外的唯一目标时，另一名角色也成为此【杀】的额外目标；②当这些角色成为使用者不为对方的【杀】的唯一目标时，另一名角色须弃置一张手牌。',
+wechat_zhenfu:'极甄宓',
+wechat_zhenfu_prefix:'极',
+wechatshenluo:'神洛',
+wechatshenluo_info:'准备阶段，你可以进行判定，若结果为黑色，则你获得判定牌并重复此流程。然后你获得X个“昭”标记（X为此次判定结果为黑色的次数且你的“昭”标记数至多为3）。',
+wechatwenzhao:'文昭',
+wechatwenzhao_info:'出牌阶段限一次，你可以选择任意名其他角色，这些角色依次展示一张手牌，若其展示牌为：黑色，你获得之；红色：其弃置之。然后你弃置X个“昭”标记（X为本次选择的角色数）。',
+wechatchengxian:'称贤',
+wechatchengxian_info:'判定阶段开始时，你可以根据“昭”标记数获得对应效果：为0：你视为拥有〖鬼才〗；大于1：本回合你的手牌上限+X（X为你的黑色手牌数）；大于2：你视为拥有〖倾城〗；为3：本回合你使用【杀】的次数上限+1。',
 wechat_ruanhui:'微信阮慧',
 wechatmingcha:'明察',
 wechatmingcha_info:'摸牌阶段开始时，你亮出牌堆顶两张牌，然后你可以放弃摸牌并获得其中点数不大于8的牌。若你以此法获得了牌，你可以获得一名其他角色的随机一张牌。',
