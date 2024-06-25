@@ -41,12 +41,13 @@ game.bolShowNewPack=function(){
 var HuoDong_update=[
 '/setPlayer/',
 'bugfix',
+'添加微信杀武将：极孙策、极荀彧、极甄宓（by@xizifu）',
 '添加欢杀武将：阎柔',
 'To be continued...',
 ];
 //更新武将
 var HuoDong_players=[
-'Mbaby_yanrou',
+'Mbaby_yanrou','wechat_sunce','wechat_xunyu','wechat_zhenji',
 ];
 //加载
 var dialog=ui.create.dialog(
@@ -37290,7 +37291,7 @@ characterSort:{
 WeChatkill:{
 wechat_standard:['wechat_jsp_huangyueying','wechat_re_gongsunzan','wechat_guanyinping','wechat_sp_machao','wechat_pangdegong','wechat_gongsunyuan','wechat_xusheng','wechat_yufan','wechat_handang','wechat_wanglang','wechat_huanghao','wechat_caiyong','wechat_yj_huangzhong','wechat_zhangzhang','wechat_chendeng','wechat_taoqian','wechat_kanze','wechat_xuezong','wechat_guyong','wechat_guansuo','wechat_zumao','wechat_yj_jushou','wechat_sp_pangde','wechat_caojie','wechat_zhuling','wechat_caizhenji','wechat_guohuanghou','wechat_yanyan','wechat_liaohua','wechat_liuyao','wechat_quancong','wechat_xiahouba','wechat_sp_jiangwei','wechat_caoxiu','wechat_yuanshao','wechat_sundeng','wechat_re_xushu','wechat_caopi','wechat_caozhang','wechat_buzhi','wechat_sp_taishici','wechat_masu','wechat_caifuren','wechat_jianyong','wechat_lukang','wechat_caozhi','wechat_huangyueying','wechat_weiyan','wechat_gaoshun','wechat_sunliang','wechat_wangping','wechat_sp_caiwenji','wechat_caochong','wechat_huangzhong','wechat_xiahouyuan','wechat_pangde','wechat_sunshangxiang','wechat_xuzhu','wechat_guanyu','wechat_caocao','wechat_shenpei','wechat_jiaxu','wechat_caoren','wechat_liuqi','wechat_zhaoxiang','wechat_caiwenji','wechat_menghuo','wechat_re_yuanshu','wechat_huaxiong','wechat_xiahoushi','wechat_xushu','wechat_zhaoyun','wechat_zhangfei','wechat_machao','wechat_yangxiu','wechat_lvmeng','wechat_zhoutai','wechat_bianfuren','wechat_sunluban','wechat_wuguotai','wechat_liubiao','wechat_liuchen','wechat_luxun','wechat_pangtong','wechat_zhangxingcai','wechat_zuoci','wechat_mayunlu','wechat_ruanhui'],
 wechat_extra:['wechat_shen_zhugeliang','wechat_shen_lvmeng','wechat_shen_guanyu'],
-wechat_zhiyin:['wechat_re_xuzhu','wechat_re_yuanshao','wechat_lusu','wechat_guojia','wechat_lvbu','wechat_daqiao','wechat_xiaoqiao','wechat_re_caocao','wechat_zhugeliang','wechat_simayi','wechat_re_machao','wechat_re_huangyueying'],
+wechat_zhiyin:['wechat_sunce','wechat_xunyu','wechat_zhenji','wechat_re_xuzhu','wechat_re_yuanshao','wechat_lusu','wechat_guojia','wechat_lvbu','wechat_daqiao','wechat_xiaoqiao','wechat_re_caocao','wechat_zhugeliang','wechat_simayi','wechat_re_machao','wechat_re_huangyueying'],
 },
 },
 character:{
@@ -37401,8 +37402,8 @@ wechat_lusu:['male','wu',3,['wechatlvyuan','wechathezong'],['die:true']],
 wechat_re_yuanshao:['male','qun',4,['wechathongtu','wechatmengshou'],['die:true']],
 wechat_re_xuzhu:['male','wei',4,['wechathuhou','wechatwuwei'],['die:true']],
 wechat_sunce:['male','wu',4,['wechatpingjiang','wechathonglve'],['zhu','die:true']],
-wechat_xunyu:['male','wei',3,['wechatshangjie','wechattunlang']],
-wechat_zhenfu:['female','wei',3,['wechatshenluo','wechatwenzhao','wechatchengxian']],
+wechat_xunyu:['male','wei',3,['wechatshangjie','wechattunlang'],['die:true']],
+wechat_zhenji:['female','wei',3,['wechatshenluo','wechatwenzhao','wechatchengxian'],['die:true']],
 },
 characterIntro:{
 },
@@ -44423,8 +44424,8 @@ wechatshangjie:'尚节',
 wechatshangjie_info:'每轮限一次。当一名角色处于濒死状态时，你可以令其将体力值回复至1点，然后你减少X点体力上限并获得X张锦囊牌（X为你的体力值与该角色的体力值的差值）。',
 wechattunlang:'吞狼',
 wechattunlang_info:'每轮开始时，你可以令两名角色获得以下效果直到本轮结束：①当这些角色使用【杀】指定除对方外的唯一目标时，另一名角色也成为此【杀】的额外目标；②当这些角色成为使用者不为对方的【杀】的唯一目标时，另一名角色须弃置一张手牌。',
-wechat_zhenfu:'极甄宓',
-wechat_zhenfu_prefix:'极',
+wechat_zhenji:'极甄宓',
+wechat_zhenji_prefix:'极',
 wechatshenluo:'神洛',
 wechatshenluo_info:'准备阶段，你可以进行判定，若结果为黑色，则你获得判定牌并重复此流程。然后你获得X个“昭”标记（X为此次判定结果为黑色的次数且你的“昭”标记数至多为3）。',
 wechatwenzhao:'文昭',
