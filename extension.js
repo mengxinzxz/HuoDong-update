@@ -9537,7 +9537,7 @@ Mbaby_zoushi:['female','qun',3,['minihuoshui','miniqingcheng'],[]],
 Mbaby_wangyun:['male','qun',4,['minilianji','minimoucheng'],['clan:太原王氏']],
 Mbaby_xiaoshan:['female','qun',4,['minishanshan','minianshi'],[]],
 Mbaby_zhanglu:['male','qun',3,['miniyishe','minibushi','minimidao'],[]],
-Mbaby_zhangning:['female','qun',3,['tianze','minidifa'],[]],
+Mbaby_zhangning:['female','qun',3,['minitianze','minidifa'],[]],
 Mbaby_ol_dingyuan:['male','qun',4,['minicixiao','xianshuai'],[]],
 Mbaby_liubian:['male','qun',3,['shiyuan','minidushi','yuwei'],['zhu']],
 Mbaby_re_pangdegong:['male','qun',3,['miniheqia','yinyi'],[]],
@@ -30982,6 +30982,35 @@ tag:{rejudge:0.6},
 },
 },
 //张宁
+minitianze:{
+audio:'tianze',
+inherit:'tianze',
+trigger:{global:'useCardAfter'},
+filter(event,player){
+return player!=event.player&&event.player.isIn()&&get.color(event.card)=='black'&&event.player.hasHistory('lose',evt=>{
+return evt&&evt.hs.length&&evt.getParent()==event;
+})&&event.player.isPhaseUsing()&&player.hasCard(card=>{
+if(_status.connectMode&&get.position(card)=='h') return true;
+return get.color(card,player)=='black';
+},'he')&&!player.hasSkill('minitianze_block');
+},
+async cost(event,trigger,player){
+event.result=await player.chooseToDiscard('he',(card,player)=>{
+return get.color(card,player)=='black';
+},get.prompt('minitianze',trigger.player),'弃置一张黑色牌并对其造成1点伤害').set('ai',card=>{
+if(!get.event().goon) return 0;
+return 8-get.value(card);
+}).set('goon',get.damageEffect(trigger.player,player,player)>0).set('logSkill',['minitianze',trigger.player]).forResult();
+},
+popup:false,
+async content(event,trigger,player){
+player.addTempSkill('minitianze_block');
+if(get.mode()!='identity'||player.identity!='nei') player.addExpose(0.2);
+await trigger.player.damage();
+await game.asyncDelayx();
+},
+group:'minitianze_draw',
+},
 minidifa:{
 audio:'difa',
 enable:'phaseUse',
@@ -36957,6 +36986,8 @@ minibushi:'布施',
 minibushi_info:'当你受到1点伤害后，或其他角色受到你造成的1点伤害后，你可以选择一张「米」令受伤角色获得之。',
 minimidao:'米道',
 minimidao_info:'一名角色的判定牌生效前，你可以打出一张「米」代替之，然后你摸一张牌。',
+minitianze:'天则',
+minitianze_info:'①每回合限一次，其他角色于其出牌阶段内使用的黑色手牌结算结束后，你可以弃置一张黑色牌，并对其造成1点伤害。②其他角色的判定生效后，若结果为黑色，则你摸一张牌。',
 minidifa:'地法',
 minidifa_info:'出牌阶段限一次，你可以重铸一张红色手牌，然后选择一个锦囊牌的牌名并从牌堆中获得一张此牌名的牌。',
 minicixiao:'慈孝',
