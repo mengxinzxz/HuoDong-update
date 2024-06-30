@@ -18306,7 +18306,7 @@ return lib.skill.rerende.ai.result.target(player,target);
 },
 effect:{
 target:function(card,player,target){
-return lib.skill.rerende.ai.effect.target(card,player,target);
+return lib.skill.rerende.ai.effect.target_use(card,player,target);
 },
 },
 },
