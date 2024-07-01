@@ -49393,7 +49393,7 @@ babybao:'活动群资深元老，隐藏自身实力的高校研究生，为萌�
 },
 characterTitle:{
 sxy_shengxunyu:(()=>new Date().getDay()>5?'周末复活赛打赢ing':'工作日打复活赛ing')(),
-'bilibili_kuangshen04':(()=>(new Date().getDate()==8||new Date().getDate()==24)?'孩子们，我回来了':'复活赛ing')(),
+'bilibili_kuangshen04':(()=>(new Date().getDate()==8||new Date().getDate()==24||(new Date().getMonth()+1==7&&new Date().getDate()==2))?'孩子们，我回来了':'复活赛ing')(),
 },
 characterFilter:{
 bilibili_sp_xuyou:function(mode){
