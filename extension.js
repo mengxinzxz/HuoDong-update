@@ -9276,12 +9276,12 @@ MiNikill:{
 MiNi_wei:['Mbaby_yanrou','Mbaby_dc_yanghu','Mbaby_ruanyu','Mbaby_chengyu','Mbaby_jianggan','Mbaby_yuejin','Mbaby_bianfuren','Mbaby_zhugedan','Mbaby_caohong','Mbaby_guojia','Mbaby_sp_caoren','Mbaby_yinfuren','Mbaby_sp_jiaxu','Mbaby_wenqin','Mbaby_kuailiangkuaiyue','Mbaby_jsp_guanyu','Mbaby_wangji','Mbaby_chenqun','Mbaby_xiahoulingnv','Mbaby_wenyang','Mbaby_sp_pangde','Mbaby_caocao','Mbaby_caozhang','Mbaby_dufuren','Mbaby_simayi','Mbaby_yangxiu','Mbaby_zhangchangpu','Mbaby_zhonghui','Mbaby_sp_jiangwei','Mbaby_caoxiu','Mbaby_xunyou','Mbaby_lidian','Mbaby_zhongyao','Mbaby_caozhen','Mbaby_guohuanghou','Mbaby_xinxianying','Mbaby_xiahouyuan','Mbaby_xizhicai','Mbaby_caorui','Mbaby_xunyu','Mbaby_dengai','Mbaby_caozhi','Mbaby_sp_caiwenji','Mbaby_caoying','Mbaby_caopi','Mbaby_caoang','Mbaby_guojia','Mbaby_zhenji','Mbaby_caoren','Mbaby_wangyi','Mbaby_zhangchunhua','Mbaby_xiahoudun','Mbaby_xuzhu','Mbaby_zhangliao','Mbaby_guohuai','Mbaby_dianwei','Mbaby_zhanghe','Mbaby_yujin','Mbaby_xuhuang'],
 MiNi_shu:['Mbaby_jiangfei','Mbaby_zhangyi','Mbaby_guanzhang','Mbaby_wolongfengchu','Mbaby_wangtao','Mbabysp_zhangfei','Mbaby_wangyue','Mbaby_xf_yiji','Mbaby_mizhu','Mbaby_mifuren','Mbaby_liuyong','Mbaby_ganfuren','Mbaby_sunqian','Mbaby_lvkai','Mbaby_zhoucang','Mbaby_huangyueying','Mbaby_yangwan','Mbaby_liuchen','Mbaby_liyan','Mbaby_chendao','Mbaby_yanyan','Mbaby_xiahouba','Mbaby_huaman','Mbaby_sp_zhugeliang','Mbaby_zhugeguo','Mbaby_jianyong','Mbaby_wangping','Mbaby_mayunlu','Mbaby_guansuo','Mbaby_xiahoushi','Mbaby_shamoke','Mbaby_wuxian','Mbaby_zhugezhan','Mbaby_qinmi','Mbaby_guanyinping','Mbaby_guanyu','Mbaby_zhugeliang','Mbaby_liubei','Mbaby_machao','Mbaby_zhurong','Mbaby_zhangfei','Mbaby_zhaoyun','Mbaby_huangzhong','Mbaby_weiyan','Mbaby_liaohua','Mbaby_pangtong','Mbaby_menghuo','Mbaby_jiangwei','Mbaby_liushan','Mbaby_fazheng','Mbaby_madai','Mbaby_guanping','Mbaby_liufeng','Mbaby_wuyi','Mbaby_zhangxingcai','Mbaby_dongyun','Mbaby_sp_sunshangxiang','Mbaby_xushu','Mbaby_masu'],
 MiNi_wu:['Mbaby_lvdai','Mbaby_jiangqing','Mbaby_re_guyong','Mbaby_quancong','Mbaby_yufan','Mbaby_dc_sunru','Mbaby_sunxiu','Mbaby_zhangfen','Mbaby_xuezong','Mbaby_dingfeng','Mbaby_panjun','Mbaby_sundeng','Mbaby_luji','Mbaby_zhoufang','Mbaby_zhangxuan','Mbaby_yanjun','Mbaby_zhuhuan','Mbaby_luyusheng','Mbaby_re_jsp_pangtong','Mbaby_sunhao','Mbabysp_daqiao','Mbaby_lukang','Mbaby_buzhi','Mbaby_xushi','Mbaby_zhugeke','Mbaby_zhoufei','Mbaby_zhangzhang','Mbaby_sunliang','Mbaby_ol_sunjian','Mbaby_zhuzhi','Mbaby_bulianshi','Mbaby_chengpu','Mbaby_daqiao','Mbaby_ganning','Mbaby_huanggai','Mbaby_lusu','Mbaby_luxun','Mbaby_lvmeng','Mbaby_sunce','Mbaby_sunluban','Mbaby_sunluyu','Mbaby_sunquan','Mbaby_sunshangxiang','Mbaby_taishici','Mbaby_wuguotai','Mbaby_xiaoqiao','Mbaby_xusheng','Mbaby_zhoutai','Mbaby_zhouyu','Mbaby_zhugejin','Mbaby_zumao','Mbabysp_xiaoqiao'],
-MiNi_qun:['Mbaby_dc_huangzu','Mbaby_licaiwei','Mbaby_ol_dingyuan','Mbaby_liubian','Mbaby_re_pangdegong','Mbaby_zhangning','Mbaby_zhanglu','Mbaby_wangyun','Mbaby_zoushi','Mbaby_dc_huangchengyan','Mbaby_simahui','Mbaby_tw_mateng','Mbaby_laiyinger','Mbaby_sp_kongrong','Mbaby_zhujun','Mbaby_gongsunyuan','Mbaby_sp_zhangliao','Mbaby_sp_ol_zhanghe','Mbaby_guotufengji','Mbaby_yanfuren','Mbaby_tangji','Mbaby_caojie','Mbaby_liangxing','Mbabysp_zhenji','Mbaby_caoxing','Mbaby_sp_menghuo','Mbaby_wangrong','Mbaby_hetaihou','Mbaby_sp_taishici','Mbaby_zhangji','Mbaby_dongbai','Mbaby_beimihu','Mbaby_chunyuqiong','Mbaby_zhangqiying','Mbaby_fuhuanghou','Mbaby_liuxie','Mbaby_quyi','Mbaby_jsp_huangyueying','Mbaby_sp_machao','Mbaby_lijue','Mbaby_panfeng','Mbaby_liuzhang','Mbaby_jiaxu','Mbaby_zhangbao','Mbaby_zhangliang','Mbaby_gaoshun','Mbaby_caifuren','Mbaby_xuyou','Mbaby_gongsunzan','Mbaby_pangde','Mbaby_jushou','Mbaby_liru','Mbaby_dongzhuo','Mbaby_zhangjiao','Mbaby_huatuo','Mbaby_lvbu','Mbaby_diaochan','Mbaby_sp_diaochan','Mbaby_huaxiong','Mbaby_yuji','Mbaby_yanwen','Mbaby_caiwenji','Mbaby_liubiao','Mbaby_yuanshao','Mbaby_yuanshu','Mbaby_chengong','Mbaby_zuoci'],
+MiNi_qun:['Mbaby_re_dongzhuo','Mbaby_yanbaihu','Mbaby_dc_huangzu','Mbaby_licaiwei','Mbaby_ol_dingyuan','Mbaby_liubian','Mbaby_re_pangdegong','Mbaby_zhangning','Mbaby_zhanglu','Mbaby_wangyun','Mbaby_zoushi','Mbaby_dc_huangchengyan','Mbaby_simahui','Mbaby_tw_mateng','Mbaby_laiyinger','Mbaby_sp_kongrong','Mbaby_zhujun','Mbaby_gongsunyuan','Mbaby_sp_zhangliao','Mbaby_sp_ol_zhanghe','Mbaby_guotufengji','Mbaby_yanfuren','Mbaby_tangji','Mbaby_caojie','Mbaby_liangxing','Mbabysp_zhenji','Mbaby_caoxing','Mbaby_sp_menghuo','Mbaby_wangrong','Mbaby_hetaihou','Mbaby_sp_taishici','Mbaby_zhangji','Mbaby_dongbai','Mbaby_beimihu','Mbaby_chunyuqiong','Mbaby_zhangqiying','Mbaby_fuhuanghou','Mbaby_liuxie','Mbaby_quyi','Mbaby_jsp_huangyueying','Mbaby_sp_machao','Mbaby_lijue','Mbaby_panfeng','Mbaby_liuzhang','Mbaby_jiaxu','Mbaby_zhangbao','Mbaby_zhangliang','Mbaby_gaoshun','Mbaby_caifuren','Mbaby_xuyou','Mbaby_gongsunzan','Mbaby_pangde','Mbaby_jushou','Mbaby_liru','Mbaby_dongzhuo','Mbaby_zhangjiao','Mbaby_huatuo','Mbaby_lvbu','Mbaby_diaochan','Mbaby_sp_diaochan','Mbaby_huaxiong','Mbaby_yuji','Mbaby_yanwen','Mbaby_caiwenji','Mbaby_liubiao','Mbaby_yuanshao','Mbaby_yuanshu','Mbaby_chengong','Mbaby_zuoci'],
 MiNi_shen:['Mbaby_shen_luxun','Mbaby_shen_dengai','Mbaby_shen_zuoci','Mbaby_shen_taishici','Mbaby_shen_diaochan','Mbaby_shen_daxiaoqiao','Mbaby_shen_zhenji','Mbaby_shen_guojia','Mbaby_shen_huatuo','Mbaby_shen_dianwei','Mbaby_shen_lvbu','Mbaby_shen_zhugeliang','Mbaby_shen_lvmeng','Mbaby_shen_zhouyu','Mbaby_shen_guanyu','Mbaby_shen_liubei','Mbaby_shen_caocao','Mbaby_shen_zhangliao','Mbaby_shen_sunquan','Mbaby_shen_simayi','Mbaby_shen_zhaoyun','Mbaby_shen_ganning','Mbaby_shen_luxun'],
 MiNi_change:['Mbaby_re_nanhualaoxian','Mbaby_re_sunyi','Mbaby_zhaoxiang','Mbaby_xushao','Mbaby_baosanniang','Mbaby_quanhuijie'],
 MiNi_shengzhiyifa:['Mbaby_sunwukong','Mbaby_dalanmao','Mbaby_libai','Mbaby_change','Mbaby_nvwa','Mbaby_tunxingmenglix','Mbaby_xiaoshan'],
 MiNi_sbCharacter:['Mbaby_sb_sunshangxiang','Mbaby_sb_xuhuang','Mbaby_sb_zhaoyun','Mbaby_sb_liubei','Mbaby_sb_caocao','Mbaby_sb_huanggai','Mbaby_sb_yuanshao','Mbaby_sb_yujin','Mbaby_sb_machao','Mbaby_sb_lvmeng','Mbaby_sb_huangzhong'],
-MiNi_miaoKill:['Mmiao_caiwenji','Mmiao_diaochan','Mmiao_caifuren','Mmiao_zhangxingcai','Mmiao_zhurong','Mmiao_huangyueying','Mmiao_daqiao','Mmiao_wangyi','Mmiao_zhangchunhua','Mmiao_zhenji','Mmiao_sunshangxiang','Mmiao_xiaoqiao'],
+MiNi_miaoKill:['Mmiao_caiwenji','Mmiao_diaochan','Mmiao_caifuren','Mmiao_zhangxingcai','Mmiao_zhurong','Mmiao_huangyueying','Mmiao_daqiao','Mmiao_wangyi','Mmiao_zhangchunhua','Mmiao_zhenji','Mmiao_sunshangxiang','Mmiao_xiaoqiao','Mmiao_lvlingqi'],
 MiNi_nianKill:['Mnian_zhugeliang'],
 },
 },
@@ -9543,6 +9543,8 @@ Mbaby_liubian:['male','qun',3,['shiyuan','minidushi','yuwei'],['zhu']],
 Mbaby_re_pangdegong:['male','qun',3,['miniheqia','yinyi'],[]],
 Mbaby_licaiwei:['female','wei',3,['yijiao','miniqibie'],['doublegroup:qun:wei']],
 Mbaby_dc_huangzu:['male','qun',4,['dcjinggong','minixiaojuan'],[]],
+Mbaby_yanbaihu:['male','qun',4,['minizhidao','minybhijili'],[]],
+Mbaby_re_dongzhuo:['male','qun',8,['minirejiuchi','miniroulin','minirebenghuai','olbaonue'],['zhu']],
 //神
 Mbaby_shen_zhugeliang:['male','shen',3,['qixing','minikuangfeng','minidawu'],['shu']],
 Mbaby_shen_lvbu:['male','shen',6,['miniwuqian','minishenfen'],['qun']],
@@ -9584,6 +9586,7 @@ Mmiao_zhangchunhua:['female','wei',3,['minimiaojueqing','minimiaoshangshi','mini
 Mmiao_zhenji:['female','wei',3,['minimiaoluoshen','minimiaoqingguo','minidoumao'],[]],
 Mmiao_sunshangxiang:['female','wu',3,['minimiaojieyin','minimiaoxiaoji','minidoumao'],[]],
 Mmiao_xiaoqiao:['female','wu',3,['minimiaotianxiang','minimiaohongyan','minidoumao'],[]],
+Mmiao_lvlingqi:['female','qun',4,['minimiaozhuangrong','minimiaoguowu','minidoumao'],[]],
 //念
 Mnian_zhugeliang:['male','shu',3,['mininianxinghan','mininianliaoyuan','mininianying_zgl'],[]],
 },
@@ -31383,6 +31386,157 @@ else event.finish();
 if(player.countCards('h')>0) player.chooseToDiscard('h',1,true);
 },
 },
+//white tigger
+minizhidao:{
+audio:'zhidao',
+inherit:'zhidao',
+mod:{
+aiOrder(player,card,num){
+if(num>0&&!player.hasSkill('minizhidao_buff')&&!get.tag(card,'damage')&&(!lib.filter.targetEnabled(card,player,player)||get.effect(player,card,player)<= 0)) return num+10;
+},
+},
+filter(event,player){
+if(event._notrigger.includes(event.player)) return false;
+return player.isPhaseUsing()&&event.player.isIn()&&event.player.countCards('hej')>0&&event.player!=player&&!player.hasSkill('minizhidao_buff');
+},
+logTarget:'player',
+async content(event,trigger,player){
+const target=trigger.player;
+let num=0;
+if(target.countCards('h')) num++;
+if(target.countCards('e')) num++;
+if(target.countCards('j')) num++;
+if(num) await player.gainPlayerCard(target,num,'hej',true).set('filterButton',button=>{
+for(var i=0;i<ui.selected.buttons.length;i++){
+if(get.position(button.link) == get.position(ui.selected.buttons[i].link)) return false;
+}
+return true;
+});
+player.addTempSkill('minizhidao_buff');
+player.markAuto('minizhidao_buff',[target]);
+},
+subSkill:{
+buff:{
+charlotte:true,
+onremove:true,
+intro:{
+content:'本回合不能对$使用牌',
+},
+mod:{
+playerEnabled(card,player,target){
+if(player.getStorage('minizhidao_buff').includes(target)) return false;
+},
+}
+}
+}
+},
+minybhijili:{
+audio:'jili',
+inherit:'jili',
+async content(event,trigger,player){
+trigger.getParent().targets.add(player);
+trigger.player.line(player,'green');
+player.when({global:'useCardAfter'}).filter(evt=>evt==trigger.getParent()&&game.hasPlayer(current=>current.hasHistory('damage',evt=>evt.card&&evt.card==trigger.card))).then(()=>{
+player.draw();
+})
+},
+},
+//界坤姐
+minirejiuchi:{
+audio:'oljiuchi',
+inherit:'oljiuchi',
+filterCard(card){
+return get.color(card)=='black';
+},
+position:'hes',
+viewAsFilter(player){
+return player.hasCard(card=>get.color(card)=='black','hes');
+},
+prompt(){
+if(get.event().name=='chooseToUse') return '将一张黑色牌当酒使用';
+return get.prompt('minirejiuchi');
+},
+prompt2(event,player){
+return '摸一张牌并令【崩坏】本回合失效';
+},
+filter(event,player){
+if(event.name=='chooseToUse') return player.hasCard(card=>get.color(card)=='black','hes')
+return event.card&&event.card.name=='sha'&&event.getParent(2).jiu==true ;
+},
+forced:false,
+content(){
+player.draw();
+if(!player.hasSkill('minirejiuchi_air',null,null,false)) player.addTempSkill('minirejiuchi_air');
+},
+subSkill:{
+air:{
+charlotte:true,
+}
+}
+},
+miniroulin:{
+audio:'roulin',
+inherit:'roulin',
+filter(event,player){
+if(event.card.name!='sha') return false;
+if(player.hasSkill('minirebenghuai_all',null,null,false)) return true;
+if(player==event.player){
+return event.target.hasSex('female');
+}
+return event.player.hasSex('female');
+},
+async content(event,trigger,player){
+const id=(player==trigger.player?trigger.target:player).playerid;
+const map=trigger.getParent().customArgs;
+if(!map[id]) map[id]={};
+if(typeof map[id].shanRequired=='number'){
+map[id].shanRequired++;
+}else{
+map[id].shanRequired=2;
+}
+player.when({global:'useCardAfter'}).filter(evt=>evt==trigger.getParent()&&!game.hasPlayer(current=>current.hasHistory('damage',evt=>evt.card&&evt.card==trigger.card))).then(()=>{
+let card=get.cardPile2(card=>get.color(card)=='black')
+if(card) player.gain(card,'draw');
+})
+},
+ai:{
+halfneg:true,
+directHit_ai:true,
+skillTagFilter(player,tag,arg){
+if(tag==='directHit_ai') return;
+if(arg.card.name!='sha'||(!arg.target.hasSex('female')&&!(player.hasSkill('minirebenghuai_all',null,null,false)))||arg.target.countCards('h','shan')>1) return false;
+},
+},
+},
+minirebenghuai:{
+audio:'benghuai',
+inherit:'minibenghuai',
+filter(event,player){
+return !player.isMinHp()&&!player.hasSkill('minirejiuchi_air')&&!player.hasSkill('rejiuchi_air') && !player.hasSkill('oljiuchi_air');
+},
+group:'minirebenghuai_buff',
+subSkill:{
+buff:{
+trigger:{
+player:'phaseBegin',
+},
+filter(event,player){
+return player.isMinHp();
+},
+forced:true,
+async content(event,trigger,player){
+player.addTempSkill('minirebenghuai_all');
+},
+},
+all:{
+charlotte:true,
+mark:true,
+intro:{
+content:'本回合〖肉林〗对所有角色生效',
+}
+}
+}
+},
 //神
 miniwuqian:{
 derivation:'wushuang',
@@ -35512,6 +35666,64 @@ player.recover();
 player.draw();
 },
 },
+//喵607
+minimiaozhuangrong:{
+audio:'zhuangrong',
+inherit:'zhuangrong',
+async content(event,trigger,player){
+player.awakenSkill(event.name);
+await player.loseMaxHp();
+if(player.maxHp>player.hp) await player.recover(player.maxHp-player.hp);
+await player.drawTo(Math.min(5,player.maxHp));
+await player.addSkills(get.info(event.name).derivation);
+},
+derivation:['mllqshenwei','wushuang'],
+},
+mllqshenwei:{
+audio:'llqshenwei',
+inherit:'llqshenwei',
+async content(event,trigger,player){
+const num=player.hasSkill('minidoumao',null,null,false)?2:3;
+trigger.num+=num;
+},
+mod:{
+maxHandcard(player,num){
+const numx=player.hasSkill('minidoumao',null,null,false)?2:1;
+return num+numx;
+},
+},
+},
+minimiaoguowu:{
+audio:'guowu',
+inherit:'guowu',
+async content(event,trigger,player){
+const hs=player.getCards('h'),num=hs.map(card=>get.type2(card,player)).toUniqued().length;
+await player.showCards(hs,get.translation(player)+'发动了【帼武】');
+if(num>=1){
+const card=get.discardPile(card=>get.type(card)=='trick');
+if(card) await player.gain(card,'gain2');
+}
+if(num>=2) player.addTempSkill('guowu_dist','phaseUseAfter');
+if(num>=3) player.addTempSkill('minimiaoguowu_buff','phaseUseAfter');
+},
+subSkill:{
+buff:{
+charlotte:true,
+trigger:{
+player:'useCard',
+},
+filter(event,player){
+if(event.card.name!='sha'&&get.type(event.card)!='trick') return false;
+return player.getHistory('useCard',evt=>evt.isPhaseUsing()&&(evt.card.name=='sha'||get.type(evt.card)=='trick')).indexOf(event)==0;
+},
+prompt2:'令此牌额外结算一次',
+async content(event,trigger,player){
+trigger.effectCount++;
+game.log(trigger.card,'额外结算一次');
+},
+}
+}
+}, 
 //念
 mininianying:{
 subSkill:{
@@ -36701,6 +36913,8 @@ Mbaby_liubian:'欢杀刘辩',
 Mbaby_re_pangdegong:'欢杀庞德公',
 Mbaby_licaiwei:'欢杀李采薇',
 Mbaby_dc_huangzu:'欢杀黄组',
+Mbaby_yanbaihu:'欢杀严虎',
+Mbaby_re_dongzhuo:'欢杀界董卓',
 miniweidi:'伪帝',
 miniweidi_info:'弃牌阶段结束时，你可以将其中一张弃置的牌交给一名其他角色。',
 minimingce:'明策',
@@ -37002,6 +37216,16 @@ miniqibie:'泣别',
 miniqibie_info:'一名角色死亡后，你可以弃置任意张手牌，然后回复1点体力并摸X+1张牌（X为你弃置的牌数）。',
 minixiaojuan:'骁隽',
 minixiaojuan_info:'当你使用牌指定其他角色为唯一目标后，你可以弃置其一半的手牌（向上取整）。若这些牌中有与你使用牌花色相同的牌，则你弃置一张手牌。',
+minizhidao:'雉盗',
+minizhidao_info:'锁定技，当你于出牌阶段内第一次对区域里有牌的其他角色造成伤害后，你获得其手牌、装备区和判定区里的各一张牌，然后直到回合结束，本回合你不能对其使用牌。',
+minybhijili:'寄篱',
+minybhijili_info:'锁定技，当一名其他角色成为红色基本牌或红色普通锦囊牌的目标时，若其与你的距离为1且你既不是此牌的使用者也不是目标，你也成为此牌的目标。若此牌造成伤害，你摸一张牌。',
+minirejiuchi:'酒池',
+minirejiuchi_info:'你可以将一张黑色牌当做【酒】使用。你使用【酒】无次数限制，且当你于回合内使用带有【酒】效果的【杀】造成伤害后，你可以摸一张牌并令〖崩坏〗失效直到回合结束。',
+miniroulin:'肉林',
+miniroulin_info:'锁定技。你对女性角色、女性角色对你使用【杀】时，都需连续使用两张【闪】才能抵消。此【杀】结算结束后，若此牌未造成伤害，你摸一张黑色牌。',
+minirebenghuai:'崩坏',
+minirebenghuai_info:'锁定技，结束阶段，若你的体力不为全场最少，你须减1点体力或体力上限，然后摸一张牌。你的回合开始时，若你的体力为全场最少，本回合〖肉林〗改为对所有角色生效。',
 //神
 Mbaby_shen_lvbu:'欢杀神吕布',
 Mbaby_shen_guanyu:'欢杀神关羽',
@@ -37187,6 +37411,7 @@ Mmiao_zhangchunhua:'喵张春华',
 Mmiao_zhenji:'喵甄宓',
 Mmiao_sunshangxiang:'喵孙尚香',
 Mmiao_xiaoqiao:'喵小乔',
+Mmiao_lvlingqi:'喵吕玲绮',
 minidoumao:'逗猫',
 minidoumao_info:'①回合开始时，你可以弃置一张牌并选择一名其他角色，你失去〖逗猫〗并令其获得〖逗猫〗，然后其摸一张牌。②回合结束时，你弃置一张牌。',
 minimiaobeige:'悲歌',
@@ -37240,6 +37465,12 @@ minimiaotianxiang2:'天香',
 minimiaotianxiang_info:'当你受到伤害时，你可以将一张红桃牌交给一名其他角色并将此伤害转移给其。若如此做，此伤害结算完毕后，若其拥有技能〖逗猫〗，你对其造成1点伤害；没有技能〖逗猫〗，你弃置其一张牌。',
 minimiaohongyan:'红颜',
 minimiaohongyan_info:'锁定技。①你的黑桃牌视为红桃牌。②没有技能〖逗猫〗的角色的红桃判定牌生效后，你回复1点体力并摸一张牌。',
+minimiaozhuangrong:'妆戎',
+minimiaozhuangrong_info:'觉醒技，每回合结束时，若你的体力值或手牌数为1，你减少1点体力上限并回复体力至上限，将手牌摸至体力上限，然后获得〖神威〗和〖无双〗。',
+mllqshenwei:'神威',
+mllqshenwei_info:'锁定技。摸牌阶段，你令额外摸牌数+X；你的手牌上限+Y（若你没有〖逗猫〗，则X为3，Y为1，否则X为2，Y为2）。',
+minimiaoguowu:'帼武',
+minimiaoguowu_info:'出牌阶段开始时，你可以展示所有手牌，根据你展示的类型数，你获得对应效果：至少一类，从弃牌堆获得一张普通锦囊牌；至少两类，此阶段使用牌无距离限制；至少三类，此阶段使用首张【杀】或普通锦囊牌可以令之额外结算一次。',
 //念
 Mnian_zhugeliang:'念诸葛亮',
 mininianxinghan:'兴汉',
@@ -37272,6 +37503,7 @@ if(MiNikill.translate[i]){
 if(MiNikill.translate[i].indexOf('欢杀神')==0) MiNikill.translate[i+'_prefix']='欢杀神';
 else if(MiNikill.translate[i].indexOf('SP欢杀神')==0) MiNikill.translate[i+'_prefix']='SP欢杀神';
 else if(MiNikill.translate[i].indexOf('欢杀谋')==0) MiNikill.translate[i+'_prefix']='欢杀谋';
+else if(MiNikill.translate[i].indexOf('欢杀界')==0) MiNikill.translate[i+'_prefix']='欢杀界';
 else if(MiNikill.translate[i].indexOf('欢杀')==0) MiNikill.translate[i+'_prefix']='欢杀';
 else if(MiNikill.translate[i].indexOf('SP欢杀')==0) MiNikill.translate[i+'_prefix']='SP欢杀';
 else if(MiNikill.translate[i].indexOf('喵')==0) MiNikill.translate[i+'_prefix']='喵';
@@ -37308,6 +37540,9 @@ getSpan:(prefix,name)=>`${get.prefixSpan('SP')}${get.prefixSpan('欢杀')}${get.
 });
 lib.namePrefix.set('欢杀谋',{
 getSpan:(prefix,name)=>`${get.prefixSpan('欢杀')}${get.prefixSpan('谋')}`,
+});
+lib.namePrefix.set('欢杀界',{
+getSpan:(prefix,name)=>`${get.prefixSpan('欢杀')}${get.prefixSpan('界')}`,
 });
 lib.config.all.characters.push('MiNikill');
 lib.config.all.sgscharacters.push('MiNikill');
