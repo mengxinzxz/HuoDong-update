@@ -619,301 +619,301 @@ export function precontent(bilibilicharacter) {
         game.import('character', FaDongCharacter);
         lib.config.all.characters.push('FaDongCharacter');
         lib.config.all.sgscharacters.push('FaDongCharacter');
-        if(!lib.config.characters.includes('FaDongCharacter')) lib.config.characters.remove('FaDongCharacter');
-        lib.translate['FaDongCharacter_character_config']='<span style="font-family: xingkai">诸侯伐董</span>';
+        if (!lib.config.characters.includes('FaDongCharacter')) lib.config.characters.remove('FaDongCharacter');
+        lib.translate['FaDongCharacter_character_config'] = '<span style="font-family: xingkai">诸侯伐董</span>';
         //生肖年兽
         game.import('character', NianShouCharacter);
         lib.config.all.characters.push('NianShouCharacter');
         lib.config.all.sgscharacters.push('NianShouCharacter');
-        if(!lib.config.characters.includes('NianShouCharacter')) lib.config.characters.remove('NianShouCharacter');
-        lib.translate['NianShouCharacter_character_config']='<span style="font-family: xingkai">生肖&年兽</span>';
+        if (!lib.config.characters.includes('NianShouCharacter')) lib.config.characters.remove('NianShouCharacter');
+        lib.translate['NianShouCharacter_character_config'] = '<span style="font-family: xingkai">生肖&年兽</span>';
         //合纵抗秦
-        game.bolAddGroupNature(['daqin','秦'],[255,165,0]);
+        game.bolAddGroupNature(['daqin', '秦'], [255, 165, 0]);
         game.import('character', hezongkangqincharacter);
         lib.config.all.characters.push('hezongkangqincharacter');
         lib.config.all.sgscharacters.push('hezongkangqincharacter');
-        if(!lib.config.characters.includes('hezongkangqincharacter')) lib.config.characters.remove('hezongkangqincharacter');
-        lib.translate['hezongkangqincharacter_character_config']='<span style="font-family: xingkai">合纵抗秦</span>';
+        if (!lib.config.characters.includes('hezongkangqincharacter')) lib.config.characters.remove('hezongkangqincharacter');
+        lib.translate['hezongkangqincharacter_character_config'] = '<span style="font-family: xingkai">合纵抗秦</span>';
         //戚宦之争——我补完了！！！
         game.import('character', decadeQiHuan);
         lib.config.all.characters.push('decadeQiHuan');
         lib.config.all.sgscharacters.push('decadeQiHuan');
-        if(!lib.config.characters.includes('decadeQiHuan')) lib.config.characters.remove('decadeQiHuan');
-        lib.translate['decadeQiHuan_character_config']='<span style="font-family: xingkai">戚宦之争</span>';
+        if (!lib.config.characters.includes('decadeQiHuan')) lib.config.characters.remove('decadeQiHuan');
+        lib.translate['decadeQiHuan_character_config'] = '<span style="font-family: xingkai">戚宦之争</span>';
         //捉鬼驱邪
         game.import('character', decadeZhuoGui);
         lib.config.all.characters.push('decadeZhuoGui');
         lib.config.all.sgscharacters.push('decadeZhuoGui');
-        if(!lib.config.characters.includes('decadeZhuoGui')) lib.config.characters.remove('decadeZhuoGui');
-        lib.translate['decadeZhuoGui_character_config']='<span style="font-family: xingkai">捉鬼驱邪</span>';
+        if (!lib.config.characters.includes('decadeZhuoGui')) lib.config.characters.remove('decadeZhuoGui');
+        lib.translate['decadeZhuoGui_character_config'] = '<span style="font-family: xingkai">捉鬼驱邪</span>';
         //魁拔
         game.import('character', decadeKuiBa);
         lib.config.all.characters.push('decadeKuiBa');
         lib.config.all.sgscharacters.push('decadeKuiBa');
-        if(!lib.config.characters.includes('decadeKuiBa')) lib.config.characters.remove('decadeKuiBa');
-        lib.translate['decadeKuiBa_character_config']='<span style="font-family: xingkai">十周年魁拔</span>';
+        if (!lib.config.characters.includes('decadeKuiBa')) lib.config.characters.remove('decadeKuiBa');
+        lib.translate['decadeKuiBa_character_config'] = '<span style="font-family: xingkai">十周年魁拔</span>';
         //超时空密探
         game.import('character', HD_chaoshikong);
         lib.config.all.characters.push('HD_chaoshikong');
         lib.config.all.sgscharacters.push('HD_chaoshikong');
-        if(!lib.config.characters.includes('HD_chaoshikong')) lib.config.characters.remove('HD_chaoshikong');
-        lib.translate['HD_chaoshikong_character_config']='<span style="font-family: xingkai">超时空密探</span>';
+        if (!lib.config.characters.includes('HD_chaoshikong')) lib.config.characters.remove('HD_chaoshikong');
+        lib.translate['HD_chaoshikong_character_config'] = '<span style="font-family: xingkai">超时空密探</span>';
         //欢乐三国杀
         game.import('character', MiNikill);
-        lib.namePrefix.set('喵',{
-        color:'#fdd559',
-        nature:'soilmm',
+        lib.namePrefix.set('喵', {
+            color: '#fdd559',
+            nature: 'soilmm',
         });
-        lib.namePrefix.set('念',{
-        color:'#bf3eff',
-        nature:'soilmm',
+        lib.namePrefix.set('念', {
+            color: '#bf3eff',
+            nature: 'soilmm',
         });
-        lib.namePrefix.set('欢杀',{
-        color:'#ff6a6a',
-        nature:'MXpink',
-        showName:'欢',
+        lib.namePrefix.set('欢杀', {
+            color: '#ff6a6a',
+            nature: 'MXpink',
+            showName: '欢',
         });
-        lib.namePrefix.set('SP欢杀',{
-        color:'#fdd559',
-        nature:'soilmm',
-        getSpan:(prefix,name)=>`${get.prefixSpan('SP')}${get.prefixSpan('欢杀')}`,
+        lib.namePrefix.set('SP欢杀', {
+            color: '#fdd559',
+            nature: 'soilmm',
+            getSpan: (prefix, name) => `${get.prefixSpan('SP')}${get.prefixSpan('欢杀')}`,
         });
-        lib.namePrefix.set('欢杀神',{
-        getSpan:(prefix,name)=>`${get.prefixSpan('欢杀')}${get.prefixSpan('神')}`,
+        lib.namePrefix.set('欢杀神', {
+            getSpan: (prefix, name) => `${get.prefixSpan('欢杀')}${get.prefixSpan('神')}`,
         });
-        lib.namePrefix.set('SP欢杀神',{
-        getSpan:(prefix,name)=>`${get.prefixSpan('SP')}${get.prefixSpan('欢杀')}${get.prefixSpan('神')}`,
+        lib.namePrefix.set('SP欢杀神', {
+            getSpan: (prefix, name) => `${get.prefixSpan('SP')}${get.prefixSpan('欢杀')}${get.prefixSpan('神')}`,
         });
-        lib.namePrefix.set('欢杀谋',{
-        getSpan:(prefix,name)=>`${get.prefixSpan('欢杀')}${get.prefixSpan('谋')}`,
+        lib.namePrefix.set('欢杀谋', {
+            getSpan: (prefix, name) => `${get.prefixSpan('欢杀')}${get.prefixSpan('谋')}`,
         });
         lib.config.all.characters.push('MiNikill');
         lib.config.all.sgscharacters.push('MiNikill');
-        if(!lib.config.characters.includes('MiNikill')) lib.config.characters.remove('MiNikill');
-        lib.translate['MiNikill_character_config']='<span style="font-family: xingkai">欢乐三国杀</span>';
+        if (!lib.config.characters.includes('MiNikill')) lib.config.characters.remove('MiNikill');
+        lib.translate['MiNikill_character_config'] = '<span style="font-family: xingkai">欢乐三国杀</span>';
         //微信三国杀
         game.import('character', WeChatkill);
-        lib.namePrefix.set('极',{
-        color:'#fdd559',
-        nature:'soilmm',
+        lib.namePrefix.set('极', {
+            color: '#fdd559',
+            nature: 'soilmm',
         });
-        lib.namePrefix.set('微信',{
-        color:'#00cd00',
-        nature:'MXgreen',
-        showName:'微',
+        lib.namePrefix.set('微信', {
+            color: '#00cd00',
+            nature: 'MXgreen',
+            showName: '微',
         });
-        lib.namePrefix.set('SP微信',{
-        getSpan:(prefix,name)=>`${get.prefixSpan('SP')}${get.prefixSpan('微信')}`,
+        lib.namePrefix.set('SP微信', {
+            getSpan: (prefix, name) => `${get.prefixSpan('SP')}${get.prefixSpan('微信')}`,
         });
-        lib.namePrefix.set('微信神',{
-        getSpan:(prefix,name)=>`${get.prefixSpan('微信')}${get.prefixSpan('神')}`,
+        lib.namePrefix.set('微信神', {
+            getSpan: (prefix, name) => `${get.prefixSpan('微信')}${get.prefixSpan('神')}`,
         });
-        lib.namePrefix.set('SP微信神',{
-        getSpan:(prefix,name)=>`${get.prefixSpan('SP')}${get.prefixSpan('微信')}${get.prefixSpan('神')}`,
+        lib.namePrefix.set('SP微信神', {
+            getSpan: (prefix, name) => `${get.prefixSpan('SP')}${get.prefixSpan('微信')}${get.prefixSpan('神')}`,
         });
-        lib.namePrefix.set('微信☆',{
-        getSpan:(prefix,name)=>`${get.prefixSpan('微信')}${get.prefixSpan('☆')}`,
+        lib.namePrefix.set('微信☆', {
+            getSpan: (prefix, name) => `${get.prefixSpan('微信')}${get.prefixSpan('☆')}`,
         });
         lib.config.all.characters.push('WeChatkill');
         lib.config.all.sgscharacters.push('WeChatkill');
-        if(!lib.config.characters.includes('WeChatkill')) lib.config.characters.remove('WeChatkill');
-        lib.translate['WeChatkill_character_config']='<span style="font-family: xingkai">微信三国杀</span>';
+        if (!lib.config.characters.includes('WeChatkill')) lib.config.characters.remove('WeChatkill');
+        lib.translate['WeChatkill_character_config'] = '<span style="font-family: xingkai">微信三国杀</span>';
         //线下--飞鸿印雪
         game.import('character', MX_feihongyinxue);
-        lib.namePrefix.set('飞鸿',{
-        color:'#ff6a6a',
-        nature:'IndianRed1',
-        showName:'鸿',
+        lib.namePrefix.set('飞鸿', {
+            color: '#ff6a6a',
+            nature: 'IndianRed1',
+            showName: '鸿',
         });
-        lib.namePrefix.set('飞鸿神',{
-        getSpan:()=>`${get.prefixSpan('飞鸿')}${get.prefixSpan('神')}`
+        lib.namePrefix.set('飞鸿神', {
+            getSpan: () => `${get.prefixSpan('飞鸿')}${get.prefixSpan('神')}`
         });
         lib.config.all.characters.push('MX_feihongyinxue');
         lib.config.all.sgscharacters.push('MX_feihongyinxue');
-        if(lib.config.characters.includes('MX_feihongyinxue')){
-        //飞鸿新机制
-        lib.arenaReady.push(()=>{
-        //把银月枪加入牌堆
-        lib.card.list.push(['diamond',12,'fh_yinyueqiang']);
-        //额外牌堆
-        if(!_status.fh_cardPile){
-        _status.fh_cardPile=[];
-        var cardList=[
-        //基本牌
-        ['club',4,'sha'],
-        ['diamond',2,'shan'],
-        ['heart',6,'tao'],
-        ['spade',9,'jiu'],
-        ['heart',4,'sha','fire'],
-        ['spade',4,'sha','thunder'],
-        //锦囊牌
-        ['heart',8,'wuzhong'],
-        ['heart',4,'wugu'],
-        ['spade',3,'guohe'],
-        ['diamond',3,'shunshou'],
-        ['diamond',2,'huogong'],
-        ['diamond',1,'juedou'],
-        ['spade',13,'nanman'],
-        ['heart',1,'wanjian'],
-        ['heart',13,'wuxie'],
-        ['heart',6,'lebu'],
-        ['spade',10,'bingliang'],
-        ['club',12,'tiesuo'],
-        ['heart',12,'shandian'],
-        ['club',13,'jiedao'],
-        ['heart',1,'taoyuan'],
-        //装备牌
-        ['spade',2,'baguazhen'],
-        ['club',2,'renwang'],
-        ['spade',2,'tengjia'],
-        ['club',1,'baiyin'],
-        ['club',5,'dilu'],
-        ['heart',5,'chitu'],
-        ['spade',13,'dayuan'],
-        ['diamond',13,'zixin'],
-        ['diamond',13,'hualiu'],
-        ['heart',13,'zhuahuang'],
-        ['spade',5,'jueying'],
-        ['diamond',1,'zhuge'],
-        ['spade',6,'qinggang'],
-        ['spade',1,'guding'],
-        ['spade',2,'hanbing'],
-        ['spade',2,'cixiong'],
-        ['spade',5,'qinglong'],
-        ['spade',12,'zhangba'],
-        ['diamond',5,'guanshi'],
-        ['diamond',1,'zhuque'],
-        ['diamond',12,'fangtian'],
-        ['heart',5,'qilin'],
-        ];
-        _status.fh_cardPile.addArray(cardList.filter(card=>{
-        return lib.card.list.some(cardx=>card[0]==cardx[0]&&card[1]==cardx[1]&&card[2]==cardx[2]&&((!card[3]&&!cardx[3])||(card[3]==cardx[3])));
-        }));
-        var names=lib.card.list.filter(cardx=>!cardList.some(card=>card[2]==cardx[2])).reduce((list,card)=>list.add(card[2]),[]);
-        names.forEach(name=>{
-        var card=lib.card.list.find(card=>card[2]==name);
-        if(card) _status.fh_cardPile.push(card);
-        });
-        _status.fh_cardPile=_status.fh_cardPile.map(card=>game.createCard2(card[2],card[0],card[1],card[3]));
-        _status.fh_cardPile.forEach(card=>card.fh_extra=true);
-        ui.fh_linfo=ui.create.system('飞鸿·额外牌堆',null,true);
-        lib.setPopped(ui.fh_linfo,function(){
-        var uiintro=ui.create.dialog('hidden');
-        if(!_status.fh_cardPile) uiintro.add('本局游戏未开启额外牌堆');
-        else if(!_status.fh_cardPile.length) uiintro.add('额外牌堆暂时没有牌');
-        else{
-        uiintro.add('额外牌堆');
-        uiintro.addSmall([_status.fh_cardPile,'card']);
-        uiintro.add('<div class="text center">额外牌堆由牌堆中所有牌的各一张组成，部分卡牌具有固定的花色点数，其余卡牌为随机花色点数</div>');
-        }
-        uiintro.add(ui.create.div('.placeholder'));
-        return uiintro;
-        },250);
-        }
-        });
-        //获取额外牌堆的牌
-        get.fh_cardPile=function(filter){
-        if(!_status.fh_cardPile){
-        console('本局游戏未开启额外牌堆');
-        return;
-        }
-        if(!filter) filter=()=>true;
-        else if(typeof filter=='string'){
-        var name=filter;
-        filter=(card)=>card.name==name;
-        }
-        var cards=_status.fh_cardPile.filter(card=>filter(card));
-        if(cards.length) return cards.randomGet();
-        return false;
-        };
-        //移除额外牌堆的牌
-        lib.skill._fh_remove={
-        ruleSkill:true,
-        charlotte:true,
-        trigger:{
-        player:['gainEnd','equipEnd','addToExpansionEnd','addJudgeEnd'],
-        global:['loseAsyncEnd','cardsGotoSpecialEnd'],
-        },
-        filter:function(event,player){
-        if(event.name=='equip') return event.card.fh_extra;
-        if(event.getg) return event.getg(player).some(card=>card.fh_extra);
-        return event.cards.some(card=>card.fh_extra);
-        },
-        priority:114514,
-        forced:true,
-        popup:false,
-        content:function(){
-        var cards=[];
-        if(trigger.name=='equip') cards.push(trigger.card);
-        else if(trigger.getg) cards.addArray(trigger.getg(player).filter(card=>card.fh_extra));
-        else cards.addArray(trigger.cards.filter(card=>card.fh_extra));
-        var cardx=cards.filter(card=>_status.fh_cardPile.includes(card));
-        if(cardx.length){
-        _status.fh_cardPile.removeArray(cardx);
-        game.log('#g额外牌堆','失去了',cardx);
-        }
-        game.broadcastAll(cards=>{
-        cards.forEach(card=>card.addGaintag('fh_tag'));
-        },cards.filter(card=>get.owner(card)));
-        },
-        };
-        lib.skill.fh_tag={charlotte:true};
-        lib.translate.fh_tag='额外牌堆';
-        //把牌放回额外牌堆
-        lib.skill._fh_lose_trigger={
-        charlotte:true,
-        ruleSkill:true,
-        trigger:{
-        player:'loseAfter',
-        global:['cardsDiscardAfter','equipAfter','addJudgeAfter','gainAfter','loseAsyncAfter','addToExpansionAfter'],
-        },
-        filter:function(event,player){
-        if(event.name!='cardsDiscard') return event.getl(player).cards.filter(card=>get.position(card,true)=='d'&&card.fh_extra).length>0;
-        if(!event.cards.filterInD('d').some(card=>card.fh_extra)) return false;
-        var evt=event.getParent();
-        if(evt.name!='orderingDiscard') return false;
-        var evtx=(evt.relatedEvent||evt.getParent());
-        var history=player.getHistory('useCard').concat(player.getHistory('respond'));
-        return evtx.player==player&&history.some(evtxx=>evtx.getParent()==(evtxx.relatedEvent||evtxx.getParent()));
-        },
-        forceDie:true,
-        priority:-1919810,
-        forced:true,
-        popup:false,
-        content:function(){
-        var cards;
-        if(trigger.name!='cardsDiscard') cards=trigger.getl(player).cards.filter(card=>get.position(card,true)=='d'&&card.fh_extra);
-        else cards=trigger.cards.filterInD('d');
-        cards=cards.filter(card=>card.fh_extra);
-        _status.fh_cardPile.addArray(cards);
-        game.cardsGotoSpecial(cards)._triggered=null;
-        game.log(cards,'被放回了','#g额外牌堆');
-        },
-        };
+        if (lib.config.characters.includes('MX_feihongyinxue')) {
+            //飞鸿新机制
+            lib.arenaReady.push(() => {
+                //把银月枪加入牌堆
+                lib.card.list.push(['diamond', 12, 'fh_yinyueqiang']);
+                //额外牌堆
+                if (!_status.fh_cardPile) {
+                    _status.fh_cardPile = [];
+                    var cardList = [
+                        //基本牌
+                        ['club', 4, 'sha'],
+                        ['diamond', 2, 'shan'],
+                        ['heart', 6, 'tao'],
+                        ['spade', 9, 'jiu'],
+                        ['heart', 4, 'sha', 'fire'],
+                        ['spade', 4, 'sha', 'thunder'],
+                        //锦囊牌
+                        ['heart', 8, 'wuzhong'],
+                        ['heart', 4, 'wugu'],
+                        ['spade', 3, 'guohe'],
+                        ['diamond', 3, 'shunshou'],
+                        ['diamond', 2, 'huogong'],
+                        ['diamond', 1, 'juedou'],
+                        ['spade', 13, 'nanman'],
+                        ['heart', 1, 'wanjian'],
+                        ['heart', 13, 'wuxie'],
+                        ['heart', 6, 'lebu'],
+                        ['spade', 10, 'bingliang'],
+                        ['club', 12, 'tiesuo'],
+                        ['heart', 12, 'shandian'],
+                        ['club', 13, 'jiedao'],
+                        ['heart', 1, 'taoyuan'],
+                        //装备牌
+                        ['spade', 2, 'baguazhen'],
+                        ['club', 2, 'renwang'],
+                        ['spade', 2, 'tengjia'],
+                        ['club', 1, 'baiyin'],
+                        ['club', 5, 'dilu'],
+                        ['heart', 5, 'chitu'],
+                        ['spade', 13, 'dayuan'],
+                        ['diamond', 13, 'zixin'],
+                        ['diamond', 13, 'hualiu'],
+                        ['heart', 13, 'zhuahuang'],
+                        ['spade', 5, 'jueying'],
+                        ['diamond', 1, 'zhuge'],
+                        ['spade', 6, 'qinggang'],
+                        ['spade', 1, 'guding'],
+                        ['spade', 2, 'hanbing'],
+                        ['spade', 2, 'cixiong'],
+                        ['spade', 5, 'qinglong'],
+                        ['spade', 12, 'zhangba'],
+                        ['diamond', 5, 'guanshi'],
+                        ['diamond', 1, 'zhuque'],
+                        ['diamond', 12, 'fangtian'],
+                        ['heart', 5, 'qilin'],
+                    ];
+                    _status.fh_cardPile.addArray(cardList.filter(card => {
+                        return lib.card.list.some(cardx => card[0] == cardx[0] && card[1] == cardx[1] && card[2] == cardx[2] && ((!card[3] && !cardx[3]) || (card[3] == cardx[3])));
+                    }));
+                    var names = lib.card.list.filter(cardx => !cardList.some(card => card[2] == cardx[2])).reduce((list, card) => list.add(card[2]), []);
+                    names.forEach(name => {
+                        var card = lib.card.list.find(card => card[2] == name);
+                        if (card) _status.fh_cardPile.push(card);
+                    });
+                    _status.fh_cardPile = _status.fh_cardPile.map(card => game.createCard2(card[2], card[0], card[1], card[3]));
+                    _status.fh_cardPile.forEach(card => card.fh_extra = true);
+                    ui.fh_linfo = ui.create.system('飞鸿·额外牌堆', null, true);
+                    lib.setPopped(ui.fh_linfo, function () {
+                        var uiintro = ui.create.dialog('hidden');
+                        if (!_status.fh_cardPile) uiintro.add('本局游戏未开启额外牌堆');
+                        else if (!_status.fh_cardPile.length) uiintro.add('额外牌堆暂时没有牌');
+                        else {
+                            uiintro.add('额外牌堆');
+                            uiintro.addSmall([_status.fh_cardPile, 'card']);
+                            uiintro.add('<div class="text center">额外牌堆由牌堆中所有牌的各一张组成，部分卡牌具有固定的花色点数，其余卡牌为随机花色点数</div>');
+                        }
+                        uiintro.add(ui.create.div('.placeholder'));
+                        return uiintro;
+                    }, 250);
+                }
+            });
+            //获取额外牌堆的牌
+            get.fh_cardPile = function (filter) {
+                if (!_status.fh_cardPile) {
+                    console('本局游戏未开启额外牌堆');
+                    return;
+                }
+                if (!filter) filter = () => true;
+                else if (typeof filter == 'string') {
+                    var name = filter;
+                    filter = (card) => card.name == name;
+                }
+                var cards = _status.fh_cardPile.filter(card => filter(card));
+                if (cards.length) return cards.randomGet();
+                return false;
+            };
+            //移除额外牌堆的牌
+            lib.skill._fh_remove = {
+                ruleSkill: true,
+                charlotte: true,
+                trigger: {
+                    player: ['gainEnd', 'equipEnd', 'addToExpansionEnd', 'addJudgeEnd'],
+                    global: ['loseAsyncEnd', 'cardsGotoSpecialEnd'],
+                },
+                filter: function (event, player) {
+                    if (event.name == 'equip') return event.card.fh_extra;
+                    if (event.getg) return event.getg(player).some(card => card.fh_extra);
+                    return event.cards.some(card => card.fh_extra);
+                },
+                priority: 114514,
+                forced: true,
+                popup: false,
+                content: function () {
+                    var cards = [];
+                    if (trigger.name == 'equip') cards.push(trigger.card);
+                    else if (trigger.getg) cards.addArray(trigger.getg(player).filter(card => card.fh_extra));
+                    else cards.addArray(trigger.cards.filter(card => card.fh_extra));
+                    var cardx = cards.filter(card => _status.fh_cardPile.includes(card));
+                    if (cardx.length) {
+                        _status.fh_cardPile.removeArray(cardx);
+                        game.log('#g额外牌堆', '失去了', cardx);
+                    }
+                    game.broadcastAll(cards => {
+                        cards.forEach(card => card.addGaintag('fh_tag'));
+                    }, cards.filter(card => get.owner(card)));
+                },
+            };
+            lib.skill.fh_tag = { charlotte: true };
+            lib.translate.fh_tag = '额外牌堆';
+            //把牌放回额外牌堆
+            lib.skill._fh_lose_trigger = {
+                charlotte: true,
+                ruleSkill: true,
+                trigger: {
+                    player: 'loseAfter',
+                    global: ['cardsDiscardAfter', 'equipAfter', 'addJudgeAfter', 'gainAfter', 'loseAsyncAfter', 'addToExpansionAfter'],
+                },
+                filter: function (event, player) {
+                    if (event.name != 'cardsDiscard') return event.getl(player).cards.filter(card => get.position(card, true) == 'd' && card.fh_extra).length > 0;
+                    if (!event.cards.filterInD('d').some(card => card.fh_extra)) return false;
+                    var evt = event.getParent();
+                    if (evt.name != 'orderingDiscard') return false;
+                    var evtx = (evt.relatedEvent || evt.getParent());
+                    var history = player.getHistory('useCard').concat(player.getHistory('respond'));
+                    return evtx.player == player && history.some(evtxx => evtx.getParent() == (evtxx.relatedEvent || evtxx.getParent()));
+                },
+                forceDie: true,
+                priority: -1919810,
+                forced: true,
+                popup: false,
+                content: function () {
+                    var cards;
+                    if (trigger.name != 'cardsDiscard') cards = trigger.getl(player).cards.filter(card => get.position(card, true) == 'd' && card.fh_extra);
+                    else cards = trigger.cards.filterInD('d');
+                    cards = cards.filter(card => card.fh_extra);
+                    _status.fh_cardPile.addArray(cards);
+                    game.cardsGotoSpecial(cards)._triggered = null;
+                    game.log(cards, '被放回了', '#g额外牌堆');
+                },
+            };
         }
         else lib.config.characters.remove('MX_feihongyinxue');
-        lib.translate['MX_feihongyinxue_character_config']='<span style="font-family: xingkai">飞鸿印雪</span>';
+        lib.translate['MX_feihongyinxue_character_config'] = '<span style="font-family: xingkai">飞鸿印雪</span>';
         //没想到吧，我换前缀了
-        game.bolAddGroupNature(['mx_dom','宿','宿舍'],[255,215,0]);
+        game.bolAddGroupNature(['mx_dom', '宿', '宿舍'], [255, 215, 0]);
         game.import('character', huodongcharacter);
         //“萌新自设”前缀
-        lib.namePrefix.set('萌设',{
-        color:'#ff6a6a',
-        nature:'MXpink',
-        showName:'萌',
+        lib.namePrefix.set('萌设', {
+            color: '#ff6a6a',
+            nature: 'MXpink',
+            showName: '萌',
         });
-        lib.namePrefix.set('蝶设',{
-        color:'#ff6a6a',
-        nature:'MXpink',
-        showName:'蝶',
+        lib.namePrefix.set('蝶设', {
+            color: '#ff6a6a',
+            nature: 'MXpink',
+            showName: '蝶',
         });
-        lib.namePrefix.set('蝶设神',{
-        getSpan:(prefix,name)=>`${get.prefixSpan('蝶设')}${get.prefixSpan('神')}`,
+        lib.namePrefix.set('蝶设神', {
+            getSpan: (prefix, name) => `${get.prefixSpan('蝶设')}${get.prefixSpan('神')}`,
         });
         lib.config.all.characters.push('huodongcharacter');
         lib.config.all.sgscharacters.push('huodongcharacter');
-        if(!lib.config.characters.includes('huodongcharacter')) lib.config.characters.remove('huodongcharacter');
-        lib.translate['huodongcharacter_character_config']='<span style="font-family: xingkai">其他武将</span>';
+        if (!lib.config.characters.includes('huodongcharacter')) lib.config.characters.remove('huodongcharacter');
+        lib.translate['huodongcharacter_character_config'] = '<span style="font-family: xingkai">其他武将</span>';
         //--------------------卡牌包--------------------//
     }
 }
