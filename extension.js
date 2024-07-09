@@ -1,4 +1,4 @@
-// game.import(name: "活动武将",
+//game.import(name: "活动武将",
 import { lib, game, ui, get, ai, _status } from '../../noname.js';
 import { config } from './js/config.js';
 import { precontent } from './js/precontent/index.js';
