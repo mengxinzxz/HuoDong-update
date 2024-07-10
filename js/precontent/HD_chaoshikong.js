@@ -701,7 +701,7 @@ const packs = function () {
                 audio: 'fengxiang',
                 trigger: { player: 'gainEnd' },
                 filter: function (event, player) {
-                    return event.source && event.source != player && event.cards.length;
+                    return event.source && event.source != player && event.cards && event.cards.length;
                 },
                 prompt: function (event, player) {
                     return '封乡：是否将本次获得的' + get.translation(event.cards) + '当作【杀】使用？';
