@@ -12,6 +12,8 @@ game.bolShowNewPack = function () {
 	//更新告示
 	var HuoDong_update = [
 		'/setPlayer/',
+		'bugfix',
+		'整合@zhichaoxi2006 @QCXYLTJ的Pull Requests',
 		'To be continued...',
 	];
 	//更新武将
