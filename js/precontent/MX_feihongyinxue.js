@@ -430,7 +430,7 @@ const packs = function () {
                         player: function (player, target) {
                             var targets = game.filterPlayer(target => target.countCards('h') < target.getHp());
                             var cards = _status.fh_cardPile.filter(card => get.type(card) == 'basic');
-                            var num = Math.min(3, cards.length, targets.filter(targetx => get.attitude(player, target) > 0).length);
+                            var num = Math.min(3, cards.length, targets.filter(targetx => get.attitude(player, targetx) > 0).length);
                             if (player.hp - (targets.length - num) > 2) return 1;
                             return 0;
                         },

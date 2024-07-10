@@ -490,7 +490,7 @@ const packs = function () {
                 trigger: { global: 'damageBegin2' },
                 usable: 1,
                 filter: function (event, player) {
-                    return player.countCards('he') && ((get.mode() == 'identity' && get.attitude(player, event.source) > 0) || (get.mode() != 'identity' && event.source.isFriendOf(player)));
+                    return player.countCards('he') && event.source && ((get.mode() == 'identity' && get.attitude(player, event.source) > 0) || (get.mode() != 'identity' && event.source.isFriendOf(player)));
                 },
                 forced: true,
                 logTarget: 'source',
@@ -527,9 +527,22 @@ const packs = function () {
                 audio: 'ext:活动武将/audio/skill:true',
                 trigger: { global: 'useCardToTargeted' },
                 filter: function (event, player) {
-                    return !event.card.kuiba_shengdou && event.card && event.card.name == 'sha' && player.countCards('he') && ((get.mode() == 'identity' && get.attitude(player, event.player) > 0) || (get.mode() != 'identity' && event.player.isFriendOf(player))) && game.hasPlayer(function (current) {
-                        return !event.targets.includes(current);
-                    });
+                    return (
+                        !event.card.kuiba_shengdou &&
+                        event.card &&
+                        event.card.name == 'sha' &&
+                        player.countCards('he') &&
+                        (
+                            (get.mode() == 'identity' && get.attitude(player, event.player) > 0) ||
+                            (get.mode() != 'identity' && event.player.isFriendOf(player))
+                        ) && 
+                        game.hasPlayer(function (current) {
+                            return (
+                                !event.targets.includes(current) && 
+                                !current.isFriendsOf(player)
+                            );
+                        })
+                    );
                 },
                 direct: true,
                 content: function () {

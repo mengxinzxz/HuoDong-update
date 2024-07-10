@@ -3889,7 +3889,7 @@ const packs = function () {
                 filter: function (event, player) {
                     if (player.storage.lzdianhu2 && player.storage.lzdianhu2.isIn()) {
                         if (get.mode() == 'identity') return get.attitude(player.storage.lzdianhu2, event.source) > 0;
-                        return event.source.isFriendOf(player.storage.lzdianhu2);
+                        return event.source && event.source.isFriendOf(player.storage.lzdianhu2);
                     };
                 },
                 content: function () {
@@ -8576,7 +8576,7 @@ const packs = function () {
                 },
                 logTarget: (evnet, player) => player.getPrevious(),
                 check: function (event, player) {
-                    return lib.skill.dcyingtu.checkx(player, player.getPrevious());
+                    return lib.skill.dcyingtu.check(player, player.getPrevious());
                 },
                 content: function () {
                     'step 0'

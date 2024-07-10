@@ -477,8 +477,10 @@ const packs = function () {
                 forced: true,
                 content: function () {
                     var target = lib.skill.QH_nongquan.logTarget(trigger, player);
-                    target.damage(2);
-                    target.discard(target.getCards('he').randomGets(2)).discarder = player;
+                    if (target) {
+                        target.damage(2);
+                        target.discard(target.getCards('he').randomGets(2)).discarder = player;
+                    }
                 },
             },
             QH_shexie: {
@@ -694,7 +696,7 @@ const packs = function () {
                     });
                 },
                 content: function () {
-                    lib.skill.QH_luanzheng.logTarget(trigger, player).addSkill('drlt_wanglie2');
+                    lib.skill.QH_luanzheng.logTarget(trigger, player).addTempSkill('drlt_wanglie2');
                 },
                 group: 'QH_luanzheng_discard',
                 subSkill: {
@@ -789,7 +791,7 @@ const packs = function () {
                 forced: true,
                 content: function () {
                     'step 0'
-                    var target = game.findPlayer(current => target.isMinHandcard());
+                    var target = game.findPlayer(current => current.isMinHandcard());
                     var num = player.countCards('h') - target.countCards('h');
                     if (num > 0) player.chooseToDiscard(num, 'he', true);
                     'step 1'

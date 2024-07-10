@@ -837,7 +837,7 @@ export function precontent(bilibilicharacter) {
                 filter: function (event, player) {
                     if (event.name == 'equip') return event.card.fh_extra;
                     if (event.getg) return event.getg(player).some(card => card.fh_extra);
-                    return event.cards.some(card => card.fh_extra);
+                    return event.cards && event.cards.some(card => card.fh_extra);
                 },
                 priority: 114514,
                 forced: true,
@@ -868,7 +868,7 @@ export function precontent(bilibilicharacter) {
                     global: ['cardsDiscardAfter', 'equipAfter', 'addJudgeAfter', 'gainAfter', 'loseAsyncAfter', 'addToExpansionAfter'],
                 },
                 filter: function (event, player) {
-                    if (event.name != 'cardsDiscard') return event.getl(player).cards.filter(card => get.position(card, true) == 'd' && card.fh_extra).length > 0;
+                    if (event.name != 'cardsDiscard') return event.getl && event.getl(player).cards.filter(card => get.position(card, true) == 'd' && card.fh_extra).length > 0;
                     if (!event.cards.filterInD('d').some(card => card.fh_extra)) return false;
                     var evt = event.getParent();
                     if (evt.name != 'orderingDiscard') return false;

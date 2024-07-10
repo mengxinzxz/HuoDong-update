@@ -5865,9 +5865,11 @@ const packs = function () {
                 filter: function (event, player) {
                     if (player.isPhaseUsing()) return false;
                     if (get.itemtype(event.cards) != 'cards') return false;
-                    for (var i = 0; i < event.cards.length; i++) {
-                        if (event.cards[i].isInPile()) {
-                            return true;
+                    if (event.cards && event.cards.length) {
+                        for (var i = 0; i < event.cards.length; i++) {
+                            if (event.cards[i].isInPile()) {
+                                return true;
+                            }
                         }
                     }
                     return false;
@@ -9091,7 +9093,7 @@ const packs = function () {
             },
             minicunsi: {
                 unique: true,
-                derivation: ['miniyongjue', 'miniguixiux'],
+                derivation: ['miniyongjue'],
                 audio: 'cunsi',
                 enable: 'phaseUse',
                 mark: true,
@@ -17459,9 +17461,11 @@ const packs = function () {
                     'step 2'
                     var gained = [];
                     var tothrow = [];
-                    for (var i = 0; i < event.cards.length; i++) {
-                        if (get.type2(event.cards[i]) == 'trick') gained.push(event.cards[i]);
-                        else tothrow.push(event.cards[i]);
+                    if (event.cards && event.cards.length) {
+                        for (var i = 0; i < event.cards.length; i++) {
+                            if (get.type2(event.cards[i]) == 'trick') gained.push(event.cards[i]);
+                            else tothrow.push(event.cards[i]);
+                        }
                     }
                     if (gained.length) player.gain(gained, 'gain2');
                     else {
@@ -18733,7 +18737,7 @@ const packs = function () {
                         game.log(player, '获得了一张', '#g' + get.translation(type) + '牌');
                     }
                     else {
-                        player.log('无牌可得了吗？');
+                        player.chat('无牌可得了吗？');
                         game.log('但是牌堆中已经没有', '#g' + get.translation(type) + '牌', '了！');
                         player.addTempSkill('mini72bian_' + get.type2(cards[0]), 'washCard');
                     }
