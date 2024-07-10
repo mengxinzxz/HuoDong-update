@@ -9,7 +9,7 @@ const packs = function () {
             huodongcharacter: {
                 CLongZhou: ['lz_sufei', 'lz_tangzi', 'lz_liuqi', 'lz_huangquan'],
                 CZHengHuo: ['bilibili_zhengxuan', 'bilibili_sp_xuyou', 'old_zuoci'],
-                Chuodong: ['bilibili_shengxunyu', 'bilibili_Firewin', 'bilibili_jinglingqiu', 'bilibili_suixingsifeng', 'bilibili_Emptycity', 'bilibili_thunderlei', 'bilibili_lonelypatients'],
+                Chuodong: ['bilibili_shengxunyu', 'bilibili_Firewin', 'bilibili_jinglingqiu', 'bilibili_suixingsifeng', 'bilibili_Emptycity', 'bilibili_thunderlei', 'bilibili_lonelypatients', 'bilibili_ningjingzhiyuan', 'bilibili_xizhicaikobe'],
                 Csxydormitory: ['sxy_shengxunyu'],
                 Cothers: ['bilibili_wangtao', 'bilibili_wangyue', 'bilibili_x_wangtao', 'bilibili_x_wangyue', 'bilibili_xushao', 'bilibili_shen_guojia', 'bilibili_re_xusheng', 'bilibili_kuangshen04', 'bilibili_adong', 'bilibili_zhangrang', 'bilibili_litiansuo', 'decade_huangwudie', 'bilibili_huanggai', 'bilibili_ekeshaoge', 'bilibili_guanning', 'bilibili_wangwang', 'bilibili_zhouxiaomei', 'diy_lvmeng'],
                 CDanJi: ['DJ_caiyang', 'DJ_pujing', 'DJ_huban'],
@@ -50,6 +50,8 @@ const packs = function () {
             bilibili_shen_guojia: ['male', 'wei', '9/9/5', ['stianyi', 'resghuishi', 'bilibili_huishi'], ['doublegroup:shen:wei']],
             bilibili_re_xusheng: ['male', 'wu', 4, ['bilibili_pojun', 'kuangcai', 'bilibili_baodao'], []],
             bilibili_xushao: ['male', 'qun', '1/6', ['bilibili_pingjian'], ['ext:活动武将/image/character/old_xushao.jpg', 'InitFilter:noZhuHp']],
+            bilibili_ningjingzhiyuan: ['male', 'key', 4, [], []],
+            bilibili_xizhicaikobe: ['male', 'key', 4, [], []],
             //千里走单骑
             DJ_caiyang: ['male', 'qun', 1, ['yinka', 'zhuixi'], ['character:caiyang']],
             DJ_pujing: ['male', 'qun', 1, ['yinka'], ['character:pujing']],
@@ -87,6 +89,8 @@ const packs = function () {
             jiananfeng: '贾南风（257年－300年5月13日），小名峕，字南风，平阳郡襄陵县（今山西省襄汾县）人，曹魏豫州刺史贾逵孙女，西晋太宰贾充之女，晋惠帝司马衷皇后。贾南风貌丑而性妒，因惠帝懦弱而一度专权，是西晋时期“八王之乱”的罪魁祸首，后死于赵王司马伦之手，而随后的八王之乱则引发了历史上著名的五胡乱华。',
             babybao: '活动群资深元老，隐藏自身实力的高校研究生，为萌新负责提供图片/配音素材、进行武将测试、管理小群' + '<span style="text-decoration:line-through;">' + '反正不要拿respect当作职务' + '</span>' + '等职务。',
             'kuangshen04': '狂神，无名杀究极更新者，但因为其过于超前的思想和当前时间线的发展完全脱轨而致其PR惨遭扑杀，遂黑化为狂神1103形态，别名牢狂，蠢蠢欲动，准备于未来继续打破历史。',
+            ningjingzhiyuan: '宁静致远，俗称牢宁，赛尔号抽象玩家，“科密”萌新转型中的心腹，喜爱肘击，现负责维持群内秩序并将违规群友抓进小黑屋肘击，肘家军大将之一，抽象集大成者。',
+            xizhicaikobe: '戏志才，抽象社恐人士，肘家军大将之一，无名杀<span style="text-decoration: line-through;">非</span>专业人士和爱好者，萌新转型中的任务召唤人。孩子们，其实牢戏<span style="text-decoration: line-through;">并不</span>想要。',
         },
         characterTitle: {
             sxy_shengxunyu: (() => new Date().getDay() > 5 ? '周末复活赛打赢ing' : '工作日打复活赛ing')(),
@@ -10349,6 +10353,10 @@ const packs = function () {
             bolyifu_info: '转换技。①一名角色可以将一张基本牌当作{天，【闪电】；地，【随机应变】；人，【铁索连环】}使用。②当你成为〖蚁附①〗转化的牌的目标后，你摸一张牌。',
             boltianjie: '天劫',
             boltianjie_info: '锁定技。①一名角色的【闪电】生效时，取消之，然后你对其或其上家或下家造成1点雷属性伤害。②一名角色的【闪电】判定牌生效后，若判定牌不为【闪】，则令其继续进行【闪电】判定。',
+            bilibili_ningjingzhiyuan: '萌设宁静致远',
+            bilibili_ningjingzhiyuan_prefix: '萌设',
+            bilibili_xizhicaikobe: '萌设戏志才',
+            bilibili_xizhicaikobe_prefix: '萌设',
         },
     };
     for (var i in huodongcharacter.character) {
