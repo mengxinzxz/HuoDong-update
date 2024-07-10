@@ -6388,7 +6388,7 @@ const packs = function () {
                         let players = game.players.slice().concat(game.dead);
                         players.remove(player);
                         cards = players.reduce((list, target) => {
-                            const evt = event.getl(target);
+                            const evt = trigger.getl(target);
                             if (evt && evt.cards2 && evt.cards2.length) {
                                 return list.addArray(evt.cards2);
                             }
