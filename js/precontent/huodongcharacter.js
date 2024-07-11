@@ -9849,6 +9849,7 @@ const packs = function () {
             },
             old_sankuang: function (player) {
                 var str = '', storage = player.storage.old_sankuang;
+                if (!storage) return '锁定技，当你于每轮第一次使用一种类型的牌后，你令一名其他角色获得此牌或交给你至少X张牌（X为该角色『场上牌数，已损失体力值，手牌数与体力值之差』之间的最小值，且X至多为3）。';
                 var list = ['场上牌数', '已损失体力值', '手牌数与体力值之差'];
                 for (var i = 0; i < list.length; i++) {
                     if (storage[i]) str += list[i];
