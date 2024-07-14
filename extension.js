@@ -14,10 +14,12 @@ game.bolShowNewPack = function () {
 		'/setPlayer/',
 		'bugfix',
 		'整合@zhichaoxi2006 @QCXYLTJ的Pull Requests',
+		'添加欢杀武将：贺齐、念吕布',
 		'To be continued...',
 	];
 	//更新武将
 	var HuoDong_players = [
+		'Mbaby_heqi', 'Mnian_lvbu'
 	];
 	//加载
 	var dialog = ui.create.dialog(
