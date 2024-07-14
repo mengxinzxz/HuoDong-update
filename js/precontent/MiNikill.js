@@ -26579,7 +26579,7 @@ const packs = function () {
                 },
             },
             minimiaoguowu: {
-                audio: 'ext:活动武将/audio/skill:1',
+                audio: 'ext:活动武将/audio/skill:2',
                 inherit: 'guowu',
                 async content(event, trigger, player) {
                     const hs = player.getCards('h'), num = hs.map(card => get.type2(card, player)).toUniqued().length;
