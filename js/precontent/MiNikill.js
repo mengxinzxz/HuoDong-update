@@ -27009,7 +27009,7 @@ const packs = function () {
                         const targets = result.links.slice().filter(i => i.split('|').length > 2).map(i => {
                             return game.findPlayer2(t => t.playerid == parseInt(i.split('|')[2]));
                         }).filter(i => i.isIn()).sortBySeat();
-                        const jius = result.links.slice().filter(i => i == 'jiu').length * 2;
+                        const jius = result.links.slice().filter(i => i.split('|')[0] == 'jiu').length * 2;
                         if (jius > 0) {
                             game.addVideo('jiuNode', player, true);
                             player.addSkill('jiu');
