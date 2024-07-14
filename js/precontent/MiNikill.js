@@ -26553,7 +26553,7 @@ const packs = function () {
             },
             //喵607
             minimiaozhuangrong: {
-                audio: 'zhuangrong',
+                audio: 'ext:活动武将/audio/skill:2',
                 inherit: 'zhuangrong',
                 async content(event, trigger, player) {
                     player.awakenSkill(event.name);
@@ -26579,7 +26579,7 @@ const packs = function () {
                 },
             },
             minimiaoguowu: {
-                audio: 'guowu',
+                audio: 'ext:活动武将/audio/skill:1',
                 inherit: 'guowu',
                 async content(event, trigger, player) {
                     const hs = player.getCards('h'), num = hs.map(card => get.type2(card, player)).toUniqued().length;
