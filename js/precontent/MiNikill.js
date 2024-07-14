@@ -319,7 +319,7 @@ const packs = function () {
             Mmiao_zhenji: ['female', 'wei', 3, ['minimiaoluoshen', 'minimiaoqingguo', 'minidoumao']],
             Mmiao_sunshangxiang: ['female', 'wu', 3, ['minimiaojieyin', 'minimiaoxiaoji', 'minidoumao']],
             Mmiao_xiaoqiao: ['female', 'wu', 3, ['minimiaotianxiang', 'minimiaohongyan', 'minidoumao']],
-            Mmiao_lvlingqi: ['female', 'qun', 4, ['minimiaozhuangrong', 'minimiaoguowu', 'minidoumao'], ['tempname:lvlingqi']],
+            Mmiao_lvlingqi: ['female', 'qun', 4, ['minimiaozhuangrong', 'minimiaoguowu', 'minidoumao']],
             //念
             Mnian_zhugeliang: ['male', 'shu', 3, ['mininianxinghan', 'mininianliaoyuan', 'mininianying_zgl']],
             Mnian_lvbu: ['male', 'qun', 5, ['mininiantazhen', 'mininiandoupo', 'mininianying_lb']],
@@ -20636,7 +20636,8 @@ const packs = function () {
                     },
                 },
                 audio: 'wushuang',
-                audioname: ['lvlingqi'],
+                audioname: ['Mnian_lvbu', 're_lvbu', 'lvlingqi'],
+                audioname2: { Mmiao_lvlingqi: 'miniwushuang_Mmiao_lvlingqi' },
                 trigger: { player: 'useCardToPlayered', target: 'useCardToTargeted' },
                 filter: function (event, player) {
                     return (event.card.name == 'sha' && event.player == player) || event.card.name == 'juedou';
@@ -20673,6 +20674,7 @@ const packs = function () {
                         if (arg.card.name == 'juedou' && Math.floor(arg.target.countCards('hs', { name: 'sha' }) / 2) > player.countCards('hs', { name: 'sha' })) return false;
                     },
                 },
+                subSkill: { Mmiao_lvlingqi: { audio: 'ext:活动武将/audio/skill:2' } },
             },
             miniwuchang: {
                 audio: 'ext:活动武将/audio/skill:2',
@@ -26565,7 +26567,7 @@ const packs = function () {
                 derivation: ['minillqshenwei', 'miniwushuang'],
             },
             minillqshenwei: {
-                audio: 'llqshenwei',
+                audio: 'ext:活动武将/audio/skill:2',
                 inherit: 'llqshenwei',
                 async content(event, trigger, player) {
                     const num = player.hasSkill('minidoumao', null, null, false) ? 2 : 3;
