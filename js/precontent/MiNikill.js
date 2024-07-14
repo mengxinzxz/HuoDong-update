@@ -26892,7 +26892,7 @@ const packs = function () {
                     if (event.isMine()) func();
                     else if (event.isOnline()) event.player.send(func);
                     const result = await player.chooseButton([
-                        '踏阵（剩余3步）',
+                        '踏阵（剩余4步）',
                         [list[0], lib.skill.mininiantazhen.tazhen],
                         [list[1], lib.skill.mininiantazhen.tazhen],
                         [list[2], lib.skill.mininiantazhen.tazhen],
@@ -26900,7 +26900,7 @@ const packs = function () {
                         '<div class="text center">路径未包括一整行：视为对踏阵击败角色使用一张无距离和次数限制的【杀】</div>',
                         '<div class="text center">路径未包括中心格：踏阵击败的角色不能对你使用【杀】直到你的下回合开始</div>',
                     ]).set('selectButton', () => {
-                        const sum = 3 + ui.selected.buttons.filter(i => i.link.split('|')[0] === 'horse').length * 2;
+                        const sum = 4 + ui.selected.buttons.filter(i => i.link.split('|')[0] === 'horse').length * 2;
                         const dialog = get.idDialog(get.event().videoId);
                         if (dialog) {
                             const nums = Array.from({ length: 3 }).map((_, i) => i);
@@ -28821,7 +28821,7 @@ const packs = function () {
             mininiantazhen: '踏阵',
             mininiantazhen_info: '锁定技，回合开始时，你进行一次“踏阵”，若“踏阵”成功，你从牌堆或弃牌堆随机获得一张【杀】，然后获得〖无双〗直到你的下个回合开始，然后若你此次踏阵过程中未路经的路线包含：①一整列：你令“踏阵”中被击败的角色依次交给你一张牌；②一整行：你视为对“踏阵”中被击败的角色使用一张无距离和次数限制的【杀】；③中心格：“踏阵”中被击败的角色不能对你使用【杀】直到你的下回合开始。',
             mininiantazhen_faq: '关于“踏阵”',
-            mininiantazhen_faq_info: '系统生成一个九宫格，其中有三格为随机三名其他角色，两格为【酒】，一格为【马】，其余格为【杀】，玩家初始步数为3，在满足{经过的路径不交叉}和{经过【杀】的次数大于等于经过角色的次数}的条件下，任选一个不为角色的格子作为初始位置进行八向移动，经过角色即为踏阵成功，且你获得其中经过的【酒】的效果。',
+            mininiantazhen_faq_info: '系统生成一个九宫格，其中有三格为随机三名其他角色，两格为【酒】（本回合使用的下一张【杀】造成的伤害+2），一格为【马】（步数+2），其余格为【杀】，玩家初始步数为4，在满足{经过的路径不交叉}和{经过【杀】的次数大于等于经过角色的次数}的条件下，任选一个不为角色的格子作为初始位置进行八向移动，经过角色即为踏阵成功，且你获得其中经过的【酒】的效果。',
             mininiandoupo: '斗破',
             mininiandoupo_info: '锁定技。①你使用【决斗】的目标上限数+2。②当你对任意角色A发起的【决斗】结束后，若你赢，则取消此【决斗】对后续目标角色S的结算，且当此【决斗】结算完毕后，你随机获得{A}∪S的各一张手牌。',
             mininianying_lb: '念影',
