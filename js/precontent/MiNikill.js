@@ -26822,7 +26822,7 @@ const packs = function () {
                             cardimage: 'sha',
                         };
                         lib.translate[sha] = '杀';
-                        lib.translate[sha + '_info'] = '踏阵经过角色的步数须小于等于踏阵经过【杀】的步数';
+                        lib.translate[sha + '_info'] = '攻击力+1';
                     }
                     const horse = 'mininiantazhen_horse';
                     if (!lib.card[horse]) {
@@ -26842,7 +26842,7 @@ const packs = function () {
                             cardimage: 'jiu',
                         };
                         lib.translate[jiu] = '酒';
-                        lib.translate[jiu + '_info'] = '本回合使用的下一张【杀】造成的伤害+2';
+                        lib.translate[jiu + '_info'] = '下次攻击攻击力+2';
                     }
                 },
                 audio: 'ext:活动武将/audio/skill:2',
@@ -26867,7 +26867,7 @@ const packs = function () {
                     for (let i = 0; i < 3; i++) {
                         for (let j = 0; j < 3; j++) {
                             let item = items.shift();
-                            list[i].push(get.itemtype(item) == 'player' ? `${item.getSeatNum()}|${item.name}|${item.playerid}|${parseFloat(i)}+${parseFloat(j)}` : `${item}|${parseFloat(i)}+${parseFloat(j)}`);
+                            list[i].push(get.itemtype(item) == 'player' ? `${item.getSeatNum()}|${item.name}|${item.playerid}|${item.getHp()}|${parseFloat(i)}+${parseFloat(j)}` : `${item}|${parseFloat(i)}+${parseFloat(j)}`);
                         }
                     }
                     const func = () => {
@@ -26894,7 +26894,8 @@ const packs = function () {
                     if (event.isMine()) func();
                     else if (event.isOnline()) event.player.send(func);
                     const result = await player.chooseButton([
-                        '踏阵（剩余4步）',
+                        '踏阵',
+                        '<div class="text center">剩余' + parseFloat(player.getHp() + 1) + '步；攻击力：0；酒：0；当前击败：无</div>',
                         [list[0], lib.skill.mininiantazhen.tazhen],
                         [list[1], lib.skill.mininiantazhen.tazhen],
                         [list[2], lib.skill.mininiantazhen.tazhen],
@@ -26902,7 +26903,7 @@ const packs = function () {
                         '<div class="text center">路径未包括一整行：视为对踏阵击败角色使用一张无距离和次数限制的【杀】</div>',
                         '<div class="text center">路径未包括中心格：踏阵击败的角色不能对你使用【杀】直到你的下回合开始</div>',
                     ]).set('selectButton', () => {
-                        const sum = 4 + ui.selected.buttons.filter(i => i.link.split('|')[0] === 'horse').length * 2;
+                        const kill = get.info('mininiantazhen').kill(ui.selected.buttons.slice().map(i => i.link), get.event().player);
                         const dialog = get.idDialog(get.event().videoId);
                         if (dialog) {
                             const nums = Array.from({ length: 3 }).map((_, i) => i);
@@ -26911,27 +26912,18 @@ const packs = function () {
                                 return [parseInt(nums[0]), parseInt(nums[1])];
                             };
                             const allPosition = ui.selected.buttons.slice().map(but => findXY(but.link));
-                            dialog.content.childNodes[0].innerHTML = '踏阵（剩余' + parseFloat(sum - ui.selected.buttons.length) + '步）';
+                            dialog.content.childNodes[1].innerHTML = '<div class="text center">剩余' + parseFloat(kill[3]) + '步；攻击力：' + parseFloat(kill[0]) + '；酒：' + parseFloat(kill[1]) + '；当前击败：' + (kill[2].length ? get.translation(kill[2].slice().map(i => i[0])) : '无') + '</div>';
                             const goon2 = nums.some(num => allPosition.filter(l => l[1] == num).length >= 3);
-                            dialog.content.childNodes[4].innerHTML = '<div class="text center">' + (goon2 ? '当前路径已包括一整列' : '路径未包括一整列：令踏阵击败角色依次交给你一张牌') + '</div>';
+                            dialog.content.childNodes[5].innerHTML = '<div class="text center">' + (goon2 ? '当前路径已包括一整列' : '路径未包括一整列：令踏阵击败角色依次交给你一张牌') + '</div>';
                             const goon3 = nums.some(num => allPosition.filter(l => l[0] == num).length >= 3);
-                            dialog.content.childNodes[5].innerHTML = '<div class="text center">' + (goon3 ? '当前路径已包括一整行' : '路径未包括一整行：视为对踏阵击败角色使用一张无距离和次数限制的【杀】') + '</div>';
+                            dialog.content.childNodes[6].innerHTML = '<div class="text center">' + (goon3 ? '当前路径已包括一整行' : '路径未包括一整行：视为对踏阵击败角色使用一张无距离和次数限制的【杀】') + '</div>';
                             const goon4 = allPosition.some(l => l[0] == 1 && l[1] == 1);
-                            dialog.content.childNodes[6].innerHTML = '<div class="text center">' + (goon4 ? '当前路径已包括中心格' : '路径未包括中心格：踏阵击败的角色不能对你使用【杀】直到你的下回合开始') + '</div>';
+                            dialog.content.childNodes[7].innerHTML = '<div class="text center">' + (goon4 ? '当前路径已包括中心格' : '路径未包括中心格：踏阵击败的角色不能对你使用【杀】直到你的下回合开始') + '</div>';
                         }
-                        return [1, sum];
+                        return [1, 1 + get.event().player.getHp()];
                     }).set('filterButton', button => {
                         if (!get.event().list.slice().flat().includes(button.link)) return false;
-                        if (button.link.split('|').length > 2) {
-                            if (!ui.selected.buttons.length) return false;
-                            if (ui.selected.buttons.slice().reduce((sum, but) => {
-                                const item = but.link;
-                                if (item.split('|').length > 2) return sum - 1;
-                                else if (item.split('|')[0] == 'sha') return sum + 1;
-                                else return sum;
-                            }, 0) < 1) return false;
-                        }
-                        if (!ui.selected.buttons.length) return true;
+                        if (!ui.selected.buttons.length) return (button.link.split('|').length > 2) === false;
                         const findXY = function (item) {
                             const nums = item.split('|').reverse()[0].split('+');
                             return [parseInt(nums[0]), parseInt(nums[1])];
@@ -26996,52 +26988,49 @@ const packs = function () {
                         return ui.selected.buttons.some(i => i.link.split('|').length > 2)
                     }).forResult();
                     if (result.bool) {
-                        player.popup('踏阵成功', 'wood');
-                        game.log(player, '踏阵', '#g成功');
-                        const sha = get.cardPile('sha');
-                        if (sha) await player.gain(sha, 'gain2');
-                        player.addTempSkill('mininiantazhen_wushuang', { player: 'phaseBegin' });
-                        await player.addAdditionalSkills('mininiantazhen_wushuang', 'miniwushuang');
-                        const findXY = function (item) {
-                            const nums = item.split('|').reverse()[0].split('+');
-                            return [parseInt(nums[0]), parseInt(nums[1])];
-                        };
-                        const allPosition = result.links.slice().map(but => findXY(but));
-                        const nums = Array.from({ length: 3 }).map((_, i) => i);
-                        const targets = result.links.slice().filter(i => i.split('|').length > 2).map(i => {
-                            return game.findPlayer2(t => t.playerid == parseInt(i.split('|')[2]));
-                        }).filter(i => i.isIn()).sortBySeat();
-                        const jius = result.links.slice().filter(i => i.split('|')[0] == 'jiu').length * 2;
-                        if (jius > 0) {
-                            game.addVideo('jiuNode', player, true);
-                            player.addSkill('jiu');
-                            player.addMark('jiu', jius, false);
-                            game.broadcastAll(target => {
-                                if (!target.node.jiu && lib.config.jiu_effect) {
-                                    target.node.jiu = ui.create.div('.playerjiu', target.node.avatar);
-                                    target.node.jiu2 = ui.create.div('.playerjiu', target.node.avatar2);
+                        const kill = get.info('mininiantazhen').kill(result.links.slice(), player);
+                        if (kill[2].length > 0) {
+                            const targets = kill[2].slice().map(i => {
+                                return game.findPlayer2(t => t.playerid == parseInt(i[1]));
+                            }).filter(i => i.isIn()).sortBySeat();
+                            player.line(targets);
+                            player.popup('踏阵成功', 'wood');
+                            game.log(player, '踏阵', '#g成功', '击败了', targets);
+                            const sha = get.cardPile('sha');
+                            if (sha) await player.gain(sha, 'gain2');
+                            player.addTempSkill('mininiantazhen_wushuang', { player: 'phaseBegin' });
+                            await player.addAdditionalSkills('mininiantazhen_wushuang', 'miniwushuang');
+                            const findXY = function (item) {
+                                const nums = item.split('|').reverse()[0].split('+');
+                                return [parseInt(nums[0]), parseInt(nums[1])];
+                            };
+                            const allPosition = result.links.slice().map(but => findXY(but));
+                            const nums = Array.from({ length: 3 }).map((_, i) => i);
+                            if (!nums.some(num => allPosition.filter(l => l[1] == num).length >= 3)) {
+                                player.popup('一整列×', 'wood');
+                                for (const i of targets) {
+                                    if (i.countCards('h')) await i.chooseToGive(player, 'he', true);
                                 }
-                            }, player);
-                        }
-                        if (!nums.some(num => allPosition.filter(l => l[1] == num).length >= 3)) {
-                            for (const i of targets) {
-                                if (i.countCards('h')) await i.chooseToGive(player, 'he', true);
                             }
-                        }
-                        if (!nums.some(num => allPosition.filter(l => l[0] == num).length >= 3)) {
-                            const card = new lib.element.VCard({ name: 'sha' });
-                            const shas = targets.filter(i => player.canUse(sha, i, false));
-                            if (shas.length) await player.useCard(sha, shas, false);
-                        }
-                        if (!allPosition.some(l => l[0] == 1 && l[1] == 1)) {
-                            player.addTempSkill('mininiantazhen_effect', { player: 'phaseBegin' });
-                            player.markAuto('mininiantazhen_effect', targets);
+                            else player.popup('一整列√', 'fire');
+                            if (!nums.some(num => allPosition.filter(l => l[0] == num).length >= 3)) {
+                                player.popup('一整行×', 'wood');
+                                const card = new lib.element.VCard({ name: 'sha' });
+                                const shas = targets.filter(i => player.canUse(sha, i, false));
+                                if (shas.length) await player.useCard(sha, shas, false);
+                            }
+                            else player.popup('一整行√', 'fire');
+                            if (!allPosition.some(l => l[0] == 1 && l[1] == 1)) {
+                                player.popup('中心格×', 'wood');
+                                player.addTempSkill('mininiantazhen_effect', { player: 'phaseBegin' });
+                                player.markAuto('mininiantazhen_effect', targets);
+                            }
+                            else player.popup('中心格√', 'fire');
+                            return;
                         }
                     }
-                    else {
-                        player.popup('踏阵失败', 'fire');
-                        game.log(player, '踏阵', '#y失败');
-                    }
+                    player.popup('踏阵失败', 'fire');
+                    game.log(player, '踏阵', '#y失败');
                 },
                 derivation: ['miniwushuang', 'mininiantazhen_faq'],
                 subSkill: {
@@ -27058,6 +27047,27 @@ const packs = function () {
                             },
                         },
                     },
+                },
+                kill(steps, player) {
+                    let attack = 0, jiu = 0, killed = [], rest = player.getHp() + 1;
+                    rest -= steps.length;
+                    for (const step of steps) {
+                        const items = step.split('|');
+                        if (items.length > 2) {
+                            if (attack + jiu >= items[3]) {
+                                killed.push([items[1], items[2]]);
+                            }
+                            jiu = 0;
+                        }
+                        else {
+                            switch (items[0]) {
+                                case 'sha': attack++; break;
+                                case 'horse': rest += 2; break;
+                                case 'jiu': jiu += 2; break;
+                            }
+                        }
+                    }
+                    return [attack, jiu, killed, rest];
                 },
                 tazhen(item, type, position, noclick, node) {
                     if (item.slice().split('|').length > 2) {
@@ -28823,7 +28833,7 @@ const packs = function () {
             mininiantazhen: '踏阵',
             mininiantazhen_info: '锁定技，回合开始时，你进行一次“踏阵”，若“踏阵”成功，你从牌堆或弃牌堆随机获得一张【杀】，然后获得〖无双〗直到你的下个回合开始，然后若你此次踏阵过程中未路经的路线包含：①一整列：你令“踏阵”中被击败的角色依次交给你一张牌；②一整行：你视为对“踏阵”中被击败的角色使用一张无距离和次数限制的【杀】；③中心格：“踏阵”中被击败的角色不能对你使用【杀】直到你的下回合开始。',
             mininiantazhen_faq: '关于“踏阵”',
-            mininiantazhen_faq_info: '系统生成一个九宫格，其中有三格为随机三名其他角色，两格为【酒】（本回合使用的下一张【杀】造成的伤害+2），一格为【马】（步数+2），其余格为【杀】，玩家初始步数为4，在满足{经过的路径不交叉}和{经过【杀】的次数大于等于经过角色的次数}的条件下，任选一个不为角色的格子作为初始位置进行八向移动，经过角色即为踏阵成功，且你获得其中经过的【酒】的效果。',
+            mininiantazhen_faq_info: '系统生成一个九宫格，其中有三格为随机三名其他角色，两格为【酒】（下次攻击攻击力+2），一格为【马】（步数+2），其余格为【杀】（攻击力+1），玩家初始步数为玩家体力值+1，初始攻击力为0，在满足经过的路径不交叉的条件下，任选一个不为角色的格子作为初始位置进行八向移动，最终路线上存在被击败角色（攻击力大于等于其当前体力值）即为踏阵成功。',
             mininiandoupo: '斗破',
             mininiandoupo_info: '锁定技。①你使用【决斗】的目标上限数+2。②当你对任意角色A发起的【决斗】结束后，若你赢，则取消此【决斗】对后续目标角色S的结算，且当此【决斗】结算完毕后，你随机获得{A}∪S的各一张手牌。',
             mininianying_lb: '念影',
