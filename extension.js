@@ -13,7 +13,7 @@ game.bolShowNewPack = function () {
 	var HuoDong_update = [
 		'/setPlayer/',
 		'bugfix',
-		'整合@zhichaoxi2006 @QCXYLTJ的Pull Requests',
+		'整合@zhichaoxi2006 @QCXYLTJ @PZ157的Pull Requests',
 		'添加欢杀武将：贺齐、念吕布',
 		'To be continued...',
 	];
