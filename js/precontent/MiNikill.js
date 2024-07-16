@@ -26811,15 +26811,26 @@ const packs = function () {
             //念吕布
             mininiantazhen: {
                 init() {
+                    lib.init.sheet([
+                        '.button.character.tazhen {',
+                        'width: 108px !important;',
+                        'height: 150px !important;',
+                        '}'
+                    ].join(''));
+                    lib.init.sheet([
+                        '.button.card.tazhen {',
+                        'width: 108px !important;',
+                        'height: 150px !important;',
+                        '}'
+                    ].join(''));
                     game.broadcastAll(() => lib.skill.mininiantazhen.video());
                 },
                 video() {
                     const sha = 'mininiantazhen_sha';
                     if (!lib.card[sha]) {
                         lib.card[sha] = {
-                            //type: 'takaramono',
-                            fullskin: true,
-                            cardimage: 'sha',
+                            fullimage: true,
+                            image: 'ext:活动武将/image/card/' + sha + '.png',
                         };
                         lib.translate[sha] = '杀';
                         lib.translate[sha + '_info'] = '攻击力+1';
@@ -26827,9 +26838,8 @@ const packs = function () {
                     const horse = 'mininiantazhen_horse';
                     if (!lib.card[horse]) {
                         lib.card[horse] = {
-                            //type: 'takaramono',
-                            fullskin: true,
-                            cardimage: 'jueying',
+                            fullimage: true,
+                            image: 'ext:活动武将/image/card/' + horse + '.png',
                         };
                         lib.translate[horse] = '马';
                         lib.translate[horse + '_info'] = '踏阵步数+2';
@@ -26837,9 +26847,8 @@ const packs = function () {
                     const jiu = 'mininiantazhen_jiu';
                     if (!lib.card[jiu]) {
                         lib.card[jiu] = {
-                            //type: 'takaramono',
-                            fullskin: true,
-                            cardimage: 'jiu',
+                            fullimage: true,
+                            image: 'ext:活动武将/image/card/' + jiu + '.png',
                         };
                         lib.translate[jiu] = '酒';
                         lib.translate[jiu + '_info'] = '下次攻击攻击力+2';
@@ -27085,6 +27094,7 @@ const packs = function () {
                             const currentPlayer = game.findPlayer(current => current.getSeatNum() == seat);
                             if (currentPlayer.classList.contains('unseen_show')) node.setBackground('hidden_image', 'character');
                             else if (item != 'unknown') node.setBackground(item, 'character');
+                            node.classList.add('tazhen');
                             if (node.node) {
                                 node.node.name.remove();
                                 node.node.hp.remove();
@@ -27132,6 +27142,7 @@ const packs = function () {
                         item = ['', '', 'mininiantazhen_' + item.split('|')[0]];
                         node = ui.create.card(position, 'noclick', noclick);
                         node.classList.add('button');
+                        node.classList.add('tazhen');
                         node.init(item);
                         node.link = _item;
                         return node;
