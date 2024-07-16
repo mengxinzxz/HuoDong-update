@@ -9812,6 +9812,168 @@ const packs = function () {
                     },
                 },
             },
+            //彭羕
+            bolxiaofan: {
+                audio: 'olxiaofan',
+                enable: 'chooseToUse',
+                onChooseToUse(event) {
+                    const sum = ui.cardPile.childNodes.length;
+                    if (game.online || !sum || !event.player.hasSkill('bolxiaofan')) return;
+                    const cards = [], num = lib.skill.olxiaofan.getNum(event.player) + 1;
+                    for (let i = 0; i < num; i++) {
+                        const card = ui.cardPile.childNodes[sum - 1 - i];
+                        if (card) cards.push(card);
+                        else break;
+                    }
+                    event.set('bolxiaofan_cards', cards);
+                },
+                hiddenCard(player, name) {
+                    return name != 'wuxie' && lib.inpile.includes(name);
+                },
+                filter(event, player) {
+                    if (!Array.isArray(event.bolxiaofan_cards) || event.responded || event.type == 'wuxie' || event.bolxiaofan) return false;
+                    return lib.inpile.some(i => i != 'wuxie' && event.filterCard(get.autoViewAs({ name: i }, 'unsure'), player, event));
+                },
+                delay: false,
+                direct: true,
+                async content(event, trigger, player) {
+                    const evt = event.getParent(2);
+                    const cardsx = evt.bolxiaofan_cards.slice().map(card => {
+                        const cardx = ui.create.card();
+                        cardx.init(get.cardInfo(card));
+                        cardx._cardid = card.cardid;
+                        return cardx;
+                    });
+                    if (!event.isMine()) evt.set('bolxiaofan', true);
+                    player.directgains(cardsx, null, 'bolxiaofan_hs');
+                    const result = await player.chooseCard('嚣翻：选择要使用的牌', (card, player) => {
+                        return get.event().cards.includes(card);
+                    }, 's').set('cards', cardsx.filter(card => {
+                        if (player.hasSkill('aozhan') && card.name == 'tao') {
+                            return evt.filterCard({
+                                name: 'sha', isCard: true, cards: [card],
+                            }, evt.player, evt) || evt.filterCard({
+                                name: 'shan', isCard: true, cards: [card],
+                            }, evt.player, evt);
+                        }
+                        return evt.filterCard(card, evt.player, evt);
+                    })).set('ai', card => {
+                        if (get.type(card) == 'equip') return 0;
+                        const evt = get.event().getParent(3), player = get.event().player;
+                        if (evt.type == 'phase' && !player.hasValueTarget(card, null, true)) return 0;
+                        if (evt && evt.ai) {
+                            const tmp = _status.event;
+                            _status.event = evt;
+                            const result = (evt.ai || event.ai1)(card, player, evt);
+                            _status.event = tmp;
+                            return result;
+                        }
+                        return 1;
+                    }).forResult();
+                    let card;
+                    if (result.bool) {
+                        card = evt.bolxiaofan_cards.find(card => card.cardid === result.cards[0]._cardid);
+                    }
+                    const cards2 = player.getCards('s', card => card.hasGaintag('bolxiaofan_hs'));
+                    if (player.isOnline2()) {
+                        player.send((cards, player) => {
+                            cards.forEach(i => i.delete());
+                            if (player == game.me) ui.updatehl();
+                        }, cards2, player);
+                    }
+                    cards2.forEach(i => i.delete());
+                    if (player == game.me) ui.updatehl();
+                    if (card) {
+                        const name = card.name, aozhan = (player.hasSkill('aozhan') && name == 'tao');
+                        if (aozhan) {
+                            name = evt.filterCard({
+                                name: 'sha', isCard: true, cards: [card],
+                            }, evt.player, evt) ? 'sha' : 'shan';
+                        }
+                        game.broadcastAll((result, name) => {
+                            lib.skill.bolxiaofan_backup.viewAs = { name: name, cards: [result], isCard: true };
+                        }, card, name);
+                        evt.set('_backupevent', 'bolxiaofan_backup');
+                        evt.set('openskilldialog', ('请选择' + get.translation(card) + '的目标'));
+                        evt.backup('bolxiaofan_backup');
+                    }
+                    evt.goto(0);
+                },
+                ai: {
+                    effect: {
+                        target(card, player, target, effect) {
+                            if (get.tag(card, 'respondShan')) return 0.7;
+                            if (get.tag(card, 'respondSha')) return 0.7;
+                        },
+                    },
+                    order: 12,
+                    respondShan: true,
+                    respondSha: true,
+                    result: {
+                        player(player) {
+                            if (_status.event.dying) return get.attitude(player, _status.event.dying);
+                            return 1;
+                        },
+                    },
+                },
+                subSkill: {
+                    backup: {
+                        precontent() {
+                            delete event.result.skill;
+                            player.logSkill('bolxiaofan');
+                            const name = event.result.card.name, cards = event.result.card.cards.slice(0);
+                            event.result.cards = cards;
+                            let rcard = cards[0], card;
+                            if (rcard.name == name) card = get.autoViewAs(rcard);
+                            else card = get.autoViewAs({ name, isCard: true });
+                            event.result.card = card;
+                            const id = get.id();
+                            player.when('chooseToUseAfter').filter(evt => evt == event.getParent()).then(() => {
+                                const num = lib.skill.olxiaofan.getNum(player);
+                                if (num > 0 && player.countCards(('jeh').slice(0, num)) > 0) {
+                                    event.maxNum = Math.min(3, num);
+                                    event.num = 0;
+                                }
+                                else event.finish();
+                            }).then(() => {
+                                const pos = ('jeh')[event.num], hs = player.countCards(pos);
+                                if (hs > 0) player.chooseToDiscard(hs, pos, true);
+                                event.num++;
+                                if (event.num < event.maxNum) event.redo();
+                            }).translation('嚣翻');
+                        },
+                        filterCard: () => false,
+                        selectCard: -1,
+                    },
+                },
+            },
+            boltuishi: {
+                audio: 'oltuishi',
+                inherit: 'oltuishi',
+                filter(event, player, name) {
+                    if (name == 'useCardAfter') {
+                        if (player.isTempBanned('bolxiaofan')) return false;
+                        return player.getHistory('useCard', evt => {
+                            if (get.type(evt.card) == 'delay') return false;
+                            return !player.getHistory('sourceDamage', evt2 => {
+                                return evt2.card && evt2.card == evt.card;
+                            }).length && get.tag(evt.card, 'damage');
+                        }).indexOf(event) >= 2;
+                    }
+                    return [1, 11, 12, 13].includes(get.number(event.card));
+                },
+                async content(event, trigger, player) {
+                    if (event.triggername == 'useCardAfter') {
+                        player.tempBanSkill('bolxiaofan');
+                        return;
+                    }
+                    trigger.targets.length = 0;
+                    trigger.all_excluded = true;
+                    game.log(trigger.card, '被无效了');
+                    await player.draw();
+                    player.addSkill('oltuishi_unlimit');
+                },
+            },
         },
         dynamicTranslate: {
             bilibili_xueji: function (player) {
@@ -10358,6 +10520,11 @@ const packs = function () {
             bilibili_ningjingzhiyuan_prefix: '萌设',
             bilibili_xizhicaikobe: '萌设戏志才',
             bilibili_xizhicaikobe_prefix: '萌设',
+            bolxiaofan: '嚣翻',
+            bolxiaofan_hs: 'invisible',
+            bolxiaofan_info: '当你需要使用不为【无懈可击】的牌时，你可以观看牌堆底的X+1张牌并使用其中的一张。此牌结算结束时，你依次弃置以下前X个区域中的所有牌：⒈判定区、⒉装备区、⒊手牌区（X为本回合你使用过的牌中包含的类型数）。',
+            boltuishi: '侻失',
+            boltuishi_info: '锁定技。①你不能使用【无懈可击】。②当你使用点数为字母的牌时，你令此牌无效并摸一张牌，且你对手牌数小于你的角色使用的下一张牌无距离和次数限制。③当你使用伤害类卡牌结算完毕后，若此牌为你本回合使用的第三张或以上未造成伤害的卡牌，则你令〖器翻〗于本回合失效。',
         },
     };
     for (var i in huodongcharacter.character) {

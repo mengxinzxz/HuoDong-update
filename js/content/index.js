@@ -1512,6 +1512,7 @@ export function content(config, pack) {
 	game.HDaddCharacter('sp_zhaoyun', ['male', 'qun', 3, ['longdan', 'chongzhen'], []], 'sp');
 	lib.translate.chongzhen_info = '当你发动〖龙胆〗时，你可以获得对方的一张手牌。';
 	game.HDaddCharacter('zhanghua', ['male', 'jin', 3, ['olbihun', 'oljianhe', 'bolchuanwu'], []], 'sp');
+	game.HDaddCharacter('ol_pengyang', ['male', 'shu', 3, ['bolxiaofan', 'boltuishi', 'nzry_cunmu'], []], 'sp');
 
 	//系列专属包
 	lib.characterSort.sp2.sp2_waitforsort.addArray(['junk_zhangrang']);
