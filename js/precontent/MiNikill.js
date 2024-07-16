@@ -2036,7 +2036,7 @@ const packs = function () {
                 ai: { expose: 0.3 },
             },
             minisidi: {
-                audio: 'sidi',
+                audio: 'residi',
                 trigger: { player: 'phaseJieshuBegin' },
                 filter: function (event, player) {
                     return player.countCards('he', function (card) {
