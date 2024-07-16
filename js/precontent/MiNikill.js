@@ -20643,22 +20643,22 @@ const packs = function () {
                     return (event.card.name == 'sha' && event.player == player) || event.card.name == 'juedou';
                 },
                 logTarget: function (event, player) {
-                    return player == event.player ? event.target : event.player
+                    return player == event.player ? event.target : event.player;
                 },
                 forced: true,
                 content: function () {
-                    var target = lib.skill.miniwushuang.logTarget(trigger, player);
+                    const target = lib.skill.miniwushuang.logTarget(trigger, player);
                     if (trigger.card.name == 'sha') {
-                        var id = target.playerid;
-                        var map = trigger.getParent().customArgs;
+                        const id = target.playerid;
+                        const map = trigger.getParent().customArgs;
                         if (!map[id]) map[id] = {};
                         if (typeof map[id].shanRequired == 'number') map[id].shanRequired++;
                         else map[id].shanRequired = 2;
                     }
                     else {
-                        var id = id = (player == target ? player : target)['playerid'];
-                        var idt = target.playerid;
-                        var map = trigger.getParent().customArgs;
+                        const id = target.playerid;
+                        const idt = trigger.target.playerid;
+                        const map = trigger.getParent().customArgs;
                         if (!map[idt]) map[idt] = {};
                         if (!map[idt].shaReq) map[idt].shaReq = {};
                         if (!map[idt].shaReq[id]) map[idt].shaReq[id] = 1;
@@ -25090,7 +25090,7 @@ const packs = function () {
                     }
                     else await lib.skill.minihuanshu.GainContent(2, (trigger.num || 1), player);
                 },
-                init(){
+                init() {
                     game.broadcastAll(() => {
                         /*神左慈幻术卡牌颜色*/
                         lib.init.sheet([
@@ -26901,7 +26901,8 @@ const packs = function () {
                     };
                     if (event.isMine()) func();
                     else if (event.isOnline()) event.player.send(func);
-                    const result = await player.chooseButton([
+                    const videoId = lib.status.videoId++;
+                    const dialog = ui.create.dialog(
                         '踏阵',
                         '<div class="text center">剩余' + parseFloat(player.getHp() + 1) + '步；攻击力：0；酒：0；当前击败：无</div>',
                         [list[0], lib.skill.mininiantazhen.tazhen],
@@ -26910,9 +26911,13 @@ const packs = function () {
                         '<div class="text center">路径未包括一整列：令踏阵击败角色依次交给你一张牌</div>',
                         '<div class="text center">路径未包括一整行：视为对踏阵击败角色使用一张无距离和次数限制的【杀】</div>',
                         '<div class="text center">路径未包括中心格：踏阵击败的角色不能对你使用【杀】直到你的下回合开始</div>',
-                    ]).set('selectButton', () => {
+                    );
+                    dialog.videoId = videoId;
+                    dialog.classList.add('fullheight');
+                    const result = await player.chooseButton().set('dialog', dialog).set('selectButton', () => {
                         const kill = get.info('mininiantazhen').kill(ui.selected.buttons.slice().map(i => i.link), get.event().player);
-                        const dialog = get.idDialog(get.event().videoId);
+                        //const dialog = get.idDialog(get.event().videoId);
+                        const dialog = get.event().dialog;
                         if (dialog) {
                             const nums = Array.from({ length: 3 }).map((_, i) => i);
                             const findXY = function (item) {
@@ -26995,6 +27000,7 @@ const packs = function () {
                     }).set('filterOk', () => {
                         return ui.selected.buttons.some(i => i.link.split('|').length > 2)
                     }).forResult();
+                    game.broadcastAll('closeDialog', videoId);
                     if (result.bool) {
                         const kill = get.info('mininiantazhen').kill(result.links.slice(), player);
                         if (kill[2].length > 0) {
@@ -27150,42 +27156,37 @@ const packs = function () {
             },
             mininiandoupo: {
                 audio: 'ext:活动武将/audio/skill:2',
-                trigger: { player: ['juedouBefore', 'juedouAfter', 'useCardAfter'] },
+                trigger: { player: ['juedouBefore', 'juedouBegin', 'useCardAfter'] },
                 filter(event, player, name) {
                     if (event.name == 'juedou') {
                         const evt = event.getParent();
                         if (!evt || evt.name != 'useCard' || !(evt.targets || []).includes(event.target)) return false;
-                        if (name == 'juedouAfter') {
-                            //if (event.turn === player) return false;
-                            //return evt.targets[evt.targets.length - 1] != event.target;
-                            return event.turn !== player;
-                        }
-                        return evt.mininiandoupo;
+                        return (evt.targets.slice().reverse()[0] !== event.target) === (name === 'juedouBefore');
                     }
-                    if (event.card.name != 'juedou' || !(event.targets || []).length || !event.mininiandoupo) return false;
-                    return event.targets.some(target => {
-                        if (!(target.isIn() && target.countGainableCards(player, 'h') > 0)) return false;
-                        return event.targets.indexOf(event.mininiandoupo) <= event.targets.indexOf(target);
+                    if (event.card.name != 'juedou' || !(event.targets || []).length) return false;
+                    if (!game.getGlobalHistory('everything', evt => {
+                        return evt.name === 'juedou' && evt.getParent() == event && evt.turn !== player;
+                    }).length) return false;
+                    return event.targets.some(target => target.isIn() && target.countGainableCards(player, 'h') > 0);
+                },
+                direct: true,
+                locked: true,
+                async content(event, trigger, player) {
+                    if (event.triggername == 'juedouBefore') {
+                        trigger.cancel();
+                        return;
+                    }
+                    const targets = trigger.name == 'juedou' ? trigger.getParent().targets : trigger.targets.filter(target => {
+                        return target.isIn() && target.countGainableCards(player, 'h') > 0;
                     });
-                },
-                forced: true,
-                logTarget(event, player) {
-                    if (event.name == 'juedou') return event.target;
-                    return event.targets.filter(target => {
-                        if (!(target.isIn() && target.countGainableCards(player, 'h') > 0)) return false;
-                        return event.targets.indexOf(event.mininiandoupo) <= event.targets.indexOf(target);
-                    }).sortBySeat();
-                },
-                content() {
-                    const name = event.triggername, evt = trigger.getParent();
-                    if (name == 'juedouAfter') evt.set('mininiandoupo', trigger.target);
-                    else if (trigger.name == 'juedou') trigger.cancel();
+                    await player.logSkill('mininiandoupo', targets);
+                    if (trigger.name == 'useCard') {
+                        for (const target of targets) {
+                            await player.gain(target.getGainableCards(player, 'h').randomGets(1), target, 'giveAuto', 'bySelf');
+                        }
+                    }
                     else {
-                        const targets = trigger.targets.filter(target => {
-                            if (!(target.isIn() && target.countGainableCards(player, 'h') > 0)) return false;
-                            return trigger.targets.indexOf(trigger.mininiandoupo) <= trigger.targets.indexOf(target);
-                        }).sortBySeat();
-                        for (const target of targets) player.gain(target.getGainableCards(player, 'h').randomGets(1), target, 'giveAuto', 'bySelf');
+                        trigger.setContent(lib.skill.mininiandoupo.juedouContent);
                     }
                 },
                 mod: {
@@ -27204,6 +27205,102 @@ const packs = function () {
                             },
                         },
                     },
+                },
+                async juedouContent(event, trigger, player) {
+                    const targets = event.targets.sortBySeat(player);
+                    if (event.turn == undefined) event.turn = targets[0];
+                    if (typeof event.baseDamage != 'number') event.baseDamage = 1;
+                    if (typeof event.extraDamage != 'number') event.extraDamage = 0;
+                    if (!event.shaReq) event.shaReq = {};
+                    if (typeof event.shaReq[player.playerid] != 'number') event.shaReq[player.playerid] = 1;
+                    for (const target of targets) {
+                        const map = event.getParent().customArgs, id = target.playerid;
+                        if (map && map[id] && map[id].shaReq && map[id].shaReq[id]) {
+                            event.shaReq[target.playerid] = map[id].shaReq[id];
+                        }
+                        else event.shaReq[target.playerid] = 1;
+                        if (target != event.target) {
+                            const myID = player.playerid;
+                            if (map && map[id] && map[id].shaReq && map[id].shaReq[myID]) {
+                                event.shaReq[player.playerid] += (map[id].shaReq[myID] - 1);
+                            }
+                        }
+                    }
+                    event.playerCards = [];
+                    event.targetCards = [];
+                    let stop = false;
+                    const juedous = targets.slice().concat(player);
+                    while (!stop) {
+                        for (const target of juedous) {
+                            if (stop && target == player) break;
+                            event.turn = target;
+                            await event.trigger('juedou');
+                            event.shaRequired = event.shaReq[event.turn.playerid];
+                            while (true) {
+                                if (event.directHit) {
+                                    event._result = { bool: false };
+                                }
+                                else {
+                                    const next = event.turn.chooseToRespond({ name: 'sha' });
+                                    if (event.shaRequired > 1) next.set('prompt2', '共需打出' + event.shaRequired + '张杀');
+                                    next.set('ai', card => {
+                                        let event = _status.event, player = event.splayer, target = event.starget;
+                                        if (player.hasSkillTag('notricksource') || target.hasSkillTag('notrick')) return 0;
+                                        if (event.shaRequired > 1 && player.countCards('h', 'sha') < event.shaRequired) return 0;
+                                        if (event.player === target) {
+                                            if (_status.event.tdamage >= 0 || player.hasSkill('naman')) return -1;
+                                            if (get.attitude(target, player) <= 0 || event.player.hp <= 1 && _status.event.tdamage < _status.event.pdamage) {
+                                                return get.order(card);
+                                            }
+                                            return -1;
+                                        }
+                                        else {
+                                            if (_status.event.pdamage >= 0 || target.hasSkill('naman')) return -1;
+                                            if (get.attitude(player, target) <= 0 || event.player.hp <= 1 && _status.event.tdamage > _status.event.pdamage) {
+                                                return get.order(card);
+                                            }
+                                            return -1;
+                                        }
+                                    });
+                                    next.set('splayer', player);
+                                    next.set('starget', target);
+                                    next.set('pdamage', targets.reduce((sum, i) => {
+                                        return sum + get.damageEffect(player, i, event.turn);
+                                    }, 0));
+                                    next.set('tdamage', get.damageEffect(target, player, event.turn));
+                                    next.set('shaRequired', event.shaRequired);
+                                    next.autochoose = lib.filter.autoRespondSha;
+                                    const result = await next.forResult();
+                                    if (result.bool) {
+                                        event.shaRequired--;
+                                        if (event.turn !== player) {
+                                            if (result.cards) event.targetCards.addArray(result.cards);
+                                            if (event.shaRequired > 0) continue;
+                                            else break;
+                                        }
+                                        else {
+                                            if (result.cards) event.playerCards.addArray(result.cards);
+                                            if (event.shaRequired > 0) continue;
+                                            else break;
+                                        }
+                                    }
+                                    else {
+                                        stop = true;
+                                        if (event.turn !== player) {
+                                            await target.damage(player);
+                                        }
+                                        else {
+                                            for (const target of targets) {
+                                                await player.damage(target);
+                                            }
+                                        }
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    event._result = {};
                 },
             },
             mininianying_lb: {
@@ -28845,7 +28942,7 @@ const packs = function () {
             mininiantazhen_faq: '关于“踏阵”',
             mininiantazhen_faq_info: '系统生成一个九宫格，其中有三格为随机三名其他角色，两格为【酒】（下次攻击攻击力+2），一格为【马】（步数+2），其余格为【杀】（攻击力+1），玩家初始步数为玩家体力值+1，初始攻击力为0，在满足经过的路径不交叉的条件下，任选一个不为角色的格子作为初始位置进行八向移动，最终路线上存在被击败角色（攻击力大于等于其当前体力值）即为踏阵成功。',
             mininiandoupo: '斗破',
-            mininiandoupo_info: '锁定技。①你使用【决斗】的目标上限数+2。②当你对任意角色A发起的【决斗】结束后，若你赢，则取消此【决斗】对后续目标角色S的结算，且当此【决斗】结算完毕后，你随机获得{A}∪S的各一张手牌。',
+            mininiandoupo_info: '锁定技。①你使用【决斗】的目标上限数+2。②你使用【决斗】的效果改为“所有目标角色与你依次打出一张【杀】，未打出【杀】的角色受到你对其造成的1点伤害。然后重复此流程直到此轮有角色受到伤害。”。③当你使用【决斗】结算完毕后，你获得所有本次【决斗】失败一方的其他角色的各一张牌。',
             mininianying_lb: '念影',
             mininianying_lb_info: '每回合限一次，当你造成或受到伤害后，若你本回合造成或受到的伤害数之和大于等于2，则你可以选择一个存在“念影”效果的技能的“念影”效果执行。',
         },
