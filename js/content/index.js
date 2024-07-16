@@ -905,6 +905,7 @@ export function content(config, pack) {
 					gz_bianfuren: ['female', 'wei', 3, ['gzwanwei', 'gzyuejian'], []],
 					gz_re_xushu: ['male', 'shu', 4, ['gzqiance', 'gzjujian'], ['gzskin']],
 					gz_wujing: ['male', 'wu', 4, ['donggui', 'fengyang_old'], ['gzskin']],
+					gz_zhugeke: ['male', 'wu', 3, ['bolaocai', 'gzduwu'], ['gzskin']],
 				},
 			};
 			for (const i in change_pack) {
@@ -1513,6 +1514,7 @@ export function content(config, pack) {
 	lib.translate.chongzhen_info = '当你发动〖龙胆〗时，你可以获得对方的一张手牌。';
 	game.HDaddCharacter('zhanghua', ['male', 'jin', 3, ['olbihun', 'oljianhe', 'bolchuanwu'], []], 'sp');
 	game.HDaddCharacter('ol_pengyang', ['male', 'shu', 3, ['bolxiaofan', 'boltuishi', 'nzry_cunmu'], []], 'sp');
+	game.HDaddCharacter('zhugeke', ['male', 'wu', 3, ['bolaocai', 'duwu'], []], 'sp');
 
 	//系列专属包
 	lib.characterSort.sp2.sp2_waitforsort.addArray(['junk_zhangrang']);
