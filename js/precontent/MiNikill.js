@@ -27030,8 +27030,8 @@ const packs = function () {
                             if (!nums.some(num => allPosition.filter(l => l[0] == num).length >= 3)) {
                                 player.popup('一整行×', 'wood');
                                 const card = new lib.element.VCard({ name: 'sha' });
-                                const shas = targets.filter(i => player.canUse(sha, i, false));
-                                if (shas.length) await player.useCard(sha, shas, false);
+                                const shas = targets.filter(i => player.canUse(card, i, false));
+                                if (shas.length) await player.useCard(card, shas, false);
                             }
                             else player.popup('一整行√', 'fire');
                             if (!allPosition.some(l => l[0] == 1 && l[1] == 1)) {
