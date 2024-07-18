@@ -6095,7 +6095,7 @@ const packs = function () {
                         const player = get.player();
                         if (player.getHp() < 2 || !game.hasPlayer(current => current != player && !current.hasMark('wechattaoni') && get.attitude(player, current) < 0)) return 'cancel2';
                         const num = Math.min(player.getHp() - 1, game.countPlayer(current => current != player && !current.hasMark('wechattaoni') && get.attitude(player, current) < 0));
-                        return Math.min(choices.length - 1, num);
+                        return Math.min(choices.length - 1, num - 1);
                     });
                     event.result = {
                         bool: result.control != 'cancel2',
@@ -6158,7 +6158,6 @@ const packs = function () {
                         forced: true,
                         popup: false,
                         async content(event, trigger, player) {
-                            console.log(trigger)
                             if (trigger.turn == player) player.tempBanSkill('wechatpingjiang');
                             else {
                                 if (trigger.target.isIn() && trigger.target.hasMark('wechattaoni')) trigger.target.clearMark('wechattaoni');
@@ -6174,12 +6173,13 @@ const packs = function () {
                         filter(event, player) {
                             return event.card && event.card.name == 'juedou';
                         },
+                        charlotte: true,
                         forced: true,
                         logTarget(event, player) {
-                            return event.name == 'useCard' ? event.target : event.player;
+                            return event.name == 'useCardToPlayered' ? event.target : event.player;
                         },
                         async content(event, trigger, player) {
-                            if (trigger.name == 'useCard') {
+                            if (trigger.name == 'useCardToPlayered') {
                                 const id = trigger.target.playerid;
                                 const idt = trigger.target.playerid;
                                 const map = trigger.getParent().customArgs;
