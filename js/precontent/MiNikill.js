@@ -26933,7 +26933,7 @@ const packs = function () {
                             const goon4 = allPosition.some(l => l[0] == 1 && l[1] == 1);
                             dialog.content.childNodes[7].innerHTML = '<div class="text center">' + (goon4 ? '当前路径已包括中心格' : '路径未包括中心格：踏阵击败的角色不能对你使用【杀】直到你的下回合开始') + '</div>';
                         }
-                        return [1, 1 + get.event().player.getHp()];
+                        return [1, 1 + get.event().player.getHp() + ui.selected.buttons.filter(i => i.link.split('|')[0] == 'horse').length * 2];
                     }).set('filterButton', button => {
                         if (!get.event().list.slice().flat().includes(button.link)) return false;
                         if (!ui.selected.buttons.length) return (button.link.split('|').length > 2) === false;
