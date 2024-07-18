@@ -26908,9 +26908,6 @@ const packs = function () {
                         [list[0], lib.skill.mininiantazhen.tazhen],
                         [list[1], lib.skill.mininiantazhen.tazhen],
                         [list[2], lib.skill.mininiantazhen.tazhen],
-                        '<div class="text center">路径未包括一整列：令踏阵击败角色依次交给你一张牌</div>',
-                        '<div class="text center">路径未包括一整行：视为对踏阵击败角色使用一张无距离和次数限制的【杀】</div>',
-                        '<div class="text center">路径未包括中心格：踏阵击败的角色不能对你使用【杀】直到你的下回合开始</div>',
                     );
                     dialog.videoId = videoId;
                     dialog.classList.add('fullheight');
@@ -26926,12 +26923,6 @@ const packs = function () {
                             };
                             const allPosition = ui.selected.buttons.slice().map(but => findXY(but.link));
                             dialog.content.childNodes[1].innerHTML = '<div class="text center">剩余' + parseFloat(kill[3]) + '步；攻击力：' + parseFloat(kill[0]) + '；酒：' + parseFloat(kill[1]) + '；当前击败：' + (kill[2].length ? get.translation(kill[2].slice().map(i => i[0])) : '无') + '</div>';
-                            const goon2 = nums.some(num => allPosition.filter(l => l[1] == num).length >= 3);
-                            dialog.content.childNodes[5].innerHTML = '<div class="text center">' + (goon2 ? '当前路径已包括一整列' : '路径未包括一整列：令踏阵击败角色依次交给你一张牌') + '</div>';
-                            const goon3 = nums.some(num => allPosition.filter(l => l[0] == num).length >= 3);
-                            dialog.content.childNodes[6].innerHTML = '<div class="text center">' + (goon3 ? '当前路径已包括一整行' : '路径未包括一整行：视为对踏阵击败角色使用一张无距离和次数限制的【杀】') + '</div>';
-                            const goon4 = allPosition.some(l => l[0] == 1 && l[1] == 1);
-                            dialog.content.childNodes[7].innerHTML = '<div class="text center">' + (goon4 ? '当前路径已包括中心格' : '路径未包括中心格：踏阵击败的角色不能对你使用【杀】直到你的下回合开始') + '</div>';
                         }
                         return [1, 1 + get.event().player.getHp() + ui.selected.buttons.filter(i => i.link.split('|')[0] == 'horse').length * 2];
                     }).set('filterButton', button => {
@@ -27020,26 +27011,23 @@ const packs = function () {
                             };
                             const allPosition = result.links.slice().map(but => findXY(but));
                             const nums = Array.from({ length: 3 }).map((_, i) => i);
-                            if (!nums.some(num => allPosition.filter(l => l[1] == num).length >= 3)) {
-                                player.popup('一整列×', 'wood');
+                            if (nums.some(num => !allPosition.some(l => l[1] == num))) {
+                                player.popup('一整列', 'wood');
                                 for (const i of targets) {
                                     if (i.countCards('h')) await i.chooseToGive(player, 'he', true);
                                 }
                             }
-                            else player.popup('一整列√', 'fire');
-                            if (!nums.some(num => allPosition.filter(l => l[0] == num).length >= 3)) {
-                                player.popup('一整行×', 'wood');
+                            if (nums.some(num => !allPosition.some(l => l[0] == num))) {
+                                player.popup('一整行', 'wood');
                                 const card = new lib.element.VCard({ name: 'sha' });
                                 const shas = targets.filter(i => player.canUse(card, i, false));
                                 if (shas.length) await player.useCard(card, shas, false);
                             }
-                            else player.popup('一整行√', 'fire');
                             if (!allPosition.some(l => l[0] == 1 && l[1] == 1)) {
-                                player.popup('中心格×', 'wood');
+                                player.popup('中心格', 'wood');
                                 player.addTempSkill('mininiantazhen_effect', { player: 'phaseBegin' });
                                 player.markAuto('mininiantazhen_effect', targets);
                             }
-                            else player.popup('中心格√', 'fire');
                             return;
                         }
                     }
