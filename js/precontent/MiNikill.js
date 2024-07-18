@@ -10141,7 +10141,7 @@ const packs = function () {
                         var targets = game.filterPlayer(current => target.inRange(current));
                         if (targets.some(currentx => get.effect(currentx, { name: 'sha' }, target, player) > 0)) return 2 - Math.abs(get.attitude(player, target));
                         return 0;
-                    }).set('complexSelect', true);
+                    }).set('multitarget', true);
                     'step 1'
                     if (result.bool) {
                         var targets = result.targets;
