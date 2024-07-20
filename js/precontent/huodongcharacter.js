@@ -41,7 +41,7 @@ const packs = function () {
             bilibili_shengxunyu: ['male', 'key', 4, ['bilibili_hehu', 'bilibili_jinyan', 'bilibili_yutai'], []],
             bilibili_Firewin: ['male', 'key', 4, ['jsrgfeiyang', 'jsrgbahu', 'bilibili_tixiang'], []],
             bilibili_jinglingqiu: ['male', 'key', '3/4', ['bilibili_tiyi', 'bilibili_zili'], []],
-            bilibili_suixingsifeng: ['female', 'key', 4, ['bilibili_daili', 'bilibili_duoyang', 'bilibili_liaoxing'], []],
+            bilibili_suixingsifeng: ['female', 'key', 4, ['bilibili_liaoxing', 'bilibili_daili', 'bilibili_duoyang'], []],
             bilibili_Emptycity: ['male', 'key', 4, ['bilibili_zhiyou', 'bilibili_guanli'], []],
             bilibili_thunderlei: ['male', 'key', '2/4/3', ['bilibili_Thunder', 'bilibili_qianxi'], []],
             bilibili_zhengxuan: ['male', 'qun', 3, ['bilibili_zhengjing'], ['character:zhengxuan', 'die:zhengxuan']],
@@ -50,7 +50,7 @@ const packs = function () {
             bilibili_shen_guojia: ['male', 'wei', '9/9/5', ['stianyi', 'resghuishi', 'bilibili_huishi'], ['doublegroup:shen:wei']],
             bilibili_re_xusheng: ['male', 'wu', 4, ['bilibili_pojun', 'kuangcai', 'bilibili_baodao'], []],
             bilibili_xushao: ['male', 'qun', '1/6', ['bilibili_pingjian'], ['ext:活动武将/image/character/old_xushao.jpg', 'InitFilter:noZhuHp']],
-            bilibili_ningjingzhiyuan: ['male', 'key', 4, ['bilibili_xiezhi', 'bilibili_fazhou', 'bilibili_mx_kanpo'], []],
+            bilibili_ningjingzhiyuan: ['male', 'key', 4, ['bilibili_liaoxing', 'bilibili_xiezhi', 'bilibili_fazhou'], []],
             bilibili_xizhicaikobe: ['male', 'key', 4, [], []],
             //千里走单骑
             DJ_caiyang: ['male', 'qun', 1, ['yinka', 'zhuixi'], ['character:caiyang']],
@@ -6806,13 +6806,18 @@ const packs = function () {
                 },
             },
             bilibili_liaoxing: {
-                trigger: { global: 'gameDrawAfter' },
-                filter: function (event, player) {
-                    return event.name != 'phase' || game.phaseNumber == 0;
-                },
+                trigger: { global: ['gameDrawBegin', 'gameDrawAfter'] },
                 forced: true,
                 content: function () {
-                    var players = game.filterPlayer(current => current != player);
+                    if (event.triggername == 'gameDrawBegin') {
+                        const numx = trigger.num, me = player;
+                        trigger.num = function (player) {
+                            const num = (typeof numx == "function" ? numx(player) : numx);
+                            return player != me ? num : Math.max(game.players.length + game.dead.length, num);
+                        };
+                        return;
+                    }
+                    const players = game.filterPlayer(current => current != player);
                     player.line(players);
                     players.forEach(target => target.addGaintag(target.getCards('h'), 'bilibili_liaoxing_tag'));
                 },
@@ -10116,11 +10121,15 @@ const packs = function () {
                     };
                     if (event.isMine()) func();
                     else if (event.isOnline()) event.player.send(func);
-                    const sum = trigger.player.countCards('h') + 2;
-                    let result = await player.chooseButton(['###协治###选择' + get.cnNumber(sum) + '张牌的类别作为' + get.translation(trigger.player) + '本回合的用牌标准', [['basic', 'trick', 'equip'], 'vcard']], true).set('ai', button => {
+                    const sum = Math.max(3, trigger.player.countCards('h'));
+                    let result = await player.chooseButton(['###协治###选择' + get.cnNumber(sum) + '次牌的类别作为' + get.translation(trigger.player) + '本回合的用牌标准', [['basic', 'trick', 'equip'], 'vcard']], true).set('filterButton', button => {
+                        const rest = get.event().selectButton - ui.selected.buttons.length;
+                        const noChoose = ['basic', 'trick', 'equip'].filter(type => !ui.selected.buttons.slice().map(i => i.link[2]).includes(type));
+                        return noChoose.length != rest || noChoose.includes(button.link[2]);
+                    }).set('ai', button => {
                         const player = get.event().player, target = get.event().getTrigger().player;
-                        if (get.attitude(player, target) >= 0) return 0;
-                        return 1 + Math.random();
+                        const index = ['basic', 'trick', 'equip'].indexOf(button.link[2]);
+                        return 1 + Math.random() * (get.attitude(player, target) > 0 ? (3 - index) : (index + 1));
                     }).set('custom', {
                         add: {
                             confirm(bool) {
@@ -10151,7 +10160,7 @@ const packs = function () {
                         replace: {
                             button(button) {
                                 const event = get.event(), sum = event.selectButton;
-                                if (!event.isMine()) return;
+                                if (!event.isMine() || !event.filterButton(button)) return;
                                 if (button.classList.contains('selectable') == false) return;
                                 if (ui.selected.buttons.length >= sum) return false;
                                 button.classList.add('selected');
@@ -10179,11 +10188,9 @@ const packs = function () {
                 logTarget: 'player',
                 async content(event, trigger, player) {
                     event.cost_data.forEach(type => trigger.player.addMark('bilibili_xiezhi_' + type, 1, false));
-                    ['basic', 'trick', 'equip'].forEach(type => trigger.player.addMark('bilibili_xiezhi_' + type, 1, false));
                     trigger.player.addTempSkill('bilibili_xiezhi_buff');
                     trigger.player.markSkill('bilibili_xiezhi_buff');
                 },
-                group: 'bilibili_xiezhi_effect',
                 subSkill: {
                     buff: {
                         charlotte: true,
@@ -10219,17 +10226,6 @@ const packs = function () {
                             },
                         },
                     },
-                    effect: {
-                        trigger: { global: 'gameDrawBegin' },
-                        forced: true,
-                        content() {
-                            const numx = trigger.num, me = player;
-                            trigger.num = function (player) {
-                                const num = (typeof numx == "function" ? numx(player) : numx);
-                                return player != me ? num : Math.max(game.players.length + game.dead.length, num);
-                            };
-                        },
-                    },
                 },
             },
             bilibili_fazhou: {
@@ -10243,22 +10239,23 @@ const packs = function () {
                 findTarget(player) {
                     return player.getRoundHistory('useCard', () => true, 1).reduce((list, evt) => {
                         return list.add(get.type2(evt.card));
-                    }, []).length + Math.min(1, player.getRoundHistory('sourceDamage', () => true, 1).length) >= 4;
+                    }, []).length >= 3 || player.getRoundHistory('sourceDamage', () => true, 1).length > 0;
                 },
                 async cost(event, trigger, player) {
-                    event.result = await player.chooseTarget(get.prompt('bilibili_fazhou'), '对一名角色肘成2点伤害，然后本轮将其肘出游戏', (card, player, target) => {
+                    event.result = await player.chooseTarget(get.prompt('bilibili_fazhou'), '对任意名角色肘成1点伤害，然后本轮将其肘出游戏', (card, player, target) => {
                         return target != player && lib.skill.bilibili_fazhou.findTarget(target);
-                    }).set('ai', target => {
+                    }, [1, Infinity]).set('ai', target => {
                         const player = get.event().player;
                         return get.damageEffect(target, player, player);
                     }).forResult();
                 },
                 async content(event, trigger, player) {
-                    const target = event.targets[0];
-                    await target.damage(2);
-                    if (target.isIn()){
-                        player.chat('Manba out');
-                        target.addTempSkill('bilibili_fazhou_manbaout', 'roundStart');
+                    for (const target of event.targets.sortBySeat(player)) {
+                        await target.damage(1);
+                        if (target.isIn()) {
+                            target.chat('Manba out');
+                            target.addTempSkill('bilibili_fazhou_manbaout', 'roundStart');
+                        }
                     }
                 },
                 subSkill: {
@@ -10638,8 +10635,7 @@ const packs = function () {
             bilibili_zhengjun_info: '当你受到伤害时，你可以获得装备区里的牌，然后打出一张装备牌。若如此做，你防止此伤害。',
             old_zuoci: '国战左慈',
             old_zuoci_ab: '左慈',
-            bilibili_shengxunyu: '萌设生熏鱼',
-            bilibili_shengxunyu_prefix: '萌设',
+            bilibili_shengxunyu: '生熏鱼',
             bilibili_jinyan: '禁言',
             bilibili_jinyan_info: '锁定技，其他角色于你的回合内至多成为一次你使用非【奇正相生】牌的目标。',
             bilibili_hehu: '呵护',
@@ -10647,8 +10643,7 @@ const packs = function () {
             bilibili_yutai: '彧态',
             bilibili_yutai_info: '你可以将X张牌当作【奇正相生】使用（X为你本回合发动〖彧态〗的次数+1，且X至多为3）。',
             bilibili_yutai_append: '<span style="font-family:yuanli">我是活动群团宠，我最爱的就是惹事然后被宵禁</span>',
-            bilibili_Firewin: '萌设Fire.win',
-            bilibili_Firewin_prefix: '萌设',
+            bilibili_Firewin: 'Fire.win',
             bilibili_tixiang: '替像',
             bilibili_tixiang_info: '锁定技。①新的一轮开始时，你按照[魏、蜀、吴、群、晋]的顺序获得当前势力的随机两张武将牌的所有无标签技能直至下一轮开始。②当你发动无标签技能结算结束后，你触发一次扩展内置彩蛋。',
             bilibili_tixiang_append: '<span style="font-family:yuanli">我每个月都要换头像，我这儿有很多的鸟可以换</span>',
@@ -10657,35 +10652,32 @@ const packs = function () {
             bolfuman: '抚蛮',
             bolfuman2: '抚蛮',
             bolfuman_info: '①出牌阶段每名角色限一次，你可以将一张手牌交给一名其他角色并标记为“抚蛮”且“抚蛮”牌的牌名视为【杀】。②一名角色使用或打出“抚蛮”牌结算结束后，你摸一张牌（若此牌造成过伤害，则改为摸两张牌）。',
-            bilibili_jinglingqiu: '萌设精灵球',
-            bilibili_jinglingqiu_ab: '萌设?',
-            bilibili_jinglingqiu_prefix: '萌设',
+            bilibili_jinglingqiu: '精灵球',
+            bilibili_jinglingqiu_ab: '?',
             bilibili_tiyi: '提议',
             bilibili_tiyi_info: '出牌阶段，若你有牌，你可以记录一名有手牌的其他角色，然后与其议事。若议事有结果且为：红色，你与其各回复1点体力；黑色，你摸两张牌，其摸牌阶段多摸一张牌且手牌上限+1直到其下个回合结束。若议事无结果，你对其造成1点伤害。当你发动〖提议〗后，或场上有角色死亡后，若场上剩余存活的其他角色均已被〖提议〗记录，你清空〖提议〗角色记录且本回合不能发动〖提议〗。',
             bilibili_zili: '资历',
             bilibili_zili_info: '锁定技。①其他角色的摸牌阶段结束后，若该角色本阶段摸牌数A大于0，且你未记录X或X小于A，则你记录X为A。②其他角色的弃牌阶段结束后，若该角色的手牌上限B大于0，且你未记录Y或Y小于B，则你记录Y为B。③若你已有记录X，你的摸牌阶段摸牌基数视为X+1；若你已有记录Y，你的手牌上限视为Y+1。',
             bilibili_zili_append: '<span style="font-family:yuanli">大佬你这么厉害，不如建一个群接纳喜欢你的扩展的人</span>',
-            bilibili_suixingsifeng: '萌设随性似风',
-            bilibili_suixingsifeng_prefix: '萌设',
+            bilibili_suixingsifeng: '随性似风',
             bilibili_daili: '代理',
             bilibili_daili_tag: '统',
             bilibili_daili_info: '锁定技，新的一轮开始时，你移去所有“统”，然后若游戏轮数大于1，你随机获得场上所有其他游戏角色各一张于上一轮使用的所有排对应的实体牌的原类型为基本或普通锦囊牌的复制，称为“统”（“统”移动至其他区域时会被销毁）。',
             bilibili_duoyang: '多样',
             bilibili_duoyangx: '多样',
             bilibili_duoyang_info: '锁定技，游戏开始时，你获得“曹操”、“刘备”、“孙权”卡牌各一张。',
-            bilibili_duoyang_append: '〖多样〗衍生武将卡功能：<br>衍生武将卡无主动使用方法，不计入手牌上限，不可被弃置或获得，当“曹操”/“刘备”/“孙权”处于你的手牌区时，你视为拥有技能〖奸雄〗/〖仁德〗/〖制衡〗。',
+            bilibili_duoyang_append: '〖多样〗衍生武将卡功能：<br>衍生武将卡无主动使用方法，不计入手牌上限，不可被弃置或获得，当“曹操”/“刘备”/“孙权”处于你的手牌区时，你视为拥有技能〖奸雄〗/〖仁德〗/〖制衡〗。<br><br><span style="font-family:yuanli">我是萌新（转型中），我也是个代更者，我还是萌新的朋友，我又是群机器人，所以我到底是...</span>',
             bilibili_duoyang_faq: '〖多样〗衍生武将卡功能',
             bilibili_duoyang_faq_info: '<br>衍生武将卡无主动使用方法，不计入手牌上限，当“曹操”/“刘备”/“孙权”处于你的手牌区时，你视为拥有技能〖奸雄〗/〖仁德〗/〖制衡〗。',
             bilibili_liaoxing: '瞭星',
             bilibili_liaoxing_tag: '星',
-            bilibili_liaoxing_info: '锁定技。①分发起始手牌后，所有其他角色的手牌被标记为“星”。②一名角色失去“星”后，其获得等量的【影】。③一名角色失去【影】后，你摸等量的牌。',
-            bilibili_liaoxing_append: '<span style="font-family:yuanli">我是萌新（转型中），我也是个代更者，我还是萌新的朋友，我又是群机器人，所以我到底是...</span>',
+            bilibili_liaoxing_info: '锁定技。①你的初始手牌数不会少于X张（X为游戏人数）；分发起始手牌后，所有其他角色的手牌被标记为“星”。②一名角色失去“星”后，其获得等量的【影】。③一名角色失去【影】后，你摸等量的牌。',
+            bilibili_mx_kanpo: '看破',
+            bilibili_mx_kanpo_info: '其他角色对你使用技能时，你可令此技能对你无效。',
             bilibili_xuxiang: '虚像',
             bilibili_xuxiang_info: '锁定技，防止你受到的伤害。',
-            bilibili_Emptycity: '萌设Empty city°',
-            bilibili_Emptycity_prefix: '萌设',
-            bilibili_thunderlei: '萌设雷',
-            bilibili_thunderlei_prefix: '萌设',
+            bilibili_Emptycity: 'Empty city°',
+            bilibili_thunderlei: '雷',
             bolshelie: '涉猎',
             bolshelie_info: '摸牌阶段，你可以改为亮出牌堆顶的五张牌，然后选择获得其中花色不同的牌各一张。每轮限一次，结束阶段，若你本回合使用的花色数不小于4，你执行一个额外的摸牌阶段或出牌阶段（不能连续选择执行相同项）。',
             bolgongxin: '攻心',
@@ -10701,8 +10693,7 @@ const packs = function () {
             bilibili_qianxi: '潜习',
             bilibili_qianxi_info: '锁定技，当你受到伤害时，你将伤害值调整为1，然后防止你本回合后续受到的伤害，且其他角色使用牌不能指定你为目标。',
             bilibili_qianxi_append: '<span style="font-family:yuanli">千幻雷音的密码是thunder，不是什么“Thunder”、“thunder，憋问了。”不带符号，不带空格。小雷音寺已解散，Thunder小游戏扩展的密码是thunderXYX，求求你们不要私信问我密码为什么不对了，憋问了。</span>',
-            bilibili_lonelypatients: '萌设lonely patients',
-            bilibili_lonelypatients_prefix: '萌设',
+            bilibili_lonelypatients: 'lonely patients',
             bolsidi: '司敌',
             bolsidi_info: '当你使用非延时锦囊牌结算完毕后，你可以选择一名未指定“司敌”目标的其他角色，并为其指定一名“司敌”目标角色（仅你可见）。其使用的下一张非延时锦囊牌指定目标后，清除你为其指定的“司敌”目标角色，若此时其使用此牌仅指定“司敌”目标为唯一目标，且目标：为你，你摸一张牌；不为你，你可以选择一项：⒈取消此牌目标，然后若场上没有处于濒死的角色，你对其造成1点伤害；⒉摸两张牌。',
             bilibili_meihua: '美化',
@@ -10758,8 +10749,7 @@ const packs = function () {
             dom_chouxiang: '抽象',
             dom_chouxiang_info: '锁定技，你对其他宿舍成员使用牌无距离和次数限制；当你使用牌或发动技能时，若其中包含其他宿舍成员，则你和这些角色各摸一张牌，然后进行同时拼点，不能拼点和拼点没赢的角色于此牌或技能结算完毕后于本轮移出游戏。',
             dom_chouxiang_append: '<span style="font-family:yuanli">抽象对抽象，不抽象的陪' + get.bolInformX('牢大', '仅娱乐，请勿过度解读') + '打复活赛</span>',
-            'bilibili_kuangshen04': '萌设狂神',
-            'bilibili_kuangshen04_prefix': '萌设',
+            'bilibili_kuangshen04': '狂神',
             BTmakeBug: 'PR',
             BTmakeBug_info: '锁定技，回合结束时，你将手牌数摸至七张，然后若你没有手牌，你结束本局游戏，否则你随机伪装你的一张手牌的花色点数，然后X须猜测其中哪一张为此伪装牌，若X猜错，你获得两张【影】，然后在牌堆中洗入20张【影】（洗入的【影】无花色且点数为114514，X为game.me，若game.me与你同阵容或game.me未存活则改为随机一名敌方角色）。',
             BTtequ: '特取',
@@ -10807,17 +10797,13 @@ const packs = function () {
             bolyifu_info: '转换技。①一名角色可以将一张基本牌当作{天，【闪电】；地，【随机应变】；人，【铁索连环】}使用。②当你成为〖蚁附①〗转化的牌的目标后，你摸一张牌。',
             boltianjie: '天劫',
             boltianjie_info: '锁定技。①一名角色的【闪电】生效时，取消之，然后你对其或其上家或下家造成1点雷属性伤害。②一名角色的【闪电】判定牌生效后，若判定牌不为【闪】，则令其继续进行【闪电】判定。',
-            bilibili_ningjingzhiyuan: '萌设宁静致远',
-            bilibili_ningjingzhiyuan_prefix: '萌设',
+            bilibili_ningjingzhiyuan: '宁静致远',
             bilibili_xiezhi: '协治',
-            bilibili_xiezhi_info: '锁定技。①你的初始手牌数不会少于X张（X为游戏人数）。②其他角色的回合开始时，你选择Y次牌的类别，其本回合至多使用选择类别次数+1的对应类别的牌（Y为其手牌数+2，仅限选择基本、锦囊、装备）。',
+            bilibili_xiezhi_info: '锁定技，其他角色的回合开始时，你选择X次牌的类别，其本回合至多使用选择类别次数的对应类别的牌（X为其手牌数且至少为3，仅限选择基本、锦囊、装备且每种类别至少选择一次）。',
             bilibili_fazhou: '罚肘',
-            bilibili_fazhou_info: '一轮游戏开始时，你可以选择一名上一轮使用过三种类别的牌且造成过伤害的其他角色，对其肘成2点伤害，然后本轮将其肘出游戏。',
-            bilibili_mx_kanpo: '看破',
-            bilibili_mx_kanpo_info: '↑↑↓↓<br>←←→→<br>B A B A ',
-            bilibili_mx_kanpo_append: '<span style="font-family:yuanli">不顺群意者，当填黑屋之壑。<br>吾令不从者，当膏肘击之锷。</span>',
-            bilibili_xizhicaikobe: '萌设戏志才',
-            bilibili_xizhicaikobe_prefix: '萌设',
+            bilibili_fazhou_info: '一轮游戏开始时，你可以选择任意名上一轮使用过三种类别的牌或造成过伤害的其他角色，对这些角色依次肘成1点伤害，然后本轮将其肘出游戏。',
+            bilibili_fazhou_append: '<span style="font-family:yuanli">不顺群意者，当填黑屋之壑。<br>吾令不从者，当膏肘击之锷。</span>',
+            bilibili_xizhicaikobe: '戏志才',
             bolxiaofan: '嚣翻',
             bolxiaofan_hs: 'invisible',
             bolxiaofan_info: '当你需要使用不为【无懈可击】的牌时，你可以观看牌堆底的X+1张牌并使用其中的一张。此牌结算结束时，你依次弃置以下前X个区域中的所有牌：⒈判定区、⒉装备区、⒊手牌区（X为本回合你使用过的牌中包含的类型数）。',
