@@ -13,13 +13,13 @@ game.bolShowNewPack = function () {
 	var HuoDong_update = [
 		'/setPlayer/',
 		'bugfix',
-		'整合@zhichaoxi2006 @QCXYLTJ @PZ157的Pull Requests',
-		'添加欢杀武将：贺齐、念吕布',
+		'整合@zhichaoxi2006 @QCXYLTJ @PZ157 @xizifu的Pull Requests',
+		'添加欢杀武将：贺齐、念吕布、胡金定、孙寒华、SP夏侯氏',
 		'To be continued...',
 	];
 	//更新武将
 	var HuoDong_players = [
-		'Mbaby_heqi', 'Mnian_lvbu'
+		'Mbaby_heqi', 'Mnian_lvbu', 'Mbaby_hujinding', 'Mbaby_sunhanhua', 'Mbaby_sp_xiahoushi'
 	];
 	//加载
 	var dialog = ui.create.dialog(
