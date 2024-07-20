@@ -6257,9 +6257,7 @@ const packs = function () {
                 unique: true,
                 init: () => game.addGlobalSkill('tianzuo_global'),
                 getNum: function (player = _status.event.player) {
-                    var num = 1 + player.getHistory('useSkill', function (evt) {
-                        return evt.skill == 'bilibili_yutai';
-                    }).length;
+                    var num = 1 + (player.getStat('skill')['bilibili_yutai'] || 0);
                     if (game.hasPlayer2(function (current) {
                         return current.name1 == 'bilibili_suixingsifeng' || current.name2 == 'bilibili_suixingsifeng';
                     })) return num;
@@ -7255,7 +7253,6 @@ const packs = function () {
                         },
                         forced: true,
                         content: function () {
-                            game.addGlobalSkill('bilibili_Thunder_decadeSkill');
                             var skill = trigger.sourceSkill || trigger.skill;
                             if (!_status.ThunderSkill) _status.ThunderSkill = [];
                             _status.ThunderSkill.push(skill);
@@ -7270,7 +7267,28 @@ const packs = function () {
                                 },
                                 selectTarget: -1,
                                 bilibili_ThunderSkill: skill,
-                                content: function () { },
+                                async content(event, trigger, player) {
+                                    await game.asyncDelayx();
+                                    const skill = lib.card[event.card.name].bilibili_ThunderSkill;
+                                    if (!player.hasSkill(skill, null, null, false)) await player.addSkills(skill);
+                                    else await player.draw(3);
+                                    const evt = event.getParent();
+                                    if (evt && evt.name == 'useCard' && (evt.cards || []).length == 1 && evt.cards[0].name == event.card.name) {
+                                        const cards = evt.cards.filterInD();
+                                        if (cards.length) {
+                                            if (!cards[0].decadeSkill) {
+                                                cards[0].decadeSkill = true;
+                                                game.log(cards, '已被洗入牌堆');
+                                                ui.cardPile.insertBefore(cards[0], ui.cardPile.childNodes[get.rand(0, ui.cardPile.childNodes.length)]);
+                                                game.updateRoundNumber();
+                                            }
+                                            else {
+                                                game.log(cards, '已被移出游戏');
+                                                await game.cardsGotoSpecial(cards);
+                                            }
+                                        }
+                                    }
+                                },
                                 ai: {
                                     basic: {
                                         order: 114514 + 1919810,
@@ -7283,35 +7301,6 @@ const packs = function () {
                             lib.translate[card] = '雷の制卡·' + lib.translate[skill];
                             lib.translate[card + '_info'] = '<li>使用此牌，获得技能【' + lib.translate[skill] + '】' + '<br><li>' + lib.translate[skill + '_info'];
                             player.gain(game.createCard2(card, lib.suit.randomGet(), get.rand(1, 13)), 'gain2');
-                        },
-                    },
-                    decadeSkill: {
-                        trigger: { player: 'useCard' },
-                        filter: function (event, player) {
-                            return lib.card[event.card.name].bilibili_ThunderSkill;
-                        },
-                        direct: true,
-                        firstDo: true,
-                        content: function () {
-                            'step 0'
-                            game.delay();
-                            'step 1'
-                            var skill = lib.card[trigger.card.name].bilibili_ThunderSkill;
-                            if (!player.hasSkill(skill)) player.addSkills(skill);
-                            else player.draw(3);
-                            'step 2'
-                            if (trigger.cards.filterInD() && trigger.cards.filterInD().length) {
-                                if (!trigger.cards.filterInD()[0].decadeSkill) {
-                                    trigger.cards.filterInD()[0].decadeSkill = true;
-                                    game.log(trigger.cards.filterInD(), '已被洗入牌堆');
-                                    ui.cardPile.insertBefore(trigger.cards.filterInD()[0], ui.cardPile.childNodes[get.rand(0, ui.cardPile.childNodes.length)]);
-                                    game.updateRoundNumber();
-                                }
-                                else {
-                                    game.log(trigger.cards.filterInD(), '已被移出游戏');
-                                    game.cardsGotoSpecial(trigger.cards);
-                                }
-                            }
                         },
                     },
                     //第二阶段————雷的花样美化————属性提升
@@ -10094,7 +10083,7 @@ const packs = function () {
             bilibili_xiezhi: {
                 trigger: { global: 'phaseBegin' },
                 filter(event, player) {
-                    return event.player != player;
+                    return event.player != player && !event.player.isOut();
                 },
                 locked: true,
                 async cost(event, trigger, player) {
@@ -10255,6 +10244,15 @@ const packs = function () {
                         if (target.isIn()) {
                             target.chat('Manba out');
                             target.addTempSkill('bilibili_fazhou_manbaout', 'roundStart');
+                            /*
+                            const evt = trigger;
+                            if (evt.player != target && !evt._finished) {
+                                evt.finish();
+                                evt._triggered = 5;
+                                const evtx = evt.player.insertPhase();
+                                delete evtx.skill;
+                            }
+                            */
                         }
                     }
                 },
