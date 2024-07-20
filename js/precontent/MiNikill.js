@@ -10971,14 +10971,16 @@ const packs = function () {
                     await target.draw(num);
                     if (get.color(cards[0]) == 'red') await target.recover();
                     if (get.color(cards[0]) == 'black') {
+                        if (!target.countMark(event.name + '_buff')) {
+                            target.when({ player: 'phaseBegin' }).then(() => {
+                                let num = player.countMark('miniwuyuan_buff');
+                                player.removeSkill('miniwuyuan_buff');
+                                player.addTempSkill('miniwuyuan_sha');
+                                player.addMark('miniwuyuan_sha', num, false);
+                            });
+                        }
                         target.addSkill(event.name + '_buff');
                         target.addMark(event.name + '_buff', 1, false);
-                        target.when({ player: 'phaseBegin' }).then(() => {
-                            let num = player.countMark('miniwuyuan_buff');
-                            player.removeSkill('miniwuyuan_buff');
-                            player.addTempSkill('miniwuyuan_sha');
-                            player.addMark('miniwuyuan_sha', num, false);
-                        });
                     }
                 },
                 subSkill: {
