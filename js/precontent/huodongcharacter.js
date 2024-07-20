@@ -10814,7 +10814,7 @@ const packs = function () {
             bilibili_fazhou: '罚肘',
             bilibili_fazhou_info: '一轮游戏开始时，你可以选择一名上一轮使用过三种类别的牌且造成过伤害的其他角色，对其肘成2点伤害，然后本轮将其肘出游戏。',
             bilibili_mx_kanpo: '看破',
-            bilibili_mx_kanpo_info: '↑↑↓↓←←→→BABA',
+            bilibili_mx_kanpo_info: '↑↑↓↓<br>←←→→<br>B A B A ',
             bilibili_mx_kanpo_append: '<span style="font-family:yuanli">不顺群意者，当填黑屋之壑。<br>吾令不从者，当膏肘击之锷。</span>',
             bilibili_xizhicaikobe: '萌设戏志才',
             bilibili_xizhicaikobe_prefix: '萌设',
