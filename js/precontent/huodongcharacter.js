@@ -6256,8 +6256,8 @@ const packs = function () {
             bilibili_yutai: {
                 unique: true,
                 init: () => game.addGlobalSkill('tianzuo_global'),
-                getNum: function (player) {
-                    var num = 1 + _status.event.player.getHistory('useSkill', function (evt) {
+                getNum: function (player = _status.event.player) {
+                    var num = 1 + player.getHistory('useSkill', function (evt) {
                         return evt.skill == 'bilibili_yutai';
                     }).length;
                     if (game.hasPlayer2(function (current) {
