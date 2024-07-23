@@ -4665,7 +4665,7 @@ const packs = function () {
             wechatyinren: {
                 derivation: ['new_rejianxiong', 'xingshang', 'mingjian'],
                 audio: 'ext:活动武将/audio/skill:2',
-                trigger: { player: 'phaseUseBefore' },
+                trigger: { player: 'phaseBegin' },
                 filter: function (event, player) {
                     return lib.skill.wechatyinren.derivation.some(skill => !player.hasSkill('wechatyinren_' + skill));
                 },
@@ -4681,7 +4681,7 @@ const packs = function () {
                 },
                 */
                 content: function () {
-                    trigger.cancel();
+                    player.skip('phaseUse');
                     player.skip('phaseDiscard');
                     player.addSkills('wechatyinren_' + lib.skill.wechatyinren.derivation.filter(skill => !player.hasSkill('wechatyinren_' + skill))[0]);
                 },
@@ -7465,7 +7465,7 @@ const packs = function () {
             wechatrejuesi_info: '出牌阶段，你可以弃置一张【杀】并选择一名其他角色，然后该角色弃置一张牌。若其弃置的牌不是【杀】，则你获得此牌然后视为对其使用一张【决斗】。',
             wechat_simayi: '极司马懿',
             wechatyinren: '隐忍',
-            wechatyinren_info: '你可以跳过出牌阶段和弃牌阶段，然后获得以下第一个你未拥有的技能：〖奸雄〗、〖行殇〗、〖明鉴〗。',
+            wechatyinren_info: '回合开始时，你可以跳过出牌阶段和弃牌阶段，然后获得以下第一个你未拥有的技能：〖奸雄〗、〖行殇〗、〖明鉴〗。',
             wechatyinren_jianxiong: '奸雄',
             wechatyinren_xingshang: '行殇',
             wechatyinren_mingjian: '明鉴',
