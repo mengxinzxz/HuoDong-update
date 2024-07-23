@@ -1510,8 +1510,6 @@ export function content(config, pack) {
 	//璀璨星河
 	game.HDaddCharacter('zhugejin', ['male', 'wu', 3, ['huanshi', 'olhongyuan', 'olmingzhe'], []], 'sp');
 	game.HDaddCharacter('maliang', ['male', 'shu', 3, ['zishu', 'xinyingyuan'], []], 'sp');
-	game.HDaddCharacter('sp_zhaoyun', ['male', 'qun', 3, ['longdan', 'chongzhen'], []], 'sp');
-	lib.translate.chongzhen_info = '当你发动〖龙胆〗时，你可以获得对方的一张手牌。';
 	game.HDaddCharacter('zhanghua', ['male', 'jin', 3, ['olbihun', 'oljianhe', 'bolchuanwu'], []], 'sp');
 	game.HDaddCharacter('ol_pengyang', ['male', 'shu', 3, ['bolxiaofan', 'boltuishi', 'nzry_cunmu'], []], 'sp');
 	game.HDaddCharacter('zhugeke', ['male', 'wu', 3, ['bolaocai', 'duwu'], []], 'sp');
