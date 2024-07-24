@@ -5264,12 +5264,73 @@ const packs = function () {
                 audio: 'guanxing',
                 audioname2: { Mbaby_jiangwei: 'guanxing_ol_jiangwei' },
                 trigger: { player: ['phaseZhunbeiBegin', 'phaseJieshuBegin'] },
-                frequent: true,
-                preHidden: true,
-                content: function () {
-                    var num = Math.min(game.countPlayer() <= 2 ? 3 : 5);
-                    player.chooseToGuanxing(num);
+                filter(event, player) {
+                    return event.name != 'phaseJieshu' || player.hasSkill('miniguanxing_on');
                 },
+                frequent: true,
+                content() {
+                    'step 0'
+                    var num = game.countPlayer() < 3 ? 3 : 5;
+                    var cards = get.cards(num);
+                    game.cardsGotoOrdering(cards);
+                    var next = player.chooseToMove();
+                    next.set('list', [
+                        ['牌堆顶', cards],
+                        ['牌堆底'],
+                    ]);
+                    next.set('prompt', '观星：点击将牌移动到牌堆顶或牌堆底');
+                    next.processAI = function (list) {
+                        var cards = list[0][1], player = _status.event.player;
+                        var target = (_status.event.getTrigger().name == 'phaseZhunbei') ? player : player.next;
+                        var att = get.sgn(get.attitude(player, target));
+                        var top = [];
+                        var judges = target.getCards('j');
+                        var stopped = false;
+                        if (player != target || !target.hasWuxie()) {
+                            for (var i = 0; i < judges.length; i++) {
+                                var judge = get.judge(judges[i]);
+                                cards.sort(function (a, b) {
+                                    return (judge(b) - judge(a)) * att;
+                                });
+                                if (judge(cards[0]) * att < 0) {
+                                    stopped = true; break;
+                                }
+                                else {
+                                    top.unshift(cards.shift());
+                                }
+                            }
+                        }
+                        var bottom;
+                        if (!stopped) {
+                            cards.sort(function (a, b) {
+                                return (get.value(b, player) - get.value(a, player)) * att;
+                            });
+                            while (cards.length) {
+                                if ((get.value(cards[0], player) <= 5) == (att > 0)) break;
+                                top.unshift(cards.shift());
+                            }
+                        }
+                        bottom = cards;
+                        return [top, bottom];
+                    }
+                    'step 1'
+                    var top = result.moved[0], bottom = result.moved[1];
+                    top.reverse();
+                    game.cardsGotoPile(
+                        top.concat(bottom),
+                        ['top_cards', top],
+                        function (event, card) {
+                            if (event.top_cards.includes(card)) return ui.cardPile.firstChild;
+                            return null;
+                        }
+                    )
+                    if (trigger.name == 'phaseZhunbei' && !top.length) player.addTempSkill('miniguanxing_on');
+                    player.popup(get.cnNumber(top.length) + '上' + get.cnNumber(bottom.length) + '下');
+                    game.log(player, '将' + get.cnNumber(top.length) + '张牌置于牌堆顶');
+                    'step 2'
+                    game.delayx();
+                },
+                subSkill: { on: { charlotte: true } },
             },
             minireguanxing: {
                 audio: 'guanxing',
@@ -28064,7 +28125,7 @@ const packs = function () {
             miniwusheng: '武圣',
             miniwusheng_info: '锁定技。①你使用红色【杀】造成的伤害+1。②回合开始时，你从牌堆或弃牌堆中获得一张红色【杀】。',
             miniguanxing: '观星',
-            miniguanxing_info: '准备阶段和结束阶段，你可以观看牌堆顶的X张牌（场上人数不大于2时X为3，否则X为5）并可以调整这些牌于牌堆顶或牌堆底。',
+            miniguanxing_info: '准备阶段，你可以观看牌堆顶的X张牌（场上人数不大于2时X为3，否则X为5）并可以调整这些牌于牌堆顶或牌堆底。若你将所有牌置于牌堆底，则你可以于结束阶段再次发动〖观星〗。',
             minireguanxing: '观星',
             minireguanxing_liannu: '诸葛连弩',
             minireguanxing_zhuge: '诸葛连弩',
@@ -28106,7 +28167,7 @@ const packs = function () {
             minirelianhuan: '连环',
             minirelianhuan_info: '①出牌阶段开始时，你可以视为使用【铁索连环】。②你使用【铁索连环】可以额外指定任意名目标，若以此法指定的目标包含你，则你摸一张牌。③当你使用【铁索连环】指定未横置的其他角色后，你随机弃置其一张手牌。',
             mininiepan: '涅槃',
-            mininiepan_info: '限定技，当你处于濒死状态时，你可以弃置你区域内的所有牌并复原你的武将牌，然后摸三张牌并将体力回复至3点。然后你选择一项：①获得技能〖八阵〗；②获得技能〖火计〗〖看破〗。',
+            mininiepan_info: '限定技，当你处于濒死状态时，你可以弃置你区域内的所有牌并复原你的武将牌，然后摸三张牌并将体力回复至3点。然后你选择一项：①获得技能〖八阵〗；②获得技能〖火计〗和〖看破〗。',
             minihuoshou: '祸首',
             minihuoshou_info: '锁定技，【南蛮入侵】对你无效；当其他角色使用【南蛮入侵】时，你代替其成为此牌的伤害来源并摸一张牌。',
             minitiaoxin: '挑衅',

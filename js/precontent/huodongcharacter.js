@@ -46,13 +46,13 @@ const packs = function () {
             bilibili_thunderlei: ['male', 'key', '2/4/3', ['bilibili_Thunder', 'bilibili_qianxi'], []],
             bilibili_zhengxuan: ['male', 'qun', 3, ['bilibili_zhengjing'], ['character:zhengxuan', 'die:zhengxuan']],
             bilibili_lonelypatients: ['male', 'key', 4, ['bilibili_meihua', 'bilibili_gongyou'], []],
-            'bilibili_kuangshen04': ['male', 'shen', '4/6', ['BTmakeBug', 'BTtequ', 'BTguoshou', 'reqimou', 'zhaxiang', 'tairan'], ['ext:活动萌扩/image/fd_kuangshen04.jpg']],
+            'bilibili_kuangshen04': ['male', 'shen', '4/6', ['BTmakeBug', 'BTtequ', 'BTguoshou', 'reqimou', 'zhaxiang', 'tairan']],
             bilibili_shen_guojia: ['male', 'wei', '9/9/5', ['stianyi', 'resghuishi', 'bilibili_huishi'], ['doublegroup:shen:wei']],
             bilibili_re_xusheng: ['male', 'wu', 4, ['bilibili_pojun', 'kuangcai', 'bilibili_baodao'], []],
             bilibili_xushao: ['male', 'qun', '1/6', ['bilibili_pingjian'], ['ext:活动武将/image/character/old_xushao.jpg', 'InitFilter:noZhuHp']],
             bilibili_ningjingzhiyuan: ['male', 'key', 4, ['bilibili_liaoxing', 'bilibili_xiezhi', 'bilibili_fazhou'], []],
             bilibili_xizhicaikobe: ['male', 'key', 4, [], []],
-            //千里走单骑
+            //千里走单骑 
             DJ_caiyang: ['male', 'qun', 1, ['yinka', 'zhuixi'], ['character:caiyang']],
             DJ_pujing: ['male', 'qun', 1, ['yinka'], ['character:pujing']],
             DJ_huban: ['male', 'qun', 2, ['yinka'], ['character:huban']],
@@ -127,7 +127,6 @@ const packs = function () {
                 content: function () {
                     var evt2 = event.getParent(3)._trigger;
                     evt2.neutralize();
-                    var evt = evt2.getParent();
                     var cardx = event.getParent().respondTo;
                     if (cardx && cardx[1] && cardx[1].cards && cardx[1].cards.filterInD('od').length) player.gain(cardx[1].cards.filterInD('od'), 'gain2', 'log');
                 },
@@ -10262,6 +10261,7 @@ const packs = function () {
                     },
                 },
             },
+            //戏志才
         },
         dynamicTranslate: {
             bilibili_xueji: function (player) {
