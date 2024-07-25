@@ -15,13 +15,14 @@ game.bolShowNewPack = function () {
 		'bugfix',
 		'整合@zhichaoxi2006 @QCXYLTJ @PZ157 @xizifu的Pull Requests',
 		'名人堂新设武将：宁静致远，戏志才',
-		'添加欢杀武将：贺齐、念吕布、胡金定、孙寒华、SP夏侯氏',
+		'添加欢杀武将：贺齐、念吕布、胡金定、孙寒华、SP夏侯氏、刘禅、郭汜',
 		'To be continued...',
 	];
 	//更新武将
 	var HuoDong_players = [
 		'bilibili_ningjingzhiyuan', 'bilibili_xizhicaikobe',
-		'Mbaby_heqi', 'Mnian_lvbu', 'Mbaby_hujinding', 'Mbaby_sunhanhua', 'Mbaby_sp_xiahoushi'
+		'Mbaby_heqi', 'Mnian_lvbu', 'Mbaby_hujinding', 'Mbaby_sunhanhua', 'Mbaby_sp_xiahoushi',
+		'Mbaby_liushan', 'Mbaby_guosi'
 	];
 	//加载
 	var dialog = ui.create.dialog(

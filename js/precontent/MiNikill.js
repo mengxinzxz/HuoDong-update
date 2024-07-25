@@ -83,7 +83,7 @@ const packs = function () {
             //蜀
             Mbaby_guanyu: ['male', 'shu', 4, ['minirewusheng', 'minituodao', 'jsrgguanjue']],
             Mbaby_zhugeliang: ['male', 'shu', 3, ['minireguanxing', 'minikongcheng']],
-            Mbaby_liubei: ['male', 'shu', 4, ['minirerende', 'minijijiang'], ['zhu']],
+            Mbaby_liubei: ['male', 'shu', 4, ['minirerende', 'minijijiang'], ['zhu', 'tempname:re_liubei', 'die:re_liubei']],
             Mbaby_machao: ['male', 'shu', 4, ['miniyuma', 'minitieji']],
             Mbaby_zhurong: ['female', 'shu', 4, ['minijuxiang', 'minirelieren', 'changbiao']],
             Mbaby_zhangfei: ['male', 'shu', 4, ['new_repaoxiao', 'minitishen']],
@@ -94,7 +94,7 @@ const packs = function () {
             Mbaby_pangtong: ['male', 'shu', 3, ['minirelianhuan', 'mininiepan'], ['tempname:ol_pangtong', 'die:ol_pangtong']],
             Mbaby_menghuo: ['male', 'shu', 5, ['minihuoshou', 'zaiqi']],
             Mbaby_jiangwei: ['male', 'shu', 4, ['minitiaoxin', 'minizhiji']],
-            Mbaby_liushan: ['male', 'shu', 4, ['minirexiangle', 'minirefangquan', 'minireruoyu'], ['zhu']],
+            Mbaby_liushan: ['male', 'shu', 4, ['minirexiangle', 'minirefangquan', 'minireruoyu'], ['zhu', 'tempname:ol_liushan', 'die:ol_liushan']],
             Mbaby_fazheng: ['male', 'shu', 3, ['minienyuan', 'minixuanhuo']],
             Mbaby_madai: ['male', 'shu', 4, ['mashu', 'miniqianxi']],
             Mbaby_guanping: ['male', 'shu', 4, ['minilongyin', 'jiezhong']],
@@ -5665,8 +5665,8 @@ const packs = function () {
                 },
             },
             minijijiang: {
-                audio: 'jijiang1_re_liubei',
-                audioname2: { Mbaby_liushan: 'jijiang1_liushan' },
+                audio: 'jijiang1',
+                audioname: ['ol_liushan', 're_liubei'],
                 unique: true,
                 group: ['minijijiang1', 'minijijiang3'],
                 zhuSkill: true,
@@ -5693,8 +5693,8 @@ const packs = function () {
                 },
             },
             minijijiang1: {
-                audio: 'jijiang1_re_liubei',
-                audioname2: { Mbaby_liushan: 'jijiang1_liushan' },
+                audio: 'jijiang1',
+                audioname: ['ol_liushan', 're_liubei'],
                 trigger: { player: ['useCardBegin', 'respondBegin'] },
                 logTarget: 'targets',
                 filter: function (event, player) {
@@ -5748,8 +5748,8 @@ const packs = function () {
                 }
             },
             minijijiang3: {
-                audio: 'jijiang1_re_liubei',
-                audioname2: { Mbaby_liushan: 'jijiang1_liushan' },
+                audio: 'jijiang1',
+                audioname: ['ol_liushan', 're_liubei'],
                 trigger: { global: ['useCard', 'respond'] },
                 filter: function (event, player) {
                     return event.card.name == 'sha' && event.player != player && event.player.group == 'shu' && event.player.isIn() &&
@@ -5772,8 +5772,6 @@ const packs = function () {
                     else player.storage.counttrigger.minijijiang3--;
                 },
             },
-            jijiang1_re_liubei: { audio: 2 },
-            jijiang1_liushan: { audio: 2 },
             //马超
             miniyuma: {
                 group: 'mashu',
@@ -6503,68 +6501,58 @@ const packs = function () {
             },
             //小胖
             minirexiangle: {
+                audio: 'xiangle',
                 inherit: 'xiangle',
                 group: 'minirexiangle_fangquan',
                 subSkill: {
                     fangquan: {
-                        trigger: {
-                            global: 'roundStart',
-                        },
+                        audio: 'xiangle',
+                        audioname: ['ol_liushan'],
+                        trigger: { global: 'roundStart' },
                         filter(event, player) {
+                            if (!player.hasSkill('minirefangquan')) return false;
                             return game.roundNumber > 1 && !player.getRoundHistory('useCard', () => true, 1).length && game.hasPlayer(current => current != player);
                         },
                         async cost(event, trigger, player) {
                             const num = Math.floor(player.getSeatNum() / 2);
-                            if (num > 0) {
-                                event.result = await player.chooseCardTarget({
-                                    prompt: get.prompt('minirexiangle'),
-                                    prompt2: '令一名其他角色进行一个额外回合',
-                                    position: 'he',
-                                    filterTarget: lib.filter.notMe,
-                                    filterCard(card, player) {
-                                        return lib.filter.cardDiscardable(card, player);
-                                    },
-                                    selectCard() {
-                                        return get.event('num');
-                                    },
-                                    ai1(card) {
-                                        return 3 / (Math.abs(get.value(card)) + 0.1);
-                                    },
-                                    ai2(target) {
-                                        const player = get.player();
-                                        if (target.hasJudge('lebu')) return -1;
-                                        if (get.attitude(player, target) > 4) {
-                                            return get.threaten(target) / Math.sqrt(target.hp + 1) / Math.sqrt(target.countCards('h') + 1);
-                                        }
-                                        return -1;
-                                    },
-                                }).set('num', num).forResult();
-                            }
-                            else {
-                                event.result = await player.chooseTarget(get.prompt2('minirexiangle'), '令一名其他角色进行一个额外回合', lib.filter.notMe).set('ai', target => {
+                            event.result = await player.chooseCardTarget({
+                                prompt: get.prompt('minirexiangle_fangquan'),
+                                prompt2: (num > 0 ? ('弃置' + get.cnNumber(num) + '张牌，') : '') + '令一名其他角色进行一个额外回合',
+                                position: 'he',
+                                filterTarget: lib.filter.notMe,
+                                filterCard(card, player) {
+                                    if (get.event('num') <= 0) return false;
+                                    return lib.filter.cardDiscardable(card, player);
+                                },
+                                selectCard() {
+                                    return get.event('num') <= 0 ? -1 : get.event('num');
+                                },
+                                ai1(card) {
+                                    return 3 / (Math.abs(get.value(card)) + 0.1);
+                                },
+                                ai2(target) {
                                     const player = get.player();
                                     if (target.hasJudge('lebu')) return -1;
                                     if (get.attitude(player, target) > 4) {
                                         return get.threaten(target) / Math.sqrt(target.hp + 1) / Math.sqrt(target.countCards('h') + 1);
                                     }
                                     return -1;
-                                }).forResult();
-                            }
+                                },
+                            }).set('num', num).forResult();
                         },
                         async content(event, trigger, player) {
                             const target = event.targets[0];
+                            await player.logSkill('minirefangquan', target);
                             if (event.cards && event.cards.length) await player.discard(event.cards);
                             await player.turnOver();
-                            const evt = trigger, evtx = target.insertPhase();
-                            target.when('phaseBeforeStart')
-                                .filter(evtt => evtt == evtx)
-                                .then(() => {
-                                    game.players.slice().concat(game.dead).forEach(current => {
-                                        current.getHistory().isSkipped = true;
-                                        current.getStat().isSkipped = true;
-                                    });
-                                });
-                            if (evt.player != player && !evt._finished) {
+                            if (player.countCards('he')) {
+                                await player.chooseToGive(target, 'he', [1, Infinity]).set('prompt', '放权：是否交给' + get.translation(target) + '任意张牌？');
+                            }
+                            const evt = trigger;
+                            target.markSkillCharacter('minirefangquan', player, '放权', '进行一个额外回合');
+                            target.insertPhase();
+                            target.addSkill('minirefangquan3');
+                            if (evt.player != target && !evt._finished) {
                                 evt.finish();
                                 evt._triggered = 5;
                                 const evtxx = evt.player.insertPhase();
@@ -6576,9 +6564,8 @@ const packs = function () {
                 }
             },
             minirefangquan: {
-                trigger: {
-                    player: 'phaseUseBefore',
-                },
+                audio: 'olfangquan',
+                trigger: { player: 'phaseUseBefore' },
                 filter(event, player) {
                     return !player.hasSkill('minirefangquan3');
                 },
@@ -6620,6 +6607,9 @@ const packs = function () {
                         if (bool) {
                             const target = targets[0];
                             player.line(target, 'fire');
+                            if (player.countCards('he')) {
+                                await player.chooseToGive(target, 'he', [1, Infinity]).set('prompt', '放权：是否交给' + get.translation(target) + '任意张牌？');
+                            }
                             target.markSkillCharacter('minirefangquan', player, '放权', '进行一个额外回合');
                             target.insertPhase();
                             target.addSkill('minirefangquan3');
@@ -6635,6 +6625,7 @@ const packs = function () {
                 },
             },
             minireruoyu: {
+                audio: 'olruoyu',
                 inherit: 'olruoyu',
                 derivation: ['minijijiang', 'sishu'],
                 filter(event, player) {
@@ -6645,7 +6636,7 @@ const packs = function () {
                     player.awakenSkill(event.name);
                     await player.gainMaxHp();
                     await player.recover();
-                    player.addSkills(get.info(event.name).derivation);
+                    await player.addSkills(get.info(event.name).derivation);
                 },
             },
             minixuanhuo: {
@@ -22918,7 +22909,7 @@ const packs = function () {
                     const target = event.targets[0];
                     let result;
                     const goon = target.countCards('hej');
-                    if (goon) result = await target.chooseControl().set('choiceList', ['令' + get.translation(player) + '随机获得你区域内的一张牌，然后其本回合内不能再对你使用牌。', '令' + get.translation(player) + '本回合内对你使用牌没有次数与距离限制。']).set('ai', () => {
+                    if (goon) result = await target.chooseControl().set('choiceList', ['令' + get.translation(player) + '获得你区域内的一张牌，然后其本回合内不能再对你使用牌。', '令' + get.translation(player) + '本回合内对你使用牌没有次数与距离限制。']).set('ai', () => {
                         var list = [0, 1];
                         return list.randomGet();
                     }).forResult();
@@ -28385,9 +28376,9 @@ const packs = function () {
             miniruoyu: '若愚',
             miniruoyu_info: '主公技，觉醒技。准备阶段，若你的体力值为全场最少，你增加1点体力上限并回复1点体力，然后获得技能〖激将〗。',
             minirexiangle: '享乐',
-            minirexiangle_info: '锁定技，当你成为一名角色使用【杀】的目标后，除非该角色弃置一张牌，否则此【杀】对你无效。每轮结束时，若你本轮未使用过牌，你可以弃置X张牌并翻面发动一次〖放权〗。',
+            minirexiangle_info: '锁定技。①当你成为一名角色使用【杀】的目标后，除非该角色弃置一张牌，否则此【杀】对你无效。②一轮游戏开始时，若你上一轮未使用过牌，你可以弃置X张牌并翻面，然后发动〖放权〗（X为你座次的一半，向下取整）。',
             minirefangquan: '放权',
-            minirefangquan_info: '你可以跳过你的出牌阶段，然后于弃牌阶段开始时选择一名其他角色，其进行一个额外回合。',
+            minirefangquan_info: '你可以跳过你的出牌阶段，然后于弃牌阶段开始时选择一名其他角色，你可以交给其任意张牌并令其于本回合结束后进行一个额外回合。',
             minireruoyu: '若愚',
             minireruoyu_info: '主公技，觉醒技。准备阶段，若你的体力值为全场最少，你增加1点体力上限并回复1点体力，然后获得技能〖激将〗和〖思蜀〗。',
             minienyuan: '恩怨',

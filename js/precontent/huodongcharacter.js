@@ -18,40 +18,40 @@ const packs = function () {
             },
         },
         character: {
-            bilibili_zhouxiaomei: ['female', 'wu', 3, ['dchuishu', 'dcyishu', 'yingzi', 'biyue'], []],
-            bilibili_zhangrang: ['male', 'qun', 3, ['bilibili_taoluan'], []],
-            diy_lvmeng: ['male', 'wu', 4, ['BTkongju', 'BThouqi'], []],
-            bilibili_wangwang: ['female', 'shu', 3, ['huguan', 'yaopei', 'mingluan'], []],
+            bilibili_zhouxiaomei: ['female', 'wu', 3, ['dchuishu', 'dcyishu', 'yingzi', 'biyue']],
+            bilibili_zhangrang: ['male', 'qun', 3, ['bilibili_taoluan']],
+            diy_lvmeng: ['male', 'wu', 4, ['BTkongju', 'BThouqi']],
+            bilibili_wangwang: ['female', 'shu', 3, ['huguan', 'yaopei', 'mingluan']],
             bilibili_wangtao: ['female', 'shu', 3, ['huguan', 'yaopei', 'dualside'], ['dualside:bilibili_x_wangyue', 'character:wangtao', 'die:wangtao']],
             bilibili_wangyue: ['female', 'shu', 3, ['huguan', 'mingluan', 'dualside'], ['dualside:bilibili_x_wangtao', 'character:wangyue', 'tempname:wangyue', 'die:wangyue']],
             bilibili_x_wangtao: ['female', 'shu', 3, ['huguan', 'yaopei', 'dualside'], ['unseen', 'character:wangtao', 'die:wangtao']],
             bilibili_x_wangyue: ['female', 'shu', 3, ['huguan', 'mingluan', 'dualside'], ['unseen', 'character:wangyue', 'tempname:wangyue', 'die:wangyue']],
             bilibili_guanning: ['male', 'qun', '3/7', ['BTdunshi'], ['forbidai']],
-            bilibili_huanggai: ['male', 'wu', 4, ['bilibili_kurou', 'bilibili_zhaxiang'], []],
-            bilibili_ekeshaoge: ['male', 'qun', 4, ['bilibili_xueji', 'bilibili_hanran'], []],
-            decade_huangwudie: ['female', 'shu', 3, ['decadexiwu', 'decadehongzhuang'], []],
-            bilibili_litiansuo: ['male', 'qun', 4, ['qin_jugu', 'yijin', 'twzhouhu', 'twharvestinori', 'twzuhuo', 'twzhouzu', 'twhuangjin', 'twguimen', 'twdidao'], []],
+            bilibili_huanggai: ['male', 'wu', 4, ['bilibili_kurou', 'bilibili_zhaxiang']],
+            bilibili_ekeshaoge: ['male', 'qun', 4, ['bilibili_xueji', 'bilibili_hanran']],
+            decade_huangwudie: ['female', 'shu', 3, ['decadexiwu', 'decadehongzhuang']],
+            bilibili_litiansuo: ['male', 'qun', 4, ['qin_jugu', 'yijin', 'twzhouhu', 'twharvestinori', 'twzuhuo', 'twzhouzu', 'twhuangjin', 'twguimen', 'twdidao']],
             bilibili_sp_xuyou: ['male', 'qun', 3, ['spshicai', 'bilibili_fushi'], ['character:sp_xuyou', 'die:sp_xuyou']],
             lz_sufei: ['male', 'qun', 4, ['lzlianpian'], ['character:xf_sufei', 'doublegroup:qun:wu', 'die:xf_sufei']],
             lz_liuqi: ['male', 'shu', 3, ['spwenji', 'lztunjiang'], ['doublegroup:shu:qun', 'die:sp_liuqi']],
             lz_tangzi: ['male', 'wu', 4, ['lzxingzhao'], ['doublegroup:wu:wei', 'die:xf_tangzi']],
             lz_huangquan: ['male', 'wei', 3, ['lzdianhu', 'xinfu_jianji'], ['character:xf_huangquan', 'doublegroup:wei:shu', 'die:xf_huangquan']],
-            bilibili_adong: ['male', 'qun', 4, ['jueman', 'oljianman'], []],
-            old_zuoci: ['male', 'qun', 3, ['gz_huashen', 'gz_xinsheng'], []],
-            bilibili_shengxunyu: ['male', 'key', 4, ['bilibili_hehu', 'bilibili_jinyan', 'bilibili_yutai'], []],
-            bilibili_Firewin: ['male', 'key', 4, ['jsrgfeiyang', 'jsrgbahu', 'bilibili_tixiang'], []],
-            bilibili_jinglingqiu: ['male', 'key', '3/4', ['bilibili_tiyi', 'bilibili_zili'], []],
-            bilibili_suixingsifeng: ['female', 'key', 4, ['bilibili_liaoxing', 'bilibili_daili', 'bilibili_duoyang'], []],
-            bilibili_Emptycity: ['male', 'key', 4, ['bilibili_zhiyou', 'bilibili_guanli'], []],
-            bilibili_thunderlei: ['male', 'key', '2/4/3', ['bilibili_Thunder', 'bilibili_qianxi'], []],
+            bilibili_adong: ['male', 'qun', 4, ['jueman', 'oljianman']],
+            old_zuoci: ['male', 'qun', 3, ['gz_huashen', 'gz_xinsheng']],
+            bilibili_shengxunyu: ['male', 'key', 4, ['bilibili_hehu', 'bilibili_jinyan', 'bilibili_yutai']],
+            bilibili_Firewin: ['male', 'key', 4, ['jsrgfeiyang', 'jsrgbahu', 'bilibili_tixiang']],
+            bilibili_jinglingqiu: ['male', 'key', '3/4', ['bilibili_tiyi', 'bilibili_zili']],
+            bilibili_suixingsifeng: ['female', 'key', 4, ['bilibili_liaoxing', 'bilibili_daili', 'bilibili_duoyang']],
+            bilibili_Emptycity: ['male', 'key', 4, ['bilibili_zhiyou', 'bilibili_guanli']],
+            bilibili_thunderlei: ['male', 'key', '2/4/3', ['bilibili_Thunder', 'bilibili_qianxi']],
             bilibili_zhengxuan: ['male', 'qun', 3, ['bilibili_zhengjing'], ['character:zhengxuan', 'die:zhengxuan']],
-            bilibili_lonelypatients: ['male', 'key', 4, ['bilibili_meihua', 'bilibili_gongyou'], []],
+            bilibili_lonelypatients: ['male', 'key', 4, ['bilibili_meihua', 'bilibili_gongyou']],
             'bilibili_kuangshen04': ['male', 'shen', '4/6', ['BTmakeBug', 'BTtequ', 'BTguoshou', 'reqimou', 'zhaxiang', 'tairan']],
             bilibili_shen_guojia: ['male', 'wei', '9/9/5', ['stianyi', 'resghuishi', 'bilibili_huishi'], ['doublegroup:shen:wei']],
-            bilibili_re_xusheng: ['male', 'wu', 4, ['bilibili_pojun', 'kuangcai', 'bilibili_baodao'], []],
+            bilibili_re_xusheng: ['male', 'wu', 4, ['bilibili_pojun', 'kuangcai', 'bilibili_baodao']],
             bilibili_xushao: ['male', 'qun', '1/6', ['bilibili_pingjian'], ['ext:活动武将/image/character/old_xushao.jpg', 'InitFilter:noZhuHp']],
-            bilibili_ningjingzhiyuan: ['male', 'key', 4, ['bilibili_liaoxing', 'bilibili_xiezhi', 'bilibili_fazhou'], []],
-            bilibili_xizhicaikobe: ['male', 'key', 4, [], []],
+            bilibili_ningjingzhiyuan: ['male', 'key', 4, ['bilibili_liaoxing', 'bilibili_xiezhi', 'bilibili_fazhou']],
+            bilibili_xizhicaikobe: ['male', 'key', 4, ['bilibili_xingshi', 'bilibili_zhangcai'], ['doublegroup:wei:shu:wu:qun:jin']],
             //千里走单骑 
             DJ_caiyang: ['male', 'qun', 1, ['yinka', 'zhuixi'], ['character:caiyang']],
             DJ_pujing: ['male', 'qun', 1, ['yinka'], ['character:pujing']],
@@ -71,7 +71,7 @@ const packs = function () {
             //NBA牢星球员宿舍
             sxy_shengxunyu: ['male', 'mx_dom', '3/Infinity', ['dom_chouxiang'], [((lib.device || lib.node) ? 'ext:' : 'db:extension-') + '活动武将/image/character/bilibili_shengxunyu.jpg']],
             //蝶设堂
-            bfake_jiananfeng: ['female', 'jin', 8, ['bolduliao', 'bolhuidu', 'bolfushou'], []],
+            bfake_jiananfeng: ['female', 'jin', 8, ['bolduliao', 'bolhuidu', 'bolfushou']],
             bfake_shen_jiaxu: ['male', 'shen', 3, ['boljiandai', 'bolfangcan', 'boljuemei', 'bolluoshu'], ['qun', 'character:le_shen_jiaxu']],
             bfake_shen_zhangfei: ['male', 'shen', 5, ['bolbaohe', 'bolrenhai', 'boltiandong'], ['shu', 'character:shen_zhangfei']],
             bfake_shen_zhangjiao: ['male', 'shen', 3, ['bolyifu', 'boltianjie'], ['qun', 'character:shen_zhangjiao']],
@@ -9807,6 +9807,7 @@ const packs = function () {
             //彭羕
             bolxiaofan: {
                 audio: 'olxiaofan',
+                audioname: ['bilibili_xizhicaikobe'],
                 enable: 'chooseToUse',
                 onChooseToUse(event) {
                     const sum = ui.cardPile.childNodes.length;
@@ -10241,8 +10242,8 @@ const packs = function () {
                     for (const target of event.targets.sortBySeat(player)) {
                         await target.damage(1);
                         if (target.isIn()) {
-                            target.chat('Manba out');
-                            target.addTempSkill('bilibili_fazhou_manbaout', 'roundStart');
+                            target.chat('mamba out');
+                            target.addTempSkill('bilibili_fazhou_mambaout', 'roundStart');
                             /*
                             const evt = trigger;
                             if (evt.player != target && !evt._finished) {
@@ -10256,12 +10257,232 @@ const packs = function () {
                     }
                 },
                 subSkill: {
-                    manbaout: {
+                    mambaout: {
                         inherit: 'diaohulishan',
                     },
                 },
             },
             //戏志才
+            bilibili_xingshi: {
+                locked: true,
+                group: ['wei', 'shu', 'wu', 'qun', 'jin'].map(i => ['bilibili_xingshi_' + i, 'bilibili_xingshi_awaken_' + i]).flat(),
+                derivation: ['wei', 'shu', 'wu', 'qun', 'jin'].map(i => ['bilibili_xingshi_' + i, 'bilibili_xingshi_awaken_' + i]).flat(),
+                subSkill: {
+                    wei: {
+                        trigger: { player: 'phaseBegin' },
+                        filter: function (event, player) {
+                            return player.group == 'wei' && player.countCards('he') > 0;
+                        },
+                        direct: true,
+                        content: function () {
+                            'step 0'
+                            player.chooseCardTarget({
+                                prompt: get.prompt2(event.name),
+                                filterCard: lib.filter.cardDiscardable,
+                                filterTarget: lib.filter.notMe,
+                                position: 'he',
+                                ai1: function (card) {
+                                    return 6 - get.value(card);
+                                },
+                                ai2: function (target) {
+                                    var player = _status.event.player;
+                                    return (2 - get.sgn(get.attitude(player, target))) / (target.countCards('he') + 1);
+                                },
+                            });
+                            'step 1'
+                            if (result.bool) {
+                                player.logSkill(event.name, result.targets);
+                                player.discard(result.cards);
+                                result.targets[0].chooseToDiscard('弃置一张牌，或令' + get.translation(player) + '摸一张牌', 'he').ai = lib.skill.zhiheng.check;
+                            }
+                            else event.finish();
+                            'step 2'
+                            if (!result.bool) player.draw();
+                        },
+                    },
+                    shu: {
+                        mod: {
+                            cardUsable: function (card, player, num) {
+                                if (card.name == 'sha' && player.group == 'shu') return num + 1;
+                            },
+                        },
+                        trigger: { player: 'phaseUseEnd' },
+                        filter: function (event, player) {
+                            return player.group == 'shu' && player.getHistory('useCard', function (evt) {
+                                return evt.card && evt.card.name == 'sha' && evt.getParent('phaseUse') == event;
+                            }).length > 1;
+                        },
+                        forced: true,
+                        content: function () {
+                            player.draw();
+                        },
+                    },
+                    wu: {
+                        trigger: { player: 'phaseEnd' },
+                        filter: function (event, player) {
+                            return player.group == 'wu' && player.countCards('h') != player.hp;
+                        },
+                        forced: true,
+                        content: function () {
+                            player.draw();
+                        },
+                    },
+                    qun: {
+                        trigger: { player: 'phaseDiscardBegin' },
+                        filter: function (event, player) {
+                            return player.group == 'qun' && (player.isDamaged() || player.countCards('h') - player.hp > 1);
+                        },
+                        forced: true,
+                        content: function () {
+                            var num = 0;
+                            if (player.isDamaged()) num++;
+                            if (player.countCards('h') - player.hp > 1) num++;
+                            player.addMark('bilibili_xingshi_temp', num, false);
+                            player.addTempSkill('bilibili_xingshi_temp', 'phaseDiscardEnd');
+                        },
+                    },
+                    jin: {
+                        trigger: { player: 'phaseDrawEnd' },
+                        filter: function (event, player) {
+                            var hs = player.getCards('h');
+                            return player.group == 'jin' && hs.length > 0 && player.getHistory('gain', function (evt) {
+                                if (evt.getParent().name != 'draw' || evt.getParent('phaseDraw') != event) return false;
+                                for (var i of evt.cards) {
+                                    if (hs.includes(i)) return true;
+                                }
+                                return false;
+                            }).length > 0;
+                        },
+                        check: function (event, player) {
+                            var hs = player.getCards('h'), cards = [], suits = [];
+                            player.getHistory('gain', function (evt) {
+                                if (evt.getParent().name != 'draw' || evt.getParent('phaseDraw') != event) return false;
+                                for (var i of evt.cards) {
+                                    if (hs.includes(i)) {
+                                        cards.add(i);
+                                        suits.add(get.suit(i, player));
+                                    }
+                                }
+                            });
+                            return cards.length == suits.length;
+                        },
+                        content: function () {
+                            var hs = player.getCards('h'), cards = [], suits = [];
+                            player.getHistory('gain', function (evt) {
+                                if (evt.getParent().name != 'draw' || evt.getParent('phaseDraw') != trigger) return false;
+                                for (var i of evt.cards) {
+                                    if (hs.includes(i)) {
+                                        cards.add(i);
+                                        suits.add(get.suit(i, player));
+                                    }
+                                }
+                            });
+                            player.showCards(cards, get.translation(player) + '发动了【晋势】');
+                            if (cards.length == suits.length) player.draw();
+                        },
+                    },
+                    temp: {
+                        noGlobal: true,
+                        onremove: true,
+                        mod: {
+                            maxHandcard: function (player, num) {
+                                return num + player.countMark('bilibili_xingshi_temp');
+                            },
+                        },
+                    },
+                    awaken_wei: {
+                        trigger: { player: 'damageEnd' },
+                        filter: function (event, player) {
+                            return player.group == 'wei';
+                        },
+                        forced: true,
+                        content: function () {
+                            player.draw();
+                        },
+                    },
+                    awaken_shu: {
+                        trigger: { source: 'damageSource' },
+                        filter: function (event, player) {
+                            return player.group == 'shu' && event.card && event.card.name == 'sha';
+                        },
+                        forced: true,
+                        content: function () { player.draw() },
+                    },
+                    awaken_wu: {
+                        trigger: { player: 'useCard' },
+                        filter: function (event, player) {
+                            return player.group == 'wu' && get.type(event.card) == 'equip';
+                        },
+                        forced: true,
+                        content: function () {
+                            player.draw();
+                        },
+                    },
+                    awaken_qun: {
+                        trigger: { player: 'useCardToPlayered' },
+                        filter: function (event, player) {
+                            if (player.group != 'qun' || !event.isFirstTarget || get.type(event.card, 'trick') != 'trick') return false;
+                            for (var i = 0; i < event.targets.length; i++) {
+                                if (event.targets[i] != player) return true;
+                            }
+                            return false;
+                        },
+                        forced: true,
+                        content: function () {
+                            player.draw();
+                        },
+                    },
+                    awaken_jin: {
+                        trigger: { player: 'phaseJieshuBegin' },
+                        filter: function (event, player) {
+                            if (player.group != 'jin') return false;
+                            var hs = player.getCards('h'), suits = [];
+                            if (hs.length < 3) return true;
+                            for (var i of hs) {
+                                suits.add(get.suit(i, player));
+                                if (suits.length > 2) return false;
+                            }
+                            return true;
+                        },
+                        forced: true,
+                        content: function () {
+                            player.draw();
+                        },
+                    },
+                },
+            },
+            bilibili_zhangcai: {
+                trigger: { player: 'gainAfter', global: 'loseAsyncAfter' },
+                filter(event, player) {
+                    return event.getg && event.getg(player).some(card => get.owner(card) == player && get.position(card) == 'h');
+                },
+                direct: true,
+                locked: false,
+                *content(event, map) {
+                    const player = map.player, trigger = map.trigger;
+                    const cards = trigger.getg(player);
+                    const result = yield player.chooseToUse(function (card) {
+                        const evt = _status.event;
+                        if (!lib.filter.cardEnabled(card, evt.player, evt)) return false;
+                        let cards = [card];
+                        if (Array.isArray(card.cards)) cards.addArray(card.cards);
+                        return cards.containsSome(...evt.cards);
+                    }, get.prompt2('bilibili_zhangcai')).set('addCount', false).set('cards', cards).set('logSkill', 'bilibili_zhangcai');
+                    if (result.bool) {
+                        const suits = player.getAllHistory('useCard', evt => {
+                            return evt.getParent(2).name == 'bilibili_zhangcai';
+                        }).reduce((list, evt) => list.add(get.suit(evt.card)), []);
+                        if (suits.length) yield player.addAdditionalSkills('bilibili_zhangcai', ['jueman', 'oljianman', 'bolaocai', 'nzry_shicai'].slice(0, Math.min(4, suits.length)));
+                    }
+                },
+                mod: {
+                    targetInRange(card, player) {
+                        const evt = _status.event;
+                        if (evt.name == 'chooseToUse' && evt.player == player && evt.getParent().name == 'bilibili_zhangcai' && evt.getParent().player == player) return true;
+                    },
+                },
+                derivation: ['jueman', 'oljianman', 'bolaocai', 'nzry_shicai'],
+            },
         },
         dynamicTranslate: {
             bilibili_xueji: function (player) {
@@ -10811,6 +11032,31 @@ const packs = function () {
             bolaocai_hs: 'invisible',
             bolaocai_info: '当你于回合外需要使用或打出一张基本牌时，你可以观看牌堆顶的两张牌（若你没有手牌则改为四张）。若你观看的牌中有此牌，你可以使用打出之。',
             bolaocai_info_guozhan: '当你于回合外需要使用或打出一张基本牌时，你可以观看牌堆顶的两张牌。若你观看的牌中有此牌，你可以使用打出之。',
+            bilibili_xingshi: '醒世',
+            bilibili_xingshi_info: '锁定技。若你的势力为魏/蜀/吴/群/晋，则你视为拥有对应势力效果。',
+            bilibili_xingshi_wei: '魏业',
+            bilibili_xingshi_wei_info: '回合开始时，你可以弃置一张牌并令一名其他角色选择一项：①弃置一张牌；②令你摸一张牌。',
+            bilibili_xingshi_shu: '蜀义',
+            bilibili_xingshi_shu_info: '锁定技。①你使用【杀】上限+1。②出牌阶段结束时，若你于此阶段使用【杀】的次数不少于2，摸一张牌。',
+            bilibili_xingshi_wu: '吴耀',
+            bilibili_xingshi_wu_info: '回合结束时，若你的手牌数不等于你的体力值，则你摸一张牌。',
+            bilibili_xingshi_qun: '群心',
+            bilibili_xingshi_qun_info: '锁定技，弃牌阶段开始时，若你的手牌数比体力值多2或更多，你本回合手牌上限+1；若你已损失体力值大于1，你手牌上限+1',
+            bilibili_xingshi_jin: '晋势',
+            bilibili_xingshi_jin_info: '摸牌阶段结束时，你可以展示你于此阶段内因摸牌而获得的牌。若这些牌的花色均不同，则你摸一张牌。',
+            bilibili_xingshi_awaken_wei: '许昌',
+            bilibili_xingshi_awaken_wei_info: '锁定技，当你受到伤害后，你摸一张牌。',
+            bilibili_xingshi_awaken_shu: '成都',
+            bilibili_xingshi_awaken_shu_info: '锁定技，当你使用【杀】造成伤害后，你摸一张牌。',
+            bilibili_xingshi_awaken_wu: '武昌',
+            bilibili_xingshi_awaken_wu_info: '锁定技，当你使用装备牌时，你摸一张牌。',
+            bilibili_xingshi_awaken_qun: '邺城',
+            bilibili_xingshi_awaken_qun_info: '锁定技，当你使用锦囊牌指定其他角色为目标后，你摸一张牌。',
+            bilibili_xingshi_awaken_jin: '洛阳',
+            bilibili_xingshi_awaken_jin_info: '锁定技，结束阶段，若你手牌中的花色数小于3，则你摸一张牌。',
+            bilibili_zhangcai: '彰才',
+            bilibili_zhangcai_info: '当你获得牌后，你可以使用其中一张牌，然后根据你本局游戏以此法使用过的花色数视为拥有对应技能：≥1，〖蟨蛮〗；≥2，〖鹣蛮〗；≥3，〖傲才〗；≥4，〖恃才〗。',
+            bilibili_zhangcai_append: '<span style="font-family:yuanli"><li>憋笑ing<br><li>seven!seven!</span>',
         },
     };
     for (var i in huodongcharacter.character) {
