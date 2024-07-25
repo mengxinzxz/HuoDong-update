@@ -51,7 +51,7 @@ const packs = function () {
             bilibili_re_xusheng: ['male', 'wu', 4, ['bilibili_pojun', 'kuangcai', 'bilibili_baodao']],
             bilibili_xushao: ['male', 'qun', '1/6', ['bilibili_pingjian'], ['ext:活动武将/image/character/old_xushao.jpg', 'InitFilter:noZhuHp']],
             bilibili_ningjingzhiyuan: ['male', 'key', 4, ['bilibili_liaoxing', 'bilibili_xiezhi', 'bilibili_fazhou']],
-            bilibili_xizhicaikobe: ['male', 'key', 4, ['bilibili_xingshi', 'bilibili_zhangcai'], ['doublegroup:wei:shu:wu:qun:jin']],
+            bilibili_xizhicaikobe: ['male', 'key', 4, ['bilibili_biexiao', 'bilibili_xingshi', 'bilibili_zhangcai'], ['doublegroup:wei:shu:wu:qun:jin']],
             //千里走单骑 
             DJ_caiyang: ['male', 'qun', 1, ['yinka', 'zhuixi'], ['character:caiyang']],
             DJ_pujing: ['male', 'qun', 1, ['yinka'], ['character:pujing']],
@@ -75,6 +75,14 @@ const packs = function () {
             bfake_shen_jiaxu: ['male', 'shen', 3, ['boljiandai', 'bolfangcan', 'boljuemei', 'bolluoshu'], ['qun', 'character:le_shen_jiaxu']],
             bfake_shen_zhangfei: ['male', 'shen', 5, ['bolbaohe', 'bolrenhai', 'boltiandong'], ['shu', 'character:shen_zhangfei']],
             bfake_shen_zhangjiao: ['male', 'shen', 3, ['bolyifu', 'boltianjie'], ['qun', 'character:shen_zhangjiao']],
+            //憋笑--牢戏专属
+            smile1: ['', '', 0, [], ['unseen', 'forbidai', ((lib.device || lib.node) ? 'ext:' : 'db:extension-') + '活动武将/image/default/smile1.jpg']],
+            smile2: ['', '', 0, [], ['unseen', 'forbidai', ((lib.device || lib.node) ? 'ext:' : 'db:extension-') + '活动武将/image/default/smile2.jpg']],
+            smile3: ['', '', 0, [], ['unseen', 'forbidai', ((lib.device || lib.node) ? 'ext:' : 'db:extension-') + '活动武将/image/default/smile3.jpg']],
+            smile4: ['', '', 0, [], ['unseen', 'forbidai', ((lib.device || lib.node) ? 'ext:' : 'db:extension-') + '活动武将/image/default/smile4.jpg']],
+            smile5: ['', '', 0, [], ['unseen', 'forbidai', ((lib.device || lib.node) ? 'ext:' : 'db:extension-') + '活动武将/image/default/smile5.jpg']],
+            smile6: ['', '', 0, [], ['unseen', 'forbidai', ((lib.device || lib.node) ? 'ext:' : 'db:extension-') + '活动武将/image/default/smile6.jpg']],
+            smile7: ['', '', 0, [], ['unseen', 'forbidai', ((lib.device || lib.node) ? 'ext:' : 'db:extension-') + '活动武将/image/default/smile7.jpg']],
         },
         characterIntro: {
             ekeshaoge: '俄何烧戈，羌将。正始八年，陇西、南安、金城、西平诸羌饿何、烧戈、伐同、蛾遮塞等相结叛乱，攻围城邑，南招蜀兵，凉州名胡治无戴复叛应之。讨蜀护军夏侯霸督诸军屯为翅。郭淮退姜维，维遁退。进讨叛羌，斩饿何、烧戈，降服者万馀落。',
@@ -10263,6 +10271,24 @@ const packs = function () {
                 },
             },
             //戏志才
+            bilibili_biexiao: {
+                charlotte: true,
+                superCharlotte: true,
+                trigger: { player: ['useCard', 'respond', 'useCardToPlayer'] },
+                filter(event, player, name) {
+                    if (name == 'useCardToPlayered') return event.target != player;
+                    return Array.isArray(event.respondTo) && event.respondTo[0] != event.player && [event.respondTo[0], event.player].includes(player);
+                },
+                forced: true,
+                popup: false,
+                firstDo: true,
+                *content(event, map) {
+                    const player = map.player, trigger = map.trigger;
+                    const target = event.triggername == 'useCardToPlayered' ? trigger.target : target = lib.skill.caiwang.logTarget(trigger, player);
+                    player.flashAvatar('bilibili_biexiao', 'smile' + get.rand(1, 7));
+                    target.flashAvatar(null, 'smile' + get.rand(1, 7));
+                },
+            },
             bilibili_xingshi: {
                 locked: true,
                 group: ['wei', 'shu', 'wu', 'qun', 'jin'].map(i => ['bilibili_xingshi_' + i, 'bilibili_xingshi_awaken_' + i]).flat(),
@@ -11032,6 +11058,7 @@ const packs = function () {
             bolaocai_hs: 'invisible',
             bolaocai_info: '当你于回合外需要使用或打出一张基本牌时，你可以观看牌堆顶的两张牌（若你没有手牌则改为四张）。若你观看的牌中有此牌，你可以使用打出之。',
             bolaocai_info_guozhan: '当你于回合外需要使用或打出一张基本牌时，你可以观看牌堆顶的两张牌。若你观看的牌中有此牌，你可以使用打出之。',
+            bilibili_biexiao: '憋笑',
             bilibili_xingshi: '醒世',
             bilibili_xingshi_info: '锁定技。若你的势力为魏/蜀/吴/群/晋，则你视为拥有对应势力效果。',
             bilibili_xingshi_wei: '魏业',
@@ -11055,7 +11082,7 @@ const packs = function () {
             bilibili_xingshi_awaken_jin: '洛阳',
             bilibili_xingshi_awaken_jin_info: '锁定技，结束阶段，若你手牌中的花色数小于3，则你摸一张牌。',
             bilibili_zhangcai: '彰才',
-            bilibili_zhangcai_info: '当你获得牌后，你可以使用其中一张牌，然后根据你本局游戏以此法使用过的花色数视为拥有对应技能：≥1，〖蟨蛮〗；≥2，〖鹣蛮〗；≥3，〖傲才〗；≥4，〖恃才〗。',
+            bilibili_zhangcai_info: '当你获得牌后，你可以使用其中一张牌（无距离和次数限制），然后根据你本局游戏以此法使用过的花色数视为拥有对应技能：≥1，〖蟨蛮〗；≥2，〖鹣蛮〗；≥3，〖傲才〗；≥4，〖恃才〗。',
             bilibili_zhangcai_append: '<span style="font-family:yuanli"><li>憋笑ing<br><li>seven!seven!</span>',
         },
     };
