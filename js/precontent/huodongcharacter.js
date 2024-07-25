@@ -10277,7 +10277,7 @@ const packs = function () {
                 trigger: { player: ['useCard', 'respond', 'useCardToPlayer'] },
                 filter(event, player, name) {
                     if (name == 'useCardToPlayered') return event.target != player;
-                    return Array.isArray(event.respondTo) && event.respondTo[0] != event.player && [event.respondTo[0], event.player].includes(player);
+                    return Array.isArray(event.respondTo) && event.respondTo[0] != player;
                 },
                 forced: true,
                 popup: false,
@@ -10286,7 +10286,7 @@ const packs = function () {
                     const player = map.player, trigger = map.trigger;
                     const target = event.triggername == 'useCardToPlayered' ? trigger.target : target = lib.skill.caiwang.logTarget(trigger, player);
                     player.flashAvatar('bilibili_biexiao', 'smile' + get.rand(1, 7));
-                    target.flashAvatar(null, 'smile' + get.rand(1, 7));
+                    if (target) target.flashAvatar(null, 'smile' + get.rand(1, 7));
                 },
             },
             bilibili_xingshi: {
