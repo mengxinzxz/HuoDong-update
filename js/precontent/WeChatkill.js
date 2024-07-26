@@ -6106,6 +6106,7 @@ const packs = function () {
                     const num = event.cost_data;
                     await player.loseHp(num);
                     await player.draw(num);
+                    player.addTempSkill(event.name + '_hand');
                     if (!game.hasPlayer(current => current != player)) return;
                     const targets = await player.chooseTarget(`令至多${get.cnNumber(num)}名其他角色获得1枚“讨逆”标记`, lib.filter.notMe, [1, num]).set('ai', target => {
                         const player = get.player(), att = get.attitude(player, target);
@@ -6122,6 +6123,16 @@ const packs = function () {
                     content: 'mark',
                     onunmark: true,
                 },
+                subSkill: {
+                    hand: {
+                        charlotte: true,
+                        mod: {
+                            maxHandcardBase(player, num) {
+                                return player.maxHp;
+                            },
+                        },
+                    }
+                }
             },
             wechatpingjiang: {
                 audio: 'ext:活动武将/audio/skill:2',
