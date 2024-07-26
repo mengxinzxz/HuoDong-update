@@ -12,6 +12,7 @@ game.bolShowNewPack = function () {
 	//更新告示
 	var HuoDong_update = [
 		'/setPlayer/',
+		'整合@xizifu的Pull Requests',
 		'bugfix',
 		'To be continued...',
 	];
