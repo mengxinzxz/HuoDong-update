@@ -7578,7 +7578,7 @@ const packs = function () {
                                 return current.hasSkill('bilibili_meihua');
                             }) && player.countCards('he') && player.countCards('h');
                         },
-                        prompt: () => '交给拥有【美化】的一名角色第一张牌，将第二张牌（须为手牌）当作本局游戏牌堆组成的任意装备牌对自己使用',
+                        prompt: () => '交给拥有【美化】的一名角色第一张牌，将第二张牌（须为手牌）当作本局游戏牌堆组成的任意装备牌装备之',
                         filterTarget: function (card, player, target) {
                             return target.hasSkill('bilibili_meihua');
                         },
@@ -7601,6 +7601,21 @@ const packs = function () {
                         lose: false,
                         position: 'he',
                         usable: 1,
+                        async content(event, trigger, player) {
+                            const target = event.target, cards = event.cards;
+                            await player.give(cards[0], target);
+                            const list = lib.inpile.filter(name => get.type(name) == 'equip').map((i) => ['装备', '', i]);
+                            const result = await player.chooseButton(['请选择' + get.translation(cards[1]) + '要转化的装备牌', [list, 'vcard']], true).set('ai', function (button) {
+                                var player = _status.event.player;
+                                var equip = button.link[2];
+                                if (player.hasEmptySlot(get.subtype(equip)) || get.equipValue({ name: button.link[2] }, player) > 0) return get.equipValue({ name: button.link[2] }, player);
+                                return (1 + Math.random()) / 1145141919810;
+                            }).forResult();
+                            if (result.bool) {
+                                await player.equip(get.autoViewAs({ name: result.links[0][2] }, [cards[1]]));
+                            }
+                        },
+                        /*
                         content: function () {
                             'step 0'
                             target.gain(cards[0], player, 'giveAuto');
@@ -7629,6 +7644,7 @@ const packs = function () {
                             player.lose(cards[1], ui.special)._triggered = null;
                             player.chooseUseTarget(equip, true, 'nopopup');
                         },
+                        */
                         ai: {
                             order: 7,
                             expose: 0,
@@ -7764,29 +7780,6 @@ const packs = function () {
                 priority: 11 + 45 + 14,
                 content: function () {
                     player.addAdditionalSkills('bilibili_gongyou', lib.skill.bilibili_gongyou.getList());
-                },
-            },
-            bilibili_qianyin: {
-                trigger: { global: 'roundStart', player: 'phaseBefore' },
-                filter: function (event, player) {
-                    return event.name != 'phase' || !event.skill;
-                },
-                direct: true,
-                locked: false,
-                content: function () {
-                    if (trigger.name != 'phase') {
-                        player.logSkill('bilibili_qianyin');
-                        player.insertPhase();
-                        var evt = trigger;
-                        if (evt.player != player && !evt._finished) {
-                            evt.finish();
-                            evt.untrigger(true);
-                            evt._triggered = 5;
-                            var evtx = evt.player.insertPhase();
-                            delete evtx.skill;
-                        }
-                    }
-                    else trigger.cancel();
                 },
             },
             //仁望值
@@ -10942,7 +10935,7 @@ const packs = function () {
             bolsidi: '司敌',
             bolsidi_info: '当你使用非延时锦囊牌结算完毕后，你可以选择一名未指定“司敌”目标的其他角色，并为其指定一名“司敌”目标角色（仅你可见）。其使用的下一张非延时锦囊牌指定目标后，清除你为其指定的“司敌”目标角色，若此时其使用此牌仅指定“司敌”目标为唯一目标，且目标：为你，你摸一张牌；不为你，你可以选择一项：⒈取消此牌目标，然后若场上没有处于濒死的角色，你对其造成1点伤害；⒉摸两张牌。',
             bilibili_meihua: '美化',
-            bilibili_meihua_info: '分发起始手牌前，你将牌堆中的所有装备牌置于武将牌上（这些牌可如手牌般使用，且每回合每种副类别的牌限使用一次）。你的装备栏不会被废除。没有〖美化〗的角色的出牌阶段限一次，其可以交给拥有〖美化〗的一名角色并将一张手牌当作本局游戏牌堆组成的一张装备牌对自己使用。',
+            bilibili_meihua_info: '分发起始手牌前，你将牌堆中的所有装备牌置于武将牌上（这些牌可如手牌般使用，且每回合每种副类别的牌限使用一次）。你的装备栏不会被废除。没有〖美化〗的角色的出牌阶段限一次，其可以交给拥有〖美化〗的一名角色并将一张手牌当作本局游戏牌堆组成的一张装备牌装备之。',
             bilibili_gongyou: '攻优',
             bilibili_gongyou_info: '锁定技。若场上存活角色的一半（向上取整）的装备区里有：武器牌，你视为拥有技能〖枭姬〗；防具牌，你视为拥有技能〖旋风〗；防御马，你视为拥有技能〖飞影〗；攻击马，你视为拥有技能〖马术〗。若均不满足，你视为拥有技能〖绮冑〗。',
             bilibili_gongyou_append: '<span style="font-family:yuanli">之前你说的，我把所有图抠好了给我管理的哈</span>',
