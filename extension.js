@@ -14,12 +14,12 @@ game.bolShowNewPack = function () {
 		'/setPlayer/',
 		'整合@xizifu的Pull Requests',
 		'bugfix',
-		'添加武将欢杀樊稠',
+		'添加欢杀武将：樊稠、皇甫嵩',
 		'To be continued...',
 	];
 	//更新武将
 	var HuoDong_players = [
-		'Mbaby_fanchou',
+		'Mbaby_fanchou', 'Mbaby_huangfusong',
 	];
 	//加载
 	var dialog = ui.create.dialog(
