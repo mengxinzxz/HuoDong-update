@@ -22,7 +22,7 @@ const packs = function () {
             //魏
             Mbaby_caopi: ['male', 'wei', 3, ['minixingshang', 'minifangzhu', 'songwei'], ['zhu']],
             Mbaby_caoang: ['male', 'wei', 4, ['minikangkai']],
-            Mbaby_zhenji: ['female', 'wei', 3, ['minireluoshen', 'reqingguo']],
+            Mbaby_zhenji: ['female', 'wei', 3, ['minireluoshen', 'reqingguo'], ['die:re_zhenji']],
             Mbaby_caoren: ['male', 'wei', 4, ['minijushou', 'xinjiewei']],
             Mbaby_zhangchunhua: ['female', 'wei', 3, ['minijueqing', 'minireshangshi']],
             Mbaby_xuzhu: ['male', 'wei', 4, ['luoyi', 'minihuchi']],
@@ -36,7 +36,7 @@ const packs = function () {
             Mbaby_sp_caiwenji: ['female', 'wei', 3, ['minichenqing', 'mozhi']],
             Mbaby_caozhi: ['male', 'wei', 3, ['miniluoying', 'minijiushi']],
             Mbaby_caorui: ['male', 'wei', 3, ['huituo', 'minimingjian', 'minixingshuai'], ['zhu']],
-            Mbaby_xizhicai: ['male', 'wei', 3, ['tiandu_xizhicai', 'xianfu', 'minichouce']],
+            Mbaby_xizhicai: ['male', 'wei', 3, ['tiandu', 'xianfu', 'minichouce'], ['tempname:xizhicai']],
             Mbaby_xiahouyuan: ['male', 'wei', 4, ['minishensu', 'minishebian']],
             Mbaby_caoying: ['female', 'wei', 4, ['minilingren', 'minifujian']],
             Mbaby_xinxianying: ['female', 'wei', 3, ['minizhongjian', 'minicaishi']],
@@ -61,7 +61,7 @@ const packs = function () {
             Mbaby_xiahoulingnv: ['female', 'wei', 4, ['fuping', 'miniweilie']],
             Mbaby_chenqun: ['male', 'wei', 3, ['pindi', 'minifaen']],
             Mbaby_wangji: ['male', 'wei', 3, ['miniqizhi', 'minijinqu']],
-            Mbaby_jsp_guanyu: ['male', 'wei', 4, ['minispwusheng', 'minidanji']],
+            Mbaby_jsp_guanyu: ['male', 'wei', 4, ['minispwusheng', 'minidanji'], ['tempname:jsp_guanyu']],
             Mbaby_kuailiangkuaiyue: ['male', 'wei', 3, ['nzry_jianxiang', 'minishenshi']],
             Mbaby_wenqin: ['male', 'wei', 4, ['olguangao', 'minihuiqi']],
             Mbaby_sp_jiaxu: ['male', 'wei', 3, ['zhenlue', 'minijianshu', 'miniyongdi']],
@@ -70,7 +70,7 @@ const packs = function () {
             Mbaby_guojia: ['male', 'wei', 3, ['tiandu', 'new_reyiji', 'minishenglun']],
             Mbaby_caohong: ['male', 'wei', 4, ['miniyuanhu', 'minijuezhu']],
             Mbaby_sb_caocao: ['male', 'wei', 4, ['minisbjianxiong', 'minisbqingzheng', 'sbhujia'], ['zhu']],
-            Mbaby_zhugedan: ['male', 'wei', 4, ['minigongao', 'minijuyi']],
+            Mbaby_zhugedan: ['male', 'wei', 4, ['minigongao', 'minijuyi'], ['tempname:zhugedan']],
             Mbaby_bianfuren: ['female', 'wei', 3, ['fh_fuding', 'miniyuejian'], ['die:ol_bianfuren']],
             Mbaby_sb_yujin: ['male', 'wei', 4, ['minixiayuan', 'minijieyue']],
             Mbaby_yuejin: ['male', 'wei', 4, ['minixiaoguo']],
@@ -93,7 +93,7 @@ const packs = function () {
             Mbaby_liaohua: ['male', 'shu', 4, ['minidangxian', 'minifuli']],
             Mbaby_pangtong: ['male', 'shu', 3, ['minirelianhuan', 'mininiepan'], ['tempname:ol_pangtong', 'die:ol_pangtong']],
             Mbaby_menghuo: ['male', 'shu', 5, ['minihuoshou', 'zaiqi']],
-            Mbaby_jiangwei: ['male', 'shu', 4, ['minitiaoxin', 'minizhiji']],
+            Mbaby_jiangwei: ['male', 'shu', 4, ['minitiaoxin', 'minizhiji'], ['tempname:ol_jiangwei', 'die:ol_jiangwei']],
             Mbaby_liushan: ['male', 'shu', 4, ['minirexiangle', 'minirefangquan', 'minireruoyu'], ['zhu', 'tempname:ol_liushan', 'die:ol_liushan']],
             Mbaby_fazheng: ['male', 'shu', 3, ['minienyuan', 'minixuanhuo']],
             Mbaby_madai: ['male', 'shu', 4, ['mashu', 'miniqianxi']],
@@ -101,7 +101,7 @@ const packs = function () {
             Mbaby_liufeng: ['male', 'shu', 4, ['minixiansi']],
             Mbaby_guanyinping: ['female', 'shu', 3, ['xueji', 'minihuxiao', 'miniwuji']],
             Mbaby_dongyun: ['male', 'shu', 3, ['minibingzheng', 'sheyan']],
-            Mbaby_sp_sunshangxiang: ['female', 'shu', 3, ['miniliangzhu', 'minifanxiang']],
+            Mbaby_sp_sunshangxiang: ['female', 'shu', 3, ['miniliangzhu', 'minifanxiang'], ['tempname:sp_sunshangxiang']],
             Mbaby_xushu: ['male', 'shu', 3, ['xinwuyan', 'minijujian']],
             Mbaby_masu: ['male', 'shu', 3, ['minisanyao', 'rezhiman']],
             Mbaby_qinmi: ['male', 'shu', 3, ['jianzheng', 'minizhuandui', 'tianbian']],
@@ -110,7 +110,7 @@ const packs = function () {
             Mbaby_wuxian: ['female', 'shu', 3, ['minifumian', 'minidaiyan'], ['clan:陈留吴氏']],
             Mbaby_shamoke: ['male', 'shu', 4, ['minijili']],
             Mbaby_xiahoushi: ['female', 'shu', 3, ['miniqiaoshi', 'miniyanyu']],
-            Mbaby_guansuo: ['male', 'shu', 4, ['minizhengnan', 'minixiefang']],
+            Mbaby_guansuo: ['male', 'shu', 4, ['minizhengnan', 'minixiefang'], ['tempname:guansuo']],
             Mbaby_mayunlu: ['female', 'shu', 4, ['minifengpo', 'mashu']],
             Mbaby_wangping: ['male', 'shu', 4, ['minifeijun', 'minibinglve']],
             Mbaby_jianyong: ['male', 'shu', 3, ['miniqiaoshui', 'jyzongshi']],
@@ -119,7 +119,7 @@ const packs = function () {
             Mbaby_baosanniang: ['female', 'shu', 3, ['decadewuniang', 'minixushen']],
             Mbaby_huaman: ['female', 'shu', 4, ['manyi', 'mansi', 'minisouying', 'minizhanyuan']],
             Mbaby_zhaoxiang: ['female', 'shu', 4, ['refanghun', 'minifuhan']],
-            Mbaby_xiahouba: ['male', 'shu', 4, ['minibaobian']],
+            Mbaby_xiahouba: ['male', 'shu', 4, ['minibaobian'], ['tempname:xiahouba']],
             Mbaby_yanyan: ['male', 'shu', 4, ['minijuzhan']],
             Mbaby_chendao: ['male', 'shu', 4, ['miniwanglie']],
             Mbaby_liyan: ['male', 'shu', 4, ['miniduliang', 'fulin']],
@@ -133,12 +133,12 @@ const packs = function () {
             Mbaby_liuyong: ['male', 'shu', 3, ['zhuning', 'minifengxiang']],
             Mbaby_mizhu: ['male', 'shu', 3, ['miniziyuan', 'minijugu']],
             Mbaby_mifuren: ['female', 'shu', 3, ['miniguixiu', 'minicunsi']],
-            Mbaby_wangyue: ['female', 'shu', 3, ['minihuguan', 'minimingluan']],
+            Mbaby_wangyue: ['female', 'shu', 3, ['minihuguan', 'minimingluan'], ['tempname:wangyue']],
             Mbaby_xf_yiji: ['male', 'shu', 3, ['minijijie', 'minijiyuan']],
             Mbabysp_zhangfei: ['male', 'shu', 4, ['minisppaoxiao', 'minixvhe']],
             Mbaby_wangtao: ['female', 'shu', 3, ['minihuguan', 'miniyaopei']],
             Mbaby_wolongfengchu: ['male', 'shu', 4, ['miniyoulong', 'miniluanfeng']],
-            Mbaby_guanzhang: ['male', 'shu', 4, ['minifuhun', 'retongxin']],
+            Mbaby_guanzhang: ['male', 'shu', 4, ['minifuhun', 'retongxin'], ['tempname:guanzhang']],
             Mbaby_sb_liubei: ['male', 'shu', 4, ['minisbrende', 'minisbzhangwu', 'minisbjijiang'], ['zhu']],
             Mbaby_sb_machao: ['male', 'shu', 4, ['miniyuma', 'minisbtieji']],
             Mbaby_sb_huangzhong: ['male', 'shu', 4, ['minisbliegong']],
@@ -156,8 +156,8 @@ const packs = function () {
             Mbaby_huanggai: ['male', 'wu', 4, ['kurou', 'minizhaxiang']],
             Mbaby_lusu: ['male', 'wu', 3, ['minihaoshi', 'dimeng']],
             Mbaby_luxun: ['male', 'wu', 3, ['minireqianxun', 'minilianying']],
-            Mbaby_lvmeng: ['male', 'wu', 4, ['minikeji', 'miniqinxue']],
-            Mbaby_sunce: ['male', 'wu', 4, ['minijiang', 'minihunzi', 'minizhiba'], ['zhu']],
+            Mbaby_lvmeng: ['male', 'wu', 4, ['minikeji', 'miniqinxue'], ['tempname:re_lvmeng', 'die:re_lvmeng']],
+            Mbaby_sunce: ['male', 'wu', 4, ['minijiang', 'minihunzi', 'minizhiba'], ['zhu', 'tempname:sunce']],
             Mbaby_sunluban: ['female', 'wu', 3, ['minizenhui', 'minijiaojin']],
             Mbaby_sunluyu: ['female', 'wu', 3, ['minimeibu', 'remumu']],
             Mbaby_sunquan: ['male', 'wu', 4, ['minirezhiheng', 'minijiuyuan'], ['zhu']],
@@ -172,21 +172,21 @@ const packs = function () {
             Mbaby_zumao: ['male', 'wu', 4, ['miniyinbing', 'minijuedi']],
             Mbabysp_xiaoqiao: ['female', 'wu', 3, ['minixingwu', 'miniluoyan', 'minihuimou']],
             Mbaby_zhuzhi: ['male', 'wu', 4, ['minianguo']],
-            Mbaby_ol_sunjian: ['male', 'wu', 4, ['miniyinghun', 'miniwulie']],
+            Mbaby_ol_sunjian: ['male', 'wu', 4, ['miniyinghun', 'miniwulie'], ['tempname:ol_sunjian']],
             Mbaby_sunliang: ['male', 'wu', 3, ['minikuizhu', 'minichezheng', 'minilijun'], ['zhu']],
             Mbaby_zhangzhang: ['male', 'wu', 3, ['rezhijian', 'miniguzheng']],
             Mbaby_zhoufei: ['female', 'wu', 3, ['miniliangyin', 'kongsheng']],
             Mbaby_zhugeke: ['male', 'wu', 3, ['miniaocai', 'miniduwu']],
             Mbaby_xushi: ['female', 'wu', 3, ['miniwengua', 'minifuzhu']],
             Mbaby_buzhi: ['male', 'wu', 3, ['minihongde', 'minidingpan']],
-            Mbaby_lukang: ['male', 'wu', 4, ['drlt_qianjie', 'minijueyan', 'minihuairou']],
+            Mbaby_lukang: ['male', 'wu', 4, ['drlt_qianjie', 'minijueyan', 'minihuairou'], ['tempname:lukang']],
             Mbabysp_daqiao: ['female', 'wu', 3, ['miniyanxiao', 'miniwanrong', 'minianxian']],
             Mbaby_sunhao: ['male', 'wu', 5, ['minicanshi', 'minichouhai', 'guiming'], ['zhu']],
             Mbaby_re_jsp_pangtong: ['male', 'wu', 3, ['miniguolun', 'minisongsang', 'xinfu_zhanji']],
             Mbaby_luyusheng: ['female', 'wu', 3, ['minizhente', 'minizhiwei']],
             Mbaby_zhuhuan: ['male', 'wu', 4, ['minifenli', 'minipingkou']],
             Mbaby_yanjun: ['male', 'wu', 3, ['miniguanchao', 'minixunxian']],
-            Mbaby_re_sunyi: ['male', 'wu', 5, ['syjiqiao', 'minisyxiongyi']],
+            Mbaby_re_sunyi: ['male', 'wu', 5, ['syjiqiao', 'minisyxiongyi'], ['tempname:re_sunyi']],
             Mbaby_zhangxuan: ['female', 'wu', 4, ['tongli', 'minishezang']],
             Mbaby_zhoufang: ['male', 'wu', 3, ['xinfu_duanfa', 'miniyoudi']],
             Mbaby_luji: ['male', 'wu', 3, ['nzry_huaiju', 'nzry_yili', 'minizhenglun']],
@@ -218,11 +218,11 @@ const packs = function () {
             Mbaby_jushou: ['male', 'qun', 3, ['jianying', 'minishibei']],
             Mbaby_liru: ['male', 'qun', 3, ['xinjuece', 'minimieji', 'xinfencheng']],
             Mbaby_dongzhuo: ['male', 'qun', 8, ['minirejiuchi', 'miniroulin', 'minirebenghuai', 'olbaonue'], ['zhu', 'tempname:ol_dongzhuo', 'die:ol_dongzhuo']],
-            Mbaby_zhangjiao: ['male', 'qun', 3, ['minileiji', 'xinguidao', 'minihuangtian'], ['zhu']],
+            Mbaby_zhangjiao: ['male', 'qun', 3, ['minileiji', 'xinguidao', 'minihuangtian'], ['zhu', 'tempname:sp_zhangjiao', 'die:sp_zhangjiao']],
             Mbaby_huatuo: ['male', 'qun', 3, ['minijijiu', 'minireqingnang']],
             Mbaby_lvbu: ['male', 'qun', 5, ['miniwushuang', 'miniwuchang']],
             Mbaby_sp_diaochan: ['female', 'qun', 3, ['minilihun', 'minibiyue']],
-            Mbaby_huaxiong: ['male', 'qun', 6, ['miniyaowu', 'miniyangwei']],
+            Mbaby_huaxiong: ['male', 'qun', 6, ['miniyaowu', 'miniyangwei'], ['tempname:sb_huaxiong', 'die:sb_huaxiong']],
             Mbaby_yuji: ['male', 'qun', 4, ['miniguhuo']],
             Mbaby_zhangliang: ['male', 'qun', 4, ['minijijun', 'minifangtong']],
             Mbaby_zhangbao: ['male', 'qun', 4, ['minizhoufu', 'miniyingbing']],
@@ -695,7 +695,7 @@ const packs = function () {
                 },
             },
             miniluoshen: {
-                audio: 'luoshen',
+                audio: 'reluoshen',
                 audioname2: { Mmiao_zhenji: 'minimiaoluoshen' },
                 trigger: { player: 'phaseZhunbeiBegin' },
                 frequent: true,
@@ -1607,10 +1607,6 @@ const packs = function () {
                     }
                 },
             },
-            tiandu_xizhicai: {
-                audio: 2,
-                inherit: 'tiandu',
-            },
             minichouce: {
                 audio: 'chouce',
                 trigger: { player: 'damageEnd' },
@@ -1688,7 +1684,7 @@ const packs = function () {
             },
             minishensu: {
                 audio: 'shensu1',
-                audioname2: { Mbaby_xiahouba: 'shensu1_xiahouba' },
+                audioname: ['xiahouba'],
                 trigger: { player: ['phaseJudgeBefore', 'phaseUseBefore', 'phaseDiscardBefore'] },
                 direct: true,
                 content: function () {
@@ -3020,7 +3016,7 @@ const packs = function () {
             },
             //曹操
             minijianxiong: {
-                audio: 'rejianxiong',
+                audio: 'jianxiong',
                 audioname2: { Mbaby_caoying: 'lingren_jianxiong' },
                 trigger: { player: 'damageEnd' },
                 direct: true,
@@ -3059,7 +3055,7 @@ const packs = function () {
             },
             minihujia: {
                 unique: true,
-                audio: 'hujia_re_caocao',
+                audio: 'hujia',
                 trigger: { player: ['chooseToRespondBefore', 'chooseToUseBefore'] },
                 filter: function (event, player) {
                     if (event.responded) return false;
@@ -3126,7 +3122,6 @@ const packs = function () {
                     },
                 },
             },
-            hujia_re_caocao: { audio: 2 },
             //庞德
             minijuesi: {
                 audio: 'juesi',
@@ -3494,10 +3489,7 @@ const packs = function () {
             minispwusheng: {
                 group: ['minispwusheng_wusheng', 'minispwusheng_effect'],
                 audio: 'wusheng',
-                audioname2: {
-                    Mbaby_jsp_guanyu: 'wusheng_jsp_guanyu',
-                    Mbaby_guansuo: 'wusheng_guansuo',
-                },
+                audioname: ['jsp_guanyu', 'guansuo'],
                 trigger: { player: 'phaseBegin' },
                 forced: true,
                 locked: false,
@@ -3510,10 +3502,7 @@ const packs = function () {
                 subSkill: {
                     wusheng: {
                         audio: 'wusheng',
-                        audioname2: {
-                            Mbaby_jsp_guanyu: 'wusheng_jsp_guanyu',
-                            Mbaby_guansuo: 'wusheng_guansuo',
-                        },
+                        audioname: ['jsp_guanyu', 'guansuo'],
                         enable: ['chooseToRespond', 'chooseToUse'],
                         filterCard: function (card, player) {
                             return get.color(card) == 'red';
@@ -3546,10 +3535,7 @@ const packs = function () {
                             },
                         },
                         audio: 'wusheng',
-                        audioname2: {
-                            Mbaby_jsp_guanyu: 'wusheng_jsp_guanyu',
-                            Mbaby_guansuo: 'wusheng_guansuo',
-                        },
+                        audioname: ['jsp_guanyu', 'guansuo'],
                         inherit: 'jie',
                         filter: function (event, player) {
                             return lib.skill.jie.filter(event) && event.card.isCard;
@@ -5228,10 +5214,7 @@ const packs = function () {
             miniwusheng: {
                 group: 'miniwusheng_damage',
                 audio: 'wusheng',
-                audioname2: {
-                    Mbaby_guansuo: 'wusheng_guansuo',
-                    Mbaby_guanzhang: 'wusheng_guanzhang',
-                },
+                audioname: ['guanzhang', 'guansuo'],
                 trigger: { player: 'phaseBegin' },
                 forced: true,
                 locked: false,
@@ -5249,17 +5232,14 @@ const packs = function () {
                             },
                         },
                         audio: 'wusheng',
-                        audioname2: {
-                            Mbaby_guansuo: 'wusheng_guansuo',
-                            Mbaby_guanzhang: 'wusheng_guanzhang',
-                        },
+                        audioname: ['guanzhang', 'guansuo'],
                         inherit: 'jie',
                     },
                 },
             },
             miniguanxing: {
                 audio: 'guanxing',
-                audioname2: { Mbaby_jiangwei: 'guanxing_ol_jiangwei' },
+                audioname: ['ol_jiangwei'],
                 trigger: { player: ['phaseZhunbeiBegin', 'phaseJieshuBegin'] },
                 filter(event, player) {
                     return event.name != 'phaseJieshu' || player.hasSkill('miniguanxing_on');
@@ -5331,7 +5311,7 @@ const packs = function () {
             },
             minireguanxing: {
                 audio: 'guanxing',
-                audioname2: { Mbaby_jiangwei: 'guanxing_ol_jiangwei' },
+                audioname: ['ol_jiangwei'],
                 trigger: { player: ['phaseZhunbeiBegin', 'phaseJieshuBegin'] },
                 frequent: true,
                 preHidden: true,
@@ -5413,7 +5393,7 @@ const packs = function () {
                 subSkill: {
                     gain: {
                         audio: 'guanxing',
-                        audioname2: { Mbaby_jiangwei: 'guanxing_ol_jiangwei' },
+                        audioname: ['ol_jiangwei'],
                         enable: 'phaseUse',
                         filter: function (event, player) {
                             return player.getExpansions('minireguanxing').length;
@@ -5445,7 +5425,7 @@ const packs = function () {
                     zhuge: {
                         inherit: 'zhuge_skill',
                         audio: 'guanxing',
-                        audioname2: { Mbaby_jiangwei: 'guanxing_ol_jiangwei' },
+                        audioname: ['ol_jiangwei'],
                         nobracket: true,
                         mod: {
                             cardUsable: function (card, player, num) {
@@ -5457,7 +5437,7 @@ const packs = function () {
                     },
                     lose: {
                         audio: 'guanxing',
-                        audioname2: { Mbaby_jiangwei: 'guanxing_ol_jiangwei' },
+                        audioname: ['ol_jiangwei'],
                         trigger: { global: ['phaseBefore', 'dieAfter'], player: 'enterGame' },
                         filter: function (event, player) {
                             const num = Math.min(game.countPlayer() <= 2 ? 3 : 5);
@@ -6101,7 +6081,7 @@ const packs = function () {
             },
             minidangxian: {
                 audio: 'dangxian',
-                audioname2: { Mbaby_guansuo: 'dangxian_guansuo' },
+                audioname: ['guansuo'],
                 trigger: { player: 'phaseBegin' },
                 forced: true,
                 locked: false,
@@ -6322,15 +6302,9 @@ const packs = function () {
                     },
                 },
             },
-            tiaoxin_ol_jiangwei: { audio: 2 },
-            tiaoxin_sp_jiangwei: { audio: 2 },
-            guanxing_ol_jiangwei: { audio: 2 },
             minitiaoxin: {
-                audio: 'tiaoxin_ol_jiangwei',
-                audioname2: {
-                    Mbaby_sp_jiangwei: 'tiaoxin_sp_jiangwei',
-                    Mbaby_xiahouba: 'tiaoxin_xiahouba',
-                },
+                audio: 'tiaoxin',
+                audioname: ['ol_jiangwei', 'sp_jiangwei', 'xiahouba'],
                 trigger: { player: 'phaseUseBegin' },
                 filter: function (event, player) {
                     return game.hasPlayer(function (current) {
@@ -6363,7 +6337,6 @@ const packs = function () {
                 },
             },
             minizhiji: {
-                derivation: 'miniguanxing',
                 audio: 'olzhiji',
                 unique: true,
                 juexingji: true,
@@ -6381,8 +6354,9 @@ const packs = function () {
                     'step 1'
                     player.loseMaxHp();
                     'step 2'
-                    player.addSkills('miniguanxing');
+                    player.addSkills(lib.skill[event.name].derivation);
                 },
+                derivation: 'minireguanxing',
             },
             minihuoshou: {
                 group: ['huoshou1', 'minihuoshou2'],
@@ -6996,7 +6970,6 @@ const packs = function () {
                     }
                 },
             },
-            xiaoji_sp_sunshangxiang: { audio: 2 },
             minifanxiang: {
                 skillAnimation: true,
                 animationColor: 'fire',
@@ -7018,7 +6991,7 @@ const packs = function () {
                     player.gainMaxHp();
                     player.recover();
                     'step 2'
-                    player.addSkills(lib.skill.minifanxiang.derivation);
+                    player.addSkills(lib.skill[event.name].derivation);
                     'step 3'
                     player.removeSkills('miniliangzhu');
                 },
@@ -8838,7 +8811,7 @@ const packs = function () {
             //黄月英
             minirejizhi: {
                 audio: 'rejizhi',
-                audioname2: { Mbaby_lukang: 'rejizhi_lukang' },
+                audioname: ['lukang'],
                 trigger: { player: 'useCard' },
                 filter: function (event, player) {
                     return get.type2(event.card) == 'trick';
@@ -9369,7 +9342,7 @@ const packs = function () {
             //王悦
             minihuguan: {
                 audio: 'huguan',
-                audioname2: { Mbaby_wangyue: 'huguan_wangyue' },
+                audioname: ['wangyue'],
                 trigger: { global: 'useCard' },
                 filter: function (event, player) {
                     if (get.color(event.card) != 'red') return false;
@@ -9424,7 +9397,6 @@ const packs = function () {
                     },
                 },
             },
-            huguan_wangyue: { audio: 2 },
             minimingluan: {
                 audio: 'mingluan',
                 trigger: { global: 'phaseJieshuBegin' },
@@ -9526,10 +9498,7 @@ const packs = function () {
                     },
                 },
                 audio: 'paoxiao',
-                audioname2: {
-                    Mbaby_xiahouba: 'paoxiao_xiahouba',
-                    Mbaby_guanzhang: 'paoxiao_guanzhang',
-                },
+                audioname: ['guanzhang', 'xiahouba'],
                 trigger: { player: 'useCard' },
                 filter: function (event, player) {
                     if (event.card.name != 'sha') return false;
@@ -9585,11 +9554,7 @@ const packs = function () {
             minirewusheng: {
                 group: ['minirewusheng_wusheng', 'minirewusheng_effect'],
                 audio: 'wusheng',
-                audioname2: {
-                    Mbaby_jsp_guanyu: 'wusheng_jsp_guanyu',
-                    Mbaby_guansuo: 'wusheng_guansuo',
-                    Mbaby_guanzhang: 'wusheng_guanzhang',
-                },
+                audioname: ['guanzhang', 'guansuo', 'jsp_guanyu'],
                 trigger: { player: 'phaseBegin' },
                 forced: true,
                 locked: false,
@@ -9602,11 +9567,7 @@ const packs = function () {
                 subSkill: {
                     wusheng: {
                         audio: 'wusheng',
-                        audioname2: {
-                            Mbaby_jsp_guanyu: 'wusheng_jsp_guanyu',
-                            Mbaby_guansuo: 'wusheng_guansuo',
-                            Mbaby_guanzhang: 'wusheng_guanzhang',
-                        },
+                        audioname: ['guanzhang', 'guansuo', 'jsp_guanyu'],
                         enable: ['chooseToRespond', 'chooseToUse'],
                         filterCard: function (card, player) {
                             return get.color(card) == 'red';
@@ -9636,11 +9597,7 @@ const packs = function () {
                             },
                         },
                         audio: 'wusheng',
-                        audioname2: {
-                            Mbaby_jsp_guanyu: 'wusheng_jsp_guanyu',
-                            Mbaby_guansuo: 'wusheng_guansuo',
-                            Mbaby_guanzhang: 'wusheng_guanzhang',
-                        },
+                        audioname: ['guanzhang', 'guansuo', 'jsp_guanyu'],
                         inherit: 'jie',
                     },
                 },
@@ -11302,7 +11259,7 @@ const packs = function () {
             miniqixi: {
                 group: 'qixi',
                 audio: 'qixi',
-                audioname2: { heqi: "duanbing_heqi" },
+                audioname: ['heqi'],
                 trigger: { player: 'phaseUseBegin' },
                 filter: function (event, player) {
                     return game.hasPlayer(function (target) {
@@ -11327,7 +11284,7 @@ const packs = function () {
             },
             minifenwei: {
                 audio: 'fenwei',
-                audioname2: { heqi: "fenwei_heqi" },
+                audioname: ['heqi'],
                 skillAnimation: true,
                 animationColor: 'wood',
                 unique: true,
@@ -11485,11 +11442,9 @@ const packs = function () {
                 },
             },
             minireyingzi: {
-                audio: 'sbyingzi',
-                audioname2: {
-                    Mbaby_sunce: 'reyingzi_sunce',
-                    Mbaby_re_sunyi: 'reyingzi_re_sunyi',
-                },
+                audio: 'reyingzi',
+                audioname: ['sunce', 're_sunyi'],
+                audioname2: { Mbaby_zhouyu: 'sbyingzi' },
                 trigger: { player: 'phaseDrawBegin2' },
                 filter(event, player) {
                     return !event.numFixed && lib.skill.sbyingzi.getNum(player) > 0;
@@ -12092,6 +12047,7 @@ const packs = function () {
             },
             minikeji: {
                 audio: 'keji',
+                audioname: ['re_lvmeng'],
                 audioname2: { Mbaby_sb_lvmeng: 'sbkeji' },
                 trigger: { player: 'phaseDiscardBefore' },
                 filter: function (event, player) {
@@ -12269,12 +12225,12 @@ const packs = function () {
                     },
                 },
             },
-            olhunzi_re_sunyi: { audio: 2 },
             minihunzi: {
                 derivation: ['minireyingzi', 'miniyinghun'],
                 unique: true,
-                audio: 'hunzi',
-                audioname2: { Mbaby_re_sunyi: 'olhunzi_re_sunyi' },
+                audio: 'olhunzi',
+                audioname: ['re_sunyi'],
+                audioname2: { Mbaby_sunce: 'hunzi' },
                 trigger: { player: ['changeHp', 'enterGame'], global: 'phaseBefore' },
                 filter: function (event, player) {
                     if (player.hp != 1) return false;
@@ -12289,13 +12245,15 @@ const packs = function () {
                     player.awakenSkill('minihunzi');
                     player.loseMaxHp();
                     'step 1'
-                    player.addSkills(['minireyingzi', 'miniyinghun']);
+                    player.addSkills(lib.skill[event.name].derivation);
                 },
             },
             minihunzi_old: {
                 unique: true,
                 audio: 'hunzi',
-                audioname2: { Mbaby_re_sunyi: 'olhunzi_re_sunyi' },
+                audio: 'olhunzi',
+                audioname: ['re_sunyi'],
+                audioname2: { Mbaby_sunce: 'hunzi' },
                 derivation: ['minireyingzi', 'miniyinghun'],
                 trigger: { player: 'phaseZhunbeiBegin' },
                 filter: function (event, player) {
@@ -12310,7 +12268,7 @@ const packs = function () {
                     player.awakenSkill('minihunzi_old');
                     player.loseMaxHp();
                     'step 1'
-                    player.addSkills(['minireyingzi', 'miniyinghun']);
+                    player.addSkills(lib.skill[event.name].derivation);
                 },
                 ai: {
                     threaten: function (player, target) {
@@ -13023,11 +12981,7 @@ const packs = function () {
             },
             miniyinghun: {
                 audio: 'yinghun',
-                audioname2: {
-                    Mbaby_ol_sunjian: 'yinghun_ol_sunjian',
-                    Mbaby_sunce: 'yinghun_sunce',
-                    Mbaby_re_sunyi: 'gzyinghun_re_sunyi'
-                },
+                audioname: ['ol_sunjian', 'sunce', 're_sunyi'],
                 trigger: { player: 'phaseZhunbeiBegin' },
                 direct: true,
                 preHidden: true,
@@ -14682,7 +14636,7 @@ const packs = function () {
                 subSkill: {
                     sha: {
                         audio: 'duanbing',
-                        audioname2: { heqi: "duanbing_heqi" },
+                        audioname: ['heqi'],
                         trigger: { player: 'useCardToPlayered' },
                         forced: true,
                         filter: function (event, player) {
@@ -16387,7 +16341,6 @@ const packs = function () {
             },
             minibiyue: {
                 audio: 'biyue',
-                audioname2: { Mbaby_sp_diaochan: 'biyue' },
                 trigger: { player: 'phaseJieshuBegin' },
                 frequent: true,
                 content: function () {
@@ -16728,11 +16681,10 @@ const packs = function () {
                     },
                 },
             },
-            new_reyaowu_sb_huaxiong: { audio: 2 },
             miniyaowu: {
+                audio: 'new_reyaowu',
+                audioname: ['sb_huaxiong'],
                 trigger: { player: 'damageBegin3' },
-                audio: 'yaowu',
-                audioname2: { Mbaby_huaxiong: 'new_reyaowu_sb_huaxiong' },
                 filter: function (event, player) {
                     if (!event.card || event.card.name != 'sha') return false;
                     return ['red', 'black'].includes(get.color(event.card)) || (get.itemtype(event.cards) == 'cards' && get.position(event.cards[0], true) == 'o');
@@ -16765,8 +16717,7 @@ const packs = function () {
                         }
                     },
                 },
-                audio: 'yangwei',
-                audioname2: { Mbaby_huaxiong: 'sbyangwei' },
+                audio: 'sbyangwei',
                 trigger: { player: 'phaseUseEnd' },
                 filter: function (event, player) {
                     return player.isDamaged() && player.getHistory('useCard', evt => evt.card.name == 'sha').length > 2;
@@ -16779,8 +16730,7 @@ const packs = function () {
                 group: 'miniyangwei_phase',
                 subSkill: {
                     phase: {
-                        audio: 'yangwei',
-                        audioname2: { Mbaby_huaxiong: 'sbyangwei' },
+                        audio: 'sbyangwei',
                         trigger: { player: 'useCardAfter' },
                         filter: function (event, player) {
                             return player.isPhaseUsing() && event.card.name == 'sha' && ['black', 'red'].includes(get.color(event.card));
@@ -17358,9 +17308,7 @@ const packs = function () {
             },
             minibenghuai: {
                 audio: 'benghuai',
-                audioname2: {
-                    Mbaby_zhugedan: 'benghuai_zhugedan',
-                },
+                audioname: ['zhugedan'],
                 inherit: 'benghuai',
                 content: function () {
                     var next = game.createEvent('minibenghuai_benghuai');
@@ -17396,7 +17344,6 @@ const packs = function () {
                     },
                 },
             },
-            luanwu_re_jiaxu: { audio: 2 },
             minimieji: {
                 audio: 'xinmieji',
                 enable: 'phaseUse',
@@ -17612,7 +17559,6 @@ const packs = function () {
                 inherit: 'qingnang',
                 filterCard: false,
             },
-            guidao_sp_zhangjiao: { audio: 2 },
             minileiji: {
                 mod: { maxHandcard: (player, num) => num + 2 },
                 audio: 'releiji',
@@ -23108,7 +23054,6 @@ const packs = function () {
                     },
                 },
             },
-            gongxin_re_lvmeng: { audio: 2 },
             minishelie: {
                 audio: 'shelie',
                 inherit: 'shelie',
@@ -23116,7 +23061,7 @@ const packs = function () {
             },
             minigongxin: {
                 audio: 'gongxin',
-                audioname2: { Mbaby_lvmeng: 'gongxin_re_lvmeng' },
+                audioname: ['re_lvmeng'],
                 trigger: { player: 'useCardToPlayered', target: 'useCardToTargeted' },
                 filter: function (event, player) {
                     if (event.player == event.target || event.targets.length != 1) return false;

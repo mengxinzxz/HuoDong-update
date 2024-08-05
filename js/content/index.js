@@ -1328,12 +1328,6 @@ export function content(config, pack) {
 	game.HDsetAudioname2('rebiyue', {
 		sp_diaochan: 'biyue',
 	});
-	game.HDsetAudioname2('xiaoji', {
-		Mbaby_sp_sunshangxiang: 'xiaoji_sp_sunshangxiang',
-	});
-	game.HDsetAudioname2('reluanwu', {
-		Mbaby_jiaxu: 'luanwu_re_jiaxu',
-	});
 	game.HDsetAudioname2('yaowu', {
 		FD_huaxiong: 'bolNoAudio',
 	});
@@ -1342,24 +1336,13 @@ export function content(config, pack) {
 	});
 	game.HDsetAudioname2('gzyinghun', {
 		FD_sunjian: 'bolNoAudio',
-		Mbaby_sunce: 'yinghun_sunce',
 	});
 	game.HDsetAudioname2('rezhiman', {
 		Mbaby_guansuo: 'zhiman_guansuo',
 		wechat_guansuo: 'zhiman_guansuo',
 	});
-	game.HDsetAudioname2('reyingzi', {
-		Mbaby_sunce: 'reyingzi_sunce',
-		Mbaby_re_sunyi: 'reyingzi_re_sunyi',
-	});
 	game.HDsetAudioname2('rejizhi', {
-		Mbaby_lukang: 'rejizhi_lukang',
 		old_shen_simayi: 'jilue_jizhi',
-	});
-	game.HDsetAudioname2('new_repaoxiao', {
-		wechat_xiahouba: 'paoxiao_xiahouba',
-		Mbaby_xiahouba: 'paoxiao_xiahouba',
-		Mbaby_guanzhang: 'paoxiao_guanzhang',
 	});
 	game.HDsetAudioname2('reyicong', {
 		jsp_zhaoyun: 'yicong_jsp_zhaoyun',
@@ -1377,14 +1360,6 @@ export function content(config, pack) {
 		qin_lvbuwei: 'bolNoAudio',
 		old_shen_simayi: 'jilue_zhiheng',
 	});
-	game.HDsetAudioname2('olluanji', {
-	});
-	game.HDsetAudioname2(['rejijiang', 'rejijiang1'], {
-		Mbaby_liushan: 'jijiang1_liushan',
-	});
-	game.HDsetAudioname2('guidao', {
-		Mbaby_zhangjiao: 'guidao_sp_zhangjiao',
-	});
 	game.HDsetAudioname2('fangzhu', {
 		old_shen_simayi: 'jilue_fangzhu',
 	});
@@ -1394,18 +1369,11 @@ export function content(config, pack) {
 	game.HDsetAudioname2('rewansha', {
 		old_shen_simayi: 'wansha_shen_simayi',
 	});
-	game.HDsetAudioname2('retiaoxin', {
-		wechat_sp_jiangwei: 'tiaoxin_sp_jiangwei',
-		wechat_xiahouba: 'tiaoxin_xiahouba',
-	});
 	game.HDsetAudioname2('relianying', {
 		wechat_lukang: 'rejizhi_lukang',
 	});
 	game.HDsetAudioname2('qingguo', {
 		re_zhenji: 'reqingguo',
-	});
-	game.HDsetAudioname2('reqingguo', {
-		Mbaby_zhenji: 'qingguo',
 	});
 	game.HDsetAudioname2('shangshi', {
 		re_zhangchunhua: 'reshangshi',

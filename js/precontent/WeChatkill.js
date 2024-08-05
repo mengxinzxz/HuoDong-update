@@ -54,7 +54,7 @@ const packs = function () {
             wechat_gaoshun: ['male', 'qun', 4, ['xianzhen', 'minijinjiu']],
             wechat_caozhi: ['male', 'wei', 3, ['wechatluoying', 'wechatjiushi']],
             wechat_huangyueying: ['female', 'shu', 3, ['wechatjizhi', 'wechatqicai']],
-            wechat_weiyan: ['male', 'shu', 4, ['wechatkuanggu', 'qimou']],
+            wechat_weiyan: ['male', 'shu', 4, ['wechatkuanggu', 'qimou'], ['tempname:re_weiyan', 'die:re_weiyan']],
             wechat_lukang: ['male', 'wu', 4, ['drlt_qianjie', 'wechatjueyan', 'drlt_huairou']],
             wechat_jianyong: ['male', 'shu', 3, ['wechatqiaoshui', 'wechatjyzongshi']],
             wechat_caifuren: ['female', 'qun', 3, ['xinqieting', 'rexianzhou']],
@@ -63,12 +63,12 @@ const packs = function () {
             wechat_buzhi: ['male', 'wu', 3, ['hongde', 'wechatdingpan']],
             wechat_caozhang: ['male', 'wei', 4, ['wechatrejiangchi']],
             wechat_caopi: ['male', 'wei', 3, ['xingshang', 'wechatfangzhu']],
-            wechat_sp_jiangwei: ['male', 'wei', 4, ['wechatkunfen', 'wechatfengliang']],
+            wechat_sp_jiangwei: ['male', 'wei', 4, ['wechatkunfen', 'wechatfengliang'], ['tempname:sp_jiangwei']],
             wechat_caoxiu: ['male', 'wei', 4, ['qianju', 'wechatqingxi']],
             wechat_yuanshao: ['male', 'qun', 4, ['wechatluanji'], ['die:re_yuanshao']],
             wechat_sundeng: ['male', 'wu', 4, ['wechatkuangbi']],
             wechat_re_xushu: ['male', 'shu', 4, ['wechatzhuhai', 'qianxin']],
-            wechat_xiahouba: ['male', 'shu', 4, ['wechatrebaobian']],
+            wechat_xiahouba: ['male', 'shu', 4, ['wechatrebaobian'], ['tempname:xiahouba']],
             wechat_liuyao: ['male', 'qun', 4, ['wechatkannan']],
             wechat_quancong: ['male', 'wu', 4, ['wechatyaoming']],
             wechat_liaohua: ['male', 'shu', 4, ['wechatdangxian', 'wechatfuli']],
@@ -80,7 +80,7 @@ const packs = function () {
             wechat_sp_pangde: ['male', 'wei', 4, ['mashu', 'wechatrejuesi']],
             wechat_yj_jushou: ['male', 'qun', 3, ['wechatjianying', 'shibei']],
             wechat_zumao: ['male', 'wu', 4, ['miniyinbing', 'wechatjuedi']],
-            wechat_guansuo: ['male', 'shu', 4, ['wechatzhengnan', 'xiefang']],
+            wechat_guansuo: ['male', 'shu', 4, ['wechatzhengnan', 'xiefang'], ['tempname:guansuo']],
             wechat_zhangzhang: ['male', 'wu', 3, ['wechatzhijian', 'guzheng']],
             wechat_chendeng: ['male', 'qun', 3, ['zhouxuan', 'wechatfengji']],
             wechat_taoqian: ['male', 'qun', 3, ['zhaohuo', 'wechatyixiang', 'yirang']],
@@ -2665,7 +2665,7 @@ const packs = function () {
             //夏侯渊
             wechatshensu: {
                 audio: 'shensu1',
-                audioname2: { wechat_xiahouba: 'shensu1_xiahouba' },
+                audioname: ['xiahouba'],
                 trigger: { player: ['phaseJudgeBefore', 'phaseUseBefore', 'phaseDiscardBefore'] },
                 direct: true,
                 content: function () {
@@ -3023,6 +3023,7 @@ const packs = function () {
             //魏延
             wechatkuanggu: {
                 audio: 'kuanggu_re_weiyan',
+                audioname: ['re_weiyan'],
                 trigger: { source: 'damageSource' },
                 filter: function (event, player) {
                     return get.distance(player, event.player) <= 1;
@@ -3033,7 +3034,6 @@ const packs = function () {
                     player.draw(trigger.num);
                 },
             },
-            kuanggu_re_weiyan: { audio: 2 },
             //黄月英
             wechatjizhi: {
                 audio: 'jizhi',
