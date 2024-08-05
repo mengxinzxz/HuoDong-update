@@ -5097,42 +5097,36 @@ const packs = function () {
             },
             //徐晃
             minisbduanliang: {
-                audio: ['1', '_true1', '_true2', '_false'].map(i => 'sbduanliang' + i + '.mp3'),
-                group: 'minisbduanliang_effect',
-                subSkill: {
-                    effect: {
-                        audio: 'sbduanliang1.mp3',
-                        enable: 'phaseUse',
-                        usable: 2,
-                        filterTarget: lib.filter.notMe,
-                        prompt: () => lib.translate.minisbduanliang_info,
-                        async content(event, trigger, player) {
-                            const target = event.target;
-                            player.removeGaintag('minisbduanliang_tag');
-                            await player.draw().set('gaintag', ['minisbduanliang_tag']);
-                            const card = player.getCards('he', card => card.hasGaintag('minisbduanliang_tag'))[0];
-                            const { result } = await player.chooseToDuiben(target).set('namelist', [
-                                '固守城池', '突出重围', '围城断粮', '擂鼓进军'
-                            ]).set('ai', button => {
-                                const source = _status.event.getParent().player, target = _status.event.getParent().target;
-                                if (get.effect(target, { name: 'juedou' }, source, source) >= 10 && button.link[2] == 'db_def2' && Math.random() < 0.5) return 10;
-                                return 1 + Math.random();
-                            }).set('sourceSkill', 'sbduanliang');
-                            if (result.bool) {
-                                if (result.player == 'db_def1') {
-                                    if (target.hasJudge('bingliang')) await player.gainPlayerCard(target, 'he', true);
-                                    else if (card && player.canUse(get.autoViewAs({ name: 'bingliang' }, [card]), target, false)) await player.useCard({ name: 'bingliang' }, target, [card], false);
-                                }
-                                else {
-                                    const juedou = { name: 'juedou', isCard: true };
-                                    if (player.canUse(juedou, target, false)) await player.useCard(juedou, target, false);
-                                }
-                            }
-                        },
-                        get ai() {
-                            return get.info('sbduanliang').ai || {};
-                        },
-                    },
+                audio: 'sbduanliang',
+                enable: 'phaseUse',
+                usable: 2,
+                logAudio: () => 1,
+                filterTarget: lib.filter.notMe,
+                async content(event, trigger, player) {
+                    const target = event.target;
+                    player.removeGaintag('minisbduanliang_tag');
+                    await player.draw().set('gaintag', ['minisbduanliang_tag']);
+                    const card = player.getCards('he', card => card.hasGaintag('minisbduanliang_tag'))[0];
+                    const { result } = await player.chooseToDuiben(target).set('namelist', [
+                        '固守城池', '突出重围', '围城断粮', '擂鼓进军'
+                    ]).set('ai', button => {
+                        const source = _status.event.getParent().player, target = _status.event.getParent().target;
+                        if (get.effect(target, { name: 'juedou' }, source, source) >= 10 && button.link[2] == 'db_def2' && Math.random() < 0.5) return 10;
+                        return 1 + Math.random();
+                    }).set('sourceSkill', 'sbduanliang');
+                    if (result.bool) {
+                        if (result.player == 'db_def1') {
+                            if (target.hasJudge('bingliang')) await player.gainPlayerCard(target, 'he', true);
+                            else if (card && player.canUse(get.autoViewAs({ name: 'bingliang' }, [card]), target, false)) await player.useCard({ name: 'bingliang' }, target, [card], false);
+                        }
+                        else {
+                            const juedou = { name: 'juedou', isCard: true };
+                            if (player.canUse(juedou, target, false)) await player.useCard(juedou, target, false);
+                        }
+                    }
+                },
+                get ai() {
+                    return get.info('sbduanliang').ai || {};
                 },
                 init() {
                     if (!_status.miniMouYi) {
@@ -10369,31 +10363,28 @@ const packs = function () {
             },
             //谋马超
             minisbtieji: {
-                audio: ['1', '_true1', '_true2', '_false'].map(i => 'sbtieji' + i + '.mp3'),
-                group: ['minisbtieji_effect', 'minisbtieji_mouyi'],
+                audio: 'sbtieji',
+                inherit: 'sbtieji',
+                logAudio: () => 1,
+                async content(event, trigger, player) {
+                    const target = trigger.target;
+                    target.addTempSkill('fengyin');
+                    trigger.directHit.add(target);
+                    const { result } = await player.mini_chooseToMouYi(target).set('namelist', [
+                        '出阵迎战', '拱卫中军', '直取敌营', '扰阵疲敌'
+                    ]).set('ai', button => {
+                        const source = get.event().getParent().player, target = get.event().getParent().target;
+                        if (!target.countCards('he') && button.link[2] == 'db_def2') return 10;
+                        if (!target.countCards('he') && get.attitude(target, source) <= 0 && button.link[2] == 'db_atk1') return 10;
+                        return 1 + Math.random();
+                    }).set('sourceSkill', 'sbtieji');
+                    if (result.bool) {
+                        if (result.player == 'db_def1') player.gainPlayerCard(target, 'he', true);
+                        else player.draw(2);
+                    }
+                },
+                group: 'minisbtieji_mouyi',
                 subSkill: {
-                    effect: {
-                        audio: 'sbtieji1.mp3',
-                        inherit: 'sbtieji',
-                        prompt2: () => lib.translate.sbtieji_info,
-                        async content(event, trigger, player) {
-                            const target = trigger.target;
-                            target.addTempSkill('fengyin');
-                            trigger.directHit.add(target);
-                            const { result } = await player.mini_chooseToMouYi(target).set('namelist', [
-                                '出阵迎战', '拱卫中军', '直取敌营', '扰阵疲敌'
-                            ]).set('ai', button => {
-                                const source = get.event().getParent().player, target = get.event().getParent().target;
-                                if (!target.countCards('he') && button.link[2] == 'db_def2') return 10;
-                                if (!target.countCards('he') && get.attitude(target, source) <= 0 && button.link[2] == 'db_atk1') return 10;
-                                return 1 + Math.random();
-                            }).set('sourceSkill', 'sbtieji');
-                            if (result.bool) {
-                                if (result.player == 'db_def1') player.gainPlayerCard(target, 'he', true);
-                                else player.draw(2);
-                            }
-                        },
-                    },
                     mouyi: {
                         audio: 'sbtieji1.mp3',
                         trigger: {
