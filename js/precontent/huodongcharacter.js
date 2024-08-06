@@ -5985,16 +5985,15 @@ const packs = function () {
             bolchouyou2: {
                 init: function (player) {
                     if (!player.storage.bolchouyou2) player.storage.bolchouyou2 = [];
-                    var list = ['useCardBefore', 'respondBefore', 'useSkillBefore'];
                     for (var skill in lib.skill) {
                         var info = get.info(skill);
-                        if (skill.indexOf('_') == 0 || !info || info.equipSkill || info.charlotte || info.silent || info.popup === false || skill == 'bolchouyou2') continue;
+                        if (skill.indexOf('_') == 0 || !info || info.equipSkill || info.charlotte || info.silent || info.popup === false) continue;
                         if (!get.is.locked(skill)) lib.skill.bolchouyou2.trigger.global.push(skill + 'Before');
                         if (info.group) {
                             var group = Array.isArray(info.group) ? info.group : [info.group];
                             for (var sk of group) {
                                 var fo = get.info(sk);
-                                if (typeof sk != 'string' || sk.indexOf('_') == 0 || !fo || fo.equipSkill || fo.charlotte || fo.silent || fo.popup === false || sk == 'bolchouyou2') continue;
+                                if (typeof sk != 'string' || sk.indexOf('_') == 0 || !fo || fo.equipSkill || fo.charlotte || fo.silent || fo.popup === false) continue;
                                 if (!get.is.locked(sk)) lib.skill.bolchouyou2.trigger.global.push(sk + 'Before');
                             }
                         }
@@ -6009,7 +6008,7 @@ const packs = function () {
                     if (!player.storage.bolchouyou2.includes(event.player)) return false;
                     var skill = ((event.name == 'useCard' || event.name == 'respond' || event.name == 'useSkill') ? event.skill : event.name);
                     var info = get.info(skill);
-                    return info && !info.equipSkill && !info.charlotte && !info.silent && info.popup !== false && skill != 'bolchouyou2' && !get.is.locked(skill) && !lib.skill.global.includes(skill);
+                    return info && !info.equipSkill && !info.charlotte && !info.silent && info.popup !== false && !get.is.locked(skill) && !lib.skill.global.includes(skill);
                 },
                 forced: true,
                 logTarget: 'player',
@@ -9808,7 +9807,6 @@ const packs = function () {
             //彭羕
             bolxiaofan: {
                 audio: 'olxiaofan',
-                audioname: ['bilibili_xizhicaikobe'],
                 enable: 'chooseToUse',
                 onChooseToUse(event) {
                     const sum = ui.cardPile.childNodes.length;
@@ -9829,7 +9827,6 @@ const packs = function () {
                     return lib.inpile.some(i => i != 'wuxie' && event.filterCard(get.autoViewAs({ name: i }, 'unsure'), player, event));
                 },
                 delay: false,
-                direct: true,
                 async content(event, trigger, player) {
                     const evt = event.getParent(2);
                     const cardsx = evt.bolxiaofan_cards.slice().map(card => {
@@ -9912,32 +9909,8 @@ const packs = function () {
                 },
                 subSkill: {
                     backup: {
-                        precontent() {
-                            delete event.result.skill;
-                            player.logSkill('bolxiaofan');
-                            const name = event.result.card.name, cards = event.result.card.cards.slice(0);
-                            event.result.cards = cards;
-                            let rcard = cards[0], card;
-                            if (rcard.name == name) card = get.autoViewAs(rcard);
-                            else card = get.autoViewAs({ name, isCard: true });
-                            event.result.card = card;
-                            const id = get.id();
-                            player.when('chooseToUseAfter').filter(evt => evt == event.getParent()).then(() => {
-                                const num = lib.skill.olxiaofan.getNum(player);
-                                if (num > 0 && player.countCards(('jeh').slice(0, num)) > 0) {
-                                    event.maxNum = Math.min(3, num);
-                                    event.num = 0;
-                                }
-                                else event.finish();
-                            }).then(() => {
-                                const pos = ('jeh')[event.num], hs = player.countCards(pos);
-                                if (hs > 0) player.chooseToDiscard(hs, pos, true);
-                                event.num++;
-                                if (event.num < event.maxNum) event.redo();
-                            }).translation('嚣翻');
-                        },
-                        filterCard: () => false,
-                        selectCard: -1,
+                        inherit: 'olxiaofan_backup',
+                        sourceSkill: 'bolxiaofan',
                     },
                 },
             },
