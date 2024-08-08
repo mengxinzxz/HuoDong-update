@@ -714,6 +714,9 @@ export function precontent(bilibilicharacter) {
         lib.namePrefix.set('微信☆', {
             getSpan: (prefix, name) => `${get.prefixSpan('微信')}${get.prefixSpan('☆')}`,
         });
+        lib.namePrefix.set('微信谋', {
+            getSpan: (prefix, name) => `${get.prefixSpan('微信')}${get.prefixSpan('谋')}`,
+        });
         lib.config.all.characters.push('WeChatkill');
         lib.config.all.sgscharacters.push('WeChatkill');
         if (!lib.config.characters.includes('WeChatkill')) lib.config.characters.remove('WeChatkill');
