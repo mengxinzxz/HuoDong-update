@@ -15,11 +15,13 @@ game.bolShowNewPack = function () {
 		'整合@xizifu的Pull Requests',
 		'bugfix',
 		'添加欢杀武将：樊稠、皇甫嵩',
+		'添加微信武将：孙尚香、赵云',
+		'调整部分微信武将的技能',
 		'To be continued...',
 	];
 	//更新武将
 	var HuoDong_players = [
-		'Mbaby_fanchou', 'Mbaby_huangfusong',
+		'Mbaby_fanchou', 'Mbaby_huangfusong', 'wechat_sb_sunshangxiang', 'wechat_sb_zhaoyun',
 	];
 	//加载
 	var dialog = ui.create.dialog(
