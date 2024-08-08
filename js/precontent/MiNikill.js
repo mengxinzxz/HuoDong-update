@@ -145,7 +145,7 @@ const packs = function () {
             Mbaby_sb_zhaoyun: ['male', 'shu', 4, ['minisblongdan', 'minisbshilve']],
             Mbaby_zhangyi: ['male', 'shu', 5, ['rewurong', 'minishizhi']],
             Mbaby_jiangfei: ['male', 'shu', 3, ['dcshengxi', 'minishoucheng']],
-            Mbaby_sb_sunshangxiang: ['female', 'shu', 3, ['minisbxiaoji', 'minisbjieyin', 'minisbfanxiang']],
+            Mbaby_sb_sunshangxiang: ['female', 'wu', 3, ['minisbxiaoji', 'minisbjieyin', 'minisbfanxiang'], ['border:shu']],
             Mbaby_sp_xiahoushi: ['female', 'shu', 3, ['sbqiaoshi', 'minispyanyu'], ['die:sb_xiahoushi']],
             Mbaby_hujinding: ['female', 'shu', '3/6', ['dcdeshi', 'miniwuyuan', 'huaizi'], ['die:dc_hujinding']],
             //吴
@@ -10843,10 +10843,8 @@ const packs = function () {
                     }
                 },
             },
-            sbjieyin1: { audio: true },
-            sbjieyin2: { audio: true },
             minisbjieyin: {
-                audio: 'sbjieyin1',
+                audio: 'sbjieyin1.mp3',
                 trigger: { global: 'phaseBefore', player: 'enterGame' },
                 filter(event, player) {
                     return game.hasPlayer(target => target != player && (!target.hasMark('minisbjieyin') || !target.hasSkill('minisbjieyin', null, false, false))) && (event.name != 'phase' || game.phaseNumber == 0);
@@ -10936,7 +10934,7 @@ const packs = function () {
             minisbfanxiang: {
                 unique: true,
                 limited: true,
-                audio: 'sbjieyin2',
+                audio: 'sbjieyin2.mp3',
                 enable: 'phaseUse',
                 filter(event, player) {
                     return game.hasPlayer(target => lib.skill.minisbfanxiang.filterTarget(null, player, target));
@@ -28530,7 +28528,7 @@ const packs = function () {
             minishoucheng: '守成',
             minishoucheng_info: '每回合限一次，一名角色于回合外失去手牌后，若其手牌数小于其体力值，则你可以令其摸两张牌。',
             minisbxiaoji: '枭姬',
-            minishxiaoji_info: '当你失去装备区里的一张牌后，你摸两张牌，然后可以弃置场上的一张牌。',
+            minisbxiaoji_info: '当你失去装备区里的一张牌后，你摸两张牌，然后可以弃置场上的一张牌。',
             minisbjieyin: '结姻',
             minisbjieyin_info: '①游戏开始时，你可以选择一名其他角色，你与其各获得1枚“姻”标记，然后令其获得〖结姻〗，最后你将势力变更至与其相同。②出牌阶段限一次，你可以将一张手牌交给一名有“姻”的其他角色或将一张装备牌置入一名有“姻”的其他角色的对应空置装备栏，然后你回复1点体力并摸一张牌。③拥有“姻”标记的角色死亡时，你获得其区域内所有的牌。',
             minisbfanxiang: '返乡',
