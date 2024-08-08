@@ -1516,6 +1516,7 @@ export function content(config, pack) {
 	}
 	game.HDaddCharacter('bolx_jsp_guanyu', ['male', 'wei', 4, ['wusheng', 'wzdanji'], ['ext:活动武将/image/character/bolx_jsp_guanyu.jpg']], 'offline');
 	game.HDaddCharacter('bol_sunluban', ['female', 'wu', 3, ['boljiaozong', 'bolchouyou'], ['ext:活动武将/image/character/bol_sunluban.jpg']], 'offline');
+	game.HDaddCharacter('jd_ol_huaxin', ['male', 'wei', 3, ['jdcaozhao', 'olxibing'], ['ext:活动武将/image/character/ol_huaxin.jpg', 'die:ol_huaxin']], 'offline');
 
 	//海外
 	lib.characterSort.tw.bilibili_buchong_tw = ['old_yj_zhanghe', 'old_qiaozhou', 'old_jiakui', 'bol_xin_sunluban', 'bol_mazhong', 'bol_jsp_guanyu', 'bol_fuhuanghou'];
