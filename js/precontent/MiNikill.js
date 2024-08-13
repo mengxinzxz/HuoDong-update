@@ -11032,7 +11032,7 @@ const packs = function () {
                             }
                             return map;
                         })());
-                        next.set("ai", fcard => {
+                        next.set("ai", card => {
                             var map = _status.event.goon;
                             var type = get.type(card, "trick");
                             if (!map[type]) return -1;
