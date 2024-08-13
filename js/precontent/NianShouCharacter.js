@@ -79,14 +79,12 @@ const packs = function () {
             },
             YJchouniu: {
                 audio: 'ext:活动武将/audio/skill:true',
-                trigger: { player: 'phaseEnd' },
-                filter: function (event, player) {
-                    return !game.hasPlayer(function (current) {
-                        return current != player && current.hp <= player.hp;
-                    });
+                trigger: { player: 'phaseJieshuBegin' },
+                filter(event, player) {
+                    return player.isMinHp();
                 },
                 forced: true,
-                content: function () {
+                content() {
                     player.recover();
                 },
             },
