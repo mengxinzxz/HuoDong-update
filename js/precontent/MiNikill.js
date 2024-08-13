@@ -27319,6 +27319,7 @@ const packs = function () {
                     const skills = Object.keys(lib.skill).filter(i => get.info(i) && get.info(i).nianyingSkill && get.info(i).nianyingFilter(trigger, player, name)).map(i => [i, get.info(i).nianyingSkill[0], get.info(i).nianyingSkill[1]]);
                     const result = await player.chooseControl(skills.slice().map(i => i[1]), 'cancel2')
                         .set('prompt', get.prompt('mininianying_zgl')).set('prompt2', '选择一项念影效果执行')
+                        .set('displayIndex', false)
                         .set('choiceList', skills.slice().map(i => {
                             return '<div class="skill">' + i[1] + '</div><div>' + i[2] + '</div>';
                         })).set('ai', () => get.event('controls').randomGet()).forResult();
@@ -27852,6 +27853,7 @@ const packs = function () {
                     const skills = Object.keys(lib.skill).filter(i => get.info(i) && get.info(i).nianyingSkill && get.info(i).nianyingFilter(trigger, player, name)).map(i => [i, get.info(i).nianyingSkill[0], get.info(i).nianyingSkill[1]]);
                     const result = await player.chooseControl(skills.slice().map(i => i[1]), 'cancel2')
                         .set('prompt', get.prompt('mininianying_lb')).set('prompt2', '选择一项念影效果执行')
+                        .set('displayIndex', false)
                         .set('choiceList', skills.slice().map(i => {
                             return '<div class="skill">' + i[1] + '</div><div>' + i[2] + '</div>';
                         })).set('ai', () => get.event('controls').randomGet()).forResult();
