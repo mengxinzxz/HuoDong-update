@@ -23,7 +23,7 @@ const packs = function () {
             wechat_zhaoyun: ['male', 'shu', 4, ['wechatlongdan', 'wechatyajiao'], ['tempname:re_zhaoyun', 'die:re_zhaoyun']],
             wechat_zhangfei: ['male', 'shu', 4, ['paoxiao', 'wechatshemao']],
             wechat_machao: ['male', 'shu', 4, ['mashu', 'wechattieji']],
-            wechat_yangxiu: ['male', 'wei', 3, ['wechatdanlao', 'wechatjilei']],
+            wechat_yangxiu: ['male', 'wei', 3, ['wechatdanlao', 'wechatrejilei']],
             wechat_zhoutai: ['male', 'wu', 4, ['wechatbuqu', 'wechatfenji']],
             wechat_bianfuren: ['female', 'wei', 3, ['wechatwanwei', 'wechatyuejian'], ['die:ol_bianfuren']],
             wechat_sunluban: ['female', 'wu', 3, ['wechatzenhui', 'wechatrejiaojin'], ['die:xin_sunluban']],
@@ -946,6 +946,50 @@ const packs = function () {
                     },
                     cardSavable: function (card, player) {
                         if (player.storage.wechatjilei2.includes(get.suit(card))) return false;
+                    },
+                },
+            },
+            wechatrejilei: {
+                audio: 'jilei',
+                trigger: { player: 'damageEnd' },
+                filter(event) {
+                    return event.source?.isIn();
+                },
+                direct: true,
+                content() {
+                    'step 0'
+                    player.chooseControl('basic', 'trick', 'equip', 'cancel2', function () {
+                        var source = _status.event.source;
+                        if (get.attitude(_status.event.player, source) > 0) return 'cancel2';
+                        var list = ['basic', 'trick', 'equip'].filter(function (name) {
+                            return (!source.storage.wechatrejilei2 || !source.storage.wechatrejilei2.includes(name));
+                        });
+                        if (!list.length) return 'cancel2';
+                        if (list.includes('trick') && source.countCards('h', function (card) {
+                            return get.type(card, source) == 'trick' && source.hasValueTarget(card);
+                        }) > 1) return 'trick';
+                        return list[0];
+                    }).set('prompt', get.prompt2('wechatrejilei', trigger.source)).set('source', trigger.source);
+                    'step 1'
+                    if (result.control != 'cancel2') {
+                        player.logSkill('wechatrejilei', trigger.source);
+                        player.popup(get.translation(result.control) + '牌');
+                        trigger.source.addTempSkill('wechatrejilei2', { player: 'phaseBegin' });
+                        trigger.source.markAuto('wechatrejilei2', [result.control]);
+                    }
+                },
+                ai: {
+                    maixie_defend: true,
+                    threaten: 0.7,
+                },
+            },
+            wechatrejilei2: {
+                charlotte: true,
+                onremove: true,
+                intro: { content: '不能使用或打出$牌' },
+                mod: {
+                    cardEnabled2(card, player) {
+                        if (player.getStorage('wechatrejilei2').includes(get.type2(card))) return false;
                     },
                 },
             },
@@ -7583,6 +7627,10 @@ const packs = function () {
             wechatjilei2: '鸡肋',
             wechatjilei2_bg: '肋',
             wechatjilei_info: '当你受到有来源的伤害后，你可以声明一种花色。若如此做，你令伤害来源不能使用、打出或弃置此花色的手牌直到其下个回合开始。',
+            wechatrejilei: '鸡肋',
+            wechatrejilei2: '鸡肋',
+            wechatrejilei2_bg: '肋',
+            wechatrejilei_info: '当你受到有来源的伤害后，你可以声明一种类别。若如此做，你令伤害来源不能使用或打出此类别的牌直到其下个回合开始。',
             wechat_shen_lvmeng: '微信神吕蒙',
             wechatgongxin: '攻心',
             wechatgongxin_info: '出牌阶段限一次，你可以观看一名其他角色的手牌，然后你可以展示其中的一张红桃牌并选择一项：1.获得此牌；2.将此牌置于牌堆顶。',
