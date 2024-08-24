@@ -6432,10 +6432,14 @@ const packs = function () {
                     }).forResult();
                 },
                 async content(event, trigger, player) {
+                    /*
                     trigger.cancel(null, null, 'notrigger');
-                    const next = event.targets[0][trigger.name]();
+                    const next =await event.targets[0][trigger.name]();
                     event.next.remove(next);
                     trigger.getParent().next.unshift(next);
+                    */
+                    await trigger.cancel();
+                    await event.targets[0][trigger.name]();
                 },
             },
             wechatjuxian: {
@@ -6492,8 +6496,7 @@ const packs = function () {
                 frequent: true,
                 async content(event, trigger, player) {
                     const cards = get.cards(3);
-                    await game.cardsGotoOrdering(cards);
-                    const next = player.chooseToMove('先识：替换其中任意张牌');
+                    const next = player.chooseToMove('先识：替换其中任意张牌', true);
                     next.set('list', [['牌堆顶', cards], ['你的手牌', player.getCards('h')]]);
                     next.set('filterMove', (from, to) => typeof to != 'number');
                     next.set('filterOk', moved => moved[1].some(i => !get.event().player.getCards('h').includes(i)));
