@@ -15,8 +15,6 @@ game.bolShowNewPack = function () {
 		'整合@xizifu的Pull Requests',
 		'bugfix',
 		'添加欢杀武将：张温、马忠',
-		'添加微信武将：孙尚香、赵云、王粲',
-		'调整部分微信武将的技能',
 		'To be continued...',
 	];
 	//更新武将

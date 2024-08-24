@@ -10,7 +10,6 @@ const packs = function () {
                 CLongZhou: ['lz_sufei', 'lz_tangzi', 'lz_liuqi', 'lz_huangquan'],
                 CZHengHuo: ['bilibili_zhengxuan', 'bilibili_sp_xuyou', 'old_zuoci'],
                 Chuodong: ['bilibili_shengxunyu', 'bilibili_Firewin', 'bilibili_jinglingqiu', 'bilibili_suixingsifeng', 'bilibili_Emptycity', 'bilibili_thunderlei', 'bilibili_lonelypatients', 'bilibili_ningjingzhiyuan', 'bilibili_xizhicaikobe'],
-                Csxydormitory: ['sxy_shengxunyu'],
                 Cothers: ['bilibili_wangtao', 'bilibili_wangyue', 'bilibili_x_wangtao', 'bilibili_x_wangyue', 'bilibili_xushao', 'bilibili_shen_guojia', 'bilibili_re_xusheng', 'bilibili_kuangshen04', 'bilibili_adong', 'bilibili_zhangrang', 'bilibili_litiansuo', 'decade_huangwudie', 'bilibili_huanggai', 'bilibili_ekeshaoge', 'bilibili_guanning', 'bilibili_wangwang', 'bilibili_zhouxiaomei', 'diy_lvmeng'],
                 CDanJi: ['DJ_caiyang', 'DJ_pujing', 'DJ_huban'],
                 CSCS: ['biliscs_shichangshi', 'biliscs_zhangrang', 'biliscs_zhaozhong', 'biliscs_sunzhang', 'biliscs_bilan', 'biliscs_xiayun', 'biliscs_hankui', 'biliscs_lisong', 'biliscs_duangui', 'biliscs_guosheng', 'biliscs_gaowang'],
@@ -68,8 +67,6 @@ const packs = function () {
             biliscs_duangui: ['male', 'qun', 1, ['scschihe'], ['character:scs_duangui']],
             biliscs_guosheng: ['male', 'qun', 1, ['scsniqu'], ['character:scs_guosheng']],
             biliscs_gaowang: ['male', 'qun', 1, ['scsmiaoyu'], ['character:scs_gaowang']],
-            //NBA牢星球员宿舍
-            sxy_shengxunyu: ['male', 'mx_dom', '3/Infinity', ['dom_chouxiang'], [((lib.device || lib.node) ? 'ext:' : 'db:extension-') + '活动武将/image/character/bilibili_shengxunyu.jpg']],
             //蝶设堂
             bfake_jiananfeng: ['female', 'jin', 8, ['bolduliao', 'bolhuidu', 'bolfushou']],
             bfake_shen_jiaxu: ['male', 'shen', 3, ['boljiandai', 'bolfangcan', 'boljuemei', 'bolluoshu'], ['qun', 'character:le_shen_jiaxu']],
@@ -101,7 +98,6 @@ const packs = function () {
             xizhicaikobe: '戏志才，抽象社恐人士，肘家军大将之一，无名杀<span style="text-decoration: line-through;">非</span>专业人士和爱好者，萌新转型中的任务召唤人。孩子们，其实牢戏<span style="text-decoration: line-through;">并不</span>想要。',
         },
         characterTitle: {
-            sxy_shengxunyu: (() => new Date().getDay() > 5 ? '周末复活赛打赢ing' : '工作日打复活赛ing')(),
             'bilibili_kuangshen04': (() => (new Date().getDate() == 8 || new Date().getDate() == 24 || (new Date().getMonth() + 1 == 7 && new Date().getDate() == 2)) ? '孩子们，我回来了' : '复活赛ing')(),
         },
         characterFilter: {
@@ -110,9 +106,6 @@ const packs = function () {
             },
             lz_tangzi: function (mode) {
                 return mode != 'identity' && mode != 'guozhan';
-            },
-            sxy_shengxunyu() {
-                return new Date().getDay() > 5;
             },
             bilibili_zhengxuan() {
                 return !_status.connectMode;
@@ -10560,13 +10553,6 @@ const packs = function () {
                 '<br><span style="font-family: yuanli">作用的人。</span>' +
                 '<br>' +
                 '活动群名人堂',
-            Csxydormitory: '<span style="font-family: yuanli">宿舍系列前言：</span>' +
-                '<br><span style="font-family: yuanli">萌新特设2024年diy系列，收录以</span>' +
-                '<br><span style="font-family: yuanli">生熏鱼为首的寝室群的人物传记</span>' +
-                '<br><span style="font-family: yuanli">，此包名称为群聊名称，请不要</span>' +
-                '<br><span style="font-family: yuanli">过度解读</span>' +
-                '<br>' +
-                'NBA牢星球员宿舍',
             Cothers: '自嗨',
             CDanJi: '彩蛋·千里走单骑',
             CSCS: '彩蛋·十常侍',
@@ -10955,8 +10941,6 @@ const packs = function () {
             bolcongshi: '从势',
             bolcongshi_info: '锁定技。①体力值最大的角色对你的上家和下家使用牌无距离限制。②有角色使用因〖从势①〗增加距离的牌对你的上家或下家造成伤害后，你回复1点体力。',
             bol_fuhuanghou: 'TW伏寿',
-            sxy_shengxunyu: '宿舍熏鱼',
-            sxy_shengxunyu_ab: '生熏鱼',
             dom_chouxiang: '抽象',
             dom_chouxiang_info: '锁定技，你对其他宿舍成员使用牌无距离和次数限制；当你使用牌或发动技能时，若其中包含其他宿舍成员，则你和这些角色各摸一张牌，然后进行同时拼点，不能拼点和拼点没赢的角色于此牌或技能结算完毕后于本轮移出游戏。',
             dom_chouxiang_append: '<span style="font-family:yuanli">抽象对抽象，不抽象的陪' + get.bolInformX('牢大', '仅娱乐，请勿过度解读') + '打复活赛</span>',
