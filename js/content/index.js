@@ -863,7 +863,7 @@ export function content(config, pack) {
 	if (lib.config.extension_活动武将_HD_yrnsm) {
 		game.HDaddCharacter('chengjichengcui', ['male', 'wei', 6, ['oltousui', 'olchuming'], []], 'yingbian');
 		game.HDaddCharacter('clan_wuqiao', ['male', 'qun', 4, ['clanqiajue', 'clanmuyin'], ['clan:陈留吴氏', 'ext:活动武将/image/character/clan_wuqiao.jpg']], 'clan');
-		game.HDaddCharacter('wangyan', ['male', 'qun', 3, ['yangkuang', 'cihuang', 'sanku'], ['ext:活动武将/image/character/wangyan.jpg']], 'sp');
+		game.HDaddCharacter('wangyan', ['male', 'qun', 4, ['yangkuang', 'cihuang', 'sanku'], ['ext:活动武将/image/character/wangyan.jpg']], 'sp');
 		game.HDaddCharacter('clan_wanglun', ['male', 'wei', 3, ['clanqiuxin', 'clanjianyuan', 'clanzhongliu'], ['clan:太原王氏', 'ext:活动武将/image/character/clan_wanglun.jpg']], 'clan');
 		game.HDaddCharacter('ol_peixiu', ['male', 'wei', 3, ['olmaozhu', 'oljinlan'], ['ext:活动武将/image/character/ol_peixiu.jpg']], 'sp');
 	}
@@ -1186,7 +1186,7 @@ export function content(config, pack) {
 		}
 		for (const name of Object.keys(lib.characterPack['huodongcharacter'])) {
 			if (!Object.keys(rank.rarity).some(rarity => rank.rarity[rarity].includes(name))) {
-				if (['Chuodong', 'CDanJi', 'CSCS', 'Csxydormitory', 'CXuanDie'].some(pack => lib.characterSort.huodongcharacter[pack].includes(name))) rank.rarity['legend'].push(name);
+				if (['Chuodong', 'CDanJi', 'CSCS', 'CXuanDie'].some(pack => lib.characterSort.huodongcharacter[pack].includes(name))) rank.rarity['legend'].push(name);
 				else rank.rarity['rare'].push(name);
 			}
 		}
