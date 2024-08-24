@@ -14,15 +14,14 @@ game.bolShowNewPack = function () {
 		'/setPlayer/',
 		'整合@xizifu的Pull Requests',
 		'bugfix',
-		'添加欢杀武将：樊稠、皇甫嵩、王双、邓芝',
+		'添加欢杀武将：张温、马忠',
 		'添加微信武将：孙尚香、赵云、王粲',
 		'调整部分微信武将的技能',
 		'To be continued...',
 	];
 	//更新武将
 	var HuoDong_players = [
-		'Mbaby_fanchou', 'Mbaby_huangfusong', 'wechat_sb_sunshangxiang', 'wechat_sb_zhaoyun',
-		'Mbaby_wangshuang', 'wechat_sp_wangcan', 'Mbaby_dengzhi'
+		'Mbaby_zhangwen', 'Mbaby_mazhong',
 	];
 	//加载
 	var dialog = ui.create.dialog(
@@ -77,7 +76,7 @@ let extensionPackage = {
 		author: '萌新（转型中）',
 		diskURL: '',
 		forumURL: '',
-		version: '0.2.9',
+		version: '0.3.0-待定',
 		//新人制作扩展，希望大家支持。
 		//新人技术不足，希望大家包涵。
 		//壹、贰、叁、肆、伍、陆、柒、捌、玖、拾
