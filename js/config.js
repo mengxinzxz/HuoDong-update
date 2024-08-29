@@ -99,7 +99,9 @@ export let config = {
 			}
 			else {
 				if (!window.CodeMirror) {
-					lib.init.js(lib.assetURL + 'game', 'codemirror', () => lib.codeMirrorReady(node, editor));
+					import('../../../game/codemirror.js').then(() => {
+						lib.codeMirrorReady(node, editor);
+					});
 					lib.init.css(lib.assetURL + 'layout/default', 'codemirror');
 				}
 				else lib.codeMirrorReady(node, editor);
