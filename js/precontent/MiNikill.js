@@ -157,7 +157,7 @@ const packs = function () {
             Mbaby_daqiao: ['female', 'wu', 3, ['miniguose', 'miniwanrong', 'liuli']],
             Mbaby_ganning: ['male', 'wu', 4, ['miniqixi', 'minifenwei']],
             Mbaby_huanggai: ['male', 'wu', 4, ['kurou', 'minizhaxiang']],
-            Mbaby_lusu: ['male', 'wu', 3, ['minihaoshi', 'dimeng']],
+            Mbaby_lusu: ['male', 'wu', 3, ['olhaoshi', 'minidimeng'], ['die:ol_lusu']],
             Mbaby_luxun: ['male', 'wu', 3, ['minireqianxun', 'minilianying']],
             Mbaby_lvmeng: ['male', 'wu', 4, ['minikeji', 'miniqinxue'], ['tempname:re_lvmeng', 'die:re_lvmeng']],
             Mbaby_sunce: ['male', 'wu', 4, ['minijiang', 'minihunzi', 'minizhiba'], ['zhu', 'tempname:sunce']],
@@ -3178,7 +3178,7 @@ const packs = function () {
                 },
             },
             minichoujue: {
-                derivation: ['minibeishui', 'qingjiao'],
+                derivation: ['minibeishui', 'miniqingjiao'],
                 unique: true,
                 audio: 'choujue',
                 trigger: { global: 'phaseAfter' },
@@ -3215,7 +3215,61 @@ const packs = function () {
                     player.storage.beishui = true;
                     player.loseMaxHp();
                     'step 1'
-                    player.addSkills('qingjiao');
+                    player.addSkills('miniqingjiao');
+                },
+            },
+            miniqingjiao: {
+                audio: 'qingjiao',
+                inherit: 'qingjiao',
+                filter(event, player) {
+                    if (!ui.cardPile.hasChildNodes() && !ui.discardPile.hasChildNodes()) return false;
+                    var hs = player.getCards('h');
+                    if (!hs.length) return false;
+                    return hs.every(i => lib.filter.cardDiscardable(i, player, 'miniqingjiao'));
+                },
+                content() {
+                    'step 0';
+                    player.chooseToDiscard(true, 'h', player.countCards('h'));
+                    'step 1';
+                    var evt = trigger.getParent();
+                    if (evt && evt.getParent && !evt.miniqingjiao) {
+                        evt.miniqingjiao = true;
+                        var next = game.createEvent('miniqingjiao_discard', false, evt.getParent());
+                        next.player = player;
+                        next.setContent(function () {
+                            var hs = player.getCards('h');
+                            if (hs.length) player.discard(hs);
+                        });
+                    }
+                    'step 2';
+                    var list = [];
+                    var typelist = [];
+                    var getType = function (card) {
+                        var sub = get.subtype(card);
+                        if (sub) return sub;
+                        return card.name;
+                    };
+                    for (var i = 0; i < ui.cardPile.childElementCount; i++) {
+                        var node = ui.cardPile.childNodes[i];
+                        var typex = getType(node);
+                        if (!typelist.includes(typex)) {
+                            list.push(node);
+                            typelist.push(typex);
+                            if (list.length >= 8) break;
+                        }
+                    }
+                    if (list.length < 8) {
+                        for (var i = 0; i < ui.discardPile.childElementCount; i++) {
+                            var node = ui.discardPile.childNodes[i];
+                            var typex = getType(node);
+                            if (!typelist.includes(typex)) {
+                                list.push(node);
+                                typelist.push(typex);
+                                if (list.length >= 8) break;
+                            }
+                        }
+                    }
+                    player.gain(list, 'gain2');
                 },
             },
             //夏侯令女
@@ -11864,6 +11918,7 @@ const packs = function () {
                     },
                 },
             },
+            //鲁肃
             minihaoshi: {
                 audio: 'haoshi',
                 trigger: { player: 'phaseDrawBegin2' },
@@ -11918,6 +11973,63 @@ const packs = function () {
                     if (result.targets && result.targets[0]) result.targets[0].gain(result.cards, player, 'giveAuto');
                     else player.discard(result.cards);
                 },
+            },
+            minidimeng: {
+                audio: 'oldimeng',
+                inherit: 'oldimeng',
+                filter(event, player) {
+                    if (player.hasMark('minidimeng')) return false;
+                    return game.hasPlayer(current => lib.skill.minidimeng.filterTarget(null, player, current));
+                },
+                filterTarget(card, player, target) {
+                    if (target == player) return false;
+                    if (!ui.selected.targets.length) {
+                        const hs = target.countCards('h');
+                        return game.hasPlayer(function (current) {
+                            if (current == player || current == target) return false;
+                            const cs = current.countCards('h');
+                            return hs > 0 || cs > 0;
+                        });
+                    }
+                    const current = ui.selected.targets[0],
+                        hs = target.countCards('h'),
+                        cs = current.countCards('h');
+                    return hs > 0 || cs > 0;
+                },
+                async content(event, trigger, player) {
+                    const targets = event.targets;
+                    targets[0].swapHandcards(targets[1]);
+                    const num = Math.abs(targets[0].countCards('h') - targets[1].countCards('h'));
+                    if (num > 0) player.addMark(event.name, num, false);
+                },
+                marktext: '盟',
+                intro: {
+                    name2: '盟',
+                    content: 'mark',
+                },
+                group: 'minidimeng_discard',
+                subSkill: {
+                    discard: {
+                        trigger: {
+                            player: ['phaseDrawEnd', 'phaseEnd'],
+                        },
+                        filter(event, player) {
+                            if (!player.hasMark('minidimeng')) return false;
+                            return player.countCards('he');
+                        },
+                        async cost(event, trigger, player) {
+                            event.result = await player.chooseToDiscard('he', get.prompt(event.name.slice(0, -5)), '弃置任意张牌并移除等量的“盟”标记', [1, player.countMark('minidimeng')]).set('ai', card => {
+                                const player = get.player();
+                                if (player.countCards('h') < 3) return 0;
+                                if (['haoshi', 'olhaoshi'].some(skill => player.hasSkill(skill)) && !game.hasPlayer(current => current != player && get.attitude(player, current) > 0 && current.isMinHandcard())) return 0;
+                                return 6 - get.value(card);
+                            }).forResult();
+                        },
+                        async content(event, trigger, player) {
+                            player.removeMark('minidimeng', event.cards.length);
+                        },
+                    }
+                }
             },
             miniganlu: {
                 moveCheck: function (player, target) {
@@ -28337,6 +28449,8 @@ const packs = function () {
             minichoujue_info: '觉醒技，一名角色的回合结束时，若你的手牌数和体力值相差3或更多，你减1点体力上限并获得技能〖背水〗，然后将〖膂力〗改为“在自己的回合时每回合限两次”。',
             minibeishui: '背水',
             minibeishui_info: '觉醒技，准备阶段，若你的手牌数或体力值不大于2，你减1点体力上限并获得技能〖清剿〗，然后将〖膂力〗改为受到伤害后也可以发动。',
+            miniqingjiao: '清剿',
+            miniqingjiao_info: '出牌阶段开始时，你可以弃置所有手牌，然后从牌堆或弃牌堆中随机获得八张牌名各不相同且副类别不同的牌。若如此做，结束阶段，你弃置所有手牌。',
             miniweilie: '炜烈',
             miniweilie_info: '每局游戏限X次。出牌阶段，你可以弃置一张牌并令一名角色回复1点体力并摸一张牌（X为你〖浮萍①〗中的记录数+1）。',
             minifaen: '法恩',
@@ -28815,6 +28929,8 @@ const packs = function () {
             minitianyi_info: '出牌阶段开始时，你可以选择一项：①本回合使用【杀】的次数上限+1，且使用【杀】造成伤害后回复1点体力；②摸一张牌，本回合使用【杀】无距离限制且无视目标角色的防具。',
             minihaoshi: '好施',
             minihaoshi_info: '摸牌阶段，你可以多摸两张牌，然后若你的手牌数大于5，你须弃置X张手牌或将X张手牌交给一名手牌数最少的其他角色（X为你手牌数的一半，向下取整）。',
+            minidimeng: '缔盟',
+            minidimeng_info: '①出牌阶段限一次，若你没有“盟”标记，你可令两名其他角色交换手牌并获得X枚“盟”标记（X为这两名角色手牌数之差的绝对值）。②摸牌阶段结束时或回合结束时，你可以弃置任意张牌并移去等量的“盟”标记。',
             miniganlu: '甘露',
             miniganlu_info: '锁定技，出牌阶段开始时，你选择一项：①移动场上的一张装备牌；②交换场上装备区中的两张副类别相同的装备牌的位置；③摸一张牌。',
             minibuyi: '补益',
