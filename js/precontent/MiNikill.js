@@ -157,7 +157,7 @@ const packs = function () {
             Mbaby_daqiao: ['female', 'wu', 3, ['miniguose', 'miniwanrong', 'liuli']],
             Mbaby_ganning: ['male', 'wu', 4, ['miniqixi', 'minifenwei']],
             Mbaby_huanggai: ['male', 'wu', 4, ['kurou', 'minizhaxiang']],
-            Mbaby_lusu: ['male', 'wu', 3, ['olhaoshi', 'minidimeng'], ['die:ol_lusu']],
+            Mbaby_lusu: ['male', 'wu', 3, ['miniolhaoshi', 'minidimeng'], ['die:ol_lusu']],
             Mbaby_luxun: ['male', 'wu', 3, ['minireqianxun', 'minilianying']],
             Mbaby_lvmeng: ['male', 'wu', 4, ['minikeji', 'miniqinxue'], ['tempname:re_lvmeng', 'die:re_lvmeng']],
             Mbaby_sunce: ['male', 'wu', 4, ['minijiang', 'minihunzi', 'minizhiba'], ['zhu', 'tempname:sunce']],
@@ -11973,6 +11973,74 @@ const packs = function () {
                     if (result.targets && result.targets[0]) result.targets[0].gain(result.cards, player, 'giveAuto');
                     else player.discard(result.cards);
                 },
+            },
+            miniolhaoshi: {
+                audio: 'olhaoshi',
+                inherit: 'olhaoshi',
+                forced: true,
+                async content(event, trigger, player) {
+                    trigger.num += 2;
+                },
+                group: 'miniolhaoshi_give',
+                subSkill: {
+                    give: {
+                        trigger: {
+                            player: 'phaseDrawEnd',
+                        },
+                        filter(event, player) {
+                            return player.countCards("h") > 5;
+                        },
+                        async cost(event, trigger, player) {
+                            const targets = game.filterPlayer(function (target) {
+                                return (target != player && !game.hasPlayer(function (current) {
+                                    return current != player && current != target && current.countCards("h") < target.countCards("h");
+                                }));
+                            });
+                            const num = Math.floor(player.countCards("h") / 2);
+                            event.result = await player.chooseCardTarget({
+                                position: 'h',
+                                filterCard: true,
+                                filterTarget(card, player, target) {
+                                    return _status.event.targets.includes(target);
+                                },
+                                targets: targets,
+                                selectTarget: targets.length == 1 ? -1 : 1,
+                                selectCard: num,
+                                prompt: '将' + get.cnNumber(num) + '张手牌交给一名手牌数最少的其他角色',
+                                ai1(card) {
+                                    var goon = false,
+                                        player = _status.event.player;
+                                    for (var i of _status.event.targets) {
+                                        if (get.attitude(i, player) > 0 && get.attitude(player, i) > 0) goon = true;
+                                        break;
+                                    }
+                                    if (goon) {
+                                        if (
+                                            !player.hasValueTarget(card) ||
+                                            (card.name == "sha" &&
+                                                player.countCards("h", function (cardx) {
+                                                    return cardx.name == "sha" && !ui.selected.cards.includes(cardx);
+                                                }) > player.getCardUsable("sha"))
+                                        )
+                                            return 2;
+                                        return Math.max(2, get.value(card) / 4);
+                                    }
+                                    return 1 / Math.max(1, get.value(card));
+                                },
+                                ai2: function (target) {
+                                    return get.attitude(_status.event.player, target);
+                                },
+                            }).forResult();
+                        },
+                        async content(event, trigger, player) {
+                            const target = event.targets[0], cards = event.cards;
+                            player.line(target, 'green');
+                            await player.give(cards, target);
+                            player.markAuto('olhaoshi_help', [target]);
+                            player.addTempSkill('olhaoshi_help', { player: 'phaseBeginStart' });
+                        },
+                    }
+                }
             },
             minidimeng: {
                 audio: 'oldimeng',
@@ -28929,6 +28997,8 @@ const packs = function () {
             minitianyi_info: '出牌阶段开始时，你可以选择一项：①本回合使用【杀】的次数上限+1，且使用【杀】造成伤害后回复1点体力；②摸一张牌，本回合使用【杀】无距离限制且无视目标角色的防具。',
             minihaoshi: '好施',
             minihaoshi_info: '摸牌阶段，你可以多摸两张牌，然后若你的手牌数大于5，你须弃置X张手牌或将X张手牌交给一名手牌数最少的其他角色（X为你手牌数的一半，向下取整）。',
+            miniolhaoshi: '好施',
+            miniolhaoshi_info: '①摸牌阶段开始时，你多摸两张牌。②摸牌阶段结束时，若你的手牌数大于5，你可以将手牌数的一半（向下取整）交给一名手牌最少其他角色并获得如下效果直到你下回合开始：当你成为【杀】或普通锦囊牌的目标后，其可以交给你一张手牌。',
             minidimeng: '缔盟',
             minidimeng_info: '①出牌阶段限一次，若你没有“盟”标记，你可令两名其他角色交换手牌并获得X枚“盟”标记（X为这两名角色手牌数之差的绝对值）。②摸牌阶段结束时或回合结束时，你可以弃置任意张牌并移去等量的“盟”标记。',
             miniganlu: '甘露',
