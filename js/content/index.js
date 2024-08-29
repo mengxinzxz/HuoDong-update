@@ -1466,7 +1466,6 @@ export function content(config, pack) {
 	//神将
 	lib.characterSort.extra.extra_ol.addArray(['junk_zhangjiao']);
 	game.HDaddCharacter('shen_sunquan', ['male', 'shen', 4, ['bolyuheng', 'boldili'], ['wu']], 'extra');
-	game.HDaddCharacter('tw_shen_lvmeng', ['male', 'shen', 3, ['bolshelie', 'bolgongxin'], ['wu']], 'extra');
 	game.HDmoveCharacter('junk_zhangjiao', 'extra');
 
 	//界限突破

@@ -6966,126 +6966,6 @@ const packs = function () {
                     xiaole: { audio: 'ext:活动武将/audio/skill:true' },
                 },
             },
-            //TW神吕蒙
-            bolshelie: {
-                group: 'bolshelie_shelie',
-                audio: 'shelie',
-                trigger: { player: 'phaseJieshuBegin' },
-                filter: function (event, player) {
-                    if (player.hasSkill('bolshelie_round')) return false;
-                    var list = [];
-                    player.getHistory('useCard', function (evt) {
-                        if (lib.suit.includes(get.suit(evt.card)) && !list.includes(get.suit(evt.card))) list.push(get.suit(evt.card));
-                    });
-                    return list.length >= 4;
-                },
-                forced: true,
-                locked: false,
-                content: function () {
-                    'step 0'
-                    player.addTempSkill('bolshelie_round', 'roundStart');
-                    if (typeof player.storage.bolshelie == 'number') event._result = { index: player.storage.bolshelie };
-                    else player.chooseControl('摸牌阶段', '出牌阶段').set('prompt', '涉猎：请选择要执行的额外阶段');
-                    'step 1'
-                    player.storage.bolshelie = 1 - result.index;
-                    if (result.index == 0) {
-                        var next = player.phaseDraw();
-                        event.next.remove(next);
-                        trigger.getParent().next.push(next);
-                    }
-                    if (result.index == 1) {
-                        var next = player.phaseUse();
-                        event.next.remove(next);
-                        trigger.getParent().next.push(next);
-                    }
-                },
-                subSkill: {
-                    shelie: {
-                        audio: 'shelie',
-                        inherit: 'shelie',
-                        prompt2: () => lib.translate.shelie_info,
-                    },
-                    round: { charlotte: true },
-                },
-            },
-            bolgongxin: {
-                audio: 'gongxin',
-                enable: 'phaseUse',
-                filter: function (event, player) {
-                    return game.hasPlayer(function (current) {
-                        return current != player && current.countCards('h');
-                    });
-                },
-                filterTarget: function (card, player, target) {
-                    return target != player && target.countCards('h');
-                },
-                usable: 1,
-                content: function () {
-                    'step 0'
-                    event.num = target.getCards('h').reduce(function (arr, card) {
-                        return arr.add(get.suit(card, target)), arr;
-                    }, []).length;
-                    'step 1'
-                    var cards = target.getCards('h');
-                    player.chooseButton(2, [
-                        '攻心',
-                        cards,
-                        [['弃置此牌', '置于牌堆顶'], 'tdnodes'],
-                    ]).set('filterButton', function (button) {
-                        var type = typeof button.link;
-                        if (ui.selected.buttons.length && type == typeof ui.selected.buttons[0].link) return false;
-                        return true;
-                    }).set('ai', function (button) {
-                        var target = _status.event.target;
-                        var type = typeof button.link;
-                        if (type == 'object') return get.value(button.link, target);
-                    });
-                    'step 2'
-                    if (result.bool) {
-                        if (typeof result.links[0] != 'string') result.links.reverse();
-                        var card = result.links[1], choice = result.links[0];
-                        if (choice == '弃置此牌') target.discard(card);
-                        else {
-                            player.showCards(card, get.translation(player) + '对' + get.translation(target) + '发动了【攻心】');
-                            target.lose(card, ui.cardPile, 'visible', 'insert');
-                            game.log(card, '被置于了牌堆顶');
-                        }
-                    }
-                    'step 3'
-                    if (event.num > target.getCards('h').reduce(function (arr, card) {
-                        return arr.add(get.suit(card, target)), arr;
-                    }, []).length) {
-                        player.line(target);
-                        player.addTempSkill('bolgongxin3', { player: ['bolgongxin3After', 'phaseAfter'] });
-                        player.markAuto('bolgongxin3', [target]);
-                    }
-                },
-                ai: {
-                    order: 10,
-                    expose: 0.25,
-                    result: {
-                        target: function (player, target) {
-                            return -target.countCards('h');
-                        },
-                    },
-                },
-            },
-            bolgongxin3: {
-                charlotte: true,
-                onremove: true,
-                intro: { content: '$不可响应你本回合使用的下一张牌' },
-                trigger: { player: 'useCard' },
-                forced: true,
-                popup: false,
-                content: function () {
-                    'step 0'
-                    game.delayx();
-                    'step 1'
-                    var targets = player.getStorage('bolgongxin3');
-                    player.line(targets, 'fire');
-                    trigger.directHit.addArray(targets);
-                },
-            },
             //Empty city°
             bilibili_zhiyou: {
                 getList: function (player) {
@@ -10875,11 +10755,6 @@ const packs = function () {
             bilibili_xuxiang_info: '锁定技，防止你受到的伤害。',
             bilibili_Emptycity: 'Empty city°',
             bilibili_thunderlei: '雷',
-            bolshelie: '涉猎',
-            bolshelie_info: '摸牌阶段，你可以改为亮出牌堆顶的五张牌，然后选择获得其中花色不同的牌各一张。每轮限一次，结束阶段，若你本回合使用的花色数不小于4，你执行一个额外的摸牌阶段或出牌阶段（不能连续选择执行相同项）。',
-            bolgongxin: '攻心',
-            bolgongxin3: '攻心',
-            bolgongxin_info: '出牌阶段限一次，你可以观看一名其他角色的手牌，然后你可以展示其中一张牌并选择一项：1.弃置此牌；2.将此牌置于牌堆顶。若该角色手牌中的花色数因此减少，其不能响应你本回合使用的下一张牌。',
             bilibili_zhiyou: '致优',
             bilibili_zhiyou_info: '出牌阶段限一次，你可以从其他角色已发动过但未你未因〖致优〗选择的随机三个武将牌上的技能中选择获得其中一个。',
             bilibili_guanli: '管理',
