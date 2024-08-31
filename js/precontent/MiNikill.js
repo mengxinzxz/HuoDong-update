@@ -25402,12 +25402,12 @@ const packs = function () {
                 trigger: { player: 'phaseUseEnd' },
                 filter(event, player) {
                     return game.hasPlayer(target => {
-                        return target.hasCard(card => lib.skill.miniyizheng.filterCardx(card, player), 'e');
+                        return target.hasVCard(card => lib.skill.miniyizheng.filterCardx(card, player), 'e');
                     });
                 },
                 check(event, player) {
                     return game.hasPlayer(target => {
-                        return target.hasCard(card => lib.skill.miniyizheng.filterCardx(card, player, true), 'e');
+                        return target.hasVCard(card => lib.skill.miniyizheng.filterCardx(card, player, true), 'e');
                     });
                 },
                 filterCardx(card, player = get.event('player'), ai) {
@@ -25424,7 +25424,7 @@ const packs = function () {
                         if (moveCard.some(cardx => lib.skill.miniyizheng.filterType(cardx) == lib.skill.miniyizheng.filterType(card))) return false;
                         return lib.skill.miniyizheng.filterCardx(card, player);
                     }, limit = Math.min(3, 1 + player.countMark('minishuangshu_yizheng'));
-                    while (moveCard.length < limit && game.hasPlayer(target => target.hasCard((card, player) => filter, 'e'))) {
+                    while (moveCard.length < limit && game.hasPlayer(target => target.hasVCard(card => filter(card, target), 'e'))) {
                         const forced = (!moveCard.length);
                         const { result: { card } } = await player.moveCard(filter, 'nojudge')
                             .set('prompt', '移筝：' + (forced ? '请' : '是否') + '移动场上的一张牌' + (forced ? '' : '？')).set('forced', forced)
