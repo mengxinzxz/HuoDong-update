@@ -5682,114 +5682,6 @@ const packs = function () {
                     player.removeSkill('bolkuangbi2');
                 },
             },
-            twxingbu: {
-                audio: 'xingbu',
-                trigger: { player: 'phaseJieshuBegin' },
-                frequent: true,
-                content: function () {
-                    'step 0'
-                    var cards = get.cards(3);
-                    game.updateRoundNumber();
-                    event.cards = cards;
-                    player.showCards(cards, get.translation(player) + '发动了【星卜】');
-                    'step 1'
-                    var num = 0, list = [
-                        ['荧惑守心', '出牌阶段使用【杀】的次数-1'],
-                        ['扶匡东柱', '出牌阶段使用的第一张牌结算完成后，弃置一张牌并摸两张牌'],
-                        ['五星连珠', '摸牌阶段多摸两张牌，出牌阶段使用【杀】的次数+1，跳过弃牌阶段'],
-                    ];
-                    for (var i of cards) {
-                        if (get.color(i, false) == 'red') num++;
-                    }
-                    if (num == 0) num = 1;
-                    player.chooseTarget('是否令一名其他角色获得“' + list[num - 1][0] + '”效果？', list[num - 1][1], lib.filter.notMe).set('ai', function (target) {
-                        var player = _status.event.player, num = _status.event.getParent().num;
-                        var att = get.attitude(player, target);
-                        switch (num) {
-                            case 1:
-                                return -get.sgn(att) * target.countCards('hs', { name: 'sha' }) - 1;
-                                break;
-                            case 2:
-                                return att;
-                                break;
-                            case 3:
-                                return att * (target.hasJudge('lebu') ? 3 : 1);
-                                break;
-                        }
-                    });
-                    event.num = num;
-                    'step 2'
-                    if (result.bool) {
-                        player.addExpose(0.15);
-                        var skill = 'twxingbu_effect' + num;
-                        var target = result.targets[0];
-                        player.line(target);
-                        game.log(player, '选择了', target);
-                        target.popup(skill);
-                        target.addTempSkill(skill, { player: 'phaseAfter' });
-                        target.addMark(skill, 1, false);
-                        game.delayx();
-                    }
-                    game.cardsDiscard(cards);
-                },
-                subSkill: {
-                    effect1: {
-                        charlotte: true,
-                        onremove: true,
-                        marktext: '惑',
-                        intro: { content: '出牌阶段使用【杀】的次数-#' },
-                        mod: {
-                            cardUsable: function (card, player, num) {
-                                if (card.name == 'sha') return num - player.countMark('twxingbu_effect1');
-                            },
-                        },
-                    },
-                    effect2: {
-                        charlotte: true,
-                        onremove: true,
-                        marktext: '匡',
-                        intro: { content: '出牌阶段使用的第一张牌结算完成后，弃置#张牌并摸#*2张牌' },
-                        audio: 'xingbu',
-                        trigger: { player: 'useCardAfter' },
-                        filter: function (event, player) {
-                            var evt = event.getParent('phaseUse');
-                            if (!evt || evt.player != player) return false;
-                            return player.getHistory('useCard', function (evtx) {
-                                return evtx.getParent('phaseUse') == evt;
-                            }).indexOf(event) < player.countMark('twxingbu_effect2');
-                        },
-                        forced: true,
-                        content: function () {
-                            'step 0'
-                            player.chooseToDiscard(player.countMark('twxingbu_effect2'), 'he', true);
-                            'step 1'
-                            player.draw(player.countMark('twxingbu_effect2') * 2);
-                        },
-                    },
-                    effect3: {
-                        charlotte: true,
-                        onremove: true,
-                        marktext: '星',
-                        intro: { content: '摸牌阶段多摸#*2张牌，出牌阶段使用【杀】的次数+#，跳过弃牌阶段' },
-                        mod: {
-                            cardUsable: function (card, player, num) {
-                                if (card.name == 'sha') return num + player.countMark('twxingbu_effect3');
-                            },
-                        },
-                        audio: 'xingbu',
-                        trigger: { player: ['phaseDrawBegin2', 'phaseDiscardBefore'] },
-                        filter: function (event, player) {
-                            if (event.name == 'phaseDiscard') return true;
-                            return !event.numFixed;
-                        },
-                        forced: true,
-                        content: function () {
-                            if (trigger.name == 'phaseDiscard') trigger.cancel();
-                            else trigger.num += (player.countMark('twxingbu_effect3') * 2);
-                        },
-                    },
-                },
-            },
             //张宝
             old_zhoufu: {
                 audio: 'zhoufu',
@@ -6321,117 +6213,6 @@ const packs = function () {
                         content: function () {
                             lib.skill.old_shenzhu.caidan(player);
                         },
-                    },
-                },
-            },
-            //TW孙鲁班
-            bolzenhui: {
-                audio: 'xinzenhui',
-                trigger: { player: 'useCardToPlayer' },
-                filter: function (event, player) {
-                    if (event.targets.length != 1) return false;
-                    var card = event.card;
-                    if (card.name != 'sha' && (get.type(card, null, false) != 'trick' || get.color(card, false) != 'black')) return false;
-                    if (!player.isPhaseUsing() || player.hasSkill('bolzenhui2')) return false;
-                    return game.hasPlayer(function (current) {
-                        return current != player && current != event.target && lib.filter.targetEnabled2(card, player, current) && lib.filter.targetInRange(card, player, current);
-                    });
-                },
-                direct: true,
-                content: function () {
-                    'step 0'
-                    player.chooseTarget(get.prompt2('bolzenhui'), function (card, player, target) {
-                        if (player == target) return false;
-                        var evt = _status.event.getTrigger();
-                        return !evt.targets.includes(target) && lib.filter.targetEnabled2(evt.card, player, target) && lib.filter.targetInRange(evt.card, player, target);
-                    }).set('ai', function (target) {
-                        var trigger = _status.event.getTrigger();
-                        var player = _status.event.player;
-                        return Math.max((target.countGainableCards(player, 'hej') ? get.effect(target, { name: 'shunshou' }, player, player) : 0), get.effect(target, trigger.card, player, player));
-                    });
-                    'step 1'
-                    if (result.bool) {
-                        player.addTempSkill('bolzenhui2', 'phaseUseAfter');
-                        var target = result.targets[0], str = get.translation(target);
-                        event.target = target;
-                        player.logSkill('bolzenhui', target);
-                        if (!target.countGainableCards(player, 'hej')) event._result = { index: 0 };
-                        else player.chooseControl().set('choiceList', [
-                            '令' + str + '也成为' + get.translation(trigger.card) + '的目标',
-                            '获得' + str + '区域里的一张牌，然后' + str + '成为' + get.translation(trigger.card) + '的使用者',
-                        ]).set('ai', function () {
-                            var trigger = _status.event.getTrigger();
-                            var player = _status.event.player, target = _status.event.getParent().target;
-                            return (target.countGainableCards(player, 'hej') ? get.effect(target, { name: 'shunshou' }, player, player) : 0) > get.effect(target, trigger.card, player, player) ? 1 : 0;
-                        })
-                    }
-                    else event.finish();
-                    'step 2'
-                    if (result.index == 1) {
-                        trigger.untrigger();
-                        trigger.getParent().player = event.target;
-                        game.log(event.target, '成为了', trigger.card, '的使用者');
-                        player.gainPlayerCard(target, true, 'hej');
-                    }
-                    else {
-                        game.log(event.target, '成为了', trigger.card, '的额外目标');
-                        trigger.getParent().targets.push(event.target);
-                    }
-                },
-            },
-            bolzenhui2: { charlotte: true },
-            //TW马忠
-            bolfuman: {
-                group: 'bolfuman_draw',
-                audio: 'fuman',
-                inherit: 'fuman',
-                filterTarget: function (card, player, target) {
-                    if (target == player) return false;
-                    var stat = player.getStat('skill').bolfuman_targets;
-                    return !stat || !stat.includes(target);
-                },
-                filter: function (event, player) {
-                    return player.countCards('h') > 0 && game.hasPlayer(function (current) {
-                        return lib.skill.bolfuman.filterTarget(null, player, current)
-                    });
-                },
-                content: function () {
-                    player.give(cards, target).gaintag.add('bolfuman');
-                    target.addSkill('bolfuman2');
-                    var stat = player.getStat('skill');
-                    if (!stat.bolfuman_targets) stat.bolfuman_targets = [];
-                    stat.bolfuman_targets.push(target);
-                },
-                subSkill: {
-                    draw: {
-                        audio: 'fuman',
-                        trigger: { global: ['useCardAfter', 'respondAfter'] },
-                        filter: function (event, player) {
-                            return event.player.getHistory('lose', function (evt) {
-                                if (evt.getParent() != event) return false;
-                                for (var i in evt.gaintag_map) {
-                                    if (evt.gaintag_map[i].includes('bolfuman')) return true;
-                                }
-                                return false;
-                            }).length;
-                        },
-                        forced: true,
-                        logTarget: 'player',
-                        content: function () {
-                            player.draw(trigger.player.getHistory('sourceDamage', function (evt) {
-                                return evt.card == trigger.card;
-                            }).length ? 2 : 1);
-                        },
-                    },
-                },
-            },
-            bolfuman2: {
-                mod: {
-                    aiOrder: function (player, card, num) {
-                        if (get.itemtype(card) == 'card' && card.hasGaintag('bolfuman')) return num + 1;
-                    },
-                    cardname: function (card, player) {
-                        if (get.itemtype(card) == 'card' && card.hasGaintag('bolfuman')) return 'sha';
                     },
                 },
             },
@@ -8160,51 +7941,6 @@ const packs = function () {
                             }
                         },
                         ai: { result: { target: 1 } },
-                    },
-                },
-            },
-            //魏关羽
-            boldanji: {
-                derivation: ['mashu', 'nuzhan'],
-                unique: true,
-                audio: 'danji',
-                trigger: { player: 'phaseZhunbeiBegin' },
-                filter: function (event, player) {
-                    var zhu = get.zhu(player);
-                    if (zhu && zhu.isZhu) {
-                        if (lib.translate[zhu.name].indexOf('刘备') != -1 || (zhu.name2 && lib.translate[zhu.name2].indexOf('刘备') != -1)) return false;
-                    }
-                    return player.countCards('h') > player.hp;
-                },
-                forced: true,
-                juexingji: true,
-                skillAnimation: true,
-                animationColor: 'water',
-                content: function () {
-                    'step 0'
-                    player.awakenSkill('boldanji');
-                    player.loseMaxHp();
-                    'step 1'
-                    player.addSkills(['mashu', 'nuzhan']);
-                    'step 2'
-                    player.addSkill('boldanji_effect');
-                },
-                subSkill: {
-                    effect: {
-                        charlotte: true,
-                        mark: true,
-                        intro: { content: '每回合首次使用转化【杀】结算结束后摸一张牌' },
-                        audio: 'danji',
-                        trigger: { player: 'useCardAfter' },
-                        filter: function (event, player) {
-                            return player.getHistory('useCard', function (evt) {
-                                return evt.card.name == 'sha' && evt.cards && evt.cards.length && !event.card.isCard;
-                            }).indexOf(event) == 0;
-                        },
-                        forced: true,
-                        content: function () {
-                            player.draw();
-                        },
                     },
                 },
             },
@@ -10682,11 +10418,6 @@ const packs = function () {
             bol_sanshou_skill: '三首',
             bol_sanshou_info: '当你受到伤害时，你可以亮出牌堆顶三张牌。若其中有本回合未被使用过的牌的类型，防止此伤害。',
             bol_sanshou_skill_info: '当你受到伤害时，你可以亮出牌堆顶三张牌。若其中有本回合未被使用过的牌的类型，防止此伤害。',
-            twxingbu: '星卜',
-            twxingbu_info: '结束阶段，你可以亮出牌堆顶的三张牌，然后可以根据这三张牌中红色牌的数量令一名其他角色获得对应的效果直到其下回合结束：三张，摸牌阶段多摸两张牌，使用【杀】的次数上限+1，跳过弃牌阶段；两张，出牌阶段使用的第一张牌结算完成后，弃置一张牌然后摸两张牌；少于两张，出牌阶段使用【杀】的次数上限-1。',
-            twxingbu_effect1: '荧惑守心',
-            twxingbu_effect2: '扶匡东柱',
-            twxingbu_effect3: '五星连珠',
             old_zhoufu: '咒缚',
             old_zhoufu2: '咒缚',
             old_zhoufu_info: '出牌阶段限一次，你可以将一张手牌置于一名武将牌旁没有“咒”的其他角色的武将牌旁，称为“咒”。当有“咒”的角色判定时，将“咒”作为判定牌。有“咒”的角色的回合结束时，你获得其武将牌旁的“咒”。',
@@ -10724,11 +10455,6 @@ const packs = function () {
             bilibili_tixiang: '替像',
             bilibili_tixiang_info: '锁定技。①新的一轮开始时，你按照[魏、蜀、吴、群、晋]的顺序获得当前势力的随机两张武将牌的所有无标签技能直至下一轮开始。②当你发动无标签技能结算结束后，你触发一次扩展内置彩蛋。',
             bilibili_tixiang_append: '<span style="font-family:yuanli">我每个月都要换头像，我这儿有很多的鸟可以换</span>',
-            bolzenhui: '谮毁',
-            bolzenhui_info: '出牌阶段限一次，当你使用【杀】或黑色普通锦囊牌指定目标时，你可选择另一名能成为此牌目标的其他角色并选择一项：①令其也成为此牌的目标。②获得其区域里的一张牌，然后将此牌的使用者改为该角色。',
-            bolfuman: '抚蛮',
-            bolfuman2: '抚蛮',
-            bolfuman_info: '①出牌阶段每名角色限一次，你可以将一张手牌交给一名其他角色并标记为“抚蛮”且“抚蛮”牌的牌名视为【杀】。②一名角色使用或打出“抚蛮”牌结算结束后，你摸一张牌（若此牌造成过伤害，则改为摸两张牌）。',
             bilibili_jinglingqiu: '精灵球',
             bilibili_jinglingqiu_ab: '?',
             bilibili_tiyi: '提议',
@@ -10785,8 +10511,6 @@ const packs = function () {
             bolliaoyi_info: '出牌阶段开始时，你可以令一名角色获得从牌堆或弃牌堆中获得其上个回合开始至现在失去过的牌的类型的牌各一张。',
             bolbinglun: '病论',
             bolbinglun_info: '出牌阶段限一次，你可以失去至多3点' + get.RenWangInform() + '，令：⒈等量名角色各选择执行以下一项；⒉一名角色执行以下等量项。①将手牌数补至体力上限（至多摸五张）；②回复1点体力；③防止下一次受到的伤害直到回合开始。',
-            boldanji: '单骑',
-            boldanji_info: '觉醒技，准备阶段，若你的手牌数大于你的体力值且本局游戏的主公不为刘备，你减1点体力上限，然后获得〖马术〗和〖怒斩〗，且本局游戏中你每回合使用的第一张转化【杀】结算完毕后，你摸一张牌。',
             bfake_jiananfeng: '蝶设贾南风',
             bfake_jiananfeng_prefix: '蝶设',
             bolduliao: '毒獠',
@@ -10815,7 +10539,6 @@ const packs = function () {
             bolyingtu_info: '①当你的上家于摸牌阶段外获得牌后，你可以获得其等量的牌，然后将等量的牌交给你的下家。②当你的下家使用【杀】或【决斗】指定第一个目标时，若目标角色不包含你和你的上家，则你可以取消此牌的所有目标，然后将此牌目标改为你的上家。',
             bolcongshi: '从势',
             bolcongshi_info: '锁定技。①体力值最大的角色对你的上家和下家使用牌无距离限制。②有角色使用因〖从势①〗增加距离的牌对你的上家或下家造成伤害后，你回复1点体力。',
-            bol_fuhuanghou: 'TW伏寿',
             dom_chouxiang: '抽象',
             dom_chouxiang_info: '锁定技，你对其他宿舍成员使用牌无距离和次数限制；当你使用牌或发动技能时，若其中包含其他宿舍成员，则你和这些角色各摸一张牌，然后进行同时拼点，不能拼点和拼点没赢的角色于此牌或技能结算完毕后于本轮移出游戏。',
             dom_chouxiang_append: '<span style="font-family:yuanli">抽象对抽象，不抽象的陪' + get.bolInformX('牢大', '仅娱乐，请勿过度解读') + '打复活赛</span>',

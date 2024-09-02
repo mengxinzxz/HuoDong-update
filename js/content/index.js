@@ -1084,8 +1084,6 @@ export function content(config, pack) {
 					'FD_dongyue',
 					//原活动配件武将
 					'ol_maliang',
-					'old_jiakui',
-					'old_qiaozhou',
 					'old_clan_xunshu',
 					'old_clan_xunchen',
 					'old_clan_xuncai',
@@ -1379,7 +1377,6 @@ export function content(config, pack) {
 		re_zhangchunhua: 'reshangshi',
 	});
 	game.HDsetAudioname2('wusheng', {
-		bol_jsp_guanyu: 'wusheng_jsp_guanyu',
 		bolx_jsp_guanyu: 'wusheng_jsp_guanyu',
 		wechat_guansuo: 'wusheng_guansuo',
 	});
@@ -1424,7 +1421,6 @@ export function content(config, pack) {
 	lib.characterReplace.zhangyì.add('old_zhangyì');
 	lib.characterReplace.manchong.add('ol_manchong');
 	lib.characterReplace.yj_ganning.add('old_yj_ganning');
-	lib.characterReplace.sp_ol_zhanghe.add('old_yj_zhanghe');
 	lib.characterReplace.ol_lusu.add('lusu');
 	lib.characterReplace.re_yuanshao.add('yuanshao');
 	lib.characterReplace.xushao = ['xushao', 'old_xushao'];
@@ -1440,13 +1436,11 @@ export function content(config, pack) {
 	lib.characterReplace.liuzhang.add('old_liuzhang');
 	lib.characterReplace.zhouchu.add('old_zhouchu');
 	lib.characterReplace.ol_bianfuren = ['ol_bianfuren', 'sp_bianfuren'];
-	lib.characterReplace.qiaozhou.add('old_qiaozhou');
 	lib.characterReplace.sb_ganning = ['sb_ganning', 'old_sb_ganning'];
 	lib.characterReplace.zhangbao.add('old_zhangbao');
-	lib.characterReplace.jsp_guanyu.addArray(['bol_jsp_guanyu', 'bolx_jsp_guanyu']);
+	lib.characterReplace.jsp_guanyu.addArray(['bolx_jsp_guanyu']);
 	lib.characterReplace.lingju.add('decade_lingju');
 	lib.characterReplace.buzhi = ['decade_buzhi', 'buzhi'];
-	lib.characterReplace.fuhuanghou.add('bol_fuhuanghou');
 	lib.characterReplace.yj_jushou.add('old_yj_jushou');
 	/*
 	//筛选武将同名替换
@@ -1498,7 +1492,6 @@ export function content(config, pack) {
 	//移动服
 	lib.characterSort.mobile.bilibili_buchong_mobile = ['old_zhaoxiang', 'ol_maliang', 'ol_yuanshu', 'old_bulianshi', 'old_zhangqiying', 'junk_xuyou'];
 	game.HDaddCharacter('old_zhangqiying', ['female', 'qun', 3, ['xinfu_falu', 'olddianhua', 'oldzhenyi'], ['ext:活动武将/image/character/old_zhangqiying.jpg']], 'mobile');
-	game.HDaddCharacter('jiakui', ['male', 'wei', 4, ['tongqu', 'xinwanlan'], []], 'mobile');
 	game.HDaddCharacter('yangfu', ['male', 'wei', 3, ['jiebing', 'bolhannan'], []], 'mobile');
 	game.HDaddCharacter('xin_caozhen', ['male', 'wei', 4, ['bolsidi'], []], 'mobile');
 	game.HDaddCharacter('junk_xuyou', ['male', 'qun', 3, ['nzry_chenglve', 'junkshicai', 'nzry_cunmu'], []], 'mobile');
@@ -1518,16 +1511,9 @@ export function content(config, pack) {
 	game.HDaddCharacter('jd_ol_huaxin', ['male', 'wei', 3, ['jdcaozhao', 'olxibing'], ['ext:活动武将/image/character/ol_huaxin.jpg', 'die:ol_huaxin']], 'offline');
 
 	//海外
-	lib.characterSort.tw.bilibili_buchong_tw = ['old_yj_zhanghe', 'old_qiaozhou', 'old_jiakui', 'bol_xin_sunluban', 'bol_mazhong', 'bol_jsp_guanyu', 'bol_fuhuanghou'];
+	lib.characterSort.tw.bilibili_buchong_tw = [];
 	delete lib.skill.twchongqi.derivation;
 	game.HDaddCharacter('tw_caozhao', ['male', 'wei', 4, ['twfuzuan', 'twchongqi', 'twfeifu'], []], 'tw');
-	game.HDaddCharacter('bol_xin_sunluban', ['female', 'wu', 3, ['bolzenhui', 'xinjiaojin'], ['ext:活动武将/image/character/bol_xin_sunluban.jpg']], 'tw');
-	game.HDaddCharacter('bol_mazhong', ['male', 'shu', 4, ['bolfuman'], ['ext:活动武将/image/character/bol_mazhong.jpg']], 'tw');
-	game.HDaddCharacter('bol_jsp_guanyu', ['male', 'wei', 4, ['wusheng', 'boldanji'], ['ext:活动武将/image/character/bol_jsp_guanyu.jpg']], 'tw');
-	game.HDaddCharacter('bol_fuhuanghou', ['female', 'qun', 3, ['rezhuikong', 'xinqiuyuan'], ['ext:活动武将/image/character/bol_fuhuanghou.jpg']], 'tw');
-	game.HDaddCharacter('old_jiakui', ['male', 'wei', 3, ['zhongzuo', 'wanlan'], []], 'tw');
-	game.HDaddCharacter('old_qiaozhou', ['male', 'shu', 3, ['zhiming', 'twxingbu'], ['ext:活动武将/image/character/old_qiaozhou.jpg']], 'tw');
-	game.HDaddCharacter('old_yj_zhanghe', ['male', 'qun', 4, ['zhilve'], ['ext:活动武将/image/character/old_yj_zhanghe.jpg']], 'tw');
 
 	//怀旧包
 	lib.characterSort.old.bilibili_buchong_shenhua = ['old_zhoufei', 'lusu', 'yuanshao', 'old_dengai'];
@@ -1965,10 +1951,6 @@ export function content(config, pack) {
 		old_clan_xuncan_prefix: '旧',
 		oldx_clan_xuncai: '旧荀采',
 		oldx_clan_xuncai_prefix: '旧',
-		old_qiaozhou: 'TW谯周',
-		old_qiaozhou_prefix: 'TW',
-		old_yj_zhanghe: 'TW张郃',
-		old_yj_zhanghe_prefix: 'TW',
 		old_yj_jushou: '旧沮授',
 		old_yj_jushou_prefix: '旧',
 		old_shen_xunyu: '旧神荀彧',
@@ -1983,8 +1965,6 @@ export function content(config, pack) {
 		old_zhangyì_prefix: '旧',
 		old_yanghuiyu: '旧羊徽瑜',
 		old_yanghuiyu_prefix: '旧',
-		old_jiakui: 'TW贾逵',
-		old_jiakui_prefix: 'TW',
 		junk_zhangrang: '新杀张让',
 		junk_zhangrang_prefix: '新杀',
 		old_zhangqiying: '手杀张琪瑛',
@@ -2045,10 +2025,6 @@ export function content(config, pack) {
 		oldx_guanyu: '关云长',
 		oldx_zhaoyun: '赵子龙',
 		oldx_yujin: '于文则',
-		bol_xin_sunluban: 'TW孙鲁班',
-		bol_xin_sunluban_prefix: 'TW',
-		bol_mazhong: 'TW马忠',
-		bol_mazhong_prefix: 'TW',
 		old_yuanji: '旧袁姬',
 		old_yuanji_prefix: '旧',
 		bfake_yangfu: '废案杨阜',
@@ -2065,14 +2041,11 @@ export function content(config, pack) {
 		old_shen_ganning_prefix: '废案神',
 		bol_sp_huaxin: '废案华歆',
 		bol_sp_huaxin_prefix: '废案',
-		bol_jsp_guanyu: 'TW关羽',
-		bol_jsp_guanyu_prefix: 'TW',
 		bfake_chengui: '废案陈珪',
 		bfake_chengui_prefix: '废案',
 		old_zhangzhongjing_prefix: '旧',
 		oldx_zhangzhongjing_prefix: '旧',
 		bol_zhangzhongjing_prefix: '废案',
-		bol_fuhuanghou_prefix: 'TW',
 
 		//武将分包翻译
 		bilibili_buchong_shenhua: '武将补充·神话再临',
