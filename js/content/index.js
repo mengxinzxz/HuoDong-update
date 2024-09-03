@@ -1746,51 +1746,6 @@ export function content(config, pack) {
 			}
 		}
 	};
-	//族荀谌
-	lib.skill._sankuang_prompt = {
-		charlotte: true,
-		ruleSkill: true,
-		trigger: { player: 'clansankuangBegin' },
-		direct: true,
-		content: function () {
-			var func = function () {
-				game.countPlayer(function (target) {
-					if (target != player) target.prompt('三恇' + lib.skill.clansankuang.getNum(target));
-				});
-			};
-			if (event.player == game.me) func();
-			else if (event.isOnline()) player.send(func);
-		},
-	};
-	//卢氏
-	lib.skill._olzhuyan_prompt = {
-		charlotte: true,
-		ruleSkill: true,
-		trigger: { player: 'olzhuyanBegin' },
-		direct: true,
-		content: function () {
-			var func = function () {
-				game.countPlayer(function (target) {
-					var str = '';
-					str += '体力值';
-					if (player.getStorage('olzhuyan_false').includes(target)) str += '--<br>';
-					else {
-						var num = lib.skill.olzhuyan.getNum(target, false);
-						str += ((num >= 0 ? '+' : '') + num + '<br>');
-					}
-					str += '手牌数';
-					if (player.getStorage('olzhuyan_true').includes(target)) str += '--<br>';
-					else {
-						var num = lib.skill.olzhuyan.getNum(target, true);
-						str += ((num >= 0 ? '+' : '') + num + '<br>');
-					}
-					target.prompt(str);
-				});
-			};
-			if (event.player == game.me) func();
-			else if (event.isOnline()) player.send(func);
-		},
-	};
 	//陈琳
 	lib.skill.songci.selectTarget = function () {
 		var player = _status.event.player;
