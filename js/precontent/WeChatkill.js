@@ -7611,6 +7611,7 @@ const packs = function () {
                     player.addTempSkill('wechatkanpo_effect', 'roundStart');
                     player.markAuto('wechatkanpo_effect', names);
                     player.markAuto('wechatkanpo', names);
+                    player.popup(names);
                     game.log(player, '记录了', '#y' + get.translation(names));
                 },
                 intro: {
