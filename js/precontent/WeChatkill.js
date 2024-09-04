@@ -5015,23 +5015,7 @@ const packs = function () {
                     },
                     result: { player: 1 },
                 },
-                group: ['dcjianying_mark', 'wechatjianying_draw'],
-                init: function (player) {
-                    var history = player.getAllHistory('useCard');
-                    if (history.length) {
-                        var trigger = history[history.length - 1];
-                        if (get.suit(trigger.card, player) == 'none' || typeof get.number(trigger.card, player) != 'number') return;
-                        player.storage.dcjianying_mark = trigger.card;
-                        player.markSkill('dcjianying_mark');
-                        game.broadcastAll(function (player, suit) {
-                            if (player.marks.dcjianying_mark) player.marks.dcjianying_mark.firstChild.innerHTML = get.translation(suit);
-                        }, player, get.suit(trigger.card, player));
-                    }
-                },
-                onremove: function (player) {
-                    player.unmarkSkill('dcjianying_mark');
-                    delete player.storage.dcjianying_mark;
-                },
+                group: ['wechatjianying_draw'],
                 subSkill: {
                     draw: {
                         audio: 'jianying',
