@@ -701,7 +701,10 @@ const packs = function () {
             },
             miniluoshen: {
                 audio: 'reluoshen',
-                audioname2: { Mmiao_zhenji: 'minimiaoluoshen' },
+                audioname2: {
+                    Mmiao_zhenji: 'minimiaoluoshen',
+                    wechat_zhenji: 'luoshen',
+                },
                 trigger: { player: 'phaseZhunbeiBegin' },
                 frequent: true,
                 content: function () {
