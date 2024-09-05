@@ -2458,6 +2458,7 @@ const packs = function () {
                 content: function () {
                     lib.skill.wechatmoulvenum.changeNum(event.triggername != 'phaseEnd' ? 3 : player.getHistory('useCard').reduce((list, evt) => list.add(get.type2(evt.card)), []).length, player);
                 },
+                derivation: ['wechatmiaoji'],
             },
             wechatsuanlve: {
                 init: function (player) {
@@ -2566,10 +2567,11 @@ const packs = function () {
             },
             wechatmiaoji: {
                 audio: 'ext:活动武将/audio/skill:2',
+                audioname: ['wechat_guojia'],
                 audioname2: {
-                    wechat_guojia: 'wechatmiaoji_wechat_guojia',
-                    wechat_zhugeliang: 'wechatmiaoji_wechat_zhugeliang',
+                    wechat_zhugeliang: 'wechatsangu',
                 },
+                forceaudio: true,
                 list: {
                     'guohe': 1,
                     'wuxie': 3,
@@ -4636,6 +4638,7 @@ const packs = function () {
                         },
                     },
                 },
+                derivation: ['wechatmiaoji'],
             },
             wechatyanshi: {
                 audio: 'ext:活动武将/audio/skill:2',
