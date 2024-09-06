@@ -12,7 +12,7 @@ game.bolShowNewPack = function () {
 	//更新告示
 	var HuoDong_update = [
 		'/setPlayer/',
-		'整合@xizifu的Pull Requests',
+		'整合@xizifu @Kobe的Pull Requests',
 		'bugfix',
 		'补充部分武将原画，修改部分武将技能',
 		'添加欢杀武将：张温、马忠、陈琳、神庞统',
