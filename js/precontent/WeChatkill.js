@@ -2567,8 +2567,8 @@ const packs = function () {
             },
             wechatmiaoji: {
                 audio: 'ext:活动武将/audio/skill:2',
-                audioname: ['wechat_guojia'],
                 audioname2: {
+                    wechat_guojia: 'wechatmiaoji_wechat_guojia',
                     wechat_zhugeliang: 'wechatsangu',
                 },
                 forceaudio: true,
