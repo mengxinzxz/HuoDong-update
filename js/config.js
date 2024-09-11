@@ -141,8 +141,8 @@ export let config = {
 		init: false,
 	},
 	HD_yrnsm: {
-		name: 'OL删晋还原',
-		intro: '开启此选项后，无名杀部分晋武将势力和原画将调整为和OL一致',
+		name: 'OL删晋图片还原',
+		intro: '开启此选项后，无名杀部分晋武将原画将调整为和OL一致',
 		init: false,
 	},
 	Boss_TZ_level: {

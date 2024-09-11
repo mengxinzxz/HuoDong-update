@@ -5758,22 +5758,6 @@ const packs = function () {
                     player.draw(2);
                 },
             },
-            //杨阜
-            bolhannan: {
-                audio: 'hannan',
-                inherit: 'hannan',
-                content: function () {
-                    'step 0'
-                    player.chooseToCompare(target);
-                    'step 1'
-                    if (!result.tie) {
-                        var players = [player, target];
-                        if (result.bool) players.reverse();
-                        players[1].line(players[0], 'thunder');
-                        players[0].damage(players[1]);
-                    }
-                },
-            },
             //用间篇孙鲁班
             //离谱的东西我来做
             boljiaozong: {
@@ -7014,129 +6998,6 @@ const packs = function () {
                                     return 'zeroplayertarget';
                                 },
                             },
-                        },
-                    },
-                },
-            },
-            //数学家
-            bolsidi: {
-                audio: 'disordersidi',
-                trigger: { player: 'useCardAfter' },
-                filter: function (event, player) {
-                    return get.type(event.card, false) != 'delay' && game.hasPlayer(function (current) {
-                        return player != current && (!player.storage.bolsidi || !player.storage.bolsidi.includes(current));
-                    });
-                },
-                direct: true,
-                content: function () {
-                    'step 0'
-                    player.chooseTarget(get.prompt('bolsidi'), '选择一名角色，为其选择一名“司敌”目标角色', function (card, player, target) {
-                        return target != player && (!player.storage.bolsidi || !player.storage.bolsidi.includes(target));
-                    }).set('ai', function (target) {
-                        var player = _status.event.player;
-                        if (target.getEnemies().length == 1) return 2 + Math.random();
-                        return 1 + Math.random();
-                    }).animate = false;
-                    'step 1'
-                    if (result.bool) {
-                        var target = result.targets[0];
-                        event.target = target;
-                        player.chooseTarget('为' + get.translation(target) + '选择一名“司敌”目标角色').set('ai', function (target) {
-                            var player = _status.event.player;
-                            var targetx = _status.event.target;
-                            if (targetx.getEnemies().includes(target) && targetx.inRange(target)) return Math.random() + 1.5;
-                            return targetx == target ? 1 : -1;
-                        }).set('target', target).animate = false;
-                    }
-                    else event.finish();
-                    'step 2'
-                    if (result.bool) {
-                        result.targets.unshift();
-                        player.logSkill('bolsidi', target);
-                        if (!player.storage.bolsidi) player.storage.bolsidi = [];
-                        if (!player.storage.bolsidi2) player.storage.bolsidi2 = [];
-                        player.storage.bolsidi.push(target);
-                        player.storage.bolsidi2.push(result.targets[0]);
-                        player.markSkill('bolsidi');
-                        game.delayx();
-                    }
-                },
-                intro: {
-                    content: function (storage, player) {
-                        if ((player == game.me || player.isUnderControl()) && !game.observe) {
-                            var storage2 = player.storage.bolsidi2, str = '';
-                            for (var i = 0; i < storage.length; i++) {
-                                str += (get.translation(storage[i]) + '=>' + get.translation(storage2[i]));
-                                if (i < storage.length - 1) str += '<br>';
-                            }
-                            return str;
-                        }
-                        return '已指定' + get.translation(storage) + '为目标';
-                    },
-                },
-                onremove: function (player) {
-                    delete player.storage.bolsidi;
-                    delete player.storage.bolsidi2;
-                },
-                group: ['bolsidi_clear', 'bolsidi_exec'],
-                subSkill: {
-                    clear: {
-                        trigger: { global: ['useCardToPlayered', 'die'] },
-                        filter: function (event, player) {
-                            if (!player.storage.bolsidi || !player.storage.bolsidi.includes(event.player)) return false;
-                            if (event.name == 'die') return true;
-                            if (get.type(event.card, false) != 'delay') {
-                                var index = player.storage.bolsidi.indexOf(event.player);
-                                return index != -1 && (player.storage.bolsidi2[index] != event.target || event.targets.length != 1);
-                            }
-                            return false;
-                        },
-                        forced: true,
-                        locked: false,
-                        popup: false,
-                        content: function () {
-                            player.storage.bolsidi2.splice(player.storage.bolsidi.indexOf(trigger.player), 1);
-                            player.unmarkAuto('bolsidi', [trigger.player]);
-                        },
-                    },
-                    exec: {
-                        audio: 'disordersidi',
-                        trigger: { global: 'useCardToPlayered' },
-                        filter: function (event, player) {
-                            if (get.type(event.card, false) == 'delay' || !player.storage.bolsidi || event.targets.length != 1) return false;
-                            var index = player.storage.bolsidi.indexOf(event.player);
-                            return index != -1 && player.storage.bolsidi2[index] == event.target;
-                        },
-                        logTarget: 'player',
-                        forced: true,
-                        locked: false,
-                        content: function () {
-                            'step 0'
-                            player.storage.bolsidi2.splice(player.storage.bolsidi.indexOf(trigger.player), 1);
-                            player.unmarkAuto('bolsidi', [trigger.player])
-                            if (trigger.target == player) {
-                                player.draw();
-                                event.finish();
-                                return;
-                            }
-                            var target = trigger.player;
-                            event.target = target;
-                            player.chooseControl('cancel2').set('choiceList', [
-                                '取消' + get.translation(trigger.card) + '的所有目标' + (_status.dying.length ? '' : '，然后对' + get.translation(target) + '造成1点伤害'),
-                                '摸两张牌',
-                            ]).set('ai', function () {
-                                var player = _status.event.player, evt = _status.event.getTrigger();
-                                if (get.damageEffect(evt.player, player, player) > 0 && get.effect(evt.target, evt.card, evt.player, player) < 0) return 0;
-                                return 1;
-                            });
-                            'step 1'
-                            if (result.index == 0) {
-                                trigger.cancel();
-                                trigger.targets.length = 0;
-                                trigger.getParent().triggeredTargets1.length = 0;
-                                if (!_status.dying.length) target.damage();
-                            }
-                            else if (result.index == 1) player.draw(2);
                         },
                     },
                 },
@@ -9413,255 +9274,6 @@ const packs = function () {
                     },
                 },
             },
-            //彭羕
-            bolxiaofan: {
-                audio: 'olxiaofan',
-                enable: 'chooseToUse',
-                onChooseToUse(event) {
-                    const sum = ui.cardPile.childNodes.length;
-                    if (game.online || !sum || !event.player.hasSkill('bolxiaofan')) return;
-                    const cards = [], num = lib.skill.olxiaofan.getNum(event.player) + 1;
-                    for (let i = 0; i < num; i++) {
-                        const card = ui.cardPile.childNodes[sum - 1 - i];
-                        if (card) cards.push(card);
-                        else break;
-                    }
-                    event.set('bolxiaofan_cards', cards);
-                },
-                hiddenCard(player, name) {
-                    return name != 'wuxie' && lib.inpile.includes(name);
-                },
-                filter(event, player) {
-                    if (!Array.isArray(event.bolxiaofan_cards) || event.responded || event.type == 'wuxie' || event.bolxiaofan) return false;
-                    return lib.inpile.some(i => i != 'wuxie' && event.filterCard(get.autoViewAs({ name: i }, 'unsure'), player, event));
-                },
-                delay: false,
-                async content(event, trigger, player) {
-                    const evt = event.getParent(2);
-                    const cardsx = evt.bolxiaofan_cards.slice().map(card => {
-                        const cardx = ui.create.card();
-                        cardx.init(get.cardInfo(card));
-                        cardx._cardid = card.cardid;
-                        return cardx;
-                    });
-                    if (!event.isMine()) evt.set('bolxiaofan', true);
-                    player.directgains(cardsx, null, 'bolxiaofan_hs');
-                    const result = await player.chooseCard('嚣翻：选择要使用的牌', (card, player) => {
-                        return get.event().cards.includes(card);
-                    }, 's').set('cards', cardsx.filter(card => {
-                        if (player.hasSkill('aozhan') && card.name == 'tao') {
-                            return evt.filterCard({
-                                name: 'sha', isCard: true, cards: [card],
-                            }, evt.player, evt) || evt.filterCard({
-                                name: 'shan', isCard: true, cards: [card],
-                            }, evt.player, evt);
-                        }
-                        return evt.filterCard(card, evt.player, evt);
-                    })).set('ai', card => {
-                        if (get.type(card) == 'equip') return 0;
-                        const evt = get.event().getParent(3), player = get.event().player;
-                        if (evt.type == 'phase' && !player.hasValueTarget(card, null, true)) return 0;
-                        if (evt && evt.ai) {
-                            const tmp = _status.event;
-                            _status.event = evt;
-                            const result = (evt.ai || event.ai1)(card, player, evt);
-                            _status.event = tmp;
-                            return result;
-                        }
-                        return 1;
-                    }).forResult();
-                    let card;
-                    if (result.bool) {
-                        card = evt.bolxiaofan_cards.find(card => card.cardid === result.cards[0]._cardid);
-                    }
-                    const cards2 = player.getCards('s', card => card.hasGaintag('bolxiaofan_hs'));
-                    if (player.isOnline2()) {
-                        player.send((cards, player) => {
-                            cards.forEach(i => i.delete());
-                            if (player == game.me) ui.updatehl();
-                        }, cards2, player);
-                    }
-                    cards2.forEach(i => i.delete());
-                    if (player == game.me) ui.updatehl();
-                    if (card) {
-                        let name = card.name, aozhan = (player.hasSkill('aozhan') && name == 'tao');
-                        if (aozhan) {
-                            name = evt.filterCard({
-                                name: 'sha', isCard: true, cards: [card],
-                            }, evt.player, evt) ? 'sha' : 'shan';
-                        }
-                        game.broadcastAll((result, name) => {
-                            lib.skill.bolxiaofan_backup.viewAs = { name: name, cards: [result], isCard: true };
-                        }, card, name);
-                        evt.set('_backupevent', 'bolxiaofan_backup');
-                        evt.set('openskilldialog', ('请选择' + get.translation(card) + '的目标'));
-                        evt.backup('bolxiaofan_backup');
-                    }
-                    evt.goto(0);
-                },
-                ai: {
-                    effect: {
-                        target(card, player, target, effect) {
-                            if (get.tag(card, 'respondShan')) return 0.7;
-                            if (get.tag(card, 'respondSha')) return 0.7;
-                        },
-                    },
-                    order: 12,
-                    respondShan: true,
-                    respondSha: true,
-                    result: {
-                        player(player) {
-                            if (_status.event.dying) return get.attitude(player, _status.event.dying);
-                            return 1;
-                        },
-                    },
-                },
-                subSkill: {
-                    backup: {
-                        inherit: 'olxiaofan_backup',
-                        sourceSkill: 'bolxiaofan',
-                    },
-                },
-            },
-            boltuishi: {
-                audio: 'oltuishi',
-                inherit: 'oltuishi',
-                filter(event, player, name) {
-                    if (name == 'useCardAfter') {
-                        if (player.isTempBanned('bolxiaofan')) return false;
-                        return player.getHistory('useCard', evt => {
-                            if (get.type(evt.card) == 'delay') return false;
-                            return !player.getHistory('sourceDamage', evt2 => {
-                                return evt2.card && evt2.card == evt.card;
-                            }).length && get.tag(evt.card, 'damage');
-                        }).indexOf(event) >= 2;
-                    }
-                    return [1, 11, 12, 13].includes(get.number(event.card));
-                },
-                async content(event, trigger, player) {
-                    if (event.triggername == 'useCardAfter') {
-                        player.tempBanSkill('bolxiaofan');
-                        return;
-                    }
-                    trigger.targets.length = 0;
-                    trigger.all_excluded = true;
-                    game.log(trigger.card, '被无效了');
-                    await player.draw();
-                    player.addSkill('oltuishi_unlimit');
-                },
-            },
-            //诸葛恪
-            bolaocai: {
-                audio: 'aocai',
-                audioname: ['gz_zhugeke'],
-                enable: ['chooseToUse', 'chooseToRespond'],
-                hiddenCard(player, name) {
-                    if (player != _status.currentPhase && get.type(name) == 'basic' && lib.inpile.includes(name)) return true;
-                },
-                filter(event, player) {
-                    if (event.responded || player == _status.currentPhase || event.bolaocai) return false;
-                    return lib.inpile.some(i => get.type(i) == 'basic' && event.filterCard(get.autoViewAs({ name: i }, 'unsure'), player, event));
-                },
-                delay: false,
-                async content(event, trigger, player) {
-                    const evt = event.getParent(2);
-                    const cards = get.cards((get.mode() != 'guozhan' && player.countCards('h') == 0) ? 4 : 2, true);
-                    const cardsx = cards.slice().map(card => {
-                        const cardx = ui.create.card();
-                        cardx.init(get.cardInfo(card));
-                        cardx._cardid = card.cardid;
-                        return cardx;
-                    });
-                    evt.set('bolaocai', true);
-                    player.directgains(cardsx, null, 'bolaocai_hs');
-                    const result = await player.chooseCard('傲才：选择要' + (evt.name == 'chooseToUse' ? '使用' : '打出') + '的牌', (card, player) => {
-                        return get.event().cards.includes(card);
-                    }, 's').set('cards', cardsx.filter(card => {
-                        if (player.hasSkill('aozhan') && card.name == 'tao') {
-                            return evt.filterCard({
-                                name: 'sha', isCard: true, cards: [card],
-                            }, evt.player, evt) || evt.filterCard({
-                                name: 'shan', isCard: true, cards: [card],
-                            }, evt.player, evt);
-                        }
-                        return evt.filterCard(card, evt.player, evt);
-                    })).set('ai', card => {
-                        if (get.type(card) == 'equip') return 0;
-                        const evt = get.event().getParent(3), player = get.event().player;
-                        if (evt.type == 'phase' && !player.hasValueTarget(card, null, true)) return 0;
-                        if (evt && evt.ai) {
-                            const tmp = _status.event;
-                            _status.event = evt;
-                            const result = (evt.ai || event.ai1)(card, player, evt);
-                            _status.event = tmp;
-                            return result;
-                        }
-                        return 1;
-                    }).forResult();
-                    let card;
-                    if (result.bool) {
-                        card = cards.find(card => card.cardid === result.cards[0]._cardid);
-                    }
-                    const cards2 = player.getCards('s', card => card.hasGaintag('bolaocai_hs'));
-                    if (player.isOnline2()) {
-                        player.send((cards, player) => {
-                            cards.forEach(i => i.delete());
-                            if (player == game.me) ui.updatehl();
-                        }, cards2, player);
-                    }
-                    cards2.forEach(i => i.delete());
-                    if (player == game.me) ui.updatehl();
-                    if (card) {
-                        let name = card.name, aozhan = (player.hasSkill('aozhan') && name == 'tao');
-                        if (aozhan) {
-                            name = evt.filterCard({
-                                name: 'sha', isCard: true, cards: [card],
-                            }, evt.player, evt) ? 'sha' : 'shan';
-                        }
-                        if (evt.name == 'chooseToUse') {
-                            game.broadcastAll((result, name) => {
-                                lib.skill.bolaocai_backup.viewAs = { name: name, cards: [result], isCard: true };
-                            }, card, name);
-                            evt.set('_backupevent', 'bolaocai_backup');
-                            evt.set('openskilldialog', '请选择' + get.translation(card) + '的目标')
-                            evt.backup('bolaocai_backup');
-                        }
-                        else {
-                            delete evt.result.skill;
-                            delete evt.result.used;
-                            evt.result.card = get.autoViewAs(card);
-                            if (aozhan) evt.result.card.name = name;
-                            evt.result.cards = [card];
-                            evt.redo();
-                            return;
-                        }
-                    }
-                    evt.goto(0);
-                },
-                ai: {
-                    effect: {
-                        target(card, player, target, effect) {
-                            if (get.tag(card, 'respondShan')) return 0.7;
-                            if (get.tag(card, 'respondSha')) return 0.7;
-                        },
-                    },
-                    order: 11,
-                    respondShan: true,
-                    respondSha: true,
-                    result: {
-                        player(player) {
-                            if (_status.event.dying) return get.attitude(player, _status.event.dying);
-                            return 1;
-                        },
-                    },
-                },
-                subSkill: {
-                    backup: {
-                        inherit: 'aocai_backup',
-                        sourceSkill: 'bolaocai',
-                    },
-                },
-            },
             //宁静致远
             bilibili_xiezhi: {
                 trigger: { global: 'phaseBegin' },
@@ -10073,7 +9685,7 @@ const packs = function () {
                         const suits = player.getAllHistory('useCard', evt => {
                             return evt.getParent(2).name == 'bilibili_zhangcai';
                         }).reduce((list, evt) => list.add(get.suit(evt.card)), []);
-                        if (suits.length) yield player.addAdditionalSkills('bilibili_zhangcai', ['jueman', 'oljianman', 'bolaocai', 'nzry_shicai'].slice(0, Math.min(4, suits.length)));
+                        if (suits.length) yield player.addAdditionalSkills('bilibili_zhangcai', ['jueman', 'oljianman', 'aocai', 'nzry_shicai'].slice(0, Math.min(4, suits.length)));
                     }
                 },
                 mod: {
@@ -10082,7 +9694,7 @@ const packs = function () {
                         if (evt.name == 'chooseToUse' && evt.player == player && evt.getParent().name == 'bilibili_zhangcai' && evt.getParent().player == player) return true;
                     },
                 },
-                derivation: ['jueman', 'oljianman', 'bolaocai', 'nzry_shicai'],
+                derivation: ['jueman', 'oljianman', 'aocai', 'nzry_shicai'],
             },
         },
         dynamicTranslate: {
@@ -10423,8 +10035,6 @@ const packs = function () {
             old_zhoufu_info: '出牌阶段限一次，你可以将一张手牌置于一名武将牌旁没有“咒”的其他角色的武将牌旁，称为“咒”。当有“咒”的角色判定时，将“咒”作为判定牌。有“咒”的角色的回合结束时，你获得其武将牌旁的“咒”。',
             old_yingbing: '影兵',
             old_yingbing_info: '当一张“咒”成为判定牌后，你可以摸两张牌。',
-            bolhannan: '扞难',
-            bolhannan_info: '出牌阶段限一次，你可以与一名角色拼点，赢的角色对没赢的角色造成1点伤害。',
             boljiaozong: '骄纵',
             boljiaozong_info: '锁定技，其他角色出牌阶段使用的第一张红色牌无距离限制且目标必须为你。',
             bolchouyou: '仇幽',
@@ -10492,8 +10102,6 @@ const packs = function () {
             bilibili_qianxi_info: '锁定技，当你受到伤害时，你将伤害值调整为1，然后防止你本回合后续受到的伤害，且其他角色使用牌不能指定你为目标。',
             bilibili_qianxi_append: '<span style="font-family:yuanli">千幻雷音的密码是thunder，不是什么“Thunder”、“thunder，憋问了。”不带符号，不带空格。小雷音寺已解散，Thunder小游戏扩展的密码是thunderXYX，求求你们不要私信问我密码为什么不对了，憋问了。</span>',
             bilibili_lonelypatients: 'lonely patients',
-            bolsidi: '司敌',
-            bolsidi_info: '当你使用非延时锦囊牌结算完毕后，你可以选择一名未指定“司敌”目标的其他角色，并为其指定一名“司敌”目标角色（仅你可见）。其使用的下一张非延时锦囊牌指定目标后，清除你为其指定的“司敌”目标角色，若此时其使用此牌仅指定“司敌”目标为唯一目标，且目标：为你，你摸一张牌；不为你，你可以选择一项：⒈取消此牌目标，然后若场上没有处于濒死的角色，你对其造成1点伤害；⒉摸两张牌。',
             bilibili_meihua: '美化',
             bilibili_meihua_info: '分发起始手牌前，你将牌堆中的所有装备牌置于武将牌上（这些牌可如手牌般使用，且每回合每种副类别的牌限使用一次）。你的装备栏不会被废除。没有〖美化〗的角色的出牌阶段限一次，其可以交给拥有〖美化〗的一名角色并将一张手牌当作本局游戏牌堆组成的一张装备牌装备之。',
             bilibili_gongyou: '攻优',
@@ -10597,15 +10205,6 @@ const packs = function () {
             bilibili_fazhou_info: '一轮游戏开始时，你可以选择任意名上一轮使用过三种类别的牌或造成过伤害的其他角色，对这些角色依次肘成1点伤害，然后本轮将其肘出游戏。',
             bilibili_fazhou_append: '<span style="font-family:yuanli">不顺群意者，当填黑屋之壑。<br>吾令不从者，当膏肘击之锷。</span>',
             bilibili_xizhicaikobe: '戏志才',
-            bolxiaofan: '嚣翻',
-            bolxiaofan_hs: 'invisible',
-            bolxiaofan_info: '当你需要使用不为【无懈可击】的牌时，你可以观看牌堆底的X+1张牌并使用其中的一张。此牌结算结束时，你依次弃置以下前X个区域中的所有牌：⒈判定区、⒉装备区、⒊手牌区（X为本回合你使用过的牌中包含的类型数）。',
-            boltuishi: '侻失',
-            boltuishi_info: '锁定技。①你不能使用【无懈可击】。②当你使用点数为字母的牌时，你令此牌无效并摸一张牌，且你对手牌数小于你的角色使用的下一张牌无距离和次数限制。③当你使用伤害类卡牌结算完毕后，若此牌为你本回合使用的第三张或以上未造成伤害的卡牌，则你令〖器翻〗于本回合失效。',
-            bolaocai: '傲才',
-            bolaocai_hs: 'invisible',
-            bolaocai_info: '当你于回合外需要使用或打出一张基本牌时，你可以观看牌堆顶的两张牌（若你没有手牌则改为四张）。若你观看的牌中有此牌，你可以使用打出之。',
-            bolaocai_info_guozhan: '当你于回合外需要使用或打出一张基本牌时，你可以观看牌堆顶的两张牌。若你观看的牌中有此牌，你可以使用打出之。',
             bilibili_biexiao: '憋笑',
             bilibili_xingshi: '醒世',
             bilibili_xingshi_info: '锁定技。若你的势力为魏/蜀/吴/群/晋，则你视为拥有对应势力效果。',

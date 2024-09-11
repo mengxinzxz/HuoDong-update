@@ -282,7 +282,7 @@ const packs = function () {
             Mbaby_ol_dingyuan: ['male', 'qun', 4, ['minicixiao', 'xianshuai']],
             Mbaby_liubian: ['male', 'qun', 3, ['shiyuan', 'minidushi', 'yuwei'], ['zhu']],
             Mbaby_re_pangdegong: ['male', 'qun', 3, ['miniheqia', 'yinyi']],
-            Mbaby_licaiwei: ['female', 'wei', 3, ['yijiao', 'miniqibie'], ['doublegroup:qun:wei']],
+            Mbaby_licaiwei: ['female', 'qun', 3, ['yijiao', 'miniqibie'], ['border:wei']],
             Mbaby_dc_huangzu: ['male', 'qun', 4, ['dcjinggong', 'minixiaojuan']],
             Mbaby_yanbaihu: ['male', 'qun', 4, ['minizhidao', 'minybhijili']],
             Mbaby_guosi: ['male', 'qun', 4, ['minitanbei', 'minisidao']],

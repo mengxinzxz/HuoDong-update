@@ -858,14 +858,13 @@ export function content(config, pack) {
 		}
 	}
 
-	//特殊势力变更
-	//特殊×出生√
+	//图片素材变更
+	//虽说有了折中的势力表示法但是OL还是先给晋谢个罪
 	if (lib.config.extension_活动武将_HD_yrnsm) {
-		game.HDaddCharacter('chengjichengcui', ['male', 'wei', 6, ['oltousui', 'olchuming'], []], 'yingbian');
-		game.HDaddCharacter('clan_wuqiao', ['male', 'qun', 4, ['clanqiajue', 'clanmuyin'], ['clan:陈留吴氏', 'ext:活动武将/image/character/clan_wuqiao.jpg']], 'clan');
-		game.HDaddCharacter('wangyan', ['male', 'qun', 4, ['yangkuang', 'cihuang', 'sanku'], ['ext:活动武将/image/character/wangyan.jpg']], 'sp');
-		game.HDaddCharacter('clan_wanglun', ['male', 'wei', 3, ['clanqiuxin', 'clanjianyuan', 'clanzhongliu'], ['clan:太原王氏', 'ext:活动武将/image/character/clan_wanglun.jpg']], 'clan');
-		game.HDaddCharacter('ol_peixiu', ['male', 'wei', 3, ['olmaozhu', 'oljinlan'], ['ext:活动武将/image/character/ol_peixiu.jpg']], 'sp');
+		[['clan_wuqiao', 'clan'], ['wangyan', 'sp'], ['clan_wanglun', 'clan'], ['ol_peixiu', 'sp']].forEach(list => {
+			lib.characterPack[list[1]][list[0]][4] = ['ext:活动武将/image/character/' + list[0] + '.jpg'].concat(lib.characterPack[list[1]][list[0]][4] || []);
+			if(lib.character[list[0]]) lib.character[list[0]][4] = ['ext:活动武将/image/character/' + list[0] + '.jpg'].concat(lib.character[list[0]][4] || []);
+		});
 	}
 
 	//precGuoZhan(分界线，便于我搜过来)
@@ -905,7 +904,6 @@ export function content(config, pack) {
 					gz_bianfuren: ['female', 'wei', 3, ['gzwanwei', 'gzyuejian'], []],
 					gz_re_xushu: ['male', 'shu', 4, ['gzqiance', 'gzjujian'], ['gzskin']],
 					gz_wujing: ['male', 'wu', 4, ['donggui', 'fengyang_old'], ['gzskin']],
-					gz_zhugeke: ['male', 'wu', 3, ['bolaocai', 'gzduwu'], ['gzskin']],
 				},
 			};
 			for (const i in change_pack) {
@@ -1263,40 +1261,8 @@ export function content(config, pack) {
 	if (!lib.skill.gzxiongnve) lib.skill.gzxiongnve = { audio: 2 };
 
 	//技能配音修正
-	lib.skill.moon_jushou.audio = 'xinjushou';
-	lib.skill.jushou.audio = 'xinjushou';
-	lib.skill.jiewei.audio = 'xinjiewei';
-	lib.skill.liangying.audio = false;
 	lib.skill.juntun.audio = 'ext:活动武将/audio/skill:true';
 	lib.skill.jiaojie.audio = 'ext:活动武将/audio/skill:true';
-	lib.skill.new_juexiang.audio = 'juexiang';
-	lib.skill.polu.subSkill.damage.audio = 'polu';
-	lib.skill.reyixiang.subSkill.card.audio = 'yixiang';
-	lib.skill.reyixiang.subSkill.card.audioname = ['re_taoqian'];
-	lib.skill.jishi.subSkill.draw.audio = 'jishi';
-	lib.skill.xinhuangtian.audio = 'huangtian2';
-	lib.skill.dcfuxue.subSkill.draw.audio = 'dcfuxue';
-	lib.skill.sbhuangtian.subSkill.mark.audio = 'sbhuangtian';
-	lib.skill.fengxiang.subSkill.draw.audio = 'fengxiang';
-	lib.skill.tianze.subSkill.draw.audio = 'tianze';
-	lib.skill.spshidi.subSkill.use.audio = 'spshidi';
-	lib.skill.spshidi.subSkill.beused.audio = 'spshidi';
-	lib.skill.huaiyuan.subSkill.init.audio = 'huaiyuan';
-	lib.skill.huaiyuan.subSkill.die.audio = 'huaiyuan';
-	lib.skill.weishu.subSkill.discard.audio = 'weishu';
-	lib.skill.twhengjiang.audio = 'hengjiang';
-	lib.skill.jianhui.subSkill.draw.audio = 'jianhui';
-	lib.skill.reqiaobian.subSkill.jieshu.audio = 'reqiaobian';
-	lib.skill.yuzhang.subSkill.skip.audio = 'yuzhang';
-	lib.skill.dcliuzhuan.subSkill.gain.audio = 'dcliuzhuan';
-	lib.skill.yizan_use.audio = 'yizan_respond_shan';
-	lib.skill.splveying.subSkill.add.audio = 'splveying';
-	lib.skill.spyingwu.subSkill.add.audio = 'spyingwu';
-	lib.skill.fuping.subSkill.mark.audio = 'fuping';
-	lib.skill.scfuhai.subSkill.usea.audio = 'scfuhai';
-	lib.skill.scfuhai.subSkill.die.audio = 'scfuhai';
-	lib.skill.tianzuo.subSkill.remove.audio = 'tianzuo';
-	lib.skill.dcbianzhuang.subSkill.refresh.audio = 'dcbianzhuang';
 
 	//武将配音audioname添加
 	game.HDsetAudioname = function (skills, list) {
@@ -1308,7 +1274,6 @@ export function content(config, pack) {
 			lib.skill[skill].audioname.addArray(list);
 		});
 	};
-	game.HDsetAudioname(['huangtian2', 'xinhuangtian', 'xinhuangtian2'], ['zhangjiao', 're_zhangjiao']);
 	game.HDsetAudioname(['dchuishu', 'dcyishu', 'yingzi', 'biyue'], 'bilibili_zhouxiaomei');
 	lib.skill.dchuishu.subSkill.effect.audioname = (lib.skill.dchuishu.subSkill.effect.audioname || []).concat(['bilibili_zhouxiaomei']);
 	game.HDsetAudioname('yijin', 'bilibili_litiansuo');
@@ -1369,12 +1334,6 @@ export function content(config, pack) {
 	});
 	game.HDsetAudioname2('relianying', {
 		wechat_lukang: 'rejizhi_lukang',
-	});
-	game.HDsetAudioname2('qingguo', {
-		re_zhenji: 'reqingguo',
-	});
-	game.HDsetAudioname2('shangshi', {
-		re_zhangchunhua: 'reshangshi',
 	});
 	game.HDsetAudioname2('wusheng', {
 		bolx_jsp_guanyu: 'wusheng_jsp_guanyu',
@@ -1454,46 +1413,32 @@ export function content(config, pack) {
 	//标包
 	game.HDaddCharacter('re_yuanshu', ['male', 'qun', 4, ['wangzun', 'tongji'], []], 'standard');
 
-	//一将成名
-	game.HDaddCharacter('guohuai', ['male', 'wei', 3, ['rejingce'], []], 'yijiang');
-
 	//神将
 	lib.characterSort.extra.extra_ol.addArray(['junk_zhangjiao']);
 	game.HDaddCharacter('shen_sunquan', ['male', 'shen', 4, ['bolyuheng', 'boldili'], ['wu']], 'extra');
 	game.HDmoveCharacter('junk_zhangjiao', 'extra');
 
 	//界限突破
-	game.HDaddCharacter('re_zhenji', ['female', 'wei', 3, ['reluoshen', 'qingguo'], []], 'refresh');
-	game.HDaddCharacter('re_zhangchunhua', ['female', 'wei', 3, ['rejueqing', 'shangshi'], []], 'refresh');
-	game.HDaddCharacter('re_caorui', ['male', 'wei', 3, ['huituo', 'remingjian', 'xingshuai'], ['zhu']], 'refresh');
 	game.HDaddCharacter('dc_xushu', ['male', 'shu', 4, ['bolzhuhai', 'xsqianxin'], []], 'refresh');
 
 	//璀璨星河
-	game.HDaddCharacter('zhugejin', ['male', 'wu', 3, ['huanshi', 'olhongyuan', 'olmingzhe'], []], 'sp');
 	game.HDaddCharacter('maliang', ['male', 'shu', 3, ['zishu', 'xinyingyuan'], []], 'sp');
 	game.HDaddCharacter('zhanghua', ['male', 'jin', 3, ['olbihun', 'oljianhe', 'bolchuanwu'], []], 'sp');
-	game.HDaddCharacter('ol_pengyang', ['male', 'shu', 3, ['bolxiaofan', 'boltuishi', 'nzry_cunmu'], []], 'sp');
-	game.HDaddCharacter('zhugeke', ['male', 'wu', 3, ['bolaocai', 'duwu'], []], 'sp');
 
 	//系列专属包
 	lib.characterSort.sp2.sp2_waitforsort.addArray(['junk_zhangrang']);
 	game.HDaddCharacter('junk_zhangrang', ['male', 'qun', 3, ['junktaoluan'], []], 'sp2');
-	game.HDaddCharacter('licaiwei', ['female', 'qun', 3, ['yijiao', 'qibie'], ['doublegroup:wei:qun']], 'sp2');
-	game.HDaddCharacter('duanwei', ['male', 'qun', 4, ['junklangmie'], []], 'sp2');
 
 	//限定专属
 	game.HDaddCharacter('luyi', ['female', 'qun', 3, ['dcyaoyi', 'dcshoutan', 'dcfuxue'], []], 'xianding');
 
 	//OL专属
 	lib.characterSort.onlyOL.bilibili_buchong_onlyOL = ['junk_lidian'];
-	game.HDaddCharacter('ol_huaxin', ['male', 'wei', 3, ['caozhao', 'olxibing'], ['ext:活动武将/image/character/ol_huaxin.jpg']], 'yingbian');
 	game.HDmoveCharacter('junk_lidian', 'onlyOL');
 
 	//移动服
 	lib.characterSort.mobile.bilibili_buchong_mobile = ['old_zhaoxiang', 'ol_maliang', 'ol_yuanshu', 'old_bulianshi', 'old_zhangqiying', 'junk_xuyou'];
 	game.HDaddCharacter('old_zhangqiying', ['female', 'qun', 3, ['xinfu_falu', 'olddianhua', 'oldzhenyi'], ['ext:活动武将/image/character/old_zhangqiying.jpg']], 'mobile');
-	game.HDaddCharacter('yangfu', ['male', 'wei', 3, ['jiebing', 'bolhannan'], []], 'mobile');
-	game.HDaddCharacter('xin_caozhen', ['male', 'wei', 4, ['bolsidi'], []], 'mobile');
 	game.HDaddCharacter('junk_xuyou', ['male', 'qun', 3, ['nzry_chenglve', 'junkshicai', 'nzry_cunmu'], []], 'mobile');
 	game.HDaddCharacter('old_bulianshi', ['female', 'wu', 3, ['anxu', 'zhuiyi'], []], 'mobile');
 	game.HDaddCharacter('ol_yuanshu', ['male', 'qun', 4, ['rewangzun', 'retongji'], []], 'mobile');
@@ -1508,7 +1453,6 @@ export function content(config, pack) {
 	}
 	game.HDaddCharacter('bolx_jsp_guanyu', ['male', 'wei', 4, ['wusheng', 'wzdanji'], ['ext:活动武将/image/character/bolx_jsp_guanyu.jpg']], 'offline');
 	game.HDaddCharacter('bol_sunluban', ['female', 'wu', 3, ['boljiaozong', 'bolchouyou'], ['ext:活动武将/image/character/bol_sunluban.jpg']], 'offline');
-	game.HDaddCharacter('jd_ol_huaxin', ['male', 'wei', 3, ['jdcaozhao', 'olxibing'], ['ext:活动武将/image/character/ol_huaxin.jpg', 'die:ol_huaxin']], 'offline');
 
 	//海外
 	lib.characterSort.tw.bilibili_buchong_tw = [];
@@ -1556,12 +1500,11 @@ export function content(config, pack) {
 	game.HDaddCharacter('old_sp_mifuren', ['female', 'shu', 3, ['spguixiu', 'spcunsi'], ['ext:活动武将/image/character/old_sp_mifuren.jpg']], 'old');
 	game.HDaddCharacter('old_zhouchu', ['male', 'wu', 4, ['xianghai', 'chuhai'], ['ext:活动武将/image/character/old_zhouchu.jpg']], 'old');
 	game.HDaddCharacter('old_sb_ganning', ['male', 'wu', 4, ['old_qixi', 'old_fenwei'], ['ext:活动武将/image/character/old_sb_ganning.jpg']], 'old');
-	game.HDaddCharacter('junk_duanwei', ['male', 'qun', 4, ['langmie'], []], 'old');
+	game.HDmoveCharacter('junk_duanwei', 'old');
 	game.HDaddCharacter('old_yuanji', ['female', 'wu', 3, ['dcmengchi', 'dcjiexing'], ['ext:活动武将/image/character/old_yuanji.jpg']], 'old');
 
 	//DIY
 	lib.characterSort.diy.diy_trashbin.addArray(['bol_zhangzhongjing', 'bol_sp_huaxin', 'bfake_zuoci', 'bfake_yangfu', 'bfake_chengpu', 'bfake_sundeng', 'old_shen_sunquan', 'old_shen_ganning', 'bfake_chengui', 'old_ol_xiaoqiao', 'old_zhanghe', 'old_zhugejin', 'oldx_zhangfei', 'oldx_guanyu', 'oldx_zhaoyun', 'oldx_yujin']);
-	game.HDdeleteCharacter('ol_guohuai');
 	game.HDaddCharacter('bfake_yangfu', ['male', 'wei', 4, ['old_jiebing', 'old_kuzhan'], ['ext:活动武将/image/character/bfake_yangfu.jpg']], 'diy');
 	game.HDaddCharacter('bfake_zuoci', ['male', 'qun', 3, ['BThuashen', 'BTxinsheng'], ['ext:活动武将/image/character/bfake_zuoci.jpg']], 'diy');
 	game.HDaddCharacter('bfake_chengpu', ['male', 'wu', 4, ['bollihuo', 'bolchunlao'], ['ext:活动武将/image/character/bfake_chengpu.jpg']], 'diy');
@@ -1583,26 +1526,6 @@ export function content(config, pack) {
 
 	//precS
 	//技能修改
-	//范疆张达
-	lib.skill.juesheng.subSkill.counter.direct = true;
-	//谋黄忠
-	lib.skill.sbliegong.subSkill.block.direct = true;
-	lib.skill.sbliegong.subSkill.count.direct = true;
-	lib.skill.sbliegong.subSkill.count.locked = false;
-	//司马师
-	lib.skill.tairan.content = function () {
-		'step 0'
-		player.addSkill('tairan2');
-		player.storage.tairan2 = 0;
-		var num = player.maxHp - player.hp;
-		if (num > 0) {
-			player.storage.tairan2 += num;
-			player.recover(num);
-		}
-		'step 1'
-		if (player.countCards('h') < player.maxHp) player.drawTo(player.maxHp).gaintag = ['tairan'];
-	};
-	lib.translate.tairan_info = '锁定技，回合结束时，你将体力回复至体力上限，并将手牌摸至体力上限（获得的牌称为“泰然”牌）。然后你的下一个出牌阶段开始时，你失去上次以此法回复的体力值的体力，弃置所有“泰然”牌。';
 	//魅步
 	lib.skill.meibu.content = function () {
 		var target = trigger.player;
@@ -1624,26 +1547,6 @@ export function content(config, pack) {
 		},
 	};
 	lib.translate.meibu_info = '其他角色的出牌阶段开始时，若你不在其攻击范围内，你可以令该角色的锦囊牌均视为【杀】直到回合结束。若如此做，本回合你视为在其攻击范围内。';
-	//贾诩
-	lib.skill.weimu.filter = function (event, player) {
-		if (event.player == player) return false;
-		if (get.color(event.card) != 'black' || get.type(event.card) != 'trick') return false;
-		var info = get.info(event.card.name);
-		return info && info.selectTarget && info.selectTarget == -1 && !info.toself;
-	};
-	lib.skill._reweimu = {
-		charlotte: true,
-		trigger: { global: 'useCard1' },
-		filter: function (event, player) {
-			if (!player.hasSkill('reweimu') || event.player == player || get.is.blocked('reweimu', player)) return false;
-			if (get.color(event.card) != 'black' || get.type(event.card) != 'trick') return false;
-			var info = get.info(event.card.name);
-			return info && info.selectTarget && info.selectTarget == -1 && !info.toself;
-		},
-		priority: 15,
-		direct: true,
-		content: function () { player.logSkill('reweimu') },
-	};
 	//周处
 	lib.skill._xianghai = {
 		charlotte: true,
@@ -1682,48 +1585,6 @@ export function content(config, pack) {
 		direct: true,
 		content: function () { player.logSkill('shenji') },
 	};
-	//水淹七军
-	lib.card.shuiyanqijunx.filterTarget = function (card, player, target) {
-		return target != player && ((get.mode() == 'single' && _status.mode && _status.mode == 'normal') || target.countCards('e'));
-	};
-	lib.translate.shuiyanqijunx_info = '出牌阶段，对一名' + ((get.mode() == 'single' && _status.mode && _status.mode == 'normal') ? '' : '装备区里有牌的') + '其他角色使用。目标角色选择一项：1、弃置装备区里的所有牌；2、受到你对其造成的1点雷电伤害。';
-	//族吴苋
-	lib.skill.clanyirong.prompt = function () {
-		var player = _status.event.player;
-		var num1 = player.countCards('h'), num2 = player.getHandcardLimit();
-		var str = '<span class="text center">';
-		if (num1 > num2) str += ('弃置' + get.cnNumber(num1 - num2) + '张牌，然后手牌上限+1。');
-		else str += ('摸' + get.cnNumber(num2 - num1) + '张牌，然后手牌上限-1。');
-		str += ('<br>※当前手牌上限：' + num2);
-		str += '</span>';
-		return str;
-	};
-	lib.skill.clanyirong.content = function () {
-		'step 0'
-		if (cards.length) {
-			lib.skill.chenliuwushi.change(player, 1);
-			event.finish();
-		}
-		else {
-			var num1 = player.countCards('h'), num2 = player.getHandcardLimit();
-			if (num1 < num2) player.draw(num2 - num1);
-		}
-		'step 1'
-		lib.skill.chenliuwushi.change(player, -1);
-	};
-	lib.translate.clanyirong_info = '出牌阶段限两次。你可以将你的手牌数摸至/弃至你的手牌上限，然后你的手牌上限-1/+1。';
-	//族吴班
-	lib.skill.clanzhanding.subSkill.effect.content = function () {
-		if (player.hasHistory('sourceDamage', evt => evt.card == trigger.card)) {
-			var num1 = player.countCards('h'), num2 = player.getHandcardLimit();
-			if (num1 < num2) player.draw(num2 - num1);
-		}
-		else if (trigger.addCount !== false) {
-			trigger.addCount = false;
-			player.getStat().card.sha--;
-		}
-	};
-	lib.translate.clanzhanding_info = '你可以将任意张牌当做【杀】使用并你令你的手牌上限-1。你以此法使用的【杀】结算结束后，若你因此【杀】造成过伤害，则你将手牌摸至手牌上限，否则你令此【杀】不计入次数限制。';
 	//神张角
 	delete lib.skill.yizhao.intro.markcount;
 	lib.skill.yizhao.filter = function (event, player) {
@@ -1782,26 +1643,6 @@ export function content(config, pack) {
 		}
 		return 1;
 	};
-	//二曹
-	lib.skill.huamu.filter = function (event, player) {
-		var color = get.color(event.card);
-		if (!player.hasHistory('lose', function (evt) {
-			return evt.hs.length > 0 && evt.getParent() == event;
-		}) || !event.cards.filterInD('oe').length) return false;
-		var history = game.getGlobalHistory('useCard');
-		var index = history.indexOf(event);
-		if (index < 1) return false;
-		var evt = history[index - 1], color2 = get.color(evt.card);
-		return color != color2;
-	};
-	lib.skill.huamu.mod.aiOrder = function (player, card, num) {
-		if (typeof card == 'object') {
-			var history = game.getGlobalHistory('useCard');
-			if (!history.length) return;
-			var evt = history[history.length - 1];
-			if (evt && evt.card && get.color(evt.card) != get.color(card)) return num + 4;
-		}
-	};
 	//左慈
 	lib.skill.rehuashen.drawCharacter = function (player, list) {
 		game.broadcastAll(function (player, list) {
@@ -1816,40 +1657,6 @@ export function content(config, pack) {
 				return game.createCard(cardname, ' ', ' ');
 			}), 'nobroadcast');
 		}, player, list);
-	};
-	//许靖
-	var content = '' + lib.skill.dccaixia.content;
-	eval('lib.skill.dccaixia.content=' + content.replace("player.addMark('dccaixia_clear',num)", "player.addMark('dccaixia_clear',num,false)"));
-	lib.skill.dccaixia.subSkill.clear.content = function () {
-		player.removeMark('dccaixia_clear', 1, false);
-	};
-	lib.translate.dccaixia_info = '当你造成或受到伤害后，你可以摸至多X张牌，然后你不能发动〖才暇〗直到你使用等量张牌（X为本局游戏人数且至多为5）。';
-	//经典孙权
-	lib.skill.dczhiheng.subSkill.add.direct = true;
-	lib.skill.dczhiheng.subSkill.add.filter = function (event, player) {
-		if (event.player == player) return false;
-		return !player.getStorage('dczhiheng_hit').includes(event.player);
-	};
-	lib.skill.dczhiheng.init = function (player) {
-		var history = player.getHistory('sourceDamage', evt => evt.player != player);
-		if (history.length) {
-			player.addTempSkill('dczhiheng_hit');
-			player.markAuto('dczhiheng_hit', history.reduce((list, evt) => list.add(evt.player), []));
-		}
-	};
-	//经典曹操
-	lib.skill.dcjianxiong.mark = true;
-	//朱铁雄
-	lib.skill.dcbianzhuang.subSkill.refresh.content = function () {
-		var stat = player.getStat('skill');
-		delete stat.dcbianzhuang;
-		game.log(player, '重置了技能', '#g【变装】');
-	};
-	//神张飞
-	lib.skill.shencai.init = (player) => player.markSkill('shencai');
-	lib.skill.shencai.intro = {
-		markcount: (storage, player) => player.countMark('shencai') + 1,
-		content: (storage, player) => '当前最大发动次数：' + (player.countMark('shencai') + 1),
 	};
 	//YYDSの蔡阳
 	lib.skill.yinka.charlotte = true;
