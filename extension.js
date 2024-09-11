@@ -16,13 +16,14 @@ game.bolShowNewPack = function () {
 		'bugfix',
 		'补充部分武将原画，修改部分武将技能',
 		'添加欢杀武将：张温、马忠、陈琳、神庞统',
-		'添加微信武将：神吕布、刘焉、甄宓、卧龙',
+		'添加微信武将：神吕布、刘焉、甄宓、卧龙、星魏延、杨阜、孙皓、甘夫人',
 		'To be continued...',
 	];
 	//更新武将
 	var HuoDong_players = [
 		'Mbaby_zhangwen', 'Mbaby_mazhong', 'Mbaby_chenlin', 'Mbaby_shen_pangtong',
 		'wechat_shen_lvbu', 'wechat_liutan', 'wechat_zhenji', 'wechat_sb_zhugeliang',
+		'wechat_yj_weiyan', 'wechat_yangfu', 'wechat_sunhao', 'wechat_ganfuren',
 	];
 	//加载
 	var dialog = ui.create.dialog(

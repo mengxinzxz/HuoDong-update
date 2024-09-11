@@ -7690,12 +7690,13 @@ const packs = function () {
                 enable: 'phaseUse',
                 filter: function (event, player) {
                     if (!player.countCards('he')) return false;
+                    var count = player.getStat('skill').minifeijun || 0;
+                    if (count > player.countMark('wechatbinglve_count')) return false;
                     return game.hasPlayer(function (current) {
                         if (current == player) return false;
                         return current.countCards('he');
                     });
                 },
-                usable: 1,
                 chooseButton: {
                     dialog: function (event, player) {
                         var dialog = ui.create.dialog('飞军：弃置一张牌，然后…', 'hidden');
