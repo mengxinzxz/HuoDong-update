@@ -11865,6 +11865,8 @@ const packs = function () {
                         content: function () {
                             player.recover();
                         },
+                        mark: true,
+                        intro: { content: '使用【杀】的次数上限+1，且使用【杀】造成伤害后回复1点体力' },
                     },
                     '1': {
                         charlotte: true,
@@ -11873,22 +11875,15 @@ const packs = function () {
                                 if (card.name == 'sha') return true;
                             },
                         },
-                        trigger: { player: 'useCardToPlayered' },
-                        filter: function (event, player) {
-                            return event.card.name == 'sha' && get.color(event.card) == 'black';
-                        },
-                        direct: true,
-                        content: function () {
-                            trigger.target.addTempSkill('qinggang2');
-                            trigger.target.storage.qinggang2.add(trigger.card);
-                        },
                         ai: {
+                            unequip: true,
                             unequip_ai: true,
                             skillTagFilter: function (player, tag, arg) {
-                                if (arg && arg.name == 'sha' && get.color(arg.card) == 'black') return true;
-                                return false;
+                                return arg && arg.name == 'sha';
                             },
                         },
+                        mark: true,
+                        intro: { content: '使用【杀】无距离限制且无视防具' },
                     },
                 },
             },
@@ -19295,7 +19290,7 @@ const packs = function () {
                                 if (!info || !info.trigger || !info.trigger.player || info.silent || info.limited || info.juexingji || info.hiddenSkill ||
                                     info.dutySkill || (info.zhuSkill && !player.isZhu2()) || info.groupSkill || (info.priority && typeof info.priority == 'number') || info.firstDo || info.lastDo) continue;
                                 if (info.trigger.player == name2 || Array.isArray(info.trigger.player) && info.trigger.player.includes(name2)) {
-                                    if (/*info.init||info.onChooseToUse||*/info.ai && (info.ai.combo || info.ai.notemp || info.ai.neg)) continue;
+                                    if (/*info.init||*/info.onChooseToUse || info.ai && (info.ai.combo || info.ai.notemp || info.ai.neg)) continue;
                                     if (info.init) info.init(player, list2[k]);
                                     if (info.filter) {
                                         try {
@@ -19354,10 +19349,10 @@ const packs = function () {
                                 if (!info || !info.enable || info.charlotte || info.limited || info.juexingji || info.hiddenSkill || info.dutySkill || (info.zhuSkill && !player.isZhu2()) || info.groupSkill) continue;
                                 if ((info.enable == 'phaseUse' || (Array.isArray(info.enable) && info.enable.includes('phaseUse'))) ||
                                     (info.enable == 'chooseToUse' || (Array.isArray(info.enable) && info.enable.includes('chooseToUse')))) {
-                                    if (/*info.init||info.onChooseToUse||*/info.ai && (info.ai.combo || info.ai.notemp || info.ai.neg)) continue;
+                                    if (/*info.init||*/info.onChooseToUse || info.ai && (info.ai.combo || info.ai.notemp || info.ai.neg)) continue;
                                     var evt = event.getParent(2);
                                     if (info.init) info.init(player, list2[k]);
-                                    if (info.onChooseToUse) info.onChooseToUse(evt);
+                                    //if (info.onChooseToUse) info.onChooseToUse(evt);
                                     if (info.filter) {
                                         try {
                                             var bool = info.filter(evt, player);
