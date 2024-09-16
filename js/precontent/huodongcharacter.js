@@ -4437,10 +4437,10 @@ const packs = function () {
                 },
                 direct: true,
                 locked: true,
-                content: function (event, player) {
+                content: function () {
                     'step 0'
                     delete _status.sankuangCheck;
-                    player.chooseTarget('请选择【三恇】的目标', lib.translate.old_sankuang_info, lib.filter.notMe, true).set('ai', function (target) {
+                    player.chooseTarget('请选择【三恇】的目标', lib.dynamicTranslate.old_sankuang(player), lib.filter.notMe, true).set('ai', function (target) {
                         var player = _status.event.player;
                         var num = lib.skill.old_sankuang.getNum(target, player);
                         if (!lib.skill.old_sankuang.findTarget(player) && game.hasPlayer(function (current) {
