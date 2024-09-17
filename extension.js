@@ -15,7 +15,7 @@ game.bolShowNewPack = function () {
 		'整合@xizifu @Kobe的Pull Requests',
 		'bugfix',
 		'补充部分武将原画，修改部分武将技能',
-		'添加欢杀武将：张温、马忠、陈琳、神庞统',
+		'添加欢杀武将：张温、马忠、陈琳、神庞统、兀突骨',
 		'添加微信武将：神吕布、刘焉、甄宓、卧龙、星魏延、杨阜、孙皓、甘夫人、徐荣',
 		'To be continued...',
 	];
@@ -24,7 +24,7 @@ game.bolShowNewPack = function () {
 		'Mbaby_zhangwen', 'Mbaby_mazhong', 'Mbaby_chenlin', 'Mbaby_shen_pangtong',
 		'wechat_shen_lvbu', 'wechat_liuyan', 'wechat_zhenji', 'wechat_sb_zhugeliang',
 		'wechat_yj_weiyan', 'wechat_yangfu', 'wechat_sunhao', 'wechat_ganfuren',
-		'wechat_xurong',
+		'wechat_xurong', 'Mbaby_wutugu',
 	];
 	//加载
 	var dialog = ui.create.dialog(
@@ -79,7 +79,7 @@ let extensionPackage = {
 		author: '萌新（转型中）',
 		diskURL: '',
 		forumURL: '',
-		version: '0.3.0-待定',
+		version: '0.3.0',
 		//新人制作扩展，希望大家支持。
 		//新人技术不足，希望大家包涵。
 		//壹、贰、叁、肆、伍、陆、柒、捌、玖、拾
