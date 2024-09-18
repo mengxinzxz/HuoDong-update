@@ -162,10 +162,12 @@ const packs = function () {
                 subtype: 'equip5',
                 loseDelay: false,
                 onLose() {
-                    card.fix();
-                    card.remove();
-                    card.destroyed = true;
-                    game.log(card, '被销毁了');
+                    cards.forEach(card => {
+                        card.fix();
+                        card.remove();
+                        card.destroyed = true;
+                        game.log(card, '被销毁了');
+                    });
                     player.addTempSkill('bol_wuqibingfa');
                 },
                 skills: [],
