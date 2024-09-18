@@ -235,7 +235,7 @@ const packs = function () {
             Mbaby_yuanshao: ['male', 'qun', 4, ['miniluanji', 'minixueyi'], ['zhu']],
             Mbaby_yuanshu: ['male', 'qun', 4, ['yongsi', 'miniweidi']],
             Mbaby_chengong: ['male', 'qun', 3, ['minimingce', 'zhichi']],
-            Mbaby_jiaxu: ['male', 'qun', 3, ['miniwansha', 'luanwu', 'weimu']],
+            Mbaby_jiaxu: ['male', 'qun', 3, ['minirewansha', 'reluanwu', 'reweimu']],
             Mbaby_liuzhang: ['male', 'qun', 4, ['miniyinlang', 'minixiusheng', 'minihuaibi'], ['zhu']],
             Mbaby_panfeng: ['male', 'qun', 4, ['minikuangfu']],
             Mbaby_sp_machao: ['male', 'qun', 4, ['minizhuiji', 'minishichou']],
@@ -17663,6 +17663,36 @@ const packs = function () {
                     },
                 },
             },
+            minirewansha: {
+                inherit: 'miniwansha',
+                group: 'minirewansha_effect',
+                subSkill: {
+                    effect: {
+                        trigger: {
+                            player: 'phaseUseBegin',
+                        },
+                        filter(event, player) {
+                            return game.hasPlayer(current => current != player && current.hp > 1);
+                        },
+                        async cost(event, trigger, player) {
+                            event.result = await player.chooseTarget(get.prompt('minirewansha'), '令一名体力值大于1的其他角色失去1点体力，本阶段结束时其回复1点体力', (card, player, target) => {
+                                return target != player && target.hp > 1;
+                            }).set('ai', target => {
+                                const player = get.player();
+                                return get.effect(target, { name: 'losehp' }, player, player);
+                            }).forResult();
+                        },
+                        async content(event, trigger, player) {
+                            const target = event.targets[0];
+                            player.line(target);
+                            await target.loseHp();
+                            player.when('phaseUseEnd').then(() => {
+                                if (target.isIn()) target.recover();
+                            }).vars({ target: target });
+                        },
+                    }
+                }
+            },
             minimieji: {
                 audio: 'xinmieji',
                 enable: 'phaseUse',
@@ -29502,6 +29532,8 @@ const packs = function () {
             minibenghuai_info: '锁定技，结束阶段，若你的体力不为全场最少，你须减1点体力或体力上限，然后摸一张牌。',
             miniwansha: '完杀',
             miniwansha_info: '锁定技，你的回合内，只有你可以使用【桃】。',
+            minirewansha: '完杀',
+            minirewansha_info: '锁定技，你的回合内，只有你可以使用【桃】；出牌阶段开始时，你可令一名体力值大于1的其他角色失去1点体力，本阶段结束时，其回复1点体力。',
             minimieji: '灭计',
             minimieji_info: '出牌阶段限一次，你可以将一张黑色牌置于牌堆顶，然后令有一名手牌的其他角色弃置一张锦囊或弃置两张非锦囊牌。',
             minishibei: '矢北',
