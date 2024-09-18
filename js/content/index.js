@@ -1062,7 +1062,6 @@ export function content(config, pack) {
 					'old_shen_xunyu',
 					'old_shen_taishici',
 					'old_shen_sunce',
-					'junk_zhangjiao',
 				],
 				//史诗
 				epic: [
@@ -1414,9 +1413,7 @@ export function content(config, pack) {
 	game.HDaddCharacter('re_yuanshu', ['male', 'qun', 4, ['wangzun', 'tongji'], []], 'standard');
 
 	//神将
-	lib.characterSort.extra.extra_ol.addArray(['junk_zhangjiao']);
 	game.HDaddCharacter('shen_sunquan', ['male', 'shen', 4, ['bolyuheng', 'boldili'], ['wu']], 'extra');
-	game.HDmoveCharacter('junk_zhangjiao', 'extra');
 
 	//界限突破
 	game.HDaddCharacter('dc_xushu', ['male', 'shu', 4, ['bolzhuhai', 'xsqianxin'], []], 'refresh');
