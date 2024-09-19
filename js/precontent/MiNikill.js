@@ -235,7 +235,7 @@ const packs = function () {
             Mbaby_yuanshao: ['male', 'qun', 4, ['miniluanji', 'minixueyi'], ['zhu']],
             Mbaby_yuanshu: ['male', 'qun', 4, ['yongsi', 'miniweidi']],
             Mbaby_chengong: ['male', 'qun', 3, ['minimingce', 'zhichi']],
-            Mbaby_jiaxu: ['male', 'qun', 3, ['minirewansha', 'reluanwu', 'reweimu']],
+            Mbaby_jiaxu: ['male', 'qun', 3, ['minirewansha', 'reluanwu', 'reweimu'], ['tempname:re_jiaxu', 'die:re_jiaxu']],
             Mbaby_liuzhang: ['male', 'qun', 4, ['miniyinlang', 'minixiusheng', 'minihuaibi'], ['zhu']],
             Mbaby_panfeng: ['male', 'qun', 4, ['minikuangfu']],
             Mbaby_sp_machao: ['male', 'qun', 4, ['minizhuiji', 'minishichou']],
@@ -17638,6 +17638,7 @@ const packs = function () {
             },
             miniwansha: {
                 audio: 'wansha',
+                audioname: ['shen_simayi', 're_jiaxu'],
                 global: 'miniwansha2',
                 trigger: { global: 'dying' },
                 forced: true,
@@ -17649,17 +17650,15 @@ const packs = function () {
             },
             miniwansha2: {
                 mod: {
-                    cardSavable: function (card, player) {
-                        if (!_status.currentPhase) return;
-                        if (_status.currentPhase.isIn() && _status.currentPhase.hasSkill('miniwansha') && _status.currentPhase != player) {
+                    cardSavable(card, player) {
+                        const target = _status.currentPhase;
+                        if (!target?.isIn()) return;
+                        if ((target.hasSkill('miniwansha') || target.hasSkill('minirewansha')) && target != player) {
                             if (card.name == 'tao') return false;
                         }
                     },
-                    cardEnabled: function (card, player) {
-                        if (!_status.currentPhase) return;
-                        if (_status.currentPhase.isIn() && _status.currentPhase.hasSkill('miniwansha') && _status.currentPhase != player) {
-                            if (card.name == 'tao') return false;
-                        }
+                    cardEnabled(card, player) {
+                        return lib.skill.miniwansha2.mod.cardSavable.apply(this, arguments);
                     },
                 },
             },
@@ -17668,6 +17667,8 @@ const packs = function () {
                 group: 'minirewansha_effect',
                 subSkill: {
                     effect: {
+                        audio: 'wansha',
+                        audioname: ['shen_simayi', 're_jiaxu'],
                         trigger: {
                             player: 'phaseUseBegin',
                         },
