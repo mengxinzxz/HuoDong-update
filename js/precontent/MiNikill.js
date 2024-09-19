@@ -13,7 +13,7 @@ const packs = function () {
                 MiNi_shen: ['Mbaby_shen_luxun', 'Mbaby_shen_dengai', 'Mbaby_shen_zuoci', 'Mbaby_shen_taishici', 'Mbaby_shen_diaochan', 'Mbaby_shen_daxiaoqiao', 'Mbaby_shen_zhenji', 'Mbaby_shen_guojia', 'Mbaby_shen_huatuo', 'Mbaby_shen_dianwei', 'Mbaby_shen_lvbu', 'Mbaby_shen_zhugeliang', 'Mbaby_shen_lvmeng', 'Mbaby_shen_zhouyu', 'Mbaby_shen_guanyu', 'Mbaby_shen_liubei', 'Mbaby_shen_caocao', 'Mbaby_shen_zhangliao', 'Mbaby_shen_sunquan', 'Mbaby_shen_simayi', 'Mbaby_shen_zhaoyun', 'Mbaby_shen_ganning', 'Mbaby_shen_pangtong'],
                 MiNi_change: ['Mbaby_re_nanhualaoxian', 'Mbaby_re_sunyi', 'Mbaby_zhaoxiang', 'Mbaby_xushao', 'Mbaby_baosanniang', 'Mbaby_quanhuijie'],
                 MiNi_shengzhiyifa: ['Mbaby_sunwukong', 'Mbaby_dalanmao', 'Mbaby_libai', 'Mbaby_change', 'Mbaby_nvwa', 'Mbaby_tunxingmenglix', 'Mbaby_xiaoshan'],
-                MiNi_sbCharacter: ['Mbaby_sb_sunshangxiang', 'Mbaby_sb_xuhuang', 'Mbaby_sb_zhaoyun', 'Mbaby_sb_liubei', 'Mbaby_sb_caocao', 'Mbaby_sb_huanggai', 'Mbaby_sb_yuanshao', 'Mbaby_sb_yujin', 'Mbaby_sb_machao', 'Mbaby_sb_lvmeng', 'Mbaby_sb_huangzhong'],
+                MiNi_sbCharacter: ['Mbaby_ol_sb_guanyu', 'Mbaby_sb_sunshangxiang', 'Mbaby_sb_xuhuang', 'Mbaby_sb_zhaoyun', 'Mbaby_sb_liubei', 'Mbaby_sb_caocao', 'Mbaby_sb_huanggai', 'Mbaby_sb_yuanshao', 'Mbaby_sb_yujin', 'Mbaby_sb_machao', 'Mbaby_sb_lvmeng', 'Mbaby_sb_huangzhong'],
                 MiNi_miaoKill: ['Mmiao_caiwenji', 'Mmiao_diaochan', 'Mmiao_caifuren', 'Mmiao_zhangxingcai', 'Mmiao_zhurong', 'Mmiao_huangyueying', 'Mmiao_daqiao', 'Mmiao_wangyi', 'Mmiao_zhangchunhua', 'Mmiao_zhenji', 'Mmiao_sunshangxiang', 'Mmiao_xiaoqiao', 'Mmiao_lvlingqi'],
                 MiNi_nianKill: ['Mnian_zhugeliang', 'Mnian_lvbu'],
             },
@@ -151,6 +151,7 @@ const packs = function () {
             Mbaby_hujinding: ['female', 'shu', '3/6', ['dcdeshi', 'miniwuyuan', 'huaizi'], ['die:dc_hujinding']],
             Mbaby_dengzhi: ['male', 'shu', 3, ['jianliang', 'miniweimeng'], ['die:re_dengzhi']],
             Mbaby_mazhong: ['male', 'shu', 4, ['minifuman'], ['die:re_mazhong']],
+            Mbaby_ol_sb_guanyu: ['male', 'shu', 4, ['miniweilin', 'miniduoshou']],
             //吴
             Mbaby_bulianshi: ['female', 'wu', 3, ['minianxu', 'zhuiyi']],
             Mbaby_chengpu: ['male', 'wu', 4, ['minilihuo', 'minichunlao']],
@@ -11302,6 +11303,85 @@ const packs = function () {
                         },
                     }
                 }
+            },
+            //关羽
+            miniweilin: {
+                audio: 'olsbweilin',
+                inherit: 'olsbweilin',
+                group: 'miniweilin_gain',
+                subfrequent: ['gain'],
+                subSkill: {
+                    backup: {},
+                    gain: {
+                        audio: 'olsbweilin',
+                        trigger: { player: ['useCardAfter', 'respondAfter'] },
+                        filter(event, player) {
+                            return game.getAllGlobalHistory('everything', evt => {
+                                return ['useCard', 'respond'].includes(evt.name) && evt.player == player;
+                            }).indexOf(event) % 7 == 1;
+                        },
+                        frequent: true,
+                        prompt2: '获得一张【水淹七军】',
+                        content() {
+                            if (!_status.miniweilin_syqj || _status.miniweilin_syqj.length > 0) {
+                                if (!lib.inpile.includes('shuiyanqijuny')) lib.inpile.add('shuiyanqijuny');
+                                if (!_status.miniweilin_syqj) _status.miniweilin_syqj = lib.suit.slice(0);
+                                player.gain(game.createCard2('shuiyanqijuny', _status.miniweilin_syqj.randomRemove(), 7), 'gain2');
+                            }
+                            else {
+                                const card = get.cardPile('shuiyanqijuny');
+                                if (card) player.gain(card, 'gain2');
+                            }
+                        },
+                    },
+                },
+            },
+            miniduoshou: {
+                init(player) {
+                    if (player.getHistory('useCard', evt => get.color(evt.card) == 'red').length) player.addTempSkill('miniduoshou_used');
+                },
+                mod: {
+                    targetInRange(card, player, target) {
+                        if (get.color(card) == 'red' && !player.hasSkill('miniduoshou_used')) return true;
+                    },
+                },
+                audio: 'olsbduoshou',
+                trigger: {
+                    player: ['useCard', 'useCardToPlayered'],
+                    source: 'damageSource',
+                },
+                filter(event, player, name) {
+                    if (event.name == 'damage') return player.getHistory('sourceDamage').indexOf(event) == 0 && event.player.isIn() && event.player.countCards('he');
+                    if (name == 'useCardToPlayered') {
+                        if (event.card.name !== 'sha') return false;
+                        return player.getHistory('useCard', evt => evt.card.name == 'sha').indexOf(event.getParent()) == 0;
+                    }
+                    if (get.color(event.card) == 'red' && !player.hasSkill('miniduoshou_used')) return true;
+                    return get.type(event.card) == 'basic' && player.getHistory('useCard', evt => get.type(evt.card) == 'basic').indexOf(event) == 0;
+                },
+                forced: true,
+                async content(event, trigger, player) {
+                    if (trigger.name == 'damage') player.gainPlayerCard(trigger.player, 'he', true);
+                    else if (event.triggername == 'useCardToPlayered') {
+                        player.line(trigger.target);
+                        player.draw(2);
+                    }
+                    else {
+                        if (get.color(trigger.card) == 'red' && !player.hasSkill('miniduoshou_used')) {
+                            game.log(trigger.card, '无距离限制');
+                            player.addTempSkill('miniduoshou_used');
+                        }
+                        if (get.type(trigger.card) == 'basic' && player.getHistory('useCard', evt => get.type(evt.card) == 'basic').indexOf(trigger) == 0) {
+                            game.log(trigger.card, '不计入次数上限');
+                            if (trigger.addCount !== false) {
+                                trigger.addCount = false;
+                                const stat = player.stat[player.stat.length - 1].card;
+                                if (typeof stat[trigger.card.name] === 'number') stat[trigger.card.name]--;
+                            }
+                        }
+                    }
+                },
+                subSkill: { used: { charlotte: true } },
             },
             //吴
             //孙权
@@ -28869,6 +28949,7 @@ const packs = function () {
             Mbaby_hujinding: '欢杀胡金定',
             Mbaby_dengzhi: '欢杀邓芝',
             Mbaby_mazhong: '欢杀马忠',
+            Mbaby_ol_sb_guanyu: '欢杀谋关羽',
             miniwusheng: '武圣',
             miniwusheng_info: '锁定技。①你使用红色【杀】造成的伤害+1。②回合开始时，你从牌堆或弃牌堆中获得一张红色【杀】。',
             miniguanxing: '观星',
@@ -29108,6 +29189,10 @@ const packs = function () {
             miniweimeng_info: '出牌阶段限一次，你可以获得一名其他角色的至多X张手牌，然后交给其等量的牌（X为你的体力值）。若你给出的牌点数之和：大于得到的牌，则你摸一张牌；小于得到的牌，弃置该角色区域内的一张牌；等于得到的牌，你下一次发动〖危盟〗时的X改为“你的体力值+1”。',
             minifuman: '抚蛮',
             minifuman_info: '出牌阶段每名角色限一次。你可以弃置一张牌，令一名其他角色从牌堆中获得一张【杀】。然后其失去此【杀】后，你与其各摸一张牌。此【杀】结算完成后，若此【杀】造成过伤害，你摸一张牌。',
+            miniweilin: '威临',
+            miniweilin_info: '①每回合限一次，你可以将一张牌当作任意【杀】或【酒】使用，且你以此法使用的牌指定最后一个目标后，你令所有目标角色本回合与此牌颜色相同的手牌均视为【杀】。②当你使用或打出牌后，若此牌为你本局使用或打出的7的倍数张，则你可以获得一张【水淹七军】。',
+            miniduoshou: '夺首',
+            miniduoshou_info: '锁定技。①你每回合使用的第一张红色牌无距离限制。②你每回合使用的第一张基本牌不计入使用次数。③你每回合使用的第一张【杀】指定目标后摸两张牌。④你每回合第一次造成伤害后，你获得受伤角色的一张牌。',
             //吴
             Mbaby_bulianshi: '欢杀步练师',
             Mbaby_chengpu: '欢杀程普',
