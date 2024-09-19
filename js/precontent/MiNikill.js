@@ -26336,7 +26336,7 @@ const packs = function () {
                                 source.getHistory('custom').push({ 'minilunce_下策': [bool, player] });
                                 if (bool) {
                                     await source.draw(2);
-                                    await source.chooseToGive(player, [1, 2], 'h');
+                                    if (source != player) await source.chooseToGive(player, [1, 2], 'h');
                                 }
                             }
                         },
