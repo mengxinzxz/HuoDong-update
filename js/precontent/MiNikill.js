@@ -26290,7 +26290,7 @@ const packs = function () {
                             }
                         },
                         mark: true,
-                        intro: { content: '<li>由$向你传授的上策<br><li>' + lib.translate['minilunce_上策_infox'] },
+                        intro: { content: '<li>由$向你传授的上策<br><li>出牌阶段开始时，你可以对一名角色使用一张无距离限制的【杀】。' },
                     },
                     '中策': {
                         charlotte: true,
@@ -26318,7 +26318,7 @@ const packs = function () {
                             }
                         },
                         mark: true,
-                        intro: { content: '<li>由$向你传授的中策<br><li>' + lib.translate['minilunce_中策_infox'] },
+                        intro: { content: `<li>由$向你传授的中策<br><li>当你于回合内首次使用【杀】指定目标后，$获得你一张牌，直到你的回合结束。` },
                     },
                     '下策': {
                         charlotte: true,
@@ -26336,12 +26336,12 @@ const packs = function () {
                                 source.getHistory('custom').push({ 'minilunce_下策': [bool, player] });
                                 if (bool) {
                                     await source.draw(2);
-                                    await source.chooseToGive(player, [1, 2], 'h');
+                                    if (source != player) await source.chooseToGive(player, [1, 2], 'h');
                                 }
                             }
                         },
                         mark: true,
-                        intro: { content: '<li>由$向你传授的下策<br><li>' + lib.translate['minilunce_下策_infox'] },
+                        intro: { content: '<li>由$向你传授的下策<br><li>回合结束时，若你本回合未于出牌阶段使用【杀】造成过伤害，则$摸两张牌且其可以交给你至多两张手牌。' },
                     },
                 },
             },
@@ -26370,7 +26370,7 @@ const packs = function () {
                             const choice = effect.slice(-2);
                             return choice !== '中策' || (evt[effect][1].isIn() && !evt[effect][1].hasSkill('minilanhai_中策'));
                         }, 1).length;
-                    });
+                    }).map(i => i.slice(-2));
                     if (list.includes('上策')) {
                         await player.draw(history.length);
                     }
@@ -29977,13 +29977,10 @@ const packs = function () {
             minilunce_info: '一轮游戏开始时，你可以选择一名角色，然后为其选择一个策略（每名角色每个策略至多拥有一个）。',
             'minilunce_上策': '上策',
             'minilunce_上策_info': '出牌阶段开始时，其可以对一名角色使用一张无距离限制的【杀】。',
-            'minilunce_上策_infox': '出牌阶段开始时，你可以对一名角色使用一张无距离限制的【杀】。',
             'minilunce_中策': '中策',
             'minilunce_中策_info': '其于回合内首次使用【杀】指定目标后，你获得其一张牌，直到其回合结束。',
-            'minilunce_中策_infox': '当你于回合内首次使用【杀】指定目标后，$获得你一张牌，直到你的回合结束。',
             'minilunce_下策': '下策',
             'minilunce_下策_info': '其回合结束时，若其本回合未于出牌阶段使用【杀】造成过伤害，则你摸两张牌且可以交给其至多两张手牌。',
-            'minilunce_下策_infox': '回合结束时，若你本回合未于出牌阶段使用【杀】造成过伤害，则$摸两张牌且其可以交给你至多两张手牌。',
             minilanhai: '览害',
             minilanhai_info: '锁定技。①一轮游戏开始时，若上一轮你的以下策略被成功执行，则你执行对应项：上策，你摸X张牌（X为你上一轮策略被成功执行的次数）；中策，你令上一轮执行你给予其中策的角色下次受到【杀】造成的伤害+1（不叠加）；3.下策，你增加1点体力上限并回复1点体力（至多以此法增加3点体力上限）。②一名角色的回合结束时，若本回合你的计策被成功执行，则你可以发动【论策】。',
             //喵
