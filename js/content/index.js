@@ -1287,17 +1287,14 @@ export function content(config, pack) {
 			for (var i in map) lib.skill[skill].audioname2[i] = map[i];
 		});
 	};
-	game.HDsetAudioname2('rebiyue', {
-		sp_diaochan: 'biyue',
-	});
 	game.HDsetAudioname2('yaowu', {
-		FD_huaxiong: 'bolNoAudio',
+		FD_huaxiong: 'haoshi2',
 	});
 	game.HDsetAudioname2('yinghun', {
-		FD_sunjian: 'bolNoAudio',
+		FD_sunjian: 'haoshi2',
 	});
 	game.HDsetAudioname2('gzyinghun', {
-		FD_sunjian: 'bolNoAudio',
+		FD_sunjian: 'haoshi2',
 	});
 	game.HDsetAudioname2('reyicong', {
 		jsp_zhaoyun: 'yicong_jsp_zhaoyun',
@@ -1306,13 +1303,13 @@ export function content(config, pack) {
 		oldx_zhaoyun: 'yicong_jsp_zhaoyun',
 	});
 	game.HDsetAudioname2('new_rejianxiong', {
-		qin_lvbuwei: 'bolNoAudio',
+		qin_lvbuwei: 'haoshi2',
 	});
 	game.HDsetAudioname2('rerende', {
-		qin_lvbuwei: 'bolNoAudio',
+		qin_lvbuwei: 'haoshi2',
 	});
 	game.HDsetAudioname2('rezhiheng', {
-		qin_lvbuwei: 'bolNoAudio',
+		qin_lvbuwei: 'haoshi2',
 	});
 	game.HDsetAudioname2('relianying', {
 		wechat_lukang: 'rejizhi_lukang',

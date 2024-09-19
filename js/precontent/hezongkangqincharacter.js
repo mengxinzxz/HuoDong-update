@@ -1187,7 +1187,7 @@ const packs = function () {
             },
             qin_jugu: {
                 audio: 'ext:活动武将/audio/skill:true',
-                audioname2: { bilibili_litiansuo: 'bolNoAudio' },
+                audioname2: { bilibili_litiansuo: 'haoshi2' },
                 inherit: 'jugu',
             },
             qin_qihuo: {

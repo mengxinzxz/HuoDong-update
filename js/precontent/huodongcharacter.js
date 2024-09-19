@@ -6700,7 +6700,7 @@ const packs = function () {
                 },
             },
             bilibili_xuxiang: {
-                audio: 'bolNoAudio',
+                audio: 'haoshi2',
                 audioname2: {
                     vtb_xiaosha: 'bilibili_xuxiang_xiaosha',
                     vtb_xiaotao: 'bilibili_xuxiang_xiaotao',
@@ -8199,7 +8199,6 @@ const packs = function () {
                     },
                 },
             },
-            bolNoAudio: { audio: false },//万 恶 之 源
             yicong_jsp_zhaoyun: { audio: 2 },
             //NBA牢星球员宿舍
             dom_chouxiang: {
