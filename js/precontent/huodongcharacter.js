@@ -4260,7 +4260,6 @@ const packs = function () {
                     },
                 },
             },
-            wusheng_jsp_guanyu: { audio: 2 },
             wzdanji: {
                 derivation: 'mashu',
                 audio: 'danji',

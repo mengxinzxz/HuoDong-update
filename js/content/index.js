@@ -863,7 +863,7 @@ export function content(config, pack) {
 	if (lib.config.extension_活动武将_HD_yrnsm) {
 		[['clan_wuqiao', 'clan'], ['wangyan', 'sp'], ['clan_wanglun', 'clan'], ['ol_peixiu', 'sp']].forEach(list => {
 			lib.characterPack[list[1]][list[0]][4] = ['ext:活动武将/image/character/' + list[0] + '.jpg'].concat(lib.characterPack[list[1]][list[0]][4] || []);
-			if(lib.character[list[0]]) lib.character[list[0]][4] = ['ext:活动武将/image/character/' + list[0] + '.jpg'].concat(lib.character[list[0]][4] || []);
+			if (lib.character[list[0]]) lib.character[list[0]][4] = ['ext:活动武将/image/character/' + list[0] + '.jpg'].concat(lib.character[list[0]][4] || []);
 		});
 	}
 
@@ -1299,13 +1299,6 @@ export function content(config, pack) {
 	game.HDsetAudioname2('gzyinghun', {
 		FD_sunjian: 'bolNoAudio',
 	});
-	game.HDsetAudioname2('rezhiman', {
-		Mbaby_guansuo: 'zhiman_guansuo',
-		wechat_guansuo: 'zhiman_guansuo',
-	});
-	game.HDsetAudioname2('rejizhi', {
-		old_shen_simayi: 'jilue_jizhi',
-	});
 	game.HDsetAudioname2('reyicong', {
 		jsp_zhaoyun: 'yicong_jsp_zhaoyun',
 	});
@@ -1320,35 +1313,15 @@ export function content(config, pack) {
 	});
 	game.HDsetAudioname2('rezhiheng', {
 		qin_lvbuwei: 'bolNoAudio',
-		old_shen_simayi: 'jilue_zhiheng',
-	});
-	game.HDsetAudioname2('fangzhu', {
-		old_shen_simayi: 'jilue_fangzhu',
-	});
-	game.HDsetAudioname2('reguicai', {
-		old_shen_simayi: 'jilue_guicai',
-	});
-	game.HDsetAudioname2('rewansha', {
-		old_shen_simayi: 'wansha_shen_simayi',
 	});
 	game.HDsetAudioname2('relianying', {
 		wechat_lukang: 'rejizhi_lukang',
-	});
-	game.HDsetAudioname2('wusheng', {
-		bolx_jsp_guanyu: 'wusheng_jsp_guanyu',
-		wechat_guansuo: 'wusheng_guansuo',
 	});
 	game.HDsetAudioname2('duanchang', {
 		Mmiao_caiwenji: 'minimiaoduanchang',
 	});
 	game.HDsetAudioname2(['juxiang', 'juxiang1'], {
 		Mmiao_zhurong: 'minimiaojuxiang',
-	});
-	game.HDsetAudioname2('dangxian', {
-		wechat_guansuo: 'dangxian_guansuo',
-	});
-	game.HDsetAudioname2('xingshuai', {
-		re_caorui: 'rexingshuai',
 	});
 
 	//precCI
@@ -1370,7 +1343,7 @@ export function content(config, pack) {
 	lib.characterReplace.dengai.add('old_dengai');
 	lib.characterReplace.jin_yanghuiyu.add('old_yanghuiyu');
 	lib.characterReplace.shen_xunyu = ['shen_xunyu', 'old_shen_xunyu'];
-	lib.characterReplace.shen_simayi = ['shen_simayi', 'old_shen_simayi'];
+	lib.characterReplace.shen_simayi.add('old_shen_simayi');
 	lib.characterReplace.shen_taishici = ['shen_taishici', 'old_shen_taishici'];
 	lib.characterReplace.shen_sunce = ['shen_sunce', 'old_shen_sunce'];
 	lib.characterReplace.zhangqiying = ['zhangqiying', 'old_zhangqiying'];
@@ -1448,7 +1421,7 @@ export function content(config, pack) {
 	if (lib.config.extension_活动武将_XvXiang) {
 		for (var i of lib.characterSort.offline.offline_vtuber) lib.characterPack.offline[i][3].add('bilibili_xuxiang');
 	}
-	game.HDaddCharacter('bolx_jsp_guanyu', ['male', 'wei', 4, ['wusheng', 'wzdanji'], ['ext:活动武将/image/character/bolx_jsp_guanyu.jpg']], 'offline');
+	game.HDaddCharacter('bolx_jsp_guanyu', ['male', 'wei', 4, ['wusheng', 'wzdanji'], ['ext:活动武将/image/character/bolx_jsp_guanyu.jpg', 'tempname:jsp_guanyu']], 'offline');
 	game.HDaddCharacter('bol_sunluban', ['female', 'wu', 3, ['boljiaozong', 'bolchouyou'], ['ext:活动武将/image/character/bol_sunluban.jpg']], 'offline');
 
 	//海外
@@ -1473,7 +1446,7 @@ export function content(config, pack) {
 	game.HDaddCharacter('yuanshao', ['male', 'qun', 4, ['oldluanji', 'xueyi'], ['ext:活动武将/image/character/yuanshao.jpg', 'zhu']], 'old');
 	game.HDaddCharacter('old_yj_jushou', ['male', 'qun', 3, ['jianying', 'oldshibei'], ['ext:活动武将/image/character/old_yj_jushou.jpg']], 'old');
 	game.HDaddCharacter('old_shen_xunyu', ['male', 'shen', 3, ['old_tianzuo', 'old_lingce', 'old_dinghan'], ['wei', 'ext:活动武将/image/character/old_shen_xunyu.jpg']], 'old');
-	game.HDaddCharacter('old_shen_simayi', ['male', 'shen', 3, ['reguicai', 'fangzhu', 'rewansha', 'rezhiheng', 'rejizhi'], ['wei', 'ext:活动武将/image/character/old_shen_simayi.jpg']], 'old');
+	game.HDaddCharacter('old_shen_simayi', ['male', 'shen', 3, ['reguicai', 'fangzhu', 'rewansha', 'rezhiheng', 'rejizhi'], ['wei', 'ext:活动武将/image/character/old_shen_simayi.jpg', 'tempname:xin_simayi']], 'old');
 	game.HDaddCharacter('old_shen_taishici', ['male', 'shen', 4, ['olddulie', 'oldpowei', 'dangmo'], ['wu', 'ext:活动武将/image/character/old_shen_taishici.jpg']], 'old');
 	game.HDaddCharacter('old_shen_sunce', ['male', 'shen', '1/6', ['old_yingba', 'old_fuhai', 'old_pinghe'], ['wu', 'ext:活动武将/image/character/old_shen_sunce.jpg']], 'old');
 	game.HDaddCharacter('old_zhangyì', ['male', 'shu', 4, ['zhiyi'], ['ext:活动武将/image/character/old_zhangyi.jpg']], 'old');
