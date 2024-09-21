@@ -79,7 +79,7 @@ const packs = function () {
             wechat_zhuling: ['male', 'wei', 4, ['wechatzhanyi']],
             wechat_caojie: ['female', 'qun', 3, ['wechatshouxi', 'huimin']],
             wechat_sp_pangde: ['male', 'wei', 4, ['mashu', 'wechatrejuesi']],
-            wechat_yj_jushou: ['male', 'qun', 3, ['wechatjianying', 'shibei']],
+            wechat_yj_jushou: ['male', 'qun', 3, ['wechatrejianying', 'shibei']],
             wechat_zumao: ['male', 'wu', 4, ['miniyinbing', 'wechatjuedi']],
             wechat_guansuo: ['male', 'shu', 4, ['wechatzhengnan', 'xiefang'], ['tempname:guansuo']],
             wechat_zhangzhang: ['male', 'wu', 3, ['wechatzhijian', 'guzheng']],
@@ -5077,6 +5077,89 @@ const packs = function () {
                     },
                 },
             },
+            wechatrejianying: {
+                hiddenCard(player, name) {
+                    return get.type(name) == 'basic' && player.countCards('hes') > 0 && !player.hasSkill('wechatrejianying_used');
+                },
+                enable: 'chooseToUse',
+                filter(event, player) {
+                    if (event.type == 'wuxie' || player.hasSkill('wechatrejianying_used')) return false;
+                    if (!player.countCards('hes')) return false;
+                    return get.inpileVCardList(info => {
+                        if (info[0] != 'basic') return false;
+                        return event.filterCard(get.autoViewAs({ name: info[2], nature: info[3] }, 'unsure'), player, event);
+                    }).length;
+                },
+                onChooseToUse(event) {
+                    if (!game.online) {
+                        const last = event.player.getAllHistory('useCard')?.lastItem;
+                        if (last) {
+                            const suit = get.suit(last.card, false);
+                            if (suit != 'none') event.set('wechatrejianying_suit', suit);
+                        }
+                    }
+                },
+                chooseButton: {
+                    dialog(event, player) {
+                        const vcards = get.inpileVCardList(info => {
+                            if (info[0] != 'basic') return false;
+                            return event.filterCard(get.autoViewAs({ name: info[2], nature: info[3] }, 'unsure'), player, event);
+                        });
+                        return ui.create.dialog('渐营', [vcards, 'vcard']);
+                    },
+                    check(button) {
+                        if (get.event().getParent().type != 'phase') return 1;
+                        return get.player().getUseValue({ name: button.link[2], nature: button.link[3] });
+                    },
+                    backup(links, player) {
+                        const next = {
+                            audio: 'dcjianying',
+                            popname: true,
+                            viewAs: { name: links[0][2], nature: links[0][3] },
+                            filterCard: true,
+                            position: 'hes',
+                            ai1(card) {
+                                return 7 - get.value(card);
+                            },
+                            precontent() {
+                                player.logSkill('wechatrejianying');
+                                player.addTempSkill('wechatrejianying_used');
+                            },
+                        }
+                        if (get.event().wechatrejianying_suit) next.viewAs.suit = get.event().wechatrejianying_suit;
+                        return next;
+                    },
+                    prompt(links, player) {
+                        const suit = get.event().wechatrejianying_suit || '';
+                        return '将一张牌当' + (get.translation(links[0][3]) || '') + get.translation(links[0][2]) + (suit ? `（${get.translation(suit)}）` : '') + '使用';
+                    },
+                },
+                ai: {
+                    respondSha: true,
+                    respondShan: true,
+                    skillTagFilter(player, tag, arg) {
+                        if (!player.countCards('hes') || player.hasSkill('wechatrejianying_used')) return false;
+                        if (arg != 'use') return false;
+                    },
+                    order(item, player) {
+                        if (get.event().wechatrejianying_suit) return 16;
+                        return 3;
+                    },
+                    result: {
+                        player(player) {
+                            return get.event().dying ? get.attitude(player, get.event().dying) : 1;
+                        },
+                    },
+                },
+                group: ['wechatrejianying_draw'],
+                subSkill: {
+                    draw: {
+                        audio: 'jianying',
+                        inherit: 'dcjianying',
+                    },
+                    used: { charlotte: true },
+                },
+            },
             //祖茂
             wechatjuedi: { inherit: 'minijuedi' },
             //关索
@@ -8312,6 +8395,8 @@ const packs = function () {
             wechat_yj_jushou: '微信沮授',
             wechatjianying: '渐营',
             wechatjianying_info: '当你使用与你使用的上一张牌点数或花色相同的牌时，你可以摸一张牌。出牌阶段限一次，你可以将一张牌当做任意基本牌使用（若你于此阶段内使用的上一张牌有花色，则此牌的花色视为上一张牌的花色）。',
+            wechatrejianying: '渐营',
+            wechatrejianying_info: '当你使用与你使用的上一张牌点数或花色相同的牌时，你可以摸一张牌。每回合限一次，你可以将一张牌当做任意基本牌使用（若你使用的上一张牌有花色，则此牌的花色视为上一张牌的花色）。',
             wechat_zumao: '微信祖茂',
             wechatjuedi: '绝地',
             wechatjuedi_info: '锁定技，准备阶段，若你的武将牌上有「引兵」牌，你选择一项：1.移去「引兵」牌，将手牌补至体力上限；2.将「引兵」牌交给一名体力值不大于你的其他角色，其回复1点体力并摸等量的牌。',
