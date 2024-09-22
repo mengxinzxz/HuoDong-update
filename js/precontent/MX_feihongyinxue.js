@@ -2413,7 +2413,7 @@ const packs = function () {
                 animationColor: 'water',
                 content: function* (event, map) {
                     var player = map.player;
-                    var result = yield player.chooseTarget(get.prompt('fg_sghuishi')).set('ai', target => {
+                    var result = yield player.chooseTarget(get.prompt2('fh_sghuishi')).set('ai', target => {
                         var player = _status.event.player;
                         var list = target.getSkills(null, false, false).filter(skill => {
                             var info = lib.skill[skill];
@@ -2431,13 +2431,14 @@ const packs = function () {
                             return info && info.juexingji;
                         });
                         if (!list.length) {
-                            target.draw(4);
+                            yield target.draw(4);
                             return;
                         }
-                        var resul2 = yield player.chooseControl(list).set('prompt', '选择一个觉醒技，令' + get.translation(target) + '可无视条件发动该技能');
+                        var result2 = yield player.chooseControl(list).set('prompt', '选择一个觉醒技，令' + get.translation(target) + '可无视条件发动该技能');
+                        player.popup(result2.control);
                         target.storage.fh_sghuishi_mark = result2.control;
                         target.markSkill('fh_sghuishi_mark');
-                        var info = lib.skill[result.control];
+                        var info = lib.skill[result2.control];
                         if (info.filter && !info.charlotte && !info.fh_sghuishi_filter) {
                             info.fh_sghuishi_filter = info.filter;
                             info.filter = function (event, player) {
