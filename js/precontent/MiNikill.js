@@ -20227,46 +20227,48 @@ const packs = function () {
             minishouxi: {
                 audio: 'shouxi',
                 trigger: { target: 'useCardToTargeted' },
-                filter: function (event, player) {
+                filter(event, player) {
                     if (event.card.name != 'sha' || !event.player.isIn()) return false;
-                    return lib.inpile.some(i => {
-                        if (player.getStorage('minishouxi').includes(i)) return false;
-                        var type = get.type2(i);
-                        return type == 'basic' || type == 'trick';
-                    });
+                    return get.inpileVCardList(info => {
+                        if (player.getStorage('minishouxi').includes(info[2]) || info[3]) return false;
+                        return ['basic', 'trick', 'delay'].includes(info[0]);
+                    }).length;
                 },
-                direct: true,
-                content: function* (event, map) {
-                    var player = map.player, trigger = map.trigger;
-                    var target = trigger.player, list = lib.inpile.filter(i => {
-                        if (player.getStorage('minishouxi').includes(i)) return false;
-                        var type = get.type2(i);
-                        return type == 'basic' || type == 'trick';
-                    }).map(name => [get.type(name), '', name]);
-                    var result = yield player.chooseButton([get.prompt('minishouxi', target), [list, 'vcard']]).set('ai', button => {
+                async cost(event, trigger, player) {
+                    const target = trigger.player;
+                    const list = get.inpileVCardList(info => {
+                        if (player.getStorage('minishouxi').includes(info[2]) || info[3]) return false;
+                        return ['basic', 'trick', 'delay'].includes(info[0]);
+                    })
+                    const { result: { bool, links } } = await player.chooseButton([get.prompt(event.name.slice(0, -5), target), [list, 'vcard']]).set('ai', button => {
                         if (_status.event.num > 0) return 0;
                         return 1 + Math.random();
                     }).set('num', get.effect(player, trigger.card, target, player));
-                    if (result.bool) {
-                        player.logSkill('minishouxi', target);
-                        var name = result.links[0][2], str = get.translation(name);
-                        player.markAuto('minishouxi', [name]);
-                        player.popup(str);
-                        game.log(player, '声明了', '#g【' + str + '】');
-                        var result2 = yield target.chooseToDiscard('he', (card) => get.name(card) == _status.event.namex).set('ai', card => 10 - get.value(card) * (_status.event.att < 0 ? 1 : 0)).set('att', get.attitude(target, player)).set('namex', name).set('dialog', ['###守玺###弃置一张【' + str + '】，否则此【杀】对' + get.translation(player) + '无效且' + get.translation(player) + '从牌堆中获得一张【' + str + '】', [result.links, 'vcard']]);
-                        if (result2.bool) target.gainPlayerCard(player);
-                        else {
-                            trigger.getParent().excluded.add(player);
-                            var card = get.cardPile2(card => card.name == name);
-                            if (card) player.gain(card, 'gain2');
-                        }
+                    event.result = {
+                        bool: bool,
+                        cost_data: links,
+                    }
+                },
+                logTarget: 'player',
+                async content(event, trigger, player) {
+                    const target = trigger.player;
+                    const links = event.cost_data, name = links[0][2], str = get.translation(name);
+                    player.markAuto(event.name, [name]);
+                    player.popup(str);
+                    game.log(player, '声明了', '#g【' + str + '】');
+                    const bool = await target.chooseToDiscard('he', (card) => get.name(card) == _status.event.namex).set('ai', card => 10 - get.value(card) * (_status.event.att < 0 ? 1 : 0)).set('att', get.attitude(target, player)).set('namex', name).set('dialog', ['###守玺###弃置一张【' + str + '】，否则此【杀】对' + get.translation(player) + '无效且' + get.translation(player) + '从牌堆中获得一张【' + str + '】', [links, 'vcard']]).forResultBool();
+                    if (bool && player.countGainableCards(target, 'he')) await target.gainPlayerCard(player, 'he', true);
+                    else {
+                        trigger.getParent().excluded.add(player);
+                        const card = get.cardPile2(card => card.name == name);
+                        if (card) await player.gain(card, 'gain2');
                     }
                 },
                 ai: {
                     effect: {
-                        target: function (card, player, target, current) {
+                        target(card, player, target, current) {
                             if (_status.event.name == 'minishouxi') return;
-                            if (card.name != 'sha' || get.effect(target, card, player, target) > 0) return;
+                            if (card.name != 'sha' || get.attitude(player, target) > 0) return;
                             var list = lib.inpile.filter(i => {
                                 if (target.getStorage('minishouxi').includes(i)) return false;
                                 var type = get.type2(i);
