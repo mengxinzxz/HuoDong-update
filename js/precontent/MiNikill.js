@@ -11318,7 +11318,7 @@ const packs = function () {
                         filter(event, player) {
                             return game.getAllGlobalHistory('everything', evt => {
                                 return ['useCard', 'respond'].includes(evt.name) && evt.player == player;
-                            }).indexOf(event) % 7 == 1;
+                            }).indexOf(event) % 7 == 0;
                         },
                         frequent: true,
                         prompt2: '获得一张【水淹七军】',
