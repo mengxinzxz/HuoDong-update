@@ -136,6 +136,7 @@ const packs = function () {
             wechat_sunce: ['male', 'wu', 4, ['wechattaoni', 'wechatpingjiang', 'wechatdingye'], ['die:true', 'zhu']],
             wechat_xunyu: ['male', 'wei', 3, ['wechatwangzuo', 'wechatjuxian', 'wechatxianshi'], ['die:true']],
             wechat_re_zhenji: ['female', 'wei', 3, ['wechatshenfu', 'wechatsiyuan'], ['die:true']],
+            wechat_re_caiwenji: ['female', 'wei', 3, ['wechatbeijia', 'wechatsifu'], ['die:true']],
             //谋攻
             wechat_sb_sunshangxiang: ['female', 'shu', 3, ['wechatsbliangzhu', 'wechatsbjieyin'], ['border:wu']],
             wechat_sb_zhaoyun: ['male', 'shu', 4, ['wechatsblongdan', 'wechatsbjizhu']],
@@ -1962,7 +1963,7 @@ const packs = function () {
                         content: function () {
                             player.changeZhuanhuanji('wechatxiangzhi');
                             if (player.getStat('skill').wechatxiangzhi) delete player.getStat('skill').wechatxiangzhi;
-                            game.log(player, '转换了了', '#g【相知】', '的韵律');
+                            game.log(player, '转换了', '#g【相知】', '的韵律');
                         },
                     },
                 },
@@ -2058,7 +2059,7 @@ const packs = function () {
                         content: function () {
                             player.changeZhuanhuanji('wechattongxin');
                             if (player.getStat('skill').wechattongxin) delete player.getStat('skill').wechattongxin;
-                            game.log(player, '转换了了', '#g【同心】', '的韵律');
+                            game.log(player, '转换了', '#g【同心】', '的韵律');
                         },
                     },
                 },
@@ -6787,6 +6788,161 @@ const packs = function () {
                     event.targets[0].damage(trigger.source, 'unreal');
                 },
             },
+            // 极蔡文姬
+            wechatbeijia: {
+                mark: true,
+                marktext: '🎶',
+                intro: {
+                    content(storage, player) {
+                        const str = '每回合限一次，你可以将一张点数' + (storage ? '小' : '大') + '于你上一张使用的牌当任意' + (storage ? '基本' : '锦囊') + '牌使用。';
+                        return '<li>当前韵律：' + (storage ? '仄' : '平') + '<br><li>' + str;
+                    },
+                },
+                audio: 'ext:活动武将/audio/skill:2',
+                yunlvSkill: true,
+                hiddenCard(player, name) {
+                    if (player.hasSkill('wechatbeijia_used', null, null, false)) return false;
+                    const evt = lib.skill.dcjianying.getLastUsed(player);
+                    if (!evt || !evt.card) return false;
+                    const num = get.number(evt.card, false)
+                    if (typeof get.number(evt.card, false) != 'number') return false;
+                    const storage = player.storage.wechatbeijia;
+                    const type = storage ? 'basic' : 'trick';
+                    return get.type(name) == type && player.countCards('hes', card => {
+                        return storage ? get.number(card) < num : get.number(card) > num;
+                    });
+                },
+                enable: 'chooseToUse',
+                filter(event, player) {
+                    if (player.hasSkill('wechatbeijia_used', null, null, false)) return false;
+                    const storage = player.storage.wechatbeijia;
+                    const num = event.wechatbeijia_number;
+                    const type = storage ? 'basic' : 'trick';
+                    if (!num || !player.countCards('hes', card => {
+                        return storage ? get.number(card) < num : get.number(card) > num;
+                    })) return false;
+                    return get.inpileVCardList(info => {
+                        if (info[0] != type) return false;
+                        return event.filterCard(get.autoViewAs({ name: info[2], nature: info[3] }, 'unsure'), player, event)
+                    }).length;
+                },
+                onChooseToUse(event) {
+                    if (!game.online) {
+                        const last = event.player.getAllHistory('useCard')?.lastItem;
+                        if (last) {
+                            const number = get.number(last.card, false);
+                            if (typeof number == 'number') event.set('wechatbeijia_number', number);
+                        }
+                    }
+                },
+                chooseButton: {
+                    dialog(event, player) {
+                        const type = player.storage.wechatbeijia ? 'basic' : 'trick';
+                        const list = get.inpileVCardList(info => {
+                            if (info[0] != type) return false;
+                            return event.filterCard(get.autoViewAs({ name: info[2], nature: info[3] }, 'unsure'), player, event)
+                        });
+                        return ui.create.dialog('悲笳', [list, 'vcard']);
+                    },
+                    check(button) {
+                        if (get.event().getParent().type != 'phase') return 1;
+                        return get.player().getUseValue({ name: button.link[2], nature: button.link[3] });
+                    },
+                    backup(links, player) {
+                        return {
+                            audio: 'wechatbeijia',
+                            popname: true,
+                            viewAs: { name: links[0][2], nature: links[0][3] },
+                            filterCard(card, player) {
+                                const storage = player.storage.wechatbeijia;
+                                const num = get.event('wechatbeijia_number');
+                                return storage ? get.number(card) < num : get.number(card) > num;
+                            },
+                            position: 'hes',
+                            ai1(card) {
+                                return 6.5 - get.value(card);
+                            },
+                            async precontent(event, trigger, player) {
+                                player.logSkill('wechatbeijia');
+                                player.addTempSkill('wechatbeijia_used');
+                            }
+                        };
+                    },
+                    prompt(links, player) {
+                        const storage = player.storage.wechatbeijia;
+                        const num = get.event('wechatbeijia_number');
+                        return '将一张点数' + (storage ? '小于' : '大于') + num + '的牌当' + (get.translation(links[0][3]) || '') + get.translation(links[0][2]) + '使用';
+                    },
+                },
+                ai: {
+                    respondSha: true,
+                    respondShan: true,
+                    skillTagFilter(player, tag, arg) {
+                        if (arg == 'respond') return false;
+                        const name = tag == 'respondSha' ? 'sha' : 'shan';
+                        return get.info('wechatbeijia').hiddenCard(player, name);
+                    },
+                    order: 7,
+                    result: {
+                        player(player) {
+                            return get.event().dying ? get.attitude(player, get.event().dying) : 1;
+                        },
+                    },
+                },
+                init(player) {
+                    const trigger = lib.skill.dcjianying.getLastUsed(player);
+                    if (trigger) {
+                        player.addTip('wechatbeijia', '悲笳 ' + get.strNumber(get.number(trigger.card)));
+                    }
+                },
+                onremove(player, skill) {
+                    player.removeTip(skill);
+                },
+                group: 'wechatbeijia_zhuanyun',
+                subSkill: {
+                    zhuanyun: {
+                        audio: 'wechatbeijia',
+                        trigger: {
+                            player: 'useCard',
+                        },
+                        filter(event, player) {
+                            player.addTip('wechatbeijia', '悲笳 ' + get.strNumber(get.number(event.card)));
+                            if (!player.isPhaseUsing()) return false;
+                            const evt = lib.skill.dcjianying.getLastUsed(player, event);
+                            if (!evt || !evt.card) return false;
+                            return typeof get.number(evt.card, false) == 'number' && get.number(evt.card, false) == get.number(event.card);
+                        },
+                        forced: true,
+                        locked: false,
+                        content() {
+                            player.changeZhuanhuanji('wechatbeijia');
+                            if (player.hasSkill('wechatbeijia_used', null, null, false)) player.removeSkill('wechatbeijia_used');
+                            game.log(player, '转换了', '#g【悲笳】', '的韵律');
+                        },
+                    },
+                    used: { charlotte: true },
+                },
+            },
+            wechatsifu: {
+                audio: 'ext:活动武将/audio/skill:2',
+                enable: 'phaseUse',
+                usable: 1,
+                async content(event, trigger, player) {
+                    const numbers = player.getHistory('useCard', evt => typeof get.number(evt.card) == 'number').map(evt => get.number(evt.card)).toUniqued();
+                    const cards = [];
+                    const used = get.cardPile2(card => numbers.includes(get.number(card)));
+                    if (used) cards.push(used);
+                    const notUsed = get.cardPile2(card => !numbers.includes(get.number(card)));
+                    if (notUsed) cards.push(notUsed);
+                    if (cards.length) await player.gain(cards, 'gain2');
+                },
+                ai: {
+                    order: 4,
+                    result: {
+                        player: 1,
+                    }
+                }
+            },
             //157的阮惠
             wechatmingcha: {
                 audio: 'mingcha',
@@ -8582,6 +8738,11 @@ const packs = function () {
             wechat_xurong: '微信徐荣',
             wechatxionghuo: '凶镬',
             wechatxionghuo_info: '游戏开始时，你获得3个“暴戾”标记（标记上限为3）。出牌阶段，你可以交给一名其他角色一个“暴戾”标记。当你对有“暴戾”标记的其他角色造成伤害时，此伤害+1。有“暴戾”标记的其他角色的出牌阶段开始时，其移去所有“暴戾”标记并随机执行一项：1.受到1点火焰伤害且本回合不能使用【杀】；2.失去1点体力且本回合手牌上限-1；3.你随机获得其两张牌。',
+            wechat_re_caiwenji: '极蔡琰',
+            wechatbeijia: '悲笳',
+            wechatbeijia_info: '韵律技。每回合限一次，平：你可以将一张点数大于上一张你使用的牌当任意锦囊牌使用；仄：你可以将一张点数小于上一张你使用的牌当任意基本牌使用。转韵：当你于出牌阶段使用一张点数等于上一张你使用的牌时。',
+            wechatsifu: '思赋',
+            wechatsifu_info: '出牌阶段限一次，你可以随机从牌堆中获得你本回合使用过与未使用过的点数的牌各一张。',
         },
     };
     for (var i in WeChatkill.character) {
