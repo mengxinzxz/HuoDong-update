@@ -12,13 +12,14 @@ game.bolShowNewPack = function () {
 	//更新告示
 	var HuoDong_update = [
 		'/setPlayer/',
+		'bugfix',
 		'整合@xizifu 的PR',
-		'添加武将欢杀谋关羽',
+		'添加武将欢杀谋关羽、极蔡文姬',
 		'To be continued...',
 	];
 	//更新武将
 	var HuoDong_players = [
-		'Mbaby_ol_sb_guanyu',
+		'Mbaby_ol_sb_guanyu', 'wechat_re_caiwenji',
 	];
 	//加载
 	var dialog = ui.create.dialog(
