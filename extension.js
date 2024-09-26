@@ -12,7 +12,7 @@ game.bolShowNewPack = function () {
 	//更新告示
 	var HuoDong_update = [
 		'/setPlayer/',
-		'bugfix',
+		'bugfix，微信武将图片素材补充',
 		'整合@xizifu 的PR',
 		'添加武将欢杀谋关羽、极蔡文姬、微信谋马超、微信霍骏',
 		'To be continued...',
