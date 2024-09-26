@@ -8202,6 +8202,7 @@ const packs = function () {
                         if (card.storage?.wechatjlmashu) return Infinity;
                     },
                 },
+                audio: ['sbtieji', 1],
                 enable: 'phaseUse',
                 locked: false,
                 viewAs: {
@@ -8224,6 +8225,7 @@ const packs = function () {
                 group: ['wechatjlmashu_gain', 'wechatjlmashu_init'],
                 subSkill: {
                     gain: {
+                        audio: ['sbtieji', 1],
                         trigger: {
                             global: ['loseAfter', 'equipAfter', 'addJudgeAfter', 'gainAfter', 'loseAsyncAfter', 'addToExpansionAfter'],
                         },
@@ -8240,6 +8242,7 @@ const packs = function () {
                         },
                     },
                     init: {
+                        audio: ['sbtieji', 1],
                         trigger: {
                             player: 'enterGame',
                             global: 'phaseBefore',
@@ -8264,6 +8267,7 @@ const packs = function () {
                 }
             },
             wechatjltieji: {
+                audio: Array.from({ length: 2 }).map((_, i) => 'sbtieji' + parseFloat(i + 2) + '.mp3'),
                 trigger: {
                     source: 'damageBegin2',
                 },
