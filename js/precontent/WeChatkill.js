@@ -114,8 +114,8 @@ const packs = function () {
             wechat_sunhao: ['male', 'wu', 5, ['wechatcanshi', 'chouhai']],
             wechat_yangfu: ['male', 'wei', 3, ['wechatjiebing', 'hannan']],
             wechat_ganfuren: ['female', 'shu', 3, ['dcshushen', 'wechatshenzhi']],
-            wechat_xurong: ['male', 'qun', 4, ['wechatxionghuo', 'xinfu_shajue'], ['die:xinfu_xurong']],
-            wechat_huojun: ['male', 'shu', 4, ['twsidai', 'jieyu'], ['die:tw_huojun']],
+            wechat_xurong: ['male', 'qun', 4, ['wechatxionghuo', 'xinfu_shajue']],
+            wechat_huojun: ['male', 'shu', 4, ['twsidai', 'jieyu']],
             //神武将
             wechat_shen_zhugeliang: ['male', 'shen', 3, ['wechatqixing', 'wechatjifeng', 'wechattianfa'], ['shu']],
             wechat_shen_lvmeng: ['male', 'shen', 3, ['shelie', 'wechatgongxin'], ['wu']],
