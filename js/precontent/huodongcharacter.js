@@ -1033,6 +1033,7 @@ const packs = function () {
                     player.addInvisibleSkill(skills);
                 },
                 removeVisitors: function (characters, player) {
+                    if (!characters.length) return;
                     game.log(player, '移去了', '#g“化身”', '#y' + get.translation(characters));
                     game.broadcastAll(function (player, names) {
                         player.tempname.removeArray(names);
@@ -1059,7 +1060,7 @@ const packs = function () {
                     player.removeInvisibleSkill(skills);
                 },
                 onremove: function (player, skill) {
-                    lib.skill.gz_huashen.removeVisitors(player.getSkills('gz_huashen'), player);
+                    lib.skill.gz_huashen.removeVisitors(player.getStorage(skill), player);
                     player.removeSkillBlocker('gz_huashen');
                 },
                 skillBlocker: function (skill, player) {
