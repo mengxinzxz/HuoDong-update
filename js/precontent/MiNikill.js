@@ -26463,87 +26463,59 @@ const packs = function () {
                                 source.getHistory('custom').push({ 'minilunce_下策': [bool, player] });
                                 if (bool) {
                                     await source.draw(2);
-                                    if (source != player) await source.chooseToGive(player, [1, 2], 'h');
+                                    if (source != player) {
+                                        const bool = await source.chooseToGive(player, [1, 3], 'he').forResultBool();
+                                        if (bool) await player.recover();
+                                    }
+                                    else if (player.isDamaged()) {
+                                        const bool = await player.chooseBool('是否回复1点体力').forResultBool();
+                                        if (bool) await player.recover();
+                                    }
                                 }
                             }
                         },
                         mark: true,
-                        intro: { content: '<li>由$向你传授的下策<br><li>回合结束时，若你本回合未于出牌阶段使用【杀】造成过伤害，则$摸两张牌且其可以交给你至多两张手牌。' },
+                        intro: { content: '<li>由$向你传授的下策<br><li>回合结束时，若你本回合未于出牌阶段使用【杀】造成过伤害，则$可以交给你至多三张牌并令你回复1点体力。' },
                     },
                 },
             },
             minilanhai: {
                 audio: 'ext:活动武将/audio/skill:2',
-                trigger: { global: 'roundStart' },
-                filter(event, player, name) {
-                    if (name === 'roundStart' && game.phaseNumber <= 1) return false;
+                trigger: { global: 'phaseEnd' },
+                filter(event, player) {
                     return lib.skill.minilunce.derivation.some(effect => {
-                        return player.getRoundHistory('custom', evt => {
-                            if (!evt[effect] || !evt[effect][0]) return false;
-                            const choice = effect.slice(-2);
-                            return choice !== '中策' || (evt[effect][1].isIn() && !evt[effect][1].hasSkill('minilanhai_中策'));
-                        }, 1).length;
+                        return player.getHistory('custom', evt => {
+                            return evt[effect];
+                        }).length;
                     });
                 },
                 forced: true,
                 async content(event, trigger, player) {
+                    const bool = player.hasHistory('custom', evt => {
+                        return lib.skill.minilunce.derivation.some(effect => {
+                            return evt[effect] && evt[effect][0];
+                        });
+                    });
                     const history = player.getRoundHistory('custom', evt => {
                         return lib.skill.minilunce.derivation.some(effect => {
                             return evt[effect] && evt[effect][0];
                         });
-                    }, 1), list = lib.skill.minilunce.derivation.filter(effect => {
-                        return player.getRoundHistory('custom', evt => {
-                            if (!evt[effect] || !evt[effect][0]) return false;
-                            const choice = effect.slice(-2);
-                            return choice !== '中策' || (evt[effect][1].isIn() && !evt[effect][1].hasSkill('minilanhai_中策'));
-                        }, 1).length;
-                    }).map(i => i.slice(-2));
-                    if (list.includes('上策')) {
-                        await player.draw(history.length);
+                    });
+                    if (bool) {
+                        await player.draw(Math.min(3, history.length));
+                        const targets = game.filterPlayer(current => {
+                            return lib.skill.minilunce.derivation.some(i => !current.hasSkill(i));
+                        });
+                        if (!targets.length) return;
+                        await player.useSkill('minilunce');
                     }
-                    if (list.includes('中策')) {
-                        const targets = player.getRoundHistory('custom', evt => {
-                            const effect = 'minilunce_中策';
-                            return evt[effect] && evt[effect][0] && evt[effect][1].isIn() && !evt[effect][1].hasSkill('minilanhai_中策');
-                        }, 1).map(evt => {
-                            return evt['minilunce_中策'][1];
-                        }).sortBySeat();
-                        player.line(targets);
-                        const skill = 'minilanhai_中策';
-                        for (const i of targets) i.addTempSkill(skill, { player: skill + 'Begin' });
-                    }
-                    if (list.includes('下策')) {
+                    else {
                         if (player.countMark('minilanhai') < 3) {
                             player.addMark('minilanhai', 1, false);
                             await player.gainMaxHp();
                         }
                         await player.recover();
                     }
-                },
-                group: 'minilanhai_effect',
-                subSkill: {
-                    '中策': {
-                        mark: true,
-                        charlotte: true,
-                        intro: { content: '下次受到【杀】造成的伤害+1' },
-                        trigger: { player: 'damageBegin2' },
-                        filter(event, player) {
-                            return event.card?.name == 'sha';
-                        },
-                        silent: true,
-                        content() {
-                            trigger.num++;
-                        },
-                    },
-                    effect: {
-                        trigger: { global: 'phaseEnd' },
-                        filter(event, player, name) {
-                            if (!lib.skill.minilunce.derivation.some(i => player.hasHistory('custom', evt => evt[i] && evt[i][0]))) return false;
-                            return lib.skill.minilunce.filter(event, player, name);
-                        },
-                        locked: true,
-                        inherit: 'minilunce',
-                    },
                 },
             },
             //喵
@@ -30115,9 +30087,9 @@ const packs = function () {
             'minilunce_中策': '中策',
             'minilunce_中策_info': '其于回合内首次使用【杀】指定目标后，你获得其一张牌，直到其回合结束。',
             'minilunce_下策': '下策',
-            'minilunce_下策_info': '其回合结束时，若其本回合未于出牌阶段使用【杀】造成过伤害，则你摸两张牌且可以交给其至多两张手牌。',
+            'minilunce_下策_info': '其回合结束时，若其本回合未于出牌阶段使用【杀】造成过伤害，则你可以交给其至多三张牌并令其回复1点体力。',
             minilanhai: '览害',
-            minilanhai_info: '锁定技。①一轮游戏开始时，若上一轮你的以下策略被成功执行，则你执行对应项：上策，你摸X张牌（X为你上一轮策略被成功执行的次数）；中策，你令上一轮执行你给予其中策的角色下次受到【杀】造成的伤害+1（不叠加）；3.下策，你增加1点体力上限并回复1点体力（至多以此法增加3点体力上限）。②一名角色的回合结束时，若本回合你的计策被成功执行，则你可以发动【论策】。',
+            minilanhai_info: '锁定技。一名角色的回合结束时，若本回合你的计策被成功执行，则你可以摸X张牌并发动一次〖论策〗（X为你本轮策略被成功执行的次数）；否则你增加1点体力上限并回复1点体力（你以此法至多增加3点体力上限）。',
             //喵
             Mmiao_caiwenji: '喵蔡琰',
             Mmiao_diaochan: '喵貂蝉',
