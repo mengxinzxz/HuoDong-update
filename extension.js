@@ -12,14 +12,15 @@ game.bolShowNewPack = function () {
 	//更新告示
 	var HuoDong_update = [
 		'/setPlayer/',
-		'bugfix，微信武将图片素材补充',
+		'bugfix，素材补充',
 		'整合@xizifu 的PR',
-		'添加武将欢杀谋关羽、极蔡文姬、微信谋马超、微信霍骏',
+		'添加武将欢杀谋关羽、极蔡文姬、微信谋马超、微信霍骏、欢杀宗预',
 		'To be continued...',
 	];
 	//更新武将
 	var HuoDong_players = [
 		'Mbaby_ol_sb_guanyu', 'wechat_re_caiwenji', 'wechat_sb_machao', 'wechat_huojun',
+		'Mbaby_zongyu',
 	];
 	//加载
 	var dialog = ui.create.dialog(
