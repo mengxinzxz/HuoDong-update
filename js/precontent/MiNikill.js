@@ -26462,7 +26462,6 @@ const packs = function () {
                                 game.log(source, '的下策执行', bool ? '#g成功' : '#y失败');
                                 source.getHistory('custom').push({ 'minilunce_下策': [bool, player] });
                                 if (bool) {
-                                    await source.draw(2);
                                     if (source != player) {
                                         const bool = await source.chooseToGive(player, [1, 3], 'he').forResultBool();
                                         if (bool) await player.recover();
