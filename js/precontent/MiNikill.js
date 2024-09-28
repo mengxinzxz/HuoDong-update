@@ -13,7 +13,7 @@ const packs = function () {
                 MiNi_shen: ['Mbaby_shen_luxun', 'Mbaby_shen_dengai', 'Mbaby_shen_zuoci', 'Mbaby_shen_taishici', 'Mbaby_shen_diaochan', 'Mbaby_shen_daxiaoqiao', 'Mbaby_shen_zhenji', 'Mbaby_shen_guojia', 'Mbaby_shen_huatuo', 'Mbaby_shen_dianwei', 'Mbaby_shen_lvbu', 'Mbaby_shen_zhugeliang', 'Mbaby_shen_lvmeng', 'Mbaby_shen_zhouyu', 'Mbaby_shen_guanyu', 'Mbaby_shen_liubei', 'Mbaby_shen_caocao', 'Mbaby_shen_zhangliao', 'Mbaby_shen_sunquan', 'Mbaby_shen_simayi', 'Mbaby_shen_zhaoyun', 'Mbaby_shen_ganning', 'Mbaby_shen_pangtong'],
                 MiNi_change: ['Mbaby_re_nanhualaoxian', 'Mbaby_re_sunyi', 'Mbaby_zhaoxiang', 'Mbaby_xushao', 'Mbaby_baosanniang', 'Mbaby_quanhuijie'],
                 MiNi_shengzhiyifa: ['Mbaby_sunwukong', 'Mbaby_dalanmao', 'Mbaby_libai', 'Mbaby_change', 'Mbaby_nvwa', 'Mbaby_tunxingmenglix', 'Mbaby_xiaoshan'],
-                MiNi_sbCharacter: ['Mbaby_ol_sb_guanyu', 'Mbaby_sb_sunshangxiang', 'Mbaby_sb_xuhuang', 'Mbaby_sb_zhaoyun', 'Mbaby_sb_liubei', 'Mbaby_sb_caocao', 'Mbaby_sb_huanggai', 'Mbaby_sb_yuanshao', 'Mbaby_sb_yujin', 'Mbaby_sb_machao', 'Mbaby_sb_lvmeng', 'Mbaby_sb_huangzhong'],
+                MiNi_sbCharacter: ['Mbaby_sb_huangyueying', 'Mbaby_ol_sb_guanyu', 'Mbaby_sb_sunshangxiang', 'Mbaby_sb_xuhuang', 'Mbaby_sb_zhaoyun', 'Mbaby_sb_liubei', 'Mbaby_sb_caocao', 'Mbaby_sb_huanggai', 'Mbaby_sb_yuanshao', 'Mbaby_sb_yujin', 'Mbaby_sb_machao', 'Mbaby_sb_lvmeng', 'Mbaby_sb_huangzhong'],
                 MiNi_miaoKill: ['Mmiao_caiwenji', 'Mmiao_diaochan', 'Mmiao_caifuren', 'Mmiao_zhangxingcai', 'Mmiao_zhurong', 'Mmiao_huangyueying', 'Mmiao_daqiao', 'Mmiao_wangyi', 'Mmiao_zhangchunhua', 'Mmiao_zhenji', 'Mmiao_sunshangxiang', 'Mmiao_xiaoqiao', 'Mmiao_lvlingqi'],
                 MiNi_nianKill: ['Mnian_zhugeliang', 'Mnian_lvbu'],
             },
@@ -153,6 +153,7 @@ const packs = function () {
             Mbaby_mazhong: ['male', 'shu', 4, ['minifuman'], ['die:re_mazhong']],
             Mbaby_ol_sb_guanyu: ['male', 'shu', 4, ['miniweilin', 'miniduoshou']],
             Mbaby_zongyu: ['male', 'shu', 3, ['zyqiao', 'minichengshang']],
+            Mbaby_sb_huangyueying: ['female', 'shu', 3, ['miniliuma', 'minisbjizhi', 'minisbqicai']],
             //吴
             Mbaby_bulianshi: ['female', 'wu', 3, ['minianxu', 'zhuiyi']],
             Mbaby_chengpu: ['male', 'wu', 4, ['minilihuo', 'minichunlao']],
@@ -11384,7 +11385,7 @@ const packs = function () {
                 },
                 subSkill: { used: { charlotte: true } },
             },
-            // 宗预
+            //宗预
             minichengshang: {
                 audio: 'chengshang',
                 trigger: {
@@ -11427,6 +11428,239 @@ const packs = function () {
                         },
                     }
                 }
+            },
+            //谋黄月英
+            miniliuma: {
+                init(player) {
+                    if (!_status.miniliuma) _status.miniliuma = [];
+                    player.markSkill('miniliuma');
+                },
+                updateLiuma() {
+                    for (const i of game.players) {
+                        if (i.hasSkill('miniliuma')) i.markSkill('miniliuma');
+                    }
+                },
+                hiddenCard(player, name) {
+                    return _status.miniliuma?.some(card => card.name == name);
+                },
+                enable: ['chooseToUse', 'chooseToRespond'],
+                filter(event, player) {
+                    return _status.miniliuma?.some(card => event.filterCard(card, player, event));
+                },
+                chooseButton: {
+                    dialog(event, player) {
+                        return ui.create.dialog('流马', _status.miniliuma, 'hidden');
+                    },
+                    filter(button, player) {
+                        var evt = _status.event.getParent();
+                        if (evt?.filterCard) return evt.filterCard(button.link, player, evt);
+                        return true;
+                    },
+                    check(button) {
+                        if (get.event().getParent().type != 'phase') return 1;
+                        if (button.link.name == 'du') return 0;
+                        const player = get.player();
+                        if (player.getUseValue(button.link) > 0) return get.order(button.link);
+                        return -1;
+                    },
+                    backup(links, player) {
+                        return {
+                            audio: 'miniliuma',
+                            filterCard: () => false,
+                            selectCard: -1,
+                            viewAs: links[0],
+                            onuse(result, player) {
+                                if (_status.miniliuma?.includes(result.cards[0])) {
+                                    _status.miniliuma.remove(result.cards[0]);
+                                    lib.skill.miniliuma.updateLiuma();
+                                }
+                            },
+                            onrespond() {
+                                return this.onuse.apply(this, arguments);
+                            },
+                            precontent() {
+                                const card = lib.skill.miniliuma_backup.viewAs;
+                                event.result.cards = [card];
+                                event.result.card.cards = [card];
+                            },
+                        }
+                    },
+                    prompt(links) {
+                        return '请选择' + get.translation(links) + '的目标';
+                    },
+                },
+                ai: {
+                    save: true,
+                    respondSha: true,
+                    respondShan: true,
+                    skillTagFilter(player, tag) {
+                        return _status.miniliuma?.some(card => {
+                            switch (tag) {
+                                case 'respondSha': if (card.name == 'sha') return true; break;
+                                case 'respondShan': if (card.name == 'shan') return true; break;
+                                case 'save': {
+                                    if (card.name == 'tao' || card.name == 'spell_zhiliaoshui') return true;
+                                    if (player == _status.event.dying) {
+                                        if (card.name == 'jiu' || card.name == 'tianxianjiu') return true;
+                                    }
+                                    break;
+                                }
+                            }
+                        });
+                    },
+                    order(item, player) {
+                        if (_status.event.type != 'phase') return 4;
+                        if (!player || !_status.miniliuma?.some(card => player.getUseValue(card) > 0)) return 0;
+                        let cards = _status.miniliuma.slice().filter(card => player.getUseValue(card) > 0);
+                        cards.sort((a, b) => get.order(b, player) - get.order(a, player));
+                        if (get.order(cards[0], player) <= 0) return 0;
+                        return get.order(cards[0], player) + 0.1;
+                    },
+                    result: {
+                        player(player) {
+                            if (_status.event.dying) return get.attitude(player, _status.event.dying);
+                            return 1;
+                        },
+                    },
+                },
+                intro: {
+                    markcount: () => _status.miniliuma?.length,
+                    mark(dialog) {
+                        if (_status.miniliuma?.length) dialog.addAuto(_status.miniliuma);
+                        else return '“流马”区暂无卡牌';
+                    },
+                },
+                group: ['miniliuma_put', 'miniliuma_give'],
+                subSkill: {
+                    backup: {},
+                    put: {
+                        trigger: { player: 'phaseUseEnd' },
+                        filter(event, player) {
+                            if (!player.countCards('h') || !player.getHp()) return false;
+                            return _status.miniliuma.length < 5;
+                        },
+                        async cost(event, trigger, player) {
+                            const num = Math.min(player.getHp(), 5 - _status.miniliuma.length);
+                            event.result = await player.chooseCard(get.prompt('miniliuma'), [1, num], '将至多' + get.cnNumber(num) + '张牌置入“流马”区').set('ai', card => {
+                                return get.value(card) * get.useful(card);
+                            }).forResult();
+                        },
+                        async content(event, trigger, player) {
+                            _status.miniliuma.addArray(event.cards);
+                            lib.skill.miniliuma.updateLiuma();
+                            player.$give(event.cards, player, false);
+                            await player.lose(event.cards, ui.special, 'visible');
+                            game.log(player, '将', event.cards, '置入了“流马”区');
+                        },
+                    },
+                    give: {
+                        trigger: { global: 'roundStart' },
+                        filter(event, player) {
+                            if (player.storage.miniliuma_give) return false;
+                            return !game.hasPlayer(target => target !== player && target.hasSkill('miniliuma', null, false, false));
+                        },
+                        async cost(event, trigger, player) {
+                            event.result = await player.chooseTarget(get.prompt('miniliuma'), '令一名其他角色获得【流马】（其不能发动此效果）', lib.filter.notMe).set('ai', card => {
+                                return get.attitude(get.player(), target);
+                            }).forResult();
+                        },
+                        async content(event, trigger, player) {
+                            const target = event.targets[0];
+                            target.storage.miniliuma_give = true;
+                            await target.addSkills('miniliuma');
+                        },
+                    },
+                },
+            },
+            minisbjizhi: {
+                audio: 'sbjizhi',
+                trigger: { player: 'useCard' },
+                filter(event, player) {
+                    return get.type2(event.card) == 'trick' && event.card.isCard;
+                },
+                forced: true,
+                preHidden: true,
+                async content(event, trigger, player) {
+                    player.draw();
+                },
+                ai: { noautowuxie: true },
+                mod: {
+                    targetInRange(card) {
+                        if (get.type2(card) === 'trick') return true;
+                    },
+                },
+            },
+            minisbqicai: {
+                audio: 'sbqicai',
+                mark: true,
+                marktext: '☯',
+                zhuanhuanji: true,
+                intro: {
+                    content(storage) {
+                        if (!storage) return '每回合限两次，当你使用普通锦囊牌时，你可以为此牌增加或减少一个目标';
+                        return '每回合限两次，出牌阶段，你可以弃置一张基本牌，然后从牌堆或弃牌堆中获得一张锦囊牌';
+                    },
+                },
+                trigger: { player: 'useCard2' },
+                filter(event, player) {
+                    if (player.storage.minisbqicai || get.type(event.card) !== 'trick') return false;
+                    if (event.targets?.length > 0) return true;
+                    const info = get.info(event.card);
+                    if (info.allowMultiple == false) return false;
+                    if (event.targets && !info.multitarget) {
+                        if (game.hasPlayer(current => {
+                            return !event.targets.includes(current) && lib.filter.targetEnabled2(event.card, player, current) && lib.filter.targetInRange(event.card, player, current);
+                        })) return true;
+                    }
+                    return false;
+                },
+                usable: 2,
+                async cost(event, trigger, player) {
+                    event.result = await player.chooseTarget(get.prompt('minisbqicai'), (card, player, target) => {
+                        const trigger = get.event().getTrigger();
+                        if (trigger.targets?.includes(target)) return true;
+                        return lib.filter.targetEnabled2(trigger.card, player, target) && lib.filter.targetInRange(trigger.card, player, target);
+                    }).set('prompt2', '为' + get.translation(trigger.card) + '增加或减少一个目标').set('ai', target => {
+                        const player = get.player(), trigger = get.event().getTrigger();
+                        return get.effect(target, trigger.card, player, player) * (trigger.targets?.includes(target) ? -1 : 1);
+                    }).forResult();
+                    if (event.result.bool && !event.isMine() && !event.isOnline()) await game.delayx();
+                },
+                async content(event, trigger, player) {
+                    player.changeZhuanhuanji('minisbqicai');
+                    if (trigger.targets.includes(event.targets[0])) trigger.targets.removeArray(event.targets);
+                    else trigger.targets.addArray(event.targets);
+                },
+                group: ['minisbqicai_gain', 'minisbqicai_change'],
+                subSkill: {
+                    gain: {
+                        audio: 'sbqicai',
+                        inherit: 'wechatjifeng',
+                        usable: 2,
+                        filterCard: { type: 'basic' },
+                        prompt: '弃置一张基本牌，然后从牌堆或弃牌堆中获得一张锦囊牌',
+                        contentBefore() {
+                            player.changeZhuanhuanji('minisbqicai');
+                        },
+                    },
+                    change: {
+                        audio: 'sbqicai',
+                        trigger: {
+                            global: 'phaseBefore',
+                            player: 'enterGame',
+                        },
+                        filter(event, player) {
+                            return event.name != 'phase' || game.phaseNumber == 0;
+                        },
+                        prompt2(event, player) {
+                            return "切换【奇才】为状态" + (player.storage.minisbqicai ? '阳' : '阴');
+                        },
+                        check: () => Math.random() > 0.5,
+                        content() {
+                            player.changeZhuanhuanji('minisbqicai');
+                        },
+                    },
+                },
             },
             //吴
             //孙权
@@ -28605,6 +28839,20 @@ const packs = function () {
                 str += '你可以跳过此阶段并摸一张牌。';
                 return str;
             },
+            miniliuma(player) {
+                if (!player.storage.miniliuma_give) return lib.translate.miniliuma_info;
+                return '①出牌阶段结束时，你可以将至多X张手牌置入“流马”区（X为你的体力值，“流马”区至多存在五张牌）。②你可以使用或打出“流马”区的牌。';
+            },
+            minisbqicai(player) {
+                let storage = player.storage.dcsbyingmou, str = '转换技，①游戏开始时，你可以转换此技能状态。②';
+                if (!storage) str += '<span class="bluetext">';
+                str += '阳：每回合限两次，当你使用锦囊牌时，你可以为此牌增加或减少一个目标；';
+                if (!storage) str += '</span>';
+                if (storage) str += '<span class="bluetext">';
+                str += '阴：每回合限两次，出牌阶段，你可以弃置一张基本牌，然后从牌堆或弃牌堆中获得一张锦囊牌。';
+                if (storage) str += '</span>';
+                return str;
+            },
         },
         translate: {
             MiNi_wei: '欢乐三国杀·魏国',
@@ -28969,6 +29217,7 @@ const packs = function () {
             Mbaby_mazhong: '欢杀马忠',
             Mbaby_ol_sb_guanyu: '欢杀谋关羽',
             Mbaby_zongyu: '欢杀宗预',
+            Mbaby_sb_huangyueying: '欢杀谋黄月英',
             miniwusheng: '武圣',
             miniwusheng_info: '锁定技。①你使用红色【杀】造成的伤害+1。②回合开始时，你从牌堆或弃牌堆中获得一张红色【杀】。',
             miniguanxing: '观星',
@@ -29214,6 +29463,12 @@ const packs = function () {
             miniduoshou_info: '锁定技。①你每回合使用的第一张红色牌无距离限制。②你每回合使用的第一张基本牌不计入使用次数。③你每回合使用的第一张【杀】指定目标后摸两张牌。④你每回合第一次造成伤害后，你获得受伤角色的一张牌。',
             minichengshang: '承赏',
             minichengshang_info: '出牌阶段限一次，当你于使用牌后，你可以从牌堆中获得所有与此牌花色点数相同的牌（你以此法获得的牌本回合不计入手牌上限）。若你未以此法获得牌，此技能视为未发动过。',
+            miniliuma: '流马',
+            miniliuma_info: '①出牌阶段结束时，你可以将至多X张手牌置入“流马”区（X为你的体力值，“流马”区至多存在五张牌）。②一轮游戏开始时，若场上仅你拥有【流马】，则你可以令一名其他角色获得不能发动此项的【流马】。③你可以使用或打出“流马”区的牌。',
+            minisbjizhi: '集智',
+            minisbjizhi_info: '锁定技。①当你使用非转化锦囊牌时，你摸一张牌。②你使用锦囊牌无距离限制。',
+            minisbqicai: '奇才',
+            minisbqicai_info: '转换技，①游戏开始时，你可以转换此技能状态。②阳：每回合限两次，当你使用普通锦囊牌时，你可以为此牌增加或减少一个目标；阴：每回合限两次，出牌阶段，你可以弃置一张基本牌，然后从牌堆或弃牌堆中获得一张锦囊牌。',
             //吴
             Mbaby_bulianshi: '欢杀步练师',
             Mbaby_chengpu: '欢杀程普',
