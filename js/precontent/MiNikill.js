@@ -436,6 +436,7 @@ const packs = function () {
                     const evt = event.getParent(2).mini_zhong || event.getParent(3).mini_zhong;
                     if (!evt) return event.finish();
                     player.line(evt.player);
+                    player.addExpose(0.2);
                     evt.cancel();
                     player.damage(evt.source ? evt.source : 'nosource', evt.nature, evt.num).set('card', evt.card).set('cards', evt.cards);
                 },
@@ -448,7 +449,7 @@ const packs = function () {
                     },
                     result: {
                         player(player) {
-                            const trigger = get.event().getParent.mini_zhong;
+                            const trigger = get.event().getParent().mini_zhong;
                             if (trigger && trigger.player) return get.info('twgonghuan').check(trigger, player) ? 1 : 0;
                             return 0;
                         },
