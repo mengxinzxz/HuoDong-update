@@ -427,6 +427,52 @@ const packs = function () {
                 type: 'junling',
                 vanish: true,
             },
+            mini_zhong: {
+                type: 'trick',
+                notarget: true,
+                wuxieable: true,
+                global: 'miniweilin_zhong',
+                content() {
+                    const evt = event.getParent(2).mini_zhong || event.getParent(3).mini_zhong;
+                    if (!evt) return event.finish();
+                    evt.cancel();
+                    player.damage(evt.source ? evt.source : 'nosource', evt.nature, evt.num).set('card', evt.card).set('cards', evt.cards);
+                },
+                ai: {
+                    value: [5, 1],
+                    useful: [5, 1],
+                    order: 1,
+                    wuxie(target, card, player, current, state) {
+                        return -state * get.attitude(player, current);
+                    },
+                    result: {
+                        player(player) {
+                            const trigger = get.event().getParent.mini_zhong;
+                            if (trigger && trigger.player) return get.info('twgonghuan').check(trigger, player) ? 1 : 0;
+                            return 0;
+                        },
+                    },
+                },
+            },
+            mini_yi: {
+                type: 'trick',
+                enable: true,
+                filterTarget(card, player, target) {
+                    return target.countCards('he') && target != player;
+                },
+                content() {
+                    target.chooseToGive(player, 'he', true);
+                    const evt = event.getParent();
+                    if (evt?.name === 'useCard' && evt.cards?.someInD('od')) {
+                        target.gain(evt.cards.filterInD('od'), 'gain2');
+                    }
+                },
+                ai: {
+                    order: 4,
+                    value: [5, 1],
+                    result: { target: -1 },
+                },
+            },
         },
         skill: {
             //魏
@@ -11307,20 +11353,160 @@ const packs = function () {
                 }
             },
             //关羽
+            //加个忠义，彩蛋不删
             miniweilin: {
                 audio: 'olsbweilin',
-                inherit: 'olsbweilin',
+                enable: 'chooseToUse',
+                filter(event, player) {
+                    return get.inpileVCardList(info => {
+                        const name = info[2];
+                        if (name != 'sha' && name != 'jiu') return false;
+                        return get.type(name) == 'basic';
+                    }).concat([['锦囊', '', 'mini_zhong'], ['锦囊', '', 'mini_yi']]).some(card => {
+                        return player.hasCard(cardx => event.filterCard({ name: card[2], nature: card[3], cards: [cardx] }, player, event), 'hes');
+                    });
+                },
+                usable: 1,
+                chooseButton: {
+                    dialog(event, player) {
+                        const list = get.inpileVCardList(info => {
+                            const name = info[2];
+                            if (name != 'sha' && name != 'jiu') return false;
+                            return get.type(name) == 'basic';
+                        }).concat([['锦囊', '', 'mini_zhong'], ['锦囊', '', 'mini_yi']]).filter(card => {
+                            return player.hasCard(cardx => event.filterCard({ name: card[2], nature: card[3], cards: [cardx] }, player, event), 'hes');
+                        });
+                        return ui.create.dialog('威临', [list, 'vcard']);
+                    },
+                    filter(button, player) {
+                        return _status.event.getParent().filterCard({ name: button.link[2], nature: button.link[3] }, player, _status.event.getParent());
+                    },
+                    check(button) {
+                        if (_status.event.getParent().type != 'phase') return 1;
+                        const player = get.event('player'), value = player.getUseValue({ name: button.link[2], nature: button.link[3] });
+                        if (button.link[2] == 'sha' && !player.getHistory('useCard', evt => get.type(evt.card) == 'basic').length) {
+                            if (value > 0) return value + 20;
+                        }
+                        return value;
+                    },
+                    backup(links, player) {
+                        return {
+                            audio: 'olsbweilin',
+                            filterCard: true,
+                            popname: true,
+                            check(card) {
+                                const name = lib.skill.miniweilin_backup.viewAs.name, color = get.color(card);
+                                const phase = (_status.event.getParent().type == 'phase');
+                                if (phase && name == 'sha' && color == 'red') return 10 - get.value(card);
+                                if (name == 'tao') return 7 + [-2, 0, 2][['black', 'red', 'none'].indexOf(color)] - get.value(card);
+                                return 6 - get.value(card);
+                            },
+                            position: 'hse',
+                            viewAs: { name: links[0][2], nature: links[0][3] },
+                            precontent() {
+                                player.addTempSkill('miniweilin_wusheng');
+                            },
+                            ai: {
+                                directHit_ai: true,
+                                skillTagFilter(player, tag, arg) {
+                                    if (get.event('skill') != 'miniweilin_backup') return false;
+                                    return arg && arg.card && arg.card.name == 'sha' && get.color(arg.card) == 'red';
+                                },
+                            },
+                        }
+                    },
+                    prompt(links, player) {
+                        return '###威临###将一张牌当作' + (get.translation(links[0][3]) || '') + '【' + get.translation(links[0][2]) + '】使用';
+                    },
+                },
+                hiddenCard(player, name) {
+                    return ['sha', 'jiu', 'mini_zhong', 'mini_yi'].includes(name) && !player.getStat('skill').miniweilin && player.countCards('hes');
+                },
+                ai: {
+                    fireAttack: true,
+                    respondSha: true,
+                    skillTagFilter(player, tag, arg) {
+                        if (arg == 'respond') return false;
+                        if (player.getStat('skill').miniweilin || !player.countCards('hes')) return false;
+                    },
+                    order(item, player) {
+                        if (player && _status.event.type == 'phase' && player.hasValueTarget({ name: 'sha' }, true, true)) {
+                            let max = 0, names = get.inpileVCardList(info => {
+                                const name = info[2];
+                                if (name != 'sha' && name != 'jiu') return false;
+                                return get.type(name) == 'basic';
+                            }).concat([['锦囊', '', 'mini_zhong'], ['锦囊', '', 'mini_yi']]);
+                            names = names.map(namex => { return { name: namex[2], nature: namex[3] } });
+                            names.forEach(card => {
+                                if (player.getUseValue(card) > 0) {
+                                    let temp = get.order(card);
+                                    if (card.name == 'jiu') {
+                                        let cards = player.getCards('hs', cardx => get.value(cardx) < 8);
+                                        cards.sort((a, b) => get.value(a) - get.value(b));
+                                        if (!cards.some(cardx => get.name(cardx) == 'sha' && !cards.slice(0, 2).includes(cardx))) temp = 0;
+                                    }
+                                    if (temp > max) max = temp;
+                                }
+                            });
+                            if (max > 0) max += 15;
+                            return max;
+                        }
+                        return 0.5;
+                    },
+                    result: {
+                        player(player) {
+                            if (_status.event.dying) return get.attitude(player, _status.event.dying);
+                            return 1;
+                        },
+                    },
+                },
+                derivation: ['mini_zhong', 'mini_yi', 'shuiyanqijuny'],
                 group: 'miniweilin_gain',
+                global: 'miniweilin_zhong',
                 subfrequent: ['gain'],
                 subSkill: {
+                    wusheng: {
+                        charlotte: true,
+                        trigger: { player: 'useCardToTargeted' },
+                        filter(event, player) {
+                            return event.getParent().skill === 'miniweilin_backup' && event.getParent().triggeredTargets3.length === event.targets.length;
+                        },
+                        forced: true,
+                        popup: false,
+                        lastDo: true,
+                        content() {
+                            const targets = trigger.targets.slice().sortBySeat();
+                            player.line(targets);
+                            for (const target of targets) {
+                                target.addTempSkill('olsbweilin_wusheng');
+                                target.markAuto('olsbweilin_wusheng', [get.color(trigger.card)]);
+                            }
+                        },
+                    },
+                    zhong: {
+                        sourceSkill: false,
+                        trigger: { global: 'damageBegin4' },
+                        filter(event, player) {
+                            if (event.player === player) return false;
+                            return !event.getParent().directHit.includes(player) && player.hasUsableCard('mini_zhong');
+                        },
+                        direct: true,
+                        content() {
+                            event.mini_zhong = trigger;
+                            player.chooseToUse((card, player) => {
+                                if (get.name(card) != 'mini_zhong') return false;
+                                return lib.filter.cardEnabled(card, player, 'forceEnable');
+                            }, '是否使用【忠】，将即将对' + get.translation(trigger.player) + '造成的伤害转移给自己？');
+                        },
+                    },
                     backup: {},
                     gain: {
                         audio: 'olsbweilin',
                         trigger: { player: ['useCardAfter', 'respondAfter'] },
                         filter(event, player) {
-                            return game.getAllGlobalHistory('everything', evt => {
+                            return (game.getAllGlobalHistory('everything', evt => {
                                 return ['useCard', 'respond'].includes(evt.name) && evt.player == player;
-                            }).indexOf(event) % 7 == 0;
+                            }).indexOf(event) + 1) % 7 == 0;
                         },
                         frequent: true,
                         prompt2: '获得一张【水淹七军】',
@@ -29461,7 +29647,11 @@ const packs = function () {
             minifuman: '抚蛮',
             minifuman_info: '出牌阶段每名角色限一次。你可以弃置一张牌，令一名其他角色从牌堆中获得一张【杀】。然后其失去此【杀】后，你与其各摸一张牌。此【杀】结算完成后，若此【杀】造成过伤害，你摸一张牌。',
             miniweilin: '威临',
-            miniweilin_info: '①每回合限一次，你可以将一张牌当作任意【杀】或【酒】使用，且你以此法使用的牌指定最后一个目标后，你令所有目标角色本回合与此牌颜色相同的手牌均视为【杀】。②当你使用或打出牌后，若此牌为你本局使用或打出的7的倍数张，则你可以获得一张【水淹七军】。',
+            miniweilin_info: '①每回合限一次，你可以将一张牌当作任意【杀】/【酒】/【忠】/【义】使用，且你以此法使用的牌指定最后一个目标后，你令所有目标角色本回合与此牌颜色相同的手牌均视为【杀】。②当你使用或打出牌后，若此牌为你本局使用或打出的7的倍数张，则你可以获得一张【水淹七军】。',
+            mini_zhong: '忠',
+            mini_zhong_info: '当其他角色受到伤害时，使用此牌，将此伤害转移给自己。',
+            mini_yi: '义',
+            mini_yi_info: '出牌阶段，对一名有手牌的其他角色使用，令其交给你一张牌，然后其获得此【义】对应的实体牌。',
             miniduoshou: '夺首',
             miniduoshou_info: '锁定技。①你每回合使用的第一张红色牌无距离限制。②你每回合使用的第一张基本牌不计入使用次数。③你每回合使用的第一张【杀】指定目标后摸两张牌。④你每回合第一次造成伤害后，你获得受伤角色的一张牌。',
             minichengshang: '承赏',
