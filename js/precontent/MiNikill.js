@@ -11598,7 +11598,7 @@ const packs = function () {
                 intro: {
                     content(storage) {
                         if (!storage) return '每回合限两次，当你使用普通锦囊牌时，你可以为此牌增加或减少一个目标';
-                        return '每回合限两次，出牌阶段，你可以弃置一张基本牌，然后从牌堆或弃牌堆中获得一张锦囊牌';
+                        return '每回合限两次，出牌阶段，你可以弃置一张基本牌，然后从牌堆中获得一张锦囊牌';
                     },
                 },
                 trigger: { player: 'useCard2' },
@@ -11636,9 +11636,12 @@ const packs = function () {
                     gain: {
                         audio: 'sbqicai',
                         inherit: 'wechatjifeng',
+                        filter(event, player) {
+                            return player.storage.minisbqicai;
+                        },
                         usable: 2,
                         filterCard: { type: 'basic' },
-                        prompt: '弃置一张基本牌，然后从牌堆或弃牌堆中获得一张锦囊牌',
+                        prompt: '弃置一张基本牌，然后从牌堆中获得一张锦囊牌',
                         contentBefore() {
                             player.changeZhuanhuanji('minisbqicai');
                         },
@@ -28849,7 +28852,7 @@ const packs = function () {
                 str += '阳：每回合限两次，当你使用锦囊牌时，你可以为此牌增加或减少一个目标；';
                 if (!storage) str += '</span>';
                 if (storage) str += '<span class="bluetext">';
-                str += '阴：每回合限两次，出牌阶段，你可以弃置一张基本牌，然后从牌堆或弃牌堆中获得一张锦囊牌。';
+                str += '阴：每回合限两次，出牌阶段，你可以弃置一张基本牌，然后从牌堆中获得一张锦囊牌。';
                 if (storage) str += '</span>';
                 return str;
             },
@@ -29468,7 +29471,7 @@ const packs = function () {
             minisbjizhi: '集智',
             minisbjizhi_info: '锁定技。①当你使用非转化锦囊牌时，你摸一张牌。②你使用锦囊牌无距离限制。',
             minisbqicai: '奇才',
-            minisbqicai_info: '转换技，①游戏开始时，你可以转换此技能状态。②阳：每回合限两次，当你使用普通锦囊牌时，你可以为此牌增加或减少一个目标；阴：每回合限两次，出牌阶段，你可以弃置一张基本牌，然后从牌堆或弃牌堆中获得一张锦囊牌。',
+            minisbqicai_info: '转换技，①游戏开始时，你可以转换此技能状态。②阳：每回合限两次，当你使用普通锦囊牌时，你可以为此牌增加或减少一个目标；阴：每回合限两次，出牌阶段，你可以弃置一张基本牌，然后从牌堆中获得一张锦囊牌。',
             //吴
             Mbaby_bulianshi: '欢杀步练师',
             Mbaby_chengpu: '欢杀程普',
