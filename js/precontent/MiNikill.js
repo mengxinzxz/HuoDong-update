@@ -435,6 +435,7 @@ const packs = function () {
                 content() {
                     const evt = event.getParent(2).mini_zhong || event.getParent(3).mini_zhong;
                     if (!evt) return event.finish();
+                    player.line(evt.player);
                     evt.cancel();
                     player.damage(evt.source ? evt.source : 'nosource', evt.nature, evt.num).set('card', evt.card).set('cards', evt.cards);
                 },
@@ -11488,7 +11489,7 @@ const packs = function () {
                         trigger: { global: 'damageBegin4' },
                         filter(event, player) {
                             if (event.player === player) return false;
-                            return !event.getParent().directHit.includes(player) && player.hasUsableCard('mini_zhong');
+                            return player.hasUsableCard('mini_zhong');
                         },
                         direct: true,
                         content() {
