@@ -8083,51 +8083,6 @@ const packs = function () {
                     player.addTempSkill('recanshi2');
                 },
             },
-            //杨阜
-            wechatjiebing: {
-                audio: 'jiebing',
-                inherit: 'jiebing',
-                filter(event, player) {
-                    return game.hasPlayer(current => current != player && current.countGainableCards(player, 'he'));
-                },
-                content() {
-                    'step 0'
-                    player.chooseTarget('借兵：选择一名其他角色', get.skillInfoTranslation('wechatjiebing'), (card, player, target) => {
-                        return player != target && target.countGainableCards(player, 'he');
-                    }, true).set('ai', target => get.effect(target, { name: 'shunshou_copy2' }, player, player));
-                    'step 1'
-                    if (result.bool) {
-                        var target = result.targets[0];
-                        player.logSkill('wechatjiebing', target);
-                        if (target.ai.shown > 0) player.addExpose(0.15);
-                        var cards = target.getGainableCards(player, 'he').randomGets(1);
-                        event.cards = cards;
-                        player.gain(target, cards, 'give', 'bySelf');
-                        player.showCards(cards, '借兵');
-                    } else event.finish();
-                    'step 2'
-                    for (var card of cards) {
-                        if (get.type(card) == 'equip' && player.hasUseTarget(card) && get.owner(card) == player) {
-                            player.chooseUseTarget(card, true);
-                        }
-                    }
-                },
-                ai: {
-                    maixie: true,
-                    maixie_hp: true,
-                    effect: {
-                        target(card, player, target) {
-                            if (get.tag(card, 'damage')) {
-                                if (player.hasSkillTag('jueqing', false, target)) return [1, -2];
-                                if (player != target && !player.getFriends().length) return;
-                                if (game.hasPlayer(current => {
-                                    return get.attitude(player, current) > 0 && current.countGainableCards(target, 'he') > 0;
-                                })) return [1, 1];
-                            }
-                        },
-                    },
-                },
-            },
             //甘夫人
             wechatshenzhi: {
                 audio: 'shenzhi',
