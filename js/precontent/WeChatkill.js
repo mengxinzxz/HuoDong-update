@@ -6,7 +6,7 @@ const packs = function () {
         connect: true,
         characterSort: {
             WeChatkill: {
-                wechat_standard: ['wechat_ganfuren', 'wechat_sunhao', 'wechat_yj_weiyan', 'wechat_sp_zhugeliang', 'wechat_zhenji', 'wechat_liuyan', 'wechat_sp_wangcan', 'wechat_xushi', 'wechat_baosanniang', 'wechat_litong', 'wechat_yj_zhoubuyi', 'wechat_jsp_huangyueying', 'wechat_re_gongsunzan', 'wechat_guanyinping', 'wechat_sp_machao', 'wechat_pangdegong', 'wechat_gongsunyuan', 'wechat_xusheng', 'wechat_yufan', 'wechat_handang', 'wechat_wanglang', 'wechat_huanghao', 'wechat_caiyong', 'wechat_yj_huangzhong', 'wechat_zhangzhang', 'wechat_chendeng', 'wechat_taoqian', 'wechat_kanze', 'wechat_xuezong', 'wechat_guyong', 'wechat_guansuo', 'wechat_zumao', 'wechat_yj_jushou', 'wechat_sp_pangde', 'wechat_caojie', 'wechat_zhuling', 'wechat_caizhenji', 'wechat_guohuanghou', 'wechat_yanyan', 'wechat_liaohua', 'wechat_liuyao', 'wechat_quancong', 'wechat_xiahouba', 'wechat_sp_jiangwei', 'wechat_caoxiu', 'wechat_yuanshao', 'wechat_sundeng', 'wechat_re_xushu', 'wechat_caopi', 'wechat_caozhang', 'wechat_buzhi', 'wechat_sp_taishici', 'wechat_masu', 'wechat_caifuren', 'wechat_jianyong', 'wechat_lukang', 'wechat_caozhi', 'wechat_huangyueying', 'wechat_weiyan', 'wechat_gaoshun', 'wechat_sunliang', 'wechat_wangping', 'wechat_sp_caiwenji', 'wechat_caochong', 'wechat_huangzhong', 'wechat_xiahouyuan', 'wechat_pangde', 'wechat_sunshangxiang', 'wechat_xuzhu', 'wechat_guanyu', 'wechat_caocao', 'wechat_shenpei', 'wechat_jiaxu', 'wechat_caoren', 'wechat_liuqi', 'wechat_zhaoxiang', 'wechat_caiwenji', 'wechat_menghuo', 'wechat_re_yuanshu', 'wechat_huaxiong', 'wechat_xiahoushi', 'wechat_xushu', 'wechat_zhaoyun', 'wechat_zhangfei', 'wechat_machao', 'wechat_yangxiu', 'wechat_lvmeng', 'wechat_zhoutai', 'wechat_bianfuren', 'wechat_sunluban', 'wechat_wuguotai', 'wechat_liubiao', 'wechat_liuchen', 'wechat_luxun', 'wechat_pangtong', 'wechat_zhangxingcai', 'wechat_zuoci', 'wechat_mayunlu', 'wechat_ruanhui', 'wechat_xurong', 'wechat_huojun'],
+                wechat_standard: ['wechat_yj_xuhuang', 'wechat_ganfuren', 'wechat_sunhao', 'wechat_yj_weiyan', 'wechat_sp_zhugeliang', 'wechat_zhenji', 'wechat_liuyan', 'wechat_sp_wangcan', 'wechat_xushi', 'wechat_baosanniang', 'wechat_litong', 'wechat_yj_zhoubuyi', 'wechat_jsp_huangyueying', 'wechat_re_gongsunzan', 'wechat_guanyinping', 'wechat_sp_machao', 'wechat_pangdegong', 'wechat_gongsunyuan', 'wechat_xusheng', 'wechat_yufan', 'wechat_handang', 'wechat_wanglang', 'wechat_huanghao', 'wechat_caiyong', 'wechat_yj_huangzhong', 'wechat_zhangzhang', 'wechat_chendeng', 'wechat_taoqian', 'wechat_kanze', 'wechat_xuezong', 'wechat_guyong', 'wechat_guansuo', 'wechat_zumao', 'wechat_yj_jushou', 'wechat_sp_pangde', 'wechat_caojie', 'wechat_zhuling', 'wechat_caizhenji', 'wechat_guohuanghou', 'wechat_yanyan', 'wechat_liaohua', 'wechat_liuyao', 'wechat_quancong', 'wechat_xiahouba', 'wechat_sp_jiangwei', 'wechat_caoxiu', 'wechat_yuanshao', 'wechat_sundeng', 'wechat_re_xushu', 'wechat_caopi', 'wechat_caozhang', 'wechat_buzhi', 'wechat_sp_taishici', 'wechat_masu', 'wechat_caifuren', 'wechat_jianyong', 'wechat_lukang', 'wechat_caozhi', 'wechat_huangyueying', 'wechat_weiyan', 'wechat_gaoshun', 'wechat_sunliang', 'wechat_wangping', 'wechat_sp_caiwenji', 'wechat_caochong', 'wechat_huangzhong', 'wechat_xiahouyuan', 'wechat_pangde', 'wechat_sunshangxiang', 'wechat_xuzhu', 'wechat_guanyu', 'wechat_caocao', 'wechat_shenpei', 'wechat_jiaxu', 'wechat_caoren', 'wechat_liuqi', 'wechat_zhaoxiang', 'wechat_caiwenji', 'wechat_menghuo', 'wechat_re_yuanshu', 'wechat_huaxiong', 'wechat_xiahoushi', 'wechat_xushu', 'wechat_zhaoyun', 'wechat_zhangfei', 'wechat_machao', 'wechat_yangxiu', 'wechat_lvmeng', 'wechat_zhoutai', 'wechat_bianfuren', 'wechat_sunluban', 'wechat_wuguotai', 'wechat_liubiao', 'wechat_liuchen', 'wechat_luxun', 'wechat_pangtong', 'wechat_zhangxingcai', 'wechat_zuoci', 'wechat_mayunlu', 'wechat_ruanhui', 'wechat_xurong', 'wechat_huojun'],
                 wechat_extra: ['wechat_shen_zhugeliang', 'wechat_shen_lvbu', 'wechat_shen_lvmeng', 'wechat_shen_guanyu'],
                 wechat_zhiyin: ['wechat_sunce', 'wechat_xunyu', 'wechat_re_zhenji', 'wechat_re_xuzhu', 'wechat_re_yuanshao', 'wechat_lusu', 'wechat_guojia', 'wechat_lvbu', 'wechat_daqiao', 'wechat_xiaoqiao', 'wechat_re_caocao', 'wechat_zhugeliang', 'wechat_simayi', 'wechat_re_machao', 'wechat_re_huangyueying', 'wechat_re_caiwenji'],
                 wechat_sb: ['wechat_sb_sunshangxiang', 'wechat_sb_zhaoyun', 'wechat_sb_machao'],
@@ -115,6 +115,7 @@ const packs = function () {
             wechat_ganfuren: ['female', 'shu', 3, ['dcshushen', 'wechatshenzhi']],
             wechat_xurong: ['male', 'qun', 4, ['wechatxionghuo', 'xinfu_shajue']],
             wechat_huojun: ['male', 'shu', 4, ['twsidai', 'jieyu']],
+            wechat_yj_xuhuang: ['male', 'wei', 4, ['wechatzhiyan', 'wechatjiewei']],
             //神武将
             wechat_shen_zhugeliang: ['male', 'shen', 3, ['wechatqixing', 'wechatjifeng', 'wechattianfa'], ['shu']],
             wechat_shen_lvmeng: ['male', 'shen', 3, ['shelie', 'wechatgongxin'], ['wu']],
@@ -8105,7 +8106,17 @@ const packs = function () {
                 group: ['xinfu_xionghuo_init', 'xinfu_xionghuo_damage', 'wechatxionghuo_effect'],
                 subSkill: {
                     effect: {
-                        inherit: 'xinfu_xionghuo_effect',
+                        audio: 'xinfu_xionghuo',
+                        trigger: {
+                            global: 'phaseUseBegin',
+                        },
+                        filter(event, player) {
+                            return event.player.countMark('xinfu_xionghuo') > 0 && event.player != player;
+                        },
+                        line: false,
+                        forced: true,
+                        locked: false,
+                        logTarget: 'player',
                         content() {
                             'step 0'
                             trigger.player.removeMark('xinfu_xionghuo', trigger.player.countMark('xinfu_xionghuo'));
@@ -8137,9 +8148,12 @@ const packs = function () {
                         },
                     },
                     disable: {
-                        inherit: 'xinfu_xionghuo_disable',
+                        charlotte: true,
+                        onremove: true,
+                        mark: true,
+                        marktext: '禁',
                         mod: {
-                            playerEnabled(card, player, target) {
+                            cardEnabled(card, player) {
                                 if (card.name == 'sha') return false;
                             },
                         },
@@ -8253,6 +8267,60 @@ const packs = function () {
                     const target = trigger.player, index = event.cost_data;
                     if (index == 0) await target.loseHp(trigger.num);
                     else await target.loseMaxHp();
+                },
+            },
+            // 星徐晃
+            wechatzhiyan: {
+                audio: 'xhzhiyan',
+                enable: 'phaseUse',
+                usable: 1,
+                filter(event, player) {
+                    return player.countCards('h') < player.maxHp;
+                },
+                async content(event, trigger, player) {
+                    player.addTempSkill('xinxhzhiyan_false', 'phaseUseEnd');
+                    await player.drawTo(player.maxHp);
+                },
+                ai: {
+                    order: 3,
+                    result: {
+                        player: 1,
+                    },
+                },
+            },
+            wechatjiewei: {
+                audio: 'xhzhiyan',
+                enable: 'phaseUse',
+                usable: 1,
+                filter(event, player) {
+                    return player.countCards('h') > player.hp;
+                },
+                filterCard: true,
+                selectCard() {
+                    const player = get.player();
+                    return player.countCards('h') - player.hp;
+                },
+                filterTarget: lib.filter.notMe,
+                check: (card) => lib.skill.xinxhzhiyan.check(card),
+                delay: false,
+                discard: false,
+                lose: false,
+                async content(event, trigger, player) {
+                    const { cards, target } = event;
+                    await player.give(cards, target);
+                },
+                ai: {
+                    order(obj, player) {
+                        if (player.countCards('h') > player.hp) return 10;
+                        return 0.5;
+                    },
+                    result: {
+                        player(player, target) {
+                            if (!ui.selected.cards.length && player.countCards('h') < player.maxHp) return 1;
+                            return 0;
+                        },
+                        target: 1,
+                    },
                 },
             },
         },
@@ -8815,6 +8883,11 @@ const packs = function () {
             wechatjltieji: '铁骑',
             wechatjltieji_info: '当你使用【杀】对其他角色造成伤害时，你可以防止此伤害，改为令其失去X点体力或减少1点体力上限（X为伤害值）。',
             wechat_huojun: '微信霍峻',
+            wechat_yj_xuhuang: '微信☆徐晃',
+            wechatzhiyan: '治严',
+            wechatzhiyan_info: '出牌阶段限一次，你可以将手牌摸至体力上限且本阶段内不能再对其他角色使用牌。',
+            wechatjiewei: '解围',
+            wechatjiewei_info: '出牌阶段限一次，你可以将X张手牌交给一名其他角色（X为你的手牌数与体力值之差）。',
         },
     };
     for (var i in WeChatkill.character) {
