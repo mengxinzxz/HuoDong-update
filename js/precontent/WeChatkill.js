@@ -115,7 +115,7 @@ const packs = function () {
             wechat_ganfuren: ['female', 'shu', 3, ['dcshushen', 'wechatshenzhi']],
             wechat_xurong: ['male', 'qun', 4, ['wechatxionghuo', 'xinfu_shajue']],
             wechat_huojun: ['male', 'shu', 4, ['twsidai', 'jieyu']],
-            wechat_yj_xuhuang: ['male', 'wei', 4, ['wechatzhiyan', 'wechatjiewei']],
+            wechat_yj_xuhuang: ['male', 'qun', 4, ['wechatxhzhiyan', 'wechatjiewei']],
             //神武将
             wechat_shen_zhugeliang: ['male', 'shen', 3, ['wechatqixing', 'wechatjifeng', 'wechattianfa'], ['shu']],
             wechat_shen_lvmeng: ['male', 'shen', 3, ['shelie', 'wechatgongxin'], ['wu']],
@@ -8270,8 +8270,8 @@ const packs = function () {
                 },
             },
             // 星徐晃
-            wechatzhiyan: {
-                audio: 'xhzhiyan',
+            wechatxhzhiyan: {
+                audio: 'xhzhiyan1.mp3',
                 enable: 'phaseUse',
                 usable: 1,
                 filter(event, player) {
@@ -8289,7 +8289,7 @@ const packs = function () {
                 },
             },
             wechatjiewei: {
-                audio: 'xhzhiyan',
+                audio: 'xhzhiyan2.mp3',
                 enable: 'phaseUse',
                 usable: 1,
                 filter(event, player) {
@@ -8884,8 +8884,8 @@ const packs = function () {
             wechatjltieji_info: '当你使用【杀】对其他角色造成伤害时，你可以防止此伤害，改为令其失去X点体力或减少1点体力上限（X为伤害值）。',
             wechat_huojun: '微信霍峻',
             wechat_yj_xuhuang: '微信☆徐晃',
-            wechatzhiyan: '治严',
-            wechatzhiyan_info: '出牌阶段限一次，你可以将手牌摸至体力上限且本阶段内不能再对其他角色使用牌。',
+            wechatxhzhiyan: '治严',
+            wechatxhzhiyan_info: '出牌阶段限一次，你可以将手牌摸至体力上限且本阶段内不能再对其他角色使用牌。',
             wechatjiewei: '解围',
             wechatjiewei_info: '出牌阶段限一次，你可以将X张手牌交给一名其他角色（X为你的手牌数与体力值之差）。',
         },
