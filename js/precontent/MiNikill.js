@@ -171,7 +171,7 @@ const packs = function () {
             Mbaby_taishici: ['male', 'wu', 4, ['minitianyi']],
             Mbaby_wuguotai: ['female', 'wu', 3, ['miniganlu', 'minibuyi']],
             Mbaby_xiaoqiao: ['female', 'wu', 3, ['minitianxiang', 'olhongyan']],
-            Mbaby_xusheng: ['male', 'wu', 4, ['minirepojun']],
+            Mbaby_xusheng: ['male', 'wu', 4, ['minirepojunx', 'miniyicheng']],
             Mbaby_zhoutai: ['male', 'wu', 4, ['minirebuqu', 'fenji', 'miniqingchuang']],
             Mbaby_zhouyu: ['male', 'wu', 3, ['minireyingzi', 'minirefanjian'], ['die:sb_zhouyu']],
             Mbaby_zhugejin: ['male', 'wu', 3, ['huanshi', 'minihongyuan', 'mingzhe']],
@@ -12863,6 +12863,133 @@ const packs = function () {
                 },
                 group: 'minirepojun_damage',
                 subSkill: { damage: { audio: 'decadepojun', inherit: 'repojun3' } },
+            },
+            minirepojunx: {
+                trigger: {
+                    player: 'useCardToPlayered',
+                    target: 'useCardToTargeted',
+                },
+                filter(event, player) {
+                    if (event.player == event.target || event.card.name != 'sha') return false;
+                    return player.maxHp > 0 && get.info('minirepojunx').logTarget(event, player).countCards('he') > 0;
+                },
+                async cost(event, trigger, player) {
+                    const target = get.info('minirepojunx').logTarget(trigger, player);
+                    const next = player.choosePlayerCard(target, 'he', [1, Math.min(player.maxHp, target.countCards('he'))], get.prompt(event.name.slice(0, -5), target));
+                    next.set('ai', button => {
+                        if (!_status.event.goon) return 0;
+                        const val = get.value(button.link);
+                        if (button.link == _status.event.target.getEquip(2)) return 2 * (val + 3);
+                        return val;
+                    });
+                    next.set('goon', get.attitude(player, target) <= 0);
+                    next.set('forceAuto', true);
+                    event.result = await next.forResult();
+                },
+                logTarget(event, player) {
+                    return event.player == player ? event.target : event.player;
+                },
+                async content(event, trigger, player) {
+                    const target = get.info(event.name).logTarget(trigger, player);
+                    target.addSkill(event.name + '_gain');
+                    const next = target.addToExpansion("giveAuto", event.cards, target)
+                    next.gaintag.add(event.name + '_gain');
+                    await next;
+                },
+                ai: {
+                    unequip_ai: true,
+                    directHit_ai: true,
+                    skillTagFilter(player, tag, arg) {
+                        const target = get.info('minirepojunx').logTarget(arg, player);
+                        if (get.attitude(player, target) > 0) return false;
+                        if (tag == 'directHit_ai') return player == arg.player && player.maxHp >= Math.max(1, arg.target.countCards('h') - 1);
+                        if (arg && arg.name == 'sha' && target.getEquip(2)) return true;
+                        return false;
+                    },
+                },
+                subSkill: {
+                    gain: {
+                        trigger: { global: 'phaseEnd' },
+                        forced: true,
+                        popup: false,
+                        charlotte: true,
+                        filter(event, player) {
+                            return player.getExpansions('minirepojunx_gain').length > 0;
+                        },
+                        async content(event, trigger, player) {
+                            const cards = player.getExpansions(event.name);
+                            await player.gain(cards, 'draw');
+                            game.log(player, '收回了' + get.cnNumber(cards.length) + '张“破军”牌');
+                            player.removeSkill(event.name);
+                        },
+                        intro: {
+                            markcount: 'expansion',
+                            mark(dialog, storage, player) {
+                                var cards = player.getExpansions('minirepojunx_gain');
+                                if (player.isUnderControl(true)) dialog.addAuto(cards);
+                                else return '共有' + get.cnNumber(cards.length) + '张牌';
+                            },
+                        },
+                    }
+                }
+            },
+            miniyicheng: {
+                trigger: {
+                    global: ['loseAfter', 'equipAfter', 'addJudgeAfter', 'gainAfter', 'loseAsyncAfter', 'addToExpansionAfter'],
+                },
+                forced: true,
+                getIndex(event, player) {
+                    return game.filterPlayer(current => {
+                        const evt = event.getl(current);
+                        const num = current.getCards('x').map(card => get.type2(card)).toUniqued().length;
+                        return (evt?.xs?.length || (event.name == 'addToExpansion' && event.player == current)) && num > 0 && num <= 3;
+                    }).sortBySeat();
+                },
+                logTarget(event, player, triggername, target) {
+                    return target;
+                },
+                async content(event, trigger, player) {
+                    const target = event.targets[0], num = target.getCards('x').map(card => get.type2(card)).toUniqued().length;
+                    if (num == 1) {
+                        if (!target.hasSkill('fengyin')) target.addTempSkill('fengyin');
+                        target.addTempSkill(event.name + '_ban');
+                    }
+                    else if (num == 2) {
+                        target.addTempSkill(event.name + '_damage');
+                    }
+                    else {
+                        await player.draw(3);
+                    }
+                },
+                subSkill: {
+                    ban: {
+                        mod: {
+                            cardEnabled2(card) {
+                                if (get.position(card) == 'h') return false;
+                            },
+                        },
+                        mark: true,
+                        intro: {
+                            content: '本回合非锁定技失效且不能使用或打出手牌',
+                        },
+                    },
+                    damage: {
+                        trigger: {
+                            player: 'damageBegin3',
+                        },
+                        charlotte: true,
+                        onremove: true,
+                        forced: true,
+                        popup: false,
+                        content() {
+                            trigger.num++;
+                        },
+                        mark: true,
+                        intro: {
+                            content: '本回合受到伤害的伤害+1',
+                        },
+                    }
+                }
             },
             minikeji: {
                 audio: 'keji',
@@ -29769,6 +29896,10 @@ const packs = function () {
             minipojun_info: '当你使用【杀】指定目标时，你可以将其至多X张牌移出游戏直至回合结束（X为其体力值），然后若其中有：装备牌，你弃置其中的一张；【闪】，你摸一张牌。',
             minirepojun: '破军',
             minirepojun_info: '①当你使用【杀】指定目标后，你可以将其至多X+1张牌移出游戏直至回合结束（X为其体力值），然后若其中有：装备牌，你弃置其中的一张；【闪】，你摸一张牌。②你使用【杀】对手牌数和装备区牌数均不大于你的角色造成的伤害+1。',
+            minirepojunx: '破军',
+            minirepojunx_info: '当你使用【杀】指定目标或成为【杀】的目标后，你可以将对方的至多X张牌置于其武将牌上（X为你的体力上限），然后其于当前回合结束时获得这些牌。',
+            miniyicheng: '疑城',
+            miniyicheng_info: '锁定技，一名角色的武将牌的牌数变化后，若其武将牌上的类别数：1.为一，其本回合非锁定技失效且不能使用或打出手牌；2.为二，其本回合受到的伤害+1；3.为三，你摸三张牌。',
             minianxu: '安恤',
             minianxu_info: '出牌阶段开始和结束时，你可以获得一名手牌数最多的其他角色的一张手牌，然后若此牌的花色为黑桃，该角色摸一张牌。',
             minilihuo: '疠火',
