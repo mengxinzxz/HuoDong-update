@@ -16808,7 +16808,7 @@ const packs = function () {
                     const result = await player.chooseUseTarget({ name: 'sha' }, get.prompt('xinfu_qinguo'), '视为使用一张【杀】，若此【杀】造成伤害，则你摸一张牌', false).set('logSkill', 'miniqinguo').forResult();
                     if (result.bool && game.hasPlayer2(target => {
                         return target.getHistory('damage', evt => evt.getParent(4) == event).length;
-                    }) && player.isDamaged()) await player.draw();
+                    })) await player.draw();
                 },
                 group: 'miniqinguo_recover',
                 subSkill: {
