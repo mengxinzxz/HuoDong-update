@@ -14,12 +14,12 @@ game.bolShowNewPack = function () {
 		'/setPlayer/',
 		'bugfix，素材补充',
 		'整合@xizifu 的PR',
-		'添加武将微信星徐晃',
+		'添加武将微信星徐晃、欢杀刘晔',
 		'To be continued...',
 	];
 	//更新武将
 	var HuoDong_players = [
-		'wechat_yj_xuhuang',
+		'wechat_yj_xuhuang', 'Mbaby_liuye',
 	];
 	//加载
 	var dialog = ui.create.dialog(
