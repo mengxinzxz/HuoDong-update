@@ -38,6 +38,16 @@ export let config = {
 			game.check();
 		},
 	},
+	ShenJiaXu: {
+		name: '神贾诩限定技能池',
+		intro: '打开此选项后，神贾诩【络殊】获得的技能池缩小为玄蝶初版（实时生效）',
+		init: false,
+		onclick: function (bool) {
+			game.saveConfig('extension_活动武将_ShenJiaXu', bool);
+			game.uncheck();
+			game.check();
+		},
+	},
 	edit_PingJianName: {
 		name: '编辑欢杀将池',
 		clear: true,

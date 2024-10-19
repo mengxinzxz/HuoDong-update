@@ -8762,7 +8762,8 @@ const packs = function () {
                             return info.limited && !info.combo && !info.charlotte;
                         }));
                     }
-                    _status.bolluoshuList = skills;
+                    const derivation = ['xingshuai', 'xiongyi', 'bolxiongsuan', 'olzaowang', 'qimou', 'xinfencheng', 'yongdi', 'jianshu', 'reluanwu'];
+                    _status.bolluoshuList = lib.config.extension_活动武将_ShenJiaXu ? derivation : skills;
                 },
                 trigger: { player: 'phaseZhunbeiBegin' },
                 forced: true,
@@ -8880,6 +8881,73 @@ const packs = function () {
                         if (text == 'draw') return 50;
                         return 20;
                     }).set('id', eventId).set('_global_waiting', true);
+                },
+            },
+            bolxiongsuan: {
+                limited: true,
+                audio: 'xiongsuan',
+                enable: 'phaseUse',
+                filterCard: true,
+                filter(event, player) {
+                    return player.countCards('h');
+                },
+                filterTarget(card, player, target) {
+                    return target.group == player.group || target.isFriendOf(player);
+                },
+                check(card) {
+                    return 7 - get.value(card);
+                },
+                async content(event, trigger, player) {
+                    const { target } = event;
+                    player.awakenSkill(event.name);
+                    await target.damage('nocard');
+                    await player.draw(3);
+                    const list = [];
+                    const skills = target.getOriginalSkills();
+                    for (let skill of skills) {
+                        if (lib.skill[skill].limited && target.awakenedSkills.includes(skill)) {
+                            list.push(skill);
+                        }
+                    }
+                    if (!list.length) return;
+                    const skill = list.length == 1 ? list[0] : await player.chooseControl(list).set('choiceList', list.map(i => {
+                        return '<div class="skill">【' + get.translation(lib.translate[i + '_ab'] || get.translation(i).slice(0, 2)) + '】</div><div>' + get.skillInfoTranslation(i, player) + '</div>';
+                    })).set('displayIndex', false).set('prompt', `选择${get.translation(target)}一个限定技在回合结束后其重置之`).forResult('control');
+                    target.when({ global: 'phaseEnd' }).step(async () => {
+                        target.restoreSkill(skill);
+                        target.popup(get.translation(skill));
+                        game.log(target, '恢复了技能', `#g${get.translation(skill)}`);
+                    });
+                },
+                ai: {
+                    order: 4,
+                    damage: true,
+                    result: {
+                        target(player, target) {
+                            if (target.hp > 1) {
+                                var skills = target.getOriginalSkills();
+                                for (var i = 0; i < skills.length; i++) {
+                                    if (lib.skill[skills[i]].limited && target.awakenedSkills.includes(skills[i])) {
+                                        return 8;
+                                    }
+                                }
+                            }
+                            if (target != player) return 0;
+                            if (get.damageEffect(target, player, player) >= 0) return 10;
+                            if (target.hp >= 4) return 5;
+                            if (target.hp == 3) {
+                                if (
+                                    player.countCards('h') <= 2 &&
+                                    game.hasPlayer(function (current) {
+                                        return current.hp <= 1 && get.attitude(player, current) < 0;
+                                    })
+                                ) {
+                                    return 3;
+                                }
+                            }
+                            return 0;
+                        },
+                    },
                 },
             },
             //神张飞
@@ -10184,6 +10252,8 @@ const packs = function () {
             bolfenfou: '纷殕',
             bolfenfou_info: '限定技，一轮游戏开始时，你可以令场上所有角色同时选择两项：①将武将牌翻面；②摸两张牌；③于本轮获得〖鸩毒〗。',
             bolfenfou_info_guozhan: '限定技，一轮游戏开始时，你可以令场上所有角色同时选择两项：①叠置武将牌；②摸两张牌；③于本轮获得〖鸩毒〗。',
+            bolxiongsuan: '凶算',
+            bolxiongsuan_info: '限定技，出牌阶段，你可以弃置一张手牌并对一名与你势力相同的角色造成1点伤害，然后摸三张牌。若该角色有已发动的限定技，你选择其中一个限定技并于此回合结束时复原之。',
             bfake_shen_zhangfei: '蝶设神张飞',
             bfake_shen_zhangfei_prefix: '蝶设神',
             bolbaohe: '暴喝',
