@@ -8,7 +8,7 @@ const packs = function () {
             WeChatkill: {
                 wechat_standard: ['wechat_yj_xuhuang', 'wechat_ganfuren', 'wechat_sunhao', 'wechat_yj_weiyan', 'wechat_sp_zhugeliang', 'wechat_zhenji', 'wechat_liuyan', 'wechat_sp_wangcan', 'wechat_xushi', 'wechat_baosanniang', 'wechat_litong', 'wechat_yj_zhoubuyi', 'wechat_jsp_huangyueying', 'wechat_re_gongsunzan', 'wechat_guanyinping', 'wechat_sp_machao', 'wechat_pangdegong', 'wechat_gongsunyuan', 'wechat_xusheng', 'wechat_yufan', 'wechat_handang', 'wechat_wanglang', 'wechat_huanghao', 'wechat_caiyong', 'wechat_yj_huangzhong', 'wechat_zhangzhang', 'wechat_chendeng', 'wechat_taoqian', 'wechat_kanze', 'wechat_xuezong', 'wechat_guyong', 'wechat_guansuo', 'wechat_zumao', 'wechat_yj_jushou', 'wechat_sp_pangde', 'wechat_caojie', 'wechat_zhuling', 'wechat_caizhenji', 'wechat_guohuanghou', 'wechat_yanyan', 'wechat_liaohua', 'wechat_liuyao', 'wechat_quancong', 'wechat_xiahouba', 'wechat_sp_jiangwei', 'wechat_caoxiu', 'wechat_yuanshao', 'wechat_sundeng', 'wechat_re_xushu', 'wechat_caopi', 'wechat_caozhang', 'wechat_buzhi', 'wechat_sp_taishici', 'wechat_masu', 'wechat_caifuren', 'wechat_jianyong', 'wechat_lukang', 'wechat_caozhi', 'wechat_huangyueying', 'wechat_weiyan', 'wechat_gaoshun', 'wechat_sunliang', 'wechat_wangping', 'wechat_sp_caiwenji', 'wechat_caochong', 'wechat_huangzhong', 'wechat_xiahouyuan', 'wechat_pangde', 'wechat_sunshangxiang', 'wechat_xuzhu', 'wechat_guanyu', 'wechat_caocao', 'wechat_shenpei', 'wechat_jiaxu', 'wechat_caoren', 'wechat_liuqi', 'wechat_zhaoxiang', 'wechat_caiwenji', 'wechat_menghuo', 'wechat_re_yuanshu', 'wechat_huaxiong', 'wechat_xiahoushi', 'wechat_xushu', 'wechat_zhaoyun', 'wechat_zhangfei', 'wechat_machao', 'wechat_yangxiu', 'wechat_lvmeng', 'wechat_zhoutai', 'wechat_bianfuren', 'wechat_sunluban', 'wechat_wuguotai', 'wechat_liubiao', 'wechat_liuchen', 'wechat_luxun', 'wechat_pangtong', 'wechat_zhangxingcai', 'wechat_zuoci', 'wechat_mayunlu', 'wechat_ruanhui', 'wechat_xurong', 'wechat_huojun'],
                 wechat_extra: ['wechat_shen_zhugeliang', 'wechat_shen_lvbu', 'wechat_shen_lvmeng', 'wechat_shen_guanyu'],
-                wechat_zhiyin: ['wechat_zhiyin_sunce', 'wechat_zhiyin_xunyu', 'wechat_zhiyin_zhenji', 'wechat_zhiyin_xuzhu', 'wechat_zhiyin_yuanshao', 'wechat_zhiyin_lusu', 'wechat_zhiyin_guojia', 'wechat_zhiyin_lvbu', 'wechat_zhiyin_daqiao', 'wechat_zhiyin_xiaoqiao', 'wechat_zhiyin_caocao', 'wechat_zhiyin_zhugeliang', 'wechat_zhiyin_simayi', 'wechat_zhiyin_machao', 'wechat_zhiyin_huangyueying', 'wechat_zhiyin_caiwenji'],
+                wechat_zhiyin: ['wechat_zhiyin_sunce', 'wechat_zhiyin_xunyu', 'wechat_zhiyin_zhenji', 'wechat_zhiyin_xuzhu', 'wechat_zhiyin_yuanshao', 'wechat_zhiyin_lusu', 'wechat_zhiyin_guojia', 'wechat_zhiyin_lvbu', 'wechat_zhiyin_daqiao', 'wechat_zhiyin_xiaoqiao', 'wechat_zhiyin_caocao', 'wechat_zhiyin_zhugeliang', 'wechat_zhiyin_simayi', 'wechat_zhiyin_machao', 'wechat_zhiyin_huangyueying', 'wechat_zhiyin_caiwenji', 'wechat_zhiyin_zhouyu'],
                 wechat_sb: ['wechat_sb_sunshangxiang', 'wechat_sb_zhaoyun', 'wechat_sb_machao'],
             },
         },
@@ -138,6 +138,7 @@ const packs = function () {
             wechat_zhiyin_xunyu: ['male', 'wei', 3, ['wechatwangzuo', 'wechatjuxian', 'wechatxianshi'], ['die:true']],
             wechat_zhiyin_zhenji: ['female', 'wei', 3, ['wechatshenfu', 'wechatsiyuan'], ['die:true']],
             wechat_zhiyin_caiwenji: ['female', 'wei', 3, ['wechatbeijia', 'wechatsifu'], ['die:true']],
+            wechat_zhiyin_zhouyu: ['male', 'wu', 4, ['wechayingrui', 'wechatfenli', 'wechatqugu'], ['die:true']],
             //谋攻
             wechat_sb_sunshangxiang: ['female', 'shu', 3, ['wechatsbliangzhu', 'wechatsbjieyin'], ['border:wu']],
             wechat_sb_zhaoyun: ['male', 'shu', 4, ['wechatsblongdan', 'wechatsbjizhu']],
@@ -8323,6 +8324,76 @@ const packs = function () {
                     },
                 },
             },
+            // 极周瑜
+            wechayingrui: {
+                audio: 'ext:活动武将/audio/skill:2',
+                trigger: {
+                    player: 'phaseDrawEnd',
+                    source: 'dieAfter',
+                },
+                filter(event, player, name) {
+                    return player.countMark('wechatmoulvenum') < lib.skill.wechatmoulvenum.getMax;
+                },
+                forced: true,
+                locked: false,
+                async content(event, trigger, player) {
+                    lib.skill.wechatmoulvenum.changeNum(4, player);
+                },
+            },
+            wechatfenli: {
+                audio: 'ext:活动武将/audio/skill:2',
+                enable: 'phaseUse',
+                usable: 1,
+                filter(event, player) {
+                    return game.hasPlayer(current => get.info('wechatfenli').filterTarget(null, player, current));
+                },
+                selectTarget: [1, 2],
+                complexSelect: true,
+                complexTarget: true,
+                filterTarget(card, player, target) {
+                    const selected = ui.selected.targets;
+                    if (!target.countDiscardableCards(player, 'he')) return false;
+                    if (!selected.length) return true;
+                    if (selected[0].getNext() == target || selected[0].getPrevious() == target) return true;
+                    return false;
+                },
+                multitarget: true,
+                multiline: true,
+                async content(event, trigger, player) {
+                    player.removeMark('wechatmoulvenum', 2);
+                    const targets = event.targets.sortBySeat();
+                    for (const target of targets) await player.discardPlayerCard(target, 'he', true);
+                    const cards = game.getGlobalHistory('cardMove', evt => evt.type == 'discard' && evt.getParent(3) == event).map(evt => evt.cards).flat();
+                    if (player.countMark('wechatmoulvenum') < 2 || cards.map(card => get.color(card)).toUniqued().length != 1) return;
+                    const effect = targets.reduce((sum, i) => sum + get.damageEffect(i, player, player, 'fire'), 0);
+                    const bool = await player.chooseBool(`是否再消耗2点谋略值对${get.translation(targets)}各造成1点伤害`).set('choice', effect > 0).forResultBool();
+                    if (!bool) return;
+                    player.removeMark('wechatmoulvenum', 2);
+                    for (const target of targets) await target.damage('fire');
+                },
+                ai: {
+                    order: 7,
+                    result: {
+                        player(player, target) {
+                            return get.effect(target, { name: 'guohe_copy2' }, player, player);
+                        },
+                    },
+                },
+            },
+            wechatqugu: {
+                audio: 'ext:活动武将/audio/skill:2',
+                trigger: {
+                    target: 'useCardToTargeted',
+                },
+                filter(event, player) {
+                    return player != event.player && game.getGlobalHistory('useCard', evt => evt.player != player).indexOf(event.getParent()) == 0;
+                },
+                frequent: true,
+                async content(event, trigger, player) {
+                    const card = get.cardPile2(cardx => get.type2(cardx) != get.type2(trigger.card));
+                    if (card) await player.gain(card, 'gain2');
+                },
+            },
         },
         dynamicTranslate: {
             wechatxiangzhi(player) {
@@ -8888,6 +8959,13 @@ const packs = function () {
             wechatxhzhiyan_info: '出牌阶段限一次，你可以将手牌摸至体力上限且本阶段内不能再对其他角色使用牌。',
             wechatjiewei: '解围',
             wechatjiewei_info: '出牌阶段限一次，你可以将X张手牌交给一名其他角色（X为你的手牌数与体力值之差）。',
+            wechat_zhiyin_zhouyu: '极周瑜',
+            wechayingrui: '英锐',
+            wechayingrui_info: '摸牌阶段结束时或当你杀死一名角色后，你获得4点谋略值。',
+            wechatfenli: '焚离',
+            wechatfenli_info: '出牌阶段限一次。你可以消耗2点谋略值并弃置至多两张座位连续的角色一张牌。若以此弃置的牌颜色相同，你可以消耗2点谋略值对这些角色造成1点火焰伤害。',
+            wechatqugu: '曲顾',
+            wechatqugu_info: '当你每回合首次成为其他角色使用牌的目标后，那你可以从牌堆中获得一张与此牌类别不同的牌。',
         },
     };
     for (var i in WeChatkill.character) {
