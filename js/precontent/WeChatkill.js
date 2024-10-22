@@ -2444,7 +2444,7 @@ const packs = function () {
                 marktext: '谋',
                 intro: {
                     name: '谋略值',
-                    content: '当前拥有#点谋略值',
+                    content: '当前拥有#点' + get.MouLveInform(),
                 },
                 getMax: 5,
             },
@@ -2522,7 +2522,7 @@ const packs = function () {
                         }
                     },
                     prompt: function (links, player) {
-                        return '失去' + (1 + player.countMark('wechatsuanlve_count')) + '点谋略值，将一张牌当做' + (get.translation(links[0][3]) || '') + get.translation(links[0][2]) + '使用';
+                        return '失去' + (1 + player.countMark('wechatsuanlve_count')) + '点' + get.MouLveInform() + '，将一张牌当做' + (get.translation(links[0][3]) || '') + get.translation(links[0][2]) + '使用';
                     },
                 },
                 ai: {
@@ -2646,7 +2646,7 @@ const packs = function () {
                     prompt: function (links, player) {
                         var name = links[0][2];
                         var num = lib.skill.wechatmiaoji.list[name];
-                        return '失去' + num + '点谋略值，视为使用' + get.translation(name);
+                        return '失去' + num + '点' + get.MouLveInform() + '，视为使用' + get.translation(name);
                     },
                 },
                 ai: {
@@ -4687,7 +4687,7 @@ const packs = function () {
                                 return ((storage || 0) % 3).toString();
                             },
                             content: function (storage, player) {
-                                return '获得谋略值进度：' + ((storage || 0) % 3) + '/3';
+                                return '获得' + get.MouLveInform() + '进度：' + ((storage || 0) % 3) + '/3';
                             },
                         },
                     },
@@ -8367,7 +8367,7 @@ const packs = function () {
                     const cards = game.getGlobalHistory('cardMove', evt => evt.type == 'discard' && evt.getParent(3) == event).map(evt => evt.cards).flat();
                     if (player.countMark('wechatmoulvenum') < 2 || cards.map(card => get.color(card)).toUniqued().length != 1) return;
                     const effect = targets.reduce((sum, i) => sum + get.damageEffect(i, player, player, 'fire'), 0);
-                    const bool = await player.chooseBool(`是否再消耗2点谋略值对${get.translation(targets)}各造成1点伤害`).set('choice', effect > 0).forResultBool();
+                    const bool = await player.chooseBool(`是否再消耗2点' + get.MouLveInform() + '对${get.translation(targets)}各造成1点伤害`).set('choice', effect > 0).forResultBool();
                     if (!bool) return;
                     player.removeMark('wechatmoulvenum', 2);
                     for (const target of targets) await target.damage('fire');
@@ -8657,7 +8657,7 @@ const packs = function () {
             wechatyigui_info: '出牌阶段限一次，当你使用普通锦囊牌时，你可以弃置一张牌并为此牌额外指定一个目标（无距离限制）。',
             wechatshendao: '神道',
             wechatshendao_info: '当你于出牌阶段使用牌结算结束后，若此牌的目标角色中存在本阶段你未记录的角色，则你记录这些角色，然后根据记录的角色数，你可以执行对应的效果：记录1名，从牌堆或弃牌堆中获得一张指定类型的牌；记录2名，视为对一名角色使用一张普通锦囊牌；记录3名，对所有记录的角色造成1点伤害。',
-            wechat_mayunlu: '微信马云禄',
+            wechat_mayunlu: '微信马云騄',
             wechatfengpo: '凤魄',
             wechatfengpo_info: '当你于回合内使用的第一张【杀】或【决斗】指定唯一目标后，你可以观看其手牌并选择一项：1.摸X张牌；2.令此牌的伤害值基数+X。（X为其手牌中♦牌的数量且X至少为1）',
             wechat_zhiyin_daqiao: '极大乔',
@@ -8711,7 +8711,7 @@ const packs = function () {
             wechatsuanlve: '算略',
             wechatsuanlve_info: '每回合限一次，你可以失去1+X点' + get.MouLveInform() + '，将一张牌当作你本回合使用的上一张基本牌或普通锦囊牌使用（X为你本轮发动〖算略〗的次数）。',
             wechatmiaoji: '妙计',
-            wechatmiaoji_info: '每回合限一次，你可以：①失去1点谋略值，视为使用【过河拆桥】；②失去3点谋略值，视为使用【无懈可击】；③失去3点谋略值，视为使用【无中生有】。',
+            wechatmiaoji_info: '每回合限一次，你可以：①失去1点' + get.MouLveInform() + '，视为使用【过河拆桥】；②失去3点' + get.MouLveInform() + '，视为使用【无懈可击】；③失去3点' + get.MouLveInform() + '，视为使用【无中生有】。',
             wechat_guanyu: '微信关羽',
             wechatqinglong: '青龙',
             wechatqinglong_info: '锁定技，若你有空置的且未被废除的武器栏，则你视为装备【青龙偃月刀】。',
@@ -9075,16 +9075,11 @@ const packs = function () {
             wechatjiewei_info: '出牌阶段限一次，你可以将X张手牌交给一名其他角色（X为你的手牌数与体力值之差）。',
             wechat_zhiyin_zhouyu: '极周瑜',
             wechatyingrui: '英锐',
-            wechatyingrui_info: '摸牌阶段结束时或当你杀死一名角色后，你获得4点谋略值。',
+            wechatyingrui_info: '摸牌阶段结束时或当你杀死一名角色后，你获得4点' + get.MouLveInform() + '。',
             wechatfenli: '焚离',
-            wechatfenli_info: '出牌阶段限一次。你可以消耗2点谋略值并弃置至多两名座位连续的角色一张牌。若以此弃置的牌颜色相同，你可以消耗2点谋略值对这些角色造成1点火焰伤害。',
+            wechatfenli_info: '出牌阶段限一次。你可以消耗2点' + get.MouLveInform() + '并弃置至多两名座位连续的角色一张牌。若以此弃置的牌颜色相同，你可以消耗2点' + get.MouLveInform() + '对这些角色造成1点火焰伤害。',
             wechatqugu: '曲顾',
             wechatqugu_info: '当你每回合首次成为其他角色使用牌的目标后，那你可以从牌堆中获得一张与此牌类别不同的牌。',
-            wechat_zhiyin_sunquan: '极孙权',
-            wechatyingrui: '英锐',
-            wechatyingrui_info: '摸牌阶段结束时或当你杀死一名角色后，你获得4点谋略值。',
-            wechatfenli: '焚离',
-            wechatfenli_info: '出牌阶段限一次。你可以消耗2点谋略值并弃置至多两张座位连续的角色一张牌。若以此弃置的牌颜色相同，你可以消耗2点谋略值对这些角色造成1点火焰伤害。',
             wechat_zhiyin_sunquan: '极孙权',
             wechatzongyue: '纵阅',
             wechatzongyue_info: '①出牌阶段限一次。你可以将至多四张手牌以任意顺序置于牌堆顶，然后与X名角色进行共同拼点（X为你以此法置于牌堆顶的牌数）。赢的角色摸两张牌。②当你进行共同拼点后，你获得其他角色的拼点牌。',
