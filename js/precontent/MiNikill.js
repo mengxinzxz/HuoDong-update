@@ -20034,7 +20034,7 @@ const packs = function () {
             minipingjian: {
                 getList: function () {
                     const list = Object.keys(lib.characterPack.MiNikill).concat(_status.extra_pingjianList || []);
-                    return list.filter(i => !get.character(i, 4) || !get.character(i, 4).includes('unseen'));
+                    return list.filter(i => !_status.banned_pingjianList?.includes(i) && (!get.character(i, 4) || !get.character(i, 4).includes('unseen')));
                 },
                 Mbaby_characterlist: true,
                 init: function (player) {
@@ -29574,7 +29574,7 @@ const packs = function () {
             Mbaby_shamoke: '欢杀沙摩柯',
             Mbaby_xiahoushi: '欢杀夏侯氏',
             Mbaby_guansuo: '欢杀关索',
-            Mbaby_mayunlu: '欢杀马云禄',
+            Mbaby_mayunlu: '欢杀马云騄',
             Mbaby_wangping: '欢杀王平',
             Mbaby_jianyong: '欢杀简雍',
             Mbaby_zhugeguo: '欢杀诸葛果',
