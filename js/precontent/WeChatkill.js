@@ -7566,7 +7566,7 @@ const packs = function () {
                     await next;
                     const evts = game.getGlobalHistory('everything', evt => evt.name == 'wechatsbjieyin' && evt.player == player && evt.getParent('phaseUse') == event.getParent(3));
                     const target = evts?.lastItem?.targets[0];
-                    if (!target || !target.isIn()) return; 21
+                    if (!target || !target.isIn()) return;
                     let result;
                     if (target.canMoveCard(null, true)) result = await target.chooseControl().set('choiceList', [
                         '移动场上一张装备牌',
