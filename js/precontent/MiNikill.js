@@ -215,7 +215,7 @@ const packs = function () {
             Mbaby_heqi: ['male', 'wu', 4, ['miniqizhou', 'minishanxi'], ['tempname:heqi']],
             Mbaby_sunhanhua: ['female', 'wu', 3, ['minihuiling', 'minichongxu'], ['die:dc_sunhanhua']],
             Mbaby_zhangwen: ['male', 'wu', 3, ['minisongshu', 'minisibian'], ['die:zhangwen']],
-            Mbaby_weigwenzhugezhi: ['male', 'wu', 3, ['minifuhai'], ['die:weigwenzhugezhi']],
+            Mbaby_weigwenzhugezhi: ['male', 'wu', 4, ['minifuhai'], ['die:weigwenzhugezhi']],
             //群
             Mbaby_gaoshun: ['male', 'qun', 4, ['minixianzhen', 'minijinjiu']],
             Mbaby_caifuren: ['female', 'qun', 3, ['minireqieting', 'minirexianzhou']],
