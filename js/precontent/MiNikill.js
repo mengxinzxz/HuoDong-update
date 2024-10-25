@@ -94,7 +94,7 @@ const packs = function () {
             Mbaby_weiyan: ['male', 'shu', 4, ['minikuanggu', 'miniqimou']],
             Mbaby_liaohua: ['male', 'shu', 4, ['minidangxian', 'minifuli']],
             Mbaby_pangtong: ['male', 'shu', 3, ['minirelianhuan', 'mininiepan'], ['tempname:ol_pangtong', 'die:ol_pangtong']],
-            Mbaby_menghuo: ['male', 'shu', 5, ['minihuoshou', 'zaiqi']],
+            Mbaby_menghuo: ['male', 'shu', 5, ['minirehuoshou', 'minizaiqi']],
             Mbaby_jiangwei: ['male', 'shu', 4, ['minitiaoxin', 'minizhiji'], ['tempname:ol_jiangwei', 'die:ol_jiangwei']],
             Mbaby_liushan: ['male', 'shu', 4, ['minirexiangle', 'minirefangquan', 'minireruoyu'], ['zhu', 'tempname:ol_liushan', 'die:ol_liushan']],
             Mbaby_fazheng: ['male', 'shu', 3, ['minienyuan', 'minixuanhuo']],
@@ -163,7 +163,7 @@ const packs = function () {
             Mbaby_huanggai: ['male', 'wu', 4, ['kurou', 'minizhaxiang']],
             Mbaby_lusu: ['male', 'wu', 3, ['miniolhaoshi', 'minidimeng'], ['die:ol_lusu']],
             Mbaby_luxun: ['male', 'wu', 3, ['minireqianxun', 'minilianying']],
-            Mbaby_lvmeng: ['male', 'wu', 4, ['minikeji', 'miniqinxue'], ['tempname:re_lvmeng', 'die:re_lvmeng']],
+            Mbaby_lvmeng: ['male', 'wu', 4, ['minikeji', 'miniqinxue', 'rebotu'], ['tempname:re_lvmeng', 'die:re_lvmeng']],
             Mbaby_sunce: ['male', 'wu', 4, ['minijiang', 'minihunzi', 'minizhiba'], ['zhu', 'tempname:sunce']],
             Mbaby_sunluban: ['female', 'wu', 3, ['minizenhui', 'minijiaojin']],
             Mbaby_sunluyu: ['female', 'wu', 3, ['minimeibu', 'remumu']],
@@ -4467,20 +4467,19 @@ const packs = function () {
             },
             minijuyi: {
                 audio: 'juyi',
-                inherit: 'rejuyi',
-                filter: function (event, player) {
+                trigger: {
+                    player: 'phaseZhunbeiBegin',
+                },
+                filter(event, player) {
                     return player.maxHp > game.countPlayer();
                 },
-                forced: false,
-                juexingji: false,
                 limited: true,
-                content: function () {
-                    'step 0'
-                    player.awakenSkill('minijuyi');
-                    'step 1'
-                    player.drawTo(player.maxHp);
-                    'step 2'
-                    player.addSkills(lib.skill.minijuyi.derivation);
+                skillAnimation: true,
+                animationColor: 'thunder',
+                async content(event, trigger, player) {
+                    player.awakenSkill(event.name);
+                    await player.drawTo(player.maxHp);
+                    await player.addSkills(get.info(event.name).derivation);
                 },
                 derivation: ['minibenghuai', 'reweizhong'],
             },
@@ -6563,6 +6562,130 @@ const packs = function () {
                 content: function () {
                     trigger.customArgs.default.customSource = player;
                     player.draw();
+                },
+            },
+            minirehuoshou: {
+                audio: 'sbhuoshou',
+                trigger: {
+                    player: 'phaseUseBegin',
+                },
+                forced: true,
+                onremove: true,
+                group: ['minirehuoshou_cancel', 'minirehuoshou_source', 'minirehuoshou_nanmaned'],
+                async content(event, trigger, player) {
+                    const card = get.discardPile(card => card.name == 'nanman');
+                    if (card) {
+                        await player.gain(card, 'gain2');
+                    } else {
+                        game.log('但是弃牌堆里并没有', '#y南蛮入侵', '！');
+                        player.addMark(event.name, 1, false);
+                        if (player.countMark(event.name) >= 5 && Math.random() < 0.25) player.chat('我南蛮呢');
+                    }
+                },
+                subSkill: {
+                    cancel: {
+                        audio: 'sbhuoshou',
+                        trigger: {
+                            target: 'useCardToBefore',
+                        },
+                        forced: true,
+                        priority: 15,
+                        filter(event, player) {
+                            return event.card.name == 'nanman';
+                        },
+                        content() {
+                            trigger.cancel();
+                        },
+                    },
+                    source: {
+                        audio: 'sbhuoshou',
+                        trigger: {
+                            global: 'useCardToPlayered',
+                        },
+                        forced: true,
+                        filter(event, player) {
+                            return event.isFirstTarget && event.card?.name == 'nanman' && event.player != player;
+                        },
+                        async content(event, trigger, player) {
+                            trigger.getParent().customArgs.default.customSource = player;
+                            await player.draw();
+                        },
+                        ai: {
+                            halfneg: true,
+                        },
+                    },
+                    nanmaned: {
+                        trigger: {
+                            player: 'useCard1',
+                        },
+                        filter(event, player) {
+                            return event.card.name == 'nanman';
+                        },
+                        forced: true,
+                        popup: false,
+                        charlotte: true,
+                        content() {
+                            player.addTempSkill('minirehuoshou_ban', 'phaseUseAfter');
+                        },
+                    },
+                    ban: {
+                        charlotte: true,
+                        intro: {
+                            content: '此阶段不能再使用【南蛮入侵】',
+                        },
+                    },
+                },
+                mod: {
+                    cardEnabled(card, player) {
+                        if (player.hasSkill('minirehuoshou_ban') && card.name == 'nanman') return false;
+                    },
+                },
+                ai: {
+                    threaten: 1.9,
+                },
+            },
+            minizaiqi: {
+                audio: 'zaiqi',
+                trigger: {
+                    player: ['phaseDrawBegin1', 'phaseJieshuBegin'],
+                },
+                filter(event, player) {
+                    if (event.name == 'phaseJieshu') return player.hasHistory('sourceDamage');
+                    return !event.numFixed && player.hp < player.maxHp;
+                },
+                check(event, player) {
+                    if (event.name == 'phaseJieshu') return true;
+                    if (player.getDamagedHp() < 2) {
+                        return false;
+                    } else if (player.getDamagedHp() == 2) {
+                        return player.countCards('h') >= 2;
+                    }
+                    return true;
+                },
+                async content(event, trigger, player) {
+                    if (trigger.name == 'phaseDraw') trigger.changeToZero();
+                    const number = player.getHistory('sourceDamage').reduce((sum, evt) => sum + evt.num, 0);
+                    event.cards = get.cards(trigger.name == 'phaseJieshu' ? number : player.getDamagedHp());
+                    await game.cardsGotoOrdering(event.cards);
+                    await player.showCards(event.cards);
+                    let num = 0;
+                    for (let i = 0; i < event.cards.length; i++) {
+                        if (get.suit(event.cards[i]) == 'heart') {
+                            num++;
+                            event.cards.splice(i--, 1);
+                        }
+                    }
+                    if (num) await player.recover(num);
+                    if (event.cards.length) {
+                        await player.gain(event.cards, 'gain2');
+                    }
+                },
+                ai: {
+                    threaten(player, target) {
+                        if (target.hp == 1) return 2;
+                        if (target.hp == 2) return 1.5;
+                        return 1;
+                    },
                 },
             },
             minifangquan: {
@@ -29664,6 +29787,10 @@ const packs = function () {
             mininiepan_info: '限定技，当你处于濒死状态时，你可以弃置你区域内的所有牌并复原你的武将牌，然后摸三张牌并将体力回复至3点。然后你选择一项：①获得技能〖八阵〗；②获得技能〖火计〗和〖看破〗。',
             minihuoshou: '祸首',
             minihuoshou_info: '锁定技，【南蛮入侵】对你无效；当其他角色使用【南蛮入侵】时，你代替其成为此牌的伤害来源并摸一张牌。',
+            minirehuoshou: '祸首',
+            minirehuoshou_info: '锁定技。①【南蛮入侵】对你无效。②当其他角色使用【南蛮入侵】指定第一个目标后，你代替其成为此牌的伤害来源并摸一张牌。③出牌阶段开始时，你随机获得弃牌堆中的一张【南蛮入侵】。④出牌阶段，若你于此阶段使用过【南蛮入侵】，你不能使用【南蛮入侵】。',
+            minizaiqi: '再起',
+            minizaiqi_info: '①摸牌阶段，若你已受伤，则你可以改为亮出牌堆顶的X张牌（X为你已损失的体力值），并回复X点体力（X为其中♥牌的数目）。然后你将这些♥牌置入弃牌堆，并获得其余的牌。②结束阶段，你可以发动一次X为你本回合造成的伤害值的〖再起①〗。',
             minitiaoxin: '挑衅',
             minitiaoxin_info: '出牌阶段开始时，你可以弃置一名其他角色至多两张手牌，然后若弃置的牌中含有【杀】，你弃置一张牌。',
             minizhiji: '志继',
