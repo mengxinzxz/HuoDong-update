@@ -8740,9 +8740,6 @@ const packs = function () {
                         filterTarget: lib.filter.filterTarget,
                         check: card => -get.value(card),
                         log: false,
-                        precontent() {
-                            delete event.result.skill;
-                        },
                     },
                 },
             },
