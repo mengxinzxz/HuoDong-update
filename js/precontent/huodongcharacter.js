@@ -8711,7 +8711,7 @@ const packs = function () {
                     sha: {
                         charlotte: true,
                         mark: true,
-                        intro: { content: '本回合结束时，将一张手牌当作【杀】使用' },
+                        intro: { content: '本回合结束时，将一张牌当作【杀】使用' },
                         trigger: { global: 'phaseEnd' },
                         filter(event, player) {
                             return player.hasCard(card => player.hasUseTarget(get.autoViewAs({ name: 'sha' }, [card]), true), 'hes');
