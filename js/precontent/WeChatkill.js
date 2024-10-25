@@ -7898,7 +7898,7 @@ const packs = function () {
                 inherit: 'baonu',
                 getIndex: event => event.num || 1,
                 content() {
-                    player.addMark('baonu', 1);
+                    player.addMark('baonu', trigger.name != 'damage' ? 2 : 1);
                 },
             },
             //刘焉
@@ -9035,7 +9035,7 @@ const packs = function () {
             wechatxinqieting_info: '其他角色的回合结束时，若其本回合内未对其他角色造成过伤害，则你可选择一项：①摸一张牌。②观看其所有手牌并获得其中的一张。③将其装备区内的一张牌移动至你的装备区。',
             wechat_shen_lvbu: '微信神吕布',
             wechatbaonu: '暴怒',
-            wechatbaonu_info: '锁定技，游戏开始时/当你造成1点伤害后/当你受到1点伤害后，你获得1枚“暴怒”标记。',
+            wechatbaonu_info: '锁定技。游戏开始时，你获得2枚“暴怒”标记；当你造成或受到1点伤害后，你获得1枚“暴怒”标记。',
             wechat_liuyan: '微信刘焉',
             wechatlimu: '立牧',
             wechatlimu_info: '①出牌阶段，你可以将一张♦牌当做【乐不思蜀】对自己使用，然后你回复1点体力。②若你的判定区内有牌，则你对其他角色使用牌无次数和距离限制。',
