@@ -6781,13 +6781,15 @@ const packs = function () {
                     player: 'damageEnd',
                 },
                 filter(event, player) {
-                    return event.source && event.source.isIn() && game.hasPlayer(current => current != player && current != event.source);
+                    return event.source?.isIn() && game.hasPlayer(current => current != player && current != event.source);
                 },
                 async cost(event, trigger, player) {
                     event.result = await player.chooseTarget(get.prompt2(event.name.slice(0, -5)), (card, player, target) => {
-                        return target != player && target != trigger.source;
+                        return target != player && target != get.event().getTrigger().source;
                     }).set('ai', target => {
-                        //不会，奖励你写
+                        const player = get.player(), source = get.event().getTrigger().source;
+                        const list = lib.skill.mbhuiyao.getUnrealDamageTargets(player, [source, game.filterPlayer(i => ![player, source].includes(i))]);
+                        return target == list[ui.selected.targets.length] ? 10 : 0;
                     }).forResult();
                 },
                 async content(event, trigger, player) {
