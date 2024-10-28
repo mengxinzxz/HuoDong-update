@@ -4967,7 +4967,7 @@ const packs = function () {
                 //全扩技能库
                 getList: function () {
                     if (!_status.characterlist) lib.skill.pingjian.initList();
-                    let list = _status.characterlist.filter(name => get.character(name, 1) == 'shu' || (get.is.double(name, true) || []).includes('shu'));
+                    let list = _status.characterlist.filter(name => get.character(name, 1) == 'wu' || (get.is.double(name, true) || []).includes('wu'));
                     const players = game.players.concat(game.dead);
                     for (const player of players) list.removeArray([player.name, player.name1, player.name2]);
                     let skills = [];
