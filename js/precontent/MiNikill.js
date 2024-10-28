@@ -11167,10 +11167,10 @@ const packs = function () {
                     }).forResult();
                 },
                 async content(event, trigger, player) {
-                    const target = event.targets[0];
-                    if (!player.hasMark('minisbjieyin')) player.addMark('minisbjieyin', 1);
-                    if (!target.hasMark('minisbjieyin')) target.addMark('minisbjieyin', 1);
-                    if (!target.hasSkill('minisbjieyin', null, false, false)) await target.addSkills('minisbjieyin');
+                    const target = event.targets[0], skill = event.name;
+                    if (!player.hasMark(skill)) player.addMark(skill, 1);
+                    if (!target.hasMark(skill)) target.addMark(skill, 1);
+                    if (!target.hasSkill(skill, null, false, false)) await target.addSkills(skill);
                     if (player.group != target.group) await player.changeGroup(target.group);
                 },
                 marktext: '姻',
@@ -11198,17 +11198,27 @@ const packs = function () {
                             return player.countCards('he') && game.hasPlayer(target => target != player && target.hasMark('minisbjieyin'));
                         },
                         filterTarget(card, player, target) {
-                            return lib.skill.minijieyin.filterTarget(card, player, target) && target.hasMark('minisbjieyin');
+                            if (!target.hasMark('minisbjieyin')) return false;
+                            const cardx = ui.selected.cards[0];
+                            if (!cardx) return false;
+                            if (get.position(cardx) == 'e' && !target.canEquip(cardx)) return false;
+                            return true;
                         },
                         prompt: '出牌阶段限一次，你可以将一张手牌交给一名有“姻”的其他角色或将一张装备牌置入一名有“姻”的其他角色的对应空置装备栏，然后你回复1点体力并摸一张牌。',
                         async content(event, trigger, player) {
-                            const target = event.target, cards = event.cards;
-                            if (get.position(cards[0]) == 'e') {
+                            const { target, cards } = event;
+                            let result;
+                            if (get.position(cards[0]) == 'e') result = { index: 1 };
+                            else if (get.type(cards[0]) != 'equip' || !target.canEquip(cards[0])) result = { index: 0 };
+                            else result = await player.chooseControl().set(`choiceList`, [`将${get.translation(cards[0])}交给${get.translation(target)}`, `将${get.translation(cards[0])}置入${get.translation(target)}的装备区`]).set('ai', () => 1).forResult();
+                            if (result.index == 0) {
+                                await player.give(cards, target, true);
+                            }
+                            else {
                                 player.$give(cards, target);
-                                await game.asyncDelay(0.5);
+                                await game.delay(0.5);
                                 await target.equip(cards[0]);
                             }
-                            else await player.give(cards, target, true);
                             await player.recover();
                             await player.draw();
                         },
@@ -30430,7 +30440,7 @@ const packs = function () {
             Mbaby_liubian: '欢杀刘辩',
             Mbaby_re_pangdegong: '欢杀庞德公',
             Mbaby_licaiwei: '欢杀李采薇',
-            Mbaby_dc_huangzu: '欢杀黄组',
+            Mbaby_dc_huangzu: '欢杀黄祖',
             Mbaby_yanbaihu: '欢杀严虎',
             Mbaby_guosi: '欢杀郭汜',
             Mbaby_fanchou: '欢杀樊稠',

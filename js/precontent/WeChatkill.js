@@ -8,7 +8,7 @@ const packs = function () {
             WeChatkill: {
                 wechat_standard: ['wechat_yj_xuhuang', 'wechat_ganfuren', 'wechat_sunhao', 'wechat_yj_weiyan', 'wechat_sp_zhugeliang', 'wechat_zhenji', 'wechat_liuyan', 'wechat_sp_wangcan', 'wechat_xushi', 'wechat_baosanniang', 'wechat_litong', 'wechat_yj_zhoubuyi', 'wechat_jsp_huangyueying', 'wechat_re_gongsunzan', 'wechat_guanyinping', 'wechat_sp_machao', 'wechat_pangdegong', 'wechat_gongsunyuan', 'wechat_xusheng', 'wechat_yufan', 'wechat_handang', 'wechat_wanglang', 'wechat_huanghao', 'wechat_caiyong', 'wechat_yj_huangzhong', 'wechat_zhangzhang', 'wechat_chendeng', 'wechat_taoqian', 'wechat_kanze', 'wechat_xuezong', 'wechat_guyong', 'wechat_guansuo', 'wechat_zumao', 'wechat_yj_jushou', 'wechat_sp_pangde', 'wechat_caojie', 'wechat_zhuling', 'wechat_caizhenji', 'wechat_guohuanghou', 'wechat_yanyan', 'wechat_liaohua', 'wechat_liuyao', 'wechat_quancong', 'wechat_xiahouba', 'wechat_sp_jiangwei', 'wechat_caoxiu', 'wechat_yuanshao', 'wechat_sundeng', 'wechat_re_xushu', 'wechat_caopi', 'wechat_caozhang', 'wechat_buzhi', 'wechat_sp_taishici', 'wechat_masu', 'wechat_caifuren', 'wechat_jianyong', 'wechat_lukang', 'wechat_caozhi', 'wechat_huangyueying', 'wechat_weiyan', 'wechat_gaoshun', 'wechat_sunliang', 'wechat_wangping', 'wechat_sp_caiwenji', 'wechat_caochong', 'wechat_huangzhong', 'wechat_xiahouyuan', 'wechat_pangde', 'wechat_sunshangxiang', 'wechat_xuzhu', 'wechat_guanyu', 'wechat_caocao', 'wechat_shenpei', 'wechat_jiaxu', 'wechat_caoren', 'wechat_liuqi', 'wechat_zhaoxiang', 'wechat_caiwenji', 'wechat_menghuo', 'wechat_re_yuanshu', 'wechat_huaxiong', 'wechat_xiahoushi', 'wechat_xushu', 'wechat_zhaoyun', 'wechat_zhangfei', 'wechat_machao', 'wechat_yangxiu', 'wechat_lvmeng', 'wechat_zhoutai', 'wechat_bianfuren', 'wechat_sunluban', 'wechat_wuguotai', 'wechat_liubiao', 'wechat_liuchen', 'wechat_luxun', 'wechat_pangtong', 'wechat_zhangxingcai', 'wechat_zuoci', 'wechat_mayunlu', 'wechat_ruanhui', 'wechat_xurong', 'wechat_huojun'],
                 wechat_extra: ['wechat_shen_zhugeliang', 'wechat_shen_lvbu', 'wechat_shen_lvmeng', 'wechat_shen_guanyu'],
-                wechat_zhiyin: ['wechat_zhiyin_sunce', 'wechat_zhiyin_xunyu', 'wechat_zhiyin_zhenji', 'wechat_zhiyin_xuzhu', 'wechat_zhiyin_yuanshao', 'wechat_zhiyin_lusu', 'wechat_zhiyin_guojia', 'wechat_zhiyin_lvbu', 'wechat_zhiyin_daqiao', 'wechat_zhiyin_xiaoqiao', 'wechat_zhiyin_caocao', 'wechat_zhiyin_zhugeliang', 'wechat_zhiyin_simayi', 'wechat_zhiyin_machao', 'wechat_zhiyin_huangyueying', 'wechat_zhiyin_caiwenji', 'wechat_zhiyin_zhouyu', 'wechat_zhiyin_sunquan'],
+                wechat_zhiyin: ['wechat_zhiyin_sunce', 'wechat_zhiyin_xunyu', 'wechat_zhiyin_zhenji', 'wechat_zhiyin_xuzhu', 'wechat_zhiyin_yuanshao', 'wechat_zhiyin_lusu', 'wechat_zhiyin_guojia', 'wechat_zhiyin_lvbu', 'wechat_zhiyin_daqiao', 'wechat_zhiyin_xiaoqiao', 'wechat_zhiyin_caocao', 'wechat_zhiyin_zhugeliang', 'wechat_zhiyin_simayi', 'wechat_zhiyin_machao', 'wechat_zhiyin_huangyueying', 'wechat_zhiyin_caiwenji', 'wechat_zhiyin_zhouyu', 'wechat_zhiyin_sunquan', 'wechat_zhiyin_guanyu'],
                 wechat_sb: ['wechat_sb_sunshangxiang', 'wechat_sb_zhaoyun', 'wechat_sb_machao'],
             },
         },
@@ -140,6 +140,7 @@ const packs = function () {
             wechat_zhiyin_caiwenji: ['female', 'wei', 3, ['wechatbeijia', 'wechatsifu'], ['die:true']],
             wechat_zhiyin_zhouyu: ['male', 'wu', 4, ['wechatyingrui', 'wechatfenli', 'wechatqugu'], ['die:true']],
             wechat_zhiyin_sunquan: ['male', 'wu', 4, ['wechatzongyue', 'wechatluheng'], ['die:true']],
+            wechat_zhiyin_guanyu: ['male', 'shu', 4, ['wechatyihan', 'wechatwuwei'], ['die:true']],
             //谋攻
             wechat_sb_sunshangxiang: ['female', 'shu', 3, ['wechatsbliangzhu', 'wechatsbjieyin'], ['border:wu']],
             wechat_sb_zhaoyun: ['male', 'shu', 4, ['wechatsblongdan', 'wechatsbjizhu']],
@@ -8510,6 +8511,69 @@ const packs = function () {
                 },
                 ai: { combo: 'wechatzongyue', }
             },
+            // 极关羽
+            wechatyihan: {
+                audio: 'ext:活动武将/audio/skill:2',
+                shiwuSkill: true,
+                categories: () => ['奋武技'],
+                shiwuAble(player, skill) {
+                    return player.getRoundHistory('useSkill', evt => evt.skill == skill).length < Math.min(5, player.getRoundHistory('damage', () => true).concat(player.getRoundHistory('sourceDamage', () => true)).reduce((sum, evt) => sum + evt.num, 0) + 1);
+                },
+                enable: 'phaseUse',
+                filter(event, player) {
+                    return game.hasPlayer(current => player != current) && get.info('wechatyihan').shiwuAble(player, 'wechatyihan');
+                },
+                filterTarget: lib.filter.notMe,
+                async content(event, trigger, player) {
+                    const { target } = event, sha = get.autoViewAs({ name: 'sha', isCard: true });
+                    const bool = await target.chooseToUse(function (card, player, event) {
+                        if (get.type(card) == 'equip') return false;
+                        return lib.filter.filterCard.apply(this, arguments);
+                    }, `翊汉：是否使用一张非装备牌，若你不使用，则${get.translation(player)}视为对你使用一张【杀】`).set('addCount', false).forResultBool();
+                    if (!bool && player.canUse(sha, target, false, false)) await player.useCard(sha, target, false);
+                },
+                ai: {
+                    order: 8,
+                    result: {
+                        target(player, target) {
+                            return -1;
+                        }
+                    }
+                }
+            },
+            wechatwuwei: {
+                audio: 'ext:活动武将/audio/skill:2',
+                enable: 'phaseUse',
+                usable: 1,
+                filter(event, player) {
+                    return game.hasPlayer(current => get.info('wechatyihan').filterTarget(null, player, current)) && player.countCards('he');
+                },
+                filterTarget(card, player, target) {
+                    return target.countDiscardableCards(player, 'hej');
+                },
+                filterCard: true,
+                selectCard: [1, Infinity],
+                position: 'he',
+                check(card) {
+                    if (ui.selected.cards.length > 2) return 0;
+                    return 7.5 - get.value(card);
+                },
+                async content(event, trigger, player) {
+                    const { cards, target } = event, num1 = cards.reduce((sum, card) => sum + get.number(card), 0);
+                    const links = await player.discardPlayerCard(target, 'hej', cards.length, true).forResultLinks();
+                    if (!links || !links.some(card => get.type(card) == 'equip')) return;
+                    const num2 = links.filter(card => get.type(card) == 'equip').reduce((sum, card) => sum + get.number(card), 0);
+                    if (num1 <= num2) await target.damage('thunder');
+                },
+                ai: {
+                    order: 10,
+                    result: {
+                        player(player, target) {
+                            return get.effect(target, { name: 'guohe_copy2' }, player, player);
+                        }
+                    }
+                }
+            },
         },
         dynamicTranslate: {
             wechatxiangzhi(player) {
@@ -9087,6 +9151,11 @@ const packs = function () {
             wechatzongyue_info: '①出牌阶段限一次。你可以将至多四张手牌以任意顺序置于牌堆顶，然后与X名角色进行共同拼点（X为你以此法置于牌堆顶的牌数）。赢的角色摸两张牌。②当你进行共同拼点后，你获得其他角色的拼点牌。',
             wechatluheng: '戮衡',
             wechatluheng_info: '结束阶段，若你本回合发动过〖纵阅〗，你可以视为对一名本回合进行过共同拼点且其中手牌数最多的其他角色使用一张【杀】。',
+            wechat_zhiyin_guanyu: '极关羽',
+            wechatyihan: '翊汉',
+            wechatyihan_info: get.ShiwuInform() + '，出牌阶段，你可以令一名其他角色选择一项：1.使用一张非装备牌；2.你视为对其使用一张无次数限制的【杀】。',
+            wechatwuwei: '武威',
+            wechatwuwei_info: '出牌阶段限一次，你可以弃置任意张牌并弃置一名角色区域内等量张牌。若你以此法弃置的牌的点数之和不大于其因此被弃置的装备牌点数之和，你对其造成1点雷电伤害。',
         },
     };
     for (var i in WeChatkill.character) {
