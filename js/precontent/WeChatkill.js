@@ -8552,7 +8552,7 @@ const packs = function () {
                 filterTarget(card, player, target) {
                     return target.countDiscardableCards(player, 'he');
                 },
-                filterCard: true,
+                filterCard: lib.filter.cardDiscardable,
                 selectCard() {
                     return 1 + (get.player().getStat('skill').wechatgywuwei || 0);
                 },
