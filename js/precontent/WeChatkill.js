@@ -8578,9 +8578,8 @@ const packs = function () {
             },
             // 谋黄忠
             wechatsbliegong: {
-                trigger: {
-                    player: 'useCardToPlayered',
-                },
+                audio: 'sbliegong',
+                trigger: { player: 'useCardToPlayered' },
                 filter(event, player) {
                     return !event.getParent()._wechatsbliegong_player && event.targets.length == 1 && event.card.name == 'sha' && player.getStorage('wechatsbliegong').length > 0;
                 },
@@ -8622,7 +8621,10 @@ const packs = function () {
                     evt._wechatsbliegong_player = player;
                     player.when('useCardAfter')
                         .filter(evtxx => evtxx._wechatsbliegong_player == player)
-                        .then(() => player.unmarkSkill('wechatsbliegong'));
+                        .then(() => {
+                            player.unmarkSkill('wechatsbliegong');
+                            player.removeTip('wechatsbliegong');
+                        });
                     var target = trigger.target;
                     target.addTempSkill('wechatsbliegong_block');
                     if (!target.storage.wechatsbliegong_block) target.storage.wechatsbliegong_block = [];
@@ -8718,11 +8720,7 @@ const packs = function () {
                         content() {
                             player.markAuto('wechatsbliegong', [get.suit(trigger.card)]);
                             player.storage.wechatsbliegong.sort((a, b) => lib.suit.indexOf(b) - lib.suit.indexOf(a));
-                            if (!_status.connectMode && game.HasExtension('十周年UI') && lib.config.extension_十周年UI_playerMarkStyle && lib.config.extension_十周年UI_playerMarkStyle == 'decade') {
-                                game.broadcastAll(function (player, skill) {
-                                    if (player.marks[skill]) player.marks[skill].firstChild.innerHTML = player.getStorage(skill).reduce((str, suit) => str += get.translation(suit), '');
-                                }, player, 'wechatsbliegong');
-                            }
+                            player.addTip('wechatsbliegong', get.translation('wechatsbliegong') + player.getStorage('wechatsbliegong').reduce((str, suit) => str + get.translation(suit), ""));
                         },
                     },
                 },
