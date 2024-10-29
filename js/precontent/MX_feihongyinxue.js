@@ -3737,51 +3737,35 @@ const packs = function () {
             fh_fenji: {
                 audio: 'fenji',
                 trigger: { global: ['loseAfter', 'equipAfter', 'addJudgeAfter', 'gainAfter', 'loseAsyncAfter', 'addToExpansionAfter'], },
-                filter: function (event, player) {
-                    if (event.getParent().name == 'useCard' || event.getParent().name == 'respond') return false;
-                    var storage = player.getStorage('fh_fenji');
-                    return game.hasPlayer(target => {
-                        if (event.name == 'gain' && event.player == target) return false;
-                        var evt = event.getl(target);
-                        return evt && evt.hs && evt.hs.length;
-                    });
+                filter(event, player, triggername, target) {
+                    return target?.isIn();
                 },
-                direct: true,
-                content: function () {
-                    'step 0'
-                    var storage = player.getStorage('fh_fenji');
-                    var targets = game.filterPlayer(target => {
-                        if (trigger.name == 'gain' && trigger.player == target) return false;
-                        var evt = trigger.getl(target);
-                        return evt && evt.hs && evt.hs.length;
+                getIndex(event, player) {
+                    if (event.getParent().name == 'useCard' || event.getParent().name == 'respond') return false;
+                    const storage = player.getStorage('fh_fenji');
+                    return game.filterPlayer(target => {
+                        if (storage.includes(target)) return false;
+                        if (event.name == 'gain' && event.player == target) return false;
+                        const evt = event.getl(target);
+                        return evt?.hs?.length;
                     }).sortBySeat();
-                    event.targets = targets;
-                    'step 1'
-                    var target = targets.shift();
-                    event.target = target;
-                    player.chooseBool(get.prompt('fh_fenji', target), '失去1点体力，令该角色摸两张牌').set('ai', function () {
-                        var evt = _status.event.getParent();
-                        return get.attitude(evt.player, evt.target) > 4;
-                    });
-                    'step 2'
-                    if (result.bool) {
-                        if (!player.getStorage('fh_fenji').length) {
-                            player.when({ player: 'fh_buquBegin', global: 'phaseAfter' }).then(() => {
-                                player.unmarkSkill('fh_fenji');
-                                delete player.storage.fh_fenji;
-                            });
-                        }
-                        player.logSkill('fh_fenji', target);
-                        player.markAuto('fh_fenji', [target]);
-                        player.loseHp();
+                },
+                logTarget: (event, player, triggername, target) => target,
+                prompt2: (event, player, triggername, target) => `失去1点体力，令${get.translation(target)}摸两张牌`,
+                check(event, player, triggername, target) {
+                    return get.attitude(player, target) > 4;
+                },
+                async content(event, trigger, player) {
+                    const target = event.targets[0];
+                    if (!player.getStorage(event.name).length) {
+                        player.when({ player: 'fh_buquBegin', global: 'phaseAfter' }).step(async () => {
+                            player.unmarkSkill(event.name);
+                            delete player.storage[event.name];
+                        });
                     }
-                    else {
-                        if (targets.length) event.goto(1);
-                        else event.finish();
-                    }
-                    'step 3'
-                    target.draw(2);
-                    if (targets.length) event.goto(1);
+                    player.markAuto(event.name, [target]);
+                    await player.loseHp();
+                    await target.draw(2);
                 },
                 onremove: true,
                 intro: { content: '本回合已对$发动过技能' },

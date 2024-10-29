@@ -9,7 +9,7 @@ const packs = function () {
                 wechat_standard: ['wechat_yj_xuhuang', 'wechat_ganfuren', 'wechat_sunhao', 'wechat_yj_weiyan', 'wechat_sp_zhugeliang', 'wechat_zhenji', 'wechat_liuyan', 'wechat_sp_wangcan', 'wechat_xushi', 'wechat_baosanniang', 'wechat_litong', 'wechat_yj_zhoubuyi', 'wechat_jsp_huangyueying', 'wechat_re_gongsunzan', 'wechat_guanyinping', 'wechat_sp_machao', 'wechat_pangdegong', 'wechat_gongsunyuan', 'wechat_xusheng', 'wechat_yufan', 'wechat_handang', 'wechat_wanglang', 'wechat_huanghao', 'wechat_caiyong', 'wechat_yj_huangzhong', 'wechat_zhangzhang', 'wechat_chendeng', 'wechat_taoqian', 'wechat_kanze', 'wechat_xuezong', 'wechat_guyong', 'wechat_guansuo', 'wechat_zumao', 'wechat_yj_jushou', 'wechat_sp_pangde', 'wechat_caojie', 'wechat_zhuling', 'wechat_caizhenji', 'wechat_guohuanghou', 'wechat_yanyan', 'wechat_liaohua', 'wechat_liuyao', 'wechat_quancong', 'wechat_xiahouba', 'wechat_sp_jiangwei', 'wechat_caoxiu', 'wechat_yuanshao', 'wechat_sundeng', 'wechat_re_xushu', 'wechat_caopi', 'wechat_caozhang', 'wechat_buzhi', 'wechat_sp_taishici', 'wechat_masu', 'wechat_caifuren', 'wechat_jianyong', 'wechat_lukang', 'wechat_caozhi', 'wechat_huangyueying', 'wechat_weiyan', 'wechat_gaoshun', 'wechat_sunliang', 'wechat_wangping', 'wechat_sp_caiwenji', 'wechat_caochong', 'wechat_huangzhong', 'wechat_xiahouyuan', 'wechat_pangde', 'wechat_sunshangxiang', 'wechat_xuzhu', 'wechat_guanyu', 'wechat_caocao', 'wechat_shenpei', 'wechat_jiaxu', 'wechat_caoren', 'wechat_liuqi', 'wechat_zhaoxiang', 'wechat_caiwenji', 'wechat_menghuo', 'wechat_re_yuanshu', 'wechat_huaxiong', 'wechat_xiahoushi', 'wechat_xushu', 'wechat_zhaoyun', 'wechat_zhangfei', 'wechat_machao', 'wechat_yangxiu', 'wechat_lvmeng', 'wechat_zhoutai', 'wechat_bianfuren', 'wechat_sunluban', 'wechat_wuguotai', 'wechat_liubiao', 'wechat_liuchen', 'wechat_luxun', 'wechat_pangtong', 'wechat_zhangxingcai', 'wechat_zuoci', 'wechat_mayunlu', 'wechat_ruanhui', 'wechat_xurong', 'wechat_huojun'],
                 wechat_extra: ['wechat_shen_zhugeliang', 'wechat_shen_lvbu', 'wechat_shen_lvmeng', 'wechat_shen_guanyu'],
                 wechat_zhiyin: ['wechat_zhiyin_sunce', 'wechat_zhiyin_xunyu', 'wechat_zhiyin_zhenji', 'wechat_zhiyin_xuzhu', 'wechat_zhiyin_yuanshao', 'wechat_zhiyin_lusu', 'wechat_zhiyin_guojia', 'wechat_zhiyin_lvbu', 'wechat_zhiyin_daqiao', 'wechat_zhiyin_xiaoqiao', 'wechat_zhiyin_caocao', 'wechat_zhiyin_zhugeliang', 'wechat_zhiyin_simayi', 'wechat_zhiyin_machao', 'wechat_zhiyin_huangyueying', 'wechat_zhiyin_caiwenji', 'wechat_zhiyin_zhouyu', 'wechat_zhiyin_sunquan', 'wechat_zhiyin_guanyu'],
-                wechat_sb: ['wechat_sb_sunshangxiang', 'wechat_sb_zhaoyun', 'wechat_sb_machao'],
+                wechat_sb: ['wechat_sb_sunshangxiang', 'wechat_sb_zhaoyun', 'wechat_sb_machao', 'wechat_sb_huangzhong'],
             },
         },
         character: {
@@ -145,6 +145,7 @@ const packs = function () {
             wechat_sb_sunshangxiang: ['female', 'shu', 3, ['wechatsbliangzhu', 'wechatsbjieyin'], ['border:wu']],
             wechat_sb_zhaoyun: ['male', 'shu', 4, ['wechatsblongdan', 'wechatsbjizhu']],
             wechat_sb_machao: ['male', 'shu', 4, ['wechatjlmashu', 'wechatjltieji']],
+            wechat_sb_huangzhong: ['male', 'shu', 4, ['wechatsbliegong']],
         },
         characterIntro: {
         },
@@ -6409,7 +6410,9 @@ const packs = function () {
                 },
                 async content(event, trigger, player) {
                     const juedou = get.autoViewAs({ name: 'juedou', isCard: true, storage: { wechatpingjiang: true } });
-                    player.useCard(juedou, event.targets[0], false);
+                    const { target } = event;
+                    target.clearMark('wechattaoni');
+                    await player.useCard(juedou, target, false);
                 },
                 ai: {
                     order: 4,
@@ -6427,17 +6430,14 @@ const packs = function () {
                             player: 'juedouAfter',
                         },
                         filter(event, player) {
-                            return event.card.storage && event.card.storage.wechatpingjiang;
+                            return event.card.storage?.wechatpingjiang;
                         },
                         charlotte: true,
                         forced: true,
                         popup: false,
                         async content(event, trigger, player) {
                             if (trigger.turn == player) player.tempBanSkill('wechatpingjiang');
-                            else {
-                                if (trigger.target.isIn() && trigger.target.hasMark('wechattaoni')) trigger.target.clearMark('wechattaoni');
-                                player.addTempSkill('wechatpingjiang_wushuang');
-                            }
+                            else player.addTempSkill('wechatpingjiang_wushuang');
                         },
                     },
                     wushuang: {
@@ -6446,7 +6446,7 @@ const packs = function () {
                             source: 'damageBegin1',
                         },
                         filter(event, player) {
-                            return event.card && event.card.name == 'juedou';
+                            return event.card?.name == 'juedou';
                         },
                         charlotte: true,
                         forced: true,
@@ -8576,6 +8576,157 @@ const packs = function () {
                     },
                 },
             },
+            // 谋黄忠
+            wechatsbliegong: {
+                trigger: {
+                    player: 'useCardToPlayered',
+                },
+                filter(event, player) {
+                    return !event.getParent()._wechatsbliegong_player && event.targets.length == 1 && event.card.name == 'sha' && player.getStorage('wechatsbliegong').length > 0;
+                },
+                prompt2(event, player) {
+                    var str = '', storage = player.getStorage('wechatsbliegong');
+                    if (storage.length > 1) str += ('亮出并获得牌堆顶的' + get.cnNumber(storage.length - 1) + '张牌并增加伤害；且');
+                    str += ('令' + get.translation(event.target) + '不能使用花色为');
+                    for (var i of storage) str += get.translation(i);
+                    str += ('的牌响应' + get.translation(event.card));
+                    return str;
+                },
+                check(event, player) {
+                    var target = event.target;
+                    if (get.attitude(player, target) > 0) return false;
+                    if (target.hasSkillTag('filterDamage', null, {
+                        player: player,
+                        card: event.card,
+                    })) return false;
+                    var storage = player.getStorage('wechatsbliegong');
+                    if (storage.length >= 4) return true;
+                    if (storage.length < 3) return false;
+                    if (target.hasShan()) return storage.includes('heart') && storage.includes('diamond');
+                    return true;
+                },
+                logTarget: 'target',
+                async content(event, trigger, player) {
+                    var storage = player.getStorage('wechatsbliegong').slice();
+                    var num = storage.length - 1;
+                    var evt = trigger.getParent();
+                    if (num > 0) {
+                        if (typeof evt.baseDamage != 'number') evt.baseDamage = 1;
+                        var cards = get.cards(num);
+                        await game.cardsGotoOrdering(cards);
+                        await player.showCards(cards.slice(), get.translation(player) + '发动了【烈弓】');
+                        for (const card of cards) {
+                            if (storage.includes(get.suit(card, false))) evt.baseDamage++;
+                        }
+                    }
+                    evt._wechatsbliegong_player = player;
+                    player.when('useCardAfter')
+                        .filter(evtxx => evtxx._wechatsbliegong_player == player)
+                        .then(() => player.unmarkSkill('wechatsbliegong'));
+                    var target = trigger.target;
+                    target.addTempSkill('wechatsbliegong_block');
+                    if (!target.storage.wechatsbliegong_block) target.storage.wechatsbliegong_block = [];
+                    target.storage.wechatsbliegong_block.push([evt.card, storage]);
+                    lib.skill.wechatsbliegong.updateBlocker(target);
+                },
+                updateBlocker(player) {
+                    var list = [], storage = player.storage.wechatsbliegong_block;
+                    if (storage?.length) {
+                        for (var i of storage) list.addArray(i[1]);
+                    }
+                    player.storage.wechatsbliegong_blocker = list;
+                },
+                ai: {
+                    threaten: 3.5,
+                    directHit_ai: true,
+                    halfneg: true,
+                    skillTagFilter(player, tag, arg) {
+                        if (arg?.card?.name == 'sha') {
+                            var storage = player.getStorage('wechatsbliegong');
+                            if (storage.length < 3 || !storage.includes('heart') || !storage.includes('diamond')) return false;
+                            var target = arg.target;
+                            if (target.hasSkill('bagua_skill') || target.hasSkill('bazhen') || target.hasSkill('rw_bagua_skill')) return false;
+                            return true;
+                        }
+                        return false;
+                    },
+                },
+                intro: {
+                    content: '已记录花色：$',
+                    markcount(storage) {
+                        if (!_status.connectMode && game.HasExtension('十周年UI') && lib.config.extension_十周年UI_playerMarkStyle && lib.config.extension_十周年UI_playerMarkStyle == 'decade') return 0;
+                        return storage.length;
+                    },
+                    onunmark: true,
+                },
+                group: 'wechatsbliegong_count',
+                subSkill: {
+                    block: {
+                        mod: {
+                            cardEnabled(card, player) {
+                                if (!player.storage.wechatsbliegong_blocker) return;
+                                var suit = get.suit(card);
+                                var evt = _status.event;
+                                if (evt.name != 'chooseToUse') evt = evt.getParent('chooseToUse');
+                                if (!evt || !evt.respondTo || evt.respondTo[1].name != 'sha') return;
+                                if (player.storage.wechatsbliegong_blocker.includes(suit)) return false;
+                            },
+                        },
+                        trigger: {
+                            player: ['damageBefore', 'damageCancelled', 'damageZero'],
+                            target: ['shaMiss', 'useCardToExcluded', 'useCardToEnd'],
+                            global: ['useCardEnd'],
+                        },
+                        forced: true,
+                        popup: false,
+                        firstDo: true,
+                        charlotte: true,
+                        onremove(player) {
+                            delete player.storage.wechatsbliegong_block;
+                            delete player.storage.wechatsbliegong_blocker;
+                        },
+                        filter(event, player) {
+                            if (!event.card || !player.storage.wechatsbliegong_block) return false;
+                            for (var i of player.storage.wechatsbliegong_block) {
+                                if (i[0] == event.card) return true;
+                            }
+                            return false;
+                        },
+                        content() {
+                            var storage = player.storage.wechatsbliegong_block;
+                            for (var i = 0; i < storage.length; i++) {
+                                if (storage[i][0] == trigger.card) {
+                                    storage.splice(i--, 1);
+                                }
+                            }
+                            if (!storage.length) player.removeSkill('wechatsbliegong_block');
+                            else lib.skill.wechatsbliegong.updateBlocker(target);
+                        },
+                    },
+                    count: {
+                        trigger: {
+                            player: 'useCard',
+                            target: 'useCardToTargeted',
+                        },
+                        filter(event, player, name) {
+                            if (name != 'useCard' && player == event.player) return false;
+                            var suit = get.suit(event.card);
+                            if (player.storage.wechatsbliegong?.includes(suit)) return false;
+                            return true;
+                        },
+                        direct: true,
+                        content() {
+                            player.markAuto('wechatsbliegong', [get.suit(trigger.card)]);
+                            player.storage.wechatsbliegong.sort((a, b) => lib.suit.indexOf(b) - lib.suit.indexOf(a));
+                            if (!_status.connectMode && game.HasExtension('十周年UI') && lib.config.extension_十周年UI_playerMarkStyle && lib.config.extension_十周年UI_playerMarkStyle == 'decade') {
+                                game.broadcastAll(function (player, skill) {
+                                    if (player.marks[skill]) player.marks[skill].firstChild.innerHTML = player.getStorage(skill).reduce((str, suit) => str += get.translation(suit), '');
+                                }, player, 'wechatsbliegong');
+                            }
+                        },
+                    },
+                },
+            }
         },
         dynamicTranslate: {
             wechatxiangzhi(player) {
@@ -9024,7 +9175,7 @@ const packs = function () {
             wechattaoni: '讨逆',
             wechattaoni_info: '出牌阶段开始时，你可以失去任意点体力并摸等量张牌，然后令至多X名其他角色获得1枚“讨逆”标记（X为你以此法失去的体力值）。若如此做，本回合你的手牌上限等于你的体力上限。',
             wechatpingjiang: '平江',
-            wechatpingjiang_info: '出牌阶段，你可以视为对一名有“讨逆”标记的角色使用一张【决斗】。若你胜，其弃置所有“讨逆”标记且本回合你使用的【决斗】获得〖无双〗效果且造成的伤害+1。',
+            wechatpingjiang_info: '出牌阶段，你可以视为移去一名角色的所有“讨逆”标记视为对其使用一张【决斗】。若你胜，本回合你使用的【决斗】获得〖无双〗效果且造成的伤害+1。',
             wechatdingye: '鼎业',
             wechatdingye_info: '锁定技，结束阶段，你回复X点体力（X为本回合受到过伤害的角色数）。',
             wechat_zhiyin_xunyu: '极荀彧',
@@ -9158,6 +9309,9 @@ const packs = function () {
             wechatyihan_info: get.ShiwuInform() + '，出牌阶段，你可以令一名其他角色选择一项：1.使用一张非装备牌；2.你视为对其使用一张无次数限制的【杀】。',
             wechatgywuwei: '武威',
             wechatgywuwei_info: '出牌阶段，你可以弃置X+1张牌并弃置一名角色的等量张牌（X为你本阶段发动〖武威〗的次数）。若你以此法弃置的牌的点数之和不大于其因此被弃置的装备牌点数之和，你对其造成1点雷电伤害。',
+            wechat_sb_huangzhong: '微信谋黄忠',
+            wechatsbliegong: '烈弓',
+            wechatsbliegong_info: '当你使用牌时或成为其他角色使用牌的目标后，若你未记录此牌的花色，你记录此牌的花色。当你使用【杀】指定唯一目标后，若〖烈弓〗存在记录花色，则你可亮出牌堆顶的X张牌（X为〖烈弓〗记录过的花色数-1），令此【杀】的伤害值基数+Y（Y为亮出牌中被〖烈弓〗记录过花色的牌的数量），且目标角色不能使用〖烈弓〗记录过花色的牌响应此【杀】。此【杀】使用结算结束后，你清除〖烈弓〗记录的的花色。',
         },
     };
     for (var i in WeChatkill.character) {
