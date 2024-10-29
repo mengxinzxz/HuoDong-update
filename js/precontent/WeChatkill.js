@@ -140,7 +140,7 @@ const packs = function () {
             wechat_zhiyin_caiwenji: ['female', 'wei', 3, ['wechatbeijia', 'wechatsifu'], ['die:true']],
             wechat_zhiyin_zhouyu: ['male', 'wu', 4, ['wechatyingrui', 'wechatfenli', 'wechatqugu'], ['die:true']],
             wechat_zhiyin_sunquan: ['male', 'wu', 4, ['wechatzongyue', 'wechatluheng'], ['die:true']],
-            wechat_zhiyin_guanyu: ['male', 'shu', 4, ['wechatyihan', 'wechatwuwei'], ['die:true']],
+            wechat_zhiyin_guanyu: ['male', 'shu', 4, ['wechatyihan', 'wechatgywuwei'], ['die:true']],
             //谋攻
             wechat_sb_sunshangxiang: ['female', 'shu', 3, ['wechatsbliangzhu', 'wechatsbjieyin'], ['border:wu']],
             wechat_sb_zhaoyun: ['male', 'shu', 4, ['wechatsblongdan', 'wechatsbjizhu']],
@@ -8541,26 +8541,28 @@ const packs = function () {
                     }
                 }
             },
-            wechatwuwei: {
+            wechatgywuwei: {
                 audio: 'ext:活动武将/audio/skill:2',
                 enable: 'phaseUse',
-                usable: 1,
                 filter(event, player) {
-                    return game.hasPlayer(current => get.info('wechatyihan').filterTarget(null, player, current)) && player.countCards('he');
+                    const num = 1 + (player.getStat('skill').wechatgywuwei || 0);
+                    if (num > player.countCards('he', card => lib.filter.cardDiscardable(card, player))) return false;
+                    return game.hasPlayer(current => get.info('wechatyihan').filterTarget(null, player, current));
                 },
                 filterTarget(card, player, target) {
-                    return target.countDiscardableCards(player, 'hej');
+                    return target.countDiscardableCards(player, 'he');
                 },
                 filterCard: true,
-                selectCard: [1, Infinity],
+                selectCard() {
+                    return 1 + (get.player().getStat('skill').wechatgywuwei || 0);
+                },
                 position: 'he',
                 check(card) {
-                    if (ui.selected.cards.length > 2) return 0;
                     return 7.5 - get.value(card);
                 },
                 async content(event, trigger, player) {
                     const { cards, target } = event, num1 = cards.reduce((sum, card) => sum + get.number(card), 0);
-                    const links = await player.discardPlayerCard(target, 'hej', cards.length, true).forResultLinks();
+                    const links = await player.discardPlayerCard(target, 'he', cards.length, true).forResultLinks();
                     if (!links || !links.some(card => get.type(card) == 'equip')) return;
                     const num2 = links.filter(card => get.type(card) == 'equip').reduce((sum, card) => sum + get.number(card), 0);
                     if (num1 <= num2) await target.damage('thunder');
@@ -8570,9 +8572,9 @@ const packs = function () {
                     result: {
                         player(player, target) {
                             return get.effect(target, { name: 'guohe_copy2' }, player, player);
-                        }
-                    }
-                }
+                        },
+                    },
+                },
             },
         },
         dynamicTranslate: {
@@ -9145,7 +9147,7 @@ const packs = function () {
             wechatfenli: '焚离',
             wechatfenli_info: '出牌阶段限一次。你可以消耗2点' + get.MouLveInform() + '并弃置至多两名座位连续的角色一张牌。若以此弃置的牌颜色相同，你可以消耗2点' + get.MouLveInform() + '对这些角色造成1点火焰伤害。',
             wechatqugu: '曲顾',
-            wechatqugu_info: '当你每回合首次成为其他角色使用牌的目标后，那你可以从牌堆中获得一张与此牌类别不同的牌。',
+            wechatqugu_info: '当你每回合首次成为其他角色使用牌的目标后，你可以从牌堆中获得一张与此牌类别不同的牌。',
             wechat_zhiyin_sunquan: '极孙权',
             wechatzongyue: '纵阅',
             wechatzongyue_info: '①出牌阶段限一次。你可以将至多四张手牌以任意顺序置于牌堆顶，然后与X名角色进行共同拼点（X为你以此法置于牌堆顶的牌数）。赢的角色摸两张牌。②当你进行共同拼点后，你获得其他角色的拼点牌。',
@@ -9154,8 +9156,8 @@ const packs = function () {
             wechat_zhiyin_guanyu: '极关羽',
             wechatyihan: '翊汉',
             wechatyihan_info: get.ShiwuInform() + '，出牌阶段，你可以令一名其他角色选择一项：1.使用一张非装备牌；2.你视为对其使用一张无次数限制的【杀】。',
-            wechatwuwei: '武威',
-            wechatwuwei_info: '出牌阶段限一次，你可以弃置任意张牌并弃置一名角色区域内等量张牌。若你以此法弃置的牌的点数之和不大于其因此被弃置的装备牌点数之和，你对其造成1点雷电伤害。',
+            wechatgywuwei: '武威',
+            wechatgywuwei_info: '出牌阶段，你可以弃置X+1张牌并弃置一名角色的等量张牌（X为你本阶段发动〖武威〗的次数）。若你以此法弃置的牌的点数之和不大于其因此被弃置的装备牌点数之和，你对其造成1点雷电伤害。',
         },
     };
     for (var i in WeChatkill.character) {

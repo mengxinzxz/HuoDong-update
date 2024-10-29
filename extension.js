@@ -14,12 +14,13 @@ game.bolShowNewPack = function () {
 		'/setPlayer/',
 		'bugfix，素材补充',
 		'整合@xizifu 的PR',
-		'添加武将微信星徐晃、欢杀刘晔、极孙权、极周瑜、欢杀卫温诸葛直',
+		'添加武将微信星徐晃、欢杀刘晔、极孙权、极周瑜、欢杀卫温诸葛直、极关羽',
 		'To be continued...',
 	];
 	//更新武将
 	var HuoDong_players = [
-		'wechat_yj_xuhuang', 'Mbaby_liuye', 'wechat_zhiyin_sunquan', 'wechat_zhiyin_zhouyu', 'Mbaby_weiwenzhugezhi',
+		'wechat_yj_xuhuang', 'Mbaby_liuye', 'wechat_zhiyin_sunquan', 'wechat_zhiyin_zhouyu',
+		'Mbaby_weiwenzhugezhi', 'wechat_zhiyin_guanyu',
 	];
 	//加载
 	var dialog = ui.create.dialog(
