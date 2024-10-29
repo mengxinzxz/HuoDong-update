@@ -8586,7 +8586,7 @@ const packs = function () {
                 },
                 prompt2(event, player) {
                     var str = '', storage = player.getStorage('wechatsbliegong');
-                    if (storage.length > 1) str += ('亮出并获得牌堆顶的' + get.cnNumber(storage.length - 1) + '张牌并增加伤害；且');
+                    if (storage.length > 1) str += ('亮出牌堆顶的' + get.cnNumber(storage.length - 1) + '张牌并增加伤害；且');
                     str += ('令' + get.translation(event.target) + '不能使用花色为');
                     for (var i of storage) str += get.translation(i);
                     str += ('的牌响应' + get.translation(event.card));
