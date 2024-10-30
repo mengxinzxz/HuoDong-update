@@ -1893,173 +1893,160 @@ const packs = function () {
                 },
             },
             minijiaozhao: {
-                init: function (player) {
-                    if (!player.storage.minijiaozhao2) player.storage.minijiaozhao2 = [[], [], [], []];
-                },
-                onChooseToUse: function (event) {
-                    if (!game.online && !event.minijiaozhao_list) {
-                        var player = event.player, list = [];
-                        var storage1 = player.storage.minijiaozhao2[2];
-                        var storage2 = player.storage.minijiaozhao2[3];
-                        for (var name of lib.inpile) {
-                            var card = { name: name };
-                            if (get.type(card) != 'basic' && get.type(card) != 'trick') continue;
-                            if (player.countMark('minidanxin') == 1 && storage1.includes(get.type(card))) continue;
-                            if (player.countMark('minidanxin') == 2 && storage2.includes(name)) continue;
-                            list.push([get.type(card), '', name]);
-                            if (name == 'sha') {
-                                for (var nature of lib.inpile_nature) list.push([get.type(card), '', name, nature]);
-                            }
-                        }
-                        var list2 = list.filter(function (link) {
-                            return player.hasUseTarget({ name: link[2], nature: link[3], storage: { minijiaozhao2: true } });
-                        });
-                        event.set('minijiaozhao_list', list2);
-                    }
-                },
                 derivation: ['minijiaozhao_1', 'minijiaozhao_2'],
                 audio: 'jiaozhao',
                 enable: 'phaseUse',
-                filter: function (event, player) {
-                    if (!event.minijiaozhao_list || !event.minijiaozhao_list.length) return false;
-                    if (!player.countCards('h', function (card) {
-                        return lib.skill.minijiaozhao.filterCard(card, player);
-                    })) return false;
+                filter(event, player) {
+                    if (!player.hasCard(card => lib.skill.minijiaozhao.filterCard(card, player), 'h')) return false;
                     var num = player.getStat('skill').minijiaozhao;
                     return !num || num < player.countMark('minidanxin') + 1;
                 },
-                filterCard: function (card, player) {
-                    if (!player.hasSkill('minijiaozhao2')) return true;
-                    return !player.storage.minijiaozhao2[0].includes(card);
+                filterCard(card, player) {
+                    return !player.storage.minijiaozhao2?.[card.cardid];
                 },
                 discard: false,
                 lose: false,
                 delay: false,
-                check: function (card) {
+                check(card) {
                     return 7 - get.value(card);
                 },
-                content: function () {
+                content() {
                     'step 0'
+                    player.addTempSkill('minijiaozhao2', 'phaseUseAfter');
                     player.showCards(cards, get.translation(player) + '发动了【矫诏】');
                     'step 1'
-                    var list = event.getParent(2).minijiaozhao_list;
+                    var list = get.inpileVCardList(info => {
+                        const name = info[2];
+                        if (player.hasMark('minidanxin')) {
+                            const str = ['type', 'name'][player.countMark('minidanxin') - 1];
+                            if (player.storage.minijiaozhao_used?.[str]?.includes([get.type(name), name][player.countMark('minidanxin') - 1])) return false;
+                        }
+                        return get.type(name) === 'basic' || get.type(name) === 'trick';
+                    });
+                    if (!list.length) {
+                        player.popup('杯具');
+                        game.log('但是', player, '已经没有可以声明的牌了！');
+                        event.finish();
+                        return;
+                    }
                     var str = '###矫诏(' + (player.countMark('minidanxin') + 1) + '级)';
                     str += '###请选择并声明' + get.translation(cards[0]) + '视为的牌';
                     if (player.countMark('minidanxin') < 2) str += '，且此牌不能指定你为目标';
                     player.chooseButton([str, [list, 'vcard']], true).set('ai', function (button) {
                         var player = _status.event.player;
-                        return player.getUseValue({ name: button.link[2], nature: button.link[3] });
+                        return player.getUseValue({ name: button.link[2], nature: button.link[3], storage: { minijiaozhao: true } });
                     });
                     'step 2'
-                    var card = { name: result.links[0][2], nature: result.links[0][3] };
-                    player.storage.minijiaozhao2[0].push(cards[0]);
-                    player.storage.minijiaozhao2[1].push(card);
+                    var card = { name: result.links[0][2], nature: result.links[0][3], storage: { minijiaozhao: true } };
+                    player.storage.minijiaozhao2[cards[0].cardid] = card;
+                    var chosen = card.name, nature = card.nature, tag = 'minijiaozhao2_' + chosen + nature;
+                    player.storage.minijiaozhao2.cardid.add(tag);
+                    player.storage.minijiaozhao_used.type.add(get.type(card));
+                    player.storage.minijiaozhao_used.name.add(chosen);
                     player.updateMarks('minijiaozhao2');
-                    if (player.hasMark('minidanxin')) player.storage.minijiaozhao2[player.countMark('minidanxin') + 1].push(get[player.countMark('minidanxin') < 2 ? 'type' : 'name'](card));
-                    var chosen = result.links[0][2];
-                    var nature = result.links[0][3];
-                    player.addGaintag(cards, 'minijiaozhao2');
+                    player.updateMarks('minijiaozhao_used');
+                    if (!lib.skill[tag]) {
+                        game.broadcastAll((tag, nature, chosen) => {
+                            lib.skill[tag] = {};
+                            lib.translate[tag] = "矫诏<br>" + (get.translation(nature) || '') + get.translation(chosen);
+                        }, tag, nature, chosen);
+                    }
+                    player.addGaintag(cards, tag);
                     player.showCards(game.createCard({
                         name: chosen,
                         nature: nature,
                         suit: cards[0].suit,
                         number: cards[0].number,
-                    }), get.translation(player) + '声明了' + (get.translation(nature) || '') + get.translation(chosen));
+                    }), get.translation(player) + '声明了' + (get.translation(nature) || '') + '【' + get.translation(chosen) + '】');
                 },
                 ai: {
                     order: 8,
                     result: { player: 1 },
                 },
-                group: 'minijiaozhao2',
             },
             minijiaozhao2: {
-                getOriginalCard: function (player, card) {
-                    var storage = player.storage.minijiaozhao2;
-                    return storage[0][storage[1].indexOf(storage[1].filter(function (cardx) {
-                        return get.name(cardx) == get.name(card) && (!get.nature(cardx) || get.nature(cardx) == get.nature(card));
-                    })[0])];
-                },
                 mod: {
-                    playerEnabled: function (card, player, target) {
+                    playerEnabled(card, player, target) {
                         if (target != player || player.countMark('minidanxin') >= 2) return;
-                        if (card.storage && card.storage.minijiaozhao2) return false;
+                        if (card.storage?.minijiaozhao2) return false;
                     },
-                    /*
-                    cardname:function(card,player,name){
-                    var storage=player.storage.minijiaozhao2;
-                    if(storage[0].includes(card)) return get.name(storage[1][storage[0].indexOf(card)]);
-                    },
-                    cardnature:function(card,player){
-                    var storage=player.storage.minijiaozhao2;
-                    if(storage[0].includes(card)) return get.nature(storage[1][storage[0].indexOf(card)]);
-                    },
-                    */
                 },
                 charlotte: true,
-                enable: 'phaseUse',
-                filter: function (event, player) {
-                    return player.countCards('h', function (card) {
-                        return player.storage.minijiaozhao2[0].includes(card);
-                    });
+                init(player, skill) {
+                    if (!player.storage[skill]) player.storage[skill] = { cardid: [] };
+                    if (!player.storage.minijiaozhao_used) player.storage.minijiaozhao_used = { type: [], name: [] };
                 },
-                chooseButton: {
-                    dialog: function (event, player) {
-                        var storage = player.storage.minijiaozhao2;
-                        var cards = player.getCards('h').slice(0).filter(function (card) {
-                            return storage[0].includes(card);
-                        }), list = [];
-                        for (var card of cards) {
-                            var cardx = storage[1][storage[0].indexOf(card)];
-                            list.push([get.translation(get.type2(cardx)), '', get.name(cardx), get.nature(cardx)]);
-                        }
-                        return ui.create.dialog('矫诏', [list, 'vcard'], 'hidden');
-                    },
-                    filter: function (button, player) {
-                        return lib.filter.filterCard({ name: button.link[2], nature: button.link[3] }, player, _status.event.getParent());
-                    },
-                    check: function (button) {
-                        return _status.event.player.getUseValue({ name: button.link[2], nature: button.link[3], storage: { minijiaozhao2: true } });
-                    },
-                    backup: function (links, player) {
-                        return {
-                            audio: 'jiaozhao',
-                            filterCard: lib.skill.minijiaozhao2.getOriginalCard(player, { name: links[0][2], nature: links[0][3] }),
-                            selectCard: -1,
-                            popname: true,
-                            viewAs: { name: links[0][2], nature: links[0][3], storage: { minijiaozhao2: true } },
-                            precontent() {
-                                if (!player.storage.minijiaozhao3) {
-                                    player.storage.minijiaozhao3 = true;
-                                    player.when(['phaseUseBefore', 'phaseUseAfter']).then(() => {
-                                        delete player.storage.minijiaozhao3;
-                                        player.removeGaintag('minijiaozhao2');
-                                        player.storage.minijiaozhao2 = [[], [], [], []];
-                                    });
-                                }
-                            },
-                        }
-                    },
-                    prompt: function (links, player) {
-                        var name = links[0][2], nature = links[0][3];
-                        var card = lib.skill.minijiaozhao2.getOriginalCard(player, { name: links[0][2], nature: links[0][3] });
-                        return '将' + get.translation(card) + '当作' + (get.translation(nature) || '') + get.translation(name) + '使用';
-                    }
+                onremove(player, skill) {
+                    let tags = player.storage[skill].cardid;
+                    delete player.storage[skill];
+                    delete player.storage.minijiaozhao_used;
+                    if (tags?.length) tags.forEach(tag => player.removeGaintag(tag));
+                },
+                enable: 'phaseUse',
+                filter(event, player) {
+                    return player.hasCard(card => lib.skill.minijiaozhao2.filterCard(card, player), 'h');
+                },
+                filterCard(card, player) {
+                    const map = player.storage.minijiaozhao2;
+                    if (!map[card.cardid]) return false;
+                    return player.hasUseTarget(get.autoViewAs(map[card.cardid], [card]), true, true);
+                },
+                filterTarget(cardx, player, target) {
+                    const cards = ui.selected.cards, map = player.storage.minijiaozhao2;
+                    if (!cards.length) return false;
+                    const card = get.autoViewAs(map[cards[0].cardid], cards);
+                    const filterTarget = lib.card[card.name].filterTarget;
+                    return filterTarget && (typeof filterTarget === 'boolean' ? filterTarget : filterTarget.apply(this, arguments));
+                },
+                selectTarget() {
+                    const player = get.player(), cards = ui.selected.cards, map = player.storage.minijiaozhao2;
+                    if (!cards.length) return -1;
+                    const card = get.autoViewAs(map[cards[0].cardid], cards);
+                    let range, select = get.copy(get.info(card).selectTarget);
+                    if (select == undefined) range = [1, 1];
+                    else if (typeof select == 'number') range = [select, select];
+                    else if (get.itemtype(select) == 'select') range = select;
+                    else if (typeof select == 'function') range = select(card, player);
+                    game.checkMod(card, player, range, 'selectTarget', player);
+                    return range;
+                },
+                lose: false,
+                discard: false,
+                delay: false,
+                check(card) {
+                    const player = get.player(), map = player.storage.minijiaozhao2;
+                    return player.getUseValue(get.autoViewAs(map[card.cardid], [card]), true, true);
+                },
+                multiline: true,
+                multitarget: true,
+                prompt: '选择一张“矫诏”牌当作声明的牌使用',
+                content() {
+                    const map = player.storage.minijiaozhao2;
+                    player.useCard(get.autoViewAs(map[cards[0].cardid], cards), targets).set('cards', cards);
                 },
                 ai: {
                     order: 7.9,
-                    result: { player: 1 },
+                    result: {
+                        player(player, target) {
+                            const cards = ui.selected.cards, map = player.storage.minijiaozhao2;
+                            const card = get.autoViewAs(map[cards[0].cardid], cards);
+                            return get.effect(target, card, player, player);
+                        },
+                    },
                 },
-                subSkill: { backup: {} },
             },
             minidanxin: {
                 audio: 'danxin',
                 trigger: { player: 'damageEnd' },
                 frequent: true,
-                content: function () {
+                content() {
+                    'step 0'
                     player.draw();
+                    'step 1'
                     if (player.countMark('minidanxin') < 2) {
                         player.addMark('minidanxin', 1, false);
-                        game.log(player, '升级了技能', '#g【矫诏】')
+                        player.popup('矫诏');
+                        game.log(player, '升级了技能', '#g【矫诏】');
                     }
                 },
             },
@@ -22915,9 +22902,11 @@ const packs = function () {
                     return target.getStorage('minijianjie_' + mark).includes(player);
                 },
                 addMark(mark, player, target) {
+                    const storage = target.storage.minijianjie_yeyan;
                     mark = 'minijianjie_' + mark;
                     target.addAdditionalSkill(`${mark}_${player.playerid}`, mark);
                     target.markAuto(mark, [player]);
+                    target.storage.minijianjie_yeyan = storage;
                     game.log(player, '令', target, '获得了', `#g“${mark == 'minijianjie_huoji' ? '龙印' : '凤印'}”`);
                 },
                 removeMark(mark, player, target, log) {

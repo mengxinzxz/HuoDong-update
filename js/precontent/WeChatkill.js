@@ -8563,8 +8563,7 @@ const packs = function () {
                 async content(event, trigger, player) {
                     const { cards, target } = event, num1 = cards.reduce((sum, card) => sum + get.number(card), 0);
                     const links = await player.discardPlayerCard(target, 'he', cards.length, true).forResultLinks();
-                    if (!links || !links.some(card => get.type(card) == 'equip')) return;
-                    const num2 = links.filter(card => get.type(card) == 'equip').reduce((sum, card) => sum + get.number(card), 0);
+                    const num2 = (links || []).reduce((sum, card) => sum + get.number(card), 0);
                     if (num1 <= num2) await target.damage('thunder');
                 },
                 ai: {
@@ -9306,7 +9305,7 @@ const packs = function () {
             wechatyihan: '翊汉',
             wechatyihan_info: get.ShiwuInform() + '，出牌阶段，你可以令一名其他角色选择一项：1.使用一张非装备牌；2.你视为对其使用一张无次数限制的【杀】。',
             wechatgywuwei: '武威',
-            wechatgywuwei_info: '出牌阶段，你可以弃置X+1张牌并弃置一名角色的等量张牌（X为你本阶段发动〖武威〗的次数）。若你以此法弃置的牌的点数之和不大于其因此被弃置的装备牌点数之和，你对其造成1点雷电伤害。',
+            wechatgywuwei_info: '出牌阶段，你可以弃置X+1张牌并弃置一名角色的等量张牌（X为你本阶段发动〖武威〗的次数）。若你以此法弃置的牌的点数之和不大于其因此被弃置的牌的点数之和，你对其造成1点雷电伤害。',
             wechat_sb_huangzhong: '微信谋黄忠',
             wechatsbliegong: '烈弓',
             wechatsbliegong_info: '当你使用牌时或成为其他角色使用牌的目标后，若你未记录此牌的花色，你记录此牌的花色。当你使用【杀】指定唯一目标后，若〖烈弓〗存在记录花色，则你可亮出牌堆顶的X张牌（X为〖烈弓〗记录过的花色数-1），令此【杀】的伤害值基数+Y（Y为亮出牌中被〖烈弓〗记录过花色的牌的数量），且目标角色不能使用〖烈弓〗记录过花色的牌响应此【杀】。此【杀】使用结算结束后，你清除〖烈弓〗记录的的花色。',
