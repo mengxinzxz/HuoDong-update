@@ -13,8 +13,8 @@ game.bolShowNewPack = function () {
 	var HuoDong_update = [
 		'/setPlayer/',
 		'bugfix，素材补充',
-		'整合@xizifu 的PR',
-		'调整部分角色的技能',
+		'整合@xizifu @Kobe 的PR',
+		'调整部分角色的技能，改善部分角色的原画画质和图像比例',
 		'添加欢杀武将刘晔、卫温诸葛直',
 		'添加微信武将星徐晃、极孙权、极周瑜、极关羽、谋黄忠',
 		'To be continued...',
@@ -77,7 +77,7 @@ let extensionPackage = {
 		author: '萌新（转型中）',
 		diskURL: '',
 		forumURL: '',
-		version: '0.3.2-待定',
+		version: '0.3.2',
 		//新人制作扩展，希望大家支持。
 		//新人技术不足，希望大家包涵。
 		//壹、贰、叁、肆、伍、陆、柒、捌、玖、拾
