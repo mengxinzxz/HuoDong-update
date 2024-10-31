@@ -12,17 +12,12 @@ game.bolShowNewPack = function () {
 	//更新告示
 	var HuoDong_update = [
 		'/setPlayer/',
-		'bugfix，素材补充',
-		'整合@xizifu @Kobe 的PR',
-		'调整部分角色的技能，改善部分角色的原画画质和图像比例',
-		'添加欢杀武将刘晔、卫温诸葛直',
-		'添加微信武将星徐晃、极孙权、极周瑜、极关羽、谋黄忠',
+		'复活微信标陆逊',
 		'To be continued...',
 	];
 	//更新武将
 	var HuoDong_players = [
-		'wechat_yj_xuhuang', 'Mbaby_liuye', 'wechat_zhiyin_sunquan', 'wechat_zhiyin_zhouyu',
-		'Mbaby_weiwenzhugezhi', 'wechat_zhiyin_guanyu', 'wechat_sb_huangzhong',
+		'wechat_luxun',
 	];
 	//加载
 	var dialog = ui.create.dialog(
@@ -77,7 +72,7 @@ let extensionPackage = {
 		author: '萌新（转型中）',
 		diskURL: '',
 		forumURL: '',
-		version: '0.3.2',
+		version: '0.3.3 - 待定',
 		//新人制作扩展，希望大家支持。
 		//新人技术不足，希望大家包涵。
 		//壹、贰、叁、肆、伍、陆、柒、捌、玖、拾
