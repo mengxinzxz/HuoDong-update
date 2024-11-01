@@ -11,7 +11,7 @@ const packs = function () {
                 fh_ren: ['mx_fh_caizhenji', 'mx_fh_sp_huaxin', 'mx_fh_xiangchong', 'mx_fh_sp_xujing', 'mx_fh_qiaogong', 'mx_fh_sp_zhangwen', 'mx_fh_liuzhang', 'mx_fh_zhangzhongjing'],
                 fh_yong: ['mx_fh_sp_wangshuang'],
                 fh_yan: ['mx_fh_sp_cuiyan', 'mx_fh_sp_jiangwan', 'mx_fh_liuba', 'mx_fh_sp_lvfan'],
-                fh_shen: ['mx_fh_shen_guojia', 'mx_fh_shen_xunyu', 'mx_fh_shen_taishici', 'mx_fh_shen_dianwei'],
+                fh_shen: ['mx_fh_shen_guojia', 'mx_fh_shen_xunyu', 'mx_fh_shen_taishici'],
                 fh_std_sh: ['mx_fh_re_huangyueying', 'mx_fh_re_zhenji', 'mx_fh_gz_huangzhong', 'mx_fh_zhoutai', 'mx_fh_ol_sp_zhugeliang', 'mx_fh_re_taishici', 'mx_fh_yanwen', 'mx_fh_guanqiujian'],
                 fh_yijiang: ['mx_fh_dc_sunziliufang', 'mx_fh_liyan', 'mx_fh_dc_huanghao', 'mx_fh_re_sundeng', 'mx_fh_xinxianying', 'mx_fh_wuxian', 'mx_fh_caojie', 'mx_fh_jikang', 'mx_fh_zhugeshang', 'mx_fh_lukai', 'mx_fh_kebineng', 'mx_fh_xin_lingtong', 'mx_fh_dc_xushu', 'mx_fh_re_liaohua', 'mx_fh_zhuzhi'],
             },
@@ -45,7 +45,6 @@ const packs = function () {
             mx_fh_shen_guojia: ['male', 'shen', 3, ['fh_shuishi', 'fh_tianyi', 'fh_sghuishi'], ['wei']],
             mx_fh_shen_xunyu: ['male', 'shen', 3, ['tianzuo', 'fh_lingce', 'fh_dinghan'], ['wei']],
             mx_fh_shen_taishici: ['male', 'shen', 4, ['dulie', 'fh_powei'], ['wu']],
-            mx_fh_shen_dianwei: ['male', 'shen', 4, ['juanjia', 'fh_qiexie', 'cuijue'], ['wei']],
             mx_fh_dc_sunziliufang: ['male', 'wei', 3, ['dcqinshen', 'fh_weidang']],
             mx_fh_liyan: ['male', 'shu', 3, ['fh_duliang', 'fh_fulin']],
             mx_fh_dc_huanghao: ['male', 'shu', 3, ['fh_qinqing', 'huisheng', 'dccunwei'], ['tempname:dc_huanghao']],
@@ -2567,16 +2566,42 @@ const packs = function () {
             fh_qiexie: {
                 audio: 'qiexie',
                 inherit: 'qiexie',
+                getList: new Map([
+                    [1, ['ol_sb_guanyu', 'ol_jiangwei']],
+                    [2, ['hansui', 'clan_xuncan', 'yadan']],
+                    [5, ['re_huangzhong', 're_xiahouyuan']],
+                    [10, ['guanyu', 'zhangfei', 'zhaoyun', 'machao', 'xuzhu', 'lvbu', 'lvmeng', 'daqiao', 'zhugeliang', 'huangyueying', 'liubei', 'sunquan', 'caocao', 'ganning', 'huanggai', 'zhangliao', 'xiahoudun', 'simayi', 'luxun', 'zhouyu', 'diaochan']],
+                ]),
                 content: function () {
                     'step 0'
                     if (!_status.characterlist) {
                         lib.skill.pingjian.initList();
                         _status.characterlist.randomSort();
                     }
-                    var list = _status.characterlist.slice();
-                    if (!list.length) event.finish();
+                    var names = _status.characterlist.slice();
+                    if (!names.length) event.finish();
                     else {
-                        list = list.randomGets(5);
+                        let list = [], filter = i => {
+                            if (!(_status.characterlist.includes(i) && !list.includes(i))) return false;
+                            return !['guanyu', 'zhangfei'].includes(i) || !list.includes(i === 'guanyu' ? 'zhangfei' : 'guanyu');
+                        };
+                        while (list.length < 5) {
+                            let limits = [], map = lib.skill.fh_qiexie.getList.entries().reduce((map, list) => {
+                                if (list[1].some(filter)) {
+                                    limits.push(list[0]);
+                                    map[list[0]] = list[1].filter(filter);
+                                }
+                                return map;
+                            }, {});
+                            if (!Object.keys(map).length) break;
+                            let sum = limits.reduce((i, j) => i + j, 0), limit = [0, ...limits.map(num => num / sum), 1], rand = Math.random();
+                            for (let i = 1; i < limit.length - 2; i++) {
+                                if (rand >= limit[i - 1] && rand <= limit[i]) {
+                                    list.push(map[limits[i]].filter(filter).randomGet());
+                                    break;
+                                }
+                            }
+                        }
                         var num = player.countEmptySlot(1);
                         player.chooseButton([
                             '挈挟：选择' + (num > 1 ? '至多' : '') + get.cnNumber(num) + '张武将置入武器栏',
@@ -4464,7 +4489,6 @@ const packs = function () {
             mx_fh_shen_guojia: '飞鸿神郭嘉',
             mx_fh_shen_xunyu: '飞鸿神荀彧',
             mx_fh_shen_taishici: '飞鸿神太史慈',
-            mx_fh_shen_dianwei: '飞鸿神典韦',
             fh_shuishi: '慧识',
             fh_shuishi_info: '出牌阶段限一次，你可进行重复判定牌直到有已有判定花色的牌，然后你可以将所有判定牌交给一名角色。',
             fh_tianyi: '天翊',

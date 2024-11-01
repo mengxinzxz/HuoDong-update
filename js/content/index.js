@@ -1062,6 +1062,7 @@ export function content(config, pack) {
 					'old_shen_xunyu',
 					'old_shen_taishici',
 					'old_shen_sunce',
+					'ol_shen_dianwei',
 				],
 				//史诗
 				epic: [
@@ -1383,7 +1384,9 @@ export function content(config, pack) {
 	game.HDaddCharacter('re_yuanshu', ['male', 'qun', 4, ['wangzun', 'tongji'], []], 'standard');
 
 	//神将
+	lib.characterSort.extra.extra_ol.addArray(['ol_shen_dianwei']);
 	game.HDaddCharacter('shen_sunquan', ['male', 'shen', 4, ['bolyuheng', 'boldili'], ['wu']], 'extra');
+	game.HDaddCharacter('ol_shen_dianwei', ['male', 'shen', 4, ['juanjia', 'fh_qiexie', 'cuijue'], ['wei', ...['character:', 'die:'].map(i => i + 'shen_dianwei')]], 'extra');
 
 	//界限突破
 	game.HDaddCharacter('dc_xushu', ['male', 'shu', 4, ['bolzhuhai', 'xsqianxin'], []], 'refresh');
@@ -1775,6 +1778,8 @@ export function content(config, pack) {
 		old_zhangzhongjing_prefix: '旧',
 		oldx_zhangzhongjing_prefix: '旧',
 		bol_zhangzhongjing_prefix: '废案',
+		ol_shen_dianwei: 'OL神典韦',
+		ol_shen_dianwei_prefix: 'OL神',
 
 		//武将分包翻译
 		bilibili_buchong_shenhua: '武将补充·神话再临',

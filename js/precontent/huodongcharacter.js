@@ -8,7 +8,7 @@ const packs = function () {
         characterSort: {
             huodongcharacter: {
                 CLongZhou: ['lz_sufei', 'lz_tangzi', 'lz_liuqi', 'lz_huangquan'],
-                CZHengHuo: ['bilibili_zhengxuan', 'bilibili_sp_xuyou', 'old_zuoci'],
+                CZhengHuo: ['bol_xushao','bilibili_zhengxuan', 'bilibili_sp_xuyou', 'old_zuoci'],
                 Chuodong: ['bilibili_shengxunyu', 'bilibili_Firewin', 'bilibili_jinglingqiu', 'bilibili_suixingsifeng', 'bilibili_Emptycity', 'bilibili_thunderlei', 'bilibili_lonelypatients', 'bilibili_ningjingzhiyuan', 'bilibili_xizhicaikobe'],
                 Cothers: ['bilibili_wangtao', 'bilibili_wangyue', 'bilibili_x_wangtao', 'bilibili_x_wangyue', 'bilibili_xushao', 'bilibili_shen_guojia', 'bilibili_re_xusheng', 'bilibili_kuangshen04', 'bilibili_adong', 'bilibili_zhangrang', 'bilibili_litiansuo', 'decade_huangwudie', 'bilibili_huanggai', 'bilibili_ekeshaoge', 'bilibili_guanning', 'bilibili_wangwang', 'bilibili_zhouxiaomei', 'diy_lvmeng'],
                 CDanJi: ['DJ_caiyang', 'DJ_pujing', 'DJ_huban'],
@@ -51,6 +51,7 @@ const packs = function () {
             bilibili_xushao: ['male', 'qun', '1/6', ['bilibili_pingjian'], ['ext:活动武将/image/character/old_xushao.jpg', 'InitFilter:noZhuHp']],
             bilibili_ningjingzhiyuan: ['male', 'key', 4, ['bilibili_liaoxing', 'bilibili_xiezhi', 'bilibili_fazhou'], ['clan:肘家军', 'clan:宿舍群', 'clan:肘击群', 'clan:活动群']],
             bilibili_xizhicaikobe: ['male', 'key', 4, ['bilibili_biexiao', 'bilibili_xingshi', 'bilibili_zhangcai'], ['doublegroup:wei:shu:wu:qun:jin', 'clan:肘家军', 'clan:肘击群', 'clan:活动群']],
+            bol_xushao: ['male', 'qun', 3, ['bol_pinjian', 'bol_yuedan'], ['ext:活动武将/image/character/old_xushao.jpg', 'die:xushao']],
             //千里走单骑 
             DJ_caiyang: ['male', 'qun', 1, ['yinka', 'zhuixi'], ['character:caiyang']],
             DJ_pujing: ['male', 'qun', 1, ['yinka'], ['character:pujing']],
@@ -181,6 +182,131 @@ const packs = function () {
             },
         },
         skill: {
+            //许劭
+            bol_pinjian: {
+                init(player) {
+                    if (!_status.characterlist) lib.skill.bol_pinjian.initList();
+                    if (!_status.characterlist._bol_pinjian_init) {
+                        _status.characterlist.randomSort();
+                        const handler = {
+                            set(target, property, value) {
+                                target[property] = value;
+                                for (const player of game.filterPlayer()) {
+                                    if (player.getSkills(null, null, false).includes('bol_pinjian')) {
+                                        lib.skill.bol_pinjian.update(player);
+                                    }
+                                }
+                                return true;
+                            },
+                            deleteProperty(target, property) {
+                                delete target[property];
+                                for (const player of game.filterPlayer()) {
+                                    if (player.getSkills(null, null, false).includes('bol_pinjian')) {
+                                        lib.skill.bol_pinjian.update(player);
+                                    }
+                                }
+                                return true;
+                            }
+                        };
+                        _status.characterlist = new Proxy(_status.characterlist, handler);
+                        _status.characterlist._bol_pinjian_init = true;
+                    }
+                    lib.skill.bol_pinjian.update(player);
+                },
+                onremove(player) {
+                    lib.skill.bol_pinjian.update(player, true);
+                    player.removeSkillBlocker('bol_pinjian');
+                },
+                update(player, remove) {
+                    const OriginalSkills = player.getStorage('bol_pinjian').reduce((list, name) => list.addArray(get.character(name).skills || []), []);
+                    player.removeInvisibleSkill(OriginalSkills);
+                    if (remove === true) {
+                        delete player.storage.bol_pinjian;
+                        return player.unmarkSkill('bol_pinjian');
+                    }
+                    player.addSkillBlocker('bol_pinjian');
+                    const names = _status.characterlist.slice(0, 4);
+                    player.storage.bol_pinjian = names;
+                    player.markSkill('bol_pinjian');
+                    const NowSkills = player.getStorage('bol_pinjian').reduce((list, name) => list.addArray(get.character(name).skills || []), []);
+                    player.addInvisibleSkill(NowSkills);
+                },
+                skillBlocker(skill, player) {
+                    const skills = player.getStorage('bol_pinjian').reduce((list, name) => list.addArray(get.character(name).skills || []), []);
+                    return skills.includes(skill) && player.invisibleSkills.includes(skill) && (!player.hasSkill('bol_pinjian') || player.hasSkill('bol_pinjian_used'));
+                },
+                audio: 'pingjian1.mp3',
+                trigger: { player: ['useSkill', 'logSkillBegin'] },
+                filter(event, player) {
+                    const skills = player.getStorage('bol_pinjian').reduce((list, name) => list.addArray(get.character(name).skills || []), []);
+                    const skill = get.sourceSkillFor(event);
+                    return skills.includes(skill) && player.invisibleSkills.includes(skill);
+                },
+                forced: true,
+                locked: false,
+                content() {
+                    player.addTempSkill('bol_pinjian_used');
+                    const names = player.storage.bol_pinjian;
+                    if (names?.length) {
+                        _status.characterlist.removeArray(names);
+                        _status.characterlist.addArray(player.storage.bol_pinjian);
+                    }
+                },
+                marktext: '将',
+                intro: {
+                    markcount: (storage, player) => player.isUnderControl(true) ? storage.length.toString() : '?',
+                    mark(dialog, storage, player) {
+                        if (!player.isUnderControl(true)) return '观看武将牌堆ing...';
+                        if (!storage?.length) return '当前武将牌堆没有牌！';
+                        dialog.addSmall([storage, 'character']);
+                        const skills = player.getStorage('bol_pinjian').reduce((list, name) => list.addArray(get.character(name).skills || []), []);
+                        if (skills.length) dialog.addText('<li>当前可用技能：' + get.translation(skills), false);
+                    },
+                },
+                group: 'bol_pinjian_trigger',
+                subSkill: {
+                    used: { charlotte: true },
+                    trigger: {
+                        charlotte: true,
+                        trigger: { player: 'triggerInvisible' },
+                        filter(event, player) {
+                            if (event.revealed) return false;
+                            const info = get.info(event.skill);
+                            if (info?.charlotte) return false;
+                            let skills = player.getStorage('bol_pinjian').reduce((list, name) => list.addArray(get.character(name).skills || []), []);
+                            game.expandSkills(skills);
+                            return skills.includes(event.skill);
+                        },
+                        forceDie: true,
+                        priority: 12,
+                        forced: true,
+                        popup: false,
+                        get content() {
+                            let content = lib.skill.sbpingjian.subSkill.trigger.content;
+                            content = content.toString().replaceAll('评鉴', '品鉴');
+                            content = new Function('return ' + content)();
+                            delete this.content;
+                            this.content = content;
+                            return content;
+                        },
+                    },
+                },
+            },
+            bol_yuedan: {
+                audio: 'pingjian2.mp3',
+                trigger: { global: 'roundStart' },
+                filter(event, player) {
+                    return game.roundNumber % 4 === 0;
+                },
+                forced: true,
+                content() {
+                    if (!_status.characterlist) lib.skill.bol_pinjian.initList();
+                    _status.characterlist.randomSort();
+                    game.log(player, '洗切了', '#g武将牌堆');
+                    game.delayx();
+                },
+                ai: { combo: 'bol_pinjian' },
+            },
             //闪闪
             bol_shanshan_skill: {
                 trigger: { target: 'useCardToBefore', player: 'phaseJudge' },
@@ -9839,7 +9965,7 @@ const packs = function () {
         },
         translate: {
             CLongZhou: '龙舟武将',
-            CZHengHuo: '杂技团',
+            CZhengHuo: '杂技团',
             Chuodong: '<span style="font-family: yuanli">名人堂前言：</span>' +
                 '<br><span style="font-family: yuanli">萌新特设，旨在纪念在萌新的身</span>' +
                 '<br><span style="font-family: yuanli">边对活动武将群聊发展起到重要</span>' +
@@ -10298,6 +10424,12 @@ const packs = function () {
             bilibili_zhangcai: '彰才',
             bilibili_zhangcai_info: '当你获得牌后，你可以使用其中一张牌（无距离和次数限制），然后根据你本局游戏以此法使用过的花色数视为拥有对应技能：≥1，〖蟨蛮〗；≥2，〖鹣蛮〗；≥3，〖傲才〗；≥4，〖恃才〗。',
             bilibili_zhangcai_append: '<span style="font-family:yuanli"><li>憋笑ing<br><li>seven!seven!</span>',
+            bol_xushao: '牢许劭',
+            bol_xushao_prefix: '牢',
+            bol_pinjian: '品鉴',
+            bol_pinjian_info: '每回合限一次，你可以于合适的时机发动武将牌堆顶四张牌中的一个技能并将这四张武将牌置入武将牌堆底。',
+            bol_yuedan: '月旦',
+            bol_yuedan_info: '一轮游戏开始时，若当前游戏轮数为4的倍数，则你洗切武将牌堆。',
         },
     };
     for (var i in huodongcharacter.character) {

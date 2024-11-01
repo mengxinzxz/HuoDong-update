@@ -12,12 +12,12 @@ game.bolShowNewPack = function () {
 	//更新告示
 	var HuoDong_update = [
 		'/setPlayer/',
-		'复活微信标陆逊',
+		'复活微信标陆逊、OL神典韦',
 		'To be continued...',
 	];
 	//更新武将
 	var HuoDong_players = [
-		'wechat_luxun',
+		'wechat_luxun', 'ol_shen_dianwei',
 	];
 	//加载
 	var dialog = ui.create.dialog(
