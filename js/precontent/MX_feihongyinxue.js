@@ -2567,11 +2567,11 @@ const packs = function () {
                 audio: 'qiexie',
                 inherit: 'qiexie',
                 getList: new Map([
-                    [2, ['ol_sb_guanyu', 'ol_jiangwei']],
-                    [3, ['hansui', 'clan_xuncan', 'yadan']],
-                    [5, ['re_huangzhong', 're_xiahouyuan']],
-                    [4, ['guanyu', 'zhangfei', 'zhaoyun', 'machao', 'xuzhu', 'lvbu', 'lvmeng', 'daqiao', 'zhugeliang']],
-                    [3, ['huangyueying', 'liubei', 'sunquan', 'caocao', 'ganning', 'huanggai', 'zhangliao', 'xiahoudun', 'simayi', 'luxun', 'zhouyu', 'diaochan']],
+                    [1, ['ol_sb_guanyu', 'ol_jiangwei']],
+                    [2, ['hansui', 'clan_xuncan', 'yadan']],
+                    [3, ['re_huangzhong', 're_xiahouyuan']],
+                    [5, ['guanyu', 'zhangfei', 'zhaoyun', 'machao', 'xuzhu', 'lvbu', 'lvmeng', 'daqiao', 'zhugeliang']],
+                    [4, ['huangyueying', 'liubei', 'sunquan', 'caocao', 'ganning', 'huanggai', 'zhangliao', 'xiahoudun', 'simayi', 'luxun', 'zhouyu', 'diaochan']],
                 ]),
                 content: function () {
                     'step 0'
@@ -2596,8 +2596,8 @@ const packs = function () {
                                     }
                                 }
                                 return limits;
-                            }, []).flat();
-                            if (name.length) list.push(name.randomGet());
+                            }, []);
+                            if (name.length) list.push(name.randomGet().randomGet());
                             else break;
                         }
                         var num = player.countEmptySlot(1);
