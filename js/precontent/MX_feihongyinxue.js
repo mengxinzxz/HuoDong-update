@@ -2569,8 +2569,9 @@ const packs = function () {
                 getList: new Map([
                     [2, ['ol_sb_guanyu', 'ol_jiangwei']],
                     [3, ['hansui', 'clan_xuncan', 'yadan']],
-                    [4, ['re_huangzhong', 're_xiahouyuan']],
-                    [4, ['guanyu', 'zhangfei', 'zhaoyun', 'machao', 'xuzhu', 'lvbu', 'lvmeng', 'daqiao', 'zhugeliang', 'huangyueying', 'liubei', 'sunquan', 'caocao', 'ganning', 'huanggai', 'zhangliao', 'xiahoudun', 'simayi', 'luxun', 'zhouyu', 'diaochan']],
+                    [5, ['re_huangzhong', 're_xiahouyuan']],
+                    [4, ['guanyu', 'zhangfei', 'zhaoyun', 'machao', 'xuzhu', 'lvbu', 'lvmeng', 'daqiao', 'zhugeliang']],
+                    [3, ['huangyueying', 'liubei', 'sunquan', 'caocao', 'ganning', 'huanggai', 'zhangliao', 'xiahoudun', 'simayi', 'luxun', 'zhouyu', 'diaochan']],
                 ]),
                 content: function () {
                     'step 0'
