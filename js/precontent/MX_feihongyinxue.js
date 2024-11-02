@@ -2567,10 +2567,10 @@ const packs = function () {
                 audio: 'qiexie',
                 inherit: 'qiexie',
                 getList: new Map([
-                    [1, ['ol_sb_guanyu', 'ol_jiangwei']],
-                    [2, ['hansui', 'clan_xuncan', 'yadan']],
-                    [5, ['re_huangzhong', 're_xiahouyuan']],
-                    [10, ['guanyu', 'zhangfei', 'zhaoyun', 'machao', 'xuzhu', 'lvbu', 'lvmeng', 'daqiao', 'zhugeliang', 'huangyueying', 'liubei', 'sunquan', 'caocao', 'ganning', 'huanggai', 'zhangliao', 'xiahoudun', 'simayi', 'luxun', 'zhouyu', 'diaochan']],
+                    [2, ['ol_sb_guanyu', 'ol_jiangwei']],
+                    [3, ['hansui', 'clan_xuncan', 'yadan']],
+                    [4, ['re_huangzhong', 're_xiahouyuan']],
+                    [4, ['guanyu', 'zhangfei', 'zhaoyun', 'machao', 'xuzhu', 'lvbu', 'lvmeng', 'daqiao', 'zhugeliang', 'huangyueying', 'liubei', 'sunquan', 'caocao', 'ganning', 'huanggai', 'zhangliao', 'xiahoudun', 'simayi', 'luxun', 'zhouyu', 'diaochan']],
                 ]),
                 content: function () {
                     'step 0'
@@ -2578,29 +2578,26 @@ const packs = function () {
                         lib.skill.pingjian.initList();
                         _status.characterlist.randomSort();
                     }
-                    var names = _status.characterlist.slice();
-                    if (!names.length) event.finish();
+                    if (!_status.characterlist.length) event.finish();
                     else {
                         let list = [], filter = i => {
                             if (!(_status.characterlist.includes(i) && !list.includes(i))) return false;
                             return !['guanyu', 'zhangfei'].includes(i) || !list.includes(i === 'guanyu' ? 'zhangfei' : 'guanyu');
                         };
                         while (list.length < 5) {
-                            let limits = [], map = lib.skill.fh_qiexie.getList.entries().reduce((map, list) => {
-                                if (list[1].some(filter)) {
-                                    limits.push(list[0]);
-                                    map[list[0]] = list[1].filter(filter);
+                            let name = lib.skill.fh_qiexie.getList.entries().reduce((limits, listx) => {
+                                let names = listx[1].filter(filter);
+                                if (names.length) {
+                                    let limit = parseInt(listx[0]);
+                                    while (limit > 0) {
+                                        limit--;
+                                        limits.push(names);
+                                    }
                                 }
-                                return map;
-                            }, {});
-                            if (!Object.keys(map).length) break;
-                            let sum = limits.reduce((i, j) => i + j, 0), limit = [0, ...limits.map(num => num / sum), 1], rand = Math.random();
-                            for (let i = 1; i < limit.length - 2; i++) {
-                                if (rand >= limit[i - 1] && rand <= limit[i]) {
-                                    list.push(map[limits[i]].filter(filter).randomGet());
-                                    break;
-                                }
-                            }
+                                return limits;
+                            }, []).flat();
+                            if (name.length) list.push(name.randomGet());
+                            else break;
                         }
                         var num = player.countEmptySlot(1);
                         player.chooseButton([
@@ -2654,7 +2651,6 @@ const packs = function () {
                 },
                 content: function () {
                     player.chooseToUse(card => {
-                        var player = _status.event.player;
                         if (get.cardNameLength(card) != lib.skill.dcqinshen.getNum()) return false;
                         return lib.filter.cardEnabled(card, _status.event.player, _status.event);
                     }, '###' + get.prompt('fh_weidang') + '###使用一张字数为' + lib.skill.dcqinshen.getNum() + '的牌').logSkill = 'fh_weidang';
