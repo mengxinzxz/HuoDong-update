@@ -2567,11 +2567,12 @@ const packs = function () {
                 audio: 'qiexie',
                 inherit: 'qiexie',
                 getList: new Map([
-                    [1, ['ol_sb_guanyu', 'ol_jiangwei']],
-                    [2, ['hansui', 'clan_xuncan', 'yadan']],
-                    [3, ['re_huangzhong', 're_xiahouyuan']],
+                    [1, ['ol_sb_guanyu']],
+                    [2, ['clan_xuncan', 'ol_jiangwei']],
+                    [3, ['hansui', 'yadan']],
+                    [4, ['re_huangzhong', 're_xiahouyuan']],
                     [5, ['guanyu', 'zhangfei', 'zhaoyun', 'machao', 'xuzhu', 'lvbu', 'lvmeng', 'daqiao', 'zhugeliang']],
-                    [4, ['huangyueying', 'liubei', 'sunquan', 'caocao', 'ganning', 'huanggai', 'zhangliao', 'xiahoudun', 'simayi', 'luxun', 'zhouyu', 'diaochan']],
+                    [5, ['huangyueying', 'liubei', 'sunquan', 'caocao', 'ganning', 'huanggai', 'zhangliao', 'xiahoudun', 'simayi', 'luxun', 'zhouyu', 'diaochan']],
                 ]),
                 content: function () {
                     'step 0'
