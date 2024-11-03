@@ -8350,6 +8350,7 @@ const packs = function () {
                 enable: 'phaseUse',
                 usable: 1,
                 filter(event, player) {
+                    if (player.countMark('wechatmoulvenum') < 2) return false;
                     return game.hasPlayer(current => get.info('wechatfenli').filterTarget(null, player, current));
                 },
                 selectTarget: [1, 2],
