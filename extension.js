@@ -12,13 +12,15 @@ game.bolShowNewPack = function () {
 	//更新告示
 	var HuoDong_update = [
 		'/setPlayer/',
+		'整合@xizifu 的Pull Requests',
 		'增加扩展内置游戏播报样式',
 		'复活微信标陆逊、OL神典韦',
+		'添加武将欢杀伏完、玄蝶桓温',
 		'To be continued...',
 	];
 	//更新武将
 	var HuoDong_players = [
-		'wechat_luxun', 'ol_shen_dianwei',
+		'wechat_luxun', 'ol_shen_dianwei', 'Mbaby_fuwan', 'bfake_huanwen',
 	];
 	//加载
 	var dialog = ui.create.dialog(
