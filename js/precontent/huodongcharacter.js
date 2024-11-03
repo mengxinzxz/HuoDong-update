@@ -8,12 +8,12 @@ const packs = function () {
         characterSort: {
             huodongcharacter: {
                 CLongZhou: ['lz_sufei', 'lz_tangzi', 'lz_liuqi', 'lz_huangquan'],
-                CZhengHuo: ['bol_xushao','bilibili_zhengxuan', 'bilibili_sp_xuyou', 'old_zuoci'],
+                CZhengHuo: ['bol_xushao', 'bilibili_zhengxuan', 'bilibili_sp_xuyou', 'old_zuoci'],
                 Chuodong: ['bilibili_shengxunyu', 'bilibili_Firewin', 'bilibili_jinglingqiu', 'bilibili_suixingsifeng', 'bilibili_Emptycity', 'bilibili_thunderlei', 'bilibili_lonelypatients', 'bilibili_ningjingzhiyuan', 'bilibili_xizhicaikobe'],
                 Cothers: ['bilibili_wangtao', 'bilibili_wangyue', 'bilibili_x_wangtao', 'bilibili_x_wangyue', 'bilibili_xushao', 'bilibili_shen_guojia', 'bilibili_re_xusheng', 'bilibili_kuangshen04', 'bilibili_adong', 'bilibili_zhangrang', 'bilibili_litiansuo', 'decade_huangwudie', 'bilibili_huanggai', 'bilibili_ekeshaoge', 'bilibili_guanning', 'bilibili_wangwang', 'bilibili_zhouxiaomei', 'diy_lvmeng'],
                 CDanJi: ['DJ_caiyang', 'DJ_pujing', 'DJ_huban'],
                 CSCS: ['biliscs_shichangshi', 'biliscs_zhangrang', 'biliscs_zhaozhong', 'biliscs_sunzhang', 'biliscs_bilan', 'biliscs_xiayun', 'biliscs_hankui', 'biliscs_lisong', 'biliscs_duangui', 'biliscs_guosheng', 'biliscs_gaowang'],
-                CXuanDie: ['bfake_jiananfeng', 'bfake_shen_zhangjiao', 'bfake_shen_zhangfei', 'bfake_shen_jiaxu'],
+                CXuanDie: ['bfake_jiananfeng', 'bfake_shen_zhangjiao', 'bfake_shen_zhangfei', 'bfake_shen_jiaxu', 'bfake_huanwen'],
             },
         },
         character: {
@@ -73,6 +73,7 @@ const packs = function () {
             bfake_shen_jiaxu: ['male', 'shen', 3, ['boljiandai', 'bolfangcan', 'boljuemei', 'bolluoshu'], ['qun', 'character:le_shen_jiaxu']],
             bfake_shen_zhangfei: ['male', 'shen', 5, ['bolbaohe', 'bolrenhai', 'boltiandong'], ['shu', 'character:shen_zhangfei']],
             bfake_shen_zhangjiao: ['male', 'shen', 3, ['bolyifu', 'boltianjie'], ['qun', 'character:shen_zhangjiao']],
+            bfake_huanwen: ['male', 'jin', 3, ['bolyuba', 'bolxingjiang']],
             //憋笑--牢戏专属
             smile1: ['', '', 0, [], ['unseen', 'forbidai', ((lib.device || lib.node) ? 'ext:' : 'db:extension-') + '活动武将/image/default/smile1.jpg']],
             smile2: ['', '', 0, [], ['unseen', 'forbidai', ((lib.device || lib.node) ? 'ext:' : 'db:extension-') + '活动武将/image/default/smile2.jpg']],
@@ -9465,6 +9466,111 @@ const packs = function () {
                     },
                 },
             },
+            // 桓温
+            bolyuba: {
+                trigger: {
+                    player: 'damageEnd',
+                    source: 'damageSource',
+                },
+                filter(event, player) {
+                    const num = player.getAllHistory('useSkill', evt => evt.skill == 'bolyuba').length + 1;
+                    return player.countCards('h') < num;
+                },
+                async content(event, trigger, player) {
+                    const num = player.getAllHistory('useSkill', evt => evt.skill == event.name).length;
+                    await player.drawTo(num);
+                    const skills = player.getSkills(null, false, false).filter(skill => {
+                        const info = get.info(skill);
+                        return info && !info.charlotte;
+                    });
+                    const list = [];
+                    for (const skill of skills) {
+                        list.push([
+                            skill,
+                            '<div class="popup text" style="width:calc(100% - 10px);display:inline-block"><div class="skill">【' + get.translation(skill) + '】</div><div>' + lib.translate[skill + '_info'] + '</div></div>',
+                        ])
+                    }
+                    const forced = !player.countCards('he', card => get.number(card) == num);
+                    if (!skills.length && forced) return;
+                    const result = await player.chooseButton([
+                        `###欲罢###失去一个技能，或点“取消”弃置一张点数为${num}的牌`,
+                        [list, 'textbutton'],
+                    ]).set('displayIndex', false).set('ai', button => {
+                        const { link: skill } = button, { player, num } = get.event();
+                        const info = get.info(skill);
+                        if (info?.ai?.neg || info?.ai?.halfneg) return 3;
+                        if (player.hasCard(card => get.number(card) == num)) return 0;
+                        if (skill.startsWith('bolhuanwen_')) return 4;
+                        return 1;
+                    }).set('num', num).set('forced', forced).forResult();
+                    if (result.bool) await player.removeSkills(result.links);
+                    else await player.chooseToDiscard('he', true, card => {
+                        return get.number(card) == get.event('num');
+                    }, `请弃置一张点数为${num}的牌`).set('num', num);
+                },
+            },
+            bolxingjiang: {
+                enable: 'phaseUse',
+                usable: 1,
+                filter(event, player) {
+                    return player.hasCard(card => get.info('bolxingjiang').filterCard(card, player), 'he');
+                },
+                filterCard(card, player) {
+                    if (!['basic', 'trick'].includes(get.type(card))) return false;
+                    if (ui.selected.cards.length && ui.selected.cards[0].name != card.name) return false;
+                    const cards = player.getCards('he');
+                    return cards.includes(card) && cards.filter(i => i.name == card.name).length > 1;
+                },
+                selectCard: [2, Infinity],
+                position: 'he',
+                complexCard: true,
+                check(card) {
+                    const player = get.event('player');
+                    const value = function (card, player) {
+                        const num = player.getUseValue(card);
+                        return num > 0 ? num + 1 / (get.value(card) || 0.5) + 7 : 7 - get.value(card);
+                    };
+                    if (ui.selected.cards.length && value(card, player) < value(ui.selected.cards[0], player)) return 20 - get.value(card);
+                    return 20 - get.value(card);
+                },
+                async content(event, trigger, player) {
+                    const name = get.name(event.cards[0]);
+                    const skill = `bolhuanwen_${name}`;
+                    const skillName = `行将•${get.translation(name)}`;
+                    const skillContent = {
+                        enable: 'chooseToUse',
+                        usable: 1,
+                        viewAs: {
+                            name: name,
+                            isCard: true,
+                        },
+                        filterCard: () => false,
+                        selectCard: -1,
+                        prompt: `行将：你可以视为使用一张【${get.translation(name)}】`,
+                    };
+                    const skillInfo = `每回合限一次，你可以视为一张【${get.translation(name)}】。`;
+                    if (player.hasSkill(skill, null, null, false)) return;
+                    game.broadcastAll((skill, skillName, skillInfo, skillContent) => {
+                        lib.translate[skill] = skillName;
+                        lib.translate[`${skill}_info`] = skillInfo;
+                        lib.skill[skill] = skillContent;
+                    }, skill, skillName, skillInfo, skillContent);
+                    game.finishSkill(skill);
+                    await player.addSkills(skill);
+                },
+                ai: {
+                    order(item, player) {
+                        let cards = player.getCards('he', card => get.info('bolxingjiang').filterCard(card, player) && player.getUseValue(card) > 0);
+                        cards = cards.filter(card => cards.filter(i => i.name == card.name).length > 1);
+                        if (!cards.length) return 1;
+                        cards.sort((a, b) => get.order(b) - get.order(a));
+                        return get.order(cards[0]) - 0.001;
+                    },
+                    result: {
+                        player: 1,
+                    },
+                },
+            },
             //宁静致远
             bilibili_xiezhi: {
                 trigger: { global: 'phaseBegin' },
@@ -10391,6 +10497,12 @@ const packs = function () {
             bolyifu_info: '转换技。①一名角色可以将一张基本牌当作{天，【闪电】；地，【随机应变】；人，【铁索连环】}使用。②当你成为〖蚁附①〗转化的牌的目标后，你摸一张牌。',
             boltianjie: '天劫',
             boltianjie_info: '锁定技。①一名角色的【闪电】生效时，取消之，然后你对其或其上家或下家造成1点雷属性伤害。②一名角色的【闪电】判定牌生效后，若判定牌不为【闪】，则令其继续进行【闪电】判定。',
+            bfake_huanwen: '蝶设桓温',
+            bfake_huanwen_prefix: '蝶设',
+            bolyuba: '行将',
+            bolyuba_info: '当你造成或受到伤害后，你可以将手牌摸至X张牌（X为此技能发动的次数+1），然后弃置一张点数为X的牌或失去一个技能。',
+            bolxingjiang: '行将',
+            bolxingjiang_info: '出牌阶段限一次。你可以弃置至少两张同名基本牌或普通锦囊牌，若如此做，你获得一个技能名和【】中为此牌名，技能效果为“每回合限一次，你可以使用一张【】”的技能。',
             bilibili_ningjingzhiyuan: '宁静致远',
             bilibili_xiezhi: '协治',
             bilibili_xiezhi_info: '锁定技，其他角色的回合开始时，你选择X次牌的类别，其本回合至多使用选择类别次数的对应类别的牌（X为其手牌数且至少为3，仅限选择基本、锦囊、装备且每种类别至少选择一次）。',
