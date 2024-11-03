@@ -13,10 +13,10 @@ import huodongcharacter from './huodongcharacter.js';
 
 export function precontent(bilibilicharacter) {
     //判断是否有XX扩展
-    game.TrueHasExtension = game.TrueHasExtension || function (ext) {
+    game.TrueHasExtension = function (ext) {
         return lib.config.extensions && lib.config.extensions.includes(ext);
     };
-    game.HasExtension = game.HasExtension || function (ext) {
+    game.HasExtension = function (ext) {
         return game.TrueHasExtension(ext) && lib.config['extension_' + ext + '_enable'];
     };
     //阵亡配音
@@ -74,17 +74,17 @@ export function precontent(bilibilicharacter) {
             'step 1'
             event.trigger('roundAfter');//After时机常用于效果清除
         },
-    };
-    //闪闪节
-    lib.arenaReady.push(() => {
-        if (lib.config.extension_活动武将_HD_shanshan) {
-            for (var i = 0; i < lib.card.list.length; i++) {
-                if (lib.card.list[i][2] != 'shan' || lib.card.list[i][0] != 'diamond') continue;
-                if ([5, 6, 7].includes(lib.card.list[i][1])) lib.card.list[i][2] = 'bol_shanshan';
+    },
+        //闪闪节
+        lib.arenaReady.push(() => {
+            if (lib.config.extension_活动武将_HD_shanshan) {
+                for (var i = 0; i < lib.card.list.length; i++) {
+                    if (lib.card.list[i][2] != 'shan' || lib.card.list[i][0] != 'diamond') continue;
+                    if ([5, 6, 7].includes(lib.card.list[i][1])) lib.card.list[i][2] = 'bol_shanshan';
+                }
+                game.log('三张', '#g【闪闪】', '已加入牌堆');
             }
-            game.log('三张', '#g【闪闪】', '已加入牌堆');
-        }
-    });
+        });
     //合纵抗秦、官渡之战模式特殊规则
     lib.skill._hzkq_shijian = {
         charlotte: true,
@@ -351,160 +351,146 @@ export function precontent(bilibilicharacter) {
         ruleSkill: true,
         forceDie: true,
         trigger: { global: 'gameDrawAfter' },
-        filter: function (event, player) {
-            game.TrueHasExtension = game.TrueHasExtension || function (ext) {
+        filter: function (event, player, name) {
+            game.TrueHasExtension = function (ext) {
                 return lib.config.extensions && lib.config.extensions.includes(ext);
             };
-            game.HasExtension = game.HasExtension || function (ext) {
+            game.HasExtension = function (ext) {
                 return game.TrueHasExtension(ext) && lib.config['extension_' + ext + '_enable'];
             };
-            const config = lib.config.extension_活动武将_HDfightAudio;
-            return config && config !== 'off' && player == game.me && (!game.HasExtension('十周年UI') || !lib.config.extension_十周年UI_gameAnimationEffect);
+            return lib.config.extension_活动武将_HDfightAudio && player == game.me && (!game.HasExtension('十周年UI') || !lib.config.extension_十周年UI_gameAnimationEffect);
         },
         direct: true,
         firstDo: true,
         priority: Infinity,
         content: function () {
             player.$fullscreenpop('游戏开始', 'fire');
-            game.broadcastAll(function (config) {
-                if (lib.config.background_audio) game.playAudio('..', 'extension', '活动武将/audio/effect', 'bilibili_OpenTheGame' + (config === 'default' ? '' : ('_' + config)));
-            }, lib.config.extension_活动武将_HDfightAudio);
+            game.broadcastAll(function () {
+                if (lib.config.background_audio) game.playAudio('..', 'extension', '活动武将/audio/effect', 'bilibili_OpenTheGame');
+            });
         },
-    };
-    lib.skill._bilibili_miaoshou = {
-        charlotte: true,
-        ruleSkill: true,
-        trigger: { global: 'xmiaoshou' },
-        filter: function (event, player) {
-            const config = lib.config.extension_活动武将_HDfightAudio;
-            return config && config !== 'off' && event.player == player;
+    },
+        lib.skill._bilibili_miaoshou = {
+            charlotte: true,
+            ruleSkill: true,
+            trigger: { global: 'xmiaoshou' },
+            filter: function (event, player) {
+                return lib.config.extension_活动武将_HDfightAudio && event.player == player;
+            },
+            direct: true,
+            firstDo: true,
+            forceDie: true,
+            content: function () {
+                trigger.player.$fullscreenpop('妙手回春', 'water');
+                game.broadcastAll(function () {
+                    if (lib.config.background_audio) game.playAudio('..', 'extension', '活动武将/audio/effect', 'bilibili_miaoshou');
+                });
+            },
         },
-        direct: true,
-        firstDo: true,
-        forceDie: true,
-        content: function () {
-            const config = lib.config.extension_活动武将_HDfightAudio;
-            trigger.player.$fullscreenpop({ 'default': '妙手回春', 'decade': '青囊济世', 'ol': '悬壶济世' }[config], 'water');
-            game.broadcastAll(function (config) {
-                if (lib.config.background_audio) game.playAudio('..', 'extension', '活动武将/audio/effect', 'bilibili_miaoshou' + (config === 'default' ? '' : ('_' + config)));
-            }, config);
+        lib.skill._bilibili_yishu = {
+            charlotte: true,
+            ruleSkill: true,
+            trigger: { global: 'xyishu' },
+            filter: function (event, player) {
+                return lib.config.extension_活动武将_HDfightAudio && event.player == player;
+            },
+            direct: true,
+            firstDo: true,
+            forceDie: true,
+            content: function () {
+                trigger.player.$fullscreenpop('医术高超', 'wood');
+                game.broadcastAll(function () {
+                    if (lib.config.background_audio) game.playAudio('..', 'extension', '活动武将/audio/effect', 'bilibili_yishu');
+                });
+            },
         },
-    };
-    lib.skill._bilibili_yishu = {
-        charlotte: true,
-        ruleSkill: true,
-        trigger: { global: 'xyishu' },
-        filter: function (event, player) {
-            const config = lib.config.extension_活动武将_HDfightAudio;
-            return config && config !== 'off' && event.player == player;
-        },
-        direct: true,
-        firstDo: true,
-        forceDie: true,
-        content: function () {
-            const config = lib.config.extension_活动武将_HDfightAudio;
-            trigger.player.$fullscreenpop({ 'default': '医术高超', 'decade': '神医妙手', 'ol': '杏林春满' }[config], 'water');
-            game.broadcastAll(function (config) {
-                if (lib.config.background_audio) game.playAudio('..', 'extension', '活动武将/audio/effect', 'bilibili_yishu' + (config === 'default' ? '' : ('_' + config)));
-            }, config);
-        },
-    };
-    lib.skill._recovertrigger = {
-        charlotte: true,
-        ruleSkill: true,
-        trigger: {
-            player: 'phaseEnd',
-            global: 'recoverEnd',
-        },
-        filter: function (event, player) {
-            if (event.name === 'phase') return player.storage.jstxyishugaochao;
-            if (_status.currentPhase === player) return true;
-            return event.player != event.source && event.source == player;
-        },
-        direct: true,
-        firstDo: true,
-        forceDie: true,
-        content: function () {
-            if (trigger.name === 'phase') delete player.storage.jstxyishugaochao;
-            else if (_status.currentPhase !== player) _status.event.trigger('xmiaoshou');
-            else {
-                if (player.storage.jstxyishugaochao == undefined) player.storage.jstxyishugaochao = trigger.num;
-                else player.storage.jstxyishugaochao += trigger.num;
-                if (player.storage.jstxyishugaochao >= 3) {
-                    player.storage.jstxyishugaochao -= 3;
-                    _status.event.trigger('xyishu');
+        lib.skill._recovertrigger = {
+            charlotte: true,
+            ruleSkill: true,
+            trigger: { global: 'recoverEnd' },
+            filter: function (event, player) {
+                if (_status.currentPhase != player) {
+                    return lib.config.extension_活动武将_HDfightAudio && event.player != event.source && event.source == player;
                 }
-            }
-        },
-    };
-    lib.skill._jishaAudio = {
-        charlotte: true,
-        ruleSkill: true,
-        trigger: { global: 'dieBegin' },
-        filter: function (event, player) {
-            const config = lib.config.extension_活动武将_HDfightAudio;
-            return config && config !== 'off' && event.source == player && event.player != player;
-        },
-        direct: true,
-        firstDo: true,
-        content: function () {
-            'step 0'
-            if (!player.storage.bilibili_kill) player.storage.bilibili_kill = 0;
-            player.storage.bilibili_kill++;
-            'step 1'
-            let config = lib.config.extension_活动武将_HDfightAudio;
-            config = config = 'default' ? lib.config.extension_活动武将_HDkillAudio : config;
-            let list;
-            switch (config) {
-                case 'new':
-                    list = ['一破·卧龙出山', '双连·一战成名', '三连·举世皆惊', '四连·天下无敌', '五连·诛天灭地', '六连·诛天灭地', '七连·诛天灭地'];
-                    break;
-                case 'decade':
-                    list = ['首破<br>一骑当先', '连破<br>世无双', '三破<br>冠三军', '四破<br>震诸侯', '五破<br>天下无敌', '六破<br>统九州乾坤', '七破<br>千古第一人'];
-                    break;
-                case 'ol':
-                    list = ['一破·龙战于野', '二连<br>飞龙在天', '三连<br>亢龙有悔', '四连<br>天下无敌', '五连<br>威震天下', '六连<br>天崩地裂', '七连<br>毁天灭地'];
-                    break;
-                default:
-                    list = ['一血·卧龙出山', '双杀·一战成名', '三杀·举世皆惊', '四杀·天下无敌', '五杀·诛天灭地', '六杀·癫狂杀戮', '无双·万军取首'];
-                    break;
-            }
-            var num = Math.min(7, player.storage.bilibili_kill);
-            player.$fullscreenpop(list[num - 1], ['water', 'wood', 'thunder', 'fire'][Math.min(3, num - 1)]);
-            game.broadcastAll(function (num, config) {
-                if (lib.config.background_audio) {
-                    game.playAudio('..', 'extension', '活动武将/audio/effect', 'bilibili_jisha' + num + (config === 'default' ? '' : ('_' + config)));
+                return true;
+            },
+            direct: true,
+            firstDo: true,
+            forceDie: true,
+            content: function () {
+                if (_status.currentPhase != player) _status.event.trigger('xmiaoshou');
+                else {
+                    if (player.storage.jstxyishugaochao == undefined) player.storage.jstxyishugaochao = trigger.num;
+                    else player.storage.jstxyishugaochao += trigger.num;
+                    if (player.storage.jstxyishugaochao >= 3) {
+                        player.storage.jstxyishugaochao -= 3;
+                        _status.event.trigger('xyishu');
+                    }
                 }
-            }, num, config);
+            },
+            group: '_recovertrigger_Delete',
+            subSkill: {
+                Delete: {
+                    charlotte: true,
+                    ruleSkill: true,
+                    trigger: { player: 'phaseEnd' },
+                    direct: true,
+                    lastDo: true,
+                    forceDie: true,
+                    content: function () {
+                        delete player.storage.jstxyishugaochao;
+                    },
+                },
+            },
         },
-    };
-    lib.skill._bilibili_HighDamageAudio = {
-        charlotte: true,
-        ruleSkill: true,
-        trigger: { source: 'damageBegin4' },
-        filter: function (event, player) {
-            const config = lib.config.extension_活动武将_HDfightAudio;
-            return ['decade', 'default'].includes(config) && event.player != player && event.num >= 3;
+        lib.skill._jishaAudio = {
+            charlotte: true,
+            ruleSkill: true,
+            trigger: { global: 'dieBegin' },
+            filter: function (event, player) {
+                return lib.config.extension_活动武将_HDkillAudio != 'off' && event.source == player && event.player != player;
+            },
+            direct: true,
+            firstDo: true,
+            content: function () {
+                'step 0'
+                if (!player.storage.bilibili_kill) player.storage.bilibili_kill = 0;
+                player.storage.bilibili_kill++;
+                'step 1'
+                var list = ['一血·卧龙出山', '双杀·一战成名', '三杀·举世皆惊', '四杀·天下无敌', '五杀·诛天灭地', '六杀·癫狂杀戮', '无双·万军取首'];
+                if (lib.config.extension_活动武将_HDkillAudio == 'new') list = ['一破·卧龙出山', '双连·一战成名', '三连·举世皆惊', '四连·天下无敌', '五连·诛天灭地', '六连·诛天灭地', '七连·诛天灭地'];
+                var num = Math.min(7, player.storage.bilibili_kill);
+                player.$fullscreenpop(list[num - 1], ['water', 'wood', 'thunder', 'fire'][Math.min(3, num - 1)]);
+                game.broadcastAll(function (num, bool) {
+                    if (lib.config.background_audio) game.playAudio('..', 'extension', '活动武将/audio/effect', 'bilibili_jisha' + num + (bool ? '_new' : ''));
+                }, num, lib.config.extension_活动武将_HDkillAudio == 'new');
+            },
         },
-        direct: true,
-        lastDo: true,
-        priority: -Infinity,
-        content: function () {
-            const config = lib.config.extension_活动武将_HDfightAudio === 'decade';
-            if (trigger.num == 3) {
-                player.$fullscreenpop(config ? '万夫莫敌' : '癫狂屠戮', 'fire');
-                game.broadcastAll(function (config) {
-                    if (lib.config.background_audio) game.playAudio('..', 'extension', '活动武将/audio/effect', 'bilibili_diankuang' + (config ? '_decade' : ''));
-                }, config);
-            }
-            else {
-                player.$fullscreenpop(config ? '神威震乾坤' : '无双<br>万军取首', 'fire');
-                game.broadcastAll(function (config) {
-                    if (lib.config.background_audio) game.playAudio('..', 'extension', '活动武将/audio/effect', 'bilibili_wanjun' + (config ? '_decade' : ''));
-                }, config);
-            }
-        },
-    };
+        lib.skill._bilibili_HighDamageAudio = {
+            charlotte: true,
+            ruleSkill: true,
+            trigger: { source: 'damageBegin4' },
+            filter: function (event, player) {
+                return lib.config.extension_活动武将_HDfightAudio && event.player != player && event.num >= 3;
+            },
+            direct: true,
+            lastDo: true,
+            priority: -Infinity,
+            content: function () {
+                if (trigger.num == 3) {
+                    player.$fullscreenpop('癫狂屠戮', 'fire');
+                    game.broadcastAll(function () {
+                        if (lib.config.background_audio) game.playAudio('..', 'extension', '活动武将/audio/effect', 'bilibili_diankuang');
+                    });
+                }
+                else {
+                    player.$fullscreenpop('无双<br>万军取首', 'fire');
+                    game.broadcastAll(function () {
+                        if (lib.config.background_audio) game.playAudio('..', 'extension', '活动武将/audio/effect', 'bilibili_wanjun');
+                    });
+                }
+            },
+        };
     //skillAnimation技能配音播放
     var originTrySkillAnimate = lib.element.player.trySkillAnimate;
     lib.element.player.trySkillAnimate = function (name, popname, checkShow) {
