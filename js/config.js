@@ -271,30 +271,36 @@ export let config = {
 		name: '<li>关于特效',
 	},
 	HDdamageAudio: {
-		name: '受击音效',
-		intro: '打开此选项后，受到属性伤害/受伤失去护甲/失去体力上限均会播放特定音效（实时生效）',
+		name: '失去上限音效',
+		intro: '打开此选项后，失去体力上限会播放特定音效（实时生效）',
 		init: true,
 	},
 	HDfightAudio: {
-		name: '游戏播报',
+		name: '各项游戏播报',
 		intro: '游戏播报包括以下内容（实时生效）' +
-			'<br><li>游戏开始播报(让步十周年UI)' +
+			'<br><li>游戏开始播报（让步十周年UI）' +
 			'<br><li>癫狂屠戮，万军取首播报' +
-			'<br><li>医术高超，妙手回春播报',
+			'<br><li>击杀角色，回复体力播报',
 		init: true,
-	},
-	HDkillAudio: {
-		name: '击杀播报',
-		intro: '击杀角色时播放对应配音',
-		init: 'old',
+		init: 'default',
 		item: {
 			off: '关闭',
-			old: '旧版',
+			default: '手杀',
+			ol: 'OL',
+			decade: '十周年',
+		},
+	},
+	HDkillAudio: {
+		name: '手杀击杀播报选择',
+		intro: '使用手杀游戏播报时，选择新旧版本',
+		init: 'default',
+		item: {
+			default: '旧版',
 			new: '新版',
 		},
 	},
 	HDskillAnimateAudio: {
-		name: 'skillAnimation技能音效',
+		name: 'skillAnimation音效',
 		intro: '打开此选项后，含skillAnimation标签的技能发动时将会播放对应的音效',
 		init: true,
 	},

@@ -12,6 +12,7 @@ game.bolShowNewPack = function () {
 	//更新告示
 	var HuoDong_update = [
 		'/setPlayer/',
+		'增加扩展内置游戏播报样式',
 		'复活微信标陆逊、OL神典韦',
 		'To be continued...',
 	];
