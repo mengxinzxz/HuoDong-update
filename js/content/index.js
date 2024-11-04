@@ -1325,9 +1325,7 @@ export function content(config, pack) {
 	//precCI
 	//武将信息
 	//----------------孙笨の专属正名区·始----------------
-	const sunbenIntro = '孙策（175年—200年5月5日），字伯符，吴郡富春（今浙江省杭州市富阳区）人。破虏将军孙坚长子、吴大帝孙权长兄。东汉末年割据江东一带的军阀，汉末群雄之一，孙吴政权的奠基者之一。《三国演义》称其武勇犹如霸王项羽，绰号“小霸王”。孙策为继承父亲孙坚的遗业而屈事袁术。兴平二年（195年），孙策征得袁术许可，东渡长江，进攻樊能、于糜，又在当利口袭击张英。并以曲阿为据点，与扬州刺史刘繇进行决战，大败刘繇。建安元年（196年），率兵进攻会稽王朗和吴郡严白虎。建安二年（197年），袁术僭越称帝后，孙策与袁术决裂；同年夏，被朝廷任命为骑都尉，袭父爵乌程侯，兼任会稽太守。建安三年（198年），朝廷任命孙策为讨逆将军，并封为吴侯。建安四年（199年），孙策击败庐江太守刘勋及刘表部将黄祖。建安五年（200年）初，在夺取豫章郡后统一江东；同年4月，正当孙策准备发兵北上之时，在丹徒狩猎时为许贡三门客所伤，不久后身亡，年仅二十六岁。其弟孙权接掌孙策势力，并于称帝后，追谥孙策为长沙桓王。';
-	lib.characterIntro.re_sunben = sunbenIntro;
-	lib.characterIntro.sunce = sunbenIntro;
+	lib.characterIntro.re_sunben = lib.characterIntro.sunce || '';
 	//----------------孙笨の专属正名区·末----------------
 	//遗漏武将介绍补充
 	lib.characterIntro.lidian = lib.characterIntro.re_lidian;
@@ -1335,48 +1333,46 @@ export function content(config, pack) {
 
 	//precCR
 	//同名武将替换
-	lib.characterReplace.xuyou.add('bilibili_sp_xuyou');
-	lib.characterReplace.zhangzhongjing = ['zhangzhongjing', 'bol_zhangzhongjing', 'old_zhangzhongjing', 'oldx_zhangzhongjing'];
-	lib.characterReplace.zhoufei = ['zhoufei', 'old_zhoufei'];
-	lib.characterReplace.dengai.add('old_dengai');
-	lib.characterReplace.jin_yanghuiyu.add('old_yanghuiyu');
-	lib.characterReplace.shen_xunyu = ['shen_xunyu', 'old_shen_xunyu'];
-	lib.characterReplace.shen_simayi.add('old_shen_simayi');
-	lib.characterReplace.shen_taishici = ['shen_taishici', 'old_shen_taishici'];
-	lib.characterReplace.shen_sunce = ['shen_sunce', 'old_shen_sunce'];
-	lib.characterReplace.zhangqiying = ['zhangqiying', 'old_zhangqiying'];
-	lib.characterReplace.sunluyu.add('old_sunluyu');
-	lib.characterReplace.zhaoxiang.add('old_zhaoxiang');
-	lib.characterReplace.zhangyì.add('old_zhangyì');
-	lib.characterReplace.manchong.add('ol_manchong');
-	lib.characterReplace.yj_ganning.add('old_yj_ganning');
-	lib.characterReplace.ol_lusu.add('lusu');
-	lib.characterReplace.re_yuanshao.add('yuanshao');
-	lib.characterReplace.xushao = ['xushao', 'old_xushao'];
-	lib.characterReplace.old_yuanji = ['yuanji', 'old_yuanji'];
-	lib.characterReplace.zhanghe.add('old_zhanghe');
-	lib.characterReplace.zhugejin = ['zhugejin', 'old_zhugejin'];
-	lib.characterReplace.xiaoqiao.add('old_ol_xiaoqiao');
-	lib.characterReplace.xunchen.add('old_xunchen');
-	lib.characterReplace.sunshao.add('old_sp_sunshao');
-	lib.characterReplace.huaxin.addArray(['bol_sp_huaxin', 'old_sp_huaxin']);
-	lib.characterReplace.sp_kongrong = ['sp_kongrong', 'old_sp_kongrong'];
-	lib.characterReplace.dc_mifuren.add('old_sp_mifuren');
-	lib.characterReplace.liuzhang.add('old_liuzhang');
-	lib.characterReplace.zhouchu.add('old_zhouchu');
-	lib.characterReplace.ol_bianfuren = ['ol_bianfuren', 'sp_bianfuren'];
-	lib.characterReplace.sb_ganning = ['sb_ganning', 'old_sb_ganning'];
-	lib.characterReplace.zhangbao.add('old_zhangbao');
-	lib.characterReplace.jsp_guanyu.addArray(['bolx_jsp_guanyu']);
-	lib.characterReplace.lingju.add('decade_lingju');
-	lib.characterReplace.buzhi = ['decade_buzhi', 'buzhi'];
-	lib.characterReplace.yj_jushou.add('old_yj_jushou');
-	/*
-	//筛选武将同名替换
-	Object.keys(lib.characterReplace).forEach(name=>{
-	lib.characterReplace[name]=lib.characterReplace[name].filter(namex=>lib.character[namex]&&!lib.filter.characterDisabled(namex));
-	});
-	*/
+	const hdpj_characterReplace = {
+		xuyou: ['bilibili_sp_xuyou'],
+		zhangzhongjing: ['bol_zhangzhongjing', 'old_zhangzhongjing', 'oldx_zhangzhongjing'],
+		zhoufei: ['old_zhoufei'],
+		dengai: ['old_dengai'],
+		jin_yanghuiyu: ['old_yanghuiyu'],
+		shen_xunyu: ['old_shen_xunyu'],
+		shen_simayi: ['old_shen_simayi'],
+		shen_taishici: ['old_shen_taishici'],
+		shen_sunce: ['old_shen_sunce'],
+		zhangqiying: ['old_zhangqiying'],
+		sunluyu: ['old_sunluyu'],
+		zhaoxiang: ['old_zhaoxiang'],
+		zhangyì: ['old_zhangyì'],
+		manchong: ['ol_manchong'],
+		yj_ganning: ['old_yj_ganning'],
+		ol_lusu: ['lusu'],
+		re_yuanshao: ['yuanshao'],
+		xushao: ['old_xushao'],
+		old_yuanji: ['old_yuanji'],
+		zhanghe: ['old_zhanghe'],
+		zhugejin: ['old_zhugejin'],
+		xiaoqiao: ['old_ol_xiaoqiao'],
+		xunchen: ['old_xunchen'],
+		sunshao: ['old_sp_sunshao'],
+		huaxin: ['bol_sp_huaxin', 'old_sp_huaxin'],
+		kongrong: ['old_sp_kongrong'],
+		dc_mifuren: ['old_sp_mifuren'],
+		liuzhang: ['old_liuzhang'],
+		zhouchu: ['old_zhouchu'],
+		ganning: ['old_sb_ganning'],
+		zhangbao: ['old_zhangbao'],
+		jsp_guanyu: ['bolx_jsp_guanyu'],
+		yj_jushou: ['old_yj_jushou'],
+		shen_dianwei: ['ol_shen_dianwei'],
+	};
+	for (const i in hdpj_characterReplace) {
+		let list = lib.characterReplace[i] || [];
+		lib.characterReplace[i] = list.concat(hdpj_characterReplace[i]).unique();
+	}
 
 	//precC
 	//武将补充/修改
@@ -1461,7 +1457,7 @@ export function content(config, pack) {
 	game.HDaddCharacter('old_sunluyu', ['female', 'wu', 3, ['meibu', 'mumu'], ['ext:活动武将/image/character/old_sunluyu.jpg']], 'old');
 	game.HDaddCharacter('old_pangtong', ['male', 'qun', 3, ['manjuan', 'zuixiang'], ['unseen', 'character:sp_pangtong', 'die:sp_pangtong']], 'old');
 	game.HDaddCharacter('ol_manchong', ['male', 'wei', 3, ['xinjunxing', 'yuce'], ['ext:活动武将/image/character/ol_manchong.jpg']], 'old');
-	game.HDaddCharacter('old_xushao', ['male', 'qun', 3, [], ['unseen', 'ext:活动武将/image/character/old_xushao.jpg']], 'old');
+	game.HDaddCharacter('old_xushao', ['male', 'qun', 3, ['bol_pinjian', 'bol_yuedan'], ['unseen', 'ext:活动武将/image/character/old_xushao.jpg']], 'old');
 	game.HDaddCharacter('old_sp_sunshao', ['male', 'wu', 3, ['refubi', 'rezuici'], ['ext:活动武将/image/character/old_sp_sunshao.jpg']], 'old');
 	game.HDaddCharacter('old_liuzhang', ['male', 'qun', 3, ['xiusheng', 'yinlang', 'huaibi'], ['zhu', 'ext:活动武将/image/character/old_liuzhang.jpg']], 'old');
 	game.HDaddCharacter('old_wangling', ['male', 'wei', 4, ['mouli', 'zifu'], ['ext:活动武将/image/character/old_wangling.jpg']], 'old');
