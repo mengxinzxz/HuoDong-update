@@ -9527,12 +9527,14 @@ const packs = function () {
                 complexCard: true,
                 check(card) {
                     const player = get.event('player');
+                    const num = player.getAllHistory('useSkill', evt => evt.skill == 'bolyuba').length;
                     const value = function (card, player) {
                         const num = player.getUseValue(card);
                         return num > 0 ? num + 1 / (get.value(card) || 0.5) + 7 : 7 - get.value(card);
                     };
-                    if (ui.selected.cards.length && value(card, player) < value(ui.selected.cards[0], player)) return 20 - get.value(card);
-                    return 20 - get.value(card);
+                    if (ui.selected.cards.length && value(card, player) < value(ui.selected.cards[0], player) && num < 3) return 20 - get.value(card);
+                    if (!player.hasSkill(`bolhuanwen_${card.name}`, null, null, false)) return 10;
+                    return 10 - get.value(card);
                 },
                 async content(event, trigger, player) {
                     const name = get.name(event.cards[0]);
@@ -9566,9 +9568,10 @@ const packs = function () {
                     order(item, player) {
                         let cards = player.getCards('he', card => get.info('bolxingjiang').filterCard(card, player) && player.getUseValue(card) > 0);
                         cards = cards.filter(card => cards.filter(i => i.name == card.name).length > 1);
+                        if (player.hasSkill('bolyuba') && player.getAllHistory('useSkill', evt => evt.skill == 'bolyuba').length > 2) cards = cards.filter(card => !player.hasSkill(`bolhuanwen_${card.name}`, null, null, false));
                         if (!cards.length) return 1;
                         cards.sort((a, b) => get.order(b) - get.order(a));
-                        return get.order(cards[0]) - 0.001;
+                        return get.order(cards[0]) + 0.001;
                     },
                     result: {
                         player: 1,
@@ -10506,7 +10509,7 @@ const packs = function () {
             bolyuba: '欲罢',
             bolyuba_info: '当你造成或受到伤害后，你可以将手牌摸至X张牌（X为此技能发动的次数+1），然后弃置一张点数为X的牌或失去一个技能。',
             bolxingjiang: '行将',
-            bolxingjiang_info: '出牌阶段限一次，你可以弃置至少两张同名基本牌或普通锦囊牌，若如此做，你获得一个技能效果为“每回合限一次，你可以使用一张【XXX】”的技能（XXX为你本次弃置牌的牌名）。',
+            bolxingjiang_info: '出牌阶段限一次，你可以弃置至少两张同名基本牌或普通锦囊牌，若如此做，你获得一个技能效果为“每回合限一次，你可以视为使用一张【XXX】”的技能（XXX为你本次弃置牌的牌名）。',
             bilibili_ningjingzhiyuan: '宁静致远',
             bilibili_xiezhi: '协治',
             bilibili_xiezhi_info: '锁定技，其他角色的回合开始时，你选择X次牌的类别，其本回合至多使用选择类别次数的对应类别的牌（X为其手牌数且至少为3，仅限选择基本、锦囊、装备且每种类别至少选择一次）。',
