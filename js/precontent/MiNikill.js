@@ -48,7 +48,7 @@ const packs = function () {
             Mbaby_zhangliao: ['male', 'wei', 4, ['new_retuxi', 'minizhengbing']],
             Mbaby_xunyou: ['male', 'wei', 3, ['miniqice', 'minizhiyu'], ['clan:颍川荀氏']],
             Mbaby_caoxiu: ['male', 'wei', 4, ['qianju', 'miniqingxi']],
-            Mbaby_sp_jiangwei: ['male', 'wei', 4, ['minikunfen', 'minifengliang']],
+            Mbaby_sp_jiangwei: ['male', 'wei', 4, ['minikunfen', 'minifengliang'], ['tempname:sp_jiangwei']],
             Mbaby_zhonghui: ['male', 'wei', 3, ['miniquanji', 'paiyi'], ['clan:颍川钟氏']],
             Mbaby_zhangchangpu: ['female', 'wei', 3, ['miniyanjiao', 'xingshen']],
             Mbaby_yangxiu: ['male', 'wei', 3, ['danlao', 'minijilei']],
@@ -26895,25 +26895,23 @@ const packs = function () {
                     suits = suits.filter(suit => !player.getStorage('minilianshi').includes(suit));
                     player.markAuto('minilianshi', suits);
                     player.storage.minilianshi.sort((a, b) => lib.suit.indexOf(b) - lib.suit.indexOf(a));
-                    if (!_status.connectMode && game.HasExtension('十周年UI') && lib.config.extension_十周年UI_playerMarkStyle && lib.config.extension_十周年UI_playerMarkStyle == 'decade') {
-                        game.broadcastAll(function (player, skill) {
-                            if (player.marks[skill]) player.marks[skill].firstChild.innerHTML = player.getStorage(skill).reduce((str, suit) => str += get.translation(suit), '');
-                        }, player, 'minilianshi');
-                    }
+                    player.addTip('minilianshi', get.translation('minilianshi') + player.getStorage('minilianshi').reduce((str, suit) => str + get.translation(suit), ""));
                     'step 1'
                     if (player.getStorage('minilianshi').length >= 4) {
                         player.draw();
                         if (player.isDamaged()) player.recover(get.number(cards[cards.length - 1], player));
                         player.unmarkSkill('minilianshi');
                         delete player.storage.minilianshi;
+                        player.removeTip('minilianshi');
                     }
                 },
                 intro: {
-                    markcount: (storage) => {
-                        if (!_status.connectMode && game.HasExtension('十周年UI') && lib.config.extension_十周年UI_playerMarkStyle && lib.config.extension_十周年UI_playerMarkStyle == 'decade') return 0;
-                        return storage.length;
-                    },
+                    onunmark: true,
                     content: '已记录花色：$',
+                },
+                onremove(player, skill) {
+                    player.removeTip(skill);
+                    delete player.storage[skill];
                 },
             },
             minituantu: {

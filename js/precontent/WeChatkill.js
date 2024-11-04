@@ -8578,7 +8578,7 @@ const packs = function () {
                     },
                 },
             },
-            // 谋黄忠
+            //谋黄忠
             wechatsbliegong: {
                 audio: 'sbliegong',
                 trigger: { player: 'useCardToPlayered' },
@@ -8656,12 +8656,12 @@ const packs = function () {
                     },
                 },
                 intro: {
-                    content: '已记录花色：$',
-                    markcount(storage) {
-                        if (!_status.connectMode && game.HasExtension('十周年UI') && lib.config.extension_十周年UI_playerMarkStyle && lib.config.extension_十周年UI_playerMarkStyle == 'decade') return 0;
-                        return storage.length;
-                    },
                     onunmark: true,
+                    content: '已记录花色：$',
+                },
+                onremove(player, skill) {
+                    player.removeTip(skill);
+                    delete player.storage[skill];
                 },
                 group: 'wechatsbliegong_count',
                 subSkill: {
