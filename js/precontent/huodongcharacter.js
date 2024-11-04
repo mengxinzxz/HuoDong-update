@@ -9532,7 +9532,7 @@ const packs = function () {
                         const num = player.getUseValue(card);
                         return num > 0 ? num + 1 / (get.value(card) || 0.5) + 7 : 7 - get.value(card);
                     };
-                    if (ui.selected.cards.length && value(card, player) < value(ui.selected.cards[0], player) && num < 3) return 20 - get.value(card);
+                    if (ui.selected.cards.length && value(card, player) < value(ui.selected.cards[0], player) && player.hasSkill('bolyuba') && num < 3) return 20 - get.value(card);
                     if (!player.hasSkill(`bolhuanwen_${card.name}`, null, null, false)) return 10;
                     return 10 - get.value(card);
                 },
