@@ -80,7 +80,7 @@ const packs = function () {
             wechat_zhuling: ['male', 'wei', 4, ['wechatzhanyi']],
             wechat_caojie: ['female', 'qun', 3, ['wechatshouxi', 'huimin']],
             wechat_sp_pangde: ['male', 'wei', 4, ['mashu', 'wechatrejuesi']],
-            wechat_yj_jushou: ['male', 'qun', 3, ['wechatrejianying', 'shibei']],
+            wechat_yj_jushou: ['male', 'qun', 3, ['wechatrejianying', 'shibei'], [...['tempname', 'die'].map(str => str + ':xin_jushou')]],
             wechat_zumao: ['male', 'wu', 4, ['miniyinbing', 'wechatjuedi']],
             wechat_guansuo: ['male', 'shu', 4, ['wechatzhengnan', 'xiefang'], ['tempname:guansuo']],
             wechat_zhangzhang: ['male', 'wu', 3, ['wechatzhijian', 'guzheng']],
@@ -5091,6 +5091,7 @@ const packs = function () {
                 hiddenCard(player, name) {
                     return get.type(name) == 'basic' && player.countCards('hes') > 0 && !player.hasSkill('wechatrejianying_used');
                 },
+                audio: 'xinjianying',
                 enable: 'chooseToUse',
                 filter(event, player) {
                     if (event.type == 'wuxie' || player.hasSkill('wechatrejianying_used')) return false;
@@ -5123,7 +5124,7 @@ const packs = function () {
                     },
                     backup(links, player) {
                         const next = {
-                            audio: 'dcjianying',
+                            audio: 'xinjianying',
                             popname: true,
                             viewAs: { name: links[0][2], nature: links[0][3] },
                             filterCard: true,
@@ -5164,7 +5165,7 @@ const packs = function () {
                 group: ['wechatrejianying_draw'],
                 subSkill: {
                     draw: {
-                        audio: 'jianying',
+                        audio: 'xinjianying',
                         inherit: 'dcjianying',
                     },
                     used: { charlotte: true },

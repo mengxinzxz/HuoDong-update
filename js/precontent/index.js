@@ -453,7 +453,7 @@ export function precontent(bilibilicharacter) {
             player.storage.bilibili_kill++;
             'step 1'
             let config = lib.config.extension_活动武将_HDfightAudio;
-            config = config = 'default' ? lib.config.extension_活动武将_HDkillAudio : config;
+            config = config === 'default' ? lib.config.extension_活动武将_HDkillAudio : config;
             let list;
             switch (config) {
                 case 'new':
