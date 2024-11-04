@@ -509,10 +509,10 @@ export function precontent(bilibilicharacter) {
     var originTrySkillAnimate = lib.element.player.trySkillAnimate;
     lib.element.player.trySkillAnimate = function (name, popname, checkShow) {
         if (!game.online && lib.config.skill_animation_type != 'off' && lib.skill[name] && lib.skill[name].skillAnimation && lib.config.extension_活动武将_HDskillAnimateAudio) {
-            game.broadcastAll(function () {
+            game.broadcastAll(function (name) {
                 if (ui.backgroundMusic) ui.backgroundMusic.pause();
                 game.playAudio('..', 'extension', '活动武将/audio/effect', 'spell_' + (lib.skill[name].juexingji ? 'wake' : 'limit'));
-            });
+            }, name);
             setTimeout(function () {
                 if (ui.backgroundMusic) ui.backgroundMusic.play();
             }, 4000);
@@ -747,7 +747,7 @@ export function precontent(bilibilicharacter) {
         });
         lib.config.all.characters.push('MX_feihongyinxue');
         lib.config.all.sgscharacters.push('MX_feihongyinxue');
-        if (lib.config.characters.includes('MX_feihongyinxue')) {
+        if (!_status.connectMode && lib.config.characters.includes('MX_feihongyinxue')) {
             //飞鸿新机制
             lib.arenaReady.push(() => {
                 //把银月枪加入牌堆
