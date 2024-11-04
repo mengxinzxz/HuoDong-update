@@ -9488,13 +9488,20 @@ const packs = function () {
                     for (const skill of skills) {
                         list.push([
                             skill,
-                            '<div class="popup text" style="width:calc(100% - 10px);display:inline-block"><div class="skill">【' + get.translation(skill) + '】</div><div>' + lib.translate[skill + '_info'] + '</div></div>',
+                            '<div class="popup text" style="width:calc(100% - 10px);display:inline-block"><div class="skill">' + (() => {
+                                let str = get.translation(skill);
+                                if (!lib.skill[skill]?.nobracket) str = '【' + str + '】';
+                                return str;
+                            })() + '</div><div>' + lib.translate[skill + '_info'] + '</div></div>',
                         ])
                     }
-                    const forced = !player.countCards('he', card => get.number(card) == num);
+                    const forced = !player.hasCard(card => lib.filter.cardDiscardable(card, player) && get.number(card) == num, 'he');
                     if (!skills.length && forced) return;
                     const result = await player.chooseButton([
-                        `###欲罢###失去一个技能，或点“取消”弃置一张点数为${num}的牌`,
+                        `###欲罢###<div class="text center">选择失去一个技能${(() => {
+                            if (forced) return '';
+                            return `，或点“取消”弃置一张点数为${num}的牌`;
+                        })()}</div>`,
                         [list, 'textbutton'],
                     ]).set('displayIndex', false).set('ai', button => {
                         const { link: skill } = button, { player, num } = get.event();
@@ -9504,7 +9511,11 @@ const packs = function () {
                         if (skill.startsWith('bolhuanwen_')) return 4;
                         return 1;
                     }).set('num', num).set('forced', forced).forResult();
-                    if (result.bool) await player.removeSkills(result.links);
+                    if (result?.bool && result.links?.length) {
+                        const [skill] = result.links;
+                        player.popup(skill);
+                        await player.removeSkills(skill);
+                    }
                     else await player.chooseToDiscard('he', true, card => {
                         return get.number(card) == get.event('num');
                     }, `请弃置一张点数为${num}的牌`).set('num', num);
