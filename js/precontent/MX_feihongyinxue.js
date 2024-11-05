@@ -61,7 +61,7 @@ const packs = function () {
             mx_fh_gz_huangzhong: ['male', 'shu', 4, ['fh_liegong'], ['die:huangzhong']],
             mx_fh_zhoutai: ['male', 'wu', 4, ['fh_buqu', 'fh_fenji']],
             mx_fh_ol_sp_zhugeliang: ['male', 'shu', 3, ['bazhen', 'olhuoji', 'olkanpo', 'fh_cangzhuo'], ['tempname:ol_sp_zhugeliang']],
-            mx_fh_re_taishici: ['male', 'wu', 3, ['tianyi', 'fh_hanzhan'], ['tempname:re_taishici']],
+            mx_fh_re_taishici: ['male', 'wu', 4, ['tianyi', 'fh_hanzhan'], ['tempname:re_taishici']],
             mx_fh_yanwen: ['male', 'qun', 4, ['fh_shuangxiong', 'fh_xiayong']],
             mx_fh_guanqiujian: ['male', 'wei', 4, ['fh_zhengrong', 'fh_hongju']],
             mx_fh_xin_lingtong: ['male', 'wu', 4, ['fh_xuanfeng', 'yongjin'], ['tempname:xin_lingtong']],
