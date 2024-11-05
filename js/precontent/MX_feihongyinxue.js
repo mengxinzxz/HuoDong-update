@@ -2566,31 +2566,46 @@ const packs = function () {
             fh_qiexie: {
                 audio: 'qiexie',
                 inherit: 'qiexie',
-                getList: new Map([
-                    [1, ['ol_sb_guanyu']],
-                    [2, ['clan_xuncan', 'ol_jiangwei']],
-                    [3, ['hansui', 'yadan']],
-                    [4, ['re_huangzhong', 're_xiahouyuan']],
-                    [5, ['guanyu', 'zhangfei', 'zhaoyun', 'machao', 'xuzhu', 'lvbu', 'lvmeng', 'daqiao', 'zhugeliang']],
-                    [5, ['huangyueying', 'liubei', 'sunquan', 'caocao', 'ganning', 'huanggai', 'zhangliao', 'xiahoudun', 'simayi', 'luxun', 'zhouyu', 'diaochan']],
-                ]),
+                getList: (() => {
+                    let map = new Map([]);
+                    for (const [number, setList, forced] of [//权重，武将组，是否强制在前三张武将牌出现
+                        [1, ['ol_sb_guanyu', 'zhangfei']],
+                        [2, ['clan_xuncan', 'ol_jiangwei']],
+                        [3, ['hansui', 'yadan']],
+                        [4, ['re_huangzhong', 're_xiahouyuan']],
+                        [5, ['guanyu', 'zhaoyun', 'machao', 'xuzhu', 'lvbu', 'lvmeng', 'daqiao', 'zhugeliang'], true],
+                        [5, ['huangyueying', 'liubei', 'sunquan', 'caocao', 'ganning', 'huanggai', 'zhangliao', 'xiahoudun', 'simayi', 'luxun', 'zhouyu', 'diaochan'], true],
+                    ]) {
+                        let list = setList.slice();
+                        if (forced) list._fh_qiexie_fixed = true;
+                        map.set((() => {
+                            while (true) {
+                                const num = Math.random().toString(36).slice(-8) + number.toString();
+                                if (map.get(num) === undefined) return num;
+                            }
+                        })(), list);
+                    }
+                    return map;
+                })(),
+                derivation: 'fh_qiexie_faq',
                 content: function () {
                     'step 0'
                     if (!_status.characterlist) {
                         lib.skill.pingjian.initList();
                         _status.characterlist.randomSort();
                     }
-                    if (!_status.characterlist.length) event.finish();
+                    if (!_status.characterlist.length || !lib.skill.fh_qiexie?.getList.size) event.finish();
                     else {
                         let list = [], filter = i => {
                             if (!(_status.characterlist.includes(i) && !list.includes(i))) return false;
                             return !['guanyu', 'zhangfei'].includes(i) || !list.includes(i === 'guanyu' ? 'zhangfei' : 'guanyu');
                         };
                         while (list.length < 5) {
-                            let name = lib.skill.fh_qiexie.getList.entries().reduce((limits, listx) => {
-                                let names = listx[1].filter(filter);
+                            let name = lib.skill.fh_qiexie.getList.entries().reduce((limits, [num, listx]) => {
+                                if (list.length < 3 && !listx._fh_qiexie_fixed) return limits;
+                                let names = listx.filter(filter);
                                 if (names.length) {
-                                    let limit = parseInt(listx[0]);
+                                    let limit = parseInt(num.slice(8));
                                     while (limit > 0) {
                                         limit--;
                                         limits.push(names);
@@ -2600,6 +2615,10 @@ const packs = function () {
                             }, []);
                             if (name.length) list.push(name.randomGet().randomGet());
                             else break;
+                        }
+                        if (!list.length) {
+                            event.finish();
+                            return;
                         }
                         var num = player.countEmptySlot(1);
                         player.chooseButton([
@@ -4501,6 +4520,19 @@ const packs = function () {
             fh_powei_info: '使命技，游戏开始时，你令所有其他角色获得一个“围”。一名角色受到伤害后，若其有“围”，则其移去“围”。回合开始时，所有有“围”的角色失去“围”，然后这些角色的第一个不为你的下家获得等量的“围”。一名其他角色的回合开始时，若其有“围”，则你可以选择一项：⒈弃置一张手牌并对其造成1点伤害。⒉若其体力值不大于你，则你获得其一张手牌。选择完成后，你视为在其攻击范围内直到回合结束。使命：回合开始时，若场上没有“围”，则你获得技能〖神著〗。失败：当你受到大于等于你的体力值的伤害时，你取消之，然后移去场上所有“围”，弃置装备区的所有牌。',
             fh_qiexie: '挈挟',
             fh_qiexie_info: '锁定技，准备阶段，你在剩余武将牌堆中随机观看五张牌，选择其中的任意张置入武器栏，这些牌具有以下效果：⒈此牌不具有花色，且其攻击范围和点数等于此武将牌的体力上限。⒉此武器牌的技能为该武将牌上所有描述中包含“【杀】”且不具有锁定技以外的标签的技能。⒊此武器牌离开你的装备区时，改为放回武将牌堆。',
+            fh_qiexie_faq: '【挈挟】将池',
+            get fh_qiexie_faq_info() {
+                let str, getList = lib?.skill?.fh_qiexie?.getList;
+                if (getList?.size) {
+                    str = '';
+                    for (const [num, listx] of getList.entries()) {
+                        if (!listx.length) return;
+                        str += '<br>权重' + parseInt(num.slice(8)) + '：' + get.translation(listx) + (listx._fh_qiexie_fixed ? '（保底）' : '');
+                    }
+                    str += '<br><br><span style="font-weight: bold;">注：【挈挟】筛选的前三张武将牌必定从保底范围筛选</span>';
+                }
+                return str || '<br>【挈挟】将池暂未加载';
+            },
             mx_fh_dc_sunziliufang: '飞鸿孙资刘放',
             mx_fh_liyan: '飞鸿李严',
             mx_fh_dc_huanghao: '飞鸿黄皓',
