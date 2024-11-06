@@ -11945,7 +11945,7 @@ const packs = function () {
                             return !game.hasPlayer(target => target !== player && target.hasSkill('miniliuma', null, false, false));
                         },
                         async cost(event, trigger, player) {
-                            event.result = await player.chooseTarget(get.prompt('miniliuma'), '令一名其他角色获得【流马】（其不能发动此效果）', lib.filter.notMe).set('ai', card => {
+                            event.result = await player.chooseTarget(get.prompt('miniliuma'), '令一名其他角色获得【流马】（其不能发动此效果）', lib.filter.notMe).set('ai', target => {
                                 return get.attitude(get.player(), target);
                             }).forResult();
                         },
