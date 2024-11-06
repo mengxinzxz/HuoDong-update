@@ -1323,15 +1323,16 @@ const packs = function () {
             fh_rongbei: {
                 audio: 'rongbei',
                 inherit: 'rongbei',
-                content: function* (event, map) {
-                    var player = map.player, target = event.target;
-                    player.awakenSkill('fh_rongbei');
-                    var num = 1;
-                    while (target.hasEmptySlot(num)) {
-                        var card = get.fh_cardPile((card) => get.subtype(card) == 'equip' + num && target.canUse(card, target));
-                        if (card) target.chooseUseTarget(card, true, 'nopopup');
+                async content(event, trigger, player) {
+                    const { target } = event;
+                    player.awakenSkill(event.name);
+                    let num = 1;
+                    while (num < 6) {
+                        if (target.hasEmptySlot(num)) {
+                            const card = get.fh_cardPile((card) => get.subtype(card) == 'equip' + num && target.canUse(card, target));
+                            if (card) await target.chooseUseTarget(card, true, 'nopopup');
+                        }
                         num++;
-                        if (num > 5) break;
                     }
                 },
                 ai: {
