@@ -2613,7 +2613,7 @@ const packs = function () {
                                 }
                                 return limits;
                             }, []);
-                            if (name.length) list.push(name.randomGet().randomGet());
+                            if (name.length) list.push(name.flat().randomGet());
                             else break;
                         }
                         if (!list.length) {
