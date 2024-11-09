@@ -8523,17 +8523,27 @@ const packs = function () {
                     return player.getRoundHistory('useSkill', evt => evt.skill == skill).length < Math.min(5, player.getRoundHistory('damage', () => true).concat(player.getRoundHistory('sourceDamage', () => true)).reduce((sum, evt) => sum + evt.num, 0) + 1);
                 },
                 enable: 'phaseUse',
+                usable: 1,
                 filter(event, player) {
-                    return game.hasPlayer(current => player != current) && get.info('wechatyihan').shiwuAble(player, 'wechatyihan');
+                    return game.hasPlayer(current => get.info('wechatyihan').filterTarget(null, player, current)) && get.info('wechatyihan').shiwuAble(player, 'wechatyihan');
                 },
-                filterTarget: lib.filter.notMe,
+                filterTarget(card, player, target) {
+                    return target.countCards('h') && target != player;
+                },
                 async content(event, trigger, player) {
                     const { target } = event, sha = get.autoViewAs({ name: 'sha', isCard: true });
-                    const bool = await target.chooseToUse(function (card, player, event) {
-                        if (get.type(card) == 'equip') return false;
-                        return lib.filter.filterCard.apply(this, arguments);
-                    }, `翊汉：是否使用一张非装备牌，若你不使用，则${get.translation(player)}视为对你使用一张【杀】`).set('addCount', false).forResultBool();
-                    if (!bool && player.canUse(sha, target, false, false)) await player.useCard(sha, target, false);
+                    const cards = await player.choosePlayerCard(target, true, 'h').forResultCards();
+                    if (!cards || !cards.length) return;
+                    await player.showCards(cards, get.translation(player) + '对' + get.translation(target) + '发动了【翊汉】');
+                    const { result: { index } } = await target.chooseControl().set('choiceList', [`交给${get.translation(target)}${get.translation(cards)}`, `${get.translation(target)}视为对你使用一张无次数限制的【杀】`]).set('ai', () => {
+                        const player = get.player(), target = get.event().getParent().player;
+                        const card = get.event().cards[0];
+                        if (get.effect(player, { name: 'sha' }, target, player) > 0) return 1;
+                        if (player.getEquip('bagua') || player.getEquip('tengjia')) return 1;
+                        return get.value(card, player) > 7 ? 1 : 0;
+                    }).set('cards', cards);
+                    if (index == 0) await target.give(cards, player);
+                    else if (player.canUse(sha, target, false, false)) await player.useCard(sha, target, false);
                 },
                 ai: {
                     order: 8,
@@ -9308,7 +9318,7 @@ const packs = function () {
             wechatluheng_info: '结束阶段，若你本回合发动过〖纵阅〗，你可以视为对一名本回合进行过共同拼点且其中手牌数最多的其他角色使用一张【杀】。',
             wechat_zhiyin_guanyu: '极关羽',
             wechatyihan: '翊汉',
-            wechatyihan_info: get.ShiwuInform() + '，出牌阶段，你可以令一名其他角色选择一项：1.使用一张非装备牌；2.你视为对其使用一张无次数限制的【杀】。',
+            wechatyihan_info: get.ShiwuInform() + '，出牌阶段限一次，你可以展示一名其他角色的一张手牌，然后令其选择一项：1.交给你展示牌；2.你视为对其使用一张无次数限制的【杀】。',
             wechatgywuwei: '武威',
             wechatgywuwei_info: '出牌阶段，你可以弃置X+1张牌并弃置一名角色的等量张牌（X为你本阶段发动〖武威〗的次数）。若你以此法弃置的牌的点数之和不大于其因此被弃置的牌的点数之和，你对其造成1点雷电伤害。',
             wechat_sb_huangzhong: '微信谋黄忠',
