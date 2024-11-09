@@ -9318,7 +9318,7 @@ const packs = function () {
             wechatluheng_info: '结束阶段，若你本回合发动过〖纵阅〗，你可以视为对一名本回合进行过共同拼点且其中手牌数最多的其他角色使用一张【杀】。',
             wechat_zhiyin_guanyu: '极关羽',
             wechatyihan: '翊汉',
-            wechatyihan_info: get.ShiwuInform() + '，出牌阶段限一次，你可以展示一名其他角色的手牌，然后令其选择一项：1.交给你展示牌；2.你视为对其使用一张无次数限制的【杀】。',
+            wechatyihan_info: get.ShiwuInform() + '，出牌阶段限一次，你可以展示一名其他角色的一张手牌，然后令其选择一项：1.交给你展示牌；2.你视为对其使用一张无次数限制的【杀】。',
             wechatgywuwei: '武威',
             wechatgywuwei_info: '出牌阶段，你可以弃置X+1张牌并弃置一名角色的等量张牌（X为你本阶段发动〖武威〗的次数）。若你以此法弃置的牌的点数之和不大于其因此被弃置的牌的点数之和，你对其造成1点雷电伤害。',
             wechat_sb_huangzhong: '微信谋黄忠',
