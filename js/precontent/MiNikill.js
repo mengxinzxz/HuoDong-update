@@ -82,6 +82,7 @@ const packs = function () {
             Mbaby_wangshuang: ['male', 'wei', 8, ['minizhuilie']],
             Mbaby_chenlin: ['male', 'wei', 3, ['bifa', 'minisongci']],
             Mbaby_liuye: ['male', 'wei', 3, ['minipoyuan', 'dchuace'], ['die:dc_liuye']],
+            Mbaby_wenqin: ['male', 'wei', 4, ['olguangao', 'olhuiqi']],
             //蜀
             Mbaby_guanyu: ['male', 'shu', 4, ['minirewusheng', 'minituodao', 'jsrgguanjue']],
             Mbaby_zhugeliang: ['male', 'shu', 3, ['minireguanxing', 'minikongcheng']],
@@ -29623,6 +29624,7 @@ const packs = function () {
             Mbaby_wangshuang: '欢杀王双',
             Mbaby_chenlin: '欢杀陈琳',
             Mbaby_liuye: '欢杀刘晔',
+            Mbaby_wenqin: '欢杀文钦',
             miniluoshen: '洛神',
             miniluoshen_info: '准备阶段，你可以进行一次判定并获得判定牌，若判定结果为黑色，你可重复此流程。',
             minireluoshen: '洛神',
