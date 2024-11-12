@@ -5401,7 +5401,7 @@ const packs = function () {
                 },
                 async content(event, trigger, player) {
                     const next = event.target.chooseToUse();
-                    next.set('openskilldialog', '偕举：是否将一张黑色牌当杀使用？');
+                    next.set('openskilldialog', '偕举：是否将一张黑色牌当作【杀】使用？');
                     next.set('norestore', true);
                     next.set('_backupevent', event.name + '_backup');
                     next.set('custom', {
@@ -5417,10 +5417,7 @@ const packs = function () {
                             return get.itemtype(card) == 'card' && get.color(card) == 'black';
                         },
                         position: 'hes',
-                        viewAs: {
-                            name: 'sha',
-                        },
-                        prompt: '将一张黑色牌当杀使用',
+                        viewAs: { name: 'sha' },
                         check(card) {
                             return 7 - get.value(card);
                         },
@@ -29799,7 +29796,8 @@ const packs = function () {
             Mbaby_wangshuang: '欢杀王双',
             Mbaby_chenlin: '欢杀陈琳',
             Mbaby_liuye: '欢杀刘晔',
-            Mbaby_wenqin: '欢杀文钦',
+            Mbaby_wenqin: 'OL文钦',
+            Mbaby_wenqin_prefix: 'OL',
             miniluoshen: '洛神',
             miniluoshen_info: '准备阶段，你可以进行一次判定并获得判定牌，若判定结果为黑色，你可重复此流程。',
             minireluoshen: '洛神',
