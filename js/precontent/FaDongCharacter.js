@@ -487,6 +487,10 @@ const packs = function () {
         if (!FaDongCharacter.character[i][4]) FaDongCharacter.character[i][4] = [];
         FaDongCharacter.character[i][4].push(((lib.device || lib.node) ? 'ext:' : 'db:extension-') + '活动武将/image/character/' + i + '.jpg');
     }
+    lib.config.all.characters.push('FaDongCharacter');
+    lib.config.all.sgscharacters.push('FaDongCharacter');
+    if (!lib.config.characters.includes('FaDongCharacter')) lib.config.characters.remove('FaDongCharacter');
+    lib.translate['FaDongCharacter_character_config'] = '<span style="font-family: xingkai">诸侯伐董</span>';
     return FaDongCharacter;
 };
 

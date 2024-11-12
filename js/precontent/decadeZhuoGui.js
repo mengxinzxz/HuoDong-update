@@ -730,6 +730,10 @@ const packs = function () {
         if (!decadeZhuoGui.character[i][4]) decadeZhuoGui.character[i][4] = [];
         decadeZhuoGui.character[i][4].push(((lib.device || lib.node) ? 'ext:' : 'db:extension-') + '活动武将/image/character/' + i + '.jpg');
     }
+    lib.config.all.characters.push('decadeZhuoGui');
+    lib.config.all.sgscharacters.push('decadeZhuoGui');
+    if (!lib.config.characters.includes('decadeZhuoGui')) lib.config.characters.remove('decadeZhuoGui');
+    lib.translate['decadeZhuoGui_character_config'] = '<span style="font-family: xingkai">捉鬼驱邪</span>';
     return decadeZhuoGui;
 };
 

@@ -924,6 +924,10 @@ const packs = function () {
         if (!decadeQiHuan.character[i][4]) decadeQiHuan.character[i][4] = [];
         decadeQiHuan.character[i][4].push(((lib.device || lib.node) ? 'ext:' : 'db:extension-') + '活动武将/image/character/' + i + '.jpg');
     }
+    lib.config.all.characters.push('decadeQiHuan');
+    lib.config.all.sgscharacters.push('decadeQiHuan');
+    if (!lib.config.characters.includes('decadeQiHuan')) lib.config.characters.remove('decadeQiHuan');
+    lib.translate['decadeQiHuan_character_config'] = '<span style="font-family: xingkai">戚宦之争</span>';
     return decadeQiHuan;
 };
 

@@ -1537,6 +1537,11 @@ const packs = function () {
         if (!hezongkangqincharacter.character[i][4]) hezongkangqincharacter.character[i][4] = [];
         hezongkangqincharacter.character[i][4].push(((lib.device || lib.node) ? 'ext:' : 'db:extension-') + '活动武将/image/character/' + i + '.jpg');
     }
+    game.bolAddGroupNature(['daqin', '秦'], [255, 165, 0]);
+    lib.config.all.characters.push('hezongkangqincharacter');
+    lib.config.all.sgscharacters.push('hezongkangqincharacter');
+    if (!lib.config.characters.includes('hezongkangqincharacter')) lib.config.characters.remove('hezongkangqincharacter');
+    lib.translate['hezongkangqincharacter_character_config'] = '<span style="font-family: xingkai">合纵抗秦</span>';
     return hezongkangqincharacter;
 };
 

@@ -10566,6 +10566,24 @@ const packs = function () {
         if (!lib.config.extension_活动武将_DanJi && i.indexOf('DJ_') == 0) delete huodongcharacter.character[i];
         if (!lib.config.extension_活动武将_SCS && i.indexOf('biliscs_') != -1) delete huodongcharacter.character[i];
     }
+    //“萌新自设”前缀
+    lib.namePrefix.set('萌设', {
+        color: '#ff6a6a',
+        nature: 'MXpink',
+        showName: '萌',
+    });
+    lib.namePrefix.set('蝶设', {
+        color: '#ff6a6a',
+        nature: 'MXpink',
+        showName: '蝶',
+    });
+    lib.namePrefix.set('蝶设神', {
+        getSpan: (prefix, name) => `${get.prefixSpan('蝶设')}${get.prefixSpan('神')}`,
+    });
+    lib.config.all.characters.push('huodongcharacter');
+    lib.config.all.sgscharacters.push('huodongcharacter');
+    if (!lib.config.characters.includes('huodongcharacter')) lib.config.characters.remove('huodongcharacter');
+    lib.translate['huodongcharacter_character_config'] = '<span style="font-family: xingkai">其他武将</span>';
     return huodongcharacter;
 };
 

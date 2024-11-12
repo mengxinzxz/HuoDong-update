@@ -9340,6 +9340,34 @@ const packs = function () {
         if (i.startsWith('wechat_') && !WeChatkill.character[i][4].some(tag => typeof tag == 'string' && tag.startsWith('die:'))) WeChatkill.character[i][4].push('die:' + i.slice(7));
         WeChatkill.character[i][4].push(((lib.device || lib.node) ? 'ext:' : 'db:extension-') + '活动武将/image/character/' + i + '.jpg');
     }
+    lib.namePrefix.set('极', {
+        color: '#fdd559',
+        nature: 'soilmm',
+    });
+    lib.namePrefix.set('微信', {
+        color: '#00cd00',
+        nature: 'MXgreen',
+        showName: '微',
+    });
+    lib.namePrefix.set('SP微信', {
+        getSpan: (prefix, name) => `${get.prefixSpan('SP')}${get.prefixSpan('微信')}`,
+    });
+    lib.namePrefix.set('微信神', {
+        getSpan: (prefix, name) => `${get.prefixSpan('微信')}${get.prefixSpan('神')}`,
+    });
+    lib.namePrefix.set('SP微信神', {
+        getSpan: (prefix, name) => `${get.prefixSpan('SP')}${get.prefixSpan('微信')}${get.prefixSpan('神')}`,
+    });
+    lib.namePrefix.set('微信☆', {
+        getSpan: (prefix, name) => `${get.prefixSpan('微信')}${get.prefixSpan('☆')}`,
+    });
+    lib.namePrefix.set('微信谋', {
+        getSpan: (prefix, name) => `${get.prefixSpan('微信')}${get.prefixSpan('谋')}`,
+    });
+    lib.config.all.characters.push('WeChatkill');
+    lib.config.all.sgscharacters.push('WeChatkill');
+    if (!lib.config.characters.includes('WeChatkill')) lib.config.characters.remove('WeChatkill');
+    lib.translate['WeChatkill_character_config'] = '<span style="font-family: xingkai">微信三国杀</span>';
     return WeChatkill;
 };
 

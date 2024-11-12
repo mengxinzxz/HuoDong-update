@@ -31348,6 +31348,37 @@ const packs = function () {
         if (i.startsWith('Mbaby_') && !MiNikill.character[i][4].some(tag => typeof tag == 'string' && tag.startsWith('die:'))) MiNikill.character[i][4].push('die:' + i.slice(6));
         MiNikill.character[i][4].push(((lib.device || lib.node) ? 'ext:' : 'db:extension-') + '活动武将/image/character/' + i + '.jpg');
     }
+    lib.namePrefix.set('喵', {
+        color: '#fdd559',
+        nature: 'soilmm',
+    });
+    lib.namePrefix.set('念', {
+        color: '#bf3eff',
+        nature: 'soilmm',
+    });
+    lib.namePrefix.set('欢杀', {
+        color: '#ff6a6a',
+        nature: 'MXpink',
+        showName: '欢',
+    });
+    lib.namePrefix.set('SP欢杀', {
+        color: '#fdd559',
+        nature: 'soilmm',
+        getSpan: (prefix, name) => `${get.prefixSpan('SP')}${get.prefixSpan('欢杀')}`,
+    });
+    lib.namePrefix.set('欢杀神', {
+        getSpan: (prefix, name) => `${get.prefixSpan('欢杀')}${get.prefixSpan('神')}`,
+    });
+    lib.namePrefix.set('SP欢杀神', {
+        getSpan: (prefix, name) => `${get.prefixSpan('SP')}${get.prefixSpan('欢杀')}${get.prefixSpan('神')}`,
+    });
+    lib.namePrefix.set('欢杀谋', {
+        getSpan: (prefix, name) => `${get.prefixSpan('欢杀')}${get.prefixSpan('谋')}`,
+    });
+    lib.config.all.characters.push('MiNikill');
+    lib.config.all.sgscharacters.push('MiNikill');
+    if (!lib.config.characters.includes('MiNikill')) lib.config.characters.remove('MiNikill');
+    lib.translate['MiNikill_character_config'] = '<span style="font-family: xingkai">欢乐三国杀</span>';
     return MiNikill;
 };
 

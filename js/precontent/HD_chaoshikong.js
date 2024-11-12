@@ -984,6 +984,10 @@ const packs = function () {
         if (HD_chaoshikong.translate[i] && HD_chaoshikong.translate[i].indexOf('密探·') == 0) HD_chaoshikong.translate[i + '_ab'] = HD_chaoshikong.translate[i].slice(HD_chaoshikong.translate[i].indexOf('密探·') + 3, HD_chaoshikong.translate[i].length);
         HD_chaoshikong.character[i][4].push(((lib.device || lib.node) ? 'ext:' : 'db:extension-') + '活动武将/image/character/' + i + '.jpg');
     }
+    lib.config.all.characters.push('HD_chaoshikong');
+    lib.config.all.sgscharacters.push('HD_chaoshikong');
+    if (!lib.config.characters.includes('HD_chaoshikong')) lib.config.characters.remove('HD_chaoshikong');
+    lib.translate['HD_chaoshikong_character_config'] = '<span style="font-family: xingkai">超时空密探</span>';
     return HD_chaoshikong;
 };
 

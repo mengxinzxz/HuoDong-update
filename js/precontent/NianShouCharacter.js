@@ -1087,6 +1087,10 @@ const packs = function () {
         if (!NianShouCharacter.character[i][4]) NianShouCharacter.character[i][4] = [];
         NianShouCharacter.character[i][4].push(((lib.device || lib.node) ? 'ext:' : 'db:extension-') + '活动武将/image/character/' + i + '.jpg');
     }
+    lib.config.all.characters.push('NianShouCharacter');
+    lib.config.all.sgscharacters.push('NianShouCharacter');
+    if (!lib.config.characters.includes('NianShouCharacter')) lib.config.characters.remove('NianShouCharacter');
+    lib.translate['NianShouCharacter_character_config'] = '<span style="font-family: xingkai">生肖&年兽</span>';
     return NianShouCharacter;
 };
 
