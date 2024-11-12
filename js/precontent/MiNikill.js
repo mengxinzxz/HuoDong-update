@@ -30424,6 +30424,7 @@ const packs = function () {
             miniqianxun: '谦逊',
             miniqianxun_info: '锁定技，当你成为锦囊牌的唯一目标时，你摸一张牌，然后可以交给一名其他角色一张手牌。',
             minireqianxun: '谦逊',
+            minireqianxun2: '谦逊',
             minireqianxun_info: '当一张锦囊牌对你生效时，你可以将至多X张手牌置于武将牌上（X为你的体力值）。回合结束时，你获得这些牌。',
             minilianying: '连营',
             minilianying_info: '当你失去最后的手牌时，你可以摸两张牌，然后可以交给一名其他角色一张手牌。',
