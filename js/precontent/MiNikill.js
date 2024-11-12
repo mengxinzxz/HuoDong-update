@@ -24440,7 +24440,7 @@ const packs = function () {
                             player: 'useCardAfter',
                         },
                         filter(event, player) {
-                            return event.skill == 'minijiaoxia' && event.cards?.length == 1 && player.hasUseTarget(get.copy(event.cards[0])) && player.getHistory('sourceDamage', evt => evt.card == event.card).length && player.hasUseTarget(event.cards[0])
+                            return event.skill == 'minijiaoxia' && event.cards?.length == 1 && player.hasUseTarget(get.copy(event.cards[0])) && player.getHistory('sourceDamage', evt => evt.card == event.card).length && player.hasUseTarget(event.cards[0]);
                         },
                         async cost(event, trigger, player) {
                             event.result = await player.chooseUseTarget(trigger.cards[0], get.prompt(event.name.slice(0, -5)), false, false).set('prompt2', `使用${get.translation(trigger.cards[0])}`).set('logSkill', event.name.slice(0, -5)).forResult();
@@ -24460,7 +24460,7 @@ const packs = function () {
                     if (typeof event.dchumei_num != 'number') return false;
                     return game.hasPlayer(target => lib.skill.minihumei.filterTarget(null, player, target));
                 },
-                filterTarget: function (card, player, target) {
+                filterTarget(card, player, target) {
                     const list = player.getStorage('minihumei_used');
                     if (!list.includes('draw')) return true;
                     if (!list.includes('give') && target.countCards('he')) return true;
