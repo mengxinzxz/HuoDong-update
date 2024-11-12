@@ -858,15 +858,6 @@ export function content(config, pack) {
 		}
 	}
 
-	//图片素材变更
-	//虽说有了折中的势力表示法但是OL还是先给晋谢个罪
-	if (lib.config.extension_活动武将_HD_yrnsm) {
-		[['clan_wuqiao', 'clan'], ['wangyan', 'sp'], ['clan_wanglun', 'clan'], ['ol_peixiu', 'sp']].forEach(list => {
-			lib.characterPack[list[1]][list[0]][4] = ['ext:活动武将/image/character/' + list[0] + '.jpg'].concat(lib.characterPack[list[1]][list[0]][4] || []);
-			if (lib.character[list[0]]) lib.character[list[0]][4] = ['ext:活动武将/image/character/' + list[0] + '.jpg'].concat(lib.character[list[0]][4] || []);
-		});
-	}
-
 	//precGuoZhan(分界线，便于我搜过来)
 	if (get.mode() == 'guozhan') {
 		//国战武将技能修复
