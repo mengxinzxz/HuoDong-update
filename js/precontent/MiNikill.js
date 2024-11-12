@@ -11709,20 +11709,16 @@ const packs = function () {
                 subSkill: {
                     wusheng: {
                         charlotte: true,
-                        trigger: { player: 'useCardToTargeted' },
+                        trigger: { global: "useCardToBegin" },
                         filter(event, player) {
-                            return event.getParent().skill === 'miniweilin_backup' && event.getParent().triggeredTargets3.length === event.targets.length;
+                            return event.skill === "miniweilin_backup";
                         },
                         forced: true,
                         popup: false,
-                        lastDo: true,
                         content() {
-                            const targets = trigger.targets.slice().sortBySeat();
-                            player.line(targets);
-                            for (const target of targets) {
-                                target.addTempSkill('olsbweilin_wusheng');
-                                target.markAuto('olsbweilin_wusheng', [get.color(trigger.card)]);
-                            }
+                            const target = trigger.target;
+                            target.addTempSkill("miniweilin_wusheng");
+                            target.markAuto("miniweilin_wusheng", [get.color(trigger.card)]);
                         },
                     },
                     zhong: {
@@ -30323,7 +30319,7 @@ const packs = function () {
             minifuman: '抚蛮',
             minifuman_info: '出牌阶段每名角色限一次。你可以弃置一张牌，令一名其他角色从牌堆中获得一张【杀】。然后其失去此【杀】后，你与其各摸一张牌。此【杀】结算完成后，若此【杀】造成过伤害，你摸一张牌。',
             miniweilin: '威临',
-            miniweilin_info: '①每回合限一次，你可以将一张牌当作任意【杀】/【酒】/【忠】/【义】使用，且你以此法使用的牌指定最后一个目标后，你令所有目标角色本回合与此牌颜色相同的手牌均视为【杀】。②当你使用或打出牌后，若此牌为你本局使用或打出的7的倍数张，则你可以获得一张【水淹七军】。',
+            miniweilin_info: '①每回合限一次，你可以将一张牌当作任意【杀】/【酒】/【忠】/【义】使用，且目标角色本回合与此牌颜色相同的手牌均视为【杀】。②当你使用或打出牌后，若此牌为你本局使用或打出的7的倍数张，则你可以获得一张【水淹七军】。',
             mini_zhong: '忠',
             mini_zhong_info: '当其他角色受到伤害时，使用此牌，将此伤害转移给自己。',
             mini_yi: '义',
