@@ -82,7 +82,7 @@ const packs = function () {
             Mbaby_wangshuang: ['male', 'wei', 8, ['minizhuilie']],
             Mbaby_chenlin: ['male', 'wei', 3, ['bifa', 'minisongci']],
             Mbaby_liuye: ['male', 'wei', 3, ['minipoyuan', 'dchuace'], ['die:dc_liuye']],
-            Mbaby_wenqin: ['male', 'wei', 4, ['olguangao', 'olhuiqi']],
+            Mbaby_wenqin: ['male', 'wei', 4, ['olguangao', 'minihuiqi']],
             //蜀
             Mbaby_guanyu: ['male', 'shu', 4, ['minirewusheng', 'minituodao', 'jsrgguanjue']],
             Mbaby_zhugeliang: ['male', 'shu', 3, ['minireguanxing', 'minikongcheng']],
@@ -5381,6 +5381,50 @@ const packs = function () {
             },
             minipiliche: {
                 inherit: 'pilitoushiche',
+            },
+            minihuiqi: {
+                audio: 'olhuiqi',
+                inherit: 'olhuiqi',
+                derivation: 'minixieju',
+                async content(event, trigger, player) {
+                    player.awakenSkill(event.name);
+                    if (player.isDamaged()) await player.recover();
+                    await player.addSkills('minixieju');
+                },
+            },
+            minixieju: {
+                audio: 'olxieju',
+                inherit: 'olxieju',
+                filterTarget(card, player, target) {
+                    return get.event().olxieju.includes(target);
+                },
+                async content(event, trigger, player) {
+                    const next = event.target.chooseToUse();
+                    next.set('openskilldialog', '偕举：是否将一张黑色牌当杀使用？');
+                    next.set('norestore', true);
+                    next.set('_backupevent', event.name + '_backup');
+                    next.set('custom', {
+                        add: {},
+                        replace: { window: function () { } },
+                    });
+                    next.backup(event.name + '_backup');
+                    await next;
+                },
+                subSkill: {
+                    backup: {
+                        filterCard(card) {
+                            return get.itemtype(card) == 'card' && get.color(card) == 'black';
+                        },
+                        position: 'hes',
+                        viewAs: {
+                            name: 'sha',
+                        },
+                        prompt: '将一张黑色牌当杀使用',
+                        check(card) {
+                            return 7 - get.value(card);
+                        },
+                    }
+                },
             },
             //蜀
             //关羽
@@ -29827,7 +29871,11 @@ const packs = function () {
             minipoyuan: '破垣',
             minipoyuan_info: '游戏开始时或准备阶段，若你的装备区内：没有【霹雳车】，则你可以将一张【霹雳车】置入装备区；有【霹雳车】，则你可以弃置一名其他角色至多两张牌。',
             minipiliche: '霹雳投石车',
-            minipiliche_info: '锁定技。①你计算与其他角色的距离-1，当此牌离开你的装备区时，销毁之。②你于回合内使用基本牌无距离限制，且当你于回合内使用基本牌时，你令此牌的牌面数值+1。③当你于回合外使用或打出基本牌时，你摸一张牌。。',
+            minipiliche_info: '锁定技。①你计算与其他角色的距离-1，当此牌离开你的装备区时，销毁之。②你于回合内使用基本牌无距离限制，且当你于回合内使用基本牌时，你令此牌的牌面数值+1。③当你于回合外使用或打出基本牌时，你摸一张牌。',
+            minihuiqi: '彗启',
+            minihuiqi_info: '觉醒技。一名角色回合结束后，若你与其他两名角色于此回合成为过牌的目标，你回复1点体力并获得〖偕举〗。',
+            minixieju: '偕举',
+            minixieju_info: '出牌阶段限一次。你可以令任意名本回合成为过牌的目标的角色可以依次将一张黑色牌当【杀】使用。。',
             //蜀
             Mbaby_guanyu: '欢杀关羽',
             Mbaby_zhugeliang: '欢杀诸葛亮',
