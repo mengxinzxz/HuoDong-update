@@ -93,7 +93,7 @@ const packs = function () {
             wechat_caiyong: ['male', 'qun', 3, ['wechatbizhuan', 'wechattongbo']],
             wechat_xusheng: ['male', 'wu', 4, ['wechatpojun']],
             wechat_yufan: ['male', 'wu', 3, ['wechatzongxuan', 'wechatzhiyan']],
-            wechat_handang: ['male', 'wu', 3, ['gongji', 'wechatjiefan']],
+            wechat_handang: ['male', 'wu', 4, ['gongji', 'wechatjiefan']],
             wechat_wanglang: ['male', 'wei', 3, ['gushe', 'wechatjici']],
             wechat_huanghao: ['male', 'shu', 3, ['wechatqinqing', 'wechathuisheng']],
             wechat_gongsunyuan: ['male', 'qun', 4, ['wechathuaiyi']],
