@@ -66,7 +66,7 @@ const packs = function () {
             Mbaby_sp_jiaxu: ['male', 'wei', 3, ['zhenlue', 'minijianshu', 'miniyongdi']],
             Mbaby_yinfuren: ['female', 'wei', 3, ['dcyingyu', 'miniyongbi']],
             Mbaby_sp_caoren: ['male', 'wei', 4, ['miniweikui', 'minilizhan']],
-            Mbaby_guojia: ['male', 'wei', 3, ['tiandu', 'new_reyiji', 'minishenglun']],
+            Mbaby_guojia: ['male', 'wei', 3, ['tiandu', 'new_reyiji', 'minishenglun'], ['tempname:re_guojia', 'die:re_guojia']],
             Mbaby_caohong: ['male', 'wei', 4, ['miniyuanhu', 'minijuezhu']],
             Mbaby_sb_caocao: ['male', 'wei', 4, ['minisbjianxiong', 'minisbqingzheng', 'sbhujia'], ['zhu']],
             Mbaby_zhugedan: ['male', 'wei', 4, ['minigongao', 'minijuyi'], ['tempname:zhugedan']],
@@ -221,7 +221,7 @@ const packs = function () {
             Mbaby_gaoshun: ['male', 'qun', 4, ['minixianzhen', 'minijinjiu']],
             Mbaby_caifuren: ['female', 'qun', 3, ['minireqieting', 'minirexianzhou']],
             Mbaby_lijue: ['male', 'qun', '5/6', ['xinfu_langxi', 'xinfu_yisuan']],
-            Mbaby_zuoci: ['male', 'qun', 3, ['minishendao', 'minixinsheng']],
+            Mbaby_zuoci: ['male', 'qun', 3, ['minishendao', 'minixinsheng'], ['die:true']],
             Mbaby_xuyou: ['male', 'qun', 3, ['minichenglve', 'nzry_shicai', 'nzry_cunmu']],
             Mbaby_gongsunzan: ['male', 'qun', 4, ['miniqiaomeng', 'miniyicong']],
             Mbaby_pangde: ['male', 'qun', 4, ['mashu', 'minijianchu']],
@@ -3606,7 +3606,11 @@ const packs = function () {
             minispwusheng: {
                 group: ['minispwusheng_wusheng', 'minispwusheng_effect'],
                 audio: 'wusheng',
-                audioname: ['jsp_guanyu', 'guansuo'],
+                audioname: ['jsp_guanyu'],
+                audioname2: {
+                    guanzhang: "wusheng_guanzhang",
+                    guansuo: "wusheng_guansuo",
+                },
                 trigger: { player: 'phaseBegin' },
                 forced: true,
                 locked: false,
@@ -3619,7 +3623,11 @@ const packs = function () {
                 subSkill: {
                     wusheng: {
                         audio: 'wusheng',
-                        audioname: ['jsp_guanyu', 'guansuo'],
+                        audioname: ['jsp_guanyu'],
+                        audioname2: {
+                            guanzhang: "wusheng_guanzhang",
+                            guansuo: "wusheng_guansuo",
+                        },
                         enable: ['chooseToRespond', 'chooseToUse'],
                         filterCard: function (card, player) {
                             return get.color(card) == 'red';
@@ -3652,7 +3660,11 @@ const packs = function () {
                             },
                         },
                         audio: 'wusheng',
-                        audioname: ['jsp_guanyu', 'guansuo'],
+                        audioname: ['jsp_guanyu'],
+                        audioname2: {
+                            guanzhang: "wusheng_guanzhang",
+                            guansuo: "wusheng_guansuo",
+                        },
                         inherit: 'jie',
                         filter: function (event, player) {
                             return lib.skill.jie.filter(event) && event.card.isCard;
@@ -5429,7 +5441,10 @@ const packs = function () {
             miniwusheng: {
                 group: 'miniwusheng_damage',
                 audio: 'wusheng',
-                audioname: ['guanzhang', 'guansuo'],
+                audioname2: {
+                    guanzhang: "wusheng_guanzhang",
+                    guansuo: "wusheng_guansuo",
+                },
                 trigger: { player: 'phaseBegin' },
                 forced: true,
                 locked: false,
@@ -5447,7 +5462,10 @@ const packs = function () {
                             },
                         },
                         audio: 'wusheng',
-                        audioname: ['guanzhang', 'guansuo'],
+                        audioname2: {
+                            guanzhang: "wusheng_guanzhang",
+                            guansuo: "wusheng_guansuo",
+                        },
                         inherit: 'jie',
                     },
                 },
@@ -6296,7 +6314,7 @@ const packs = function () {
             },
             minidangxian: {
                 audio: 'dangxian',
-                audioname: ['guansuo'],
+                audioname2: { guansuo: "dangxian_guansuo" },
                 trigger: { player: 'phaseBegin' },
                 forced: true,
                 locked: false,
@@ -9894,7 +9912,11 @@ const packs = function () {
             minirewusheng: {
                 group: ['minirewusheng_wusheng', 'minirewusheng_effect'],
                 audio: 'wusheng',
-                audioname: ['guanzhang', 'guansuo', 'jsp_guanyu'],
+                audioname: ['jsp_guanyu'],
+                audioname2: {
+                    guanzhang: "wusheng_guanzhang",
+                    guansuo: "wusheng_guansuo",
+                },
                 trigger: { player: 'phaseBegin' },
                 forced: true,
                 locked: false,
@@ -9907,7 +9929,11 @@ const packs = function () {
                 subSkill: {
                     wusheng: {
                         audio: 'wusheng',
-                        audioname: ['guanzhang', 'guansuo', 'jsp_guanyu'],
+                        audioname: ['jsp_guanyu'],
+                        audioname2: {
+                            guanzhang: "wusheng_guanzhang",
+                            guansuo: "wusheng_guansuo",
+                        },
                         enable: ['chooseToRespond', 'chooseToUse'],
                         filterCard: function (card, player) {
                             return get.color(card) == 'red';
@@ -9937,7 +9963,11 @@ const packs = function () {
                             },
                         },
                         audio: 'wusheng',
-                        audioname: ['guanzhang', 'guansuo', 'jsp_guanyu'],
+                        audioname: ['jsp_guanyu'],
+                        audioname2: {
+                            guanzhang: "wusheng_guanzhang",
+                            guansuo: "wusheng_guansuo",
+                        },
                         inherit: 'jie',
                     },
                 },
@@ -13100,6 +13130,7 @@ const packs = function () {
                 subSkill: { damage: { audio: 'decadepojun', inherit: 'repojun3' } },
             },
             minirepojunx: {
+                audio: 'decadepojun',
                 trigger: {
                     player: 'useCardToPlayered',
                     target: 'useCardToTargeted',
@@ -13169,6 +13200,7 @@ const packs = function () {
                 }
             },
             miniyicheng: {
+                audio: ['yicheng1.mp3', 'yicheng2.mp3'],
                 trigger: {
                     global: ['loseAfter', 'equipAfter', 'addJudgeAfter', 'gainAfter', 'loseAsyncAfter', 'addToExpansionAfter'],
                 },
@@ -18610,7 +18642,8 @@ const packs = function () {
             },
             miniwansha: {
                 audio: 'wansha',
-                audioname: ['shen_simayi', 're_jiaxu'],
+                audioname: ['re_jiaxu'],
+                audioname2: { shen_simayi: "jilue_wansha" },
                 global: 'miniwansha2',
                 trigger: { global: 'dying' },
                 forced: true,
@@ -18640,7 +18673,8 @@ const packs = function () {
                 subSkill: {
                     effect: {
                         audio: 'wansha',
-                        audioname: ['shen_simayi', 're_jiaxu'],
+                        audioname: ['re_jiaxu'],
+                        audioname2: { shen_simayi: "jilue_wansha" },
                         trigger: {
                             player: 'phaseUseBegin',
                         },
@@ -25569,7 +25603,7 @@ const packs = function () {
                         },
                     },
                     wansha: {
-                        audio: 'wansha_shen_simayi',
+                        audio: 'jilue_wansha',
                         trigger: { global: 'dying' },
                         filter: function (event, player) {
                             if (!_status.currentPhase || player.hasSkill('minijilve_miniwansha')) return false;
@@ -25581,7 +25615,7 @@ const packs = function () {
                         logTarget: 'player',
                         content: function () {
                             player.removeMark('minirenjie', 1);
-                            player.addTempSkill('minijilve_miniwansha', ['phaseZhunbeiAfter', 'phaseJudgeAfter', 'phaseDrawAfter', 'phaseUseAfter', 'phaseDiscardAfter', 'phaseJieshuAfter', 'phaseAfter']);
+                            player.addTempSkill('minijilve_miniwansha', ['phaseBefore', 'phaseChange', 'phaseAfter']);
                             game.log(player, '获得了', '#g【完杀】', '效果');
                         },
                     },
@@ -30443,7 +30477,7 @@ const packs = function () {
             minirepojunx: '破军',
             minirepojunx_info: '当你使用【杀】指定目标或成为【杀】的目标后，你可以将对方的至多X张牌置于其武将牌上（X为你的体力上限），然后其于当前回合结束时获得这些牌。',
             miniyicheng: '疑城',
-            miniyicheng_info: '锁定技，一名角色的武将牌的牌数变化后，若其武将牌上的类别数：1.为一，其本回合非锁定技失效且不能使用或打出手牌；2.为二，其本回合受到的伤害+1；3.为三，你摸三张牌。',
+            miniyicheng_info: '锁定技，一名角色的武将牌的牌数变化后，若其武将牌上的类别数：为1，其本回合非锁定技失效且不能使用或打出手牌；为2，其本回合受到的伤害+1；为3，你摸三张牌。',
             minianxu: '安恤',
             minianxu_info: '出牌阶段开始和结束时，你可以获得一名手牌数最多的其他角色的一张手牌，然后若此牌的花色为黑桃，该角色摸一张牌。',
             minilihuo: '疠火',
@@ -31119,7 +31153,7 @@ const packs = function () {
             minijilve_jizhi_info: '当你使用锦囊牌时，你可以弃置1枚“忍”并摸一张牌。若此牌为：基本牌，你本回合手牌上限+1；锦囊牌，你本回合使用【杀】的额定次数+1；装备牌，你可以将此牌置入一名其他角色的装备区。',
             minijilve_wansha: '完杀',
             minijilve_miniwansha: '完杀',
-            minijilve_wansha_info: '当一名角色于你的回合内进入濒死状态时，你可以弃置1枚“忍”，于本阶段获得〖完杀〗效果。',
+            minijilve_wansha_info: '当一名角色于你的回合内进入濒死状态时，你可以弃置1枚“忍”并于本阶段获得〖完杀〗效果。',
             minijuejing: '绝境',
             minijuejing_info: '锁定技，你的手牌上限+3；当你进入或脱离濒死状态时，你摸一张牌。',
             minilonghun: '龙魂',
