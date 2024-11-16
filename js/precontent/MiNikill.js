@@ -159,7 +159,7 @@ const packs = function () {
             //吴
             Mbaby_bulianshi: ['female', 'wu', 3, ['minianxu', 'zhuiyi']],
             Mbaby_chengpu: ['male', 'wu', 4, ['minilihuo', 'minichunlao']],
-            Mbaby_daqiao: ['female', 'wu', 3, ['miniguose', 'miniwanrong', 'liuli']],
+            Mbaby_daqiao: ['female', 'wu', 3, ['miniguose', 'miniwanrong', 'liuli'], ['tempname:re_daqiao', 'die:re_daqiao']],
             Mbaby_ganning: ['male', 'wu', 4, ['miniqixi', 'minifenwei']],
             Mbaby_huanggai: ['male', 'wu', 4, ['kurou', 'minizhaxiang']],
             Mbaby_lusu: ['male', 'wu', 3, ['miniolhaoshi', 'minidimeng'], ['die:ol_lusu']],
@@ -188,7 +188,7 @@ const packs = function () {
             Mbaby_xushi: ['female', 'wu', 3, ['miniwengua', 'minifuzhu']],
             Mbaby_buzhi: ['male', 'wu', 3, ['minihongde', 'minidingpan']],
             Mbaby_lukang: ['male', 'wu', 4, ['drlt_qianjie', 'minijueyan', 'minihuairou'], ['tempname:lukang']],
-            Mbabysp_daqiao: ['female', 'wu', 3, ['miniyanxiao', 'miniwanrong', 'minianxian']],
+            Mbabysp_daqiao: ['female', 'wu', 3, ['miniyanxiao', 'miniwanrong', 'minianxian'], ['die:re_daqiao']],
             Mbaby_sunhao: ['male', 'wu', 5, ['minicanshi', 'minichouhai', 'guiming'], ['zhu']],
             Mbaby_re_jsp_pangtong: ['male', 'wu', 3, ['miniguolun', 'minisongsang', 'xinfu_zhanji']],
             Mbaby_luyusheng: ['female', 'wu', 3, ['minizhente', 'minizhiwei']],
@@ -8619,7 +8619,7 @@ const packs = function () {
             //夏侯霸
             minibaobian: {
                 derivation: ['minitiaoxin', 'minisppaoxiao', 'minishensu'],
-                audio: 'baobian',
+                audio: 'rebaobian',
                 trigger: { player: 'damageEnd' },
                 filter: function (event, player) {
                     for (var i of lib.skill.minibaobian.derivation) {
@@ -11322,14 +11322,13 @@ const packs = function () {
             //sp夏侯氏
             minispyanyu: {
                 audio: 'sbyanyu',
-                trigger: {
-                    global: 'phaseUseBegin',
-                },
+                trigger: { global: 'phaseUseBegin' },
                 filter(event, player) {
-                    return player.countCards('he') > 0;
+                    return player.hasCard(card => _status.connectMode || lib.filter.cardDiscardable(card, player), 'he');
                 },
                 async cost(event, trigger, player) {
-                    const next = player.chooseToDiscard('he', get.prompt(event.name.slice(0, -5)));
+                    const name = event.name.slice(0, -5);
+                    const next = player.chooseToDiscard('he', get.prompt(name));
                     if (player == trigger.player) {
                         next.set('goon', (function () {
                             var map = {
@@ -11390,8 +11389,10 @@ const packs = function () {
                             return map[type] - get.value(cardx);
                         })
                     }
+                    next.logSkill = name;
                     event.result = await next.forResult();
                 },
+                popup: false,
                 async content(event, trigger, player) {
                     player.addTempSkill(event.name + '_effect');
                     player.markAuto(event.name, [get.type2(event.cards[0])]);
@@ -12277,17 +12278,14 @@ const packs = function () {
                 },
             },
             miniwanrong: {
-                audio: 'guose',
+                audio: 'reguose',
                 trigger: {
                     player: 'loseAfter',
                     global: ['equipAfter', 'addJudgeAfter', 'gainAfter', 'loseAsyncAfter', 'addToExpansionAfter'],
                 },
-                filter: function (event, player) {
+                filter(event, player) {
                     if (event.name == 'gain' && event.player == player) return false;
-                    var evt = event.getl(player);
-                    return evt && evt.cards2 && evt.cards2.filter(function (card) {
-                        return get.suit(card) == 'diamond';
-                    }).length;
+                    return event.getl?.(player)?.cards2?.some(card => get.suit(card, player) === 'diamond');
                 },
                 forced: true,
                 locked: true,
@@ -12296,6 +12294,7 @@ const packs = function () {
                 },
             },
             miniguose: {
+                audio: ['wanrong1.mp3', 'wanrong2.mp3'],
                 enable: 'phaseUse',
                 filter: function (event, player) {
                     return player.countCards('hes', { suit: 'diamond' }) > 0;
