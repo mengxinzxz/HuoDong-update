@@ -984,42 +984,11 @@ const packs = function () {
                 },
                 forced: true,
                 content: function () {
-                    game.addGlobalSkill('qin_tongpao_destroy');
                     var card = game.createCard2(trigger.card.name, trigger.card.suit, trigger.card.number);
-                    if (!_status.tongpaoList) _status.tongpaoList = [];
-                    _status.tongpaoList.push(card);
+                    card._destroy = true;
                     player.$gain2(card);
                     game.delayx();
                     player.equip(card);
-                },
-                subSkill: {
-                    destroy: {
-                        charlotte: true,
-                        trigger: { global: 'loseEnd' },
-                        filter: function (event, player) {
-                            if (!_status.tongpaoList) return false;
-                            return event.cards.filter(function (card) {
-                                return _status.tongpaoList.includes(card);
-                            }).length;
-                        },
-                        direct: true,
-                        forceDie: true,
-                        priority: Infinity,
-                        content: function () {
-                            if (!_status.tongpaodestory) _status.tongpaodestory = {};
-                            var list = [];
-                            var cs = trigger.cards;
-                            for (var i = 0; i < cs.length; i++) {
-                                if (_status.tongpaoList.includes(cs[i])) {
-                                    _status.tongpaodestory[cs[i].name] = false;
-                                    _status.tongpaoList.remove(cs[i]);
-                                    list.push(cs[i]);
-                                }
-                            }
-                            game.log(list, '被销毁了');
-                            game.cardsGotoSpecial(list);
-                        },
-                    },
                 },
             },
             qin_shashen: {
@@ -1267,6 +1236,7 @@ const packs = function () {
                     var num = player.maxHp - player.hp;
                     if (num > 0) player.recover(num);
                     'step 1'
+                    player.popup('qin_zhongfu');
                     player.addSkills('qin_zhongfu');
                 },
                 ai: {
@@ -1285,7 +1255,9 @@ const packs = function () {
                 trigger: { player: 'phaseZhunbeiBegin' },
                 forced: true,
                 content: function () {
-                    player.addTempSkills(['new_rejianxiong', 'rerende', 'rezhiheng'].randomGet(), { player: 'phaseBegin' });
+                    const skill = ['new_rejianxiong', 'rerende', 'rezhiheng'].randomGet();
+                    player.popup(skill);
+                    player.addTempSkills(skill, { player: "phaseBegin" });
                 },
             },
             qin_shanwu: {
