@@ -4318,11 +4318,11 @@ const packs = function () {
                     return get.itemtype(event.cards) == 'cards' && event.cards.some(i => get.position(i, true) == 'o') || 2 - player.countMark('sbjianxiong') > 0;
                 },
                 prompt2: function (event, player) {
-                    var gain = get.itemtype(event.cards) == 'cards' && event.cards.some(i => get.position(i, true) == 'o'), draw = 2 - player.countMark('sbjianxiong');
-                    var str = '';
+                    var gain = get.itemtype(event.cards) == 'cards' && event.cards.some(i => get.position(i, true) == 'o');
+                    var str = '', draw = 2 - player.countMark('sbjianxiong');
                     if (gain) str += '获得' + get.translation(event.cards);
                     if (gain && draw > 0) str += '并';
-                    if (draw > 0) str += '摸' + get.cnNumber(1 - player.countMark('sbjianxiong')) + '张牌';
+                    if (draw > 0) str += '摸' + get.cnNumber(draw) + '张牌';
                     if (player.countMark('sbjianxiong')) str += '，然后可以弃1枚“治世”标记';
                     return str;
                 },
