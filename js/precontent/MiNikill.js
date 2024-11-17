@@ -8640,10 +8640,7 @@ const packs = function () {
                 audio: 'rebaobian',
                 trigger: { player: 'damageEnd' },
                 filter: function (event, player) {
-                    for (var i of lib.skill.minibaobian.derivation) {
-                        if (!player.hasSkill(i, null, null, false)) return true;
-                    }
-                    return false;
+                    return lib.skill.minibaobian.derivation.some(i => !player.hasSkill(i, null, null, false));
                 },
                 forced: true,
                 content: function () {
@@ -9856,7 +9853,8 @@ const packs = function () {
                     },
                 },
                 audio: 'paoxiao',
-                audioname: ['guanzhang', 'xiahouba'],
+                audioname: ['xiahouba'],
+                audioname2: { guanzhang: "paoxiao_guanzhang" },
                 trigger: { player: 'useCard' },
                 filter: function (event, player) {
                     if (event.card.name != 'sha') return false;
