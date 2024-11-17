@@ -18631,7 +18631,6 @@ const packs = function () {
             },
             minibenghuai: {
                 audio: 'benghuai',
-                audioname: ['zhugedan'],
                 inherit: 'benghuai',
                 content: function () {
                     var next = game.createEvent('minibenghuai_benghuai');
@@ -23329,7 +23328,6 @@ const packs = function () {
             },
             //王允
             minilianji: {
-                audio: 'lianji',
                 inherit: 'xinlianji',
                 filterTarget(card, player, target) {
                     const cardx = new lib.element.VCard({ name: 'sha', isCard: true });
