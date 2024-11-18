@@ -12,8 +12,6 @@ game.bolShowNewPack = function () {
 	//更新告示
 	var HuoDong_update = [
 		//'/setPlayer/',
-		'bugfix',
-		'修复当前目录未存在“十周年UI”但在lib.config.extensions中有“十周年UI”时导入素材出错的bug',
 		'To be continued...',
 	];
 	//更新武将
