@@ -34,14 +34,6 @@ export function content(config, pack) {
 		}
 	};
 
-	//检测扩展是否存在的简化写法
-	game.TrueHasExtension = function (ext) {
-		return lib.config.extensions && lib.config.extensions.includes(ext);
-	};
-	game.HasExtension = function (ext) {
-		return game.TrueHasExtension(ext) && lib.config['extension_' + ext + '_enable'];
-	};
-
 	//十周年UI美化素材
 	if (game.HasExtension('十周年UI') && game.getFileList && game.readFile && game.writeFile) {
 		for (var img of ['leijin', 'bianzhen', 'mingzhi']) lib.card['zhengsu_' + img].fullskin = true;
@@ -88,7 +80,7 @@ export function content(config, pack) {
 					game.writeFile(data, 'extension/十周年UI/image/card', 'bol_shanshan.webp', () => { });
 				});
 			}
-		});
+		}, () => {});
 	}
 
 	//Hidden--作者专属

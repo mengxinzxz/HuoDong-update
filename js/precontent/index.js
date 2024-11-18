@@ -352,12 +352,6 @@ export function precontent(bilibilicharacter) {
         forceDie: true,
         trigger: { global: 'gameDrawAfter' },
         filter: function (event, player) {
-            game.TrueHasExtension = game.TrueHasExtension || function (ext) {
-                return lib.config.extensions && lib.config.extensions.includes(ext);
-            };
-            game.HasExtension = game.HasExtension || function (ext) {
-                return game.TrueHasExtension(ext) && lib.config['extension_' + ext + '_enable'];
-            };
             const config = lib.config.extension_活动武将_HDfightAudio;
             return config && config !== 'off' && player == game.me && (!game.HasExtension('十周年UI') || !lib.config.extension_十周年UI_gameAnimationEffect);
         },
