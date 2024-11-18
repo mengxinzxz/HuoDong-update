@@ -5949,10 +5949,9 @@ const packs = function () {
                     player.chooseTarget(get.prompt2('bolchouyou'), function (card, player, target) {
                         return _status.event.targets.includes(target);
                     }).set('ai', function (target) {
-                        var player = _status.event.player, trigger = _status.event.getTrigger(), storage = player.storage.bolchouyou2;
+                        var player = _status.event.player, trigger = _status.event.getTrigger(), storage = player.getStorage('bolchouyou2');
                         if (get.effect(player, trigger.card, trigger.player, player) > 0) return 0;
-                        return get.effect(target, trigger.card, trigger.player, player) * ((!storage || !storage.includes(target)) ? 3 : 1);
-                        return
+                        return get.effect(target, trigger.card, trigger.player, player) * (!storage.includes(target) ? 3 : 1);
                     }).set('targets', game.filterPlayer(function (current) {
                         return !trigger.targets.includes(current) && current != player && lib.filter.targetEnabled(trigger.card, trigger.player, current);
                     }));
@@ -5974,38 +5973,19 @@ const packs = function () {
                         target.chat('拒绝');
                         game.log(target, '拒绝代替', player, '成为', trigger.card, '的目标');
                         player.addSkill('bolchouyou2');
-                        if (!player.storage.bolchouyou2.includes(target)) player.storage.bolchouyou2.push(target);
-                        player.markSkill('bolchouyou2');
+                        player.markAuto('bolchouyou2', [target]);
                     }
                 },
             },
             bolchouyou2: {
-                init: function (player) {
-                    if (!player.storage.bolchouyou2) player.storage.bolchouyou2 = [];
-                    for (var skill in lib.skill) {
-                        var info = get.info(skill);
-                        if (skill.indexOf('_') == 0 || !info || info.equipSkill || info.charlotte || info.silent || info.popup === false) continue;
-                        if (!get.is.locked(skill)) lib.skill.bolchouyou2.trigger.global.push(skill + 'Before');
-                        if (info.group) {
-                            var group = Array.isArray(info.group) ? info.group : [info.group];
-                            for (var sk of group) {
-                                var fo = get.info(sk);
-                                if (typeof sk != 'string' || sk.indexOf('_') == 0 || !fo || fo.equipSkill || fo.charlotte || fo.silent || fo.popup === false) continue;
-                                if (!get.is.locked(sk)) lib.skill.bolchouyou2.trigger.global.push(sk + 'Before');
-                            }
-                        }
-                    }
-                },
                 charlotte: true,
+                onremove: true,
                 intro: { content: '已对$产生怨恨' },
-                group: 'bolchouyou3',
                 audio: 'bolchouyou',
                 trigger: { global: ['useCardBefore', 'respondBefore', 'useSkillBefore'] },
                 filter: function (event, player) {
-                    if (!player.storage.bolchouyou2.includes(event.player)) return false;
-                    var skill = ((event.name == 'useCard' || event.name == 'respond' || event.name == 'useSkill') ? event.skill : event.name);
-                    var info = get.info(skill);
-                    return info && !info.equipSkill && !info.charlotte && !info.silent && info.popup !== false && !get.is.locked(skill) && !lib.skill.global.includes(skill);
+                    if (!player.getStorage('bolchouyou2').includes(event.player)) return false;
+                    return get.info('bolchouyou2').getFilter(event[(event.name == 'useCard' || event.name == 'respond' || event.name == 'useSkill') ? 'skill' : 'name'], player);
                 },
                 forced: true,
                 logTarget: 'player',
@@ -6024,28 +6004,32 @@ const packs = function () {
                         var info = get.info(skill);
                         if (info.limited || info.juexingji) trigger.player.restoreSkill(skill);
                         if (info.usable) {
-                            if (player.storage.counttrigger && player.storage.counttrigger[skill]) player.storage.counttrigger[skill]--;
+                            if (player.storage.counttrigger?.counttrigger[skill]) player.storage.counttrigger[skill]--;
                             if (player.getStat('skill')[skill]) player.getStat('skill')[skill]--;
                         }
                         trigger.cancel();
                         if (trigger.name == 'useCard' || trigger.name == 'respond') trigger.getParent().goto(0);
-                        trigger.player.addTempSkill('bolchouyou4', ['phaseZhunbeiBefore', 'phaseJudgeBefore', 'phaseDrawBefore', 'phaseUseBefore', 'phaseDiscardBefore', 'phaseJieshuBefore', 'phaseBefore']);
+                        trigger.player.addTempSkill('bolchouyou4', ['phaseBefore', 'phaseChange', 'phaseAfter']);
                         trigger.player.storage.bolchouyou4.push(skill);
                         trigger.player.disableSkill('bolchouyou4', trigger.player.storage.bolchouyou4);
                     }
+                },
+                group: ['bolchouyou3', 'bolchouyou5'],
+                getFilter(skill, player) {
+                    if (skill.indexOf('_') == 0 || !info || info.equipSkill || info.charlotte || info.silent || info.nopop || info.popup === false) return false;
+                    return !lib.skill.global.includes(skill) && !get.is.locked(skill, player);
                 },
             },
             bolchouyou3: {
                 charlotte: true,
                 trigger: { player: 'recoverEnd' },
                 filter: function (event, player) {
-                    return event.source && player.storage.bolchouyou2.includes(event.source);
+                    return event.source && player.getStorage('bolchouyou2').includes(event.source);
                 },
                 direct: true,
                 firstDo: true,
                 content: function () {
-                    player.storage.bolchouyou2.remove(trigger.source);
-                    player.markSkill('bolchouyou2');
+                    player.unmarkAuto('bolchouyou2', [trigger.source]);
                 },
             },
             bolchouyou4: {
@@ -6056,6 +6040,19 @@ const packs = function () {
                 onremove: function (player) {
                     player.enableSkill('bolchouyou4');
                     delete player.storage.bolchouyou4;
+                },
+            },
+            bolchouyou5: {
+                charlotte: true,
+                trigger: { global: 'logSkillBegin' },
+                filter(event, player) {
+                    const { skill } = event, info = get.info(skill);
+                    return get.info('bolchouyou2').getFilter(skill, player);
+                },
+                forced: true,
+                popup: false,
+                content() {
+                    lib.skill.bolchouyou2.trigger.global.push(trigger.skill + 'Before');
                 },
             },
             //张仲景
