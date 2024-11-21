@@ -140,7 +140,7 @@ const packs = function () {
             wechat_zhiyin_zhenji: ['female', 'wei', 3, ['wechatshenfu', 'wechatsiyuan'], ['die:true']],
             wechat_zhiyin_caiwenji: ['female', 'wei', 3, ['wechatbeijia', 'wechatsifu'], ['die:true']],
             wechat_zhiyin_zhouyu: ['male', 'wu', 3, ['wechatyingrui', 'wechatfenli'/*, 'wechatqugu'*/], ['die:true']],
-            wechat_zhiyin_sunquan: ['male', 'wu', 4, ['wechatzongyue', 'wechatluheng'], ['die:true']],
+            wechat_zhiyin_sunquan: ['male', 'wu', 4, ['wechatzongxi', 'wechatluheng'], ['die:true']],
             wechat_zhiyin_guanyu: ['male', 'shu', 4, ['wechatyihan', 'wechatgywuwei'], ['die:true']],
             //谋攻
             wechat_sb_sunshangxiang: ['female', 'shu', 3, ['wechatsbliangzhu', 'wechatsbjieyin'], ['border:wu']],
@@ -8402,7 +8402,7 @@ const packs = function () {
                 },
             },
             // 极孙权
-            wechatzongyue: {
+            wechatzongxi: {
                 audio: 'ext:活动武将/audio/skill:2',
                 enable: 'phaseUse',
                 usable: 1,
@@ -8426,7 +8426,7 @@ const packs = function () {
                     let { cards } = event;
                     player.$throw(cards.length);
                     if (cards.length > 1) {
-                        const result = await player.chooseToMove(`纵阅：将牌以任意顺序置于牌堆顶`, true).set('list', [['牌堆顶', cards]]).set('processAI', list => {
+                        const result = await player.chooseToMove(`纵阋：将牌以任意顺序置于牌堆顶`, true).set('list', [['牌堆顶', cards]]).set('processAI', list => {
                             const cards = list[0][1].slice(0);
                             cards.sort((a, b) => {
                                 return (_status.event.reverse ? 1 : -1) * (get.value(b) - get.value(a));
@@ -8464,9 +8464,10 @@ const packs = function () {
                         },
                     },
                 },
-                group: 'wechatzongyue_gain',
+                group: 'wechatzongxi_gain',
                 subSkill: {
                     gain: {
+                        audio: "wechatzongxi",
                         trigger: {
                             player: 'chooseToCompareAfter',
                             target: 'chooseToCompareAfter',
@@ -8498,7 +8499,7 @@ const packs = function () {
                 },
                 trigger: { player: 'phaseJieshuBegin' },
                 filter(event, player) {
-                    return player.hasHistory('useSkill', evt => evt.skill == 'wechatzongyue') && get.info('wechatluheng').getTargets(player).length;
+                    return player.hasHistory('useSkill', evt => evt.skill == 'wechatzongxi') && get.info('wechatluheng').getTargets(player).length;
                 },
                 async cost(event, trigger, player) {
                     event.result = await player.chooseTarget(get.prompt2(event.name.slice(0, -5)), (card, player, target) => {
@@ -8512,7 +8513,7 @@ const packs = function () {
                     const sha = get.autoViewAs({ name: 'sha', isCard: true });
                     await player.useCard(sha, event.targets[0], false);
                 },
-                ai: { combo: 'wechatzongyue', }
+                ai: { combo: 'wechatzongxi', }
             },
             // 极关羽
             wechatyihan: {
@@ -9312,10 +9313,10 @@ const packs = function () {
             wechatqugu: '曲顾',
             wechatqugu_info: '当你每回合首次成为其他角色使用牌的目标后，你可以从牌堆中获得一张与此牌类别不同的牌。',
             wechat_zhiyin_sunquan: '极孙权',
-            wechatzongyue: '纵阅',
-            wechatzongyue_info: '①出牌阶段限一次。你可以将至多四张手牌以任意顺序置于牌堆顶，然后与X名角色进行共同拼点（X为你以此法置于牌堆顶的牌数）。赢的角色摸两张牌。②当你进行共同拼点后，你获得其他角色的拼点牌。',
+            wechatzongxi: '纵阋',
+            wechatzongxi_info: '①出牌阶段限一次。你可以将至多四张手牌以任意顺序置于牌堆顶，然后与X名角色进行共同拼点（X为你以此法置于牌堆顶的牌数）。赢的角色摸两张牌。②当你进行共同拼点后，你获得其他角色的拼点牌。',
             wechatluheng: '戮衡',
-            wechatluheng_info: '结束阶段，若你本回合发动过〖纵阅〗，你可以视为对一名本回合进行过共同拼点且其中手牌数最多的其他角色使用一张【杀】。',
+            wechatluheng_info: '结束阶段，若你本回合发动过〖纵阋〗，你可以视为对一名本回合进行过共同拼点且其中手牌数最多的其他角色使用一张【杀】。',
             wechat_zhiyin_guanyu: '极关羽',
             wechatyihan: '翊汉',
             wechatyihan_info: get.ShiwuInform() + '，出牌阶段限一次，你可以展示一名其他角色的一张手牌，然后令其选择一项：1.交给你展示牌；2.你视为对其使用一张无次数限制的【杀】。',
