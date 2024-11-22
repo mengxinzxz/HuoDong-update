@@ -6791,7 +6791,7 @@ const packs = function () {
                         return target != player && target != get.event().getTrigger().source;
                     }).set('ai', target => {
                         const player = get.player(), source = get.event().getTrigger().source;
-                        const list = lib.skill.mbhuiyao.getUnrealDamageTargets(player, [source, game.filterPlayer(i => ![player, source].includes(i))]);
+                        const list = lib.skill.mbhuiyao.getUnrealDamageTargets(player, [[source], game.filterPlayer(i => ![player, source].includes(i))]);
                         return target == list[ui.selected.targets.length] ? 10 : 0;
                     }).forResult();
                 },
