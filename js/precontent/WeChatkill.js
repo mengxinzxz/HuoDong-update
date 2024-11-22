@@ -138,7 +138,7 @@ const packs = function () {
             wechat_zhiyin_sunce: ['male', 'wu', 4, ['wechattaoni', 'wechatpingjiang', 'wechatdingye'], ['die:true', 'zhu']],
             wechat_zhiyin_xunyu: ['male', 'wei', 3, ['wechatwangzuo', 'wechatjuxian', 'wechatxianshi'], ['die:true']],
             wechat_zhiyin_zhenji: ['female', 'wei', 3, ['wechatshenfu', 'wechatsiyuan'], ['die:true']],
-            wechat_zhiyin_caiwenji: ['female', 'wei', 3, ['wechatbeijia', 'wechatsifu'], ['die:true']],
+            wechat_zhiyin_caiwenji: ['female', 'qun', 3, ['wechatbeijia', 'wechatsifu'], ['die:true']],
             wechat_zhiyin_zhouyu: ['male', 'wu', 3, ['wechatyingrui', 'wechatfenli'/*, 'wechatqugu'*/], ['die:true']],
             wechat_zhiyin_sunquan: ['male', 'wu', 4, ['wechatzongxi', 'wechatluheng'], ['die:true']],
             wechat_zhiyin_guanyu: ['male', 'shu', 4, ['wechatyihan', 'wechatgywuwei'], ['die:true']],
