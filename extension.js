@@ -11,11 +11,13 @@ lib.init.css(lib.assetURL + 'extension/活动武将', 'extension');
 game.bolShowNewPack = function () {
 	//更新告示
 	var HuoDong_update = [
-		//'/setPlayer/',
+		'/setPlayer/',
+		'添加欢杀武将管宁，谋姜维，韩遂，毌丘俭',
 		'To be continued...',
 	];
 	//更新武将
 	var HuoDong_players = [
+		'Mbaby_guanning', 'Mbaby_ol_sb_jiangwei', 'Mbaby_re_hansui', 'Mbaby_guanqiujian',
 	];
 	//加载
 	var dialog = ui.create.dialog(
