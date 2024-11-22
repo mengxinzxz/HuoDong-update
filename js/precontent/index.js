@@ -24,14 +24,14 @@ export function precontent(bilibilicharacter) {
         charlotte: true,
         ruleSkill: true,
         trigger: { player: 'dieBegin' },
-        filter: function (event, player) {
+        filter(event, player) {
             return lib.config.background_speak && event.player.name;
         },
         firstDo: true,
         direct: true,
         priority: -Infinity,
         lasrDo: true,
-        content: function () {
+        content() {
             game.broadcastAll(function (name) {
                 game.playAudio('..', 'extension', '活动武将/audio/die', name);
             }, trigger.player.name);
@@ -42,12 +42,12 @@ export function precontent(bilibilicharacter) {
         charlotte: true,
         ruleSkill: true,
         trigger: { global: 'gameStart', player: 'enterGame' },
-        filter: function (event, player) {
+        filter(event, player) {
             return player.name == 'NS_nianshouC' || player.name2 == 'NS_nianshouC';
         },
         priority: 114514,//恶臭(划掉)
         direct: true,
-        content: function () {
+        content() {
             for (var i = 0; i < game.players.length; i++) {
                 if (game.players[i] == player) continue;
                 player.maxHp += game.players[i].maxHp;
@@ -61,14 +61,14 @@ export function precontent(bilibilicharacter) {
         charlotte: true,
         ruleSkill: true,
         trigger: { player: ['phaseAfter', 'phaseCancelled', 'phaseSkipped'] },//伪·一轮的结束
-        filter: function (event, player) {
+        filter(event, player) {
             return !event.skill && player.next == _status.roundStart;
         },
         forceDie: true,
         direct: true,
         priority: -Infinity,
         lastDo: true,
-        content: function () {
+        content() {
             'step 0'
             event.trigger('roundEnd');//End时机常用于技能结算
             'step 1'
@@ -90,14 +90,14 @@ export function precontent(bilibilicharacter) {
         charlotte: true,
         ruleSkill: true,
         trigger: { global: 'chooseButtonBefore' },
-        filter: function (event, player) {
+        filter(event, player) {
             if (!lib.config.extension_活动武将_KQShiJian) lib.config.extension_活动武将_KQShiJian = 'off';
             if (!lib.config.extension_活动武将_GDShiJian) lib.config.extension_活动武将_GDShiJian = 'off';
             if (event.parent.name != 'chooseCharacter' || get.mode() == 'boss') return false;
             return (lib.config.extension_活动武将_KQShiJian != 'off' && !game.hzkqshijianed) || (lib.config.extension_活动武将_GDShiJian != 'off' && !game.GDZZshijianed);
         },
         direct: true,
-        content: function () {
+        content() {
             'step 0'
             if (lib.config.extension_活动武将_KQShiJian != 'off' && !game.hzkqshijianed) {
                 game.hzkqshijianed = true;
@@ -186,12 +186,12 @@ export function precontent(bilibilicharacter) {
         charlotte: true,
         ruleSkill: true,
         trigger: { global: 'gameStart' },
-        filter: function (event, player) {
+        filter(event, player) {
             return game.hslh && (player.name && player.name == 'qin_yingzheng') || (player.name2 && player.name2 == 'qin_yingzheng');
         },
         direct: true,
         priority: 1 + 1 + 4 + 5 + 1 + 4 + 1 + 9 + 1 + 9 + 8 + 1 + 0,
-        content: function () {
+        content() {
             //传国玉玺
             var card1 = get.cardPile2(function (card1) {
                 return card1.name == 'qin_chuanguoyuxi';
@@ -209,13 +209,13 @@ export function precontent(bilibilicharacter) {
         charlotte: true,
         ruleSkill: true,
         trigger: { global: 'phaseBefore' },
-        filter: function (event, player) {
+        filter(event, player) {
             if (!lib.config.extension_活动武将_ShowSeatNum) return false;
             return !game.firstPlayer && game.phaseNumber == 0;
         },
         direct: true,
         priority: 1145141919810,
-        content: function () {
+        content() {
             game.firstPlayer = true;
             game.players.forEach(i => {
                 if (i.getSeatNum() != 0) i.setNickname(get.cnNumber(i.getSeatNum(), true) + '号位');
@@ -233,13 +233,13 @@ export function precontent(bilibilicharacter) {
         charlotte: true,
         ruleSkill: true,
         trigger: { player: 'phaseDiscardBegin' },
-        filter: function (event, player) {
+        filter(event, player) {
             return player.countCards('h') > player.hp;
         },
         direct: true,
         firstDo: true,
         priority: 15,
-        content: function () {
+        content() {
             if (player.hasSkill('zongshi')) player.logSkill('zongshi');
             if (player.hasSkill('rezongshi')) player.logSkill('rezongshi');
             if (player.hasSkill('decadezongshi')) player.logSkill('decadezongshi');
@@ -257,13 +257,13 @@ export function precontent(bilibilicharacter) {
         charlotte: true,
         ruleSkill: true,
         trigger: { player: 'loseMaxHpBegin' },
-        filter: function (event, player) {
+        filter(event, player) {
             return lib.config.extension_活动武将_HDdamageAudio && lib.config.background_audio;
         },
         direct: true,
         priority: -Infinity,
         lastDo: true,
-        content: function () {
+        content() {
             game.broadcastAll(function () {
                 game.playAudio('..', 'extension', '活动武将/audio/effect', 'bilibili_loseMaxHp');
             });
@@ -274,12 +274,12 @@ export function precontent(bilibilicharacter) {
         charlotte: true,
         ruleSkill: true,
         trigger: { player: ['chooseToCompareAfter', 'compareMultipleAfter'], target: ['chooseToCompareAfter', 'compareMultipleAfter'] },
-        filter: function (event, player) {
+        filter(event, player) {
             return (player.name == 'shen_zhangfei' || player.name2 == 'shen_zhangfei') && event.num1 == event.num2;
         },
         priority: -3,
         direct: true,
-        content: function () {
+        content() {
             player.chat('俺也一样');
             game.broadcastAll(function () {
                 if (lib.config.background_speak) game.playAudio('..', 'extension', '活动武将/audio/effect', 'shen_zhangfei_anyeyiyang');
@@ -291,12 +291,12 @@ export function precontent(bilibilicharacter) {
         charlotte: true,
         ruleSkill: true,
         trigger: { player: 'useCard' },
-        filter: function (event, player) {
+        filter(event, player) {
             return (player.name == 'shen_zhangfei' || player.name2 == 'shen_zhangfei') && event.card.name == 'wugu';
         },
         priority: -3,
         direct: true,
-        content: function () {
+        content() {
             player.chat('俺颇有家资');
             game.broadcastAll(function () {
                 if (lib.config.background_speak) game.playAudio('..', 'extension', '活动武将/audio/effect', 'shen_zhangfei_anpoyoujiazi');
@@ -351,14 +351,14 @@ export function precontent(bilibilicharacter) {
         ruleSkill: true,
         forceDie: true,
         trigger: { global: 'gameDrawAfter' },
-        filter: function (event, player) {
+        filter(event, player) {
             const config = lib.config.extension_活动武将_HDfightAudio;
             return config && config !== 'off' && player == game.me && (!game.HasExtension('十周年UI') || !lib.config.extension_十周年UI_gameAnimationEffect);
         },
         direct: true,
         firstDo: true,
         priority: Infinity,
-        content: function () {
+        content() {
             player.$fullscreenpop('游戏开始', 'fire');
             game.broadcastAll(function (config) {
                 if (lib.config.background_audio) game.playAudio('..', 'extension', '活动武将/audio/effect', 'bilibili_OpenTheGame' + (config === 'default' ? '' : ('_' + config)));
@@ -369,14 +369,14 @@ export function precontent(bilibilicharacter) {
         charlotte: true,
         ruleSkill: true,
         trigger: { global: 'xmiaoshou' },
-        filter: function (event, player) {
+        filter(event, player) {
             const config = lib.config.extension_活动武将_HDfightAudio;
             return config && config !== 'off' && event.player == player;
         },
         direct: true,
         firstDo: true,
         forceDie: true,
-        content: function () {
+        content() {
             const config = lib.config.extension_活动武将_HDfightAudio;
             trigger.player.$fullscreenpop({ 'default': '妙手回春', 'decade': '青囊济世', 'ol': '悬壶济世' }[config], 'water');
             game.broadcastAll(function (config) {
@@ -388,14 +388,14 @@ export function precontent(bilibilicharacter) {
         charlotte: true,
         ruleSkill: true,
         trigger: { global: 'xyishu' },
-        filter: function (event, player) {
+        filter(event, player) {
             const config = lib.config.extension_活动武将_HDfightAudio;
             return config && config !== 'off' && event.player == player;
         },
         direct: true,
         firstDo: true,
         forceDie: true,
-        content: function () {
+        content() {
             const config = lib.config.extension_活动武将_HDfightAudio;
             trigger.player.$fullscreenpop({ 'default': '医术高超', 'decade': '神医妙手', 'ol': '杏林春满' }[config], 'water');
             game.broadcastAll(function (config) {
@@ -410,7 +410,7 @@ export function precontent(bilibilicharacter) {
             player: 'phaseEnd',
             global: 'recoverEnd',
         },
-        filter: function (event, player) {
+        filter(event, player) {
             if (event.name === 'phase') return player.storage.jstxyishugaochao;
             if (_status.currentPhase === player) return true;
             return event.player != event.source && event.source == player;
@@ -418,7 +418,7 @@ export function precontent(bilibilicharacter) {
         direct: true,
         firstDo: true,
         forceDie: true,
-        content: function () {
+        content() {
             if (trigger.name === 'phase') delete player.storage.jstxyishugaochao;
             else if (_status.currentPhase !== player) _status.event.trigger('xmiaoshou');
             else {
@@ -435,13 +435,13 @@ export function precontent(bilibilicharacter) {
         charlotte: true,
         ruleSkill: true,
         trigger: { global: 'dieBegin' },
-        filter: function (event, player) {
+        filter(event, player) {
             const config = lib.config.extension_活动武将_HDfightAudio;
             return config && config !== 'off' && event.source == player && event.player != player;
         },
         direct: true,
         firstDo: true,
-        content: function () {
+        content() {
             'step 0'
             if (!player.storage.bilibili_kill) player.storage.bilibili_kill = 0;
             player.storage.bilibili_kill++;
@@ -476,14 +476,14 @@ export function precontent(bilibilicharacter) {
         charlotte: true,
         ruleSkill: true,
         trigger: { source: 'damageBegin4' },
-        filter: function (event, player) {
+        filter(event, player) {
             const config = lib.config.extension_活动武将_HDfightAudio;
             return ['decade', 'default'].includes(config) && event.player != player && event.num >= 3;
         },
         direct: true,
         lastDo: true,
         priority: -Infinity,
-        content: function () {
+        content() {
             const config = lib.config.extension_活动武将_HDfightAudio === 'decade';
             if (trigger.num == 3) {
                 player.$fullscreenpop(config ? '万夫莫敌' : '癫狂屠戮', 'fire');
@@ -530,14 +530,14 @@ export function precontent(bilibilicharacter) {
         ruleSkill: true,
         charlotte: true,
         trigger: { global: 'chooseButtonBefore' },
-        filter: function (event, player) {
+        filter(event, player) {
             if (!lib.config.extension_活动武将_HD_bgmPlay || !game.zhu || game.zhu.identity != 'zhu') return false;
             return !game.bol_playAudio1 && event.parent.name == 'chooseCharacter' && get.mode() == 'identity' && _status.mode == 'normal';
         },
         direct: true,
         firstDo: true,
         priority: Infinity + 114 - 514,
-        content: function () {
+        content() {
             'step 0'
             lib.config.background_music = 'music_off';
             game.playBackgroundMusic();
@@ -555,13 +555,13 @@ export function precontent(bilibilicharacter) {
         ruleSkill: true,
         charlotte: true,
         trigger: { global: ['gameDrawAfter', 'phaseBefore'] },
-        filter: function (event, player) {
+        filter(event, player) {
             return game.bol_playAudio1 && !game.bol_playAudio2;
         },
         direct: true,
         firstDo: true,
         priority: Infinity + 114 - 514,
-        content: function () {
+        content() {
             game.bol_playAudio2 = true;
             var bgm = ((game.zhu && ['wei', 'shu', 'wu', 'qun'].includes(game.zhu.group)) ? game.zhu.group : 'qun');
             ui.backgroundMusic.src = lib.assetURL + 'extension/活动武将/audio/effect/bgm_' + bgm + '.mp3';
@@ -573,13 +573,13 @@ export function precontent(bilibilicharacter) {
         ruleSkill: true,
         charlotte: true,
         trigger: { global: 'phaseBeginStart' },
-        filter: function (event, player) {
+        filter(event, player) {
             return game.bol_playAudio2 && !game.bol_playAudio3 && game.players.length <= 4;
         },
         direct: true,
         firstDo: true,
         priority: Infinity + 114 - 514,
-        content: function () {
+        content() {
             game.bol_playAudiox();
         },
     };

@@ -52,11 +52,11 @@ const packs = function () {
                 forbid: ['guozhan'],
                 unique: true,
                 trigger: { global: 'gameStart', player: 'enterGame' },
-                filter: function (event, player) {
+                filter(event, player) {
                     return player.name == 'cike_meihuashisan' || player.name2 == 'cike_meihuashisan';
                 },
                 direct: true,
-                content: function () {
+                content() {
                     'step 0'
                     var list = ['cike_biandao', 'cike_yingyue', 'cike_huti'];
                     event.videoId = lib.status.videoId++;
@@ -91,11 +91,11 @@ const packs = function () {
                 forbid: ['guozhan'],
                 unique: true,
                 trigger: { global: 'gameStart', player: 'enterGame' },
-                filter: function (event, player) {
+                filter(event, player) {
                     return player.name == 'cike_wuliuqi' || player.name2 == 'cike_wuliuqi';
                 },
                 direct: true,
-                content: function () {
+                content() {
                     'step 0'
                     var list = ['cike_yirong', 'cike_qingsuo', 'cike_xuefa'];
                     event.videoId = lib.status.videoId++;
@@ -126,11 +126,11 @@ const packs = function () {
                 mode: ['guozhan'],
                 unique: true,
                 trigger: { player: 'showCharacterAfter' },
-                filter: function (event, player) {
+                filter(event, player) {
                     return event.toShow && event.toShow.includes('cike_meihuashisan');
                 },
                 direct: true,
-                content: function () {
+                content() {
                     'step 0'
                     var list = ['cike_biandao', 'cike_yingyue', 'cike_huti'];
                     event.videoId = lib.status.videoId++;
@@ -165,11 +165,11 @@ const packs = function () {
                 mode: ['guozhan'],
                 unique: true,
                 trigger: { player: 'showCharacterAfter' },
-                filter: function (event, player) {
+                filter(event, player) {
                     return event.toShow && event.toShow.includes('cike_wuliuqi');
                 },
                 direct: true,
-                content: function () {
+                content() {
                     'step 0'
                     var list = ['cike_yirong', 'cike_qingsuo', 'cike_xuefa'];
                     event.videoId = lib.status.videoId++;
@@ -202,11 +202,11 @@ const packs = function () {
                 unique: true,
                 forced: true,
                 trigger: { global: 'damageBegin4' },
-                filter: function (event, player) {
+                filter(event, player) {
                     return event.player != player && ((get.mode() == 'identity' && get.attitude(player, event.player) > 0) || (get.mode() != 'identity' && event.player.isFriendOf(player)));
                 },
                 logTarget: 'player',
-                content: function () {
+                content() {
                     trigger.num--;
                     player.loseHp();
                     game.asyncDraw([player, trigger.player]);
@@ -215,13 +215,13 @@ const packs = function () {
             cike_feijian: {
                 audio: 'ext:活动武将/audio/skill:true',
                 trigger: { player: 'phaseUseEnd' },
-                filter: function (event, player) {
+                filter(event, player) {
                     return player.getEquips(1).length && player.getHistory('sourceDamage', function (evt) {
                         return evt.player != player;
                     }).length;
                 },
                 forced: true,
-                logTarget: function (event, player) {
+                logTarget(event, player) {
                     return game.filterPlayer(function (current) {
                         if (current == player) return false;
                         return player.getHistory('sourceDamage', function (evt) {
@@ -229,7 +229,7 @@ const packs = function () {
                         }).length;
                     }).sortBySeat();
                 },
-                content: function () {
+                content() {
                     'step 0'
                     player.discard(player.getEquips(1));
                     event.list = lib.skill.cike_feijian.logTarget(trigger, player);
@@ -242,12 +242,12 @@ const packs = function () {
             cike_yirong: {
                 audio: 'ext:活动武将/audio/skill:true',
                 trigger: { source: 'damageBefore' },
-                filter: function (event, player) {
+                filter(event, player) {
                     return game.players.length > 2;
                 },
                 usable: 1,
                 forced: true,
-                content: function () {
+                content() {
                     var list = game.filterPlayer();
                     list.remove(player);
                     list.remove(trigger.player);
@@ -259,12 +259,12 @@ const packs = function () {
             cike_qingsuo: {
                 audio: 'ext:活动武将/audio/skill:true',
                 trigger: { player: 'damageEnd' },
-                filter: function (event, player) {
+                filter(event, player) {
                     return event.source != player;
                 },
                 forced: true,
                 logTarget: 'source',
-                content: function () {
+                content() {
                     player.turnOver();
                     trigger.source.turnOver();
                 },
@@ -272,11 +272,11 @@ const packs = function () {
             cike_xuefa: {
                 audio: 'ext:活动武将/audio/skill:true',
                 trigger: { source: 'damageSource' },
-                filter: function (event, player) {
+                filter(event, player) {
                     return event.player != player && event.player.countCards('he');
                 },
                 forced: true,
-                content: function () {
+                content() {
                     trigger.player.discard(trigger.player.getCards('he').randomGets(get.rand(1, 3)));
                 },
             },
@@ -286,11 +286,11 @@ const packs = function () {
                 unique: true,
                 forced: true,
                 trigger: { global: 'damageBegin4' },
-                filter: function (event, player) {
+                filter(event, player) {
                     return event.source && event.player != player && ((get.mode() == 'identity' && get.attitude(player, event.player) > 0) || (get.mode() != 'identity' && event.player.isFriendOf(player)));
                 },
                 logTarget: 'player',
-                content: function () {
+                content() {
                     trigger.num--;
                     player.loseHp();
                     trigger.source.chooseToDiscard('he', 2, true);
@@ -300,10 +300,10 @@ const packs = function () {
                 audio: 'ext:活动武将/audio/skill:true',
                 trigger: { player: 'useCard' },
                 forced: true,
-                filter: function (event, player) {
+                filter(event, player) {
                     return get.suit(event.card) == 'club';
                 },
-                content: function () {
+                content() {
                     trigger.directHit.addArray(game.filterPlayer(function (current) {
                         return current != player;
                     }));
@@ -313,17 +313,17 @@ const packs = function () {
             cike_biandao: {
                 audio: 'ext:活动武将/audio/skill:true',
                 trigger: { player: 'phaseUseEnd' },
-                filter: function (event, player) {
+                filter(event, player) {
                     return player.getHistory('sourceDamage').length == 0;
                 },
-                logTarget: function (event, player) {
+                logTarget(event, player) {
                     return game.filterPlayer(function (current) {
                         if (get.mode() == 'guozhan') return current.isEnemyOf(player);
                         return get.attitude(player, current) < 0;
                     });
                 },
                 forced: true,
-                content: function () {
+                content() {
                     'step 0'
                     event.list = game.filterPlayer(function (current) {
                         if (get.mode() == 'guozhan') return current.isEnemyOf(player);
@@ -339,7 +339,7 @@ const packs = function () {
             cike_yingyue: {
                 audio: 'ext:活动武将/audio/skill:true',
                 trigger: { player: 'useCard2' },
-                filter: function (event, player) {
+                filter(event, player) {
                     if (player != _status.currentPhase || !event.targets || event.targets.length != 1) return false;
                     return (event.card.name == 'sha' || get.type(event.card) == 'trick') && game.hasPlayer(function (current) {
                         return current != player && !event.targets.includes(current);
@@ -347,7 +347,7 @@ const packs = function () {
                 },
                 usable: 1,
                 direct: true,
-                content: function () {
+                content() {
                     'step 0'
                     player.chooseTarget(get.prompt('cike_yingyue'), '为' + get.translation(trigger.card) + '增加一个目标', function (card, player, target) {
                         var evt = _status.event.getTrigger();
@@ -371,12 +371,12 @@ const packs = function () {
             cike_huti: {
                 audio: 'ext:活动武将/audio/skill:true',
                 trigger: { player: 'damageBegin4' },
-                filter: function (event, player) {
+                filter(event, player) {
                     return event.source && event.source != player && !event.source.getHistory('sourceDamage').length;
                 },
                 forced: true,
                 usable: 1,
-                content: function () {
+                content() {
                     trigger.cancel();
                     player.discard(player.getCards('he', function (card) {
                         return lib.filter.cardDiscardable(card, player, 'cike_huti');
@@ -385,7 +385,7 @@ const packs = function () {
             },
             cike_wenhui: {
                 mod: {
-                    cardUsable: function (card, player) {
+                    cardUsable(card, player) {
                         if (!card.cards || !(game.online ? player == _status.currentPhase : player.isPhaseUsing())) return;
                         for (var i of card.cards) {
                             if (i.hasGaintag('cike_wenhui')) return Infinity;
@@ -395,12 +395,12 @@ const packs = function () {
                 trigger: { global: 'loseAfter' },
                 forced: true,
                 locked: false,
-                filter: function (event, player) {
+                filter(event, player) {
                     var target = _status.currentPhase;
                     if (!target || player != target || event.type != 'discard' || player == event.player || event.getParent(2).player != player) return false;
                     return event.cards2 && event.cards2.length > 0;
                 },
-                content: function () {
+                content() {
                     player.addTempSkill('cike_wenhui_keep');
                     var cards = [], cardx = trigger.cards2;
                     for (var i = 0; i < cardx.length; i++) {
@@ -415,14 +415,14 @@ const packs = function () {
                 subSkill: {
                     keep: {
                         charlotte: true,
-                        onremove: function (player) {
+                        onremove(player) {
                             player.removeGaintag('cike_wenhui');
                         },
                         mod: {
-                            ignoredHandcard: function (card, player) {
+                            ignoredHandcard(card, player) {
                                 if (card.hasGaintag('cike_wenhui')) return true;
                             },
-                            cardDiscardable: function (card, player, name) {
+                            cardDiscardable(card, player, name) {
                                 if (name == 'phaseDiscard' && card.hasGaintag('cike_wenhui')) return false;
                             },
                         },
@@ -432,16 +432,16 @@ const packs = function () {
             cike_qintao: {
                 shaRelated: true,
                 trigger: { player: 'useCardAfter' },
-                filter: function (event, player) {
+                filter(event, player) {
                     return event.card.name == 'sha' && !player.getHistory('sourceDamage', function (evt) {
                         return evt.card == event.card;
                     }).length && event.targets.length == 1;
                 },
-                check: function (event, player) {
+                check(event, player) {
                     return player.hp >= 2;
                 },
                 logTarget: 'targets',
-                content: function () {
+                content() {
                     'step 0'
                     player.loseHp();
                     if (!trigger.targets[0].countCards('he')) result.index = 0;
@@ -456,12 +456,12 @@ const packs = function () {
             },
             cike_xianggong: {
                 trigger: { player: 'damageEnd' },
-                filter: function (event, player) {
+                filter(event, player) {
                     return event.source && event.source.countCards('he');
                 },
                 forced: true,
                 logTarget: 'source',
-                content: function () {
+                content() {
                     'step 0'
                     var num = Math.min(player.getDamagedHp(), trigger.source.countCards('he'));
                     trigger.source.chooseToDiscard(num, 'he', true);
@@ -476,36 +476,36 @@ const packs = function () {
                 animationColor: 'wood',
                 limited: true,
                 mark: true,
-                init: function (player) {
+                init(player) {
                     player.storage.cike_zhibi = false;
                 },
                 enable: 'phaseUse',
-                filter: function (event, player) {
+                filter(event, player) {
                     return !player.storage.cike_zhibi;
                 },
                 intro: {
                     content: 'limited'
                 },
-                filterTarget: function (card, player, target) {
+                filterTarget(card, player, target) {
                     if (get.mode() == 'guozhan') return target.isEnemyOf(player);
                     return get.attitude(player, target) < 0;
                 },
-                content: function () {
+                content() {
                     player.awakenSkill('cike_zhibi');
                     player.storage.cike_zhibi = true;
                     target.addTempSkill('cike_zhibi_block');
                 },
                 subSkill: {
                     block: {
-                        init: function (player, skill) {
+                        init(player, skill) {
                             player.addSkillBlocker(skill);
                         },
-                        onremove: function (player, skill) {
+                        onremove(player, skill) {
                             player.removeSkillBlocker(skill);
                         },
                         charlotte: true,
                         locked: true,
-                        skillBlocker: function (skill, player) {
+                        skillBlocker(skill, player) {
                             return skill != 'cike_zhibi_block' && !lib.skill[skill].charlotte;
                         },
                         mark: true,
@@ -520,7 +520,7 @@ const packs = function () {
             cike_hujia: {
                 audio: 'hujia',
                 trigger: { player: ['chooseToRespondBegin', 'chooseToUseBegin'] },
-                filter: function (event, player) {
+                filter(event, player) {
                     if (event.responded) return false;
                     if (event.cike_hujia) return false;
                     if (!event.filterCard || !event.filterCard({ name: 'shan' }, player, event)) return false;
@@ -530,7 +530,7 @@ const packs = function () {
                     return true;
                 },
                 forced: true,
-                content: function () {
+                content() {
                     "step 0"
                     trigger.cike_hujia = true;
                     var hs = _status.currentPhase.getCards('h');
@@ -551,11 +551,11 @@ const packs = function () {
                 trigger: { global: 'judgeEnd' },
                 forced: true,
                 audio: 'songwei2',
-                filter: function (event, player) {
+                filter(event, player) {
                     var hs = event.player.getCards('he');
                     return event.player != player && hs.length > 0;
                 },
-                content: function () {
+                content() {
                     var hs = trigger.player.getCards('he');
                     if (hs.length > 0) {
                         var card = hs.randomGet();
@@ -568,7 +568,7 @@ const packs = function () {
                 audio: 'xingshuai',
                 forced: true,
                 trigger: { player: 'dyingAfter' },
-                content: function () {
+                content() {
                     event.list = game.filterPlayer(function (current) {
                         if (get.mode() == 'guozhan') return current.isEnemyOf(player);
                         return get.attitude(player, current) < 0;
@@ -583,10 +583,10 @@ const packs = function () {
                 forced: true,
                 usable: 1,
                 trigger: { global: 'damageEnd' },
-                filter: function (event, player) {
+                filter(event, player) {
                     return event.num > 1;
                 },
-                content: function () {
+                content() {
                     player.gainMaxHp();
                 },
             },
@@ -595,14 +595,14 @@ const packs = function () {
                 audio: 'jijiang1',
                 forced: true,
                 trigger: { player: ['useCard', 'respond'] },
-                filter: function (event, player) {
+                filter(event, player) {
                     return event.card.name == 'sha';
                 },
-                init: function (player) {
+                init(player) {
                     player.storage.nownum = 0;
                     player.storage.nextnum = 0;
                 },
-                content: function () {
+                content() {
                     'step 0'
                     player.draw();
                     'step 1'
@@ -613,7 +613,7 @@ const packs = function () {
                 },
                 mark: true,
                 intro: {
-                    content: function (storage, player) {
+                    content(storage, player) {
                         var str = '';
                         if (player.storage.nownum != 0) str += '<span class=\"texiaotext\" style=\"color:#00FF00\">本次</span>出牌阶段可额外使用' + player.storage.nownum + '张【杀】。<br>';
                         if (player.storage.nextnum != 0) str += '<span class=\"texiaotext\" style=\"color:#FF8247\">下个</span>出牌阶段可额外使用' + player.storage.nextnum + '张【杀】。';
@@ -624,7 +624,7 @@ const packs = function () {
                     refresh: {
                         trigger: { player: 'phaseUseBefore' },
                         direct: true,
-                        content: function () {
+                        content() {
                             player.storage.nownum = player.storage.nextnum;
                             player.storage.nextnum = 0;
                         },
@@ -632,13 +632,13 @@ const packs = function () {
                     clear: {
                         trigger: { player: 'phaseUseAfter' },
                         direct: true,
-                        content: function () {
+                        content() {
                             player.storage.nownum = 0;
                         }
                     },
                     plus: {
                         mod: {
-                            cardUsable: function (card, player, num) {
+                            cardUsable(card, player, num) {
                                 if (card.name == 'sha') return num + player.storage.nownum;
                             }
                         },
@@ -649,14 +649,14 @@ const packs = function () {
                 audio: 'ruoyu',
                 forced: true,
                 trigger: { player: 'phaseBefore' },
-                filter: function (event, player) {
+                filter(event, player) {
                     if (game.hasPlayer(function (current) {
                         return current.hp < player.hp;
                     })) return false;
                     if (player.hp == player.maxHp) return false;
                     return true;
                 },
-                content: function () {
+                content() {
                     player.recover();
                 }
             },
@@ -664,10 +664,10 @@ const packs = function () {
                 audio: 'qinwang1',
                 forced: true,
                 trigger: { global: 'useCard' },
-                filter: function (event, player) {
+                filter(event, player) {
                     return event.card.name == 'juedou';
                 },
-                content: function () {
+                content() {
                     var card = get.cardPile2(function (card) {
                         return get.type(card, false) == 'basic';
                     });
@@ -678,11 +678,11 @@ const packs = function () {
             cike_suizhan: {
                 audio: 'ext:活动武将/audio/skill:true',
                 trigger: { player: 'phaseDrawBegin2' },
-                filter: function (event, player) {
+                filter(event, player) {
                     return !event.numFixed;
                 },
                 forced: true,
-                content: function () {
+                content() {
                     trigger.num += player.getExpansions('xiansi').length;
                 },
             },
@@ -690,23 +690,23 @@ const packs = function () {
                 audio: 'zhuning',
                 trigger: { source: 'damageBegin1' },
                 frequent: true,
-                filter: function (event, player) {
+                filter(event, player) {
                     return event.card && (event.card.name == 'sha') && event.notLink() && !player.getHistory('sourceDamage').length;
                 },
-                content: function () {
+                content() {
                     trigger.num++;
                 },
             },
             cike_fengxiang: {
                 audio: 'fengxiang',
                 trigger: { player: 'gainEnd' },
-                filter: function (event, player) {
+                filter(event, player) {
                     return event.source && event.source != player && event.cards && event.cards.length;
                 },
-                prompt: function (event, player) {
+                prompt(event, player) {
                     return '封乡：是否将本次获得的' + get.translation(event.cards) + '当作【杀】使用？';
                 },
-                check: function (event, player) {
+                check(event, player) {
                     var num = event.cards.length;
                     if (num == 1) return true;
                     else if (num == 2) return !player.hasHistory('useCard', function (evt) {
@@ -714,7 +714,7 @@ const packs = function () {
                     });
                     else return false;
                 },
-                content: function () {
+                content() {
                     'step 0'
                     player.chooseTarget('请选择使用【杀】的目标', function (card, player, target) {
                         return player.canUse('sha', target, false);
@@ -735,10 +735,10 @@ const packs = function () {
                 group: ['cike_jitong_judge'],
                 direct: true,
                 trigger: { source: 'damageSource' },
-                filter: function (event, player) {
+                filter(event, player) {
                     return event.card && event.card.name == 'sha' && event.getParent().name == 'sha' && _status.currentPhase == player && !player.hasSkill('cike_jitong_ban');
                 },
-                content: function () {
+                content() {
                     player.addTempSkill('cike_jitong_ban');
                 },
                 subSkill: {
@@ -748,10 +748,10 @@ const packs = function () {
                     judge: {
                         forced: true,
                         trigger: { player: 'phaseEnd' },
-                        filter: function (event, player) {
+                        filter(event, player) {
                             return !player.hasSkill('cike_jitong_ban') && !player.hasSkill('cike_jitong_pro');
                         },
-                        content: function () {
+                        content() {
                             player.addTempSkill('cike_jitong_pro', { player: 'damageBegin4' });
                         },
                     },
@@ -763,7 +763,7 @@ const packs = function () {
                             content: '防止你受到的下次伤害',
                         },
                         trigger: { player: 'damageBegin2' },
-                        content: function () {
+                        content() {
                             trigger.cancel();
                             player.removeSkill('cike_jitong_pro');
                         }
@@ -775,10 +775,10 @@ const packs = function () {
                 forced: true,
                 usable: 1,
                 trigger: { global: 'useCardAfter' },
-                filter: function (event, player) {
+                filter(event, player) {
                     return event.player.isPhaseUsing() && event.card.name == 'tao' && event.player != player && player.hp < player.maxHp;
                 },
-                content: function () {
+                content() {
                     player.recover();
                 },
             },
@@ -786,10 +786,10 @@ const packs = function () {
                 forced: true,
                 audio: 'zhiba2',
                 trigger: { global: ['chooseToCompareAfter', 'compareMultipleAfter'] },
-                filter: function (event, player) {
+                filter(event, player) {
                     return !get.owner(event.card1) || !get.owner(event.card2);
                 },
-                content: function () {
+                content() {
                     var cardsx = [];
                     if (!get.owner(trigger.card1)) cardsx.push(trigger.card1);
                     if (!get.owner(trigger.card2)) cardsx.push(trigger.card2);
@@ -799,11 +799,11 @@ const packs = function () {
             cike_lijun: {
                 audio: 'nzry_lijun1',
                 trigger: { global: 'loseAfter' },
-                filter: function (event, player) {
+                filter(event, player) {
                     return event.player != player && _status.currentPhase == player && event.type == 'discard';
                 },
                 forced: true,
-                content: function () {
+                content() {
                     player.gain(trigger.cards, 'gain2');
                 },
             },
@@ -819,7 +819,7 @@ const packs = function () {
                 subSkill: {
                     eff: {
                         mod: {
-                            globalFrom: function (from, to, distance) {
+                            globalFrom(from, to, distance) {
                                 if (game.hasPlayer(function (current) {
                                     return current.hasSkill('cike_zhaofu') && (get.mode() == 'guozhan' ? current.isFriendOf(from) : get.attitude(from, current) > 0);
                                 })) {
@@ -833,20 +833,20 @@ const packs = function () {
             cike_canshi: {
                 audio: 'canshi',
                 trigger: { player: 'phaseDrawBegin2' },
-                filter: function (event, player) {
+                filter(event, player) {
                     return !event.numFixed && game.hasPlayer(function (current) {
                         if (player.hasSkill('cike_guiming') && current != player) return true;
                         return current.isDamaged();
                     });
                 },
-                prompt: function (event, player) {
+                prompt(event, player) {
                     var num = game.countPlayer(function (current) {
                         if (player.hasSkill('cike_guiming') && current != player) return true;
                         return current.isDamaged();
                     });
                     return '残蚀：是否多摸' + get.cnNumber(num) + '张牌？';
                 },
-                content: function () {
+                content() {
                     var num = game.countPlayer(function (current) {
                         if (player.hasSkill('cike_guiming') && current != player) return true;
                         return current.isDamaged();
@@ -860,17 +860,17 @@ const packs = function () {
                 audio: 'guiming',
                 trigger: { player: 'cike_canshiBegin' },
                 forced: true,
-                content: function () { },
+                content() { },
             },
             cike_yinci: {
                 trigger: { global: 'useCardToPlayered' },
-                filter: function (event, player) {
+                filter(event, player) {
                     return event.target && event.card && (get.type(event.card) == 'trick' || get.type(event.card) == 'basic' && !['shan', 'tao', 'jiu', 'du'].includes(event.card.name))
                         && event.target != event.player && get.distance(event.target, event.player) <= 1
                         && (get.mode() == 'guozhan' ? event.player.isFriendOf(player) : get.attitude(player, event.player) > 0);
                 },
                 forced: true,
-                content: function () {
+                content() {
                     trigger.directHit.add(trigger.target);
                 },
             },

@@ -10,7 +10,7 @@ export let config = {
 		clear: true,
 		intro: '点击检查扩展更新',
 		name: '<button type="button">检查扩展更新</button>',
-		onclick: function () {
+		onclick() {
 		},
 	},
 	*/
@@ -32,7 +32,7 @@ export let config = {
 		name: '神孙权全扩技能池',
 		intro: '打开此选项后，神孙权【驭衡】获得的技能池扩大为全扩（实时生效）',
 		init: false,
-		onclick: function (bool) {
+		onclick(bool) {
 			game.saveConfig('extension_活动武将_ShenSunQuan', bool);
 			game.uncheck();
 			game.check();
@@ -42,7 +42,7 @@ export let config = {
 		name: '神贾诩限定技能池',
 		intro: '打开此选项后，神贾诩【络殊】获得的技能池缩小为玄蝶初版（实时生效）',
 		init: false,
-		onclick: function (bool) {
+		onclick(bool) {
 			game.saveConfig('extension_活动武将_ShenJiaXu', bool);
 			game.uncheck();
 			game.check();
@@ -51,7 +51,7 @@ export let config = {
 	edit_PingJianName: {
 		name: '编辑欢杀将池',
 		clear: true,
-		onclick: function () {
+		onclick() {
 			var container = ui.create.div('.popup-container.editor');
 			var node = container;
 			var map = lib.config.extension_活动武将_PingJianName || lib.skill.minipingjian.getList();
@@ -121,7 +121,7 @@ export let config = {
 	reset_PingJianName: {
 		name: '重置欢杀将池',
 		clear: true,
-		onclick: function () {
+		onclick() {
 			if (confirm('是否重置已编辑的欢杀将池？')) {
 				if (confirm('该操作不可撤销！是否确认重置？')) {
 					game.saveConfig('extension_活动武将_PingJianName', null);
@@ -220,7 +220,7 @@ export let config = {
 	clearFavoriteCharacter: {
 		name: '一键清除已收藏武将',
 		clear: true,
-		onclick: function () {
+		onclick() {
 			if (this.innerHTML == '<span>确认清除</span>') {
 				var list = [];
 				for (var i = 0; i < lib.config.favouriteCharacter.length; i++) {
@@ -245,7 +245,7 @@ export let config = {
 	clearRecentCharacter: {
 		name: '一键清除最近使用武将记录',
 		clear: true,
-		onclick: function () {
+		onclick() {
 			if (this.innerHTML == '<span>确认清除</span>') {
 				game.saveConfig('recentCharacter', [], true);
 				game.uncheck();

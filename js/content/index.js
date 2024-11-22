@@ -93,7 +93,7 @@ export function content(config, pack) {
 		lib.extensionMenu['extension_活动武将'].HDcheckNew = {
 			name: '检查更新公告',
 			clear: true,
-			onclick: function (bool) {
+			onclick(bool) {
 				game.bolShowNewPack();
 			},
 		};
@@ -126,7 +126,7 @@ export function content(config, pack) {
 			firstDo: true,
 			priority: Infinity,
 			direct: true,
-			content: function () {
+			content() {
 				var num1 = lib.config.extension_活动武将_Boss_TZ_level;
 				var num2 = lib.config.extension_活动武将_Boss_YZ_level;
 				switch (player.identity) {
@@ -414,7 +414,7 @@ export function content(config, pack) {
 		lib.rank.rarity.epic.addArray(['sp_huangfusong', 'sp_zhujun']);
 		lib.skill.zhengsu.subSkill.leijin = {
 			mod: {
-				aiOrder: function (player, card, num) {
+				aiOrder(player, card, num) {
 					if (typeof card.number != 'number') return;
 					var history = player.getHistory('useCard', function (evt) {
 						return evt.isPhaseUsing();
@@ -436,7 +436,7 @@ export function content(config, pack) {
 			charlotte: true,
 			forced: true,
 			popup: false,
-			init: function (player) {
+			init(player) {
 				var zsbgxx = document.querySelector('.zhengsubeijing1');
 				var zsbggg = document.querySelector('.zhengsubeijing2');
 				if (!zsbgxx) {
@@ -454,7 +454,7 @@ export function content(config, pack) {
 					player.storage.zhengsu_leijingua.innerHTML = '发起者为' + get.translation(player) + '<br>还需出3张牌' + '<br>出牌点数递增';
 				}
 			},
-			onremove: function (player) {
+			onremove(player) {
 				var zsbgxx = document.querySelector('.zhengsubeijing1');
 				var zsbggg = document.querySelector('.zhengsubeijing2');
 				var zsbgxg = document.querySelector('.zhengsubeijing3');
@@ -466,10 +466,10 @@ export function content(config, pack) {
 				delete player.storage.zhengsu_leijingua3;
 				delete player.storage.zhengsu_leijin;
 			},
-			filter: function (event, player) {
+			filter(event, player) {
 				return player.isPhaseUsing() && player.storage.zhengsu_leijin !== false;
 			},
-			content: function () {
+			content() {
 				var list = player.getHistory('useCard', function (evt) {
 					return evt.isPhaseUsing(player);
 				});
@@ -536,7 +536,7 @@ export function content(config, pack) {
 			charlotte: true,
 			forced: true,
 			popup: false,
-			init: function (player) {
+			init(player) {
 				var zsbgxx = document.querySelector('.zhengsubeijing1');
 				var zsbggg = document.querySelector('.zhengsubeijing2');
 				if (!zsbgxx) {
@@ -554,7 +554,7 @@ export function content(config, pack) {
 					player.storage.zhengsu_bianzhengua.innerHTML = '发起者为' + get.translation(player) + '<br>还需出2张牌' + '<br>出牌花色相同';
 				}
 			},
-			onremove: function (player) {
+			onremove(player) {
 				var zsbgxx = document.querySelector('.zhengsubeijing1');
 				var zsbggg = document.querySelector('.zhengsubeijing2');
 				var zsbgxg = document.querySelector('.zhengsubeijing3');
@@ -565,10 +565,10 @@ export function content(config, pack) {
 				delete player.storage.zhengsu_bianzhengua2;
 				delete player.storage.zhengsu_bianzhengua3;
 			},
-			filter: function (event, player) {
+			filter(event, player) {
 				return player.isPhaseUsing() && player.storage.zhengsu_bianzhen !== false;
 			},
-			content: function () {
+			content() {
 				var list = player.getHistory('useCard', function (evt) {
 					return evt.isPhaseUsing();
 				});
@@ -614,7 +614,7 @@ export function content(config, pack) {
 			intro: { content: '<li>条件：回合内所有于出牌阶段使用的牌花色相同且不少于两张。' },
 			ai: {
 				effect: {
-					player_use: function (card, player, target) {
+					player_use(card, player, target) {
 						if (typeof card != 'object' || !player.isPhaseUsing()) return;
 						var suitx = get.suit(card);
 						var history = player.getHistory('useCard');
@@ -650,7 +650,7 @@ export function content(config, pack) {
 			charlotte: true,
 			forced: true,
 			popup: false,
-			init: function (player) {
+			init(player) {
 				var zsbgxx = document.querySelector('.zhengsubeijing1');
 				var zsbggg = document.querySelector('.zhengsubeijing2');
 				if (!zsbgxx) {
@@ -668,7 +668,7 @@ export function content(config, pack) {
 					player.storage.zhengsu_mingzhigua.innerHTML = '发起者为' + get.translation(player) + '<br>需弃置2张牌' + '<br>弃置花色不同';
 				}
 			},
-			onremove: function (player) {
+			onremove(player) {
 				var zsbgxx = document.querySelector('.zhengsubeijing1');
 				var zsbggg = document.querySelector('.zhengsubeijing2');
 				var zsbgxg = document.querySelector('.zhengsubeijing3');
@@ -681,12 +681,12 @@ export function content(config, pack) {
 				delete player.storage.zhengsu_mingzhigua2;
 				delete player.storage.zhengsu_mingzhigua3;
 			},
-			filter: function (event, player) {
+			filter(event, player) {
 				if (player.storage.zhengsu_mingzhi === false || event.type != 'discard') return false;
 				var evt = event.getParent('phaseDiscard');
 				return evt && evt.player == player;
 			},
-			content: function () {
+			content() {
 				var goon = true, list = [];
 				player.getHistory('lose', function (event) {
 					if (!goon || event.type != 'discard') return false;
@@ -925,29 +925,29 @@ export function content(config, pack) {
 			lib.skill.gzxuanhuo.subSkill.others = {
 				forceaudio: true,
 				audio: 'rexuanhuo',
-				filter: function (event, player) {
+				filter(event, player) {
 					return !player.isUnseen() && player.countCards('h') && player.countCards('he') >= 2 && game.hasPlayer(target => {
 						return lib.skill.gzxuanhuo.subSkill.others.filterTarget(null, player, target);
 					});
 				},
 				enable: 'phaseUse',
-				filterTarget: function (card, player, target) {
+				filterTarget(card, player, target) {
 					return target != player && target.hasSkill('gzxuanhuo') && player.isFriendOf(target);
 				},
-				selectTarget: function () {
+				selectTarget() {
 					var targets = game.filterPlayer(target => lib.skill.gzxuanhuo.subSkill.others.filterTarget(null, _status.event.player, target));
 					return targets.length > 1 ? 1 : -1;
 				},
-				prompt: function () {
+				prompt() {
 					var targets = game.filterPlayer(target => lib.skill.gzxuanhuo.subSkill.others.filterTarget(null, _status.event.player, target));
 					return '弃置一张手牌并交给' + get.translation(targets) + (targets.length > 1 ? '中的一人' : '') + '一张牌，然后获得以下技能中的一个：〖武圣〗〖咆哮〗〖龙胆〗〖铁骑〗〖烈弓〗〖狂骨〗';
 				},
-				filterCard: function (card) {
+				filterCard(card) {
 					return ui.selected.cards.length || get.position(card) == 'h';
 				},
 				selectCard: 2,
 				position: 'he',
-				check: function (card) {
+				check(card) {
 					var player = _status.event.player;
 					if (player.hasSkill('gzpaoxiao', true) || player.getEquip('zhuge')) return 0;
 					if (player.countCards('h', function (cardx) {
@@ -958,7 +958,7 @@ export function content(config, pack) {
 				usable: 1,
 				discard: false,
 				delay: false,
-				content: function () {
+				content() {
 					'step 0'
 					player.discard(cards[0]);
 					if (target) target.gain(cards[1], player, 'giveAuto');
@@ -986,15 +986,15 @@ export function content(config, pack) {
 		lib.skill.gzxingzhao.subSkill.use = {
 			audio: 'gzxingzhao',
 			trigger: { player: 'damageEnd' },
-			filter: function (event, player) {
+			filter(event, player) {
 				var num = lib.skill.gzxingzhao.getNum();
 				return num >= 2 && event.source && event.source.isIn() && player.countCards('h') != event.source.countCards('h');
 			},
-			logTarget: function (event, player) {
+			logTarget(event, player) {
 				return player.countCards('h') > event.source.countCards('h') ? event.source : player;
 			},
 			forced: true,
-			content: function () {
+			content() {
 				lib.skill.gzxingzhao.subSkill.use.logTarget(trigger, player).draw();
 			},
 		};
@@ -1486,10 +1486,10 @@ export function content(config, pack) {
 		charlotte: true,
 		onremove: true,
 		mod: {
-			cardname: function (card) {
+			cardname(card) {
 				if (get.itemtype(card) == 'card' && (get.type(card, null, false) == 'trick' || get.type(card, null, false) == 'delay')) return 'sha';
 			},
-			targetInRange: function (card, player, target) {
+			targetInRange(card, player, target) {
 				if (!player.storage.meibu_range) return;
 				if (target == player.storage.meibu_range) return true;
 			},
@@ -1500,13 +1500,13 @@ export function content(config, pack) {
 	lib.skill._xianghai = {
 		charlotte: true,
 		trigger: { player: ['useCard1', 'respond'] },
-		filter: function (event, player) {
+		filter(event, player) {
 			if (!player.hasSkill('xianghai') || get.is.blocked('xianghai', player)) return false;
 			return event.card.name == 'jiu' && !event.skill && event.cards && event.cards.length == 1 && get.type(event.cards[0]) == 'equip';
 		},
 		priority: 15,
 		direct: true,
-		content: function () { player.logSkill('xianghai') },
+		content() { player.logSkill('xianghai') },
 	};
 	//刘辩
 	lib.skill._dushi = {
@@ -1514,25 +1514,25 @@ export function content(config, pack) {
 		sourceSkill: 'dushi',
 		audio: 'dushi',
 		trigger: { player: 'dying' },
-		filter: function (event, player) {
+		filter(event, player) {
 			return player.hasSkill('dushi') && !get.is.blocked('dushi', player);
 		},
 		priority: 15,
 		forced: true,
-		content: function () { },
+		content() { },
 	};
 	lib.translate._dushi = '毒誓';
 	//暴怒战神
 	lib.skill._shenji = {
 		charlotte: true,
 		trigger: { player: 'useCard1' },
-		filter: function (event, player) {
+		filter(event, player) {
 			if (!player.hasSkill('shenji') || get.is.blocked('shenji', player)) return false;
 			return event.card.name == 'sha' && (event.targets.length > 1 || player.countUsed('sha', true) > 1);
 		},
 		priority: 15,
 		direct: true,
-		content: function () { player.logSkill('shenji') },
+		content() { player.logSkill('shenji') },
 	};
 	//神张角
 	delete lib.skill.yizhao.intro.markcount;

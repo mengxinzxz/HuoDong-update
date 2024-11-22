@@ -57,11 +57,11 @@ const packs = function () {
                 global: 'qin_shangyangbianfa_dying',
                 type: 'trick',
                 enable: true,
-                filterTarget: function (card, player, target) {
+                filterTarget(card, player, target) {
                     return target != player;
                 },
                 selectTarget: 1,
-                content: function () {
+                content() {
                     'step 0'
                     var num = [1, 2].randomGet();
                     target.damage(num).type = 'qin_shangyangbianfa';
@@ -115,7 +115,7 @@ const packs = function () {
                 trigger: { global: 'roundStart' },
                 direct: true,
                 forceDie: true,
-                content: function () {
+                content() {
                     game.countPlayer(function (current) {
                         current.link(true);
                     })
@@ -124,10 +124,10 @@ const packs = function () {
             cpzz: {
                 charlotte: true,
                 mod: {
-                    targetEnabled: function (card) {
+                    targetEnabled(card) {
                         if (card.name == 'tao' && (card.isCard && card.cardid || get.itemtype(card) == 'card')) return false;
                     },
-                    cardSavable: function (card) {
+                    cardSavable(card) {
                         if (card.name == 'tao' && (card.isCard && card.cardid || get.itemtype(card) == 'card')) return false;
                     },
                 },
@@ -138,13 +138,13 @@ const packs = function () {
                     gain: {
                         charlotte: true,
                         trigger: { player: 'phaseBegin' },
-                        filter: function (event, player) {
+                        filter(event, player) {
                             return game.hasPlayer(function (current) {
                                 return current.name == 'qin_baiqi' && get.attitude(current, player) > 0;
                             });
                         },
                         forced: true,
-                        content: function () {
+                        content() {
                             var card = get.cardPile(function (card) {
                                 return card.name == 'tao';
                             });
@@ -155,22 +155,22 @@ const packs = function () {
                         enable: ['chooseToUse', 'chooseToRespond'],
                         filterCard: { name: 'tao' },
                         viewAs: { name: 'sha' },
-                        viewAsFilter: function (player) {
+                        viewAsFilter(player) {
                             if (!player.countCards('h', 'tao')) return false;
                         },
                         prompt: '将一张桃当杀使用或打出',
-                        check: function () { return 1 },
+                        check() { return 1 },
                         ai: {
                             effect: {
-                                target: function (card, player, target, current) {
+                                target(card, player, target, current) {
                                     if (get.tag(card, 'respondSha') && current < 0) return 0.6
                                 },
                             },
                             respondSha: true,
-                            skillTagFilter: function (player) {
+                            skillTagFilter(player) {
                                 if (!player.countCards('h', 'tao')) return false;
                             },
-                            order: function () {
+                            order() {
                                 return get.order({ name: 'sha' }) - 0.1;
                             },
                         },
@@ -180,17 +180,17 @@ const packs = function () {
                         filterCard: { name: 'tao' },
                         viewAs: { name: 'shan' },
                         prompt: '将一张桃当闪打出',
-                        check: function () { return 1 },
-                        viewAsFilter: function (player) {
+                        check() { return 1 },
+                        viewAsFilter(player) {
                             if (!player.countCards('h', 'tao')) return false;
                         },
                         ai: {
                             respondShan: true,
-                            skillTagFilter: function (player) {
+                            skillTagFilter(player) {
                                 if (!player.countCards('h', 'tao')) return false;
                             },
                             effect: {
-                                target: function (card, player, target, current) {
+                                target(card, player, target, current) {
                                     if (get.tag(card, 'respondShan') && current < 0) return 0.6
                                 },
                             },
@@ -201,13 +201,13 @@ const packs = function () {
             scth: {
                 charlotte: true,
                 trigger: { player: 'phaseBegin' },
-                filter: function (event, player) {
+                filter(event, player) {
                     return player.sex == 'male' && game.hasPlayer(function (current) {
                         return current.name == 'qin_miyue';
                     });
                 },
                 forced: true,
-                content: function () {
+                content() {
                     'step 0'
                     var target = game.findPlayer(function (current) {
                         return current.name == 'qin_miyue';
@@ -226,13 +226,13 @@ const packs = function () {
             lscq: {
                 charlotte: true,
                 trigger: { player: ['gainEnd', 'phaseDrawBegin'] },
-                filter: function (event, player, name) {
+                filter(event, player, name) {
                     if (name == 'phaseDrawBegin') return player.sex == 'male';
                     return _status.currentPhase != player && player.name == 'qin_lvbuwei' && (event.animate == 'draw' ||
                         event.getParent().name == 'draw') && event.getParent(2).name != 'lscq';
                 },
                 forced: true,
-                content: function () {
+                content() {
                     if (trigger.name == 'phaseDraw') trigger.num++;
                     else player.draw('nodelay');
                 },
@@ -241,7 +241,7 @@ const packs = function () {
                 charlotte: true,
                 trigger: { source: 'damageBegin3' },
                 usable: 1,
-                filter: function (event, player) {
+                filter(event, player) {
                     if (player.sex != 'male') return false;
                     var target = game.findPlayer(function (current) {
                         return current.name == 'qin_zhaoji';
@@ -249,7 +249,7 @@ const packs = function () {
                     return !target || get.attitude(target, player) > 0;
                 },
                 forced: true,
-                content: function () {
+                content() {
                     trigger.player.draw();
                 },
             },
@@ -258,12 +258,12 @@ const packs = function () {
                 trigger: { player: 'die' },
                 forceDie: true,
                 forced: true,
-                filter: function (event, player) {
+                filter(event, player) {
                     return game.hasPlayer(function (current) {
                         return current.name == 'qin_zhaogao' || current.sex == 'male';
                     }) && player.countCards('he');
                 },
-                content: function () {
+                content() {
                     var cards = player.getCards('he');
                     var zhaogao = game.findPlayer(function (current) {
                         return current.name == 'qin_zhaogao';
@@ -293,7 +293,7 @@ const packs = function () {
                 forbid: ['identity'],
                 audio: 'ext:活动武将/audio/skill:true',
                 trigger: { target: 'useCardToTarget' },
-                filter: function (event, player) {
+                filter(event, player) {
                     if (get.info(event.card).multitarget) return false;
                     if (event.card.name != 'sha' && get.type(event.card) != 'trick') return false;
                     return game.hasPlayer(function (current) {
@@ -301,7 +301,7 @@ const packs = function () {
                     });
                 },
                 direct: true,
-                content: function () {
+                content() {
                     'step 0'
                     player.chooseTarget(get.prompt('qin_gaizhao'), '将' + get.translation(trigger.card) + '转移给其他友方角色', function (card, player, target) {
                         var trigger = _status.event.getTrigger();
@@ -323,14 +323,14 @@ const packs = function () {
                 marktext: '害',
                 intro: { content: 'mark', name: '害忠', name2: '害' },
                 trigger: { global: 'recoverEnd' },
-                filter: function (event, player) {
+                filter(event, player) {
                     return event.player != player;
                 },
-                check: function (event, player) {
+                check(event, player) {
                     return get.attitude(player, event.player) < 0;
                 },
                 logTarget: 'player',
-                content: function () {
+                content() {
                     'step 0'
                     var num = Math.max(1, trigger.player.countMark('qin_haizhong'));
                     event.num = num;
@@ -344,7 +344,7 @@ const packs = function () {
                 audio: 'ext:活动武将/audio/skill:true',
                 trigger: { player: 'phaseZhunbeiBegin' },
                 direct: true,
-                content: function () {
+                content() {
                     'step 0'
                     player.chooseTarget(get.prompt2('qin_zhangzheng'), lib.filter.notMe, [1, game.players.length]).set('ai', function (current) {
                         var player = _status.event.player;
@@ -377,18 +377,18 @@ const packs = function () {
                 global: 'qin_wuan_buff',
                 audio: 'ext:活动武将/audio/skill:true',
                 trigger: { global: 'damageBegin1' },
-                filter: function (event, player) {
+                filter(event, player) {
                     return event.source && event.card && event.card.name == 'sha' && (event.source == player || (get.mode() != 'identity' && event.source.isFriendOf(player)));
                 },
                 forced: true,
-                content: function () {
+                content() {
                     if (trigger.player != player) player.addExpose(0.25);
                     trigger.num++;
                 },
                 subSkill: {
                     buff: {
                         mod: {
-                            cardUsable: function (card, player, num) {
+                            cardUsable(card, player, num) {
                                 if (card.name == 'sha') return num += game.countPlayer(function (current) {
                                     return current.hasSkill('qin_wuan') && (current == player || (get.mode() != 'identity' && current.isFriendOf(player)));
                                 });
@@ -400,14 +400,14 @@ const packs = function () {
             qin_fachu: {
                 audio: 'ext:活动武将/audio/skill:true',
                 trigger: { global: 'dying' },
-                filter: function (event, player) {
+                filter(event, player) {
                     return player.isIn() && event.source == player && event.player != player && event.player.hasEnabledSlot();
                 },
-                check: function (event, player) {
+                check(event, player) {
                     return get.attitude(player, event.player) < 0;
                 },
                 logTarget: 'player',
-                content: function () {
+                content() {
                     var list = Array.from({ length: 5 }).map((_, i) => i + 1);
                     list = list.filter(i => trigger.player.hasEnabledSlot(i));
                     trigger.player.disableEquip(list.randomGet());
@@ -416,15 +416,15 @@ const packs = function () {
             qin_fenshu: {
                 audio: 'ext:活动武将/audio/skill:true',
                 trigger: { global: 'useCard' },
-                filter: function (event, player) {
+                filter(event, player) {
                     return event.player == _status.currentPhase && event.player != player && get.type(event.card) == 'trick';
                 },
-                check: function (event, player) {
+                check(event, player) {
                     return get.attitude(player, event.player) < 0;
                 },
                 usable: 1,
                 logTarget: 'player',
-                content: function () {
+                content() {
                     'step 0'
                     trigger.cancel();
                     game.broadcastAll(ui.clear);
@@ -437,15 +437,15 @@ const packs = function () {
                 marktext: '功',
                 intro: { content: 'mark', name: '垦草', name2: '功' },
                 trigger: { global: 'damageAfter' },
-                filter: function (event, player) {
+                filter(event, player) {
                     return event.source && event.source.isIn();
                 },
-                check: function (event, player) {
+                check(event, player) {
                     if (get.attitude(player, event.source) > 0) return true;
                     return false;
                 },
                 logTarget: 'source',
-                content: function () {
+                content() {
                     trigger.source.addMark('qin_kencao', trigger.num);
                     if (trigger.source.countMark('qin_kencao') >= 3) {
                         trigger.source.removeMark('qin_kencao', trigger.source.countMark('qin_kencao'));
@@ -456,25 +456,25 @@ const packs = function () {
             },
             qin_yitong: {
                 mod: {
-                    targetInRange: function (card, player, target) {
+                    targetInRange(card, player, target) {
                         if (['shunshou', 'sha'].includes(card.name)) return true;
                     },
-                    selectTarget: function (card, player, range) {
+                    selectTarget(card, player, range) {
                         if (['shunshou', 'guohe', 'sha', 'huogong'].includes(card.name) && range[1] != -1) range[1] = Infinity;
                     },
                 },
                 audio: 'ext:活动武将/audio/skill:true',
                 trigger: { player: 'useCard1' },
-                filter: function (event, player) {
+                filter(event, player) {
                     return ['shunshou', 'guohe', 'sha', 'huogong'].includes(event.card.name);
                 },
                 forced: true,
-                content: function () { },
+                content() { },
             },
             qin_lianheng: {
                 audio: 'ext:活动武将/audio/skill:true',
                 trigger: { global: 'phaseBefore', player: ['enterGame', 'phaseZhunbeiBegin'] },
-                filter: function (event, player) {
+                filter(event, player) {
                     var list = game.filterPlayer(function (current) {
                         if (current == player) return false;
                         return get.mode() == 'identity' || current.isEnemyOf(player);
@@ -482,7 +482,7 @@ const packs = function () {
                     return list.length && (event.name != 'phase' || game.phaseNumber == 0);
                 },
                 forced: true,
-                content: function () {
+                content() {
                     'step 0'
                     var targets = game.filterPlayer(function (current) {
                         if (current == player) return false;
@@ -509,7 +509,7 @@ const packs = function () {
                         onremove: (player) => game.log(player, '移去了', '#g“横”', '标记'),
                         charlotte: true,
                         mod: {
-                            playerEnabled: function (card, player, target) {
+                            playerEnabled(card, player, target) {
                                 if (game.hasPlayer(function (current) {
                                     return current.hasSkill('qin_lianheng') && ((get.mode() == 'identity' && current == target) || (get.mode() != 'identity' && target.isFriendOf(current)));
                                 }) || (target.isLinked() && game.lianhenged)) return false;
@@ -518,7 +518,7 @@ const packs = function () {
                         marktext: '横',
                         mark: true,
                         intro: {
-                            content: function () {
+                            content() {
                                 if (get.mode() == 'identity') {
                                     if (game.lianhenged) return '不能对拥有【连横】的角色和已横置角色使用牌';
                                     return '不能对拥有【连横】的角色使用牌';
@@ -539,13 +539,13 @@ const packs = function () {
                 viewAs: { name: 'sha' },
                 filterCard: { color: 'black' },
                 prompt: '将一张黑色手牌当作【杀】使用或打出。',
-                check: function (card) { return 1 / (get.value(card) || 0.5) },
-                viewAsFilter: function (player) {
+                check(card) { return 1 / (get.value(card) || 0.5) },
+                viewAsFilter(player) {
                     return player.countCards('h', { color: 'black' });
                 },
                 ai: {
                     respondSha: true,
-                    skillTagFilter: function (player) {
+                    skillTagFilter(player) {
                         return player.countCards('h', { color: 'black' });
                     },
                 },
@@ -556,13 +556,13 @@ const packs = function () {
                 viewAs: { name: 'shan' },
                 filterCard: { color: 'red' },
                 prompt: '将一张红色手牌当作【闪】使用或打出。',
-                check: function (card) { return 1 / (get.value(card) || 0.5) },
-                viewAsFilter: function (player) {
+                check(card) { return 1 / (get.value(card) || 0.5) },
+                viewAsFilter(player) {
                     return player.countCards('h', { color: 'red' });
                 },
                 ai: {
                     respondShan: true,
-                    skillTagFilter: function (player) {
+                    skillTagFilter(player) {
                         return player.countCards('h', { color: 'red' });
                     },
                 },
@@ -571,7 +571,7 @@ const packs = function () {
                 audio: 'ext:活动武将/audio/skill:true',
                 trigger: { player: 'phaseUseBegin' },
                 forced: true,
-                content: function () {
+                content() {
                     var list = [];
                     for (var i = 0; i < 2; i++) {
                         var cardx = get.cardPile2(function (card) {
@@ -585,14 +585,14 @@ const packs = function () {
             qin_xichu: {
                 audio: 'ext:活动武将/audio/skill:true',
                 trigger: { target: 'useCardToTarget' },
-                filter: function (event, player) {
+                filter(event, player) {
                     return event.card.name == 'sha' && game.hasPlayer(function (current) {
                         return current != player && current != event.player && lib.filter.targetInRange(event.card, event.player, current);
                     });
                 },
                 forced: true,
                 logTarget: 'player',
-                content: function () {
+                content() {
                     'step 0'
                     trigger.player.chooseToDiscard('戏楚：弃置一张点数为6的牌，或令' + get.translation(player) + '将此【杀】转移', function (card) {
                         return get.number(card) == 6;
@@ -616,7 +616,7 @@ const packs = function () {
                 },
                 ai: {
                     effect: {
-                        target: function (card, player, target) {
+                        target(card, player, target) {
                             if (card.name == 'sha' && !player.countCards('h', { number: 6 }) && game.hasPlayer(function (current) {
                                 return current != player && current != target && lib.filter.targetInRange(card, trigger.player, current) && get.effect(current, card, player, player) < 0;
                             })) return 0;
@@ -627,11 +627,11 @@ const packs = function () {
             qin_xiongbian: {
                 audio: 'ext:活动武将/audio/skill:true',
                 trigger: { target: 'useCardToTargeted' },
-                filter: function (event, player) {
+                filter(event, player) {
                     return get.type(event.card) == 'trick';
                 },
                 forced: true,
-                content: function () {
+                content() {
                     'step 0'
                     player.judge(function (result) {
                         if (result.number == 6) return 1;
@@ -648,7 +648,7 @@ const packs = function () {
                     global: 'judge',
                 },
                 direct: true,
-                content: function () {
+                content() {
                     'step 0'
                     var card = trigger.player.judging[0];
                     var judge0 = trigger.judge(card);
@@ -690,13 +690,13 @@ const packs = function () {
             qin_shihuang: {
                 audio: 'ext:活动武将/audio/skill:true',
                 trigger: { global: 'phaseAfter' },
-                filter: function (event, player) {
+                filter(event, player) {
                     var num = game.roundNumber / 100 * 6;
                     if (num > 1) num = 1;
                     return event.player != player && Math.random() <= num;
                 },
                 forced: true,
-                content: function () {
+                content() {
                     player.insertPhase();
                 },
             },
@@ -705,7 +705,7 @@ const packs = function () {
                 audio: 'ext:活动武将/audio/skill:true',
                 trigger: { player: 'phaseZhunbeiBegin' },
                 forced: true,
-                content: function () {
+                content() {
                     var list = [], draw = true;
                     var card1 = get.cardPile(function (card) {
                         return card.name == 'qin_zhenlongchangjian';
@@ -756,20 +756,20 @@ const packs = function () {
             },
             qin_zhenlongchangjian_skill: {
                 trigger: { player: 'useCard' },
-                filter: function (event, player) {
+                filter(event, player) {
                     return get.type(event.card) == 'trick' && player.getHistory('useCard', function (evt) {
                         return get.type(evt.card) == 'trick';
                     }).length == 1;
                 },
                 forced: true,
-                content: function () {
+                content() {
                     trigger.nowuxie = true;
                 },
             },
             qin_chuanguoyuxi_skill: {
                 trigger: { player: 'phaseUseBegin' },
                 direct: true,
-                content: function () {
+                content() {
                     'step 0'
                     var list = ['nanman', 'wanjian', 'taoyuan', 'wugu'];
                     player.chooseButton([get.prompt2('qin_chuanguoyuxi_skill'), [list, 'vcard']]).set('ai', function (button) {
@@ -784,21 +784,21 @@ const packs = function () {
                 derivation: 'qin_shangyangbianfa_dying',
                 audio: 'ext:活动武将/audio/skill:true',
                 mod: {
-                    selectTarget: function (card, player, range) {
+                    selectTarget(card, player, range) {
                         if (card.name == 'qin_shangyangbianfa' && range[1] != -1 && game.bianfaed) range[1]++;
                     },
                 },
                 enable: 'chooseToUse',
                 usable: 1,
-                filterCard: function (card) {
+                filterCard(card) {
                     return get.type(card) == 'trick';
                 },
                 viewAs: { name: 'qin_shangyangbianfa' },
-                viewAsfilter: function (player) {
+                viewAsfilter(player) {
                     if (!player.countCards('h', { type: 'trick' })) return false;
                 },
                 prompt: '将一张普通锦囊牌当作【商鞅变法】使用',
-                check: function (card) {
+                check(card) {
                     return 1 / (get.value(card) || 0.5);
                 },
                 ai: {
@@ -818,11 +818,11 @@ const packs = function () {
             qin_limu: {
                 audio: 'ext:活动武将/audio/skill:true',
                 trigger: { player: 'useCard' },
-                filter: function (event, player) {
+                filter(event, player) {
                     return get.type(event.card) == 'trick';
                 },
                 forced: true,
-                content: function () {
+                content() {
                     trigger.nowuxie = true;
                 },
             },
@@ -833,10 +833,10 @@ const packs = function () {
                 direct: true,
                 charlotte: true,
                 locked: true,
-                filter: function (event, player) {
+                filter(event, player) {
                     return event.getParent().type == 'qin_shangyangbianfa';
                 },
-                content: function () {
+                content() {
                     'step 0'
                     player.judge(function (card) {
                         return get.color(card) == 'black' ? -1 : 0;
@@ -857,11 +857,11 @@ const packs = function () {
                 derivation: 'qin_qinnu_skill',
                 audio: 'ext:活动武将/audio/skill:true',
                 trigger: { player: 'phaseZhunbeiBegin' },
-                filter: function (event, player) {
+                filter(event, player) {
                     return !player.getEquip('qin_qinnu');
                 },
                 forced: true,
-                content: function () {
+                content() {
                     var card = game.createCard('qin_qinnu', Math.random() < 0.5 ? 'diamond' : 'club', 1);
                     player.chooseUseTarget(card, true);
                 },
@@ -869,7 +869,7 @@ const packs = function () {
             qin_qinnu_skill: {
                 inherit: 'qinggang_skill',
                 mod: {
-                    cardUsable: function (card, player, num) {
+                    cardUsable(card, player, num) {
                         if (card.name == 'sha') return num + 1;
                     },
                 },
@@ -877,16 +877,16 @@ const packs = function () {
             qin_changjian: {
                 audio: 'ext:活动武将/audio/skill:true',
                 mod: {
-                    attackFrom: function (from, to, distance) {
+                    attackFrom(from, to, distance) {
                         return distance - 1;
                     },
                 },
                 trigger: { player: 'useCard2' },
-                filter: function (event, player) {
+                filter(event, player) {
                     return event.card && event.card.name == 'sha';
                 },
                 forced: true,
-                content: function () {
+                content() {
                     'step 0'
                     player.chooseTarget(get.prompt('qin_changjian'), '为' + get.translation(trigger.card) + '增加一个目标，或取消并令' + get.translation(trigger.card) + '伤害＋1', function (card, player, target) {
                         return !_status.event.sourcex.includes(target) && player.canUse('sha', target);
@@ -911,11 +911,11 @@ const packs = function () {
                 group: 'qin_liangju_judge',
                 audio: 'ext:活动武将/audio/skill:true',
                 trigger: { player: 'useCardToPlayered' },
-                filter: function (event, player) {
+                filter(event, player) {
                     return event.card.name == 'sha';
                 },
                 forced: true,
-                content: function () {
+                content() {
                     'step 0'
                     trigger.target.judge(function (result) {
                         if (get.suit(result) != 'spade') return 1;
@@ -930,11 +930,11 @@ const packs = function () {
                     judge: {
                         audio: 'qin_liangju',
                         trigger: { target: 'useCardToTargeted' },
-                        filter: function (event, player) {
+                        filter(event, player) {
                             return event.card.name == 'sha';
                         },
                         forced: true,
-                        content: function () {
+                        content() {
                             'step 0'
                             player.judge(function (card) {
                                 return get.suit(card) == 'heart' ? 2 : -2;
@@ -948,14 +948,14 @@ const packs = function () {
             qin_fangzhen: {
                 audio: 'ext:活动武将/audio/skill:true',
                 trigger: { target: 'useCardToTargeted' },
-                filter: function (event, player) {
+                filter(event, player) {
                     if (event.player == player) return false;
                     return (event.card.name == 'sha' || get.type(event.card) == 'trick') && player.inRange(event.player);
                 },
-                check: function (event, player) {
+                check(event, player) {
                     return get.attitude(player, event.player) < 0;
                 },
-                content: function () {
+                content() {
                     'step 0'
                     player.judge(function (card) {
                         return get.color(card) == 'black' ? 1 : -1;
@@ -971,7 +971,7 @@ const packs = function () {
             qin_changbing: {
                 audio: 'ext:活动武将/audio/skill:true',
                 mod: {
-                    attackFrom: function (from, to, distance) {
+                    attackFrom(from, to, distance) {
                         return distance - 2;
                     },
                 },
@@ -979,11 +979,11 @@ const packs = function () {
             qin_tongpao: {
                 audio: 'ext:活动武将/audio/skill:true',
                 trigger: { global: 'useCardAfter' },
-                filter: function (event, player) {
+                filter(event, player) {
                     return event.player != player && !player.getEquips(2).length && get.subtype(event.card) == 'equip2';
                 },
                 forced: true,
-                content: function () {
+                content() {
                     var card = game.createCard2(trigger.card.name, trigger.card.suit, trigger.card.number);
                     card._destroy = true;
                     player.$gain2(card);
@@ -997,16 +997,16 @@ const packs = function () {
                 enable: ['chooseToUse', 'chooseToRespond'],
                 filterCard: true,
                 viewAs: { name: 'sha' },
-                viewAsfilter: function (player) {
+                viewAsfilter(player) {
                     if (!player.countCards('h')) return false;
                 },
                 prompt: '将一张手牌当作【杀】使用或打出',
-                check: function (card) {
+                check(card) {
                     return 5 - get.value(card);
                 },
                 ai: {
                     respondSha: true,
-                    skillTagFilter: function (player) {
+                    skillTagFilter(player) {
                         if (!player.countCards('h')) return false;
                     },
                 },
@@ -1014,7 +1014,7 @@ const packs = function () {
                     draw: {
                         audio: 'qin_shashen',
                         trigger: { source: 'damageSource' },
-                        filter: function (event, player) {
+                        filter(event, player) {
                             if (!event.card || event.card.name != 'sha') return false;
                             var history = player.getHistory('useCard', function (evt) {
                                 return evt.card == event.card;
@@ -1025,7 +1025,7 @@ const packs = function () {
                         },
                         forced: true,
                         locked: false,
-                        content: function () {
+                        content() {
                             player.draw();
                         },
                     },
@@ -1034,7 +1034,7 @@ const packs = function () {
             qin_changsheng: {
                 audio: 'ext:活动武将/audio/skill:true',
                 mod: {
-                    targetInRange: function (card) {
+                    targetInRange(card) {
                         if (card.name == 'sha') return true;
                     },
                 },
@@ -1042,12 +1042,12 @@ const packs = function () {
             qin_taihou: {
                 audio: 'ext:活动武将/audio/skill:true',
                 trigger: { target: 'useCardToTargeted' },
-                filter: function (event, player) {
+                filter(event, player) {
                     return event.player != player && event.player.sex == 'male' && event.card && (event.card.name == 'sha' || get.type(event.card) == 'trick');
                 },
                 forced: true,
                 logTarget: 'player',
-                content: function () {
+                content() {
                     'step 0'
                     var type = get.type2(trigger.card);
                     var eff = get.effect(player, trigger.card, trigger.player, trigger.player);
@@ -1066,7 +1066,7 @@ const packs = function () {
             qin_youmie: {
                 audio: 'ext:活动武将/audio/skill:true',
                 enable: 'phaseUse',
-                filter: function (event, player) {
+                filter(event, player) {
                     return player.countCards('he');
                 },
                 discard: false,
@@ -1074,13 +1074,13 @@ const packs = function () {
                 position: 'he',
                 filterCard: true,
                 filterTarget: true,
-                check: function (card) {
+                check(card) {
                     if (get.position(card) == 'e') return -1;
                     return 5 - get.value(card);
                 },
                 usable: 1,
                 prompt: '将一张牌交给一名角色，该角色于其回合外无法使用或打出牌直到你的下个回合开始',
-                content: function () {
+                content() {
                     target.gain(cards, player, 'giveAuto');
                     target.addSkill('qin_youmie_debuff');
                     player.when('phaseBegin').vars({ target: target }).then(() => target.removeSkill('qin_youmie_debuff'));
@@ -1096,7 +1096,7 @@ const packs = function () {
                         mark: true,
                         marktext: '灭',
                         mod: {
-                            cardEnabled2: function (card, player, target) {
+                            cardEnabled2(card, player, target) {
                                 if (_status.currentPhase != player) return false;
                             },
                         },
@@ -1113,22 +1113,22 @@ const packs = function () {
                     player: 'loseAfter',
                     global: ['equipAfter', 'addJudgeAfter', 'gainAfter', 'loseAsyncAfter', 'addToExpansionAfter'],
                 },
-                filter: function (event, player) {
+                filter(event, player) {
                     if (player.countCards('h')) return false;
                     var evt = event.getl(player);
                     return evt && evt.player == player && evt.hs && evt.hs.length > 0;
                 },
                 forced: true,
-                content: function () {
+                content() {
                     player.turnOver();
                 },
                 ai: {
                     noh: true,
-                    skillTagfilter: function (player, tag) {
+                    skillTagfilter(player, tag) {
                         if (player.countCards('h') != 1) return false;
                     },
                     effect: {
-                        target: function (card, player, target) {
+                        target(card, player, target) {
                             if (!target.isTurnedOver()) return;
                             if (player.hasSkillTag('jueqing', false, target)) return;
                             var num = get.tag(card, 'damage');
@@ -1143,11 +1143,11 @@ const packs = function () {
                     damage: {
                         audio: 'qin_yintui',
                         trigger: { player: 'damageBegin3' },
-                        filter: function (event, player) {
+                        filter(event, player) {
                             return player.isTurnedOver();
                         },
                         forced: true,
-                        content: function () {
+                        content() {
                             trigger.num--;
                             player.draw();
                         },
@@ -1162,15 +1162,15 @@ const packs = function () {
             qin_qihuo: {
                 audio: 'ext:活动武将/audio/skill:true',
                 enable: 'phaseUse',
-                filter: function (event, player) {
+                filter(event, player) {
                     return player.countCards('he');
                 },
                 usable: 1,
                 chooseButton: {
-                    dialog: function (event, player) {
+                    dialog(event, player) {
                         return ui.create.dialog('###奇货###' + lib.translate.qin_qihuo_info);
                     },
-                    chooseControl: function (event, player) {
+                    chooseControl(event, player) {
                         var list = [];
                         for (var type2 of ['basic', 'trick', 'equip']) {
                             if (player.countCards('he', { type: [type2].addArray(type2 == 'trick' ? ['delay'] : []) })) list.push(type2);
@@ -1178,7 +1178,7 @@ const packs = function () {
                         list.push('cancel2');
                         return list;
                     },
-                    check: function (event, player) {
+                    check(event, player) {
                         var map = {};
                         player.getCards('he').forEach(function (card) {
                             var type = get.type2(card);
@@ -1188,12 +1188,12 @@ const packs = function () {
                         var list = Object.keys(map).sort((a, b) => map[b] - map[a]);
                         return list[0];
                     },
-                    backup: function (result, player) {
+                    backup(result, player) {
                         return {
                             audio: 'qin_qihuo',
                             type: result.control,
                             delay: 0,
-                            content: function () {
+                            content() {
                                 var cards = player.getCards('he', function (card) {
                                     return get.type2(card) == lib.skill.qin_qihuo_backup.type;
                                 });
@@ -1211,11 +1211,11 @@ const packs = function () {
             qin_chunqiu: {
                 audio: 'ext:活动武将/audio/skill:true',
                 trigger: { player: ['useCard', 'respond'] },
-                filter: function (event, player) {
+                filter(event, player) {
                     return player.getHistory('useCard').length + player.getHistory('respond').length == 1;
                 },
                 forced: true,
-                content: function () {
+                content() {
                     player.draw();
                 },
             },
@@ -1226,11 +1226,11 @@ const packs = function () {
                 unique: true,
                 trigger: { player: 'phaseZhunbeiBegin' },
                 forced: true,
-                filter: function (event, player) {
+                filter(event, player) {
                     return player.countCards('h') >= player.hp * 3;
                 },
                 derivation: ['qin_zhongfu', 'new_rejianxiong', 'rerende', 'rezhiheng'],
-                content: function () {
+                content() {
                     'step 0'
                     player.awakenSkill('qin_baixiang');
                     var num = player.maxHp - player.hp;
@@ -1242,7 +1242,7 @@ const packs = function () {
                 ai: {
                     maixie: true,
                     effect: {
-                        target: function (card, player, target) {
+                        target(card, player, target) {
                             if (!target.hasFriend()) return;
                             if (get.tag(card, 'damage') == 1 && target.hp * 3 > target.countCards('h') && (target.hp - 1) * 3 <= target.countCards('h') && target.hp > 1 && !target.isTurnedOver() &&
                                 _status.currentPhase != target && get.distance(_status.currentPhase, target, 'absolute') <= 3) return [0.5, 1];
@@ -1254,7 +1254,7 @@ const packs = function () {
                 audio: 'ext:活动武将/audio/skill:true',
                 trigger: { player: 'phaseZhunbeiBegin' },
                 forced: true,
-                content: function () {
+                content() {
                     const skill = ['new_rejianxiong', 'rerende', 'rezhiheng'].randomGet();
                     player.popup(skill);
                     player.addTempSkills(skill, { player: "phaseBegin" });
@@ -1264,10 +1264,10 @@ const packs = function () {
                 audio: 'ext:活动武将/audio/skill:true',
                 trigger: { player: 'useCardToPlayered' },
                 forced: true,
-                filter: function (event, player) {
+                filter(event, player) {
                     return event.card.name == 'sha';
                 },
-                content: function () {
+                content() {
                     'step 0'
                     player.judge(function (card) {
                         return (get.color(card) == 'black') ? 2 : -2;
@@ -1280,13 +1280,13 @@ const packs = function () {
                     judge: {
                         audio: 'qin_shanwu',
                         trigger: { target: 'useCardToTargeted' },
-                        filter: function (event, player) {
+                        filter(event, player) {
                             if (event.player == player) return false;
                             if (event.card.name == 'sha') return true;
                             return false;
                         },
                         forced: true,
-                        content: function () {
+                        content() {
                             'step 0'
                             player.judge(function (card) {
                                 return (get.color(card) == 'red') ? 2 : -2;
@@ -1303,11 +1303,11 @@ const packs = function () {
                 intro: { content: 'mark', name: '大期', name2: '期' },
                 trigger: { player: ['phaseZhunbeiBegin', 'qin_xianjiAfter'] },
                 forced: true,
-                filter: function (event, player) {
+                filter(event, player) {
                     if (event.name == 'qin_xianji') return true;
                     return player.countMark('qin_daqi') >= 10;
                 },
-                content: function () {
+                content() {
                     player.removeMark('qin_daqi', player.countMark('qin_daqi'));
                     var hp = player.maxHp - player.hp;
                     var card = player.maxHp - player.countCards('h');
@@ -1320,7 +1320,7 @@ const packs = function () {
                         trigger: { player: ['damageAfter', 'useCard', 'respond'], source: 'damageSource' },
                         audio: 'qin_daqi',
                         forced: true,
-                        content: function () {
+                        content() {
                             player.addMark('qin_daqi', trigger.num || 1);
                         },
                     },
@@ -1332,10 +1332,10 @@ const packs = function () {
                 limited: true,
                 audio: 'ext:活动武将/audio/skill:true',
                 enable: 'phaseUse',
-                filter: function (event, player) {
+                filter(event, player) {
                     return player.countMark('qin_daqi') > 0;
                 },
-                check: function (event, player) {
+                check(event, player) {
                     var hp = player.maxHp - player.hp;
                     var card = 3 - player.countCards('he');
                     if ((hp + card) > 0) return true;
@@ -1343,7 +1343,7 @@ const packs = function () {
                 },
                 skillAnimation: true,
                 animationColor: 'thunder',
-                content: function () {
+                content() {
                     'step 0'
                     player.awakenSkill('qin_xianji');
                     'step 1'
@@ -1355,7 +1355,7 @@ const packs = function () {
                 ai: {
                     order: 1,
                     result: {
-                        player: function (player, target) {
+                        player(player, target) {
                             var hp = player.maxHp - player.hp;
                             var card = player.maxHp - player.countCards('h');
                             return 0 + hp + card;
@@ -1366,11 +1366,11 @@ const packs = function () {
             qin_huoluan: {
                 audio: 'ext:活动武将/audio/skill:true',
                 trigger: { player: ['useSkillAfter', 'logSkill'] },
-                filter: function (event, player) {
+                filter(event, player) {
                     return event.skill == 'qin_daqi';
                 },
                 forced: true,
-                content: function () {
+                content() {
                     var targets = game.filterPlayer().remove(player);
                     player.line(targets);
                     for (var i of targets) i.damage();

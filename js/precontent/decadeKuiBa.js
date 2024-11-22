@@ -31,11 +31,11 @@ const packs = function () {
             kuiba_wuyao: {
                 audio: 'ext:活动武将/audio/skill:true',
                 trigger: { player: 'damageBegin4' },
-                filter: function (event, player) {
+                filter(event, player) {
                     return event.source && event.num > 0;
                 },
                 forced: true,
-                content: function () {
+                content() {
                     'step 0'
                     player.judge(function (card) {
                         return get.color(card) == 'black' ? 2 : -2;
@@ -52,18 +52,18 @@ const packs = function () {
             },
             kuiba_sanjian: {
                 mod: {
-                    cardUsable: function (card, player, num) {
+                    cardUsable(card, player, num) {
                         if (card.name == 'sha') return num + 1;
                     },
                 },
                 audio: 'ext:活动武将/audio/skill:true',
                 trigger: { source: 'damageSource' },
-                filter: function (event, player) {
+                filter(event, player) {
                     return event.card && event.card.name == 'sha' && event.player.countCards('he');
                 },
                 forced: true,
                 logTarget: 'player',
-                content: function () {
+                content() {
                     trigger.player.chooseToDiscard('he', 2, true);
                 },
             },
@@ -71,7 +71,7 @@ const packs = function () {
                 audio: 'ext:活动武将/audio/skill:true',
                 trigger: { player: 'phaseUseBegin' },
                 forced: true,
-                content: function () {
+                content() {
                     var cards = [];
                     for (var i = 0; i < 2; i++) {
                         var card = get.cardPile(function (card) {
@@ -87,7 +87,7 @@ const packs = function () {
                 audio: 'ext:活动武将/audio/skill:true',
                 trigger: { player: 'phaseBegin' },
                 forced: true,
-                content: function () {
+                content() {
                     'step 0'
                     player.judge().set('callback', function () {
                         var player = _status.event.player;
@@ -99,7 +99,7 @@ const packs = function () {
             },
             kuiba_linyao: {
                 mod: {
-                    targetEnabled: function (card, player, target) {
+                    targetEnabled(card, player, target) {
                         if (((get.mode() == 'identity' && get.attitude(player, target) < 0) || (get.mode() != 'identity' && target.isEnemyOf(player))) && get.color(card) == 'red' && get.type2(card) == 'trick') return false;
                     },
                 },
@@ -109,11 +109,11 @@ const packs = function () {
             kuiba_jinghong: {
                 audio: 'ext:活动武将/audio/skill:true',
                 trigger: { player: 'useCard' },
-                filter: function (event, player) {
+                filter(event, player) {
                     return get.color(event.card, player) != 'none' && get.type2(event.card) == 'trick';
                 },
                 forced: true,
-                content: function () {
+                content() {
                     var color = ['red', 'black'];
                     color.remove(get.color(trigger.card, player));
                     color = color[0];
@@ -130,7 +130,7 @@ const packs = function () {
                 audio: 'ext:活动武将/audio/skill:true',
                 trigger: { global: 'dieAfter' },
                 forced: true,
-                content: function () {
+                content() {
                     player.addMark('kuiba_wenjia', 1);
                     var num = player.countMark('kuiba_wenjia');
                     if (num == 1) player.addSkills('xinfu_wuniang');
@@ -140,22 +140,22 @@ const packs = function () {
                     yingzi: {
                         audio: 'kuiba_wenjia',
                         trigger: { player: 'phaseDrawBegin2' },
-                        filter: function (event, player) {
+                        filter(event, player) {
                             return !event.numFixed && player.countMark('kuiba_wenjia') > 0;
                         },
                         forced: true,
-                        content: function () {
+                        content() {
                             trigger.num += player.countMark('kuiba_wenjia');
                         },
                     },
                     damage: {
                         audio: 'kuiba_wenjia',
                         trigger: { source: 'damageBegin1' },
-                        filter: function (event, player) {
+                        filter(event, player) {
                             return player.countMark('kuiba_wenjia') == 3;
                         },
                         forced: true,
-                        content: function () {
+                        content() {
                             trigger.num++;
                         },
                     },
@@ -164,7 +164,7 @@ const packs = function () {
             kuiba_huanguang: {
                 audio: 'ext:活动武将/audio/skill:true',
                 trigger: { player: 'useCard2' },
-                filter: function (event, player) {
+                filter(event, player) {
                     if (!player.isPhaseUsing() || get.type(event.card) != 'trick' || player.getHistory('useCard', function (evt) {
                         return get.type(evt.card) == 'trick';
                     }).length > 4) return false;
@@ -179,7 +179,7 @@ const packs = function () {
                     return false;
                 },
                 direct: true,
-                content: function () {
+                content() {
                     'step 0'
                     var prompt2 = '为' + get.translation(trigger.card) + '增加或减少一个目标';
                     player.chooseTarget(get.prompt('kuiba_huanguang'), function (card, player, target) {
@@ -208,12 +208,12 @@ const packs = function () {
             kuiba_wangjian: {
                 audio: 'ext:活动武将/audio/skill:true',
                 trigger: { player: 'useCardToTargeted' },
-                filter: function (event) {
+                filter(event) {
                     return event.card.name == 'sha';
                 },
                 forced: true,
                 logTarget: 'target',
-                content: function () {
+                content() {
                     trigger.target.addTempSkill('qinggang2');
                     trigger.target.storage.qinggang2.add(trigger.card);
                     var id = trigger.target.playerid;
@@ -224,7 +224,7 @@ const packs = function () {
                 },
                 ai: {
                     unequip_ai: true,
-                    skillTagFilter: function (player, tag, arg) {
+                    skillTagFilter(player, tag, arg) {
                         if (arg && arg.name == 'sha') return true;
                         return false;
                     },
@@ -256,11 +256,11 @@ const packs = function () {
             kuiba_kuiqu: {
                 audio: 'ext:活动武将/audio/skill:true',
                 trigger: { player: 'damageEnd' },
-                filter: function (event, player) {
+                filter(event, player) {
                     return event.num > 0;
                 },
                 forced: true,
-                content: function () {
+                content() {
                     'step 0'
                     event.count = trigger.num;
                     'step 1'
@@ -278,7 +278,7 @@ const packs = function () {
                 group: 'kuiba_juli_hit',
                 audio: 'ext:活动武将/audio/skill:true',
                 trigger: { source: 'damageBegin1' },
-                filter: function (event, player) {
+                filter(event, player) {
                     return event.card && event.card.name == 'sha' && game.hasPlayer(function (current) {
                         return current != player && get.distance(player, current) == 1;
                     });
@@ -286,7 +286,7 @@ const packs = function () {
                 firstDo: true,
                 direct: true,
                 locked: true,
-                content: function () {
+                content() {
                     trigger.num += (game.countPlayer(function (current) {
                         return current != player && get.distance(player, current) == 1;
                     }) - 1);
@@ -296,17 +296,17 @@ const packs = function () {
                         audio: 'kuiba_juli',
                         shaRelated: true,
                         trigger: { player: 'useCardToPlayered' },
-                        filter: function (event, player) {
+                        filter(event, player) {
                             return event.card && get.distance(event.target, player) > 1;
                         },
                         forced: true,
                         logTarget: 'target',
-                        content: function () {
+                        content() {
                             trigger.getParent().directHit.add(trigger.target);
                         },
                         ai: {
                             directHit_ai: true,
-                            skillTagFilter: function (player, tag, arg) {
+                            skillTagFilter(player, tag, arg) {
                                 if (get.distance(arg.target, player) <= 1) return false;
                             },
                         },
@@ -317,13 +317,13 @@ const packs = function () {
                 group: ['kuiba_kuiba_yingzi', 'kuiba_kuiba_damage'],
                 audio: 'ext:活动武将/audio/skill:true',
                 trigger: { player: ['useCard2', 'useCardToPlayer'] },
-                filter: function (event, player) {
+                filter(event, player) {
                     return ['sha', 'juedou'].includes(event.card.name) && game.hasPlayer(function (current) {
                         return current != player && !event.targets.includes(current);
                     });
                 },
                 forced: true,
-                content: function () {
+                content() {
                     trigger.targets.addArray(game.filterPlayer(function (current) {
                         return current != player && !trigger.targets.includes(current);
                     }));
@@ -333,22 +333,22 @@ const packs = function () {
                     yingzi: {
                         audio: 'kuiba_kuiba',
                         trigger: { player: 'phaseDrawBegin2' },
-                        filter: function (event, player) {
+                        filter(event, player) {
                             return !event.numFixed;
                         },
                         forced: true,
-                        content: function () {
+                        content() {
                             trigger.num += 2;
                         },
                     },
                     damage: {
                         audio: 'kuiba_kuiba',
                         trigger: { source: 'damageBegin1' },
-                        filter: function (event, player) {
+                        filter(event, player) {
                             return event.card && ['sha', 'juedou'].includes(event.card.name) && player.inRange(event.player);
                         },
                         forced: true,
-                        content: function () {
+                        content() {
                             trigger.num++;
                         },
                     },
@@ -357,17 +357,17 @@ const packs = function () {
             kuiba_tianshen: {
                 audio: 'ext:活动武将/audio/skill:true',
                 trigger: { player: 'damageBegin4' },
-                filter: function (event, player) {
+                filter(event, player) {
                     return get.type2(event.card) == 'trick';
                 },
                 forced: true,
-                content: function () {
+                content() {
                     trigger.cancel();
                 },
                 ai: {
                     notrick: true,
                     effect: {
-                        target: function (card, player, target, current) {
+                        target(card, player, target, current) {
                             if (get.type(card) == 'trick' && get.tag(card, 'damage')) return 'zeroplayertarget';
                         }
                     },
@@ -377,13 +377,13 @@ const packs = function () {
                 intro: { content: 'mark', name: '光势' },
                 audio: 'ext:活动武将/audio/skill:true',
                 trigger: { player: ['phaseJieshuBegin', 'damageEnd'] },
-                filter: function (event, player, name) {
+                filter(event, player, name) {
                     var num = player.countMark('kuiba_guangshi');
                     if (name == 'phaseJieshuBegin') return num < 3;
                     return num > 0;
                 },
                 forced: true,
-                content: function () {
+                content() {
                     if (event.triggername == 'phaseJieshuBegin') player.addMark('kuiba_guangshi', 3);
                     else player.removeMark('kuiba_guangshi', 1);
                 },
@@ -394,10 +394,10 @@ const packs = function () {
                 limited: true,
                 skillAnimation: true,
                 animationColor: 'thunder',
-                filter: function (event, player) {
+                filter(event, player) {
                     return player.countMark('kuiba_guangshi') > 2;
                 },
-                check: function (event, player) {
+                check(event, player) {
                     var friend = 0, enemy = 0;
                     for (var target of game.players) {
                         if (target != player) {
@@ -407,12 +407,12 @@ const packs = function () {
                     }
                     return enemy >= friend;
                 },
-                logTarget: function (event, player) {
+                logTarget(event, player) {
                     return game.filterPlayer(function (current) {
                         return current != player;
                     });
                 },
-                content: function () {
+                content() {
                     player.awakenSkill('kuiba_guangmie');
                     var num = player.countMark('kuiba_guangshi');
                     player.removeMark('kuiba_guangshi', num);
@@ -426,16 +426,16 @@ const packs = function () {
             kuiba_lingshan: {
                 audio: 'ext:活动武将/audio/skill:true',
                 trigger: { player: 'damageBegin4' },
-                filter: function (event, player) {
+                filter(event, player) {
                     return event.card && ['spade', 'diamond'].includes(get.suit(event.card, event.player));
                 },
                 forced: true,
-                content: function () {
+                content() {
                     trigger.num--;
                 },
                 ai: {
                     effect: {
-                        target: function (card, player, target) {
+                        target(card, player, target) {
                             if (!['spade', 'diamond'].includes(get.suit(card, player))) return;
                             if (player.hasSkillTag('jueqing', false, target)) return;
                             var num = get.tag(card, 'damage');
@@ -450,16 +450,16 @@ const packs = function () {
             kuiba_shengmeng: {
                 audio: 'ext:活动武将/audio/skill:true',
                 trigger: { player: 'damageBegin4' },
-                filter: function (event, player) {
+                filter(event, player) {
                     return event.card && ['heart', 'club'].includes(get.suit(event.card, event.player));
                 },
                 forced: true,
-                content: function () {
+                content() {
                     trigger.num--;
                 },
                 ai: {
                     effect: {
-                        target: function (card, player, target) {
+                        target(card, player, target) {
                             if (!['heart', 'club'].includes(get.suit(card, player))) return;
                             if (player.hasSkillTag('jueqing', false, target)) return;
                             var num = get.tag(card, 'damage');
@@ -474,12 +474,12 @@ const packs = function () {
             kuiba_lingshou: {
                 audio: 'ext:活动武将/audio/skill:true',
                 trigger: { global: 'damageBegin4' },
-                filter: function (event, player) {
+                filter(event, player) {
                     return event.player != player && ((get.mode() == 'identity' && get.attitude(player, event.player) > 0) || (get.mode() != 'identity' && event.player.isFriendOf(player)));
                 },
                 forced: true,
                 logTarget: 'player',
-                content: function () {
+                content() {
                     trigger.num--;
                     player.loseHp();
                     if (trigger.source) trigger.source.chooseToDiscard(3, 'he', true);
@@ -489,12 +489,12 @@ const packs = function () {
                 audio: 'ext:活动武将/audio/skill:true',
                 trigger: { global: 'damageBegin2' },
                 usable: 1,
-                filter: function (event, player) {
+                filter(event, player) {
                     return player.countCards('he') && event.source && ((get.mode() == 'identity' && get.attitude(player, event.source) > 0) || (get.mode() != 'identity' && event.source.isFriendOf(player)));
                 },
                 forced: true,
                 logTarget: 'source',
-                content: function () {
+                content() {
                     player.discard(player.getCards('he').randomGet());
                     trigger.num++;
                 },
@@ -502,31 +502,31 @@ const packs = function () {
             kuiba_lingxun: {
                 audio: 'ext:活动武将/audio/skill:true',
                 trigger: { global: 'useCardToTargeted' },
-                filter: function (event, player) {
+                filter(event, player) {
                     return event.card && event.card.name == 'sha' && event.player.countCards('h') && ((get.mode() == 'identity' && get.attitude(player, event.target) > 0) || (get.mode() != 'identity' && event.target.isFriendOf(player))) && ((get.mode() == 'identity' && get.attitude(player, event.player) < 0) || (get.mode() != 'identity' && event.player.isEnemyOf(player)));
                 },
                 forced: true,
                 logTarget: 'player',
-                content: function () {
+                content() {
                     player.gain(trigger.player.getCards('h').randomGet(), trigger.player, 'giveAuto');
                 },
             },
             kuiba_lingluan: {
                 audio: 'ext:活动武将/audio/skill:true',
                 trigger: { global: 'phaseJieshuBegin' },
-                filter: function (event, player) {
+                filter(event, player) {
                     return event.player.countCards('he') && ((get.mode() == 'identity' && get.attitude(player, event.player) < 0) || (get.mode() != 'identity' && event.player.isEnemyOf(player)));
                 },
                 forced: true,
                 logTarget: 'player',
-                content: function () {
+                content() {
                     trigger.player.chooseToDiscard(2, 'he', true);
                 },
             },
             kuiba_shengdou: {
                 audio: 'ext:活动武将/audio/skill:true',
                 trigger: { global: 'useCardToTargeted' },
-                filter: function (event, player) {
+                filter(event, player) {
                     return (
                         !event.card.kuiba_shengdou &&
                         event.card &&
@@ -545,7 +545,7 @@ const packs = function () {
                     );
                 },
                 direct: true,
-                content: function () {
+                content() {
                     'step 0'
                     trigger.card.kuiba_shengdou = true;
                     player.chooseBool(get.prompt2('kuiba_shengdou', trigger.player));
@@ -574,12 +574,12 @@ const packs = function () {
             kuiba_shenghu: {
                 audio: 'ext:活动武将/audio/skill:true',
                 trigger: { global: 'damageBegin4' },
-                filter: function (event, player) {
+                filter(event, player) {
                     return event.player != player && ((get.mode() == 'identity' && get.attitude(player, event.player) > 0) || (get.mode() != 'identity' && event.player.isFriendOf(player)));
                 },
                 forced: true,
                 logTarget: 'player',
-                content: function () {
+                content() {
                     trigger.num--;
                     player.loseHp();
                     game.asyncDraw([player, trigger.player]);
@@ -589,13 +589,13 @@ const packs = function () {
             kuiba_shengjie: {
                 audio: 'ext:活动武将/audio/skill:true',
                 trigger: { global: 'useCardToTargeted' },
-                filter: function (event, player) {
+                filter(event, player) {
                     if (event.getParent('useCard').kuiba_shengjie) return false;
                     return event.card && get.type(event.card) == 'trick' && player.countCards('he') && ((get.mode() == 'identity' && get.attitude(player, event.target) > 0) || (get.mode() != 'identity' && event.target.isFriendOf(player))) && ((get.mode() == 'identity' && get.attitude(player, event.player) < 0) || (get.mode() != 'identity' && event.player.isEnemyOf(player)));
                 },
                 forced: true,
                 logTarget: 'targets',
-                content: function () {
+                content() {
                     trigger.getParent('useCard').kuiba_shengjie = true;
                     player.discard(player.getCards('he').randomGet());
                     game.asyncDraw(trigger.targets, 2);
@@ -604,12 +604,12 @@ const packs = function () {
             kuiba_shengzhu: {
                 audio: 'ext:活动武将/audio/skill:true',
                 trigger: { global: 'phaseJieshuBegin' },
-                filter: function (event, player) {
+                filter(event, player) {
                     return (get.mode() == 'identity' && get.attitude(player, event.player) > 0) || (get.mode() != 'identity' && event.player.isFriendOf(player));
                 },
                 forced: true,
                 logTarget: 'player',
-                content: function () {
+                content() {
                     trigger.player.draw(2);
                 },
             },
