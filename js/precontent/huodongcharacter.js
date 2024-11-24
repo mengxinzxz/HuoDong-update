@@ -9266,7 +9266,7 @@ const packs = function () {
                     }
                     let cards = Array.from(ui.cardPile.childNodes);
                     if (cards.length) {
-                        const max = cards.slice().map(card => get.number(card, false)).unique().sort((a, b) => b - a)[0];
+                        const max = cards.map(card => get.number(card, false)).unique().sort((a, b) => b - a)[0];
                         cards = cards.filter(card => get.number(card, false) == max).randomGets(num);
                         await player.gain(cards, 'gain2');
                     }
@@ -9619,7 +9619,7 @@ const packs = function () {
                     const sum = Math.max(3, trigger.player.countCards('h'));
                     let result = await player.chooseButton(['###协治###选择' + get.cnNumber(sum) + '次牌的类别作为' + get.translation(trigger.player) + '本回合的用牌标准', [['basic', 'trick', 'equip'], 'vcard']], true).set('filterButton', button => {
                         const rest = get.event().selectButton - ui.selected.buttons.length;
-                        const noChoose = ['basic', 'trick', 'equip'].filter(type => !ui.selected.buttons.slice().map(i => i.link[2]).includes(type));
+                        const noChoose = ['basic', 'trick', 'equip'].filter(type => !ui.selected.buttons.map(i => i.link[2]).includes(type));
                         return noChoose.length != rest || noChoose.includes(button.link[2]);
                     }).set('ai', button => {
                         const player = get.event().player, target = get.event().getTrigger().player;
@@ -9677,7 +9677,7 @@ const packs = function () {
                             },
                         }
                     }).set('selectButton', sum).forResult();
-                    if (result.bool) result.cost_data = result.links.slice().map(i => i[2]);
+                    if (result.bool) result.cost_data = result.links.map(i => i[2]);
                     event.result = result;
                 },
                 logTarget: 'player',

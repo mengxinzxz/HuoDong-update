@@ -5691,12 +5691,12 @@ const packs = function () {
                 },
                 prompt2(event, player) {
                     let cards = event.name == 'cardsDiscard' ? event.cards : event.getl(player).cards2;
-                    cards = cards.slice().filterInD('d');
+                    cards = cards.filterInD('d');
                     return '将' + get.translation(cards) + '中的任意张牌以任意顺序置于牌堆顶';
                 },
                 async content(event, trigger, player) {
                     let cards = trigger.name == 'cardsDiscard' ? trigger.cards : trigger.getl(player).cards2;
-                    cards = cards.slice().filterInD('d');
+                    cards = cards.filterInD('d');
                     const next = player.chooseToMove('纵玄：将任意张牌置于牌堆顶', true);
                     next.set('list', [
                         ['本次弃置的牌', cards],
@@ -6068,7 +6068,7 @@ const packs = function () {
                             const targets = [player].concat(player.getStorage(skill));
                             delete player.storage[skill];
                             for (const i of targets) {
-                                const skills = i.skills.slice().filter(hezong => hezong.startsWith('wechathezong_mark_'));
+                                const skills = i.skills.filter(hezong => hezong.startsWith('wechathezong_mark_'));
                                 if (skills.length) i.removeSkill(skills);
                             }
                         },
@@ -6568,7 +6568,7 @@ const packs = function () {
                             const targets = [player].concat(player.getStorage(skill));
                             delete player.storage[skill];
                             for (const i of targets) {
-                                const skills = i.skills.slice().filter(tunlang => tunlang.startsWith('wechattunlang_mark_'));
+                                const skills = i.skills.filter(tunlang => tunlang.startsWith('wechattunlang_mark_'));
                                 if (skills.length) i.removeSkill(skills);
                             }
                         },
@@ -7961,7 +7961,7 @@ const packs = function () {
                     event.result.cost_data = event.result.links || [];
                 },
                 async content(event, trigger, player) {
-                    const names = event.cost_data.slice().map(i => i[2]);
+                    const names = event.cost_data.map(i => i[2]);
                     player.addTempSkill('wechatkanpo_effect', 'roundStart');
                     player.markAuto('wechatkanpo_effect', names);
                     player.markAuto('wechatkanpo', names);

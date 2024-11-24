@@ -4446,7 +4446,7 @@ const packs = function () {
                         }
                     },
                     prompt(links, player) {
-                        const popup = links.slice().map(i => i[2].slice(6)).sort((a, b) => lib.suit.indexOf(a) - lib.suit.indexOf(b)).reduce((str, suit) => str + get.translation(suit), '');
+                        const popup = links.map(i => i[2].slice(6)).sort((a, b) => lib.suit.indexOf(a) - lib.suit.indexOf(b)).reduce((str, suit) => str + get.translation(suit), '');
                         return '###清正###弃置' + popup + '花色的所有手牌并观看一名有手牌的其他角色的手牌，你弃置其中一种花色的所有牌。若其被弃置的牌数小于你以此法弃置的牌数，你对其造成1点伤害，然后你可获得或失去1枚“治世”标记';
                     },
                 },
@@ -5100,7 +5100,7 @@ const packs = function () {
                         logTarget: 'player',
                         content() {
                             const removes = player.getStorage('minishefu').filter(i => i[1] == trigger.card.name);
-                            const cards = removes.slice().map(i => i[2]);
+                            const cards = removes.map(i => i[2]);
                             player.unmarkAuto('minishefu', removes);
                             player.loseToDiscardpile(cards);
                             trigger.targets.length = 0;
@@ -5136,7 +5136,7 @@ const packs = function () {
                         .set('prompt', get.prompt('benyu', target)).set('choiceList', choiceList)
                         .set('ai', () => {
                             const player = get.event('player'), target = get.event('target');
-                            const num = get.event('num'), controls = get.event('controls').slice().filter(i => i != 'cancel2');
+                            const num = get.event('num'), controls = get.event('controls').filter(i => i != 'cancel2');
                             const def = get.damageEffect(target, player, player);
                             if (controls.length == 1) {
                                 if (controls[0] == '摸牌') return '摸牌';
@@ -12017,7 +12017,7 @@ const packs = function () {
                     order(item, player) {
                         if (_status.event.type != 'phase') return 4;
                         if (!player || !_status.miniliuma?.some(card => player.getUseValue(card) > 0)) return 0;
-                        let cards = _status.miniliuma.slice().filter(card => player.getUseValue(card) > 0);
+                        let cards = _status.miniliuma.filter(card => player.getUseValue(card) > 0);
                         cards.sort((a, b) => get.order(b, player) - get.order(a, player));
                         if (get.order(cards[0], player) <= 0) return 0;
                         return get.order(cards[0], player) + 0.1;
@@ -12613,7 +12613,7 @@ const packs = function () {
                         }
                     },
                     prompt(links, player) {
-                        const suit = get.translation(links.slice().map(i => i[2].slice(6))[0]);
+                        const suit = get.translation(links.map(i => i[2].slice(6))[0]);
                         return '###反间###令一名其他角色选择一个花色，若其选择的为' + suit + '，你令其摸一张牌并对其造成1点伤害，否则你对一名角色造成1点伤害';
                     },
                 },
@@ -27863,7 +27863,7 @@ const packs = function () {
                         let choice;
                         if (list.length == 1) choice = { control: list[0] };
                         else choice = await player.chooseControl(list).set('choiceList', (() => {
-                            return list.slice().map(i => '<div class="skill">【' + lib.translate[i] + '】</div><div>' + lib.translate[i + '_info'] + '</div>');
+                            return list.map(i => '<div class="skill">【' + lib.translate[i] + '】</div><div>' + lib.translate[i + '_info'] + '</div>');
                         })()).set('prompt', '论策：为' + get.translation(target) + '分配一个计策').set('ai', () => {
                             return get.event().controls.randomGet();
                         }).set('displayIndex', false).forResult();
@@ -29432,10 +29432,10 @@ const packs = function () {
                 },
                 async cost(event, trigger, player) {
                     const skills = Object.keys(lib.skill).filter(i => get.info(i) && get.info(i).nianyingSkill && get.info(i).nianyingFilter(trigger, player, name)).map(i => [i, get.info(i).nianyingSkill[0], get.info(i).nianyingSkill[1]]);
-                    const result = await player.chooseControl(skills.slice().map(i => i[1]), 'cancel2')
+                    const result = await player.chooseControl(skills.map(i => i[1]), 'cancel2')
                         .set('prompt', get.prompt('mininianying_zgl')).set('prompt2', '选择一项念影效果执行')
                         .set('displayIndex', false)
-                        .set('choiceList', skills.slice().map(i => {
+                        .set('choiceList', skills.map(i => {
                             return '<div class="skill">' + i[1] + '</div><div>' + i[2] + '</div>';
                         })).set('ai', () => get.event('controls').randomGet()).forResult();
                     event.result = { bool: (result.control != 'cancel2'), cost_data: skills.find(i => i[1] == result.control) };
@@ -29574,7 +29574,7 @@ const packs = function () {
                     dialog.videoId = videoId;
                     dialog.classList.add('fullheight');
                     const result = await player.chooseButton().set('dialog', dialog).set('selectButton', () => {
-                        const kill = get.info('mininiantazhen').kill(ui.selected.buttons.slice().map(i => i.link), get.event().player);
+                        const kill = get.info('mininiantazhen').kill(ui.selected.buttons.map(i => i.link), get.event().player);
                         //const dialog = get.idDialog(get.event().videoId);
                         const dialog = get.event().dialog;
                         if (dialog) {
@@ -29583,8 +29583,8 @@ const packs = function () {
                                 const nums = item.split('|').reverse()[0].split('+');
                                 return [parseInt(nums[0]), parseInt(nums[1])];
                             };
-                            const allPosition = ui.selected.buttons.slice().map(but => findXY(but.link));
-                            dialog.content.childNodes[1].innerHTML = '<div class="text center">剩余' + parseFloat(kill[3]) + '步；攻击力：' + parseFloat(kill[0]) + '；酒：' + parseFloat(kill[1]) + '；当前击败：' + (kill[2].length ? get.translation(kill[2].slice().map(i => i[0])) : '无') + '</div>';
+                            const allPosition = ui.selected.buttons.map(but => findXY(but.link));
+                            dialog.content.childNodes[1].innerHTML = '<div class="text center">剩余' + parseFloat(kill[3]) + '步；攻击力：' + parseFloat(kill[0]) + '；酒：' + parseFloat(kill[1]) + '；当前击败：' + (kill[2].length ? get.translation(kill[2].map(i => i[0])) : '无') + '</div>';
                         }
                         return [1, 1 + get.event().player.getHp() + ui.selected.buttons.filter(i => i.link.split('|')[0] == 'horse').length * 2];
                     }).set('filterButton', button => {
@@ -29599,7 +29599,7 @@ const packs = function () {
                         if (Math.abs(buttonPosition[0] - itemPosition[0]) > 1 || Math.abs(buttonPosition[1] - itemPosition[1]) > 1) return false;
                         if (buttonPosition[0] == itemPosition[0] || buttonPosition[1] == itemPosition[1]) return true;
                         const dx = buttonPosition[0] - itemPosition[0], dy = buttonPosition[1] - itemPosition[1];
-                        const allPosition = ui.selected.buttons.slice().map(but => findXY(but.link));
+                        const allPosition = ui.selected.buttons.map(but => findXY(but.link));
                         return !allPosition.some(p => p[0] == itemPosition[0] + dx && p[1] == itemPosition[1]) || !allPosition.some(p => p[0] == itemPosition[0] && p[1] == itemPosition[1] + dy);
                     }).set('list', list).set('ai', () => 1 + Math.random()).set('custom', {
                         add: {
@@ -29657,7 +29657,7 @@ const packs = function () {
                     if (result.bool) {
                         const kill = get.info('mininiantazhen').kill(result.links.slice(), player);
                         if (kill[2].length > 0) {
-                            const targets = kill[2].slice().map(i => {
+                            const targets = kill[2].map(i => {
                                 return game.findPlayer2(t => t.playerid == parseInt(i[1]));
                             }).filter(i => i.isIn()).sortBySeat();
                             player.line(targets);
@@ -29671,7 +29671,7 @@ const packs = function () {
                                 const nums = item.split('|').reverse()[0].split('+');
                                 return [parseInt(nums[0]), parseInt(nums[1])];
                             };
-                            const allPosition = result.links.slice().map(but => findXY(but));
+                            const allPosition = result.links.map(but => findXY(but));
                             const nums = Array.from({ length: 3 }).map((_, i) => i);
                             if (nums.some(num => !allPosition.some(l => l[1] == num))) {
                                 player.popup('一整列', 'wood');
@@ -29966,10 +29966,10 @@ const packs = function () {
                 },
                 async cost(event, trigger, player) {
                     const skills = Object.keys(lib.skill).filter(i => get.info(i) && get.info(i).nianyingSkill && get.info(i).nianyingFilter(trigger, player, name)).map(i => [i, get.info(i).nianyingSkill[0], get.info(i).nianyingSkill[1]]);
-                    const result = await player.chooseControl(skills.slice().map(i => i[1]), 'cancel2')
+                    const result = await player.chooseControl(skills.map(i => i[1]), 'cancel2')
                         .set('prompt', get.prompt('mininianying_lb')).set('prompt2', '选择一项念影效果执行')
                         .set('displayIndex', false)
-                        .set('choiceList', skills.slice().map(i => {
+                        .set('choiceList', skills.map(i => {
                             return '<div class="skill">' + i[1] + '</div><div>' + i[2] + '</div>';
                         })).set('ai', () => get.event('controls').randomGet()).forResult();
                     event.result = { bool: (result.control != 'cancel2'), cost_data: skills.find(i => i[1] == result.control) };
