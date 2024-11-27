@@ -13294,19 +13294,18 @@ const packs = function () {
                         const target = get.info('minirepojunx').logTarget(arg, player);
                         if (get.attitude(player, target) > 0) return false;
                         if (tag == 'directHit_ai') return player == arg.player && player.maxHp >= Math.max(1, arg.target.countCards('h') - 1);
-                        if (arg && arg.name == 'sha' && target.getEquip(2)) return true;
-                        return false;
+                        return arg && arg.card?.name == 'sha' && arg.target?.getEquip(2);
                     },
                 },
                 subSkill: {
                     gain: {
-                        trigger: { global: 'phaseEnd' },
-                        forced: true,
-                        popup: false,
                         charlotte: true,
+                        trigger: { global: 'phaseEnd' },
                         filter(event, player) {
                             return player.getExpansions('minirepojunx_gain').length > 0;
                         },
+                        forced: true,
+                        popup: false,
                         async content(event, trigger, player) {
                             const cards = player.getExpansions(event.name);
                             await player.gain(cards, 'draw');

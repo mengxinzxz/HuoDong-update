@@ -8863,6 +8863,7 @@ const packs = function () {
             wechatqianxun: '谦逊',
             wechatqianxun_info: '每名角色的回合限一次，若你的手牌数为1，你可以将所有手牌当作一张单体非延时锦囊牌使用。',
             wechatreqianxun: '谦逊',
+            wechatreqianxun2: '谦逊',
             wechatreqianxun_info: '每当一张延时类锦囊牌或其他角色使用的普通锦囊牌生效时，若你是此牌的唯一目标，你可以将任意张手牌置于你的武将牌上，若如此做，此回合结束时，你获得你武将牌上的所有牌。',
             wechat_pangtong: '微信庞统',
             wechatniepan: '涅槃',
