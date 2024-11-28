@@ -80,7 +80,7 @@ export function content(config, pack) {
 					game.writeFile(data, 'extension/十周年UI/image/card', 'bol_shanshan.webp', () => { });
 				});
 			}
-		}, () => {});
+		}, () => { });
 	}
 
 	//Hidden--作者专属
@@ -1387,12 +1387,12 @@ export function content(config, pack) {
 
 	//移动服
 	lib.characterSort.mobile.bilibili_buchong_mobile = ['old_zhaoxiang', 'ol_maliang', 'ol_yuanshu', 'old_bulianshi', 'old_zhangqiying', 'junk_xuyou'];
-	game.HDaddCharacter('old_zhangqiying', ['female', 'qun', 3, ['xinfu_falu', 'olddianhua', 'oldzhenyi'], ['ext:活动武将/image/character/old_zhangqiying.jpg']], 'mobile');
+	game.HDaddCharacter('old_zhangqiying', ['female', 'qun', 3, ['xinfu_falu', 'olddianhua', 'oldzhenyi'], ['ext:活动武将/image/character/old_zhangqiying.jpg', 'die:zhangqiying']], 'mobile');
 	game.HDaddCharacter('junk_xuyou', ['male', 'qun', 3, ['nzry_chenglve', 'junkshicai', 'nzry_cunmu'], []], 'mobile');
 	game.HDaddCharacter('old_bulianshi', ['female', 'wu', 3, ['anxu', 'zhuiyi'], []], 'mobile');
 	game.HDaddCharacter('ol_yuanshu', ['male', 'qun', 4, ['rewangzun', 'retongji'], []], 'mobile');
 	game.HDaddCharacter('ol_maliang', ['male', 'shu', 3, ['zishu', 'yingyuan'], []], 'mobile');
-	game.HDaddCharacter('old_zhaoxiang', ['female', 'shu', 4, ['xinfanghun', 'xinfuhan'], ['ext:活动武将/image/character/old_zhaoxiang.jpg']], 'mobile');
+	game.HDaddCharacter('old_zhaoxiang', ['female', 'shu', 4, ['xinfanghun', 'xinfuhan'], ['ext:活动武将/image/character/old_zhaoxiang.jpg', 'die:zhaoxiang']], 'mobile');
 
 	//线下
 	lib.characterSort.offline.offline_star.add('bolx_jsp_guanyu');
