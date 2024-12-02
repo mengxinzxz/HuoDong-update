@@ -172,7 +172,7 @@ const packs = function () {
             Mbaby_sunluyu: ['female', 'wu', 3, ['minimeibu', 'remumu']],
             Mbaby_sunquan: ['male', 'wu', 4, ['minirezhiheng', 'minijiuyuan'], ['zhu']],
             Mbaby_sunshangxiang: ['female', 'wu', 3, ['minijieyin', 'xiaoji']],
-            Mbaby_taishici: ['male', 'wu', 4, ['minitianyi']],
+            Mbaby_taishici: ['male', 'wu', 4, ['miniretianyi']],
             Mbaby_wuguotai: ['female', 'wu', 3, ['miniganlu', 'minibuyi']],
             Mbaby_xiaoqiao: ['female', 'wu', 3, ['minitianxiang', 'olhongyan']],
             Mbaby_xusheng: ['male', 'wu', 4, ['minirepojunx', 'miniyicheng']],
@@ -12829,6 +12829,160 @@ const packs = function () {
                         intro: { content: '使用【杀】无距离限制且无视防具' },
                     },
                 },
+            },
+            miniretianyi: {
+                audio: 'tianyi',
+                trigger: { player: ['phaseUseBegin', 'useCardToPlayer'] },
+                filter(event, player) {
+                    return event.name == 'phaseUse' || (event.card.name == 'sha' && player.canCompare(event.target));
+                },
+                async cost(event, trigger, player) {
+                    if (event.name == 'phaseUse') {
+                        const { result: { bool, links } } = await player.chooseButton([
+                            get.prompt(event.name.slice(0, -5)),
+                            [
+                                [
+                                    ['add', '本回合使用【杀】的次数上限+1'],
+                                    ['recover', `本回合使用【杀】造成伤害后回复1点体力`],
+                                    ['draw', `摸一张牌`],
+                                    ['range', `本回合使用【杀】无距离限制且无视目标角色的防具`],
+                                ],
+                                'textbutton',
+                            ],
+                        ]).set('ai', button => {
+                            const { link } = button, player = get.player();
+                            if (link == 'add' && (player.countCards('h', card => {
+                                return get.name(card, player) == 'sha' && player.hasUseTarget(card);
+                            }) - player.getCardUsable('sha')) > 1) return 2;
+                            if (link == 'recover' && player.isHealthy()) return 0;
+                            if (link == 'range' && game.hasPlayer(current => player.canUse({ name: 'sha' }, current, true) && get.effect(current, { name: 'sha' }, player, player) > 0)) return 0;
+                            return 1;
+                        }).set('selectButton', 2);
+                        event.result = {
+                            bool: bool,
+                            cost_data: links,
+                        }
+                    }
+                    else {
+                        const { player: target, card } = trigger;
+                        const bool = await player.chooseBool(get.prompt(event.name.slice(0, -5), target), `你可以与其拼点，若你赢，你可以为${get.translation(card)}额外指定一个目标`).set('choice', get.attitude(player, target) <= 0).forResultBool();
+                        event.result = {
+                            bool: bool,
+                            targets: [target],
+                        }
+                    }
+                },
+                async content(event, trigger, player) {
+                    const { cost_data: choices, targets: [target] } = event, { card } = trigger;
+                    if (event.name == 'phaseUse') {
+                        if (choices.includes('add')) {
+                            game.log(player, '选择了', '#y选项一');
+                            player.addTempSkill(event.name + '_add');
+                            player.addMark(event.name + '_add', 1, false);
+                        }
+                        if (choices.includes('recover')) {
+                            game.log(player, '选择了', '#y选项二');
+                            player.addTempSkill(event.name + '_recover');
+                        }
+                        if (choices.includes('draw')) {
+                            game.log(player, '选择了', '#y选项三');
+                            await player.draw();
+                        }
+                        if (choices.includes('range')) {
+                            game.log(player, '选择了', '#y选项四');
+                            player.addTempSkill(event.name + '_range');
+                        }
+                    }
+                    else {
+                        const bool = await player.chooseToCompare(target).forResultBool();
+                        if (!bool || !game.hasPlayer(current => !trigger.targets.includes(current) && lib.filter.targetEnabled2(card, player, current))) return;
+                        const { result } = await player.chooseTarget(get.prompt(event.name), '为' + get.translation(card) + '增加一个目标', (card, player, target) => {
+                            const evt = _status.event.getTrigger();
+                            return !evt.targets.includes(target) && lib.filter.targetEnabled2(evt.card, player, target);
+                        }).set('ai', target => {
+                            const evt = _status.event.getTrigger();
+                            return get.effect(target, evt.card, evt.player, evt.player);
+                        });
+                        if (!result.bool) return;
+                        if (player != game.me && !player.isOnline()) await game.delayx();
+                        trigger.targets.push(result.targets[0]);
+                        game.log(result.targets[0], '成为了', card, '的额外目标');
+                    }
+                },
+                subSkill: {
+                    add: {
+                        charlotte: true,
+                        onremove: true,
+                        mod: {
+                            cardUsable(card, player, num) {
+                                if (card.name == 'sha') return num + player.countMark('miniretianyi_add');
+                            },
+                        },
+                        intro: { content: '使用【杀】的次数上限+#' },
+                    },
+                    recover: {
+                        charlotte: true,
+                        trigger: { source: 'damageSource' },
+                        filter(event, player) {
+                            return player.isDamaged() && event.card?.name == 'sha';
+                        },
+                        forced: true,
+                        popup: false,
+                        content() {
+                            player.recover();
+                        },
+                        mark: true,
+                        intro: { content: '使用【杀】造成伤害后回复1点体力' },
+                    },
+                    range: {
+                        charlotte: true,
+                        mod: {
+                            targetInRange(card, player, target, now) {
+                                if (card.name == 'sha') return true;
+                            },
+                        },
+                        mark: true,
+                        intro: { content: '使用【杀】无距离限制且无视防具' },
+                    },
+                },
+            },
+            minihanzhan: {
+                audio: 'hanzhan',
+                inherit: 'hanzhan',
+                group: 'minihanzhan_gain',
+                subSkill: {
+                    gain: {
+                        audio: 'hanzhan',
+                        getCards(event) {
+                            const cards = [];
+                            for (const i of event.lose_list) {
+                                if (Array.isArray(i[1])) {
+                                    for (const j of i[1]) {
+                                        if (get.name(j, i[0]) == 'sha' && get.position(j, true) == 'o') cards.push(j)
+                                    }
+                                } else {
+                                    const j = i[1];
+                                    if (get.name(j, i[0]) == 'sha' && get.position(j, true) == 'o') cards.push(j)
+                                }
+                            }
+                            return cards;
+                        },
+                        trigger: { global: 'chooseToCompareAfter' },
+                        filter(event, player) {
+                            if (event.preserve) return false;
+                            if (player != event.player && player != event.target && (!event.targets || !event.targets.includes(player))) return false;
+                            return get.info('minihanzhan_gain').getCards(event).length;
+                        },
+                        frequent: true,
+                        prompt2(event, player) {
+                            const cards = get.info('minihanzhan_gain').getCards(event);
+                            return '获得' + get.translation(cards);
+                        },
+                        async content(event, trigger, player) {
+                            await player.gain(get.info(event.name).getCards(trigger), 'gain2');
+                        },
+                    }
+                }
             },
             //鲁肃
             minihaoshi: {
@@ -31043,6 +31197,10 @@ const packs = function () {
             minilianying_info: '当你失去最后的手牌时，你可以摸两张牌，然后可以交给一名其他角色一张手牌。',
             minitianyi: '天义',
             minitianyi_info: '出牌阶段开始时，你可以选择一项：①本回合使用【杀】的次数上限+1，且使用【杀】造成伤害后回复1点体力；②摸一张牌，本回合使用【杀】无距离限制且无视目标角色的防具。',
+            miniretianyi: '天义',
+            miniretianyi_info: '①出牌阶段开始时，你可以选择两项：①本回合使用【杀】的次数上限+1；②本回合使用【杀】造成伤害后回复1点体力；③摸一张牌；④本回合使用【杀】无距离限制且无视目标角色的防具。②当你使用【杀】指定目标时，你可以与目标角色拼点，若你赢，你可以为此【杀】额外指定一个目标。',
+            minihanzhan: '酣战',
+            minihanzhan_info: '①当你发起拼点时，或成为拼点的目标时，你可以令对方选择拼点牌的方式改为随机选择一张手牌。②当你拼点结束后，你可以获得其中的【杀】。',
             minihaoshi: '好施',
             minihaoshi_info: '摸牌阶段，你可以多摸两张牌，然后若你的手牌数大于5，你须弃置X张手牌或将X张手牌交给一名手牌数最少的其他角色（X为你手牌数的一半，向下取整）。',
             miniolhaoshi: '好施',
