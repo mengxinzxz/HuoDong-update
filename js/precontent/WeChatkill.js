@@ -8962,7 +8962,7 @@ const packs = function () {
             wechatduanchang_info: '锁定技，杀死你的角色于本局游戏不能使用【桃】。',
             wechat_zhaoxiang: '微信赵襄',
             wechat_old_zhaoxiang: '微信旧赵襄',
-            wechat_old_zhaoxiang_prefix: '微信赵襄',
+            wechat_old_zhaoxiang_ab: '微信赵襄',
             wechatfanghun: '芳魂',
             wechatfanghun_fengpo: '凤魄',
             wechatfanghun_info: '游戏开始时，你获得技能〖龙胆〗。当你发动〖龙胆〗后，你获得“梅影”标记。若你有“梅影”标记，你可以发动〖凤魄〗，然后失去“梅影”标记。',

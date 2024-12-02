@@ -10,9 +10,9 @@ const packs = function () {
                 MiNi_shu: ['Mbaby_zongyu', 'Mbaby_mazhong', 'Mbaby_dengzhi', 'Mbaby_hujinding', 'Mbaby_sp_xiahoushi', 'Mbaby_jiangfei', 'Mbaby_zhangyi', 'Mbaby_guanzhang', 'Mbaby_wolongfengchu', 'Mbaby_wangtao', 'Mbabysp_zhangfei', 'Mbaby_wangyue', 'Mbaby_xf_yiji', 'Mbaby_mizhu', 'Mbaby_mifuren', 'Mbaby_liuyong', 'Mbaby_ganfuren', 'Mbaby_sunqian', 'Mbaby_lvkai', 'Mbaby_zhoucang', 'Mbaby_huangyueying', 'Mbaby_yangwan', 'Mbaby_liuchen', 'Mbaby_liyan', 'Mbaby_chendao', 'Mbaby_yanyan', 'Mbaby_xiahouba', 'Mbaby_huaman', 'Mbaby_sp_zhugeliang', 'Mbaby_zhugeguo', 'Mbaby_jianyong', 'Mbaby_wangping', 'Mbaby_mayunlu', 'Mbaby_guansuo', 'Mbaby_xiahoushi', 'Mbaby_shamoke', 'Mbaby_wuxian', 'Mbaby_zhugezhan', 'Mbaby_qinmi', 'Mbaby_guanyinping', 'Mbaby_guanyu', 'Mbaby_zhugeliang', 'Mbaby_liubei', 'Mbaby_machao', 'Mbaby_zhurong', 'Mbaby_zhangfei', 'Mbaby_zhaoyun', 'Mbaby_huangzhong', 'Mbaby_weiyan', 'Mbaby_liaohua', 'Mbaby_pangtong', 'Mbaby_menghuo', 'Mbaby_jiangwei', 'Mbaby_liushan', 'Mbaby_fazheng', 'Mbaby_madai', 'Mbaby_guanping', 'Mbaby_liufeng', 'Mbaby_wuyi', 'Mbaby_zhangxingcai', 'Mbaby_dongyun', 'Mbaby_sp_sunshangxiang', 'Mbaby_xushu', 'Mbaby_masu'],
                 MiNi_wu: ['Mbaby_kanze', 'Mbaby_panzhangmazhong', 'Mbaby_weiwenzhugezhi', 'Mbaby_zhangwen', 'Mbaby_sunhanhua', 'Mbaby_heqi', 'Mbaby_lvdai', 'Mbaby_jiangqing', 'Mbaby_re_guyong', 'Mbaby_quancong', 'Mbaby_yufan', 'Mbaby_dc_sunru', 'Mbaby_sunxiu', 'Mbaby_zhangfen', 'Mbaby_xuezong', 'Mbaby_dingfeng', 'Mbaby_panjun', 'Mbaby_sundeng', 'Mbaby_luji', 'Mbaby_zhoufang', 'Mbaby_zhangxuan', 'Mbaby_yanjun', 'Mbaby_zhuhuan', 'Mbaby_luyusheng', 'Mbaby_re_jsp_pangtong', 'Mbaby_sunhao', 'Mbabysp_daqiao', 'Mbaby_lukang', 'Mbaby_buzhi', 'Mbaby_xushi', 'Mbaby_zhugeke', 'Mbaby_zhoufei', 'Mbaby_zhangzhang', 'Mbaby_sunliang', 'Mbaby_ol_sunjian', 'Mbaby_zhuzhi', 'Mbaby_bulianshi', 'Mbaby_chengpu', 'Mbaby_daqiao', 'Mbaby_ganning', 'Mbaby_huanggai', 'Mbaby_lusu', 'Mbaby_luxun', 'Mbaby_lvmeng', 'Mbaby_sunce', 'Mbaby_sunluban', 'Mbaby_sunluyu', 'Mbaby_sunquan', 'Mbaby_sunshangxiang', 'Mbaby_taishici', 'Mbaby_wuguotai', 'Mbaby_xiaoqiao', 'Mbaby_xusheng', 'Mbaby_zhoutai', 'Mbaby_zhouyu', 'Mbaby_zhugejin', 'Mbaby_zumao', 'Mbabysp_xiaoqiao'],
                 MiNi_qun: ['Mbaby_re_hansui', 'Mbaby_dongxie', 'Mbaby_fuwan', 'Mbaby_wutugu', 'Mbaby_huangfusong', 'Mbaby_fanchou', 'Mbaby_guosi', 'Mbaby_yanbaihu', 'Mbaby_dc_huangzu', 'Mbaby_licaiwei', 'Mbaby_ol_dingyuan', 'Mbaby_liubian', 'Mbaby_re_pangdegong', 'Mbaby_zhangning', 'Mbaby_zhanglu', 'Mbaby_wangyun', 'Mbaby_zoushi', 'Mbaby_dc_huangchengyan', 'Mbaby_simahui', 'Mbaby_tw_mateng', 'Mbaby_laiyinger', 'Mbaby_sp_kongrong', 'Mbaby_zhujun', 'Mbaby_gongsunyuan', 'Mbaby_sp_zhangliao', 'Mbaby_sp_ol_zhanghe', 'Mbaby_guotufengji', 'Mbaby_yanfuren', 'Mbaby_tangji', 'Mbaby_caojie', 'Mbaby_liangxing', 'Mbabysp_zhenji', 'Mbaby_caoxing', 'Mbaby_sp_menghuo', 'Mbaby_wangrong', 'Mbaby_hetaihou', 'Mbaby_sp_taishici', 'Mbaby_zhangji', 'Mbaby_dongbai', 'Mbaby_beimihu', 'Mbaby_chunyuqiong', 'Mbaby_zhangqiying', 'Mbaby_fuhuanghou', 'Mbaby_liuxie', 'Mbaby_quyi', 'Mbaby_jsp_huangyueying', 'Mbaby_sp_machao', 'Mbaby_lijue', 'Mbaby_panfeng', 'Mbaby_liuzhang', 'Mbaby_jiaxu', 'Mbaby_zhangbao', 'Mbaby_zhangliang', 'Mbaby_gaoshun', 'Mbaby_caifuren', 'Mbaby_xuyou', 'Mbaby_gongsunzan', 'Mbaby_pangde', 'Mbaby_jushou', 'Mbaby_liru', 'Mbaby_dongzhuo', 'Mbaby_zhangjiao', 'Mbaby_huatuo', 'Mbaby_lvbu', 'Mbaby_diaochan', 'Mbaby_sp_diaochan', 'Mbaby_huaxiong', 'Mbaby_yuji', 'Mbaby_yanwen', 'Mbaby_caiwenji', 'Mbaby_liubiao', 'Mbaby_yuanshao', 'Mbaby_yuanshu', 'Mbaby_chengong', 'Mbaby_zuoci'],
-                MiNi_shen: ['Mbaby_jingwei', 'Mbaby_shen_luxun', 'Mbaby_shen_dengai', 'Mbaby_shen_zuoci', 'Mbaby_shen_taishici', 'Mbaby_shen_diaochan', 'Mbaby_shen_daxiaoqiao', 'Mbaby_shen_zhenji', 'Mbaby_shen_guojia', 'Mbaby_shen_huatuo', 'Mbaby_shen_dianwei', 'Mbaby_shen_lvbu', 'Mbaby_shen_zhugeliang', 'Mbaby_shen_lvmeng', 'Mbaby_shen_zhouyu', 'Mbaby_shen_guanyu', 'Mbaby_shen_liubei', 'Mbaby_shen_caocao', 'Mbaby_shen_zhangliao', 'Mbaby_shen_sunquan', 'Mbaby_shen_simayi', 'Mbaby_shen_zhaoyun', 'Mbaby_shen_ganning', 'Mbaby_shen_pangtong'],
+                MiNi_shen: ['Mbaby_shen_luxun', 'Mbaby_shen_dengai', 'Mbaby_shen_zuoci', 'Mbaby_shen_taishici', 'Mbaby_shen_diaochan', 'Mbaby_shen_daxiaoqiao', 'Mbaby_shen_zhenji', 'Mbaby_shen_guojia', 'Mbaby_shen_huatuo', 'Mbaby_shen_dianwei', 'Mbaby_shen_lvbu', 'Mbaby_shen_zhugeliang', 'Mbaby_shen_lvmeng', 'Mbaby_shen_zhouyu', 'Mbaby_shen_guanyu', 'Mbaby_shen_liubei', 'Mbaby_shen_caocao', 'Mbaby_shen_zhangliao', 'Mbaby_shen_sunquan', 'Mbaby_shen_simayi', 'Mbaby_shen_zhaoyun', 'Mbaby_shen_ganning', 'Mbaby_shen_pangtong'],
                 MiNi_change: ['Mbaby_guanning', 'Mbaby_caoying', 'Mbaby_re_nanhualaoxian', 'Mbaby_re_sunyi', 'Mbaby_zhaoxiang', 'Mbaby_xushao', 'Mbaby_baosanniang', 'Mbaby_quanhuijie'],
-                MiNi_shengzhiyifa: ['Mbaby_sunwukong', 'Mbaby_dalanmao', 'Mbaby_libai', 'Mbaby_change', 'Mbaby_nvwa', 'Mbaby_tunxingmenglix', 'Mbaby_xiaoshan'],
+                MiNi_shengzhiyifa: ['Mbaby_jingwei', 'Mbaby_sunwukong', 'Mbaby_dalanmao', 'Mbaby_libai', 'Mbaby_change', 'Mbaby_nvwa', 'Mbaby_tunxingmenglix', 'Mbaby_xiaoshan'],
                 MiNi_sbCharacter: ['Mbaby_ol_sb_jiangwei', 'Mbaby_sb_huangyueying', 'Mbaby_ol_sb_guanyu', 'Mbaby_sb_sunshangxiang', 'Mbaby_sb_xuhuang', 'Mbaby_sb_zhaoyun', 'Mbaby_sb_liubei', 'Mbaby_sb_caocao', 'Mbaby_sb_huanggai', 'Mbaby_sb_yuanshao', 'Mbaby_sb_yujin', 'Mbaby_sb_machao', 'Mbaby_sb_lvmeng', 'Mbaby_sb_huangzhong'],
                 MiNi_miaoKill: ['Mmiao_caiwenji', 'Mmiao_diaochan', 'Mmiao_caifuren', 'Mmiao_zhangxingcai', 'Mmiao_zhurong', 'Mmiao_huangyueying', 'Mmiao_daqiao', 'Mmiao_wangyi', 'Mmiao_zhangchunhua', 'Mmiao_zhenji', 'Mmiao_sunshangxiang', 'Mmiao_xiaoqiao', 'Mmiao_lvlingqi'],
                 MiNi_nianKill: ['Mnian_zhugeliang', 'Mnian_lvbu'],
@@ -172,7 +172,7 @@ const packs = function () {
             Mbaby_sunluyu: ['female', 'wu', 3, ['minimeibu', 'remumu']],
             Mbaby_sunquan: ['male', 'wu', 4, ['minirezhiheng', 'minijiuyuan'], ['zhu']],
             Mbaby_sunshangxiang: ['female', 'wu', 3, ['minijieyin', 'xiaoji']],
-            Mbaby_taishici: ['male', 'wu', 4, ['miniretianyi']],
+            Mbaby_taishici: ['male', 'wu', 4, ['miniretianyi', 'minihanzhan'], [...['die', 'tempname'].map(i => i + ':re_taishici')]],
             Mbaby_wuguotai: ['female', 'wu', 3, ['miniganlu', 'minibuyi']],
             Mbaby_xiaoqiao: ['female', 'wu', 3, ['minitianxiang', 'olhongyan']],
             Mbaby_xusheng: ['male', 'wu', 4, ['minirepojunx', 'miniyicheng']],
@@ -332,7 +332,7 @@ const packs = function () {
             Mbaby_shen_dengai: ['male', 'shen', 4, ['dctuoyu', 'minixianjin', 'dcqijing'], ['wei']],
             Mbaby_shen_luxun: ['male', 'shen', 4, ['nzry_junlve', 'minicuike', 'nzry_dinghuo'], ['wu']],
             Mbaby_shen_pangtong: ['male', 'shen', 4, ['minilunce', 'minilanhai'], ['shu', 'die:true']],
-            Mbaby_jingwei: ['female', 'shen', 4, ['minitianhai', 'minihaiku'], ['qun']],
+            Mbaby_jingwei: ['female', 'shen', 4, ['minitianhai', 'minihaiku']],
             //喵
             Mmiao_caiwenji: ['female', 'qun', 3, ['minimiaobeige', 'minimiaoduanchang', 'minidoumao']],
             Mmiao_diaochan: ['female', 'qun', 3, ['minimiaolijian', 'minimiaobiyue', 'minidoumao']],
@@ -355,6 +355,8 @@ const packs = function () {
             Mbaby_change: '嫦娥，中国古代神话中的人物，又名恒我、恒娥、姮娥、常娥、素娥，羿之妻，因偷吃了不死药而飞升至月宫。嫦娥的故事最早出现在商朝卦书 《归藏》。而嫦娥奔月的完整故事最早记载于西汉《淮南子·览冥训》。东汉时期，嫦娥与羿的夫妻关系确立，而嫦娥在进入月宫后变成了捣药的蟾蜍。南北朝以后，嫦娥的形象回归为女儿身。汉画像中，嫦娥人头蛇身，头梳高髻，身着宽袖长襦，身后长尾上饰有倒钩状细短羽毛。南北朝以后，嫦娥的形象被描绘成绝世美女。南朝陈后主陈叔宝曾把宠妃张丽华比作嫦娥。唐朝诗人白居易曾用嫦娥夸赞邻家少女不可多得的容貌。',
             Mbaby_nvwa: '女娲，中国上古神话中的创世女神。又称娲皇、女阴，史记女娲氏，是华夏民族人文先始，是福佑社稷之正神。相传女娲造人，一日中七十化变，以黄泥仿照自己抟土造人，创造人类社会并建立婚姻制度；因世间天塌地陷，于是熔彩石以补苍天，斩鳌足以立四极，留下了女娲补天的神话传说。女娲不但是补天救世的英雄和抟土造人的女神，还是一个创造万物的自然之神，神通广大化生万物，每天至少能创造出七十样东西。她开世造物，因此被称为大地之母，是被民间广泛而又长久崇拜的创世神和始母神。',
             Mbaby_tunxingmenglix: '据《王子年拾遗记》记载：蜀先主甘后；生而体貌特异，年至十八，玉质柔肌，态媚容冶…河南献玉人高三尺…甘后与玉人洁白齐润，观者殆相乱惑。刘备非常喜爱这尊玉雕，“夕则用后而玩玉人”。白玉美人怀抱一只白玉狸猫，甘夫人常对玉人倾诉渴望为刘备诞下一子的心愿，然而久盼未果。偶有一日，在梦中化身成一只饥肠辘辘、失去理智的白玉狸猫，闯入到幻境当中，吞掉了幻境中的启明星。事后，梦醒的甘夫人发现已怀有身孕，甚是欣喜。而白玉美人怀抱的玉狸猫则留在了幻境中，化身为吞星梦狸守护着幻境里的星星。',
+            Mbaby_jingwei: '精卫，中国古代神话中的一种鸟。上古神话传说里，女娃是炎帝最小的女儿，后溺水而亡，化作精卫鸟；另一说，女娃是上古的一个部落，由于气候变暖，海平面上升，女娃部落遭到灭顶之灾，后化作精卫。据《山海经》记载：精卫婀娜多姿、长发飘逸、背生双翼，花头颅、白嘴壳、红脚爪，样子有点儿像乌鸦。',
+
         },
         characterFilter: {
         },
@@ -12833,6 +12835,7 @@ const packs = function () {
             },
             miniretianyi: {
                 audio: 'tianyi',
+                audioname: ['re_taishici'],
                 trigger: { player: ['phaseUseBegin', 'useCardToPlayer'] },
                 filter(event, player) {
                     return event.name == 'phaseUse' || (event.card.name == 'sha' && player.canCompare(event.target));
@@ -17729,11 +17732,11 @@ const packs = function () {
                 audio: 'reduodao',
                 inherit: 'reduodao',
                 async cost(event, trigger, player) {
-                    const { player: target, card } = trigger;
+                    const { player: target, card } = trigger, goon = get.color(card) === 'red';
                     let prompt = '弃置一张牌，然后', cards = target.getEquips(1).filter(card => {
                         return lib.filter.canBeGained(card, player, target);
                     });
-                    if (get.color(card) == 'red') {
+                    if (goon) {
                         if (target.countGainableCards(player, 'hej')) prompt += '获得' + get.translation(target) + '区域内的一张牌';
                         else prompt += '无事发生';
                     }
@@ -17742,8 +17745,8 @@ const packs = function () {
                         else prompt += '无事发生';
                     }
                     event.result = await player.chooseToDiscard('he', get.prompt(event.name.slice(0, -5), target), prompt).set('ai', card => {
-                        const { player, target, card, eff } = get.event();
-                        if (get.color(card) == 'red') {
+                        const { player, target, goon, eff } = get.event();
+                        if (goon) {
                             let att = get.attitude(player, target);
                             if (att < 0) att = -Math.sqrt(-att);
                             else att = Math.sqrt(att);
@@ -17763,7 +17766,7 @@ const packs = function () {
                         return 2 * es.reduce((acc, card) => {
                             return acc + get.value(card, player);
                         }, 0);
-                    }()).set('target', target).set('card', card).forResult();
+                    }()).set('target', target).set('goon', goon).forResult();
                 },
                 async content(event, trigger, player) {
                     const { player: target, card } = trigger;
@@ -31903,7 +31906,7 @@ const packs = function () {
             Mbaby_shen_dengai: '欢杀神邓艾',
             Mbaby_shen_luxun: '欢杀神陆逊',
             Mbaby_shen_pangtong: '欢杀神庞统',
-            Mbaby_shen_pangtong: '欢杀精卫',
+            Mbaby_jingwei: '欢杀精卫',
             miniwuqian: '无前',
             miniwuqian_info: '锁定技，当你于回合内第一次使用【杀】或【决斗】指定目标后，则你令此牌无视目标角色的防具且视为具有〖无双〗效果。',
             minishenfen: '神愤',

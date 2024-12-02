@@ -12,12 +12,14 @@ game.bolShowNewPack = function () {
 	//更新告示
 	var HuoDong_update = [
 		'/setPlayer/',
-		'添加欢杀武将管宁，谋姜维，韩遂，毌丘俭',
+		'部分素材替换',
+		'添加欢杀武将管宁、谋姜维、韩遂、毌丘俭、精卫、潘璋马忠、阚泽、界太史慈',
 		'To be continued...',
 	];
 	//更新武将
 	var HuoDong_players = [
 		'Mbaby_guanning', 'Mbaby_ol_sb_jiangwei', 'Mbaby_re_hansui', 'Mbaby_guanqiujian',
+		'Mbaby_jingwei', 'Mbaby_panzhangmazhong', 'Mbaby_kanze', 'Mbaby_taishici',
 	];
 	//加载
 	var dialog = ui.create.dialog(
