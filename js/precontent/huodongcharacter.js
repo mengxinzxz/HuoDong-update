@@ -41,7 +41,7 @@ const packs = function () {
             bilibili_shengxunyu: ['male', 'key', 4, ['bilibili_hehu', 'bilibili_jinyan', 'bilibili_yutai'], ['clan:宿舍群', 'clan:肘击群', 'name:熏|鱼']],
             bilibili_Firewin: ['male', 'key', 4, ['jsrgfeiyang', 'jsrgbahu', 'bilibili_tixiang'], ['clan:宿舍群', 'clan:肘击群', 'clan:活动群', 'name:火|赢']],
             bilibili_jinglingqiu: ['male', 'key', '3/4', ['bilibili_tiyi', 'bilibili_zili'], ['clan:活动群', 'name:精灵|球']],
-            bilibili_suixingsifeng: ['female', 'key', 4, ['bilibili_liaoxing', 'bilibili_daili', 'bilibili_duoyang'], ['clan:肘家军', 'clan:宿舍群', 'clan:肘击群', 'clan:活动群', 'name:牢|大']],
+            bilibili_suixingsifeng: ['female', 'key', 4, ['bilibili_liaoxing', 'bilibili_daili', 'bilibili_duoyang'], ['clan:肘家军', 'clan:宿舍群', 'clan:肘击群', 'clan:活动群', 'name:萌新|转型中']],
             bilibili_Emptycity: ['male', 'key', 4, ['bilibili_zhiyou', 'bilibili_guanli'], ['clan:活动群', 'clan:Thunder群', 'name:空|城']],
             bilibili_thunderlei: ['male', 'key', '2/4/3', ['bilibili_Thunder', 'bilibili_qianxi'], ['clan:Thunder群', 'name:雷|null']],
             bilibili_zhengxuan: ['male', 'qun', 3, ['bilibili_zhengjing'], ['character:zhengxuan', 'die:zhengxuan']],
@@ -50,7 +50,7 @@ const packs = function () {
             bilibili_shen_guojia: ['male', 'wei', '9/9/5', ['stianyi', 'resghuishi', 'bilibili_huishi'], ['doublegroup:shen:wei:wu', 'die:shen_guojia']],
             bilibili_re_xusheng: ['male', 'wu', 4, ['bilibili_pojun', 'kuangcai', 'bilibili_baodao'], ['die:re_xusheng']],
             bilibili_xushao: ['male', 'qun', '1/6', ['bilibili_pingjian'], ['ext:活动武将/image/character/old_xushao.jpg', 'InitFilter:noZhuHp']],
-            bilibili_ningjingzhiyuan: ['male', 'key', 4, ['bilibili_liaoxing', 'bilibili_xiezhi', 'bilibili_fazhou'], ['clan:肘家军', 'clan:宿舍群', 'clan:肘击群', 'clan:活动群', 'name:牢|宁']],
+            bilibili_ningjingzhiyuan: ['male', 'key', 4, ['bilibili_liaoxing', 'bilibili_xiezhi', 'bilibili_fazhou'], ['clan:肘家军', 'clan:宿舍群', 'clan:肘击群', 'clan:活动群', 'name:宁动|致近']],
             bilibili_xizhicaikobe: ['male', 'key', 4, ['bilibili_biexiao', 'bilibili_xingshi', 'bilibili_zhangcai'], ['doublegroup:wei:shu:wu:qun:jin', 'clan:肘家军', 'clan:肘击群', 'clan:活动群', 'name:戏|子宓']],
             //千里走单骑 
             DJ_caiyang: ['male', 'qun', 1, ['yinka', 'zhuixi'], ['character:caiyang']],
