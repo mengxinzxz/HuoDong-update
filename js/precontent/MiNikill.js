@@ -185,7 +185,7 @@ const packs = function () {
             Mbaby_ol_sunjian: ['male', 'wu', 4, ['miniyinghun', 'miniwulie'], ['tempname:ol_sunjian']],
             Mbaby_sunliang: ['male', 'wu', 3, ['minikuizhu', 'minichezheng', 'minilijun'], ['zhu']],
             Mbaby_zhangzhang: ['male', 'wu', 3, ['rezhijian', 'miniguzheng']],
-            Mbaby_zhoufei: ['female', 'wu', 3, ['miniliangyin', 'kongsheng']],
+            Mbaby_zhoufei: ['female', 'wu', 3, ['miniliangyin', 'kongsheng'], ['name:周|null']],
             Mbaby_zhugeke: ['male', 'wu', 3, ['miniaocai', 'miniduwu'], ['name:诸葛|恪']],
             Mbaby_xushi: ['female', 'wu', 3, ['miniwengua', 'minifuzhu'], ['name:徐|null']],
             Mbaby_buzhi: ['male', 'wu', 3, ['minihongde', 'minidingpan']],
