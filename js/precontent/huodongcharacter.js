@@ -21,7 +21,7 @@ const packs = function () {
             bilibili_zhouxiaomei: ['female', 'wu', 3, ['dchuishu', 'dcyishu', 'yingzi', 'biyue'], ['name:周|null']],
             bilibili_zhangrang: ['male', 'qun', 3, ['bilibili_taoluan']],
             diy_lvmeng: ['male', 'wu', 4, ['BTkongju', 'BThouqi'], ['die:lvmeng']],
-            bilibili_wangwang: ['female', 'shu', 3, ['huguan', 'yaopei', 'mingluan'], ['die:wangtao', 'die:wangyue', ['name:王|桃-王|悦']]],
+            bilibili_wangwang: ['female', 'shu', 3, ['huguan', 'yaopei', 'mingluan'], ['die:wangtao', 'die:wangyue', 'name:王|桃-王|悦']],
             bilibili_wangtao: ['female', 'shu', 3, ['huguan', 'yaopei', 'dualside'], ['dualside:bilibili_x_wangyue', 'character:wangtao', 'die:wangtao']],
             bilibili_wangyue: ['female', 'shu', 3, ['huguan', 'mingluan', 'dualside'], ['dualside:bilibili_x_wangtao', 'character:wangyue', 'tempname:wangyue', 'die:wangyue']],
             bilibili_x_wangtao: ['female', 'shu', 3, ['huguan', 'yaopei', 'dualside'], ['unseen', 'character:wangtao', 'die:wangtao']],
