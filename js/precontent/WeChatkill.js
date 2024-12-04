@@ -48,7 +48,7 @@ const packs = function () {
             wechat_xuzhu: ['male', 'wei', 4, ['wechatluoyi']],
             wechat_sunshangxiang: ['female', 'wu', 3, ['wechatjieyin', 'xiaoji']],
             wechat_pangde: ['male', 'qun', 4, ['mashu', 'wechatmengjin']],
-            wechat_xiahouyuan: ['male', 'wei', 4, ['wechatshensu'], 'name:夏侯|渊'],
+            wechat_xiahouyuan: ['male', 'wei', 4, ['wechatshensu'], ['name:夏侯|渊']],
             wechat_huangzhong: ['male', 'shu', 4, ['wechatliegong']],
             wechat_caochong: ['male', 'wei', 3, ['chengxiang', 'wechatrenxin']],
             wechat_sp_caiwenji: ['female', 'wei', 3, ['wechatchenqing', 'wechatmozhi'], ['name:蔡|琰']],
