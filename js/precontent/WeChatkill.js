@@ -2752,7 +2752,7 @@ const packs = function () {
                 ai: {
                     unequip_ai: true,
                     skillTagFilter(player, tag, arg) {
-                        if (arg && arg.name == 'sha' && arg.target && get.attitude(player, arg.target) <= 0 && arg.target.countCards('he')) return true;
+                        if (arg?.name == 'sha' && arg.target && get.attitude(player, arg.target) <= 0 && arg.target.countCards('he')) return true;
                         return false;
                     },
                 },
@@ -2975,7 +2975,7 @@ const packs = function () {
                         }
                     }
                     'step 2'
-                    if (result && result.bool) event.goto(1);
+                    if (result?.bool) event.goto(1);
                 },
             },
             wechatmozhix: {
@@ -3477,7 +3477,7 @@ const packs = function () {
                     }
                     else {
                         var evt = _status.event.getParent('phaseUse');
-                        if (evt && evt.name == 'phaseUse') evt.skipped = true;
+                        if (evt?.name == 'phaseUse') evt.skipped = true;
                     }
                 },
                 ai: {
@@ -3831,7 +3831,7 @@ const packs = function () {
                         trigger: { global: 'respond' },
                         filter(event, player) {
                             var evt = event.getParent(2);
-                            return evt && evt.name == 'wanjian' && evt.getParent().player == player && event.player != player;
+                            return evt?.name == 'wanjian' && evt.getParent().player == player && event.player != player;
                         },
                         forced: true,
                         locked: false,
@@ -3900,7 +3900,7 @@ const packs = function () {
                             if (storage.length) {
                                 for (var i = 0; i < storage[0].length; i++) {
                                     var target = storage[0][i], num = storage[1][i];
-                                    if (target && target.isIn()) {
+                                    if (target?.isIn()) {
                                         player.line(target);
                                         target.draw(num);
                                     }
@@ -4793,7 +4793,7 @@ const packs = function () {
                 async content(event, trigger, player) {
                     const target = event.target;
                     const cards = await target.chooseToDiscard('he', true).forResultCards();
-                    if (cards && cards.length && cards[0].name != 'sha') {
+                    if (cards?.length && cards[0].name != 'sha') {
                         await player.gain(cards, 'gain2');
                         await player.useCard({ name: 'juedou', isCard: true }, target);
                     }
@@ -5025,7 +5025,7 @@ const packs = function () {
                 onChooseToUse(event) {
                     if (event.type == 'phase' && !game.online) {
                         var last = event.player.getLastUsed();
-                        if (last && last.getParent('phaseUse') == event.getParent()) {
+                        if (last?.getParent('phaseUse') == event.getParent()) {
                             var suit = get.suit(last.card, false);
                             if (suit != 'none') event.set('wechatjianying_suit', suit);
                         }
@@ -6022,7 +6022,7 @@ const packs = function () {
                         },
                         filter(event, player) {
                             const evt = event.getl(player), storage = player.getStorage('wechatlvyuan_effect');
-                            return evt && evt.player == player && evt.cards2 && evt.cards2.some(card => storage.length != 1 || get.color(card, player) != storage[0]);
+                            return evt?.player == player && evt.cards2?.some(card => storage.length != 1 || get.color(card, player) != storage[0]);
                         },
                         forced: true,
                         content() {
@@ -6287,7 +6287,7 @@ const packs = function () {
                             const evt = event.getParent(), evtx = event.getParent(2);
                             if (evtx.name != 'useCard' || !['sha', 'juedou'].includes(evtx.card.name)) return false;
                             if (evtx.skill == 'wechathuhou_wusheng' && (evtx.cards || []).some(i => get.type(i, false) == 'equip')) return true;
-                            if (evt && evt.name == 'juedou' && player.getHistory('respond', evtxx => {
+                            if (evt?.name == 'juedou' && player.getHistory('respond', evtxx => {
                                 return evtxx.getParent(2) == evt && evtxx.skill == 'wechathuhou_wusheng' && (evtxx.cards || []).length;
                             }).reduce((list, evtxx) => {
                                 list.addArray(evtxx.cards || []); return list;
@@ -6300,7 +6300,7 @@ const packs = function () {
                         content() {
                             const evt = trigger.getParent(), evtx = trigger.getParent(2);
                             if (evtx.skill == 'wechathuhou_wusheng' && (evtx.cards || []).length) trigger.num += evtx.cards.filter(i => get.type(i, false) == 'equip').length;
-                            if (evt && evt.name == 'juedou') trigger.num += player.getHistory('respond', evtxx => {
+                            if (evt?.name == 'juedou') trigger.num += player.getHistory('respond', evtxx => {
                                 return evtxx.getParent(2) == evt && evtxx.skill == 'wechathuhou_wusheng' && (evtxx.cards || []).length;
                             }).reduce((list, evtxx) => {
                                 list.addArray(evtxx.cards || []); return list;
@@ -6497,7 +6497,7 @@ const packs = function () {
                 filter(event, player) {
                     if (event.type != 'dying') return false;
                     const evt = get.event().getParent('_save');
-                    return evt && evt.dying && evt.dying.isIn();
+                    return evt?.dying?.dying.isIn();
                 },
                 round: 1,
                 async content(event, trigger, player) {
@@ -6647,9 +6647,7 @@ const packs = function () {
                         players.remove(player);
                         return players.reduce((list, target) => {
                             const evt = event.getl(target);
-                            if (evt && evt.cards2 && evt.cards2.length) {
-                                return list.addArray(evt.cards2);
-                            }
+                            if (evt?.cards2?.length) list.addArray(evt.cards2);
                             return list;
                         }, []).someInD('d');
                     }
@@ -6671,9 +6669,7 @@ const packs = function () {
                         players.remove(player);
                         cards = players.reduce((list, target) => {
                             const evt = trigger.getl(target);
-                            if (evt && evt.cards2 && evt.cards2.length) {
-                                return list.addArray(evt.cards2);
-                            }
+                            if (evt?.cards2?.length) list.addArray(evt.cards2);
                             return list;
                         }, []).filterInD('d');
                     }
@@ -7100,7 +7096,7 @@ const packs = function () {
                         audio: 'ol_shichou',
                         trigger: { player: 'useCardAfter' },
                         filter(event, player) {
-                            return event.card.name == 'sha' && event.cards && event.cards.someInD() && !player.getHistory('sourceDamage', evt => evt.card && evt.card == event.card).length;
+                            return event.card.name == 'sha' && event.cards?.someInD() && !player.getHistory('sourceDamage', evt => evt.card && evt.card == event.card).length;
                         },
                         forced: true,
                         locked: false,

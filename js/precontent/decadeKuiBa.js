@@ -225,8 +225,7 @@ const packs = function () {
                 ai: {
                     unequip_ai: true,
                     skillTagFilter(player, tag, arg) {
-                        if (arg && arg.name == 'sha') return true;
-                        return false;
+                        return arg?.name == 'sha';
                     },
                 },
             },

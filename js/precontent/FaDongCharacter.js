@@ -319,7 +319,7 @@ const packs = function () {
                 trigger: { player: 'phaseUseBegin' },
                 filter(event, player) {
                     var jiangling = player.storage.myjiangling;
-                    return jiangling && jiangling.isIn() && jiangling.isDamaged();
+                    return jiangling?.isIn() && jiangling.isDamaged();
                 },
                 direct: true,
                 content() {

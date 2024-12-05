@@ -581,7 +581,7 @@ const packs = function () {
                     return game.hasPlayer2(current => {
                         if (current == player) return false;
                         var evt = event.getl(current);
-                        return evt && evt.player == current && evt.es && evt.es.length;
+                        return evt?.player == current && evt.es?.length;
                     });
                 },
                 forced: true,
@@ -592,7 +592,7 @@ const packs = function () {
                         num--;
                         game.filterPlayer2(target => target != player).forEach(current => {
                             var evt = trigger.getl(current);
-                            if (evt && evt.player == current && evt.es && evt.es.length) num += evt.es.length;
+                            if (evt?.player == current && evt.es?.length) num += evt.es.length;
                         });
                     }
                     num = Math.min(num, 3 - player.countMark('fh_wuku'));
@@ -1702,7 +1702,7 @@ const packs = function () {
                         trigger: { player: ['useCardBefore', 'respondBefore'] },
                         filter(event, player) {
                             var cards = player.getCards('s', card => card.hasGaintag('fh_songshu_buff') && card._cardid);
-                            return event.cards && event.cards.some(card => cards.includes(card));
+                            return event.cards?.some(card => cards.includes(card));
                         },
                         forced: true,
                         popup: false,
@@ -2329,8 +2329,7 @@ const packs = function () {
                     'step 1'
                     player.judge(function (result) {
                         var evt = _status.event.getParent('fh_shuishi');
-                        if (evt && evt.suits && evt.suits.includes(get.suit(result))) return 0;
-                        return 1;
+                        return 1 - evt?.suits?.includes(get.suit(result));
                     }).set('callback', lib.skill.fh_shuishi.callback).judge2 = function (result) {
                         return result.bool ? true : false;
                     };
@@ -2416,8 +2415,7 @@ const packs = function () {
                     var result = yield player.chooseTarget(get.prompt2('fh_sghuishi')).set('ai', target => {
                         var player = _status.event.player;
                         var list = target.getSkills(null, false, false).filter(skill => {
-                            var info = lib.skill[skill];
-                            return info && info.juexingji;
+                            return lib.skill[skill]?.juexingji;
                         });
                         if (list.length) return get.attitude(player, target);
                         return get.attitude(player, target) + 5;
@@ -2427,8 +2425,7 @@ const packs = function () {
                         player.logSkill('fh_sghuishi', target);
                         player.awakenSkill('fh_sghuishi');
                         var list = target.getSkills(null, false, false).filter(skill => {
-                            var info = lib.skill[skill];
-                            return info && info.juexingji;
+                            return lib.skill[skill]?.juexingji;
                         });
                         if (!list.length) {
                             yield target.draw(4);
@@ -2792,7 +2789,7 @@ const packs = function () {
                         });
                         player.when('fh_qinqingEnd').then(() => {
                             var zhu = game.filterPlayer(current => current.getSeatNum() == 1)[0];
-                            if (zhu && zhu.isIn()) {
+                            if (zhu?.isIn()) {
                                 var num = targets.filter(target => target.countCards('h') > zhu.countCards('h')).length;
                                 if (num > 0) player.draw(num);
                             }
@@ -2871,7 +2868,7 @@ const packs = function () {
                             if (event.draw) {
                                 player.draw('nodelay');
                                 var target = player.getStorage('fh_kuangbi_effect')[0];
-                                if (target && target.isIn()) target.draw();
+                                if (target?.isIn()) target.draw();
                             }
                             else player.draw();
                         },
@@ -3220,7 +3217,7 @@ const packs = function () {
                         else event.finish();
                     }
                     'step 2'
-                    if (result && result.cards) event.card = result.cards[0];
+                    if (result?.cards?.length) event.card = result.cards[0];
                     'step 3'
                     if (event.card && get.suit(event.card) == 'club') player.draw();
                 },
@@ -4135,13 +4132,13 @@ const packs = function () {
                     if (event.name == 'phaseDiscard') {
                         var cards = [];
                         player.getHistory('lose', function (evt) {
-                            if (evt && evt.type == 'discard' && evt.getParent('phaseDiscard') == event && evt.hs) cards.addArray(evt.hs);
+                            if (evt?.type == 'discard' && evt.getParent('phaseDiscard') == event && evt.hs) cards.addArray(evt.hs);
                         });
                         return cards.length > 1;
                     }
                     else {
                         var evt = event.getl(player);
-                        return evt && evt.es && evt.es.length > 0;
+                        return evt?.es?.length > 0;
                     }
                 },
                 *content(event, map) {
@@ -4757,7 +4754,7 @@ const packs = function () {
             filter(event, player) {
                 if (event.name == 'equip') return event.card.fh_extra;
                 if (event.getg) return event.getg(player).some(card => card.fh_extra);
-                return event.cards && event.cards.some(card => card.fh_extra);
+                return event.cards?.some(card => card.fh_extra);
             },
             priority: 114514,
             forced: true,

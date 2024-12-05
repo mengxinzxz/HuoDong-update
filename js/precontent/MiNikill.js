@@ -464,7 +464,7 @@ const packs = function () {
                     result: {
                         player(player) {
                             const trigger = get.event().getParent().mini_zhong;
-                            if (trigger && trigger.player) return get.info('twgonghuan').check(trigger, player) ? 1 : 0;
+                            if (trigger?.player) return get.info('twgonghuan').check(trigger, player) ? 1 : 0;
                             return 0;
                         },
                     },
@@ -2067,7 +2067,7 @@ const packs = function () {
                 trigger: { player: 'gainAfter' },
                 filter(event, player) {
                     if (event.parent.parent.name == 'phaseDraw') return false;
-                    return event.cards && event.cards.length > 0
+                    return event.cards?.length > 0
                 },
                 usable: 1,
                 direct: true,
@@ -3301,7 +3301,7 @@ const packs = function () {
                     player.chooseToDiscard(true, 'h', player.countCards('h'));
                     'step 1';
                     var evt = trigger.getParent();
-                    if (evt && evt.getParent && !evt.miniqingjiao) {
+                    if (evt?.getParent && !evt.miniqingjiao) {
                         evt.miniqingjiao = true;
                         var next = game.createEvent('miniqingjiao_discard', false, evt.getParent());
                         next.player = player;
@@ -3709,7 +3709,7 @@ const packs = function () {
                 audio: 'dcnuchen',
                 trigger: { player: 'useCard1', source: 'damageBegin1' },
                 filter(event, player) {
-                    if (!(event.card && event.card.name == 'sha' && event.cards && event.cards.length && !event.card.isCard)) return false;
+                    if (!(event.card && event.card.name == 'sha' && event.cards?.length && !event.card.isCard)) return false;
                     if (event.name == 'useCard') return event.addCount !== false && get.type2(event.cards[0]) != 'trick';
                     return get.type2(event.cards[0]) == 'trick';
                 },
@@ -3805,7 +3805,7 @@ const packs = function () {
                             if (player.countCards('h') >= 4) return false;
                             return game.hasPlayer2(function (current) {
                                 var evt = event.getl(current);
-                                if (evt && evt.gaintag_map) {
+                                if (evt?.gaintag_map) {
                                     for (var i in evt.gaintag_map) {
                                         if (evt.gaintag_map[i].includes('minishenshi_' + player.playerid)) return true;
                                     }
@@ -4973,7 +4973,7 @@ const packs = function () {
                     }
                     if (event.player == player) return false;
                     var evt = event.getl(player);
-                    return evt && evt.hs && evt.hs.length > 0;
+                    return evt?.hs?.length > 0;
                 },
             },
             minidaoshu: {
@@ -5081,7 +5081,7 @@ const packs = function () {
                     content: 'expansion',
                     markcount: 'expansion',
                     mark(dialog, content, player) {
-                        if (content && content.length) {
+                        if (content?.length) {
                             if (player.isUnderControl(true)) dialog.addSmall([content.map(i => i[0]), 'vcard']);
                             else dialog.addAuto(player.getExpansions('minishefu'));
                         }
@@ -5666,7 +5666,7 @@ const packs = function () {
                         );
                         player.popup(get.cnNumber(top.length) + '上' + get.cnNumber(bottom.length) + '下');
                         game.log(player, '将' + get.cnNumber(top.length) + '张牌置于牌堆顶');
-                        if (put && put.length) player.addToExpansion(put, 'gain2').gaintag.add('minireguanxing');
+                        if (put?.length) player.addToExpansion(put, 'gain2').gaintag.add('minireguanxing');
                         game.updateRoundNumber();
                         game.delayx();
                     }
@@ -5829,7 +5829,7 @@ const packs = function () {
                 content() {
                     'step 0'
                     var evt = _status.event.getParent('phaseUse');
-                    if (evt && evt.name == 'phaseUse' && !evt.minirerende) {
+                    if (evt?.name == 'phaseUse' && !evt.minirerende) {
                         var next = game.createEvent('minirerende_clear');
                         _status.event.next.remove(next);
                         evt.after.push(next);
@@ -5876,7 +5876,7 @@ const packs = function () {
                     }
                     else event.finish();
                     'step 1'
-                    if (result && result.bool && result.links[0]) {
+                    if (result?.bool && result.links[0]) {
                         var card = { name: result.links[0][2], nature: result.links[0][3] };
                         player.chooseUseTarget(card, true);
                     }
@@ -6102,7 +6102,7 @@ const packs = function () {
                     if (event.type != 'discard' || event.getlx === false) return false;
                     var cards = event.cards2.slice(0);
                     var evt = event.getl(player);
-                    if (evt && evt.cards) cards.removeArray(evt.cards);
+                    if (evt?.cards) cards.removeArray(evt.cards);
                     return cards.filter(function (card) {
                         return card.name == 'nanman' && get.position(card, true) == 'd';
                     }).length;
@@ -6113,7 +6113,7 @@ const packs = function () {
                     if (trigger.name == 'lose') {
                         var cards = trigger.cards2.slice(0);
                         var evt = trigger.getl(player);
-                        if (evt && evt.cards) cards.removeArray(evt.cards);
+                        if (evt?.cards) cards.removeArray(evt.cards);
                         player.gain(cards.filter(function (card) {
                             return card.name == 'nanman' && get.position(card, true) == 'd';
                         }), 'gain2');
@@ -6197,7 +6197,7 @@ const packs = function () {
                 filter(event, player) {
                     if (player.isPhaseUsing()) return false;
                     if (get.itemtype(event.cards) != 'cards') return false;
-                    if (event.cards && event.cards.length) {
+                    if (event.cards?.length) {
                         for (var i = 0; i < event.cards.length; i++) {
                             if (event.cards[i].isInPile()) {
                                 return true;
@@ -6928,7 +6928,7 @@ const packs = function () {
                         async content(event, trigger, player) {
                             const target = event.targets[0];
                             await player.logSkill('minirefangquan', target);
-                            if (event.cards && event.cards.length) await player.discard(event.cards);
+                            if (event.cards?.length) await player.discard(event.cards);
                             await player.turnOver();
                             if (player.countCards('he')) {
                                 await player.chooseToGive(target, 'he', [1, Infinity]).set('prompt', '放权：是否交给' + get.translation(target) + '任意张牌？');
@@ -7094,7 +7094,7 @@ const packs = function () {
                         filter(event, player) {
                             if (event.player != player) {
                                 var evt = event.getl(player);
-                                return evt && evt.hs && evt.hs.length > 0;
+                                return evt?.hs?.length > 0;
                             }
                             return false;
                         },
@@ -8687,7 +8687,7 @@ const packs = function () {
                     }
                     'step 2'
                     var map = event.result || result;
-                    if (map && map.skills && map.skills.length) player.addSkills(map.skills);
+                    if (map?.skills?.length) player.addSkills(map.skills);
                     'step 3'
                     if (player.isMinHp()) player.recover();
                 },
@@ -9182,15 +9182,15 @@ const packs = function () {
                                 if (list.length >= lib.suit.length) return false;
                             }
                             var evt = event.getParent('phaseUse');
-                            if (evt && evt.player == player && !evt.miniyouyaned) return true;
+                            if (evt?.player == player && !evt.miniyouyaned) return true;
                             var evt = event.getParent('phaseDiscard');
-                            if (evt && evt.player == player && !evt.miniyouyaned) return true;
+                            if (evt?.player == player && !evt.miniyouyaned) return true;
                             return false;
                         },
                         prompt2: '从牌堆中获得本次弃牌中没有的花色的牌各一张',
                         content() {
                             var evt = trigger.getParent('phaseUse');
-                            if (evt && evt.player == player) evt.miniyouyaned = true;
+                            if (evt?.player == player) evt.miniyouyaned = true;
                             else {
                                 var evt = trigger.getParent('phaseDiscard');
                                 if (evt) evt.miniyouyaned = true;
@@ -9724,7 +9724,7 @@ const packs = function () {
                     }));
                     if (!event.cards || !event.cards.filterInD().length || event.player == player) return false;
                     var evt = event.getParent('phaseUse');
-                    return evt && evt.player == event.player && event.player.getHistory('useCard', function (evt2) {
+                    return evt?.player == event.player && event.player.getHistory('useCard', function (evt2) {
                         return evt2.card.name == 'sha' && evt2.getParent('phaseUse') == evt;
                     }).indexOf(event) == 0;
                 },
@@ -10493,7 +10493,7 @@ const packs = function () {
                     },
                     select() {
                         var opts = _status.event.dialog._chosenOpt;
-                        return opts && opts.length && opts[0].link == '交给其他角色牌' ? 0 : 1;
+                        return opts?.length && opts[0].link == '交给其他角色牌' ? 0 : 1;
                     },
                     backup(links, player) {
                         var isUse = links.length == 1;
@@ -10949,7 +10949,7 @@ const packs = function () {
                 },
                 updateBlocker(player) {
                     var list = [], storage = player.storage.minisbliegong_block;
-                    if (storage && storage.length) {
+                    if (storage?.length) {
                         for (var i of storage) list.addArray(i[1]);
                     }
                     player.storage.minisbliegong_blocker = list;
@@ -10959,7 +10959,7 @@ const packs = function () {
                     directHit_ai: true,
                     halfneg: true,
                     skillTagFilter(player, tag, arg) {
-                        if (arg && arg.card && arg.card.name == 'sha') {
+                        if (arg?.card && arg.card.name == 'sha') {
                             var storage = player.getStorage('minisbliegong');
                             if (storage.length < 3 || !storage.includes('heart') || !storage.includes('diamond')) return false;
                             var target = arg.target;
@@ -11221,7 +11221,7 @@ const packs = function () {
                     return game.hasPlayer(current => {
                         if (target && current == target) return false;
                         const evt = event.getl(current);
-                        return evt && evt.hs && evt.hs.length && current.countCards('h') < current.maxHp;
+                        return evt?.hs?.length && current.countCards('h') < current.maxHp;
                     });
                 },
                 async cost(event, trigger, player) {
@@ -11229,7 +11229,7 @@ const packs = function () {
                     const targets = game.filterPlayer(current => {
                         if (targetx && current == targetx || !current.isIn()) return false;
                         const evt = trigger.getl(current);
-                        return evt && evt.hs && evt.hs.length && current.countCards('h') < current.maxHp;
+                        return evt?.hs?.length && current.countCards('h') < current.maxHp;
                     }).sortBySeat(targetx || player);
                     event.result = await player.chooseTarget((card, player, target) => {
                         return get.event('targets').includes(target);
@@ -11739,7 +11739,7 @@ const packs = function () {
                                 directHit_ai: true,
                                 skillTagFilter(player, tag, arg) {
                                     if (get.event('skill') != 'miniweilin_backup') return false;
-                                    return arg && arg.card && arg.card.name == 'sha' && get.color(arg.card) == 'red';
+                                    return arg?.card?.name == 'sha' && get.color(arg.card) == 'red';
                                 },
                             },
                         }
@@ -12425,7 +12425,7 @@ const packs = function () {
                             if (player.countCards('h')) return false;
                             if (!player.awakenedSkills.includes('minifenwei')) return false;
                             var evt = event.getl(player);
-                            return evt && evt.player == player && evt.hs && evt.hs.length > 0;
+                            return evt?.player == player && evt?.hs?.length > 0;
                         },
                         direct: true,
                         firstDo: true,
@@ -12732,7 +12732,7 @@ const packs = function () {
                 filter(event, player) {
                     if (player.countCards('h')) return false;
                     var evt = event.getl(player);
-                    return evt && evt.hs && evt.hs.length;
+                    return evt?.hs?.length;
                 },
                 frequent: true,
                 content() {
@@ -12825,7 +12825,7 @@ const packs = function () {
                             unequip: true,
                             unequip_ai: true,
                             skillTagFilter(player, tag, arg) {
-                                return arg && arg.name == 'sha';
+                                return arg?.name == 'sha';
                             },
                         },
                         mark: true,
@@ -13376,7 +13376,7 @@ const packs = function () {
                     skillTagFilter(player, tag, arg) {
                         if (get.attitude(player, arg.target) > 0) return false;
                         if (tag == 'directHit_ai') return arg.target.hp >= Math.max(1, arg.target.countCards('h') - 1);
-                        if (arg && arg.name == 'sha' && arg.target.getEquips(2).length) return true;
+                        if (arg?.name == 'sha' && arg.target.getEquips(2).length) return true;
                         return false;
                     }
                 },
@@ -13454,7 +13454,7 @@ const packs = function () {
                         const target = get.info('minirepojunx').logTarget(arg, player);
                         if (get.attitude(player, target) > 0) return false;
                         if (tag == 'directHit_ai') return player == arg.player && player.maxHp >= Math.max(1, arg.target.countCards('h') - 1);
-                        return arg && arg.card?.name == 'sha' && arg.target?.getEquip(2);
+                        return arg?.card?.name == 'sha' && arg.target?.getEquip(2);
                     },
                 },
                 subSkill: {
@@ -14777,7 +14777,7 @@ const packs = function () {
                         filter(event, player) {
                             return event.fromStorage == true || game.hasPlayer2(function (current) {
                                 var evt = event.getl(current);
-                                return evt && evt.xs && evt.xs.length > 0;
+                                return evt?.xs?.length > 0;
                             });
                         },
                         direct: true,
@@ -14825,7 +14825,7 @@ const packs = function () {
                         return evt.filterCard(card, evt.player, evt);
                     })).set('ai', function (button) {
                         var evt = _status.event.getParent(3);
-                        if (evt && evt.ai) {
+                        if (evt?.ai) {
                             var tmp = _status.event;
                             _status.event = evt;
                             var result = (evt.ai || event.ai1)(button.link, _status.event.player, evt);
@@ -15075,7 +15075,7 @@ const packs = function () {
                 filter(event, player) {
                     if (event.name == 'gain' && event.player == player) return false;
                     var evt = event.getl(player);
-                    return evt && evt.cards2 && evt.cards2.length > 0;
+                    return evt?.cards2?.length > 0;
                 },
                 usable: 2,
                 frequent: true,
@@ -15086,7 +15086,7 @@ const packs = function () {
                     hongde: {
                         trigger: { player: 'gainAfter' },
                         filter(event, player) {
-                            return event.cards && event.cards.length > 1;
+                            return event.cards?.length > 1;
                         },
                         direct: true,
                         content() {
@@ -15567,7 +15567,7 @@ const packs = function () {
                         filter(event, player) {
                             if (event.type != 'discard' || event.getlx === false || event.getParent('phaseDiscard').player != player || !player.storage.minizhiwei2 || !player.storage.minizhiwei2.isIn()) return false;
                             var evt = event.getl(player);
-                            return evt && evt.cards2.filterInD('d').length > 0;
+                            return evt?.cards2.someInD('d');
                         },
                         logTarget(event, player) {
                             return player.storage.minizhiwei2;
@@ -16097,7 +16097,7 @@ const packs = function () {
                 ai: {
                     filterDamage: true,
                     skillTagFilter(player, tag, arg) {
-                        if (arg && arg.player) {
+                        if (arg?.player) {
                             if (arg.player.hasSkillTag('jueqing', false, player)) return false;
                             if (arg.player.getAttackRange() < 3) return true;
                         }
@@ -16599,13 +16599,13 @@ const packs = function () {
                     targetInRange(card, player, target) {
                         if (card.storage && card.storage.minidagongche) {
                             var cardx = player.getEquip('minidagongche');
-                            if (cardx && cardx.storage.大攻车选项一) return true;
+                            if (cardx?.storage?.大攻车选项一) return true;
                         }
                     },
                     selectTarget(card, player, range) {
                         if (card.storage && card.storage.minidagongche && range[1] != -1) {
                             var cardx = player.getEquip('minidagongche');
-                            if (cardx && cardx.storage.大攻车选项二) range[1] += cardx.storage.大攻车选项二;
+                            if (cardx?.storage?.大攻车选项二) range[1] += cardx.storage.大攻车选项二;
                         }
                     },
                     canBeDiscarded(card) {
@@ -16642,7 +16642,7 @@ const packs = function () {
                         content() {
                             var num = 1;
                             var cardx = player.getEquip('minidagongche');
-                            if (cardx && cardx.storage.大攻车选项三) num += cardx.storage.大攻车选项三;
+                            if (cardx?.storage?.大攻车选项三) num += cardx.storage.大攻车选项三;
                             player.discardPlayerCard(trigger.player, true, num, 'he');
                         },
                     },
@@ -16734,8 +16734,8 @@ const packs = function () {
                     }
                     else event.goto(2);
                     'step 4'
-                    if (result && result.cards) {
-                        if (!result.targets || !result.targets.length) {
+                    if (result?.cards?.length) {
+                        if (!result?.targets?.length) {
                             event.current.lose(result.cards, ui.cardPile, 'insert');
                             event.current.$throw(result.cards.length, 1000);
                         }
@@ -17373,7 +17373,7 @@ const packs = function () {
                             if (player.isHealthy() || player.countCards('e') < player.hp) return false;
                             var evt = event.getl(player);
                             if (event.name == 'equip' && event.player == player) return !evt || evt.cards.length != 1;
-                            return evt && evt.es.length;
+                            return evt?.es?.length;
                         },
                         frequent: true,
                         prompt: '是否发动【勤国】回复1点体力？',
@@ -18145,7 +18145,7 @@ const packs = function () {
                         if (tag == 'directHit_ai') return arg.card.name == 'sha' && arg.target.countCards('e', function (card) {
                             return get.value(card) > 1;
                         }) > 0;
-                        if (arg && arg.name == 'sha' && arg.target.getEquips(2).length) return true;
+                        if (arg?.name == 'sha' && arg.target.getEquips(2).length) return true;
                         return false;
                     }
                 },
@@ -19815,7 +19815,7 @@ const packs = function () {
                     'step 2'
                     var gained = [];
                     var tothrow = [];
-                    if (event.cards && event.cards.length) {
+                    if (event.cards?.length) {
                         for (var i = 0; i < event.cards.length; i++) {
                             if (get.type2(event.cards[i]) == 'trick') gained.push(event.cards[i]);
                             else tothrow.push(event.cards[i]);
@@ -20529,7 +20529,7 @@ const packs = function () {
                         filter(event, player) {
                             if (player == event.player) return false;
                             var evt = event.getl(player);
-                            return evt && evt.cards2 && evt.cards2.filter(function (card) {
+                            return evt?.cards2 && evt.cards2.filter(function (card) {
                                 return get.color(card, player) == 'black';
                             }).length > 0;
                         },
@@ -22638,7 +22638,7 @@ const packs = function () {
                         trigger: { player: ['useCard', 'respond'] },
                         filter(event, player) {
                             if (player.getExpansions('minizhouxuan').length) return true;
-                            return event.name != 'respond' && event.cards && event.cards.length;
+                            return event.name != 'respond' && event.cards?.length;
                         },
                         direct: true,
                         content() {
@@ -22798,7 +22798,7 @@ const packs = function () {
                     var target = _status.currentPhase;
                     if (!target || get.attitude(player, target) <= 0) return false;
                     var evt = event.getParent('phaseDiscard'), evt2 = event.getParent('phaseJieshu');
-                    if (evt && evt.name == 'phaseDiscard' || evt2 && evt.name == 'phaseJieshu') return false;
+                    if (evt?.name == 'phaseDiscard' || evt2 && evt.name == 'phaseJieshu') return false;
                     if (target.getCardUsable({ name: 'sha' }) >= target.countCards('hs', 'sha')) return false;
                     if (!target.hasValueTarget({ name: 'sha' })) return false;
                     return true;
@@ -22809,7 +22809,7 @@ const packs = function () {
                     var target = _status.currentPhase;
                     var cards = trigger.getg(player).filter(i => player.getCards('h').includes(i)).slice();
                     var str = '弃置任意张此次获得的牌';
-                    if (target && target.isIn()) {
+                    if (target?.isIn()) {
                         event.target = target;
                         str += '，令' + get.translation(target) + '本回合使用【杀】的次数+X（X为你以此法弃置的花色数）';
                     }
@@ -22823,12 +22823,12 @@ const packs = function () {
                     }).set('cards', cards).set('complexCard', true).set('goon', lib.skill.minizjjuxiang.checkx(trigger, player)).logSkill = 'minizjjuxiang';
                     'step 1'
                     if (result.bool) {
-                        if (target && target.isIn()) {
+                        if (target?.isIn()) {
                             var num = result.cards.reduce((list, card) => list.add(get.suit(card, player)), []).length;
                             target.addTempSkill('jsrgjuxiang_sha');
                             target.addMark('jsrgjuxiang_sha', num, false);
                             var evt = trigger.getParent('phaseUse');
-                            if (evt && evt.name == 'phaseUse' && !evt.skill) {
+                            if (evt?.name == 'phaseUse' && !evt.skill) {
                                 evt.player.addTempSkill('jsrgjuxiang_buff', 'phaseUseAfter');
                                 evt.player.addMark('jsrgjuxiang_buff', num, false);
                             }
@@ -22983,8 +22983,7 @@ const packs = function () {
                 audio: 'splirang',
                 trigger: { global: 'phaseBefore', player: ['enterGame', 'phaseZhunbeiBegin'] },
                 filter(event, player) {
-                    var target = player.storage.minilirang;
-                    if (target && target.isIn()) return false;
+                    if (player.storage.minilirang?.isIn()) return false;
                     return event.name != 'phase' || game.phaseNumber == 0;
                 },
                 direct: true,
@@ -23294,9 +23293,8 @@ const packs = function () {
                         filter(event, player) {
                             if (!event.miniluannian_num) return false;
                             return player.group == 'qun' && player.countCards('he') >= event.miniluannian_num && game.hasPlayer(function (current) {
-                                var target = current.storage.minixiongzheng_target;
-                                return target && target.isIn() && current != player && current.hasZhuSkill('miniluannian', player)
-                            })
+                                return current.storage.minixiongzheng_target?.isIn() && current != player && current.hasZhuSkill('miniluannian', player)
+                            });
                         },
                         filterCard: true,
                         position: 'he',
@@ -23806,7 +23804,7 @@ const packs = function () {
                         return current.getAllHistory('sourceDamage', function (evt) {
                             if (!evt.card || evt.card.name != 'sha' || evt.getParent().type != 'card') return false;
                             var evt2 = evt.getParent(3);
-                            return evt2 && evt2.name == 'minilianji' && evt2.player == player;
+                            return evt2?.name == 'minilianji' && evt2.player == player;
                         }).length > 0;
                     });
                 },
@@ -23960,7 +23958,7 @@ const packs = function () {
                             return game.hasPlayer(target => {
                                 if (!target.countCards('e')) return false;
                                 const evt = event.getl(target);
-                                return evt && evt.es.length;
+                                return evt?.es?.length;
                             });
                         },
                         logTarget(event, player) {
@@ -23968,7 +23966,7 @@ const packs = function () {
                             return game.filterPlayer(target => {
                                 if (!target.countCards('e')) return false;
                                 const evt = event.getl(target);
-                                return evt && evt.es.length;
+                                return evt?.es?.length;
                             }).sortBySeat();
                         },
                         forced: true,
@@ -24087,7 +24085,7 @@ const packs = function () {
                 trigger: { global: 'useCardAfter' },
                 filter(event, player) {
                     return player != event.player && event.player.isIn() && get.color(event.card) == 'black' && event.player.hasHistory('lose', evt => {
-                        return evt && evt.hs.length && evt.getParent() == event;
+                        return evt?.hs?.length && evt.getParent() == event;
                     }) && event.player.isPhaseUsing() && player.hasCard(card => {
                         if (_status.connectMode && get.position(card) == 'h') return true;
                         return get.color(card, player) == 'black';
@@ -24254,7 +24252,7 @@ const packs = function () {
                             trigger.num++;
                             player.removeSkills('minipanshi');
                             var evt = event.getParent('phaseUse');
-                            if (evt && evt.player == player) evt.skipped = true;
+                            if (evt?.player == player) evt.skipped = true;
                         },
                     },
                 },
@@ -24346,7 +24344,7 @@ const packs = function () {
                     }
                     else event.finish();
                     'step 4'
-                    if (source && source.isIn() && source.countCards('h') > 0) {
+                    if (source?.isIn() && source.countCards('h') > 0) {
                         var list = [];
                         for (var name of lib.inpile) {
                             if (get.type(name) != 'basic') continue;
@@ -25273,7 +25271,7 @@ const packs = function () {
                 ai: {
                     unequip_ai: true,
                     skillTagfilter(player, tag, arg) {
-                        if (arg && arg.card && !player.getHistory('useCard', function (evt) {
+                        if (arg?.card && !player.getHistory('useCard', function (evt) {
                             return (evt.card.name == 'sha' || evt.card.name == 'juedou');
                         }).length && ['sha', 'juedou'].includes(arg.card.name)) return true;
                         return false;
@@ -26088,7 +26086,7 @@ const packs = function () {
                     unequip_ai: true,
                     combo: 'miniquantui',
                     skillTagFilter(player, tag, arg) {
-                        if (arg && arg.name == 'sha' && arg.target && arg.target.hasMark('miniquantui')) return true;
+                        if (arg?.name == 'sha' && arg.target && arg.target.hasMark('miniquantui')) return true;
                         return false;
                     },
                 },
@@ -26134,7 +26132,7 @@ const packs = function () {
                         filter(event, player) {
                             if (event.type != 'discard' || !event.cards2) return false;
                             var evt = event.getParent('phaseDiscard');
-                            return evt && evt.name == 'phaseDiscard' && evt.player == player;
+                            return evt?.name == 'phaseDiscard' && evt.player == player;
                         },
                         forced: true,
                         content() {
@@ -26376,7 +26374,7 @@ const packs = function () {
                         charlotte: true,
                         trigger: { player: 'useCard' },
                         filter(event, player) {
-                            return event.skill == 'minilonghun' && ['sha', 'tao'].includes(event.card.name) && event.cards && event.cards.length == 2;
+                            return event.skill == 'minilonghun' && ['sha', 'tao'].includes(event.card.name) && event.cards?.length == 2;
                         },
                         forced: true,
                         popup: false,
@@ -26392,7 +26390,7 @@ const packs = function () {
                             return event.name == 'respond' ? 0.5 : false;
                         },
                         filter(event, player) {
-                            return event.skill == 'minilonghun' && ['shan', 'wuxie'].includes(event.card.name) && event.cards && event.cards.length == 2 && _status.currentPhase && _status.currentPhase != player && _status.currentPhase.countGainableCards(player, 'he');
+                            return event.skill == 'minilonghun' && ['shan', 'wuxie'].includes(event.card.name) && event.cards?.length == 2 && _status.currentPhase && _status.currentPhase != player && _status.currentPhase.countGainableCards(player, 'he');
                         },
                         logTarget: () => _status.currentPhase,
                         forced: true,
@@ -26894,8 +26892,7 @@ const packs = function () {
                     for (var target of game.filterPlayer()) {
                         var list = target.getSkills(null, false, false).filter(function (skill) {
                             if (target.awakenedSkills.includes(skill)) return false;
-                            var info = lib.skill[skill];
-                            return info && info.juexingji;
+                            return lib.skill[skill]?.juexingji;
                         });
                         var bool1 = (!list.length && player.maxHp >= 3);
                         var bool2 = (list.length && player.maxHp >= game.players.length);
@@ -26908,8 +26905,7 @@ const packs = function () {
                     player.awakenSkill('minihuishi');
                     var list = target.getSkills(null, false, false).filter(function (skill) {
                         if (target.awakenedSkills.includes(skill)) return false;
-                        var info = lib.skill[skill];
-                        return info && info.juexingji;
+                        return lib.skill[skill]?.juexingji;
                     });
                     if (!list.length && player.maxHp >= 3) {
                         target.draw(4);
@@ -26943,8 +26939,7 @@ const packs = function () {
                         target(player, target) {
                             if (player.maxHp < 5) return 0;
                             var list = target.getSkills(null, false, false).filter(function (skill) {
-                                var info = lib.skill[skill];
-                                return info && info.juexingji;
+                                return lib.skill[skill]?.juexingji;
                             });
                             if (list.length && player.maxHp >= game.players.length) return 10 * list.length;
                             if (target.hasJudge('lebu') || target.hasSkillTag('nogain')) return 0;
@@ -27226,7 +27221,7 @@ const packs = function () {
                                 /*
                                 else{
                                 var evt=_status.event.getParent('phaseUse');
-                                if(evt&&evt.name=='phaseUse'&&!player.getHistory('useCard',function(evt2){
+                                if(evt?.name=='phaseUse'&&!player.getHistory('useCard',function(evt2){
                                 return evt2.getParent('phaseUse')==evt;
                                 }).length) return true;
                                 }
@@ -27253,9 +27248,9 @@ const packs = function () {
                         filter(event, player) {
                             if (!event.isFirstTarget) return false;
                             var evt = event.getParent('phaseUse');
-                            return evt && evt.player == player && player.getHistory('useCard', function (evt2) {
+                            return evt?.player == player && player.getHistory('useCard', function (evt2) {
                                 return evt2.getParent('phaseUse') == evt;
-                            }).indexOf(event.getParent()) == 1 && event.cards && event.cards.filterInD().length;
+                            }).indexOf(event.getParent()) == 1 && event.cards?.filterInD().length;
                         },
                         forced: true,
                         content() {
@@ -27265,7 +27260,7 @@ const packs = function () {
                             result: {
                                 player(card, player, target) {
                                     var evt = _status.event.getParent('phaseUse');
-                                    if (['equip', 'delay'].includes(get.type(card)) && evt && evt.player == player && player.getHistory('useCard', function (evt2) {
+                                    if (['equip', 'delay'].includes(get.type(card)) && evt?.player == player && player.getHistory('useCard', function (evt2) {
                                         return evt2.getParent('phaseUse') == evt;
                                     }).length == 1) return 0.3;
                                 },
@@ -27281,7 +27276,7 @@ const packs = function () {
                         trigger: { player: 'useCardAfter' },
                         filter(event, player) {
                             var evt = event.getParent('phaseUse');
-                            return evt && evt.player == player && player.getHistory('useCard', function (evt2) {
+                            return evt?.player == player && player.getHistory('useCard', function (evt2) {
                                 return evt2.getParent('phaseUse') == evt;
                             }).indexOf(event) == 2;
                         },
@@ -27300,7 +27295,7 @@ const packs = function () {
                         trigger: { player: 'useCard' },
                         filter(event, player) {
                             var evt = event.getParent('phaseUse');
-                            return evt && evt.player == player && player.getHistory('useCard', function (evt2) {
+                            return evt?.player == player && player.getHistory('useCard', function (evt2) {
                                 return evt2.getParent('phaseUse') == evt;
                             }).indexOf(event) == 3 && event.targets/*&&!event.reuse_buff*/;
                         },
@@ -27314,7 +27309,7 @@ const packs = function () {
                             result: {
                                 player(card, player, target) {
                                     var evt = _status.event.getParent('phaseUse');
-                                    if (card.name == 'tiesuo' && evt && evt.player == player && player.getHistory('useCard', function (evt2) {
+                                    if (card.name == 'tiesuo' && evt?.player == player && player.getHistory('useCard', function (evt2) {
                                         return evt2.getParent('phaseUse') == evt;
                                     }).length == 3) return 'zerotarget';
                                 },
@@ -27763,7 +27758,7 @@ const packs = function () {
                 },
                 filter(event, player) {
                     if (event.name.indexOf('lose') == 0) return event.type == 'discard' && event.getl(player).cards2.filter(card => get.position(card, true) == 'd' && !player.getStorage('minilianshi').includes(get.suit(card, player))).length > 0;
-                    return event.cards && event.cards.some(card => !player.getStorage('minilianshi').includes(get.suit(card, player)) && lib.suit.includes(get.suit(card, player)));
+                    return event.cards?.some(card => !player.getStorage('minilianshi').includes(get.suit(card, player)) && lib.suit.includes(get.suit(card, player)));
                 },
                 forced: true,
                 content() {
@@ -28882,7 +28877,7 @@ const packs = function () {
                     if (event.name == 'lose' && event.player == player) return false;
                     var cards = event.cards2.slice(0);
                     var evt = event.getl(player);
-                    if (evt && evt.cards) cards.removeArray(evt.cards);
+                    if (evt?.cards?.length) cards.removeArray(evt.cards);
                     return cards.filter(function (card) {
                         var type = get.type(card, null, event.hs && event.hs.includes(card) ? event.player : false);
                         if (!player.hasSkill('minidoumao')) return type != 'equip';
@@ -28935,7 +28930,7 @@ const packs = function () {
                     if (event.type != 'discard' || event.getlx === false) return false;
                     var cards = event.cards2.slice(0);
                     var evt = event.getl(player);
-                    if (evt && evt.cards) cards.removeArray(evt.cards);
+                    if (evt?.cards?.length) cards.removeArray(evt.cards);
                     return cards.filter(function (card) {
                         return card.name == 'nanman' && get.position(card, true) == 'd';
                     }).length;
@@ -28948,7 +28943,7 @@ const packs = function () {
                     else if (trigger.name == 'lose') {
                         var cards = trigger.cards2.slice(0);
                         var evt = trigger.getl(player);
-                        if (evt && evt.cards) cards.removeArray(evt.cards);
+                        if (evt?.cards?.length) cards.removeArray(evt.cards);
                         player.gain(cards.filter(function (card) {
                             return card.name == 'nanman' && get.position(card, true) == 'd';
                         }), 'gain2');
@@ -28961,7 +28956,7 @@ const packs = function () {
                 ai: {
                     directHit_ai: true,
                     skillTagFilter(player, tag, arg) {
-                        return arg && arg.card && arg.card.name == 'nanman' && arg.target && arg.target != player && arg.target.hasSkill('minidoumao');
+                        return arg?.card && arg.card.name == 'nanman' && arg.target && arg.target != player && arg.target.hasSkill('minidoumao');
                     },
                     effect: {
                         target(card) {
@@ -29071,14 +29066,14 @@ const packs = function () {
                         filter(event, player) {
                             return player.getHistory('sourceDamage', function (evxt) {
                                 var evt = evxt.getParent();
-                                return evt && evt.name == 'sha' && evt.skill == 'minimiaochangbiao' && evt.getParent('phaseUse') == event;
+                                return evt?.name == 'sha' && evt.skill == 'minimiaochangbiao' && evt.getParent('phaseUse') == event;
                             }).length > 0;
                         },
                         content() {
                             var num = 0;
                             player.getHistory('sourceDamage', function (evxt) {
                                 var evt = evxt.getParent();
-                                if (evt && evt.name == 'sha' && evt.skill == 'minimiaochangbiao' && evt.getParent('phaseUse') == trigger) num += evt.cards.length;
+                                if (evt?.name == 'sha' && evt.skill == 'minimiaochangbiao' && evt.getParent('phaseUse') == trigger) num += evt.cards.length;
                             });
                             player.draw(num);
                         },
@@ -29482,7 +29477,7 @@ const packs = function () {
                 },
                 filter(event, player) {
                     var evt = event.getl(player);
-                    return evt && evt.player == player && evt.es && evt.es.length > 0;
+                    return evt?.player == player && evt.es && evt.es.length > 0;
                 },
                 frequent: true,
                 content() {

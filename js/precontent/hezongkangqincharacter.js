@@ -1116,7 +1116,7 @@ const packs = function () {
                 filter(event, player) {
                     if (player.countCards('h')) return false;
                     var evt = event.getl(player);
-                    return evt && evt.player == player && evt.hs && evt.hs.length > 0;
+                    return ev?.player == player && evt.hs?.length > 0;
                 },
                 forced: true,
                 content() {

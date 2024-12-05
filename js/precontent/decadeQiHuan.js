@@ -573,7 +573,7 @@ const packs = function () {
                     return game.hasPlayer(function (current) {
                         if (current == player || current.group != 'qun') return false;
                         var evt = event.getl(current);
-                        return evt && evt.cards2 && evt.cards2.filterInD('d').length;
+                        return evt?.cards2?.someInD('d');
                     });
                 },
                 forced: true,
@@ -582,14 +582,14 @@ const packs = function () {
                     game.countPlayer(function (current) {
                         if (current == player || current.group != 'qun') return false;
                         var evt = event.getl(current);
-                        if (evt && evt.cards2 && evt.cards2.filterInD('d').length) cards.addArray(evt.cards2.filterInD('d'));
+                        if (evt?.cards2?.someInD('d')) cards.addArray(evt.cards2.filterInD('d'));
                     });
                     var card = cards.randomGet();
                     player.gain(card);
                     var targets = game.filterPlayer(function (current) {
                         if (current == player || current.group != 'qun') return false;
                         var evt = event.getl(current);
-                        return evt && evt.cards2 && evt.cards2.filterInD('d').length && evt.cards2.filterInD('d').includes(card);
+                        return evt?.cards2.filterInD('d').includes(card);
                     });
                     if (targets.length) {
                         for (var i of targets) player.gain(i.getCards('hej').randomGets(1), i, 'giveAuto');

@@ -428,7 +428,7 @@ const packs = function () {
                 trigger: { global: 'discardAfter' },
                 filter(event, player) {
                     if (event.player == player) return false;
-                    if (event.cards && event.cards.length) {
+                    if (event.cards?.length) {
                         for (var i = 0; i < event.cards.length; i++) {
                             if (get.color(event.cards[i]) == 'black' && get.position(event.cards[i]) == 'd') {
                                 return true;

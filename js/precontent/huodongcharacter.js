@@ -789,7 +789,7 @@ const packs = function () {
                         if (i.group == 'qun') quns++;
                     }
                     var skills = player.additionalSkills.bilibili_fushi;
-                    if (skills && skills.length) {
+                    if (skills?.length) {
                         if (weis > quns && !skills.includes('bilibili_chenggong')) player.addAdditionalSkills('bilibili_fushi', ['bilibili_chenggong']);
                         else if (quns > weis && !skills.includes('bilibili_zezhu')) player.addAdditionalSkills('bilibili_fushi', ['bilibili_zezhu']);
                         else player.removeAdditionalSkill('bilibili_fushi');
@@ -1221,7 +1221,7 @@ const packs = function () {
                         filter(event, player) {
                             if (event.revealed) return false;
                             var info = get.info(event.skill);
-                            if (info && info.charlotte) return false;
+                            if (info?.charlotte) return false;
                             var skills = lib.skill.gz_huashen.getSkills(player.getStorage('gz_huashen'), player);
                             game.expandSkills(skills);
                             return skills.includes(event.skill);
@@ -1678,7 +1678,7 @@ const packs = function () {
                     combo: 'old_yingba',
                     directHit_ai: true,
                     skillTagFilter(player, tag, arg) {
-                        return arg && arg.target && arg.target.hasMark('old_yingba_mark')
+                        return arg?.target && arg.target.hasMark('old_yingba_mark')
                     },
                 },
                 subSkill: {
@@ -2021,8 +2021,7 @@ const packs = function () {
                 filter(event, player) {
                     if (event.name == 'useCardToTargeted') return event.targets.length == 1;
                     if (player == event.player) return false;
-                    var targets = event.targets;
-                    return targets && targets.includes(player) && event.type == 'player';
+                    return event.targets?.includes(player) && event.type == 'player';
                 },
                 forced: true,
                 logTarget: 'player',
@@ -2515,12 +2514,11 @@ const packs = function () {
                         var skill = storage.current2;
                         if (skill) dialog.add('<div><div class="skill">【' + get.translation(lib.translate[skill + '_ab'] || get.translation(skill).slice(0, 2)) + '】</div>' + '<div>' + get.skillInfoTranslation(skill, player) + '</div></div>');
                     },
-                    content(storage, player) {
+                    content(storage) {
                         return '共有' + get.cnNumber(storage.character.length) + '张「化身」'
                     },
-                    markcount(storage, player) {
-                        if (storage && storage.character) return storage.character.length;
-                        return 0;
+                    markcount(storage) {
+                        return storage?.character?.length || 0;
                     },
                 },
                 changeSex(sex, player) {
@@ -3956,7 +3954,7 @@ const packs = function () {
                                 })) return;
                                 if (player.isPhaseUsing()) {
                                     var evt = player.getLastUsed();
-                                    if (evt && evt.targets && evt.targets.length && evt.isPhaseUsing(player) && game.hasPlayer(function (current) {
+                                    if (evt?.targets && evt.targets.length && evt.isPhaseUsing(player) && game.hasPlayer(function (current) {
                                         return evt.targets.includes(current) && player.canUse(card, current) && get.effect(current, card, player, player) > 0;
                                     })) return num + 10;
                                 }
@@ -4409,7 +4407,7 @@ const packs = function () {
                 juexingji: true,
                 filter(event, player) {
                     var zhu = get.zhu(player);
-                    if (zhu && zhu.isZhu) {
+                    if (zhu?.isZhu) {
                         if (lib.translate[zhu.name].indexOf('曹操') != -1 || (zhu.name2 && lib.translate[zhu.name2].indexOf('曹操') != -1)) {
                             if (player.countCards('h') > player.hp) return true;
                         }
@@ -4641,7 +4639,7 @@ const packs = function () {
                     return game.hasPlayer(function (current) {
                         if (!list.includes(current)) return false;
                         var evt = event.getl(current);
-                        return evt && evt.hs && evt.hs.length && current.countCards('h') == 0;
+                        return evt?.hs?.length && current.countCards('h') == 0;
                     });
                 },
                 logTarget(event, player) {
@@ -4650,7 +4648,7 @@ const packs = function () {
                     return game.filterPlayer(function (current) {
                         if (!list.includes(current)) return false;
                         var evt = event.getl(current);
-                        return evt && evt.hs && evt.hs.length && current.countCards('h') == 0;
+                        return evt?.hs?.length && current.countCards('h') == 0;
                     }).sortBySeat();
                 },
                 forced: true,
@@ -5041,10 +5039,7 @@ const packs = function () {
                         var skill = evt.sourceSkill || evt.skill, targets = evt.targets;
                         var info = get.info(skill);
                         if (!info || info.charlotte) return false;
-                        if (targets && targets.length) {
-                            if (targets.filter(i => player.differentSexFrom(i)).length) return true;
-                        }
-                        return false;
+                        return targets?.some(i => player.differentSexFrom(i));
                     });
                     if (history.length) return history[0].targets.filter(i => player.differentSexFrom(i));
                     return [];
@@ -6771,7 +6766,7 @@ const packs = function () {
                         filter(event, player) {
                             return game.hasPlayer2(current => {
                                 var evt = event.getl(current);
-                                return evt && evt.cards2 && evt.cards2.some(card => card.name == 'ying');
+                                return evt?.cards2?.some(card => card.name == 'ying');
                             });
                         },
                         forced: true,
@@ -6779,7 +6774,7 @@ const packs = function () {
                             var num = 0;
                             game.countPlayer2(current => {
                                 var evt = trigger.getl(current);
-                                if (evt && evt.cards2) num += evt.cards2.filter(card => card.name == 'ying').length;
+                                if (evt?.cards2) num += evt.cards2.filter(card => card.name == 'ying').length;
                             });
                             if (num) player.draw(num);
                         },
@@ -6805,7 +6800,7 @@ const packs = function () {
                     if (!skill || skill == 'bilibili_mx_kanpo') return false;
                     var info = get.info(skill);
                     if (!info || info.charlotte || info.ruleSkill) return false;
-                    return targets && targets.includes(player);
+                    return targets?.includes(player);
                 },
                 prompt2(event, player) {
                     var skill = ['chooseTarget', 'chooseCardTarget', 'chooseToUseEnd', 'chooseToCompareEnd',
@@ -7052,7 +7047,7 @@ const packs = function () {
                                     if (!player.hasSkill(skill, null, null, false)) await player.addSkills(skill);
                                     else await player.draw(3);
                                     const evt = event.getParent();
-                                    if (evt && evt.name == 'useCard' && (evt.cards || []).length == 1 && evt.cards[0].name == event.card.name) {
+                                    if (evt?.name == 'useCard' && evt.cards?.length == 1 && evt.cards[0].name == event.card.name) {
                                         const cards = evt.cards.filterInD();
                                         if (cards.length) {
                                             if (!cards[0].decadeSkill) {
@@ -7314,7 +7309,7 @@ const packs = function () {
                         filter(event, player) {
                             if (event.name.indexOf('lose') == 0) {
                                 var evt = event.getl(player);
-                                return evt && evt.player == player && evt.cards && evt.cards.some(card => card.bilibili_meihua);
+                                return evt?.player == player && evt.cards?.some(card => card.bilibili_meihua);
                             }
                             return event.cards.some(card => card.bilibili_meihua);
                         },
@@ -7417,7 +7412,7 @@ const packs = function () {
                         var bool = false;
                         game.countPlayer(function (current) {
                             var evt = event.getl(current);
-                            if (evt && evt.es) bool = true;
+                            if (evt?.es?.length) bool = true;
                         });
                         if (event.name == 'equip') bool = true;
                         if (!bool) return false;
@@ -8546,12 +8541,10 @@ const packs = function () {
                     'step 1'
                     player.judge(result => {
                         var evt = _status.event.getParent('bilibili_huishi');
-                        if (evt && evt.suits && evt.suits.includes(get.suit(result))) return 0;
-                        return 1;
-                    })
-                        .set('callback', lib.skill.bilibili_huishi.callback).judge2 = function (result) {
-                            return result.bool ? true : false;
-                        };
+                        return 1 - evt?.suits?.includes(get.suit(result));
+                    }).set('callback', lib.skill.bilibili_huishi.callback).judge2 = function (result) {
+                        return result.bool ? true : false;
+                    };
                     'step 2'
                     var cards = cards.filterInD();
                     if (cards.length) {
@@ -8824,7 +8817,7 @@ const packs = function () {
                 filter(event, player) {
                     if (!lib.skill.bol_wuqibingfa.countSkill(player)) return false;
                     const evt = event.getl(player);
-                    return evt && evt.es.some(card => card.name == 'bol_wuqibingfa');
+                    return evt?.es?.some(card => card.name == 'bol_wuqibingfa');
                 },
                 forced: true,
                 async content(event, trigger, player) {
@@ -8946,7 +8939,7 @@ const packs = function () {
                     if (humans.length > 0) {
                         const solve = function (resolve, reject) {
                             return function (result, player) {
-                                if (result && result.bool) {
+                                if (result?.bool) {
                                     choice[player.playerid] = result.links;
                                     resolve();
                                 } else reject();
@@ -8975,7 +8968,7 @@ const packs = function () {
                     if (locals.length > 0) {
                         for (let current of locals) {
                             const result = await lib.skill.bolfenfou.chooseButton(current).forResult();
-                            if (result && result.bool) {
+                            if (result?.bool) {
                                 choice[current.playerid] = result.links;
                             }
                         }
@@ -9096,14 +9089,13 @@ const packs = function () {
                 },
                 trigger: { source: 'damageBegin1' },
                 filter(event, player) {
-                    const evt = event.getParent(2);
-                    return evt && evt.name == 'useCard';
+                    return event.getParent(2)?.name == 'useCard';
                 },
                 forced: true,
                 logTarget: 'player',
                 content() {
                     const evt = trigger.getParent(2);
-                    trigger.num = (evt.cards || []).reduce((sum, card) => sum + get.cardNameLength(card), 0)
+                    trigger.num = (evt.cards || []).reduce((sum, card) => sum + get.cardNameLength(card), 0);
                 },
                 ai: {
                     effect: {
@@ -9377,7 +9369,7 @@ const packs = function () {
                             const nums = game.filterPlayer(target => target.hasSkill('bolyifu')).map(target => target.countMark('bolyifu') % 3);
                             const history = player.getHistory('useCard', evt => get.type(evt.card) == 'basic' || get.type(evt.card) == 'trick');
                             const evt = history[history.length - 1];
-                            if (evt && evt.card.name == name && nums.includes(1)) return true;
+                            if (evt?.card?.name == name && nums.includes(1)) return true;
                             return (name == 'shandian' && nums.includes(0)) || (name == 'tiesuo' && nums.includes(2));
                         },
                         ai: {
@@ -9445,7 +9437,7 @@ const packs = function () {
                         ai: {
                             effect: {
                                 target(card, player) {
-                                    if (card && card.name == 'shandian' && game.hasPlayer(target => get.attitude(player, target) > 0 && target.hasSkill('boltianjie'))) return [1, 2];
+                                    if (card?.name == 'shandian' && game.hasPlayer(target => get.attitude(player, target) > 0 && target.hasSkill('boltianjie'))) return [1, 2];
                                 },
                             },
                         },

@@ -684,14 +684,14 @@ export function content(config, pack) {
 			filter(event, player) {
 				if (player.storage.zhengsu_mingzhi === false || event.type != 'discard') return false;
 				var evt = event.getParent('phaseDiscard');
-				return evt && evt.player == player;
+				return evt?.player == player;
 			},
 			content() {
 				var goon = true, list = [];
 				player.getHistory('lose', function (event) {
 					if (!goon || event.type != 'discard') return false;
 					var evt = event.getParent('phaseDiscard');
-					if (evt && evt.player == player) {
+					if (evt?.player == player) {
 						for (var i of event.cards2) {
 							var suit = get.suit(i, player);
 							if (list.includes(suit)) {
@@ -1502,7 +1502,7 @@ export function content(config, pack) {
 		trigger: { player: ['useCard1', 'respond'] },
 		filter(event, player) {
 			if (!player.hasSkill('xianghai') || get.is.blocked('xianghai', player)) return false;
-			return event.card.name == 'jiu' && !event.skill && event.cards && event.cards.length == 1 && get.type(event.cards[0]) == 'equip';
+			return event.card.name == 'jiu' && !event.skill && event.cards?.length == 1 && get.type(event.cards[0]) == 'equip';
 		},
 		priority: 15,
 		direct: true,
@@ -1573,7 +1573,7 @@ export function content(config, pack) {
 			for (var target of game.filterPlayer()) {
 				var list = target.getSkills(null, false, false).filter(function (skill) {
 					var info = lib.skill[skill];
-					return info && info.juexingji && !target.awakenedSkills.includes(skill);
+					return info?.juexingji && !target.awakenedSkills.includes(skill);
 				});
 				target.prompt(list.length ? '可觉醒' : '可摸牌');
 			}
@@ -1586,7 +1586,7 @@ export function content(config, pack) {
 			if (player == target) continue;
 			var list = target.getSkills(null, false, false).filter(function (skill) {
 				var info = lib.skill[skill];
-				return info && info.juexingji && !target.awakenedSkills.includes(skill);
+				return info?.juexingji && !target.awakenedSkills.includes(skill);
 			});
 			target.prompt(list.length ? '可觉醒' : '可摸牌');
 		}
