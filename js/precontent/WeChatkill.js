@@ -6074,10 +6074,11 @@ const packs = function () {
                             }
                         },
                         audio: 'wechathezong',
-                        trigger: { global: ['useCardAfter', 'useCardToTarget'] },
+                        trigger: { global: ['useCardAfter', 'useCardToTarget', 'die'] },
                         filter(event, player, name) {
-                            if (event.card.name != 'sha' || !event.targets || event.targets.length != 1) return false;
                             const list = [player].concat(player.getStorage('wechathezong_effect'));
+                            if (event.name === 'die') return list.includes(event.player);
+                            if (event.card.name != 'sha' || !event.targets || event.targets.length != 1) return false;
                             if (name == 'useCardAfter') return event.getParent(2).name != 'wechathezong_effect' && list.includes(event.player) && !list.includes(event.targets[0]) && event.targets.length == 1 && event.targets[0].isIn();
                             return list.includes(event.target) && !list.includes(event.player);
                         },
@@ -6087,7 +6088,12 @@ const packs = function () {
                         },
                         forced: true,
                         popup: false,
+                        forceDie: true,
                         async content(event, trigger, player) {
+                            if (trigger.name === 'die') {
+                                lib.skill[event.name].onremove(player, event.name);
+                                return;
+                            }
                             const name = event.triggername, aim = (name == 'useCardAfter' ? trigger.targets[0] : trigger.target);
                             const targets = get.info('wechathezong').subSkill.effect.getTarget(trigger, player, name).sortBySeat();
                             trigger[name == 'useCardAfter' ? 'player' : 'target'].logSkill('wechathezong_effect', targets);
