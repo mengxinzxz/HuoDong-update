@@ -11066,7 +11066,7 @@ const packs = function () {
                     }
                     return false;
                 },
-                chargeSkill: true,
+                chargeSkill: 3,
                 chooseButton: {
                     dialog(event, player) {
                         var list = [];
@@ -11102,7 +11102,7 @@ const packs = function () {
                                 return 6 / Math.max(1, get.value(card));
                             },
                             precontent() {
-                                player.removeMark('charge', 1);
+                                player.removeCharge();
                                 player.addTempSkill('minisblongdan_draw');
                             },
                         }
@@ -11157,11 +11157,11 @@ const packs = function () {
                         },
                         forced: true,
                         filter(event, player, name) {
-                            if (player.countMark('charge') > 2) return false;
+                            if (!player.countCharge(true)) return false;
                             return (name != 'phaseBefore' || game.phaseNumber == 0);
                         },
                         content() {
-                            player.addMark('charge', 1);
+                            player.addCharge();
                         },
                     },
                 },
