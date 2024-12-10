@@ -5566,7 +5566,7 @@ const packs = function () {
                         if (get.itemtype(result) != 'cards') return;
                         count += result.length;
                         cards.addArray(result)
-                        if (get.color(result) == 'black') break;
+                        if (get.color(result) == 'black' || count > 2) break;
                         const bool = await player.chooseBool('是否继续发动【命戒】？').set('choice', player.isHealthy() || (lib.skill.mingjie.check() && get.recoverEffect(player, player, player) > 0)).forResultBool();
                         if (!bool) break;
                     }
