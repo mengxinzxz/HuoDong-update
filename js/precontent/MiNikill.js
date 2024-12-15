@@ -25299,6 +25299,7 @@ const packs = function () {
                         audio: 'niluan',
                         trigger: { player: 'useCardAfter' },
                         filter(event, player) {
+                            if (event.card.name !== 'sha') return false;
                             return event.addCount !== false && !player.hasHistory('sourceDamage', evt => evt.card === event.card);
                         },
                         forced: true,
