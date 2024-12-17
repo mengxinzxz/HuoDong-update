@@ -8518,7 +8518,6 @@ const packs = function () {
                     return player.getRoundHistory('useSkill', evt => evt.skill == skill).length < Math.min(5, player.getRoundHistory('damage', () => true).concat(player.getRoundHistory('sourceDamage', () => true)).reduce((sum, evt) => sum + evt.num, 0) + 1);
                 },
                 enable: 'phaseUse',
-                usable: 1,
                 filter(event, player) {
                     return game.hasPlayer(current => get.info('wechatyihan').filterTarget(null, player, current)) && get.info('wechatyihan').shiwuAble(player, 'wechatyihan');
                 },
