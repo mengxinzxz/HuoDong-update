@@ -22036,7 +22036,7 @@ const packs = function () {
                     if (skills.length) await player.addAdditionalSkills('minishixian', skills);
                     cards = cards.filter(card => cards.some(cardx => cardx != card && get.suit(card, player) == get.suit(cardx, player)));
                     if (cards.length) {
-                        const { result: { bool } } = await player.chooseBool('诗仙：是否获得' + get.translation(event.cards) + '？').set('frequentSkill', 'minishixian');
+                        const { result: { bool } } = await player.chooseBool('诗仙：是否获得' + get.translation(cards) + '？').set('frequentSkill', 'minishixian');
                         if (bool) player.gain(cards, 'gain2');
                     }
                 },
