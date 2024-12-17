@@ -31,7 +31,7 @@ list:[]
 },'卡包中文名');
 //复杂武将包模板(可关闭)
 game.import('character',function(){
-var 武将包英文名={
+const 武将包英文名={
 name:'武将包英文名',
 connect:true,
 characterSort:{
@@ -45,18 +45,18 @@ skill:{
 translate:{
 },
 };
-for(var i in 武将包英文名.character){
+for(const i in 武将包英文名.character){
 武将包英文名.character[i][4].push(((lib.device||lib.node)?'ext:':'db:extension-')+'活动武将/image/character/'+i+'.jpg');
 }
-return 武将包英文名;
-});
 lib.config.all.characters.push('武将包英文名');
 lib.config.all.sgscharacters.push('武将包英文名');
 if(!lib.config.characters.includes('武将包英文名')) lib.config.characters.remove('武将包英文名');
 lib.translate['武将包英文名_character_config']='武将包中文名';
+return 武将包英文名;
+});
 //复杂卡包模板(可关闭)
 game.import('card',function(){
-return {
+const 卡包英文名={
 name:'卡包英文名',
 connect:true,
 card:{
@@ -67,8 +67,9 @@ translate:{
 },
 list:[],
 };
-});
 lib.config.all.cards.push('卡包英文名');
 if(!lib.config.cards.includes('卡包英文名')) lib.config.cards.remove('卡包英文名');
 lib.translate['卡包英文名_card_config']='卡包中文名';
+return 卡包英文名;
+});
 */

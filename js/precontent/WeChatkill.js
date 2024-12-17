@@ -4055,16 +4055,15 @@ const packs = function () {
                     'step 0'
                     var nh = player.countCards('h');
                     player.chooseTarget(get.prompt2('wechatyaoming')).set('ai', function (target) {
-                        var att = get.attitude(_status.event.player, target);
+                        const player = get.player();
+                        const eff1 = get.effect(target, { name: 'guohe_copy', position: 'h' }, player, player);
+                        const eff2 = get.effect(target, { name: 'draw' }, player, player);
                         switch (get.sgn(target.countCards('h') - _status.event.nh)) {
-                            case 1: return att; break;
-                            case 0:
-                                if (nh == 0) return att;
-                                return Math.abs(att);
-                                break;
-                            case -1: return -att; break;
+                            case 1: return eff1;
+                            case 0: return Math.max(eff1, eff2);
+                            case -1: return eff2;
                         }
-                    }).set('nh', nh);
+                    }).set('nh', nh).set('animate', false);
                     'step 1'
                     if (result.bool) {
                         var target = result.targets[0];
@@ -4072,9 +4071,10 @@ const packs = function () {
                         if (player === target || target.countCards('h') < player.countCards('h') || !target.countCards('h')) event._result = { control: '摸牌' };
                         else if (target.countCards('h') > player.countCards('h')) event._result = { control: '弃牌' };
                         else player.chooseControl('摸牌', '弃牌').set('prompt', '邀名：令' + get.translation(target) + '摸一张牌或弃置其一张手牌').set('ai', function () {
-                            var player = _status.event.player;
-                            var target = _status.event.target;
-                            return get.attitude(player, target) > 0 ? '摸牌' : '弃牌';
+                            const { player, target } = get.event();
+                            const eff1 = get.effect(target, { name: 'guohe_copy', position: 'h' }, player, player);
+                            const eff2 = get.effect(target, { name: 'draw' }, player, player);
+                            return eff2 >= eff1 ? '摸牌' : '弃牌';
                         }).set('target', target);
                     }
                     else event.finish();
