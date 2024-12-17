@@ -28,7 +28,7 @@ const packs = function () {
             wechat_bianfuren: ['female', 'wei', 3, ['wechatwanwei', 'wechatyuejian'], ['die:ol_bianfuren', 'name:卞|null']],
             wechat_sunluban: ['female', 'wu', 3, ['wechatzenhui', 'wechatrejiaojin'], ['die:xin_sunluban']],
             wechat_wuguotai: ['female', 'wu', 3, ['wechatganlu', 'buyi']],
-            wechat_liubiao: ['male', 'qun', 3, ['wechatrezishou', 'wechatzongshi']],
+            wechat_liubiao: ['male', 'qun', 3, ['wechatrerezishou', 'wechatrezongshi']],
             wechat_liuchen: ['male', 'shu', 4, ['zhanjue', 'wechatqinwang']],
             wechat_luxun: ['male', 'wu', 3, ['wechatqianxun', 'lianying']],
             wechat_re_luxun: ['male', 'wu', 3, ['wechatreqianxun', 'relianying']],
@@ -95,7 +95,7 @@ const packs = function () {
             wechat_xusheng: ['male', 'wu', 4, ['wechatpojun']],
             wechat_yufan: ['male', 'wu', 3, ['wechatzongxuan', 'wechatzhiyan']],
             wechat_handang: ['male', 'wu', 4, ['gongji', 'wechatjiefan']],
-            wechat_wanglang: ['male', 'wei', 3, ['gushe', 'wechatjici']],
+            wechat_wanglang: ['male', 'wei', 3, ['wechatgushe', 'wechatrejici']],
             wechat_huanghao: ['male', 'shu', 3, ['wechatqinqing', 'wechathuisheng']],
             wechat_gongsunyuan: ['male', 'qun', 4, ['wechathuaiyi'], ['name:公孙|渊']],
             wechat_ruanhui: ['female', 'wei', 3, ['wechatmingcha', 'wechatjingzhong']],
@@ -1262,6 +1262,40 @@ const packs = function () {
                                 if (card.name == 'sha') return num + player.countMark('wechatzongshi_paoxiao');
                             },
                         },
+                    },
+                },
+            },
+            //难蚌
+            wechatrerezishou: {
+                audio: 'zishou',
+                inherit: 'zishou',
+                check(event, player) {
+                    if (player.hasSkill('rezongshi_paoxiao') && player.countCards('hs', { name: 'sha' }) && player.hasValueTarget({ name: 'sha' }, true, false)) return false;
+                    return player.countCards('h') <= (player.hasSkill('wechatrezongshi') ? player.maxHp : player.hp - 2) || player.skipList.includes('phaseUse');
+                },
+                content() {
+                    trigger.num += 3;
+                    player.addTempSkill(event.name + '_ban');
+                },
+                subSkill: {
+                    ban: {
+                        charlotte: true,
+                        mod: {
+                            cardEnabled(card, player) {
+                                if (card.name == 'sha') return false;
+                            },
+                        },
+                        mark: true,
+                        intro: { content: '本回合不能使用【杀】' },
+                    }
+                }
+            },
+            wechatrezongshi: {
+                audio: 'rezongshi',
+                inherit: 'rezongshi',
+                mod: {
+                    maxHandcard(player, num) {
+                        return num + 3;
                     },
                 },
             },
@@ -5810,6 +5844,89 @@ const packs = function () {
                     game.log(player, '的拼点牌点数+' + num);
                 },
             },
+            wechatgushe: {
+                audio: 'gushe',
+                inherit: 'gushe',
+                usable(skill, player) {
+                    return 7 - player.countMark('wechatgushe');
+                },
+                content() {
+                    player.chooseToCompare(targets).callback = lib.skill[event.name].callback;
+                },
+                callback() {
+                    'step 0'
+                    if (event.winner !== player) {
+                        target.chat(lib.skill.gushe.chat[player.countMark('wechatgushe')])
+                        game.delay();
+                        player.addMark('wechatgushe', 1);
+                        if (player.countMark('wechatgushe') >= 7) {
+                            player.die();
+                        }
+                    }
+                    'step 1'
+                    if (event.winner !== player) {
+                        player.chooseToDiscard('he', '弃置一张牌，或摸一张牌').set('ai', function () {
+                            return -1;
+                        });
+                    } else event.goto(3);
+                    'step 2'
+                    if (!result.bool) {
+                        player.draw();
+                    }
+                    'step 3'
+                    if (event.winner !== target) {
+                        target
+                            .chooseToDiscard('he', '弃置一张牌，或令' + get.translation(player) + '摸一张牌')
+                            .set('ai', function (card) {
+                                if (_status.event.goon) return 6 - get.value(card);
+                                return 0;
+                            })
+                            .set('goon', get.attitude(target, player) < 0);
+                    } else event.finish();
+                    'step 4';
+                    if (!result.bool) player.draw();
+                },
+                ai: {
+                    order: 7,
+                    result: {
+                        target(player, target) {
+                            var num = ui.selected.targets.length + 1;
+                            if (num > 3) num = 3;
+                            var hs = player.getCards('h');
+                            for (var i = 0; i < hs.length; i++) {
+                                if (get.value(hs[i]) <= 6) {
+                                    switch (hs[i].number) {
+                                        case 13:
+                                            return -1;
+                                        case 12:
+                                            if (player.countMark('wechatgushe') + num <= 8) return -1;
+                                            break;
+                                        case 11:
+                                            if (player.countMark('wechatgushe') + num <= 7) return -1;
+                                            break;
+                                        default:
+                                            if (hs[i].number > 5 && player.countMark('wechatgushe') + num <= 6) return -1;
+                                    }
+                                }
+                            }
+                            return 0;
+                        },
+                    },
+                },
+            },
+            wechatrejici: {
+                audio: 'jici',
+                inherit: 'jici',
+                filter(event, player) {
+                    return event.getParent().name == 'wechatgushe' && !event.iwhile && player.countMark('wechatgushe');
+                },
+                content() {
+                    const num = player.countMark('wechatgushe');
+                    trigger.num1 = Math.min(13, trigger.num1 + num);
+                    game.log(player, '的拼点牌点数+' + num);
+                },
+                ai: { combo: 'wechatgushe' },
+            },
             //黄皓
             wechatqinqing: {
                 audio: 'qinqing',
@@ -8925,6 +9042,10 @@ const packs = function () {
             wechatrezishou_info: '摸牌阶段，你可以额外摸三张牌。然后本回合你使用牌不能指定其他角色为目标。',
             wechatzongshi: '宗室',
             wechatzongshi_info: '锁定技，你的手牌上限+X。准备阶段，若你的手牌数大于你的体力值，你本回合可以额外使用X张【杀】（X为场上的其他角色数）。',
+            wechatrerezishou: '自守',
+            wechatrerezishou_info: '摸牌阶段，你可以额外摸三张牌。然后本回合你不能使用牌【杀】。',
+            wechatrezongshi: '宗室',
+            wechatrezongshi_info: '锁定技，你的手牌上限+3。准备阶段，若你的手牌数大于你的体力值，你本回合使用【杀】无次数限制。',
             wechat_liuchen: '微信刘谌',
             wechatqinwang: '勤王',
             wechatqinwang1: '勤王',
@@ -9229,6 +9350,10 @@ const packs = function () {
             wechatjiefan_info: '限定技，出牌阶段，你可以选择一名角色，然后令所有角色依次选择一项：1.弃置一张武器牌；2.令其摸一张牌。',
             wechatjici: '激词',
             wechatjici_info: '当你因发动〖鼓舌〗而扣置的拼点牌亮出后，若此牌点数等于X，你本回合发动〖鼓舌〗的次数上限+1；然后你令此牌点数+X。（X为你“饶舌”标记的数量）',
+            wechatgushe: '鼓舌',
+            wechatgushe_info: '①出牌阶段限X次（X为7-你的“饶舌”标记数），你可以用一张手牌与至多三名角色同时拼点，然后依次结算拼点结果，没赢的角色选择一项：1.弃置一张牌；2.令你摸一张牌。若你没赢，你获得一个“饶舌”标记。②当你获得第7个“饶舌”标记时，你死亡。',
+            wechatrejici: '激词',
+            wechatrejici_info: '当你因发动〖鼓舌〗而扣置的拼点牌亮出后，你令此牌点数+X（X为你“饶舌”标记的数量）。',
             wechatqinqing: '寝情',
             wechatqinqing_info: '结束阶段，你可以选择任意名攻击范围内含有你的角色，然后弃置这些角色各一张牌并令其摸一张牌（无牌则不弃）。若如此做，你摸X张牌（X为其中手牌比你多的角色数）。',
             wechathuisheng: '贿生',
