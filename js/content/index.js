@@ -108,9 +108,7 @@ export function content(config, pack) {
 		lib.config.hiddenCharacterPack.removeArray(openCharacterPack);
 		game.saveConfig('hiddenCharacterPack', lib.config.hiddenCharacterPack);
 		alert('检测到官方武将包' + get.translation(openCharacterPack) + '被隐藏，可能会使得部分技能函数无法读取从而导致问题，即将为您解除这些武将包的隐藏并重启游戏');
-		setTimeout(function () {
-			game.reload();
-		}, 2000);
+		setTimeout(() => game.reload(), 2000);
 	}
 
 	//precBoss
@@ -1501,7 +1499,7 @@ export function content(config, pack) {
 		charlotte: true,
 		trigger: { player: ['useCard1', 'respond'] },
 		filter(event, player) {
-			if (!player.hasSkill('xianghai') || get.is.blocked('xianghai', player)) return false;
+			if (!player.hasSkill('xianghai')) return false;
 			return event.card.name == 'jiu' && !event.skill && event.cards?.length == 1 && get.type(event.cards[0]) == 'equip';
 		},
 		priority: 15,
@@ -1511,28 +1509,64 @@ export function content(config, pack) {
 	//刘辩
 	lib.skill._dushi = {
 		charlotte: true,
-		sourceSkill: 'dushi',
-		audio: 'dushi',
 		trigger: { player: 'dying' },
 		filter(event, player) {
-			return player.hasSkill('dushi') && !get.is.blocked('dushi', player);
+			return player.hasSkill('dushi');
 		},
 		priority: 15,
-		forced: true,
-		content() { },
+		direct: true,
+		content() { player.logSkill('dushi') },
 	};
-	lib.translate._dushi = '毒誓';
 	//暴怒战神
 	lib.skill._shenji = {
 		charlotte: true,
 		trigger: { player: 'useCard1' },
 		filter(event, player) {
-			if (!player.hasSkill('shenji') || get.is.blocked('shenji', player)) return false;
+			if (!player.hasSkill('shenji')) return false;
 			return event.card.name == 'sha' && (event.targets.length > 1 || player.countUsed('sha', true) > 1);
 		},
 		priority: 15,
 		direct: true,
 		content() { player.logSkill('shenji') },
+	};
+	//族荀谌
+	lib.skill._clansankuang = {
+		charlotte: true,
+		trigger: { player: 'chooseTargetBegin' },
+		filter: event => event.getParent().name === 'clansankuang',
+		priority: 15,
+		direct: true,
+		content() {
+			const func = (event, player) => {
+				const name = event.getParent().name;
+				game.countPlayer(target => {
+					if (event.filterTarget(null, player, target)) {
+						target.prompt(get.translation(name) + get.info(name).getNum(target));
+					}
+				});
+			};
+			if (event.player == game.me) func(trigger, player);
+			else if (event.isOnline()) player.send(func, trigger, player);
+		},
+	};
+	//卢氏
+	lib.skill._olzhuyan = {
+		charlotte: true,
+		trigger: { player: 'chooseTargetBegin' },
+		filter: event => event.getParent().name === 'olzhuyan',
+		priority: 15,
+		direct: true,
+		content() {
+			const func = event => {
+				game.countPlayer(target => {
+					let text = event.targetprompt(target);
+					target.prompt('体力值' + text.replaceAll('/', '<br>手牌数'));
+				});
+			};
+			event.map = trigger.getParent().map;
+			if (event.player == game.me) func(trigger);
+			else if (event.isOnline()) player.send(func, trigger);
+		},
 	};
 	//神张角
 	delete lib.skill.yizhao.intro.markcount;
