@@ -7065,21 +7065,69 @@ const packs = function () {
             },
             wechatsifu: {
                 audio: 'ext:活动武将/audio/skill:2',
+                getUsed: player => player.getHistory('useCard', evt => typeof get.number(evt.card) == 'number').map(evt => get.number(evt.card)).toUniqued(),
                 enable: 'phaseUse',
-                usable: 1,
-                async content(event, trigger, player) {
-                    const numbers = player.getHistory('useCard', evt => typeof get.number(evt.card) == 'number').map(evt => get.number(evt.card)).toUniqued();
-                    const cards = [];
-                    const used = get.cardPile2(card => numbers.includes(get.number(card)));
-                    if (used) cards.push(used);
-                    const notUsed = get.cardPile2(card => !numbers.includes(get.number(card)));
-                    if (notUsed) cards.push(notUsed);
-                    if (cards.length) await player.gain(cards, 'gain2');
+                filter(event, player) {
+                    const { wechatsifu } = event, storage = player.getStorage('wechatsifu_used');
+                    if (!Array.isArray(wechatsifu) || storage.length > 1) return false;
+                    const numbers = Array.from({ length: 13 }).map((_, i) => i + 1);
+                    const list = numbers.filter(i => {
+                        if (storage.includes('yes') && wechatsifu.includes(i)) return false;
+                        if (storage.includes('no') && !wechatsifu.includes(i)) return false;
+                        return true;
+                    })
+                    return list.length;
+                },
+                onChooseToUse(event) {
+                    if (!game.online && !event.wechatsifu) {
+                        const player = event.player;
+                        event.set('wechatsifu', get.info('wechatsifu').getUsed(player));
+                    }
+                },
+                chooseButton: {
+                    dialog(event, player) {
+                        return ui.create.dialog('###思赋###选择一个点数，然后从牌堆获得此点数的一张牌');
+                    },
+                    chooseControl(event, player) {
+                        const { wechatsifu } = event, storage = player.getStorage('wechatsifu_used');
+                        const numbers = Array.from({ length: 13 }).map((_, i) => i + 1);
+                        const list = numbers.filter(i => {
+                            if (storage.includes('yes') && wechatsifu.includes(i)) return false;
+                            if (storage.includes('no') && !wechatsifu.includes(i)) return false;
+                            return true;
+                        }).map(i => get.cnNumber(i, true))
+                        list.push('cancel2');
+                        return list;
+                    },
+                    backup(result, player) {
+                        return {
+                            control: result.control,
+                            audio: 'wechatsifu',
+                            filterCard: () => false,
+                            selectCard: -1,
+                            async content(event, trigger, player) {
+                                const control = lib.skill.wechatsifu_backup.control;
+                                const num = Array.from({ length: 13 }).map((_, i) => get.cnNumber(i + 1, true)).indexOf(control) + 1;
+                                const { wechatsifu } = event.getParent(2);
+                                player.$damagepop(get.strNumber(num), 'water');
+                                game.log(player, '选择的点数是', '#y' + get.strNumber(num));
+                                player.addTempSkill('wechatsifu_used', 'phaseUseAfter');
+                                player.markAuto('wechatsifu_used', [wechatsifu.includes(num) ? 'yes' : 'no']);
+                                const card = get.cardPile2(card => get.number(card) == num);
+                                if (card) await player.gain(card, 'gain2');
+                            },
+                        };
+                    },
                 },
                 ai: {
-                    order: 4,
-                    result: {
-                        player: 1,
+                    order: 10,
+                    result: { player: 1 },
+                },
+                subSkill: {
+                    backup: {},
+                    used: {
+                        charlotte: true,
+                        onremove: true,
                     }
                 }
             },
@@ -8638,15 +8686,10 @@ const packs = function () {
             // 极关羽
             wechatyihan: {
                 audio: 'ext:活动武将/audio/skill:2',
-                shiwuSkill: true,
-                categories: () => ['奋武技'],
-                shiwuAble(player, skill) {
-                    return player.getRoundHistory('useSkill', evt => evt.skill == skill).length < Math.min(5, player.getRoundHistory('damage', () => true).concat(player.getRoundHistory('sourceDamage', () => true)).reduce((sum, evt) => sum + evt.num, 0) + 1);
-                },
                 enable: 'phaseUse',
                 usable: 1,
                 filter(event, player) {
-                    return game.hasPlayer(current => get.info('wechatyihan').filterTarget(null, player, current)) && get.info('wechatyihan').shiwuAble(player, 'wechatyihan');
+                    return game.hasPlayer(current => get.info('wechatyihan').filterTarget(null, player, current));
                 },
                 filterTarget(card, player, target) {
                     return target.countCards('h') && target != player;
@@ -8677,8 +8720,14 @@ const packs = function () {
             },
             wechatgywuwei: {
                 audio: 'ext:活动武将/audio/skill:2',
+                shiwuSkill: true,
+                categories: () => ['奋武技'],
+                shiwuAble(player, skill) {
+                    return player.getRoundHistory('useSkill', evt => evt.skill == skill).length < Math.min(5, player.getRoundHistory('damage', () => true).concat(player.getRoundHistory('sourceDamage', () => true)).reduce((sum, evt) => sum + evt.num, 0) + 1);
+                },
                 enable: 'phaseUse',
                 filter(event, player) {
+                    if (!get.info('wechatgywuwei').shiwuAble(player, 'wechatgywuwei')) return false;
                     const num = 1 + (player.getStat('skill').wechatgywuwei || 0);
                     if (num > player.countCards('he', card => lib.filter.cardDiscardable(card, player))) return false;
                     return game.hasPlayer(current => get.info('wechatyihan').filterTarget(null, player, current));
@@ -9482,7 +9531,7 @@ const packs = function () {
             wechatbeijia: '悲笳',
             wechatbeijia_info: '韵律技。每回合限一次，平：你可以将一张点数大于上一张你使用的牌当任意锦囊牌使用；仄：你可以将一张点数小于上一张你使用的牌当任意基本牌使用。转韵：你于出牌阶段使用一张点数等于上一张你使用的牌。',
             wechatsifu: '思赋',
-            wechatsifu_info: '出牌阶段限一次，你可以随机从牌堆中获得你本回合使用过与未使用过的点数的牌各一张。',
+            wechatsifu_info: '出牌阶段各限一次，你可以选择一个你本回合使用过或未使用过的牌的点数，然后随机从牌堆中获得一张此点数的牌。',
             wechat_sb_machao: '微信谋马超',
             wechatjlmashu: '马术',
             wechatjlmashu_info: '①游戏开始时，你从牌堆中随机使用一张防御坐骑牌和一张进攻坐骑牌。②一名角色失去装备区的坐骑牌后，你获得2枚“千骑”标记。③出牌阶段，你可以弃置1枚“千骑”标记视为一张无距离和次数限制的【杀】。',
@@ -9508,9 +9557,9 @@ const packs = function () {
             wechatluheng_info: '结束阶段，若你本回合发动过〖纵阋〗，你可以视为对一名本回合进行过共同拼点且其中手牌数最多的其他角色使用一张【杀】。',
             wechat_zhiyin_guanyu: '极关羽',
             wechatyihan: '翊汉',
-            wechatyihan_info: get.ShiwuInform() + '，出牌阶段限一次，你可以展示一名其他角色的一张手牌，然后令其选择一项：1.交给你展示牌；2.你视为对其使用一张无次数限制的【杀】。',
+            wechatyihan_info: '出牌阶段限一次，你可以展示一名其他角色的一张手牌，然后令其选择一项：1.交给你展示牌；2.你视为对其使用一张无次数限制的【杀】。',
             wechatgywuwei: '武威',
-            wechatgywuwei_info: '出牌阶段，你可以弃置X+1张牌并弃置一名角色的等量张牌（X为你本阶段发动〖武威〗的次数）。若你以此法弃置的牌的点数之和不大于其因此被弃置的牌的点数之和，你对其造成1点雷电伤害。',
+            wechatgywuwei_info: get.ShiwuInform() + '，出牌阶段，你可以弃置X+1张牌并弃置一名角色的等量张牌（X为你本阶段发动〖武威〗的次数）。若你以此法弃置的牌的点数之和不大于其因此被弃置的牌的点数之和，你对其造成1点雷电伤害。',
             wechat_sb_huangzhong: '微信谋黄忠',
             wechatsbliegong: '烈弓',
             wechatsbliegong_info: '当你使用牌时或成为其他角色使用牌的目标后，若你未记录此牌的花色，你记录此牌的花色。当你使用【杀】指定唯一目标后，若〖烈弓〗存在记录花色，则你可亮出牌堆顶的X张牌（X为〖烈弓〗记录过的花色数-1），令此【杀】的伤害值基数+Y（Y为亮出牌中被〖烈弓〗记录过花色的牌的数量），且目标角色不能使用〖烈弓〗记录过花色的牌响应此【杀】。此【杀】使用结算结束后，你清除〖烈弓〗记录的的花色。',
