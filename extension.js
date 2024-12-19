@@ -13,6 +13,7 @@ game.bolShowNewPack = function () {
 	var HuoDong_update = [
 		'/setPlayer/',
 		'部分素材替换',
+		'微信三国杀武将技能调整',
 		'添加欢杀武将管宁、谋姜维、韩遂、毌丘俭、精卫、潘璋马忠、阚泽、界太史慈、管辂',
 		'To be continued...',
 	];
