@@ -701,7 +701,7 @@ const packs = function () {
                 },
             },
             qin_zulong: {
-                derivation: ['qin_chuanguoyuxi_skill', 'qin_zhenlongchangjian_skill'],
+                derivation: ['qin_chuanguoyuxi', 'qin_zhenlongchangjian'],
                 audio: 'ext:活动武将/audio/skill:true',
                 trigger: { player: 'phaseZhunbeiBegin' },
                 forced: true,
@@ -781,7 +781,7 @@ const packs = function () {
                 },
             },
             qin_bianfa: {
-                derivation: 'qin_shangyangbianfa_dying',
+                derivation: 'qin_shangyangbianfa',
                 audio: 'ext:活动武将/audio/skill:true',
                 mod: {
                     selectTarget(card, player, range) {
@@ -854,7 +854,7 @@ const packs = function () {
                 mod: { cardSavable: () => false },
             },
             qin_jinnu: {
-                derivation: 'qin_qinnu_skill',
+                derivation: 'qin_qinnu',
                 audio: 'ext:活动武将/audio/skill:true',
                 trigger: { player: 'phaseZhunbeiBegin' },
                 filter(event, player) {

@@ -9759,7 +9759,7 @@ const packs = function () {
             },
             minicunsi: {
                 unique: true,
-                derivation: ['miniyongjue'],
+                derivation: ['miniyongjue', 'miniguixiux'],
                 audio: 'cunsi',
                 enable: 'phaseUse',
                 mark: true,
