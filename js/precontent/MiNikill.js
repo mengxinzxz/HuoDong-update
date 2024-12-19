@@ -28384,6 +28384,7 @@ const packs = function () {
                     }
                 },
             },
+            //精卫
             minitianhai: {
                 audio: 'ext:活动武将/audio/skill:2',
                 trigger: { global: ['useCard', 'respond'] },
@@ -28406,7 +28407,7 @@ const packs = function () {
                             target.addMark(event.name + '_damage', 1, false);
                             game.log(target, '下一次受到的伤害', '#g+1');
                         }
-                        else if (num >= 10) {
+                        else if (number >= 10) {
                             const num = target.getCards('he').filter(card => lib.filter.cardDiscardable(card, target, 'minitianhai')).reduce((sum, card) => sum + get.number(card), 0);
                             if (num <= number) await target.discard(target.getCards('he'));
                             else await target.chooseToDiscard(`弃置任意张点数之和不小于${number}的牌`, 'he', true).set('selectCard', function () {
