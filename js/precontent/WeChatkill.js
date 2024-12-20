@@ -32,7 +32,7 @@ const packs = function () {
             wechat_liuchen: ['male', 'shu', 4, ['zhanjue', 'wechatqinwang']],
             wechat_luxun: ['male', 'wu', 3, ['wechatqianxun', 'lianying']],
             wechat_re_luxun: ['male', 'wu', 3, ['wechatreqianxun', 'relianying']],
-            wechat_pangtong: ['male', 'shu', 3, ['lianhuan', 'wechatniepan', 'wechathuzhu']],
+            wechat_pangtong: ['male', 'shu', 3, ['wechatlianhuan', 'wechatniepan', 'wechathuzhu']],
             wechat_zhangxingcai: ['female', 'shu', 3, ['wechatshenxian', 'wechatqiangwu']],
             wechat_zuoci: ['male', 'qun', 3, ['wechatyigui', 'wechatshendao']],
             wechat_mayunlu: ['female', 'shu', 4, ['wechatfengpo', 'mashu']],
@@ -112,7 +112,7 @@ const packs = function () {
             wechat_liuyan: ['male', 'qun', 3, ['xinfu_tushe', 'wechatlimu']],
             wechat_zhenji: ['female', 'wei', 3, ['miniluoshen', 'qingguo']],
             wechat_sp_zhugeliang: ['male', 'shu', 3, ['wechathuoji', 'wechatkanpo'], ['die:sb_sp_zhugeliang', 'name:诸葛|亮']],
-            wechat_yj_weiyan: ['male', 'qun', 4, ['wechatguli', 'mbaosi']],
+            wechat_yj_weiyan: ['male', 'qun', 4, ['wechatguli', 'wechataosi']],
             wechat_sunhao: ['male', 'wu', 5, ['wechatcanshi', 'chouhai']],
             wechat_ganfuren: ['female', 'shu', 3, ['dcshushen', 'wechatshenzhi'], ['name:甘|null']],
             wechat_xurong: ['male', 'qun', 4, ['wechatxionghuo', 'xinfu_shajue']],
@@ -1565,6 +1565,25 @@ const packs = function () {
                         else return '共有' + get.cnNumber(cards.length) + '张牌';
                     },
                     markcount: 'expansion',
+                },
+            },
+            wechatlianhuan: {
+                audio: 'lianhuan',
+                trigger: { player: 'phaseDrawBegin2' },
+                filter(event, player) {
+                    return !event.numFixed && game.hasPlayer(t => t.isLinked());
+                },
+                forced: true,
+                locked: false,
+                content() {
+                    trigger.num += Math.min(3, game.countPlayer(t => t.isLinked()));
+                },
+                group: 'wechatlianhuan_lianhuan',
+                subSkill: {
+                    lianhuan: {
+                        audio: 'lianhuan',
+                        inherit: 'lianhuan',
+                    },
                 },
             },
             wechatniepan: {
@@ -8216,9 +8235,7 @@ const packs = function () {
                             });
                         },
                         content() {
-                            'step 0'
                             player.loseHp();
-                            'step 1'
                             player.drawTo(player.maxHp);
                         },
                         group: 'wechatguli_unequip',
@@ -8239,6 +8256,13 @@ const packs = function () {
                             trigger.target.markSkill('qinggang2');
                         },
                     },
+                },
+            },
+            wechataosi: {
+                audio: 'aosi',
+                inherit: 'aosi',
+                filter(event, player) {
+                    return player.isPhaseUsing() && event.player.isIn() && !player.getStorage('mbaosi_inf').includes(event.player);
                 },
             },
             //孙皓
@@ -9107,6 +9131,8 @@ const packs = function () {
             wechatreqianxun2: '谦逊',
             wechatreqianxun_info: '每当一张延时类锦囊牌或其他角色使用的普通锦囊牌生效时，若你是此牌的唯一目标，你可以将任意张手牌置于你的武将牌上，若如此做，此回合结束时，你获得你武将牌上的所有牌。',
             wechat_pangtong: '微信庞统',
+            wechatlianhuan: '连环',
+            wechatlianhuan_info: '①你可以将一张♣牌当作【铁索连环】使用或重铸。②摸牌阶段，你额外摸X张牌（X为场上处于连环状态的角色数，至多为3）。',
             wechatniepan: '涅槃',
             wechatniepan_info: '限定技，当你处于濒死状态时，你可以弃置区域内的所有牌，复原武将牌，摸三张牌并将体力值回复至3，然后本局游戏你造成的伤害均视为火属性。',
             wechathuzhu: '护主',
@@ -9517,6 +9543,8 @@ const packs = function () {
             wechat_yj_weiyan: '微信☆魏延',
             wechatguli: '孤厉',
             wechatguli_info: '出牌阶段限一次。你可以将所有手牌当做一张无距离限制且无视防具的【杀】使用。此牌结算结束后，若此牌造成过伤害，你可以将手牌数摸至你的体力上限。',
+            wechataosi: '骜肆',
+            wechataosi_info: '锁定技。当你于出牌阶段对一名角色造成伤害后，你于此阶段对其使用牌无次数限制。',
             wechat_sunhao: '微信孙皓',
             wechatcanshi: '残蚀',
             wechatcanshi_info: '摸牌阶段，你可以多摸X张牌（X为已受伤的角色数且至少为2）.若如此做，当你于此回合内使用【杀】或普通锦囊牌时，你弃置一张牌。',
