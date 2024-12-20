@@ -30646,6 +30646,7 @@ const packs = function () {
                         },
                     },
                 },
+                derivation: 'mininiansuhui_faq',
             },
             mininianchongzou: {
                 audio: 'ext:活动武将/audio/skill:2',
