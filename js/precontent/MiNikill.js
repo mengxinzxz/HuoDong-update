@@ -30629,8 +30629,9 @@ const packs = function () {
                     }).map(evt => evt.cards).flat().filterInD('d');
                     if (cards.length) await target.gain(cards, 'gain2');
                     target.addTempSkill('mininiansuhui_hand');
-                    target.addMark('mininiansuhui_hand', musicList.filter(item => {
-                        return musicList.some(item2 => item !== item2 && item.name === item2.name);
+                    const musicList2 = musicList.map((item, i) => [item, i]);
+                    target.addMark('mininiansuhui_hand', musicList2.filter(item => {
+                        return musicList2.some(item2 => item !== item2 && item[0] === item2[0]);
                     }).length, false);
                 },
                 subSkill: {
@@ -30667,7 +30668,7 @@ const packs = function () {
                             .then(() => {
                                 const num = player.countMark('mininianchongzou_gain');
                                 delete player.storage.mininianchongzou_gain;
-                                player.addTempSkill('mininianchongzou_effect');
+                                player.addTempSkill('mininianchongzou_effect', 'roundStart');
                                 player.addMark('mininianchongzou_effect', num, false);
                             })
                             .finish();
