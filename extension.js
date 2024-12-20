@@ -14,12 +14,12 @@ game.bolShowNewPack = function () {
 		'/setPlayer/',
 		'部分素材替换',
 		'微信三国杀武将技能调整',
-		'添加欢杀武将管宁、谋姜维、韩遂、毌丘俭、精卫、潘璋马忠、阚泽、界太史慈、管辂',
+		'添加欢杀武将念周瑜、管宁、谋姜维、韩遂、毌丘俭、精卫、潘璋马忠、阚泽、界太史慈、管辂',
 		'To be continued...',
 	];
 	//更新武将
 	var HuoDong_players = [
-		'Mbaby_guanning', 'Mbaby_ol_sb_jiangwei', 'Mbaby_re_hansui', 'Mbaby_guanqiujian',
+		'Mnian_zhouyu', 'Mbaby_guanning', 'Mbaby_ol_sb_jiangwei', 'Mbaby_re_hansui', 'Mbaby_guanqiujian',
 		'Mbaby_jingwei', 'Mbaby_panzhangmazhong', 'Mbaby_kanze', 'Mbaby_taishici', 'Mbaby_guanlu',
 	];
 	//加载

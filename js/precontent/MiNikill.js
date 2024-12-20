@@ -15,7 +15,7 @@ const packs = function () {
                 MiNi_shengzhiyifa: ['Mbaby_jingwei', 'Mbaby_sunwukong', 'Mbaby_dalanmao', 'Mbaby_libai', 'Mbaby_change', 'Mbaby_nvwa', 'Mbaby_tunxingmenglix', 'Mbaby_xiaoshan'],
                 MiNi_sbCharacter: ['Mbaby_ol_sb_jiangwei', 'Mbaby_sb_huangyueying', 'Mbaby_ol_sb_guanyu', 'Mbaby_sb_sunshangxiang', 'Mbaby_sb_xuhuang', 'Mbaby_sb_zhaoyun', 'Mbaby_sb_liubei', 'Mbaby_sb_caocao', 'Mbaby_sb_huanggai', 'Mbaby_sb_yuanshao', 'Mbaby_sb_yujin', 'Mbaby_sb_machao', 'Mbaby_sb_lvmeng', 'Mbaby_sb_huangzhong'],
                 MiNi_miaoKill: ['Mmiao_caiwenji', 'Mmiao_diaochan', 'Mmiao_caifuren', 'Mmiao_zhangxingcai', 'Mmiao_zhurong', 'Mmiao_huangyueying', 'Mmiao_daqiao', 'Mmiao_wangyi', 'Mmiao_zhangchunhua', 'Mmiao_zhenji', 'Mmiao_sunshangxiang', 'Mmiao_xiaoqiao', 'Mmiao_lvlingqi'],
-                MiNi_nianKill: ['Mnian_zhugeliang', 'Mnian_lvbu'],
+                MiNi_nianKill: ['Mnian_zhugeliang', 'Mnian_lvbu', 'Mnian_zhouyu'],
             },
         },
         character: {
@@ -351,6 +351,7 @@ const packs = function () {
             //念
             Mnian_zhugeliang: ['male', 'shu', 3, ['mininianxinghan', 'mininianliaoyuan', 'mininianying_zgl'], ['name:诸葛|亮']],
             Mnian_lvbu: ['male', 'qun', 5, ['mininiantazhen', 'mininiandoupo', 'mininianying_lb']],
+            Mnian_zhouyu: ['male', 'wu', 4, ['mininiansuhui', 'mininianchongzou', 'mininianying_zy']],
         },
         characterIntro: {
             Mbaby_change: '嫦娥，中国古代神话中的人物，又名恒我、恒娥、姮娥、常娥、素娥，羿之妻，因偷吃了不死药而飞升至月宫。嫦娥的故事最早出现在商朝卦书 《归藏》。而嫦娥奔月的完整故事最早记载于西汉《淮南子·览冥训》。东汉时期，嫦娥与羿的夫妻关系确立，而嫦娥在进入月宫后变成了捣药的蟾蜍。南北朝以后，嫦娥的形象回归为女儿身。汉画像中，嫦娥人头蛇身，头梳高髻，身着宽袖长襦，身后长尾上饰有倒钩状细短羽毛。南北朝以后，嫦娥的形象被描绘成绝世美女。南朝陈后主陈叔宝曾把宠妃张丽华比作嫦娥。唐朝诗人白居易曾用嫦娥夸赞邻家少女不可多得的容貌。',
@@ -500,6 +501,38 @@ const packs = function () {
                 skills: ['minipiliche'],
                 destroy: true,
                 ai: { basic: { equipValue: 3 } },
+            },
+            mininiantazhen_sha: {
+                fullimage: true,
+                image: 'ext:活动武将/image/card/mininiantazhen_sha.png',
+            },
+            mininiantazhen_horse: {
+                fullimage: true,
+                image: 'ext:活动武将/image/card/mininiantazhen_horse.png',
+            },
+            mininiantazhen_jiu: {
+                fullimage: true,
+                image: 'ext:活动武将/image/card/mininiantazhen_jiu.png',
+            },
+            zhouyu_宫: {
+                fullimage: true,
+                image: 'ext:活动武将/image/default/zhouyu_宫.jpg',
+            },
+            zhouyu_商: {
+                fullimage: true,
+                image: 'ext:活动武将/image/default/zhouyu_商.jpg',
+            },
+            zhouyu_角: {
+                fullimage: true,
+                image: 'ext:活动武将/image/default/zhouyu_角.jpg',
+            },
+            zhouyu_徵: {
+                fullimage: true,
+                image: 'ext:活动武将/image/default/zhouyu_徵.jpg',
+            },
+            zhouyu_羽: {
+                fullimage: true,
+                image: 'ext:活动武将/image/default/zhouyu_羽.jpg',
             },
         },
         skill: {
@@ -29744,6 +29777,7 @@ const packs = function () {
                 subSkill: {
                     Mnian_zhugeliang: { audio: 'ext:活动武将/audio/skill:2' },
                     Mnian_lvbu: { audio: 'ext:活动武将/audio/skill:2' },
+                    Mnian_zhouyu: { audio: 'ext:活动武将/audio/skill:2' },
                 },
             },
             mininianxinghan: {
@@ -29952,36 +29986,6 @@ const packs = function () {
                         'height: 150px !important;',
                         '}'
                     ].join(''));
-                    game.broadcastAll(() => lib.skill.mininiantazhen.video());
-                },
-                video() {
-                    const sha = 'mininiantazhen_sha';
-                    if (!lib.card[sha]) {
-                        lib.card[sha] = {
-                            fullimage: true,
-                            image: 'ext:活动武将/image/card/' + sha + '.png',
-                        };
-                        lib.translate[sha] = '杀';
-                        lib.translate[sha + '_info'] = '攻击力+1';
-                    }
-                    const horse = 'mininiantazhen_horse';
-                    if (!lib.card[horse]) {
-                        lib.card[horse] = {
-                            fullimage: true,
-                            image: 'ext:活动武将/image/card/' + horse + '.png',
-                        };
-                        lib.translate[horse] = '马';
-                        lib.translate[horse + '_info'] = '踏阵步数+2';
-                    }
-                    const jiu = 'mininiantazhen_jiu';
-                    if (!lib.card[jiu]) {
-                        lib.card[jiu] = {
-                            fullimage: true,
-                            image: 'ext:活动武将/image/card/' + jiu + '.png',
-                        };
-                        lib.translate[jiu] = '酒';
-                        lib.translate[jiu + '_info'] = '下次攻击攻击力+2';
-                    }
                 },
                 audio: 'ext:活动武将/audio/skill:2',
                 trigger: { player: 'phaseBegin' },
@@ -30486,6 +30490,242 @@ const packs = function () {
                             else player.addMark('mininianying_lb', trigger.num, false);
                         },
                     },
+                },
+            },
+            //念周瑜
+            mininiansuhui: {
+                audio: 'ext:活动武将/audio/skill:2',
+                trigger: { global: 'phaseEnd' },
+                check(event, player) {
+                    return get.attitude(player, event.player) > 0;
+                },
+                round: 1,
+                logTarget: 'player',
+                async content(event, trigger, player) {
+                    await Promise.all(event.next);
+                    event.videoId = lib.status.videoId++;
+                    const switchToAuto = function () {
+                        _status.imchoosing = false;
+                        if (event.dialog) event.dialog.close();
+                        if (event.control) event.control.close();
+                        game.resume();
+                        event._result = { musicList: [0, 0, 0].concat([get.rand(0, 1)].concat([get.rand(0, 1)])) };
+                        return Promise.resolve(event._result);
+                    };
+                    const zhouyu_MusicPlay = function (player) {
+                        const event = _status.event, { promise, resolve } = Promise.withResolvers();
+                        //可以即兴/更换音符的最大次数
+                        event.restNum = 5 + player.countMark('mininianchongzou_effect');
+                        event.resetNum = 1;
+                        //定义初始五音和是否上锁的列表
+                        const musicList = ['宫', '商', '角', '徵', '羽'].map(i => 'zhouyu_' + i);
+                        event.musicList = [];
+                        while (event.musicList.length < 5) {
+                            event.musicList.push(musicList.randomGet());
+                        }
+                        event.musicList_Locked = [];
+                        //如果以自己视角进入流程后AI直接走结果
+                        event.switchToAuto = function () {
+                            _status.imchoosing = false;
+                            event._result = { musicList: [0, 0, 0].concat([get.rand(0, 1)].concat([get.rand(0, 1)])) };
+                            resolve(event._result);
+                            if (event.dialog) event.dialog.close();
+                            if (event.control_replace) event.control_replace.close();
+                            if (event.control_ok) event.control_ok.close();
+                        };
+                        //替换音符，每次替换消耗一次即兴次数
+                        event.control_replace = ui.create.control('即兴', link => {
+                            if (!event.restNum || event.musicList_Locked.length >= 5) return;
+                            event.restNum--;
+                            event.dialog.content.childNodes[0].innerHTML = event.dialog.content.childNodes[0].innerHTML.replace(/还可即兴\d+次/g, '还可即兴' + event.restNum + '次');
+                            for (let i = 0; i < 5; i++) {
+                                const container = event.dialog.itemContainers[i + event.resetNum];
+                                container.classList.remove('selected');
+                                if (!event.musicList_Locked.includes(container)) event.musicList[i] = musicList.randomGet();
+                            }
+                            event.resetNum += 5;
+                            event.musicList_Locked = [];
+                            event.dialog.content.childNodes[1].remove();
+                            event.dialog.addNewRow(...event.musicList.map(item => {
+                                return {
+                                    item: [game.createCard(item, ' ', ' ')], ItemNoclick: true, clickItemContainer
+                                };
+                            }));
+                        });
+                        //获取结果
+                        event.control_ok = ui.create.control('演奏', link => {
+                            event.dialog.close();
+                            event.control_replace.close();
+                            event.control_ok.close();
+                            game.resume();
+                            _status.imchoosing = false;
+                            event._result = { musicList: event.musicList };
+                            resolve(event._result);
+                        });
+                        //点击容器事件的反馈
+                        const clickItemContainer = function (container) {
+                            if (!event.restNum) return;//无法即兴则点击无效
+                            const goon = event.musicList_Locked.includes(container);
+                            event.musicList_Locked[goon ? 'remove' : 'add'](container);
+                            container.classList[goon ? 'remove' : 'add']('selected');
+                        };
+                        //创建dialog
+                        const dialog = event.dialog = ui.create.dialog('forcebutton', 'hidden');
+                        dialog.addNewRow('溯洄：请进行演奏，根据最多的同名音符数执行后续效果<br><div class="text center">还可即兴' + event.restNum + '次，点击音符即可锁定，避免被即兴替换</div>');
+                        dialog.addNewRow(...event.musicList.map(item => {
+                            return {
+                                item: [game.createCard(item, ' ', ' ')], ItemNoclick: true, clickItemContainer
+                            };
+                        }));
+                        dialog.open();
+                        game.pause();
+                        game.countChoose();
+                        return promise;
+                    };
+                    let next;
+                    if (event.isMine()) {
+                        next = zhouyu_MusicPlay(player);
+                    } else if (event.isOnline()) {
+                        const { promise, resolve } = Promise.withResolvers();
+                        event.player.send(zhouyu_MusicPlay, player);
+                        event.player.wait(async result => {
+                            if (result == 'ai') result = await switchToAuto();
+                            resolve(result);
+                        });
+                        game.pause();
+                        next = promise;
+                    } else {
+                        next = switchToAuto();
+                    }
+                    const result = await next;
+                    game.resume();
+                    const target = trigger.player, musicList = result.musicList;
+                    const num = Math.max(...Object.values(musicList.reduce((map, name) => {
+                        if (!map[name]) map[name] = 0;
+                        map[name]++;
+                        return map;
+                    }, {})));
+                    player.chat(num + '个');
+                    game.log(player, '本次', '#g演奏', '共收集', '#y' + num, '个相同音符');
+                    if (num >= 3) {
+                        player.popup('洗具', 'wood');
+                        const level = { '3': 'phaseDiscard', '4': 'phaseUse', '5': 'phaseZhunbei' }[num.toString()], list = trigger.phaseList;
+                        const index = list.find(item => item.startsWith(level));
+                        if (index) {
+                            target.chat('洗具', 'wood');
+                            trigger.num = list.indexOf(index);
+                            game.log(target, '回溯至', '#g' + get.translation(level));
+                        }
+                        else {
+                            target.chat('杯具', 'fire');
+                            game.log('但是', target, '本回合没有', '#g' + get.translation(level), '！');
+                        }
+                    }
+                    else {
+                        player.chat('杯具', 'fire');
+                    }
+                    const cards = game.getGlobalHistory('everything', evt => {
+                        return evt.name === 'cardsDiscard' || (evt.name === 'lose' && evt.position === ui.discardPile);
+                    }).map(evt => evt.cards).flat().filterInD('d');
+                    if (cards.length) await target.gain(cards, 'gain2');
+                    target.addTempSkill('mininiansuhui_hand');
+                    target.addMark('mininiansuhui_hand', musicList.filter(item => {
+                        return musicList.some(item2 => item !== item2 && item.name === item2.name);
+                    }).length, false);
+                },
+                subSkill: {
+                    hand: {
+                        charlotte: true,
+                        onremove: true,
+                        intro: { content: '手牌上限+#' },
+                        mod: {
+                            maxHandcard(player, num) {
+                                return num + player.countMark('mininiansuhui_hand');
+                            },
+                        },
+                    },
+                },
+            },
+            mininianchongzou: {
+                audio: 'ext:活动武将/audio/skill:2',
+                trigger: { player: ['useCard', 'respond'] },
+                filter(event, player) {
+                    if (!game.getGlobalHistory('everything', evt => {
+                        if (evt === event) return false;
+                        return evt.player === event.player && ['useCard', 'respond'].includes(evt.name) && evt.card.name === event.card.name;
+                    }).length) return false;
+                    return !game.getGlobalHistory('everything', evt => {
+                        return evt.player === event.player && evt.name === 'mininianchongzou' && get.type2(event.card) === get.type2(evt._trigger.card);
+                    }).length;
+                },
+                forced: true,
+                async content(event, trigger, player) {
+                    const card = get.cardPile(card => get.type2(card) !== get.type2(trigger.card));
+                    if (card) await player.gain(card, 'gain2');
+                    if (!player.storage.mininianchongzou_gain) {
+                        player.when({ global: 'roundStart' }, false)
+                            .then(() => {
+                                const num = player.countMark('mininianchongzou_gain');
+                                delete player.storage.mininianchongzou_gain;
+                                player.addTempSkill('mininianchongzou_effect');
+                                player.addMark('mininianchongzou_effect', num, false);
+                            })
+                            .finish();
+                    }
+                    player.addMark('mininianchongzou_gain', 1, false);
+                },
+                ai: { combo: 'mininiansuhui' },
+                subSkill: {
+                    effect: {
+                        charlotte: true,
+                        onremove: true,
+                        intro: { content: '即兴次数+#' },
+                    },
+                },
+            },
+            mininianying_zy: {
+                audio: 'mininianying_Mnian_zhouyu',
+                trigger: { global: 'phaseEnd' },
+                filter(event, player, name) {
+                    if (!Object.keys(lib.skill).some(i => get.info(i) && get.info(i).nianyingSkill && get.info(i).nianyingFilter(event, player, name))) return false;
+                    const history = game.getGlobalHistory('everything', evt => evt.player === event.player && ['useCard', 'respond'].includes(evt.name));
+                    const map = history.reduce((map, evt) => {
+                        const { name } = evt.card;
+                        if (!map[name]) map[name] = 0;
+                        map[name]++;
+                        return map;
+                    }, {});
+                    return Object.keys(map).reduce((sum, item) => sum + Math.floor(map[item] / 2), 0) >= 2;
+                },
+                async cost(event, trigger, player) {
+                    const skills = Object.keys(lib.skill).filter(i => get.info(i) && get.info(i).nianyingSkill && get.info(i).nianyingFilter(trigger, player, name)).map(i => [i, get.info(i).nianyingSkill[0], get.info(i).nianyingSkill[1]]);
+                    const result = await player.chooseControl(skills.map(i => i[1]), 'cancel2')
+                        .set('prompt', get.prompt('mininianying_zy')).set('prompt2', '选择一项念影效果执行')
+                        .set('displayIndex', false)
+                        .set('choiceList', skills.map(i => {
+                            return '<div class="skill">' + i[1] + '</div><div>' + i[2] + '</div>';
+                        })).set('ai', () => get.event('controls').randomGet()).forResult();
+                    event.result = { bool: (result.control != 'cancel2'), cost_data: skills.find(i => i[1] == result.control) };
+                },
+                usable: 1,
+                async content(event, trigger, player) {
+                    const choice = event.cost_data;
+                    player.popup(choice[1]);
+                    game.log(player, '选择了', '#g' + choice[1]);
+                    await lib.skill[choice[0]].nianyingContent(player);
+                },
+                nianyingSkill: ['江东双壁', '令至多两名角色各获得1点护甲（至多为5）'],
+                nianyingFilter: () => true,
+                async nianyingContent(player) {
+                    const { result } = await player.chooseTarget(...get.info('mininianying_zy').nianyingSkill, [1, 2]).set('ai', target => {
+                        const player = get.player();
+                        return get.attitude(player, target) / Math.sqrt(Math.min(1, target.hp + target.hujia));
+                    });
+                    if (result?.bool && result.targets?.length) {
+                        const targets = result.targets.sortBySeat();
+                        player.line(targets);
+                        for (const target of targets) await target.changeHujia(1, null, true);
+                    }
                 },
             },
         },
@@ -32221,8 +32461,9 @@ const packs = function () {
             //念
             Mnian_zhugeliang: '念诸葛亮',
             Mnian_lvbu: '念吕布',
+            Mnian_zhouyu: '念周瑜',
             mininianxinghan: '兴汉',
-            mininianxinghan_info: '每回合限一次，回合开始时或当你受到伤害后，若默认势力和场上的势力的并集存在非蜀势力和你此前未因“定乱”成功的势力，则你可以进行“定乱”。若“定乱”成功，则你增加1点体力上限并回复1点体力，然后将场上的“定乱”势力角色均改为蜀势力。',
+            mininianxinghan_info: '每回合限一次，回合开始时或当你受到伤害后，若默认势力和场上的势力的并集存在非蜀势力和你此前未因“定乱”成功的势力，则你可以进行一次“定乱”。若“定乱”成功，则你增加1点体力上限并回复1点体力，然后将场上的“定乱”势力角色均改为蜀势力。',
             mininianxinghan_faq: '关于“定乱”',
             mininianxinghan_faq_info: '<br>系统为默认势力和场上的势力的并集存在非蜀势力和你此前未因“定乱”成功的势力各建立一个势力卡牌框，然后将这些势力的各四张对应势力卡牌随机分配至各个势力卡牌框中，玩家需要在[40+10*max(0,X-5)]秒内将其中仅一个势力卡牌框的所有卡牌调整为此势力的牌，则“定乱”成功，“定乱”结果为你成功分配的这个势力（X为S所含元素个数）。',
             mininianliaoyuan: '燎原',
@@ -32230,13 +32471,32 @@ const packs = function () {
             mininianying_zgl: '念影',
             mininianying_zgl_info: '回合开始时，若场上角色均为蜀势力；一名角色的回合结束时，若本回合场上有蜀势力角色死亡/场上有原其他势力角色变更势力至过蜀势力/场上有原蜀势力角色变更至过其他势力。则你可以摸两张牌并选择一个存在“念影”效果的技能的“念影”效果执行。',
             mininiantazhen: '踏阵',
+            mininiantazhen_jiu: '杀',
+            mininiantazhen_jiu_info: '攻击力+1',
+            mininiantazhen_horse: '马',
+            mininiantazhen_horse_info: '踏阵步数+2',
+            mininiantazhen_jiu: '酒',
+            mininiantazhen_jiu_info: '下次攻击攻击力+2',
             mininiantazhen_info: '锁定技，回合开始时，你进行一次“踏阵”，若“踏阵”成功，你从牌堆或弃牌堆随机获得一张【杀】，然后获得〖无双〗直到你的下个回合开始，然后若你此次踏阵过程中未路经的路线包含：①一整列：你令“踏阵”中被击败的角色依次交给你一张牌；②一整行：你视为对“踏阵”中被击败的角色使用一张无距离和次数限制的【杀】；③中心格：“踏阵”中被击败的角色不能对你使用【杀】直到你的下回合开始。',
             mininiantazhen_faq: '关于“踏阵”',
-            mininiantazhen_faq_info: '系统生成一个九宫格，其中有三格为随机三名其他角色，两格为【酒】（下次攻击攻击力+2），一格为【马】（步数+2），其余格为【杀】（攻击力+1），玩家初始步数为玩家体力值+1，初始攻击力为0，在满足经过的路径不交叉的条件下，任选一个不为角色的格子作为初始位置进行八向移动，最终路线上存在被击败角色（攻击力大于等于其当前体力值）即为踏阵成功。',
+            mininiantazhen_faq_info: '<br>系统生成一个九宫格，其中有三格为随机三名其他角色，两格为【酒】（下次攻击攻击力+2），一格为【马】（步数+2），其余格为【杀】（攻击力+1），玩家初始步数为玩家体力值+1，初始攻击力为0，在满足经过的路径不交叉的条件下，任选一个不为角色的格子作为初始位置进行八向移动，最终路线上存在被击败角色（攻击力大于等于其当前体力值）即为踏阵成功。',
             mininiandoupo: '斗破',
             mininiandoupo_info: '锁定技。①你使用【决斗】的目标上限数+2。②你使用【决斗】的效果改为“所有目标角色与你依次打出一张【杀】，未打出【杀】的角色受到你对其造成的1点伤害。然后重复此流程直到此轮有角色受到伤害。”。③当你使用【决斗】结算完毕后，你获得所有本次【决斗】失败一方的其他角色的各一张牌。',
             mininianying_lb: '念影',
             mininianying_lb_info: '每回合限一次，当你造成或受到伤害后，若你本回合造成或受到的伤害数之和大于等于2，则你可以选择一个存在“念影”效果的技能的“念影”效果执行。',
+            mininiansuhui: '溯洄',
+            mininiansuhui_info: '每轮限一次，一名角色的回合结束时，你可以进行一次“奏乐”，根据其中最多的同名音符数执行对应效果：3个，令其回溯至弃牌阶段；4个，令其回溯至出牌阶段；5个，令其回溯至准备阶段。然后令其获得本回合进入弃牌堆的所有牌且其本回合手牌上限+X（X为本次“奏乐”后的同名音符数）。',
+            mininiansuhui_faq: '关于“奏乐”',
+            mininiansuhui_faq_info: '<br>系统分配五个随机音符，且初始拥有五次即兴次数，可通过点击音符的方式对音符进行保留，点击即兴可将所有未选择保留的音符进行重置，玩家可随时点击“演奏”按钮结束“奏乐”，以当前的五个音符作为本次“奏乐”结果。',
+            mininianchongzou: '重奏',
+            mininianchongzou_info: '锁定技，每种类别每回合限一次，当你使用或打出牌时，若你本回合已使用或打出过此牌名的其他牌，则你获得一张与此牌类别不同的牌，并令下一轮〖溯洄〗的可即兴次数+1。',
+            mininianying_zy: '念影',
+            mininianying_zy_info: '一名角色的回合结束时，若其本回合至少使用了两组同名牌，则你可以选择一个存在“念影”效果的技能的“念影”效果执行。',
+            zhouyu_宫: '宫',
+            zhouyu_商: '商',
+            zhouyu_角: '角',
+            zhouyu_徵: '徵',
+            zhouyu_羽: '羽',
         },
     };
     for (var skill in MiNikill.skill) {
