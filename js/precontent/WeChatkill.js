@@ -6781,7 +6781,7 @@ const packs = function () {
             },
             wechatjuxian: {
                 audio: 'ext:活动武将/audio/skill:2',
-                getNum: (player) => 3 - game.getAllGlobalHistory('everything', evt => evt.player == player && evt.name == 'gain' && evt.getParent().name == 'wechatjuxian').reduce((numx, evt) => numx + evt.cards.length, 0),
+                getNum: (player) => 3 - game.getGlobalHistory('everything', evt => evt.player == player && evt.name == 'gain' && evt.getParent().name == 'wechatjuxian').reduce((numx, evt) => numx + evt.cards.length, 0),
                 trigger: { global: ['loseAfter', 'loseAsyncAfter', 'cardsDiscardAfter'] },
                 filter(event, player) {
                     if (get.info('wechatjuxian').getNum(player) <= 0) return false;

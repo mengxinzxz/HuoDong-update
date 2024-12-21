@@ -12,17 +12,13 @@ game.bolShowNewPack = function () {
 	//更新告示
 	var HuoDong_update = [
 		'/setPlayer/',
-		'部分素材替换',
-		'微信三国杀武将技能调整',
-		'添加欢杀武将念周瑜、管宁、谋姜维、韩遂、毌丘俭、精卫、潘璋马忠、阚泽、界太史慈、管辂',
-		'添加微信武将星甘宁、孙鲁育',
+		'bugfix',
+		'添加欢杀武将欢杀郑浑',
 		'To be continued...',
 	];
 	//更新武将
 	var HuoDong_players = [
-		'Mnian_zhouyu', 'Mbaby_guanning', 'Mbaby_ol_sb_jiangwei', 'Mbaby_re_hansui', 'Mbaby_guanqiujian',
-		'Mbaby_jingwei', 'Mbaby_panzhangmazhong', 'Mbaby_kanze', 'Mbaby_taishici', 'Mbaby_guanlu',
-		'wechat_yj_ganning', 'wechat_sunluyu',
+		'Mbaby_zhenghun',
 	];
 	//加载
 	var dialog = ui.create.dialog(
@@ -77,7 +73,7 @@ let extensionPackage = {
 		author: '萌新（转型中）',
 		diskURL: '',
 		forumURL: '',
-		version: '0.3.4',
+		version: '0.3.5 - 待定',
 		//新人制作扩展，希望大家支持。
 		//新人技术不足，希望大家包涵。
 		//壹、贰、叁、肆、伍、陆、柒、捌、玖、拾
