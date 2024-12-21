@@ -28426,7 +28426,7 @@ const packs = function () {
                     if (typeof number !== 'number') return false;
                     const storage = player.getStorage('minitianhai'), bool = !storage.includes(number);
                     if (player == target) return bool && player.hasHistory('lose', evt => evt.getParent() == event && evt.hs?.length);
-                    if (!bool) return false;
+                    if (bool) return false;
                     if (number >= 10 && !target.hasCard(card => lib.filter.cardDiscardable(card, target, 'minitianhai'), 'he')) return false;
                     return true;
                 },
