@@ -13,12 +13,13 @@ game.bolShowNewPack = function () {
 	var HuoDong_update = [
 		'/setPlayer/',
 		'bugfix',
+		'添加新武将眼睛👁（施工ing）',
 		'添加欢杀武将欢杀郑浑',
 		'To be continued...',
 	];
 	//更新武将
 	var HuoDong_players = [
-		'Mbaby_zhenghun',
+		'bilibili_yanjing', 'Mbaby_zhenghun',
 	];
 	//加载
 	var dialog = ui.create.dialog(
