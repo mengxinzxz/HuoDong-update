@@ -6889,19 +6889,43 @@ const packs = function () {
                 check(event, player) {
                     return player.countMark('wechatshenfu') > 2;
                 },
+                prompt2: () => '弃置所有“洛神”标记并亮出牌堆顶等量的牌，然后可以依次使用其中的黑色牌或获得其中的红色牌',
                 async content(event, trigger, player) {
                     const num = player.countMark(event.name);
                     player.clearMark(event.name);
                     const cards = get.cards(num);
                     await player.showCards(cards, get.translation(player) + '发动了【神赋】');
                     const black = cards.filter(card => get.color(card) == 'black' && player.hasUseTarget(card));
-                    if (!black.length) return;
-                    while (black.length) {
-                        const card = black.shift();
-                        if (!player.hasUseTarget(card)) continue;
-                        const bool = await player.chooseUseTarget(card, false).forResultBool();
-                        if (!bool) break;
+                    const red = cards.filter(card => get.color(card) == 'red');
+                    if (!(black.length + red.length)) return;
+                    let result;
+                    if (!black.length) result = { index: 1 };
+                    else if (!red.length) result = { index: 0 };
+                    else {
+                        result = await player.chooseControl().set('choiceList', [
+                            '可以依次使用' + get.translation(black),
+                            '获得' + get.translation(red),
+                        ]).set('ai', () => {
+                            const { player, cardList: [black, red] } = get.event();
+                            return (() => {
+                                let sum = 0;
+                                for (const card of black) {
+                                    if (player.hasValueTarget(card)) sum += player.getUseValue(card);
+                                    else break;
+                                }
+                                return sum;
+                            })() > red.reduce((sum, card) => sum + get.value(card), 0) ? 0 : 1
+                        }).set('cardList', [black, red]).forResult();
                     }
+                    if (result.index === 0) {
+                        while (black.length) {
+                            const card = black.shift();
+                            if (!player.hasUseTarget(card)) continue;
+                            const bool = await player.chooseUseTarget(card, false).forResultBool();
+                            if (!bool) break;
+                        }
+                    }
+                    else player.gain(red, 'gain2');
                 },
                 group: 'wechatshenfu_mark',
                 subSkill: {
@@ -9609,7 +9633,7 @@ const packs = function () {
             wechatxianshi_info: '每轮限一次。其他角色的摸牌阶段开始时，你可以观看牌堆顶三张牌并用任意张手牌替换其中等量的牌。',
             wechat_zhiyin_zhenji: '极甄宓',
             wechatshenfu: '神赋',
-            wechatshenfu_info: '①一名角色受到1点伤害后，若你的“洛神”标记数小于6，你获得1枚“洛神”标记。②结束阶段，你可以弃置所有“洛神”标记并亮出牌堆顶等量的牌，然后你可以依次使用其中的黑色牌。',
+            wechatshenfu_info: '①一名角色受到1点伤害后，若你的“洛神”标记数小于6，你获得1枚“洛神”标记。②结束阶段，你可以弃置所有“洛神”标记并亮出牌堆顶等量的牌，然后你选择一项：1.可以依次使用其中的黑色牌；2.获得其中的红色牌。',
             wechatsiyuan: '思怨',
             wechatsiyuan_info: '当你受到伤害后，你可以选择一名其他角色，令伤害来源视为对其造成过1点伤害。',
             wechat_ruanhui: '微信阮慧',
