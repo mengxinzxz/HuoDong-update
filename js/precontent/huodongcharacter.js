@@ -50,8 +50,9 @@ const packs = function () {
             bilibili_shen_guojia: ['male', 'wei', '9/9/5', ['stianyi', 'resghuishi', 'bilibili_huishi'], ['doublegroup:shen:wei:wu', 'die:shen_guojia']],
             bilibili_re_xusheng: ['male', 'wu', 4, ['bilibili_pojun', 'kuangcai', 'bilibili_baodao'], ['die:re_xusheng']],
             bilibili_xushao: ['male', 'qun', '1/6', ['bilibili_pingjian'], ['ext:活动武将/image/character/old_xushao.jpg', 'InitFilter:noZhuHp']],
-            bilibili_ningjingzhiyuan: ['male', 'key', 4, ['bilibili_liaoxing', 'bilibili_xiezhi', 'bilibili_fazhou'], ['clan:肘家军', 'clan:宿舍群', 'clan:肘击群', 'clan:活动群', 'name:宁动|致近']],
+            bilibili_ningjingzhiyuan: ['male', 'key', 4, ['bilibili_liaoxing', 'bilibili_xiezhi', 'bilibili_fazhou'], ['clan:肘家军', 'clan:宿舍群', 'clan:肘击群', 'clan:活动群', 'name:闹动|导近']],
             bilibili_xizhicaikobe: ['male', 'key', 4, ['bilibili_biexiao', 'bilibili_xingshi', 'bilibili_zhangcai'], ['doublegroup:wei:shu:wu:qun:jin', 'clan:肘家军', 'clan:肘击群', 'clan:活动群', 'name:戏|子宓']],
+            bilibili_yanjingge: ['male', 'key', 3, ['bilibili_dongcha', 'bilibili_mingcha', 'bilibili_huiyan'], ['clan:宿舍群', 'clan:肘击群', 'clan:活动群', 'name:tooenough|眼睛']],
             //千里走单骑 
             DJ_caiyang: ['male', 'qun', 1, ['yinka', 'zhuixi'], ['character:caiyang']],
             DJ_pujing: ['male', 'qun', 1, ['yinka'], ['character:pujing']],
@@ -10033,6 +10034,96 @@ const packs = function () {
                     },
                 },
             },
+            //眼睛哥
+            bilibili_dongcha: {
+                trigger: { target: 'useCardToTargeted' },
+                filter(event, player) {
+                    return event.player != player;
+                },
+                usable: 1,
+                check(event, player) {
+                    if (event.getParent().excluded.includes(player)) return false;
+                    return get.effect(player, event.card, event.player, player) < 0;
+                },
+                logTarget: 'player',
+                async content(event, trigger, player) {
+                    const judgeEvent = player.judge(card => get.color(card) == 'black' ? 2 : -2);
+                    judgeEvent.judge2 = result => result.bool;
+                    const { result: { judge } } = await judgeEvent;
+                    if (judge > 0) {
+                        player.chat('喜！也够能奈我何？');
+                        trigger.getParent().excluded.add(player);
+                        await player.draw();
+                    } else {
+                        player.chat('悲！（转圈圈.jpg）');
+                    }
+                },
+            },
+            bilibili_mingcha: {
+                enable: 'phaseUse',
+                usable: 1,
+                filter(event, player) {
+                    return game.hasPlayer(current => get.info('bilibili_mingcha').filterTarget(null, player, current));
+                },
+                filterTarget(card, player, target) {
+                    return target.countCards('h') && target != player;
+                },
+                async content(event, trigger, player) {
+                    const { target } = event;
+                    const cards = await player.choosePlayerCard(target, true, 'h').forResultCards();
+                    if (!cards?.length) return;
+                    await player.showCards(cards, get.translation(player) + '对' + get.translation(target) + '发动了【明察】');
+                    const goon1 = player.countCards('he'), goon2 = target.countCards('he');
+                    if (goon1 || goon2) {
+                        let result;
+                        if (goon1 && goon2) result = await player.chooseControl().set('choiceList', [`令${get.translation(target)}交给你一张牌`, `交给${get.translation(target)}一张牌`]).set('ai', () => {
+                            const player = get.player(), target = get.event().getParent().target;
+                            const card = get.event().cards[0];
+                            return get.attitude(player, target) > 4 ? 1 : 0;
+                        }).set('cards', cards).forResult();
+                        else result = { index: goon2 ? 0 : 1 };
+                        if (result.index == 0) await target.chooseToGive(player, 'he', true);
+                        else {
+                            const give = await player.chooseToGive(target, 'he', true).set('ai', card => {
+                                const { player, target } = get.event();
+                                const cardx = get.event().cards[0];
+                                if (get.attitude(player, target) > 0 && get.type2(card) != get.type2(cardx)) return 10;
+                                return 6 - get.value(card);
+                            }).set('cards', cards).forResultCards();
+                            if (give?.length && get.type2(give[0]) != get.type2(cards[0])) await player.draw();
+                        };
+                    }
+                },
+                ai: {
+                    order: 8,
+                    result: { player: 1 },
+                },
+            },
+            bilibili_huiyan: {
+                trigger: { player: 'phaseZhunbeiBegin' },
+                filter(event, player) {
+                    return game.hasPlayer(current => player != current);
+                },
+                locked: true,
+                async cost(event, trigger, player) {
+                    event.result = await player.chooseTarget(get.prompt2(event.name.slice(0, -5)), lib.filter.notMe, true).set('ai', target => {
+                        const player = get.player();
+                        return get, attitude(player, target);
+                    }).forResult();
+                },
+                async content(event, trigger, player) {
+                    const { targets: [target] } = event;
+                    let result;
+                    if (player.isDamaged()) result = await target.chooseControl().set('choiceList', [`${get.translation(player)}}回复1点体力`, `${get.translation(target)}摸一张牌`]).set('ai', () => {
+                        const player = get.player(), target = get.event().getParent().player;
+                        const eff1 = get.recoverEffect(target, player, player), eff2 = get.effect(target, { name: 'draw' }, player, player);
+                        return eff2 > eff1 ? 1 : 0;
+                    }).forResult();
+                    else result = { index: 1 };
+                    if (result.index == 0) await player.recover();
+                    else await player.draw();
+                },
+            },
         },
         dynamicTranslate: {
             bilibili_xueji(player) {
@@ -10584,6 +10675,13 @@ const packs = function () {
             bilibili_daxiao_prefix: '乐',
             bilibili_qiqin: '绮琴',
             bilibili_qiqin_info: '锁定技。①你的起始手牌数×2；游戏开始时，你将所有手牌标记为“琴”。②你的“琴”牌不计入手牌上限。③准备阶段，你获得位于弃牌堆的所有“琴”。',
+            bilibili_yanjingge: '眼睛哥',
+            bilibili_dongcha: '洞察',
+            bilibili_dongcha_info: '每回合限一次。当你成为其他角色使用牌的目标后，你可以判定，若结果为黑色，你令此牌对你无效且你摸一张牌。',
+            bilibili_mingcha: '明察',
+            bilibili_mingcha_info: '出牌阶段限一次，你可以展示一名其他角色的手牌，然后选择一项：1.其交给一张牌；2.你交给其一张牌。若你以此法交出的牌与其以此法展示的牌类别不同，你摸一张牌。',
+            bilibili_huiyan: '慧眼',
+            bilibili_huiyan_info: '锁定技。准备阶段，你令一名其他角色选择一项：1.你回复1点体力；2.你摸一张牌。',
         },
     };
     for (var i in huodongcharacter.character) {
