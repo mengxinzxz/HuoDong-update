@@ -10168,6 +10168,7 @@ const packs = function () {
                             player.node.avatar2.setBackground(chosen, 'character');
                             player.node.name2.innerHTML = get.slimName(chosen);
                             if (player == game.me && ui.fakeme) ui.fakeme.style.backgroundImage = player.node.avatar.style.backgroundImage;
+                            if (_status.characterlist) _status.characterlist.removeArray(['', '1', '2'].map(num => player['name' + num]).filter(i => Boolean(i)));
                         }, player, ...list);
                         player.addAdditionalSkill(event.name, list.map(name => get.character(name)?.skills || []).flat());
                         game.log(player, '将', '#g主将', '替换为', '#g' + get.translation(list[0]));
@@ -10186,7 +10187,6 @@ const packs = function () {
                             if (_status.characterlist) _status.characterlist.addArray(['', '1', '2'].map(num => player['name' + num]).filter(i => Boolean(i)));
                             player.name1 = player.name = 'bilibili_caifuren';
                             player.sex = get.character(player.name).sex;
-                            if (_status.characterlist) _status.characterlist.remove(player.name);
                             player.smoothAvatar(false);
                             player.node.avatar.setBackground(player.name, 'character');
                             player.node.name.innerHTML = get.slimName(player.name);
@@ -10195,6 +10195,7 @@ const packs = function () {
                             player.node.avatar2.classList.add('hidden');
                             player.node.name2.innerHTML = '';
                             if (player == game.me && ui.fakeme) ui.fakeme.style.backgroundImage = player.node.avatar.style.backgroundImage;
+                            if (_status.characterlist) _status.characterlist.remove(player.name);
                         }, player);
                     }
                 },
