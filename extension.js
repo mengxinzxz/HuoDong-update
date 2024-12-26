@@ -13,14 +13,14 @@ game.bolShowNewPack = function () {
 	var HuoDong_update = [
 		'/setPlayer/',
 		'bugfix',
-		'添加新武将眼睛👁（施工ing）',
+		'添加新武将眼睛👁、蔡夫人-暗黑傀儡师',
 		'修改部分武将技能为新版',
-		'添加欢杀武将欢杀郑浑',
+		'添加欢杀武将郑浑、踏顿',
 		'To be continued...',
 	];
 	//更新武将
 	var HuoDong_players = [
-		'bilibili_yanjing', 'Mbaby_zhenghun',
+		'bilibili_yanjing', 'bilibili_caifuren', 'Mbaby_zhenghun', 'Mbaby_tadun',
 	];
 	//加载
 	var dialog = ui.create.dialog(

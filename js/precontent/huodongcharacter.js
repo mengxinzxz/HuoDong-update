@@ -11,7 +11,7 @@ const packs = function () {
                 CZhengHuo: ['bilibili_zhengxuan', 'bilibili_sp_xuyou', 'old_zuoci'],
                 Chuodong: ['bilibili_shengxunyu', 'bilibili_Firewin', 'bilibili_jinglingqiu', 'bilibili_suixingsifeng', 'bilibili_Emptycity', 'bilibili_thunderlei', 'bilibili_lonelypatients', 'bilibili_ningjingzhiyuan', 'bilibili_xizhicaikobe'],
                 CDormitory: ['bilibili_yanjing'],
-                Cothers: ['bilibili_daxiao', 'bilibili_wangtao', 'bilibili_wangyue', 'bilibili_x_wangtao', 'bilibili_x_wangyue', 'bilibili_xushao', 'bilibili_shen_guojia', 'bilibili_re_xusheng', 'bilibili_kuangshen04', 'bilibili_adong', 'bilibili_zhangrang', 'bilibili_litiansuo', 'decade_huangwudie', 'bilibili_huanggai', 'bilibili_ekeshaoge', 'bilibili_guanning', 'bilibili_wangwang', 'bilibili_zhouxiaomei', 'diy_lvmeng'],
+                Cothers: ['bilibili_caifuren', 'bilibili_daxiao', 'bilibili_wangtao', 'bilibili_wangyue', 'bilibili_x_wangtao', 'bilibili_x_wangyue', 'bilibili_xushao', 'bilibili_shen_guojia', 'bilibili_re_xusheng', 'bilibili_kuangshen04', 'bilibili_adong', 'bilibili_zhangrang', 'bilibili_litiansuo', 'decade_huangwudie', 'bilibili_huanggai', 'bilibili_ekeshaoge', 'bilibili_guanning', 'bilibili_wangwang', 'bilibili_zhouxiaomei', 'diy_lvmeng'],
                 CDanJi: ['DJ_caiyang', 'DJ_pujing', 'DJ_huban'],
                 CSCS: ['biliscs_shichangshi', 'biliscs_zhangrang', 'biliscs_zhaozhong', 'biliscs_sunzhang', 'biliscs_bilan', 'biliscs_xiayun', 'biliscs_hankui', 'biliscs_lisong', 'biliscs_duangui', 'biliscs_guosheng', 'biliscs_gaowang'],
                 CXuanDie: ['bfake_jiananfeng', 'bfake_shen_zhangjiao', 'bfake_shen_zhangfei', 'bfake_shen_jiaxu', 'bfake_huanwen'],
@@ -54,6 +54,7 @@ const packs = function () {
             bilibili_ningjingzhiyuan: ['male', 'key', 4, ['bilibili_liaoxing', 'bilibili_xiezhi', 'bilibili_fazhou'], ['clan:肘家军', 'clan:宿舍群', 'clan:肘击群', 'clan:活动群', 'name:闹动|导近']],
             bilibili_xizhicaikobe: ['male', 'key', 4, ['bilibili_biexiao', 'bilibili_xingshi', 'bilibili_zhangcai'], ['doublegroup:wei:shu:wu:qun:jin', 'clan:肘家军', 'clan:肘击群', 'clan:活动群', 'name:戏|子宓']],
             bilibili_yanjing: ['male', 'key', 3, ['bilibili_dongcha', 'bilibili_mingcha', 'bilibili_huiyan'], ['clan:宿舍群', 'clan:肘击群', 'clan:活动群', 'name:tooenough|眼睛']],
+            bilibili_caifuren: ['female', 'qun', 3, ['bilibili_kuilei'], ["name:蔡|null"]],
             //千里走单骑 
             DJ_caiyang: ['male', 'qun', 1, ['yinka', 'zhuixi'], ['character:caiyang']],
             DJ_pujing: ['male', 'qun', 1, ['yinka'], ['character:pujing']],
@@ -10126,6 +10127,77 @@ const packs = function () {
                     else await player.draw();
                 },
             },
+            //暗黑傀儡师蔡夫人
+            bilibili_kuilei: {
+                unique: true,
+                trigger: {
+                    global: 'phaseBefore',
+                    player: ['enterGame', 'dieBefore', 'showCharacterAfter'],
+                },
+                filter(event, player) {
+                    if (['', '1', '2'].every(num => player['name' + num] !== 'bilibili_caifuren')) return false;
+                    if (event.name === 'die') return player.maxHp > 0;
+                    if (get.mode() === 'guozhan') return event.toShow.includes('bilibili_caifuren');
+                    return event.name !== 'phase' || game.phaseNumber === 0;
+                },
+                forced: true,
+                async content(event, trigger, player) {
+                    get.info(event.name).onremove(player, event.name);
+                    if (trigger.name === 'die') {
+                        player.chat(['呃...', '可恶！', '猜猜看吧，我是否还会有下一招？'].randomGet());
+                        trigger.cancel();
+                        await player.loseMaxHp();
+                        await player.recoverTo(player.maxHp);
+                        if (player.isIn()) await game.delay(3);
+                    }
+                    if (!_status.characterlist) get.info('pingjian').initList();
+                    const list = ['蔡', '夫人'].map(str => {
+                        return _status.characterlist.filter(name => {
+                            const nameStr = lib.translate[name + '_ab'] || lib.translate[name];
+                            return nameStr && !nameStr.includes('蔡夫人') && nameStr.includes(str);
+                        }).randomGet();
+                    });
+                    if (list.every(i => Boolean(i))) {
+                        game.broadcastAll((player, first, chosen) => {
+                            player.name1 = first;
+                            player.node.avatar.setBackground(first, 'character');
+                            player.node.name.innerHTML = get.slimName(first);
+                            player.name2 = chosen;
+                            player.classList.add('fullskin2');
+                            player.node.avatar2.classList.remove('hidden');
+                            player.node.avatar2.setBackground(chosen, 'character');
+                            player.node.name2.innerHTML = get.slimName(chosen);
+                            if (player == game.me && ui.fakeme) ui.fakeme.style.backgroundImage = player.node.avatar.style.backgroundImage;
+                        }, player, ...list);
+                        player.addAdditionalSkill(event.name, list.map(name => get.character(name)?.skills || []).flat());
+                        game.log(player, '将', '#g主将', '替换为', '#g' + get.translation(list[0]));
+                        game.log(player, '将', '#y副将', '替换为', '#y' + get.translation(list[1]));
+                    }
+                    else {
+                        player.chat('杯具');
+                        game.log('但', player, '无法凑到两个傀儡！');
+                    }
+                },
+                onremove(player, skill) {
+                    player.removeAdditionalSkill(skill);
+                    if (player.name2) {
+                        if (get.mode() === 'guozhan') player.showCharacter(2);
+                        game.broadcastAll(player => {
+                            if (_status.characterlist) _status.characterlist.addArray(['', '1', '2'].map(num => player['name' + num]).filter(i => Boolean(i)));
+                            player.name1 = player.name = 'bilibili_caifuren';
+                            if (_status.characterlist) _status.characterlist.remove(player.name);
+                            player.smoothAvatar(false);
+                            player.node.avatar.setBackground(player.name, 'character');
+                            player.node.name.innerHTML = get.slimName(player.name);
+                            delete player.name2;
+                            player.classList.remove('fullskin2');
+                            player.node.avatar2.classList.add('hidden');
+                            player.node.name2.innerHTML = '';
+                            if (player == game.me && ui.fakeme) ui.fakeme.style.backgroundImage = player.node.avatar.style.backgroundImage;
+                        }, player);
+                    }
+                },
+            },
         },
         dynamicTranslate: {
             bilibili_xueji(player) {
@@ -10686,6 +10758,17 @@ const packs = function () {
             bilibili_mingcha_info: '出牌阶段限一次，你可以展示一名其他角色的手牌，然后选择一项：1.其交给一张牌；2.你交给其一张牌。若你以此法交出的牌与其以此法展示的牌类别不同，你摸一张牌。',
             bilibili_huiyan: '慧眼',
             bilibili_huiyan_info: '锁定技。准备阶段，你令一名其他角色选择一项：1.你回复1点体力；2.你摸一张牌。',
+            bilibili_caifuren: '蔡夫人-暗黑傀儡师',
+            bilibili_caifuren_ab: '蔡夫人',
+            bilibili_kuilei: '傀儡',
+            get bilibili_kuilei_info() {
+                const str = ' ，然后你将主将替换为姓名包含“蔡”但不包含“蔡夫人”的武将牌，将副将替换为姓名包含“夫人”但不包含“蔡夫人”的武将牌（保留此技能且不替换势力和性别）。';
+                return [
+                    '锁定技，若你的武将牌有“蔡夫人-暗黑傀儡师”，则：',
+                    '①' + (get.mode() === 'guozhan' ? '当你明置“蔡夫人-暗黑傀儡师”后' : '游戏开始时') + '，你移除另一张武将牌（若有）' + str,
+                    '②当你死亡前，若你的体力上限大于0，则你取消之，将全部武将牌替换为单将“蔡夫人-暗黑傀儡师”，减1点体力上限并将体力回复至上限，然后你将主将替换为姓名包含“蔡”但不包含“蔡夫人”的武将牌，将副将替换为姓名包含“夫人”但不包含“蔡夫人”的武将牌（保留此技能）。' + str,
+                ].join('');
+            },
         },
     };
     for (var i in huodongcharacter.character) {
