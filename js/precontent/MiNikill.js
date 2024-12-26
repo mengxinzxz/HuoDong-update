@@ -25262,18 +25262,15 @@ const packs = function () {
                         },
                         forced: true,
                         logTarget: 'source',
-                        content() {
-                            'step 0'
-                            event.cardname = player.storage.minidunshi_damage;
-                            player.removeSkill('minidunshi_damage');
-                            event.target = trigger.source;
-                            var card = get.translation(trigger.source), card2 = get.translation(event.cardname), card3 = get.translation(trigger.player);
-                            var list = [
-                                '防止即将对' + card3 + '造成的伤害，并令' + card + '获得一个技能名中包含“仁/义/礼/智/信”的技能',
-                                '从〖遁世〗中删除【' + card2 + '】',
+                        async content(event, trigger, player) {
+                            const cardname = player.storage[event.name], { source: target } = trigger;
+                            player.removeSkill(event.name);
+                            const list = [
+                                `防止即将对${get.translation(trigger.player)}造成的伤害，并令${get.translation(target)}获得一个技能名中包含“仁/义/礼/智/信”的技能`,
+                                `从〖遁世〗中删除【${get.translation(cardname)}】`,
                                 '减1点体力上限，然后摸剩余选项数的牌',
-                            ];
-                            var next = player.chooseButton([
+                            ]
+                            const next = player.chooseButton([
                                 '遁世：请选择两项',
                                 [list.map((item, i) => {
                                     return [i, item];
@@ -25281,8 +25278,8 @@ const packs = function () {
                             ]);
                             next.set('forced', true);
                             next.set('selectButton', 2);
-                            next.set('ai', function (button) {
-                                var player = _status.event.player;
+                            next.set('ai', button => {
+                                const player = get.player();
                                 switch (button.link) {
                                     case 0:
                                         if (get.attitude(player, _status.currentPhase) > 0) return 3;
@@ -25290,27 +25287,26 @@ const packs = function () {
                                     case 1:
                                         return 1;
                                     case 2:
-                                        var num = player.storage.minidunshi;
-                                        for (var i of ui.selected.buttons) {
+                                        let num = player.storage.minidunshi;
+                                        for (const i of ui.selected.buttons) {
                                             if (i.link == 1) num++;
                                         }
                                         if (num > 0 && player.isDamaged()) return 2;
                                         return 0;
                                 }
                             });
-                            'step 1'
-                            event.links = result.links.sort();
-                            for (var i of event.links) {
+                            const links = await next.forResultLinks();
+                            if (!links?.length) return;
+                            links.sort();
+                            for (const i of links) {
                                 game.log(player, '选择了', '#g【遁世】', '的', '#y选项' + get.cnNumber(i + 1, true));
                             }
-                            if (event.links.includes(0)) {
+                            const storage = player.storage.minidunshi;
+                            if (links.includes(0)) {
                                 trigger.cancel();
                                 if (!_status.minidunshi_list) lib.skill.minidunshi.initList();
-                                var list = _status.minidunshi_list.filter(function (i) {
-                                    return !target.hasSkill(i, null, null, false);
-                                }).randomGets(3);
-                                if (list.length == 0) event.goto(3);
-                                else {
+                                const list = _status.minidunshi_list.filter(i => !target.hasSkill(i, null, null, false)).randomGets(3);
+                                if (list.length) {
                                     event.videoId = lib.status.videoId++;
                                     var func = function (skills, id, target) {
                                         var dialog = ui.create.dialog('forcebutton');
@@ -25323,27 +25319,22 @@ const packs = function () {
                                     }
                                     if (player.isOnline()) player.send(func, list, event.videoId, target);
                                     else if (player == game.me) func(list, event.videoId, target);
-                                    player.chooseControl(list).set('ai', function () {
+                                    const control = await player.chooseControl(list).set('ai', function () {
                                         var controls = _status.event.controls;
                                         if (controls.includes('cslilu')) return 'cslilu';
                                         return controls[0];
-                                    });
+                                    }).forResultControl();
+                                    game.broadcastAll('closeDialog', event.videoId);
+                                    if (control) await target.addSkills(control);
                                 }
                             }
-                            else event.goto(3);
-                            'step 2'
-                            game.broadcastAll('closeDialog', event.videoId);
-                            target.addSkills(result.control);
-                            'step 3'
-                            var storage = player.storage.minidunshi;
-                            if (event.links.includes(1)) {
-                                storage.remove(event.cardname);
+                            if (links.includes(1)) {
+                                storage.remove(cardname);
                                 player.markSkill('minidunshi');
                             }
-                            'step 4'
-                            if (event.links.includes(2)) {
-                                player.loseMaxHp();
-                                if (4 - storage.length > 0) player.draw(storage.length);
+                            if (links.includes(2)) {
+                                await player.loseMaxHp();
+                                if (4 - storage.length > 0) await player.draw(storage.length);
                             }
                         },
                     },
