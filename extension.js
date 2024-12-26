@@ -14,6 +14,7 @@ game.bolShowNewPack = function () {
 		'/setPlayer/',
 		'bugfix',
 		'添加新武将眼睛👁（施工ing）',
+		'修改部分武将技能为新版',
 		'添加欢杀武将欢杀郑浑',
 		'To be continued...',
 	];
