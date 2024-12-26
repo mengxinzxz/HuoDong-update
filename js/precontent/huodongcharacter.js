@@ -10187,6 +10187,8 @@ const packs = function () {
                             if (_status.characterlist) _status.characterlist.addArray(['', '1', '2'].map(num => player['name' + num]).filter(i => Boolean(i)));
                             player.name1 = player.name = 'bilibili_caifuren';
                             player.sex = get.character(player.name).sex;
+                            player.group = get.character(player.name).group;
+                            player.node.name.dataset.nature = get.groupnature(player.group);
                             player.smoothAvatar(false);
                             player.node.avatar.setBackground(player.name, 'character');
                             player.node.name.innerHTML = get.slimName(player.name);
