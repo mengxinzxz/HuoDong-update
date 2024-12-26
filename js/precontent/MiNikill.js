@@ -11955,17 +11955,17 @@ const packs = function () {
                 subSkill: {
                     wusheng: {
                         charlotte: true,
-                        trigger: { global: "useCardToBegin" },
+                        trigger: { global: 'useCardToBegin' },
                         filter(event, player) {
-                            return event.skill === "miniweilin_backup";
+                            if (!event.target) return false;
+                            return event.skill === 'miniweilin_backup';
                         },
                         forced: true,
                         popup: false,
                         content() {
                             const { target } = trigger;
-                            if (!target) return event.finish();
-                            target.addTempSkill("olsbweilin_wusheng");
-                            target.markAuto("olsbweilin_wusheng", [get.color(trigger.card)]);
+                            target.addTempSkill('olsbweilin_wusheng');
+                            target.markAuto('olsbweilin_wusheng', [get.color(trigger.card)]);
                         },
                     },
                     zhong: {
