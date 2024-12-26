@@ -10185,6 +10185,7 @@ const packs = function () {
                         game.broadcastAll(player => {
                             if (_status.characterlist) _status.characterlist.addArray(['', '1', '2'].map(num => player['name' + num]).filter(i => Boolean(i)));
                             player.name1 = player.name = 'bilibili_caifuren';
+                            player.sex = get.character(player.name).sex;
                             if (_status.characterlist) _status.characterlist.remove(player.name);
                             player.smoothAvatar(false);
                             player.node.avatar.setBackground(player.name, 'character');
