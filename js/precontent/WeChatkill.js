@@ -9626,7 +9626,7 @@ const packs = function () {
             wechattunlang: '吞狼',
             wechattunlang_info: '每轮开始时，你可以令两名角色获得以下效果直到本轮结束：①当这些角色使用【杀】指定除对方外的唯一目标时，另一名角色也成为此【杀】的额外目标；②当这些角色成为使用者不为对方的【杀】的唯一目标时，另一名角色须弃置一张手牌。',
             wechatwangzuo: '王佐',
-            wechatwangzuo_info: '每回合限一次，你的摸牌/出牌/判定阶段开始前，你可以跳过此阶段并令一名其他角色执行之。',
+            wechatwangzuo_info: '每回合限一次，你的摸牌/出牌/弃牌阶段开始前，你可以跳过此阶段并令一名其他角色执行之。',
             wechatjuxian: '举贤',
             wechatjuxian_info: '你的回合内，其他角色使用/打出/弃置的牌进入弃牌堆后，你获得其中X张牌（X为3-本回合你以此法获得的牌数）。',
             wechatxianshi: '先识',
