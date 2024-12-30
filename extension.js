@@ -11,6 +11,7 @@ lib.init.css(lib.assetURL + 'extension/活动武将', 'extension');
 game.bolShowNewPack = function () {
 	//更新告示
 	var HuoDong_update = [
+		'将扩展页面“活动武将”的显示改为图片（感谢逍遥如云提供的活动武将横向logo）',
 		'/setPlayer/',
 		'bugfix',
 		'添加新武将眼睛👁、蔡夫人-暗黑傀儡师',
