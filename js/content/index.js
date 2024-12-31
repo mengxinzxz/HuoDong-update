@@ -1219,7 +1219,7 @@ export function content(config, pack) {
 		[['张机', '张仲景'], ['蔡琰', '蔡文姬'], ['卧龙', '卧龙诸葛'],
 		['严虎', '严白虎'], ['甄宓', '甄姬'], ['伏寿', '伏皇后'],
 		['吉本', '吉平']].forEach(name => {
-			list.filter(name2 => !list2.includes(name2) && lib.translate[name2] && list3.filter(name4 => lib.translate[name2].includes(name4)).length == 0 && lib.translate[name2].includes(name[0])).forEach(name3 => {
+			list.filter(name2 => !list2.includes(name2) && typeof lib.translate[name2] === "string" && list3.filter(name4 => lib.translate[name2].includes(name4)).length == 0 && lib.translate[name2].includes(name[0])).forEach(name3 => {
 				var str = lib.translate[name3];
 				var num = str.indexOf(name[0]);
 				lib.translate[name3] = str.slice(0, num) + name[1] + str.slice(num + name[0].length, str.length);
