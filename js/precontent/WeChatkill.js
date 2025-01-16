@@ -8742,6 +8742,7 @@ const packs = function () {
                 filterTarget(card, player, target) {
                     return target.countCards('h') && target != player;
                 },
+                usable: 1,
                 async content(event, trigger, player) {
                     const { target } = event, sha = get.autoViewAs({ name: 'sha', isCard: true });
                     const cards = await player.choosePlayerCard(target, true, 'h').forResultCards();

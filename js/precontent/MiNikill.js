@@ -4915,7 +4915,7 @@ const packs = function () {
                 },
                 direct: true,
                 async content(event, trigger, player) {
-                    const { result: { bool } } = await player.chooseToDiscard(get.prompt2('minixiaoguo', trigger.player)).set('ai', card => {
+                    const { result: { bool } } = await player.chooseToDiscard(get.prompt2('minixiaoguo', trigger.player), 'he').set('ai', card => {
                         return _status.event.eff - get.useful(card);
                     }).set('logSkill', ['minixiaoguo', trigger.player]).set('eff', (() => {
                         if (trigger.player.hasSkillTag('noe')) return get.attitude(_status.event.player, trigger.player);
