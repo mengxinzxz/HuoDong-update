@@ -16,7 +16,7 @@ game.bolShowNewPack = function () {
 		'bugfix',
 		'添加新武将眼睛👁、蔡夫人-暗黑傀儡师',
 		'修改部分武将技能为新版',
-		'添加欢杀武将郑浑、踏顿、陈泰、谋甘宁、雷铜、吴兰、战黄忠',
+		'添加欢杀武将郑浑、踏顿、陈泰、谋甘宁、雷铜、吴兰、战黄忠、韩浩史涣',
 		'添加微信武将SP貂蝉、诸葛果、孙寒华、刘赪、极刘备、极曹植、极姜维、极祝融',
 		'To be continued...',
 	];
@@ -25,7 +25,7 @@ game.bolShowNewPack = function () {
 		'bilibili_yanjing', 'bilibili_caifuren', 'Mbaby_zhenghun', 'Mbaby_tadun', 'Mbaby_chentai',
 		'Mbaby_sb_ganning', 'Mbaby_leitong', 'Mbaby_wulan', 'wechat_sp_diaochan', 'wechat_zhugeguo',
 		'wechat_sunhanhua', 'wechat_liucheng', 'wechat_zhiyin_liubei', 'wechat_zhiyin_caozhi',
-		'wechat_zhiyin_jiangwei', 'wechat_zhiyin_zhurong', 'Mfight_huangzhong',
+		'wechat_zhiyin_jiangwei', 'wechat_zhiyin_zhurong', 'Mfight_huangzhong', 'Mbaby_hanhaoshihuan',
 	];
 	//加载
 	var dialog = ui.create.dialog(
