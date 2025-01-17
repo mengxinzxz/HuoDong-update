@@ -16,6 +16,7 @@ const packs = function () {
                 MiNi_sbCharacter: ['Mbaby_sb_ganning', 'Mbaby_ol_sb_jiangwei', 'Mbaby_sb_huangyueying', 'Mbaby_ol_sb_guanyu', 'Mbaby_sb_sunshangxiang', 'Mbaby_sb_xuhuang', 'Mbaby_sb_zhaoyun', 'Mbaby_sb_liubei', 'Mbaby_sb_caocao', 'Mbaby_sb_huanggai', 'Mbaby_sb_yuanshao', 'Mbaby_sb_yujin', 'Mbaby_sb_machao', 'Mbaby_sb_lvmeng', 'Mbaby_sb_huangzhong'],
                 MiNi_miaoKill: ['Mmiao_caiwenji', 'Mmiao_diaochan', 'Mmiao_caifuren', 'Mmiao_zhangxingcai', 'Mmiao_zhurong', 'Mmiao_huangyueying', 'Mmiao_daqiao', 'Mmiao_wangyi', 'Mmiao_zhangchunhua', 'Mmiao_zhenji', 'Mmiao_sunshangxiang', 'Mmiao_xiaoqiao', 'Mmiao_lvlingqi'],
                 MiNi_nianKill: ['Mnian_zhugeliang', 'Mnian_lvbu', 'Mnian_zhouyu'],
+                MiNi_fightKill: ['Mfight_huangzhong'],
             },
         },
         character: {
@@ -358,6 +359,8 @@ const packs = function () {
             Mnian_zhugeliang: ['male', 'shu', 3, ['mininianxinghan', 'mininianliaoyuan', 'mininianying_zgl'], ['name:诸葛|亮']],
             Mnian_lvbu: ['male', 'qun', 5, ['mininiantazhen', 'mininiandoupo', 'mininianying_lb']],
             Mnian_zhouyu: ['male', 'wu', 4, ['mininiansuhui', 'mininianchongzou', 'mininianying_zy']],
+            //战
+            Mfight_huangzhong: ['male', 'shu', 4, ['minifightdingjun', 'minifightlizhan']],
         },
         characterIntro: {
             Mbaby_change: '嫦娥，中国古代神话中的人物，又名恒我、恒娥、姮娥、常娥、素娥，羿之妻，因偷吃了不死药而飞升至月宫。嫦娥的故事最早出现在商朝卦书 《归藏》。而嫦娥奔月的完整故事最早记载于西汉《淮南子·览冥训》。东汉时期，嫦娥与羿的夫妻关系确立，而嫦娥在进入月宫后变成了捣药的蟾蜍。南北朝以后，嫦娥的形象回归为女儿身。汉画像中，嫦娥人头蛇身，头梳高髻，身着宽袖长襦，身后长尾上饰有倒钩状细短羽毛。南北朝以后，嫦娥的形象被描绘成绝世美女。南朝陈后主陈叔宝曾把宠妃张丽华比作嫦娥。唐朝诗人白居易曾用嫦娥夸赞邻家少女不可多得的容貌。',
@@ -22998,8 +23001,7 @@ const packs = function () {
                         charlotte: true,
                         trigger: { global: 'damageBegin2' },
                         filter(event, player) {
-                            if (!player.countCards('h')) return false;
-                            if (!event.card || event.card.name != 'juedou') return false;
+                            if (!player.countCards('h') || !event.card || event.card.name !== 'juedou') return false;
                             const evtx = event.getParent(2);
                             if (!evtx || evtx.name !== 'useCard' || evtx.card.name !== 'juedou') return false;
                             const evt = event.getParent(5);
@@ -23018,8 +23020,7 @@ const packs = function () {
                         charlotte: true,
                         trigger: { global: 'damageSource' },
                         filter(event, player) {
-                            if (!event.source?.isIn()) return false;
-                            if (!event.card || event.card.name != 'juedou') return false;
+                            if (!event.source?.isIn() || !event.card || event.card.name !== 'juedou') return false;
                             const evtx = event.getParent(2);
                             if (!evtx || evtx.name !== 'useCard' || evtx.card.name !== 'juedou' || !evtx.cards.length) return false;
                             const evt = event.getParent(5);
@@ -31336,6 +31337,244 @@ const packs = function () {
                     }
                 },
             },
+            //战
+            //黄忠
+            minifightdingjun: {
+                init(player) {
+                    if (!ui._minifightdingjun) {
+                        game.broadcastAll(() => {
+                            if (!_status._minifightdingjun) _status._minifightdingjun = 0;
+                            _status._minifightdingjun = Math.max(0, _status._minifightdingjun);
+                            if (get.is.phoneLayout()) ui._minifightdingjun = ui.create.div('.touchinfo.left', ui.window);
+                            else ui._minifightdingjun = ui.create.div(ui.gameinfo);
+                            ui._minifightdingjun.innerHTML = '当前士气：' + _status._minifightdingjun;
+                        });
+                    }
+                },
+                audio: 'ext:活动武将/audio/skill:2',
+                placeSkill: true,
+                categories: () => ['战场技'],
+                async updateShiQi(player = _status.event.player, num = 1) {
+                    if (num) {
+                        const next = game.createEvent('minifight_UpdateShiQi');
+                        next.num = num;
+                        next.player = player;
+                        next.setContent(async function (event, trigger, player) {
+                            const num = event.num;
+                            game.broadcastAll(num => {
+                                _status._minifightdingjun += num;
+                                _status._minifightdingjun = Math.max(0, _status._minifightdingjun);
+                                ui._minifightdingjun.innerHTML = '当前士气：' + _status._minifightdingjun;
+                            }, num);
+                            game.log('#y士气', '#g' + (num > 0 ? '增加了' : '下降了') + Math.abs(num) + '点');
+                        });
+                        await next;
+                    }
+                },
+                trigger: { global: ['damageSource', 'minifight_UpdateShiQiAfter'] },
+                filter(event, player) {
+                    return event.name !== 'damage' || (event.source?.isIn() && event.card.name === 'sha');
+                },
+                forced: true,
+                locked: false,
+                content() {
+                    if (trigger.name === 'damage') get.info(event.name).updateShiQi(player);
+                    else player.draw();
+                },
+                derivation: 'minifightliegong',
+                global: 'minifightdingjun_ai',
+                group: ['minifightdingjun_change', 'minifightdingjun_effect'],
+                subSkill: {
+                    change: {
+                        audio: 'minifightdingjun',
+                        trigger: { global: 'minifight_UpdateShiQiEnd' },
+                        filter(event, player) {
+                            if (!ui._minifightdingjun_dingjunshan) return _status._minifightdingjun >= game.countPlayer();
+                            return _status._minifightdingjun === 0;
+                        },
+                        forced: true,
+                        locked: false,
+                        content() {
+                            if (!ui._minifightdingjun_dingjunshan) {
+                                player.$fullscreenpop('定军山战场', 'fire');
+                                game.broadcastAll(() => {
+                                    if (get.is.phoneLayout()) ui._minifightdingjun_dingjunshan = ui.create.div('.touchinfo.left', ui.window);
+                                    else ui._minifightdingjun_dingjunshan = ui.create.div(ui.gameinfo);
+                                    ui._minifightdingjun_dingjunshan.innerHTML = '定军山战场';
+                                });
+                            }
+                            else {
+                                game.broadcastAll(() => ui._minifightdingjun_dingjunshan.remove());
+                            }
+                        },
+                    },
+                    effect: {
+                        audio: 'minifightdingjun',
+                        trigger: { global: 'useCard' },
+                        filter(event, player) {
+                            if (!ui._minifightdingjun_dingjunshan || event.player.hasSkill('miniliegong', null, null, false)) return false;
+                            return _status._minifightdingjun >= 2 && event.player.getHistory('useCard', evt => evt.card.name === 'sha').indexOf(event) === 0;
+                        },
+                        prompt2(event, player) {
+                            return '是否消耗2层士气，令' + get.translation(event.player) + '于' + get.translation(event.card) + '结算中视为拥有【烈弓】？';
+                        },
+                        check(event, player) {
+                            return event.targets.reduce((sum, target) => sum + get.effect(target, event.card, event.player, player), 0) > 0;
+                        },
+                        logTarget: 'player',
+                        async content(event, trigger, player) {
+                            await get.info('minifightdingjun').updateShiQi(player, -2);
+                            await trigger.player.addTempSkills('minifightliegong');
+                            trigger.player.when('useCardAfter').filter(evt => evt === trigger).then(() => player.removeSkills('minifightliegong'));
+                        },
+                    },
+                    ai: {
+                        ai: {
+                            directHit_ai: true,
+                            skillTagFilter(player, tag, arg) {
+                                const targets = game.filterPlayer(target => target.hasSkill('minifightdingjun'));
+                                if (!targets.length || _status._minifightdingjun_aiCheck || !_status._minifightdingjun || _status._minifightdingjun < 2) return false;
+                                if (!ui._minifightdingjun_dingjunshan || !arg?.card || !arg?.target || arg.card.name !== 'sha') return false;
+                                const filter = card => !ui.selected.cards.includes(card) && !card.cards?.includes(card);
+                                if (!(arg.target.getHp() >= player.getHp() || arg.target.countCards('h', filter) >= player.countCards('h', filter))) return false;
+                                _status._minifightdingjun_aiCheck = true;
+                                const bool = (() => {
+                                    if (get.effect(arg.target, arg.card, player, player) <= 0) return false;
+                                    if (get.damageEffect(arg.target, player, player) < 0 && targets.some(i => get.attitude(player, i) < 0)) return true;
+                                    if (get.damageEffect(arg.target, player, player) > 0 && targets.some(i => get.attitude(player, i) > 0)) return true;
+                                    return false;
+                                })();
+                                delete _status._minifightdingjun_aiCheck;
+                                return bool;
+                            },
+                        },
+                    },
+                },
+            },
+            minifightliegong: {
+                audio: 'liegong',
+                trigger: { player: 'useCardToTargeted' },
+                filter(event, player) {
+                    if (event.card.name !== 'sha') return false;
+                    return event.target.getHp() >= player.getHp() || event.target.countCards('h') >= player.countCards('h');
+                },
+                forced: true,
+                logTarget: 'target',
+                content() {
+                    const goon1 = trigger.target.getHp() >= player.getHp(), goon2 = trigger.target.countCards('h') >= player.countCards('h');
+                    trigger.getParent().directHit.push(trigger.target);
+                    game.log(trigger.target, '不能响应', trigger.card);
+                    if (goon1 && goon2) {
+                        const id = trigger.target.playerid;
+                        const map = trigger.getParent().customArgs;
+                        if (!map[id]) map[id] = {};
+                        if (typeof map[id].extraDamage !== 'number') map[id].extraDamage = 0;
+                        map[id].extraDamage++;
+                        game.log(trigger.card, '对', trigger.target, '造成的伤害', '#y+1');
+                    }
+                },
+                ai: {
+                    directHit_ai: true,
+                    skillTagFilter(player, tag, arg) {
+                        if (!arg?.card || !arg?.target || arg.card.name !== 'sha') return false;
+                        const filter = card => !ui.selected.cards.includes(card) && !card.cards?.includes(card);
+                        return arg.target.getHp() >= player.getHp() || arg.target.countCards('h', filter) >= player.countCards('h', filter);
+                    },
+                },
+            },
+            minifightlizhan: {
+                audio: 'ext:活动武将/audio/skill:2',
+                enable: 'phaseUse',
+                filter(event, player) {
+                    return player.hasSha('respond') && player.hasUseTarget(new lib.element.VCard({ name: 'sha' }));
+                },
+                async content(event, trigger, player) {
+                    let num = 0;
+                    while (player.hasSha('respond')) {
+                        const result = await player.chooseToRespond('###力斩：请打出任意张【杀】###当前已经打出' + num + '张【杀】', (card, player) => {
+                            return get.name(card) === 'sha';
+                        }).set('ai', () => 1).forResult();
+                        if (result?.bool) num++;
+                        else break;
+                    }
+                    if (!num) return event.finish();
+                    player.addTempSkill('minifightlizhan_effect');
+                    const sha = new lib.element.VCard({ name: 'sha', storage: { minifightlizhan: num } });
+                    const next = player.chooseUseTarget(sha, true, false, '###力斩###<div class="text center">请选择【杀】的目标（需要' + num + '张【闪】响应，伤害基数为' + num + '）</div>');
+                    await next;
+                    if (player.hasHistory('sourceDamage', evt => evt.getParent('chooseUseTarget') === next)) {
+                        const targets = game.filterPlayer(target => {
+                            if (player.hasHistory('useCard', evt => evt.getParent() === next && evt.targets?.includes(target))) return false;
+                            return get.inpileVCardList().some(name => {
+                                return get.tag({ name: name[2] }, 'damage') >= 0.5 && player.canUse(new lib.element.VCard({ name: name[2] }), target, false);
+                            });
+                        });
+                        if (targets.length) {
+                            const result = await player.chooseTarget('力斩：是否再选择另一名角色？', '视为对其使用一张无距离和次数限制的伤害类卡牌', (card, player, target) => {
+                                return get.event().targets.includes(target);
+                            }).set('targets', targets).set('ai', target => {
+                                const player = get.player();
+                                return Math.max(...get.inpileVCardList().filter(name => {
+                                    return get.tag({ name: name[2] }, 'damage') >= 0.5 && player.canUse(new lib.element.VCard({ name: name[2], nature: name[3] }), target, false);
+                                }).map(name => get.effect(target, new lib.element.VCard({ name: name[2], nature: name[3] }), player, player)));
+                            }).set('animate', false).forResult();
+                            if (result?.bool && result.targets?.length) {
+                                const [target] = result.targets;
+                                const links = await player.chooseButton([
+                                    '###力斩###<div class="text center">视为' + get.translation(target) + '对使用一张无距离和次数限制的伤害类卡牌</div>',
+                                    [get.inpileVCardList().filter(name => {
+                                        return get.tag({ name: name[2] }, 'damage') >= 0.5 && player.canUse(new lib.element.VCard({ name: name[2], nature: name[3] }), target, false);
+                                    }), 'vcard'],
+                                ], true).set('ai', button => {
+                                    const { player, target } = get.event(), name = button.link;
+                                    return get.effect(target, new lib.element.VCard({ name: name[2], nature: name[3] }), player, player);
+                                }).set('target', target).forResult('links');
+                                if (links?.length) await player.useCard(new lib.element.VCard({ name: links[0][2], nature: links[0][3] }), target, false);
+                            }
+                        }
+                    }
+                },
+                ai: {
+                    order(item, player) {
+                        return get.order({ name: 'sha' }, player) + 0.5;
+                    },
+                    result: {
+                        player(player) {
+                            return player.hasValueTarget(new lib.element.VCard({ name: 'sha' })) ? 1 : 0;
+                        },
+                    },
+                },
+                subSkill: {
+                    effect: {
+                        charlotte: true,
+                        trigger: {
+                            player: 'useCard1',
+                            global: 'useCard',
+                        },
+                        filter(event, player, name) {
+                            if (name === 'useCard1') {
+                                return event.card.storage?.minifightlizhan && typeof event.card.storage.minifightlizhan === 'number';
+                            }
+                            return Array.isArray(event.respondTo) && event.respondTo[0] === player && event.respondTo[1].storage?.minifightlizhan && typeof event.respondTo[1].storage.minifightlizhan === 'number';
+                        },
+                        forced: true,
+                        popup: false,
+                        content() {
+                            if (event.triggername === 'useCard1') {
+                                trigger.baseDamage += (trigger.card.storage.minifightlizhan - 1);
+                                for (const target of game.filterPlayer(null, null, true)) {
+                                    const id = target.playerid, map = trigger.customArgs;
+                                    if (!map[id]) map[id] = {};
+                                    map[id].shanRequired = trigger.card.storage.minifightlizhan;
+                                }
+                            }
+                            else {
+                                trigger.getParent(2).baseDamage--;
+                            }
+                        },
+                    },
+                },
+            },
         },
         dynamicTranslate: {
             minizhongjian(player) {
@@ -31443,6 +31682,7 @@ const packs = function () {
             MiNi_sbCharacter: '欢乐三国杀·谋攻篇',
             MiNi_miaoKill: '欢乐三国杀·喵系列',
             MiNi_nianKill: '欢乐三国杀·念系列',
+            MiNi_fightKill: '欢乐三国杀·战系列',
             //牌
             miniyanxiao_card: '言笑',
             miniyanxiao_card_info: '判定阶段开始时，获得此牌和判定区内的所有牌。',
@@ -33127,6 +33367,14 @@ const packs = function () {
             zhouyu_角: '角',
             zhouyu_徵: '徵',
             zhouyu_羽: '羽',
+            //战
+            Mfight_huangzhong: '战黄忠',
+            minifightdingjun: '定军',
+            minifightdingjun_info: '战场技。①一名角色使用【杀】造成伤害后，获得1层士气。②士气变化后，你摸一张牌。③士气变化时，若士气层数大于等于场上存活角色数，则进入“定军山战场”；若士气层数为0，则退出“定军山战场”。④一名角色于一回合首次使用【杀】时，若此时处于“定军山战场”，则你可以消耗2层士气，令其于此牌结算中视为拥有〖烈弓〗。',
+            minifightliegong: '烈弓',
+            minifightliegong_info: '锁定技，当你使用【杀】指定目标后，若目标角色的手牌数或体力值大于等于你的手牌数或体力值，则其不可响应此【杀】；目标角色的手牌数和体力值均大于等于你的手牌数或体力值，则此【杀】对其造成的伤害+1。',
+            minifightlizhan: '力斩',
+            minifightlizhan_info: '出牌阶段，你可以打出任意张【杀】，然后视为使用一张需要X张【闪】响应且伤害基数为X的【杀】（X为你打出的【杀】数），目标角色每使用【闪】响应一次此牌，此牌伤害基数-1。若此【杀】造成伤害，则你可以选择一名非此【杀】目标角色，视为对其使用一张无距离和次数限制的伤害牌。',
         },
     };
     for (var skill in MiNikill.skill) {
@@ -33154,6 +33402,7 @@ const packs = function () {
             else if (MiNikill.translate[i].indexOf('SP欢杀') == 0) MiNikill.translate[i + '_prefix'] = 'SP欢杀';
             else if (MiNikill.translate[i].indexOf('喵') == 0) MiNikill.translate[i + '_prefix'] = '喵';
             else if (MiNikill.translate[i].indexOf('念') == 0) MiNikill.translate[i + '_prefix'] = '念';
+            else if (MiNikill.translate[i].indexOf('战') == 0) MiNikill.translate[i + '_prefix'] = '战';
         }
         if (i.startsWith('Mbaby_') && !MiNikill.character[i][4].some(tag => typeof tag == 'string' && tag.startsWith('die:'))) MiNikill.character[i][4].push('die:' + i.slice(6));
         MiNikill.character[i][4].push(((lib.device || lib.node) ? 'ext:' : 'db:extension-') + '活动武将/image/character/' + i + '.jpg');
@@ -33165,6 +33414,10 @@ const packs = function () {
     lib.namePrefix.set('念', {
         color: '#bf3eff',
         nature: 'soilmm',
+    });
+    lib.namePrefix.set('战', {
+        color: '#ff4500',
+        nature: 'firemm',
     });
     lib.namePrefix.set('欢杀', {
         color: '#ff6a6a',
