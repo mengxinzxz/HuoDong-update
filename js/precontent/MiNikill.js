@@ -22979,8 +22979,6 @@ const packs = function () {
                         });
                         next.backup('minichanni_backup');
                     }
-                    'step 2'
-                    player.removeTempSkill('minichanni_effect');
                 },
                 subSkill: {
                     backup: {
