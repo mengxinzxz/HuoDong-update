@@ -1034,7 +1034,7 @@ const packs = function () {
                     ]).set('filterButton', function (button) {
                         var type = typeof button.link;
                         if (ui.selected.buttons.length && type == typeof ui.selected.buttons[0].link) return false;
-                        return type == 'string' || get.suit(button.link, get.owner(button.link)) == 'heart';
+                        return type == 'string' || get.color(button.link, get.owner(button.link)) === 'red';
                     });
                     'step 1'
                     if (result.bool) {
@@ -3325,7 +3325,7 @@ const packs = function () {
             //简雍
             wechatqiaoshui: {
                 audio: 'qiaoshui',
-                inherit: 'xinqiaoshui',
+                inherit: 'reqiaoshui',
             },
             wechatjyzongshi: {
                 audio: 'jyzongshi',
@@ -6255,18 +6255,20 @@ const packs = function () {
                                     }
                                 }
                             }
-                        }
-                    }
-                }
+                        },
+                    },
+                },
             },
             //极袁绍
             wechathongtu: {
                 audio: 'ext:活动武将/audio/skill:2',
                 enable: 'phaseUse',
                 filter(event, player) {
-                    return !game.hasPlayer(target => target != player && !player.canCompare(target));
+                    return game.hasPlayer(target => player.canCompare(target));
                 },
-                filterTarget: lib.filter.notMe,
+                filterTarget(card, player, target) {
+                    return player.canCompare(target);
+                },
                 selectTarget: -1,
                 usable: 1,
                 multitarget: true,
@@ -10035,7 +10037,7 @@ const packs = function () {
             wechatrejilei_info: '当你受到有来源的伤害后，你可以声明一种类别。若如此做，你令伤害来源不能使用或打出此类别的牌直到其下个回合开始。',
             wechat_shen_lvmeng: '微信神吕蒙',
             wechatgongxin: '攻心',
-            wechatgongxin_info: '出牌阶段限一次，你可以观看一名其他角色的手牌，然后你可以展示其中的一张红桃牌并选择一项：1.获得此牌；2.将此牌置于牌堆顶。',
+            wechatgongxin_info: '出牌阶段限一次，你可以观看一名其他角色的手牌，然后你可以展示其中的一张红色牌并选择一项：1.获得此牌；2.将此牌置于牌堆顶。',
             wechat_zhoutai: '微信周泰',
             wechatbuqu: '不屈',
             wechatbuqux: '创',
@@ -10395,7 +10397,7 @@ const packs = function () {
             wechathezong_info: '一轮游戏开始时，你可以选择两名角色。若如此做，直到下一轮游戏开始：①当这些角色使用指定除对方外的唯一目标的【杀】结算完毕后，除非另一名角色对相同目标使用一张【杀】，否则交给其一张牌；②当这些角色成为使用者不为对方的唯一目标的【杀】时，除非另一名角色交给其一张【闪】，否则其也成为此牌的额外目标。',
             wechat_zhiyin_yuanshao: '极袁绍',
             wechathongtu: '尊北',
-            wechathongtu_info: '出牌阶段限一次，你可以与所有其他角色进行共同拼点。赢的角色视为使用一张【万箭齐发】，且此牌结算完毕后，你摸受到过此牌造成的伤害的角色数的牌；若不存在赢的角色，则此技能视为未发动过。',
+            wechathongtu_info: '出牌阶段限一次，你可以与所有可以拼点的其他角色进行共同拼点。赢的角色视为使用一张【万箭齐发】，且此牌结算完毕后，你摸受到过此牌造成的伤害的角色数的牌；若不存在赢的角色，则此技能视为未发动过。',
             wechatmengshou: '盟首',
             wechatmengshou_info: '每轮限一次，当你受到其他角色造成的伤害时，若其本轮造成的伤害值不大于你，则你可以防止此伤害。',
             wechat_zhiyin_xuzhu: '极许褚',

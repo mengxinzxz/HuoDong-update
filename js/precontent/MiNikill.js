@@ -22961,8 +22961,8 @@ const packs = function () {
                 inherit: 'channi',
                 content() {
                     'step 0'
-                    player.addTempSkill('minichanni_effect', { player: 'minichanniAfter' });
                     player.give(cards, target);
+                    player.addTempSkill('minichanni_effect');
                     'step 1'
                     if (target.countCards('h') > 0) {
                         game.broadcastAll(function (num) {
@@ -22979,18 +22979,8 @@ const packs = function () {
                         });
                         next.backup('minichanni_backup');
                     }
-                    else event.finish();
                     'step 2'
-                    if (result.bool) {
-                        var evts = target.getHistory('useCard', function (evt) {
-                            return evt.card.name == 'juedou' && evt.getParent(2) == event;
-                        });
-                        if (!evts.length) return;
-                        var num = evts[0].cards.length;
-                        if (target.hasHistory('sourceDamage', function (evt) {
-                            return evt.card && evt.card.name == 'juedou' && evt.getParent(4) == event;
-                        })) target.draw(num);
-                    }
+                    player.removeTempSkill('minichanni_effect');
                 },
                 subSkill: {
                     backup: {
@@ -23011,7 +23001,10 @@ const packs = function () {
                         trigger: { global: 'damageBegin2' },
                         filter(event, player) {
                             if (!player.countCards('h')) return false;
-                            var evt = event.getParent(5);
+                            if (!event.card || event.card.name != 'juedou') return false;
+                            const evtx = event.getParent(2);
+                            if (!evtx || evtx.name !== 'useCard' || evtx.card.name !== 'juedou') return false;
+                            const evt = event.getParent(5);
                             return evt.skill == 'minichanni' && evt.player == player && evt.targets[0] == event.player;
                         },
                         prompt2(event, player) {
@@ -23020,6 +23013,24 @@ const packs = function () {
                         content() {
                             player.discard(player.getCards('h'));
                             trigger.cancel();
+                        },
+                        group: 'minichanni_draw',
+                    },
+                    draw: {
+                        charlotte: true,
+                        trigger: { global: 'damageSource' },
+                        filter(event, player) {
+                            if (!event.source?.isIn()) return false;
+                            if (!event.card || event.card.name != 'juedou') return false;
+                            const evtx = event.getParent(2);
+                            if (!evtx || evtx.name !== 'useCard' || evtx.card.name !== 'juedou' || !evtx.cards.length) return false;
+                            const evt = event.getParent(5);
+                            return evt.skill == 'minichanni' && evt.player == player && evt.targets[0] == event.source;
+                        },
+                        forced: true,
+                        popup: false,
+                        content() {
+                            trigger.source.draw(trigger.getParent(2).cards.length);
                         },
                     },
                 },
@@ -32697,7 +32708,7 @@ const packs = function () {
             minijinghe: '经合',
             minijinghe_info: '出牌阶段限一次，你可以展示四张牌名各不相同的牌并选择等量的角色。系统从“写满技能的天书”中随机选择等量的技能，然后这些角色依次选择获得其中的一个。',
             minichanni: '谗逆',
-            minichanni_info: '出牌阶段限一次，你可将任意张手牌交给一名其他角色，然后其可以将等量的手牌当做【决斗】使用。若其因此【决斗】造成了伤害，则其摸X张牌（X为此【决斗】对应的实体牌数）。其因此【决斗】受到伤害时，你可以弃置所有手牌并防止此伤害。',
+            minichanni_info: '出牌阶段限一次，你可将任意张手牌交给一名其他角色，然后其可以将等量的手牌当做【决斗】使用。其因此【决斗】造成伤害后摸X张牌（X为此【决斗】对应的实体牌数）。其因此【决斗】受到伤害时，你可以弃置所有手牌并防止此伤害。',
             mininifu: '匿伏',
             mininifu_info: '锁定技，一名角色的回合结束时，你将手牌摸至三张。',
             minihuaiyi: '怀异',
