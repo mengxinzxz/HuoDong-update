@@ -9416,12 +9416,12 @@ const packs = function () {
                 audio: 'ext:活动武将/audio/skill:2',
                 trigger: { player: 'phaseZhunbeiBegin' },
                 filter(event, player) {
-                    return game.countPlayer(t => player.canCompare(t)) >= 4;
+                    return game.hasPlayer(t => player.canCompare(t));
                 },
                 async cost(event, trigger, player) {
                     event.result = await player.chooseTarget(get.prompt2('wechatguizhi'), (card, player, target) => {
                         return player.canCompare(target);
-                    }, 4).set('ai', target => {
+                    }, [1, 4]).set('ai', target => {
                         let player = get.player(), num = 0;
                         if (player.hasSkill('twlvren')) num += 2 * (ui.selected.targets.length + 1);
                         if (player.hasSkill('twchuanshu_effect')) num += 3;
@@ -10579,7 +10579,7 @@ const packs = function () {
             wechatyingwu_info: '①出牌阶段限三次，当你使用非伤害类普通锦囊牌指定目标后，你获得1个“椎”。②当你使用的非伤害类普通锦囊牌结算结束后，若你的“椎”数大于1，则你弃置2个“椎”并摸一张牌，然后可以视为使用一张【杀】。',
             wechat_zhiyin_liubei: '极刘备',
             wechatguizhi: '圭志',
-            wechatguizhi_info: '准备阶段，你可以与四名其他角色进行共同拼点，赢的角色于下个出牌阶段使用的前X张牌无次数限制（X为本次拼点角色数），若你没赢，则你从牌堆中获得一张点数大于你本次拼点点数的牌。',
+            wechatguizhi_info: '准备阶段，你可以与至多四名其他角色进行共同拼点，赢的角色于下个出牌阶段使用的前X张牌无次数限制（X为本次拼点角色数），若你没赢，则你从牌堆中获得一张点数大于你本次拼点点数的牌。',
             wechathengyi: '恒毅',
             wechathengyi_info: '每回合限一次，当你失去手牌中点数最大的牌后，你可以令一名其他角色获得这些牌或令自己摸两张牌。',
             wechat_zhiyin_caozhi: '极曹植',

@@ -11,21 +11,12 @@ lib.init.css(lib.assetURL + 'extension/活动武将', 'extension');
 game.bolShowNewPack = function () {
 	//更新告示
 	var HuoDong_update = [
-		'将扩展页面“活动武将”的显示改为图片（感谢逍遥如云提供的活动武将横向logo）',
 		'/setPlayer/',
 		'bugfix',
-		'添加新武将眼睛👁、蔡夫人-暗黑傀儡师',
-		'修改部分武将技能为新版',
-		'添加欢杀武将郑浑、踏顿、陈泰、谋甘宁、雷铜、吴兰、战黄忠、韩浩史涣',
-		'添加微信武将SP貂蝉、诸葛果、孙寒华、刘赪、极刘备、极曹植、极姜维、极祝融',
 		'To be continued...',
 	];
 	//更新武将
 	var HuoDong_players = [
-		'bilibili_yanjing', 'bilibili_caifuren', 'Mbaby_zhenghun', 'Mbaby_tadun', 'Mbaby_chentai',
-		'Mbaby_sb_ganning', 'Mbaby_leitong', 'Mbaby_wulan', 'wechat_sp_diaochan', 'wechat_zhugeguo',
-		'wechat_sunhanhua', 'wechat_liucheng', 'wechat_zhiyin_liubei', 'wechat_zhiyin_caozhi',
-		'wechat_zhiyin_jiangwei', 'wechat_zhiyin_zhurong', 'Mfight_huangzhong', 'Mbaby_hanhaoshihuan',
 	];
 	//加载
 	var dialog = ui.create.dialog(
@@ -80,7 +71,7 @@ let extensionPackage = {
 		author: '萌新（转型中）',
 		diskURL: '',
 		forumURL: '',
-		version: '0.3.5',
+		version: '0.3.6 - 待定',
 		//新人制作扩展，希望大家支持。
 		//新人技术不足，希望大家包涵。
 		//壹、贰、叁、肆、伍、陆、柒、捌、玖、拾
