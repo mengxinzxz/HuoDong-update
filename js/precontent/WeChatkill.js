@@ -9448,7 +9448,7 @@ const packs = function () {
                     effect: {
                         charlotte: true,
                         onremove: true,
-                        intro: { content: '出牌阶段使用前#张牌无次数限制' },
+                        intro: { content: '出牌阶段使用前#张牌无任何次数限制' },
                         trigger: { player: 'useCard1' },
                         filter(event, player) {
                             return player.isPhaseUsing();
@@ -9457,6 +9457,11 @@ const packs = function () {
                         popup: false,
                         content() {
                             player.removeMark(event.name, 1, false);
+                            if (trigger.addCount !== false) {
+                                trigger.addCount = false;
+                                const stat = player.getStat().card, name = trigger.card.name;
+                                if (typeof stat[name] === 'number') stat[name]--;
+                            }
                         },
                         mod: {
                             cardUsable(card, player) {
@@ -9736,6 +9741,11 @@ const packs = function () {
                                 }, trigger);
                                 player.removeMark(event.name + '_' + get.type2(trigger.card), 1, false);
                                 player[(Boolean(get.info(event.name).intro.markcount(null, player)) ? 'mark' : 'unmark') + 'Skill'](event.name);
+                                if (trigger.addCount !== false) {
+                                    trigger.addCount = false;
+                                    const stat = player.getStat().card, name = trigger.card.name;
+                                    if (typeof stat[name] === 'number') stat[name]--;
+                                }
                             }
                             else {
                                 const result = await player.chooseTarget(get.prompt(event.name), (card, player, target) => {
@@ -9801,6 +9811,18 @@ const packs = function () {
                             cardUsableTarget(card, player, target) {
                                 if (player.getStorage('wechatxiangwei_xiang').includes(target)) return true;
                             },
+                        },
+                        trigger: { player: 'useCard' },
+                        filter(event, player) {
+                            if (event.addCount === false) return false;
+                            return event.targets?.some(i => player.getStorage('wechatxiangwei_xiang').includes(i));
+                        },
+                        forced: true,
+                        popup: false,
+                        content() {
+                            trigger.addCount = false;
+                            const stat = player.getStat().card, name = trigger.card.name;
+                            if (typeof stat[name] === 'number') stat[name]--;
                         },
                     },
                     wei: {
@@ -10579,7 +10601,7 @@ const packs = function () {
             wechatyingwu_info: '①出牌阶段限三次，当你使用非伤害类普通锦囊牌指定目标后，你获得1个“椎”。②当你使用的非伤害类普通锦囊牌结算结束后，若你的“椎”数大于1，则你弃置2个“椎”并摸一张牌，然后可以视为使用一张【杀】。',
             wechat_zhiyin_liubei: '极刘备',
             wechatguizhi: '圭志',
-            wechatguizhi_info: '准备阶段，你可以与至多四名其他角色进行共同拼点，赢的角色于下个出牌阶段使用的前X张牌无次数限制（X为本次拼点角色数），若你没赢，则你从牌堆中获得一张点数大于你本次拼点点数的牌。',
+            wechatguizhi_info: '准备阶段，你可以与至多四名其他角色进行共同拼点，赢的角色于下个出牌阶段使用的前X张牌无任何次数限制（X为本次拼点角色数），若你没赢，则你从牌堆中获得一张点数大于你本次拼点点数的牌。',
             wechathengyi: '恒毅',
             wechathengyi_info: '每回合限一次，当你失去手牌中点数最大的牌后，你可以令一名其他角色获得这些牌或令自己摸两张牌。',
             wechat_zhiyin_caozhi: '极曹植',
@@ -10591,10 +10613,10 @@ const packs = function () {
             wechatgujin: '鼓进',
             wechatgujin_info: '①一名角色的回合结束时，若你本回合未成为过其他角色使用牌的目标，则你获得1点' + get.MouLveInform() + '。②当你抵消其他角色使用的【杀】后，你获得2点' + get.MouLveInform() + '。',
             wechatqumou: '屈谋',
-            wechatqumou_info: '出牌阶段开始时，你可以令你本回合无法使用、打出、弃置基本牌/锦囊牌。若如此做，你使用的下两张锦囊牌/基本牌无距离和次数限制且可以额外指定一个目标。',
+            wechatqumou_info: '出牌阶段开始时，你可以令你本回合无法使用、打出、弃置基本牌/锦囊牌。若如此做，你使用的下两张锦囊牌/基本牌无距离和任何次数限制且可以额外指定一个目标。',
             wechat_zhiyin_zhurong: '极祝融',
             wechatxiangwei: '象威',
-            wechatxiangwei_info: '准备阶段，你可以视为使用【南蛮入侵】。然后你选择一项：①本回合对未受到此牌造成的伤害的角色使用牌无次数限制；②本回合使用的下X张【杀】造成的伤害+1（X为受到此牌造成的伤害的角色）。',
+            wechatxiangwei_info: '准备阶段，你可以视为使用【南蛮入侵】。然后你选择一项：①本回合对未受到此牌造成的伤害的角色使用牌无任何次数限制；②本回合使用的下X张【杀】造成的伤害+1（X为受到此牌造成的伤害的角色）。',
             wechatyanfeng: '炎锋',
             wechatyanfeng_info: get.ShiwuInform() + '，出牌阶段，你可以将一张牌当作无距离限制的火【杀】使用。此牌结算完毕后，若此牌未造成伤害且仅指定唯一目标，则你令目标角色选择一项：①对你造成1点伤害，然后随机弃置一张牌；②令你摸一张牌，然后本回合你对其使用的下一张【杀】无效。',
         },

@@ -31467,7 +31467,7 @@ const packs = function () {
                                 game.broadcastAll(() => {
                                     if (get.is.phoneLayout()) ui._minifightdingjun_dingjunshan = ui.create.div('.touchinfo.left', ui.window);
                                     else ui._minifightdingjun_dingjunshan = ui.create.div(ui.gameinfo);
-                                    ui._minifightdingjun_dingjunshan.innerHTML = '定军山战场';
+                                    ui._minifightdingjun_dingjunshan.innerHTML = '<br>定军山战场';
                                 });
                             }
                             else {
