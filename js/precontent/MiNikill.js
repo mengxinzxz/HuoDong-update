@@ -31440,7 +31440,7 @@ const packs = function () {
                 },
                 trigger: { global: ['damageSource', 'minifight_UpdateShiQiAfter'] },
                 filter(event, player) {
-                    return event.name !== 'damage' || (event.source?.isIn() && event.card.name === 'sha');
+                    return event.name !== 'damage' || (event.source?.isIn() && event.card?.name === 'sha');
                 },
                 forced: true,
                 locked: false,
