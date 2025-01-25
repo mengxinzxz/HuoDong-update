@@ -13,10 +13,12 @@ game.bolShowNewPack = function () {
 	var HuoDong_update = [
 		'/setPlayer/',
 		'bugfix',
+		'添加欢杀武将：高览、卢植',
 		'To be continued...',
 	];
 	//更新武将
 	var HuoDong_players = [
+		'Mbaby_gaolan', 'Mbaby_yl_luzhi',
 	];
 	//加载
 	var dialog = ui.create.dialog(
