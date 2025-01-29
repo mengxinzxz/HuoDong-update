@@ -104,7 +104,7 @@ const packs = function () {
             Mbaby_menghuo: ['male', 'shu', 5, ['minirehuoshou', 'minizaiqi']],
             Mbaby_jiangwei: ['male', 'shu', 4, ['minitiaoxin', 'minizhiji'], ['tempname:ol_jiangwei', 'die:ol_jiangwei']],
             Mbaby_liushan: ['male', 'shu', 4, ['minirexiangle', 'minirefangquan', 'minireruoyu'], ['zhu', 'tempname:ol_liushan', 'die:ol_liushan']],
-            Mbaby_fazheng: ['male', 'shu', 3, ['minienyuan', 'minixuanhuo']],
+            Mbaby_fazheng: ['male', 'shu', 3, ['minireenyuan', 'minirexuanhuo']],
             Mbaby_madai: ['male', 'shu', 4, ['mashu', 'miniqianxi']],
             Mbaby_guanping: ['male', 'shu', 4, ['minilongyin', 'jiezhong']],
             Mbaby_liufeng: ['male', 'shu', 4, ['minixiansi']],
@@ -7347,6 +7347,149 @@ const packs = function () {
                             player.draw();
                         },
                     },
+                },
+            },
+            minireenyuan: {
+                inherit: 'minienyuan',
+                group: ['minienyuan_draw', 'minireenyuan_damage'],
+                subSkill: {
+                    damage: {
+                        audio: 'reenyuan',
+                        trigger: { player: 'damageEnd' },
+                        logTarget: 'source',
+                        filter(event, player) {
+                            return event.source && event.source != player && event.source.isIn() && event.num > 0;
+                        },
+                        getIndex(event, player, triggername) {
+                            return event.num;
+                        },
+                        check(event, player) {
+                            const att = get.attitude(player, event.source);
+                            const num = event.source.countCards("h");
+                            if (att <= 0) return true;
+                            if (num > 2) return true;
+                            if (num) return att < 4;
+                            return false;
+                        },
+                        prompt2: '令该角色选择一项：①失去1点体力。②交给你一张红色手牌。若此牌不为♥，则你摸一张牌。',
+                        async content(event, trigger, player) {
+                            const { source } = trigger;
+                            const result = !source.countCards('h', { color: 'red' }) ? { bool: true } : await source.chooseToGive('h', player, `恩怨：将一张红色手牌交给${get.translation(player)}，否则失去1点体力`, { color: 'red' }).set('ai', card => {
+                                const { player, target } = get.event();
+                                if (get.attitude(player, target) > 0) {
+                                    if (get.suit(card) != 'heart') return 15 - get.value(card);
+                                    return 11 - get.value(card);
+                                } else {
+                                    let num = 12 - player.hp * 2;
+                                    if (get.suit(card) != 'heart') num -= 2;
+                                    return num - get.value(card);
+                                }
+                            }).forResult();
+                            if (!result.bool) await source.loseHp();
+                            else if (get.suit(result.cards[0]) != 'heart') player.draw();
+                        }
+                    }
+                }
+            },
+            minirexuanhuo: {
+                audio: 'xinxuanhuo',
+                trigger: { player: 'phaseDrawEnd' },
+                filter(event, player) {
+                    return player.countCards('h') && game.countPlayer() > 2;
+                },
+                async cost(event, trigger, player) {
+                    const ai2 = function (target) {
+                        const player = get.player();
+                        const goon = game.hasPlayer(current => get.attitude(player, current) > 0 && player != current);
+                        if (get.attitude(player, target) <= 0 && goon) return 0;
+                        const list = [null, 'juedou'].concat(lib.inpile_nature);
+                        if (target.hasSkill('ayato_zenshen')) list.push('kami');
+                        let num = Math.max.apply(Math, list.map(i => {
+                            if (i == 'juedou') return target.getUseValue({ name: 'juedou', isCard: true }, false);
+                            const card = { name: 'sha', nature: i, isCard: true };
+                            return target.getUseValue(card, false);
+                        }));
+                        if (goon) num += 1;
+                        if (target.hasSkillTag('nogain')) num /= 4;
+                        return num;
+                    };
+                    event.result = await player.chooseCardTarget({
+                        prompt: get.prompt2(event.name.slice(0, -5)),
+                        filterCard: true,
+                        selectCard: [1, 2],
+                        position: 'h',
+                        filterTarget: lib.filter.notMe,
+                        goon: game.hasPlayer(current => current != player && ai2(player, current) > 0),
+                        ai1(card) {
+                            if (!_status.event.goon) return 0;
+                            return 7 - get.value(card);
+                        },
+                        ai2: ai2,
+                    }).forResult();
+                },
+                async content(event, trigger, player) {
+                    const { targets: [target], cards } = event;
+                    await player.give(cards, target);
+                    const targetsx = game.filterPlayer(current => {
+                        if (current == player || current == target) return false;
+                        const list = lib.inpile_nature.slice(0);
+                        list.unshift(null);
+                        if (target.hasSkill('ayato_zenshen')) list.add('kami');
+                        return list.some(nature => target.canUse({ name: 'sha', isCard: true, nature: nature }, current, false)) || target.canUse({ name: 'juedou', isCard: true }, current, false);
+                    });
+                    const goon = targetsx.length > 0;
+                    if (!goon && !target.countCards('h')) return;
+                    let result;
+                    if (goon && target.countCards('h')) {
+                        result = await target.chooseControl().set('choiceList', [`视为对${get.translation(player)}选择的另一名其他角色使用任意一种【杀】或【决斗】`, `${get.translation(player)}观看并获得你任意张牌`]).set('ai', () => {
+                            return [0, 1].randomGet();
+                        }).forResult();
+                    }
+                    else result = { index: goon ? 0 : 1 };
+                    if (result.index == 1) await player.gainPlayerCard(target, 'h', [1, Infinity], true, 'visible').set('ai', button => {
+                        const { player, target } = get.event(), { link } = button;
+                        const att = get.attitude(player, target);
+                        if (att > 0) {
+                            if (ui.selected.buttons.length > 1) return 0;
+                            return 6 - get.value(link);
+                        }
+                        return 1;
+                    });
+                    else {
+                        const { result: { targets } } = await player.chooseTarget((card, player, target) => {
+                            return get.event('targetsx').includes(target);
+                        }, `选择${get.translation(target)}使用【杀】或【决斗】的目标`, true).set('target', target).set('ai', target => {
+                            const evt = _status.event;
+                            const list = [null, 'juedou'].concat(lib.inpile_nature);
+                            if (evt.target.hasSkill('ayato_zenshen')) list.push('kami');
+                            return Math.max.apply(Math, list.map(i => {
+                                const card = { name: 'sha', isCard: true };
+                                if (i == 'juedou') card.name = 'juedou';
+                                else if (i) card.nature = i;
+                                if (!evt.target.canUse(card, target, false)) return 0;
+                                return get.effect(target, card, evt.target, evt.player);
+                            }));
+                        }).set('targetsx', targetsx);
+                        if (!targets?.length) return;
+                        const target2 = targets[0];
+                        player.line(target2);
+                        game.log(player, '选择了', target2);
+                        const list = lib.inpile_nature.slice(0);
+                        list.unshift(null);
+                        const vcards = [];
+                        if (target.hasSkill('ayato_zenshen')) list.add('kami');
+                        for (const i of list) {
+                            if (target.canUse({ name: 'sha', isCard: true, nature: i }, target2, false)) vcards.push(['基本', '', 'sha', i]);
+                        }
+                        if (target.canUse({ name: 'juedou', isCard: true }, target2, false)) vcards.push(['基本', '', 'juedou']);
+                        if (!vcards.length) return;
+                        const links = vcards.length == 1 ? vcards : await target.chooseButton([`请选择要对${get.translation(target2)}使用的牌`, [vcards, 'vcard']], true).set("ai", button => {
+                            const player = get.player();
+                            return get.effect(get.event('target2'), { name: button.link[2], isCard: true, nature: button.link[3] }, player, player);
+                        }).set('target2', target2).forResultLinks();
+                        if (!links?.length) return;
+                        await target.useCard({ name: links[0][2], isCard: true, nature: links[0][3] }, false, target2);
+                    }
                 },
             },
             miniqianxi: {
@@ -32320,6 +32463,10 @@ const packs = function () {
             minienyuan_info: '当你获得一名其他角色的牌后，你可以令其摸一张牌；其他角色获得你的牌后，你可以摸一张牌。',
             minixuanhuo: '眩惑',
             minixuanhuo_info: '摸牌阶段，你可以选择一名其他角色，除非该角色对你选择的另一名角色使用一张【杀】，否则你获得其一张牌。',
+            minireenyuan: '恩怨',
+            minireenyuan_info: '①当你获得一名其他角色的牌后，你可以令其摸一张牌；其他角色获得你的牌后，你可以摸一张牌。②当你受到1点伤害后，你可以令伤害来源选择一项：1.交给你一张红色手牌，然后若此牌不为红桃牌，你摸一张牌；2.失去1点体力。',
+            minirexuanhuo: '眩惑',
+            minirexuanhuo_info: '摸牌阶段结束时，你可以交给一名其他角色至多两张手牌，然后其选择一项：1.视为对你选择的另一名其他角色使用任意一张【杀】或【决斗】；2.你观看并获得其任意张手牌。',
             miniqianxi: '潜袭',
             miniqianxi2: '潜袭',
             miniqianxi_info: '准备阶段，你可以摸两张牌并弃置其中的一张，然后你令一名与你距离为1的角色于本回合无法使用或打出与你弃置的牌颜色相同的手牌。',
