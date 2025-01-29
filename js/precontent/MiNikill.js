@@ -13365,7 +13365,7 @@ const packs = function () {
                     return event.name == 'phaseUse' || (event.card.name == 'sha' && player.canCompare(event.target));
                 },
                 async cost(event, trigger, player) {
-                    if (event.name == 'phaseUse') {
+                    if (trigger.name == 'phaseUse') {
                         const { result: { bool, links } } = await player.chooseButton([
                             get.prompt(event.name.slice(0, -5)),
                             [
@@ -13392,7 +13392,7 @@ const packs = function () {
                         }
                     }
                     else {
-                        const { player: target, card } = trigger;
+                        const { target, card } = trigger;
                         const bool = await player.chooseBool(get.prompt(event.name.slice(0, -5), target), `你可以与其拼点，若你赢，你可以为${get.translation(card)}额外指定一个目标`).set('choice', get.attitude(player, target) <= 0).forResultBool();
                         event.result = {
                             bool: bool,
@@ -13401,8 +13401,8 @@ const packs = function () {
                     }
                 },
                 async content(event, trigger, player) {
-                    const { cost_data: choices, targets: [target] } = event, { card } = trigger;
-                    if (event.name == 'phaseUse') {
+                    const { cost_data: choices } = event, { target, card } = trigger;
+                    if (trigger.name == 'phaseUse') {
                         if (choices.includes('add')) {
                             game.log(player, '选择了', '#y选项一');
                             player.addTempSkill(event.name + '_add');
