@@ -12937,6 +12937,7 @@ const packs = function () {
             },
             //甘夫人糜夫人
             minixunbie: {
+                audio: 'dcxunbie',
                 inherit: 'dcxunbie',
                 characters() {
                     const characters = ['Mbaby_ganfuren', 'Mbaby_mifuren'];
