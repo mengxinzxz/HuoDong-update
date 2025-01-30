@@ -7,7 +7,7 @@ const packs = function () {
         characterSort: {
             MiNikill: {
                 MiNi_wei: ['Mbaby_hanhaoshihuan', 'Mbaby_chentai', 'Mbaby_zhenghun', 'Mbaby_guanlu', 'Mbaby_guanqiujian', 'Mbaby_wenqin', 'Mbaby_liuye', 'Mbaby_chenlin', 'Mbaby_wangshuang', 'Mbaby_yanrou', 'Mbaby_dc_yanghu', 'Mbaby_ruanyu', 'Mbaby_chengyu', 'Mbaby_jianggan', 'Mbaby_yuejin', 'Mbaby_bianfuren', 'Mbaby_zhugedan', 'Mbaby_caohong', 'Mbaby_guojia', 'Mbaby_sp_caoren', 'Mbaby_yinfuren', 'Mbaby_sp_jiaxu', 'Mbaby_kuailiangkuaiyue', 'Mbaby_jsp_guanyu', 'Mbaby_wangji', 'Mbaby_chenqun', 'Mbaby_xiahoulingnv', 'Mbaby_wenyang', 'Mbaby_sp_pangde', 'Mbaby_caocao', 'Mbaby_caozhang', 'Mbaby_dufuren', 'Mbaby_simayi', 'Mbaby_yangxiu', 'Mbaby_zhangchangpu', 'Mbaby_zhonghui', 'Mbaby_sp_jiangwei', 'Mbaby_caoxiu', 'Mbaby_xunyou', 'Mbaby_lidian', 'Mbaby_zhongyao', 'Mbaby_caozhen', 'Mbaby_guohuanghou', 'Mbaby_xinxianying', 'Mbaby_xiahouyuan', 'Mbaby_xizhicai', 'Mbaby_caorui', 'Mbaby_xunyu', 'Mbaby_dengai', 'Mbaby_caozhi', 'Mbaby_sp_caiwenji', 'Mbaby_caopi', 'Mbaby_caoang', 'Mbaby_guojia', 'Mbaby_zhenji', 'Mbaby_caoren', 'Mbaby_wangyi', 'Mbaby_zhangchunhua', 'Mbaby_xiahoudun', 'Mbaby_xuzhu', 'Mbaby_zhangliao', 'Mbaby_guohuai', 'Mbaby_dianwei', 'Mbaby_zhanghe', 'Mbaby_yujin', 'Mbaby_xuhuang'],
-                MiNi_shu: ['Mbaby_wulan', 'Mbaby_leitong', 'Mbaby_zongyu', 'Mbaby_mazhong', 'Mbaby_dengzhi', 'Mbaby_hujinding', 'Mbaby_sp_xiahoushi', 'Mbaby_jiangfei', 'Mbaby_zhangyi', 'Mbaby_guanzhang', 'Mbaby_wolongfengchu', 'Mbaby_wangtao', 'Mbabysp_zhangfei', 'Mbaby_wangyue', 'Mbaby_xf_yiji', 'Mbaby_mizhu', 'Mbaby_mifuren', 'Mbaby_liuyong', 'Mbaby_ganfuren', 'Mbaby_sunqian', 'Mbaby_lvkai', 'Mbaby_zhoucang', 'Mbaby_huangyueying', 'Mbaby_yangwan', 'Mbaby_liuchen', 'Mbaby_liyan', 'Mbaby_chendao', 'Mbaby_yanyan', 'Mbaby_xiahouba', 'Mbaby_huaman', 'Mbaby_sp_zhugeliang', 'Mbaby_zhugeguo', 'Mbaby_jianyong', 'Mbaby_wangping', 'Mbaby_mayunlu', 'Mbaby_guansuo', 'Mbaby_xiahoushi', 'Mbaby_shamoke', 'Mbaby_wuxian', 'Mbaby_zhugezhan', 'Mbaby_qinmi', 'Mbaby_guanyinping', 'Mbaby_guanyu', 'Mbaby_zhugeliang', 'Mbaby_liubei', 'Mbaby_machao', 'Mbaby_zhurong', 'Mbaby_zhangfei', 'Mbaby_zhaoyun', 'Mbaby_huangzhong', 'Mbaby_weiyan', 'Mbaby_liaohua', 'Mbaby_pangtong', 'Mbaby_menghuo', 'Mbaby_jiangwei', 'Mbaby_liushan', 'Mbaby_fazheng', 'Mbaby_madai', 'Mbaby_guanping', 'Mbaby_liufeng', 'Mbaby_wuyi', 'Mbaby_zhangxingcai', 'Mbaby_dongyun', 'Mbaby_sp_sunshangxiang', 'Mbaby_xushu', 'Mbaby_masu'],
+                MiNi_shu: ['Mbaby_ganfurenmifuren', 'Mbaby_zhaotongzhaoguang', 'Mbaby_wulan', 'Mbaby_leitong', 'Mbaby_zongyu', 'Mbaby_mazhong', 'Mbaby_dengzhi', 'Mbaby_hujinding', 'Mbaby_sp_xiahoushi', 'Mbaby_jiangfei', 'Mbaby_zhangyi', 'Mbaby_guanzhang', 'Mbaby_wolongfengchu', 'Mbaby_wangtao', 'Mbabysp_zhangfei', 'Mbaby_wangyue', 'Mbaby_xf_yiji', 'Mbaby_mizhu', 'Mbaby_mifuren', 'Mbaby_liuyong', 'Mbaby_ganfuren', 'Mbaby_sunqian', 'Mbaby_lvkai', 'Mbaby_zhoucang', 'Mbaby_huangyueying', 'Mbaby_yangwan', 'Mbaby_liuchen', 'Mbaby_liyan', 'Mbaby_chendao', 'Mbaby_yanyan', 'Mbaby_xiahouba', 'Mbaby_huaman', 'Mbaby_sp_zhugeliang', 'Mbaby_zhugeguo', 'Mbaby_jianyong', 'Mbaby_wangping', 'Mbaby_mayunlu', 'Mbaby_guansuo', 'Mbaby_xiahoushi', 'Mbaby_shamoke', 'Mbaby_wuxian', 'Mbaby_zhugezhan', 'Mbaby_qinmi', 'Mbaby_guanyinping', 'Mbaby_guanyu', 'Mbaby_zhugeliang', 'Mbaby_liubei', 'Mbaby_machao', 'Mbaby_zhurong', 'Mbaby_zhangfei', 'Mbaby_zhaoyun', 'Mbaby_huangzhong', 'Mbaby_weiyan', 'Mbaby_liaohua', 'Mbaby_pangtong', 'Mbaby_menghuo', 'Mbaby_jiangwei', 'Mbaby_liushan', 'Mbaby_fazheng', 'Mbaby_madai', 'Mbaby_guanping', 'Mbaby_liufeng', 'Mbaby_wuyi', 'Mbaby_zhangxingcai', 'Mbaby_dongyun', 'Mbaby_sp_sunshangxiang', 'Mbaby_xushu', 'Mbaby_masu'],
                 MiNi_wu: ['Mbaby_kanze', 'Mbaby_panzhangmazhong', 'Mbaby_weiwenzhugezhi', 'Mbaby_zhangwen', 'Mbaby_sunhanhua', 'Mbaby_heqi', 'Mbaby_lvdai', 'Mbaby_jiangqing', 'Mbaby_re_guyong', 'Mbaby_quancong', 'Mbaby_yufan', 'Mbaby_dc_sunru', 'Mbaby_sunxiu', 'Mbaby_zhangfen', 'Mbaby_xuezong', 'Mbaby_dingfeng', 'Mbaby_panjun', 'Mbaby_sundeng', 'Mbaby_luji', 'Mbaby_zhoufang', 'Mbaby_zhangxuan', 'Mbaby_yanjun', 'Mbaby_zhuhuan', 'Mbaby_luyusheng', 'Mbaby_re_jsp_pangtong', 'Mbaby_sunhao', 'Mbabysp_daqiao', 'Mbaby_lukang', 'Mbaby_buzhi', 'Mbaby_xushi', 'Mbaby_zhugeke', 'Mbaby_zhoufei', 'Mbaby_zhangzhang', 'Mbaby_sunliang', 'Mbaby_ol_sunjian', 'Mbaby_zhuzhi', 'Mbaby_bulianshi', 'Mbaby_chengpu', 'Mbaby_daqiao', 'Mbaby_ganning', 'Mbaby_huanggai', 'Mbaby_lusu', 'Mbaby_luxun', 'Mbaby_lvmeng', 'Mbaby_sunce', 'Mbaby_sunluban', 'Mbaby_sunluyu', 'Mbaby_sunquan', 'Mbaby_sunshangxiang', 'Mbaby_taishici', 'Mbaby_wuguotai', 'Mbaby_xiaoqiao', 'Mbaby_xusheng', 'Mbaby_zhoutai', 'Mbaby_zhouyu', 'Mbaby_zhugejin', 'Mbaby_zumao', 'Mbabysp_xiaoqiao'],
                 MiNi_qun: ['Mbaby_gaolan', 'Mbaby_yl_luzhi', 'Mbaby_tadun', 'Mbaby_re_hansui', 'Mbaby_dongxie', 'Mbaby_fuwan', 'Mbaby_wutugu', 'Mbaby_huangfusong', 'Mbaby_fanchou', 'Mbaby_guosi', 'Mbaby_yanbaihu', 'Mbaby_dc_huangzu', 'Mbaby_licaiwei', 'Mbaby_ol_dingyuan', 'Mbaby_liubian', 'Mbaby_re_pangdegong', 'Mbaby_zhangning', 'Mbaby_zhanglu', 'Mbaby_wangyun', 'Mbaby_zoushi', 'Mbaby_dc_huangchengyan', 'Mbaby_simahui', 'Mbaby_tw_mateng', 'Mbaby_laiyinger', 'Mbaby_sp_kongrong', 'Mbaby_zhujun', 'Mbaby_gongsunyuan', 'Mbaby_sp_zhangliao', 'Mbaby_sp_ol_zhanghe', 'Mbaby_guotufengji', 'Mbaby_yanfuren', 'Mbaby_tangji', 'Mbaby_caojie', 'Mbaby_liangxing', 'Mbabysp_zhenji', 'Mbaby_caoxing', 'Mbaby_sp_menghuo', 'Mbaby_wangrong', 'Mbaby_hetaihou', 'Mbaby_sp_taishici', 'Mbaby_zhangji', 'Mbaby_dongbai', 'Mbaby_beimihu', 'Mbaby_chunyuqiong', 'Mbaby_zhangqiying', 'Mbaby_fuhuanghou', 'Mbaby_liuxie', 'Mbaby_quyi', 'Mbaby_jsp_huangyueying', 'Mbaby_sp_machao', 'Mbaby_lijue', 'Mbaby_panfeng', 'Mbaby_liuzhang', 'Mbaby_jiaxu', 'Mbaby_zhangbao', 'Mbaby_zhangliang', 'Mbaby_gaoshun', 'Mbaby_caifuren', 'Mbaby_xuyou', 'Mbaby_gongsunzan', 'Mbaby_pangde', 'Mbaby_jushou', 'Mbaby_liru', 'Mbaby_dongzhuo', 'Mbaby_zhangjiao', 'Mbaby_huatuo', 'Mbaby_lvbu', 'Mbaby_diaochan', 'Mbaby_sp_diaochan', 'Mbaby_huaxiong', 'Mbaby_yuji', 'Mbaby_yanwen', 'Mbaby_caiwenji', 'Mbaby_liubiao', 'Mbaby_yuanshao', 'Mbaby_yuanshu', 'Mbaby_chengong', 'Mbaby_zuoci'],
                 MiNi_shen: ['Mbaby_shen_luxun', 'Mbaby_shen_dengai', 'Mbaby_shen_zuoci', 'Mbaby_shen_taishici', 'Mbaby_shen_diaochan', 'Mbaby_shen_daxiaoqiao', 'Mbaby_shen_zhenji', 'Mbaby_shen_guojia', 'Mbaby_shen_huatuo', 'Mbaby_shen_dianwei', 'Mbaby_shen_lvbu', 'Mbaby_shen_zhugeliang', 'Mbaby_shen_lvmeng', 'Mbaby_shen_zhouyu', 'Mbaby_shen_guanyu', 'Mbaby_shen_liubei', 'Mbaby_shen_caocao', 'Mbaby_shen_zhangliao', 'Mbaby_shen_sunquan', 'Mbaby_shen_simayi', 'Mbaby_shen_zhaoyun', 'Mbaby_shen_ganning', 'Mbaby_shen_pangtong'],
@@ -104,7 +104,7 @@ const packs = function () {
             Mbaby_menghuo: ['male', 'shu', 5, ['minirehuoshou', 'minizaiqi']],
             Mbaby_jiangwei: ['male', 'shu', 4, ['minitiaoxin', 'minizhiji'], ['tempname:ol_jiangwei', 'die:ol_jiangwei']],
             Mbaby_liushan: ['male', 'shu', 4, ['minirexiangle', 'minirefangquan', 'minireruoyu'], ['zhu', 'tempname:ol_liushan', 'die:ol_liushan']],
-            Mbaby_fazheng: ['male', 'shu', 3, ['minienyuan', 'minixuanhuo']],
+            Mbaby_fazheng: ['male', 'shu', 3, ['minireenyuan', 'minirexuanhuo']],
             Mbaby_madai: ['male', 'shu', 4, ['mashu', 'miniqianxi']],
             Mbaby_guanping: ['male', 'shu', 4, ['minilongyin', 'jiezhong']],
             Mbaby_liufeng: ['male', 'shu', 4, ['minixiansi']],
@@ -165,6 +165,8 @@ const packs = function () {
             Mbaby_ol_sb_jiangwei: ['male', 'shu', 4, ['olsbzhuri', 'miniranji']],
             Mbaby_leitong: ['male', 'shu', 4, ['minikuiji']],
             Mbaby_wulan: ['male', 'shu', 4, ['minicuorui']],
+            Mbaby_zhaotongzhaoguang: ['male', 'shu', 4, ['yizan_use', 'dclongyuan', 'miniqingren']],
+            Mbaby_ganfurenmifuren: ['female', 'shu', 3, ['dcchanjuan', 'minixunbie']],
             //吴
             Mbaby_bulianshi: ['female', 'wu', 3, ['minianxu', 'zhuiyi']],
             Mbaby_chengpu: ['male', 'wu', 4, ['minilihuo', 'minichunlao']],
@@ -7349,6 +7351,149 @@ const packs = function () {
                     },
                 },
             },
+            minireenyuan: {
+                inherit: 'minienyuan',
+                group: ['minienyuan_draw', 'minireenyuan_damage'],
+                subSkill: {
+                    damage: {
+                        audio: 'reenyuan',
+                        trigger: { player: 'damageEnd' },
+                        logTarget: 'source',
+                        filter(event, player) {
+                            return event.source && event.source != player && event.source.isIn() && event.num > 0;
+                        },
+                        getIndex(event, player, triggername) {
+                            return event.num;
+                        },
+                        check(event, player) {
+                            const att = get.attitude(player, event.source);
+                            const num = event.source.countCards("h");
+                            if (att <= 0) return true;
+                            if (num > 2) return true;
+                            if (num) return att < 4;
+                            return false;
+                        },
+                        prompt2: '令该角色选择一项：①失去1点体力。②交给你一张红色手牌。若此牌不为♥，则你摸一张牌。',
+                        async content(event, trigger, player) {
+                            const { source } = trigger;
+                            const result = !source.countCards('h', { color: 'red' }) ? { bool: true } : await source.chooseToGive('h', player, `恩怨：将一张红色手牌交给${get.translation(player)}，否则失去1点体力`, { color: 'red' }).set('ai', card => {
+                                const { player, target } = get.event();
+                                if (get.attitude(player, target) > 0) {
+                                    if (get.suit(card) != 'heart') return 15 - get.value(card);
+                                    return 11 - get.value(card);
+                                } else {
+                                    let num = 12 - player.hp * 2;
+                                    if (get.suit(card) != 'heart') num -= 2;
+                                    return num - get.value(card);
+                                }
+                            }).forResult();
+                            if (!result.bool) await source.loseHp();
+                            else if (get.suit(result.cards[0]) != 'heart') player.draw();
+                        }
+                    }
+                }
+            },
+            minirexuanhuo: {
+                audio: 'xinxuanhuo',
+                trigger: { player: 'phaseDrawEnd' },
+                filter(event, player) {
+                    return player.countCards('h') && game.countPlayer() > 2;
+                },
+                async cost(event, trigger, player) {
+                    const ai2 = function (target) {
+                        const player = get.player();
+                        const goon = game.hasPlayer(current => get.attitude(player, current) > 0 && player != current);
+                        if (get.attitude(player, target) <= 0 && goon) return 0;
+                        const list = [null, 'juedou'].concat(lib.inpile_nature);
+                        if (target.hasSkill('ayato_zenshen')) list.push('kami');
+                        let num = Math.max.apply(Math, list.map(i => {
+                            if (i == 'juedou') return target.getUseValue({ name: 'juedou', isCard: true }, false);
+                            const card = { name: 'sha', nature: i, isCard: true };
+                            return target.getUseValue(card, false);
+                        }));
+                        if (goon) num += 1;
+                        if (target.hasSkillTag('nogain')) num /= 4;
+                        return num;
+                    };
+                    event.result = await player.chooseCardTarget({
+                        prompt: get.prompt2(event.name.slice(0, -5)),
+                        filterCard: true,
+                        selectCard: [1, 2],
+                        position: 'h',
+                        filterTarget: lib.filter.notMe,
+                        goon: game.hasPlayer(current => current != player && ai2(player, current) > 0),
+                        ai1(card) {
+                            if (!_status.event.goon) return 0;
+                            return 7 - get.value(card);
+                        },
+                        ai2: ai2,
+                    }).forResult();
+                },
+                async content(event, trigger, player) {
+                    const { targets: [target], cards } = event;
+                    await player.give(cards, target);
+                    const targetsx = game.filterPlayer(current => {
+                        if (current == player || current == target) return false;
+                        const list = lib.inpile_nature.slice(0);
+                        list.unshift(null);
+                        if (target.hasSkill('ayato_zenshen')) list.add('kami');
+                        return list.some(nature => target.canUse({ name: 'sha', isCard: true, nature: nature }, current, false)) || target.canUse({ name: 'juedou', isCard: true }, current, false);
+                    });
+                    const goon = targetsx.length > 0;
+                    if (!goon && !target.countCards('h')) return;
+                    let result;
+                    if (goon && target.countCards('h')) {
+                        result = await target.chooseControl().set('choiceList', [`视为对${get.translation(player)}选择的另一名其他角色使用任意一种【杀】或【决斗】`, `${get.translation(player)}观看并获得你任意张牌`]).set('ai', () => {
+                            return [0, 1].randomGet();
+                        }).forResult();
+                    }
+                    else result = { index: goon ? 0 : 1 };
+                    if (result.index == 1) await player.gainPlayerCard(target, 'h', [1, Infinity], true, 'visible').set('ai', button => {
+                        const { player, target } = get.event(), { link } = button;
+                        const att = get.attitude(player, target);
+                        if (att > 0) {
+                            if (ui.selected.buttons.length > 1) return 0;
+                            return 6 - get.value(link);
+                        }
+                        return 1;
+                    });
+                    else {
+                        const { result: { targets } } = await player.chooseTarget((card, player, target) => {
+                            return get.event('targetsx').includes(target);
+                        }, `选择${get.translation(target)}使用【杀】或【决斗】的目标`, true).set('target', target).set('ai', target => {
+                            const evt = _status.event;
+                            const list = [null, 'juedou'].concat(lib.inpile_nature);
+                            if (evt.target.hasSkill('ayato_zenshen')) list.push('kami');
+                            return Math.max.apply(Math, list.map(i => {
+                                const card = { name: 'sha', isCard: true };
+                                if (i == 'juedou') card.name = 'juedou';
+                                else if (i) card.nature = i;
+                                if (!evt.target.canUse(card, target, false)) return 0;
+                                return get.effect(target, card, evt.target, evt.player);
+                            }));
+                        }).set('targetsx', targetsx);
+                        if (!targets?.length) return;
+                        const target2 = targets[0];
+                        player.line(target2);
+                        game.log(player, '选择了', target2);
+                        const list = lib.inpile_nature.slice(0);
+                        list.unshift(null);
+                        const vcards = [];
+                        if (target.hasSkill('ayato_zenshen')) list.add('kami');
+                        for (const i of list) {
+                            if (target.canUse({ name: 'sha', isCard: true, nature: i }, target2, false)) vcards.push(['基本', '', 'sha', i]);
+                        }
+                        if (target.canUse({ name: 'juedou', isCard: true }, target2, false)) vcards.push(['基本', '', 'juedou']);
+                        if (!vcards.length) return;
+                        const links = vcards.length == 1 ? vcards : await target.chooseButton([`请选择要对${get.translation(target2)}使用的牌`, [vcards, 'vcard']], true).set("ai", button => {
+                            const player = get.player();
+                            return get.effect(get.event('target2'), { name: button.link[2], isCard: true, nature: button.link[3] }, player, player);
+                        }).set('target2', target2).forResultLinks();
+                        if (!links?.length) return;
+                        await target.useCard({ name: links[0][2], isCard: true, nature: links[0][3] }, false, target2);
+                    }
+                },
+            },
             miniqianxi: {
                 audio: 'qianxi',
                 trigger: { player: 'phaseZhunbeiBegin' },
@@ -12774,6 +12919,49 @@ const packs = function () {
                     if (cards2.length) player.gain(cards2, 'gain2');
                 },
             },
+            //二赵
+            miniqingren: {
+                audio: 'dcqingren',
+                trigger: { player: 'phaseJieshuBegin' },
+                frequent: true,
+                filter(event, player) {
+                    return get.info('miniqingren').getNum(player);
+                },
+                getNum(player) {
+                    const filter = evt => get.type(evt.card) == 'basic' && !get.is.virtualCard(evt.card);
+                    return player.getHistory('useCard', filter).length + player.getHistory('respond', filter).length;
+                },
+                content() {
+                    player.draw(get.info(event.name).getNum(player));
+                },
+            },
+            //甘夫人糜夫人
+            minixunbie: {
+                inherit: 'dcxunbie',
+                characters() {
+                    const characters = ['Mbaby_ganfuren', 'Mbaby_mifuren'];
+                    game.countPlayer(current => {
+                        if (get.nameList(current).includes('Mbaby_ganfuren')) characters.remove('Mbaby_ganfuren');
+                        if (get.nameList(current).includes('Mbaby_mifuren')) characters.remove('Mbaby_mifuren');
+                    });
+                    return characters;
+                },
+                filter(event, player) {
+                    if (player.hp > 0) return false;
+                    const characters = get.info('minixunbie').characters();
+                    return characters.length && [player.name1, player.name2].some(name => get.character(name, 3).includes('minixunbie'));
+                },
+                derivation: ['minishushen', 'minihuangsi', 'miniguixiu', 'minicunsi', 'miniyongjue'],
+                async content(event, trigger, player) {
+                    player.awakenSkill(event.name);
+                    const characters = get.info(event.name).characters();
+                    const character = characters.length == 1 ? characters[0] : await player.chooseControl(characters).set('dialog', ['选择要替换成的武将', [characters, 'character']]).set('ai', () => [0, 1].randomGet()).forResultControl();
+                    if (!_status.characterlist) lib.skill.pingjian.initList();
+                    await player.reinitCharacter(get.character(player.name2, 3).includes(event.name) ? player.name2 : player.name1, character);
+                    await player.recoverTo(1);
+                    player.addTempSkill('dcxunbie_muteki');
+                },
+            },
             //吴
             //孙权
             minizhiheng: {
@@ -13365,7 +13553,7 @@ const packs = function () {
                     return event.name == 'phaseUse' || (event.card.name == 'sha' && player.canCompare(event.target));
                 },
                 async cost(event, trigger, player) {
-                    if (event.name == 'phaseUse') {
+                    if (trigger.name == 'phaseUse') {
                         const { result: { bool, links } } = await player.chooseButton([
                             get.prompt(event.name.slice(0, -5)),
                             [
@@ -13392,7 +13580,7 @@ const packs = function () {
                         }
                     }
                     else {
-                        const { player: target, card } = trigger;
+                        const { target, card } = trigger;
                         const bool = await player.chooseBool(get.prompt(event.name.slice(0, -5), target), `你可以与其拼点，若你赢，你可以为${get.translation(card)}额外指定一个目标`).set('choice', get.attitude(player, target) <= 0).forResultBool();
                         event.result = {
                             bool: bool,
@@ -13401,8 +13589,8 @@ const packs = function () {
                     }
                 },
                 async content(event, trigger, player) {
-                    const { cost_data: choices, targets: [target] } = event, { card } = trigger;
-                    if (event.name == 'phaseUse') {
+                    const { cost_data: choices } = event, { target, card } = trigger;
+                    if (trigger.name == 'phaseUse') {
                         if (choices.includes('add')) {
                             game.log(player, '选择了', '#y选项一');
                             player.addTempSkill(event.name + '_add');
@@ -32250,6 +32438,8 @@ const packs = function () {
             Mbaby_ol_sb_jiangwei: '欢杀谋姜维',
             Mbaby_leitong: '欢杀雷铜',
             Mbaby_wulan: '欢杀吴兰',
+            Mbaby_zhaotongzhaoguang: '欢杀赵统赵广',
+            Mbaby_ganfurenmifuren: '欢杀甘夫人糜夫人',
             miniwusheng: '武圣',
             miniwusheng_info: '锁定技。①你使用红色【杀】造成的伤害+1。②回合开始时，你从牌堆或弃牌堆中获得一张红色【杀】。',
             miniguanxing: '观星',
@@ -32320,6 +32510,10 @@ const packs = function () {
             minienyuan_info: '当你获得一名其他角色的牌后，你可以令其摸一张牌；其他角色获得你的牌后，你可以摸一张牌。',
             minixuanhuo: '眩惑',
             minixuanhuo_info: '摸牌阶段，你可以选择一名其他角色，除非该角色对你选择的另一名角色使用一张【杀】，否则你获得其一张牌。',
+            minireenyuan: '恩怨',
+            minireenyuan_info: '①当你获得一名其他角色的牌后，你可以令其摸一张牌；其他角色获得你的牌后，你可以摸一张牌。②当你受到1点伤害后，你可以令伤害来源选择一项：1.交给你一张红色手牌，然后若此牌不为红桃牌，你摸一张牌；2.失去1点体力。',
+            minirexuanhuo: '眩惑',
+            minirexuanhuo_info: '摸牌阶段结束时，你可以交给一名其他角色至多两张手牌，然后其选择一项：1.视为对你选择的另一名其他角色使用任意一张【杀】或【决斗】；2.你观看并获得其任意张手牌。',
             miniqianxi: '潜袭',
             miniqianxi2: '潜袭',
             miniqianxi_info: '准备阶段，你可以摸两张牌并弃置其中的一张，然后你令一名与你距离为1的角色于本回合无法使用或打出与你弃置的牌颜色相同的手牌。',
@@ -32515,6 +32709,10 @@ const packs = function () {
             minikuiji_info: '出牌阶段限一次，你可以将一张黑色基本牌当做【兵粮寸断】置于你的判定区，摸两张牌，然后你可以对体力值最多的一名其他角色造成2点伤害。该角色因此进入濒死状态时，你可令一名角色回复1点体力。',
             minicuorui: '挫锐',
             minicuorui_info: '出牌阶段开始时，你可以弃置一名你至其的距离不大于1的角色区域里的一张牌，然后你选择一项：1.弃置另一名其他角色装备区里至多两张与此牌颜色相同的牌；2.弃置另一名其他角色的至多两张手牌，然后获得其中与此牌颜色相同的牌。',
+            miniqingren: '青刃',
+            miniqingren_info: '结束阶段，你可以摸X张牌（X为你本回合使用或打出的非虚拟基本牌数）。',
+            minixunbie: '殉别',
+            minixunbie_info: '限定技。当你进入濒死状态时，你可以将此武将牌替换为“甘夫人”或“糜夫人”（不能选择已在场上的武将）。然后回复至1点体力并防止所有伤害直到本回合结束。',
             //吴
             Mbaby_bulianshi: '欢杀步练师',
             Mbaby_chengpu: '欢杀程普',
