@@ -165,7 +165,7 @@ const packs = function () {
             Mbaby_ol_sb_jiangwei: ['male', 'shu', 4, ['olsbzhuri', 'miniranji']],
             Mbaby_leitong: ['male', 'shu', 4, ['minikuiji']],
             Mbaby_wulan: ['male', 'shu', 4, ['minicuorui']],
-            Mbaby_zhaotongzhaoguang: ['male', 'shu', 4, ['yizan_use', 'dclongyuan', 'miniqingren']],
+            Mbaby_zhaotongzhaoguang: ['male', 'shu', 4, ['yizan_use', 'miniqingren', 'dclongyuan']],
             Mbaby_ganfurenmifuren: ['female', 'shu', 3, ['dcchanjuan', 'minixunbie']],
             //吴
             Mbaby_bulianshi: ['female', 'wu', 3, ['minianxu', 'zhuiyi']],
