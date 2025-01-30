@@ -2089,8 +2089,11 @@ const packs = function () {
                     result: {
                         player(player, target) {
                             const cards = ui.selected.cards, map = player.storage.minijiaozhao2;
-                            const card = get.autoViewAs(map[cards[0].cardid], cards);
-                            return get.effect(target, card, player, player);
+                            if(cards.length){
+                                const card = get.autoViewAs(map[cards[0].cardid], cards);
+                                return get.effect(target, card, player, player);
+                            }
+                            return 1;
                         },
                     },
                 },
