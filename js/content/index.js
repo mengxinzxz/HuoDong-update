@@ -1453,7 +1453,7 @@ export function content(config, pack) {
 	game.HDaddCharacter('old_sunluyu', ['female', 'wu', 3, ['meibu', 'mumu'], ['ext:活动武将/image/character/old_sunluyu.jpg']], 'old');
 	game.HDaddCharacter('old_pangtong', ['male', 'qun', 3, ['manjuan', 'zuixiang'], ['unseen', 'character:sp_pangtong', 'die:sp_pangtong']], 'old');
 	game.HDaddCharacter('ol_manchong', ['male', 'wei', 3, ['xinjunxing', 'yuce'], ['ext:活动武将/image/character/ol_manchong.jpg']], 'old');
-	game.HDaddCharacter('old_xushao', ['male', 'qun', 3, ['bol_pinjian', 'bol_yuedan'], ['unseen', 'ext:活动武将/image/character/old_xushao.jpg']], 'old');
+	game.HDaddCharacter('old_xushao', ['male', 'qun', 3, ['bol_pinjian', 'bol_yuedan'], ['ext:活动武将/image/character/old_xushao.jpg']], 'old');
 	game.HDaddCharacter('old_sp_sunshao', ['male', 'wu', 3, ['refubi', 'rezuici'], ['ext:活动武将/image/character/old_sp_sunshao.jpg']], 'old');
 	game.HDaddCharacter('old_liuzhang', ['male', 'qun', 3, ['xiusheng', 'yinlang', 'huaibi'], ['zhu', 'ext:活动武将/image/character/old_liuzhang.jpg']], 'old');
 	game.HDaddCharacter('old_wangling', ['male', 'wei', 4, ['mouli', 'zifu'], ['ext:活动武将/image/character/old_wangling.jpg']], 'old');

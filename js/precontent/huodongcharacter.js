@@ -203,24 +203,30 @@ const packs = function () {
                     if (!_status.characterlist) lib.skill.bol_pinjian.initList();
                     if (!_status.characterlist._bol_pinjian_init) {
                         _status.characterlist.randomSort();
+                        function bol_pinjian_timeset(callback, delay) {
+                            let timeout;
+                            return function () {
+                                clearTimeout(timeout);
+                                timeout = setTimeout(callback, delay);
+                            };
+                        };
+                        const debouncedUpdate = bol_pinjian_timeset(() => {
+                            for (const player of game.filterPlayer()) {
+                                if (player.getSkills(null, null, false).includes('bol_pinjian')) {
+                                    lib.skill.bol_pinjian.update(player);
+                                }
+                            }
+                        }, 200);
                         const handler = {
                             set(target, property, value) {
-                                target[property] = value;
-                                for (const player of game.filterPlayer()) {
-                                    if (player.getSkills(null, null, false).includes('bol_pinjian')) {
-                                        lib.skill.bol_pinjian.update(player);
-                                    }
-                                }
-                                return true;
+                                const result = Reflect.set(target, property, value);
+                                debouncedUpdate();
+                                return result;
                             },
                             deleteProperty(target, property) {
-                                delete target[property];
-                                for (const player of game.filterPlayer()) {
-                                    if (player.getSkills(null, null, false).includes('bol_pinjian')) {
-                                        lib.skill.bol_pinjian.update(player);
-                                    }
-                                }
-                                return true;
+                                const result = Reflect.deleteProperty(target, property);
+                                debouncedUpdate();
+                                return result;
                             }
                         };
                         _status.characterlist = new Proxy(_status.characterlist, handler);
@@ -257,14 +263,13 @@ const packs = function () {
                     const skill = get.sourceSkillFor(event);
                     return skills.includes(skill) && player.invisibleSkills.includes(skill);
                 },
-                forced: true,
-                locked: false,
+                direct: true,
                 content() {
                     player.addTempSkill('bol_pinjian_used');
                     const names = player.storage.bol_pinjian;
                     if (names?.length) {
                         _status.characterlist.removeArray(names);
-                        _status.characterlist.addArray(player.storage.bol_pinjian);
+                        _status.characterlist.addArray(names);
                     }
                 },
                 marktext: '将',
@@ -279,6 +284,52 @@ const packs = function () {
                     },
                 },
                 group: 'bol_pinjian_trigger',
+                async triggerInvisible(event, trigger, player) {
+                    if (get.info(trigger.skill)?.silent) return event.finish();
+                    const result = await ((event, trigger, player) => {
+                        var info = get.info(trigger.skill), check = info.check;
+                        var skillName = event.name, event = trigger, trigger = event._trigger, str;
+                        if (info.prompt) str = info.prompt;
+                        else {
+                            if (typeof info.logTarget == "string") {
+                                str = get.prompt(event.skill, trigger[info.logTarget], player);
+                            }
+                            else if (typeof info.logTarget == "function") {
+                                var logTarget = info.logTarget(trigger, player, trigger.triggername, trigger.indexedData);
+                                if (get.itemtype(logTarget)?.indexOf("player") == 0) str = get.prompt(event.skill, logTarget, player);
+                            }
+                            else str = get.prompt(event.skill, null, player);
+                        }
+                        if (typeof str == "function") str = str(trigger, player, trigger.triggername, trigger.indexedData);
+                        var next = player.chooseBool(get.translation(skillName) + "：" + str);
+                        next.set("yes", !check || check(trigger, player, trigger.triggername, trigger.indexedData));
+                        next.set("hsskill", event.skill);
+                        next.set("forceDie", true);
+                        next.set("ai", () => _status.event.yes);
+                        if (typeof info.prompt2 == "function") {
+                            next.set("prompt2", info.prompt2(trigger, player, trigger.triggername, trigger.indexedData));
+                        }
+                        else if (typeof info.prompt2 == "string") {
+                            next.set("prompt2", info.prompt2);
+                        }
+                        else if (info.prompt2 != false) {
+                            if (lib.dynamicTranslate[event.skill]) next.set("prompt2", lib.dynamicTranslate[event.skill](player, event.skill));
+                            else if (lib.translate[event.skill + "_info"]) next.set("prompt2", lib.translate[event.skill + "_info"]);
+                        }
+                        if (trigger.skillwarn) {
+                            if (next.prompt2) next.set("prompt2", '<span class="thundertext">' + trigger.skillwarn + "。</span>" + next.prompt2);
+                            else next.set("prompt2", trigger.skillwarn);
+                        }
+                        return next;
+                    })(event, trigger, player).forResult();
+                    if (result.bool) {
+                        if (!get.info(trigger.skill).cost) trigger.revealed = true;
+                    }
+                    else {
+                        trigger.untrigger();
+                        trigger.cancelled = true;
+                    }
+                },
                 subSkill: {
                     used: { charlotte: true },
                     trigger: {
@@ -296,13 +347,8 @@ const packs = function () {
                         priority: 12,
                         forced: true,
                         popup: false,
-                        get content() {
-                            let content = lib.skill.sbpingjian.subSkill.trigger.content;
-                            content = content.toString().replaceAll('评鉴', '品鉴');
-                            content = new Function('return ' + content)();
-                            delete this.content;
-                            this.content = content;
-                            return content;
+                        content() {
+                            get.info('bol_pinjian').triggerInvisible(event, trigger, player);
                         },
                     },
                 },
@@ -1234,13 +1280,8 @@ const packs = function () {
                         priority: 12,
                         forced: true,
                         popup: false,
-                        get content() {
-                            let content = lib.skill.sbpingjian.subSkill.trigger.content;
-                            content = content.toString().replaceAll('评鉴', '化身');
-                            content = new Function('return ' + content)();
-                            delete this.content;
-                            this.content = content;
-                            return content;
+                        content() {
+                            get.info('bol_pinjian').triggerInvisible(event, trigger, player);
                         },
                     },
                     flash: {
