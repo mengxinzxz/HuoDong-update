@@ -2089,8 +2089,11 @@ const packs = function () {
                     result: {
                         player(player, target) {
                             const cards = ui.selected.cards, map = player.storage.minijiaozhao2;
-                            const card = get.autoViewAs(map[cards[0].cardid], cards);
-                            return get.effect(target, card, player, player);
+                            if(cards.length){
+                                const card = get.autoViewAs(map[cards[0].cardid], cards);
+                                return get.effect(target, card, player, player);
+                            }
+                            return 1;
                         },
                     },
                 },
@@ -5701,7 +5704,7 @@ const packs = function () {
                         ]);
                     }
                     event.result = await player.chooseButton(list).set('filterButton', button => {
-                        return lib.filter.canBeDiscarded(card, get.player(), get.owner(button.link));
+                        return lib.filter.canBeDiscarded(button.link, get.player(), get.owner(button.link));
                     }).set('ai', button => {
                         const player = get.player(), trigger = get.event().getTrigger();
                         let att = get.attitude(player, trigger.player), nh = trigger.player.countCards('h');
