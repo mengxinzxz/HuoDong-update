@@ -2089,7 +2089,7 @@ const packs = function () {
                     result: {
                         player(player, target) {
                             const cards = ui.selected.cards, map = player.storage.minijiaozhao2;
-                            if(cards.length){
+                            if (cards.length) {
                                 const card = get.autoViewAs(map[cards[0].cardid], cards);
                                 return get.effect(target, card, player, player);
                             }
@@ -5256,13 +5256,53 @@ const packs = function () {
             minixingzuo: {
                 audio: 'xingzuo',
                 inherit: 'xingzuo',
-                get content() {
-                    let content = lib.skill.xingzuo.content;
-                    content = content.toString().replaceAll('xingzuo2', 'minixingzuo_effect');
-                    content = new Function('return ' + content)();
-                    delete this.content;
-                    this.content = content;
-                    return content;
+                async content(event, trigger, player) {
+                    player.addTempSkill('minixingzuo_effect');
+                    const next = game.cardsGotoOrdering(get.bottomCards(3));
+                    await next;
+                    const result = await (() => {
+                        const cards = next.cards, next2 = player.chooseToMove('兴作：将三张牌置于牌堆底');
+                        const list = [['牌堆底', cards]], hs = player.getCards('h');
+                        if (hs.length) {
+                            list.push(['手牌', hs]);
+                            next2.set('filterMove', (_, to) => typeof to !== 'number');
+                        }
+                        next2.set('list', list);
+                        next2.set('processAI', list => {
+                            const player = get.player(), getv = button => {
+                                if (button.name == 'sha' && allcards.filter(function (card) {
+                                    return card.name == 'sha' && !cards.filter(function () {
+                                        return button == card;
+                                    }).length;
+                                }).length > player.getCardUsable({ name: 'sha' })) return 10;
+                                return -player.getUseValue(button, player);
+                            };
+                            let allcards = list[0][1].slice(0), cards = [];
+                            if (list.length > 1) allcards = allcards.concat(list[1][1]);
+                            let canchoose = allcards.slice(0);
+                            while (cards.length < 3) {
+                                canchoose.sort((a, b) => getv(b) - getv(a));
+                                cards.push(canchoose.shift());
+                            }
+                            return [cards, canchoose];
+                        });
+                        return next2;
+                    })().forResult();
+                    if (result.bool) {
+                        event.forceDie = true;
+                        const hs = player.getCards('h'), cards = result.moved[0];
+                        player.storage.minixingzuo_effect = cards;
+                        const lose = cards.filter(i => hs.includes(i)), gain = next.cards.slice().removeArray(cards.filter(i => !hs.includes(i)));
+                        if (lose.length) await player.lose(lose, ui.cardPile);
+                        if (gain.length) await player.gain(gain, 'draw');
+                        for (const i of cards) {
+                            if (!(('hejsdx').includes(get.position(i, true)))) {
+                                i.fix();
+                                ui.cardPile.appendChild(i);
+                            }
+                        }
+                        game.updateRoundNumber();
+                    }
                 },
                 subSkill: {
                     effect: {
