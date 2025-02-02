@@ -15300,7 +15300,7 @@ const packs = function () {
                         var player = _status.event.player;
                         if (player.hasUnknown() || !_status.event.controls.includes(get.cnNumber(_status.event.goon, true))) return 'cancel2';
                         return get.cnNumber(_status.event.goon, true);
-                    }).set('goon', player.hp - get.sgn(player.countCards('hs', { name: ['tao', 'jiu'] })));
+                    }).set('goon', player.hp - 1 + get.sgn(player.countCards('hs', { name: ['tao', 'jiu'] })));
                     'step 1'
                     if (result.control != 'cancel2') {
                         var num = event.map[result.control] || 1;
