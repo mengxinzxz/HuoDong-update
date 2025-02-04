@@ -4752,7 +4752,7 @@ const packs = function () {
                 global: ['loseAsyncEnd', 'cardsGotoSpecialEnd'],
             },
             filter(event, player) {
-                if (event.name == 'equip') return event.card.fh_extra;
+                if (event.name == 'equip') return event.card?.fh_extra;
                 if (event.getg) return event.getg(player).some(card => card.fh_extra);
                 return event.cards?.some(card => card.fh_extra);
             },
