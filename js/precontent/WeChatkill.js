@@ -10134,7 +10134,6 @@ const packs = function () {
                 check(event, player) {
                     const { targets: [target], card } = event;
                     if (player == event.player) return get.effect(target, { name: 'guohe_copy2' }, player, player) >= get.effect(player, { name: 'guohe_copy2' }, player, player) || get.tag(card, 'damage') && get.attitude(player, target) < 0;
-                    const eff1 = get.effect(event.player, { name: 'guohe_copy2' }, player, player) * num;
                     return get.effect(event.player, { name: 'guohe_copy2' }, player, player) >= get.effect(player, { name: 'guohe_copy2' }, player, player) || !get.tag(card, 'damage') && get.attitude(player, target) < 0;;
                 },
                 async content(event, trigger, player) {
@@ -10475,18 +10474,20 @@ const packs = function () {
                     return event.source?.isIn() && event.player.canUse({ name: 'juedou', isCard: true }, event.source);
                 },
                 check(event, player) {
-                    return get.effect(event.source, { name: 'juedou', isCard: true }, event.player, player) > 0;
+                    const juedou = get.autoViewAs({ name: 'juedou', isCard: true });
+                    return get.effect(event.source, juedou, event.player, player) > 0;
                 },
+                logTarget: 'source',
                 async content(event, trigger, player) {
-                    player.addTempSkill(event.name + '_used', { global: 'roundStart' });
+                    player.addTempSkill(event.name + '_used', 'roundStart');
                     player.addMark(event.name + '_used', 1, false);
                     const { player: target, source } = trigger;
                     const juedou = get.autoViewAs({ name: 'juedou', isCard: true });
                     target.when({ global: 'useCardAfter' })
-                        .filter(evt => evt == trigger)
+                        .filter(evt => evt == trigger.getParent(2))
                         .step(async () => {
                             if (target.canUse(juedou), source) await target.useCard(juedou, source, 'noai');
-                        })
+                        });
                 },
                 subSkill: {
                     used: {
