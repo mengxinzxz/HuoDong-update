@@ -13,7 +13,7 @@ game.bolShowNewPack = function () {
 	var HuoDong_update = [
 		'/setPlayer/',
 		'bugfix',
-		'技能修改',
+		'技能修改，配音补充',
 		'添加怀旧武将：许劭、OL袁姬',
 		'添加欢杀武将：高览、卢植、甘糜、二赵',
 		'To be continued...',
