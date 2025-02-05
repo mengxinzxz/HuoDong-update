@@ -10499,14 +10499,21 @@ const packs = function () {
             wechatzuoyou: {
                 audio: 'mbzuoyou',
                 inherit: 'mbzuoyou',
-                filterTarget(card, player, target) {
-                    if (player.storage.wechatzuoyou) return target.countCards('h');
-                    return true;
-                },
+                mark: false,
+                zhuanhuanji: false,
+                filterTarget: true,
                 async content(event, trigger, player) {
-                    const storage = player.storage.wechatzuoyou, { target } = event;
-                    if (event.name === 'wechatzuoyou') player.changeZhuanhuanji('wechatzuoyou');
-                    if (!storage) {
+                    const { target } = event;
+                    const result = event.result || (target.countCards('h') > 0 ? await player.chooseControl().set('choiceList', [
+                        `令${get.translation(target)}摸三张牌，然后弃置两张手牌`,
+                        `令${get.translation(target)}弃置一张手牌，然后其回复1点体力`,
+                    ]).set('ai', () => {
+                        const player = get.player(), target = get.event().getParent().target;
+                        const eff = get.recoverEffect(target, player, player) + get.effect(target, { name: 'guohe_copy', position: 'h' }, target, player);
+                        return get.effect(target, 'wechatzuoyou', player, player) > eff ? 0 : 1;
+                    }).forResult() : { index: 0 });
+                    event.result = event.result || result;
+                    if (result.index === 0) {
                         await target.draw(3);
                         if (target.countCards('h')) await target.chooseToDiscard(2, true, 'h');
                     } else {
@@ -10514,37 +10521,33 @@ const packs = function () {
                         await target.recover();
                     }
                 },
-                intro: {
-                    content(storage, player) {
-                        return '转换技。出牌阶段限一次，你可以令一名' + (storage ? '有手牌的角色弃置一张手牌，然后其回复1点体力。' : '角色摸三张牌，然后其弃置两张手牌。');
-                    },
-                },
                 ai: {
                     order(item, player) {
-                        if (player.storage.wechatzuoyou && game.hasPlayer(current => {
+                        if (game.hasPlayer(current => {
                             return current !== player && get.effect(current, 'wechatzuoyou', player, player) > 0;
                         })) return get.order({ name: 'zengbin' }) + 0.1;
                         return 2;
                     },
                     result: {
-                        target(player, target) {
-                            let eff = 0;
-                            if (player.storage.wechatzuoyou) eff = target.isDamaged() ? 1 : -1;
-                            else eff = 1;
-                            if (target === player && player.hasSkill('wechatzuoyou')) eff /= 10;
-                            return eff;
+                        player(player, target) {
+                            let eff = get.recoverEffect(target, player, player) + get.effect(target, { name: 'guohe_copy', position: 'h' }, target, player);
+                            if (!target.countCards('h')) eff = 0;
+                            return Math.max(eff, get.effect(target, 'wechatzuoyou', player, player));
                         },
                     },
                 },
             },
             wechatshishou: {
                 audio: 'mbshishou',
-                inherit: 'mbshishou',
+                trigger: { player: 'wechatzuoyouAfter' },
                 filter(event, player) {
-                    return event.skill === 'wechatzuoyou' && !event.targets.includes(player);
+                    return event.target !== player;
                 },
+                forced: true,
                 async content(event, trigger, player) {
-                    await lib.skill.wechatzuoyou.content({ target: player }, {}, player);
+                    event.target = player;
+                    event.result = { index: 1 - trigger.result.index };
+                    await lib.skill.mbzuoyou.content(event, trigger, player);
                 },
                 ai: { combo: 'wechatzuoyou' },
             },
@@ -10695,11 +10698,6 @@ const packs = function () {
             wechatbeijia(player) {
                 if (player.storage.wechatbeijia) return get.YunLvInform() + '。每回合限一次，<br>平：你可以将一张点数大于上一张你使用的牌当任意锦囊牌使用；<br><span class="bluetext">仄：你可以将一张点数小于上一张你使用的牌当任意基本牌使用。</span><br>转韵：你于出牌阶段使用一张点数等于上一张你使用的牌。';
                 return get.YunLvInform() + '。每回合限一次，<br><span class="bluetext">平：你可以将一张点数大于上一张你使用的牌当任意锦囊牌使用；</span><br>仄：你可以将一张点数小于上一张你使用的牌当任意基本牌使用。<br>转韵：你于出牌阶段使用一张点数等于上一张你使用的牌。';
-            },
-            wechatzuoyou(player) {
-                const { storage: { wechatzuoyou } } = player, str = '转换技。出牌阶段限一次，';
-                if (wechatzuoyou) return str + '阴：你可以令一名角色摸三张牌，然后其弃置两张牌；<span class="bluetext">阳：你可以令一名有手牌的角色弃置一张手牌，然后其回复1点体力。</span>';
-                return str + '<span class="bluetext">阴：你可以令一名角色摸三张牌，然后其弃置两张牌；</span>阳：你可以令一名你可以令一名有手牌的角色弃置一张手牌，然后其回复1点体力。';
             },
         },
         translate: {
@@ -11366,7 +11364,7 @@ const packs = function () {
             wechatjianchou_info: '每轮限两次。一名角色受到【杀】或【决斗】的伤害后，你可以令其于此牌结算结束后视为对伤害来源使用一张【决斗】。',
             wechat_lizhaojiaobo: '微信李昭焦伯',
             wechatzuoyou: '佐佑',
-            wechatzuoyou_info: '转换技。出牌阶段限一次，阴：你可以令一名角色摸三张牌，然后其弃置两张手牌；阳：你可以令一名有手牌的角色弃置一张手牌，然后其回复1点体力。',
+            wechatzuoyou_info: '出牌阶段限一次，你可以：①令一名角色摸三张牌，然后其弃置两张手牌。②令一名有手牌的角色弃置一张手牌，然后其回复1点体力。',
             wechatshishou: '侍守',
             wechatshishou_info: '锁定技。当你发动〖佐佑〗后，若目标角色不为你，你执行〖佐佑〗中目标角色未执行的一项。',
             wechat_jikang: '微信嵇康',
