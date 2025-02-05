@@ -10125,8 +10125,9 @@ const packs = function () {
                 audio: 'ext:活动武将/audio/skill:2',
                 trigger: { global: 'useCard' },
                 filter(event, player) {
-                    if (!event.targets || event.targets.length != 1 || event.targets[0] == event.player) return false;
-                    return [event.targets[0], event.player].some(target => target.countDiscardableCards(player, 'he'));
+                    if (!event.targets || event.targets.length !== 1 || event.targets[0] === event.player) return false;
+                    const list = [event.targets[0], event.player];
+                    return list.includes(player) && list.every(target => target.countDiscardableCards(player, 'he'));
                 },
                 logTarget(event, player) {
                     return player == event.player ? event.targets[0] : event.player;
