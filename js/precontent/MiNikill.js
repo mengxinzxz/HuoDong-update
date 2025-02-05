@@ -7419,7 +7419,7 @@ const packs = function () {
                         prompt2: '令该角色选择一项：①失去1点体力。②交给你一张红色手牌。若此牌不为♥，则你摸一张牌。',
                         async content(event, trigger, player) {
                             const { source } = trigger;
-                            const result = !source.countCards('h', { color: 'red' }) ? { bool: true } : await source.chooseToGive('h', player, `恩怨：将一张红色手牌交给${get.translation(player)}，否则失去1点体力`, { color: 'red' }).set('ai', card => {
+                            const result = !source.countCards('h', { color: 'red' }) ? { bool: false } : await source.chooseToGive('h', player, `恩怨：将一张红色手牌交给${get.translation(player)}，否则失去1点体力`, { color: 'red' }).set('ai', card => {
                                 const { player, target } = get.event();
                                 if (get.attitude(player, target) > 0) {
                                     if (get.suit(card) != 'heart') return 15 - get.value(card);
@@ -7431,7 +7431,7 @@ const packs = function () {
                                 }
                             }).forResult();
                             if (!result.bool) await source.loseHp();
-                            else if (get.suit(result.cards[0]) != 'heart') player.draw();
+                            else if (get.suit(result.cards[0]) != 'heart') await player.draw();
                         }
                     }
                 }
