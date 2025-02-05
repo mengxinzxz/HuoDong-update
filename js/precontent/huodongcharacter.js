@@ -2527,13 +2527,8 @@ const packs = function () {
                         if (name) {
                             const sex = get.character(name, 0);
                             const group = get.character(name, 1);
-                            if (player.sex != sex) {
-                                game.broadcastAll((player, sex) => {
-                                    player.sex = sex;
-                                }, player, sex);
-                                game.log(player, '将性别变为了', '#y' + get.translation(sex) + '性');
-                            }
-                            if (player.group != group) {
+                            if (player.sex !== sex) get.info('BThuashen').changeSex(sex, player);
+                            if (player.group !== group) {
                                 game.broadcastAll((player, group) => {
                                     player.group = group;
                                     player.node.name.dataset.nature = get.groupnature(group);
@@ -2543,7 +2538,7 @@ const packs = function () {
                         }
                     },
                     mark(dialog, storage, player) {
-                        if (!storage || !storage.character || !storage.character.length) return '没有化身';
+                        if (!storage?.character?.length) return '没有化身';
                         var list = storage.character;
                         dialog.addSmall([list, 'character']);
                         for (var i = 0; i < dialog.buttons.length; i++) {
@@ -2571,7 +2566,7 @@ const packs = function () {
                     },
                 },
                 changeSex(sex, player) {
-                    game.broadcastAll(function (list) {
+                    game.broadcastAll((sex, player) => {
                         player.sex = sex;
                     }, sex, player);
                     game.log(player, '将性别变为了', '#y' + get.translation(sex) + '性');
