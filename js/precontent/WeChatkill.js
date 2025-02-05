@@ -10192,7 +10192,7 @@ const packs = function () {
                         if (!targets.length) return;
                         const bool = await winner.chooseBool(`视为对${get.translation(targets)}使用一张【杀】？`).set('choice', targets.reduce((num, i) => num + get.effect(i, sha, winner, winner), 0) > 0).forResultBool();
                         if (bool) {
-                            player.when({ global: 'useCardAfter' })
+                            winner.when({ global: 'useCardAfter' })
                                 .filter(evt => evt.card.name == 'sha' && evt.getParent() == event && (() => {
                                     const targets = event.losers.filter(i => i.hasHistory('useCard', evtx => evtx.respondTo?.[1] == evt.card && evtx.card.name == 'shan'));
                                     return targets.length > 0 && event.losers.some(i => !targets.includes(i) && i.isIn());
@@ -10264,6 +10264,7 @@ const packs = function () {
                     return Math.min(5, _status.event.wechat_shiwuAble);
                 },
                 filter(event, player) {
+                    if (player.countCards('h')) return false;
                     return game.hasPlayer(current => get.info('wechathupo').filterTarget(null, player, current));
                 },
                 filterTarget(card, player, target) {
@@ -10568,7 +10569,7 @@ const packs = function () {
                 trigger: { global: 'useCard' },
                 filter(event, player) {
                     if (!_status.currentPhase) return false;
-                    return player == _status.currentPhase ? event.player == player && event.targets?.some(current => player != current) : event.player != player && event.targets?.includes(player);
+                    return player != _status.currentPhase ? event.player == player && event.targets?.some(current => player != current) : event.player != player && event.targets?.includes(player);
                 },
                 forced: true,
                 async content(event, trigger, player) {
@@ -10577,7 +10578,7 @@ const packs = function () {
                 ai: {
                     directHit_ai: true,
                     skillTagFilter(player, tag, arg) {
-                        return player == _status.currentPhase;
+                        return player != _status.currentPhase;
                     },
                 },
             },
