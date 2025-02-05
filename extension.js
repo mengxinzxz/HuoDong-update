@@ -13,14 +13,15 @@ game.bolShowNewPack = function () {
 	var HuoDong_update = [
 		'/setPlayer/',
 		'bugfix',
-		'旧许劭解禁+诸多bugfix（拖更许久）',
 		'技能修改',
+		'添加怀旧武将：许劭、OL袁姬',
 		'添加欢杀武将：高览、卢植、甘糜、二赵',
 		'To be continued...',
 	];
 	//更新武将
 	var HuoDong_players = [
-		'old_xushao', 'Mbaby_gaolan', 'Mbaby_yl_luzhi', 'Mbaby_ganfurenmifuren', 'Mbaby_zhaotongzhaoguang',
+		'old_xushao', 'old_ol_yuanji', 'Mbaby_gaolan', 'Mbaby_yl_luzhi', 'Mbaby_ganfurenmifuren',
+		'Mbaby_zhaotongzhaoguang',
 	];
 	//加载
 	var dialog = ui.create.dialog(
