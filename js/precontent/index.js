@@ -25,15 +25,14 @@ export function precontent(bilibilicharacter) {
         ruleSkill: true,
         trigger: { player: 'dieBegin' },
         filter(event, player) {
-            if (!lib.config.background_speak || typeof event.player.name !== 'string') return false;
-            return !get.character(event.player.name)?.dieAudios?.length;
+            return lib.config.background_speak && event.player.name;
         },
         firstDo: true,
         direct: true,
         priority: -Infinity,
         lasrDo: true,
         content() {
-            game.broadcastAll(name => {
+            game.broadcastAll(function (name) {
                 game.playAudio('..', 'extension', '活动武将/audio/die', name);
             }, trigger.player.name);
         },
