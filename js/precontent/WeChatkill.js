@@ -10194,11 +10194,11 @@ const packs = function () {
                         if (bool) {
                             player.when({ global: 'useCardAfter' })
                                 .filter(evt => evt.card.name == 'sha' && evt.getParent() == event && (() => {
-                                    const targets = event.losers.filter(i => i.hasHistory('useCard').some(evtx => evtx.respondTo?.[1] == evt.card && evtx.card.name == 'shan'));
+                                    const targets = event.losers.filter(i => i.hasHistory('useCard', evtx => evtx.respondTo?.[1] == evt.card && evtx.card.name == 'shan'));
                                     return targets.length > 0 && event.losers.some(i => !targets.includes(i) && i.isIn());
                                 })())
                                 .then(() => {
-                                    const targets = losers.filter(i => i.isIn() && !i.hasHistory('useCard').some(evtx => evtx.respondTo?.[1] == trigger.card && evtx.card.name == 'shan'));
+                                    const targets = losers.filter(i => i.isIn() && !i.hasHistory('useCard', evtx => evtx.respondTo?.[1] == trigger.card && evtx.card.name == 'shan'));
                                     if (targets.length) targets.forEach(i => i.loseHp());
                                 })
                                 .assign({ forceDie: true })
