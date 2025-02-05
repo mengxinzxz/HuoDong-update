@@ -2342,20 +2342,6 @@ const packs = function () {
                         shown: [],
                         map: {},
                     }
-                    player.when('dieBegin').then(() => {
-                        const name = player.name ? player.name : player.name1;
-                        if (name) {
-                            const sex = get.character(name, 0);
-                            const group = get.character(name, 1);
-                            if (player.sex != sex) {
-                                game.broadcastAll((player, sex) => {
-                                    player.sex = sex;
-                                }, player, sex);
-                                game.log(player, '将性别变为了', '#y' + get.translation(sex) + '性');
-                            }
-                            if (player.group != group) player.changeGroup(group);
-                        }
-                    });
                 },
                 unique: true,
                 audio: 'huashen2',
@@ -2537,6 +2523,24 @@ const packs = function () {
                         _status.characterlist.addArray(storage.character);
                         storage.character = [];
                         storage.shown = [];
+                        const name = player.name ? player.name : player.name1;
+                        if (name) {
+                            const sex = get.character(name, 0);
+                            const group = get.character(name, 1);
+                            if (player.sex != sex) {
+                                game.broadcastAll((player, sex) => {
+                                    player.sex = sex;
+                                }, player, sex);
+                                game.log(player, '将性别变为了', '#y' + get.translation(sex) + '性');
+                            }
+                            if (player.group != group) {
+                                game.broadcastAll((player, group) => {
+                                    player.group = group;
+                                    player.node.name.dataset.nature = get.groupnature(group);
+                                }, player, group);
+                                game.log(player, '将势力变为了', '#y' + get.translation(group + 2));
+                            }
+                        }
                     },
                     mark(dialog, storage, player) {
                         if (!storage || !storage.character || !storage.character.length) return '没有化身';
@@ -10242,6 +10246,186 @@ const packs = function () {
                         }, player);
                     }
                 },
+            },	//OL袁姬
+            old_jieyan: {
+                audio: 'oljieyan',
+                trigger: { player: 'phaseZhunbeiBegin' },
+                async cost(event, trigger, player) {
+                    event.result = await player.chooseTarget(get.prompt2(event.name.slice(0, -5))).set('ai', target => {
+                        const player = get.player(), att = get.attitude(player, target), goon = player.hasSkill('old_shuiyue', null, null, false);
+                        let eff = get.damageEffect(target, player, player);
+                        if (goon) {
+                            if (player.storage.old_shuiyue) eff += get.effect(target, { name: 'guohe_copy2' }, player, player) * Math.min(2, target.countCards('he'));
+                            else eff += get.effect(target, { name: 'draw' }, player, player);
+                        }
+                        if (goon && target.getHp() > 2 && att > 0 && target !== player && !player.storage.old_shuiyue) {
+                            return 0.1 + (target.countCards('h') - target.getHp());
+                        }
+                        return eff;
+                    }).forResult();
+                },
+                async content(event, trigger, player) {
+                    const target = event.targets[0];
+                    await target.damage();
+                    const { result: { index } } = await target.chooseControl().set('choiceList', [
+                        '跳过下个弃牌阶段',
+                        '回复1点体力，下个弃牌阶段手牌上限-2',
+                    ]).set('ai', () => {
+                        const player = get.player(), target = get.event().getTrigger().player;
+                        if ((get.recoverEffect(player, target, target) > 0 || get.attitude(player, target) > 0) && game.hasPlayer(current => current != player && get.attitude(player, current) > 0)) return 1;
+                        return 0;
+                    });
+                    if (index == 0) {
+                        target.skip('phaseDiscard');
+                        game.log(target, '跳过下个弃牌阶段');
+                    }
+                    else {
+                        await target.recover();
+                        target.addTempSkill('old_jieyan_effect', { player: 'phaseDiscardAfter' });
+                        target.addMark('old_jieyan_effect', 2, false);
+                        target.when('phaseDiscardBefore').then(() => {
+                            player.addTempSkill('old_jieyan_hand', { player: 'phaseDiscardAfter' });
+                        });
+                        player.addSkill('old_jieyan_gain');
+                        player.markAuto('old_jieyan_gain', [target]);
+                    }
+                },
+                subSkill: {
+                    effect: {
+                        charlotte: true,
+                        onremove: true,
+                        mark: true,
+                        marktext: '弃',
+                        intro: { content: '下个弃牌阶段手牌上限-#' },
+                        mod: {
+                            maxHandcard(player, num) {
+                                if (player.hasSkill('old_jieyan_hand')) return num - player.countMark('old_jieyan_effect');
+                            },
+                        },
+                    },
+                    hand: { charlotte: true },
+                    gain: {
+                        charlotte: true,
+                        onremove: true,
+                        intro: { content: '节言角色：$' },
+                        trigger: { global: 'phaseDiscardAfter' },
+                        filter(event, player) {
+                            return player.getStorage('old_jieyan_gain').includes(event.player);
+                        },
+                        forced: true,
+                        popup: false,
+                        async content(event, trigger, player) {
+                            const target = trigger.player, cards = [];
+                            target.getHistory('lose', evt => {
+                                if (evt.type == 'discard' && evt.getParent('phaseDiscard') === trigger) cards.addArray(evt.cards2.filterInD('d'));
+                            });
+                            player.unmarkAuto('old_jieyan_gain', [target]);
+                            if (cards.length && game.hasPlayer(current => current !== target)) {
+                                const targets = await player.chooseTarget(get.prompt(event.name), `令一名不为${get.translation(target)}的角色获得${get.translation(cards)}`, (card, player, target) => {
+                                    return target !== get.event().getTrigger().player;
+                                }).set('ai', target => {
+                                    const player = get.player();
+                                    let att = get.attitude(player, target);
+                                    if (att < 3) return 0;
+                                    if (target.hasSkillTag('nogain')) att /= 10;
+                                    return att;
+                                }).forResultTargets();
+                                if (targets && targets.length) {
+                                    const next = targets[0].gain(cards, 'gain2');
+                                    next.giver = player;
+                                    await next;
+                                }
+                            }
+                            if (!player.getStorage('old_jieyan_gain').length) player.removeSkill('old_jieyan_gain');
+                        },
+                    },
+                },
+            },
+            old_jinghua: {
+                audio: 'oljinghua',
+                trigger: {
+                    global: 'gainAfter',
+                    player: 'loseAsyncAfter',
+                },
+                filter(event, player, triggername, target) {
+                    if (event.name === 'loseAsync' && event.type !== 'gain') return false;
+                    return target?.isIn();
+                },
+                getIndex(event, player) {
+                    return game.filterPlayer(target => {
+                        if (target === player) return false;
+                        if (!player.storage.old_jinghua && target.isHealthy()) return false;
+                        const cards = event.getg(target);
+                        if (!cards.length || event.giver === player) return true;
+                        return event.getl && event.getl(player)?.cards2?.some(card => cards.includes(card));
+                    }).sortBySeat();
+                },
+                logTarget: (event, player, triggername, target) => target,
+                check(event, player, triggername, target) {
+                    return player.storage.old_jinghua ? get.effect(target, { name: 'losehp' }, player, player) > 0 : get.recoverEffect(target, player, player) > 0;
+                },
+                locked: false,
+                forced: true,
+                async content(event, trigger, player) {
+                    event.targets[0][player.storage.old_jinghua ? 'loseHp' : 'recover']();
+                },
+                group: 'old_jinghua_change',
+                subSkill: {
+                    change: {
+                        audio: 'oljinghua',
+                        trigger: {
+                            player: 'loseAfter',
+                            global: ['equipAfter', 'addJudgeAfter', 'gainAfter', 'loseAsyncAfter', 'addToExpansionAfter'],
+                        },
+                        filter(event, player) {
+                            if (player.countCards('h') || player.storage.old_jinghua) return false;
+                            return event.getl(player)?.hs?.length > 0;
+                        },
+                        skillAnimation: true,
+                        animationColor: 'wood',
+                        prompt2: '修改【镜花】为：当其他角色获得你的牌后，其失去1点体力。',
+                        content() {
+                            player.storage.old_jinghua = true;
+                            player.popup('镜花');
+                            game.log(player, '修改了技能', '#g【镜花】');
+                        },
+                    },
+                },
+            },
+            old_shuiyue: {
+                audio: 'olshuiyue',
+                trigger: { global: 'damageEnd' },
+                filter(event, player) {
+                    const target = event.player, source = event.source;
+                    if (!target.isIn() || target === player || source !== player) return false;
+                    return !player.storage.old_shuiyue || target.countCards('he');
+                },
+                forced: true,
+                locked: false,
+                logTarget: 'player',
+                async content(event, trigger, player) {
+                    const target = trigger.player;
+                    if (player.storage.old_shuiyue) await target.chooseToDiscard('he', true);
+                    else await target.draw();
+                },
+                group: 'old_shuiyue_change',
+                subSkill: {
+                    change: {
+                        audio: 'olshuiyue',
+                        trigger: { source: 'dying' },
+                        filter(event, player) {
+                            return !player.storage.old_shuiyue && event.player !== player;
+                        },
+                        skillAnimation: true,
+                        animationColor: 'water',
+                        prompt2: '修改【水月】为：当其他角色受到你造成的伤害后，其弃置一张牌。',
+                        content() {
+                            player.storage.old_shuiyue = true;
+                            player.popup('水月');
+                            game.log(player, '修改了技能', '#g【水月】');
+                        },
+                    },
+                },
             },
         },
         dynamicTranslate: {
@@ -10317,6 +10501,22 @@ const packs = function () {
                 if (count == 2) str += '</span>';
                 str += '}';
                 return '转换技。①一名角色可以将一张基本牌当作' + str + '使用。②当你成为〖蚁附①〗转化的牌的目标后，你摸一张牌。';
+            },
+            old_jinghua(player) {
+                const storage = player.storage.old_jinghua;
+                var str = '当其他角色获得你的牌后，或当你交给其他角色牌后，其';
+                str += storage ? '失去' : '回复';
+                str += '1点体力。';
+                if (!storage) str += '当你失去最后的手牌后，你可以将此技能描述中的“回复”改为“失去”。';
+                return str;
+            },
+            old_shuiyue(player) {
+                const storage = player.storage.old_shuiyue;
+                var str = '当其他角色受到你造成的伤害后，其';
+                str += storage ? '弃置' : '摸';
+                str += '一张牌。';
+                if (!storage) str += '当你令其他角色进入濒死状态后，你可以将此技能描述中的“摸”改为“弃置”。';
+                return str;
             },
         },
         translate: {
@@ -10814,6 +11014,12 @@ const packs = function () {
                     '②当你死亡前，若你的体力上限大于0，则你取消之，将全部武将牌替换为单将“蔡夫人-暗黑傀儡师”，减1点体力上限并将体力回复至上限' + str,
                 ].join('');
             },
+            old_jieyan: '节言',
+            old_jieyan_info: '准备阶段，你可以对一名角色造成1点伤害，然后其选择一项：1.跳过下个弃牌阶段；2.回复1点体力，其下个弃牌阶段手牌上限-2且你可以将其此阶段弃置的牌交给另一名角色。',
+            old_jinghua: '镜花',
+            old_jinghua_info: '当其他角色获得你的牌后，或当你交给其他角色牌后，其回复1点体力。当你失去最后的手牌后，你可以将此技能描述中的“回复”改为“失去”。',
+            old_shuiyue: '水月',
+            old_shuiyue_info: '当其他角色受到你造成的伤害后，其摸一张牌。当你令其他角色进入濒死状态后，你可以将此技能描述中的“摸”改为“弃置”。',
         },
     };
     for (var i in huodongcharacter.character) {
