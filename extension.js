@@ -16,12 +16,14 @@ game.bolShowNewPack = function () {
 		'技能修改，配音补充',
 		'添加怀旧武将：许劭、OL袁姬',
 		'添加欢杀武将：高览、卢植、甘糜、二赵',
+		'添加微信武将：极何太后、极张春华、极曹叡、极张飞、极贾诩、李昭焦伯、嵇康',
 		'To be continued...',
 	];
 	//更新武将
 	var HuoDong_players = [
 		'old_xushao', 'old_ol_yuanji', 'Mbaby_gaolan', 'Mbaby_yl_luzhi', 'Mbaby_ganfurenmifuren',
-		'Mbaby_zhaotongzhaoguang',
+		'Mbaby_zhaotongzhaoguang', 'wechat_zhiyin_jiaxu', 'wechat_zhiyin_zhangfei', 'wechat_zhiyin_caorui',
+		'wechat_zhiyin_zhangchunhua', 'wechat_zhiyin_hetaihou', 'wechat_lizhaojiaobo', 'wechat_jikang',
 	];
 	//加载
 	var dialog = ui.create.dialog(
