@@ -10193,11 +10193,15 @@ const packs = function () {
                         const bool = await winner.chooseBool(`视为对${get.translation(targets)}使用一张【杀】？`).set('choice', targets.reduce((num, i) => num + get.effect(i, sha, winner, winner), 0) > 0).forResultBool();
                         if (bool) {
                             player.when({ global: 'useCardAfter' })
-                                .filter(evt => evt.card.name == 'sha' && evt.getParent() == event && event.losers.filter(i => i.getHistory('useCard').some(evtx => evtx.respondTo?.[1] == evt.card && evtx.card.name == 'shan')).length != event.losers.length)
+                                .filter(evt => evt.card.name == 'sha' && evt.getParent() == event && (() => {
+                                    const targets = event.losers.filter(i => i.hasHistory('useCard').some(evtx => evtx.respondTo?.[1] == evt.card && evtx.card.name == 'shan'));
+                                    return targets.length > 0 && event.losers.some(i => !targets.includes(i) && i.isIn());
+                                })())
                                 .then(() => {
-                                    const targets = losers.filter(i => !i.getHistory('useCard').some(evtx => evtx.respondTo?.[1] == trigger.card && evtx.card.name == 'shan'));
+                                    const targets = losers.filter(i => i.isIn() && !i.hasHistory('useCard').some(evtx => evtx.respondTo?.[1] == trigger.card && evtx.card.name == 'shan'));
                                     if (targets.length) targets.forEach(i => i.loseHp());
                                 })
+                                .assign({ forceDie: true })
                                 .vars({ losers: targets });
                             await winner.useCard(sha, targets, false);
                         }
@@ -10478,8 +10482,13 @@ const packs = function () {
                     const juedou = get.autoViewAs({ name: 'juedou', isCard: true });
                     return get.effect(event.source, juedou, event.player, player) > 0;
                 },
-                logTarget: 'source',
+                logTarget(event, player) {
+                    return [event.player, event.source];
+                },
+                line: false,
                 async content(event, trigger, player) {
+                    player.line2([trigger.player, trigger.source]);
+                    await game.delay();
                     player.addTempSkill(event.name + '_used', 'roundStart');
                     player.addMark(event.name + '_used', 1, false);
                     const { player: target, source } = trigger;
