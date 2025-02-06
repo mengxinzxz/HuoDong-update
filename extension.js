@@ -14,7 +14,7 @@ game.bolShowNewPack = function () {
 		'/setPlayer/',
 		'bugfix',
 		'技能修改，配音补充',
-		'添加怀旧武将：许劭、OL袁姬',
+		'添加怀旧武将：许劭、袁姬、蒋干',
 		'添加欢杀武将：高览、卢植、甘糜、二赵',
 		'添加微信武将：极何太后、极张春华、极曹叡、极张飞、极贾诩、李昭焦伯、嵇康',
 		'To be continued...',
@@ -24,6 +24,7 @@ game.bolShowNewPack = function () {
 		'old_xushao', 'old_ol_yuanji', 'Mbaby_gaolan', 'Mbaby_yl_luzhi', 'Mbaby_ganfurenmifuren',
 		'Mbaby_zhaotongzhaoguang', 'wechat_zhiyin_jiaxu', 'wechat_zhiyin_zhangfei', 'wechat_zhiyin_caorui',
 		'wechat_zhiyin_zhangchunhua', 'wechat_zhiyin_hetaihou', 'wechat_lizhaojiaobo', 'wechat_jikang',
+		'old_sp_jianggan',
 	];
 	//加载
 	var dialog = ui.create.dialog(
