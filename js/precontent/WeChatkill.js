@@ -124,7 +124,7 @@ const packs = function () {
             wechat_zhugeguo: ['female', 'shu', 3, ['wechatqirang', 'wechatyuhua']],
             wechat_sunhanhua: ['female', 'wu', 3, ['wechatchongxu', 'miaojian', 'shhlianhua']],
             wechat_liucheng: ['female', 'qun', 3, ['wechatlveying', 'wechatyingwu']],
-            wechat_lizhaojiaobo: ['male', 'wei', 3, ['wechatzuoyou', 'wechatshishou']],
+            wechat_lizhaojiaobo: ['male', 'wei', 4, ['wechatzuoyou', 'wechatshishou']],
             wechat_jikang: ['male', 'wei', 3, ['wechatjikai', 'wechatqingkuang', 'wechatyinyi']],
             //神武将
             wechat_shen_zhugeliang: ['male', 'shen', 3, ['wechatqixing', 'wechatjifeng', 'wechattianfa'], ['shu', 'name:诸葛|亮']],
@@ -10516,7 +10516,7 @@ const packs = function () {
                 filterTarget: true,
                 async content(event, trigger, player) {
                     const { target } = event;
-                    const result = event.result || (target.countCards('h') > 0 ? await player.chooseControl().set('choiceList', [
+                    event.result = event.result || (target.countCards('h') > 0 ? await player.chooseControl().set('choiceList', [
                         `令${get.translation(target)}摸三张牌，然后弃置两张手牌`,
                         `令${get.translation(target)}弃置一张手牌，然后其回复1点体力`,
                     ]).set('ai', () => {
@@ -10524,13 +10524,15 @@ const packs = function () {
                         const eff = get.recoverEffect(target, player, player) + get.effect(target, { name: 'guohe_copy', position: 'h' }, target, player);
                         return get.effect(target, 'wechatzuoyou', player, player) > eff ? 0 : 1;
                     }).forResult() : { index: 0 });
-                    event.result = event.result || result;
-                    if (result.index === 0) {
+                    if (event.result.index === 0) {
                         await target.draw(3);
                         if (target.countCards('h')) await target.chooseToDiscard(2, true, 'h');
-                    } else {
-                        if (target.countCards('h')) await target.chooseToDiscard(target === player ? '佐佑' : `${get.translation(player)}对你发动了【佐佑】`, '请弃置一张手牌，然后回复1点体力', 1, true);
-                        await target.recover();
+                    }
+                    else {
+                        if (target.countCards('h')) {
+                            const resultx = await target.chooseToDiscard(target === player ? '佐佑' : `${get.translation(player)}对你发动了【佐佑】`, '请弃置一张手牌，然后回复1点体力', true).forResult();
+                            if (resultx.bool) await target.recover();
+                        }
                     }
                 },
                 ai: {
@@ -10542,9 +10544,18 @@ const packs = function () {
                     },
                     result: {
                         player(player, target) {
-                            let eff = get.recoverEffect(target, player, player) + get.effect(target, { name: 'guohe_copy', position: 'h' }, target, player);
-                            if (!target.countCards('h')) eff = 0;
-                            return Math.max(eff, get.effect(target, 'wechatzuoyou', player, player));
+                            const list = (() => {
+                                let eff = get.recoverEffect(target, player, player) + get.effect(target, { name: 'guohe_copy', position: 'h' }, target, player);
+                                if (!target.countCards('h')) eff = 0;
+                                let eff2 = get.effect(target, 'wechatzuoyou', player, player);
+                                return [eff > eff2, Math.max(eff, eff2)];
+                            })();
+                            if (!player.hasSkill('wechaishishou') || target === player) return list[1];
+                            return list[1] + (() => {
+                                if (list[0]) return get.effect(player, 'wechatzuoyou', player, player);
+                                if (!player.countCards('h')) return 0;
+                                return get.recoverEffect(player, player, player) + get.effect(player, { name: 'guohe_copy', position: 'h' }, player, player);
+                            })();
                         },
                     },
                 },
@@ -10553,13 +10564,14 @@ const packs = function () {
                 audio: 'mbshishou',
                 trigger: { player: 'wechatzuoyouAfter' },
                 filter(event, player) {
+                    if (event.result.index === 0 && !player.countCards('h')) return false;
                     return event.target !== player;
                 },
                 forced: true,
                 async content(event, trigger, player) {
                     event.target = player;
                     event.result = { index: 1 - trigger.result.index };
-                    await lib.skill.mbzuoyou.content(event, trigger, player);
+                    await get.info('wechatzuoyou').content(event, trigger, player);
                 },
                 ai: { combo: 'wechatzuoyou' },
             },
