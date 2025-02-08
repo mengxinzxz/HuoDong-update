@@ -33,7 +33,7 @@ const packs = function () {
             mx_fh_sp_huaxin: ['male', 'wei', 3, ['fh_yuanqing', 'shuchen']],
             mx_fh_xiangchong: ['male', 'shu', 4, ['fh_guying', 'muzhen']],
             mx_fh_sp_xujing: ['male', 'shu', 3, ['fh_boming', 'fh_ejian']],
-            mx_fh_qiaogong: ['male', 'wu', 3, ['fh_yizhu', 'gonghuan']],
+            mx_fh_qiaogong: ['male', 'wu', 3, ['fh_yizhu', 'luanchou']],
             mx_fh_sp_zhangwen: ['male', 'wu', 3, ['gebo', 'fh_songshu']],
             mx_fh_liuzhang: ['male', 'qun', 3, ['fh_yinge', 'fh_shiren', 'fh_juyi'], ['zhu']],
             mx_fh_zhangzhongjing: ['male', 'qun', 3, ['fh_jishi', 'fh_liaoyi', 'fh_binglun']],
