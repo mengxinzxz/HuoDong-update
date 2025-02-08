@@ -10585,7 +10585,7 @@ const packs = function () {
                 },
                 forced: true,
                 async content(event, trigger, player) {
-                    trigger.directHit.addArray(player == _status.currentPhase ? game.filterPlayer(current => player != current) : [player]);
+                    trigger.directHit.addArray(player != _status.currentPhase ? game.filterPlayer(current => player != current) : [player]);
                 },
                 ai: {
                     directHit_ai: true,
