@@ -10264,7 +10264,7 @@ const packs = function () {
                     return Math.min(5, _status.event.wechat_shiwuAble);
                 },
                 filter(event, player) {
-                    if (player.countCards('h')) return false;
+                    if (!player.countCards('h')) return false;
                     return game.hasPlayer(current => get.info('wechathupo').filterTarget(null, player, current));
                 },
                 filterTarget(card, player, target) {
