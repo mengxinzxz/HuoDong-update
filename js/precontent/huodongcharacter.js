@@ -279,9 +279,9 @@ const packs = function () {
             //许劭
             bol_pinjian: {
                 init(player) {
-                    if (!_status.pileTop) lib.skill.bol_pinjian.initList();
-                    if (!_status._bolshicai_pileTop) {
-                        _status.pileTop.randomSort();
+                    if (!_status.characterlist) lib.skill.bol_pinjian.initList();
+                    if (!_status.characterlist._bol_pinjian_init) {
+                        _status.characterlist.randomSort();
                         function bol_pinjian_timeset(callback, delay) {
                             let timeout;
                             return function () {
@@ -308,8 +308,8 @@ const packs = function () {
                                 return result;
                             }
                         };
-                        _status.pileTop = new Proxy(_status.pileTop, handler);
-                        _status._bolshicai_pileTop = true;
+                        _status.characterlist = new Proxy(_status.characterlist, handler);
+                        _status.characterlist._bol_pinjian_init = true;
                     }
                     lib.skill.bol_pinjian.update(player);
                 },
@@ -325,7 +325,7 @@ const packs = function () {
                         return player.unmarkSkill('bol_pinjian');
                     }
                     player.addSkillBlocker('bol_pinjian');
-                    const names = _status.pileTop.slice(0, 4);
+                    const names = _status.characterlist.slice(0, 4);
                     player.storage.bol_pinjian = names;
                     player.markSkill('bol_pinjian');
                     const NowSkills = player.getStorage('bol_pinjian').reduce((list, name) => list.addArray(get.character(name).skills || []), []);
@@ -347,8 +347,8 @@ const packs = function () {
                     player.addTempSkill('bol_pinjian_used');
                     const names = player.storage.bol_pinjian;
                     if (names?.length) {
-                        _status.pileTop.removeArray(names);
-                        _status.pileTop.addArray(names);
+                        _status.characterlist.removeArray(names);
+                        _status.characterlist.addArray(names);
                     }
                 },
                 marktext: '将',
@@ -440,8 +440,8 @@ const packs = function () {
                 },
                 forced: true,
                 content() {
-                    if (!_status.pileTop) lib.skill.bol_pinjian.initList();
-                    _status.pileTop.randomSort();
+                    if (!_status.characterlist) lib.skill.bol_pinjian.initList();
+                    _status.characterlist.randomSort();
                     game.log(player, '洗切了', '#g武将牌堆');
                     game.delayx();
                 },
@@ -1250,8 +1250,8 @@ const packs = function () {
                     return node;
                 },
                 getCharacter(player) {
-                    if (!_status.pileTop) lib.skill.pingjian.initList();
-                    return _status.pileTop.filter(function (name) {
+                    if (!_status.characterlist) lib.skill.pingjian.initList();
+                    return _status.characterlist.filter(function (name) {
                         if (name.indexOf('zuoci') != -1 || !lib.character[name] || !lib.character[name][3]) return false;
                         return lib.character[name][3].filter(function (skill) {
                             var info = get.info(skill);
@@ -1322,7 +1322,7 @@ const packs = function () {
                     characters2.removeArray(characters);
                     skills.removeArray(lib.skill.gz_huashen.getSkills(characters2, player));
                     player.unmarkAuto('gz_huashen', characters);
-                    _status.pileTop.addArray(characters);
+                    _status.characterlist.addArray(characters);
                     player.removeInvisibleSkill(skills);
                 },
                 onremove(player, skill) {
@@ -2599,7 +2599,7 @@ const packs = function () {
                 },
                 intro: {
                     onunmark(storage, player) {
-                        _status.pileTop.addArray(storage.character);
+                        _status.characterlist.addArray(storage.character);
                         storage.character = [];
                         storage.shown = [];
                         const name = player.name ? player.name : player.name1;
@@ -2652,10 +2652,10 @@ const packs = function () {
                 },
                 addFuckShen(player, skill) {
                     if (!player.storage[skill]) return;
-                    if (!_status.pileTop) lib.skill.pingjian.initList();
-                    _status.pileTop.randomSort();
-                    for (var i = 0; i < _status.pileTop.length; i++) {
-                        var name = _status.pileTop[i];
+                    if (!_status.characterlist) lib.skill.pingjian.initList();
+                    _status.characterlist.randomSort();
+                    for (var i = 0; i < _status.characterlist.length; i++) {
+                        var name = _status.characterlist[i];
                         if (lib.character[name][1] == 'shen' || name.indexOf('zuoci') != -1 || name.indexOf('xushao') != -1 || name.indexOf('key') == 0 || lib.skill.rehuashen.banned.includes(name) || player.storage[skill].character.includes(name)) continue;
                         var skills = lib.character[name][3];
                         for (var j = 0; j < skills.length; j++) {
@@ -2665,7 +2665,7 @@ const packs = function () {
                         if (skills.length) {
                             player.storage[skill].character.push(name);
                             player.storage[skill].map[name] = skills;
-                            _status.pileTop.remove(name);
+                            _status.characterlist.remove(name);
                             return name;
                         }
                     }
@@ -2684,7 +2684,7 @@ const packs = function () {
                 },
                 removeFuckShen(player, links, skill) {
                     player.storage[skill].character.removeArray(links);
-                    _status.pileTop.addArray(links);
+                    _status.characterlist.addArray(links);
                     game.log(player, '移去了', get.cnNumber(links.length) + '张', '#g化身');
                     player[player.storage[skill].character.length ? 'markSkill' : 'unmarkSkill'](skill);
                 },
@@ -5221,8 +5221,8 @@ const packs = function () {
                 derivation: 'bolyuheng_faq',
                 //全扩技能库
                 getList() {
-                    if (!_status.pileTop) lib.skill.pingjian.initList();
-                    let list = _status.pileTop.filter(name => get.character(name, 1) == 'wu' || (get.is.double(name, true) || []).includes('wu'));
+                    if (!_status.characterlist) lib.skill.pingjian.initList();
+                    let list = _status.characterlist.filter(name => get.character(name, 1) == 'wu' || (get.is.double(name, true) || []).includes('wu'));
                     const players = game.players.concat(game.dead);
                     for (const player of players) list.removeArray([player.name, player.name1, player.name2]);
                     let skills = [];
@@ -8807,7 +8807,7 @@ const packs = function () {
                     player: ['enterGame', 'subPlayerDie'],
                 },
                 filter(event, player) {
-                    if (!(_status.pileTop || []).some(name => {
+                    if (!(_status.characterlist || []).some(name => {
                         if (get.is.double(name)) return false;
                         const group = get.character(name).group;
                         return lib.skill.bilibili_pingjian.groups.includes(group) && !player.getStorage('bilibili_pingjianx').includes(group);
@@ -8819,7 +8819,7 @@ const packs = function () {
                 charlotte: true,
                 async content(event, trigger, player) {
                     await player.loseMaxHp();
-                    const list = _status.pileTop.slice();
+                    const list = _status.characterlist.slice();
                     let characters = list.filter(name => {
                         if (get.is.double(name)) return false;
                         const group = get.character(name).group;
@@ -8837,7 +8837,7 @@ const packs = function () {
                     if (result.bool) {
                         const name = result.links[0];
                         player.markAuto('bilibili_pingjianx', [get.character(name).group]);
-                        _status.pileTop.remove(name);
+                        _status.characterlist.remove(name);
                         const subPlayer = player.addSubPlayer({
                             name: name,
                             skills: get.character(name).skills,
@@ -8850,14 +8850,14 @@ const packs = function () {
                             intro: '初始体力值和体力上限为2，手牌数为4',//主将视角
                             intro2: '随从阵亡后切换为原武将牌',//随从视角
                             onremove(player, name) {
-                                _status.pileTop.add(name);
+                                _status.characterlist.add(name);
                             }
                         });
                         await player.callSubPlayer(subPlayer);
                     }
                 },
                 init() {
-                    if (!_status.pileTop) lib.skill.pingjian.initList();
+                    if (!_status.characterlist) lib.skill.pingjian.initList();
                 },
             },
             //神贾诩
@@ -10269,9 +10269,9 @@ const packs = function () {
                         await player.recoverTo(player.maxHp);
                         if (player.isIn()) await game.delay(3);
                     }
-                    if (!_status.pileTop) get.info('pingjian').initList();
+                    if (!_status.characterlist) get.info('pingjian').initList();
                     const list = ['蔡', '夫人'].map(str => {
-                        return _status.pileTop.filter(name => {
+                        return _status.characterlist.filter(name => {
                             const nameStr = lib.translate[name + '_ab'] || lib.translate[name];
                             return nameStr && !nameStr.includes('蔡夫人') && nameStr.includes(str);
                         }).randomGet();
@@ -10287,7 +10287,7 @@ const packs = function () {
                             player.node.avatar2.setBackground(chosen, 'character');
                             player.node.name2.innerHTML = get.slimName(chosen);
                             if (player == game.me && ui.fakeme) ui.fakeme.style.backgroundImage = player.node.avatar.style.backgroundImage;
-                            if (_status.pileTop) _status.pileTop.removeArray(['', '1', '2'].map(num => player['name' + num]).filter(i => Boolean(i)));
+                            if (_status.characterlist) _status.characterlist.removeArray(['', '1', '2'].map(num => player['name' + num]).filter(i => Boolean(i)));
                         }, player, ...list);
                         player.addAdditionalSkill(event.name, list.map(name => get.character(name)?.skills || []).flat());
                         game.log(player, '将', '#g主将', '替换为', '#g' + get.translation(list[0]));
@@ -10303,7 +10303,7 @@ const packs = function () {
                     if (player.name2) {
                         if (get.mode() === 'guozhan') player.showCharacter(2);
                         game.broadcastAll(player => {
-                            if (_status.pileTop) _status.pileTop.addArray(['', '1', '2'].map(num => player['name' + num]).filter(i => Boolean(i)));
+                            if (_status.characterlist) _status.characterlist.addArray(['', '1', '2'].map(num => player['name' + num]).filter(i => Boolean(i)));
                             player.name1 = player.name = 'bilibili_caifuren';
                             player.sex = get.character(player.name).sex;
                             player.group = get.character(player.name).group;
@@ -10316,7 +10316,7 @@ const packs = function () {
                             player.node.avatar2.classList.add('hidden');
                             player.node.name2.innerHTML = '';
                             if (player == game.me && ui.fakeme) ui.fakeme.style.backgroundImage = player.node.avatar.style.backgroundImage;
-                            if (_status.pileTop) _status.pileTop.remove(player.name);
+                            if (_status.characterlist) _status.characterlist.remove(player.name);
                         }, player);
                     }
                 },
@@ -10608,9 +10608,6 @@ const packs = function () {
             CSCS: '彩蛋·十常侍',
             CXuanDie: '蝶设堂',
             huashen_unknown: ' ',
-            bolshicai: '恃才',
-            bolshicai_effect: '牌堆顶',
-            bolshicai_info: '出牌阶段，牌堆顶的一张牌对你可见。你可以弃置一张牌，然后获得牌堆顶的一张牌，且不能再发动〖恃才〗直到此牌离开你的手牌区。',
             bilibili_zhengxuan: '郑玄',
             bilibili_zhengxuan_ab: '水果忍者',
             bilibili_zhengjing: '整经',
@@ -11097,6 +11094,9 @@ const packs = function () {
             old_jinghua_info: '当其他角色获得你的牌后，或当你交给其他角色牌后，其回复1点体力。当你失去最后的手牌后，你可以将此技能描述中的“回复”改为“失去”。',
             old_shuiyue: '水月',
             old_shuiyue_info: '当其他角色受到你造成的伤害后，其摸一张牌。当你令其他角色进入濒死状态后，你可以将此技能描述中的“摸”改为“弃置”。',
+            bolshicai: '恃才',
+            bolshicai_effect: '牌堆顶',
+            bolshicai_info: '出牌阶段，牌堆顶的一张牌对你可见。你可以弃置一张牌，然后获得牌堆顶的一张牌，且不能再发动〖恃才〗直到此牌离开你的手牌区。',
         },
     };
     for (var i in huodongcharacter.character) {
