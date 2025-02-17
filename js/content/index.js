@@ -1533,45 +1533,6 @@ export function content(config, pack) {
 		direct: true,
 		content() { player.logSkill('shenji') },
 	};
-	//族荀谌
-	lib.skill._clansankuang = {
-		charlotte: true,
-		trigger: { player: 'chooseTargetBegin' },
-		filter: event => event.getParent().name === 'clansankuang',
-		priority: 15,
-		direct: true,
-		content() {
-			const func = (event, player) => {
-				const name = event.getParent().name;
-				game.countPlayer(target => {
-					if (event.filterTarget(null, player, target)) {
-						target.prompt(get.translation(name) + get.info(name).getNum(target));
-					}
-				});
-			};
-			if (event.player == game.me) func(trigger, player);
-			else if (event.isOnline()) player.send(func, trigger, player);
-		},
-	};
-	//卢氏
-	lib.skill._olzhuyan = {
-		charlotte: true,
-		trigger: { player: 'chooseTargetBegin' },
-		filter: event => event.getParent().name === 'olzhuyan',
-		priority: 15,
-		direct: true,
-		content() {
-			const func = event => {
-				game.countPlayer(target => {
-					let text = event.targetprompt(target);
-					target.prompt('体力值' + text.replaceAll('/', '<br>手牌数'));
-				});
-			};
-			event.map = trigger.getParent().map;
-			if (event.player == game.me) func(trigger);
-			else if (event.isOnline()) player.send(func, trigger);
-		},
-	};
 	//神张角
 	delete lib.skill.yizhao.intro.markcount;
 	lib.skill.yizhao.filter = function (event, player) {

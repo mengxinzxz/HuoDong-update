@@ -683,28 +683,14 @@ const packs = function () {
                     player.popup('猜对' + get.cnNumber(event.num) + '项');
                     game.log(player, '猜对了' + get.cnNumber(event.num) + '项');
                     if (event.num > 0) {
-                        target.addTempSkill('minilingren_adddamage');
-                        target.storage.minilingren = {
-                            card: trigger.card,
-                        };
+                        var map = trigger.customArgs;
+                        var id = target.playerid;
+                        if (!map[id]) map[id] = {};
+                        if (typeof map[id].extraDamage != "number") map[id].extraDamage = 0;
+                        map[id].extraDamage++;
                     }
                     if (event.num > 1) player.draw(2);
                     if (event.num > 2) player.addTempSkills(['minijianxiong', 'minixingshang'], { player: 'phaseBegin' });
-                },
-            },
-            minilingren_adddamage: {
-                charlotte: true,
-                onremove: true,
-                trigger: { player: 'damageBegin3' },
-                filter(event, player) {
-                    var info = player.storage.minilingren;
-                    return event.card && event.card == info.card;
-                },
-                silent: true,
-                popup: false,
-                forced: true,
-                content() {
-                    trigger.num++;
                 },
             },
             minifujian: {
