@@ -4294,7 +4294,13 @@ const packs = function () {
                         },
                     },
                 },
-                subSkill: { backup: {} },
+                subSkill: {
+                    backup: {},
+                    type: {
+                        charlotte: true,
+                        onremove: true,
+                    },
+                },
             },
             //廖化
             fh_dangxian: {
