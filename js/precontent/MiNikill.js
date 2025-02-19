@@ -184,7 +184,7 @@ const packs = function () {
             Mbaby_taishici: ['male', 'wu', 4, ['miniretianyi', 'minihanzhan'], [...['die', 'tempname'].map(i => i + ':re_taishici'), 'name:太史|慈']],
             Mbaby_wuguotai: ['female', 'wu', 3, ['miniganlu', 'minibuyi']],
             Mbaby_xiaoqiao: ['female', 'wu', 3, ['minitianxiang', 'olhongyan'], ['name:桥|null']],
-            Mbaby_xusheng: ['male', 'wu', 4, ['minirepojunx', 'miniyicheng']],
+            Mbaby_xusheng: ['male', 'wu', 4, ['minirepojun', 'miniyicheng']],
             Mbaby_zhoutai: ['male', 'wu', 4, ['minirebuqu', 'fenji', 'miniqingchuang']],
             Mbaby_zhouyu: ['male', 'wu', 3, ['minireyingzi', 'minirefanjian'], ['die:sb_zhouyu']],
             Mbaby_zhugejin: ['male', 'wu', 3, ['huanshi', 'minihongyuan', 'mingzhe'], ['name:诸葛|瑾']],
@@ -12631,11 +12631,8 @@ const packs = function () {
                     player.awakenSkill('miniranji');
                     var num = lib.skill.olsbranji.getNum(player);
                     const skills = [];
-                    if (num >= player.getHp()) {
-                        skills.push('kunfen');
-                        player.storage.kunfen = true;
-                    }
-                    if (num <= player.getHp()) skills.push('zhaxiang');
+                    if (num >= player.getHp()) skills.push('minikunfen');
+                    if (num <= player.getHp()) skills.push('minisbzhaxiang');
                     player.addSkills(skills);
                     if (player.countCards('h') != player.getHandcardLimit() || player.isDamaged()) {
                         var num1 = player.countCards('h') - player.getHandcardLimit();
@@ -14074,7 +14071,7 @@ const packs = function () {
                 },
                 content() {
                     'step 0'
-                    const num = Math.min(trigger.target.getHp() + (event.name == 'minirepojun' ? 1 : 0), trigger.target.countCards('he'));
+                    const num = Math.min(trigger.target.getHp(), trigger.target.countCards('he'));
                     var next = player.choosePlayerCard(trigger.target, 'he', [1, num], get.prompt(event.name, trigger.target));
                     next.set('ai', function (button) {
                         if (!_status.event.goon) return 0;
@@ -32869,7 +32866,7 @@ const packs = function () {
             minipojun2: '破军',
             minipojun_info: '当你使用【杀】指定目标时，你可以将其至多X张牌移出游戏直至回合结束（X为其体力值），然后若其中有：装备牌，你弃置其中的一张；【闪】，你摸一张牌。',
             minirepojun: '破军',
-            minirepojun_info: '①当你使用【杀】指定目标后，你可以将其至多X+1张牌移出游戏直至回合结束（X为其体力值），然后若其中有：装备牌，你弃置其中的一张；【闪】，你摸一张牌。②你使用【杀】对手牌数和装备区牌数均不大于你的角色造成的伤害+1。',
+            minirepojun_info: '①当你使用【杀】指定目标后，你可以将其至多X张牌移出游戏直至回合结束（X为其体力值），然后若其中有：装备牌，你弃置其中的一张；【闪】，你摸一张牌。②你使用【杀】对手牌数和装备区牌数均不大于你的角色造成的伤害+1。',
             minirepojunx: '破军',
             minirepojunx_info: '当你使用【杀】指定目标或成为【杀】的目标后，你可以将对方的至多X张牌置于其武将牌上（X为你的体力上限），然后其于当前回合结束时获得这些牌。',
             miniyicheng: '疑城',
