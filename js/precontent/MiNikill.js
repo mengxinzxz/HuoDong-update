@@ -30788,7 +30788,7 @@ const packs = function () {
             },
             mininianxinghan: {
                 audio: 'ext:活动武将/audio/skill:2',
-                trigger: { player: ['phaseBegin', 'damageEnd'] },
+                trigger: { player: ['phaseBegin', 'damageBegin4'] },
                 filter(event, player) {
                     return lib.skill.mininianxinghan.filterGroup(player).length;
                 },
@@ -31620,6 +31620,7 @@ const packs = function () {
                         if (index) {
                             target.chat('洗具', 'wood');
                             trigger.num = list.indexOf(index);
+                            trigger._phaseEndTriggered = false;
                             game.log(target, '回溯至', '#g' + get.translation(level));
                         }
                         else {
@@ -33764,7 +33765,7 @@ const packs = function () {
             Mnian_lvbu: '念吕布',
             Mnian_zhouyu: '念周瑜',
             mininianxinghan: '兴汉',
-            mininianxinghan_info: '每回合限一次，回合开始时或当你受到伤害后，若默认势力和场上的势力的并集存在非蜀势力和你此前未因“定乱”成功的势力，则你可以进行一次“定乱”。若“定乱”成功，则你增加1点体力上限并回复1点体力，然后将场上的“定乱”势力角色均改为蜀势力。',
+            mininianxinghan_info: '每回合限一次，回合开始时或当你受到伤害时，若默认势力和场上的势力的并集存在非蜀势力和你此前未因“定乱”成功的势力，则你可以进行一次“定乱”。若“定乱”成功，则你增加1点体力上限并回复1点体力，然后将场上的“定乱”势力角色均改为蜀势力。',
             mininianxinghan_faq: '关于“定乱”',
             mininianxinghan_faq_info: '<br>系统为默认势力和场上的势力的并集存在非蜀势力和你此前未因“定乱”成功的势力各建立一个势力卡牌框，然后将这些势力的各四张对应势力卡牌随机分配至各个势力卡牌框中，玩家需要在[40+10*max(0,X-5)]秒内将其中仅一个势力卡牌框的所有卡牌调整为此势力的牌，则“定乱”成功，“定乱”结果为你成功分配的这个势力（X为S所含元素个数）。',
             mininianliaoyuan: '燎原',
