@@ -31716,7 +31716,6 @@ const packs = function () {
                         })).set('ai', () => get.event('controls').randomGet()).forResult();
                     event.result = { bool: (result.control != 'cancel2'), cost_data: skills.find(i => i[1] == result.control) };
                 },
-                usable: 1,
                 async content(event, trigger, player) {
                     const choice = event.cost_data;
                     player.popup(choice[1]);
