@@ -10522,8 +10522,11 @@ const packs = function () {
                         `令${get.translation(target)}弃置一张手牌，然后其回复1点体力`,
                     ]).set('ai', () => {
                         const player = get.player(), target = get.event().getParent().target;
-                        const eff = get.recoverEffect(target, player, player) + get.effect(target, { name: 'guohe_copy', position: 'h' }, target, player);
-                        return get.effect(target, 'wechatzuoyou', player, player) > eff ? 0 : 1;
+                        let eff1 = (player, target) => (get.recoverEffect(target, player, player) + get.effect(target, { name: 'guohe_copy', position: 'h' }, target, player));
+                        let eff2 = (player, target) => get.effect(target, { name: 'draw' }, player, player);
+                        if (player == target) {
+                            return eff1(player, target) >= eff2(player, target) ? 1 : 0;
+                        } return (eff1(player, target) + eff2(player, player)) >= (eff1(player, player) + eff2(player, target)) ? 1 : 0;
                     }).forResult() : { index: 0 });
                     if (event.result.index === 0) {
                         await target.draw(3);
@@ -10540,23 +10543,23 @@ const packs = function () {
                     order(item, player) {
                         if (game.hasPlayer(current => {
                             return current !== player && get.effect(current, 'wechatzuoyou', player, player) > 0;
-                        })) return get.order({ name: 'zengbin' }) + 0.1;
+                        })) return 10;
                         return 2;
                     },
                     result: {
                         player(player, target) {
-                            const list = (() => {
-                                let eff = get.recoverEffect(target, player, player) + get.effect(target, { name: 'guohe_copy', position: 'h' }, target, player);
-                                if (!target.countCards('h')) eff = 0;
-                                let eff2 = get.effect(target, 'wechatzuoyou', player, player);
-                                return [eff > eff2, Math.max(eff, eff2)];
-                            })();
-                            if (!player.hasSkill('wechaishishou') || target === player) return list[1];
-                            return list[1] + (() => {
-                                if (list[0]) return get.effect(player, 'wechatzuoyou', player, player);
-                                if (!player.countCards('h')) return 0;
-                                return get.recoverEffect(player, player, player) + get.effect(player, { name: 'guohe_copy', position: 'h' }, player, player);
-                            })();
+                            let eff1 = (player, target) => (get.recoverEffect(target, player, player) + get.effect(target, { name: 'guohe_copy', position: 'h' }, target, player));
+                            let eff2 = (player, target) => get.effect(target, { name: 'draw' }, player, player);
+                            if (player.hasSkill('wechaishishou')) {
+                                if (player == target) return Math.max(eff1(player, target), eff2(player, target));
+                                return Math.max(eff1(player, target) + eff2(player, player), eff1(player, player) + eff2(player, target));
+                            }
+                            return Math.max(eff1(player, target), eff2(player, target));
+                        },
+                        target(player, target) {
+                            const att = get.attitude(player, target);
+                            if (att <= 0 && target.isHealthy() && target.countCards('h')) return -1;
+                            return 1;
                         },
                     },
                 },
