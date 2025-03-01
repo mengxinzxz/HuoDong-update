@@ -6,7 +6,7 @@ const packs = function () {
         connect: true,
         characterSort: {
             WeChatkill: {
-                wechat_standard: ['wechat_jikang', 'wechat_lizhaojiaobo', 'wechat_liucheng', 'wechat_sunhanhua', 'wechat_zhugeguo', 'wechat_sp_diaochan', 'wechat_sunluyu', 'wechat_old_zhaoxiang', 'wechat_yj_ganning', 'wechat_re_luxun', 'wechat_yj_xuhuang', 'wechat_ganfuren', 'wechat_sunhao', 'wechat_yj_weiyan', 'wechat_sp_zhugeliang', 'wechat_zhenji', 'wechat_liuyan', 'wechat_sp_wangcan', 'wechat_xushi', 'wechat_baosanniang', 'wechat_litong', 'wechat_yj_zhoubuyi', 'wechat_jsp_huangyueying', 'wechat_re_gongsunzan', 'wechat_guanyinping', 'wechat_sp_machao', 'wechat_pangdegong', 'wechat_gongsunyuan', 'wechat_xusheng', 'wechat_yufan', 'wechat_handang', 'wechat_wanglang', 'wechat_huanghao', 'wechat_caiyong', 'wechat_yj_huangzhong', 'wechat_zhangzhang', 'wechat_chendeng', 'wechat_taoqian', 'wechat_kanze', 'wechat_xuezong', 'wechat_guyong', 'wechat_guansuo', 'wechat_zumao', 'wechat_yj_jushou', 'wechat_sp_pangde', 'wechat_caojie', 'wechat_zhuling', 'wechat_caizhenji', 'wechat_guohuanghou', 'wechat_yanyan', 'wechat_liaohua', 'wechat_liuyao', 'wechat_quancong', 'wechat_xiahouba', 'wechat_sp_jiangwei', 'wechat_caoxiu', 'wechat_yuanshao', 'wechat_sundeng', 'wechat_re_xushu', 'wechat_caopi', 'wechat_caozhang', 'wechat_buzhi', 'wechat_sp_taishici', 'wechat_masu', 'wechat_caifuren', 'wechat_jianyong', 'wechat_lukang', 'wechat_caozhi', 'wechat_huangyueying', 'wechat_weiyan', 'wechat_gaoshun', 'wechat_sunliang', 'wechat_wangping', 'wechat_sp_caiwenji', 'wechat_caochong', 'wechat_huangzhong', 'wechat_xiahouyuan', 'wechat_pangde', 'wechat_sunshangxiang', 'wechat_xuzhu', 'wechat_guanyu', 'wechat_caocao', 'wechat_shenpei', 'wechat_jiaxu', 'wechat_caoren', 'wechat_liuqi', 'wechat_zhaoxiang', 'wechat_caiwenji', 'wechat_menghuo', 'wechat_re_yuanshu', 'wechat_huaxiong', 'wechat_xiahoushi', 'wechat_xushu', 'wechat_zhaoyun', 'wechat_zhangfei', 'wechat_machao', 'wechat_yangxiu', 'wechat_lvmeng', 'wechat_zhoutai', 'wechat_bianfuren', 'wechat_sunluban', 'wechat_wuguotai', 'wechat_liubiao', 'wechat_liuchen', 'wechat_luxun', 'wechat_pangtong', 'wechat_zhangxingcai', 'wechat_zuoci', 'wechat_mayunlu', 'wechat_ruanhui', 'wechat_xurong', 'wechat_huojun'],
+                wechat_standard: ['wechat_guozhao', 'wechat_re_zuoci', 'wechat_jikang', 'wechat_lizhaojiaobo', 'wechat_liucheng', 'wechat_sunhanhua', 'wechat_zhugeguo', 'wechat_sp_diaochan', 'wechat_sunluyu', 'wechat_old_zhaoxiang', 'wechat_yj_ganning', 'wechat_re_luxun', 'wechat_yj_xuhuang', 'wechat_ganfuren', 'wechat_sunhao', 'wechat_yj_weiyan', 'wechat_sp_zhugeliang', 'wechat_zhenji', 'wechat_liuyan', 'wechat_sp_wangcan', 'wechat_xushi', 'wechat_baosanniang', 'wechat_litong', 'wechat_yj_zhoubuyi', 'wechat_jsp_huangyueying', 'wechat_re_gongsunzan', 'wechat_guanyinping', 'wechat_sp_machao', 'wechat_pangdegong', 'wechat_gongsunyuan', 'wechat_xusheng', 'wechat_yufan', 'wechat_handang', 'wechat_wanglang', 'wechat_huanghao', 'wechat_caiyong', 'wechat_yj_huangzhong', 'wechat_zhangzhang', 'wechat_chendeng', 'wechat_taoqian', 'wechat_kanze', 'wechat_xuezong', 'wechat_guyong', 'wechat_guansuo', 'wechat_zumao', 'wechat_yj_jushou', 'wechat_sp_pangde', 'wechat_caojie', 'wechat_zhuling', 'wechat_caizhenji', 'wechat_guohuanghou', 'wechat_yanyan', 'wechat_liaohua', 'wechat_liuyao', 'wechat_quancong', 'wechat_xiahouba', 'wechat_sp_jiangwei', 'wechat_caoxiu', 'wechat_yuanshao', 'wechat_sundeng', 'wechat_re_xushu', 'wechat_caopi', 'wechat_caozhang', 'wechat_buzhi', 'wechat_sp_taishici', 'wechat_masu', 'wechat_caifuren', 'wechat_jianyong', 'wechat_lukang', 'wechat_caozhi', 'wechat_huangyueying', 'wechat_weiyan', 'wechat_gaoshun', 'wechat_sunliang', 'wechat_wangping', 'wechat_sp_caiwenji', 'wechat_caochong', 'wechat_huangzhong', 'wechat_xiahouyuan', 'wechat_pangde', 'wechat_sunshangxiang', 'wechat_xuzhu', 'wechat_guanyu', 'wechat_caocao', 'wechat_shenpei', 'wechat_jiaxu', 'wechat_caoren', 'wechat_liuqi', 'wechat_zhaoxiang', 'wechat_caiwenji', 'wechat_menghuo', 'wechat_re_yuanshu', 'wechat_huaxiong', 'wechat_xiahoushi', 'wechat_xushu', 'wechat_zhaoyun', 'wechat_zhangfei', 'wechat_machao', 'wechat_yangxiu', 'wechat_lvmeng', 'wechat_zhoutai', 'wechat_bianfuren', 'wechat_sunluban', 'wechat_wuguotai', 'wechat_liubiao', 'wechat_liuchen', 'wechat_luxun', 'wechat_pangtong', 'wechat_zhangxingcai', 'wechat_zuoci', 'wechat_mayunlu', 'wechat_ruanhui', 'wechat_xurong', 'wechat_huojun'],
                 wechat_extra: ['zhugeliang', 'lvbu', 'lvmeng', 'guanyu'].map(i => `wechat_shen_${i}`),
                 wechat_zhiyin: ['jiaxu', 'zhangfei', 'caorui', 'zhangchunhua', 'hetaihou', 'zhurong', 'jiangwei', 'caozhi', 'liubei', 'sunce', 'xunyu', 'zhenji', 'xuzhu', 'yuanshao', 'lusu', 'guojia', 'lvbu', 'daqiao', 'xiaoqiao', 'caocao', 'zhugeliang', 'simayi', 'machao', 'huangyueying', 'caiwenji', 'zhouyu', 'sunquan', 'guanyu'].map(i => `wechat_zhiyin_${i}`),
                 wechat_sb: ['sunshangxiang', 'zhaoyun', 'machao', 'huangzhong'].map(i => `wechat_sb_${i}`),
@@ -126,6 +126,8 @@ const packs = function () {
             wechat_liucheng: ['female', 'qun', 3, ['wechatlveying', 'wechatyingwu']],
             wechat_lizhaojiaobo: ['male', 'wei', 4, ['wechatzuoyou', 'wechatshishou']],
             wechat_jikang: ['male', 'wei', 3, ['wechatjikai', 'wechatqingkuang', 'wechatyinyi']],
+            wechat_re_zuoci: ['male', 'qun', 3, ['rehuashen', 'wechatrexinsheng']],
+            wechat_guozhao: ['female', 'wei', 3, ['yichong', 'wechatwufei']],
             //神武将
             wechat_shen_zhugeliang: ['male', 'shen', 3, ['wechatqixing', 'wechatjifeng', 'wechattianfa'], ['shu', 'name:诸葛|亮']],
             wechat_shen_lvmeng: ['male', 'shen', 3, ['shelie', 'wechatgongxin'], ['wu']],
@@ -10521,8 +10523,11 @@ const packs = function () {
                         `令${get.translation(target)}弃置一张手牌，然后其回复1点体力`,
                     ]).set('ai', () => {
                         const player = get.player(), target = get.event().getParent().target;
-                        const eff = get.recoverEffect(target, player, player) + get.effect(target, { name: 'guohe_copy', position: 'h' }, target, player);
-                        return get.effect(target, 'wechatzuoyou', player, player) > eff ? 0 : 1;
+                        let eff1 = (player, target) => (get.recoverEffect(target, player, player) + get.effect(target, { name: 'guohe_copy', position: 'h' }, target, player));
+                        let eff2 = (player, target) => get.effect(target, { name: 'draw' }, player, player);
+                        if (player == target) {
+                            return eff1(player, target) >= eff2(player, target) ? 1 : 0;
+                        } return (eff1(player, target) + eff2(player, player)) >= (eff1(player, player) + eff2(player, target)) ? 1 : 0;
                     }).forResult() : { index: 0 });
                     if (event.result.index === 0) {
                         await target.draw(3);
@@ -10539,23 +10544,23 @@ const packs = function () {
                     order(item, player) {
                         if (game.hasPlayer(current => {
                             return current !== player && get.effect(current, 'wechatzuoyou', player, player) > 0;
-                        })) return get.order({ name: 'zengbin' }) + 0.1;
+                        })) return 10;
                         return 2;
                     },
                     result: {
                         player(player, target) {
-                            const list = (() => {
-                                let eff = get.recoverEffect(target, player, player) + get.effect(target, { name: 'guohe_copy', position: 'h' }, target, player);
-                                if (!target.countCards('h')) eff = 0;
-                                let eff2 = get.effect(target, 'wechatzuoyou', player, player);
-                                return [eff > eff2, Math.max(eff, eff2)];
-                            })();
-                            if (!player.hasSkill('wechaishishou') || target === player) return list[1];
-                            return list[1] + (() => {
-                                if (list[0]) return get.effect(player, 'wechatzuoyou', player, player);
-                                if (!player.countCards('h')) return 0;
-                                return get.recoverEffect(player, player, player) + get.effect(player, { name: 'guohe_copy', position: 'h' }, player, player);
-                            })();
+                            let eff1 = (player, target) => (get.recoverEffect(target, player, player) + get.effect(target, { name: 'guohe_copy', position: 'h' }, target, player));
+                            let eff2 = (player, target) => get.effect(target, { name: 'draw' }, player, player);
+                            if (player.hasSkill('wechaishishou')) {
+                                if (player == target) return Math.max(eff1(player, target), eff2(player, target));
+                                return Math.max(eff1(player, target) + eff2(player, player), eff1(player, player) + eff2(player, target));
+                            }
+                            return Math.max(eff1(player, target), eff2(player, target));
+                        },
+                        target(player, target) {
+                            const att = get.attitude(player, target);
+                            if (att <= 0 && target.isHealthy() && target.countCards('h')) return -1;
+                            return 1;
                         },
                     },
                 },
@@ -10704,6 +10709,49 @@ const packs = function () {
                     name2: '音',
                     content: 'mark',
                 },
+            },
+            // 界左慈
+            wechatrexinsheng: {
+                audio: 'rexinsheng',
+                inherit: 'rexinsheng',
+                getIndex(event, player) {
+                    return event.num;
+                },
+                filter(event, player) {
+                    return player.hasSkill('rehuashen') && event.num > 0;
+                },
+                async content(event, trigger, player) {
+                    lib.skill.rehuashen.addHuashens(player, 1);
+                    await player.draw();
+                },
+            },
+            // 郭女王
+            wechatwufei: {
+                audio: 'wufei',
+                trigger: { player: ['useCardToPlayered', 'damageEnd'] },
+                filter(event, player) {
+                    const target = game.findPlayer(current => current.hasSkill('yichong_' + player.playerid));
+                    if (!target) return false;
+                    if (event.name == 'damage') return target.hp > 1;
+                    return event.isFirstTarget && (event.card.name == 'sha' || (get.type(event.card) == 'trick' && get.tag(event.card, 'damage') > 0.5));
+                },
+                async cost(event, trigger, player) {
+                    const target = game.findPlayer(current => current.hasSkill('yichong_' + player.playerid));
+                    const bool = trigger.name != 'damage' ? true : await player.chooseBool(get.prompt(event.skill, target), '令' + get.translation(target) + '受到1点无来源伤害').set('choice', get.damageEffect(target, player, player) > 0).forResultBool();
+                    event.result = {
+                        bool: bool,
+                        targets: [target],
+                    }
+                },
+                async content(event, trigger, player) {
+                    const { targets: [target] } = event;
+                    if (trigger.name == 'damage') await target.damage('nosource');
+                    else {
+                        trigger.getParent().customArgs.default.customSource = target;
+                        game.log(target, '成为了', trigger.card, '的伤害来源');
+                    }
+                },
+                ai: { combo: 'yichong' },
             },
         },
         dynamicTranslate: {
@@ -11398,6 +11446,12 @@ const packs = function () {
             wechatqingkuang_info: '出牌阶段，你可以弃置一张本回合你未以此法弃置过的颜色的牌，然后摸两张牌。若如此做，结束阶段，你弃置本回合以此法获得的所有牌',
             wechatyinyi: '音忆',
             wechatyinyi_info: '①当你失去牌后，你获得一个“音”标记。②一名角色的结束阶段，你可以弃置5个“音”标记，并选择一项：1.弃置一张牌并视为对该角色使用一张杀。2.摸一张牌。',
+            wechat_re_zuoci: '微信界左慈',
+            wechatrexinsheng: '新生',
+            wechatrexinsheng_info: '当你受到1点伤害后，若你拥有〖化身〗，你可以获得一张新的化身牌并摸一张牌。',
+            wechat_guozhao: '微信郭照',
+            wechatwufei: '诬诽',
+            wechatwufei_info: '若场上存在拥有“雀”标记的角色A，则：①当你使用【杀】或伤害类锦囊牌指定第一个目标后，你令A成为此牌伤害来源。②当你受到伤害后，若A的体力值大于1，则你可以令A受到1点无来源伤害。',
         },
     };
     for (var i in WeChatkill.character) {
