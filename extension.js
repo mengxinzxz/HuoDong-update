@@ -20,7 +20,7 @@ game.bolShowNewPack = function () {
 	];
 	//更新武将
 	var HuoDong_players = [
-		'Mbaby_chendong', 'Mbaby_sb_zhenji', 'Mbaby_yuanshu', 'wechat_caiyong', 'Mbaby_simalang',
+		'Mbaby_chendong', 'Mbaby_sb_zhenji', 'Mbaby_yuanshu', 'Mbaby_caiyong', 'Mbaby_simalang',
 		'wechat_re_zuoci', 'wechat_guozhao',
 	];
 	//加载
