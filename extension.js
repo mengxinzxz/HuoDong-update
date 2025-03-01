@@ -14,24 +14,21 @@ game.bolShowNewPack = function () {
 		'/setPlayer/',
 		'bugfix',
 		'技能修改，配音补充',
-		'添加怀旧武将：许劭、袁姬、蒋干',
-		'添加欢杀武将：高览、卢植、甘糜、二赵、孟节',
-		'添加微信武将：极何太后、极张春华、极曹叡、极张飞、极贾诩、李昭焦伯、嵇康',
+		'添加欢杀武将：陈武董袭、谋甄宓、界袁术、蔡邕、司马朗',
+		'添加微信武将：界左慈、郭照',
 		'To be continued...',
 	];
 	//更新武将
 	var HuoDong_players = [
-		'old_xushao', 'old_ol_yuanji', 'Mbaby_gaolan', 'Mbaby_yl_luzhi', 'Mbaby_ganfurenmifuren',
-		'Mbaby_zhaotongzhaoguang', 'wechat_zhiyin_jiaxu', 'wechat_zhiyin_zhangfei', 'wechat_zhiyin_caorui',
-		'wechat_zhiyin_zhangchunhua', 'wechat_zhiyin_hetaihou', 'wechat_lizhaojiaobo', 'wechat_jikang',
-		'old_sp_jianggan', 'Mbaby_mengjie',
+		'Mbaby_chendong', 'Mbaby_sb_zhenji', 'Mbaby_yuanshu', 'wechat_caiyong', 'Mbaby_simalang',
+		'wechat_re_zuoci', 'wechat_guozhao',
 	];
 	//加载
 	var dialog = ui.create.dialog(
 		'<span class="text center">' +
 		'新人制作扩展，希望大家支持<br>新人技术不足，希望大家包涵' +
 		'<br>' +
-		'<a href="https://github.com/mengxinzxz/HuoDong-update.git">点击前往活动武将Github仓库</a>' +
+		'<a href="https://github.com/HuoDong-Update-Organization/HuoDong-update">点击前往活动武将Github仓库</a>' +
 		'<br>' +
 		'活动武将 ' + lib.extensionPack.活动武将.version + ' 更新内容' +
 		'</span>', 'hidden');
@@ -71,7 +68,7 @@ let extensionPackage = {
 	package: {
 		intro: '新人制作扩展，希望大家支持。' +
 			'<br>新人技术不足，希望大家包涵。' +
-			'<br><a href="https://github.com/mengxinzxz/HuoDong-update.git">点击前往活动武将Github仓库</a>' +
+			'<br><a href="https://github.com/HuoDong-Update-Organization/HuoDong-update">点击前往活动武将Github仓库</a>' +
 			'<br><li>欢迎大家进群支持活动武将' +
 			//入群二维码图片
 			'<br><img style=width:238px src=' + lib.assetURL + 'extension/活动武将/HuoDong_QQ.png>' +
