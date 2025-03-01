@@ -255,7 +255,7 @@ const packs = function () {
             Mbaby_yanwen: ['male', 'qun', 4, ['minishuangxiong']],
             Mbaby_liubiao: ['male', 'qun', 3, ['rezishou', 'rezongshi']],
             Mbaby_yuanshao: ['male', 'qun', 4, ['miniluanji', 'minixueyi'], ['zhu']],
-            Mbaby_yuanshu: ['male', 'qun', 4, ['yongsi', 'miniweidi']],
+            Mbaby_yuanshu: ['male', 'qun', 4, ['miniyongsi', 'minireweidi']],
             Mbaby_chengong: ['male', 'qun', 3, ['miniremingce', 'minizhichi']],
             Mbaby_jiaxu: ['male', 'qun', 3, ['minirewansha', 'reluanwu', 'reweimu'], ['tempname:re_jiaxu', 'die:re_jiaxu']],
             Mbaby_liuzhang: ['male', 'qun', 4, ['miniyinlang', 'minixiusheng', 'minihuaibi'], ['zhu']],
@@ -26470,6 +26470,82 @@ const packs = function () {
                     player.gain(trigger.cards.filterInD('d'), 'gain2');
                 },
             },
+            //界袁术
+            miniyongsi: {
+                audio: 'yongsi',
+                trigger: { player: ['phaseDrawBegin2', 'phaseDiscardBegin', 'phaseEnd'] },
+                forced: true,
+                filter(event, player) {
+                    if (event.name == 'phaseDraw') return !event.numFixed;
+                    if (event.name == 'phaseDiscard') return player.countCards('he');
+                    return player.getHistory('sourceDamage').reduce((num, evt) => num + evt.num, 0) <= 1;
+                },
+                async content(event, trigger, player) {
+                    const num = game.countGroup();
+                    if (trigger.name == 'phaseDraw') trigger.num += num;
+                    else if (trigger.name == 'phaseDiscard') await player.chooseToDiscard(num, 'he', true);
+                    else await player.draw(num);
+                },
+            },
+            minireweidi: {
+                audio: 'weidi',
+                getCards(event) {
+                    const cards = [];
+                    game.getGlobalHistory('cardMove', evt => {
+                        if (evt.name == 'cardsDiscard' && evt.getParent('phaseDiscard') == event) cards.addArray(evt.cards.filterInD('d'));
+                    });
+                    game.countPlayer2(current => {
+                        current.getHistory('lose', evt => {
+                            if (evt.type != 'discard' || evt.getParent('phaseDiscard') != event) return;
+                            cards.addArray(evt.cards.filterInD('d'));
+                        })
+                    });
+                    return cards;
+                },
+                preHidden: true,
+                trigger: { player: 'phaseDiscardEnd' },
+                filter(event, player) {
+                    return get.info('minireweidi').getCards(event).length;
+                },
+                async cost(event, trigger, player) {
+                    const cards = get.info(event.skill).getCards(trigger);
+                    const list = cards.map(card => get.color(card)).toUniqued();
+                    const dialog = ui.create.dialog();
+                    dialog.addText('伪帝：请选择一张颜色');
+                    dialog.addAuto(cards);
+                    const control = await player.chooseControl(list, 'cancel2').set('dialog', dialog).set('ai', () => {
+                        const { player, cards, controls } = get.event();
+                        if (!game.hasPlayer(current => current != player && get.attitude(player, current) > 0)) return 'cancel2';
+                        const map = {}, list = [];
+                        for (const color of controls.remove('cancel2')) {
+                            if (typeof map[color] != 'number') map[color] = 0;
+                            map[color] += cards.filter(card => get.color(card) == color).length;
+                        } for (let i in map) {
+                            if (map[i] > 0) list.push([i, map[i]]);
+                        }
+                        list.sort((a, b) => b[1] - a[1]);
+                        return list[0][0];
+                    }).set('cards', cards).forResultControl();
+                    if (control == 'cancel2') return;
+                    const give = cards.filter(card => get.color(card) == control);
+                    const targets = await player.chooseTarget(lib.filter.notMe, get.prompt(event.skill), `选择一名其他角色交给其${get.translation(give)}`).set('ai', target => {
+                        const { player, give } = get.event();
+                        return get.attitude(player, target) * get.value(give, target) * (target.hasSkillTag('nogain') ? 0.1 : 1);
+                    }).set('give', give).setHiddenSkill(event.skill).forResultTargets();
+                    event.result = {
+                        bool: targets?.length,
+                        targets: targets,
+                        cost_data: give,
+                    }
+                },
+                async content(event, trigger, player) {
+                    const { targets: [target], cost_data: cards } = event;
+                    await target.gain(cards, 'gain2').set('giver', player);
+                    const color = get.color(cards[0]);
+                    if (target.group != 'qun' || !target.hasCard(card => get.color(card) != color, 'he')) return;
+                    await target.chooseToGive(player, 'he', card => get.color(card) != get.event('color'), num, true).set('color', color);
+                },
+            },
             //神
             miniwuqian: {
                 derivation: 'wushuang',
@@ -33630,6 +33706,10 @@ const packs = function () {
             minizhenliang_info: '转换技。阳：出牌阶段限一次，你可以弃置一张与“任”颜色相同的牌并对攻击范围内的一名角色造成1点伤害。阴：你的回合外，一名角色使用或打出牌结算完成后，若此牌与“任”颜色相同，则你可以令一名角色摸两张牌。',
             miniyouqi: '幽栖',
             miniyouqi_info: '锁定技，当其他角色因〖引路〗标记弃置牌后，你获得此牌。',
+            miniyongsi: '庸肆',
+            miniyongsi_info: '锁定技。①摸牌阶段，你多摸X张牌。②弃牌阶段开始时，你弃置X张牌。③回合结束时是，若你本回合造成的伤害值不大于1，你摸X张牌。',
+            minireweidi: '伪帝',
+            minireweidi_info: '弃牌阶段结束时，你可以将其中一种颜色的所有牌交给一名其他角色。若该角色为群势力角色，你可以令其交给你等量张另一种颜色的牌。',
             //神
             Mbaby_shen_lvbu: '欢杀神吕布',
             Mbaby_shen_guanyu: '欢杀神关羽',
