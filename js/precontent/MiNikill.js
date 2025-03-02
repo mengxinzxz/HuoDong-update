@@ -26574,6 +26574,7 @@ const packs = function () {
                     await target.gain(cards, 'gain2').set('giver', player);
                     const color = get.color(cards[0]);
                     if (target.group != 'qun' || !target.hasCard(card => get.color(card) != color, 'he')) return;
+                    const num = cards.length;
                     await target.chooseToGive(player, 'he', card => get.color(card) != get.event('color'), num, true).set('color', color);
                 },
             },
@@ -33873,7 +33874,7 @@ const packs = function () {
             miniyouqi: '幽栖',
             miniyouqi_info: '锁定技，当其他角色因〖引路〗标记弃置牌后，你获得此牌。',
             miniyongsi: '庸肆',
-            miniyongsi_info: '锁定技。①摸牌阶段，你多摸X张牌。②弃牌阶段开始时，你弃置X张牌。③回合结束时是，若你本回合造成的伤害值不大于1，你摸X张牌。',
+            miniyongsi_info: '锁定技。①摸牌阶段，你多摸X张牌。②弃牌阶段开始时，你弃置X张牌。③回合结束时，若你本回合造成的伤害值不大于1，你摸X张牌（X为场上势力数）。',
             minireweidi: '伪帝',
             minireweidi_info: '弃牌阶段结束时，你可以将其中一种颜色的所有牌交给一名其他角色。若该角色为群势力角色，你可以令其交给你等量张另一种颜色的牌。',
             minibizhuan: '辟撰',
