@@ -5849,7 +5849,7 @@ const packs = function () {
                             }, 'he');
                         },
                         async cost(event, trigger, player) {
-                            event.result = await player.chooseToDiscard(get.prompt(event.skill), `弃置一张黑色牌令${get.translate(trigger.card)}对你无效`, (card, player) => {
+                            event.result = await player.chooseToDiscard(get.prompt(event.skill), `弃置一张黑色牌令${get.translation(trigger.card)}对你无效`, (card, player) => {
                                 return get.color(card) == 'black';
                             }, 'chooseonly').set('ai', card => {
                                 const { goon } = get.event();
