@@ -10220,7 +10220,7 @@ const packs = function () {
                 async cost(event, trigger, player) {
                     event.result = await player.chooseTarget(get.prompt2(event.name.slice(0, -5)), lib.filter.notMe, true).set('ai', target => {
                         const player = get.player();
-                        return get, attitude(player, target);
+                        return get.attitude(player, target);
                     }).forResult();
                 },
                 async content(event, trigger, player) {
