@@ -1219,10 +1219,13 @@ export function content(config, pack) {
 			if (typeof translation !== 'string' || get.character(name).isNull) continue;
 			if (BanIdList.includes(name) || BanTransList.some(str => translation.includes(str))) continue;
 			const item = Object.keys(changeMap).find(str => translation.includes(str));
+			/*
 			if (item) {
 				const num = translation.indexOf(item);
 				lib.translate[name] = translation.slice(0, num) + changeMap[item] + translation.slice(num + item.length, translation.length);
 			}
+			*/
+			if (item) lib.translate[name] = lib.translate[name].replace(item, changeMap[item]);
 		}
 	}
 
