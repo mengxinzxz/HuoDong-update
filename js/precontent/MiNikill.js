@@ -89,7 +89,7 @@ const packs = function () {
             Mbaby_zhenghun: ['male', 'wei', 3, ['miniqiangzhi', 'dcpitian']],
             Mbaby_chentai: ['male', 'wei', 4, ['minijiuxian', 'dcchenyong']],
             Mbaby_hanhaoshihuan: ['male', 'wei', 4, ['shenduan', 'miniyonglve']],
-            Mbaby_sb_zhenji: ['female', 'wei', 3, ['minisbluoshen', 'minisbqingguo']],
+            Mbaby_sb_zhenji: ['female', 'wei', 3, ['minisbluoshen', 'minisbqingguo'], ['die:true']],
             Mbaby_simalang: ['male', 'wei', 3, ['rejunbing', 'miniquji'], ['name:司马|朗']],
             //蜀
             Mbaby_guanyu: ['male', 'shu', 4, ['minirewusheng', 'minituodao', 'jsrgguanjue']],
@@ -5776,7 +5776,7 @@ const packs = function () {
             },
             //谋甄姬
             minisbluoshen: {
-                audio: 'sbluoshen',
+                audio: 'ext:活动武将/audio/skill:2',
                 trigger: {
                     player: 'loseAfter',
                     global: ['equipAfter', 'addJudgeAfter', 'gainAfter', 'loseAsyncAfter', 'addToExpansionAfter'],
@@ -5802,7 +5802,7 @@ const packs = function () {
                 },
             },
             minisbqingguo: {
-                audio: 'qingguo_sb_zhenji',
+                audio: 'ext:活动武将/audio/skill:2',
                 enable: 'phaseUse',
                 usable: 2,
                 filterCard: { color: 'red' },
@@ -13911,57 +13911,42 @@ const packs = function () {
                 audio: 'olhaoshi',
                 inherit: 'olhaoshi',
                 forced: true,
+                locked: false,
                 async content(event, trigger, player) {
                     trigger.num += 2;
                 },
                 group: 'miniolhaoshi_give',
                 subSkill: {
                     give: {
-                        trigger: {
-                            player: 'phaseDrawEnd',
-                        },
+                        audio: 'olhaoshi',
+                        trigger: { player: 'phaseDrawEnd' },
                         filter(event, player) {
                             return player.countCards("h") > 5;
                         },
                         async cost(event, trigger, player) {
-                            const targets = game.filterPlayer(function (target) {
-                                return (target != player && !game.hasPlayer(function (current) {
-                                    return current != player && current != target && current.countCards("h") < target.countCards("h");
-                                }));
-                            });
                             const num = Math.floor(player.countCards("h") / 2);
                             event.result = await player.chooseCardTarget({
-                                position: 'h',
+                                prompt: '好施：是否将' + get.cnNumber(num) + '张手牌交给一名其他角色？',
                                 filterCard: true,
-                                filterTarget(card, player, target) {
-                                    return _status.event.targets.includes(target);
-                                },
-                                targets: targets,
-                                selectTarget: targets.length == 1 ? -1 : 1,
                                 selectCard: num,
-                                prompt: '将' + get.cnNumber(num) + '张手牌交给一名手牌数最少的其他角色',
+                                position: 'h',
+                                filterTarget: lib.filter.notMe,
                                 ai1(card) {
-                                    var goon = false,
-                                        player = _status.event.player;
-                                    for (var i of _status.event.targets) {
-                                        if (get.attitude(i, player) > 0 && get.attitude(player, i) > 0) goon = true;
-                                        break;
-                                    }
-                                    if (goon) {
-                                        if (
-                                            !player.hasValueTarget(card) ||
-                                            (card.name == "sha" &&
-                                                player.countCards("h", function (cardx) {
-                                                    return cardx.name == "sha" && !ui.selected.cards.includes(cardx);
-                                                }) > player.getCardUsable("sha"))
-                                        )
-                                            return 2;
+                                    const player = get.player();
+                                    if (goon = game.hasPlayer(target => {
+                                        if (target === player) return false;
+                                        return get.attitude(player, target) > 0 && get.attitude(target, player) > 0;
+                                    })) {
+                                        if (!player.hasValueTarget(card) || (card.name == "sha" && player.countCards("h", cardx => {
+                                            return cardx.name == "sha" && !ui.selected.cards.includes(cardx);
+                                        }) > player.getCardUsable("sha"))) return 2;
                                         return Math.max(2, get.value(card) / 4);
                                     }
                                     return 1 / Math.max(1, get.value(card));
                                 },
                                 ai2(target) {
-                                    return get.attitude(_status.event.player, target);
+                                    const player = get.player();
+                                    return get.attitude(player, target);
                                 },
                             }).forResult();
                         },
@@ -13983,25 +13968,19 @@ const packs = function () {
                     return game.hasPlayer(current => lib.skill.minidimeng.filterTarget(null, player, current));
                 },
                 filterTarget(card, player, target) {
-                    if (target == player) return false;
                     if (!ui.selected.targets.length) {
-                        const hs = target.countCards('h');
-                        return game.hasPlayer(function (current) {
-                            if (current == player || current == target) return false;
-                            const cs = current.countCards('h');
-                            return hs > 0 || cs > 0;
+                        return game.hasPlayer(current => {
+                            if (current == target) return false;
+                            return target.countCards('h') + current.countCards('h') > 0;
                         });
                     }
-                    const current = ui.selected.targets[0],
-                        hs = target.countCards('h'),
-                        cs = current.countCards('h');
-                    return hs > 0 || cs > 0;
+                    return ui.selected.targets[0].countCards('h') + target.countCards('h') > 0;
                 },
                 async content(event, trigger, player) {
                     const targets = event.targets;
                     targets[0].swapHandcards(targets[1]);
                     const num = Math.abs(targets[0].countCards('h') - targets[1].countCards('h'));
-                    if (num > 0) player.addMark(event.name, num, false);
+                    if (num > 0) player.addMark(event.name, num);
                 },
                 marktext: '盟',
                 intro: {
@@ -14011,21 +13990,20 @@ const packs = function () {
                 group: 'minidimeng_discard',
                 subSkill: {
                     discard: {
-                        trigger: {
-                            player: ['phaseDrawEnd', 'phaseEnd'],
-                        },
+                        trigger: { player: ['phaseDrawEnd', 'phaseEnd'] },
                         filter(event, player) {
                             if (!player.hasMark('minidimeng')) return false;
-                            return player.countCards('he');
+                            return player.hasCard(card => _status.connectMode || lib.filter.cardDiscardable(card, player), 'he');
                         },
                         async cost(event, trigger, player) {
-                            event.result = await player.chooseToDiscard('he', get.prompt(event.name.slice(0, -5)), '弃置任意张牌并移除等量的“盟”标记', [1, player.countMark('minidimeng')]).set('ai', card => {
+                            event.result = await player.chooseToDiscard('he', get.prompt('minidimeng'), '弃置任意张牌并移除等量的“盟”标记', [1, player.countMark('minidimeng')]).set('ai', card => {
                                 const player = get.player();
                                 if (player.countCards('h') < 3) return 0;
                                 if (['haoshi', 'olhaoshi'].some(skill => player.hasSkill(skill)) && !game.hasPlayer(current => current != player && get.attitude(player, current) > 0 && current.isMinHandcard())) return 0;
                                 return 6 - get.value(card);
-                            }).forResult();
+                            }).set('logSkill', 'minidimeng').forResult();
                         },
+                        popup: false,
                         async content(event, trigger, player) {
                             player.removeMark('minidimeng', event.cards.length);
                         },
@@ -32764,9 +32742,9 @@ const packs = function () {
             miniyonglve: '勇略',
             miniyonglve_info: '判定区有牌的其他角色的判定阶段开始时，你可以弃置其判定区的一张牌或弃置自己一张牌，然后若其在你的攻击范围内，则你摸一张牌；若其不在你的攻击范围内，则你视为对其使用一张无距离限制的【杀】。',
             minisbluoshen: '洛神',
-            minisbluoshen_info: '当你失去最后的红色手牌后，你可展示牌堆顶的一张牌，然后若此牌为：1.黑色，你重复此流程且可使用此牌；2.红色，你获得此牌。',
+            minisbluoshen_info: '当你失去最后的红色手牌后，你可展示牌堆顶的一张牌，然后若此牌为：黑色，你重复此流程且可使用此牌；红色，你获得此牌。',
             minisbqingguo: '倾国',
-            minisbqingguo_info: '①出牌阶段限两次，你可以将一张红色手牌交给一名其他角色，然后令其交给你一张黑色牌。②当你成为其他角色【杀 】或普通锦囊牌的目标时，你可以弃置一张黑色牌令此牌对你无效。',
+            minisbqingguo_info: '①出牌阶段限两次，你可以将一张红色手牌交给一名其他角色，然后令其交给你一张黑色牌。②当你成为其他角色【杀】或普通锦囊牌的目标时，你可以弃置一张黑色牌，令此牌对你无效。',
             miniquji: '去疾',
             miniquji_info: '出牌阶段限一次，你可以重铸X张牌（X为你已损失的体力值+1）并令至多X名角色回复1点体力，然后仍处于受伤状态的目标角色摸一张牌。',
             //蜀
@@ -33224,9 +33202,9 @@ const packs = function () {
             minihaoshi: '好施',
             minihaoshi_info: '摸牌阶段，你可以多摸两张牌，然后若你的手牌数大于5，你须弃置X张手牌或将X张手牌交给一名手牌数最少的其他角色（X为你手牌数的一半，向下取整）。',
             miniolhaoshi: '好施',
-            miniolhaoshi_info: '①摸牌阶段开始时，你多摸两张牌。②摸牌阶段结束时，若你的手牌数大于5，你可以将手牌数的一半（向下取整）交给一名手牌最少其他角色并获得如下效果直到你下回合开始：当你成为【杀】或普通锦囊牌的目标后，其可以交给你一张手牌。',
+            miniolhaoshi_info: '①摸牌阶段开始时，你多摸两张牌。②摸牌阶段结束时，若你的手牌数大于5，你可以将手牌数的一半（向下取整）交给一名其他角色并获得如下效果直到你下回合开始：当你成为【杀】或普通锦囊牌的目标后，其可以交给你一张手牌。',
             minidimeng: '缔盟',
-            minidimeng_info: '①出牌阶段限一次，若你没有“盟”标记，你可令两名其他角色交换手牌并获得X枚“盟”标记（X为这两名角色手牌数之差的绝对值）。②摸牌阶段结束时或回合结束时，你可以弃置任意张牌并移去等量的“盟”标记。',
+            minidimeng_info: '①出牌阶段限一次，若你没有“盟”标记，你可令两名角色交换手牌并获得X枚“盟”标记（X为这两名角色手牌数之差的绝对值）。②摸牌阶段结束时或回合结束时，你可以弃置任意张牌并移去等量的“盟”标记。',
             miniganlu: '甘露',
             miniganlu_info: '锁定技，出牌阶段开始时，你选择一项：①移动场上的一张装备牌；②交换场上装备区中的两张副类别相同的装备牌的位置；③摸一张牌。',
             minibuyi: '补益',
