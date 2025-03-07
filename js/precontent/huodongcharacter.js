@@ -5108,7 +5108,7 @@ const packs = function () {
                                 return 1.5;
                                 break;
                             case 2:
-                                if (att > 0) return 2;
+                                if (get.attitude(player, target) > 0) return 2;
                                 return 0;
                                 break;
                         }
