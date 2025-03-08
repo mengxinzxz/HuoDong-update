@@ -29938,14 +29938,14 @@ const packs = function () {
                     }).forResult();
                 },
                 async content(event, trigger, player) {
-                    if (event.triggername == 'phaseEnd') await player.chooseToDiscard(true, 'he');
-                    else {
+                    if (event.triggername == 'phaseBegin') {
                         const { cards, targets: [target] } = event;
                         await player.discard(cards);
                         await player.removeSkills('minidoumao');
                         await target.addSkills('minidoumao');
-                        await target.draw()
+                        await target.draw();
                     }
+                    else if (player.countCards('he')) await player.chooseToDiscard(true, 'he');
                 },
                 mark: true,
                 marktext: '猫',
@@ -30191,9 +30191,7 @@ const packs = function () {
                 trigger: { player: 'phaseJieshuBegin' },
                 forced: true,
                 content() {
-                    player.draw(Math.min(5, game.countPlayer2(function (current) {
-                        return current.getHistory('damage').length > 0;
-                    }) + (player.hasSkill('minidoumao') ? 1 : 2)));
+                    player.draw(Math.min(5, game.countPlayer2(current => current.getHistory('damage').length) + (player.hasSkill('minidoumao') ? 1 : 2)));
                 },
             },
             //喵蔡夫人
@@ -34098,7 +34096,7 @@ const packs = function () {
             minimiaolijian: '离间',
             minimiaolijian_info: '出牌阶段限一次，你可以选择至少两名角色并弃置X张牌（X为你选择的角色数，若你没有技能〖逗猫〗则改为弃置X-1张牌）。然后每名你选择的角色依次视为对这些角色中与其逆时针座次最近的另一名角色使用一张【决斗】。',
             minimiaobiyue: '闭月',
-            minimiaobiyue_info: '锁定技，结束阶段，你摸Y张牌（Y为本回合受到过伤害的角色数+1（若你没有技能〖逗猫〗则改为+2），且X至多为5）。',
+            minimiaobiyue_info: '锁定技，结束阶段，你摸Y张牌（Y为本回合受到过伤害的角色数+1（若你没有技能〖逗猫〗则改为+2），且Y至多为5）。',
             minimiaoqieting: '窃听',
             minimiaoqieting_info: '其他角色的回合结束时，你可以选择[ ]中的一项：[“摸一张牌”]。若其拥有技能〖逗猫〗，[ ]中添加“观看其两张手牌并获得其中一张”，否则[ ]中添加“将其装备区里的一张牌置入自己的装备区”。',
             minimiaoxianzhou: '献州',
