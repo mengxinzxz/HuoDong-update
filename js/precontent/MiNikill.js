@@ -29888,49 +29888,37 @@ const packs = function () {
                 filter(event, player) {
                     return player.countCards('he');
                 },
-                direct: true,
-                content() {
-                    'step 0'
-                    if (event.triggername == 'phaseEnd') {
-                        player.logSkill('minidoumao');
-                        player.chooseToDiscard(true);
-                        event.finish();
-                    }
-                    else {
-                        player.chooseCardTarget({
-                            prompt: get.prompt('minidoumao'),
-                            prompt2: '弃置一张牌，失去【逗猫】并令一名其他角色获得【逗猫】，然后其摸一张牌',
-                            //filterTarget:function(card,player,target){
-                            //return !target.hasSkill('minidoumao');
-                            //},
-                            filterTarget: lib.filter.notMe,
-                            filterCard: lib.filter.cardDiscardable,
-                            position: 'he',
-                            ai1(card) {
-                                return 7 - get.value(card);
-                            },
-                            ai2(target) {
-                                var player = _status.event.player;
-                                var att = get.attitude(player, target);
-                                //集智
-                                if (target.hasSkill('minimiaojizhi')) return 10 * (-get.sgn(att));
-                                //枪舞
-                                if (player.hasSkill('minimiaoqiangwu')) {
-                                    player._minimiaoqiangwu_check = true;
-                                    var cards = player.getCards('hs', function (card) {
-                                        return card.name == 'sha' && player.canUse(card, target);
-                                    });
-                                    if (cards.length > 1) {
-                                        if (att >= 0) return 0;
-                                        var sum = 0;
-                                        for (var card of cards) sum += get.effect(target, card, player, player);
-                                        if (sum <= 0) return 0;
-                                        else {
-                                            while (sum < 1 || sum > 10) {
-                                                if (sum < 1) sum = sum * 10;
-                                                if (sum > 10) sum = sum / 10;
-                                            }
-                                            return sum;
+                async cost(event, trigger, player) {
+                    if (event.triggername == 'phaseEnd') event.result = { bool: true };
+                    else event.result = await player.chooseCardTarget({
+                        prompt: get.prompt('minidoumao'),
+                        prompt2: '弃置一张牌，失去【逗猫】并令一名其他角色获得【逗猫】，然后其摸一张牌',
+                        filterTarget: lib.filter.notMe,
+                        filterCard: lib.filter.cardDiscardable,
+                        position: 'he',
+                        ai1(card) {
+                            return 7 - get.value(card);
+                        },
+                        ai2(target) {
+                            const player = get.player();
+                            const att = get.attitude(player, target);
+                            //集智
+                            if (target.hasSkill('minimiaojizhi')) return 10 * (-get.sgn(att));
+                            //枪舞
+                            if (player.hasSkill('minimiaoqiangwu')) {
+                                player._minimiaoqiangwu_check = true;
+                                const cards = player.getCards('hs', card => {
+                                    return card.name == 'sha' && player.canUse(card, target);
+                                });
+                                if (cards.length > 1) {
+                                    if (att >= 0) return 0;
+                                    let sum = 0;
+                                    for (const card of cards) sum += get.effect(target, card, player, player);
+                                    if (sum <= 0) return 0;
+                                    else {
+                                        while (sum < 1 || sum > 10) {
+                                            if (sum < 1) sum = sum * 10;
+                                            if (sum > 10) sum = sum / 10;
                                         }
                                         return sum;
                                     }
