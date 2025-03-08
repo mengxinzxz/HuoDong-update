@@ -13121,7 +13121,7 @@ const packs = function () {
                 filter(event, player) {
                     const zhu = game.findPlayer(current => get.info('jsrgzhenglve').isFirst(current));
                     if (!zhu?.isIn()) return false;
-                    return game.hasPlayer(current => current != player && current.inRange(zhu));
+                    return game.hasPlayer(current => current != player && current.inRange(zhu) && current.countDiscardableCards(player, 'he'));
                 },
                 async cost(event, trigger, player) {
                     event.result = await player.chooseTarget(get.prompt2(event.skill), (card, player, target) => {
