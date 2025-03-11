@@ -3633,10 +3633,9 @@ const packs = function () {
                     var next = player.chooseToMove('点化：将卡牌以任意顺序置于牌堆顶');
                     next.set('list', [['牌堆顶', cards]]);
                     next.set('processAI', function (list) {
+                        var player = _status.event.player, target = (_status.event.namex == 'phaseZhunbeiBegin' ? player : player.next);
+                        var att = get.attitude(player, target);
                         var check = function (card) {
-                            var player = _status.event.player;
-                            var target = (_status.event.namex == 'phaseZhunbeiBegin' ? player : player.next);
-                            var att = get.attitude(player, target);
                             var judge = player.getCards('j')[cards.length];
                             if (judge) return get.judge(judge)(card) * att;
                             return player.getUseValue(card) * att;
