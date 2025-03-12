@@ -32245,6 +32245,7 @@ const packs = function () {
                 audio: 'ext:活动武将/audio/skill:2',
                 enable: 'phaseUse',
                 filter(event, player) {
+                    if (player.hasSkill('minifightlizhan_blocker')) return false;
                     return player.hasSha('respond') && player.hasUseTarget(new lib.element.VCard({ name: 'sha' }));
                 },
                 async content(event, trigger, player) {
@@ -32256,7 +32257,10 @@ const packs = function () {
                         if (result?.bool) num++;
                         else break;
                     }
-                    if (!num) return event.finish();
+                    if (!num) {
+                        player.addTempSkill('minifightlizhan_blocker', { player: ['useCard1', 'useSkillBegin', 'phaseUseEnd'] });
+                        return event.finish();
+                    }
                     player.addTempSkill('minifightlizhan_effect');
                     const sha = new lib.element.VCard({ name: 'sha', storage: { minifightlizhan: num } });
                     const next = player.chooseUseTarget(sha, true, false, '###力斩###<div class="text center">请选择【杀】的目标（需要' + num + '张【闪】响应，伤害基数为' + num + '）</div>');
@@ -32304,6 +32308,7 @@ const packs = function () {
                     },
                 },
                 subSkill: {
+                    blocker: { charlotte: true },
                     effect: {
                         charlotte: true,
                         trigger: {
