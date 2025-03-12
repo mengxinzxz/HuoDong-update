@@ -13970,7 +13970,7 @@ const packs = function () {
                                 filterTarget: lib.filter.notMe,
                                 ai1(card) {
                                     const player = get.player();
-                                    if (goon = game.hasPlayer(target => {
+                                    if (game.hasPlayer(target => {
                                         if (target === player) return false;
                                         return get.attitude(player, target) > 0 && get.attitude(target, player) > 0;
                                     })) {
