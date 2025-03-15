@@ -14,14 +14,14 @@ game.bolShowNewPack = function () {
 		'/setPlayer/',
 		'bugfix',
 		'技能修改，配音补充',
-		'添加欢杀武将：陈武董袭、谋甄宓、界袁术、蔡邕、司马朗、黄皓',
+		'添加欢杀武将：陈武董袭、谋甄宓、界袁术、蔡邕、司马朗、黄皓、陈登',
 		'添加微信武将：界左慈、郭照',
 		'To be continued...',
 	];
 	//更新武将
 	var HuoDong_players = [
-		'Mbaby_chendong', 'Mbaby_sb_zhenji', 'Mbaby_yuanshu', 'Mbaby_caiyong', 'Mbaby_simalang', 'Mbaby_huanghao',
-		'wechat_re_zuoci', 'wechat_guozhao',
+		'Mbaby_chendong', 'Mbaby_sb_zhenji', 'Mbaby_yuanshu', 'Mbaby_caiyong', 'Mbaby_simalang',
+		'wechat_re_zuoci', 'wechat_guozhao', 'Mbaby_huanghao', 'Mbaby_chendeng',
 	];
 	//加载
 	var dialog = ui.create.dialog(
