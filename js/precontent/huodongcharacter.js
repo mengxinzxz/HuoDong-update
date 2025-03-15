@@ -4673,11 +4673,7 @@ const packs = function () {
                     return list.length > 1 ? list[0] : 0;
                 },
                 findTarget(player) {
-                    var history = player.getAllHistory('useSkill', function (evt) {
-                        return evt.skill == 'old_sankuang';
-                    });
-                    if (!history.length) return false;
-                    return history[0].targets[0];
+                    return player.getAllHistory('useSkill', evt => evt.skill == 'old_sankuang')[0]?.targets?.[0];
                 },
                 audio: 'clansankuang',
                 trigger: { player: 'useCardAfter' },
@@ -4689,7 +4685,7 @@ const packs = function () {
                 content() {
                     'step 0'
                     delete _status.sankuangCheck;
-                    player.chooseTarget('请选择【三恇】的目标', lib.dynamicTranslate.old_sankuang(player), lib.filter.notMe, true).set('ai', function (target) {
+                    player.chooseTarget('请选择【三恇】的目标', lib.dynamicTranslate.old_sankuang(player, event.name), lib.filter.notMe, true).set('ai', function (target) {
                         var player = _status.event.player;
                         var num = lib.skill.old_sankuang.getNum(target, player);
                         if (!lib.skill.old_sankuang.findTarget(player) && game.hasPlayer(function (current) {
@@ -4715,48 +4711,37 @@ const packs = function () {
                     });
                     'step 1'
                     if (result.bool) {
-                        var target = result.targets[0];
-                        event.target = target;
+                        var target = event.target = result.targets[0];
+                        var cards = event.cards = trigger.cards.filterInD('ode');
                         player.logSkill('old_sankuang', target);
-                        player.chooseControl().set('choiceList', [
-                            '令' + get.translation(target) + '获得' + get.translation(trigger.cards),
-                            '令' + get.translation(target) + '交给你至少' + get.cnNumber(lib.skill.old_sankuang.getNum(target, player)) + '张牌'
-                        ]).set('ai', function () {
-                            if (_status.sankuangCheck && _status.sankuangCheck == target) return 1;
-                            if (get.attitude(player, target) > 0 && !['delay', 'equip'].includes(_status.event.type)) return 0;
-                            return 1;
-                        }).set('type', get.type(trigger.card));
+                        if (cards.length > 0) {
+                            player.chooseControl().set('choiceList', [
+                                '令' + get.translation(target) + '获得' + get.translation(cards),
+                                '令' + get.translation(target) + '交给你至少' + get.cnNumber(lib.skill.old_sankuang.getNum(target, player)) + '张牌',
+                            ]).set('ai', function () {
+                                if (_status.sankuangCheck && _status.sankuangCheck == target) return 1;
+                                if (get.attitude(player, target) > 0 && !['delay', 'equip'].includes(_status.event.type)) return 0;
+                                return 1;
+                            }).set('type', get.type(trigger.card));
+                        }
+                        else event._result = { index: 1 };
                     }
                     else event.finish();
                     'step 2'
-                    if (result.index == 0 && trigger.cards.length) {
-                        target.gain(trigger.cards, 'gain2');
-                        event.finish();
-                        return;
+                    if (result.index == 0 && cards.length) target.gain(cards, 'gain2');
+                    if (result.index == 1 && target.countCards('he')) {
+                        target.chooseToGive('he', [lib.skill.old_sankuang.getNum(target, player), Infinity], true, '交给' + get.translation(player) + '至少' + get.cnNumber(lib.skill.old_sankuang.getNum(target, player)) + '张牌', player).set('ai', function (card) {
+                            if (_status.event.att) return 1;
+                            return -get.value(card);
+                        }).set('att', get.attitude(target, player) > 0 && lib.skill.old_sankuang.findTarget(player) == target);
                     }
-                    if (result.index == 1 && target.countCards('he')) target.chooseCard('he', [lib.skill.old_sankuang.getNum(target, player), Infinity], true, '交给' + get.translation(player) + '至少' + get.cnNumber(lib.skill.old_sankuang.getNum(target, player)) + '张牌').set('ai', function (card) {
-                        if (_status.event.att) return 1;
-                        return -get.value(card);
-                    }).set('att', get.attitude(target, player) > 0 && lib.skill.old_sankuang.findTarget(player) == target);
-                    'step 3'
-                    if (result.cards.length) player.gain(result.cards, target, 'giveAuto');
                 },
             },
             old_beishi: {
                 audio: 'clanbeishi',
                 trigger: { global: ['loseAfter', 'equipAfter', 'addJudgeAfter', 'gainAfter', 'loseAsyncAfter', 'addToExpansionAfter'] },
-                filter(event, player) {
-                    var list = [player];
-                    if (lib.skill.old_sankuang.findTarget(player)) list.push(lib.skill.old_sankuang.findTarget(player));
-                    return game.hasPlayer(function (current) {
-                        if (!list.includes(current)) return false;
-                        var evt = event.getl(current);
-                        return evt?.hs?.length && current.countCards('h') == 0;
-                    });
-                },
-                logTarget(event, player) {
-                    var list = [player];
-                    if (lib.skill.old_sankuang.findTarget(player)) list.push(lib.skill.old_sankuang.findTarget(player));
+                getIndex(event, player) {
+                    var list = [player, lib.skill.old_sankuang.findTarget(player)];
                     return game.filterPlayer(function (current) {
                         if (!list.includes(current)) return false;
                         var evt = event.getl(current);
@@ -4764,6 +4749,7 @@ const packs = function () {
                     }).sortBySeat();
                 },
                 forced: true,
+                logTarget: (event, player, name, target) => target,
                 content() {
                     'step 0'
                     var storage = player.storage.old_sankuang;
