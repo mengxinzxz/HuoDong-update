@@ -33569,6 +33569,7 @@ const packs = function () {
             Mbaby_yl_luzhi: '欢杀卢植',
             Mbaby_mengjie: '欢杀孟节',
             Mbaby_caiyong: '欢杀蔡邕',
+            Mbaby_chendeng: '欢杀陈登',
             miniweidi: '伪帝',
             miniweidi_info: '弃牌阶段结束时，你可以将其中一张弃置的牌交给一名其他角色。',
             minimingce: '明策',
