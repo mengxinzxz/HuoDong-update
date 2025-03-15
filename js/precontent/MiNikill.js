@@ -417,7 +417,8 @@ const packs = function () {
                 fullimage: true,
             },
             miniruyi_jingubang: {
-                fullimage: true,
+                fullskin: true,
+                cardimage: 'ruyijingubang',
                 derivation: 'Mbaby_sunwukong',
                 type: 'equip',
                 subtype: 'equip1',

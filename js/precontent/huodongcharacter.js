@@ -156,8 +156,9 @@ const packs = function () {
             },
             //三首
             bol_sanshou: {
+                fullskin: true,
                 image: 'ext:活动武将/image/card/bol_sanshou.png',
-                fullimage: true,
+                derivation: 'junk_zhangjiao',
                 type: 'equip',
                 subtype: 'equip2',
                 skills: ['bol_sanshou_skill'],
