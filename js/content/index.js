@@ -7,7 +7,9 @@ export function content(config, pack) {
 			const result = originLoading.apply(this, arguments);
 			const extensionPack = Array.from(document.getElementsByTagName('div')).find(div => div.innerHTML === '扩展');
 			if (extensionPack) {
+				const originClick = extensionPack.onclick || function () { };
 				extensionPack.onclick = () => {
+					originClick.apply(this, arguments);
 					const plagueExtension = Array.from(document.querySelectorAll('.menubutton.large')).find(div => div.innerHTML === '活动武将');
 					if (plagueExtension) plagueExtension.innerHTML = "<img style=width:100px src=" + lib.assetURL + "extension/活动武将/image/default/活动武将.png>";
 				};
