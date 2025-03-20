@@ -4,14 +4,14 @@ const packs = function () {
     var huodongcharacter = {
         name: 'huodongcharacter',
         connect: true,
-        connectBanned: ['bilibili_zhengxuan'],
+        //connectBanned: ['bilibili_zhengxuan'],
         characterSort: {
             huodongcharacter: {
                 CLongZhou: ['lz_sufei', 'lz_tangzi', 'lz_liuqi', 'lz_huangquan'],
                 CZhengHuo: ['bilibili_zhengxuan', 'bilibili_sp_xuyou', 'old_zuoci'],
                 Chuodong: ['bilibili_shengxunyu', 'bilibili_Firewin', 'bilibili_jinglingqiu', 'bilibili_suixingsifeng', 'bilibili_Emptycity', 'bilibili_thunderlei', 'bilibili_lonelypatients', 'bilibili_ningjingzhiyuan', 'bilibili_xizhicaikobe'],
                 CDormitory: ['bilibili_yanjing'],
-                Cothers: ['bilibili_caifuren', 'bilibili_daxiao', 'bilibili_wangtao', 'bilibili_wangyue', 'bilibili_x_wangtao', 'bilibili_x_wangyue', 'bilibili_xushao', 'bilibili_shen_guojia', 'bilibili_re_xusheng', 'bilibili_kuangshen04', 'bilibili_adong', 'bilibili_zhangrang', 'bilibili_litiansuo', 'decade_huangwudie', 'bilibili_huanggai', 'bilibili_ekeshaoge', 'bilibili_guanning', 'bilibili_wangwang', 'bilibili_zhouxiaomei', 'diy_lvmeng'],
+                Cothers: ['bilibili_caifuren', 'bilibili_nanhualaoxian', 'bilibili_daxiao', 'bilibili_wangtao', 'bilibili_wangyue', 'bilibili_x_wangtao', 'bilibili_x_wangyue', 'bilibili_xushao', 'bilibili_shen_guojia', 'bilibili_re_xusheng', 'bilibili_kuangshen04', 'bilibili_adong', 'bilibili_zhangrang', 'bilibili_litiansuo', 'decade_huangwudie', 'bilibili_huanggai', 'bilibili_ekeshaoge', 'bilibili_guanning', 'bilibili_wangwang', 'bilibili_zhouxiaomei', 'diy_lvmeng'],
                 CDanJi: ['DJ_caiyang', 'DJ_pujing', 'DJ_huban'],
                 CSCS: ['biliscs_shichangshi', 'biliscs_zhangrang', 'biliscs_zhaozhong', 'biliscs_sunzhang', 'biliscs_bilan', 'biliscs_xiayun', 'biliscs_hankui', 'biliscs_lisong', 'biliscs_duangui', 'biliscs_guosheng', 'biliscs_gaowang'],
                 CXuanDie: ['bfake_jiananfeng', 'bfake_shen_zhangjiao', 'bfake_shen_zhangfei', 'bfake_shen_jiaxu', 'bfake_huanwen'],
@@ -55,6 +55,7 @@ const packs = function () {
             bilibili_xizhicaikobe: ['male', 'key', 4, ['bilibili_biexiao', 'bilibili_xingshi', 'bilibili_zhangcai'], ['doublegroup:wei:shu:wu:qun:jin', 'clan:肘家军', 'clan:肘击群', 'clan:活动群', 'name:戏|子宓']],
             bilibili_yanjing: ['male', 'key', 3, ['bilibili_dongcha', 'bilibili_mingcha', 'bilibili_huiyan'], ['clan:宿舍群', 'clan:肘击群', 'clan:活动群', 'name:tooenough|眼睛']],
             bilibili_caifuren: ['female', 'qun', 3, ['bilibili_kuilei'], ["name:蔡|null"]],
+            bilibili_nanhualaoxian: ['male', 'qun', 3, ['bilibili_qingshu', 'olshoushu', 'olhedao'], ['die:ol_nanhualaoxian', 'name:庄|周']],
             //千里走单骑 
             DJ_caiyang: ['male', 'qun', 1, ['yinka', 'zhuixi'], ['character:caiyang']],
             DJ_pujing: ['male', 'qun', 1, ['yinka'], ['character:pujing']],
@@ -515,19 +516,14 @@ const packs = function () {
             bilibili_zhengjing: {
                 audio: 'zhengjing',
                 inherit: 'zhengjing',
-                content() {
-                    'step 0'
-                    var cardx = {}, cards = [], names = [], types = [];
-                    var num = [3, 4, 6].randomGet();
-                    event.num = num;//定下每张牌切的数量
+                async content(event, trigger, player) {
+                    let cards = [], names = [], types = [];
                     while (true) {
-                        var card = get.cardPile(function (card) {
+                        const card = get.cardPile(card => {
                             //判定类型是否补充完毕的辅助牌
-                            var card2 = get.cardPile(function (card2) {
-                                return card2.name != 'du' && !names.includes(card2.name) && !types.includes(get.type2(card2));
-                            });
+                            const card2 = get.cardPile(card2 => card2.name !== 'du' && !names.includes(card2.name) && !types.includes(get.type2(card2)));
                             //先填补每种类型的牌各一张，然后补充其他的牌
-                            return card.name != 'du' && !names.includes(card.name) && (!types.includes(get.type2(card)) || !card2);
+                            return card.name !== 'du' && !names.includes(card.name) && (!types.includes(get.type2(card)) || !card2);
                         });
                         if (card) {
                             cards.push(card);
@@ -546,27 +542,50 @@ const packs = function () {
                         }
                         else break;
                     };
-                    event.cards = cards;
-                    if (!cards.length) { event.finish(); return; };
-                    for (var i of names) cardx[i] = num;//切的牌
-                    cardx.du = names.length;//炸弹
-                    if (player == game.me && !_status.auto) {
-                        event.dialog = function (cards) {
-                            var cards1 = [];
-                            for (var i in cards) {
-                                for (var j = 0; j < cards[i]; j++) {
+                    if (!cards.length) return event.finish();
+                    let cardx = { 'du': names.length }, num = [3, 4, 6].randomGet();
+                    for (const i of names) cardx[i] = num;//切牌数
+                    await Promise.all(event.next);
+                    if (_status.connectMode) event.time = lib.configOL.choose_timeout;
+                    event.videoId = lib.status.videoId++;
+                    if (player.isUnderControl()) game.swapPlayerAuto(player);
+                    const switchToAuto = () => {
+                        return new Promise((resolve) => {
+                            game.pause();
+                            game.countChoose();
+                            event._result = {};
+                            for (const i in cardx) event._result[i] = cardx[i];
+                            setTimeout(() => {
+                                _status.imchoosing = false;
+                                if (event.dialog) event.dialog.close();
+                                game.resume();
+                                resolve(event._result);
+                            }, 5000);
+                        });
+                    };
+                    const createDialog = (player, id) => {
+                        if (_status.connectMode) lib.configOL.choose_timeout = "30";
+                        if (player === game.me) return;
+                        const dialog = ui.create.dialog(get.translation(player) + "正在整理经书...<br>");
+                        dialog.videoId = id;
+                    };
+                    const chooseButton = cardx => {
+                        const { promise, resolve } = Promise.withResolvers(), event = _status.event;
+                        event.dialog = ((cards) => {
+                            let cards1 = [], lineList = [], pointList = [], pointNum = 0, result = {}, interval;
+                            for (const i in cards) {
+                                for (let j = 0; j < cards[i]; j++) {
                                     cards1.push(i);
                                 };
                             };
                             if (!cards1.length) cards1.push('sha');
-                            var result = {};
-                            var interval;
-                            var finish = function () {
+                            const finish = () => {
                                 clearInterval(interval);
-                                _status.event._result = result;
+                                event._result = result;
+                                resolve(event._result);
                                 game.resume();
                             };
-                            var dialog = ui.create.dialog('hidden');
+                            const dialog = event.dialog = ui.create.dialog('hidden');
                             dialog.classList.add('popped');
                             dialog.classList.add('static');
                             dialog.style.height = '100%';
@@ -576,7 +595,7 @@ const packs = function () {
                             dialog.style['text-align'] = 'left';
                             ui.window.appendChild(dialog);
                             dialog.innerHTML = '';
-                            var getAngle = function (x1, y1, x2, y2) {
+                            const getAngle = (x1, y1, x2, y2) => {
                                 var x = x1 - x2;
                                 var y = y1 - y2;
                                 var z = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
@@ -593,11 +612,8 @@ const packs = function () {
                                 if (x2 > x1 && y2 > y1) angle = angle - 90;
                                 return angle;
                             };
-                            var lineList = [];
-                            var pointList = [];
-                            var pointNum = 0;
-                            var createLine = function (e) {
-                                if (this.hadClicked == true) {
+                            const createLine = e => {
+                                if (dialog.hadClicked == true) {
                                     if (e.changedTouches) e = e.changedTouches[e.changedTouches.length - 1];
                                     if (pointNum % 3 == 0) {
                                         pointList.push([e.clientX / game.documentZoom, e.clientY / game.documentZoom]);
@@ -619,13 +635,13 @@ const packs = function () {
                                             div.style.top = (y0 + 2) + 'px';
                                             div.style.transform = 'rotate(' + getAngle(x0, y0, x1, y1) + 'deg)';
                                             div.style['transform-origin'] = '0 50%';
-                                            this.appendChild(div);
+                                            dialog.appendChild(div);
                                             lineList.push(div);
                                             if (lineList.length > 3) {
                                                 var div1 = lineList[0];
                                                 div1.style.transition = 'opacity 0.25s';
                                                 div1.style.opacity = 0;
-                                                setTimeout(function () {
+                                                setTimeout(() => {
                                                     if (div1.parentNode != undefined) div1.parentNode.removeChild(div1);
                                                 }, 250);
                                                 lineList.remove(lineList[0]);
@@ -637,12 +653,12 @@ const packs = function () {
                                     pointNum++;
                                 };
                             };
-                            var clearLine = function () {
-                                var deleteLine = function () {
-                                    var div1 = lineList[0];
+                            const clearLine = () => {
+                                const deleteLine = () => {
+                                    const div1 = lineList[0];
                                     div1.style.transition = 'opacity 0.25s';
                                     div1.style.opacity = 0;
-                                    setTimeout(function () {
+                                    setTimeout(() => {
                                         if (div1.parentNode != undefined) div1.parentNode.removeChild(div1);
                                     }, 250);
                                     lineList.remove(lineList[0]);
@@ -651,20 +667,19 @@ const packs = function () {
                                 if (lineList.length > 0) deleteLine();
                                 pointList = [];
                             };
-                            dialog.addEventListener(lib.device ? "touchstart" : "mousedown", function (e) {
+                            dialog.addEventListener(lib.device ? "touchstart" : "mousedown", e => {
                                 e.stopPropagation();
-                                this.hadClicked = true;
+                                dialog.hadClicked = true;
                                 pointNum = 0;
                             });
                             dialog.addEventListener(lib.device ? "touchmove" : "mousemove", createLine);
-                            dialog.addEventListener(lib.device ? "touchend" : "mouseup", function (e) {
+                            dialog.addEventListener(lib.device ? "touchend" : "mouseup", e => {
                                 e.stopPropagation();
-                                delete this.hadClicked;
+                                delete dialog.hadClicked;
                                 clearLine();
                             });
-                            var createCard = function (name) {
-                                var left = Math.ceil(Math.random() * 560);
-                                var card = ui.create.card(null, 'noclick', true);
+                            const createCard = name => {
+                                const left = Math.ceil(Math.random() * 560), card = ui.create.card(null, 'noclick', true);
                                 card.init({ name: name });
                                 if (name == 'du') card.style['box-shadow'] = 'rgba(0, 0, 0, 0.2) 0 0 0 1px,rgba(255, 0, 0, 0.4) 0 0 5px, rgba(255, 0, 0, 0.4) 0 0 12px, rgba(255, 0, 0, 0.8) 0 0 15px';
                                 card.style['pointer-events'] = 'none';
@@ -674,22 +689,11 @@ const packs = function () {
                                 card.style.transition = 'opacity 0.25s';
                                 card.style.opacity = 0;
                                 dialog.appendChild(card);
-                                setTimeout(function () {
-                                    card.style.opacity = 1;
-                                }, 10);
-                                var t_x = 0,
-                                    t_y = 0,
-                                    s_x = 0,
-                                    s_y = 0,
-                                    s_y0 = 0,
-                                    v_y = [90, 95, 100, 105, 110, 115, 105, 110, 115].randomGet(),
-                                    a_y = [9, 9.2, 9.4, 9.6, 9.8, 10, 10.2, 10.4, 10.6, 10.8, 11].randomGet(),
-                                    t_x_increase = 0,
-                                    t_y_increase = 0.3,
-                                    isMovingUp = true,
-                                    cardLeft = card.offsetLeft,
-                                    cardTop = card.offsetTop,
-                                    num_x = 63;
+                                setTimeout(() => card.style.opacity = 1, 10);
+                                var t_x = 0, t_y = 0, s_x = 0, s_y = 0, s_y0 = 0, t_x_increase = 0, t_y_increase = 0.3;
+                                var v_y = [90, 95, 100, 105, 110, 115, 105, 110, 115].randomGet();
+                                var a_y = [9, 9.2, 9.4, 9.6, 9.8, 10, 10.2, 10.4, 10.6, 10.8, 11].randomGet();
+                                var isMovingUp = true, cardLeft = card.offsetLeft, cardTop = card.offsetTop, num_x = 63;
                                 if (v_y == 90) num_x = 56;
                                 else if (v_y == 95) num_x = 60;
                                 else if (v_y == 100) num_x = 63;
@@ -697,14 +701,14 @@ const packs = function () {
                                 else if (v_y == 110) num_x = 70;
                                 else num_x = 74;
                                 if ([true, false].randomGet()) {
-                                    var s1 = dialog.offsetWidth - card.offsetWidth - left;
+                                    let s1 = dialog.offsetWidth - card.offsetWidth - left;
                                     t_x_increase = (s1 / num_x) * Math.random();
                                 }
                                 else {
-                                    var s1 = left;
+                                    let s1 = left;
                                     t_x_increase = -(s1 / num_x) * Math.random();
                                 };
-                                var interval1 = setInterval(function () {
+                                const interval1 = setInterval(() => {
                                     if (!_status.paused2) {
                                         t_x += t_x_increase;
                                         s_x = t_x;
@@ -721,7 +725,7 @@ const packs = function () {
                                             card.hadHide = true;
                                             card.style.transition = 'opacity .3s';
                                             card.style.opacity = 0;
-                                            setTimeout(function () {
+                                            setTimeout(() => {
                                                 card.delete();
                                                 clearInterval(interval1);
                                             }, 350);
@@ -771,9 +775,7 @@ const packs = function () {
                                                     card.style.transition = 'all .3s';
                                                     card.style.transform = 'scale(1.5)';
                                                     card.style.opacity = 0;
-                                                    setTimeout(function () {
-                                                        card.delete();
-                                                    }, 350);
+                                                    setTimeout(() => card.delete(), 350);
                                                     clearInterval(interval1);
                                                 };
                                             };
@@ -782,7 +784,7 @@ const packs = function () {
                                     if (dialog.parentNode == undefined) clearInterval(interval1);
                                 }, 30);
                             };
-                            interval = setInterval(function () {
+                            interval = setInterval(() => {
                                 if (!_status.paused2) {
                                     var num2 = [0, 1, 1, 1, 1, 2, 2, 3].randomGet();
                                     if (num2 > 0) {
@@ -792,103 +794,100 @@ const packs = function () {
                                             createCard(card);
                                             cards1.remove(card);
                                             if (!cards1.length) {
-                                                setTimeout(function () {
-                                                    finish();
-                                                }, 3000);
+                                                setTimeout(() => finish(), 3000);
                                             }
                                         };
                                     };
                                 };
                             }, 650);
                             return dialog;
-                        }(cardx);
-                        event.switchToAuto = function () {
-                            event._result = event.skillai(event.list);
+                        })(cardx);
+                        event.switchToAuto = () => {
+                            event._result = {};
+                            for (const i in cardx) event._result[i] = cardx[i];
                             game.resume();
+                            resolve(event._result);
                         };
                         _status.imchoosing = true;
                         game.pause();
+                        game.pause();
+                        game.countChoose();
+                        return promise;
+                    };
+                    game.broadcastAll(createDialog, player, event.videoId);
+                    let next;
+                    if (event.isMine()) next = chooseButton(cardx);
+                    else if (event.isOnline()) {
+                        const { promise, resolve } = Promise.withResolvers();
+                        event.player.send(chooseButton, cardx);
+                        event.player.wait(async result => {
+                            if (result == "ai") result = await switchToAuto();
+                            resolve(result);
+                        });
+                        game.pause();
+                        next = promise;
                     }
-                    else {
-                        event.result = {};
-                        for (var i in cardx) event.result[i] = cardx[i];
-                        var str = get.translation(player) + '正在整理经书...';
-                        game.broadcastAll(function (str) {
-                            var dialog = ui.create.dialog(str);
-                            dialog.classList.add('center');
-                            setTimeout(function () {
-                                dialog.close();
-                            }, 5000);
-                        }, str);
-                        game.delay(10);
-                    }
-                    'step 1'
+                    else next = switchToAuto();
+                    const result = await next;
+                    game.broadcastAll((id, time) => {
+                        if (_status.connectMode) lib.configOL.choose_timeout = time;
+                        const dialog = get.idDialog(id);
+                        if (dialog) dialog.close();
+                    }, event.videoId, event.time);
                     _status.imchoosing = false;
                     if (event.dialog) event.dialog.close();
                     if (!event.result) event.result = result;
-                    'step 2'
-                    var result = event.result;
-                    for (var i = 0; i < cards.length; i++) {
+                    for (let i = 0; i < cards.length; i++) {
                         if (!result[cards[i].name] || result[cards[i].name] < num) cards.splice(i--, 1);
                     }
-                    if (cards.length) {
-                        if (lib.config.background_speak) game.playAudio('skill', 'zhengjing_finish');
-                        player.showCards(cards, get.translation(player) + '整理出了以下经典');
-                        game.cardsGotoOrdering(cards);
-                    }
-                    else {
+                    if (!cards.length) {
                         game.log(player, '并没有整理出经典');
                         player.popup('杯具');
-                        event.finish();
+                        return event.finish();
                     }
-                    'step 3'
-                    game.updateRoundNumber();
-                    player.chooseTarget('请选择一名角色', '将整理出的经典（' + get.translation(cards) + '）置于其武将牌上', true).set('ai', function (target) {
+                    if (lib.config.background_speak) game.playAudio('skill', 'zhengjing_finish');
+                    player.showCards(cards, get.translation(player) + '整理出了以下经典');
+                    await game.cardsGotoOrdering(cards);
+                    const result2 = await player.chooseTarget('请选择一名角色', '将整理出的经典（' + get.translation(cards) + '）置于其武将牌上', true).set('ai', function (target) {
                         var player = _status.event.player;
                         if (target.hasSkill('xinfu_pdgyingshi')) return 0;
                         return -get.attitude(player, target);
-                    });
-                    'step 4'
-                    if (result.bool) {
-                        var target = result.targets[0];
-                        event.target = target;
+                    }).forResult();
+                    if (result2?.bool && result2.targets.length) {
+                        const target = result2.targets[0];
                         player.line(target, 'thunder');
+                        let result3;
+                        if (cards.length === 1) result3 = { bool: true, moved: [cards, []] };
+                        else {
+                            const next2 = player.chooseToMove('整经：请分配整理出的经典', true);
+                            next2.set('list', [
+                                ['置于' + get.translation(target) + '的武将牌上', cards],
+                                ['自己获得'],
+                            ]);
+                            next2.set('filterMove', function (from, to, moved) {
+                                if (moved[0].length == 1 && to == 1 && from.link == moved[0][0]) return false;
+                                return true;
+                            });
+                            next2.set('filterOk', function (moved) {
+                                return moved[0].length > 0;
+                            });
+                            next2.set('processAI', function (list) {
+                                var cards = list[0][1].slice(0).sort(function (a, b) {
+                                    return get.value(a) - get.value(b);
+                                });
+                                return [cards.splice(0, 1), cards];
+                            });
+                            result3 = await next2.forResult();
+                        }
+                        if (result3.bool) {
+                            const [puts, gains] = result3.moved;
+                            target.addSkill('zhengjing2');
+                            const next3 = target.addToExpansion(puts, 'gain2');
+                            next3.gaintag.add('zhengjing2');
+                            await next3;
+                            if (gains.length) await player.gain(gains, 'gain2');
+                        }
                     }
-                    'step 5'
-                    if (cards.length == 1) {
-                        event._result = { bool: true, moved: [cards, []] };
-                        return;
-                    }
-                    var next = player.chooseToMove('整经：请分配整理出的经典', true);
-                    next.set('list', [
-                        ['置于' + get.translation(target) + '的武将牌上', cards],
-                        ['自己获得'],
-                    ]);
-                    next.set('filterMove', function (from, to, moved) {
-                        if (moved[0].length == 1 && to == 1 && from.link == moved[0][0]) return false;
-                        return true;
-                    });
-                    next.set('filterOk', function (moved) {
-                        return moved[0].length > 0;
-                    });
-                    next.set('processAI', function (list) {
-                        var cards = list[0][1].slice(0).sort(function (a, b) {
-                            return get.value(a) - get.value(b);
-                        });
-                        return [cards.splice(0, 1), cards];
-                    })
-                    'step 6'
-                    if (result.bool) {
-                        var cards = result.moved[0], gains = result.moved[1];
-                        target.addSkill('zhengjing2');
-                        target.addToExpansion(cards, 'gain2').gaintag.add('zhengjing2');
-                        if (gains.length) player.gain(gains, 'gain2');
-                    }
-                },
-                ai: {
-                    order: 10,
-                    result: { player: 1 },
-                    threaten: 3.2,
                 },
             },
             //SP许攸
@@ -10477,6 +10476,57 @@ const packs = function () {
                     },
                 },
             },
+            //牢登
+            bilibili_qingshu: {
+                audio: 'bilibili_qingshu',
+                inherit: 'olqingshu',
+                async content(event, trigger, player) {
+                    const FromItems = lib.skill.olhedao.tianshuTrigger.slice();
+                    const froms = await player.chooseButton(['青书：请选择“天书”时机', [FromItems.randomGets(3).map(item => [item, item.name]), 'textbutton']], true).set('ai', () => 1 + Math.random()).forResult('links');
+                    if (!froms?.length) return;
+                    const [from] = froms;
+                    const ToItems = lib.skill.olhedao.tianshuContent.filter(item => !item.filter || item.filter(from.name));
+                    const tos = await player.chooseButton(['###青书：请选择“天书”效果###<div class="text center">' + from.name + '</div>', [ToItems.randomGets(3).map(item => [item, item.name]), 'textbutton']], true).set('ai', () => 1 + Math.random()).forResult('links');
+                    if (!tos?.length) return;
+                    const [to] = tos;
+                    let skill;
+                    while (true) {
+                        skill = 'olhedao_tianshu_' + Math.random().toString(36).slice(-8);
+                        if (!lib.skill[skill]) break;
+                    }
+                    game.broadcastAll((skill, from, to) => {
+                        lib.skill[skill] = { nopop: true, olhedao: true, charlotte: true, onremove: true, ...from.effect, ...to.effect };
+                        lib.skill[skill].init = (player, skill) => (player.storage[skill] = player.storage[skill] || [0, skill]);
+                        lib.skill[skill].intro = {
+                            markcount: (storage = [0]) => storage[0],
+                            content(storage, player) {
+                                const book = storage?.[1];
+                                if (!book) return '查无此书';
+                                return [
+                                    '此书还可使用' + storage[0] + '次',
+                                    (() => {
+                                        if (!player.isUnderControl(true) && get.info(book)?.nopop) return '未翻开的天书，效果不可见';
+                                        return lib.translate[book + '_info'];
+                                    })(),
+                                ].map(str => '<li>' + str).join('<br>');
+                            },
+                        };
+                        lib.skill[skill].markimage = 'image/card/tianshu2.png';
+                        lib.translate[skill] = '天书';
+                        lib.translate[skill + '_info'] = from.name + '，' + to.name + '。';
+                        game.finishSkill(skill);
+                    }, skill, from, to);
+                    player.addSkill(skill);
+                    lib.skill.olhedao.tianshuClear(skill, player, -3);
+                    const skills = player.getSkills(null, false, false).filter(skill => get.info(skill)?.olhedao);
+                    const num = skills.length - get.info('olhedao').getLimit(player);
+                    if (num > 0) {
+                        const result = num < skills.length ? await player.chooseButton(['青书：选择失去' + get.cnNumber(num) + '册多余的“天书”', [skills.map(item => [item, '（剩余' + player.storage[item][0] + '次）' + lib.translate[item + '_info']]), 'textbutton']], true, num).set('ai', () => 1 + Math.random()).forResult() : { bool: true, links: skills };
+                        if (result?.bool && result.links?.length) player.removeSkill(result.links);
+                    }
+                },
+                derivation: 'bilibili_qingshu_faq',
+            },
         },
         dynamicTranslate: {
             bilibili_xueji(player) {
@@ -11073,11 +11123,15 @@ const packs = function () {
             bolshicai: '恃才',
             bolshicai_effect: '牌堆顶',
             bolshicai_info: '出牌阶段，牌堆顶的一张牌对你可见。你可以弃置一张牌，然后获得牌堆顶的一张牌，且不能再发动〖恃才〗直到此牌离开你的手牌区。',
+            bilibili_nanhualaoxian: '南华老仙',
+            bilibili_qingshu: '青书',
+            bilibili_qingshu_faq: '关于天书',
+            bilibili_qingshu_faq_info: '<br>书写“天书”时，系统先从30个“天书”时机中随机筛选出三个，角色选择时机后，系统再从30个“天书”效果中随机筛选出三个可以和选择的时机匹配的效果，然后角色获得技能为你选择的“天书”时机+“天书”效果的〖天书〗，此技能被发动前对其余玩家不可见，发动三次时失去此〖天书〗。',
         },
     };
     for (var i in huodongcharacter.character) {
         if (!huodongcharacter.character[i][4]) huodongcharacter.character[i][4] = [];
-        //if(huodongcharacter.characterSort.huodongcharacter.Cothers.includes(i)&&lib.config.connect_nickname!=='萌新（转型中）') huodongcharacter.character[i][4].push('unseen');
+        if (huodongcharacter.characterSort.huodongcharacter.Cothers.includes(i) && lib.config.connect_nickname !== '萌新（转型中）') huodongcharacter.character[i][4].push('unseen');
         huodongcharacter.character[i][4].push(((lib.device || lib.node) ? 'ext:' : 'db:extension-') + '活动武将/image/character/' + i + '.jpg');
         if (!lib.config.extension_活动武将_DanJi && i.indexOf('DJ_') == 0) delete huodongcharacter.character[i];
         if (!lib.config.extension_活动武将_SCS && i.indexOf('biliscs_') != -1) delete huodongcharacter.character[i];

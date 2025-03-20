@@ -1029,6 +1029,7 @@ export function content(config, pack) {
 				legend: [
 					//活动武将包武将
 					'bilibili_zhengxuan',
+					'bilibili_nanhualaoxian',
 					'old_zuoci',
 					'bilibili_guanning',
 					'bilibili_litiansuo',
