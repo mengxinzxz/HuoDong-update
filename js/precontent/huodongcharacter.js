@@ -8,10 +8,10 @@ const packs = function () {
         characterSort: {
             huodongcharacter: {
                 CLongZhou: ['lz_sufei', 'lz_tangzi', 'lz_liuqi', 'lz_huangquan'],
-                CZhengHuo: ['bilibili_zhengxuan', 'bilibili_sp_xuyou', 'old_zuoci'],
+                CZhengHuo: ['bilibili_caifuren', 'bilibili_zhengxuan', 'bilibili_sp_xuyou', 'old_zuoci'],
                 Chuodong: ['bilibili_shengxunyu', 'bilibili_Firewin', 'bilibili_jinglingqiu', 'bilibili_suixingsifeng', 'bilibili_Emptycity', 'bilibili_thunderlei', 'bilibili_lonelypatients', 'bilibili_ningjingzhiyuan', 'bilibili_xizhicaikobe'],
                 CDormitory: ['bilibili_yanjing'],
-                Cothers: ['bilibili_caifuren', 'bilibili_nanhualaoxian', 'bilibili_daxiao', 'bilibili_wangtao', 'bilibili_wangyue', 'bilibili_x_wangtao', 'bilibili_x_wangyue', 'bilibili_xushao', 'bilibili_shen_guojia', 'bilibili_re_xusheng', 'bilibili_kuangshen04', 'bilibili_adong', 'bilibili_zhangrang', 'bilibili_litiansuo', 'decade_huangwudie', 'bilibili_huanggai', 'bilibili_ekeshaoge', 'bilibili_guanning', 'bilibili_wangwang', 'bilibili_zhouxiaomei', 'diy_lvmeng'],
+                Cothers: ['bilibili_nanhualaoxian', 'bilibili_daxiao', 'bilibili_wangtao', 'bilibili_wangyue', 'bilibili_x_wangtao', 'bilibili_x_wangyue', 'bilibili_xushao', 'bilibili_shen_guojia', 'bilibili_re_xusheng', 'bilibili_kuangshen04', 'bilibili_adong', 'bilibili_zhangrang', 'bilibili_litiansuo', 'decade_huangwudie', 'bilibili_huanggai', 'bilibili_ekeshaoge', 'bilibili_guanning', 'bilibili_wangwang', 'bilibili_zhouxiaomei', 'diy_lvmeng'],
                 CDanJi: ['DJ_caiyang', 'DJ_pujing', 'DJ_huban'],
                 CSCS: ['biliscs_shichangshi', 'biliscs_zhangrang', 'biliscs_zhaozhong', 'biliscs_sunzhang', 'biliscs_bilan', 'biliscs_xiayun', 'biliscs_hankui', 'biliscs_lisong', 'biliscs_duangui', 'biliscs_guosheng', 'biliscs_gaowang'],
                 CXuanDie: ['bfake_jiananfeng', 'bfake_shen_zhangjiao', 'bfake_shen_zhangfei', 'bfake_shen_jiaxu', 'bfake_huanwen'],
@@ -573,11 +573,7 @@ const packs = function () {
                         const { promise, resolve } = Promise.withResolvers(), event = _status.event;
                         event.dialog = ((cards) => {
                             let cards1 = [], lineList = [], pointList = [], pointNum = 0, result = {}, interval;
-                            for (const i in cards) {
-                                for (let j = 0; j < cards[i]; j++) {
-                                    cards1.push(i);
-                                };
-                            };
+                            for (const i in cards) cards1 = cards1.concat(Array.from({ length: cards[i] }).map(() => i));
                             if (!cards1.length) cards1.push('sha');
                             const finish = () => {
                                 clearInterval(interval);
@@ -788,15 +784,13 @@ const packs = function () {
                             };
                             interval = setInterval(() => {
                                 if (!_status.paused2) {
-                                    var num2 = [0, 1, 1, 1, 1, 2, 2, 3].randomGet();
-                                    if (num2 > 0) {
-                                        for (var i = 0; i < num2; i++) {
-                                            if (!cards1.length) continue;
-                                            var card = cards1.randomGet();
-                                            createCard(card);
-                                            cards1.remove(card);
+                                    const num2 = [0, 1, 1, 1, 1, 2, 2, 3].randomGet();
+                                    if (num2 > 0 && cards1.length) {
+                                        for (let i = 0; i < num2; i++) {
+                                            createCard(cards1.randomRemove());
                                             if (!cards1.length) {
                                                 setTimeout(() => finish(), 3000);
+                                                break;
                                             }
                                         };
                                     };
@@ -10257,6 +10251,8 @@ const packs = function () {
                     if (list.every(i => Boolean(i))) {
                         game.broadcastAll((player, first, chosen) => {
                             player.name1 = first;
+                            player.sex = get.character(first).sex;
+                            player.group = get.character(first).group;
                             player.node.avatar.setBackground(first, 'character');
                             player.node.name.innerHTML = get.slimName(first);
                             player.name2 = chosen;
