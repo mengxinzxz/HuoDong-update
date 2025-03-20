@@ -4,7 +4,7 @@ const packs = function () {
     var huodongcharacter = {
         name: 'huodongcharacter',
         connect: true,
-        //connectBanned: ['bilibili_zhengxuan'],
+        connectBanned: ['bilibili_sp_xuyou'],
         characterSort: {
             huodongcharacter: {
                 CLongZhou: ['lz_sufei', 'lz_tangzi', 'lz_liuqi', 'lz_huangquan'],
@@ -581,6 +581,8 @@ const packs = function () {
                             if (!cards1.length) cards1.push('sha');
                             const finish = () => {
                                 clearInterval(interval);
+                                _status.imchoosing = false;
+                                if (event.dialog) event.dialog.close();
                                 event._result = result;
                                 resolve(event._result);
                                 game.resume();
@@ -834,22 +836,23 @@ const packs = function () {
                         const dialog = get.idDialog(id);
                         if (dialog) dialog.close();
                     }, event.videoId, event.time);
-                    _status.imchoosing = false;
-                    if (event.dialog) event.dialog.close();
-                    if (!event.result) event.result = result;
                     for (let i = 0; i < cards.length; i++) {
                         if (!result[cards[i].name] || result[cards[i].name] < num) cards.splice(i--, 1);
                     }
                     if (!cards.length) {
                         game.log(player, '并没有整理出经典');
                         player.popup('杯具');
+                        await game.delayx();
                         return event.finish();
                     }
-                    if (lib.config.background_speak) game.playAudio('skill', 'zhengjing_finish');
-                    player.showCards(cards, get.translation(player) + '整理出了以下经典');
+                    player.popup('洗具');
+                    game.broadcastAll(() => {
+                        if (lib.config.background_speak) game.playAudio('skill', 'zhengjing_finish');
+                    });
+                    await player.showCards(cards, get.translation(player) + '整理出了以下经典');
                     await game.cardsGotoOrdering(cards);
-                    const result2 = await player.chooseTarget('请选择一名角色', '将整理出的经典（' + get.translation(cards) + '）置于其武将牌上', true).set('ai', function (target) {
-                        var player = _status.event.player;
+                    const result2 = await player.chooseTarget('整经：请选择一名角色', '将整理出的经典（' + get.translation(cards) + '）置于其武将牌上', true).set('ai', target => {
+                        const player = get.player();
                         if (target.hasSkill('xinfu_pdgyingshi')) return 0;
                         return -get.attitude(player, target);
                     }).forResult();
@@ -11131,7 +11134,7 @@ const packs = function () {
     };
     for (var i in huodongcharacter.character) {
         if (!huodongcharacter.character[i][4]) huodongcharacter.character[i][4] = [];
-        if (huodongcharacter.characterSort.huodongcharacter.Cothers.includes(i) && lib.config.connect_nickname !== '萌新（转型中）') huodongcharacter.character[i][4].push('unseen');
+        if (huodongcharacter.characterSort.huodongcharacter.Cothers.includes(i) && (_status.connectMode || lib.config.connect_nickname !== '萌新（转型中）')) huodongcharacter.character[i][4].push('unseen');
         huodongcharacter.character[i][4].push(((lib.device || lib.node) ? 'ext:' : 'db:extension-') + '活动武将/image/character/' + i + '.jpg');
         if (!lib.config.extension_活动武将_DanJi && i.indexOf('DJ_') == 0) delete huodongcharacter.character[i];
         if (!lib.config.extension_活动武将_SCS && i.indexOf('biliscs_') != -1) delete huodongcharacter.character[i];

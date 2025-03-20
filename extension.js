@@ -14,14 +14,18 @@ game.bolShowNewPack = function () {
 		'/setPlayer/',
 		'bugfix',
 		'技能修改，配音补充',
+		'隐藏“其他武将”包中的“自嗨包”',
+		'重置“其他武将”包中水果忍者【整经】代码，联机解禁水果忍者',
+		'因“其他武将”包中【恃才】使用代理，联机禁用官渡许攸',
 		'添加欢杀武将：陈武董袭、谋甄宓、界袁术、蔡邕、司马朗、黄皓、陈登',
 		'添加微信武将：界左慈、郭照',
 		'To be continued...',
 	];
 	//更新武将
 	var HuoDong_players = [
-		'Mbaby_chendong', 'Mbaby_sb_zhenji', 'Mbaby_yuanshu', 'Mbaby_caiyong', 'Mbaby_simalang',
-		'wechat_re_zuoci', 'wechat_guozhao', 'Mbaby_huanghao', 'Mbaby_chendeng',
+		'bilibili_zhengxuan', 'bilibili_sp_xuyou', 'Mbaby_chendong', 'Mbaby_sb_zhenji',
+		'Mbaby_yuanshu', 'Mbaby_caiyong', 'Mbaby_simalang', 'wechat_re_zuoci',
+		'wechat_guozhao', 'Mbaby_huanghao', 'Mbaby_chendeng',
 	];
 	//加载
 	var dialog = ui.create.dialog(
