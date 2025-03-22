@@ -5946,7 +5946,7 @@ const packs = function () {
                             const list = event.indexedData;
                             player.storage[event.name].remove(list);
                             if (!player.storage[event.name].length) player.removeSkill(event.name);
-                            const [source, card] = list;
+                            const [card, source] = list;
                             if (source.isIn() && player.getCards('h').includes(card)) {
                                 source.logSkill(event.name, player);
                                 const result = await player.chooseControl().set('choiceList', [
@@ -26830,7 +26830,7 @@ const packs = function () {
                 trigger: { global: 'phaseJieshuBegin' },
                 filter(event, player) {
                     const target = event.player;
-                    if (player === event.player || player.hasCard(card => {
+                    if (player === event.player || !player.hasCard(card => {
                         if (get.position(card) === 'h' && _status.connectMode) return true;
                         return lib.filter.cardDiscardable(card, player);
                     }, 'he')) return false;
