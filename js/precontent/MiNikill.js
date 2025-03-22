@@ -5945,7 +5945,7 @@ const packs = function () {
                         async content(event, trigger, player) {
                             const list = event.indexedData;
                             player.storage[event.name].remove(list);
-                            if (!player[event.name].length) player.removeSkill(event.name);
+                            if (!player.storage[event.name].length) player.removeSkill(event.name);
                             const [source, card] = list;
                             if (source.isIn() && player.getCards('h').includes(card)) {
                                 source.logSkill(event.name, player);
