@@ -2179,7 +2179,7 @@ const packs = function () {
                 },
                 contentx() {
                     'step 0'
-                    var list, skills = [];
+                    var list, skills = [], bannedInfo = ['游戏开始时'];
                     if (get.mode() == 'guozhan') {
                         list = [];
                         for (var i in lib.characterPack.mode_guozhan) list.push(i);
@@ -2199,13 +2199,10 @@ const packs = function () {
                             if (target.hasSkill(j)) continue;
                             if (!skill || skill.zhuSkill) continue;
                             if (skill.ai && (skill.ai.combo || skill.ai.notemp || skill.ai.neg)) continue;
-                            var info = get.translation(j);
-                            for (var ix = 0; ix < info.length; ix++) {
-                                if (/仁|义|礼|智|信/.test(info[ix]) == true) {
-                                    skills.add(j);
-                                    break;
-                                }
-                            }
+                            const infox = get.plainText(get.skillInfoTranslation(j));
+                            if (bannedInfo.some(item => infox.includes(item))) continue;
+                            const info = get.plainText(get.translation(j));
+                            if ('仁/义/礼/智/信'.split('/').some(item => info.includes(item))) skills.add(j);
                         }
                     }
                     if (!skills.length) {
@@ -11029,8 +11026,8 @@ const packs = function () {
             bolluoshu: '络殊',
             bolluoshu_info: '锁定技，准备阶段，你从随机三个限定技中选择一个获得（若你未拥有〖纷殕〗，则选项必定包含〖纷殕〗）。',
             bolfenfou: '纷殕',
-            bolfenfou_info: '限定技，一轮游戏开始时，你可以令场上所有角色同时选择两项：①将武将牌翻面；②摸两张牌；③于本轮获得〖鸩毒〗。',
-            bolfenfou_info_guozhan: '限定技，一轮游戏开始时，你可以令场上所有角色同时选择两项：①叠置武将牌；②摸两张牌；③于本轮获得〖鸩毒〗。',
+            bolfenfou_info: '限定技，每轮开始时，你可以令场上所有角色同时选择两项：①将武将牌翻面；②摸两张牌；③于本轮获得〖鸩毒〗。',
+            bolfenfou_info_guozhan: '限定技，每轮开始时，你可以令场上所有角色同时选择两项：①叠置武将牌；②摸两张牌；③于本轮获得〖鸩毒〗。',
             bolxiongsuan: '凶算',
             bolxiongsuan_info: '限定技，出牌阶段，你可以弃置一张手牌并对一名与你势力相同的角色造成1点伤害，然后摸三张牌。若该角色有已发动的限定技，你选择其中一个限定技并于此回合结束时复原之。',
             bfake_shen_zhangfei: '蝶设神张飞',
@@ -11057,7 +11054,7 @@ const packs = function () {
             bilibili_xiezhi: '协治',
             bilibili_xiezhi_info: '锁定技，其他角色的回合开始时，你选择X次牌的类别，其本回合至多使用选择类别次数的对应类别的牌（X为其手牌数且至少为3，仅限选择基本、锦囊、装备且每种类别至少选择一次）。',
             bilibili_fazhou: '罚肘',
-            bilibili_fazhou_info: '一轮游戏开始时，你可以选择任意名上一轮使用过三种类别的牌或造成过伤害的其他角色，对这些角色依次肘成1点伤害，然后本轮将其肘出游戏。',
+            bilibili_fazhou_info: '每轮开始时，你可以选择任意名上一轮使用过三种类别的牌或造成过伤害的其他角色，对这些角色依次肘成1点伤害，然后本轮将其肘出游戏。',
             bilibili_fazhou_append: '<span style="font-family:yuanli">不顺群意者，当填黑屋之壑。<br>吾令不从者，当膏肘击群之锷。</span>',
             bilibili_xizhicaikobe: '戏志才',
             bilibili_biexiao: '憋笑',
@@ -11089,7 +11086,7 @@ const packs = function () {
             bol_pinjian: '品鉴',
             bol_pinjian_info: '每回合限一次，你可以于合适的时机发动武将牌堆顶四张牌中的一个技能并将这四张武将牌置入武将牌堆底。',
             bol_yuedan: '月旦',
-            bol_yuedan_info: '一轮游戏开始时，若当前游戏轮数为4的倍数，则你洗切武将牌堆。',
+            bol_yuedan_info: '每轮开始时，若当前游戏轮数为4的倍数，则你洗切武将牌堆。',
             bilibili_daxiao: '乐大乔小乔',
             bilibili_daxiao_prefix: '乐',
             bilibili_qiqin: '绮琴',
