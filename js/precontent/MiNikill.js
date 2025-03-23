@@ -18367,7 +18367,7 @@ const packs = function () {
                     if (num > 0) player.addAdditionalSkill('miniqizhou', lib.skill.miniqizhou.derivation.slice(0, num));
                 },
                 onremove: true,
-                derivation: ['reyingzi', 'miniqixi', 'fenwei', 'miniduanbing'],
+                derivation: ['reyingzi', 'miniqixi', 'decadexuanfeng', 'miniduanbing'],
             },
             minishanxi: {
                 audio: 'shanxi',
