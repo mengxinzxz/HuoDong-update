@@ -164,6 +164,7 @@ const packs = function () {
             wechat_zhiyin_wangyi: ['female', 'wei', 3, ['wechatzuoqing', 'wechatjianchou'], ['die:true']],
             wechat_zhiyin_caopi: ['male', 'wei', 3, ['wechatchaowei', 'wechatenshe'], ['die:true']],
             wechat_zhiyin_kongrong: ['male', 'qun', 3, ['wechatzhengren', 'wechatjijian'], ['die:true']],
+            wechat_zhiyin_jiaxu: ['male', 'qun', 3, ['wechatquanbian', 'wechatkuangshi', 'wechatchenjie'], ['die:true']],
             //谋攻
             wechat_sb_sunshangxiang: ['female', 'shu', 3, ['wechatsbliangzhu', 'wechatsbjieyin'], ['border:wu']],
             wechat_sb_zhaoyun: ['male', 'shu', 4, ['wechatsblongdan', 'wechatsbjizhu']],
@@ -2657,12 +2658,27 @@ const packs = function () {
                 audioname2: {
                     wechat_zhiyin_guojia: 'wechatmiaoji_wechat_zhiyin_guojia',
                     wechat_zhiyin_zhugeliang: 'wechatsangu',
+                    wechat_zhiyin_zhouyu: 'wechatyingrui',
+                    wechat_zhiyin_jiangwei: 'wechatgujin',
+                    wechat_zhiyin_jiaxu: ' wechatquanbian',
                 },
                 forceaudio: true,
                 list: {
-                    'guohe': 1,
-                    'wuxie': 3,
-                    'wuzhong': 3,
+                    guohe: player => {
+                        let num = 1;
+                        num -= player.countMark('wechatquanbian_effect');
+                        return Math.max(0, num);
+                    },
+                    wuxie: player => {
+                        let num = 3;
+                        num -= player.countMark('wechatquanbian_effect');
+                        return Math.max(0, num);
+                    },
+                    wuzhong: player => {
+                        let num = 3;
+                        num -= player.countMark('wechatquanbian_effect');
+                        return Math.max(0, num);
+                    },
                 },
                 subSkill: {
                     used: { charlotte: true },
@@ -2673,26 +2689,21 @@ const packs = function () {
                 hiddenCard(player, name) {
                     if (player.hasSkill('wechatmiaoji_used')) return false;
                     const list = lib.skill.wechatmiaoji.list;
-                    return list[name] && player.countMark('wechatmoulvenum') >= list[name];
+                    return list[name] && player.countMark('wechatmoulvenum') >= list[name](player);
                 },
                 filter(event, player) {
                     if (player.hasSkill('wechatmiaoji_used')) return false;
-                    var num = player.countMark('wechatmoulvenum');
-                    if (!num) return false;
+                    const num = player.countMark('wechatmoulvenum');
                     const list = lib.skill.wechatmiaoji.list;
-                    for (var namex in list) {
-                        if (num < list[namex]) continue;
-                        if (event.filterCard({ name: namex, isCard: true }, player, event)) return true;
-                    }
-                    return false;
+                    return Object.keys(list).some(name => num >= list[name](player) && event.filterCard({ name: name, isCard: true }, player, event));
                 },
                 chooseButton: {
                     dialog(event, player) {
-                        var list = [], num = player.countMark('wechatmoulvenum');
+                        const list = [], num = player.countMark('wechatmoulvenum');
                         const listx = lib.skill.wechatmiaoji.list;
-                        for (var namex in listx) {
-                            if (num < listx[namex]) continue;
-                            if (event.filterCard({ name: namex, isCard: true }, player, event)) list.push(['锦囊', '', namex]);
+                        for (const name of Object.keys(listx)) {
+                            if (num < listx[name](player)) continue;
+                            if (event.filterCard({ name: name, isCard: true }, player, event)) list.push(['锦囊', '', name]);
                         }
                         return ui.create.dialog('妙计', [list, 'vcard'], 'hidden')
                     },
@@ -2709,18 +2720,18 @@ const packs = function () {
                                 nature: links[0][3],
                                 isCard: true,
                             },
+                            log: false,
                             precontent() {
                                 player.logSkill('wechatmiaoji');
                                 player.addTempSkill('wechatmiaoji_used');
-                                delete event.result.skill;
-                                var num = lib.skill.wechatmiaoji.list[event.result.card.name];
+                                const num = lib.skill.wechatmiaoji.list[event.result.card.name](player);
                                 lib.skill.wechatmoulvenum.changeNum(-num, player);
                             },
                         }
                     },
                     prompt(links, player) {
-                        var name = links[0][2];
-                        var num = lib.skill.wechatmiaoji.list[name];
+                        const name = links[0][2];
+                        const num = lib.skill.wechatmiaoji.list[name](player);
                         return '失去' + num + '点' + get.MouLveInform() + '，视为使用' + get.translation(name);
                     },
                 },
@@ -10354,7 +10365,7 @@ const packs = function () {
                     }
                 }
             },
-            //极贾诩
+            //极王异
             wechatzuoqing: {
                 audio: 'ext:活动武将/audio/skill:2',
                 enable: 'phaseUse',
@@ -10986,6 +10997,168 @@ const packs = function () {
                                 await _status.currentPhase.damage();
                                 if (!player.getStorage(event.name).length) player.removeSkill(event.name);
                             }
+                        },
+                    }
+                }
+            },
+            // 极贾诩
+            wechatquanbian: {
+                audio: 'ext:活动武将/audio/skill:2',
+                getLast(event, target) {
+                    const history = game.getAllGlobalHistory('useCard', evt => get.tag(evt.card, 'damage') > 0.5 && evt.targets?.includes(target));
+                    const index = history.indexOf(event) - 1;
+                    if (index >= 0) return history[index].card;
+                    return false;
+                },
+                trigger: { global: 'useCardToTargeted' },
+                filter(event, player) {
+                    if (!get.tag(event.card, 'damage') > 0.5 || event.targets.length !== 1) return false;
+                    const card = get.info('wechatquanbian').getLast(event.getParent(), event.target);
+                    if (!card) return false;
+                    return (get.color(card) == get.color(event.card) && player.countMark('wechatmoulvenum') < get.info('wechatmoulvenum').getMax) || get.name(card) == get.name(event.card);
+                },
+                forced: true,
+                async content(event, trigger, player) {
+                    const card = get.info(event.name).getLast(trigger.getParent(), trigger.target);
+                    if (get.color(card) == get.color(trigger.card) && player.countMark('wechatmoulvenum') < get.info('wechatmoulvenum').getMax) get.info('wechatmoulvenum').changeNum(1, player);
+                    if (get.name(card) == get.name(trigger.card)) {
+                        player.addSkill(event.name + '_effect');
+                        player.addMark(event.name + '_effect', 1, false);
+                    }
+                },
+                subSkill: {
+                    effect: {
+                        charlotte: true,
+                        onremove: true,
+                        intro: { content: '下次发动〖妙计〗时失去的谋略值-#' },
+                        trigger: { player: 'useCard' },
+                        filter(event, player) {
+                            return event.skill == 'wechatmiaoji_backup' && player.hasMark('wechatquanbian_effect');
+                        },
+                        forced: true,
+                        popup: false,
+                        async content(event, trigger, player) {
+                            player.removeSkill(event.name);
+                        },
+                    }
+                }
+            },
+            wechatkuangshi: {
+                audio: 'ext:活动武将/audio/skill:2',
+                trigger: { player: 'phaseUseEnd' },
+                async cost(event, trigger, player) {
+                    event.result = await player.chooseTarget(get.prompt2(event.skill)).set('ai', target => {
+                        const player = get.player();
+                        const num = target.maxHp - target.countCards('hej');
+                        let att = get.attitude(player, target);
+                        const draw = target.maxHp - target.countCards('h');
+                        if (draw > 0 && num > 0) {
+                            if (target.hasSkillTag('nogain')) att /= 6;
+                            if (att > 2) return Math.sqrt(draw + 1) * att;
+                            return att / 3;
+                        }
+                        if (draw < -1 && num < 0) {
+                            if (target.hasSkillTag('nogain')) att *= 6;
+                            if (att < -2) return -Math.sqrt(1 - draw) * att;
+                        }
+                        return 0;
+                    }).forResult();
+                },
+                async content(event, trigger, player) {
+                    const { targets: [target] } = event;
+                    const num = target.maxHp - target.countCards('hej');
+                    if (num == 0) return;
+                    const draw = target.maxHp - target.countCards('h');
+                    if (num > 0 && draw > 0) {
+                        const { result: drawCards } = await target.draw(Math.min(5, draw));
+                        if (get.itemtype(drawCards) == 'cards' && target.getCards('h').some(card => drawCards.includes(card))) {
+                            const { result } = await player.chooseButton(['你可以使用其中一张牌', drawCards]).set('filterButton', button => {
+                                return get.player().hasUseTarget(button.link);
+                            }).set('ai', button => {
+                                return get.player().getUseValue(button.link);
+                            });
+                            if (result?.bool && result?.links?.length) await player.chooseUseTarget(result.links[0], true, false);
+                        }
+                    }
+                    else if (num < 0 && draw < 0) {
+                        const { result } = await target.chooseToDiscard(Math.min(5, -draw), 'h', true);
+                        const cards = result?.cards?.filter(card => get.position(card) == 'd' && player.hasUseTarget(card));
+                        if (get.itemtype(cards) == 'cards') {
+                            const { result } = await player.chooseButton(['你可以使用其中一张牌', cards]).set('filterButton', button => {
+                                return get.player().hasUseTarget(button.link);
+                            }).set('ai', button => {
+                                return get.player().getUseValue(button.link);
+                            });
+                            if (result?.bool && result?.links?.length) await player.chooseUseTarget(result.links[0], true, false);
+                        }
+                    }
+                },
+            },
+            wechatchenjie: {
+                audio: 'ext:活动武将/audio/skill:2',
+                trigger: { global: 'roundStart' },
+                filter(event, player) {
+                    return player.countMark('wechatmoulvenum') > 4 && get.info('wechatchenjie').logTarget(event, player).length;
+                },
+                check(event, player) {
+                    if (player.hasUnknown()) return false;
+                    return game.countPlayer(target => Math.sign(get.attitude(player, target))) > 0;
+                },
+                logTarget: (event, player) => game.filterPlayer(current => player != current).sortBySeat(),
+                skillAnimation: true,
+                animationColor: 'thunder',
+                async content(event, trigger, player) {
+                    player.awakenSkill(event.name);
+                    if (player.hasMark('wechatmoulvenum')) player.removeMark('wechatmoulvenum', Math.min(5, player.countMark('wechatmoulvenum')));
+                    for (const target of event.targets) {
+                        if (!target.isIn()) continue;
+                        const next = target.chooseControl();
+                        next.set('choiceList', [`${get.translation(player)}下次受到的伤害转移给你`, `减少1点体力上限，然后${get.translation(player)}下次受到伤害后你增加1点体力上限`]);
+                        next.set('ai', () => {
+                            const player = get.player();
+                            const target = get.event().getParent().player;
+                            if (player.isDamaged() && player.maxHp > 1) return 1;
+                            return 0;
+                        });
+                        next.set('prompt', `沉节：请选择一项`);
+                        const { result } = await next;
+                        if (typeof result?.index == 'number') {
+                            const { index } = result;
+                            const skillName = `${event.name}_${index == 0 ? 'change' : 'damage'}`;
+                            player.addSkill(skillName);
+                            player.markAuto(skillName, [target]);
+                            if (index == 1) await target.loseMaxHp();
+                        }
+                    }
+                },
+                subSkill: {
+                    change: {
+                        charlotte: true,
+                        onremove: true,
+                        intro: { content: '下次受到的伤害转移的角色：$' },
+                        trigger: { player: 'damageBegin4' },
+                        forced: true,
+                        popup: false,
+                        async content(event, trigger, player) {
+                            trigger.cancel();
+                            const targets = player.getStorage(event.name).filter(current => current.isIn());
+                            player.removeSkill(event.name);
+                            if (!targets.length) return;
+                            for (const target of targets) await target.damage(trigger.source?.isIn() ? trigger.source : 'nosource', trigger.nature, trigger.num).set('card', trigger.card).set('cards', trigger.cards);
+                        },
+                    },
+                    damage: {
+                        charlotte: true,
+                        onremove: true,
+                        intro: { content: '下次受到伤害后增加体力上限的角色：$' },
+                        trigger: { player: 'damageEnd' },
+                        forced: true,
+                        popup: false,
+                        async content(event, trigger, player) {
+                            const targets = player.getStorage(event.name).filter(current => current.isIn());
+                            player.removeSkill(event.name);
+                            if (!targets.length) return;
+                            for (const target of targets) await target.gainMaxHp();
                         },
                     }
                 }
@@ -11698,7 +11871,14 @@ const packs = function () {
             wechatzhengren: '诤仁',
             wechatzhengren_info: '锁定技。一名角色A的回合结束时，若本回合有角色受到过伤害，你选择一名不为A的角色B，然后令A依次执行本轮未被执行的一项：①交给B一张牌；②弃置两张牌并令B摸两张牌；③以手牌中花色最多的牌交换B手牌中花色最少的牌。',
             wechatjijian: '讥谏',
-            wechatjijian_info: '出牌阶段限一次，你可记录一张基本牌或锦囊牌为“谏”。当此牌进入弃牌堆后，你对当前回合角色造成1点伤害。',
+            wechatjijian_info: '出牌阶段限一次，你可记录一张基本牌或锦囊牌。当此牌进入弃牌堆后，你对当前回合角色造成1点伤害。',
+            wechat_zhiyin_jiaxu: '极贾诩',
+            wechatquanbian: '权变',
+            wechatquanbian_info: '锁定技。当一名角色成为伤害牌的唯一目标后，若此牌与上一张指定该角色的伤害牌：①颜色相同，你获得1点谋略值；牌名相同，你下次发动〖妙计〗时失去的谋略值-1。',
+            wechatkuangshi: '匡势',
+            wechatkuangshi_info: '出牌阶段结束时，你可选择一名角色。然后若：X小于Y，则其将手牌摸至Y（至多5张），然后你可观看并使用其获得牌中的一张牌；X大于Y，则其将手牌弃至Y（至多5张），然后你可使用其弃置牌中的一张牌（X为其区域内的牌数，Y为其体力上限）。',
+            wechatchenjie: '沉节',
+            wechatchenjie_info: '限定技。每轮开始时，你可消耗5点谋略值，令所有其他角色选择一项：1.当你下次受到伤害时，此伤害转移给其；2.减1点体力上限，然后当你下次受到伤害后，其加1点体力上限。',
         },
     };
     for (var i in WeChatkill.character) {
