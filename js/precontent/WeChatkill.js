@@ -8834,7 +8834,7 @@ const packs = function () {
                     const cards = await player.choosePlayerCard(target, true, 'h').forResultCards();
                     if (!cards || !cards.length) return;
                     await player.showCards(cards, get.translation(player) + '对' + get.translation(target) + '发动了【翊汉】');
-                    const { result: { index } } = await target.chooseControl().set('choiceList', [`交给${get.translation(target)}${get.translation(cards)}`, `${get.translation(target)}视为对你使用一张无次数限制的【杀】`]).set('ai', () => {
+                    const { result: { index } } = await target.chooseControl().set('choiceList', [`交给${get.translation(player)}${get.translation(cards)}`, `${get.translation(player)}视为对你使用一张无次数限制的【杀】`]).set('ai', () => {
                         const player = get.player(), target = get.event().getParent().player;
                         const card = get.event().cards[0];
                         if (get.effect(player, { name: 'sha' }, target, player) > 0) return 1;
@@ -10777,7 +10777,7 @@ const packs = function () {
                 filterTarget(card, player, target) {
                     return player.canCompare(target);
                 },
-                selectTarget: [1, , 3],
+                selectTarget: [1, 3],
                 multitarget: true,
                 multiline: true,
                 async content(event, trigger, player) {
@@ -11864,7 +11864,7 @@ const packs = function () {
             wechatwufei_info: '若场上存在拥有“雀”标记的角色A，则：①当你使用【杀】或伤害类锦囊牌指定第一个目标后，你令A成为此牌伤害来源。②当你受到伤害后，若A的体力值大于1，则你可以令A受到1点无来源伤害。',
             wechat_zhiyin_caopi: '极曹丕',
             wechatchaowei: '朝威',
-            wechatchaowei_info: '出牌阶段限一次。你可以与至少三名角色进行共同拼点。赢的角色使用的下三张牌无次数限制且本次拼点没赢的角色选择一项：1.交给你一张牌；2.受到你的1点伤害。',
+            wechatchaowei_info: '出牌阶段限一次。你可以与至多三名角色进行共同拼点。赢的角色使用的下三张牌无次数限制且本次拼点没赢的角色选择一项：1.交给你一张牌；2.受到你的1点伤害。',
             wechatenshe: '恩赦',
             wechatenshe_info: '锁定技。①当你进行共同拼点时，你令拼点牌点数+X（X为本局游戏你发动〖恩赦②〗的次数）。②每名角色限一次，当你对一名角色造成伤害时，你防止此伤害并获得其手牌中所有点数最大的牌，且其不可使用其中包含类别的牌直到其下个回合开始。',
             wechat_zhiyin_kongrong: '极孔融',
