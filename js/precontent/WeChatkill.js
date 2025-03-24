@@ -10867,10 +10867,10 @@ const packs = function () {
                         charlotte: true,
                         onremove: true,
                         mod: {
-                            cardEnabled(card) {
+                            cardEnabled(card, player) {
                                 if ([card].concat(card.cards || []).some(cardx => player.getStorage('wechatenshe_effect').includes(get.type2(cardx)))) return false;
                             },
-                            cardSavable(card) {
+                            cardSavable(card, player) {
                                 if ([card].concat(card.cards || []).some(cardx => player.getStorage('wechatenshe_effect').includes(get.type2(cardx)))) return false;
                             },
                         },
