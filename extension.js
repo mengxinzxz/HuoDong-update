@@ -81,7 +81,7 @@ let extensionPackage = {
 		author: '萌新（转型中）',
 		diskURL: '',
 		forumURL: '',
-		version: '0.3.6',
+		version: '0.3.7',
 		//新人制作扩展，希望大家支持。
 		//新人技术不足，希望大家包涵。
 		//壹、贰、叁、肆、伍、陆、柒、捌、玖、拾
