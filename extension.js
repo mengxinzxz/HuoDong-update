@@ -13,20 +13,11 @@ game.bolShowNewPack = function () {
 	var HuoDong_update = [
 		'/setPlayer/',
 		'bugfix',
-		'技能修改，配音补充',
-		'隐藏“其他武将”包中的“自嗨包”',
-		'重置“其他武将”包中水果忍者【整经】代码，联机解禁水果忍者',
-		'因“其他武将”包中【恃才】使用代理，联机禁用官渡许攸',
-		'添加欢杀武将：陈武董袭、谋甄宓、界袁术、蔡邕、司马朗、黄皓、陈登、段煨、张恭',
-		'添加微信武将：界左慈、郭照、极曹丕、极孔融、极贾诩',
+		//'技能修改，配音补充',
 		'To be continued...',
 	];
 	//更新武将
 	var HuoDong_players = [
-		'bilibili_zhengxuan', 'bilibili_sp_xuyou', 'Mbaby_chendong', 'Mbaby_sb_zhenji',
-		'Mbaby_yuanshu', 'Mbaby_caiyong', 'Mbaby_simalang', 'wechat_re_zuoci',
-		'wechat_guozhao', 'Mbaby_huanghao', 'Mbaby_chendeng', 'Mbaby_duanwei',
-		'Mbaby_zhanggong', 'wechat_zhiyin_caopi', 'wechat_zhiyin_kongrong', 'wechat_zhiyin_jiaxu'
 	];
 	//加载
 	var dialog = ui.create.dialog(
@@ -81,7 +72,7 @@ let extensionPackage = {
 		author: '萌新（转型中）',
 		diskURL: '',
 		forumURL: '',
-		version: '0.3.7',
+		version: '0.3.8 - 待定',
 		//新人制作扩展，希望大家支持。
 		//新人技术不足，希望大家包涵。
 		//壹、贰、叁、肆、伍、陆、柒、捌、玖、拾
