@@ -13,6 +13,7 @@ game.bolShowNewPack = function () {
 	var HuoDong_update = [
 		'/setPlayer/',
 		'bugfix',
+		'对部分音频素材进行音质提升，对部分图片素材进行画质提升，补充捉鬼驱邪的武将介绍。by--逍遥如云',
 		//'技能修改，配音补充',
 		'To be continued...',
 	];
