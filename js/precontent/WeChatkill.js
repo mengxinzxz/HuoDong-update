@@ -10726,7 +10726,7 @@ const packs = function () {
             // 界左慈
             wechatrexinsheng: {
                 audio: 'rexinsheng',
-                inherit: 'rexinsheng',
+                inherit: 'xinsheng',
                 getIndex(event, player) {
                     return event.num;
                 },
@@ -11857,6 +11857,7 @@ const packs = function () {
             wechatyinyi: '音忆',
             wechatyinyi_info: '①当你失去牌后，你获得一个“音”标记。②一名角色的结束阶段，你可以弃置5个“音”标记，并选择一项：1.弃置一张牌并视为对该角色使用一张杀。2.摸一张牌。',
             wechat_re_zuoci: '微信界左慈',
+            wechat_re_zuoci_prefix: '微信界',
             wechatrexinsheng: '新生',
             wechatrexinsheng_info: '当你受到1点伤害后，若你拥有〖化身〗，你可以获得一张新的化身牌并摸一张牌。',
             wechat_guozhao: '微信郭照',
@@ -11918,6 +11919,9 @@ const packs = function () {
     });
     lib.namePrefix.set('微信谋', {
         getSpan: (prefix, name) => `${get.prefixSpan('微信')}${get.prefixSpan('谋')}`,
+    });
+    lib.namePrefix.set('微信界', {
+        getSpan: (prefix, name) => `${get.prefixSpan('微信')}${get.prefixSpan('界')}`,
     });
     lib.config.all.characters.push('WeChatkill');
     lib.config.all.sgscharacters.push('WeChatkill');
