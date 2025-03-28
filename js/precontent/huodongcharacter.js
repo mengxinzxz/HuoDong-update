@@ -6728,11 +6728,6 @@ const packs = function () {
                             selectCard: -1,
                             position: 'e',
                             viewAs: links[0],
-                            precontent() {
-                                const card = get.info('bilibili_duoyang_backup').viewAs;
-                                event.result.cards = [card];
-                                event.result.card.cards = [card];
-                            },
                         }
                     },
                 },
