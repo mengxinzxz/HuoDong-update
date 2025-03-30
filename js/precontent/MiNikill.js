@@ -111,7 +111,7 @@ const packs = function () {
             Mbaby_madai: ['male', 'shu', 4, ['mashu', 'miniqianxi']],
             Mbaby_guanping: ['male', 'shu', 4, ['minilongyin', 'jiezhong']],
             Mbaby_liufeng: ['male', 'shu', 4, ['minixiansi']],
-            Mbaby_guanyinping: ['female', 'shu', 3, ['xueji', 'minihuxiao', 'miniwuji']],
+            Mbaby_guanyinping: ['female', 'shu', 3, ['minixueji', 'minirehuxiao', 'minirewuji']],
             Mbaby_dongyun: ['male', 'shu', 3, ['minibingzheng', 'sheyan']],
             Mbaby_sp_sunshangxiang: ['female', 'shu', 3, ['miniliangzhu', 'minifanxiang'], ['tempname:sp_sunshangxiang']],
             Mbaby_xushu: ['male', 'shu', 3, ['xinwuyan', 'minijujian']],
@@ -8171,25 +8171,79 @@ const packs = function () {
                 intro: { content: 'players' },
             },
             miniwuji: {
-                skillAnimation: true,
-                animationColor: 'orange',
                 audio: 'wuji',
-                trigger: { player: 'phaseJieshuBegin' },
-                forced: true,
-                unique: true,
-                juexingji: true,
+                inherit: 'wuji',
                 filter(event, player) {
                     return player.getStat('damage') >= 3;
                 },
-                content() {
-                    'step 0'
-                    player.awakenSkill('miniwuji');
-                    player.gainMaxHp();
-                    player.recover();
-                    'step 1'
-                    var card = get.cardPile('qinglong', 'field');
-                    if (card) player.gain(card, 'gain2', 'log');
+                async content(event, trigger, player) {
+                    player.awakenSkill(event.name);
+                    await player.gainMaxHp();
+                    await player.recover();
+                    player.storage.minirehuxiao = true;
+                    const card = get.cardPile('qinglong', 'field');
+                    if (card) await player.gain(card, 'gain2');
                 },
+            },
+            //关银屏
+            minixueji: {
+                audio: 'xueji',
+                inherit: 'xueji',
+                selectTarget() {
+                    const player = get.player();
+                    return [1, 1 + player.getDamagedHp()];
+                },
+            },
+            minirehuxiao: {
+                audio: 'xueji',
+                inherit: 'huxiao',
+                async content(event, trigger, player) {
+                    await player.draw();
+                    player.addTempSkill(event.name + '_effect');
+                    player.markAuto(event.name + '_effect', [trigger.player]);
+                },
+                group: 'minirehuxiao_gain',
+                subSkill: {
+                    effect: {
+                        charlotte: true,
+                        onremove: true,
+                        mod: {
+                            cardUsableTarget(card, player, target) {
+                                if (player.getStorage('minirehuxiao_effect').includes(target)) return true;
+                            },
+                        },
+                        intro: { content: '本回合对$使用牌无次数限制' },
+                    },
+                    gain: {
+                        audio: 'huxiao',
+                        trigger: { player: 'phaseBegin' },
+                        filter(event, player) {
+                            return player.storage.minirehuxiao;
+                        },
+                        forced: true,
+                        async content(event, trigger, player) {
+                            const card = get.cardPile(card => get.color(card) == 'red' && card.name == 'sha');
+                            if (card) await player.gain(card, 'gain2');
+                        }
+                    }
+                },
+            },
+            minirehuxiao_rewrite: { nopop: true },
+            minirewuji: {
+                audio: 'wuji',
+                inherit: 'wuji',
+                filter(event, player) {
+                    return player.getStat('damage') >= 3;
+                },
+                async content(event, trigger, player) {
+                    player.awakenSkill(event.name);
+                    player.storage.minirehuxiao = true;
+                    await player.gainMaxHp();
+                    await player.recover();
+                    const card = get.cardPile('qinglong', 'field');
+                    if (card) await player.gain(card, 'gain2');
+                },
+                derivation: 'minirehuxiao_rewrite',
             },
             minisanyao: {
                 audio: 'sanyao',
@@ -32586,6 +32640,15 @@ const packs = function () {
                 if (storage) str += '</span>';
                 return str;
             },
+            minirehuxiao(player) {
+                let storage = player.storage.minirehuxiao, str = '锁定技。';
+                if (storage) str += '①';
+                str += '回合开始时，你获得一张红色【杀】';
+                if (storage) str += '；②';
+                else str += '。';
+                if (storage) str += '当你对一名角色造成火属性伤害后，你摸一张牌且本回合内对其使用牌没有次数限制。';
+                return str;
+            },
         },
         translate: {
             MiNi_wei: '欢乐三国杀·魏国',
@@ -33095,6 +33158,14 @@ const packs = function () {
             minihuxiao_info: '锁定技，当你造成火属性伤害时，你于此回合内对目标角色使用牌没有次数限制。',
             miniwuji: '武继',
             miniwuji_info: '觉醒技，结束阶段开始时，若你于此回合内造成过3点或更多伤害，则你加1点体力上限并回复1点体力，然后从场上、牌堆或弃牌堆中获得【青龙偃月刀】。',
+            minixueji: '雪恨',
+            minixueji_info: '出牌阶段限一次，你可以弃置一张红色牌，然后选择至多X名角色，横置这些角色并对其中一名角色造成1点火焰伤害（X为你已损失的体力值+1）。',
+            minirehuxiao: '虎啸',
+            minirehuxiao_info: '锁定技。当你对一名角色造成火属性伤害后，你摸一张牌且本回合内对其使用牌没有次数限制。',
+            minirehuxiao_rewrite: '虎啸·改',
+            minirehuxiao_rewrite_info: '锁定技。①回合开始时，你获得一张红色【杀】；②当你对一名角色造成火属性伤害后，你摸一张牌且本回合内对其使用牌没有次数限制。',
+            minirewuji: '武继',
+            minirewuji_info: '觉醒技，结束阶段，若你于此回合内造成过3点或更多伤害，则你加1点体力上限并回复1点体力，然后从场上、牌堆或弃牌堆中获得【青龙偃月刀】并修改〖虎啸〗。',
             minisanyao: '散谣',
             minisanyao_info: '出牌阶段限一次，你可以弃置至多四张牌并对等量的其他角色各造成1点伤害。',
             minizhuandui: '专对',

@@ -5129,40 +5129,35 @@ const packs = function () {
                 },
             },
             old_fenchai: {
-                getTargets(player) {
-                    var history = player.getHistory('useSkill', function (evt) {
+                group: ['old_fenchai_audio', 'old_fenchai_give'],
+                global: 'old_fenchai_global',
+                audio: 'clanfenchai',
+                inherit: 'clanfenchai',
+                init(player, skill) {
+                    if (player.getStorage(skill).length > 0) return;
+                    const history = player.getHistory('useSkill', evt => {
                         if (evt.type != 'player') return false;
-                        var skill = evt.sourceSkill || evt.skill, targets = evt.targets;
-                        var info = get.info(skill);
+                        const skill = get.sourceSkillFor(evt), targets = evt.targets;
+                        const info = get.info(skill);
                         if (!info || info.charlotte) return false;
                         return targets?.some(i => player.differentSexFrom(i));
                     });
-                    if (history.length) return history[0].targets.filter(i => player.differentSexFrom(i));
-                    return [];
-                },
-                group: 'old_fenchai_audio',
-                global: 'old_fenchai_global',
-                audio: 'clanfenchai',
-                trigger: { global: 'die' },
-                filter(event, player) {
-                    return lib.skill.old_fenchai.getTargets(player).includes(event.player) && event.player.countCards('h');
-                },
-                direct: true,
-                skillAnimation: true,
-                animationColor: 'water',
-                content() {
-                    'step 0'
-                    trigger.player.chooseCard('he', [0, Math.ceil(trigger.player.countCards('h'))], get.prompt('old_fenchai'), '交给' + get.translation(player) + '至多' + get.cnNumber() + '张牌').set('ai', function (card) {
-                        if (_status.event.goon) return get.value(card);
-                        return -1;
-                    }).set('goon', get.attitude(trigger.player, player) > 0).set('forceDie', true);
-                    'step 1'
-                    if (result.bool) {
-                        player.logSkill('old_fenchai');
-                        trigger.player.line(player);
-                        game.log(player, '收到了来自', trigger.player, '的呼唤');
-                        player.gain(result.cards, trigger.player, 'giveAuto').set('forceDie', true);
+                    if (history.length) {
+                        const evt = history[0], targets = evt.targets;
+                        player.markAuto(skill, targets.filter(i => player.differentSexFrom(i)));
                     }
+                },
+                filter(event, player) {
+                    if (event.type != 'player') return false;
+                    const targets = event.targets;
+                    if (!targets?.length) return false;
+                    const info = get.info(get.sourceSkillFor(event));
+                    if (!info || info.charlotte) return false;
+                    if (player.getStorage('old_fenchai').length) return false;
+                    return targets.filter(i => player.differentSexFrom(i)).length > 0;
+                },
+                content() {
+                    player.markAuto(event.name, trigger.targets.filter(i => player.differentSexFrom(i)));
                 },
                 subSkill: {
                     audio: {
@@ -5179,14 +5174,36 @@ const packs = function () {
                     global: {
                         mod: {
                             suit(card, suit) {
-                                var player = get.owner(card) || _status.event.player;
-                                if (!player) return;
-                                if (player.hasSkill('old_fenchai') || game.hasPlayer(function (target) {
-                                    return lib.skill.old_fenchai.getTargets(target).includes(player);
-                                })) return 'heart';
+                                const player = get.owner(card) || get.player();
+                                if (!player?.judging || player.judging[0] != card) return;
+                                if (player.hasSkill('old_fenchai') || game.hasPlayer(target => target.getStorage('old_fenchai').includes(player))) return 'heart';
                             },
                         },
                     },
+                    give: {
+                        audio: 'clanfenchai',
+                        trigger: { global: 'die' },
+                        filter(event, player) {
+                            return player.getStorage('old_fenchai').includes(event.player) && event.player.countCards('h');
+                        },
+                        direct: true,
+                        skillAnimation: true,
+                        animationColor: 'water',
+                        content() {
+                            'step 0'
+                            trigger.player.chooseCard('he', [0, Math.ceil(trigger.player.countCards('h'))], get.prompt('old_fenchai'), '交给' + get.translation(player) + '至多' + get.cnNumber() + '张牌').set('ai', function (card) {
+                                if (_status.event.goon) return get.value(card);
+                                return -1;
+                            }).set('goon', get.attitude(trigger.player, player) > 0).set('forceDie', true);
+                            'step 1'
+                            if (result.bool) {
+                                player.logSkill(event.name);
+                                trigger.player.line(player);
+                                game.log(player, '收到了来自', trigger.player, '的呼唤');
+                                player.gain(result.cards, trigger.player, 'giveAuto').set('forceDie', true);
+                            }
+                        },
+                    }
                 },
             },
             //神孙权
