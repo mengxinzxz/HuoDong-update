@@ -8228,6 +8228,7 @@ const packs = function () {
                     }
                 },
             },
+            minirehuxiao_rewrite: { nopop: true },
             minirewuji: {
                 audio: 'wuji',
                 inherit: 'wuji',
