@@ -6717,7 +6717,7 @@ const packs = function () {
                 },
                 chooseButton: {
                     dialog(event, player) {
-                        return ui.create.dialog('流马', player.getCards('e'), 'hidden');
+                        return ui.create.dialog('多样', player.getCards('e'), 'hidden');
                     },
                     filter(button, player) {
                         if (get.type(button.link) === 'equip') return false;
