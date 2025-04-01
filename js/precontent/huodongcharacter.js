@@ -42,7 +42,7 @@ const packs = function () {
             bilibili_shengxunyu: ['male', 'key', 4, ['bilibili_hehu', 'bilibili_jinyan', 'bilibili_yutai'], ['clan:宿舍群', 'clan:肘击群', 'name:熏|鱼']],
             bilibili_Firewin: ['male', 'key', 4, ['jsrgfeiyang', 'jsrgbahu', 'bilibili_tixiang'], ['clan:宿舍群', 'clan:肘击群', 'clan:活动群', 'name:火|赢']],
             bilibili_jinglingqiu: ['male', 'key', '3/4', ['bilibili_tiyi', 'bilibili_zili'], ['clan:活动群', 'name:精灵|球']],
-            bilibili_suixingsifeng: ['female', 'key', 4, ['bilibili_liaoxing', 'bilibili_daili', 'bilibili_duoyang'], ['clan:肘家军', 'clan:宿舍群', 'clan:肘击群', 'clan:活动群', 'name:萌新|转型中']],
+            bilibili_suixingsifeng: ['female', 'key', 4, ['bilibili_liaoxing', 'bilibili_daili', 'bilibili_chouhua', 'bilibili_duoyang'], ['clan:肘家军', 'clan:宿舍群', 'clan:肘击群', 'clan:活动群', 'name:萌新|转型中']],
             bilibili_Emptycity: ['male', 'key', 4, ['bilibili_zhiyou', 'bilibili_guanli'], ['clan:活动群', 'clan:Thunder群', 'name:空|城']],
             bilibili_thunderlei: ['male', 'key', '2/4/3', ['bilibili_Thunder', 'bilibili_qianxi'], ['clan:Thunder群', 'name:雷|null']],
             bilibili_zhengxuan: ['male', 'qun', 3, ['bilibili_zhengjing'], ['character:zhengxuan', 'die:zhengxuan']],
@@ -58,7 +58,7 @@ const packs = function () {
             bilibili_nanhualaoxian: ['male', 'qun', 3, ['bilibili_qingshu', 'olshoushu', 'olhedao'], ['die:ol_nanhualaoxian', 'name:庄|周']],
             bilibili_xiaoyaoruyun: ['female', 'key', 4, ['bilibili_chuandu', 'bilibili_huaikui', 'bilibili_xyduoyang'], ['clan:宿舍群', 'clan:肘击群', 'clan:活动群', 'name:鹿都|智川介']],
             bilibili_shuijiaobuboli: ['female', 'key', '3/4', ['bilibili_qicai', 'bilibili_jizhi', 'bilibili_fengliang', 'bilibili_guiyin'], ['clan:宿舍群', 'clan:活动群', 'name:黄|月英']],
-            //千里走单骑 
+            //千里走单骑
             DJ_caiyang: ['male', 'qun', 1, ['yinka', 'zhuixi'], ['character:caiyang']],
             DJ_pujing: ['male', 'qun', 1, ['yinka'], ['character:pujing']],
             DJ_huban: ['male', 'qun', 2, ['yinka'], ['character:huban']],
@@ -105,7 +105,7 @@ const packs = function () {
             shengxunyu: '活动武将群聊团宠，群管理萌新（转型中）致力于对生熏鱼进行管制和保护以希望生熏鱼能够在群里拥有真正的既健康又快乐的生活。',
             Firewin: '从活动武将群创立至今留存时间最久的人员之一，属于活动武将群元老级人员，现为活动群和管理之一，擅长素材提供。最大特征为每个月都会更换一个愤怒的小鸟的头像，因此别称“鸟鸟”。',
             jinglingqiu: '活动武将群最最最元老级成员，活动武将群聊开创者之一，萌新于无名杀扩展群推广群聊时便使用活动武将，并且经常提供一些可靠的意见，于2022年2月2日劝说萌新创建活动武将扩展交流群。',
-            suixingsifeng: '萌新的小号，于某段特殊时间代替萌新大号进行活动武将的更新，这个号有时候由萌新操作，有时候由萌新的朋友操作，有时候由机器人脚本操作。',
+            suixingsifeng: '萌新转型中的小号。',
             Emptycity: 'Empty city°，活动武将群骨干级成员，于萌新高考时加入活动武将群，给予萌新素材支持，现为活动群管理之一。',
             thunderlei: '雷，过去萌新的同行（现在比萌新厉害太多），负责十周年武将的前瞻制作，活动群和Thunder群之间总保持着良好的关系，过去常常被群友成为在各方串门不累脚，现在主负责千幻的更新和更细致的特效制作。',
             lonelypatients: 'lonely patients，活动群群主，美化大佬，前活动武将二群成员，因完成了活动武将第一次的全露头制作晋升二群管理，后来因合群人数需求成为活动群群主，现负责不定期活动武将的露头包制作。因群主平时较忙，故在群聊内见到群主的次数较为稀少。',
@@ -2820,8 +2820,8 @@ const packs = function () {
                 marktext: '☯',
                 intro: {
                     content(storage) {
-                        if (storage) return '新的一轮开始时，你可以失去1点体力上限，并视为使用一张【杀】，若此【杀】造成伤害，你摸两张牌。';
-                        return '新的一轮开始时，你可以失去1点体力，令一名角色于本轮第一次造成的伤害+1。';
+                        if (storage) return '每轮开始时，你可以失去1点体力上限，并视为使用一张【杀】，若此【杀】造成伤害，你摸两张牌。';
+                        return '每轮开始时，你可以失去1点体力，令一名角色于本轮第一次造成的伤害+1。';
                     },
                 },
                 direct: true,
@@ -4194,12 +4194,12 @@ const packs = function () {
                             str += '<br><li>所有友方角色始终跳过弃牌阶段。';
                         }
                         if (num < lznum * 6) {
-                            str += '<li>距离“新的一轮开始时，你所属的阵营直接获得游戏胜利”还需要造成';
+                            str += '<li>距离“每轮开始时，你所属的阵营直接获得游戏胜利”还需要造成';
                             str += lznum * 6 - num;
                             str += '点伤害。';
                         }
                         if (num >= lznum * 6) {
-                            str += '<br><li>新的一轮开始时，你所属的阵营直接获得游戏胜利。';
+                            str += '<br><li>每轮开始时，你所属的阵营直接获得游戏胜利。';
                         }
                         return str;
                     },
@@ -10934,12 +10934,121 @@ const packs = function () {
                     player.addTempSkill('diaohulishan', { player: 'phaseBegin' });
                 },
             },
+            //筹画--梦婉清
+            bilibili_chouhua: {
+                trigger: { player: 'phaseZhunbeiBegin' },
+                filter(event, player) {
+                    const list = get.info('bilibili_chouhua').getList(player).filter(num => num >= 0 && num !== Infinity);
+                    return list.length >= 2 && list.reduce((sum, num) => sum + (num === Infinity ? 0 : num), 0);
+                },
+                async cost(event, trigger, player) {
+                    let dialog = [get.prompt2(event.skill)];
+                    const list = get.info('bilibili_chouhua').getList(player), sum = list.filter(num => num >= 0 && num !== Infinity).reduce((sum, num) => sum + (num === Infinity ? 0 : num), 0) + 1;
+                    dialog.push('<div class="text center">摸牌数</div>');
+                    dialog.push([Array.from({ length: sum }).map((_, i) => ['摸牌数值|' + i.toString(), i]), 'tdnodes']);
+                    if (list[1] >= 0 && list[1] !== Infinity) {
+                        dialog.push('<div class="text center">使用【杀】的次数上限</div>');
+                        dialog.push([Array.from({ length: sum }).map((_, i) => ['次数上限|' + i.toString(), i]), 'tdnodes']);
+                    }
+                    if (list[2] >= 0 && list[2] !== Infinity) {
+                        dialog.push('<div class="text center">攻击范围</div>');
+                        dialog.push([Array.from({ length: sum }).map((_, i) => ['攻击范围|' + i.toString(), i]), 'tdnodes']);
+                    }
+                    if (list[3] >= 0 && list[3] !== Infinity) {
+                        dialog.push('<div class="text center">手牌上限</div>');
+                        dialog.push([Array.from({ length: sum }).map((_, i) => ['手牌上限|' + i.toString(), i]), 'tdnodes']);
+                    }
+                    const result = event.result = await player.chooseButton(dialog, list.length).set('filterButton', button => {
+                        const choosed = ui.selected.buttons;
+                        if (choosed.some(i => i.link.split('|')[0] === button.link.split('|')[0])) return false;
+                        const sum = [button.link, ...choosed.map(i => i.link)].map(list => parseInt(list.split('|')[1])).reduce((numx, num) => numx + num, 0);
+                        return choosed.length === get.event().limit ? (sum === get.event().sum) : (sum <= get.event().sum);
+                    }).set('limit', list.length - 1).set('sum', sum - 1).forResult();
+                    if (result?.bool && result.links?.length) event.result.cost_data = result.links;
+                },
+                async content(event, trigger, player) {
+                    const list = get.info(event.name).getList(player);
+                    for (const list2 of event.cost_data) {
+                        let [choice, num] = list2.split('|');
+                        num = parseInt(num);
+                        let change = num - list[get.info(event.name).onremove.map(str => str.slice('bilibili_chouhua_'.length)).indexOf(choice)];
+                        if (change !== 0) {
+                            player.addSkill('bilibili_chouhua_' + choice);
+                            if (choice !== '手牌上限') player.storage['bilibili_chouhua_' + choice] += change;
+                            else {
+                                //手牌上限至少为0，得用更“科学”的方法
+                                change = Math.sign(change);
+                                while (player.getHandcardLimit() !== num) player.storage['bilibili_chouhua_' + choice] += change;
+                            }
+                        }
+                    }
+                },
+                getList(player) {
+                    return [
+                        (player.storage['bilibili_chouhua_摸牌数值'] ?? 0) + (((get.config("first_less") || _status.connectMode || _status.first_less_forced) && game.phaseNumber === 1 && _status.first_less) ? 1 : 2),
+                        player.getCardUsable('sha', true), player.getAttackRange(), player.getHandcardLimit(),
+                    ];
+                },
+                mark: true,
+                intro: {
+                    content(storage, player) {
+                        const list = get.info('bilibili_chouhua').getList(player);
+                        const list2 = get.info('bilibili_chouhua').onremove.map(str => str.slice('bilibili_chouhua_'.length));
+                        return Array.from({ length: list.length }).map((_, i) => '<li>' + list2[i] + '：' + (list[i] == Infinity ? '无限' : list[i])).join('<br>');
+                    },
+                },
+                onremove: ['摸牌数值', '次数上限', '攻击范围', '手牌上限'].map(str => 'bilibili_chouhua_' + str),
+                subSkill: {
+                    '摸牌数值': {
+                        charlotte: true,
+                        init: (player, skill) => player.storage[skill] ??= 0,
+                        onremove: true,
+                        trigger: { player: 'phaseDrawBegin' },
+                        forced: true,
+                        popup: false,
+                        content() {
+                            trigger.num += player.storage[event.name];
+                            trigger.num = Math.max(0, trigger.num);
+                        },
+                    },
+                    '次数上限': {
+                        charlotte: true,
+                        init: (player, skill) => player.storage[skill] ??= 0,
+                        onremove: true,
+                        mod: {
+                            cardUsable(card, player, num) {
+                                if (card.name === 'sha') return num + player.storage['bilibili_chouhua_次数上限'];
+                            },
+                        },
+                    },
+                    '攻击范围': {
+                        charlotte: true,
+                        init: (player, skill) => player.storage[skill] ??= 0,
+                        onremove: true,
+                        mod: {
+                            attackRange(player, num) {
+                                return num + player.storage['bilibili_chouhua_攻击范围'];
+                            },
+                        },
+                    },
+                    '手牌上限': {
+                        charlotte: true,
+                        init: (player, skill) => player.storage[skill] ??= 0,
+                        onremove: true,
+                        mod: {
+                            maxHandcard(player, num) {
+                                return num + player.storage['bilibili_chouhua_手牌上限'];
+                            },
+                        },
+                    },
+                },
+            },
         },
         dynamicTranslate: {
             bilibili_xueji(player) {
                 var storage = player.storage.bilibili_xueji;
-                if (storage) return '转换技，新的一轮开始时。阴：你可以失去1点体力，令一名角色于本轮第一次造成的伤害+1。<span class="bluetext">阳：你可以失去1点体力上限，并视为使用一张【杀】，若此【杀】造成伤害，你摸两张牌</span>。';
-                return '转换技，新的一轮开始时。<span class="bluetext">阴：你可以失去1点体力，令一名角色于本轮第一次造成的伤害+1</span>。阳：你可以失去1点体力上限，并视为使用一张【杀】，若此【杀】造成伤害，你摸两张牌。';
+                if (storage) return '转换技，每轮开始时。阴：你可以失去1点体力，令一名角色于本轮第一次造成的伤害+1。<span class="bluetext">阳：你可以失去1点体力上限，并视为使用一张【杀】，若此【杀】造成伤害，你摸两张牌</span>。';
+                return '转换技，每轮开始时。<span class="bluetext">阴：你可以失去1点体力，令一名角色于本轮第一次造成的伤害+1</span>。阳：你可以失去1点体力上限，并视为使用一张【杀】，若此【杀】造成伤害，你摸两张牌。';
             },
             BTdunshi(player) {
                 var info = player.storage.BTdunshi;
@@ -11134,7 +11243,7 @@ const packs = function () {
             bilibili_ekeshaoge: '俄何烧戈',
             bilibili_xueji: '血激',
             bilibili_xueji2: '血激',
-            bilibili_xueji_info: '转换技，新的一轮开始时。阴：你可以失去1点体力，令一名角色于本轮第一次造成的伤害+1。阳：你可以失去1点体力上限，并视为使用一张【杀】，若此【杀】造成伤害，你摸两张牌。',
+            bilibili_xueji_info: '转换技，每轮开始时。阴：你可以失去1点体力，令一名角色于本轮第一次造成的伤害+1。阳：你可以失去1点体力上限，并视为使用一张【杀】，若此【杀】造成伤害，你摸两张牌。',
             bilibili_hanran: '悍然',
             bilibili_hanran_info: '锁定技，当你对其他角色造成伤害时，若该角色体力上限大于你，你加1点体力上限。',
             oldluanji: '乱击',
@@ -11213,7 +11322,7 @@ const packs = function () {
             lzdianhu_info: '锁定技，游戏开始时，你选择一名其他角色。友方角色对其造成1点伤害后，摸一张牌。',
             lzxingzhao: '兴棹',
             lz_xunxun: '恂恂',
-            lzxingzhao_info: '锁定技，若本局游戏中所有友方角色（包含死亡的友方角色，其后同理）造成的伤害数合计为：<br><li>不少于友方角色数，所有友方角色视为拥有技能〖恂恂〗；<br><li>不少于友方角色数的两倍，所有友方角色使用装备牌时摸一张牌；<br><li>不少于友方角色数的三倍，所有友方角色跳过弃牌阶段；<br><li>不少于友方角色数的六倍，新的一轮开始时，你所属的阵营直接获得游戏胜利。',
+            lzxingzhao_info: '锁定技，若本局游戏中所有友方角色（包含死亡的友方角色，其后同理）造成的伤害数合计为：<br><li>不少于友方角色数，所有友方角色视为拥有技能〖恂恂〗；<br><li>不少于友方角色数的两倍，所有友方角色使用装备牌时摸一张牌；<br><li>不少于友方角色数的三倍，所有友方角色跳过弃牌阶段；<br><li>不少于友方角色数的六倍，每轮开始时，你所属的阵营直接获得游戏胜利。',
             boss_tz: '等阶特权·玩家方',
             boss_tz_sha: '出杀',
             boss_tz_sha_info: '出【杀】次数+1。',
@@ -11318,7 +11427,7 @@ const packs = function () {
             bilibili_yutai_append: '<span style="font-family:yuanli">我是活动群团宠，我最爱的就是惹事然后被宵禁</span>',
             bilibili_Firewin: 'Fire.win',
             bilibili_tixiang: '替像',
-            bilibili_tixiang_info: '锁定技。①新的一轮开始时，你按照[魏、蜀、吴、群、晋]的顺序获得当前势力的随机两张武将牌的所有无标签技能直至下一轮开始。②当你发动无标签技能结算结束后，你触发一次扩展内置彩蛋。',
+            bilibili_tixiang_info: '锁定技。①每轮开始时，你按照[魏、蜀、吴、群、晋]的顺序获得当前势力的随机两张武将牌的所有无标签技能直至下一轮开始。②当你发动无标签技能结算结束后，你触发一次扩展内置彩蛋。',
             bilibili_tixiang_append: '<span style="font-family:yuanli">我每个月都要换头像，我这儿有很多的鸟可以换</span>',
             bilibili_jinglingqiu: '精灵球',
             bilibili_jinglingqiu_ab: '?',
@@ -11330,7 +11439,7 @@ const packs = function () {
             bilibili_suixingsifeng: '随性似风',
             bilibili_daili: '代理',
             bilibili_daili_tag: '统',
-            bilibili_daili_info: '锁定技，新的一轮开始时，你移去所有“统”，然后若游戏轮数大于1，你随机获得场上所有其他游戏角色各一张于上一轮使用的所有排对应的实体牌的原类型为基本或普通锦囊牌的复制，称为“统”（“统”移动至其他区域时会被销毁）。',
+            bilibili_daili_info: '锁定技，每轮开始时，你移去所有“统”，然后若游戏轮数大于1，你随机获得场上所有其他游戏角色各一张于上一轮使用的所有排对应的实体牌的原类型为基本或普通锦囊牌的复制，称为“统”（“统”移动至其他区域时会被销毁）。',
             bilibili_duoyang: '多样',
             bilibili_duoyang_info: '锁定技。①你可以装备任意装备牌（不受装备栏影响）。②一张非装备牌非因〖多样③〗进入弃牌堆后，你将此牌以随机副类别置入装备区。③你可以使用或打出装备区里的非装备牌。',
             bilibili_duoyang_append: '<span style="font-family:yuanli">萌新（转型中）御用第二人格</span>',
@@ -11553,6 +11662,9 @@ const packs = function () {
             bilibili_guiyin: '归隐',
             bilibili_guiyin_info: '限定技，回合结束时，你可以将自己移出游戏直到下回合开始。',
             bilibili_guiyin_append: '<span style="font-family:yuanli">黄月英打了三年的复活赛，终于打赢了……</span>',
+            bilibili_chouhua: '筹画',
+            bilibili_chouhua_info: '准备阶段，若以下不为无限且数值大于等于0的项数不小于2且这些项的数值和大于0，则你可以分配这些项的数值：①摸牌阶段摸牌数；②使用【杀】的次数上限；③攻击范围；④手牌上限。',
+            bilibili_chouhua_append: '<li>本技能由梦婉清投稿<br><li>真是数数又值值口阿',
         },
     };
     for (var i in huodongcharacter.character) {
