@@ -3543,7 +3543,7 @@ const packs = function () {
                     var target = event.targets.shift();
                     event.target = target;
                     player.line(target);
-                    if (!target.countCards('h')) event.redo();
+                    if (!target.countCards('h')) event[event.targets.length > 0 ? 'redo' : 'finish']();
                     'step 3'
                     var card = target.getCards('h').randomGet();
                     player.showCards(card, get.translation(player) + '展示的' + get.translation(target) + '的手牌');
