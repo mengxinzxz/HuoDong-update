@@ -10959,12 +10959,13 @@ const packs = function () {
                         dialog.push('<div class="text center">手牌上限</div>');
                         dialog.push([Array.from({ length: sum }).map((_, i) => ['手牌上限|' + i.toString(), i]), 'tdnodes']);
                     }
-                    const result = event.result = await player.chooseButton(dialog, list.length).set('filterButton', button => {
+                    const limit = list.filter(num => num >= 0 && num !== Infinity).length;
+                    const result = event.result = await player.chooseButton(dialog).set('filterButton', button => {
                         const choosed = ui.selected.buttons;
                         if (choosed.some(i => i.link.split('|')[0] === button.link.split('|')[0])) return false;
                         const sum = [button.link, ...choosed.map(i => i.link)].map(list => parseInt(list.split('|')[1])).reduce((numx, num) => numx + num, 0);
-                        return choosed.length === get.event().limit ? (sum === get.event().sum) : (sum <= get.event().sum);
-                    }).set('limit', list.length - 1).set('sum', sum - 1).forResult();
+                        return choosed.length === (get.event().selectButton - 1) ? (sum === get.event().sum) : (sum <= get.event().sum);
+                    }).set('selectButton', limit).set('sum', sum - 1).forResult();
                     if (result?.bool && result.links?.length) event.result.cost_data = result.links;
                 },
                 async content(event, trigger, player) {
