@@ -11927,6 +11927,41 @@ const packs = function () {
     lib.config.all.sgscharacters.push('WeChatkill');
     if (!lib.config.characters.includes('WeChatkill')) lib.config.characters.remove('WeChatkill');
     lib.translate['WeChatkill_character_config'] = '<span style="font-family: xingkai">微信三国杀</span>';
+    if (ui?.create?.menu) {
+        const originLoading = ui.create.menu;
+        ui.create.menu = function () {
+            const result = originLoading.apply(this, arguments);
+            const characterPack = Array.from(document.getElementsByTagName('div')).find(div => div.innerHTML === '武将');
+            if (characterPack) {
+                const originClick = characterPack.onclick || function () { };
+                characterPack.onclick = () => {
+                    originClick.apply(this, arguments);
+                    const characterPackage = Array.from(document.querySelectorAll('.menubutton.large')).find(div => div.innerHTML === lib.translate['WeChatkill_character_config']);
+                    if (characterPackage) {
+                        const originClick2 = characterPackage.onclick || function () { };
+                        characterPackage.onclick = () => {
+                            originClick2.apply(this, arguments);
+                            const rightPane = document.querySelector('.menu-buttons.leftbutton');
+                            if (rightPane && !rightPane.init) {
+                                rightPane.init = true;
+                                const cfgNodes = rightPane.querySelectorAll('.config.toggle');
+                                for (let i = 0; i < cfgNodes.length; i++) {
+                                    if (cfgNodes[i].textContent === '仅点将可用') {
+                                        const addIntro = document.createElement('div');
+                                        addIntro.classList.add('config', 'pointerspan');
+                                        addIntro.innerHTML = '<span style="font-family: yuanli">点击查看小程序专属名词解释：<br>' + [get.YunLvInform(), get.MouLveInform(), get.ShiwuInform()].map(str => '<li>' + str).join('<br>') + '</span>';
+                                        cfgNodes[i].parentNode.insertBefore(addIntro, cfgNodes[i].nextSibling);
+                                        break;
+                                    }
+                                }
+                            }
+                        };
+                    }
+                };
+            }
+            return result;
+        };
+    }
     return WeChatkill;
 };
 
