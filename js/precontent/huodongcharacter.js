@@ -11140,12 +11140,7 @@ const packs = function () {
         translate: {
             CLongZhou: '龙舟武将',
             CZhengHuo: '杂技团',
-            Chuodong: '<span style="font-family: yuanli">名人堂前言：</span>' +
-                '<br><span style="font-family: yuanli">萌新特设，旨在纪念在萌新的身</span>' +
-                '<br><span style="font-family: yuanli">边对活动武将群聊发展起到重要</span>' +
-                '<br><span style="font-family: yuanli">作用的人。</span>' +
-                '<br>' +
-                '活动群名人堂',
+            Chuodong: '活动群名人堂',
             CDormitory: '寝室/肘击群杂谈',
             Cothers: '自嗨',
             CDanJi: '彩蛋·千里走单骑',
@@ -11696,6 +11691,41 @@ const packs = function () {
     lib.config.all.sgscharacters.push('huodongcharacter');
     if (!lib.config.characters.includes('huodongcharacter')) lib.config.characters.remove('huodongcharacter');
     lib.translate['huodongcharacter_character_config'] = '<span style="font-family: xingkai">其他武将</span>';
+    if (ui?.create?.menu) {
+        const originLoading = ui.create.menu;
+        ui.create.menu = function () {
+            const result = originLoading.apply(this, arguments);
+            const characterPack = Array.from(document.getElementsByTagName('div')).find(div => div.innerHTML === '武将');
+            if (characterPack) {
+                const originClick = characterPack.onclick || function () { };
+                characterPack.onclick = () => {
+                    originClick.apply(this, arguments);
+                    const characterPackage = Array.from(document.querySelectorAll('.menubutton.large')).find(div => div.innerHTML === lib.translate['huodongcharacter_character_config']);
+                    if (characterPackage) {
+                        const originClick2 = characterPackage.onclick || function () { };
+                        characterPackage.onclick = () => {
+                            originClick2.apply(this, arguments);
+                            const rightPane = document.querySelector('.menu-buttons.leftbutton');
+                            if (rightPane && !rightPane.init) {
+                                rightPane.init = true;
+                                const cfgNodes = rightPane.querySelectorAll('.config.toggle');
+                                for (let i = 0; i < cfgNodes.length; i++) {
+                                    if (cfgNodes[i].textContent === '活动群名人堂') {
+                                        const addIntro = document.createElement('div');
+                                        addIntro.classList.add('config', 'pointerspan');
+                                        addIntro.innerHTML = '<span style="font-family: yuanli">名人堂前言：<br>萌新特设，旨在纪念在萌新的身边对活动武将群聊发展起到重要作用的人</span>';
+                                        cfgNodes[i].parentNode.insertBefore(addIntro, cfgNodes[i]);
+                                        break;
+                                    }
+                                }
+                            }
+                        };
+                    }
+                };
+            }
+            return result;
+        };
+    }
     return huodongcharacter;
 };
 
