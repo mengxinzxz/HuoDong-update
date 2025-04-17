@@ -765,89 +765,89 @@ export function content(config, pack) {
 			if (!window.rkbg) {
 				window.rkbg = ui.create.div('.renkubeijinggua', ui.arena);
 				if (lib.config.hdwj_renkuIndex) {
-					window.rkbg.style.setProperty('--l', Math.round(lib.config.hdwj_renkuIndex.x * document.body.offsetWidth) + 'px');
-					window.rkbg.style.setProperty('--t', Math.round(lib.config.hdwj_renkuIndex.y * document.body.offsetHeight) + 'px');
+					window.rkbg.style.left = Math.round(lib.config.hdwj_renkuIndex.x * document.body.offsetWidth) + 'px';
+					window.rkbg.style.top = Math.round(lib.config.hdwj_renkuIndex.y * document.body.offsetHeight) + 'px';
 				}
 			}
 			window.rkbg.innerHTML = '仁' + (_status.renku.length < 6 ? '' : '<b><font color=\"#FF5500\">') + _status.renku.length;
-			var flag = 0, ol = 0, ot = 0, defaultevent = e => e.preventDefault();
+			let isDragging = false;
+			let offsetX = 0, offsetY = 0;
+			let animationFrameId = null;
+			let saveRenkuPosition = function () {
+				if (!lib.config.hdwj_renkuIndex) lib.config.hdwj_renkuIndex = {};
+				lib.config.hdwj_renkuIndex.x = window.rkbg.offsetLeft / document.body.offsetWidth;
+				lib.config.hdwj_renkuIndex.y = window.rkbg.offsetTop / document.body.offsetHeight;
+				game.saveConfig('hdwj_renkuIndex', lib.config.hdwj_renkuIndex);
+			}
 			if (lib.config.touchscreen) {
+				let defaultevent = e => e.preventDefault();
 				window.rkbg.addEventListener('touchstart', function (e) {
-					var evt = e || window.event;
-					ol = evt.touches[0].clientX - window.rkbg.offsetLeft;
-					ot = evt.touches[0].clientY - window.rkbg.offsetTop;
+					let evt = e || window.event;
+					let zoom = game.documentZoom || 1;
+					offsetX = (evt.touches[0].clientX - window.rkbg.offsetLeft * zoom) / zoom;
+					offsetY = (evt.touches[0].clientY - window.rkbg.offsetTop * zoom) / zoom;
 					document.addEventListener('touchmove', defaultevent, false);
 				});
 				window.rkbg.addEventListener('touchmove', function (e) {
-					var evt = e || window.event;
-					var oleft = evt.touches[0].clientX - ol;
-					var otop = evt.touches[0].clientY - ot;
+					let evt = e || window.event;
+					let zoom = game.documentZoom || 1;
+					let oleft = evt.touches[0].clientX / zoom - offsetX;
+					let otop = evt.touches[0].clientY / zoom - offsetY;
 					window.rkbg.style.left = oleft + 'px';
 					window.rkbg.style.top = otop + 'px';
 				});
 				window.rkbg.addEventListener('touchend', function () {
-					if (!lib.config.hdwj_renkuIndex) {
-						lib.config.hdwj_renkuIndex = {
-							x: this.offsetLeft / document.body.offsetWidth,
-							y: this.offsetTop / document.body.offsetHeight,
-						}
-					}
-					else {
-						lib.config.hdwj_renkuIndex.x = this.offsetLeft / document.body.offsetWidth;
-						lib.config.hdwj_renkuIndex.y = this.offsetTop / document.body.offsetHeight;
-					}
-					game.saveConfig('hdwj_renkuIndex', lib.config.hdwj_renkuIndex);
+					saveRenkuPosition();
 					document.removeEventListener('touchmove', defaultevent);
 				});
 			}
 			else {
-				window.rkbg.onmousedown = function (e) {
-					var evt = e || window.event;
-					if (document.setCapture) this.setCapture();
-					if (window.captureEvents) window.captureEvents(Event.MOUSEMOVE | Event.MOUSEUP);
-					flag = 1;
-					ol = evt.clientX - window.rkbg.offsetLeft;
-					ot = evt.clientY - window.rkbg.offsetTop;
-				}
-				document.onmousemove = function (e) {
-					var evt = e || window.event;
-					if (flag) {
-						window.rkbg.style.left = parseInt(evt.clientX - ol) + 'px';
-						window.rkbg.style.top = parseInt(evt.clientY - ot) + 'px';
+				window.rkbg.addEventListener('mousedown', function (e) {
+					let zoom = game.documentZoom || 1;
+					isDragging = true;
+					offsetX = (e.clientX - window.rkbg.offsetLeft * zoom) / zoom;
+					offsetY = (e.clientY - window.rkbg.offsetTop * zoom) / zoom;
+					document.body.style.userSelect = 'none';
+					e.preventDefault();
+				});
+				document.addEventListener('mousemove', function (e) {
+					if (isDragging) {
+						if (animationFrameId) cancelAnimationFrame(animationFrameId);
+						animationFrameId = requestAnimationFrame(() => {
+							let zoom = game.documentZoom || 1;
+							let newX = e.clientX / zoom - offsetX;
+							let newY = e.clientY / zoom - offsetY;
+							window.rkbg.style.left = newX + 'px';
+							window.rkbg.style.top = newY + 'px';
+						});
 					}
-					else return null;
-				}
-				window.rkbg.onmouseup = function () {
-					if (!lib.config.hdwj_renkuIndex) {
-						lib.config.hdwj_renkuIndex = {
-							x: this.offsetLeft / document.body.offsetWidth,
-							y: this.offsetTop / document.body.offsetHeight,
-						}
-					} else {
-						lib.config.hdwj_renkuIndex.x = this.offsetLeft / document.body.offsetWidth;
-						lib.config.hdwj_renkuIndex.y = this.offsetTop / document.body.offsetHeight;
+				});
+				document.addEventListener('mouseup', function () {
+					if (isDragging) {
+						isDragging = false;
+						document.body.style.userSelect = '';
+						saveRenkuPosition();
 					}
-					game.saveConfig('hdwj_renkuIndex', lib.config.hdwj_renkuIndex);
-					if (document.releaseCapture) this.releaseCapture();
-					if (window.releaseEvents) window.releaseEvents(Event.MOUSEMOVE | Event.MOUSEUP); flag = 0;
-				}
+				});
 			}
-			if (_status.renku.length == 0) {
-				window.rkbg.remove(window.rkbg);
+			if (_status.renku.length === 0) {
+				window.rkbg.remove();
 				window.rkbg = null;
 			}
-			else window.rkbg.onclick = function () {
-				if (!window.dialogguagua) {
-					window.dialogguagua = ui.create.dialog('仁库', _status.renku);
-					window.rkbg.innerHTML = '❌';
-				}
-				else {
-					window.dialogguagua.remove();
-					window.dialogguagua = null;
-					window.rkbg.innerHTML = '仁' + (_status.renku.length < 6 ? '' : '<b><font color=\"#FF5500\">') + _status.renku.length;
-				}
+			else {
+				window.rkbg.onclick = function () {
+					if (!window.dialogguagua) {
+						window.dialogguagua = ui.create.dialog('仁库', _status.renku);
+						window.rkbg.innerHTML = '❌';
+					}
+					else {
+						window.dialogguagua.remove();
+						window.dialogguagua = null;
+						window.rkbg.innerHTML = '仁' + (_status.renku.length < 6 ? '' : '<b><font color=\"#FF5500\">') + _status.renku.length;
+					}
+				};
 			}
-		}
+		};
 	}
 
 	//precGuoZhan(分界线，便于我搜过来)
