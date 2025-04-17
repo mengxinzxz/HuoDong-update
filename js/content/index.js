@@ -761,9 +761,7 @@ export function content(config, pack) {
 	//仁库
 	if (lib.config.extension_活动武将_HD_renku) {
 		game.updateRenku = function () {
-			game.broadcast(function (renku) {
-				_status.renku = renku;
-			}, _status.renku);
+			game.broadcast(renku => _status.renku = renku, _status.renku);
 			if (!window.rkbg) {
 				window.rkbg = ui.create.div('.renkubeijinggua', ui.arena);
 				if (lib.config.hdwj_renkuIndex) {
@@ -771,16 +769,8 @@ export function content(config, pack) {
 					window.rkbg.style.setProperty('--t', Math.round(lib.config.hdwj_renkuIndex.y * document.body.offsetHeight) + 'px');
 				}
 			}
-			if (_status.renku.length < 6) {
-				window.rkbg.innerHTML = '仁' + _status.renku.length;
-			}
-			else {
-				window.rkbg.innerHTML = '仁' + '<b><font color=\"#FF5500\">' + _status.renku.length;
-			}
-			var flag = 0, ol = 0, ot = 0;
-			function defaultevent(e) {
-				e.preventDefault();
-			}
+			window.rkbg.innerHTML = '仁' + (_status.renku.length < 6 ? '' : '<b><font color=\"#FF5500\">') + _status.renku.length;
+			var flag = 0, ol = 0, ot = 0, defaultevent = e => e.preventDefault();
 			if (lib.config.touchscreen) {
 				window.rkbg.addEventListener('touchstart', function (e) {
 					var evt = e || window.event;
@@ -801,14 +791,16 @@ export function content(config, pack) {
 							x: this.offsetLeft / document.body.offsetWidth,
 							y: this.offsetTop / document.body.offsetHeight,
 						}
-					} else {
+					}
+					else {
 						lib.config.hdwj_renkuIndex.x = this.offsetLeft / document.body.offsetWidth;
 						lib.config.hdwj_renkuIndex.y = this.offsetTop / document.body.offsetHeight;
 					}
 					game.saveConfig('hdwj_renkuIndex', lib.config.hdwj_renkuIndex);
 					document.removeEventListener('touchmove', defaultevent);
 				});
-			} else {
+			}
+			else {
 				window.rkbg.onmousedown = function (e) {
 					var evt = e || window.event;
 					if (document.setCapture) this.setCapture();
@@ -822,9 +814,8 @@ export function content(config, pack) {
 					if (flag) {
 						window.rkbg.style.left = parseInt(evt.clientX - ol) + 'px';
 						window.rkbg.style.top = parseInt(evt.clientY - ot) + 'px';
-					} else {
-						return null;
 					}
+					else return null;
 				}
 				window.rkbg.onmouseup = function () {
 					if (!lib.config.hdwj_renkuIndex) {
@@ -841,7 +832,6 @@ export function content(config, pack) {
 					if (window.releaseEvents) window.releaseEvents(Event.MOUSEMOVE | Event.MOUSEUP); flag = 0;
 				}
 			}
-
 			if (_status.renku.length == 0) {
 				window.rkbg.remove(window.rkbg);
 				window.rkbg = null;
@@ -854,12 +844,7 @@ export function content(config, pack) {
 				else {
 					window.dialogguagua.remove();
 					window.dialogguagua = null;
-					if (_status.renku.length < 6) {
-						window.rkbg.innerHTML = '仁' + _status.renku.length;
-					}
-					else {
-						window.rkbg.innerHTML = '仁' + '<b><font color=\"#FF5500\">' + _status.renku.length;
-					}
+					window.rkbg.innerHTML = '仁' + (_status.renku.length < 6 ? '' : '<b><font color=\"#FF5500\">') + _status.renku.length;
 				}
 			}
 		}
