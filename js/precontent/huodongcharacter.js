@@ -214,6 +214,12 @@ const packs = function () {
                     game.log(player, '获得了牌堆顶的一张牌');
                     player.gain(get.cards()[0], 'draw').gaintag.add(event.name);
                 },
+                init(player, skill) {
+                    if (player.isPhaseUsing()) player.addTempSkill(skill + '_effect', 'phaseUseAfter');
+                },
+                onremove(player, skill) {
+                    player.removeTempSkill(skill + '_effect');
+                },
                 group: 'bolshicai_mark',
                 subSkill: {
                     mark: {
@@ -249,23 +255,25 @@ const packs = function () {
                         },
                         init(player, skill) {
                             if (!_status._bolshicai_pileTop) {
-                                _status._pileTop = _status.pileTop;
-                                _status._bolshicai_pileTop = true;
-                                Object.defineProperties(_status, {
-                                    pileTop: {
-                                        configurable: true,
-                                        get() {
-                                            return this._pileTop;
+                                game.broadcastAll(() => {
+                                    _status._pileTop = _status.pileTop;
+                                    _status._bolshicai_pileTop = true;
+                                    Object.defineProperties(_status, {
+                                        pileTop: {
+                                            configurable: true,
+                                            get() {
+                                                return this._pileTop;
+                                            },
+                                            set(pileTop) {
+                                                if (!pileTop) return;
+                                                this._pileTop = pileTop;
+                                                const skill = 'bolshicai_effect';
+                                                for (const player of game.filterPlayer2()) {
+                                                    if (player.hasSkill(skill)) get.info(skill).getCards(player, skill);
+                                                }
+                                            },
                                         },
-                                        set(pileTop) {
-                                            if (!pileTop) return;
-                                            this._pileTop = pileTop;
-                                            const skill = 'bolshicai_effect';
-                                            for (const player of game.filterPlayer2()) {
-                                                if (player.hasSkill(skill)) get.info(skill).getCards(player, skill);
-                                            }
-                                        },
-                                    },
+                                    });
                                 });
                             }
                             get.info(skill).getCards(player, skill);
