@@ -1489,8 +1489,7 @@ const packs = function () {
                 popup: false,
                 async content(event, trigger, player) {
                     trigger.cancel();
-                    const cards = trigger.cards?.filterInD();
-                    if (cards.length) await player.gain(cards, 'gain2', 'log');
+                    if (trigger.cards?.someInD()) await player.gain(trigger.cards.filterInD(), 'gain2', 'log');
                 },
             },
             wechatqianxun: {
