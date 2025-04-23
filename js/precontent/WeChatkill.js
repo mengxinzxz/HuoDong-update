@@ -10674,7 +10674,7 @@ const packs = function () {
                 filter(event, player) {
                     if (event.name == 'phaseJieshu') return player.countMark('wechatyinyi') > 4;
                     const evt = event.getl(player);
-                    return evt?.cards2?.length;
+                    return evt?.cards2?.length && player.countMark('wechatyinyi') < 5;
                 },
                 async cost(event, trigger, player) {
                     if (trigger.name == 'phaseJieshu') {
@@ -11854,7 +11854,7 @@ const packs = function () {
             wechatqingkuang: '清狂',
             wechatqingkuang_info: '出牌阶段，你可以弃置一张本回合你未以此法弃置过的颜色的牌，然后摸两张牌。若如此做，结束阶段，你弃置本回合以此法获得的所有牌',
             wechatyinyi: '音忆',
-            wechatyinyi_info: '①当你失去牌后，你获得一个“音”标记。②一名角色的结束阶段，你可以弃置5个“音”标记，并选择一项：1.弃置一张牌并视为对该角色使用一张杀。2.摸一张牌。',
+            wechatyinyi_info: '①当你失去牌后，你获得1枚“音”标记（你至多拥有5枚“音”标记）。②一名角色的结束阶段，你可以弃置5枚“音”标记并选择一项：1.弃置一张牌并视为对该角色使用一张杀；2.摸一张牌。',
             wechat_re_zuoci: '微信界左慈',
             wechat_re_zuoci_prefix: '微信界',
             wechatrexinsheng: '新生',
