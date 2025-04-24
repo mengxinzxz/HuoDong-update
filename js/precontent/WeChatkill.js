@@ -11266,8 +11266,9 @@ const packs = function () {
                 async content(event, trigger, player) {
                     if (event.cost_data == 0) {
                         const num = player.countMark(event.name) + 1;
+                        player.clearMark(event.name, false);
                         const cards = get.cards(2 * num, true);
-                        const { result } = await player.chooseButton([`${get.translation(event.name)}：请选择获得${get.cnNumber(num)}张牌`], true).set('ai', button => {
+                        const { result } = await player.chooseButton([`${get.translation(event.name)}：请选择获得${get.cnNumber(num)}张牌`, cards], true, num).set('ai', button => {
                             const player = get.player();
                             return get.value(button.link, player);
                         });
