@@ -160,7 +160,7 @@ const packs = function () {
             wechat_zhiyin_hetaihou: ['female', 'qun', 4, ['wechatfuyin', 'wechatqiangji'], ['die:true', 'name:何|null']],
             wechat_zhiyin_zhangchunhua: ['female', 'wei', 4, ['wechatjuejue', 'wechatqingshi', 'wechatqingjue'], ['die:true']],
             wechat_zhiyin_dongzhuo: ['male', 'qun', 5, ['wechatweicheng', 'wechatbianguan'], ['die:true']],
-            wechat_zhiyin_zhangfei: ['male', 'shu', 4, ['wechathupo', 'wechathanxing'], ['die:true']],
+            wechat_zhiyin_zhangfei: ['male', 'shu', 4, ['wechatrehupo', 'wechathanxing'], ['die:true']],
             wechat_zhiyin_wangyi: ['female', 'wei', 3, ['wechatzuoqing', 'wechatjianchou'], ['die:true']],
             wechat_zhiyin_caopi: ['male', 'wei', 3, ['wechatchaowei', 'wechatenshe'], ['die:true']],
             wechat_zhiyin_kongrong: ['male', 'qun', 3, ['wechatzhengren', 'wechatjijian'], ['die:true']],
@@ -10290,10 +10290,10 @@ const packs = function () {
                     const { target } = event;
                     await player.showHandcards();
                     await target.showHandcards();
-                    if ([player, target].every(i => !i.countCards('he'))) return;
+                    if ([player, target].every(current => !current.countCards('he'))) return;
                     const goon = target.getCards('he').filter(card => lib.filter.canBeGained(card, target, player)).every(card => player.hasCard(cardx => get.name(card) == get.name(cardx), 'he'));
                     let result;
-                    if (!goon && [player, target].some(i => i.countDiscardableCards(player, 'he'))) result = await player
+                    if (!goon && [player, target].some(current => current.countDiscardableCards(player, 'he'))) result = await player
                         .chooseControl()
                         .set('choiceList', [`弃置你与${get.translation(target)}一各牌名的所有牌`, `获得${get.translation(target)}一张你没有的牌名的牌`])
                         .set('ai', () => {
@@ -10338,6 +10338,88 @@ const packs = function () {
                         },
                     },
                 },
+            },
+            wechatrehupo: {
+                audio: 'ext:活动武将/audio/skill:2',
+                enable: 'phaseUse',
+                filter(event, player) {
+                    if (!player.countCards('h') || player.getStorage('wechatrehupo_used').length > 1) return false;
+                    return game.hasPlayer(current => get.info('wechathupo').filterTarget(null, player, current));
+                },
+                filterTarget(card, player, target) {
+                    return target.countCards('h') && target != player;
+                },
+                async content(event, trigger, player) {
+                    const { target } = event;
+                    await player.showHandcards();
+                    await target.showHandcards();
+                    if ([player, target].every(current => !current.countCards('he'))) return;
+                    const goon1 = !target.getCards('he').filter(card => lib.filter.canBeGained(card, target, player)).every(card => player.hasCard(cardx => get.name(card) == get.name(cardx), 'he')) && !player.getStorage(event.name + '_used').includes(1);
+                    const goon2 = [player, target].some(current => current.countDiscardableCards(player, 'he')) && !player.getStorage(event.name + '_used').includes(0);
+                    if (!goon1 && !goon2) {
+                        player.addTempSkill(event.name + '_check', 'phaseAfter');
+                        player.markAutor(event.name + '_check', [target]);
+                        return;
+                    }
+                    let result;
+                    if (goon1 && goon2) result = await player
+                        .chooseControl()
+                        .set('choiceList', [`弃置你与${get.translation(target)}一各牌名的所有牌`, `获得${get.translation(target)}一张你没有的牌名的牌`])
+                        .set('ai', () => {
+                            const { player, target } = get.event();
+                            return target.getCards('he').some(card => {
+                                if (!lib.filter.cardDiscardable(card, player)) return false;
+                                return get.effect(target, { name: 'guohe_copy2' }, player, player) * target.countCards('he', { name: card.name }) > Math.max(get.effect(target, { name: 'shunshou_copy2' }, player, player), get.effect(player, { name: 'guohe_copy2' }, player, player) * player.countCards('he', { name: card.name }))
+                            }) ? 0 : 1;
+                        })
+                        .set('target', target)
+                        .forResult();
+                    else result = { index: goon1 ? 0 : 1 };
+                    player.addTempSkill(event.name + '_used', 'phaseAfter');
+                    player.markAuto(event.name + '_used', [result.index]);
+                    if (result.index == 0) {
+                        const names = [player.getCards('he'), target.getCards('he')].filter(card => lib.filter.cardDiscardable(card, player)).flat().map(i => get.name(i)).toUniqued();
+                        let name;
+                        if (names.length == 1) name == names[0];
+                        else {
+                            const links = await player.chooseButton([`请选择一个牌名`, [names, 'vcard']], true).set('ai', button => {
+                                const { player, target, names } = get.event(), { link } = button;
+                                const gett = (name) => target.getCards('he').filter(card => lib.filter.cardDiscardable(card, player) && get.name(card) == name).length - player.getCards('he').filter(card => lib.filter.cardDiscardable(card, player) && get.name(card) == name).length;
+                                return link[2] == names.sort((a, b) => gett(b) - gett(a))[0] ? 10 : 0;
+                            }).set('target', target).set('names', names).forResultLinks();
+                            if (links?.length) name = links[0][2];
+                        }
+                        if (!name) return;
+                        for (const i of [player, target]) {
+                            const cards = i.getCards('he').filter(card => lib.filter.cardDiscardable(card, player) && get.name(card) == name)
+                            if (cards.length) await i.discard(cards).set('discard', player);
+                        }
+                    } else {
+                        await player.gain(target.getCards('he', card => {
+                            if (!lib.filter.canBeGained(card, target, player)) return false;
+                            return !player.hasCard(cardx => get.name(cardx) == get.name(card), 'he');
+                        }).randomGet(), target, 'giveAuto');
+                    }
+                },
+                ai: {
+                    order: 9,
+                    result: {
+                        target(player, target) {
+                            if (player.getStorage('wechatrehupo_check').includes(target)) return 0;
+                            return -1 * target.countCards('h');
+                        },
+                    },
+                },
+                subSkill: {
+                    used: {
+                        charlotte: true,
+                        onremove: true,
+                    },
+                    check: {
+                        charlotte: true,
+                        onremove: true,
+                    }
+                }
             },
             wechathanxing: {
                 audio: 'ext:活动武将/audio/skill:2',
@@ -12037,6 +12119,8 @@ const packs = function () {
             wechat_zhiyin_zhangfei: '极张飞',
             wechathupo: '虎魄',
             wechathupo_info: get.ShiwuInform() + '，出牌阶段，你可以展示你与一名其他角色的所有手牌，然后你选择一项：1.弃置你与其一个牌名的所有牌；2.获得其一张你没有的牌名的牌。',
+            wechatrehupo: '虎魄',
+            wechatrehupo_info: '出牌阶段每项各限一次，你可以展示你与一名其他角色的所有手牌，然后你选择一项：1.弃置你与其一个牌名的所有牌；2.获得其一张你没有的牌名的牌。',
             wechathanxing: '酣兴',
             wechathanxing_info: '锁定技。每回合你首次对自己使用牌后，你下一次造成的伤害+1。',
             wechat_zhiyin_wangyi: '极王异',
