@@ -186,7 +186,7 @@ const packs = function () {
             Mbaby_sunquan: ['male', 'wu', 4, ['minirezhiheng', 'minijiuyuan'], ['zhu']],
             Mbaby_sunshangxiang: ['female', 'wu', 3, ['minijieyin', 'xiaoji']],
             Mbaby_taishici: ['male', 'wu', 4, ['miniretianyi', 'minihanzhan'], [...['die', 'tempname'].map(i => i + ':re_taishici'), 'name:太史|慈']],
-            Mbaby_wuguotai: ['female', 'wu', 3, ['miniganlu', 'minibuyi']],
+            Mbaby_wuguotai: ['female', 'wu', 3, ['miniganlu', 'minirebuyi']],
             Mbaby_xiaoqiao: ['female', 'wu', 3, ['minitianxiang', 'olhongyan'], ['name:桥|null']],
             Mbaby_xusheng: ['male', 'wu', 4, ['minirepojun', 'miniyicheng']],
             Mbaby_zhoutai: ['male', 'wu', 4, ['minirebuqu', 'fenji', 'miniqingchuang']],
@@ -14176,6 +14176,7 @@ const packs = function () {
                     }
                 }
             },
+            // 吴国太
             miniganlu: {
                 moveCheck(player, target) {
                     if (target == player) return false;
@@ -14326,6 +14327,54 @@ const packs = function () {
                         trigger.player.discard(event.card);
                         trigger.player.recover();
                     }
+                },
+            },
+            minirebuyi: {
+                audio: 'buyi',
+                trigger: { global: 'dying' },
+                usable: 3,
+                filter(event, player) {
+                    return event.player.hp <= 0;
+                },
+                async cost(event, trigger, player) {
+                    const { player: target } = trigger;
+                    const bool = target.countCards('h');
+                    let next;
+                    if (!bool) {
+                        next = player.chooseBool(get.prompt(event.skill, target), '令其摸一张牌并展示之');
+                        next.set('choice', get.attitude(player, target) > 0);
+                    }
+                    else {
+                        next = player.choosePlayerCard(target, get.prompt(event.skill, target), 'h', 'visible', [1, Infinity]);
+                        next.set('ai', button => {
+                            const { player, target } = get.event();
+                            const { link } = button;
+                            const att = get.attitude(player, target);
+                            if (att <= 0) {
+                                if (get.type(link) != 'basic') return 1;
+                                return 0;
+                            };
+                            if (get.type(link) == 'basic' && ui.selected.buttons.length < target.getDamagedHp()) return 10 - get.value(link);
+                            return 0;
+                        });
+                        next.set('filterButton', button => {
+                            const { player, target } = get.event();
+                            if (player == target) return lib.filter.cardDiscardable(button.link, player);
+                            return true;
+                        })
+                    }
+                    event.result = await next.forResult();
+                },
+                logTarget: 'player',
+                async content(event, trigger, player) {
+                    const { player: target } = trigger;
+                    let { cards } = event;
+                    if (get.itemtype(cards) != 'cards') ({ result: cards } = await target.draw());
+                    if (get.itemtype(cards) != 'cards') return;
+                    await player.showCards(cards, `${get.translation(player)}对${player === target ? '自己' : get.translation(target)}发动了【补益】`);
+                    await target.discard(cards).set('discarder', player);
+                    const num = cards.filter(card => get.type(card) == 'basic').length;
+                    if (num) await target.recover(num);
                 },
             },
             minipojun: {
@@ -33480,6 +33529,8 @@ const packs = function () {
             miniganlu_info: '锁定技，出牌阶段开始时，你选择一项：①移动场上的一张装备牌；②交换场上装备区中的两张副类别相同的装备牌的位置；③摸一张牌。',
             minibuyi: '补益',
             minibuyi_info: '每回合限三次，一名角色进入濒死状态时，你可以展示其一张手牌，若此牌为基本牌，该角色弃置此牌并回复1点体力。',
+            minirebuyi: '补益',
+            minirebuyi_info: '每回合限三次，一名角色进入濒死状态时，你可以观看并展示其任意张手牌（若其没有手牌则改为你令其摸一张牌并展示之），然后你弃置以此法展示的牌并令其回复X点体力（X为其中基本牌的数量）。',
             minipojun: '破军',
             minipojun2: '破军',
             minipojun_info: '当你使用【杀】指定目标时，你可以将其至多X张牌移出游戏直至回合结束（X为其体力值），然后若其中有：装备牌，你弃置其中的一张；【闪】，你摸一张牌。',
