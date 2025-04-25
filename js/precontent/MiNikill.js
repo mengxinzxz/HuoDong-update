@@ -16,7 +16,7 @@ const packs = function () {
                 MiNi_sbCharacter: ['Mbaby_sb_zhenji', 'Mbaby_sb_ganning', 'Mbaby_ol_sb_jiangwei', 'Mbaby_sb_huangyueying', 'Mbaby_ol_sb_guanyu', 'Mbaby_sb_sunshangxiang', 'Mbaby_sb_xuhuang', 'Mbaby_sb_zhaoyun', 'Mbaby_sb_liubei', 'Mbaby_sb_caocao', 'Mbaby_sb_huanggai', 'Mbaby_sb_yuanshao', 'Mbaby_sb_yujin', 'Mbaby_sb_machao', 'Mbaby_sb_lvmeng', 'Mbaby_sb_huangzhong'],
                 MiNi_miaoKill: ['Mmiao_caiwenji', 'Mmiao_diaochan', 'Mmiao_caifuren', 'Mmiao_zhangxingcai', 'Mmiao_zhurong', 'Mmiao_huangyueying', 'Mmiao_daqiao', 'Mmiao_wangyi', 'Mmiao_zhangchunhua', 'Mmiao_zhenji', 'Mmiao_sunshangxiang', 'Mmiao_xiaoqiao', 'Mmiao_lvlingqi'],
                 MiNi_nianKill: ['Mnian_zhugeliang', 'Mnian_lvbu', 'Mnian_zhouyu'],
-                MiNi_fightKill: ['Mfight_huangzhong'],
+                MiNi_fightKill: ['huangzhong', 'zhangliao'].map(i => `Mfight_${i}`),
             },
         },
         character: {
@@ -378,6 +378,7 @@ const packs = function () {
             Mnian_zhouyu: ['male', 'wu', 4, ['mininiansuhui', 'mininianchongzou', 'mininianying_zy']],
             //战
             Mfight_huangzhong: ['male', 'shu', 4, ['minifightdingjun', 'minifightlizhan']],
+            Mfight_zhangliao: ['male', 'wei', 4, ['minifightbiaoxi', 'minifightpozhen']],
         },
         characterIntro: {
             Mbaby_change: '嫦娥，中国古代神话中的人物，又名恒我、恒娥、姮娥、常娥、素娥，羿之妻，因偷吃了不死药而飞升至月宫。嫦娥的故事最早出现在商朝卦书 《归藏》。而嫦娥奔月的完整故事最早记载于西汉《淮南子·览冥训》。东汉时期，嫦娥与羿的夫妻关系确立，而嫦娥在进入月宫后变成了捣药的蟾蜍。南北朝以后，嫦娥的形象回归为女儿身。汉画像中，嫦娥人头蛇身，头梳高髻，身着宽袖长襦，身后长尾上饰有倒钩状细短羽毛。南北朝以后，嫦娥的形象被描绘成绝世美女。南朝陈后主陈叔宝曾把宠妃张丽华比作嫦娥。唐朝诗人白居易曾用嫦娥夸赞邻家少女不可多得的容貌。',
@@ -32955,6 +32956,137 @@ const packs = function () {
                     },
                 },
             },
+            // 张辽
+            minifightbiaoxi: {
+                audio: 'ext:活动武将/audio/skill:2',
+                placeSkill: true,
+                categories: () => ['战场技'],
+                trigger: { global: ['loseAfter', 'equipAfter', 'addJudgeAfter', 'gainAfter', 'loseAsyncAfter', 'addToExpansionAfter'] },
+                filter(event, player) {
+                    if (ui._minifightbiaoxi_hefei) return false;
+                    const evt = event.getParent('phaseUse', true);
+                    if (!evt) return false;
+                    return game.hasPlayer(current => {
+                        if (evt.player != current) return false;
+                        return event.getl?.(current)?.cards2?.some(card => get.type(card) == 'basic') && current.getHistory('lose', evt => evt.getParent('phaseUse', true)).reduce((num, evt) => num + evt.cards2.filter(card => get.type(card) == 'basic').length, 0) > 1;
+                    });
+                },
+                prompt2: '进入合淝战场？',
+                async content(event, trigger, player) {
+                    player.$fullscreenpop('合淝战场', 'fire');
+                    game.broadcastAll(() => {
+                        if (get.is.phoneLayout()) ui._minifightbiaoxi_hefei = ui.create.div('.touchinfo.left', ui.window);
+                        else ui._minifightbiaoxi_hefei = ui.create.div(ui.gameinfo);
+                        ui._minifightbiaoxi_hefei.innerHTML = '<br>合淝战场';
+                    });
+                },
+                derivation: 'new_retuxi',
+                group: 'minifightbiaoxi_effect',
+                subSkill: {
+                    effect: {
+                        trigger: { global: 'useCardAfter' },
+                        filter(event, player) {
+                            if (!ui._minifightbiaoxi_hefei || event.card?.name != 'sha') return false;
+                            return [player].concat(event.targets).some(current => game.hasPlayer(currentx => currentx != current && currentx.countGainableCards(current, 'h')));
+                        },
+                        async cost(event, trigger, player) {
+                            event.result = await player.chooseTarget(get.prompt(event.skill), `令其中一名角色发动〖突袭〗`, (card, player, target) => {
+                                return (player == target || get.event().getTrigger().targets.includes(target)) && game.hasPlayer(current => current != target && current.countGainableCards(target, 'h'));
+                            }).set('ai', target => {
+                                const player = get.player();
+                                return get.attitude(player, target);
+                            }).forResult();
+                        },
+                        async content(event, trigger, player) {
+                            const { targets: [target] } = event;
+                            const targets = game.filterPlayer(current => current != target && current.countGainableCards(target, 'h'));
+                            if (!targets.length) return;
+                            const { result } = await target.chooseTarget(`突袭：获得一名其他角色的手牌`, (card, player, target) => {
+                                return get.event('targetsx').includes(target);
+                            }, true).set('ai', target => {
+                                const player = get.player();
+                                return get.effect(target, { name: 'guohe_copy2', position: 'h' }, player, player);
+                            }).set('targetsx', targets);
+                            if (result?.bool && result?.targets?.length) {
+                                result.targets.sortBySeat();
+                                await target.logSkill('new_retuxi', result.targets);
+                                await target.gainMultiple(result.targets);
+                                if (target.isMaxHandcard(true) && ui._minifightbiaoxi_hefei) game.broadcastAll(() => {
+                                    ui._minifightbiaoxi_hefei.remove();
+                                    delete ui._minifightbiaoxi_hefei;
+                                });
+                            }
+                        },
+                    }
+                }
+            },
+            minifightpozhen: {
+                audio: 'ext:活动武将/audio/skill:2',
+                trigger: {
+                    player: 'gainAfter',
+                    global: 'loseAsyncAfter',
+                },
+                filter(event, player) {
+                    const cards = event.getg?.(player);
+                    if (!cards?.length) return false;
+                    return game.hasPlayer(current => {
+                        if (current == player) return false;
+                        return event.getl?.(current)?.cards2.some(card => cards.includes(card));
+                    });
+                },
+                async cost(event, trigger, player) {
+                    event.result = await player.chooseCard(get.prompt2(event.skill), lib.filter.cardRecastable, [1, trigger.getg(player).length]).set('ai', card => {
+                        const player = get.player();
+                        if (player.isPhaseUsing()) {
+                            if (player.hasValueTarget({ name: 'sha' }) && get.name(card) != 'sha' && get.type(card) == 'basic') return 10;
+                            return 7 - get.value(card);
+                        }
+                        if (player.countMark('minifightpozhen_draw') < 5 && get.type(card) != 'basic') return 10;
+                        return 7 - get.value(card);
+                    }).forResult();
+                },
+                async content(event, trigger, player) {
+                    const { cards } = event;
+                    await player.recast(cards);
+                    if (cards.some(card => get.type(card) == 'basic')) {
+                        player.addTempSkill(event.name + '_effect');
+                        player.addMark(event.name + '_effect', 1, false);
+
+                    }
+                    if (cards.some(card => get.type(card) != 'basic') && player.countMark(event.name + '_draw') < 5) {
+                        player.addSkill(event.name + '_draw');
+                        player.addMark(event.name + '_draw', 1, false);
+                    }
+                },
+                subSkill: {
+                    effect: {
+                        charlotte: true,
+                        onremove: true,
+                        intro: { content: '使用【杀】的次数上限+#' },
+                        mod: {
+                            cardUsable(card, player, num) {
+                                if (card.name == 'sha') return num + player.countMark('minifightpozhen_effect');
+                            },
+                        },
+                    },
+                    draw: {
+                        charlotte: true,
+                        onremove: true,
+                        intro: { content: '下个摸牌阶段摸牌数+#' },
+                        trigger: { player: 'phaseDrawBegin2' },
+                        filter(event, player) {
+                            return !event.numFixed;
+                        },
+                        forced: true,
+                        popup: false,
+                        async content(event, trigger, player) {
+                            const num = player.countMark(event.name);
+                            player.removeSkill(event.name);
+                            trigger.num += num;
+                        },
+                    }
+                }
+            },
         },
         dynamicTranslate: {
             minizhongjian(player) {
@@ -34849,12 +34981,17 @@ const packs = function () {
             zhouyu_羽: '羽',
             //战
             Mfight_huangzhong: '战黄忠',
+            Mfight_zhangliao: '战张辽',
             minifightdingjun: '定军',
             minifightdingjun_info: '战场技。①一名角色使用【杀】造成伤害后，获得1层士气。②士气变化后，你摸一张牌。③士气变化时，若士气层数大于等于场上存活角色数，则进入“定军山战场”；若士气层数为0，则退出“定军山战场”。④一名角色于一回合首次使用【杀】时，若此时处于“定军山战场”，则你可以消耗2层士气，令其于此牌结算中视为拥有〖烈弓〗。',
             minifightliegong: '烈弓',
             minifightliegong_info: '锁定技，当你使用【杀】指定目标后，若目标角色的手牌数或体力值大于等于你的手牌数或体力值，则其不可响应此【杀】；目标角色的手牌数和体力值均大于等于你的手牌数或体力值，则此【杀】对其造成的伤害+1。',
             minifightlizhan: '力斩',
             minifightlizhan_info: '出牌阶段，你可以打出任意张【杀】，然后视为使用一张需要X张【闪】响应且伤害基数为X的【杀】（X为你打出的【杀】数），目标角色每使用【闪】响应一次此牌，此牌伤害基数-1。若此【杀】造成伤害，则你可以选择一名非此【杀】目标角色，视为对其使用一张无距离和次数限制的伤害牌。',
+            minifightbiaoxi: '飚袭',
+            minifightbiaoxi_info: '战场技。①一名角色于其出牌阶段失去第二张基本牌时，你可以进入“合淝战场”。②一名角色使用【杀】结算结束后，若此时处于“合淝战场”，你可令你或此【杀】的目标角色发动一次〖突袭〗，若该角色的手牌数因此成为全场唯一最多，则退出“合淝战场”。',
+            minifightpozhen: '破阵',
+            minifightpozhen_info: '当你获得其他角色的牌后，你可以重铸至多等量张牌，若被重铸的牌中包含：①基本牌：你本回合使用【杀】的次数上限+1；②非基本牌：你下个摸牌阶段摸牌数+1（至多+5）。',
         },
     };
     for (var skill in MiNikill.skill) {
