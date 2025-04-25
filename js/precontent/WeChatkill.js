@@ -11360,7 +11360,8 @@ const packs = function () {
                         onremove: true,
                         trigger: { global: 'damageSource' },
                         filter(event, player) {
-                            return event.source && player.getStorage('wechatyanzheng_effect').includes(event.source);
+                            const { source } = event;
+                            return source && (player.getStorage('wechatyanzheng_effect').includes(source) || player == source);
                         },
                         forced: true,
                         logTarget: 'source',
