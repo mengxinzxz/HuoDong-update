@@ -234,7 +234,7 @@ const packs = function () {
             Mbaby_weiwenzhugezhi: ['male', 'wu', 4, ['minifuhai'], ['die:weiwenzhugezhi', 'name:卫|温-诸葛|直']],
             Mbaby_panzhangmazhong: ['male', 'wu', 4, ['miniduodao', 'minianjian'], ['die:re_panzhangmazhong', 'name:潘|璋-马|忠']],
             Mbaby_kanze: ['male', 'wu', 4, ['xiashu', 'minikuanshi'], ['die:kanze']],
-            Mbaby_sb_ganning: ['male', 'wu', 4, ['sbqixi', 'minisbfenwei']],
+            Mbaby_sb_ganning: ['male', 'wu', 4, ['minisbqixi', 'minisbfenwei']],
             Mbaby_chendong: ['male', 'wu', 4, ['miniduanxie', 'minifenming']],
             //群
             Mbaby_gaoshun: ['male', 'qun', 4, ['minixianzhen', 'minijinjiu']],
@@ -18933,6 +18933,81 @@ const packs = function () {
                 },
             },
             //谋甘宁
+            minisbqixi: {
+                audio: 'sbqixi',
+                enable: 'phaseUse',
+                usable: 1,
+                filter(event, player) {
+                    return game.hasPlayer(current => player != current);
+                },
+                chooseButton: {
+                    dialog(event, player) {
+                        return ui.create.dialog('###奇袭###' + get.translation('minisbqixi_info'));
+                    },
+                    chooseControl(event, player) {
+                        return lib.suit.slice().concat(['cancel2']);
+                    },
+                    check(event, player) {
+                        return get.event('controls').remove('cancel2').randomGet();
+                    },
+                    backup(result, player) {
+                        return {
+                            audio: 'minisbqixi',
+                            suit: result.control,
+                            filterTarget: lib.filter.notMe,
+                            filterCard: () => false,
+                            selectCard: -1,
+                            async content(event, trigger, player) {
+                                const { suit } = get.info('minisbqixi_backup');
+                                const { target } = event;
+                                let num = 1, list = lib.suit.slice();
+                                while (true) {
+                                    const result = list.length == 1 ? { control: list[0] } : await target.chooseControl(list).set('prompt', `奇袭：猜测${get.translation(player)}声明的花色`).set('ai', () => {
+                                        const controls = get.event('controls');
+                                        if (controls.includes('diamond') && Math.random() < 0.3) return 'diamond';
+                                        return controls.randomGet();
+                                    }).forResult();
+                                    if (result?.control) {
+                                        const { control } = result;
+                                        target.chat(`我猜是${get.translation(control)}！`);
+                                        game.log(target, '猜测为', '#y' + control);
+                                        if (!event.isMine() && !event.isOnline()) await game.delayx();
+                                        if (suit !== control) {
+                                            player.chat('猜错了！');
+                                            game.log(target, '猜测', '#y错误');
+                                            num++;
+                                            list.remove(control);
+                                        }
+                                        else {
+                                            player.chat(num == 1 ? '这么准？' : '猜对了！');
+                                            game.log(target, '猜测', '#g正确');
+                                            break;
+                                        }
+                                    }
+                                    else break;
+                                }
+                                if (target.countDiscardableCards(player, 'hej')) {
+                                    player.line(target);
+                                    await player.discardPlayerCard(target, num, true, 'hej');
+                                }
+                            },
+                            ai: {
+                                result: {
+                                    target(player, target) {
+                                        return get.effect(target, { name: 'guohe' }, player, target) * (5 - get.attitude(player, target) / 2);
+                                    },
+                                }
+                            }
+                        }
+                    },
+                    prompt: () => '请选择【奇袭】的目标',
+                },
+                ai: {
+                    order: 10,
+                    result: { player: 1 },
+                },
+                subSkill: { backup: {} },
+            },
             minisbfenwei: {
                 audio: 'sbfenwei',
                 inherit: 'sbfenwei',
@@ -33713,6 +33788,8 @@ const packs = function () {
             minianjian_info: '锁定技，当你使用【杀】指定目标后，若你不在其攻击范围内，则此【杀】无视防具且你选择一项：1. 令其无法响应此【杀】；2. 其受到此【杀】造成的伤害+1。若其因执行此【杀】的效果受到伤害而进入濒死状态，则其不能使用【桃】直到此濒死事件结算结束。',
             minikuanshi: '宽释',
             minikuanshi_info: '结束阶段，你可以选择一名角色。直到你的下回合开始，该角色每受到两次伤害后，其回复1点体力。',
+            minisbqixi: '奇袭',
+            minisbqixi_info: '出牌阶段限一次。你可以声明一种花色并令一名其他角色猜测你声明的花色。若其猜错，你令其从其此次未选择过的花色中再次猜测。然后你弃置其区域内的X张牌（X为其于本次〖奇袭〗中猜错的次数+1）。',
             minisbfenwei: '奋威',
             minisbfenwei_info: '①出牌阶段限一次，你可以将至多三张牌称为“威”分别置于等量名角色的武将牌上，然后你摸等量牌。②当一名有“威”的角色成为锦囊牌的目标时，你须选择一项：1.令其获得其“威”；2.令其移去“威”，并取消此目标；3.令其移去“威”，其不可响应此牌；4.令其移去“威”，你摸一张牌。',
             miniduanxie: '断绁',
