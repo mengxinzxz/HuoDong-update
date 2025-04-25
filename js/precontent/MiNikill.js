@@ -13201,7 +13201,7 @@ const packs = function () {
             //二赵
             miniqingren: {
                 audio: 'dcqingren',
-                trigger: { player: 'phaseJieshuBegin' },
+                trigger: { global: 'phaseJieshuBegin' },
                 frequent: true,
                 filter(event, player) {
                     return get.info('miniqingren').getNum(player);
@@ -33390,7 +33390,7 @@ const packs = function () {
             minicuorui: '挫锐',
             minicuorui_info: '出牌阶段开始时，你可以弃置一名你至其的距离不大于1的角色区域里的一张牌，然后你选择一项：1.弃置另一名其他角色装备区里至多两张与此牌颜色相同的牌；2.弃置另一名其他角色的至多两张手牌，然后获得其中与此牌颜色相同的牌。',
             miniqingren: '青刃',
-            miniqingren_info: '结束阶段，你可以摸X张牌（X为你本回合使用或打出的非虚拟基本牌数）。',
+            miniqingren_info: '一名角色的结束阶段，你可以摸X张牌（X为你本回合使用或打出的非虚拟基本牌数）。',
             minixunbie: '殉别',
             minixunbie_info: '限定技。当你进入濒死状态时，你可以将此武将牌替换为“甘夫人”或“糜夫人”（不能选择已在场上的武将）。然后回复至1点体力并防止所有伤害直到本回合结束。',
             miniqinqing: '寝情',
