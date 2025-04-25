@@ -128,6 +128,7 @@ const packs = function () {
             wechat_jikang: ['male', 'wei', 3, ['wechatjikai', 'wechatqingkuang', 'wechatyinyi']],
             wechat_re_zuoci: ['male', 'qun', 3, ['rehuashen', 'wechatrexinsheng']],
             wechat_guozhao: ['female', 'wei', 3, ['yichong', 'wechatwufei'], ['die:xin_guozhao']],
+            wechat_sp_zhenji: ['female', 'qun', 3, ['mbbojian', ' wechatjiwei']],
             //神武将
             wechat_shen_zhugeliang: ['male', 'shen', 3, ['wechatqixing', 'wechatjifeng', 'wechattianfa'], ['shu', 'name:诸葛|亮']],
             wechat_shen_lvmeng: ['male', 'shen', 3, ['shelie', 'wechatgongxin'], ['wu']],
@@ -11446,6 +11447,27 @@ const packs = function () {
                     }
                 }
             },
+            // SP微信甄宓
+            wechatjiwei: {
+                audio: 'mbjiwei',
+                inherit: 'mbjiwei',
+                getNum(event, player) {
+                    return event.name == 'phase' ? 1 : Math.max(game.countPlayer(), player.getHp());
+                },
+                trigger: {
+                    player: 'phaseDiscardBegin',
+                    global: 'phaseEnd',
+                },
+                filter(event, player) {
+                    const num = get.info(' wechatjiwei').getNum(event, player);
+                    if (event.name == 'phaseDiscard') return player.countCards('h') >= num && game.hasPlayer(current => current != player);
+                    return event.player != player && num > 0;
+                },
+                logAudio(event, player) {
+                    if (event.name == 'phaseDiscard') return ['mbjiwei3.mp3', 'mbjiwei4.mp3'];
+                    return ['mbjiwei1.mp3', 'mbjiwei2.mp3'];
+                },
+            },
         },
         dynamicTranslate: {
             wechatxiangzhi(player) {
@@ -12175,6 +12197,9 @@ const packs = function () {
             wechatyanzheng_info: '摸牌阶段，你可以改为与一名其他角各摸两张牌。若如此做，直到你的下回合开始，当你或其下次造成伤害后，你弃置伤害来源区域内的一张牌。',
             wechatgaojie: '高节',
             wechatgaojie_info: '出牌阶段开始时，你可以重铸你区域内点数最大和最小的牌各一张。若如此做，你可以令一名角色摸两张牌或回复1点体力，然后本回合你不能使用这两个点数之间的牌。',
+            wechat_sp_zhenji: 'SP微信甄宓',
+            wechatjiwei: '济危',
+            wechatjiwei_info: '锁定技。①其他角色的回合结束时，若本回合有角色失去过牌，你摸一张牌。②弃牌阶段开始时，若你的手牌数不小于X，你将手牌中颜色较多的牌分配给任意名其他角色（X为你体力值与全场存活的其他角色数的最大值）。',
         },
     };
     for (var i in WeChatkill.character) {

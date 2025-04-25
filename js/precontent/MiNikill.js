@@ -325,7 +325,6 @@ const packs = function () {
             Mbaby_caiyong: ['male', 'qun', 3, ['minibizhuan', 'minitongbo']],
             Mbaby_chendeng: ['male', 'qun', 3, ['refuyuan', 'miniyingshui', 'rewangzu'], ['die:re_chendeng']],
             Mbaby_duanwei: ['male', 'qun', 4, ['minilangmie']],
-            Mbaby_sp_zhenji: ['female', 'qun', 3, ['mbbojian', 'minijiwei']],
             //神
             Mbaby_shen_zhugeliang: ['male', 'shen', 3, ['qixing', 'minikuangfeng', 'minidawu'], ['shu', 'name:诸葛|亮']],
             Mbaby_shen_lvbu: ['male', 'shen', 6, ['miniwuqian', 'minishenfen'], ['qun']],
@@ -26971,27 +26970,6 @@ const packs = function () {
                     }
                 },
             },
-            // SP欢杀甄宓
-            minijiwei: {
-                audio: 'mbjiwei',
-                inherit: 'mbjiwei',
-                getNum(event, player) {
-                    return event.name == 'phase' ? 1 : Math.max(game.countPlayer(), player.getHp());
-                },
-                trigger: {
-                    player: 'phaseDiscardBegin',
-                    global: 'phaseEnd',
-                },
-                filter(event, player) {
-                    const num = get.info('minijiwei').getNum(event, player);
-                    if (event.name == 'phaseDiscard') return player.countCards('h') >= num && game.hasPlayer(current => current != player);
-                    return event.player != player && num > 0;
-                },
-                logAudio(event, player) {
-                    if (event.name == 'phaseDiscard') return ['mbjiwei3.mp3', 'mbjiwei4.mp3'];
-                    return ['mbjiwei1.mp3', 'mbjiwei2.mp3'];
-                },
-            },
             //神
             miniwuqian: {
                 derivation: 'wushuang',
@@ -33830,7 +33808,6 @@ const packs = function () {
             Mbaby_caiyong: '欢杀蔡邕',
             Mbaby_chendeng: '欢杀陈登',
             Mbaby_duanwei: '欢杀段煨',
-            Mbaby_sp_zhenji: 'SP欢杀甄宓',
             miniweidi: '伪帝',
             miniweidi_info: '弃牌阶段结束时，你可以将其中一张弃置的牌交给一名其他角色。',
             minimingce: '明策',
@@ -34188,8 +34165,6 @@ const packs = function () {
             miniyingshui_info: '出牌阶段限一次，你可将一张牌交给攻击范围内的一名本回合未已此法选择过的其他角色，然后其选择一项：①交给你至少两张装备牌；②受到1点伤害，你重置〖营说〗。',
             minilangmie: '狼灭',
             minilangmie_info: '其他角色结束阶段。若其本回合使用过的牌中有类型相同的牌，则你可以弃置一张牌并摸两张牌；若其本回合内造成的伤害大于1，则你可以弃置一张牌并对其造成1点伤害。',
-            minijiwei: '济危',
-            minijiwei_info: '锁定技。①其他角色的回合结束时，若本回合有角色失去过牌，你摸一张牌。②弃牌阶段开始时，若你的手牌数不小于X，你将手牌中颜色较多的牌分配给任意名其他角色（X为你体力值与全场存活的其他角色数的最大值）。',
             //神
             Mbaby_shen_lvbu: '欢杀神吕布',
             Mbaby_shen_guanyu: '欢杀神关羽',
