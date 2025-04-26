@@ -187,7 +187,7 @@ const packs = function () {
             Mbaby_sunquan: ['male', 'wu', 4, ['minirezhiheng', 'minijiuyuan'], ['zhu']],
             Mbaby_sunshangxiang: ['female', 'wu', 3, ['minijieyin', 'xiaoji']],
             Mbaby_taishici: ['male', 'wu', 4, ['miniretianyi', 'minihanzhan'], [...['die', 'tempname'].map(i => i + ':re_taishici'), 'name:太史|慈']],
-            Mbaby_wuguotai: ['female', 'wu', 3, ['miniganlu', 'minirebuyi']],
+            Mbaby_wuguotai: ['female', 'wu', 3, ['minireganlu', 'minirebuyi']],
             Mbaby_xiaoqiao: ['female', 'wu', 3, ['minitianxiang', 'olhongyan'], ['name:桥|null']],
             Mbaby_xusheng: ['male', 'wu', 4, ['minirepojun', 'miniyicheng']],
             Mbaby_zhoutai: ['male', 'wu', 4, ['minirebuqu', 'fenji', 'miniqingchuang']],
@@ -14406,6 +14406,123 @@ const packs = function () {
                     if (get.type(event.card) == 'basic') {
                         trigger.player.discard(event.card);
                         trigger.player.recover();
+                    }
+                },
+            },
+            minireganlu: {
+                audio: 'ganlu',
+                trigger: { player: 'phaseUseBegin' },
+                locked: true,
+                async cost(event, trigger, player) {
+                    const list = ['摸牌'];
+                    if (game.hasPlayer(current => game.hasPlayer(currentx => currentx != current && (current.countCards('e') + currentx.countCards('e')) > 0))) list.push('交换牌');
+                    const { result } = await player.chooseControl(list).set('choiceList', [
+                        '摸两张牌，然后移动场上的一张装备牌或交换场上装备区中两张副类别相同的装备牌的位置',
+                        '交换两名角色装备区的牌，然后弃置一张牌',
+                    ]).set('prompt', '请选择你要执行的选项').set('ai', () => {
+                        const player = get.player();
+                        const controls = get.event('controls').slice();
+                        if (controls.includes('交换牌') && game.hasPlayer(current => game.hasPlayer(currentx => {
+                            if (currentx == current) return false;
+                            const att1 = get.attitude(player, current), att2 = get.attitude(player, currentx);
+                            if (att1 * att2 > 0) return false;
+                            let delta = get.value(current.getCards('e'), currentx) - get.value(currentx.getCards('e'), currentx);
+                            return Math.abs(delta) > 4 && Math.abs(current.countCards('e') - currentx.countCards('e')) > 1;
+                        }))) return '交换牌';
+                        return '摸牌';
+                    });
+                    event.result = {
+                        bool: true,
+                        cost_data: result?.control,
+                    }
+                },
+                async content(event, trigger, player) {
+                    const { cost_data: control } = event;
+                    if (control == '摸牌') {
+                        await player.draw(2);
+                        const list = [];
+                        if (player.canMoveCard(null, true)) list.push('移动牌');
+                        if (game.hasPlayer(current1 => {
+                            return game.hasPlayer(current2 => lib.skill.miniganlu.moveCheck(current1, current2));
+                        })) list.push('交换牌');
+                        if (!list.length) return;
+                        list.push('cancel2');
+                        const { result } = await player.chooseControl(list).set('choiceList', [
+                            '移动场上的一张装备牌',
+                            '交换场上装备区中两张副类别相同的装备牌的位置',
+                        ]).set('prompt', '请选择你要执行的选项').set('ai', () => {
+                            const player = get.player();
+                            if (player.canMoveCard(true, true)) return '移动牌';
+                            return '交换牌';
+                        });
+                        switch (result?.control) {
+                            case '移动牌': {
+                                await player.moveCard().set('nojudge', true);
+                                break;
+                            }
+                            case '交换牌': {
+                                let result;
+                                result = await player.chooseTarget('甘露：请选择两名角色，交换他们装备区的一张副类别相同的一张牌', (card, player, target) => {
+                                    if (!ui.selected.targets.length) return game.hasPlayer(current => lib.skill.miniganlu.moveCheck(target, current));
+                                    return lib.skill.miniganlu.moveCheck(ui.selected.targets[0], target);
+                                }, 2).forResult();
+                                if (result?.bool && result?.targets?.length) {
+                                    const { targets } = result;
+                                    result = await player.chooseButton([
+                                        '###甘露###<div class="text center">请选择' + get.translation(targets[0]) + '和' + get.translation(targets[1]) + '交换的装备牌</div>',
+                                        '<div class="text center">' + get.translation(targets[0]) + '</div>',
+                                        targets[0].getCards('e'),
+                                        '<div class="text center">' + get.translation(targets[1]) + '</div>',
+                                        targets[1].getCards('e')
+                                    ], 2, true).set('filterButton', button => {
+                                        var targets = _status.event.targets;
+                                        if (!ui.selected.buttons.length) {
+                                            if (targets[0].getCards('e', card => {
+                                                return targets[1].countCards('e', cardx => get.subtype(card) == get.subtype(cardx) && targets[0].canEquip(cardx, true) && targets[1].canEquip(card, true));
+                                            }).includes(button.link)) return true;
+                                            if (targets[1].getCards('e', card => {
+                                                return targets[0].countCards('e', cardx => get.subtype(card) == get.subtype(cardx) && targets[1].canEquip(cardx, true) && targets[0].canEquip(card, true));
+                                            }).includes(button.link)) return true;
+                                            return false;
+                                        }
+                                        var card = ui.selected.buttons[0].link;
+                                        var owner = get.owner(card);
+                                        var target = targets.find(target => target != owner);
+                                        return target.getCards('e', cardx => get.subtype(card) == get.subtype(cardx) && owner.canEquip(cardx, true) && target.canEquip(card, true)).includes(button.link);
+                                    }).set('targets', targets).forResult();
+                                    if (result?.bool && result?.links?.length == 2) {
+                                        if (get.owner(result.links[0]) != targets[0]) result.links.reverse();
+                                        game.log(player, '令', targets[0], '和', targets[1], '交换了', result.links[0], '和', result.links[1]);
+                                        event.links = result.links;
+                                        await game.loseAsync({
+                                            player: targets[0],
+                                            target: targets[1],
+                                            cards1: event.links[0],
+                                            cards2: event.links[1],
+                                        }).setContent('swapHandcardsx');
+                                        if (get.position(event.links[1], true) == 'o') await targets[0].equip(event.links[1]);
+                                        if (get.position(event.links[0], true) == 'o') await targets[1].equip(event.links[0]);
+                                    }
+                                }
+                                break;
+                            }
+                        }
+                    }
+                    else if (game.hasPlayer(current => game.hasPlayer(currentx => currentx != current && (current.countCards('e') + currentx.countCards('e')) > 0))) {
+                        const { result } = await player.chooseTarget('甘露：请选择两名角色，交换他们装备区的牌', true, 2, (card, player, target) => {
+                            if (target.isMin()) return false;
+                            if (ui.selected.targets.length == 0) return true;
+                            if (ui.selected.targets[0].countCards('e') == 0 && target.countCards('e') == 0) return false;
+                            return true;
+                        }).set('ai', target => {
+                            const player = get.player();
+                            return get.effect(target, 'xinganlu', player, player);
+                        }).set('multitarget', true);
+                        if (result?.bool && result?.targets?.length) {
+                            const [target1, target2] = result.targets;
+                            await target1.swapEquip(target2);
+                            if (player.countDiscardableCards(player, 'he')) await player.chooseToDiscard('he', true);
+                        }
                     }
                 },
             },
@@ -34157,6 +34274,8 @@ const packs = function () {
             miniganlu_info: '锁定技，出牌阶段开始时，你选择一项：①移动场上的一张装备牌；②交换场上装备区中的两张副类别相同的装备牌的位置；③摸一张牌。',
             minibuyi: '补益',
             minibuyi_info: '每回合限三次，一名角色进入濒死状态时，你可以展示其一张手牌，若此牌为基本牌，该角色弃置此牌并回复1点体力。',
+            minireganlu: '甘露',
+            minireganlu_info: '锁定技，出牌阶段开始时，你选择一项：①摸两张牌，然后你可以移动场上的一张装备牌或交换场上装备区中的两张副类别相同的装备牌的位置；②交换两名角色装备区内的牌，然后弃置一张牌。',
             minirebuyi: '补益',
             minirebuyi_info: '每回合限三次，一名角色进入濒死状态时，你可以观看并展示其任意张手牌（若其没有手牌则改为你令其摸一张牌并展示之），然后你弃置以此法展示的牌并令其回复X点体力（X为其中基本牌的数量）。',
             minipojun: '破军',
