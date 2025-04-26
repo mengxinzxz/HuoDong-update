@@ -128,7 +128,7 @@ const packs = function () {
             wechat_jikang: ['male', 'wei', 3, ['wechatjikai', 'wechatqingkuang', 'wechatyinyi']],
             wechat_re_zuoci: ['male', 'qun', 3, ['rehuashen', 'wechatrexinsheng']],
             wechat_guozhao: ['female', 'wei', 3, ['yichong', 'wechatwufei'], ['die:xin_guozhao']],
-            wechat_sp_zhenji: ['female', 'qun', 3, ['mbbojian', ' wechatjiwei']],
+            wechat_sp_zhenji: ['female', 'qun', 3, ['mbbojian', 'wechatjiwei']],
             //神武将
             wechat_shen_zhugeliang: ['male', 'shen', 3, ['wechatqixing', 'wechatjifeng', 'wechattianfa'], ['shu', 'name:诸葛|亮']],
             wechat_shen_lvmeng: ['male', 'shen', 3, ['shelie', 'wechatgongxin'], ['wu']],
@@ -9539,17 +9539,21 @@ const packs = function () {
             //极曹植
             wechatcaiyi: {
                 audio: 'ext:活动武将/audio/skill:2',
+                getNum(player) {
+                    return player.getCards('h').map(card => get.type2(card, player)).unique().length + Math.min(3, player.getAllHistory('useSkill', evt => evt.skill == 'wechatcaiyi').length);
+                },
                 trigger: {
                     player: 'loseAfter',
                     global: ['loseAsyncAfter', 'equipAfter', 'addJudgeAfter', 'gainAfter', 'addToExpansionAfter'],
                 },
                 filter(event, player) {
-                    if (event.getParent().name !== 'useCard' || !player.countCards('h')) return false;
+                    if (event.getParent().name !== 'useCard' || !get.info('wechatcaiyi').getNum(player)) return false;
                     return event.getl?.(player)?.hs?.some(card => !player.hasCard(cardx => get.type2(cardx, player) === get.type2(card, player), 'h'));
                 },
                 usable: 1,
                 async content(event, trigger, player) {
-                    const cards = game.cardsGotoOrdering(get.cards(player.getCards('h').map(card => get.type2(card, player)).unique().length)).cards;
+                    const num = get.info(event.name).getNum(player);
+                    const cards = game.cardsGotoOrdering(get.cards(num)).cards;
                     const videoId = lib.status.videoId++, str = get.translation(event.name);
                     game.broadcastAll((player, id, cards, str) => {
                         const dialog = ui.create.dialog(str + ((player === game.me && !_status.auto) ? '：选择获得一种颜色的牌' : ''), cards);
@@ -9872,11 +9876,11 @@ const packs = function () {
                 audio: 'ext:活动武将/audio/skill:2',
                 shiwuSkill: true,
                 categories: () => ['奋武技'],
-                mod: {
+                /* mod: {
                     targetInRange(card, player, target) {
                         if (card.wechatyanfeng) return true;
                     },
-                },
+                }, */
                 enable: 'phaseUse',
                 onChooseToUse(event) {
                     if (!game.online && typeof event.wechat_shiwuAble !== 'number') {
@@ -10241,7 +10245,7 @@ const packs = function () {
                 filter(event, player) {
                     if (event.name == 'die') return game.hasPlayer(current => player != current && game.hasPlayer(currentx => current.canCompare(currentx)));
                     if (player.hasSkill('wechatbianguan_record', null, null, false)) return false;
-                    return event.targets?.length && event.lose_list.some(list => list[1].someInD());
+                    return event.targets?.length && event.lose_list.some(list => list[1].filter(card => get.tag(card, 'damage') || get.type(card) == 'basic').someInD());
                 },
                 locked: true,
                 forceDie: true,
@@ -10260,7 +10264,7 @@ const packs = function () {
                     }
                     else {
                         player.addTempSkill(event.name + '_record', { global: 'roundStart' });
-                        await player.gain(trigger.lose_list.map(list => list[1].filterInD()).flat(), 'gain2');
+                        await player.gain(trigger.lose_list.map(list => list[1].filter(card => get.tag(card, 'damage') || get.type(card) == 'basic').filterInD()).flat(), 'gain2');
                     }
                 },
                 subSkill: { record: { charlotte: true } }
@@ -12104,7 +12108,7 @@ const packs = function () {
             wechathengyi_info: '每回合限一次，当你失去手牌中点数最大的牌后，你可以令一名其他角色获得这些牌或令自己摸两张牌。',
             wechat_zhiyin_caozhi: '极曹植',
             wechatcaiyi: '才溢',
-            wechatcaiyi_info: '每回合限一次，当你因使用失去手牌中一种类别的所有牌后，你可以亮出牌堆顶X张牌（X为你手牌拥有的类别数），然后获得其中一种颜色的所有牌。',
+            wechatcaiyi_info: '每回合限一次，当你因使用失去手牌中一种类别的所有牌后，你可以亮出牌堆顶X+Y张牌（X为你手牌拥有的类别数，Y为你本局游戏发动〖才溢〗的次数且多为3），然后获得其中一种颜色的所有牌。',
             wechataoxiang: '遨想',
             wechataoxiang_info: '每回合限一次，你可以视为使用一张【酒】并从牌堆中获得一张你手牌中未拥有类别的牌。若如此做，则本回合结束时，你选择一项：①若你的武将牌正面朝上，则将武将牌翻面；②令〖才溢〗于本轮失效。',
             wechat_zhiyin_jiangwei: '极姜维',
@@ -12116,7 +12120,7 @@ const packs = function () {
             wechatxiangwei: '象威',
             wechatxiangwei_info: '准备阶段，你可以视为使用【南蛮入侵】。然后你选择一项：①本回合对未受到此牌造成的伤害的角色使用牌无任何次数限制；②本回合使用的下X张【杀】造成的伤害+1（X为受到此牌造成的伤害的角色数）。',
             wechatyanfeng: '炎锋',
-            wechatyanfeng_info: get.ShiwuInform() + '，出牌阶段，你可以将一张牌当作无距离限制的火【杀】使用。此牌结算完毕后，若此牌未造成伤害且仅指定唯一目标，则你令目标角色选择一项：①对你造成1点伤害，然后随机弃置一张牌；②令你摸一张牌，然后本回合你对其使用的下一张【杀】无效。',
+            wechatyanfeng_info: get.ShiwuInform() + '，出牌阶段，你可以将一张牌当作火【杀】使用。此牌结算完毕后，若此牌未造成伤害且仅指定唯一目标，则你令目标角色选择一项：①对你造成1点伤害，然后随机弃置一张牌；②令你摸一张牌，然后本回合你对其使用的下一张【杀】无效。',
             wechat_zhiyin_hetaihou: '极何太后',
             wechatfuyin: '覆胤',
             wechatfuyin_info: '①游戏开始时，你可令一名其他角色获得1枚“覆胤”标记。拥有“覆胤”标记的角色跳过其摸牌阶段。②摸牌阶段，你额外摸两张牌，然后此阶段结束时你依次交给场上拥有“覆胤”标记的存活角色两张牌。',
@@ -12133,7 +12137,7 @@ const packs = function () {
             wechatweicheng: '威乘',
             wechatweicheng_info: '出牌阶段限一次。你可以与至少X名角色进行共同拼点（X为全场角色数的一半且向上取整）。然后胜者可以视为对所有败者使用一张【杀】。此【杀】结算结束后，若有败者使用【闪】响应过此牌，则未使用【闪】响应此牌的败者各失去1点体力。',
             wechatbianguan: '变观',
-            wechatbianguan_info: '锁定技。①当你本轮首次参加共同拼点后，你获得所有拼点牌。②当你死亡时，你令所有其他角色进行共同拼点，然后所有败者各失去1点体力。',
+            wechatbianguan_info: '锁定技。①当你本轮首次参加共同拼点后，你获得所有拼点牌中的伤害牌和基本牌。②当你死亡时，你令所有其他角色进行共同拼点，然后所有败者各失去1点体力。',
             wechat_zhiyin_zhangfei: '极张飞',
             wechathupo: '虎魄',
             wechathupo_info: get.ShiwuInform() + '，出牌阶段，你可以展示你与一名其他角色的所有手牌，然后你选择一项：1.弃置你与其一个牌名的所有牌；2.获得其一张你没有的牌名的牌。',
