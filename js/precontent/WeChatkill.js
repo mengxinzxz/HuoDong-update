@@ -10292,9 +10292,9 @@ const packs = function () {
                     await player.showHandcards();
                     await target.showHandcards();
                     if ([player, target].every(current => !current.countCards('he'))) return;
-                    const goon = target.getCards('he').filter(card => lib.filter.canBeGained(card, target, player)).every(card => player.hasCard(cardx => get.name(card) == get.name(cardx), 'he'));
+                    const goon = target.getCards('he').filter(card => lib.filter.canBeGained(card, target, player)).some(card => player.hasCard(cardx => get.name(card) !== get.name(cardx), 'he'));
                     let result;
-                    if (!goon && [player, target].some(current => current.countDiscardableCards(player, 'he'))) result = await player
+                    if (goon && [player, target].some(current => current.countDiscardableCards(player, 'he'))) result = await player
                         .chooseControl()
                         .set('choiceList', [`弃置你与${get.translation(target)}一各牌名的所有牌`, `获得${get.translation(target)}一张你没有的牌名的牌`])
                         .set('ai', () => {
@@ -10306,7 +10306,7 @@ const packs = function () {
                         })
                         .set('target', target)
                         .forResult();
-                    else result = { index: goon ? 0 : 1 };
+                    else result = { index: goon ? 1 : 0 };
                     if (result.index == 0) {
                         const names = [player.getCards('he'), target.getCards('he')].filter(card => lib.filter.cardDiscardable(card, player)).flat().map(i => get.name(i)).toUniqued();
                         let name;
@@ -10345,7 +10345,7 @@ const packs = function () {
                 enable: 'phaseUse',
                 filter(event, player) {
                     if (!player.countCards('h') || player.getStorage('wechatrehupo_used').length > 1) return false;
-                    return game.hasPlayer(current => get.info('wechathupo').filterTarget(null, player, current));
+                    return game.hasPlayer(current => get.info('wechatrehupo').filterTarget(null, player, current));
                 },
                 filterTarget(card, player, target) {
                     return target.countCards('h') && target != player;
@@ -10355,13 +10355,9 @@ const packs = function () {
                     await player.showHandcards();
                     await target.showHandcards();
                     if ([player, target].every(current => !current.countCards('he'))) return;
-                    const goon1 = !target.getCards('he').filter(card => lib.filter.canBeGained(card, target, player)).every(card => player.hasCard(cardx => get.name(card) == get.name(cardx), 'he')) && !player.getStorage(event.name + '_used').includes(1);
+                    const goon1 = target.getCards('he').filter(card => lib.filter.canBeGained(card, target, player)).some(card => player.hasCard(cardx => get.name(card) !== get.name(cardx), 'he')) && !player.getStorage(event.name + '_used').includes(1);
                     const goon2 = [player, target].some(current => current.countDiscardableCards(player, 'he')) && !player.getStorage(event.name + '_used').includes(0);
-                    if (!goon1 && !goon2) {
-                        player.addTempSkill(event.name + '_check', 'phaseAfter');
-                        player.markAutor(event.name + '_check', [target]);
-                        return;
-                    }
+                    if (!goon1 && !goon2) return;
                     let result;
                     if (goon1 && goon2) result = await player
                         .chooseControl()
@@ -10375,7 +10371,7 @@ const packs = function () {
                         })
                         .set('target', target)
                         .forResult();
-                    else result = { index: goon1 ? 0 : 1 };
+                    else result = { index: goon1 ? 1 : 0 };
                     player.addTempSkill(event.name + '_used', 'phaseAfter');
                     player.markAuto(event.name + '_used', [result.index]);
                     if (result.index == 0) {
@@ -10406,8 +10402,10 @@ const packs = function () {
                     order: 9,
                     result: {
                         target(player, target) {
-                            if (player.getStorage('wechatrehupo_check').includes(target)) return 0;
-                            return -1 * target.countCards('h');
+                            const goon1 = target.getCards('he').filter(card => lib.filter.canBeGained(card, target, player)).some(card => player.hasCard(cardx => get.name(card) !== get.name(cardx), 'he')) && !player.getStorage('wechatrehupo_used').includes(1);
+                            const goon2 = [player, target].some(current => current.countDiscardableCards(player, 'he')) && !player.getStorage('wechatrehupo_used').includes(0);
+                            if (!goon1 && !goon2) return 0;
+                            return target.countCards('h') * get.sgnAttitude(player, target);
                         },
                     },
                 },
@@ -10416,10 +10414,6 @@ const packs = function () {
                         charlotte: true,
                         onremove: true,
                     },
-                    check: {
-                        charlotte: true,
-                        onremove: true,
-                    }
                 }
             },
             wechathanxing: {
