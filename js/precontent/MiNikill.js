@@ -4392,7 +4392,7 @@ const packs = function () {
                     'step 0'
                     if (get.itemtype(trigger.cards) == 'cards' && trigger.cards.some(i => get.position(i, true) == 'o')) player.gain(trigger.cards, 'gain2');
                     var num = player.countMark('sbjianxiong');
-                    if (2 - num > 0) player.draw(3 - num, 'nodelay');
+                    if (2 - num > 0) player.draw(2 - num, 'nodelay');
                     'step 1'
                     var controls = [];
                     if (player.countMark('sbjianxiong') < 2) controls.push('获得标记');
@@ -33728,7 +33728,7 @@ const packs = function () {
             minijuezhu: '决助',
             minijuezhu_info: '限定技，出牌阶段，你可以选择一名角色并废除一个坐骑栏，令该角色获得〖飞影〗并废除判定区。若如此做，该角色死亡后，你恢复以此法废除的装备栏。',
             minisbjianxiong: '奸雄',
-            minisbjianxiong_info: '游戏开始时，你可获得至多2枚“治世”标记。当你受到伤害后，你可获得伤害牌，摸3-X张牌（X为你的“治世”标记数），然后你可获得或失去1枚“治世”标记。',
+            minisbjianxiong_info: '游戏开始时，你可获得至多2枚“治世”标记。当你受到伤害后，你可获得伤害牌，摸2-X张牌（X为你的“治世”标记数），然后你可获得或失去1枚“治世”标记。',
             minisbqingzheng: '清正',
             minisbqingzheng_backup: '清正',
             minisbqingzheng_info: '出牌阶段限一次，你可以弃置3-X种花色的所有手牌（X为你的“治世”标记数）并观看一名有手牌的其他角色的手牌，你弃置其中一种花色的所有牌。若其被弃置的牌数小于你以此法弃置的牌数，你对其造成1点伤害，然后你可获得或失去1枚“治世”标记。',

@@ -467,12 +467,14 @@ const packs = function () {
                 audio: 'ext:活动武将/audio/skill:true',
                 trigger: { player: 'damageEnd' },
                 filter(event, player) {
-                    return lib.skill.QH_nongquan.logTarget(event, player);
+                    const targets = game.filterPlayer(current => lib.skill.lztunjiang.filtery({ player: current }, player));
+                    if (!targets.length) return false;
+                    return targets.length == 1 || targets[0].hp != targets[1].hp;
                 },
                 logTarget(event, player) {
-                    var targets = game.filterPlayer(current => lib.skill.lztunjiang.filtery({ player: current }, player));
+                    const targets = game.filterPlayer(current => lib.skill.lztunjiang.filtery({ player: current }, player));
                     targets.sort((a, b) => a.hp - b.hp);
-                    return targets[0].hp != targets[1].hp ? targets[0] : false;
+                    return targets[0];
                 },
                 forced: true,
                 content() {
