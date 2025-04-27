@@ -11458,7 +11458,7 @@ const packs = function () {
                     global: 'phaseEnd',
                 },
                 filter(event, player) {
-                    const num = get.info(' wechatjiwei').getNum(event, player);
+                    const num = get.info('wechatjiwei').getNum(event, player);
                     if (event.name == 'phaseDiscard') return player.countCards('h') >= num && game.hasPlayer(current => current != player);
                     return event.player != player && num > 0;
                 },
