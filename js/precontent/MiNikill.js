@@ -33219,17 +33219,15 @@ const packs = function () {
             // 张辽
             minifightbiaoxi: {
                 audio: 'ext:活动武将/audio/skill:2',
+                init(player, skill) {
+                    game.addGlobalSkill(skill + '_record');
+                },
                 placeSkill: true,
                 categories: () => ['战场技'],
                 trigger: { global: ['loseAfter', 'equipAfter', 'addJudgeAfter', 'gainAfter', 'loseAsyncAfter', 'addToExpansionAfter'] },
                 filter(event, player) {
                     if (ui._minifightbiaoxi_hefei) return false;
-                    const evt = event.getParent('phaseUse', true);
-                    if (!evt) return false;
-                    return game.hasPlayer(current => {
-                        if (evt.player != current) return false;
-                        return event.getl?.(current)?.cards2?.some(card => get.type(card) == 'basic') && current.getHistory('lose', evt => evt.getParent('phaseUse', true)).reduce((num, evt) => num + evt.cards2.filter(card => get.type(card) == 'basic').length, 0) > 1;
-                    });
+                    return event.minifightbiaoxi;
                 },
                 prompt2: '进入合淝战场？',
                 async content(event, trigger, player) {
@@ -33277,7 +33275,30 @@ const packs = function () {
                                 });
                             }
                         },
-                    }
+                    },
+                    record: {
+                        charlotte: true,
+                        trigger: {
+                            player: 'loseAfter',
+                            global: ['equipAfter', 'addJudgeAfter', 'gainAfter', 'loseAsyncAfter', 'addToExpansionAfter'],
+                        },
+                        filter(event, player) {
+                            if (player.hasSkill('minifightbiaoxi_losed', null, null, false)) return false;
+                            const evt = event.getParent('phaseUse', true);
+                            if (!evt) return false;
+                            if (evt.player != player) return false;
+                            return event.getl?.(player)?.cards2?.some(card => get.type(card) == 'basic') && player.getHistory('lose', evt => evt.getParent('phaseUse', true)).reduce((num, evt) => num + evt.cards2.filter(card => get.type(card) == 'basic').length, 0) > 1;
+                        },
+                        forced: true,
+                        popup: false,
+                        silent: true,
+                        firstDo: true,
+                        async content(event, trigger, player) {
+                            player.addTempSkill('minifightbiaoxi_losed', 'phaseUseAfter');
+                            trigger.minifightbiaoxi = true;
+                        },
+                    },
+                    losed: { charlotte: true },
                 }
             },
             minifightpozhen: {
