@@ -6142,7 +6142,7 @@ const packs = function () {
                     }
                 },
                 group: ['bolchouyou3', 'bolchouyou5'],
-                getFilter(skill, player) {
+                getFilter(skill, player, info) {
                     if (skill.indexOf('_') == 0 || !info || info.equipSkill || info.charlotte || info.silent || info.nopop || info.popup === false) return false;
                     return !lib.skill.global.includes(skill) && !get.is.locked(skill, player);
                 },
@@ -6174,7 +6174,7 @@ const packs = function () {
                 trigger: { global: 'logSkillBegin' },
                 filter(event, player) {
                     const { skill } = event, info = get.info(skill);
-                    return get.info('bolchouyou2').getFilter(skill, player);
+                    return get.info('bolchouyou2').getFilter(skill, player, info);
                 },
                 forced: true,
                 popup: false,
