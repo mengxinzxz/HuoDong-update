@@ -25807,6 +25807,7 @@ const packs = function () {
             },
             minibushi: {
                 audio: 'bushi',
+                inherit: 'bushi',
                 async cost(event, trigger, player) {
                     const { player: target } = trigger;
                     const result = await player.chooseButton([
