@@ -25800,25 +25800,28 @@ const packs = function () {
                 inherit: 'yishe',
                 filter: () => true,
                 frequent: true,
+                onremove(player) {
+                    const cards = player.getExpansions('yishe');
+                    if (cards.length) player.loseToDiscardpile(cards);
+                },
             },
             minibushi: {
                 audio: 'bushi',
-                inherit: 'bushi',
-                async content(event, trigger, player) {
-                    let sum = trigger.num;
-                    while (sum && player.getExpansions('yishe').length && player.hasSkill('minibushi')) {
-                        sum--;
-                        const { result: { bool, links } } = await player.chooseCardButton('布施：是否' + (trigger.player != player ? ('令' + get.translation(trigger.player)) : '') + '获得一张“米”？', player.getExpansions('yishe')).set('ai', button => {
-                            const att = get.attitude(get.event('player'), get.event().getTrigger().player);
-                            return get.value(button.link) * get.sgn(get.sgn(att) - 0.5);
-                        });
-                        if (bool) {
-                            player.logSkill('minibushi', trigger.player);
-                            await player.give(links, trigger.player);
-                        }
-                        else break;
-                    }
+                async cost(event, trigger, player) {
+                    const { player: target } = trigger;
+                    const result = await player.chooseButton([
+                        '###' + get.prompt('minibushi', target) + '###<div class="text center">选择一张“米”，令' + get.translation(target) + '获得</div>',
+                        player.getExpansions('yishe'),
+                    ]).set('ai', button => {
+                        const { player, target } = get.event();
+                        return get.attitude(player, target) * get.value(button.link, target);
+                    }).set('target', target).forResult();
+                    event.result = {
+                        bool: result?.bool,
+                        cost_data: result?.links,
+                    };
                 },
+                logTarget: 'player',
                 ai: { combo: 'miniyishe' },
             },
             minimidao: {
