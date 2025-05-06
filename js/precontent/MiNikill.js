@@ -26056,11 +26056,11 @@ const packs = function () {
                 forced: true,
                 forceDie: true,
                 async content(event, trigger, player) {
-                    if (player.isAlive()) {
-                        await player.removeSkills('minidushi');
-                    }
-                    if (game.hasPlayer(target => target != player)) {
-                        const { result: { bool, targets } } = await player.chooseTarget('请选择【毒逝】的目标', '令一名其他角色获得技能【毒逝】', true, lib.filter.notMe).set('ai', target => {
+                    if (player.isAlive()) await player.removeSkills('minidushi');
+                    if (game.hasPlayer(target => target != player && !target.hasSkill('minidushi', null, false, false))) {
+                        const { result: { bool, targets } } = await player.chooseTarget('请选择【毒逝】的目标', (card, player, target) => {
+                            return target != player && !target.hasSkill('minidushi', null, false, false);
+                        }, '令一名其他角色获得技能【毒逝】', true).set('ai', target => {
                             return -get.attitude(_status.event.player, target);
                         }).set('forceDie', true);
                         if (bool) {
@@ -26342,9 +26342,7 @@ const packs = function () {
                     if (get.event().name == 'chooseToUse') return '将一张黑色牌当酒使用';
                     return get.prompt('minirejiuchi');
                 },
-                prompt2(event, player) {
-                    return '摸一张牌并令【崩坏】本回合失效';
-                },
+                prompt2: () => '摸一张牌并令【崩坏】于本回合失效',
                 filter(event, player) {
                     if (event.name == 'chooseToUse') return player.hasCard(card => get.color(card) == 'black', 'hes')
                     return event.card && event.card.name == 'sha' && event.getParent(2).jiu == true;
@@ -26352,13 +26350,13 @@ const packs = function () {
                 forced: false,
                 content() {
                     player.draw();
-                    if (!player.hasSkill('minirejiuchi_air', null, null, false)) player.addTempSkill('minirejiuchi_air');
+                    player.addTempSkill('minirejiuchi_air');
                 },
                 subSkill: {
                     air: {
                         charlotte: true,
-                    }
-                }
+                    },
+                },
             },
             miniroulin: {
                 audio: 'roulin',
@@ -26485,15 +26483,13 @@ const packs = function () {
             //老八
             minixingluan: {
                 audio: 'xinfu_xingluan',
-                usable: 1,
-                trigger: {
-                    player: 'useCardAfter',
-                },
+                trigger: { player: 'useCardAfter' },
                 filter(event, player) {
                     return player.isPhaseUsing() && event.targets && event.targets.length == 1;
                 },
+                usable: 1,
                 async content(event, trigger, player) {
-                    const cards = []
+                    const cards = [];
                     while (cards.length < 2) {
                         const card = get.cardPile2(card => {
                             return !cards.includes(card) && get.number(card) == 6;
@@ -26503,10 +26499,10 @@ const packs = function () {
                     }
                     if (!cards.length) await player.draw(6);
                     else {
-                        const links = await player.chooseButton(['兴乱：选择获得其中一张', cards], true).set('ai', button => {
+                        const links = cards.length > 1 ? await player.chooseButton(['兴乱：选择获得其中一张', cards], true).set('ai', button => {
                             return get.value(button.link, get.player());
-                        }).forResultLinks();
-                        await player.gain(links, 'gain2');
+                        }).forResultLinks() : cards;
+                        if (links?.length) await player.gain(links, 'gain2');
                     }
                 },
             },
@@ -34910,7 +34906,7 @@ const packs = function () {
             minipanshi: '叛弑',
             minipanshi_info: '锁定技，准备阶段，你交给有“慈孝”技能的角色一张手牌；当你于出牌阶段因使用【杀】对其他角色造成伤害时，若其拥有技能“慈孝”，则此伤害+1，且你失去“义子”标记并结束出牌阶段。',
             minidushi: '毒逝',
-            minidushi_info: '锁定技，你处于濒死状态时，其他角色不能对你使用【桃】。当你的濒死状态结算完毕后，你失去〖毒逝〗，然后选择一名其他角色获得〖毒逝〗。',
+            minidushi_info: '锁定技。①你处于濒死状态时，其他角色不能对你使用【桃】。②当你的濒死状态结算完毕后，你失去〖毒逝〗，然后令一名其他角色获得〖毒逝〗。',
             miniheqia: '和洽',
             miniheqia_info: '出牌阶段限一次，你可将任意张牌交给一名其他角色或令一名有手牌的其他角色交给你任意张牌。然后以此法得到牌的角色可以将一张手牌当作任意基本牌使用，且当其声明使用此牌后，可以为此牌增加至至多X个目标（X为本次使用者以此法得到的牌数）。',
             miniqibie: '泣别',
@@ -34926,7 +34922,7 @@ const packs = function () {
             miniroulin: '肉林',
             miniroulin_info: '锁定技。你对女性角色、女性角色对你使用【杀】时，都需连续使用两张【闪】才能抵消。此【杀】结算结束后，若此牌未造成伤害，你摸一张黑色牌。',
             minirebenghuai: '崩坏',
-            minirebenghuai_info: '锁定技，结束阶段，若你的体力不为全场最少，你须减1点体力或体力上限，然后摸一张牌。你的回合开始时，若你的体力为全场最少，本回合〖肉林〗改为对所有角色生效。',
+            minirebenghuai_info: '锁定技。①结束阶段，若你的体力不为全场最少，你须减1点体力或体力上限，然后摸一张牌。②回合开始时，若你的体力为全场最低，本回合〖肉林〗改为对所有角色生效。',
             minitanbei: '贪狈',
             minitanbei_info: '出牌阶段限一次，你可以令一名其他角色选择一项：1.你获得其区域内的一张牌，本回合不能再对其使用牌；2.你本回合对其使用牌无距离和次数限制。',
             minisidao: '伺盗',
