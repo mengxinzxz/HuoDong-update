@@ -2440,7 +2440,7 @@ const packs = function () {
                         charlotte: true,
                         trigger: { player: 'gainBegin' },
                         filter(event, player) {
-                            return lib.translate[event.getParent(3).name] == '突袭';
+                            return lib.translate[event.getParent(3).name] == '突袭' || event.getParent(3).name == 'minifightbiaoxi_effect';
                         },
                         direct: true,
                         firstDo: true,
@@ -33239,7 +33239,7 @@ const packs = function () {
                     });
                 },
                 derivation: 'new_retuxi',
-                group: 'minifightbiaoxi_effect',
+                group: ['minifightbiaoxi_effect', 'minizhengbing_mark'],
                 subSkill: {
                     effect: {
                         trigger: { global: 'useCardAfter' },
@@ -33313,10 +33313,10 @@ const packs = function () {
                     return game.hasPlayer(current => {
                         if (current == player) return false;
                         return event.getl?.(current)?.cards2.some(card => cards.includes(card));
-                    });
+                    }) && player.hasCard(lib.filter.cardRecastable, 'he');
                 },
                 async cost(event, trigger, player) {
-                    event.result = await player.chooseCard(get.prompt2(event.skill), lib.filter.cardRecastable, [1, trigger.getg(player).length]).set('ai', card => {
+                    event.result = await player.chooseCard(get.prompt2(event.skill), lib.filter.cardRecastable, [1, trigger.getg(player).length], 'he').set('ai', card => {
                         const player = get.player();
                         if (player.isPhaseUsing()) {
                             if (player.hasValueTarget({ name: 'sha' }) && get.name(card) != 'sha' && get.type(card) == 'basic') return 10;
