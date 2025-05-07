@@ -2396,9 +2396,9 @@ const packs = function () {
             wechatluanwu: {
                 audio: 'luanwu',
                 inherit: 'luanwu',
+                multitarget: true,
                 content() {
                     'step 0'
-                    player.awakenSkill('wechatluanwu');
                     var card = get.cardPile2(card => card.name == 'sha');
                     if (card) player.gain(card, 'gain2');
                     event.current = player;
