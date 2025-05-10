@@ -15,12 +15,14 @@ game.bolShowNewPack = function () {
 		'bugfix',
 		'技能修改，配音补充，新武将',
 		'小程序：SP甄宓、极郭皇后、极辛宪英、谋曹操',
-		'欢杀：许贡、朱佩兰、赵昂、战张辽、界吴国太、神鲁肃',
+		'欢杀：许贡、朱佩兰、赵昂、战张辽、界吴国太、神鲁肃、谋孙权',
 		'To be continued...',
 	];
 	//更新武将
 	var HuoDong_players = [
-		'wechat_sp_zhenji', 'wechat_zhiyin_guohuanghou', 'wechat_zhiyin_xinxianying', 'wechat_sb_caocao', 'Mbaby_xugong', 'Mbaby_zhupeilan', 'Mbaby_zhaoang', 'Mfight_zhangliao', 'Mbaby_shen_lusu'
+		'wechat_sp_zhenji', 'wechat_zhiyin_guohuanghou', 'wechat_zhiyin_xinxianying',
+		'wechat_sb_caocao', 'Mbaby_xugong', 'Mbaby_zhupeilan', 'Mbaby_zhaoang',
+		'Mfight_zhangliao', 'Mbaby_shen_lusu', 'Mbaby_sb_sunquan',
 	];
 	//加载
 	var dialog = ui.create.dialog(
