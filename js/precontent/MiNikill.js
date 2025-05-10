@@ -8277,7 +8277,7 @@ const packs = function () {
                 },
             },
             minirehuxiao: {
-                audio: 'xueji',
+                audio: 'huxiao',
                 inherit: 'huxiao',
                 async content(event, trigger, player) {
                     await player.draw();
@@ -33497,14 +33497,8 @@ const packs = function () {
                 if (storage) str += '</span>';
                 return str;
             },
-            minirehuxiao(player) {
-                let storage = player.storage.minirehuxiao, str = '锁定技。';
-                if (storage) str += '①';
-                str += '回合开始时，你获得一张红色【杀】';
-                if (storage) str += '；②';
-                else str += '。';
-                if (storage) str += '当你对一名角色造成火属性伤害后，你摸一张牌且本回合内对其使用牌没有次数限制。';
-                return str;
+            minirehuxiao(player, skill) {
+                return lib.translate[player.storage[skill] ? 'minirehuxiao_rewrite_info' : 'minirehuxiao_info'];
             },
         },
         translate: {
