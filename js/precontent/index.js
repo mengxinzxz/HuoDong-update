@@ -20,23 +20,14 @@ export function precontent(bilibilicharacter) {
         return game.TrueHasExtension(ext) && lib.config['extension_' + ext + '_enable'];
     };
     //阵亡配音
-    lib.skill._HD_die = {
-        charlotte: true,
-        ruleSkill: true,
-        trigger: { player: 'dieBegin' },
-        filter(event, player) {
-            return lib.config.background_speak && event.player.name;
-        },
-        firstDo: true,
-        direct: true,
-        priority: -Infinity,
-        lasrDo: true,
-        content() {
-            game.broadcastAll(function (name) {
+    lib.hooks['checkDie'].push(function HD_die(trigger) {
+        const target = trigger.player, name = target?.name;
+        if (name && lib.config.background_speak) {
+            game.broadcastAll(name => {
                 game.playAudio('..', 'extension', '活动武将/audio/die', name);
-            }, trigger.player.name);
-        },
-    };
+            }, name);
+        }
+    });
     //困难年兽体力上限和体力值为所有其他角色的体力上限和
     lib.skill._YJplusmaxHp = {
         charlotte: true,
