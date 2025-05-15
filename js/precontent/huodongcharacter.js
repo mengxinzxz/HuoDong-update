@@ -268,7 +268,7 @@ const packs = function () {
                                                 if (!pileTop) return;
                                                 this._pileTop = pileTop;
                                                 const skill = 'bolshicai_effect';
-                                                for (const player of game.filterPlayer2()) {
+                                                for (const player of game.filterPlayer()) {
                                                     if (player.hasSkill(skill)) get.info(skill).getCards(player, skill);
                                                 }
                                             },
