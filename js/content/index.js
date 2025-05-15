@@ -1222,9 +1222,9 @@ export function content(config, pack) {
 		game.loadModeAsync('boss', mode => {
 			for (const i of ['translate', 'dynamicTranslate', 'skill']) {
 				for (const j in mode[i]) {
-					if (!j.startsWith('_')) {
-						if (!lib[i][j]) lib[i][j] = mode[i][j];
-						if (i == 'skill' && lib[i][j]) game.finishSkill(j);
+					if (!j.startsWith('_') && !lib[i][j]) {
+						lib[i][j] = mode[i][j];
+						if (i == 'skill') game.finishSkill(j);
 					}
 				}
 			}
