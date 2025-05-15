@@ -1224,7 +1224,13 @@ export function content(config, pack) {
 				for (const j in mode[i]) {
 					if (!j.startsWith('_') && !lib[i][j]) {
 						lib[i][j] = mode[i][j];
-						if (i == 'skill') game.finishSkill(j);
+						if (i === "skill") {
+							if (lib.skill[j].inherit && !lib.skill[lib.skill[j].inherit] && mode.skill[lib.skill[j].inherit]) {
+								lib.skill[lib.skill[j].inherit] = mode.skill[lib.skill[j].inherit];
+								game.finishSkill(lib.skill[j].inherit);
+							}
+							game.finishSkill(j);
+						}
 					}
 				}
 			}
