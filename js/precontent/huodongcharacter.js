@@ -8240,7 +8240,7 @@ const packs = function () {
                 content() {
                     'step 0'
                     if (trigger.source.hasSex('male')) {
-                        trigger.source.chooseCard(get.prompt('bolhuidu'), '重铸任意张牌，防止对' + get.translation(player) + '造成的伤害', lib.filter.cardRecastable, [1, Infinity]).set('ai', function (card) {
+                        trigger.source.chooseCard(get.prompt('bolhuidu'), '重铸任意张牌，防止对' + get.translation(player) + '造成的伤害', lib.filter.cardRecastable, [1, Infinity], 'he').set('ai', function (card) {
                             if (_status.event.goon) return lib.skill.zhiheng.check(card) + 1;
                             return 0;
                         }).set('goon', get.damageEffect(player, trigger.source, trigger.source));
