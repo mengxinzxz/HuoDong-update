@@ -14,15 +14,12 @@ game.bolShowNewPack = function () {
 		'/setPlayer/',
 		'bugfix',
 		'技能修改，配音补充，新武将',
-		'小程序：SP甄宓、极郭皇后、极辛宪英、谋曹操',
-		'欢杀：许贡、朱佩兰、赵昂、战张辽、界吴国太、神鲁肃、谋孙权',
+		'欢杀：SP徐晃、曹安民',
 		'To be continued...',
 	];
 	//更新武将
 	var HuoDong_players = [
-		'wechat_sp_zhenji', 'wechat_zhiyin_guohuanghou', 'wechat_zhiyin_xinxianying',
-		'wechat_sb_caocao', 'Mbaby_xugong', 'Mbaby_zhupeilan', 'Mbaby_zhaoang',
-		'Mfight_zhangliao', 'Mbaby_shen_lusu', 'Mbaby_sb_sunquan',
+		'Mbaby_sp_xuhuang', 'Mbaby_caoanmin',
 	];
 	//加载
 	var dialog = ui.create.dialog(
@@ -77,7 +74,7 @@ let extensionPackage = {
 		author: '萌新（转型中）',
 		diskURL: '',
 		forumURL: '',
-		version: '0.3.9 - 待定',
+		version: '0.4.0 - 待定',
 		//新人制作扩展，希望大家支持。
 		//新人技术不足，希望大家包涵。
 		//壹、贰、叁、肆、伍、陆、柒、捌、玖、拾
