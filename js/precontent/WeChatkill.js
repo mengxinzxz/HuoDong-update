@@ -148,7 +148,7 @@ const packs = function () {
             wechat_zhiyin_yuanshao: ['male', 'qun', 4, ['wechathongtu', 'wechatmengshou'], ['die:true']],
             wechat_zhiyin_xuzhu: ['male', 'wei', 4, ['wechathuhou', 'wechatwuwei'], ['die:true']],
             wechat_zhiyin_sunce: ['male', 'wu', 4, ['wechattaoni', 'wechatpingjiang', 'wechatdingye'], ['die:true', 'zhu']],
-            wechat_zhiyin_xunyu: ['male', 'wei', 3, ['wechatwangzuo', 'wechatjuxian', 'wechatxianshi'], ['die:true']],
+            wechat_zhiyin_xunyu: ['male', 'wei', 3, ['wechatwangzuo', 'wechatrejuxian', 'wechatxianshi'], ['die:true']],
             wechat_zhiyin_zhenji: ['female', 'wei', 3, ['wechatshenfu', 'wechatsiyuan'], ['die:true']],
             wechat_zhiyin_caiwenji: ['female', 'qun', 3, ['wechatbeijia', 'wechatsifu'], ['die:true', 'name:蔡|琰']],
             wechat_zhiyin_zhouyu: ['male', 'wu', 3, ['wechatyingrui', 'wechatfenli'/*, 'wechatqugu'*/], ['die:true']],
@@ -6806,6 +6806,9 @@ const packs = function () {
                 trigger: { global: ['loseAfter', 'loseAsyncAfter', 'cardsDiscardAfter'] },
                 filter(event, player) {
                     if (get.info('wechatjuxian').getNum(player) <= 0) return false;
+                    return get.info('wechatjuxian').filterx(event, player);
+                },
+                filterx(event, player) {
                     if (player !== _status.currentPhase) return false;
                     if (event.name.indexOf('lose') == 0) {
                         if (event.type != 'discard') return false;
@@ -6896,6 +6899,28 @@ const packs = function () {
                         }
                         game.updateRoundNumber();
                     }
+                },
+            },
+            wechatrejuxian: {
+                audio: 'wechatjuxian',
+                inherit: 'wechatjuxian',
+                usable: 3,
+                filter(event, player) {
+                    return get.info('wechatjuxian').filterx(event, player);
+                },
+                async content(event, trigger, player) {
+                    let cards;
+                    if (trigger.name == 'cardsDiscard') cards = trigger.cards.filterInD('d');
+                    else {
+                        let players = game.players.slice().concat(game.dead);
+                        players.remove(player);
+                        cards = players.reduce((list, target) => {
+                            const evt = trigger.getl(target);
+                            if (evt?.cards2?.length) list.addArray(evt.cards2);
+                            return list;
+                        }, []).filterInD('d');
+                    }
+                    if (cards?.length) await player.gain(cards, 'gain2');
                 },
             },
             //极甄宓
@@ -8327,8 +8352,8 @@ const packs = function () {
             wechatguli: {
                 audio: 'mbguli',
                 inherit: 'mbguli',
+                usable: 1,
                 filter(event, player) {
-                    if (player.hasSkill('wechatguli_used')) return false;
                     var hs = player.getCards('h');
                     if (!hs.length) return false;
                     for (var card of hs) {
@@ -8342,7 +8367,7 @@ const packs = function () {
                     storage: { wechatguli: true },
                 },
                 onuse(links, player) {
-                    player.addTempSkill("wechatguli_used", "phaseUseAfter");
+                    player.addTempSkill('wechatguli_effect', 'phaseUseAfter');
                 },
                 mod: {
                     cardUsable(card) {
@@ -8355,7 +8380,7 @@ const packs = function () {
                 },
                 locked: false,
                 subSkill: {
-                    used: {
+                    effect: {
                         charlotte: true,
                         audio: 'mbguli',
                         trigger: { global: 'useCardAfter' },
@@ -11974,6 +11999,8 @@ const packs = function () {
             wechatwangzuo_info: '每回合限一次，你的摸牌/出牌/弃牌阶段开始前，你可以跳过此阶段并令一名其他角色执行之。',
             wechatjuxian: '举贤',
             wechatjuxian_info: '你的回合内，其他角色使用/打出/弃置的牌进入弃牌堆后，你获得其中X张牌（X为3-本回合你以此法获得的牌数）。',
+            wechatrejuxian: '举贤',
+            wechatrejuxian_info: '你的回合限三次，其他角色使用/打出/弃置的牌进入弃牌堆后，你获得之。',
             wechatxianshi: '先识',
             wechatxianshi_info: '每轮限一次。其他角色的摸牌阶段开始时，你可以观看牌堆顶三张牌并用任意张手牌替换其中等量的牌。',
             wechat_zhiyin_zhenji: '极甄宓',
