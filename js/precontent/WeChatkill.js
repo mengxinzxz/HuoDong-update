@@ -150,7 +150,7 @@ const packs = function () {
             wechat_zhiyin_sunce: ['male', 'wu', 4, ['wechattaoni', 'wechatpingjiang', 'wechatdingye'], ['die:true', 'zhu']],
             wechat_zhiyin_xunyu: ['male', 'wei', 3, ['wechatwangzuo', 'wechatrejuxian', 'wechatxianshi'], ['die:true']],
             wechat_zhiyin_zhenji: ['female', 'wei', 3, ['wechatshenfu', 'wechatsiyuan'], ['die:true']],
-            wechat_zhiyin_caiwenji: ['female', 'qun', 3, ['wechatbeijia', 'wechatsifu'], ['die:true', 'name:蔡|琰']],
+            wechat_zhiyin_caiwenji: ['female', 'qun', 3, ['wechatbeijia', 'wechatresifu'], ['die:true', 'name:蔡|琰']],
             wechat_zhiyin_zhouyu: ['male', 'wu', 3, ['wechatyingrui', 'wechatfenli'/*, 'wechatqugu'*/], ['die:true']],
             wechat_zhiyin_sunquan: ['male', 'wu', 4, ['wechatzongxi', 'wechatluheng'], ['die:true']],
             wechat_zhiyin_guanyu: ['male', 'shu', 4, ['wechatyihan', 'wechatgywuwei'], ['die:true']],
@@ -7236,6 +7236,60 @@ const packs = function () {
                     }
                 }
             },
+            wechatresifu: {
+                audio: 'wechatsifu',
+                getUsed: player => player.getHistory('useCard', evt => evt.getParent('phaseUse', true) && typeof get.number(evt.card) == 'number' && get.number(evt.card) > 0).map(evt => get.number(evt.card)).toUniqued(),
+                onChooseToUse(event) {
+                    if (!game.online && !event.wechatsifu) {
+                        const player = event.player;
+                        event.set('wechatsifu', get.info('wechatsifu').getUsed(player));
+                    }
+                },
+                enable: 'phaseUse',
+                usable: 1,
+                async content(event, trigger, player) {
+                    const { wechatsifu } = event.getParent(2);
+                    const bool1 = !wechatsifu.length;
+                    const bool2 = wechatsifu.length > 13;
+                    let used = false, notUsed = false;
+                    event.cards ??= [];
+                    while (true) {
+                        const judgeEvent = player.judge();
+                        judgeEvent.judge2 = result => result.bool;
+                        judgeEvent.set('callback', async event => {
+                            event.getParent(2).cards.push(event.judgeResult.card);
+                        });
+                        const { result } = await judgeEvent;
+                        if (typeof result?.number == 'number') {
+                            if (bool1) {
+                                break;
+                            }
+                            else if (bool2) {
+                                break;
+                            }
+                            else {
+                                if (wechatsifu.includes(result.number)) used = true;
+                                else notUsed = true;
+                                if (used && notUsed) break;
+                            }
+                        }
+                    }
+                    if (!event.cards.someInD('d')) return;
+                    let num = 1;
+                    if (!bool1 && !bool2 && event.cards.filterInD('d').some(card => wechatsifu.includes(get.number(card))) && event.cards.filterInD('d').some(card => !wechatsifu.includes(get.number(card)))) num = 2;
+                    const { result } = await player.chooseButton([`思赋：获得其中满足条件的${get.cnNumber(num)}张牌`, event.cards.filterInD('d')], true, num).set('filterButton', button => {
+                        const { link } = button;
+                        const { wechatsifu } = get.event();
+                        if (!ui.selected.buttons.length) return true;
+                        return wechatsifu.includes(get.number(ui.selected.buttons[0].link)) != wechatsifu.includes(get.number(link));
+                    }).set('wechatsifu', wechatsifu);
+                    if (result?.links?.length) await player.gain(result.links);
+                },
+                ai: {
+                    order: 7,
+                    result: { player: 1 },
+                },
+            },
             //157的阮惠
             wechatmingcha: {
                 audio: 'mingcha',
@@ -12117,6 +12171,8 @@ const packs = function () {
             wechatbeijia_info: '韵律技。每回合限一次，平：你可以将一张点数大于上一张你使用的牌当任意锦囊牌使用；仄：你可以将一张点数小于上一张你使用的牌当任意基本牌使用。转韵：你于出牌阶段使用一张点数等于上一张你使用的牌。',
             wechatsifu: '思赋',
             wechatsifu_info: '出牌阶段各限一次，你可以选择一个你本回合使用过或未使用过的牌的点数，然后随机从牌堆中获得一张此点数的牌。',
+            wechatresifu: '思赋',
+            wechatresifu_info: '出牌阶段限一次，你可以判定并重复此流程直到这些判定牌的点数包含你此阶段使用过的点数和未使用过的点数，然后你获得其中你此阶段使用过的点数和未使用过的点数的牌各一张。',
             wechat_sb_machao: '微信谋马超',
             wechatjlmashu: '马术',
             wechatjlmashu_info: '①游戏开始时，你从牌堆中随机使用一张防御坐骑牌和一张进攻坐骑牌。②一名角色失去装备区的坐骑牌后，你获得2枚“千骑”标记。③出牌阶段，你可以弃置1枚“千骑”标记视为一张无距离和次数限制的【杀】。',
