@@ -30430,16 +30430,17 @@ const packs = function () {
             minihuanshu: {
                 audio: 'ext:活动武将/audio/skill:2',
                 trigger: {
-                    global: ['roundStart', 'loseAfter'],
+                    global: ['roundStart', 'gainAfter', 'loseAsyncAfter'],
                     player: ['damageEnd', 'phaseUseBegin'],
                 },
                 filter(event, player) {
-                    if (event.name == 'lose') return event.HuanShuDestroy;
-                    return event.name != 'phaseUse' || player.countCards('h', card => card.minihuanshu && !card.minihuanhua);
+                    if (['gain', 'loseAsync'].includes(event.name)) return typeof event.HuanShuDestroy === 'number' && event.HuanShuDestroy > 0;
+                    return event.name !== 'phaseUse' || player.hasCard(card => card.minihuanshu && !card.minihuanhua, 'h');
                 },
                 forced: true,
+                getIndex: event => event.name === 'damage' ? event.num : 1,
                 async content(event, trigger, player) {
-                    if (trigger.name == 'lose') await player.draw(trigger.cards.length);
+                    if (['gain', 'loseAsync'].includes(trigger.name)) await player.draw(trigger.HuanShuDestroy);
                     else if (trigger.name == 'phaseUse') {
                         const cards = player.getCards('h', card => card.minihuanshu && !card.minihuanhua);
                         for (const card of cards) {
@@ -30454,7 +30455,7 @@ const packs = function () {
                             }, card, card2);
                         }
                     }
-                    else await lib.skill.minihuanshu.GainContent(2, (trigger.num || 1), player);
+                    else await lib.skill.minihuanshu.GainContent(2, player);
                 },
                 init() {
                     game.broadcastAll(() => {
@@ -30480,32 +30481,39 @@ const packs = function () {
                         ].join(''));
                     });
                 },
-                async GainContent(length, num, player) {
+                async GainContent(length, player) {
                     game.addGlobalSkill('minihuanshu_gain');
-                    while (num > 0 && player.hasSkill('minihuanshu')) {
-                        num--;
-                        let gains = [], count = 0;
-                        const sum = Math.min(length, player.maxHp * 2 - player.countCards('h', card => card.minihuanshu));
-                        if (sum > 0) {
-                            while (sum - count > 0) {
-                                count++;
-                                const cardy = lib.card.list.randomGet();
-                                if (cardy) gains.push(game.createCard2(cardy[2], cardy[0], cardy[1], cardy[3]));
-                                else break;
-                            }
-                            if (gains.length) {
-                                game.broadcastAll(cards => {
-                                    for (const card of cards) {
-                                        card.minihuanshu = true;
-                                        card.classList.add('minihuanshu-glow');
-                                    }
-                                }, gains);
-                                await player.gain(gains, 'draw');
-                                game.log(player, '获得了', '#y' + get.cnNumber(gains.length) + '张', '#g“幻化”牌');
-                            }
+                    let gains = [], count = 0;
+                    const sum = Math.min(length, player.maxHp * 2 - player.countCards('h', card => card.minihuanshu));
+                    if (sum > 0) {
+                        while (sum - count > 0) {
+                            count++;
+                            const cardy = lib.card.list.randomGet();
+                            if (cardy) gains.push(game.createCard2(cardy[2], cardy[0], cardy[1], cardy[3]));
+                            else break;
                         }
-                        if (length - gains.length > 0) await player.draw(length - gains.length);
+                        if (gains.length) {
+                            game.broadcastAll(cards => {
+                                for (const card of cards) {
+                                    card.minihuanshu = true;
+                                    card.classList.add('minihuanshu-glow');
+                                    const original = card.destroyed;
+                                    card.destroyed = function (card, position, player, event) {
+                                        let result = typeof original === 'function' ? original.apply(this, arguments) : false;
+                                        if (position === 'handcard' && !player.hasSkill('minihuanshu', null, null, true)) {
+                                            event.set('HuanShuDestroy', 1 + (event.HuanShuDestroy ?? 0));
+                                            result = true;
+                                        }
+                                        return result;
+                                    };
+                                }
+                            }, gains);
+                            await player.gain(gains, 'draw');
+                            game.log(player, '获得了', '#y' + get.cnNumber(gains.length) + '张', '#g“幻化”牌');
+                        }
                     }
+                    game.log(length, gains.length);
+                    if (length - gains.length > 0) await player.draw(length - gains.length);
                 },
                 derivation: 'minihuanshu_faq',
                 subSkill: {
@@ -30518,20 +30526,6 @@ const packs = function () {
                             cardDiscardable(card, player, name) {
                                 if (name == 'phaseDiscard' && card.minihuanshu) return false;
                             },
-                        },
-                        trigger: { player: 'gainAfter', global: 'loseAsyncAfter' },
-                        filter(event, player) {
-                            if (player.hasSkill('minihuanshu', null, false, false)) return false;
-                            return event.getg(player).some(card => card.minihuanshu);
-                        },
-                        forced: true,
-                        popup: false,
-                        firstDo: true,
-                        forceDie: true,
-                        content() {
-                            const cards = trigger.getg(player).filter(card => card.minihuanshu);
-                            game.log(cards, '被销毁了');
-                            player.lose(cards, ui.special).set('HuanShuDestroy', true);
                         },
                     },
                 },
@@ -30575,7 +30569,7 @@ const packs = function () {
                         cards[0].classList.remove('minihuanshu-glow');
                         cards[0].classList.add('minihuanhua-glow');
                     }, cards);
-                    if (suit == cards[1].suit) await lib.skill.minihuanshu.GainContent(1, 1, player);
+                    if (suit == cards[1].suit) await lib.skill.minihuanshu.GainContent(1, player);
                 },
                 ai: {
                     order: 9,
@@ -30591,7 +30585,7 @@ const packs = function () {
                 async content(event, trigger, player) {
                     const num = Math.max(1, player.getDamagedHp() * 2);
                     player.awakenSkill('minihuanjing');
-                    await lib.skill.minihuanshu.GainContent(num, 1, player);
+                    await lib.skill.minihuanshu.GainContent(num, player);
                     player.addTempSkill('minihuanjing_effect');
                     player.addMark('minihuanjing_effect', num, false);
                 },
