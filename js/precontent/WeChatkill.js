@@ -8363,10 +8363,9 @@ const packs = function () {
                         filter(event, player) {
                             return event.card.storage?.wechatguli && game.hasPlayer2(current => {
                                 return current.hasHistory('sourceDamage', evt => evt.card == event.card);
-                            });
+                            }) && player.countCards('h') < player.maxHp;
                         },
                         content() {
-                            player.loseHp();
                             player.drawTo(player.maxHp);
                         },
                     },
