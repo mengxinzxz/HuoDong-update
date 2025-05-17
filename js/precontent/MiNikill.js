@@ -30537,22 +30537,25 @@ const packs = function () {
                     if (!game.online && event.type == 'phase' && !event.minihuanhua_count) {
                         const player = event.player;
                         event.set('minihuanhua_count', [
-                            player.getHistory('useSkill', evt => evt.skill == 'minihuanhua').length, player.getCards('h', card => card.minihuanshu && !card.minihuanhua),
-                            player.getCards('h', card => (player.countMark('minihuanjing_effect') || !card.minihuanshu) && !card.hasGaintag('minihuanhua_tag'))
+                            player.getCards('h', card => card.minihuanshu && !card.minihuanhua),
+                            player.getCards('h', card => (player.hasMark('minihuanjing_effect') || !card.minihuanshu) && !card.hasGaintag('minihuanhua_tag'))
                         ]);
                     }
                 },
                 filter(event, player) {
                     const count = event.minihuanhua_count;
-                    return count[0] < 2 + player.countMark('minihuanjing_effect') && count[1].length && count[2].length;
+                    return count[0].length > 0 && count[1].length > 0;
                 },
                 filterCard(card, player) {
-                    return (get.event('minihuanhua_count')[1 + ui.selected.cards.length] || []).includes(card);
+                    return (get.event('minihuanhua_count')[ui.selected.cards.length] ?? []).includes(card);
                 },
                 selectCard: 2,
                 check(card) {
                     if (ui.selected.cards.length && ui.selected.cards[0].suit == card.suit) return 5 + get.useful(card) * get.value(card);
                     return get.useful(card) * get.value(card);
+                },
+                usable(skill, player) {
+                    return 2 + player.countMark('minihuanjing_effect');
                 },
                 complexCard: true,
                 position: 'h',
@@ -30570,6 +30573,7 @@ const packs = function () {
                         cards[0].classList.add('minihuanhua-glow');
                     }, cards);
                     if (suit == cards[1].suit) await lib.skill.minihuanshu.GainContent(1, player);
+                    await game.delayx();
                 },
                 ai: {
                     order: 9,
@@ -35460,7 +35464,7 @@ const packs = function () {
             })(),
             minihuanhua: '幻化',
             minihuanhua_tag: '已选择',
-            minihuanhua_info: '每回合限两次，出牌阶段，你可选择一张未被〖幻化〗定向转化过的“幻术”牌和一张未被〖幻化〗选择过的非“幻术”牌，你将前者的牌名、属性、花色和点数转化为和后者一致，若两张牌的花色相同，你获得一张“幻术”牌。',
+            minihuanhua_info: '出牌阶段限两次，出牌阶段，你可选择一张未被〖幻化〗定向转化过的“幻术”牌和一张未被〖幻化〗选择过的非“幻术”牌，你将前者的牌名、属性、花色和点数转化为和后者一致，若两张牌的花色相同，你获得一张“幻术”牌。',
             minihuanjing: '幻境',
             minihuanjing_info: '限定技，出牌阶段，你可令本回合发动〖幻化〗的次数+X且你发动〖幻化〗可以选择“幻术”牌为转化目标卡牌，然后你获得X张“幻术”牌。（X为你已损失的体力值的两倍且X至少为1）',
             minixianjin: '险进',
