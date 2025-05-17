@@ -185,7 +185,7 @@ const packs = function () {
             Mbaby_sunce: ['male', 'wu', 4, ['minijiang', 'minihunzi', 'minizhiba'], ['zhu', 'tempname:sunce']],
             Mbaby_sunluban: ['female', 'wu', 3, ['minizenhui', 'minijiaojin']],
             Mbaby_sunluyu: ['female', 'wu', 3, ['minimeibu', 'remumu']],
-            Mbaby_sunquan: ['male', 'wu', 4, ['minirezhiheng', 'minijiuyuan'], ['zhu']],
+            Mbaby_sunquan: ['male', 'wu', 4, ['minirezhiheng', 'minijiuyuan'], ['zhu', 'die:true']],
             Mbaby_sunshangxiang: ['female', 'wu', 3, ['minijieyin', 'xiaoji']],
             Mbaby_taishici: ['male', 'wu', 4, ['miniretianyi', 'minihanzhan'], [...['die', 'tempname'].map(i => i + ':re_taishici'), 'name:太史|慈']],
             Mbaby_wuguotai: ['female', 'wu', 3, ['minireganlu', 'minirebuyi']],
