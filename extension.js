@@ -31,7 +31,7 @@ game.bolShowNewPack = function () {
 		'bilibili_xiaoyaoruyun', 'bilibili_shuijiaobuboli', 'bilibili_yanjing', 'bilibili_suixingsifeng',
 		'wechat_sp_zhenji', 'wechat_zhiyin_guohuanghou', 'wechat_zhiyin_xinxianying',
 		'wechat_sb_caocao', 'Mbaby_xugong', 'Mbaby_zhupeilan', 'Mbaby_zhaoang', 'Mfight_zhangliao',
-		'Mbaby_shen_lusu', 'Mbaby_sb_sunquan', 'Mbaby_sp_xuhuang', 'Mbaby_caoanmin',
+		'Mbaby_shen_lusu', 'Mbaby_sb_sunquan', 'Mbabysp_xuhuang', 'Mbaby_caoanmin',
 	];
 	//加载
 	var dialog = ui.create.dialog(
