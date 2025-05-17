@@ -27736,15 +27736,31 @@ const packs = function () {
                         target(player, target) {
                             if (!ui.selected.targets.length) return -3;
                             const source = ui.selected.targets[0];
-                            let eff = get.effect(source, { name: 'losehp' }, source, player) + get.recoverEffect(target, player, player)
-                            if (!source.countCards('h', { type: 'basic' })) return eff;
-                            return 1;
+                            if (!source.countCards('h', { type: 'basic' })) return get.effect(source, { name: 'losehp' }, source, target) + get.recoverEffect(target, player, target);
+                            let eff1 = get.effect(player, { name: 'losehp' }, player, player);
+                            let eff2 = get.recoverEffect(target, player, target);
+                            if (player == target) {
+                                if (player.getHp() > 1) return Math.max(1, eff1 + eff2);
+                                return eff1;
+                            }
+                            return eff1 + eff2;
                         }
                     }
                 },
                 subSkill: {
                     backup: {},
                     effect: {
+                        mod: {
+                            aiOrder(player, card, num) {
+                                if (get.itemtype(card) == 'card' && card.hasGaintag('minixuefeng_effect')) return num + 0.1;
+                            },
+                            aiValue(player, card, num) {
+                                if (get.itemtype(card) == 'card' && card.hasGaintag('minixuefeng_effect')) return num + 5;
+                            },
+                            aiUseful() {
+                                return lib.skill.minixuefeng_effect.mod.aiValue.apply(this, arguments);
+                            },
+                        },
                         charlotte: true,
                         onremove(player, skill) {
                             player.removeGaintag(skill);
