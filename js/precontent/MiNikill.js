@@ -638,7 +638,7 @@ const packs = function () {
             minilingren: {
                 derivation: ['minijianxiong', 'minixingshang'],
                 audio: 'xinfu_lingren',
-                trigger: { player: 'useCardToPlayered' },
+                inherit: 'xinfu_lingren',
                 filter(event, player) {
                     if (event.getParent().triggeredTargets3.length > 1) return false;
                     if (!player.isPhaseUsing()) return false;
@@ -646,68 +646,61 @@ const packs = function () {
                     if (get.tag(event.card, 'damage')) return true;
                     return false;
                 },
-                usable: 1,
-                direct: true,
-                content() {
-                    'step 0'
-                    player.chooseTarget(get.prompt('minilingren'), '选择一名目标角色并猜测其手牌构成', function (card, player, target) {
-                        return _status.event.targets.includes(target);
-                    }).set('ai', function (target) {
-                        return 2 - get.attitude(_status.event.player, target);
-                    }).set('targets', trigger.targets);
-                    'step 1'
-                    if (result.bool) {
-                        var target = result.targets[0];
-                        event.target = target;
-                        player.logSkill('minilingren', target);
-                        var list = ['minilingren_basic', 'minilingren_trick', 'minilingren_equip'];
-                        player.chooseButton(['###' + '凌人：猜测' + get.translation(target) + '的手牌组成类型' + '###' + '请选出你认为' + get.translation(target) + '有的手牌类型', [list, 'vcard']], [0, 3]).set('ai', function (button) {
-                            var name = button.link[2];
-                            switch (name) {
-                                case 'minilingren_basic':
-                                    var A = 0.95;
-                                    if (!target.countCards('h', { type: ['basic'] })) A = 0.05;
-                                    if (!target.countCards('h')) A = 0;
-                                    return Math.random() < A ? 1 : -1;
-                                    break;
-                                case 'minilingren_trick':
-                                    var B = 0.9;
-                                    if (!target.countCards('h', { type: ['trick', 'delay'] })) B = 0.1;
-                                    if (!target.countCards('h')) B = 0;
-                                    return Math.random() < B ? 1 : -1;
-                                    break;
-                                case 'minilingren_equip':
-                                    var C = 0.75;
-                                    if (!target.countCards('h', { type: ['equip'] })) C = 0.25;
-                                    if (!target.countCards('h')) C = 0;
-                                    return Math.random() < C ? 1 : -1;
-                                    break;
-                            }
-                        });
-                    }
-                    else {
-                        player.storage.counttrigger.minilingren--;
-                        event.finish();
-                    }
-                    'step 2'
-                    event.num = 0;
-                    var list1 = [], list2 = [];
-                    if (result.links) for (var name of result.links) list1.push(name[2].slice(12));
-                    if (target.countCards('h')) for (var card of target.getCards('h')) if (!list2.includes(get.type2(card))) list2.push(get.type2(card));
-                    for (var type of ['basic', 'trick', 'equip']) if ((list1.includes(type) && list2.includes(type)) || (!list1.includes(type) && !list2.includes(type))) event.num++;
-                    if (!event.isMine() && !event.isOnline()) game.delayx();
-                    'step 3'
-                    player.popup('猜对' + get.cnNumber(event.num) + '项');
-                    game.log(player, '猜对了' + get.cnNumber(event.num) + '项');
-                    if (event.num > 0) {
-                        var map = trigger.customArgs;
-                        var id = target.playerid;
-                        if (!map[id]) map[id] = {};
+                async content(event, trigger, player) {
+                    const { targets: [target] } = event;
+                    const list = ['basic', 'trick', 'equip'].map(type => ['', '', `${event.name}_${type}`]);
+                    const { result } = await player
+                        .chooseButton(['凌人：猜测其有哪些类别的手牌', [list, 'vcard']], [0, 3], true)
+                        .set('ai', button => {
+                            return get.event('choice').includes(button.link[2].slice(12));
+                        })
+                        .set(
+                            'choice',
+                            (() => {
+                                if (!target.countCards('h')) return [];
+                                let choice = [],
+                                    known = target.getKnownCards(player),
+                                    unknown = target.getCards('h', i => !known.includes(i));
+                                for (let i of known) {
+                                    choice.add(get.type2(i, target));
+                                }
+                                if (!unknown.length || choice.length > 2) return choice;
+                                let rand = 0.05;
+                                if (!choice.includes('basic')) {
+                                    if (unknown.some(i => get.type(i, null, target) === 'basic')) rand = 0.95;
+                                    if (Math.random() < rand) choice.push('basic');
+                                }
+                                if (!choice.includes('trick')) {
+                                    if (unknown.some(i => get.type(i, 'trick', target) === 'trick')) rand = 0.9;
+                                    else rand = 0.1;
+                                    if (Math.random() < rand) choice.push('trick');
+                                }
+                                if (!choice.includes('equip')) {
+                                    if (unknown.some(i => get.type(i, null, target) === 'equip')) rand = 0.75;
+                                    else rand = 0.25;
+                                    if (Math.random() < rand) choice.push('equip');
+                                }
+                                return choice;
+                            })()
+                        );
+                    if (!result?.bool) return;
+                    const choices = result.links.map(i => i[2].slice(12));
+                    if (!event.isMine() && !event.isOnline()) await game.delayx();
+                    let num = 0;
+                    ['basic', 'trick', 'equip'].forEach(type => {
+                        if (choices.includes(type) == target.hasCard(card => get.type2(card, target) === type, 'h')) num++;
+                    });
+                    player.popup('猜对' + get.cnNumber(num) + '项');
+                    game.log(player, '猜对了' + get.cnNumber(num) + '项');
+                    if (num > 0) {
+                        const map = trigger.customArgs;
+                        const id = target.playerid;
+                        map[id] ??= {};
                         if (typeof map[id].extraDamage != "number") map[id].extraDamage = 0;
                         map[id].extraDamage++;
                     }
-                    if (event.num > 1) player.draw(2);
-                    if (event.num > 2) player.addTempSkills(['minijianxiong', 'minixingshang'], { player: 'phaseBegin' });
+                    if (num > 1) await player.draw(2);
+                    if (num > 2) await player.addTempSkills(get.info(event.name).derivation, { player: "phaseBegin" });
                 },
             },
             minifujian: {
