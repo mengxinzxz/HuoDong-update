@@ -47,25 +47,6 @@ export function precontent(bilibilicharacter) {
             player.update();
         },
     };
-    //一轮的结束
-    lib.skill._bilibili_roundEnd = {
-        charlotte: true,
-        ruleSkill: true,
-        trigger: { player: ['phaseAfter', 'phaseCancelled', 'phaseSkipped'] },//伪·一轮的结束
-        filter(event, player) {
-            return !event.skill && player.next == _status.roundStart;
-        },
-        forceDie: true,
-        direct: true,
-        priority: -Infinity,
-        lastDo: true,
-        content() {
-            'step 0'
-            event.trigger('roundEnd');//End时机常用于技能结算
-            'step 1'
-            event.trigger('roundAfter');//After时机常用于效果清除
-        },
-    };
     //闪闪节
     lib.arenaReady.push(() => {
         if (lib.config.extension_活动武将_HD_shanshan) {
