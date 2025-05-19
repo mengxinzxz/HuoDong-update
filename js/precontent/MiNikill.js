@@ -7526,10 +7526,10 @@ const packs = function () {
                     fangquan: {
                         audio: 'xiangle',
                         audioname: ['ol_liushan'],
-                        trigger: { global: 'roundStart' },
+                        trigger: { global: 'roundEnd' },
                         filter(event, player) {
                             if (!player.hasSkill('minirefangquan')) return false;
-                            return game.roundNumber > 1 && !player.getRoundHistory('useCard', () => true, 1).length && game.hasPlayer(current => current != player);
+                            return !player.getRoundHistory('useCard', lib.filter.all).length && game.hasPlayer(current => current != player);
                         },
                         async cost(event, trigger, player) {
                             const num = Math.floor(player.getSeatNum() / 2);
@@ -7566,20 +7566,12 @@ const packs = function () {
                             if (player.countCards('he')) {
                                 await player.chooseToGive(target, 'he', [1, Infinity]).set('prompt', '放权：是否交给' + get.translation(target) + '任意张牌？');
                             }
-                            const evt = trigger;
                             target.markSkillCharacter('minirefangquan', player, '放权', '进行一个额外回合');
                             target.insertPhase();
                             target.addSkill('minirefangquan3');
-                            if (evt.player != target && !evt._finished) {
-                                evt.finish();
-                                evt._triggered = 5;
-                                const evtxx = evt.player.insertPhase();
-                                if (trigger.skill) evtxx.skill = trigger.skill;
-                                else delete evtxx.skill;
-                            }
                         },
                     }
-                }
+                },
             },
             minirefangquan: {
                 audio: 'olfangquan',
@@ -25040,122 +25032,142 @@ const packs = function () {
             },
             //马腾
             minixiongzheng: {
-                onremove: true,
                 audio: 'twxiongzheng',
-                trigger: { global: 'roundStart' },
-                direct: true,
-                content() {
-                    'step 0'
-                    var target = player.storage.minixiongzheng_target;
-                    delete player.storage.minixiongzheng_target;
-                    if (!target) { event.goto(4); return; }
-                    event.target = target;
-                    var list = target.getRoundHistory('damage', evt => evt.source, 1).reduce((list, evt) => list.add(evt.source), []).filter(i => i.isIn());
-                    var list2 = game.filterPlayer(i => i != player).removeArray(list);
-                    event.list = list; event.list2 = list2;
-                    var choiceList = [
-                        '视为对任意名上一轮未对' + get.translation(target) + '造成过伤害的角色使用一张【杀】',
-                        '令任意名上一轮对' + get.translation(target) + '造成过伤害的角色摸两张牌'
-                    ];
-                    var choices = [];
-                    if (list2.length) {
-                        choices.push('选项一');
-                        choiceList[0] += '（' + get.translation(list2) + '）';
-                    }
-                    else choiceList[0] = '<span style="opacity:0.5">' + choiceList[0] + '</span>';
-                    if (list.length) {
-                        choices.push('选项二');
-                        choiceList[1] += '（' + get.translation(list) + '）';
-                    }
-                    else choiceList[1] = '<span style="opacity:0.5">' + choiceList[1] + '</span>';
-                    choices.push('cancel2');
-                    player.chooseControl(choices).set('prompt', '雄争：是否选择一项？').set('choiceList', choiceList).set('ai', function () {
-                        var player = _status.event.player;
-                        var list = _status.event.getParent().list, list2 = _status.event.getParent().list2;
-                        var eff = list.map(target => {
-                            if (target == player) return 0;
-                            return get.effect(target, { name: 'sha' }, player, player);
-                        }).reduce((p, c) => p + c, 0), eff2 = list2.map(target => get.effect(target, { name: 'wuzhong' }, player, player)).reduce((p, c) => p + c, 0);
-                        if (_status.event.controls.includes('选项二') && eff2 > eff) return '选项二';
-                        if (eff > 0) return 0;
-                        return 'cancel2';
-                    });
-                    'step 1'
-                    if (result.control == '选项一') {
-                        event.bool = true;
-                        if (event.list2.length) player.chooseTarget('雄争：请选择任意名满足条件的角色，你视为依次对这些角色使用一张杀', [1, Infinity], true, function (card, player, target) {
-                            return player.canUse('sha', target, false, false) && _status.event.getParent().list2.includes(target);
-                        }).set('ai', function (target) {
-                            var player = _status.event.player;
-                            return get.effect(target, { name: 'sha' }, player, player);
-                        });
-                        else event.finish();
-                    }
-                    else if (result.control == '选项二') {
-                        event.bool = false;
-                        if (event.list.length) player.chooseTarget('雄争：请选择任意名满足条件的角色，这些角色摸两张牌', [1, Infinity], true, function (card, player, target) {
-                            return _status.event.getParent().list.includes(target);
-                        }).set('ai', function (target) {
-                            var player = _status.event.player;
-                            return get.effect(target, { name: 'wuzhong' }, player, player);
-                        });
-                        else event.finish();
-                    }
-                    else event.goto(3);
-                    'step 2'
-                    result.targets.sortBySeat();
-                    player.logSkill('minixiongzheng_effect', result.targets);
-                    if (event.bool) {
-                        for (var i of result.targets) player.useCard({ name: 'sha', isCard: true }, i, false);
-                    }
-                    else game.asyncDraw(result.targets, 2);
-                    'step 3'
-                    if (!game.hasPlayer(function (current) {
-                        return !lib.skill.minixiongzheng.getTarget(player, current);
-                    })) event.finish();
-                    else game.delayx();
-                    'step 4'
-                    player.chooseTarget(get.prompt('minixiongzheng'), '选择一名上一轮未选择过的角色，称为“雄争”角色', function (card, player, target) {
-                        return !lib.skill.minixiongzheng.getTarget(player, target);
-                    }).set('ai', target => -get.attitude(_status.event.player, target));
-                    'step 5'
-                    if (result.bool) {
-                        var target = result.targets[0];
-                        player.logSkill('minixiongzheng', target);
-                        player.storage.minixiongzheng_target = target;
-                        player.addTempSkill('minixiongzheng_mark', 'roundStart');
-                        target.addTempSkill('minixiongzheng_threaten', 'roundStart');
-                        game.delayx();
-                    }
+                onremove: true,
+                trigger: { global: "roundStart" },
+                filter(event, player) {
+                    return game.hasPlayer(target => target !== player.storage.minixiongzheng_target);
                 },
-                getTarget(player, target) {
-                    return player.getRoundHistory('useSkill', evt => {
-                        return evt.skill == 'minixiongzheng' && (evt.targets || [evt.target]).includes(target);
-                    }, 1).length;
+                async cost(event, trigger, player) {
+                    event.result = await player
+                        .chooseTarget(get.prompt("minixiongzheng"), "选择一名未选择过的角色，称为“雄争”角色", (card, player, target) => {
+                            return target !== player.storage.minixiongzheng_target;
+                        })
+                        .set("ai", target => {
+                            var player = _status.event.player,
+                                att = get.attitude(player, target);
+                            if (game.roundNumber <= 1 && player.hasUnknown()) return 0;
+                            return -att;
+                        })
+                        .forResult();
+                },
+                async content(event, trigger, player) {
+                    var target = event.targets[0];
+                    player.storage.minixiongzheng_target = target;
+                    player.addTempSkill("minixiongzheng_mark", "roundStart");
+                    target.addTempSkill("minixiongzheng_threaten", "roundStart");
+                    await game.delayx();
                 },
                 subSkill: {
-                    effect: { audio: 'twxiongzheng' },
                     mark: {
                         intro: {
-                            content: '$参与了〖雄争〗的争斗',
+                            content: "$参与了〖雄争〗的争斗",
                             onunmark: true,
                         },
                         charlotte: true,
                         onremove: true,
-                        trigger: { global: 'damage' },
-                        filter(event, player) {
-                            return event.player == player.storage.minixiongzheng_target && get.itemtype(event.source) == 'player';
-                        },
-                        direct: true,
+                        trigger: { global: "damage" },
                         firstDo: true,
-                        content() {
-                            player.markAuto('minixiongzheng_mark', [trigger.source]);
+                        direct: true,
+                        filter(event, player) {
+                            return event.player == player.storage.minixiongzheng_target && get.itemtype(event.source) == "player";
                         },
+                        content() {
+                            player.markAuto("minixiongzheng_mark", [trigger.source]);
+                        },
+                        group: "minixiongzheng_effect",
                     },
                     threaten: {
                         mark: true,
-                        intro: { content: '本轮〖雄争〗目标' },
+                        intro: { content: "本轮〖雄争〗目标" },
                         ai: { threaten: 10 },
+                    },
+                    effect: {
+                        charlotte: true,
+                        audio: 'twxiongzheng',
+                        trigger: { global: "roundEnd" },
+                        filter(event, player) {
+                            const sha = new lib.element.VCard({ name: "sha" });
+                            return game.hasPlayer(target => player.getStorage("minixiongzheng_mark").includes(target) || player.canUse(sha, target, false));
+                        },
+                        async cost(event, trigger, player) {
+                            const target = player.storage.minixiongzheng_target;
+                            const sha = new lib.element.VCard({ name: "sha" });
+                            const list = game.filterPlayer(target => player.getStorage("minixiongzheng_mark").includes(target));
+                            const list2 = game.filterPlayer(target => player.canUse(sha, target, false));
+                            let choiceList = ["视为对任意名本轮未对" + get.translation(target) + "造成过伤害的角色使用一张【杀】", "令任意名本轮对" + get.translation(target) + "造成过伤害的角色摸两张牌"];
+                            let choices = [];
+                            if (list2.length) {
+                                choices.push("选项一");
+                                choiceList[0] += "（" + get.translation(list2) + "）";
+                            } else choiceList[0] = '<span style="opacity:0.5">' + choiceList[0] + "</span>";
+                            if (list.length) {
+                                choices.push("选项二");
+                                choiceList[1] += "（" + get.translation(list) + "）";
+                            } else choiceList[1] = '<span style="opacity:0.5">' + choiceList[1] + "</span>";
+                            choices.push("cancel2");
+                            const control = await player
+                                .chooseControl(choices)
+                                .set("prompt", "雄争：是否选择一项？")
+                                .set("choiceList", choiceList)
+                                .set("list", list)
+                                .set("list2", list2)
+                                .set("ai", function () {
+                                    const { player, list, list2 } = get.event();
+                                    const eff1 = list.reduce((acc, target) => {
+                                        if (target === player) return acc;
+                                        const eff = get.effect(target, { name: "sha" }, player, player);
+                                        if (eff > 0) return acc + eff;
+                                        return acc;
+                                    }, 0),
+                                        eff2 = list2.reduce((acc, target) => {
+                                            const eff = get.effect(target, { name: "draw" }, player, player);
+                                            if (eff > 0) return acc + eff;
+                                            return acc;
+                                        }, 0);
+                                    if (eff2 > eff1 && _status.event.controls.includes("选项二")) return "选项二";
+                                    if (eff1 > 0) return 0;
+                                    return "cancel2";
+                                })
+                                .forResult("control");
+                            event.result = {
+                                bool: control && control !== "cancel2",
+                                cost_data: [control, [list2, list]],
+                            };
+                        },
+                        async content(event, trigger, player) {
+                            const goon = event.cost_data[0] === "选项一";
+                            const list = event.cost_data[1][goon ? 0 : 1];
+                            const prompt = "雄争：请选择任意名满足条件的角色，" + (goon ? "视为依次对这些角色使用一张【杀】" : "令这些角色摸两张牌");
+                            const result = await player
+                                .chooseTarget(
+                                    prompt,
+                                    (card, player, target) => {
+                                        const { goon, list } = get.event();
+                                        if (!list.includes(target)) return false;
+                                        return !goon || player.canUse(new lib.element.VCard({ name: "sha" }), target, false);
+                                    },
+                                    [1, list.length]
+                                )
+                                .set("goon", goon)
+                                .set("list", list)
+                                .set("ai", target => {
+                                    const { goon, player } = get.event();
+                                    return get.effect(target, { name: goon ? "sha" : "draw" }, player, player);
+                                })
+                                .forResult();
+                            if (result?.bool && result.targets?.length) {
+                                const targets = result.targets.sortBySeat();
+                                player.line(targets);
+                                if (goon) {
+                                    const sha = new lib.element.VCard({ name: "sha" });
+                                    await player.useCard(sha, targets, false);
+                                } else {
+                                    await game.asyncDraw(targets, 2);
+                                    await game.delayx();
+                                }
+                            }
+                        },
                     },
                 },
             },
@@ -25245,18 +25257,9 @@ const packs = function () {
                         const target = targets[0];
                         player.logSkill('minizecai', target);
                         player.awakenSkill('minizecai');
-                        target.addAdditionalSkills('minizecai_effect', 'minirejizhi');
-                        target.addTempSkill('minizecai_effect', 'roundStart');
-                        if (target == targetx) {
-                            const evt = trigger;
-                            target.insertPhase();
-                            if (evt.player != target && !evt._finished) {
-                                evt.finish();
-                                evt._triggered = 5;
-                                const evtx = evt.player.insertPhase();
-                                delete evtx.skill;
-                            }
-                        }
+                        target.addTempSkill('minizecai_effect', 'roundEnd');
+                        await target.addAdditionalSkills('minizecai_effect', 'minirejizhi');
+                        if (target == targetx) target.insertPhase();
                     }
                 },
             },
@@ -34276,7 +34279,7 @@ const packs = function () {
             miniruoyu: '若愚',
             miniruoyu_info: '主公技，觉醒技。准备阶段，若你的体力值为全场最少，你增加1点体力上限并回复1点体力，然后获得技能〖激将〗。',
             minirexiangle: '享乐',
-            minirexiangle_info: '锁定技。①当你成为一名角色使用【杀】的目标后，除非该角色弃置一张牌，否则此【杀】对你无效。②每轮开始时，若你上一轮未使用过牌，你可以弃置X张牌并翻面，然后发动〖放权〗（X为你座次的一半，向下取整）。',
+            minirexiangle_info: '锁定技。①当你成为一名角色使用【杀】的目标后，除非该角色弃置一张牌，否则此【杀】对你无效。②每轮结束时，若你本轮未使用过牌，你可以弃置X张牌并翻面，然后发动〖放权〗（X为你座次的一半，向下取整）。',
             minirefangquan: '放权',
             minirefangquan_info: '你可以跳过你的出牌阶段，然后于弃牌阶段开始时选择一名其他角色，你可以交给其任意张牌并令其于本回合结束后进行一个额外回合。',
             minireruoyu: '若愚',
@@ -35184,11 +35187,11 @@ const packs = function () {
             minisbxueyi: '血裔',
             minisbxueyi_info: '主公技，锁定技。①你的手牌上限+2X（X为场上的群势力角色数）。②每回合限两次，当你使用牌指定群势力角色为目标后，你摸一张牌。',
             minixiongzheng: '雄争',
-            minixiongzheng_info: '每轮开始时，①若你上一轮发动过〖雄争〗且选择过“雄争”角色，你可以选择一项：1.视为对任意名上一轮内未对“雄争”角色造成过伤害的角色依次使用一张【杀】；2.令任意名上一轮对“雄争”角色造成过伤害的角色摸两张牌。②你可以选择一名上一轮发动过〖雄争〗未选择过的角色，称为“雄争”角色。',
+            minixiongzheng_info: '每轮开始时，你可以选择一名上一轮未以此法选择过的角色，称为“雄争”角色。若如此做，本轮结束时，你可以选择一项：1.视为对任意名本轮内未对“雄争”角色造成过伤害的角色依次使用一张【杀】；2.令任意名本轮对“雄争”角色造成过伤害的角色摸两张牌。',
             miniluannian: '乱年',
             miniluannian_info: '主公技。其他群势力角色的出牌阶段限一次。其可以弃置X张牌并对“雄争”角色造成1点伤害（X为所有角色于本轮发动〖乱年〗的次数+1）。',
             minizecai: '择才',
-            minizecai_info: '限定技，非首轮游戏开始时，你可令一名角色获得〖集智〗直到下一轮游戏开始；若其是上一轮内使用过锦囊牌数量唯一最多的角色，则其获得一个额外的回合。',
+            minizecai_info: '限定技，每轮结束时，你可令一名角色获得〖集智〗直到下一轮游戏开始；若其是本轮内使用过锦囊牌数量唯一最多的角色，则其获得一个额外的回合。',
             minijianjie: '荐杰',
             minijianjie_info: '①你的第一个准备阶段，你令一名角色获得“龙印”，然后令另一名角色获得“凤印”。②出牌阶段限一次。若当前回合不是你的第一个回合，则你可以移动场上的“龙印”或“凤印”。③拥有“龙印”或“凤印”的其他角色死亡时，你转移该角色的“龙印”和“凤印”。④拥有“龙印”/“凤印”的角色视为拥有〖火计〗/〖连环〗，且同时拥有这两种标记的角色视为拥有〖业炎〗。',
             minijianjie_huoji: '火计',
