@@ -649,40 +649,32 @@ const packs = function () {
                 async content(event, trigger, player) {
                     const { targets: [target] } = event;
                     const list = ['basic', 'trick', 'equip'].map(type => ['', '', `${event.name}_${type}`]);
-                    const { result } = await player
-                        .chooseButton(['凌人：猜测其有哪些类别的手牌', [list, 'vcard']], [0, 3], true)
-                        .set('ai', button => {
-                            return get.event('choice').includes(button.link[2].slice(12));
-                        })
-                        .set(
-                            'choice',
-                            (() => {
-                                if (!target.countCards('h')) return [];
-                                let choice = [],
-                                    known = target.getKnownCards(player),
-                                    unknown = target.getCards('h', i => !known.includes(i));
-                                for (let i of known) {
-                                    choice.add(get.type2(i, target));
-                                }
-                                if (!unknown.length || choice.length > 2) return choice;
-                                let rand = 0.05;
-                                if (!choice.includes('basic')) {
-                                    if (unknown.some(i => get.type(i, null, target) === 'basic')) rand = 0.95;
-                                    if (Math.random() < rand) choice.push('basic');
-                                }
-                                if (!choice.includes('trick')) {
-                                    if (unknown.some(i => get.type(i, 'trick', target) === 'trick')) rand = 0.9;
-                                    else rand = 0.1;
-                                    if (Math.random() < rand) choice.push('trick');
-                                }
-                                if (!choice.includes('equip')) {
-                                    if (unknown.some(i => get.type(i, null, target) === 'equip')) rand = 0.75;
-                                    else rand = 0.25;
-                                    if (Math.random() < rand) choice.push('equip');
-                                }
-                                return choice;
-                            })()
-                        );
+                    const { result } = await player.chooseButton(['凌人：猜测其有哪些类别的手牌', [list, 'vcard']], [0, 3], true).set('ai', button => {
+                        return get.event('choice').includes(button.link[2].slice(12));
+                    }).set('choice', (() => {
+                        if (!target.countCards('h')) return [];
+                        let choice = [], known = target.getKnownCards(player), unknown = target.getCards('h', i => !known.includes(i));
+                        for (let i of known) {
+                            choice.add(get.type2(i, target));
+                        }
+                        if (!unknown.length || choice.length > 2) return choice;
+                        let rand = 0.05;
+                        if (!choice.includes('basic')) {
+                            if (unknown.some(i => get.type(i, null, target) === 'basic')) rand = 0.95;
+                            if (Math.random() < rand) choice.push('basic');
+                        }
+                        if (!choice.includes('trick')) {
+                            if (unknown.some(i => get.type(i, 'trick', target) === 'trick')) rand = 0.9;
+                            else rand = 0.1;
+                            if (Math.random() < rand) choice.push('trick');
+                        }
+                        if (!choice.includes('equip')) {
+                            if (unknown.some(i => get.type(i, null, target) === 'equip')) rand = 0.75;
+                            else rand = 0.25;
+                            if (Math.random() < rand) choice.push('equip');
+                        }
+                        return choice;
+                    })());
                     if (!result?.bool) return;
                     const choices = result.links.map(i => i[2].slice(12));
                     if (!event.isMine() && !event.isOnline()) await game.delayx();
@@ -27592,17 +27584,17 @@ const packs = function () {
                         const num2 = player.hp;
                         if (num1 > num2) {
                             const num = num1 - num2;
-                            if (game.hasPlayer(current => player != current && get.attitude(player, current) < 0 && get.effect(current, { name: 'guohe_copy2' }, player, player) > 0)) {
+                            if (game.hasPlayer(current => player != current && get.attitude(player, current) < 0 && get.effect(current, { name: 'guohe_copy2' }, player, player) > 0) && player.countCards('h') > 2) {
                                 if (link % 2 === 0) return 0;
-                                if (link === num) return 100;
+                                if (link === (num % 2 + 1)) return 100;
                             }
                             if (link === 2) return 100;
                         }
                         else if (num1 < num2) {
                             const num = num2 - num1;
                             if (game.hasPlayer(current => player != current && get.attitude(player, current) > 0)) {
-                                if (link === num) return 100;
-                                if (link === 2) return 100;
+                                if (link % 2 === 1) return 0;
+                                if (link === (num % 2 + 1)) return 100;
                             }
                         }
                         if (link === 2) return 100;
@@ -27625,8 +27617,8 @@ const packs = function () {
                         const num1 = player.getCards('h').filter(card => get.type(card) == 'basic').length;
                         const num2 = player.hp;
                         const num = num1 - num2;
-                        if (num > 0 && num <= 2 && get.type(card) == 'basic') return 100;
-                        return 6 - get.value(card)
+                        if (num > 0 && num <= 2 && get.type(card) == 'basic' && !card.hasGaintag('minixuefeng_effect')) return 100;
+                        return 6 - get.value(card);
                     });
                     await next;
                     const hs = player.getCards('h');
@@ -27724,19 +27716,25 @@ const packs = function () {
                     }
                 },
                 ai: {
-                    order: 10,
+                    order(item, player) {
+                        const friends = game.filterPlayer(current => get.attitude(player, current) > 0);
+                        const enemies = game.filterPlayer(current => current != player && get.attitude(player, current) < 0);
+                        if (friends.some(current => get.recoverEffect(current, player, player) > 0) && enemies.some(current => !current.countCards('h') || !current.countCards('h', { type: 'basic' }))) return 10;
+                        if (player.getHp() > 1 || game.hasPlayer(current => get.attitude(current, player) > 0 && current.canSave(player))) return 8;
+                        return 3;
+                    },
                     result: {
                         target(player, target) {
-                            if (!ui.selected.targets.length) return -3;
-                            const source = ui.selected.targets[0];
-                            if (!source.countCards('h', { type: 'basic' })) return get.effect(source, { name: 'losehp' }, source, target) + get.recoverEffect(target, player, target);
-                            let eff1 = get.effect(player, { name: 'losehp' }, player, player);
-                            let eff2 = get.recoverEffect(target, player, target);
-                            if (player == target) {
-                                if (player.getHp() > 1) return Math.max(1, eff1 + eff2);
-                                return eff1;
+                            if (!ui.selected.targets.length) {
+                                const att = get.attitude(player, target);
+                                if (att > 0) return 0;
+                                const friends = game.filterPlayer(current => get.attitude(player, current) > 0);
+                                if (friends.some(current => get.recoverEffect(current, player, player) > 0) && (!target.countCards('h') || !target.countCards('h', { type: 'basic' }))) return -4;
+                                return -3;
                             }
-                            return eff1 + eff2;
+                            const source = ui.selected.targets[0];
+                            if (player.getHp() < 1 && !game.hasPlayer(current => get.attitude(current, player) > 0 && current.canSave(player))) return 0;
+                            return 1 + target.getDamagedHp() + (target.countCards('h') < 3);
                         }
                     }
                 },
