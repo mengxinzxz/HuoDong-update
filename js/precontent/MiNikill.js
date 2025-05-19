@@ -638,7 +638,7 @@ const packs = function () {
             minilingren: {
                 derivation: ['minijianxiong', 'minixingshang'],
                 audio: 'xinfu_lingren',
-                trigger: { player: 'useCardToPlayered' },
+                inherit: 'xinfu_lingren',
                 filter(event, player) {
                     if (event.getParent().triggeredTargets3.length > 1) return false;
                     if (!player.isPhaseUsing()) return false;
@@ -646,68 +646,53 @@ const packs = function () {
                     if (get.tag(event.card, 'damage')) return true;
                     return false;
                 },
-                usable: 1,
-                direct: true,
-                content() {
-                    'step 0'
-                    player.chooseTarget(get.prompt('minilingren'), '选择一名目标角色并猜测其手牌构成', function (card, player, target) {
-                        return _status.event.targets.includes(target);
-                    }).set('ai', function (target) {
-                        return 2 - get.attitude(_status.event.player, target);
-                    }).set('targets', trigger.targets);
-                    'step 1'
-                    if (result.bool) {
-                        var target = result.targets[0];
-                        event.target = target;
-                        player.logSkill('minilingren', target);
-                        var list = ['minilingren_basic', 'minilingren_trick', 'minilingren_equip'];
-                        player.chooseButton(['###' + '凌人：猜测' + get.translation(target) + '的手牌组成类型' + '###' + '请选出你认为' + get.translation(target) + '有的手牌类型', [list, 'vcard']], [0, 3]).set('ai', function (button) {
-                            var name = button.link[2];
-                            switch (name) {
-                                case 'minilingren_basic':
-                                    var A = 0.95;
-                                    if (!target.countCards('h', { type: ['basic'] })) A = 0.05;
-                                    if (!target.countCards('h')) A = 0;
-                                    return Math.random() < A ? 1 : -1;
-                                    break;
-                                case 'minilingren_trick':
-                                    var B = 0.9;
-                                    if (!target.countCards('h', { type: ['trick', 'delay'] })) B = 0.1;
-                                    if (!target.countCards('h')) B = 0;
-                                    return Math.random() < B ? 1 : -1;
-                                    break;
-                                case 'minilingren_equip':
-                                    var C = 0.75;
-                                    if (!target.countCards('h', { type: ['equip'] })) C = 0.25;
-                                    if (!target.countCards('h')) C = 0;
-                                    return Math.random() < C ? 1 : -1;
-                                    break;
-                            }
-                        });
-                    }
-                    else {
-                        player.storage.counttrigger.minilingren--;
-                        event.finish();
-                    }
-                    'step 2'
-                    event.num = 0;
-                    var list1 = [], list2 = [];
-                    if (result.links) for (var name of result.links) list1.push(name[2].slice(12));
-                    if (target.countCards('h')) for (var card of target.getCards('h')) if (!list2.includes(get.type2(card))) list2.push(get.type2(card));
-                    for (var type of ['basic', 'trick', 'equip']) if ((list1.includes(type) && list2.includes(type)) || (!list1.includes(type) && !list2.includes(type))) event.num++;
-                    if (!event.isMine() && !event.isOnline()) game.delayx();
-                    'step 3'
-                    player.popup('猜对' + get.cnNumber(event.num) + '项');
-                    game.log(player, '猜对了' + get.cnNumber(event.num) + '项');
-                    if (event.num > 0) {
-                        var map = trigger.customArgs;
-                        var id = target.playerid;
-                        if (!map[id]) map[id] = {};
+                async content(event, trigger, player) {
+                    const { targets: [target] } = event;
+                    const list = ['basic', 'trick', 'equip'].map(type => ['', '', `${event.name}_${type}`]);
+                    const { result } = await player.chooseButton(['凌人：猜测其有哪些类别的手牌', [list, 'vcard']], [0, 3], true).set('ai', button => {
+                        return get.event('choice').includes(button.link[2].slice(12));
+                    }).set('choice', (() => {
+                        if (!target.countCards('h')) return [];
+                        let choice = [], known = target.getKnownCards(player), unknown = target.getCards('h', i => !known.includes(i));
+                        for (let i of known) {
+                            choice.add(get.type2(i, target));
+                        }
+                        if (!unknown.length || choice.length > 2) return choice;
+                        let rand = 0.05;
+                        if (!choice.includes('basic')) {
+                            if (unknown.some(i => get.type(i, null, target) === 'basic')) rand = 0.95;
+                            if (Math.random() < rand) choice.push('basic');
+                        }
+                        if (!choice.includes('trick')) {
+                            if (unknown.some(i => get.type(i, 'trick', target) === 'trick')) rand = 0.9;
+                            else rand = 0.1;
+                            if (Math.random() < rand) choice.push('trick');
+                        }
+                        if (!choice.includes('equip')) {
+                            if (unknown.some(i => get.type(i, null, target) === 'equip')) rand = 0.75;
+                            else rand = 0.25;
+                            if (Math.random() < rand) choice.push('equip');
+                        }
+                        return choice;
+                    })());
+                    if (!result?.bool) return;
+                    const choices = result.links.map(i => i[2].slice(12));
+                    if (!event.isMine() && !event.isOnline()) await game.delayx();
+                    let num = 0;
+                    ['basic', 'trick', 'equip'].forEach(type => {
+                        if (choices.includes(type) == target.hasCard(card => get.type2(card, target) === type, 'h')) num++;
+                    });
+                    player.popup('猜对' + get.cnNumber(num) + '项');
+                    game.log(player, '猜对了' + get.cnNumber(num) + '项');
+                    if (num > 0) {
+                        const map = trigger.customArgs;
+                        const id = target.playerid;
+                        map[id] ??= {};
                         if (typeof map[id].extraDamage != "number") map[id].extraDamage = 0;
                         map[id].extraDamage++;
                     }
-                    if (event.num > 1) player.draw(2);
-                    if (event.num > 2) player.addTempSkills(['minijianxiong', 'minixingshang'], { player: 'phaseBegin' });
+                    if (num > 1) await player.draw(2);
+                    if (num > 2) await player.addTempSkills(get.info(event.name).derivation, { player: "phaseBegin" });
                 },
             },
             minifujian: {
@@ -27599,17 +27584,17 @@ const packs = function () {
                         const num2 = player.hp;
                         if (num1 > num2) {
                             const num = num1 - num2;
-                            if (game.hasPlayer(current => player != current && get.attitude(player, current) < 0 && get.effect(current, { name: 'guohe_copy2' }, player, player) > 0)) {
+                            if (game.hasPlayer(current => player != current && get.attitude(player, current) < 0 && get.effect(current, { name: 'guohe_copy2' }, player, player) > 0) && player.countCards('h') > 2) {
                                 if (link % 2 === 0) return 0;
-                                if (link === num) return 100;
+                                if (link === (num % 2 + 1)) return 100;
                             }
                             if (link === 2) return 100;
                         }
                         else if (num1 < num2) {
                             const num = num2 - num1;
                             if (game.hasPlayer(current => player != current && get.attitude(player, current) > 0)) {
-                                if (link === num) return 100;
-                                if (link === 2) return 100;
+                                if (link % 2 === 1) return 0;
+                                if (link === (num % 2 + 1)) return 100;
                             }
                         }
                         if (link === 2) return 100;
@@ -27632,8 +27617,8 @@ const packs = function () {
                         const num1 = player.getCards('h').filter(card => get.type(card) == 'basic').length;
                         const num2 = player.hp;
                         const num = num1 - num2;
-                        if (num > 0 && num <= 2 && get.type(card) == 'basic') return 100;
-                        return 6 - get.value(card)
+                        if (num > 0 && num <= 2 && get.type(card) == 'basic' && !card.hasGaintag('minixuefeng_effect')) return 100;
+                        return 6 - get.value(card);
                     });
                     await next;
                     const hs = player.getCards('h');
@@ -27731,19 +27716,25 @@ const packs = function () {
                     }
                 },
                 ai: {
-                    order: 10,
+                    order(item, player) {
+                        const friends = game.filterPlayer(current => get.attitude(player, current) > 0);
+                        const enemies = game.filterPlayer(current => current != player && get.attitude(player, current) < 0);
+                        if (friends.some(current => get.recoverEffect(current, player, player) > 0) && enemies.some(current => !current.countCards('h') || !current.countCards('h', { type: 'basic' }))) return 10;
+                        if (player.getHp() > 1 || game.hasPlayer(current => get.attitude(current, player) > 0 && current.canSave(player))) return 8;
+                        return 3;
+                    },
                     result: {
                         target(player, target) {
-                            if (!ui.selected.targets.length) return -3;
-                            const source = ui.selected.targets[0];
-                            if (!source.countCards('h', { type: 'basic' })) return get.effect(source, { name: 'losehp' }, source, target) + get.recoverEffect(target, player, target);
-                            let eff1 = get.effect(player, { name: 'losehp' }, player, player);
-                            let eff2 = get.recoverEffect(target, player, target);
-                            if (player == target) {
-                                if (player.getHp() > 1) return Math.max(1, eff1 + eff2);
-                                return eff1;
+                            if (!ui.selected.targets.length) {
+                                const att = get.attitude(player, target);
+                                if (att > 0) return 0;
+                                const friends = game.filterPlayer(current => get.attitude(player, current) > 0);
+                                if (friends.some(current => get.recoverEffect(current, player, player) > 0) && (!target.countCards('h') || !target.countCards('h', { type: 'basic' }))) return -4;
+                                return -3;
                             }
-                            return eff1 + eff2;
+                            const source = ui.selected.targets[0];
+                            if (player.getHp() < 1 && !game.hasPlayer(current => get.attitude(current, player) > 0 && current.canSave(player))) return 0;
+                            return 1 + target.getDamagedHp() + (target.countCards('h') < 3);
                         }
                     }
                 },
