@@ -130,7 +130,7 @@ const packs = function () {
             wechat_guozhao: ['female', 'wei', 3, ['yichong', 'wechatwufei'], ['die:xin_guozhao']],
             wechat_sp_zhenji: ['female', 'qun', 3, ['mbbojian', 'wechatjiwei']],
             //神武将
-            wechat_shen_zhugeliang: ['male', 'shen', 3, ['wechatqixing', 'wechatrejifeng', 'wechattianfa'], ['shu', 'name:诸葛|亮']],
+            wechat_shen_zhugeliang: ['male', 'shen', 3, ['wechatqixing', 'wechatjifeng', 'wechattianfa'], ['shu', 'name:诸葛|亮']],
             wechat_shen_lvmeng: ['male', 'shen', 3, ['shelie', 'wechatgongxin'], ['wu']],
             wechat_shen_guanyu: ['male', 'shen', 5, ['wechatwushen'], ['shu']],
             wechat_shen_lvbu: ['male', 'shen', 5, ['wushuang', 'baonu', 'wumou', 'ol_shenfen'], ['qun', 'die:shen_lvbu', 'tempname:shen_lvbu']],
@@ -345,21 +345,6 @@ const packs = function () {
                                 for (var i of targets) i.damage();
                             }
                         },
-                    },
-                },
-            },
-            wechatrejifeng: {
-                inherit: 'wechatjifeng',
-                async content(event, trigger, player) {
-                    const cards = Array.from(ui.discardPile.childNodes).filter(card => get.type2(card) == 'trick');
-                    if (!cards.length) return;
-                    const { result } = await player.chooseButton(['祭凤：获得一张锦囊牌', cards], true);
-                    if (result?.bool && result?.links?.length) await player.gain(result.links, 'gain2');
-                },
-                ai: {
-                    order: 8,
-                    player(player, target) {
-                        return 1;
                     },
                 },
             },
@@ -5383,10 +5368,29 @@ const packs = function () {
                 trigger: { player: 'phaseBegin' },
                 forced: true,
                 locked: false,
-                content() {
-                    player.addTempSkills(lib.skill.wechatrehuixin.derivation[(player.countCards('e') + 1) % 2]);
+                async content(event, trigger, player) {
+                    await player.addTempSkills(lib.skill.wechatrehuixin.derivation[(player.countCards('e') + 1) % 2]);
                 },
-                derivation: ['wechatjifeng', 'wechatjizhi'],
+                derivation: ['wechatrejifeng', 'wechatjizhi'],
+            },
+            wechatrejifeng: {
+                audio: 'wechatjifeng',
+                enable: 'phaseUse',
+                usable: 1,
+                filterCard: lib.filter.cardDiscardable,
+                check(card) {
+                    return 5 - get.value(card);
+                },
+                async content(event, trigger, player) {
+                    const card = get.discardPile(card => get.type2(card) == 'trick');
+                    if (card) await player.gain(card, 'gain2');
+                },
+                ai: {
+                    order: 8,
+                    player(player, target) {
+                        return 1;
+                    },
+                },
             },
             //二张
             wechatzhijian: {
@@ -11627,7 +11631,7 @@ const packs = function () {
             wechatjifeng: '祭风',
             wechatjifeng_info: '出牌阶段限一次，你可以弃置一张手牌，然后从牌堆中随机获得一张锦囊牌。',
             wechatrejifeng: '祭风',
-            wechatrejifeng_info: '出牌阶段限一次，你可以弃置一张手牌，然后从弃牌堆中获得一张锦囊牌。',
+            wechatrejifeng_info: '出牌阶段限一次，你可以弃置一张手牌，然后从弃牌堆随机中获得一张锦囊牌。',
             wechattianfa: '天罚',
             wechattianfa_info: '出牌阶段，你每使用两张锦囊牌，你获得1枚“罚”标记；回合结束时，你可以对至多X名其他角色各造成1点伤害（X为你拥有的“罚”标记数）。',
             wechat_re_yuanshu: '微信袁术',
