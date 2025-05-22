@@ -7581,7 +7581,7 @@ const packs = function () {
                 },
                 async cost(event, trigger, player) {
                     const fang = player.countMark('minirefangquan2') == 0 && player.hp >= 2 && player.countCards('h') <= player.hp + 2;
-                    const bool = await player.chooseBool(get.prompt2(event.name.slice(0, -5))).set('ai', function () {
+                    event.result = await player.chooseBool(get.prompt2(event.name.slice(0, -5))).set('ai', function () {
                         if (!_status.event.fang) return false;
                         return game.hasPlayer(function (target) {
                             if (target.hasJudge('lebu') || target == player) return false;
@@ -7590,10 +7590,7 @@ const packs = function () {
                             }
                             return false;
                         });
-                    }).set('fang', fang).forResultBool();
-                    event.result = {
-                        bool: bool,
-                    }
+                    }).set('fang', fang).forResult();
                 },
                 async content(event, trigger, player) {
                     trigger.cancel();

@@ -118,7 +118,7 @@ const packs = function () {
             wechat_xurong: ['male', 'qun', 4, ['wechatxionghuo', 'xinfu_shajue']],
             wechat_huojun: ['male', 'shu', 4, ['twsidai', 'jieyu']],
             wechat_yj_xuhuang: ['male', 'qun', 4, ['wechatxhzhiyan', 'wechatjiewei']],
-            wechat_yj_ganning: ['male', 'qun', 4, ['wechatjinfan', 'gnsheque']],
+            wechat_yj_ganning: ['male', 'qun', 4, ['wechatjinfan', 'wechatsheque']],
             wechat_sunluyu: ['female', 'wu', 3, ['wechatmeibu', 'wechatmumu']],
             wechat_sp_diaochan: ['female', 'qun', 3, ['lihun', 'wechatbiyue']],
             wechat_zhugeguo: ['female', 'shu', 3, ['wechatqirang', 'wechatyuhua']],
@@ -7017,9 +7017,7 @@ const packs = function () {
             },
             wechatsiyuan: {
                 audio: 'ext:活动武将/audio/skill:2',
-                trigger: {
-                    player: 'damageEnd',
-                },
+                trigger: { player: 'damageEnd' },
                 filter(event, player) {
                     return event.source?.isIn() && game.hasPlayer(current => current != player && current != event.source);
                 },
@@ -7029,11 +7027,11 @@ const packs = function () {
                     }).set('ai', target => {
                         const player = get.player(), source = get.event().getTrigger().source;
                         const list = lib.skill.mbhuiyao.getUnrealDamageTargets(player, [[source], game.filterPlayer(i => ![player, source].includes(i))]);
-                        return target == list[ui.selected.targets.length] ? 10 : 0;
+                        return (target == list[0] ? 10 : 0) + get.effect(player, { name: 'draw' }, player, player) + get.effect(target, { name: 'draw' }, player, player);
                     }).forResult();
                 },
                 async content(event, trigger, player) {
-                    event.targets[0].damage(trigger.source, 'unreal');
+                    await event.targets[0].damage(trigger.source, 'unreal');
                 },
             },
             // 极蔡文姬
@@ -9183,6 +9181,12 @@ const packs = function () {
                     aiOrder(player, card, num) {
                         if (get.itemtype(card) === 'card' && card.hasGaintag('wechatjinfan')) return num + 0.5;
                     },
+                    cardUsable(card, player) {
+                        if (Array.isArray(card.cards) && card.cards.some(i => i.hasGaintag('wechatjinfan'))) return Infinity;
+                    },
+                    targetInRange(card, player) {
+                        if (Array.isArray(card.cards) && card.cards.some(i => i.hasGaintag('wechatjinfan'))) return true;
+                    },
                 },
                 subSkill: {
                     gain: {
@@ -9195,6 +9199,11 @@ const packs = function () {
                         forced: true,
                         locked: false,
                         content() {
+                            const evt = trigger.getParent();
+                            if (evt.name === 'useCard' && evt.player === player && evt.addCount !== false) {
+                                evt.addCount = false;
+                                player.getStat('card')[evt.card.name]--;
+                            }
                             const cards = trigger.ss.reduce((list, i) => {
                                 if (trigger.gaintag_map?.[i.cardid]?.includes('wechatjinfan')) {
                                     const card = get.cardPile2(card => !list.includes(card) && get.suit(card, false) === get.suit(i, false));
@@ -9204,6 +9213,39 @@ const packs = function () {
                             }, []);
                             if (cards.length) player.gain(cards, 'gain2');
                         },
+                    },
+                },
+            },
+            wechatsheque: {
+                audio: 'gnsheque',
+                trigger: { global: 'phaseZhunbeiBegin' },
+                filter(event, player) {
+                    return event.player.isIn() && lib.filter.targetEnabled({ name: 'sha' }, player, event.player) && (player.hasSha() || _status.connectMode && player.countCards('hs') > 0);
+                },
+                direct: true,
+                content() {
+                    player.chooseToUse(function (card, player, event) {
+                        if (get.name(card) !== 'sha') return false;
+                        return lib.filter.filterCard.apply(this, arguments);
+                    }, '射却：是否对' + get.translation(trigger.player) + '使用一张【杀】？').set('logSkill', 'wechatsheque').set('complexSelect', true).set('filterTarget', function (card, player, target) {
+                        if (target != _status.event.sourcex && !ui.selected.targets.includes(_status.event.sourcex)) return false;
+                        return lib.filter.targetEnabled.apply(this, arguments);
+                    }).set('sourcex', trigger.player).set('oncard', (card) => {
+                        try {
+                            card.wechatsheque_tag = true;
+                        } catch (e) {
+                            alert('发生了一个导致【射却】无法正常触发无视防具效果的错误。请关闭十周年UI/手杀ui等扩展以解决');
+                        }
+                    });
+                },
+                ai: {
+                    unequip: true,
+                    unequip_ai: true,
+                    skillTagFilter(player, tag, arg) {
+                        if (tag === 'unequip_ai') {
+                            if (get.event().getParent().name !== 'wechatsheque') return false;
+                        }
+                        else if (!arg?.card?.wechatsheque_tag) return false;
                     },
                 },
             },
@@ -9425,32 +9467,94 @@ const packs = function () {
                 audio: 'chongxu',
                 enable: 'phaseUse',
                 usable: 1,
-                content() {
-                    'step 0'
-                    var score = event.score = 5;
-                    var list = [];
-                    if (player.countMark('miaojian') < 2 && player.hasSkill('miaojian')) list.push('修改【妙剑】');
-                    if (player.countMark('shhlianhua') < 2 && player.hasSkill('shhlianhua')) list.push('修改【莲华】');
-                    if (list.length) {
-                        list.push('全部摸牌');
-                        player.chooseControl(list).set('prompt', '冲虚：修改技能并摸一张牌；或摸两张牌');
+                async content(event, trigger, player) {
+                    const func = () => {
+                        const event = get.event();
+                        const controls = [
+                            link => {
+                                const evt = get.event();
+                                if (evt.dialog && evt.dialog.buttons) {
+                                    for (let i = 0; i < evt.dialog.buttons.length; i++) {
+                                        const button = evt.dialog.buttons[i];
+                                        button.classList.remove("selectable");
+                                        button.classList.remove("selected");
+                                        const counterNode = button.querySelector(".caption");
+                                        if (counterNode) counterNode.childNodes[0].innerHTML = ``;
+                                    }
+                                    ui.selected.buttons.length = 0;
+                                    game.check();
+                                }
+                                return;
+                            },
+                        ];
+                        event.controls = [ui.create.control(controls.concat(["清除选择", "stayleft"]))];
+                    };
+                    event.isMine() ? func() : (event.isOnline() && event.player.send(func));
+                    const result = await player.chooseButton([
+                        '###' + get.translation(event.name) + '###<div class="text center">请选择你要执行的项目</div>',
+                        [
+                            [
+                                ['miaojian', '使用3积分升级【' + get.translation('miaojian') + '】'],
+                                ['shhlianhua', '使用3积分升级【' + get.translation('shhlianhua') + '】'],
+                                ['draw', '使用2积分摸一张牌'],
+                            ],
+                            'textbutton',
+                        ],
+                    ], [1, Infinity]).set('filterButton', button => {
+                        const player = get.player(), choice = ui.selected.buttons.map(i => i.link);
+                        if (button.link !== 'draw' && (!player.hasSkill(button.link, null, null, false) || choice.filter(i => i === button.link).length + player.countMark(button.link) > 1)) return false;
+                        return [choice, button.link].reduce((sum, i) => sum + (i === 'draw' ? 2 : 3), 0) <= 6;
+                    }).set("custom", {
+                        add: {
+                            confirm(bool) {
+                                if (bool !== true) return;
+                                const event = get.event().parent;
+                                Array.isArray(event.controls) && event.controls.forEach(i => i.close());
+                                ui.confirm && ui.confirm.close();
+                                game.uncheck();
+                            },
+                            button() {
+                                if (ui.selected.buttons.length) return;
+                                const event = get.event();
+                                if (event.dialog && event.dialog.buttons) {
+                                    for (let i = 0; i < event.dialog.buttons.length; i++) {
+                                        const button = event.dialog.buttons[i];
+                                        const counterNode = button.querySelector(".caption");
+                                        if (counterNode) counterNode.childNodes[0].innerHTML = ``;
+                                    }
+                                }
+                                if (!ui.selected.buttons.length) event.parent?.controls?.[0]?.classList.add("disabled");
+                            },
+                        },
+                        replace: {
+                            button(button) {
+                                const event = get.event();
+                                if (!event.isMine() || !event.filterButton(button) || button.classList.contains("selectable") == false) return;
+                                button.classList.add("selected");
+                                ui.selected.buttons.push(button);
+                                let counterNode = button.querySelector(".caption");
+                                const count = ui.selected.buttons.filter(i => i == button).length;
+                                counterNode ? (((counterNode) => {
+                                    counterNode = counterNode.childNodes[0];
+                                    counterNode.innerHTML = `×${count}`;
+                                })(counterNode)) : counterNode = ui.create.caption(`<span style="font-family:xinwei; text-shadow:#FFF 0 0 4px, #FFF 0 0 4px, rgba(74,29,1,1) 0 0 3px;">×${count}</span>`, button);
+                                event.parent?.controls?.[0]?.classList.add("disabled");
+                                game.check();
+                            },
+                        },
+                    }).forResult();
+                    if (result?.bool && result.links?.length) {
+                        const miaojian = result.links.filter(i => i === 'miaojian').length;
+                        miaojian > 0 && (player.addMark('miaojian', miaojian, false) || player.popup('miaojian') || game.log(player, '升级了技能', '#g【' + get.translation('miaojian') + '】'));
+                        const shhlianhua = result.links.filter(i => i === 'shhlianhua').length;
+                        shhlianhua > 0 && (player.addMark('shhlianhua', shhlianhua, false) || player.popup('shhlianhua') || game.log(player, '升级了技能', '#g【' + get.translation('shhlianhua') + '】'));
+                        const draw = result.links.filter(i => i === 'draw').length;
+                        draw > 0 && await player.draw(draw);
                     }
-                    else event._result = { control: '全部摸牌' };
-                    'step 1'
-                    var score = event.score;
-                    if (result.control != '全部摸牌') {
-                        score -= 3;
-                        var skill = result.control == '修改【妙剑】' ? 'miaojian' : 'shhlianhua';
-                        player.addMark(skill, 1, false);
-                        game.log(player, '修改了技能', '#g【' + get.translation(skill) + '】');
-                    }
-                    if (score > 1) player.draw(Math.floor(score / 2));
                 },
                 ai: {
                     order: 10,
-                    result: {
-                        player: 1,
-                    },
+                    result: { player: 1 },
                 },
             },
             //刘赪
@@ -12082,7 +12186,7 @@ const packs = function () {
             wechatshenfu: '神赋',
             wechatshenfu_info: '①一名角色受到1点伤害后，若你的“洛神”标记数小于6，你获得1枚“洛神”标记。②结束阶段，你可以弃置所有“洛神”标记并亮出牌堆顶等量的牌，然后你选择一项：1.可以依次使用其中的黑色牌；2.获得其中的红色牌。',
             wechatsiyuan: '思怨',
-            wechatsiyuan_info: '当你受到伤害后，你可以选择一名其他角色，令伤害来源视为对其造成过1点伤害。',
+            wechatsiyuan_info: '当你受到伤害后，你可以选择一名其他角色，令伤害来源视为对其造成过1点伤害，然后你与其各摸一张牌。',
             wechat_ruanhui: '微信阮慧',
             wechatmingcha: '明察',
             wechatmingcha_info: '摸牌阶段开始时，你亮出牌堆顶两张牌，然后你可以放弃摸牌并获得其中点数不大于8的牌。若你以此法获得了牌，你可以获得一名其他角色的随机一张牌。',
@@ -12210,7 +12314,9 @@ const packs = function () {
             wechatsbliegong_info: '当你使用牌时或成为其他角色使用牌的目标后，若你未记录此牌的花色，你记录此牌的花色。当你使用【杀】指定唯一目标后，若〖烈弓〗存在记录花色，则你可亮出牌堆顶的X张牌（X为〖烈弓〗记录过的花色数-1），令此【杀】的伤害值基数+Y（Y为亮出牌中被〖烈弓〗记录过花色的牌的数量），且目标角色不能使用〖烈弓〗记录过花色的牌响应此【杀】。此【杀】使用结算结束后，你清除〖烈弓〗记录的的花色。',
             wechat_yj_ganning: '微信☆甘宁',
             wechatjinfan: '锦帆',
-            wechatjinfan_info: '①弃牌阶段开始时，你可将任意张手牌置于武将牌上，称为“铃”（每种花色的“铃”限一张，且对其他角色不可见）。②你可以如手牌般使用或打出“铃”。③当你失去“铃”后，你从牌堆中获得一张与此“铃”花色相同的牌。',
+            wechatjinfan_info: '①弃牌阶段开始时，你可将任意张手牌置于武将牌上，称为“铃”（每种花色的“铃”限一张，且对其他角色不可见）。②你可以如手牌般使用或打出“铃”（无距离和任何次数限制）。③当你失去“铃”后，你从牌堆中获得一张与此“铃”花色相同的牌。',
+            wechatsheque: '射却',
+            wechatsheque_info: '其他角色的准备阶段开始时，你可以对其使用一张【杀】（无距离限制且无视防具）。',
             wechat_sunluyu: '微信孙鲁育',
             wechatmeibu: '魅步',
             wechatmeibu_info: '攻击范围含有你的角色的准备阶段，你可以弃置一张牌，令其本回合获得技能〖止息〗。',
@@ -12228,7 +12334,7 @@ const packs = function () {
             wechatyuhua_info: '锁定技，你的非基本牌不计入手牌上限。',
             wechat_sunhanhua: '微信孙寒华',
             wechatchongxu: '冲虚',
-            wechatchongxu_info: '出牌阶段限一次，你可以获得5点积分，然后你可修改〖妙剑〗或〖莲华〗（消耗3分），并使用剩余的分数进行摸牌（每张2分）。',
+            wechatchongxu_info: '出牌阶段限一次，你可以获得6点积分，然后你可修改〖妙剑〗或〖莲华〗（消耗3分），并使用剩余的分数进行摸牌（每张2分）。',
             wechat_liucheng: '微信刘赪',
             wechatlveying: '掠影',
             wechatlveying_info: '①出牌阶段限三次，当你使用【杀】指定目标后，你获得1个“椎”。②当你使用的【杀】结算结束后，若你的“椎”数大于1，则你弃置2个“椎”并摸一张牌，然后可以视为使用一张【过河拆桥】。',
