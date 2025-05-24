@@ -30140,7 +30140,6 @@ const packs = function () {
                         },
                     },
                     reuse: {
-                        //group:'minipingting_buff',
                         charlotte: true,
                         mark: true,
                         marktext: '④',
@@ -30151,11 +30150,10 @@ const packs = function () {
                             var evt = event.getParent('phaseUse');
                             return evt?.player == player && player.getHistory('useCard', function (evt2) {
                                 return evt2.getParent('phaseUse') == evt;
-                            }).indexOf(event) == 3 && event.targets/*&&!event.reuse_buff*/;
+                            }).indexOf(event) == 3 && event.targets;
                         },
                         forced: true,
                         content() {
-                            //trigger.reuse_buff=player;
                             trigger.effectCount++;
                             game.log(trigger.card, '额外结算一次');
                         },
@@ -30170,21 +30168,6 @@ const packs = function () {
                             },
                         },
                     },
-                    /*
-                    buff:{
-                    charlotte:true,
-                    trigger:{global:'useCardToTargeted'},
-                    filter:function(event,player){
-                    return event.parent.reuse_buff==player&&event.targets.length==event.parent.triggeredTargets4.length;
-                    },
-                    direct:true,
-                    lastDo:true,
-                    content:function(){
-                    trigger.getParent().targets=trigger.getParent().targets.concat(trigger.targets);
-                    trigger.getParent().triggeredTargets4=trigger.getParent().triggeredTargets4.concat(trigger.targets);
-                    },
-                    },
-                    */
                 },
             },
             miniyizheng: {
@@ -30192,17 +30175,17 @@ const packs = function () {
                 trigger: { player: 'phaseUseEnd' },
                 filter(event, player) {
                     return game.hasPlayer(target => {
-                        return target.hasVCard(card => lib.skill.miniyizheng.filterCardx(card, player), 'e');
+                        return target.hasCard(card => lib.skill.miniyizheng.filterCardx(card, player), 'e');
                     });
                 },
                 check(event, player) {
                     return game.hasPlayer(target => {
-                        return target.hasVCard(card => lib.skill.miniyizheng.filterCardx(card, player, true), 'e');
+                        return target.hasCard(card => lib.skill.miniyizheng.filterCardx(card, player, true), 'e');
                     });
                 },
                 filterCardx(card, player = get.event('player'), ai) {
                     if (!Array.from({ length: 3 }).map((_, i) => i).includes(lib.skill.miniyizheng.filterType(card))) return false;
-                    return player.canMoveCard(ai || null, true, card);
+                    return player.canMoveCard(ai || null, true);
                 },
                 filterType(card) {
                     if (get.type(card) != 'equip' || !get.subtype(card)) return -1;
@@ -30214,12 +30197,12 @@ const packs = function () {
                         if (moveCard.some(cardx => lib.skill.miniyizheng.filterType(cardx) == lib.skill.miniyizheng.filterType(card))) return false;
                         return lib.skill.miniyizheng.filterCardx(card, player);
                     }, limit = Math.min(3, 1 + player.countMark('minishuangshu_yizheng'));
-                    while (moveCard.length < limit && game.hasPlayer(target => target.hasVCard(card => filter(card, target), 'e'))) {
+                    while (moveCard.length < limit && game.hasPlayer(target => target.hasCard(card => filter(card, target), 'e'))) {
                         const forced = (!moveCard.length);
-                        const { result: { card } } = await player.moveCard(filter, 'nojudge')
+                        const { result } = await player.moveCard(filter, 'nojudge')
                             .set('prompt', '移筝：' + (forced ? '请' : '是否') + '移动场上的一张牌' + (forced ? '' : '？')).set('forced', forced)
                             .set('prompt2', '还可移动' + get.cnNumber(limit - moveCard.length) + '张' + (moveType.length ? ('非' + get.translation(moveType)) : '') + '牌');
-                        if (card) {
+                        if (result?.card) {
                             moveCard.push(card);
                             moveType.push(get.subtype(card));
                         }
