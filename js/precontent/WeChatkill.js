@@ -7031,7 +7031,9 @@ const packs = function () {
                     }).forResult();
                 },
                 async content(event, trigger, player) {
-                    await event.targets[0].damage(trigger.source, 'unreal');
+                    const [target] = event.targets;
+                    await target.damage(trigger.source, 'unreal');
+                    await game.asyncDraw([player, target].sortBySeat());
                 },
             },
             // 极蔡文姬
