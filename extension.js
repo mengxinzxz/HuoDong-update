@@ -22,16 +22,16 @@ game.bolShowNewPack = function () {
 		'对部分音频素材进行音质提升，对部分图片素材进行画质提升，补充捉鬼驱邪的武将介绍。by--逍遥如云',
 		'优化仁库拖动逻辑，提高拖动仁库流畅度，修复仁库位置不计算偏移的bug',
 		'活动武将阵亡配音改为塞入hooks，以让播放时机更合理',
-		'小程序：SP甄宓、极郭皇后、极辛宪英、谋曹操',
-		'欢杀：许贡、朱佩兰、赵昂、战张辽、界吴国太、神鲁肃、谋孙权、SP徐晃、曹安民',
+		'小程序：SP甄宓、极郭皇后、极辛宪英、谋曹操、谋孙策',
+		'欢杀：许贡、朱佩兰、赵昂、战张辽、界吴国太、神鲁肃、谋孙权、SP徐晃、曹安民、卞玥、向朗、谢灵毓、张让',
 		'To be continued...',
 	];
 	//更新武将
 	var HuoDong_players = [
 		'bilibili_xiaoyaoruyun', 'bilibili_shuijiaobuboli', 'bilibili_yanjing', 'bilibili_suixingsifeng',
 		'wechat_sp_zhenji', 'wechat_zhiyin_guohuanghou', 'wechat_zhiyin_xinxianying',
-		'wechat_sb_caocao', 'Mbaby_xugong', 'Mbaby_zhupeilan', 'Mbaby_zhaoang', 'Mfight_zhangliao',
-		'Mbaby_shen_lusu', 'Mbaby_sb_sunquan', 'Mbabysp_xuhuang', 'Mbaby_caoanmin',
+		'wechat_sb_caocao', 'wechat_sb_sunce', 'Mbaby_xugong', 'Mbaby_zhupeilan', 'Mbaby_zhaoang', 'Mfight_zhangliao', 'Mbaby_shen_lusu', 'Mbaby_sb_sunquan', 'Mbabysp_xuhuang', 'Mbaby_caoanmin',
+		'Mbaby_bianyue', 'Mbaby_xianglang', 'Mbaby_xielingyu', 'Mbaby_zhangrang',
 	];
 	//加载
 	var dialog = ui.create.dialog(

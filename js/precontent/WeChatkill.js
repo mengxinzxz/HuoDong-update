@@ -174,7 +174,7 @@ const packs = function () {
             wechat_sb_machao: ['male', 'shu', 4, ['wechatjlmashu', 'wechatjltieji']],
             wechat_sb_huangzhong: ['male', 'shu', 4, ['wechatsbliegong']],
             wechat_sb_caocao: ['male', 'wei', 4, ['wechatsbjianxiong', 'sbqingzheng']],
-            wechat_sb_sunce: ['male', 'wei', 4, ['wechatsbjiang', 'wechatsbhunzi']],
+            wechat_sb_sunce: ['male', 'wu', 4, ['wechatsbjiang', 'wechatsbhunzi'], ['tempname:sb_sunce']],
         },
         characterIntro: {
         },
