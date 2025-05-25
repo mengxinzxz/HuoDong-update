@@ -27970,14 +27970,13 @@ const packs = function () {
                         const list = get.inpileVCardList(info => {
                             if (!['basic', 'trick'].includes(info[0])) return false;
                             if (player.getStorage('minitaoluan').includes(info[2])) return false;
-                            return event.filterCard(get.autoViewAs({ name: info[2], nature: info[3] }, "unsure"), player, event);
+                            return event.filterCard(get.autoViewAs({ name: info[2], nature: info[3] }, 'unsure'), player, event);
                         });
                         return ui.create.dialog('滔乱', [list, 'vcard']);
                     },
                     check(button) {
                         const player = get.player();
                         const card = { name: button.link[2], nature: button.link[3] };
-                        if (player.countCards('hes', cardx => cardx.name == card.name)) return 0;
                         return get.event().getParent().type == 'phase' ? player.getUseValue(card) : 1;
                     },
                     backup(links, player) {
@@ -28005,7 +28004,21 @@ const packs = function () {
                     },
                 },
                 ai: {
-                    order: 8,
+                    order(item, player) {
+                        if (player && get.event().type == 'phase') {
+                            let list = get.inpileVCardList(info => {
+                                if (!['basic', 'trick'].includes(info[0])) return false;
+                                if (player.getStorage('minitaoluan').includes(info[2])) return false;
+                                return true;
+                            }).map(card => {
+                                return { name: card[2], nature: card[3] };
+                            }).filter(card => player.getUseValue(card, true, true) > 0);
+                            if (!list.length) return 0;
+                            list.sort((a, b) => (player.getUseValue(b, true, true) || 0) - (player.getUseValue(a, true, true) || 0));
+                            return get.order(list[0], player) * 0.99;
+                        }
+                        return 1;
+                    },
                     save: true,
                     respondSha: true,
                     respondShan: true,
@@ -28015,7 +28028,7 @@ const packs = function () {
                             if (arg == 'respond') return false;
                             return !player.getStorage('minitaoluan').includes(tag == 'respondSha' ? 'sha' : 'shan');
                         }
-                        return !player.getStorage("minitaoluan").includes('tao') || (!player.getStorage('minitaoluan').includes('jiu') && arg == player);
+                        return !player.getStorage('minitaoluan').includes('tao') || (!player.getStorage('minitaoluan').includes('jiu') && arg == player);
                     },
                     result: {
                         player(player) {
@@ -28026,9 +28039,10 @@ const packs = function () {
                 },
                 subSkill: {
                     backup: {},
-                    uesd: {
+                    used: {
                         charlotte: true,
                         onremove: true,
+                        intro: { content: '本回合已使用花色:$' },
                     },
                     effect: {
                         charlotte: true,
@@ -28047,9 +28061,10 @@ const packs = function () {
                                     if (player.getStorage('minitaoluan').includes(info[2])) return false;
                                     return player.getUseValue({ name: info[2] }) > 0;
                                 });
-                                if (att > 0 && list.length && player.getStorage('minitaoluan_used').length < 4) {
-                                    if (get.attitude(target, player) > 0) return target.countCards('h');
-                                    return target.countCards('h') / 2;
+                                if (list.length && player.getStorage('minitaoluan_used').length < 4 && player.isPhaseUsing()) {
+                                    if (att <= 0) return 0;
+                                    if (!target.countCards('he', card => get.type2(card) != get.event('cardType'))) return 0;
+                                    return target.countCards('he') - 2;
                                 }
                                 return get.effect(target, { name: 'losehp' }, player, player);
                             }).forResult();
@@ -28061,9 +28076,12 @@ const packs = function () {
                             const { result } = await target.chooseToGive(player, `###滔乱###交给${get.translation(player)}一张不为${get.translation(type)}牌的牌，或于回合结束时失去1点体力且〖滔乱〗无效直到回合结束`, 'he', (card, player, target) => {
                                 return get.type2(card) != get.event('cardType');
                             }).set('cardType', type).set('ai', card => {
-                                if (get.event().att) return 11 - get.value(card);
+                                const { player, target } = get.event();
+                                const att = get.attitude(player, target);
+                                if (att > 0) return 11 - get.value(card);
+                                if (att < 0 && player.getHp() < 2 && !game.hasPlayer(current => get.attitude(current, player) > 0 && current.countCards('hs', card => current.canSaveCard(card, player))) && !game.hasPlayer(current => get.attitude(current, player) > 0 && current != player) && target.getStorage('minitaoluan_used').includes(get.suit(card))) return 10 - get.value(card);
                                 return 0;
-                            }).set('att', get.attitude(target, player) > 0);
+                            });
                             if (!result?.bool) {
                                 player.tempBanSkill('minitaoluan');
                                 target.addTempSkill('minitaoluan_buff');
