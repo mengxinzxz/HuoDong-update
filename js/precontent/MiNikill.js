@@ -30203,6 +30203,7 @@ const packs = function () {
                             .set('prompt', '移筝：' + (forced ? '请' : '是否') + '移动场上的一张牌' + (forced ? '' : '？')).set('forced', forced)
                             .set('prompt2', '还可移动' + get.cnNumber(limit - moveCard.length) + '张' + (moveType.length ? ('非' + get.translation(moveType)) : '') + '牌');
                         if (result?.card) {
+                            const { card } = result;
                             moveCard.push(card);
                             moveType.push(get.subtype(card));
                         }
