@@ -5396,36 +5396,29 @@ const packs = function () {
                 direct: true,
                 async content(event, trigger, player) {
                     const target = trigger.player;
-                    let choices = [], choiceList = ['将一张手牌当作【杀】对其使用', '将一张手牌当作【过河拆桥】对其使用'];
-                    if (player.hasCard(card => {
-                        return game.checkMod(card, player, 'unchanged', 'cardEnabled2', player) !== false && player.canUse(get.autoViewAs({ name: 'sha' }, [card]), target, false);
-                    }, 'hs')) choices.push('选项一');
-                    else choiceList[0] = '<span style="opacity:0.5">' + choiceList[0] + '</span>';
-                    if (player.hasCard(card => {
-                        return game.checkMod(card, player, 'unchanged', 'cardEnabled2', player) !== false && player.canUse(get.autoViewAs({ name: 'juedou' }, [card]), target, false);
-                    }, 'hs')) choices.push('选项二');
-                    else choiceList[1] = '<span style="opacity:0.5">' + choiceList[1] + '</span>';
-                    choices.push('cancel2');
-                    const { result: { control } } = await player.chooseControl(choices).set('choiceList', choiceList)
-                        .set('prompt', get.prompt('bolzhuhai', target)).set('ai', () => {
-                            const player = get.event('player'), target = get.event('target'), choices = get.event('controls');
-                            let eff1 = 0, eff2 = 0;
-                            if (choices.includes('选项一')) eff1 = get.effect(target, { name: 'sha' }, player, player);
-                            if (choices.includes('选项二')) eff2 = get.effect(target, { name: 'guohe' }, player, player);
-                            if (eff1 > 0 && ((player.hasSkill('xsqianxin') || player.hasSkill('fh_qianxin')) && player.isDamaged() || eff1 > eff2)) return '选项一';
-                            if (eff2 > 0) return '选项二';
-                            return 'cancel2';
-                        }).set('target', target);
-                    if (control != 'cancel2') {
-                        const name = (control == '选项一' ? 'sha' : 'guohe');
-                        const { result: { bool, cards } } = await player.chooseCard('hs', true, (card, player) => {
+                    const list = [['基本', '', 'sha'], ['锦囊', '', 'guohe']];
+                    let result = await player.chooseButton([`诛害：请选择要对${get.translation(target)}使用的牌`, [list, 'vcard']]).set('filterButton', button => {
+                        const player = get.player();
+                        return player.hasCard(card => player.hasUseTarget(get.autoViewAs({ name: button.link[2] }, [card]), false, false), 'hs');
+                    }).set('ai', button => {
+                        const { player, target } = get.event();
+                        const name = button.link[2];
+                        let eff1 = get.effect(target, { name: 'sha' }, player, player), eff2 = get.effect(target, { name: 'sha' }, player, player);
+                        if (name == 'sha' && eff1 > 0 && ((player.hasSkill('xsqianxin') || player.hasSkill('fh_qianxin')) && player.isDamaged() || eff1 > eff2)) return 1;
+                        if (name == 'guohe' && eff2 > 0) return 1;
+                        return 0
+                    }).set('target', target).forResult();
+                    if (result?.bool && result?.links?.length) {
+                        const name = result.links[0][2];
+                        result = await player.chooseCard('hs', (card, player) => {
                             if (!game.checkMod(card, player, 'unchanged', 'cardEnabled2', player)) return false;
-                            return player.canUse(get.autoViewAs({ name: get.event('namex') }, [card]), get.event('target'), false);
-                        }, '将一张手牌当作【' + get.translation(name) + '】对' + get.translation(target) + '使用').set('ai', card => {
-                            const player = get.event('player'), target = get.event('target');
-                            return get.effect(target, get.autoViewAs({ name: get.event('namex') }, [card]), player, player) / Math.max(1, get.value(card));
-                        }).set('namex', name).set('target', target);
-                        if (bool) player.useCard({ name: name }, cards, 'bolzhuhai', target, false);
+                            const { namex, target } = get.event();
+                            return player.canUse(get.autoViewAs({ name: namex }, [card]), target, false);
+                        }, '诛害：你可以将一张手牌当作【' + get.translation(name) + '】对' + get.translation(target) + '使用').set('ai', card => {
+                            const { player, target, namex } = get.event();
+                            return get.effect(target, get.autoViewAs({ name: namex }, [card]), player, player) / Math.max(1, get.value(card));
+                        }).set('namex', name).set('target', target).forResult();
+                        if (result?.bool && result?.cards?.length) await player.useCard({ name: name }, result.cards, 'bolzhuhai', target, false);
                     }
                 },
             },

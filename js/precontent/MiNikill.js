@@ -19733,7 +19733,7 @@ const packs = function () {
                 async cost(event, trigger, player) {
                     const { player: target } = trigger;
                     const name = get.translation(target);
-                    const choices = ['选项一'];
+                    const choices = ['选项二'];
                     const choiceList = [`弃置${name}一张手牌`, `你与${name}各摸一张牌`];
                     if (target.countDiscardableCards(player, 'h')) choices.unshift('选项一');
                     else choiceList[0] = '<span style="opacity:0.5">' + choiceList[0] + '</span>';
