@@ -35944,11 +35944,11 @@ const packs = function () {
     for (var i in MiNikill.character) {
         if (!MiNikill.character[i][4]) MiNikill.character[i][4] = [];
         if (MiNikill.translate[i]) {
-            if (MiNikill.translate[i].indexOf('欢杀神') == 0) MiNikill.translate[i + '_prefix'] = '欢杀神';
-            else if (MiNikill.translate[i].indexOf('SP欢杀神') == 0) MiNikill.translate[i + '_prefix'] = 'SP欢杀神';
-            else if (MiNikill.translate[i].indexOf('欢杀谋') == 0) MiNikill.translate[i + '_prefix'] = '欢杀谋';
+            if (MiNikill.translate[i].indexOf('欢杀神') == 0) MiNikill.translate[i + '_prefix'] = '欢杀|神';
+            else if (MiNikill.translate[i].indexOf('SP欢杀神') == 0) MiNikill.translate[i + '_prefix'] = 'SP|欢杀|神';
+            else if (MiNikill.translate[i].indexOf('欢杀谋') == 0) MiNikill.translate[i + '_prefix'] = '欢杀|谋';
             else if (MiNikill.translate[i].indexOf('欢杀') == 0) MiNikill.translate[i + '_prefix'] = '欢杀';
-            else if (MiNikill.translate[i].indexOf('SP欢杀') == 0) MiNikill.translate[i + '_prefix'] = 'SP欢杀';
+            else if (MiNikill.translate[i].indexOf('SP欢杀') == 0) MiNikill.translate[i + '_prefix'] = 'SP|欢杀';
             else if (MiNikill.translate[i].indexOf('喵') == 0) MiNikill.translate[i + '_prefix'] = '喵';
             else if (MiNikill.translate[i].indexOf('念') == 0) MiNikill.translate[i + '_prefix'] = '念';
             else if (MiNikill.translate[i].indexOf('战') == 0) MiNikill.translate[i + '_prefix'] = '战';
@@ -35972,20 +35972,6 @@ const packs = function () {
         color: '#ff6a6a',
         nature: 'MXpink',
         showName: '欢',
-    });
-    lib.namePrefix.set('SP欢杀', {
-        color: '#fdd559',
-        nature: 'soilmm',
-        getSpan: (prefix, name) => `${get.prefixSpan('SP')}${get.prefixSpan('欢杀')}`,
-    });
-    lib.namePrefix.set('欢杀神', {
-        getSpan: (prefix, name) => `${get.prefixSpan('欢杀')}${get.prefixSpan('神')}`,
-    });
-    lib.namePrefix.set('SP欢杀神', {
-        getSpan: (prefix, name) => `${get.prefixSpan('SP')}${get.prefixSpan('欢杀')}${get.prefixSpan('神')}`,
-    });
-    lib.namePrefix.set('欢杀谋', {
-        getSpan: (prefix, name) => `${get.prefixSpan('欢杀')}${get.prefixSpan('谋')}`,
     });
     lib.config.all.characters.push('MiNikill');
     lib.config.all.sgscharacters.push('MiNikill');

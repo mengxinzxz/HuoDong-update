@@ -12511,12 +12511,13 @@ const packs = function () {
     for (var i in WeChatkill.character) {
         if (!WeChatkill.character[i][4]) WeChatkill.character[i][4] = [];
         if (WeChatkill.translate[i]) {
-            if (WeChatkill.translate[i].indexOf('SP微信神') == 0) WeChatkill.translate[i + '_prefix'] = 'SP微信神';
-            else if (WeChatkill.translate[i].indexOf('微信神') == 0) WeChatkill.translate[i + '_prefix'] = '微信神';
-            else if (WeChatkill.translate[i].indexOf('微信☆') == 0) WeChatkill.translate[i + '_prefix'] = '微信☆';
-            else if (WeChatkill.translate[i].indexOf('微信谋') == 0) WeChatkill.translate[i + '_prefix'] = '微信谋';
+            if (WeChatkill.translate[i].indexOf('SP微信神') == 0) WeChatkill.translate[i + '_prefix'] = 'SP|微信|神';
+            else if (WeChatkill.translate[i].indexOf('微信神') == 0) WeChatkill.translate[i + '_prefix'] = '微信|神';
+            else if (WeChatkill.translate[i].indexOf('微信☆') == 0) WeChatkill.translate[i + '_prefix'] = '微信|☆';
+            else if (WeChatkill.translate[i].indexOf('微信谋') == 0) WeChatkill.translate[i + '_prefix'] = '微信|谋';
+            else if (WeChatkill.translate[i].indexOf('微信界') == 0) WeChatkill.translate[i + '_prefix'] = '微信|界';
             else if (WeChatkill.translate[i].indexOf('微信') == 0) WeChatkill.translate[i + '_prefix'] = '微信';
-            else if (WeChatkill.translate[i].indexOf('SP微信') == 0) WeChatkill.translate[i + '_prefix'] = 'SP微信';
+            else if (WeChatkill.translate[i].indexOf('SP微信') == 0) WeChatkill.translate[i + '_prefix'] = 'SP|微信';
             else if (WeChatkill.translate[i].indexOf('极') == 0) WeChatkill.translate[i + '_prefix'] = '极';
         }
         if (i.startsWith('wechat_') && !WeChatkill.character[i][4].some(tag => typeof tag == 'string' && tag.startsWith('die:'))) WeChatkill.character[i][4].push('die:' + i.slice(7));
@@ -12530,24 +12531,6 @@ const packs = function () {
         color: '#00cd00',
         nature: 'MXgreen',
         showName: '微',
-    });
-    lib.namePrefix.set('SP微信', {
-        getSpan: (prefix, name) => `${get.prefixSpan('SP')}${get.prefixSpan('微信')}`,
-    });
-    lib.namePrefix.set('微信神', {
-        getSpan: (prefix, name) => `${get.prefixSpan('微信')}${get.prefixSpan('神')}`,
-    });
-    lib.namePrefix.set('SP微信神', {
-        getSpan: (prefix, name) => `${get.prefixSpan('SP')}${get.prefixSpan('微信')}${get.prefixSpan('神')}`,
-    });
-    lib.namePrefix.set('微信☆', {
-        getSpan: (prefix, name) => `${get.prefixSpan('微信')}${get.prefixSpan('☆')}`,
-    });
-    lib.namePrefix.set('微信谋', {
-        getSpan: (prefix, name) => `${get.prefixSpan('微信')}${get.prefixSpan('谋')}`,
-    });
-    lib.namePrefix.set('微信界', {
-        getSpan: (prefix, name) => `${get.prefixSpan('微信')}${get.prefixSpan('界')}`,
     });
     lib.config.all.characters.push('WeChatkill');
     lib.config.all.sgscharacters.push('WeChatkill');

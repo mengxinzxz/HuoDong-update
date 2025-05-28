@@ -1631,12 +1631,6 @@ export function content(config, pack) {
 		nature: 'black',
 		showName: '废',
 	});
-	lib.namePrefix.set('废案神', {
-		getSpan: (prefix, name) => `${get.prefixSpan('废案')}${get.prefixSpan('神')}`,
-	});
-	lib.namePrefix.set('旧OL', {
-		getSpan: (prefix, name) => `${get.prefixSpan('旧')}${get.prefixSpan('OL')}`,
-	});
 	//删除翻译
 	delete lib.translate.sp_shenpei_prefix;
 	delete lib.translate.jin_xiahouhui_prefix;
@@ -1757,9 +1751,9 @@ export function content(config, pack) {
 		bfake_sundeng: '废案孙登',
 		bfake_sundeng_prefix: '废案',
 		old_shen_sunquan: '废案神孙权',
-		old_shen_sunquan_prefix: '废案神',
+		old_shen_sunquan_prefix: '废案|神',
 		old_shen_ganning: '废案神甘宁',
-		old_shen_ganning_prefix: '废案神',
+		old_shen_ganning_prefix: '废案|神',
 		bol_sp_huaxin: '废案华歆',
 		bol_sp_huaxin_prefix: '废案',
 		bfake_chengui: '废案陈珪',
@@ -1770,7 +1764,7 @@ export function content(config, pack) {
 		ol_shen_dianwei: 'OL神典韦',
 		ol_shen_dianwei_prefix: 'OL神',
 		old_ol_yuanji: '旧OL袁姬',
-		old_ol_yuanji_prefix: '旧OL',
+		old_ol_yuanji_prefix: '旧|OL',
 		'#ext:活动武将/audio/die/old_xunchen:die': 'undefined',
 		'#ext:活动武将/audio/die/old_dengai:die': 'undefined',
 		old_sp_jianggan: '旧蒋干',

@@ -4632,16 +4632,13 @@ const packs = function () {
         if (!MX_feihongyinxue.character[i][4].some(tag => tag.indexOf('die:') == 0)) MX_feihongyinxue.character[i][4].add('die:' + i.slice(6));
         //MX_feihongyinxue.translate[i+'_ab']=MX_feihongyinxue.translate[i].slice(2);
         var trans = MX_feihongyinxue.translate[i];
-        if (trans.indexOf('飞鸿神') == 0) MX_feihongyinxue.translate[i + '_prefix'] = trans.slice(0, 3);
+        if (trans.indexOf('飞鸿神') == 0) MX_feihongyinxue.translate[i + '_prefix'] = '飞鸿|神';
         else MX_feihongyinxue.translate[i + '_prefix'] = trans.slice(0, 2);
     }
     lib.namePrefix.set('飞鸿', {
         color: '#ff6a6a',
         nature: 'IndianRed1',
         showName: '鸿',
-    });
-    lib.namePrefix.set('飞鸿神', {
-        getSpan: () => `${get.prefixSpan('飞鸿')}${get.prefixSpan('神')}`
     });
     lib.config.all.characters.push('MX_feihongyinxue');
     lib.config.all.sgscharacters.push('MX_feihongyinxue');

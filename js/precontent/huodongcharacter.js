@@ -39,11 +39,11 @@ const packs = function () {
             lz_huangquan: ['male', 'wei', 3, ['lzdianhu', 'xinfu_jianji'], ['character:xf_huangquan', 'doublegroup:wei:shu', 'die:xf_huangquan']],
             bilibili_adong: ['male', 'qun', 4, ['jueman', 'oljianman'], ['die:ahuinan', 'die:dongtuna', 'name:null|null']],
             old_zuoci: ['male', 'qun', 3, ['gz_huashen', 'gz_xinsheng']],
-            bilibili_shengxunyu: ['male', 'key', 4, ['bilibili_hehu', 'bilibili_jinyan', 'bilibili_yutai'], ['clan:宿舍群', 'clan:肘击群', 'name:熏|鱼']],
-            bilibili_Firewin: ['male', 'key', 4, ['jsrgfeiyang', 'jsrgbahu', 'bilibili_tixiang'], ['clan:宿舍群', 'clan:肘击群', 'clan:活动群', 'name:火|赢']],
+            bilibili_shengxunyu: ['male', 'key', 4, ['bilibili_hehu', 'bilibili_jinyan', 'bilibili_yutai'], ['clan:宿舍群|肘击群', 'name:熏|鱼']],
+            bilibili_Firewin: ['male', 'key', 4, ['jsrgfeiyang', 'jsrgbahu', 'bilibili_tixiang'], ['clan:宿舍群|肘击群|活动群', 'name:火|赢']],
             bilibili_jinglingqiu: ['male', 'key', '3/4', ['bilibili_tiyi', 'bilibili_zili'], ['clan:活动群', 'name:精灵|球']],
-            bilibili_suixingsifeng: ['female', 'key', 4, ['bilibili_liaoxing', 'bilibili_daili', 'bilibili_chouhua', 'bilibili_duoyang'], ['clan:肘家军', 'clan:宿舍群', 'clan:肘击群', 'clan:活动群', 'name:萌新|转型中']],
-            bilibili_Emptycity: ['male', 'key', 4, ['bilibili_zhiyou', 'bilibili_guanli'], ['clan:活动群', 'clan:Thunder群', 'name:空|城']],
+            bilibili_suixingsifeng: ['female', 'key', 4, ['bilibili_liaoxing', 'bilibili_daili', 'bilibili_chouhua', 'bilibili_duoyang'], ['clan:肘家军|宿舍群|肘击群|活动群', 'name:萌新|转型中']],
+            bilibili_Emptycity: ['male', 'key', 4, ['bilibili_zhiyou', 'bilibili_guanli'], ['clan:活动群|Thunder群', 'name:空|城']],
             bilibili_thunderlei: ['male', 'key', '2/4/3', ['bilibili_Thunder', 'bilibili_qianxi'], ['clan:Thunder群', 'name:雷|null']],
             bilibili_zhengxuan: ['male', 'qun', 3, ['bilibili_zhengjing'], ['character:zhengxuan', 'die:zhengxuan']],
             bilibili_lonelypatients: ['male', 'key', 4, ['bilibili_meihua', 'bilibili_gongyou'], ['clan:活动群', 'name:独孤|null']],
@@ -51,13 +51,13 @@ const packs = function () {
             bilibili_shen_guojia: ['male', 'wei', '9/9/5', ['stianyi', 'resghuishi', 'bilibili_huishi'], ['doublegroup:shen:wei:wu', 'die:shen_guojia']],
             bilibili_re_xusheng: ['male', 'wu', 4, ['bilibili_pojun', 'kuangcai', 'bilibili_baodao'], ['die:re_xusheng']],
             bilibili_xushao: ['male', 'qun', '1/6', ['bilibili_pingjian'], ['ext:活动武将/image/character/old_xushao.jpg', 'InitFilter:noZhuHp']],
-            bilibili_ningjingzhiyuan: ['male', 'key', 4, ['bilibili_liaoxing', 'bilibili_xiezhi', 'bilibili_fazhou'], ['clan:肘家军', 'clan:宿舍群', 'clan:肘击群', 'clan:活动群', 'name:闹动|导近']],
-            bilibili_xizhicaikobe: ['male', 'key', 4, ['bilibili_biexiao', 'bilibili_xingshi', 'bilibili_zhangcai'], ['doublegroup:wei:shu:wu:qun:jin', 'clan:肘家军', 'clan:肘击群', 'clan:活动群', 'name:戏|子宓']],
-            bilibili_yanjing: ['male', 'key', 3, ['bilibili_dongxi', 'bilibili_mingcha', 'bilibili_huiyan'], ['clan:宿舍群', 'clan:肘击群', 'clan:活动群', 'name:tooenough|眼睛']],
+            bilibili_ningjingzhiyuan: ['male', 'key', 4, ['bilibili_liaoxing', 'bilibili_xiezhi', 'bilibili_fazhou'], ['clan:肘家军|宿舍群|肘击群|活动群', 'name:闹动|导近']],
+            bilibili_xizhicaikobe: ['male', 'key', 4, ['bilibili_biexiao', 'bilibili_xingshi', 'bilibili_zhangcai'], ['doublegroup:wei:shu:wu:qun:jin', 'clan:肘家军|肘击群|活动群', 'name:戏|子宓']],
+            bilibili_yanjing: ['male', 'key', 3, ['bilibili_dongxi', 'bilibili_mingcha', 'bilibili_huiyan'], ['clan:宿舍群|肘击群|活动群', 'name:tooenough|眼睛']],
             bilibili_caifuren: ['female', 'qun', 3, ['bilibili_kuilei'], ["name:蔡|null"]],
             bilibili_nanhualaoxian: ['male', 'qun', 4, ['bilibili_qingshu', 'olshoushu', 'olhedao'], ['die:ol_nanhualaoxian', 'name:庄|周']],
-            bilibili_xiaoyaoruyun: ['female', 'key', 4, ['bilibili_chuandu', 'bilibili_huaikui', 'bilibili_xyduoyang'], ['clan:宿舍群', 'clan:肘击群', 'clan:活动群', 'name:鹿都|智川介']],
-            bilibili_shuijiaobuboli: ['female', 'key', '3/4', ['bilibili_qicai', 'bilibili_jizhi', 'bilibili_fengliang', 'bilibili_guiyin'], ['clan:宿舍群', 'clan:活动群', 'name:黄|月英']],
+            bilibili_xiaoyaoruyun: ['female', 'key', 4, ['bilibili_chuandu', 'bilibili_huaikui', 'bilibili_xyduoyang'], ['clan:宿舍群|肘击群|活动群', 'name:鹿都|智川介']],
+            bilibili_shuijiaobuboli: ['female', 'key', '3/4', ['bilibili_qicai', 'bilibili_jizhi', 'bilibili_fengliang', 'bilibili_guiyin'], ['clan:宿舍群|活动群', 'name:黄|月英']],
             bilibili_kuailiangkuaiyue: ['male', 'qun', 4, ['bilibili_chouhua'], ['character:kuailiangkuaiyue']],
             //千里走单骑
             DJ_caiyang: ['male', 'qun', 1, ['yinka', 'zhuixi'], ['character:caiyang']],
@@ -10495,9 +10495,9 @@ const packs = function () {
                     return game.filterPlayer(target => {
                         if (target === player) return false;
                         if (!player.storage.old_jinghua && target.isHealthy()) return false;
-                        const cards = event.getg(target);
-                        if (!cards.length || event.giver === player) return true;
-                        return event.getl && event.getl(player)?.cards2?.some(card => cards.includes(card));
+                        const cards = event.getg?.(target);
+                        if (!cards?.length || event.giver === player) return true;
+                        return event.getl?.(player)?.cards2?.some(card => cards?.includes(card));
                     }).sortBySeat();
                 },
                 logTarget: (event, player, triggername, target) => target,
@@ -10519,7 +10519,7 @@ const packs = function () {
                         },
                         filter(event, player) {
                             if (player.countCards('h') || player.storage.old_jinghua) return false;
-                            return event.getl(player)?.hs?.length > 0;
+                            return event.getl?.(player)?.hs?.length > 0;
                         },
                         skillAnimation: true,
                         animationColor: 'wood',
@@ -11528,7 +11528,7 @@ const packs = function () {
             bilibili_pingjian: '评鉴',
             bilibili_pingjian_info: '持恒技，锁定技。游戏开始时，或当你的随从武将牌阵亡后，你减1点体力上限，从随机每个势力的各随机两张武将牌中选择一张武将牌作为随从武将牌，然后你将武将牌替换为此随从。（随从武将牌初始2血2上限4手牌，每个势力的武将牌每局游戏只能选择一次）',
             bfake_shen_jiaxu: '蝶设神贾诩',
-            bfake_shen_jiaxu_prefix: '蝶设神',
+            bfake_shen_jiaxu_prefix: '蝶设|神',
             boljiandai: '缄殆',
             boljiandai_info: '锁定技，你的武将牌始终背面朝下。',
             boljiandai_info_guozhan: '锁定技，你的武将牌始终叠置。',
@@ -11546,7 +11546,7 @@ const packs = function () {
             bolxiongsuan: '凶算',
             bolxiongsuan_info: '限定技，出牌阶段，你可以弃置一张手牌并对一名与你势力相同的角色造成1点伤害，然后摸三张牌。若该角色有已发动的限定技，你选择其中一个限定技并于此回合结束时复原之。',
             bfake_shen_zhangfei: '蝶设神张飞',
-            bfake_shen_zhangfei_prefix: '蝶设神',
+            bfake_shen_zhangfei_prefix: '蝶设|神',
             bolbaohe: '暴喝',
             bolbaohe_info: '锁定技。①你的锦囊牌均视为无次数限制的无属性【杀】。②你使用牌造成的伤害改为此牌对应的所有实体牌的牌名字数之和。',
             bolrenhai: '人骇',
@@ -11554,7 +11554,7 @@ const packs = function () {
             boltiandong: '天动',
             boltiandong_info: '锁定技，准备阶段，你令场上所有拥有因〖人骇〗获得技能的角色失去因〖人骇〗获得的技能，然后你随机获得牌堆中X张点数最大的牌（X为你本次移去的技能数），然后你选择一项：①将武将牌翻面；②复原〖人骇〗。',
             bfake_shen_zhangjiao: '蝶设神张角',
-            bfake_shen_zhangjiao_prefix: '蝶设神',
+            bfake_shen_zhangjiao_prefix: '蝶设|神',
             bolyifu: '蚁附',
             bolyifu_info: '转换技。①一名角色可以将一张基本牌当作{天，【闪电】；地，【随机应变】；人，【铁索连环】}使用。②当你成为〖蚁附①〗转化的牌的目标后，你摸一张牌。',
             boltianjie: '天劫',
@@ -11684,9 +11684,6 @@ const packs = function () {
         color: '#ff6a6a',
         nature: 'MXpink',
         showName: '蝶',
-    });
-    lib.namePrefix.set('蝶设神', {
-        getSpan: (prefix, name) => `${get.prefixSpan('蝶设')}${get.prefixSpan('神')}`,
     });
     lib.config.all.characters.push('huodongcharacter');
     lib.config.all.sgscharacters.push('huodongcharacter');
