@@ -9916,7 +9916,7 @@ const packs = function () {
                     player.addTempSkill('wechatqumou_ban');
                     player.markAuto('wechatqumou_ban', [type]);
                     player.addSkill('wechatqumou_eff');
-                    player.addMark('wechatqumou_eff_' + eff, 2, false);
+                    player.addMark('wechatqumou_eff_' + eff, 3, false);
                     player.markSkill('wechatqumou_eff');
                 },
                 subSkill: {
@@ -12423,7 +12423,7 @@ const packs = function () {
             wechatgujin: '鼓进',
             wechatgujin_info: '①一名角色的回合结束时，若你本回合未成为过其他角色使用牌的目标，则你获得1点' + get.MouLveInform() + '。②当你抵消其他角色使用的【杀】后，你获得2点' + get.MouLveInform() + '。',
             wechatqumou: '屈谋',
-            wechatqumou_info: '出牌阶段开始时，你可以令你本回合无法使用、打出、弃置基本牌/锦囊牌。若如此做，你使用的下两张锦囊牌/基本牌无距离和任何次数限制且可以额外指定一个目标。',
+            wechatqumou_info: '出牌阶段开始时，你可以令你本回合无法使用、打出、弃置基本牌/锦囊牌。若如此做，你使用的下三张锦囊牌/基本牌无距离和任何次数限制且可以额外指定一个目标。',
             wechat_zhiyin_zhurong: '极祝融',
             wechatxiangwei: '象威',
             wechatxiangwei_info: '准备阶段，你可以视为使用【南蛮入侵】。然后你选择一项：①本回合对未受到此牌造成的伤害的角色使用牌无任何次数限制；②本回合使用的下X张【杀】造成的伤害+1（X为受到此牌造成的伤害的角色数）。',
