@@ -7590,10 +7590,31 @@ const packs = function () {
             },
             wechatrexuehen: {
                 audio: 'xueji',
-                inherit: 'xueji',
-                filter: () => true,
-                filterCard: () => false,
-                selecrCard: -1,
+                enable: 'phaseUse',
+                usable: 1,
+                filterTarget: true,
+                selectTarget() {
+                    const player = get.player();
+                    return [1, Math.max(1, player.getDamagedHp())];
+                },
+                multitarget: true,
+                multiline: true,
+                line: 'fire',
+                async content(event, trigger, player) {
+                    const { targets } = event;
+                    for (const i of targets.sortBySeat()) await i.link(true);
+                    await targets[0].damage('fire', 'nocard');
+                },
+                ai: {
+                    order: 7,
+                    result: {
+                        target(player, target) {
+                            const eff = get.damageEffect(target, player, target, "fire");
+                            if (target.isLinked()) return eff / 10;
+                            return eff;
+                        },
+                    },
+                },
             },
             wechathuxiao: {
                 inherit: 'oldhuxiao',
