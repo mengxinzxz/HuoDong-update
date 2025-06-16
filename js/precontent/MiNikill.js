@@ -6173,6 +6173,15 @@ const packs = function () {
             minisbxianmou: {
                 audio: 'ext:活动武将/audio/skill:2',
                 inherit: 'xianmou',
+                getNum(player) {
+                    let num = 0;
+                    player.getHistory('lose', evt => {
+                        const evt2 = evt.getParent();
+                        if (evt2.name == 'useCard' && evt2.player == player && get.type(evt2.card, null, false) == 'equip') return;
+                        if (evt.cards2?.length) num += evt.cards2.length;
+                    });
+                    return num;
+                },
                 zhuanhuanji(player, skill) {
                     player.storage[skill] = !player.storage[skill];
                     player.changeSkin({ characterName: 'Mbaby_sb_guojia' }, 'Mbaby_sb_guojia' + (player.storage[skill] ? '_shadow' : ''));
