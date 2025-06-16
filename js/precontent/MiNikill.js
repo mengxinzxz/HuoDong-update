@@ -33837,7 +33837,10 @@ const packs = function () {
                                 });
                             }
                             else {
-                                game.broadcastAll(() => ui._minifightdingjun_dingjunshan.remove());
+                                game.broadcastAll(() => {
+                                    ui._minifightdingjun_dingjunshan.remove();
+                                    delete ui._minifightdingjun_dingjunshan;
+                                });
                             }
                         },
                     },
