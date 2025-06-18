@@ -366,7 +366,7 @@ const packs = function () {
             Mbaby_shen_luxun: ['male', 'shen', 4, ['nzry_junlve', 'minicuike', 'nzry_dinghuo'], ['wu']],
             Mbaby_shen_pangtong: ['male', 'shen', 4, ['minilunce', 'minilanhai'], ['shu', 'die:true']],
             Mbaby_jingwei: ['female', 'shen', 4, ['minitianhai', 'minihaiku']],
-            Mbaby_shen_lusu: ['male', 'shen', 3, ['tamo', 'minidingzhou', 'minizhimeng'], ['wu', 'die:true']],
+            Mbaby_shen_lusu: ['male', 'shen', 3, ['tamo', 'minidingzhou', 'zhimeng'], ['wu', 'die:true']],
             //喵
             Mmiao_caiwenji: ['female', 'qun', 3, ['minimiaobeige', 'minimiaoduanchang', 'minidoumao'], ['name:蔡|琰']],
             Mmiao_diaochan: ['female', 'qun', 3, ['minimiaolijian', 'minimiaobiyue', 'minidoumao']],
@@ -31469,7 +31469,7 @@ const packs = function () {
                         await player.gain(cards, 'give', target);
                         if (player.countCards('he')) await player.chooseToGive(target, 'he', cards.length, true).set('ai', card => {
                             const { player, target } = get.event();
-                            if (player.hasSkill('minizhimeng') && get.position(card) == 'e') return 10;
+                            if (player.hasSkill('zhimeng') && get.position(card) == 'e') return 10;
                             return 6 - get.value(card);
                         });
                     }
@@ -31481,7 +31481,7 @@ const packs = function () {
                             let eff = 0;
                             if (ui.selected.cards.length) eff = ui.selected.cards.map(card => get.value(card)).reduce((p, c) => p + c, 0);
                             else eff = -target.getGainableCards(player, 'h').map(card => get.value(card)).reduce((p, c) => p + c, 0);
-                            if (player.hasSkill('minizhimeng')) eff *= 1 + get.sgnAttitude(player, target) * 0.15;
+                            if (player.hasSkill('zhimeng')) eff *= 1 + get.sgnAttitude(player, target) * 0.15;
                             if (ui.selected.cards.length) {
                                 const es = target.getCards('e'), js = target.getCards('j');
                                 es.forEach(card => {
@@ -31495,64 +31495,6 @@ const packs = function () {
                         },
                     },
                 },
-            },
-            minizhimeng: {
-                audio: 'zhimeng',
-                trigger: { player: 'phaseAfter' },
-                filter(event, player) {
-                    return game.hasPlayer(target => {
-                        if (target.countCards('h') + player.countCards('h') == 0) return false;
-                        return target != player;
-                    });
-                },
-                async cost(event, trigger, player) {
-                    event.result = await player.chooseTarget(get.prompt(event.skill), '与一名其他角色平分手牌', (card, player, target) => {
-                        if (target.countCards('h') + player.countCards('h') == 0) return false;
-                        return target != player;
-                    }).set('ai', target => {
-                        const player = get.player();
-                        const pvalue = -player.getCards('h').map(card => get.value(card, player)).reduce((p, c) => p + c, 0);
-                        const tvalue = -target.getCards('h').map(card => get.value(card, target)).reduce((p, c) => p + c, 0) * get.sgnAttitude(player, target);
-                        return (pvalue + tvalue) / 2;
-                    }).forResult();
-                },
-                async content(event, trigger, player) {
-                    const { targets: [target] } = event;
-                    if ([player, target].every(current => !current.countCards('h'))) return;
-                    const lose_list = [];
-                    let cards = [];
-                    [player, target].forEach(current => {
-                        const hs = current.getCards('h');
-                        if (hs.length) {
-                            cards.addArray(hs);
-                            current.$throw(hs.length, 500);
-                            game.log(current, '将', get.cnNumber(hs.length), '张牌置入了处理区');
-                            lose_list.push([current, hs]);
-                        }
-                    });
-                    await game.loseAsync({
-                        lose_list: lose_list,
-                    }).setContent('chooseToCompareLose');
-                    await game.delay();
-                    cards = cards.filterInD();
-                    const pcards = cards.randomGets(Math.ceil(cards.length / 2));
-                    const tcards = cards.removeArray(pcards);
-                    const list = [];
-                    if (pcards.length) {
-                        list.push([player, pcards]);
-                        game.log(player, '获得了', get.cnNumber(pcards.length), '张牌');
-                    }
-                    if (tcards.length) {
-                        list.push([target, tcards]);
-                        game.log(target, '获得了', get.cnNumber(tcards.length), '张牌');
-                    }
-                    await game.loseAsync({
-                        gain_list: list,
-                        player: player,
-                        animate: 'draw',
-                    }).setContent('gaincardMultiple');
-                },
-                ai: { threaten: 4 },
             },
             //喵
             //核心逗猫
@@ -35990,8 +35932,6 @@ const packs = function () {
             minihaiku_info: '锁定技。若所有的点数均被〖填海①〗记录，其他角色于摸牌阶段外获得牌后弃置这些牌，然后你获得这些牌中位于弃牌堆的牌。',
             minidingzhou: '定州',
             minidingzhou_info: '出牌阶段限一次。你可以选择一项：1.将X张牌交给一名场上有牌的其他角色，然后你获得其场上的所有牌（X为其场上的牌数）；2.获得一名其他角色的所有手牌，然后交给其等量张牌。',
-            minizhimeng: '智盟',
-            minizhimeng_info: '回合结束后，你可以选择一名其他角色。若如此做，你与其将各自所有手牌置于处理区，然后你随机获得这些牌中的一半（向上取整），其获得剩余的牌。',
             //喵
             Mmiao_caiwenji: '喵蔡琰',
             Mmiao_diaochan: '喵貂蝉',
