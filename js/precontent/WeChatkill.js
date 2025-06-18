@@ -170,7 +170,7 @@ const packs = function () {
             wechat_zhiyin_xinxianying: ['female', 'wei', 3, ['wechatyanzheng', 'wechatgaojie'], ['die:true']],
             wechat_zhiyin_zhaoyun: ['male', 'shu', 4, ['wechatlongyi', 'wechattalan', 'wechatjueya'], ['die:true']],
             wechat_zhiyin_dianwei: ['male', 'wei', '4/5', ['wechatkangyong', 'wechatjiuqu'], ['die:true']],
-            wechat_zhiyin_xunyou: ['male', 'wei', 3, ['wechatweiimo', 'wechatlance'], ['die:true']],
+            wechat_zhiyin_xunyou: ['male', 'wei', 3, ['wechatweimo', 'wechatlance'], ['die:true']],
             wechat_zhiyin_sunshangxiang: ['female', 'wu', 3, ['wechatxiaojie', 'wechatjiaohao'], ['die:true']],
             //谋攻
             wechat_sb_sunshangxiang: ['female', 'shu', 3, ['wechatsbliangzhu', 'wechatsbjieyin'], ['border:wu']],
@@ -12090,7 +12090,7 @@ const packs = function () {
                 },
             },
             // 极荀攸
-            wechatweiimo: {
+            wechatweimo: {
                 audio: 'ext:活动武将/audio/skill:2',
                 trigger: {
                     global: 'phaseBefore',
@@ -12120,34 +12120,34 @@ const packs = function () {
                     const cards = player.getExpansions(skill);
                     if (cards.length) player.loseToDiscardpile(cards);
                 },
-                group: 'wechatweiimo_effect',
+                group: 'wechatweimo_effect',
                 subSkill: {
                     effect: {
-                        audio: 'wechatweiimo',
+                        audio: 'wechatweimo',
                         trigger: {
                             player: 'loseAfter',
                             global: ['equipAfter', 'addJudgeAfter', 'gainAfter', 'loseAsyncAfter', 'addToExpansionAfter'],
                         },
                         filter(event, player) {
-                            if (player.countExpansions('wechatweiimo') !== player.countCards('h')) return false;
+                            if (player.countExpansions('wechatweimo') !== player.countCards('h')) return false;
                             const bool = (event.getl?.(player)?.hs?.length || event.getg?.(player)?.length);
                             if (bool) return true;
                             if (event.name == 'addToExpansion') {
-                                return event.gaintag.includes('wechatweiimo') && event.player == player;
+                                return event.gaintag.includes('wechatweimo') && event.player == player;
                             }
                             if (event.name == 'lose' && event.getlx !== false) {
-                                return Object.values(evt.gaintag_map).flat().includes('wechatweiimo');
+                                return Object.values(evt.gaintag_map).flat().includes('wechatweimo');
                             }
                             return game.getGlobalHistory('cardMove', evt => {
                                 if (evt.name != 'lose' || event != evt.getParent() || evt.player !== player) return false;
-                                return Object.values(evt.gaintag_map).flat().includes('wechatweiimo');
+                                return Object.values(evt.gaintag_map).flat().includes('wechatweimo');
                             }).length > 0;
                         },
                         forced: true,
                         locked: false,
                         async content(event, trigger, player) {
                             await player.draw();
-                            const cards = player.getExpansions('wechatweiimo');
+                            const cards = player.getExpansions('wechatweimo');
                             if (player.isPhaseUsing() && cards.length) {
                                 const result = cards.length == 1 ? { bool: true, links: cards } : await player.chooseButton(['获得其中一张牌', cards], true).set('ai', button => {
                                     return get.value(button.link);
@@ -12178,7 +12178,7 @@ const packs = function () {
                 lose: false,
                 async content(event, trigger, player) {
                     const next = player.addToExpansion(event.cards, player, 'give');
-                    next.gaintag.add('wechatweiimo');
+                    next.gaintag.add('wechatweimo');
                     await next;
                     const num = game.countPlayer(current => player.canUse(event.cards[0], current));
                     if (!num) return;
@@ -12200,7 +12200,7 @@ const packs = function () {
                     }
                 },
                 ai: {
-                    combo: 'wechatweiimo',
+                    combo: 'wechatweimo',
                     order: 9,
                     result: { player: 1 },
                 },
@@ -13137,8 +13137,8 @@ const packs = function () {
             wechatjiuqu: '就躯',
             wechatjiuqu_info: '每回合限一次。当你进入濒死状态时，你可以判定。若判定结果的花色与当前回合角色本回合使用过的牌花色均不同，你回复1点体力。',
             wechat_zhiyin_xunyou: '极荀攸',
-            wechatweiimo: '帷谟',
-            wechatweiimo_info: '①游戏开始时，你将手牌摸至场上角色数，然后你将X张牌置于武将牌上，称为“帷谟”（X为你手牌数的一半，且向下取整）。②当你的“帷谟”牌数或手牌数变化后，若二者数量相同，你摸一张牌。然后若此时在你的出牌阶段内，你获得武将牌上的一张“帷谟”',
+            wechatweimo: '帷谟',
+            wechatweimo_info: '①游戏开始时，你将手牌摸至场上角色数，然后你将X张牌置于武将牌上，称为“帷谟”（X为你手牌数的一半，且向下取整）。②当你的“帷谟”牌数或手牌数变化后，若二者数量相同，你摸一张牌。然后若此时在你的出牌阶段内，你获得武将牌上的一张“帷谟”',
             wechatlance: '览策',
             wechatlance_info: '出牌阶段限一次，你可以将一张牌A置于武将牌上，称为“帷谟”。然后你可以视为使用一张普通锦囊牌（此牌合法目标数须不大于A的合法目标数）。',
             wechat_zhiyin_sunshangxiang: '极孙尚香',
