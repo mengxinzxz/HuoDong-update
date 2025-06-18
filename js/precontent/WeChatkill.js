@@ -12149,7 +12149,7 @@ const packs = function () {
                             await player.draw();
                             const cards = player.getExpansions('wechatweiimo');
                             if (player.isPhaseUsing() && cards.length) {
-                                const result = cards.length == 1 ? { bool: true, links: cards } : await player.chooseButton(['获得其中一张牌', player.cards.length], true).set('ai', button => {
+                                const result = cards.length == 1 ? { bool: true, links: cards } : await player.chooseButton(['获得其中一张牌', cards], true).set('ai', button => {
                                     return get.value(button.link);
                                 }).forResult();
                                 if (result?.bool && result?.links?.length) {
@@ -12169,6 +12169,8 @@ const packs = function () {
                 },
                 filterCard: true,
                 check(card) {
+                    const player = get.player();
+                    if (player.hasUseTarget(card)) return 8;
                     return 6 - get.value(card);
                 },
                 position: 'he',
@@ -12178,7 +12180,7 @@ const packs = function () {
                     const next = player.addToExpansion(event.cards, player, 'give');
                     next.gaintag.add('wechatweiimo');
                     await next;
-                    const num = player.countExpansions('wechatweiimo');
+                    const num = game.countPlayer(current => player.canUse(event.cards[0], current));
                     if (!num) return;
                     const list = get.inpileVCardList(info => {
                         if (info[0] != 'trick' || !player.hasUseTarget(info[2])) return false;
@@ -13138,7 +13140,7 @@ const packs = function () {
             wechatweiimo: '帷谟',
             wechatweiimo_info: '①游戏开始时，你将手牌摸至场上角色数，然后你将X张牌置于武将牌上，称为“帷谟”（X为你手牌数的一半，且向下取整）。②当你的“帷谟”牌数或手牌数变化后，若二者数量相同，你摸一张牌。然后若此时在你的出牌阶段内，你获得武将牌上的一张“帷谟”',
             wechatlance: '览策',
-            wechatlance_info: '出牌阶段限一次，你可以将一张牌置于武将牌上，称为“帷谟”。然后你可以视为使用一张普通锦囊牌（此牌合法目标数须不大于你武将牌上的“帷谟”牌数）。',
+            wechatlance_info: '出牌阶段限一次，你可以将一张牌A置于武将牌上，称为“帷谟”。然后你可以视为使用一张普通锦囊牌（此牌合法目标数须不大于A的合法目标数）。',
             wechat_zhiyin_sunshangxiang: '极孙尚香',
             wechatxiaojie: '枭捷',
             wechatxiaojie_info: get.ShiwuInform() + '，出牌阶段，你可以弃置场上的一张牌并视为使用一张【杀】或【酒】，然后你与失去牌的角色本回合受到的伤害+1。若你以此法弃置了自己场上的牌，则此牌不计入次数。',
