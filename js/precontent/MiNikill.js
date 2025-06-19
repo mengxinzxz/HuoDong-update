@@ -366,7 +366,7 @@ const packs = function () {
             Mbaby_shen_luxun: ['male', 'shen', 4, ['nzry_junlve', 'minicuike', 'nzry_dinghuo'], ['wu']],
             Mbaby_shen_pangtong: ['male', 'shen', 4, ['minilunce', 'minilanhai'], ['shu', 'die:true']],
             Mbaby_jingwei: ['female', 'shen', 4, ['minitianhai', 'minihaiku']],
-            Mbaby_shen_lusu: ['male', 'shen', 3, ['tamo', 'minidingzhou', 'zhimeng'], ['wu', 'die:true']],
+            Mbaby_shen_lusu: ['male', 'shen', 3, ['tamo', 'minidingzhou', 'zhimeng'], ['wu']],
             //喵
             Mmiao_caiwenji: ['female', 'qun', 3, ['minimiaobeige', 'minimiaoduanchang', 'minidoumao'], ['name:蔡|琰']],
             Mmiao_diaochan: ['female', 'qun', 3, ['minimiaolijian', 'minimiaobiyue', 'minidoumao']],
