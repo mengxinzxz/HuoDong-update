@@ -6228,15 +6228,7 @@ const packs = function () {
                 trigger: { player: ['damageEnd', 'dying'] },
                 filter(event, player, name) {
                     if (event.name == 'damage') return event.num > 0;
-                    const history = game.getAllGlobalHistory();
-                    for (let i = history.length - 1; i >= 0; i--) {
-                        const evt = history[i]['everything'];
-                        for (let j = evt.length - 1; j >= 0; j--) {
-                            if (evt[j].name == 'dying' && evt[j].player == player && evt[j] != event) return false;
-                        }
-                        if (history[i].isRound) break;
-                    }
-                    return true;
+                    return game.getRoundHistory('everything', evt => evt.name == 'dying' && evt.player == player).indexOf(event) == 0;
                 },
                 getIndex(event, player, triggername) {
                     return event.num || 1;
