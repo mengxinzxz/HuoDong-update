@@ -5205,8 +5205,9 @@ const packs = function () {
                         animationColor: 'water',
                         async content(event, trigger, player) {
                             const { player: target } = trigger;
-                            const { result } = await target.chooseCard('he', [0, Math.ceil(target.countCards('h'))], get.prompt('old_fenchai'), '交给' + get.translation(player) + '至多' + get.cnNumber() + '张牌').set('ai', card => {
-                                if (_status.event.goon) return get.value(card);
+                            const num = Math.ceil(target.countCards('h'));
+                            const { result } = await target.chooseCard('he', [0, num], get.prompt('old_fenchai'), '交给' + get.translation(player) + '至多' + get.cnNumber(num) + '张牌').set('ai', card => {
+                                if (get.event('goon')) return get.value(card);
                                 return -1;
                             }).set('goon', get.attitude(target, player) > 0).set('forceDie', true);
                             if (result?.bool && result?.cards?.length) {
