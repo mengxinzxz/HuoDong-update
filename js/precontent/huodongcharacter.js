@@ -5138,10 +5138,7 @@ const packs = function () {
                 },
             },
             old_fenchai: {
-                group: ['old_fenchai_audio', 'old_fenchai_give'],
-                global: 'old_fenchai_global',
                 audio: 'clanfenchai',
-                inherit: 'clanfenchai',
                 init(player, skill) {
                     if (player.getStorage(skill).length > 0) return;
                     const history = player.getHistory('useSkill', evt => {
@@ -5152,33 +5149,41 @@ const packs = function () {
                         return targets?.some(i => player.differentSexFrom(i));
                     });
                     if (history.length) {
-                        const evt = history[0], targets = evt.targets;
+                        const { targets } = history[0];
                         player.markAuto(skill, targets.filter(i => player.differentSexFrom(i)));
                     }
                 },
+                trigger: { player: ['logSkillBegin', 'useSkill'] },
                 filter(event, player) {
                     if (event.type != 'player') return false;
-                    const targets = event.targets;
+                    const { targets } = event;
                     if (!targets?.length) return false;
                     const info = get.info(get.sourceSkillFor(event));
                     if (!info || info.charlotte) return false;
                     if (player.getStorage('old_fenchai').length) return false;
                     return targets.filter(i => player.differentSexFrom(i)).length > 0;
                 },
-                content() {
+                forced: true,
+                silent: true,
+                async content(event, trigger, player) {
                     player.markAuto(event.name, trigger.targets.filter(i => player.differentSexFrom(i)));
                 },
+                onremove: true,
+                marktext: '钗',
+                intro: { content: (storage, player) => '对象：' + get.translation(storage) },
+                group: ['old_fenchai_audio', 'old_fenchai_give'],
+                global: 'old_fenchai_global',
                 subSkill: {
                     audio: {
                         audio: 'clanfenchai',
                         trigger: { global: 'judge' },
                         filter(event, player) {
-                            return event.player == player || lib.skill.old_fenchai.getTargets(player).includes(event.player);
+                            return event.player == player || player.getStorage('old_fenchai').includes(event.player);
                         },
                         forced: true,
                         locked: false,
                         logTarget: 'player',
-                        content() { },
+                        async content(event, trigger, player) { },
                     },
                     global: {
                         mod: {
@@ -5198,18 +5203,17 @@ const packs = function () {
                         direct: true,
                         skillAnimation: true,
                         animationColor: 'water',
-                        content() {
-                            'step 0'
-                            trigger.player.chooseCard('he', [0, Math.ceil(trigger.player.countCards('h'))], get.prompt('old_fenchai'), '交给' + get.translation(player) + '至多' + get.cnNumber() + '张牌').set('ai', function (card) {
+                        async content(event, trigger, player) {
+                            const { player: target } = trigger;
+                            const { result } = await target.chooseCard('he', [0, Math.ceil(target.countCards('h'))], get.prompt('old_fenchai'), '交给' + get.translation(player) + '至多' + get.cnNumber() + '张牌').set('ai', card => {
                                 if (_status.event.goon) return get.value(card);
                                 return -1;
-                            }).set('goon', get.attitude(trigger.player, player) > 0).set('forceDie', true);
-                            'step 1'
-                            if (result.bool) {
+                            }).set('goon', get.attitude(target, player) > 0).set('forceDie', true);
+                            if (result?.bool && result?.cards?.length) {
                                 player.logSkill(event.name);
-                                trigger.player.line(player);
-                                game.log(player, '收到了来自', trigger.player, '的呼唤');
-                                player.gain(result.cards, trigger.player, 'giveAuto').set('forceDie', true);
+                                target.line(player);
+                                game.log(player, '收到了来自', target, '的呼唤');
+                                await player.gain(result.cards, target, 'giveAuto').set('forceDie', true);
                             }
                         },
                     }
