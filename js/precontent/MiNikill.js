@@ -9364,6 +9364,7 @@ const packs = function () {
                         game.log(player, '弃置了', cards, '#g（源自牌堆）');
                         trigger.finish();
                         trigger.getParent()._result = { bool: true };
+                        trigger.result = { bool: true };
                     }
                     'step 2'
                     game.updateRoundNumber();
