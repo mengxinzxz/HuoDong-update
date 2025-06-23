@@ -5538,7 +5538,7 @@ const packs = function () {
                 audio: 'drlt_zhenrong',
                 inherit: 'drlt_zhenrong',
                 filter(event, player) {
-                    return event.player !== player && event.player.countCards('he');
+                    return event.player !== player && event.player.countCards('he') && event.player.countCards('h') > player.countCards('h');
                 },
                 onremove(player) {
                     const cards = player.getExpansions('drlt_zhenrong');
