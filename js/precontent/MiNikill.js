@@ -6186,7 +6186,6 @@ const packs = function () {
                 },
                 zhuanhuanji(player, skill) {
                     player.storage[skill] = !player.storage[skill];
-                    player.changeSkin({ characterName: 'Mbaby_sb_guojia' }, 'Mbaby_sb_guojia' + (player.storage[skill] ? '_shadow' : ''));
                 },
                 intro: {
                     content(storage) {
@@ -35539,7 +35538,7 @@ const packs = function () {
             minidiaodu: '调度',
             minidiaodu_info: '出牌阶段开始时，你可以获得一名距离不大于1的一名角色A装备区里的一张牌，然后你将此牌交给另一名角色B，然后B选择是否使用此牌，若B使用/不使用，则你/B摸一张牌。',
             minidiancai: '典财',
-            minidiancai_info: '一名角色的出牌阶段结束时，若你于此阶段失去了至少X张牌，则你可以将手牌摸至体力上限（X为你的体力值且X至多为5）。然后你可以发动一次〖调度〗',
+            minidiancai_info: '一名角色的出牌阶段结束时，若你于此阶段失去了至少X张牌，则你可以将手牌摸至体力上限（X为你的体力值且X至多为5）。然后你可以发动一次〖调度〗。',
             //群
             Mbaby_zuoci: '欢杀左慈',
             Mbaby_gaoshun: '欢杀高顺',
