@@ -368,7 +368,7 @@ const packs = function () {
             Mbaby_shen_luxun: ['male', 'shen', 4, ['nzry_junlve', 'minicuike', 'nzry_dinghuo'], ['wu']],
             Mbaby_shen_pangtong: ['male', 'shen', 4, ['minilunce', 'minilanhai'], ['shu', 'die:true']],
             Mbaby_jingwei: ['female', 'shen', 4, ['minitianhai', 'minihaiku']],
-            Mbaby_shen_lusu: ['male', 'shen', 3, ['tamo', 'minidingzhou', 'zhimeng'], ['wu']],
+            Mbaby_shen_lusu: ['male', 'shen', 3, ['minitamo', 'minidingzhou', 'zhimeng'], ['wu']],
             //喵
             Mmiao_caiwenji: ['female', 'qun', 3, ['minimiaobeige', 'minimiaoduanchang', 'minidoumao'], ['name:蔡|琰']],
             Mmiao_diaochan: ['female', 'qun', 3, ['minimiaolijian', 'minimiaobiyue', 'minidoumao']],
@@ -31657,6 +31657,15 @@ const packs = function () {
                 ai: { combo: 'minitianhai' },
             },
             // 神鲁肃
+            minitamo: {
+                inherit: 'tamo',
+                getTargets() {
+                    return game.filterPlayer(current => {
+                        if (get.mode() === 'doudizhu') return current.getSeatNum() !== 3;
+                        return !current.isZhu2();
+                    });
+                },
+            },
             minidingzhou: {
                 audio: 'dingzhou',
                 inherit: 'dingzhou',
@@ -36190,6 +36199,9 @@ const packs = function () {
             minitianhai_info: '锁定技。①当你使用或打出手牌时，若此牌有点数且你未记录，则你记录之。②其他角色使用或打出与你〖填海①〗记录的点数相同的牌时，若此牌点数：不大于4，其下次受到的伤害+1；大于4且小于10，你摸一张牌；不小于10，其须弃置任意张牌直到这些牌的点数不小于此牌点数。',
             minihaiku: '海枯',
             minihaiku_info: '锁定技。若所有的点数均被〖填海①〗记录，其他角色于摸牌阶段外获得牌后弃置这些牌，然后你获得这些牌中位于弃牌堆的牌。',
+            minitamo: '榻谟',
+            minitamo_info: '游戏开始时，你可以重新分配除主公外所有角色的座次。',
+            minitamo_info_doudizhu: '游戏开始时，你可以重新分配除三号位角色外所有角色的座次。',
             minidingzhou: '定州',
             minidingzhou_info: '出牌阶段限一次。你可以选择一项：1.将X张牌交给一名场上有牌的其他角色，然后你获得其场上的所有牌（X为其场上的牌数）；2.获得一名其他角色的所有手牌，然后交给其等量张牌。',
             //喵
