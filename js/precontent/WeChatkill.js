@@ -134,7 +134,7 @@ const packs = function () {
             wechat_shen_lvmeng: ['male', 'shen', 3, ['shelie', 'wechatgongxin'], ['wu']],
             wechat_shen_guanyu: ['male', 'shen', 5, ['wechatwushen'], ['shu']],
             wechat_shen_lvbu: ['male', 'shen', 5, ['wushuang', 'baonu', 'wumou', 'ol_shenfen'], ['qun', 'die:shen_lvbu', 'tempname:shen_lvbu']],
-            wechat_shen_simayi: ['male', 'shen', 4, ['xinrenjie', 'wechatbaiyin', 'wechatlianpo'], ['wei', 'character:xin_simayi', 'die:xin_simayi', 'tempname:xin_simayi','name:司马|懿']],
+            wechat_shen_simayi: ['male', 'shen', 4, ['xinrenjie', 'wechatbaiyin', 'wechatlianpo'], ['wei', 'character:xin_simayi', 'die:xin_simayi', 'tempname:xin_simayi', 'name:司马|懿']],
             //只因武将
             wechat_zhiyin_lvbu: ['male', 'qun', 4, ['wushuang', 'wechatxiaohu'], ['die:true']],
             wechat_zhiyin_daqiao: ['female', 'wu', 3, ['wechatjielie', 'wechatxiangzhi'], ['die:true', 'name:桥|null']],
@@ -12717,12 +12717,7 @@ const packs = function () {
                 async content(event, trigger, player) {
                     const { target } = event;
                     player.changeZhuanhuanji(event.name);
-                    if (!player.storage[event.name]) {
-                        for (const current of [player, target].sortBySeat()) {
-                            if (!current.isIn() || !current.countCards('he')) continue;
-                            await current.chooseToDiscard('he', true);
-                        }
-                    }
+                    if (!player.storage[event.name]) await target.chooseToDiscard('he', true);
                     else await target.damage();
                     lib.skill.wechatmoulvenum.changeNum(1, player);
                 },
