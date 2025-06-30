@@ -2685,7 +2685,7 @@ const packs = function () {
                         return Math.max(0, num);
                     },
                     wuxie: player => {
-                        let num = 3;
+                        let num = 2;
                         num -= player.countMark('wechatquanbian_effect');
                         return Math.max(0, num);
                     },
@@ -13345,7 +13345,7 @@ const packs = function () {
             wechatsuanlve: '算略',
             wechatsuanlve_info: '每回合限一次，你可以失去1+X点' + get.MouLveInform() + '，将一张牌当作你本回合使用的上一张基本牌或普通锦囊牌使用（X为你本轮发动〖算略〗的次数）。',
             wechatmiaoji: '妙计',
-            wechatmiaoji_info: '每回合限一次，你可以：①失去1点' + get.MouLveInform() + '，视为使用【过河拆桥】；②失去3点' + get.MouLveInform() + '，视为使用【无懈可击】；③失去3点' + get.MouLveInform() + '，视为使用【无中生有】。',
+            wechatmiaoji_info: '每回合限一次，你可以：①失去1点' + get.MouLveInform() + '，视为使用【过河拆桥】；②失去2点' + get.MouLveInform() + '，视为使用【无懈可击】；③失去3点' + get.MouLveInform() + '，视为使用【无中生有】。',
             wechat_guanyu: '微信关羽',
             wechatqinglong: '青龙',
             wechatqinglong_info: '锁定技，若你有空置的且未被废除的武器栏，则你视为装备【青龙偃月刀】。',
