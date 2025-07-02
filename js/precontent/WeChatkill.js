@@ -8513,20 +8513,20 @@ const packs = function () {
                 async content(event, trigger, player) {
                     player.addTempSkill(event.name + '_effect', 'phaseUseAfter');
                     player.markAuto(event.name + '_effect', [trigger.player]);
-                }
-            },
-            subSkill: {
-                effect: {
-                    charlotte: true,
-                    onremove: true,
-                    forced: true,
-                    intro: { content: '对$使用牌无次数限制' },
-                    mod: {
-                        cardUsableTarget(card, player, target) {
-                            if (player.getStorage('mbaosi_inf').includes(target)) return true;
+                },
+                subSkill: {
+                    effect: {
+                        charlotte: true,
+                        onremove: true,
+                        forced: true,
+                        intro: { content: '对$使用牌无次数限制' },
+                        mod: {
+                            cardUsableTarget(card, player, target) {
+                                if (player.getStorage('wechataosi_effect').includes(target)) return true;
+                            },
                         },
-                    },
-                }
+                    }
+                },
             },
             //孙皓
             wechatcanshi: {
