@@ -160,7 +160,7 @@ const packs = function () {
             Mbaby_sb_huangzhong: ['male', 'shu', 4, ['minisbliegong']],
             Mbaby_sb_zhaoyun: ['male', 'shu', 4, ['minisblongdan', 'minisbshilve']],
             Mbaby_zhangyi: ['male', 'shu', 5, ['rewurong', 'minishizhi']],
-            Mbaby_jiangfei: ['male', 'shu', 3, ['dcshengxi', 'minishoucheng']],
+            Mbaby_jiangfei: ['male', 'shu', 3, ['reshengxi', 'minishoucheng']],
             Mbaby_sb_sunshangxiang: ['female', 'wu', 3, ['minisbxiaoji', 'minisbjieyin', 'minisbfanxiang'], ['border:shu']],
             Mbaby_sp_xiahoushi: ['female', 'shu', 3, ['sbqiaoshi', 'minispyanyu'], ['die:sb_xiahoushi', 'name:夏侯|null']],
             Mbaby_hujinding: ['female', 'shu', '3/6', ['dcdeshi', 'miniwuyuan', 'huaizi'], ['die:dc_hujinding']],
