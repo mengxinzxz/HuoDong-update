@@ -4503,11 +4503,9 @@ const packs = function () {
                         group: ['wechatzhanyi_basic1'],
                     },
                     basic1: {
-                        trigger: {
-                            player: "useCard",
-                        },
+                        trigger: { player: 'useCard' },
                         filter(event, player) {
-                            return get.type(event.card, false) == "basic" && event.skill == 'xinzhanyi_basic_backup';
+                            return get.type(event.card, false) == 'basic' && event.skill == 'wechatzhanyi_basic_backup';
                         },
                         forced: true,
                         silent: true,
@@ -4515,7 +4513,7 @@ const packs = function () {
                         content() {
                             if (!trigger.baseDamage) trigger.baseDamage = 1;
                             trigger.baseDamage++;
-                            game.log(trigger.card, "的伤害值/回复值", "#y+1");
+                            game.log(trigger.card, '的伤害值/回复值', '#y+1');
                         },
                     },
                     trick: {
@@ -8507,11 +8505,28 @@ const packs = function () {
                 },
             },
             wechataosi: {
-                audio: 'aosi',
-                inherit: 'aosi',
+                audio: 'mbaosi',
+                inherit: 'mbaosi',
                 filter(event, player) {
-                    return player.isPhaseUsing() && event.player.isIn() && !player.getStorage('mbaosi_inf').includes(event.player);
+                    return player.isPhaseUsing() && event.player.isIn() && !player.getStorage('wechataosi_effect').includes(event.player);
                 },
+                async content(event, trigger, player) {
+                    player.addTempSkill(event.name + '_effect', 'phaseUseAfter');
+                    player.markAuto(event.name + '_effect', [trigger.player]);
+                }
+            },
+            subSkill: {
+                effect: {
+                    charlotte: true,
+                    onremove: true,
+                    forced: true,
+                    intro: { content: '对$使用牌无次数限制' },
+                    mod: {
+                        cardUsableTarget(card, player, target) {
+                            if (player.getStorage('mbaosi_inf').includes(target)) return true;
+                        },
+                    },
+                }
             },
             //孙皓
             wechatcanshi: {
@@ -9518,9 +9533,9 @@ const packs = function () {
                                 if (evt.dialog && evt.dialog.buttons) {
                                     for (let i = 0; i < evt.dialog.buttons.length; i++) {
                                         const button = evt.dialog.buttons[i];
-                                        button.classList.remove("selectable");
-                                        button.classList.remove("selected");
-                                        const counterNode = button.querySelector(".caption");
+                                        button.classList.remove('selectable');
+                                        button.classList.remove('selected');
+                                        const counterNode = button.querySelector('.caption');
                                         if (counterNode) counterNode.childNodes[0].innerHTML = ``;
                                     }
                                     ui.selected.buttons.length = 0;
@@ -9529,10 +9544,11 @@ const packs = function () {
                                 return;
                             },
                         ];
-                        event.controls = [ui.create.control(controls.concat(["清除选择", "stayleft"]))];
+                        event.controls = [ui.create.control(controls.concat(['清除选择', 'stayleft']))];
                     };
-                    event.isMine() ? func() : (event.isOnline() && event.player.send(func));
-                    const result = await player.chooseButton([
+                    if (event.isMine()) func();
+                    else if (event.isOnline()) event.player.send(func);
+                    const { result } = await player.chooseButton([
                         '###' + get.translation(event.name) + '###<div class="text center">请选择你要执行的项目</div>',
                         [
                             [
@@ -9545,14 +9561,14 @@ const packs = function () {
                     ], [1, Infinity]).set('filterButton', button => {
                         const player = get.player(), choice = ui.selected.buttons.map(i => i.link);
                         if (button.link !== 'draw' && (!player.hasSkill(button.link, null, null, false) || choice.filter(i => i === button.link).length + player.countMark(button.link) > 1)) return false;
-                        return [choice, button.link].reduce((sum, i) => sum + (i === 'draw' ? 2 : 3), 0) <= 6;
-                    }).set("custom", {
+                        return [...choice, button.link].reduce((sum, i) => sum + (i === 'draw' ? 2 : 3), 0) <= 6;
+                    }).set('custom', {
                         add: {
                             confirm(bool) {
                                 if (bool !== true) return;
                                 const event = get.event().parent;
-                                Array.isArray(event.controls) && event.controls.forEach(i => i.close());
-                                ui.confirm && ui.confirm.close();
+                                if (Array.isArray(event.controls)) event.controls.forEach(i => i.close());
+                                if (ui.confirm) ui.confirm.close();
                                 game.uncheck();
                             },
                             button() {
@@ -9561,37 +9577,45 @@ const packs = function () {
                                 if (event.dialog && event.dialog.buttons) {
                                     for (let i = 0; i < event.dialog.buttons.length; i++) {
                                         const button = event.dialog.buttons[i];
-                                        const counterNode = button.querySelector(".caption");
+                                        const counterNode = button.querySelector('.caption');
                                         if (counterNode) counterNode.childNodes[0].innerHTML = ``;
                                     }
                                 }
-                                if (!ui.selected.buttons.length) event.parent?.controls?.[0]?.classList.add("disabled");
+                                if (!ui.selected.buttons.length) event.parent?.controls?.[0]?.classList.add('disabled');
                             },
                         },
                         replace: {
                             button(button) {
                                 const event = get.event();
-                                if (!event.isMine() || !event.filterButton(button) || button.classList.contains("selectable") == false) return;
-                                button.classList.add("selected");
+                                if (!event.isMine() || !event.filterButton(button) || button.classList.contains('selectable') == false) return;
+                                button.classList.add('selected');
                                 ui.selected.buttons.push(button);
-                                let counterNode = button.querySelector(".caption");
+                                let counterNode = button.querySelector('.caption');
                                 const count = ui.selected.buttons.filter(i => i == button).length;
                                 counterNode ? (((counterNode) => {
                                     counterNode = counterNode.childNodes[0];
                                     counterNode.innerHTML = `×${count}`;
                                 })(counterNode)) : counterNode = ui.create.caption(`<span style="font-family:xinwei; text-shadow:#FFF 0 0 4px, #FFF 0 0 4px, rgba(74,29,1,1) 0 0 3px;">×${count}</span>`, button);
-                                event.parent?.controls?.[0]?.classList.add("disabled");
+                                event.parent?.controls?.[0]?.classList.add('disabled');
                                 game.check();
                             },
                         },
-                    }).forResult();
+                    });
                     if (result?.bool && result.links?.length) {
                         const miaojian = result.links.filter(i => i === 'miaojian').length;
-                        miaojian > 0 && (player.addMark('miaojian', miaojian, false) || player.popup('miaojian') || game.log(player, '升级了技能', '#g【' + get.translation('miaojian') + '】'));
+                        if (miaojian > 0) {
+                            player.addMark('miaojian', miaojian, false);
+                            player.popup('miaojian');
+                            game.log(player, '升级了技能', '#g【' + get.translation('miaojian') + '】');
+                        }
                         const shhlianhua = result.links.filter(i => i === 'shhlianhua').length;
-                        shhlianhua > 0 && (player.addMark('shhlianhua', shhlianhua, false) || player.popup('shhlianhua') || game.log(player, '升级了技能', '#g【' + get.translation('shhlianhua') + '】'));
+                        if (shhlianhua > 0) {
+                            player.addMark('shhlianhua', shhlianhua, false);
+                            player.popup('shhlianhua');
+                            game.log(player, '升级了技能', '#g【' + get.translation('shhlianhua') + '】');
+                        }
                         const draw = result.links.filter(i => i === 'draw').length;
-                        draw > 0 && await player.draw(draw);
+                        if (draw > 0) await player.draw(draw);
                     }
                 },
                 ai: {
