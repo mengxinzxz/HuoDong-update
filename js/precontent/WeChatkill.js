@@ -5321,7 +5321,7 @@ const packs = function () {
                                     var player = _status.event.player;
                                     var target = _status.event.target;
                                     var cards = _status.event.cards.filter(card => target.canUse(card, player, false));
-                                    if (cards.reduce((num, card) => num + get.effect(target, card, player, player), 0) <= 0) return 1;
+                                    if (cards.reduce((num, card) => num + get.effect(player, card, target, player), 0) >= 0) return 1;
                                     return 0;
                                 }).set('target', target).set('cards', cards);
                                 if (result.index == 0) {

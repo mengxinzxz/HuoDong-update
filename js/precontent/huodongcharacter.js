@@ -148,7 +148,11 @@ const packs = function () {
                 notarget: true,
                 content() {
                     var evt2 = event.getParent(3)._trigger;
-                    evt2.neutralize();
+                    if (evt2.name == "phaseJudge") {
+                        evt2.untrigger("currentOnly");
+                        evt2.cancelled = true;
+                    }
+                    else evt2.neutralize();
                     var cardx = event.getParent().respondTo;
                     if (cardx && cardx[1] && cardx[1].cards && cardx[1].cards.filterInD('od').length) player.gain(cardx[1].cards.filterInD('od'), 'gain2', 'log');
                 },
