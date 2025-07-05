@@ -10598,7 +10598,12 @@ const packs = function () {
                         if (!lib.skill[skill]) break;
                     }
                     game.broadcastAll((skill, from, to) => {
-                        lib.skill[skill] = { nopop: true, olhedao: true, charlotte: true, onremove: true, ...from.effect, ...to.effect };
+                        const { filter: filterFrom, ...otherFrom } = from.effect;
+                        const { filter: filterTo, ...otherTo } = to.effect;
+                        lib.skill[skill] = { nopop: true, olhedao: true, charlotte: true, onremove: true, ...otherFrom, ...otherTo };
+                        lib.skill[skill].filter = function (...args) {
+                            return (filterFrom ? filterFrom(...args) : true) && (filterTo ? filterTo(...args) : true);
+                        };
                         lib.skill[skill].init = (player, skill) => (player.storage[skill] = player.storage[skill] || [0, skill]);
                         lib.skill[skill].intro = {
                             markcount: (storage = [0]) => storage[0],
