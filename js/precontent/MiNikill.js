@@ -31685,6 +31685,9 @@ const packs = function () {
                         return !current.isZhu2();
                     });
                 },
+                filter(event, player) {
+                    return (event.name != 'phase' || game.phaseNumber == 0) && get.info('minitamo').getTargets().length > 1;
+                },
             },
             minidingzhou: {
                 audio: 'dingzhou',
