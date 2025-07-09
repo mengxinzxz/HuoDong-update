@@ -20316,7 +20316,7 @@ const packs = function () {
                 },
             },
             minizhoufu: {
-                audio: 'zhoufu',
+                audio: 'rezhoufu',
                 enable: 'phaseUse',
                 filter(event, player) {
                     return player.countCards('he');
@@ -20358,7 +20358,7 @@ const packs = function () {
                 group: ['minizhoufu_judge', 'minizhoufu_losehp'],
                 subSkill: {
                     judge: {
-                        audio: 'zhoufu',
+                        audio: 'rezhoufu',
                         trigger: { global: 'judgeBefore' },
                         forced: true,
                         filter(event, player) {
@@ -20371,7 +20371,7 @@ const packs = function () {
                         },
                     },
                     losehp: {
-                        audio: 'zhoufu',
+                        audio: 'rezhoufu',
                         trigger: { global: 'phaseEnd' },
                         forced: true,
                         filter(event, player) {
@@ -20416,7 +20416,7 @@ const packs = function () {
             minizhoufu2: { intro: { content: 'expansion' } },
             minizhoufu3: {},
             miniyingbing: {
-                audio: 'yingbin',
+                audio: 'reyingbin',
                 trigger: { global: 'useCard' },
                 forced: true,
                 filter(event, player) {

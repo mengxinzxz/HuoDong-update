@@ -907,17 +907,35 @@ const packs = function () {
             //SP许攸
             bilibili_fushi: {
                 derivation: ['bilibili_zezhu', 'bilibili_chenggong'],
-                trigger: { global: ['dieAfter', 'phaseBefore', 'showCharacterAfter'] },
+                trigger: {
+                    player: 'enterGame',
+                    global: ['dieAfter', 'changeSkillsAfter', 'changeGroupAfter', 'phaseBefore', 'showCharacterAfter'],
+                },
                 filter(event, player) {
-                    var weis = 0;
-                    var quns = 0;
-                    for (var i of game.players) {
-                        if (i.group == 'wei') weis++;
-                        if (i.group == 'qun') quns++;
+                    switch (event.name) {
+                        case 'die':
+                            if (event.name === 'die' && !['wei', 'qun'].includes(event.player.group)) return false;
+                            break;
+                        case 'changeSkills':
+                            if (event.name === 'changeSkills' && !event.addSkill.includes('bilibili_shicai')) return false;
+                            break;
+                        case 'changeGroup':
+                            if (event.name === 'changeGroup' && (event.originGroup === event.group || [event.originGroup, event.group].every(i => !['wei', 'qun'].includes(i)))) return false;
+                            break;
+                        case 'phase':
+                            if (game.phaseNumber > 0) return false;
+                            break;
+                        case 'showCharacter':
+                            if (get.mode() === 'guozhan' && !['wei', 'qun'].includes(event.player.identity)) return false;
+                            break;
                     }
-                    var skills = player.additionalSkills.bilibili_fushi;
-                    if (!skills || !skills.length) return weis != quns;
-                    if (weis == quns) return true;
+                    let weis = 0, quns = 0, group = get.mode() === 'guozhan' ? 'identity' : 'group';
+                    game.countPlayer(i => {
+                        if (i[group] == 'wei') weis++;
+                        if (i[group] == 'qun') quns++;
+                    });
+                    const skills = player.additionalSkills.bilibili_fushi;
+                    if ((weis === quns) === (Array.isArray(skills) && skills.length > 0)) return true;
                     if (quns > weis && !skills.includes('bilibili_zezhu')) return true;
                     if (weis > quns && !skills.includes('bilibili_chenggong')) return true;
                     return false;
@@ -925,13 +943,12 @@ const packs = function () {
                 noHidden: true,
                 forced: true,
                 content() {
-                    var weis = 0;
-                    var quns = 0;
-                    for (var i of game.players) {
-                        if (i.group == 'wei') weis++;
-                        if (i.group == 'qun') quns++;
-                    }
-                    var skills = player.additionalSkills.bilibili_fushi;
+                    let weis = 0, quns = 0, group = get.mode() === 'guozhan' ? 'identity' : 'group';
+                    game.countPlayer(i => {
+                        if (i[group] == 'wei') weis++;
+                        if (i[group] == 'qun') quns++;
+                    });
+                    const skills = player.additionalSkills.bilibili_fushi;
                     if (skills?.length) {
                         if (weis > quns && !skills.includes('bilibili_chenggong')) player.addAdditionalSkills('bilibili_fushi', ['bilibili_chenggong']);
                         else if (quns > weis && !skills.includes('bilibili_zezhu')) player.addAdditionalSkills('bilibili_fushi', ['bilibili_zezhu']);
@@ -947,7 +964,7 @@ const packs = function () {
                 audio: 'chenggong',
                 trigger: { global: 'useCard' },
                 filter(event, player) {
-                    return event.targets && event.targets.length > 1;
+                    return event.targets?.length > 1;
                 },
                 logTarget: 'player',
                 check(event, player) {
@@ -5941,7 +5958,7 @@ const packs = function () {
             },
             //张宝
             old_zhoufu: {
-                audio: 'zhoufu',
+                audio: 'rezhoufu',
                 enable: 'phaseUse',
                 filter(event, player) {
                     return player.countCards('h') && game.hasPlayer(function (target) {
@@ -5972,7 +5989,7 @@ const packs = function () {
                 subSkill: {
                     judge: {
                         charlotte: true,
-                        audio: 'zhoufu',
+                        audio: 'rezhoufu',
                         trigger: { global: 'judgeBefore' },
                         filter(event, player) {
                             return !event.directresult && event.player.getExpansions('old_zhoufu2').length;
@@ -5988,7 +6005,7 @@ const packs = function () {
                     },
                     gain: {
                         charlotte: true,
-                        audio: 'zhoufu',
+                        audio: 'rezhoufu',
                         trigger: { global: 'phaseEnd' },
                         filter(event, player) {
                             return event.player.getExpansions('old_zhoufu2').length;
@@ -6008,7 +6025,7 @@ const packs = function () {
                 intro: { content: 'expansion' },
             },
             old_yingbing: {
-                audio: 'yingbin',
+                audio: 'reyingbin',
                 trigger: { global: 'old_zhoufu_judgeAfter' },
                 frequent: true,
                 content() {
