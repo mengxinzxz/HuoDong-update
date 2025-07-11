@@ -14,7 +14,7 @@ const packs = function () {
                 Cothers: ['bilibili_kuailiangkuaiyue', 'bilibili_nanhualaoxian', 'bilibili_daxiao', 'bilibili_wangtao', 'bilibili_wangyue', 'bilibili_x_wangtao', 'bilibili_x_wangyue', 'bilibili_xushao', 'bilibili_shen_guojia', 'bilibili_re_xusheng', 'bilibili_kuangshen04', 'bilibili_adong', 'bilibili_zhangrang', 'bilibili_litiansuo', 'decade_huangwudie', 'bilibili_huanggai', 'bilibili_ekeshaoge', 'bilibili_guanning', 'bilibili_wangwang', 'bilibili_zhouxiaomei', 'diy_lvmeng'],
                 CDanJi: ['DJ_caiyang', 'DJ_pujing', 'DJ_huban'],
                 CSCS: ['biliscs_shichangshi', 'biliscs_zhangrang', 'biliscs_zhaozhong', 'biliscs_sunzhang', 'biliscs_bilan', 'biliscs_xiayun', 'biliscs_hankui', 'biliscs_lisong', 'biliscs_duangui', 'biliscs_guosheng', 'biliscs_gaowang'],
-                CXuanDie: ['bfake_jiananfeng', 'bfake_shen_zhangjiao', 'bfake_shen_zhangfei', 'bfake_shen_jiaxu', 'bfake_huanwen'],
+                CXuanDie: ['bfake_jiananfeng', 'bfake_shen_zhangjiao', 'bfake_shen_zhangfei', 'bfake_shen_jiaxu', 'bfake_huanwen', 'bfake_miheng'],
             },
         },
         character: {
@@ -81,6 +81,7 @@ const packs = function () {
             bfake_shen_zhangfei: ['male', 'shen', 5, ['bolbaohe', 'bolrenhai', 'boltiandong'], ['shu', 'character:shen_zhangfei']],
             bfake_shen_zhangjiao: ['male', 'shen', 3, ['bolyifu', 'boltianjie'], ['qun', 'character:shen_zhangjiao']],
             bfake_huanwen: ['male', 'jin', 3, ['bolyuba', 'bolxingjiang']],
+            bfake_miheng: ['male', 'qun', 3, ['bolhuaici', 'boljianling']],
             //憋笑--牢戏专属
             smile1: ['', '', 0, [], ['unseen', 'forbidai', ((lib.device || lib.node) ? 'ext:' : 'db:extension-') + '活动武将/image/default/smile1.jpg']],
             smile2: ['', '', 0, [], ['unseen', 'forbidai', ((lib.device || lib.node) ? 'ext:' : 'db:extension-') + '活动武将/image/default/smile2.jpg']],
@@ -9798,6 +9799,92 @@ const packs = function () {
                     },
                 },
             },
+            // 祢衡
+            _boljianlingCheck: {
+                charlotte: true,
+                trigger: { player: 'loseBefore' },
+                filter(event, player) {
+                    if (event.getParent().name != 'useCard') return false;
+                    return event.cards?.some(card => get.is.shownCard(card));
+                },
+                firstDo: true,
+                silent: true,
+                async content(event, trigger, player) {
+                    const { card } = trigger.getParent();
+                    card.storage ??= {};
+                    card.storage.boljianling = true;
+                },
+            },
+            bolhuaici: {
+                trigger: { global: ['roundStart', 'roundEnd', 'useCard2'] },
+                filter(event, player, name) {
+                    if (name == 'roundStart') return true;
+                    if (name == 'roundEnd') return game.roundNumber == game.countPlayer2(null, true);
+                    const { card } = event;
+                    const info = get.info(card);
+                    if (!['basic', 'trick'].includes(get.type(card))) return false;
+                    if (!player.hasCard(cardx => get.is.shownCard(cardx) && get.suit(card) == get.suit(cardx), 'h')) return false;
+                    if (info.allowMultiple == false) return false;
+                    if (event.targets && !info.multitarget) return lib.filter.targetEnabled2(card, event.player, player) && !event.targets.includes(player);
+                    return false;
+                },
+                forced: true,
+                async content(event, trigger, player) {
+                    switch (event.triggername) {
+                        case 'roundStart': {
+                            const num = game.countPlayer2(null, true);
+                            const cards = get.cards(num);
+                            await game.cardsGotoOrdering(cards);
+                            await player.showCards(cards, `${get.translation(player)}发动了【怀刺】`);
+                            const { result } = await player.chooseButton(['怀刺：你可以获得并明置其中任意张牌', cards], [1, Infinity]);
+                            if (result?.bool && result?.links?.length) {
+                                const { links } = result;
+                                await player.gain(links, 'gain2');
+                                await player.addShownCards(links, `visible_${event.name}`);
+                                await player.showCards(links, `${get.translation(player)}发动了【怀刺】`);
+                            }
+                            break;
+                        }
+                        case 'roundEnd': {
+                            await player.die();
+                            break;
+                        }
+                        default: {
+                            trigger.targets.add(player);
+                            await game.delayex();
+                        }
+                    }
+                },
+            },
+            boljianling: {
+                mark: true,
+                zhuanhuanji: true,
+                marktext: '☯',
+                intro: {
+                    content(storage, player, skill) {
+                        let str = '你仅使用明置牌造成伤害的回合结束后，';
+                        if (storage) str += '你令所有角色将武将牌翻至背面';
+                        else str += '你执行一个额外回合';
+                        return str;
+                    },
+                },
+                trigger: { global: 'phaseAfter' },
+                filter(event, player) {
+                    if (!player.hasHistory('sourceDamage') || !player.getHistory('sourceDamage').every(evt => evt.card?.storage?.boljianling)) return false;
+                    if (!player.storage.boljianling) return true;
+                    return game.hasPlayer(current => !current.isTurnedOver());
+                },
+                forced: true,
+                async content(event, trigger, player) {
+                    player.changeZhuanhuanji(event.name);
+                    if (player.storage[event.name]) player.insertPhase();
+                    else {
+                        for (const target of game.filterPlayer().sortBySeat()) {
+                            await target.turnOver(true);
+                        }
+                    }
+                },
+            },
             //宁静致远
             bilibili_xiezhi: {
                 trigger: { global: 'phaseBegin' },
@@ -11171,6 +11258,14 @@ const packs = function () {
                 if (!storage) str += '当你令其他角色进入濒死状态后，你可以将此技能描述中的“摸”改为“弃置”。';
                 return str;
             },
+            boljianling(player) {
+                const bool = player.storage.boljianling;
+                let yang = '你执行一个额外回合', yin = '你令所有角色将武将牌翻至背面';
+                if (bool) yin = `<span class='bluetext'>${yin}</span>`;
+                else yang = `<span class='firetext'>${yang}</span>`;
+                let start = '锁定技，转换技。你仅使用明置牌造成伤害的回合结束后，', end = '。';
+                return `${start}阳：${yang}；阴：${yin}${end}`;
+            },
         },
         translate: {
             CLongZhou: '龙舟武将',
@@ -11599,6 +11694,13 @@ const packs = function () {
             bolyuba_info: '当你造成或受到伤害后，你可以将手牌摸至X张牌（X为此技能发动的次数+1），然后弃置一张点数为X的牌或失去一个技能。',
             bolxingjiang: '行将',
             bolxingjiang_info: '出牌阶段限一次，你可以弃置至少两张同名基本牌或普通锦囊牌，若如此做，你获得一个技能效果为“每回合限一次，你可以视为使用一张【XXX】”的技能（XXX为你本次弃置牌的牌名）。',
+            bfake_miheng: '蝶设祢衡',
+            bfake_miheng_prefix: '蝶设',
+            visible_bolhuaici: '怀刺',
+            bolhuaici: '怀刺',
+            bolhuaici_info: '锁定技。①每轮开始时，你亮出牌堆顶X张牌，获得其中任意张并明置之。②你成为与你的明置手牌花色相同的基本牌或普通锦囊牌的额外目标。③你于第X轮结束时死亡。（X为场上角色数）',
+            boljianling: '剪翎',
+            boljianling_info: '锁定技，转换技。你仅使用明置牌造成伤害的回合结束后，阳：你执行一个额外回合；阴：你令所有角色将武将牌翻至背面。',
             bilibili_ningjingzhiyuan: '宁静致远',
             bilibili_xiezhi: '协治',
             bilibili_xiezhi_info: '锁定技，其他角色的回合开始时，你选择X次牌的类别，其本回合至多使用选择类别次数的对应类别的牌（X为其手牌数且至少为3，仅限选择基本、锦囊、装备且每种类别至少选择一次）。',
