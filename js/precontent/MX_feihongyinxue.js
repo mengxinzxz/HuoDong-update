@@ -264,11 +264,26 @@ const packs = function () {
             },
             //费祎
             fh_shengxi: {
-                init(player) {
-                    if (_status.fh_cardPile && !get.fh_cardPile('tiaojiyanmei') && !_status.fh_tiaojiyanmei) {
+                init() {
+                    if (_status.fh_cardPile && !get.fh_cardPile('tiaojiyanmei')) {
                         var card = game.createCard2('tiaojiyanmei', 'heart', 6);
-                        _status.fh_tiaojiyanmei = true;
-                        _status.fh_cardPile.push(card);
+                        card.destroyed = (card, position, player, event) => {
+                            if (position === "discardPile") {
+                                if (!_status.fh_cardPile.includes(card)) {
+                                    game.broadcastAll(card => _status.fh_cardPile.add(card), card);
+                                    game.log(card, '被放回了', '#g额外牌堆');
+                                }
+                            }
+                            else {
+                                if (_status.fh_cardPile.includes(card)) {
+                                    game.broadcastAll(card => _status.fh_cardPile.remove(card), card);
+                                    game.log('#g额外牌堆', '失去了', card);
+                                }
+                            }
+                            return false;
+                        };
+                        card.addGaintag('eternal_fh_tag');
+                        game.broadcastAll(card => _status.fh_cardPile.add(card), card);
                         game.log(card, '已加入额外牌堆');
                     }
                 },
@@ -736,7 +751,7 @@ const packs = function () {
             //荀谌
             fh_weipo: {
                 init() {
-                    if (_status.fh_cardPile && !get.fh_cardPile('binglinchengxiax') && !_status.fh_binglinchengxiax) {
+                    if (_status.fh_cardPile && !get.fh_cardPile('binglinchengxiax')) {
                         var card = game.createCard2('binglinchengxiax', 'spade', 7);
                         card.destroyed = (card, position, player, event) => {
                             if (position === "discardPile") {
@@ -754,8 +769,7 @@ const packs = function () {
                             return false;
                         };
                         card.addGaintag('eternal_fh_tag');
-                        _status.fh_binglinchengxiax = true;
-                        _status.fh_cardPile.push(card);
+                        game.broadcastAll(card => _status.fh_cardPile.add(card), card);
                         game.log(card, '已加入额外牌堆');
                     }
                 },
