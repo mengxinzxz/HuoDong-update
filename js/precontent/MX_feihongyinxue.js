@@ -4677,13 +4677,9 @@ const packs = function () {
     for (let i in MX_feihongyinxue.character) {
         MX_feihongyinxue.character[i][4] ??= [];
         MX_feihongyinxue.character[i][4].add('character:' + i.slice(6));
-        if (game.getFileList) {
-            game.getFileList('extension/活动武将/audio/die', (folders, files) => {
-                if (files.includes(`${i}.mp3`)) {
-                    MX_feihongyinxue.character[i][4].push('die:ext:活动武将/audio/die:true');
-                    MX_feihongyinxue.translate[`#ext:活动武将/audio/die/${i}:die`] = '点击播放阵亡配音';
-                }
-            }, () => { });
+        if (_status['extension_活动武将_files']?.includes(`${i}.mp3`)) {
+            MX_feihongyinxue.character[i][4].push('die:ext:活动武将/audio/die:true');
+            MX_feihongyinxue.translate[`#ext:活动武将/audio/die/${i}:die`] = '点击播放阵亡配音';
         }
         if (!MX_feihongyinxue.character[i][4].some(tag => tag.indexOf('die:') == 0)) MX_feihongyinxue.character[i][4].add('die:' + i.slice(6));
         //MX_feihongyinxue.translate[i+'_ab']=MX_feihongyinxue.translate[i].slice(2);

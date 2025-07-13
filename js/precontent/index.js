@@ -11,7 +11,7 @@ import WeChatkill from './WeChatkill.js';
 import MX_feihongyinxue from './MX_feihongyinxue.js';
 import huodongcharacter from './huodongcharacter.js';
 
-export function precontent(bilibilicharacter) {
+export async function precontent(bilibilicharacter) {
     //判断是否有XX扩展
     game.TrueHasExtension = game.TrueHasExtension || function (ext) {
         return lib.config.extensions && lib.config.extensions.includes(ext);
@@ -19,8 +19,10 @@ export function precontent(bilibilicharacter) {
     game.HasExtension = game.HasExtension || function (ext) {
         return game.TrueHasExtension(ext) && lib.config['extension_' + ext + '_enable'];
     };
-    /*
     //阵亡配音
+    const [folders, files] = await game.promises.getFileList('extension/活动武将/audio/die');
+    _status['extension_活动武将_files'] = files;//提前获取阵亡文件夹下的素材，否则每次都加载getFileList会极大增加运行负担！
+    /*
     lib.hooks['checkDie'].push(function HD_die(trigger) {
         const target = trigger.player, name = target?.name;
         if (name && lib.config.background_speak) {

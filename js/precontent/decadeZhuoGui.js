@@ -741,13 +741,9 @@ const packs = function () {
     };
     for (let i in decadeZhuoGui.character) {
         decadeZhuoGui.character[i][4] ??= [];
-        if (game.getFileList) {
-            game.getFileList('extension/活动武将/audio/die', (folders, files) => {
-                if (files.includes(`${i}.mp3`)) {
-                    decadeZhuoGui.character[i][4].push('die:ext:活动武将/audio/die:true');
-                    decadeZhuoGui.translate[`#ext:活动武将/audio/die/${i}:die`] = '点击播放阵亡配音';
-                }
-            }, () => { });
+        if (_status['extension_活动武将_files']?.includes(`${i}.mp3`)) {
+            decadeZhuoGui.character[i][4].push('die:ext:活动武将/audio/die:true');
+            decadeZhuoGui.translate[`#ext:活动武将/audio/die/${i}:die`] = '点击播放阵亡配音';
         }
         decadeZhuoGui.character[i][4].push(((lib.device || lib.node) ? 'ext:' : 'db:extension-') + '活动武将/image/character/' + i + '.jpg');
     }

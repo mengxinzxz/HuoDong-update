@@ -36821,16 +36821,12 @@ const packs = function () {
             else if (MiNikill.translate[i].indexOf('念') == 0) MiNikill.translate[i + '_prefix'] = '念';
             else if (MiNikill.translate[i].indexOf('战') == 0) MiNikill.translate[i + '_prefix'] = '战';
         }
-        if (game.getFileList) {
-            game.getFileList('extension/活动武将/audio/die', (folders, files) => {
-                if (files.includes(`${i}.mp3`)) {
-                    MiNikill.character[i][4].push('die:ext:活动武将/audio/die:true');
-                    MiNikill.translate[`#ext:活动武将/audio/die/${i}:die`] = '点击播放阵亡配音';
-                }
-                else {
-                    if (i.startsWith('Mbaby_') && !MiNikill.character[i][4].some(tag => typeof tag == 'string' && tag.startsWith('die:'))) MiNikill.character[i][4].push('die:' + i.slice(6));
-                }
-            }, () => { });
+        if (_status['extension_活动武将_files']?.includes(`${i}.mp3`)) {
+            MiNikill.character[i][4].push('die:ext:活动武将/audio/die:true');
+            MiNikill.translate[`#ext:活动武将/audio/die/${i}:die`] = '点击播放阵亡配音';
+        }
+        else {
+            if (i.startsWith('Mbaby_') && !MiNikill.character[i][4].some(tag => typeof tag == 'string' && tag.startsWith('die:'))) MiNikill.character[i][4].push('die:' + i.slice(6));
         }
         MiNikill.character[i][4].push(((lib.device || lib.node) ? 'ext:' : 'db:extension-') + '活动武将/image/character/' + i + '.jpg');
     }

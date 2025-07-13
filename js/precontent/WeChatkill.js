@@ -13970,16 +13970,12 @@ const packs = function () {
             else if (WeChatkill.translate[i].indexOf('SP微信') == 0) WeChatkill.translate[i + '_prefix'] = 'SP|微信';
             else if (WeChatkill.translate[i].indexOf('极') == 0) WeChatkill.translate[i + '_prefix'] = '极';
         }
-        if (game.getFileList) {
-            game.getFileList('extension/活动武将/audio/die', (folders, files) => {
-                if (files.includes(`${i}.mp3`)) {
-                    WeChatkill.character[i][4].push('die:ext:活动武将/audio/die:true');
-                    WeChatkill.translate[`#ext:活动武将/audio/die/${i}:die`] = '点击播放阵亡配音';
-                }
-                else {
-                    if (i.startsWith('wechat_') && !WeChatkill.character[i][4].some(tag => typeof tag == 'string' && tag.startsWith('die:'))) WeChatkill.character[i][4].push('die:' + i.slice(7));
-                }
-            }, () => { });
+        if (_status['extension_活动武将_files']?.includes(`${i}.mp3`)) {
+            WeChatkill.character[i][4].push('die:ext:活动武将/audio/die:true');
+            WeChatkill.translate[`#ext:活动武将/audio/die/${i}:die`] = '点击播放阵亡配音';
+        }
+        else {
+            if (i.startsWith('wechat_') && !WeChatkill.character[i][4].some(tag => typeof tag == 'string' && tag.startsWith('die:'))) WeChatkill.character[i][4].push('die:' + i.slice(7));
         }
         WeChatkill.character[i][4].push(((lib.device || lib.node) ? 'ext:' : 'db:extension-') + '活动武将/image/character/' + i + '.jpg');
     }

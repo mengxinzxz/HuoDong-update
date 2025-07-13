@@ -11805,13 +11805,9 @@ const packs = function () {
     };
     for (let i in huodongcharacter.character) {
         huodongcharacter.character[i][4] ??= [];
-        if (game.getFileList) {
-            game.getFileList('extension/活动武将/audio/die', (folders, files) => {
-                if (files.includes(`${i}.mp3`)) {
-                    huodongcharacter.character[i][4].push('die:ext:活动武将/audio/die:true');
-                    huodongcharacter.translate[`#ext:活动武将/audio/die/${i}:die`] = '点击播放阵亡配音';
-                }
-            }, () => { });
+        if (_status['extension_活动武将_files']?.includes(`${i}.mp3`)) {
+            huodongcharacter.character[i][4].push('die:ext:活动武将/audio/die:true');
+            huodongcharacter.translate[`#ext:活动武将/audio/die/${i}:die`] = '点击播放阵亡配音';
         }
         if (huodongcharacter.characterSort.huodongcharacter.Cothers.includes(i) && (_status.connectMode || lib.config.connect_nickname !== '萌新（转型中）')) huodongcharacter.character[i][4].push('unseen');
         huodongcharacter.character[i][4].push(((lib.device || lib.node) ? 'ext:' : 'db:extension-') + '活动武将/image/character/' + i + '.jpg');
