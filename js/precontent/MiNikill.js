@@ -1700,6 +1700,7 @@ const packs = function () {
                 content() {
                     'step 0'
                     player.awakenSkill(event.name);
+                    player.addSkill(`${event.name}_restore`);
                     var targets = game.filterPlayer();
                     targets.remove(player);
                     event.targets = targets;
@@ -1738,6 +1739,9 @@ const packs = function () {
                         });
                     }
                 },
+                subSkill: {
+                    restore: {},
+                },
             },
             minihuituo: {
                 audio: 'huituo',
@@ -1751,13 +1755,13 @@ const packs = function () {
                 },
                 async content(event, trigger, player) {
                     const target = event.targets[0];
-                    const result = target.judge(card => {
+                    const result = await target.judge(card => {
                         if (get.color(card) === 'red') return target.isDamaged() ? 2 : -1;
                         return 1;
                     }).forResult();
                     const color = result.color;
                     if (color === 'red') await target.recover();
-                    else if (color === 'black') await target.draw((trigger.name === 'damage' ? trigger : trigger._trigger).num);
+                    else if (color === 'black') await target.draw(1 + (trigger.name === 'damage' ? trigger : trigger._trigger).num);
                 },
             },
             miniremingjian: {
@@ -1811,9 +1815,6 @@ const packs = function () {
             },
             minirexingshuai: {
                 inherit: 'minixingshuai',
-                async contentBefore(event, trigger, player) {
-                    player.addSkill('minirexingshuai_restore');
-                },
                 subSkill: {
                     restore: {
                         charlotte: true,
