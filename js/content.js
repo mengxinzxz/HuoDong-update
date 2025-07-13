@@ -1563,42 +1563,6 @@ export function content(config, pack) {
 			}
 		}
 	};
-	//陈琳
-	lib.skill.songci.selectTarget = function () {
-		var player = _status.event.player;
-		for (var target of game.filterPlayer()) {
-			if (player.getStorage('songci').includes(target)) continue;
-			var bool = target.countCards('h') > target.hp;
-			target.prompt('<span class=\"texiaotext\" style=\"color:' + (bool ? '#FF0000' : '#00FF00') + '\">' + (bool ? '弃牌' : '摸牌') + '</span>');
-		}
-		return 1;
-	};
-	//神郭嘉
-	lib.skill.resghuishi.selectTarget = function () {
-		var player = _status.event.player;
-		if (player.maxHp >= game.players.length) {
-			for (var target of game.filterPlayer()) {
-				var list = target.getSkills(null, false, false).filter(function (skill) {
-					var info = lib.skill[skill];
-					return info?.juexingji && !target.awakenedSkills.includes(skill);
-				});
-				target.prompt(list.length ? '可觉醒' : '可摸牌');
-			}
-		}
-		return 1;
-	};
-	lib.skill.sghuishi.selectTarget = function () {
-		var player = _status.event.player;
-		for (var target of game.filterPlayer()) {
-			if (player == target) continue;
-			var list = target.getSkills(null, false, false).filter(function (skill) {
-				var info = lib.skill[skill];
-				return info?.juexingji && !target.awakenedSkills.includes(skill);
-			});
-			target.prompt(list.length ? '可觉醒' : '可摸牌');
-		}
-		return 1;
-	};
 	//左慈
 	lib.skill.rehuashen.drawCharacter = function (player, list) {
 		game.broadcastAll(function (player, list) {
