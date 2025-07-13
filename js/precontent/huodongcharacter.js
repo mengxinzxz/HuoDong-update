@@ -1666,7 +1666,7 @@ const packs = function () {
                 },
                 subSkill: {
                     cancel: {
-                        audio: 'tspowei3',
+                        audio: 'tspowei3.mp3',
                         trigger: { source: 'damageBegin3' },
                         logTarget: 'player',
                         filter(event, player) {
@@ -1680,7 +1680,7 @@ const packs = function () {
                         },
                     },
                     achieve: {
-                        audio: 'tspowei1',
+                        audio: 'tspowei1.mp3',
                         trigger: { player: 'useCardAfter' },
                         forced: true,
                         skillAnimation: true,
@@ -1697,7 +1697,7 @@ const packs = function () {
                         },
                     },
                     fail: {
-                        audio: 'tspowei2',
+                        audio: 'tspowei2.mp3',
                         trigger: { player: 'dying' },
                         forced: true,
                         content() {

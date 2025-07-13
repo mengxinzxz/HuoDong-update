@@ -31013,40 +31013,39 @@ const packs = function () {
             },
             //神太
             minidulie: {
-                audio: 'dulie',
+                audio: ['dulie1.mp3', 'dulie2.mp3', 'tspowei2.mp3'],
                 inherit: 'dulie',
+                logAudio: index => `dulie${typeof index == "number" ? index : get.rand(1, 2)}.mp3`,
                 filter(event, player) {
                     return event.card.name == 'sha';
                 },
                 group: 'minidulie_dying',
                 subSkill: {
                     dying: {
-                        audio: 'tspowei2',
+                        audio: 'tspowei2.mp3',
                         trigger: { player: 'dying' },
                         filter(event, player) {
-                            return !player.storage.minidulie_dying;
+                            if (game.getAllGlobalHistory('everything', evt => {
+                                return evt.name === event.name && evt.player === event.player;
+                            }).indexOf(event) !== 0) return false;
+                            return game.hasPlayer(current => current.hasMark('minidulie'));
                         },
+                        forced: true,
                         skillAnimation: true,
                         animationColor: 'fire',
-                        direct: true,
                         content() {
-                            player.storage.minidulie_dying = true;
-                            var num = game.countPlayer(current => current.hasMark('minidulie'));
-                            if (num) {
-                                player.logSkill('minidulie_dying');
-                                player.recover(num - player.hp);
-                            }
+                            player.recoverTo(game.countPlayer(current => current.hasMark('minidulie')));
                         },
                     },
                 },
             },
             minichongwei: {
-                audio: 'tspowei3',
+                audio: 'tspowei3.mp3',
                 forced: true,
                 group: ['minichongwei_init', 'minichongwei_move', 'minichongwei_use', 'minichongwei_remove'],
                 subSkill: {
                     remove: {
-                        audio: 'tspowei3',
+                        audio: 'tspowei3.mp3',
                         trigger: { global: 'damageEnd' },
                         filter(event, player) {
                             return event.player && event.player.isIn() && event.player.hasMark('minidulie');
@@ -31058,7 +31057,7 @@ const packs = function () {
                         },
                     },
                     use: {
-                        audio: 'tspowei3',
+                        audio: 'tspowei3.mp3',
                         trigger: { global: 'phaseBegin' },
                         filter(event, player) {
                             return event.player != player && event.player.hasMark('minidulie') && (player.countCards('h') > 0 || player.hp >= event.player.hp && event.player.countCards('h') > 0);
@@ -31103,7 +31102,7 @@ const packs = function () {
                         ai: { expose: 0.2 },
                     },
                     init: {
-                        audio: 'tspowei3',
+                        audio: 'tspowei3.mp3',
                         trigger: { global: 'phaseBefore', player: 'enterGame' },
                         filter(event, player) {
                             if (!lib.skill.minichongwei.subSkill.init.logTarget(event, player).length) return false;
@@ -31119,7 +31118,7 @@ const packs = function () {
                         },
                     },
                     move: {
-                        audio: 'tspowei3',
+                        audio: 'tspowei3.mp3',
                         trigger: { player: 'phaseBegin' },
                         filter(event, player) {
                             return game.hasPlayer((current) => current != player && current.hasMark('minidulie'));
@@ -31145,7 +31144,7 @@ const packs = function () {
             minipowei: {
                 unique: true,
                 derivation: 'minishenzhu',
-                audio: 'tspowei1',
+                audio: 'tspowei1.mp3',
                 trigger: { global: 'phaseEnd' },
                 filter(event, player) {
                     return !game.hasPlayer(current => current.hasMark('minidulie'));
