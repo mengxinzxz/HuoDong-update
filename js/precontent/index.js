@@ -19,6 +19,7 @@ export function precontent(bilibilicharacter) {
     game.HasExtension = game.HasExtension || function (ext) {
         return game.TrueHasExtension(ext) && lib.config['extension_' + ext + '_enable'];
     };
+    /*
     //阵亡配音
     lib.hooks['checkDie'].push(function HD_die(trigger) {
         const target = trigger.player, name = target?.name;
@@ -28,6 +29,7 @@ export function precontent(bilibilicharacter) {
             }, name);
         }
     });
+    */
     //困难年兽体力上限和体力值为所有其他角色的体力上限和
     lib.skill._YJplusmaxHp = {
         charlotte: true,

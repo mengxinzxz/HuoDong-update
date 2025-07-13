@@ -922,8 +922,16 @@ const packs = function () {
             QH_huolu_info: '锁定技，出牌阶段开始时，若你的手牌数为全场最多，你须将手牌数弃置至全场最少，然后将总共5点随机伤害分配给任意敌方角色。',
         },
     };
-    for (var i in decadeQiHuan.character) {
-        if (!decadeQiHuan.character[i][4]) decadeQiHuan.character[i][4] = [];
+    for (let i in decadeQiHuan.character) {
+        decadeQiHuan.character[i][4] ??= [];
+        if (game.getFileList) {
+            game.getFileList('extension/活动武将/audio/die', (folders, files) => {
+                if (files.includes(`${i}.mp3`)) {
+                    decadeQiHuan.character[i][4].push('die:ext:活动武将/audio/die:true');
+                    decadeQiHuan.translate[`#ext:活动武将/audio/die/${i}:die`] = '点击播放阵亡配音';
+                }
+            }, () => { });
+        }
         decadeQiHuan.character[i][4].push(((lib.device || lib.node) ? 'ext:' : 'db:extension-') + '活动武将/image/character/' + i + '.jpg');
     }
     lib.config.all.characters.push('decadeQiHuan');

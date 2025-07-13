@@ -1504,8 +1504,16 @@ const packs = function () {
             qin_chuanguoyuxi_info: '出牌阶段开始时，你可以从【南蛮入侵】、【万箭齐发】、【桃园结义】、【五谷丰登】中选择一张使用。',
         },
     };
-    for (var i in hezongkangqincharacter.character) {
-        if (!hezongkangqincharacter.character[i][4]) hezongkangqincharacter.character[i][4] = [];
+    for (let i in hezongkangqincharacter.character) {
+        hezongkangqincharacter.character[i][4] ??= [];
+        if (game.getFileList) {
+            game.getFileList('extension/活动武将/audio/die', (folders, files) => {
+                if (files.includes(`${i}.mp3`)) {
+                    hezongkangqincharacter.character[i][4].push('die:ext:活动武将/audio/die:true');
+                    hezongkangqincharacter.translate[`#ext:活动武将/audio/die/${i}:die`] = '点击播放阵亡配音';
+                }
+            }, () => { });
+        }
         hezongkangqincharacter.character[i][4].push(((lib.device || lib.node) ? 'ext:' : 'db:extension-') + '活动武将/image/character/' + i + '.jpg');
     }
     game.bolAddGroupNature(['daqin', '秦'], [255, 165, 0]);

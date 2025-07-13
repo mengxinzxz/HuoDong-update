@@ -597,8 +597,16 @@ const packs = function () {
             NShundunyin_info: '觉醒技，出牌阶段开始时，若年兽阳已阵亡，你增加1点体力上限，回复1点体力，然后获得〖怒焰〗。',
         },
     };
-    for (var i in NianShouCharacter.character) {
-        if (!NianShouCharacter.character[i][4]) NianShouCharacter.character[i][4] = [];
+    for (let i in NianShouCharacter.character) {
+        NianShouCharacter.character[i][4] ??= [];
+        if (game.getFileList) {
+            game.getFileList('extension/活动武将/audio/die', (folders, files) => {
+                if (files.includes(`${i}.mp3`)) {
+                    NianShouCharacter.character[i][4].push('die:ext:活动武将/audio/die:true');
+                    NianShouCharacter.translate[`#ext:活动武将/audio/die/${i}:die`] = '点击播放阵亡配音';
+                }
+            }, () => { });
+        }
         NianShouCharacter.character[i][4].push(((lib.device || lib.node) ? 'ext:' : 'db:extension-') + '活动武将/image/character/' + i + '.jpg');
     }
     lib.config.all.characters.push('NianShouCharacter');

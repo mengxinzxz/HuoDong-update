@@ -483,8 +483,16 @@ const packs = function () {
             },
         },
     };
-    for (var i in FaDongCharacter.character) {
-        if (!FaDongCharacter.character[i][4]) FaDongCharacter.character[i][4] = [];
+    for (let i in FaDongCharacter.character) {
+        FaDongCharacter.character[i][4] ??= [];
+        if (game.getFileList) {
+            game.getFileList('extension/活动武将/audio/die', (folders, files) => {
+                if (files.includes(`${i}.mp3`)) {
+                    FaDongCharacter.character[i][4].push('die:ext:活动武将/audio/die:true');
+                    FaDongCharacter.translate[`#ext:活动武将/audio/die/${i}:die`] = '点击播放阵亡配音';
+                }
+            }, () => { });
+        }
         FaDongCharacter.character[i][4].push(((lib.device || lib.node) ? 'ext:' : 'db:extension-') + '活动武将/image/character/' + i + '.jpg');
     }
     lib.config.all.characters.push('FaDongCharacter');

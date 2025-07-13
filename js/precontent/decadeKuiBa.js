@@ -686,8 +686,16 @@ const packs = function () {
             kuiba_shengzhu_info: '锁定技，己方角色结束阶段开始时，其摸两张牌。',
         },
     };
-    for (var i in decadeKuiBa.character) {
-        if (!decadeKuiBa.character[i][4]) decadeKuiBa.character[i][4] = [];
+    for (let i in decadeKuiBa.character) {
+        decadeKuiBa.character[i][4] ??= [];
+        if (game.getFileList) {
+            game.getFileList('extension/活动武将/audio/die', (folders, files) => {
+                if (files.includes(`${i}.mp3`)) {
+                    decadeKuiBa.character[i][4].push('die:ext:活动武将/audio/die:true');
+                    decadeKuiBa.translate[`#ext:活动武将/audio/die/${i}:die`] = '点击播放阵亡配音';
+                }
+            }, () => { });
+        }
         decadeKuiBa.character[i][4].push(((lib.device || lib.node) ? 'ext:' : 'db:extension-') + '活动武将/image/character/' + i + '.jpg');
     }
     lib.config.all.characters.push('decadeKuiBa');

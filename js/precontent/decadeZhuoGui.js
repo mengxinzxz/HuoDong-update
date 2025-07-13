@@ -739,8 +739,16 @@ const packs = function () {
             ZGchihu_info: '锁定技，若你的手牌数不是全场最多的，摸牌阶段你多摸两张牌；若你的体力值不是全场最多的，你造成的伤害+1。',
         },
     };
-    for (var i in decadeZhuoGui.character) {
-        if (!decadeZhuoGui.character[i][4]) decadeZhuoGui.character[i][4] = [];
+    for (let i in decadeZhuoGui.character) {
+        decadeZhuoGui.character[i][4] ??= [];
+        if (game.getFileList) {
+            game.getFileList('extension/活动武将/audio/die', (folders, files) => {
+                if (files.includes(`${i}.mp3`)) {
+                    decadeZhuoGui.character[i][4].push('die:ext:活动武将/audio/die:true');
+                    decadeZhuoGui.translate[`#ext:活动武将/audio/die/${i}:die`] = '点击播放阵亡配音';
+                }
+            }, () => { });
+        }
         decadeZhuoGui.character[i][4].push(((lib.device || lib.node) ? 'ext:' : 'db:extension-') + '活动武将/image/character/' + i + '.jpg');
     }
     lib.config.all.characters.push('decadeZhuoGui');

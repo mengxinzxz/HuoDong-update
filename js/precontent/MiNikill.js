@@ -89,7 +89,7 @@ const packs = function () {
             Mbaby_zhenghun: ['male', 'wei', 3, ['miniqiangzhi', 'dcpitian']],
             Mbaby_chentai: ['male', 'wei', 4, ['minijiuxian', 'dcchenyong']],
             Mbaby_hanhaoshihuan: ['male', 'wei', 4, ['shenduan', 'miniyonglve']],
-            Mbaby_sb_zhenji: ['female', 'wei', 3, ['minisbluoshen', 'minisbqingguo'], ['die:true']],
+            Mbaby_sb_zhenji: ['female', 'wei', 3, ['minisbluoshen', 'minisbqingguo']],
             Mbaby_simalang: ['male', 'wei', 3, ['rejunbing', 'miniquji'], ['name:司马|朗']],
             Mbaby_zhanggong: ['male', 'wei', 3, ['miniqianxin', 'xinfu_zhenxing']],
             Mbaby_zhaoang: ['male', 'wei', 4, ['dczhongjie', 'minisushou']],
@@ -188,7 +188,7 @@ const packs = function () {
             Mbaby_sunce: ['male', 'wu', 4, ['minijiang', 'minihunzi', 'minizhiba'], ['zhu', 'tempname:sunce']],
             Mbaby_sunluban: ['female', 'wu', 3, ['minizenhui', 'minijiaojin']],
             Mbaby_sunluyu: ['female', 'wu', 3, ['minimeibu', 'remumu']],
-            Mbaby_sunquan: ['male', 'wu', 4, ['minirezhiheng', 'minijiuyuan'], ['zhu', 'die:true']],
+            Mbaby_sunquan: ['male', 'wu', 4, ['minirezhiheng', 'minijiuyuan'], ['zhu']],
             Mbaby_sunshangxiang: ['female', 'wu', 3, ['minijieyin', 'xiaoji']],
             Mbaby_taishici: ['male', 'wu', 4, ['miniretianyi', 'minihanzhan'], [...['die', 'tempname'].map(i => i + ':re_taishici'), 'name:太史|慈']],
             Mbaby_wuguotai: ['female', 'wu', 3, ['minireganlu', 'minirebuyi']],
@@ -250,7 +250,7 @@ const packs = function () {
             Mbaby_gaoshun: ['male', 'qun', 4, ['minirexianzhen', 'minirejinjiu']],
             Mbaby_caifuren: ['female', 'qun', 3, ['minireqieting', 'minirexianzhou'], ['name:蔡|null']],
             Mbaby_lijue: ['male', 'qun', '5/6', ['xinfu_langxi', 'xinfu_yisuan']],
-            Mbaby_zuoci: ['male', 'qun', 3, ['minishendao', 'minixinsheng'], ['die:true']],
+            Mbaby_zuoci: ['male', 'qun', 3, ['minishendao', 'minixinsheng']],
             Mbaby_xuyou: ['male', 'qun', 3, ['minichenglve', 'nzry_shicai', 'nzry_cunmu']],
             Mbaby_gongsunzan: ['male', 'qun', 4, ['miniqiaomeng', 'miniyicong'], ['name:公孙|瓒']],
             Mbaby_pangde: ['male', 'qun', 4, ['mashu', 'minijianchu']],
@@ -352,12 +352,12 @@ const packs = function () {
             Mbaby_shen_simayi: ['male', 'shen', 3, ['minirenjie', 'minijilve', 'lianpo'], ['wei', 'name:司马|懿']],
             Mbaby_shen_zhaoyun: ['male', 'shen', 2, ['minijuejing', 'minilonghun'], ['shu']],
             Mbaby_shen_ganning: ['male', 'shen', '3/6', ['minipoxi', 'drlt_jieying'], ['wu']],
-            Mbaby_shen_dianwei: ['male', 'shen', 5, ['minishenwei', 'minielai', 'minikuangxi'], ['wei', 'die:true']],
+            Mbaby_shen_dianwei: ['male', 'shen', 5, ['minishenwei', 'minielai', 'minikuangxi'], ['wei']],
             Mbaby_shen_huatuo: ['male', 'shen', 1, ['minijishi', 'minitaoxian', 'minishenzhen'], ['qun']],
             Mbaby_shen_guojia: ['male', 'shen', 3, ['reshuishi', 'minigjtianyi', 'minihuishi'], ['wei']],
             Mbaby_shen_zhenji: ['female', 'shen', 3, ['minishenfu', 'miniqixian', 'minifeifu'], ['wei']],
             Mbaby_shen_daxiaoqiao: ['female', 'shen', 4, ['minishuangshu', 'minipingting', 'miniyizheng'], ['wu', 'name:桥|null']],
-            Mbaby_shen_diaochan: ['female', 'shen', 3, ['minimeihun', 'minihuoxin'], ['qun', 'die:true']],
+            Mbaby_shen_diaochan: ['female', 'shen', 3, ['minimeihun', 'minihuoxin'], ['qun']],
             Mbaby_sunwukong: ['male', 'shen', 4, ['mini72bian', 'miniruyi', 'miniqitian']],
             Mbaby_dalanmao: ['male', 'shen', 4, ['minizuzhou', 'minimoyu', 'minisanlian']],
             Mbaby_change: ['female', 'shen', '1/4', ['minidaoyao', 'minibenyue']],
@@ -367,7 +367,7 @@ const packs = function () {
             Mbaby_shen_zuoci: ['male', 'shen', 3, ['minihuanshu', 'minihuanhua', 'minihuanjing'], ['qun']],
             Mbaby_shen_dengai: ['male', 'shen', 4, ['dctuoyu', 'minixianjin', 'dcqijing'], ['wei']],
             Mbaby_shen_luxun: ['male', 'shen', 4, ['nzry_junlve', 'minicuike', 'nzry_dinghuo'], ['wu']],
-            Mbaby_shen_pangtong: ['male', 'shen', 4, ['minilunce', 'minilanhai'], ['shu', 'die:true']],
+            Mbaby_shen_pangtong: ['male', 'shen', 4, ['minilunce', 'minilanhai'], ['shu']],
             Mbaby_jingwei: ['female', 'shen', 4, ['minitianhai', 'minihaiku']],
             Mbaby_shen_lusu: ['male', 'shen', 3, ['minitamo', 'minidingzhou', 'zhimeng'], ['wu']],
             //喵
@@ -36632,7 +36632,7 @@ const packs = function () {
             MiNikill.translate[skill + '_append'] = '<span style="font-family: yuanli"><li>念影——' + MiNikill.skill[skill].nianyingSkill[0] + '<br>' + MiNikill.skill[skill].nianyingSkill[1] + '</span>';
         }
     }
-    for (var i in MiNikill.character) {
+    for (let i in MiNikill.character) {
         if (!MiNikill.character[i][4]) MiNikill.character[i][4] = [];
         if (MiNikill.translate[i]) {
             if (MiNikill.translate[i].indexOf('欢杀神') == 0) MiNikill.translate[i + '_prefix'] = '欢杀|神';
@@ -36644,7 +36644,17 @@ const packs = function () {
             else if (MiNikill.translate[i].indexOf('念') == 0) MiNikill.translate[i + '_prefix'] = '念';
             else if (MiNikill.translate[i].indexOf('战') == 0) MiNikill.translate[i + '_prefix'] = '战';
         }
-        if (i.startsWith('Mbaby_') && !MiNikill.character[i][4].some(tag => typeof tag == 'string' && tag.startsWith('die:'))) MiNikill.character[i][4].push('die:' + i.slice(6));
+        if (game.getFileList) {
+            game.getFileList('extension/活动武将/audio/die', (folders, files) => {
+                if (files.includes(`${i}.mp3`)) {
+                    MiNikill.character[i][4].push('die:ext:活动武将/audio/die:true');
+                    MiNikill.translate[`#ext:活动武将/audio/die/${i}:die`] = '点击播放阵亡配音';
+                }
+                else {
+                    if (i.startsWith('Mbaby_') && !MiNikill.character[i][4].some(tag => typeof tag == 'string' && tag.startsWith('die:'))) MiNikill.character[i][4].push('die:' + i.slice(6));
+                }
+            }, () => { });
+        }
         MiNikill.character[i][4].push(((lib.device || lib.node) ? 'ext:' : 'db:extension-') + '活动武将/image/character/' + i + '.jpg');
     }
     lib.namePrefix.set('喵', {

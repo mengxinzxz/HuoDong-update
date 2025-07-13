@@ -1,4 +1,4 @@
-import { lib, game, ui, get, ai, _status } from '../../../../noname.js'
+import { lib, game, ui, get, ai, _status } from '../../../noname.js'
 export function content(config, pack) {
 	//活动武将显示
 	if (ui?.create?.menu) {
@@ -1765,8 +1765,8 @@ export function content(config, pack) {
 		ol_shen_dianwei_prefix: 'OL神',
 		old_ol_yuanji: '旧OL袁姬',
 		old_ol_yuanji_prefix: '旧|OL',
-		'#ext:活动武将/audio/die/old_xunchen:die': 'undefined',
-		'#ext:活动武将/audio/die/old_dengai:die': 'undefined',
+		'#ext:活动武将/audio/die/old_xunchen:die': '点击播放阵亡配音',
+		'#ext:活动武将/audio/die/old_dengai:die': '点击播放阵亡配音',
 		old_sp_jianggan: '旧蒋干',
 		old_sp_jianggan_prefix: '旧',
 
