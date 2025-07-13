@@ -1460,7 +1460,7 @@ const packs = function () {
             qin_chunqiu: '春秋',
             qin_chunqiu_info: '锁定技，你于每个回合使用或打出第一张牌时，摸一张牌。',
             qin_baixiang: '拜相',
-            qin_baixiang_info: '觉醒技，准备阶段，若你的手牌数不小于你当前体力值的三倍，则你将体力回复至体力上限，然后获得技能〖仲父〗。',
+            qin_baixiang_info: '觉醒技，准备阶段，若你的手牌数不小于你当前体力值的三倍，则你将体力回复至体力上限，然后获得〖仲父〗。',
             qin_zhongfu: '仲父',
             qin_zhongfu_info: '锁定技，准备阶段，你随机获得『〖奸雄〗、〖仁德〗、〖制衡〗』中的一个直到你的下个回合开始。',
             qin_shanwu: '善舞',

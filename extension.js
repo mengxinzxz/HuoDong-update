@@ -13,10 +13,12 @@ game.bolShowNewPack = function () {
 	var HuoDong_update = [
 		'/setPlayer/',
 		'bugfix',
+		'新武将：玄蝶祢衡、喵曹婴',
 		'To be continued...',
 	];
 	//更新武将
 	var HuoDong_players = [
+		'bfake_miheng', 'Mmiao_caoying',
 	];
 	//加载
 	var dialog = ui.create.dialog(

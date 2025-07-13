@@ -81,7 +81,7 @@ const packs = function () {
             bfake_shen_zhangfei: ['male', 'shen', 5, ['bolbaohe', 'bolrenhai', 'boltiandong'], ['shu', 'character:shen_zhangfei']],
             bfake_shen_zhangjiao: ['male', 'shen', 3, ['bolyifu', 'boltianjie'], ['qun', 'character:shen_zhangjiao']],
             bfake_huanwen: ['male', 'jin', 3, ['bolyuba', 'bolxingjiang']],
-            bfake_miheng: ['male', 'qun', 3, ['bolhuaici', 'boljianling']],
+            bfake_miheng: ['male', 'qun', 3, ['bolhuaici', 'boljianling'], ['character:gz_miheng']],
             //憋笑--牢戏专属
             smile1: ['', '', 0, [], ['unseen', 'forbidai', ((lib.device || lib.node) ? 'ext:' : 'db:extension-') + '活动武将/image/default/smile1.jpg']],
             smile2: ['', '', 0, [], ['unseen', 'forbidai', ((lib.device || lib.node) ? 'ext:' : 'db:extension-') + '活动武将/image/default/smile2.jpg']],
@@ -1016,7 +1016,7 @@ const packs = function () {
                         target(player, target) {
                             var att = get.attitude(player, target);
                             if (att > 0 && !target.countCards('he')) return 10;
-                            return get.sgn(att) * get.effect(target, { name: 'shunshou_copy2' }, player, player);
+                            return Math.sign(att) * get.effect(target, { name: 'shunshou_copy2' }, player, player);
                         },
                     },
                 },
@@ -2931,7 +2931,7 @@ const packs = function () {
                     });
                     var num = 0;
                     for (var i = 0; i < targets.length; i++) {
-                        var eff = get.sgn(get.effect(targets[i], { name: 'wanjian' }, player, player));
+                        var eff = Math.sign(get.effect(targets[i], { name: 'wanjian' }, player, player));
                         if (targets[i].hp == 1) {
                             eff *= 1.5;
                         }
@@ -3010,7 +3010,7 @@ const packs = function () {
                         return 0;
                     });
                     'step 1'
-                    switch (get.sgn(result.judge)) {
+                    switch (Math.sign(result.judge)) {
                         case 1: player.recover(); break;
                         case -1: player.loseHp(); break;
                     }
@@ -7017,7 +7017,7 @@ const packs = function () {
                     return get.translation(event.player) + '对你发动了' + '【' + get.translation(skill) + '】，是否令【' + get.translation(skill) + '】对你无效？';
                 },
                 check(event, player) {
-                    var att = get.sgn(get.attitude(player, event.player));
+                    var att = Math.sign(get.attitude(player, event.player));
                     if (att < 0) return true;
                     if (att == 0) return get.attitude(event.player, player) <= 0;
                     return false;
@@ -7282,7 +7282,7 @@ const packs = function () {
                                 },
                             };
                             lib.translate[card] = '雷の制卡·' + lib.translate[skill];
-                            lib.translate[card + '_info'] = '<li>使用此牌，获得技能【' + lib.translate[skill] + '】' + '<br><li>' + lib.translate[skill + '_info'];
+                            lib.translate[card + '_info'] = '<li>使用此牌，获得【' + lib.translate[skill] + '】' + '<br><li>' + lib.translate[skill + '_info'];
                             player.gain(game.createCard2(card, lib.suit.randomGet(), get.rand(1, 13)), 'gain2');
                         },
                     },
@@ -7507,7 +7507,7 @@ const packs = function () {
                                     var target = game.findPlayer(function (current) {
                                         return current.hasSkill('bilibili_meihua');
                                     });
-                                    if (target) return 2 + get.sgn(get.attitude(player, target));
+                                    if (target) return 2 + Math.sign(get.attitude(player, target));
                                 },
                             },
                         },
@@ -7697,7 +7697,7 @@ const packs = function () {
                     for (var target of game.filterPlayer()) {
                         if (target == player || !target.countDiscardableCards(target, 'h')) continue;
                         for (var i in map) {
-                            if (target.countCards('h', { color: i })) map[i] += get.sgn(get.attitude(player, target));
+                            if (target.countCards('h', { color: i })) map[i] += Math.sign(get.attitude(player, target));
                         }
                     }
                     var colors = Object.keys(map).filter(color => map[color] >= 0);
@@ -7762,7 +7762,7 @@ const packs = function () {
                             for (var target of game.filterPlayer()) {
                                 if (target == player || !target.countDiscardableCards(target, 'h')) continue;
                                 for (var i in map) {
-                                    if (target.countCards('h', { color: i })) map[i] += get.sgn(get.attitude(player, target));
+                                    if (target.countCards('h', { color: i })) map[i] += Math.sign(get.attitude(player, target));
                                 }
                             }
                             var colors = Object.keys(map).filter(color => map[color] >= 0);
@@ -7923,7 +7923,7 @@ const packs = function () {
                         return lib.skill.bolliaoyi.getList(target).length;
                     }).set('ai', function (target) {
                         var player = _status.event.player;
-                        return lib.skill.bolliaoyi.getList(target).length * get.sgn(get.attitude(player, target));
+                        return lib.skill.bolliaoyi.getList(target).length * Math.sign(get.attitude(player, target));
                     });
                     'step 1'
                     if (result.bool) {
@@ -10110,7 +10110,7 @@ const packs = function () {
                                 },
                                 ai2(target) {
                                     var player = _status.event.player;
-                                    return (2 - get.sgn(get.attitude(player, target))) / (target.countCards('he') + 1);
+                                    return (2 - Math.sign(get.attitude(player, target))) / (target.countCards('he') + 1);
                                 },
                             });
                             'step 1'
@@ -11313,7 +11313,7 @@ const packs = function () {
             olddulie: '笃烈',
             olddulie_info: '锁定技。①游戏开始时，你令X名其他角色获得“围”（X为游戏人数的一半且向下取整）。②你对没有“围”的角色使用【杀】无距离限制。③当你成为【杀】的目标时，若使用者没有“围”，则你进行判定。若结果为红色，则取消此目标。',
             oldpowei: '破围',
-            oldpowei_info: '使命技。①当你因使用【杀】而对有“围”的角色造成伤害时，你防止此伤害并移去该角色的“围”。②使命：当你使用【杀】结算完成后，若场上没有“围”，则你获得技能〖神著〗。③失败：当你进入濒死状态时，你弃置装备区的所有牌，然后将体力值回复至1点。',
+            oldpowei_info: '使命技。①当你因使用【杀】而对有“围”的角色造成伤害时，你防止此伤害并移去该角色的“围”。②使命：当你使用【杀】结算完成后，若场上没有“围”，则你获得〖神著〗。③失败：当你进入濒死状态时，你弃置装备区的所有牌，然后将体力值回复至1点。',
             old_shenzhu: '神著',
             old_shenzhu_info: '锁定技，你使用【杀】无次数限制。当你使用有对应实体牌的非转化【杀】结算结束后，你摸一张牌。',
             old_yingba: '英霸',
@@ -11357,7 +11357,7 @@ const packs = function () {
             BTxinsheng_1: '新生·2级',
             BTxinsheng_1_info: '当你造成或受到1点伤害后，你可以获得一张化身牌。',
             BTxinsheng_2: '新生·3级',
-            BTxinsheng_2_info: '当你造成或受到1点伤害后，你可以获得一张化身牌，然后若你的化身牌数不小于场上人数，你获得技能〖幻化〗。',
+            BTxinsheng_2_info: '当你造成或受到1点伤害后，你可以获得一张化身牌，然后若你的化身牌数不小于场上人数，你获得〖幻化〗。',
             BThuanhua: '幻化',
             BThuanhua_backup: '幻化',
             BThuanhua_info: '出牌阶段限一次，你可以弃置一张未展示的化身牌，然后将一张手牌视为一张基本牌或普通锦囊牌使用。',
@@ -11398,7 +11398,7 @@ const packs = function () {
             old_jiebing: '借兵',
             old_jiebing_info: '出牌阶段限一次，你可以获得一名有手牌的其他角色的三张手牌，然后受到1点伤害。若如此做，此阶段结束时，你交给其以此法获得的牌。',
             old_kuzhan: '苦战',
-            old_kuzhan_info: '使命技。成功：准备阶段，若你本局游戏受到的伤害不少于5点，你获得技能〖退敌〗。失败：结束阶段，若你本回合和上回合均发动过〖借兵〗且均未于当前回合造成过伤害，则使命失败。',
+            old_kuzhan_info: '使命技。成功：准备阶段，若你本局游戏受到的伤害不少于5点，你获得〖退敌〗。失败：结束阶段，若你本回合和上回合均发动过〖借兵〗且均未于当前回合造成过伤害，则使命失败。',
             old_tuidi: '退敌',
             old_tuidi_info: '当你对一名其他角色造成伤害后，你可以随机废除其一种装备栏。',
             old_qixi: '奇袭',
@@ -11467,9 +11467,9 @@ const packs = function () {
             boss_yz_draw: '摸牌',
             boss_yz_draw_info: '摸牌阶段摸牌数+1。',
             boss_yz_kunshou: '困兽',
-            boss_yz_kunshou_info: '觉醒技，当你进入濒死状态时，你将体力回复至5，将手牌数补至5，然后获得技能〖崩坏〗。',
+            boss_yz_kunshou_info: '觉醒技，当你进入濒死状态时，你将体力回复至5，将手牌数补至5，然后获得〖崩坏〗。',
             wzdanji: '单骑',
-            wzdanji_info: '觉醒技，准备阶段开始时，若你的手牌数大于你的体力值且本局游戏的主公为曹操，你减1点体力上限，然后获得技能〖马术〗。',
+            wzdanji_info: '觉醒技，准备阶段开始时，若你的手牌数大于你的体力值且本局游戏的主公为曹操，你减1点体力上限，然后获得〖马术〗。',
             old_shenjun: '神君',
             old_shenjun_info: '锁定技，一名角色使用【杀】或普通锦囊牌时，你展示你手牌中所有的同名牌，此阶段结束时，你须选择一项：①将X张牌当作你本阶段发动〖神君〗响应的牌名使用（X为你手牌中已展示的〖神君〗牌数）；②失去1点体力。',
             old_balong: '八龙',

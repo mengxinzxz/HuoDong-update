@@ -408,7 +408,7 @@ const packs = function () {
                                 var player = _status.event.player, targets = _status.event.targets;
                                 var num = 1;
                                 if (!_status.event.gained.includes(target)) num = 3;
-                                return get.sgn(get.attitude(player, target)) * num;
+                                return Math.sign(get.attitude(player, target)) * num;
                             }).set('targets', targets).set('gained', map);
                             if (result2.bool) {
                                 var target = result2.targets[0];
@@ -837,7 +837,7 @@ const packs = function () {
                             'step 2'
                             var cards = get.cards(3, true);
                             player.chooseButton(['陈势：请选择弃置的牌', cards], [1, cards.length], true).set('ai', function (button) {
-                                var eff = get.sgn(_status.event.effect);
+                                var eff = Math.sign(_status.event.effect);
                                 switch (eff) {
                                     case 0:
                                         return -0.5 + Math.random();
@@ -907,7 +907,7 @@ const packs = function () {
                             'step 2'
                             var cards = get.cards(3, true);
                             player.chooseButton(['陈势：请选择弃置的牌', cards], [1, cards.length], true).set('ai', function (button) {
-                                var eff = get.sgn(_status.event.effect);
+                                var eff = Math.sign(_status.event.effect);
                                 switch (eff) {
                                     case 0:
                                         return -0.5 + Math.random();
@@ -1630,7 +1630,7 @@ const packs = function () {
                         if (cards.length < target.countCards('h')) return -get.value(card);
                         var num1 = cards.reduce((sum, card) => sum += target.getUseValue(card), 0);
                         var num2 = target.getCards('hs').reduce((sum, card) => sum += target.getUseValue(card), 0);
-                        return (num1 - num2) * get.sgn(get.attitude(player, target));
+                        return (num1 - num2) * Math.sign(get.attitude(player, target));
                     }).set('target', target);
                     if (result.bool) {
                         player.logSkill('fh_songshu');
@@ -2160,13 +2160,13 @@ const packs = function () {
                             var num2 = lib.skill.fh_jincui.getSeatNum(player, target);
                             var num3 = player.countCards('hs', card => player.canSaveCard(card, player));
                             while (true) {
-                                num -= get.sgn(get.attitude(player, current));
+                                num -= Math.sign(get.attitude(player, current));
                                 if (current == target) break;
                                 current = current.next;
                             }
                             while (true) {
                                 if (current == player) break;
-                                num += get.sgn(get.attitude(player, current)) * 1.1;
+                                num += Math.sign(get.attitude(player, current)) * 1.1;
                                 current = current.next;
                             }
                             if (num < num2 - num3) return 0;
@@ -2213,7 +2213,7 @@ const packs = function () {
                     else target.chooseCard('he', true, '请重铸一张牌', lib.filter.cardRecastable).set('ai', card => {
                         var player = _status.event.player;
                         var source = _status.event.source;
-                        var num = get.sgn(get.attitude(player, source));
+                        var num = Math.sign(get.attitude(player, source));
                         if (source.awakenedSkills.includes('duanbi') && source.hasSkill('tongduo', null, false, false) && get.name(card) == 'wuzhong') {
                             if (num == 1) return 10;
                             return 0;
@@ -2390,7 +2390,7 @@ const packs = function () {
                     player.awakenSkill('fh_tianyi');
                     if (player.maxHp < 10) player.gainMaxHp(10 - player.maxHp);
                     'step 1'
-                    player.chooseTarget('令一名角色获得技能〖佐幸〗', true).set('ai', target => {
+                    player.chooseTarget('令一名角色获得〖佐幸〗', true).set('ai', target => {
                         return get.attitude(_status.event.player, target);
                     });
                     'step 2'
@@ -3189,7 +3189,7 @@ const packs = function () {
                         player.chooseControl().set('ai', () => _status.event.index).set('choiceList', [
                             '令' + get.translation(target) + '失去1点体力，从额外牌堆随机使用一张装备牌',
                             '令' + get.translation(target) + '回复1点体力，弃置一张装备牌',
-                        ]).set('index', Math.max(0, get.sgn(get.attitude(player, target))));
+                        ]).set('index', Math.max(0, Math.sign(get.attitude(player, target))));
                     }
                     'step 1'
                     if (result.index == 0) {
@@ -4435,7 +4435,7 @@ const packs = function () {
             fh_zifu: '自缚',
             fh_zifu_info: '锁定技，出牌阶段结束时，若你本阶段内未使用牌，则你移去所有“备”且本回合的手牌上限-1。',
             fh_mibei: '秘备',
-            fh_mibei_info: '使命技，使命：当你使用的牌结算完成后，若你的“备”中包含的基本牌，锦囊牌，装备牌数量均不少于两张，则你从额外牌堆中随机获得这三种类型的牌各一张并获得技能〖谋立〗。失败：结束阶段开始时，若你没有“备”，且你于本回合的准备阶段开始时也没有“备”，则你减1点体力上限。',
+            fh_mibei_info: '使命技，使命：当你使用的牌结算完成后，若你的“备”中包含的基本牌，锦囊牌，装备牌数量均不少于两张，则你从额外牌堆中随机获得这三种类型的牌各一张并获得〖谋立〗。失败：结束阶段开始时，若你没有“备”，且你于本回合的准备阶段开始时也没有“备”，则你减1点体力上限。',
             fh_mouli: '谋立',
             fh_mouli_info: '出牌阶段限一次，你可以令一名其他角色获得你的一张“备”。',
             fh_guixiu: '闺秀',
@@ -4505,7 +4505,7 @@ const packs = function () {
             fh_shuishi: '慧识',
             fh_shuishi_info: '出牌阶段限一次，你可进行重复判定牌直到有已有判定花色的牌，然后你可以将所有判定牌交给一名角色。',
             fh_tianyi: '天翊',
-            fh_tianyi_info: '觉醒技，准备阶段，若场上的所有存活角色均于本局游戏内受到过伤害，则你将体力上限增加至10点，然后令一名角色获得技能〖佐幸〗。',
+            fh_tianyi_info: '觉醒技，准备阶段，若场上的所有存活角色均于本局游戏内受到过伤害，则你将体力上限增加至10点，然后令一名角色获得〖佐幸〗。',
             fh_sghuishi: '辉逝',
             fh_sghuishi_info: '限定技，当你进入濒死状态时，你可以选择一名角色。若其有未发动的觉醒技，则你令其中一个技能无视发动条件；否则其摸四张牌。',
             fh_lingce: '灵策',
@@ -4513,7 +4513,7 @@ const packs = function () {
             fh_dinghan: '定汉',
             fh_dinghan_info: '准备阶段，你可以更换智囊牌中的一张锦囊牌。',
             fh_powei: '破围',
-            fh_powei_info: '使命技，游戏开始时，你令所有其他角色获得一个“围”。一名角色受到伤害后，若其有“围”，则其移去“围”。回合开始时，所有有“围”的角色失去“围”，然后这些角色的第一个不为你的下家获得等量的“围”。一名其他角色的回合开始时，若其有“围”，则你可以选择一项：⒈弃置一张手牌并对其造成1点伤害。⒉若其体力值不大于你，则你获得其一张手牌。选择完成后，你视为在其攻击范围内直到回合结束。使命：回合开始时，若场上没有“围”，则你获得技能〖神著〗。失败：当你受到大于等于你的体力值的伤害时，你取消之，然后移去场上所有“围”，弃置装备区的所有牌。',
+            fh_powei_info: '使命技，游戏开始时，你令所有其他角色获得一个“围”。一名角色受到伤害后，若其有“围”，则其移去“围”。回合开始时，所有有“围”的角色失去“围”，然后这些角色的第一个不为你的下家获得等量的“围”。一名其他角色的回合开始时，若其有“围”，则你可以选择一项：⒈弃置一张手牌并对其造成1点伤害。⒉若其体力值不大于你，则你获得其一张手牌。选择完成后，你视为在其攻击范围内直到回合结束。使命：回合开始时，若场上没有“围”，则你获得〖神著〗。失败：当你受到大于等于你的体力值的伤害时，你取消之，然后移去场上所有“围”，弃置装备区的所有牌。',
             fh_qiexie: '挈挟',
             fh_qiexie_info: '锁定技，准备阶段，你在剩余武将牌堆中随机观看五张牌，选择其中的任意张置入武器栏，这些牌具有以下效果：⒈此牌不具有花色，且其攻击范围和点数等于此武将牌的体力上限。⒉此武器牌的技能为该武将牌上所有描述中包含“【杀】”且不具有锁定技以外的标签的技能。⒊此武器牌离开你的装备区时，改为放回武将牌堆。',
             fh_qiexie_faq: '【挈挟】将池',

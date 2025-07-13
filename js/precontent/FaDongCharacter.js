@@ -214,7 +214,7 @@ const packs = function () {
                     result: {
                         target(player, target) {
                             if (player.hp <= 1 && !player.countCards('hs', { name: ['tao', 'jiu'] })) return 0;
-                            var att = get.attitude(player, target), sgn = get.sgn(att);
+                            var att = get.attitude(player, target), sgn = Math.sign(att);
                             return get.damageEffect(target, player, player) * sgn * (2 - sgn);
                         },
                     },
