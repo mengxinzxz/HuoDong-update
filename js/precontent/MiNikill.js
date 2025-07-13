@@ -33202,26 +33202,26 @@ const packs = function () {
                     const targets = game.filterPlayer(target => target.hasMark(event.name));
                     if (targets.length) {
                         player.line(targets);
-                        let lost_list = [], next;
+                        let lose_list = [], next;
                         for (const target of targets) {
                             const cards = target.getDiscardableCards(target, 'h');
-                            if (cards.length) lost_list.push([target, cards.randomGets(1)]);
+                            if (cards.length) lose_list.push([target, cards.randomGets(1)]);
                         }
-                        if (lost_list.length) {
-                            if (lost_list.length === 1) {
-                                next = lose_list[0].discard(lose_list[1]);
+                        if (lose_list.length) {
+                            if (lose_list.length === 1) {
+                                next = lose_list[0][0].discard(lose_list[0][1]);
                                 next.discarder = player;
                             }
                             else {
                                 next = game.loseAsync({
-                                    lose_list: lost_list,
+                                    lose_list: lose_list,
                                     discarder: player,
                                 }).setContent("discardMultiple");
                             }
                             await next;
                         }
                         game.countPlayer(target => target.clearMark(event.name));
-                        const gains = lost_list.filter(list => list[0].hasSkill('minidoumao', null, null, false)).map(list => list[1].filterInD('d')).flat();
+                        const gains = lose_list.filter(list => list[0].hasSkill('minidoumao', null, null, false)).map(list => list[1].filterInD('d')).flat();
                         if (gains.length > 0) await player.gain(gains, 'gain2');
                     }
                 },
