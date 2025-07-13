@@ -3144,28 +3144,29 @@ const packs = function () {
                     Mmiao_caoying: 'minijianxiong_caoying',
                 },
                 trigger: { player: 'damageEnd' },
-                direct: true,
-                content() {
-                    'step 0'
-                    event.count = trigger.num;
-                    'step 1'
-                    event.count--;
-                    player.chooseControl('摸两张牌', '拿牌摸牌', 'cancel2').set('prompt', get.prompt2('minijianxiong')).set('ai', function () {
-                        var trigger = _status.event.getTrigger();
-                        if (get.itemtype(trigger.cards) != 'cards' || trigger.cards.filterInD().length < 1 || (trigger.cards.filterInD().length == 1 && trigger.cards.filterInD()[0].name == 'sha')) return '摸两张牌';
-                        return '拿牌摸牌';
-                    });
-                    'step 2'
-                    if (result.control != 'cancel2') {
-                        player.logSkill('minijianxiong');
-                        if (result.control == '拿牌摸牌') {
-                            if (trigger.cards.filterInD().length) player.gain(trigger.cards.filterInD(), 'gain2');
-                            player.draw();
-                        }
-                        else player.draw(2);
-                        if (event.count > 0 && player.hasSkill('minijianxiong')) event.goto(1);
+                getIndex: event => event.num,
+                async cost(event, trigger, player) {
+                    const choice = ['摸两张牌'];
+                    if (trigger.cards?.someInD('od')) choice.push('拿牌摸牌');
+                    const result = await player.chooseControl(choice, 'cancel2').set('ai', () => {
+                        const { player, controls } = get.event(), trigger = get.event().getTrigger();
+                        if (controls.length === 2) return '摸两张牌';
+                        return trigger.cards.filterInD('od').reduce((sum, card) => sum + get.value(card), 0) > get.effect(player, { name: 'draw' }, player, player);
+                    }).set('prompt', get.prompt2('minijianxiong')).forResult();
+                    const control = result.control;
+                    event.result = {
+                        bool: control && control !== 'cancel2',
+                        cost_data: control,
+                    };
+                },
+                async content(event, trigger, player) {
+                    if (event.cost_data === '摸两张牌') {
+                        await player.draw(2);
                     }
-                    else event.finish();
+                    else {
+                        if (trigger.cards?.someInD('od')) await player.gain(trigger.cards.filterInD('od'), 'gain2');
+                        await player.draw();
+                    }
                 },
                 ai: {
                     maixie: true,

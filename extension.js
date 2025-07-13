@@ -2,7 +2,7 @@
 import { lib, game, ui, get, ai, _status } from '../../noname.js';
 import { config } from './js/config.js';
 import { precontent } from './js/precontent/index.js';
-import { content } from './js/content/index.js';
+import { content } from './js/content.js';
 import { help } from './js/help.js';
 
 lib.init.css(lib.assetURL + 'extension/活动武将', 'extension');
