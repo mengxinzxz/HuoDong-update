@@ -35,11 +35,15 @@ export async function precontent(bilibilicharacter) {
     //闪闪节
     lib.arenaReady.push(() => {
         if (lib.config.extension_活动武将_HD_shanshan) {
-            for (var i = 0; i < lib.card.list.length; i++) {
+            let num = 0;
+            for (let i = 0; i < lib.card.list.length; i++) {
                 if (lib.card.list[i][2] != 'shan' || lib.card.list[i][0] != 'diamond') continue;
-                if ([5, 6, 7].includes(lib.card.list[i][1])) lib.card.list[i][2] = 'bol_shanshan';
+                if ([5, 6, 7].includes(lib.card.list[i][1])) {
+                    num++;
+                    lib.card.list[i][2] = 'bol_shanshan';
+                }
             }
-            game.log('三张', '#g【闪闪】', '已加入牌堆');
+            if (num > 0) game.log(`${get.cnNumber(num)}张`, '#g【闪闪】', '已加入牌堆');
         }
     });
     //合纵抗秦、官渡之战模式特殊规则
