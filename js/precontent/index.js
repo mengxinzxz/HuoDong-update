@@ -512,41 +512,6 @@ export async function precontent(bilibilicharacter) {
     };
     //----------------游戏播报·末----------------
 
-    //设定势力+颜色显示
-    game.bolAddGroupNature = function (name, mapping, gradient, push) {
-        var n;
-        if (!name || !Array.isArray(name)) return;
-        n = name[0];
-        if (!mapping || !Array.isArray(mapping) || mapping.length != 3) mapping = [199, 21, 133];
-        var y = "(" + mapping[0] + "," + mapping[1] + "," + mapping[2];
-        var y1 = y + ",1)", y2 = y + ")";
-        var s = document.createElement('style');
-        var l = ".player .identity[data-color='diy" + n + "'],";
-        l += "div[data-nature='diy" + n + "'],";
-        l += "span[data-nature='diy" + n + "'] {text-shadow: black 0 0 1px,rgba" + y1 + " 0 0 2px,rgba" + y1 + " 0 0 5px,rgba" + y1 + " 0 0 10px,rgba" + y1 + " 0 0 10px}";
-        l += "div[data-nature='diy" + n + "m'],";
-        l += "span[data-nature='diy" + n + "m'] {text-shadow: black 0 0 1px,rgba" + y1 + " 0 0 2px,rgba" + y1 + " 0 0 5px,rgba" + y1 + " 0 0 5px,rgba" + y1 + " 0 0 5px,black 0 0 1px;}";
-        l += "div[data-nature='diy" + n + "mm'],";
-        l += "span[data-nature='diy" + n + "mm'] {text-shadow: black 0 0 1px,rgba" + y1 + " 0 0 2px,rgba" + y1 + " 0 0 2px,rgba" + y1 + " 0 0 2px,rgba" + y1 + " 0 0 2px,black 0 0 1px;}";
-        s.innerHTML = l;
-        document.head.appendChild(s);
-        if (gradient && Array.isArray(gradient) && Array.isArray(gradient[0]) && gradient[0].length == 3) {
-            var str = "", st2 = [];
-            for (var i = 0; i < gradient.length; i++) {
-                str += ",rgb(" + gradient[i][0] + "," + gradient[i][1] + "," + gradient[i][2] + ")";
-                if (i < 2) st2[i] = "rgb(" + gradient[i][0] + "," + gradient[i][1] + "," + gradient[i][2] + ")";
-            }
-            var tenUi = document.createElement('style');
-            tenUi.innerHTML = ".player>.camp-zone[data-camp='" + n + "']>.camp-back {background: linear-gradient(to bottom" + str + ");}";
-            tenUi.innerHTML += ".player>.camp-zone[data-camp='" + n + "']>.camp-name {text-shadow: 0 0 5px " + st2[0] + ", 0 0 10px " + st2[1] + ";}";
-            document.head.appendChild(tenUi);
-        }
-        if (push === true) lib.group.add(n);
-        if (!_status.mx_group) _status.mx_group = '夏商周秦汉晋南北隋唐宋元明清';
-        lib.translate[n] = name[1];
-        lib.translate[n + '2'] = (name[2] ? name[2] : (name[1] + (_status.mx_group.includes(name[1]) ? '朝' : '国')));
-        lib.groupnature[n] = "diy" + n;
-    };
     //武将包和卡包
     if (bilibilicharacter.enable) {
         //--------------------武将包--------------------//

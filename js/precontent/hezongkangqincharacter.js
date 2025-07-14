@@ -1512,7 +1512,7 @@ const packs = function () {
         }
         hezongkangqincharacter.character[i][4].push(((lib.device || lib.node) ? 'ext:' : 'db:extension-') + '活动武将/image/character/' + i + '.jpg');
     }
-    game.bolAddGroupNature(['daqin', '秦'], [255, 165, 0]);
+    game.addGroup('daqin', '秦', '秦朝', { color: '#FFA500' });
     lib.config.all.characters.push('hezongkangqincharacter');
     lib.config.all.sgscharacters.push('hezongkangqincharacter');
     if (!lib.config.characters.includes('hezongkangqincharacter')) lib.config.characters.remove('hezongkangqincharacter');
