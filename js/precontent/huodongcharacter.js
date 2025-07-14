@@ -165,18 +165,6 @@ const packs = function () {
                     result: { player: 1 },
                 },
             },
-            //三首
-            bol_sanshou: {
-                fullskin: true,
-                image: 'ext:活动武将/image/card/bol_sanshou.png',
-                derivation: 'junk_zhangjiao',
-                type: 'equip',
-                subtype: 'equip2',
-                skills: ['bol_sanshou_skill'],
-                ai: {
-                    basic: { equipValue: 7.5 },
-                },
-            },
             //化身牌
             huashen_unknown: {
                 fullimage: true,
@@ -496,38 +484,6 @@ const packs = function () {
                     });
                     'step 1'
                     if (result.bool && trigger.name == 'phaseJudge' && [trigger.card].filterInD().length) player.gain([trigger.card].filterInD(), 'gain2');
-                },
-            },
-            //三首
-            bol_sanshou_skill: {
-                audio: 'sanshou',
-                inherit: 'sanshou',
-                filter(event, player) {
-                    if (player.hasSkillTag('unequip2')) return false;
-                    if (event.source && event.source.hasSkillTag('unequip', false, {
-                        name: event.card ? event.card.name : null,
-                        target: player,
-                        card: event.card
-                    })) return false;
-                    return true;
-                },
-                ai: {
-                    effect: {
-                        target(card, player, target) {
-                            if (target.hasSkillTag('unequip2')) return;
-                            if (player.hasSkillTag('unequip', false, {
-                                name: card ? card.name : null,
-                                target: target,
-                                card: card
-                            })) return;
-                            if (card.name == 'shandian' || card.name == 'fulei') return [0, 0.1];
-                            if (!get.tag(card, 'damage')) return;
-                            var types = [], bool = 0;
-                            types.addArray(game.getGlobalHistory('useCard').map(evt => get.type2(evt.card)));
-                            if (!types.includes(get.type2(card))) bool = 1;
-                            if (types.length < 2) return Math.min(1, 0.4 + (types.length + bool) * 0.2);
-                        },
-                    },
                 },
             },
             //水 果 忍 者
@@ -11517,10 +11473,6 @@ const packs = function () {
             bolkuangbi_info: '出牌阶段限一次，你可以与一名其他角色将任意张牌置于其武将牌上。若如此做，当你进入濒死状态时或下X个回合开始时，你获得其武将牌上的“匡弼”牌，其摸X张牌（X为其武将牌上的“匡弼”牌数）。',
             bol_shanshan: '闪闪',
             bol_shanshan_info: '当一张基本牌或锦囊牌即将对你生效前，对此牌使用，抵消此牌的效果，然后获得此牌对应的所有实体牌。',
-            bol_sanshou: '三首',
-            bol_sanshou_skill: '三首',
-            bol_sanshou_info: '当你受到伤害时，你可以亮出牌堆顶三张牌。若其中有本回合未被使用过的牌的类型，防止此伤害。',
-            bol_sanshou_skill_info: '当你受到伤害时，你可以亮出牌堆顶三张牌。若其中有本回合未被使用过的牌的类型，防止此伤害。',
             old_zhoufu: '咒缚',
             old_zhoufu2: '咒缚',
             old_zhoufu_info: '出牌阶段限一次，你可以将一张手牌置于一名武将牌旁没有“咒”的其他角色的武将牌旁，称为“咒”。当有“咒”的角色判定时，将“咒”作为判定牌。有“咒”的角色的回合结束时，你获得其武将牌旁的“咒”。',
