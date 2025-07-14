@@ -3256,12 +3256,13 @@ const packs = function () {
                 trigger: { player: 'damageEnd' },
                 getIndex: event => event.num,
                 async cost(event, trigger, player) {
-                    const choice = ['摸两张牌'];
-                    if (trigger.cards?.someInD('od')) choice.push('拿牌摸牌');
+                    const choice = ['摸两张牌', '拿牌摸牌'];
                     const result = await player.chooseControl(choice, 'cancel2').set('ai', () => {
-                        const { player, controls } = get.event(), trigger = get.event().getTrigger();
-                        if (controls.length === 2) return '摸两张牌';
-                        return trigger.cards.filterInD('od').reduce((sum, card) => sum + get.value(card), 0) > get.effect(player, { name: 'draw' }, player, player);
+                        const { player } = get.event(), trigger = get.event().getTrigger();
+                        if ((trigger.cards?.filterInD('od')?.reduce((sum, card) => sum + get.value(card), 0) || 0) > get.effect(player, { name: 'draw' }, player, player)) {
+                            return '拿牌摸牌';
+                        }
+                        return '摸两张牌';
                     }).set('prompt', get.prompt2('minijianxiong')).forResult();
                     const control = result.control;
                     event.result = {
