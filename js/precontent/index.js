@@ -32,25 +32,6 @@ export async function precontent(bilibilicharacter) {
         }
     });
     */
-    //困难年兽体力上限和体力值为所有其他角色的体力上限和
-    lib.skill._YJplusmaxHp = {
-        charlotte: true,
-        ruleSkill: true,
-        trigger: { global: 'gameStart', player: 'enterGame' },
-        filter(event, player) {
-            return player.name == 'NS_nianshouC' || player.name2 == 'NS_nianshouC';
-        },
-        priority: 114514,//恶臭(划掉)
-        direct: true,
-        content() {
-            for (var i = 0; i < game.players.length; i++) {
-                if (game.players[i] == player) continue;
-                player.maxHp += game.players[i].maxHp;
-            }
-            player.hp = player.maxHp;
-            player.update();
-        },
-    };
     //闪闪节
     lib.arenaReady.push(() => {
         if (lib.config.extension_活动武将_HD_shanshan) {
@@ -181,53 +162,19 @@ export async function precontent(bilibilicharacter) {
         },
     };
     //座位号显示
-    lib.skill._firstPlayer = {
-        charlotte: true,
-        ruleSkill: true,
-        trigger: { global: 'phaseBefore' },
-        filter(event, player) {
-            if (!lib.config.extension_活动武将_ShowSeatNum) return false;
-            return !game.firstPlayer && game.phaseNumber == 0;
-        },
-        direct: true,
-        priority: 1145141919810,
-        content() {
-            game.firstPlayer = true;
-            game.players.forEach(i => {
-                if (i.getSeatNum() != 0) i.setNickname(get.cnNumber(i.getSeatNum(), true) + '号位');
-            });
-            var originSwapSeat = game.swapSeat;
-            game.swapSeat = function (player1, player2, prompt, behind, noanimate) {
-                originSwapSeat.apply(this, arguments);
-                if (player1.getSeatNum() != 0) player1.setNickname(get.cnNumber(player1.getSeatNum(), true) + '号位');
-                if (player2.getSeatNum() != 0) player2.setNickname(get.cnNumber(player2.getSeatNum(), true) + '号位');
-            };
-        },
-    };
-    //弃牌阶段相关技能
-    lib.skill._bilibili_phaseDiscard_audio = {
-        charlotte: true,
-        ruleSkill: true,
-        trigger: { player: 'phaseDiscardBegin' },
-        filter(event, player) {
-            return player.countCards('h') > player.hp;
-        },
-        direct: true,
-        firstDo: true,
-        priority: 15,
-        content() {
-            if (player.hasSkill('zongshi')) player.logSkill('zongshi');
-            if (player.hasSkill('rezongshi')) player.logSkill('rezongshi');
-            if (player.hasSkill('decadezongshi')) player.logSkill('decadezongshi');
-            if (player.hasSkill('huaibi') && player.storage.yinlang && game.hasPlayer(function (current) {
-                return current.group == player.storage.yinlang;
-            })) player.logSkill('huaibi');
-            if (player.hasSkill('rehuaibi') && player.storage.yaohu && game.hasPlayer(function (current) {
-                return current.group == player.storage.yaohu;
-            })) player.logSkill('rehuaibi');
-            if (player.hasSkill('sbxueyi') && game.hasPlayer(current => player != current && current.group == 'qun')) player.logSkill('sbxueyi');
-        },
-    };
+    if (lib.config.extension_活动武将_ShowSeatNum) {
+        const originSetSeatNum = lib.element.player.setSeatNum;
+        lib.element.player.setSeatNum = function () {
+            originSetSeatNum.apply(this, arguments);
+            if (this.getSeatNum() != 0) this.setNickname(get.cnNumber(this.getSeatNum(), true) + '号位');
+        };
+        const originSwapSeat = game.swapSeat;
+        game.swapSeat = function (player1, player2, prompt, behind, noanimate) {
+            originSwapSeat.apply(this, arguments);
+            if (player1.getSeatNum() != 0) player1.setNickname(get.cnNumber(player1.getSeatNum(), true) + '号位');
+            if (player2.getSeatNum() != 0) player2.setNickname(get.cnNumber(player2.getSeatNum(), true) + '号位');
+        };
+    }
     //失去体力上限配音
     lib.skill._bilibili_loseMaxHp = {
         charlotte: true,

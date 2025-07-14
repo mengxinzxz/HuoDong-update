@@ -377,11 +377,6 @@ export let config = {
 		intro: '开启此选项后，国战卞夫人【挽危】调整为OL/十周年版本（重启生效）',
 		init: false,
 	},
-	keymove: {
-		name: 'key社角色移动',
-		intro: '将国战武将包中的key武将（冈崎汐）移至DIY包（重启生效）',
-		init: true,
-	},
 	FenJieXianE: {
 		clear: true,
 		name: '<li>扩展彩蛋（点击折叠）',

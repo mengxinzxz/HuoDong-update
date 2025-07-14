@@ -65,9 +65,10 @@ export async function content(config, pack) {
 	};
 
 	//十周年UI美化素材
-	if (game.HasExtension('十周年UI') && game.getFileList && game.readFile && game.writeFile) {
-		for (var img of ['leijin', 'bianzhen', 'mingzhi']) lib.card['zhengsu_' + img].fullskin = true;
-		game.getFileList('extension/十周年UI/image/card', (folders, files) => {
+	if (game.HasExtension('十周年UI')) {
+		const [folders, files] = await game.promises.getFileList('extension/十周年UI/image/card');
+		if (files) {
+			for (const img of ['leijin', 'bianzhen', 'mingzhi']) lib.card['zhengsu_' + img].fullskin = true;
 			//整肃
 			if (!files.includes('zhengsu_leijin.png')) {
 				game.readFile('extension/活动武将/image/card/zhengsu_leijin.png', (data) => {
@@ -110,7 +111,7 @@ export async function content(config, pack) {
 					game.writeFile(data, 'extension/十周年UI/image/card', 'bol_shanshan.webp', () => { });
 				});
 			}
-		}, () => { });
+		}
 	}
 
 	//Hidden--作者专属
@@ -672,16 +673,6 @@ export async function content(config, pack) {
 	if (get.mode() == 'guozhan') {
 		//国战武将技能修复
 		if (get.config('onlyguozhan')) {
-			//------------------------------删除武将------------------------------//
-			if (lib.config.extension_活动武将_keymove) {
-				delete lib.characterPack.mode_guozhan.gz_key_ushio;
-				delete lib.character.gz_key_ushio;
-				lib.characterSort.key.key_clannad.push('key_ushio');
-				game.HDaddCharacter('key_ushio', ['female', 'key', 3, ['ushio_huanxin', 'ushio_xilv'], ['doublegroup:key:wei:shu:wu:qun:jin']], 'key');
-				lib.translate.key_ushio = '冈崎汐';
-			}
-			//------------------------------删除武将------------------------------//
-
 			//------------------------------增改武将------------------------------//
 			//国战武将补充
 			lib.characterSort.mode_guozhan.bilibili_GuoZhan = [];
@@ -1338,17 +1329,6 @@ export async function content(config, pack) {
 		priority: 15,
 		direct: true,
 		content() { player.logSkill('xianghai') },
-	};
-	//刘辩
-	lib.skill._dushi = {
-		charlotte: true,
-		trigger: { player: 'dying' },
-		filter(event, player) {
-			return player.hasSkill('dushi');
-		},
-		priority: 15,
-		direct: true,
-		content() { player.logSkill('dushi') },
 	};
 	//暴怒战神
 	lib.skill._shenji = {

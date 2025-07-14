@@ -19,6 +19,25 @@ const packs = function () {
             NS_nianshouyin: ['female', 'shen', 6, ['NSyinshou', 'NSbeimingyin', 'NShuihun', 'NShundunyin']],
         },
         skill: {
+            _YJplusmaxHp: {
+                charlotte: true,
+                ruleSkill: true,
+                trigger: { global: 'gameStart', player: 'enterGame' },
+                filter(event, player) {
+                    return player.name == 'NS_nianshouC' || player.name2 == 'NS_nianshouC';
+                },
+                priority: 114514,//恶臭(划掉)
+                direct: true,
+                forceLoad: true,
+                content() {
+                    for (var i = 0; i < game.players.length; i++) {
+                        if (game.players[i] == player) continue;
+                        player.maxHp += game.players[i].maxHp;
+                    }
+                    player.hp = player.maxHp;
+                    player.update();
+                },
+            },
             YJjinzhu: {
                 mod: {
                     maxHandcard(player, num) {
