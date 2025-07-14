@@ -29,8 +29,6 @@ export async function content(config, pack) {
 	}
 
 	//快捷添加/删除武将
-	const [folders, files] = await game.promises.getFileList('extension/活动武将/image/character');
-	_status['extension_活动武将_files_image'] = files;
 	game.HDdeleteCharacter = function (name) {
 		if (lib.character[name]) delete lib.character[name];
 		var packs = Object.keys(lib.characterPack).filter(pack => lib.characterPack[pack][name]);
@@ -43,14 +41,14 @@ export async function content(config, pack) {
 			var packs = packss.split(':').filter(p => lib.config.all.characters.includes(p));
 			packs.forEach(pack => {
 				lib.characterPack[pack][name] = character;
-				if (_status['extension_活动武将_files_image'].includes(`${name}.jpg`)) {
+				if (_status['extension_活动武将_files']?.image.character.files.includes(`${name}.jpg`)) {
 					lib.characterPack[pack][name][4] ??= [];
 					lib.characterPack[pack][name][4].push(`ext:活动武将/image/character/${name}.jpg`);
 				}
 			});
 			if (packs.some(p => lib.config.characters.includes(p))) lib.character[name] = character;
 		}
-		if (lib.character[name] && _status['extension_活动武将_files_image'].includes(`${name}.jpg`)) {
+		if (lib.character[name] && _status['extension_活动武将_files']?.image.character.files.includes(`${name}.jpg`)) {
 			lib.character[name][4] ??= [];
 			lib.character[name][4].push(`ext:活动武将/image/character/${name}.jpg`);
 		}

@@ -924,7 +924,7 @@ const packs = function () {
     };
     for (let i in decadeQiHuan.character) {
         decadeQiHuan.character[i][4] ??= [];
-        if (_status['extension_活动武将_files']?.includes(`${i}.mp3`)) {
+        if (_status['extension_活动武将_files']?.audio.die.files.includes(`${i}.mp3`)) {
             decadeQiHuan.character[i][4].push('die:ext:活动武将/audio/die:true');
             decadeQiHuan.translate[`#ext:活动武将/audio/die/${i}:die`] = '点击播放阵亡配音';
         }

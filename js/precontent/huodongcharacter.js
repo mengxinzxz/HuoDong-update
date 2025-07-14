@@ -11757,7 +11757,7 @@ const packs = function () {
     };
     for (let i in huodongcharacter.character) {
         huodongcharacter.character[i][4] ??= [];
-        if (_status['extension_活动武将_files']?.includes(`${i}.mp3`)) {
+        if (_status['extension_活动武将_files']?.audio.die.files.includes(`${i}.mp3`)) {
             huodongcharacter.character[i][4].push('die:ext:活动武将/audio/die:true');
             huodongcharacter.translate[`#ext:活动武将/audio/die/${i}:die`] = '点击播放阵亡配音';
         }

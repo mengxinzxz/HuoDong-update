@@ -12,6 +12,21 @@ import MX_feihongyinxue from './MX_feihongyinxue.js';
 import huodongcharacter from './huodongcharacter.js';
 
 export async function precontent(bilibilicharacter) {
+    _status['extension_活动武将_files'] = await (async () => {
+        const getFileList = async function (path = 'extension/活动武将') {
+            const [folders, files] = await game.promises.getFileList(path);
+            const map = { files };
+            if (Array.isArray(folders) && folders.length > 0) {
+                for (const folder of folders) {
+                    const subPath = path + '/' + folder;
+                    map[folder] = await getFileList(subPath);
+                }
+            }
+            return map;
+        };
+        return await getFileList();
+    })();
+
     //判断是否有XX扩展
     game.TrueHasExtension = game.TrueHasExtension || function (ext) {
         return lib.config.extensions && lib.config.extensions.includes(ext);
@@ -19,19 +34,6 @@ export async function precontent(bilibilicharacter) {
     game.HasExtension = game.HasExtension || function (ext) {
         return game.TrueHasExtension(ext) && lib.config['extension_' + ext + '_enable'];
     };
-    //阵亡配音
-    const [folders, files] = await game.promises.getFileList('extension/活动武将/audio/die');
-    _status['extension_活动武将_files'] = files;//提前获取阵亡文件夹下的素材，否则每次都加载getFileList会极大增加运行负担！
-    /*
-    lib.hooks['checkDie'].push(function HD_die(trigger) {
-        const target = trigger.player, name = target?.name;
-        if (name && lib.config.background_speak) {
-            game.broadcastAll(name => {
-                game.playAudio('..', 'extension', '活动武将/audio/die', name);
-            }, name);
-        }
-    });
-    */
     //闪闪节
     lib.arenaReady.push(() => {
         if (lib.config.extension_活动武将_HD_shanshan) {

@@ -4677,7 +4677,7 @@ const packs = function () {
     for (let i in MX_feihongyinxue.character) {
         MX_feihongyinxue.character[i][4] ??= [];
         MX_feihongyinxue.character[i][4].add('character:' + i.slice(6));
-        if (_status['extension_活动武将_files']?.includes(`${i}.mp3`)) {
+        if (_status['extension_活动武将_files']?.audio.die.files.includes(`${i}.mp3`)) {
             MX_feihongyinxue.character[i][4].push('die:ext:活动武将/audio/die:true');
             MX_feihongyinxue.translate[`#ext:活动武将/audio/die/${i}:die`] = '点击播放阵亡配音';
         }

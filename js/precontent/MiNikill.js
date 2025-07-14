@@ -36820,7 +36820,7 @@ const packs = function () {
             else if (MiNikill.translate[i].indexOf('念') == 0) MiNikill.translate[i + '_prefix'] = '念';
             else if (MiNikill.translate[i].indexOf('战') == 0) MiNikill.translate[i + '_prefix'] = '战';
         }
-        if (_status['extension_活动武将_files']?.includes(`${i}.mp3`)) {
+        if (_status['extension_活动武将_files']?.audio.die.files.includes(`${i}.mp3`)) {
             MiNikill.character[i][4].push('die:ext:活动武将/audio/die:true');
             MiNikill.translate[`#ext:活动武将/audio/die/${i}:die`] = '点击播放阵亡配音';
         }
