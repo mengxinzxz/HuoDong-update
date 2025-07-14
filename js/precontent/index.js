@@ -173,7 +173,7 @@ export async function precontent(bilibilicharacter) {
             if (this.getSeatNum() != 0) this.setNickname(get.cnNumber(this.getSeatNum(), true) + '号位');
         };
         const originSwapSeat = game.swapSeat;
-        game.swapSeat = function (player1, player2, prompt, behind, noanimate) {
+        game.swapSeat = function (player1, player2) {
             originSwapSeat.apply(this, arguments);
             if (player1.getSeatNum() != 0) player1.setNickname(get.cnNumber(player1.getSeatNum(), true) + '号位');
             if (player2.getSeatNum() != 0) player2.setNickname(get.cnNumber(player2.getSeatNum(), true) + '号位');
