@@ -13,12 +13,12 @@ game.bolShowNewPack = function () {
 	var HuoDong_update = [
 		'/setPlayer/',
 		'bugfix',
-		'新武将：玄蝶祢衡、喵曹婴、葛玄、界曹叡',
+		'新武将：玄蝶祢衡、喵曹婴、葛玄、界曹叡、旧董翓',
 		'To be continued...',
 	];
 	//更新武将
 	var HuoDong_players = [
-		'bfake_miheng', 'Mmiao_caoying', 'Mbaby_gexuan', 'Mbaby_caorui',
+		'bfake_miheng', 'Mmiao_caoying', 'Mbaby_gexuan', 'Mbaby_caorui', 'old_dongxie',
 	];
 	//加载
 	var dialog = ui.create.dialog(

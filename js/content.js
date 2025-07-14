@@ -1,5 +1,6 @@
-import { lib, game, ui, get, ai, _status } from '../../../noname.js'
-export function content(config, pack) {
+import { lib, game, ui, get, ai, _status } from '../../../noname.js';
+
+export async function content(config, pack) {
 	//活动武将显示
 	if (ui?.create?.menu) {
 		const originLoading = ui.create.menu;
@@ -28,6 +29,8 @@ export function content(config, pack) {
 	}
 
 	//快捷添加/删除武将
+	const [folders, files] = await game.promises.getFileList('extension/活动武将/image/character');
+	_status['extension_活动武将_files_image'] = files;
 	game.HDdeleteCharacter = function (name) {
 		if (lib.character[name]) delete lib.character[name];
 		var packs = Object.keys(lib.characterPack).filter(pack => lib.characterPack[pack][name]);
@@ -38,15 +41,25 @@ export function content(config, pack) {
 		if (!packss) lib.character[name] = character;
 		else {
 			var packs = packss.split(':').filter(p => lib.config.all.characters.includes(p));
-			packs.forEach(pack => lib.characterPack[pack][name] = character);
+			packs.forEach(pack => {
+				lib.characterPack[pack][name] = character;
+				if (_status['extension_活动武将_files_image'].includes(`${name}.jpg`)) {
+					lib.characterPack[pack][name][4] ??= [];
+					lib.characterPack[pack][name][4].push(`ext:活动武将/image/character/${name}.jpg`);
+				}
+			});
 			if (packs.some(p => lib.config.characters.includes(p))) lib.character[name] = character;
+		}
+		if (lib.character[name] && _status['extension_活动武将_files_image'].includes(`${name}.jpg`)) {
+			lib.character[name][4] ??= [];
+			lib.character[name][4].push(`ext:活动武将/image/character/${name}.jpg`);
 		}
 	};
 	//移动武将所在武将包
 	game.HDmoveCharacter = function (name, packss) {
 		var nameinfo = get.character(name);
 		if (nameinfo) {
-			if (!nameinfo[4]) nameinfo[4] = [];
+			nameinfo[4] ??= [];
 			game.HDaddCharacter(name, nameinfo, packss);
 		}
 	};
@@ -1023,9 +1036,11 @@ export function content(config, pack) {
 	}
 
 	//虎牢关
-	if (lib.config.extension_活动武将_ShenLvBu && get.mode() != 'boss' && (!lib.config.plays || !lib.config.plays.boss)) {
-		game.loadModeAsync('boss', mode => {
+	if (lib.config.extension_活动武将_ShenLvBu && get.mode() != 'boss' && !lib.config.plays?.boss) {
+		const mode = await game.loadModeAsync('boss');
+		if (mode) {
 			for (const i of ['translate', 'dynamicTranslate', 'skill']) {
+				if (!mode[i]) continue;
 				for (const j in mode[i]) {
 					if (!j.startsWith('_') && !lib[i][j]) {
 						lib[i][j] = mode[i][j];
@@ -1049,7 +1064,7 @@ export function content(config, pack) {
 			game.HDaddCharacter('boss_lvbu2', ['male', 'shen', 6, ['wushuang', 'mashu', 'xiuluo', 'shenwei', 'shenji'], ['mode:boss']], 'extra');
 			game.HDaddCharacter('boss_lvbu3', ['male', 'shen', 6, ['wushuang', 'shenqu', 'jiwu'], ['mode:boss']], 'extra');
 			lib.translate.boss_hlg = 'OL·虎牢关';
-		});
+		}
 	}
 
 	//precA
@@ -1203,12 +1218,12 @@ export function content(config, pack) {
 
 	//移动服
 	lib.characterSort.mobile.bilibili_buchong_mobile = ['old_zhaoxiang', 'ol_maliang', 'ol_yuanshu', 'old_bulianshi', 'old_zhangqiying', 'junk_xuyou'];
-	game.HDaddCharacter('old_zhangqiying', ['female', 'qun', 3, ['xinfu_falu', 'olddianhua', 'oldzhenyi'], ['ext:活动武将/image/character/old_zhangqiying.jpg', 'die:zhangqiying']], 'mobile');
+	game.HDaddCharacter('old_zhangqiying', ['female', 'qun', 3, ['xinfu_falu', 'olddianhua', 'oldzhenyi'], ['die:zhangqiying']], 'mobile');
 	game.HDaddCharacter('junk_xuyou', ['male', 'qun', 3, ['nzry_chenglve', 'junkshicai', 'nzry_cunmu'], []], 'mobile');
 	game.HDaddCharacter('old_bulianshi', ['female', 'wu', 3, ['anxu', 'zhuiyi'], []], 'mobile');
 	game.HDaddCharacter('ol_yuanshu', ['male', 'qun', 4, ['rewangzun', 'retongji'], []], 'mobile');
 	game.HDaddCharacter('ol_maliang', ['male', 'shu', 3, ['zishu', 'yingyuan'], []], 'mobile');
-	game.HDaddCharacter('old_zhaoxiang', ['female', 'shu', 4, ['xinfanghun', 'xinfuhan'], ['ext:活动武将/image/character/old_zhaoxiang.jpg', 'die:zhaoxiang']], 'mobile');
+	game.HDaddCharacter('old_zhaoxiang', ['female', 'shu', 4, ['xinfanghun', 'xinfuhan'], ['die:zhaoxiang']], 'mobile');
 
 	//线下
 	lib.characterSort.offline.offline_star.add('bolx_jsp_guanyu');
@@ -1216,73 +1231,74 @@ export function content(config, pack) {
 	if (lib.config.extension_活动武将_XvXiang) {
 		for (var i of lib.characterSort.offline.offline_vtuber) lib.characterPack.offline[i][3].add('bilibili_xuxiang');
 	}
-	game.HDaddCharacter('bolx_jsp_guanyu', ['male', 'wei', 4, ['wusheng', 'wzdanji'], ['ext:活动武将/image/character/bolx_jsp_guanyu.jpg', 'tempname:jsp_guanyu', 'die:jsg_guanyu']], 'offline');
-	game.HDaddCharacter('bol_sunluban', ['female', 'wu', 3, ['boljiaozong', 'bolchouyou'], ['ext:活动武将/image/character/bol_sunluban.jpg']], 'offline');
+	game.HDaddCharacter('bolx_jsp_guanyu', ['male', 'wei', 4, ['wusheng', 'wzdanji'], ['tempname:jsp_guanyu', 'die:jsg_guanyu']], 'offline');
+	game.HDaddCharacter('bol_sunluban', ['female', 'wu', 3, ['boljiaozong', 'bolchouyou']], 'offline');
 
 	//怀旧包
 	lib.characterSort.old.bilibili_buchong_shenhua = ['old_zhoufei', 'lusu', 'yuanshao', 'old_dengai'];
 	lib.characterSort.old.bilibili_buchong_yijiang = ['old_yj_jushou', 'ol_manchong'];
 	lib.characterSort.old.bilibili_buchong_sp = ['old_zhangbao', 'old_sunluyu', 'old_pangtong', 'old_ol_yuanji'];
-	lib.characterSort.old.bilibili_buchong_szn2 = ['old_yuanji', 'old_xushao', 'junk_duanwei'];
+	lib.characterSort.old.bilibili_buchong_szn2 = ['old_yuanji', 'old_xushao', 'junk_duanwei', 'old_dongxie'];
 	lib.characterSort.old.bilibili_buchong_mobile2 = ['old_sb_ganning', 'old_zhouchu', 'old_xunchen', 'old_sp_kongrong', 'old_zhangzhongjing', 'oldx_zhangzhongjing', 'old_zhangyì', 'old_yj_ganning', 'old_yanghuiyu', 'old_liuzhang', 'old_sp_sunshao', 'old_wangling', 'old_sp_huaxin', 'old_sp_mifuren', 'old_sp_jianggan'];
 	lib.characterSort.old.bilibili_buchong_menfashizu = ['old_clan_xunshu', 'old_clan_xunchen', 'old_clan_xuncai', 'old_clan_xuncan', 'oldx_clan_xuncai'];
 	lib.characterSort.old.bilibili_buchong_extra = ['old_shen_sunce', 'old_shen_taishici', 'old_shen_simayi', 'old_shen_xunyu'];
-	game.HDaddCharacter('old_clan_xunshu', ['male', 'qun', 3, ['old_shenjun', 'old_balong', 'clandaojie'], ['clan:颍川荀氏', 'ext:活动武将/image/character/old_clan_xunshu.jpg', 'tempname:clan_xunshu', 'die:clan_xunshu']], 'old');
-	game.HDaddCharacter('old_clan_xunchen', ['male', 'qun', 3, ['old_sankuang', 'old_beishi', 'clandaojie'], ['clan:颍川荀氏', 'ext:活动武将/image/character/old_clan_xunchen.jpg', 'tempname:clan_xunchen', 'die:clan_xunchen']], 'old');
-	game.HDaddCharacter('old_clan_xuncai', ['female', 'qun', 3, ['old_lieshi', 'old_dianzhan', 'old_huanyin', 'clandaojie'], ['clan:颍川荀氏', 'ext:活动武将/image/character/old_clan_xuncai.jpg', 'tempname:clan_xuncai', 'die:clan_xuncai']], 'old');
-	game.HDaddCharacter('old_clan_xuncan', ['male', 'wei', 3, ['old_yunshen', 'old_shangshen', 'old_fenchai', 'clandaojie'], ['clan:颍川荀氏', 'ext:活动武将/image/character/old_clan_xuncan.jpg', 'tempname:clan_xuncan', 'die:clan_xuncan']], 'old');
+	game.HDaddCharacter('old_clan_xunshu', ['male', 'qun', 3, ['old_shenjun', 'old_balong', 'clandaojie'], ['clan:颍川荀氏', 'tempname:clan_xunshu', 'die:clan_xunshu']], 'old');
+	game.HDaddCharacter('old_clan_xunchen', ['male', 'qun', 3, ['old_sankuang', 'old_beishi', 'clandaojie'], ['clan:颍川荀氏', 'tempname:clan_xunchen', 'die:clan_xunchen']], 'old');
+	game.HDaddCharacter('old_clan_xuncai', ['female', 'qun', 3, ['old_lieshi', 'old_dianzhan', 'old_huanyin', 'clandaojie'], ['clan:颍川荀氏', 'tempname:clan_xuncai', 'die:clan_xuncai']], 'old');
+	game.HDaddCharacter('old_clan_xuncan', ['male', 'wei', 3, ['old_yunshen', 'old_shangshen', 'old_fenchai', 'clandaojie'], ['clan:颍川荀氏', 'tempname:clan_xuncan', 'die:clan_xuncan']], 'old');
 	game.HDaddCharacter('oldx_clan_xuncai', ['female', 'qun', 3, ['oldx_lieshi', 'oldx_dianzhan', 'clanhuanyin', 'clandaojie'], ['clan:颍川荀氏', 'tempname:clan_xuncai', 'die:clan_xuncai']], 'old');
-	game.HDaddCharacter('lusu', ['male', 'wu', 3, ['haoshi', 'redimeng'], ['ext:活动武将/image/character/lusu.jpg', 'die:re_lusu']], 'old');
-	game.HDaddCharacter('yuanshao', ['male', 'qun', 4, ['oldluanji', 'xueyi'], ['ext:活动武将/image/character/yuanshao.jpg', 'zhu']], 'old');
-	game.HDaddCharacter('old_yj_jushou', ['male', 'qun', 3, ['jianying', 'oldshibei'], ['ext:活动武将/image/character/old_yj_jushou.jpg', 'die:yj_jushou']], 'old');
-	game.HDaddCharacter('old_shen_xunyu', ['male', 'shen', 3, ['old_tianzuo', 'old_lingce', 'old_dinghan'], ['wei', 'ext:活动武将/image/character/old_shen_xunyu.jpg', 'die:shen_xunyu']], 'old');
-	game.HDaddCharacter('old_shen_simayi', ['male', 'shen', 3, ['reguicai', 'fangzhu', 'rewansha', 'rezhiheng', 'rejizhi'], ['wei', 'ext:活动武将/image/character/old_shen_simayi.jpg', 'tempname:new_simayi', 'die:new_simayi']], 'old');
-	game.HDaddCharacter('old_shen_taishici', ['male', 'shen', 4, ['olddulie', 'oldpowei', 'dangmo'], ['wu', 'ext:活动武将/image/character/old_shen_taishici.jpg', 'die:shen_taishici']], 'old');
-	game.HDaddCharacter('old_shen_sunce', ['male', 'shen', '1/6', ['old_yingba', 'old_fuhai', 'old_pinghe'], ['wu', 'ext:活动武将/image/character/old_shen_sunce.jpg', 'die:shen_sunce']], 'old');
-	game.HDaddCharacter('old_zhangyì', ['male', 'shu', 4, ['zhiyi'], ['ext:活动武将/image/character/old_zhangyi.jpg', 'die:zhangyì']], 'old');
-	game.HDaddCharacter('old_xunchen', ['male', 'qun', 3, ['jianzhan', 'reduoji'], ['ext:活动武将/image/character/old_xunchen.jpg', 'die:ext:活动武将/audio/die:true']], 'old');
-	game.HDaddCharacter('old_zhangzhongjing', ['male', 'qun', 3, ['old_jishi', 'liaoyi', 'binglun'], ['ext:活动武将/image/character/old_zhangzhongjing.jpg', 'die:zhangzhongjing']], 'old');
-	game.HDaddCharacter('oldx_zhangzhongjing', ['male', 'qun', 3, ['jishi', 'old_liaoyi', 'binglun'], ['ext:活动武将/image/character/oldx_zhangzhongjing.jpg', 'die:zhangzhongjing']], 'old');
-	game.HDaddCharacter('old_yanghuiyu', ['female', 'wei', 3, ['oldhongyi', 'quanfeng'], ['ext:活动武将/image/character/old_yanghuiyu.jpg', 'die:yanghuiyu']], 'old');
-	game.HDaddCharacter('old_zhoufei', ['female', 'wu', 3, ['liangyin', 'kongsheng'], ['ext:活动武将/image/character/old_zhoufei.jpg', 'die:zhoufei']], 'old');
-	game.HDaddCharacter('old_dengai', ['male', 'wei', 3, ['bilibili_zhenggong', 'bilibili_toudu'], ['ext:活动武将/image/character/old_dengai.jpg', 'die:ext:活动武将/audio/die:true']], 'old');
-	game.HDaddCharacter('old_yj_ganning', ['male', 'qun', 4, ['bilibili_jinfan', 'bilibili_sheque'], ['ext:活动武将/image/character/old_yj_ganning.jpg', 'die:yj_ganning']], 'old');
-	game.HDaddCharacter('old_zhangbao', ['male', 'qun', 3, ['old_zhoufu', 'old_yingbing'], ['ext:活动武将/image/character/old_zhangbao.jpg', 'die:zhangbao']], 'old');
-	game.HDaddCharacter('old_sunluyu', ['female', 'wu', 3, ['meibu', 'mumu'], ['ext:活动武将/image/character/old_sunluyu.jpg', 'die:sunluyu']], 'old');
+	game.HDaddCharacter('lusu', ['male', 'wu', 3, ['haoshi', 'redimeng'], ['die:re_lusu']], 'old');
+	game.HDaddCharacter('yuanshao', ['male', 'qun', 4, ['oldluanji', 'xueyi'], ['zhu']], 'old');
+	game.HDaddCharacter('old_yj_jushou', ['male', 'qun', 3, ['jianying', 'oldshibei'], ['die:yj_jushou']], 'old');
+	game.HDaddCharacter('old_shen_xunyu', ['male', 'shen', 3, ['old_tianzuo', 'old_lingce', 'old_dinghan'], ['wei', 'die:shen_xunyu']], 'old');
+	game.HDaddCharacter('old_shen_simayi', ['male', 'shen', 3, ['reguicai', 'fangzhu', 'rewansha', 'rezhiheng', 'rejizhi'], ['wei', 'tempname:new_simayi', 'die:new_simayi']], 'old');
+	game.HDaddCharacter('old_shen_taishici', ['male', 'shen', 4, ['olddulie', 'oldpowei', 'dangmo'], ['wu', 'die:shen_taishici']], 'old');
+	game.HDaddCharacter('old_shen_sunce', ['male', 'shen', '1/6', ['old_yingba', 'old_fuhai', 'old_pinghe'], ['wu', 'die:shen_sunce']], 'old');
+	game.HDaddCharacter('old_zhangyì', ['male', 'shu', 4, ['zhiyi'], ['die:zhangyì']], 'old');
+	game.HDaddCharacter('old_xunchen', ['male', 'qun', 3, ['jianzhan', 'reduoji'], ['die:ext:活动武将/audio/die:true']], 'old');
+	game.HDaddCharacter('old_zhangzhongjing', ['male', 'qun', 3, ['old_jishi', 'liaoyi', 'binglun'], ['die:zhangzhongjing']], 'old');
+	game.HDaddCharacter('oldx_zhangzhongjing', ['male', 'qun', 3, ['jishi', 'old_liaoyi', 'binglun'], ['die:zhangzhongjing']], 'old');
+	game.HDaddCharacter('old_yanghuiyu', ['female', 'wei', 3, ['oldhongyi', 'quanfeng'], ['die:yanghuiyu']], 'old');
+	game.HDaddCharacter('old_zhoufei', ['female', 'wu', 3, ['liangyin', 'kongsheng'], ['die:zhoufei']], 'old');
+	game.HDaddCharacter('old_dengai', ['male', 'wei', 3, ['bilibili_zhenggong', 'bilibili_toudu'], ['die:ext:活动武将/audio/die:true']], 'old');
+	game.HDaddCharacter('old_yj_ganning', ['male', 'qun', 4, ['bilibili_jinfan', 'bilibili_sheque'], ['die:yj_ganning']], 'old');
+	game.HDaddCharacter('old_zhangbao', ['male', 'qun', 3, ['old_zhoufu', 'old_yingbing'], ['die:zhangbao']], 'old');
+	game.HDaddCharacter('old_sunluyu', ['female', 'wu', 3, ['meibu', 'mumu'], ['die:sunluyu']], 'old');
 	game.HDaddCharacter('old_pangtong', ['male', 'qun', 3, ['manjuan', 'zuixiang'], ['character:sp_pangtong', 'die:sp_pangtong']], 'old');
-	game.HDaddCharacter('old_ol_yuanji', ['female', 'wu', 3, ['old_jieyan', 'old_jinghua', 'old_shuiyue'], ['ext:活动武将/image/character/old_ol_yuanji.jpg', 'die:ol_yuanji']], 'old');
-	game.HDaddCharacter('ol_manchong', ['male', 'wei', 3, ['xinjunxing', 'yuce'], ['ext:活动武将/image/character/ol_manchong.jpg', 'die:manchong']], 'old');
-	game.HDaddCharacter('old_xushao', ['male', 'qun', 3, ['bol_pinjian', 'bol_yuedan'], ['ext:活动武将/image/character/old_xushao.jpg', 'die:xushao']], 'old');
-	game.HDaddCharacter('old_sp_sunshao', ['male', 'wu', 3, ['refubi', 'rezuici'], ['ext:活动武将/image/character/old_sp_sunshao.jpg', 'die:sp_sunshao']], 'old');
-	game.HDaddCharacter('old_liuzhang', ['male', 'qun', 3, ['xiusheng', 'yinlang', 'huaibi'], ['zhu', 'ext:活动武将/image/character/old_liuzhang.jpg', 'die:liuzhang']], 'old');
-	game.HDaddCharacter('old_wangling', ['male', 'wei', 4, ['mouli', 'zifu'], ['ext:活动武将/image/character/old_wangling.jpg', 'die:wangling']], 'old');
-	game.HDaddCharacter('old_sp_huaxin', ['male', 'wei', 3, ['hxrenshi', 'debao', 'buqi'], ['ext:活动武将/image/character/old_sp_huaxin.jpg', 'die:sp_huaxin']], 'old');
-	game.HDaddCharacter('old_sp_kongrong', ['male', 'qun', 3, ['spmingshi', 'splirang'], ['ext:活动武将/image/character/old_sp_kongrong.jpg', 'die:sp_kongrong']], 'old');
-	game.HDaddCharacter('old_sp_mifuren', ['female', 'shu', 3, ['spguixiu', 'spcunsi'], ['ext:活动武将/image/character/old_sp_mifuren.jpg', 'die:sp_mifuren']], 'old');
-	game.HDaddCharacter('old_zhouchu', ['male', 'wu', 4, ['xianghai', 'chuhai'], ['ext:活动武将/image/character/old_zhouchu.jpg', 'die:zhouchu']], 'old');
-	game.HDaddCharacter('old_sb_ganning', ['male', 'wu', 4, ['old_qixi', 'old_fenwei'], ['ext:活动武将/image/character/old_sb_ganning.jpg', 'die:sb_ganning']], 'old');
+	game.HDaddCharacter('old_ol_yuanji', ['female', 'wu', 3, ['old_jieyan', 'old_jinghua', 'old_shuiyue'], ['die:ol_yuanji']], 'old');
+	game.HDaddCharacter('ol_manchong', ['male', 'wei', 3, ['xinjunxing', 'yuce'], ['die:manchong']], 'old');
+	game.HDaddCharacter('old_xushao', ['male', 'qun', 3, ['bol_pinjian', 'bol_yuedan'], ['die:xushao']], 'old');
+	game.HDaddCharacter('old_sp_sunshao', ['male', 'wu', 3, ['refubi', 'rezuici'], ['die:sp_sunshao']], 'old');
+	game.HDaddCharacter('old_liuzhang', ['male', 'qun', 3, ['xiusheng', 'yinlang', 'huaibi'], ['zhu', 'die:liuzhang']], 'old');
+	game.HDaddCharacter('old_wangling', ['male', 'wei', 4, ['mouli', 'zifu'], ['die:wangling']], 'old');
+	game.HDaddCharacter('old_sp_huaxin', ['male', 'wei', 3, ['hxrenshi', 'debao', 'buqi'], ['die:sp_huaxin']], 'old');
+	game.HDaddCharacter('old_sp_kongrong', ['male', 'qun', 3, ['spmingshi', 'splirang'], ['die:sp_kongrong']], 'old');
+	game.HDaddCharacter('old_sp_mifuren', ['female', 'shu', 3, ['spguixiu', 'spcunsi'], ['die:sp_mifuren']], 'old');
+	game.HDaddCharacter('old_zhouchu', ['male', 'wu', 4, ['xianghai', 'chuhai'], ['die:zhouchu']], 'old');
+	game.HDaddCharacter('old_sb_ganning', ['male', 'wu', 4, ['old_qixi', 'old_fenwei'], ['die:sb_ganning']], 'old');
 	game.HDmoveCharacter('junk_duanwei', 'old');
 	lib.characterPack.old.junk_duanwei[4].add('die:duanwei');
 	if (lib.config.characters.includes('old')) lib.character.junk_duanwei[4].add('die:duanwei');
-	game.HDaddCharacter('old_sp_jianggan', ['male', 'wei', 3, ['spdaoshu', 'spdaizui'], ['ext:活动武将/image/character/old_sp_jianggan.jpg', 'die:sp_jianggan']], 'old');
-	game.HDaddCharacter('old_yuanji', ['female', 'wu', 3, ['dcmengchi', 'dcjiexing'], ['ext:活动武将/image/character/old_yuanji.jpg', 'die:yuanji']], 'old');
+	game.HDaddCharacter('old_sp_jianggan', ['male', 'wei', 3, ['spdaoshu', 'spdaizui'], ['die:sp_jianggan']], 'old');
+	game.HDaddCharacter('old_yuanji', ['female', 'wu', 3, ['dcmengchi', 'dcjiexing'], ['die:yuanji']], 'old');
+	game.HDaddCharacter('old_dongxie', ['female', 'qun', 4, ['juntun', 'jiaojie'], ['die:dongxie']], 'old');
 
 	//DIY
 	lib.characterSort.diy.diy_trashbin.addArray(['bol_zhangzhongjing', 'bol_sp_huaxin', 'bfake_zuoci', 'bfake_yangfu', 'bfake_chengpu', 'bfake_sundeng', 'old_shen_sunquan', 'old_shen_ganning', 'bfake_chengui', 'old_ol_xiaoqiao', 'old_zhanghe', 'old_zhugejin', 'oldx_zhangfei', 'oldx_guanyu', 'oldx_zhaoyun', 'oldx_yujin']);
-	game.HDaddCharacter('bfake_yangfu', ['male', 'wei', 4, ['old_jiebing', 'old_kuzhan'], ['ext:活动武将/image/character/bfake_yangfu.jpg', 'die:yangfu']], 'diy');
-	game.HDaddCharacter('bfake_zuoci', ['male', 'qun', 3, ['BThuashen', 'BTxinsheng'], ['ext:活动武将/image/character/bfake_zuoci.jpg', 'die:re_zuoci']], 'diy');
-	game.HDaddCharacter('bfake_chengpu', ['male', 'wu', 4, ['bollihuo', 'bolchunlao'], ['ext:活动武将/image/character/bfake_chengpu.jpg', 'die:chengpu']], 'diy');
-	game.HDaddCharacter('bfake_sundeng', ['male', 'wu', 4, ['bolkuangbi'], ['ext:活动武将/image/character/bfake_sundeng.jpg', 'die:sundeng']], 'diy');
-	game.HDaddCharacter('old_shen_sunquan', ['male', 'shen', 4, ['shen_sunquan_skill'], ['wu', 'ext:活动武将/image/character/old_shen_sunquan.jpg', 'die:shen_sunquan']], 'diy');
-	game.HDaddCharacter('old_shen_ganning', ['male', 'shen', 1, ['old_jieying', 'old_tongling'], ['wu', 'ext:活动武将/image/character/old_shen_ganning.jpg', 'die:shen_ganning']], 'diy');
-	game.HDaddCharacter('bfake_chengui', ['male', 'qun', 3, ['bolyingtu', 'bolcongshi'], ['ext:活动武将/image/character/bfake_chengui.jpg', 'die:chengui']], 'diy');
+	game.HDaddCharacter('bfake_yangfu', ['male', 'wei', 4, ['old_jiebing', 'old_kuzhan'], ['die:yangfu']], 'diy');
+	game.HDaddCharacter('bfake_zuoci', ['male', 'qun', 3, ['BThuashen', 'BTxinsheng'], ['die:re_zuoci']], 'diy');
+	game.HDaddCharacter('bfake_chengpu', ['male', 'wu', 4, ['bollihuo', 'bolchunlao'], ['die:chengpu']], 'diy');
+	game.HDaddCharacter('bfake_sundeng', ['male', 'wu', 4, ['bolkuangbi'], ['die:sundeng']], 'diy');
+	game.HDaddCharacter('old_shen_sunquan', ['male', 'shen', 4, ['shen_sunquan_skill'], ['wu', 'die:shen_sunquan']], 'diy');
+	game.HDaddCharacter('old_shen_ganning', ['male', 'shen', 1, ['old_jieying', 'old_tongling'], ['wu', 'die:shen_ganning']], 'diy');
+	game.HDaddCharacter('bfake_chengui', ['male', 'qun', 3, ['bolyingtu', 'bolcongshi'], ['die:chengui']], 'diy');
 	if (lib.config.connect_nickname == '萌新（转型中）') {
 		game.HDaddCharacter('bol_sp_huaxin', ['male', 'wei', 3, ['bolyuanqing', 'bolshuchen', 'bolxiezheng'], ['die:sp_huaxin']], 'diy');
 		game.HDaddCharacter('bol_zhangzhongjing', ['male', 'qun', 3, ['bolliaoyi', 'bolbinglun'], ['die:zhangzhongjing']], 'diy');
 	}
-	game.HDaddCharacter('old_ol_xiaoqiao', ['female', 'wu', 3, ['oltianxiang', 'rehongyan'], ['ext:活动武将/image/character/old_ol_xiaoqiao.jpg', 'die:ol_xiaoqiao']], 'diy');
-	game.HDaddCharacter('old_zhanghe', ['male', 'wei', 4, ['qiaobian', 'bilibili_zhiyinxian'], ['ext:活动武将/image/character/old_zhanghe.jpg']], 'diy');
-	game.HDaddCharacter('old_zhugejin', ['male', 'wu', 3, ['olhongyuan', 'bolhuanshi', 'olmingzhe'], ['ext:活动武将/image/character/old_zhugejin.jpg', 'die:ol_zhugejin']], 'diy');
+	game.HDaddCharacter('old_ol_xiaoqiao', ['female', 'wu', 3, ['oltianxiang', 'rehongyan'], ['die:ol_xiaoqiao']], 'diy');
+	game.HDaddCharacter('old_zhanghe', ['male', 'wei', 4, ['qiaobian', 'bilibili_zhiyinxian']], 'diy');
+	game.HDaddCharacter('old_zhugejin', ['male', 'wu', 3, ['olhongyuan', 'bolhuanshi', 'olmingzhe'], ['die:ol_zhugejin']], 'diy');
 	game.HDaddCharacter('oldx_zhangfei', ['male', 'shu', 4, ['paoxiao', 'bilibili_tannang'], ['character:zhangfei', 'die:zhangfei']], 'diy');
 	game.HDaddCharacter('oldx_guanyu', ['male', 'shu', 4, ['wusheng', 'bilibili_yishi'], ['character:guanyu', 'die:guanyu']], 'diy');
 	game.HDaddCharacter('oldx_zhaoyun', ['male', 'shu', 4, ['longdan', 'yicong'], ['character:zhaoyun', 'die:zhaoyun']], 'diy');
@@ -1511,6 +1527,8 @@ export function content(config, pack) {
 		oldx_yujin: '于文则',
 		old_yuanji: '旧袁姬',
 		old_yuanji_prefix: '旧',
+		old_dongxie: '旧董翓',
+		old_dongxie_prefix: '旧',
 		bfake_yangfu: '废案杨阜',
 		bfake_yangfu_prefix: '废案',
 		bfake_zuoci: '谋左慈',
