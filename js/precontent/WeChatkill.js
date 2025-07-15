@@ -9029,7 +9029,7 @@ const packs = function () {
                 filter(event, player) {
                     const num = 1 + (player.getStat('skill').wechatgywuwei || 0);
                     if (num > player.countCards('he', card => lib.filter.cardDiscardable(card, player))) return false;
-                    return game.hasPlayer(current => get.info('wechatyihan').filterTarget(null, player, current));
+                    return game.hasPlayer(current => get.info('wechatgywuwei').filterTarget(null, player, current));
                 },
                 filterTarget(card, player, target) {
                     return target.countDiscardableCards(player, 'he');
