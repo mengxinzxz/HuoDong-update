@@ -8481,6 +8481,10 @@ const packs = function () {
                 ai: {
                     order: 0.01,
                     threaten: 1.14,
+                    unequip_ai: true,
+                    skillTagFilter(player, tag, arg) {
+                        if (!arg?.card?.storage?.wechatguli) return false;
+                    },
                 },
                 locked: false,
                 subSkill: {
@@ -8500,11 +8504,9 @@ const packs = function () {
                         ai: {
                             unequip: true,
                             skillTagFilter(player, tag, arg) {
-                                if (tag == 'unequip') {
-                                    if (!arg?.card?.storage?.wechatguli) return false;
-                                }
+                                if (!arg?.card?.storage?.wechatguli) return false;
                             },
-                        }
+                        },
                     },
                 },
             },
