@@ -33299,8 +33299,8 @@ const packs = function () {
                         `${get.translation(event.name)}：请选择${get.cnNumber(num)}项`,
                         [[
                             [0, `令${get.translation(trigger.card)}对你造成的伤害+1`],
-                            [1, `令${get.translation(player)}摸两张牌`],
-                            [2, `获得1枚“伏间”标记，令令${get.translation(player)}获得${lib.skill[event.name].derivation.map(i => `【${get.translation(i)}】`).join('、')}直到其下个回合开始`],
+                            [1, `令${get.translation(source)}摸两张牌`],
+                            [2, `获得1枚“伏间”标记，令${get.translation(source)}获得${lib.skill[event.name].derivation.map(i => `【${get.translation(i)}】`).join('、')}直到其下个回合开始`],
                         ], 'textbutton'],
                     ], num, true);
                     next.set('ai', button => {
