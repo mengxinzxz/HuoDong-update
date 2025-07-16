@@ -28660,7 +28660,8 @@ const packs = function () {
                             return 0;
                         },
                         ai2(target) {
-                            const { link } = button;
+                            if (!ui.selected?.buttons?.length) return 0;
+                            const { link } = ui.selected.buttons[0];
                             const player = get.player();
                             if (link == 'damage') return get.damageEffect(target, player, player);
                             return get.recoverEffect(target, player, player);
