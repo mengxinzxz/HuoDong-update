@@ -1057,6 +1057,7 @@ const packs = function () {
             },
             minikangkai: {
                 audio: 'kaikang',
+                audioname2: { Mnian_caopi: 'minikangkai_Mnian_caopi' },
                 trigger: { global: 'useCardToTargeted' },
                 filter(event, player) {
                     return event.card.name == 'sha' && get.distance(player, event.target) <= 1;
@@ -1086,6 +1087,9 @@ const packs = function () {
                     'step 2'
                     if (trigger.target.getCards('h').includes(card) && get.type(card) == 'equip') trigger.target.chooseUseTarget(card);
                 },
+                subSkill: {
+                    Mnian_caopi: { audio: 'ext:活动武将/audio/skill:true' },
+                }
             },
             minishangshi: {
                 audio: 'shangshi',
@@ -1424,66 +1428,46 @@ const packs = function () {
                         if (name == 'phaseDiscard' && get.suit(card) == 'club') return false;
                     },
                 },
-                audio: 'luoying_discard',
-                group: ['miniluoying_discard', 'miniluoying_judge'],
-                subfrequent: ['judge'],
+                locked: false,
+                audio: 'luoying',
+                audioname2: { Mnian_caopi: 'miniluoying_Mnian_caopi' },
+                trigger: { global: ['loseAfter', 'loseAsyncAfter', 'cardsDiscardAfter'] },
+                filter(event, player) {
+                    if (event.name.startsWith('lose')) {
+                        if (event.type != 'discard' || event.getlx === false) return false;
+                        const cards = event.cards.slice(0);
+                        const evt = event.getl?.(player);
+                        if (evt?.cards) cards.removeArray(evt.cards);
+                        return cards.some(card => card.original != 'j' && get.suit(card, event.player) == 'club' && get.position(card, true) == 'd');
+                    }
+                    const evt = event.getParent().relatedEvent;
+                    if (!evt || evt.name != 'judge') return false;
+                    if (evt.player == player) return false;
+                    return event.cards.some(card => get.position(card, true) == 'd' && get.suit(card) == 'club');
+                },
+                frequent: true,
+                async cost(event, trigger, player) {
+                    let cards, cards2 = trigger.cards.slice(0);
+                    if (trigger.name.startsWith('lose')) {
+                        if (trigger.delay == false) await game.delay();
+                        const evt = trigger.getl(player);
+                        if (evt?.cards) cards2.removeArray(evt.cards);
+                        cards = cards2.filter(card => card.original != 'j' && get.suit(card, event.player) == 'club' && get.position(card, true) == 'd');
+                    }
+                    else cards = trigger.cards.filter(card => get.position(card, true) == 'd' && get.suit(card) == 'club');
+                    const { result } = await player.chooseButton(['落英：选择要获得的牌', cards], [1, cards.length]).set('ai', button => {
+                        return get.value(button.link, get.player(), "raw");
+                    });
+                    event.result = {
+                        bool: result?.bool,
+                        cost_data: result?.links,
+                    }
+                },
+                async content(event, trigger, player) {
+                    await player.gain(event.cost_data, 'gain2', 'log');
+                },
                 subSkill: {
-                    discard: {
-                        trigger: { global: 'loseAfter' },
-                        filter(event, player) {
-                            if (event.type != 'discard') return false;
-                            if (event.player == player) return false;
-                            for (var i = 0; i < event.cards2.length; i++) {
-                                if (get.suit(event.cards2[i], event.player) == 'club' && get.position(event.cards2[i], true) == 'd') return true;
-                            }
-                            return false;
-                        },
-                        direct: true,
-                        content() {
-                            'step 0'
-                            if (trigger.delay == false) game.delay();
-                            'step 1'
-                            var cards = [];
-                            for (var i = 0; i < trigger.cards2.length; i++) {
-                                if (get.suit(trigger.cards2[i], trigger.player) == 'club' && get.position(trigger.cards2[i], true) == 'd') {
-                                    cards.push(trigger.cards2[i]);
-                                }
-                            }
-                            if (cards.length) {
-                                player.chooseButton(['落英：选择要获得的牌', cards], [1, cards.length]).set('ai', function (button) {
-                                    return get.value(button.link, _status.event.player, 'raw');
-                                });
-                            }
-                            else event.finish();
-                            'step 2'
-                            if (result.bool) {
-                                player.logSkill('miniluoying');
-                                player.gain(result.links, 'gain2');
-                            }
-                        },
-                    },
-                    judge: {
-                        trigger: { global: 'cardsDiscardAfter' },
-                        filter(event, player) {
-                            var evt = event.getParent().relatedEvent;
-                            if (!evt || evt.name != 'judge') return;
-                            if (evt.player == player) return false;
-                            if (get.position(event.cards[0], true) != 'd') return false;
-                            return (get.suit(event.cards[0]) == 'club');
-                        },
-                        direct: true,
-                        content() {
-                            'step 0'
-                            player.chooseButton(['落英：选择要获得的牌', trigger.cards], [1, trigger.cards.length]).set('ai', function (button) {
-                                return get.value(button.link, _status.event.player, 'raw');
-                            });
-                            'step 1'
-                            if (result.bool) {
-                                player.logSkill('miniluoying');
-                                player.gain(result.links, 'gain2');
-                            }
-                        },
-                    },
+                    Mnian_caopi: { audio: 'ext:活动武将/audio/skill:true' },
                 },
             },
             miniquhu: {
@@ -3187,6 +3171,7 @@ const packs = function () {
             },
             minijiangchi: {
                 audio: 'jiangchi',
+                audioname2: { Mnian_caopi: 'minijiangchi_Mnian_caopi' },
                 trigger: { player: 'phaseUseBegin' },
                 direct: true,
                 content() {
@@ -3245,6 +3230,7 @@ const packs = function () {
                             },
                         },
                     },
+                    Mnian_caopi: { audio: 'ext:活动武将/audio/skill:true' },
                 },
             },
             //曹操
@@ -27258,9 +27244,7 @@ const packs = function () {
                     }
                     else {
                         player.addTempSkill(event.name + '_effect');
-                        player.markAuto(event.name + '_effect', [[target, choices[0]]]);
-                        const evt = trigger.getParent();
-                        if (!evt[event.name + '_effect']) evt[event.name + '_effect'] = true;
+                        player.markAuto(event.name + '_effect', [[target, choices[0], trigger.getParent()]]);
                     }
                 },
                 subSkill: {
@@ -27272,13 +27256,14 @@ const packs = function () {
                         },
                         filter(event, player) {
                             if (!game.hasPlayer(current => current.hasHistory('damage', evt => evt.card == event.card))) return false;
-                            return event.minimoukui_effect;
+                            return player.getStorage('minimoukui_effect').some(list => list[2] === event);
                         },
                         forced: true,
                         popup: false,
                         async content(event, trigger, player) {
                             const storage = player.getStorage(event.name);
-                            for (const [target, choice] of storage) {
+                            for (const [target, choice, evt] of storage) {
+                                if (evt !== trigger) continue;
                                 if (choice == 'draw') await player.draw();
                                 else if (target.isIn() && target.countDiscardableCards(player, 'he')) await player.discardPlayerCard(target, true, 'he').set('boolline', true);
                             }
@@ -35386,6 +35371,7 @@ const packs = function () {
                     await player.draw();
                 },
             },
+            chengxiang_Mnian_caopi: { audio: 'ext:活动武将/audio/skill:true' },
             //战
             //黄忠
             minifightdingjun: {
