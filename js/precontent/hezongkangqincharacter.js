@@ -1512,10 +1512,13 @@ const packs = function () {
         }
         hezongkangqincharacter.character[i][4].push(((lib.device || lib.node) ? 'ext:' : 'db:extension-') + '活动武将/image/character/' + i + '.jpg');
     }
-    game.addGroup('daqin', '秦', '秦朝', { color: '#FFA500' });
+    game.addGroup('daqin', '秦', '秦朝', { color: '#FFA500', image: 'ext:活动武将/image/default/daqin.png' });
     lib.config.all.characters.push('hezongkangqincharacter');
     lib.config.all.sgscharacters.push('hezongkangqincharacter');
-    if (!lib.config.characters.includes('hezongkangqincharacter')) lib.config.characters.remove('hezongkangqincharacter');
+    if (!lib.config.characters.includes('hezongkangqincharacter')) {
+        lib.group.remove('daqin');
+        lib.config.characters.remove('hezongkangqincharacter');
+    }
     lib.translate['hezongkangqincharacter_character_config'] = '<span style="font-family: xingkai">合纵抗秦</span>';
     return hezongkangqincharacter;
 };
