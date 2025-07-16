@@ -35259,7 +35259,7 @@ const packs = function () {
                     await player.recast(cards);
                     const list = player.getStorage('mininiandengji_effect');
                     if (!list.length) return;
-                    const result = list.length == 1 ? { bool: true, links: ['', '', `lukai_${list[0]}`] } : await player.chooseButton(['选择一种花色，从牌堆或弃牌堆中获得一张此花色的牌', [list.map(i => ['', '', `lukai_${i}`]), 'vcard']], true).forResult();
+                    const result = list.length == 1 ? { bool: true, links: [['', '', `lukai_${list[0]}`]] } : await player.chooseButton(['选择一种花色，从牌堆或弃牌堆中获得一张此花色的牌', [list.map(i => ['', '', `lukai_${i}`]), 'vcard']], true).forResult();
                     if (result?.bool && result.links?.length) {
                         const suit = result.links[0][2].slice(6);
                         player.popup(suit);
