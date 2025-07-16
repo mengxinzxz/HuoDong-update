@@ -35150,7 +35150,7 @@ const packs = function () {
                             player.addSkill(effect);
                             player.markAuto(effect, suit);
                             get.info(event.name).init(player, event.name);
-                            player.addAdditionalSkill(event.name, characterEffectMap.get(result.name)[0]);
+                            await player.addAdditionalSkills(event.name, characterEffectMap.get(result.name)[0]);
                         }
                         else if (result.name == 'liuxie') {
                             player.storage.mininianchengming = true;
