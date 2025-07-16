@@ -119,17 +119,16 @@
 	transition: none;
 }
 
-
 .dialog.dengjie-game:not(.player) {
 	width: fit-content;
 	height: fit-content;
 }
 
-.dialog.dengjie-game>.content-container {
+.dialog.dengjie-game > .content-container {
 	position: relative;
 }
 
-.dialog.dengjie-game>.content-container>.content {
+.dialog.dengjie-game > .content-container > .content {
 	position: relative;
 }
 
@@ -157,7 +156,7 @@ td.dengjie-game {
 	float: left;
 }
 
-td.dengjie-game>.arrow-container {
+td.dengjie-game > .arrow-container {
 	position: absolute;
 	font-size: 100%;
 	left: 0px;
@@ -170,7 +169,7 @@ td.dengjie-game>.arrow-container {
 	border-radius: var(--border-radius);
 }
 
-td.dengjie-game>.arrow-container>.arrow {
+td.dengjie-game > .arrow-container > .arrow {
 	border-radius: 100%;
 	display: flex;
 	justify-content: center;
@@ -178,51 +177,34 @@ td.dengjie-game>.arrow-container>.arrow {
 	width: 50%;
 	height: 50%;
 	z-index: 3;
-	box-shadow:
-		rgba(0, 0, 0, 0.2) 0 0 0 1px,
-		rgba(0, 0, 0, 0.45) 0 3px 10px;
+	box-shadow: rgba(0, 0, 0, 0.2) 0 0 0 1px, rgba(0, 0, 0, 0.45) 0 3px 10px;
 }
 
-td.dengjie-game>.arrow-container.new-gain>.arrow {
+td.dengjie-game > .arrow-container.new-gain > .arrow {
 	background-color: #007dbd;
 }
 
-td.dengjie-game>.arrow-container.new-lose>.arrow {
+td.dengjie-game > .arrow-container.new-lose > .arrow {
 	background-color: #c50000;
 }
 
-td.dengjie-game>.arrow-container.old>.arrow {
+td.dengjie-game > .arrow-container.old > .arrow {
 	background-color: #494949;
 }
 
-td.dengjie-game>.arrow-container.new-gain {
+td.dengjie-game > .arrow-container.new-gain {
 	background-color: #007dbd;
-	box-shadow:
-		rgba(0, 0, 0, 0.3) 0 0 0 1px,
-		rgba(0, 125, 189, 1) 0 0 5px,
-		rgba(0, 125, 189, 1) 0 0 5px,
-		rgba(0, 125, 189, 1) 0 0 10px,
-		rgba(0, 125, 189, 1) 0 0 10px !important;
+	box-shadow: rgba(0, 0, 0, 0.3) 0 0 0 1px, rgba(0, 125, 189, 1) 0 0 5px, rgba(0, 125, 189, 1) 0 0 5px, rgba(0, 125, 189, 1) 0 0 10px, rgba(0, 125, 189, 1) 0 0 10px !important;
 }
 
-td.dengjie-game>.arrow-container.new-lose {
+td.dengjie-game > .arrow-container.new-lose {
 	background-color: #c50000;
-	box-shadow:
-		rgba(0, 0, 0, 0.3) 0 0 0 1px,
-		rgba(197, 0, 0, 1) 0 0 5px,
-		rgba(197, 0, 0, 1) 0 0 5px,
-		rgba(197, 0, 0, 1) 0 0 10px,
-		rgba(197, 0, 0, 1) 0 0 10px !important;
+	box-shadow: rgba(0, 0, 0, 0.3) 0 0 0 1px, rgba(197, 0, 0, 1) 0 0 5px, rgba(197, 0, 0, 1) 0 0 5px, rgba(197, 0, 0, 1) 0 0 10px, rgba(197, 0, 0, 1) 0 0 10px !important;
 }
 
-td.dengjie-game>.arrow-container.old {
+td.dengjie-game > .arrow-container.old {
 	background-color: #494949;
-	box-shadow:
-		rgba(0, 0, 0, 0.3) 0 0 0 1px,
-		rgba(73, 73, 73, 1) 0 0 5px,
-		rgba(73, 73, 73, 1) 0 0 5px,
-		rgba(73, 73, 73, 1) 0 0 10px,
-		rgba(73, 73, 73, 1) 0 0 10px !important;
+	box-shadow: rgba(0, 0, 0, 0.3) 0 0 0 1px, rgba(73, 73, 73, 1) 0 0 5px, rgba(73, 73, 73, 1) 0 0 5px, rgba(73, 73, 73, 1) 0 0 10px, rgba(73, 73, 73, 1) 0 0 10px !important;
 }
 
 td.dengjie-game.selectable {
@@ -233,11 +215,11 @@ td.dengjie-game:first-child {
 	margin: 0px;
 }
 
-.dialog.dengjie-game>.content-container>.content>div:last-child {
+.dialog.dengjie-game > .content-container > .content > div:last-child {
 	padding-bottom: 0px;
 }
 
-td.dengjie-game>.button.character {
+td.dengjie-game > .button.character {
 	--expand-size: calc(var(--cell-spacing) - 4px);
 	width: var(--block-size);
 	height: var(--block-size);
@@ -250,17 +232,27 @@ td.dengjie-game>.button.character {
 	justify-content: flex-end;
 }
 
-td.dengjie-game>.button.character>.score {
+td.dengjie-game > .button.character > .score {
 	border-radius: var(--border-radius);
 	font-size: 12px;
 	width: 35%;
 	height: 35%;
 }
 
-td.dengjie-game>.button.character>.score.gain {
+td.dengjie-game > .button.character > .score.gain {
 	background-color: #007dbd;
 }
 
-td.dengjie-game>.button.character>.score.lose {
+td.dengjie-game > .button.character > .score.lose {
 	background-color: #c50000;
+}
+
+.button.character.tazhen {
+	width: 108px !important;
+	height: 150px !important;
+}
+
+.button.card.tazhen {
+	width: 108px !important;
+	height: 150px !important;
 }

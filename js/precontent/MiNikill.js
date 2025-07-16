@@ -33637,20 +33637,6 @@ const packs = function () {
             },
             //念吕布
             mininiantazhen: {
-                init() {
-                    lib.init.sheet([
-                        '.button.character.tazhen {',
-                        'width: 108px !important;',
-                        'height: 150px !important;',
-                        '}'
-                    ].join(''));
-                    lib.init.sheet([
-                        '.button.card.tazhen {',
-                        'width: 108px !important;',
-                        'height: 150px !important;',
-                        '}'
-                    ].join(''));
-                },
                 audio: 'ext:活动武将/audio/skill:2',
                 trigger: { player: 'phaseBegin' },
                 forced: true,
@@ -33793,9 +33779,7 @@ const packs = function () {
                     if (result.bool) {
                         const kill = get.info('mininiantazhen').kill(result.links.slice(), player);
                         if (kill[2].length > 0) {
-                            const targets = kill[2].map(i => {
-                                return game.findPlayer2(t => t.playerid == parseInt(i[1]));
-                            }).filter(i => i.isIn()).sortBySeat();
+                            const targets = kill[2].map(i => (_status.connectMode ? lib.playerOL : game.playerMap)[i[1]]).sortBySeat();
                             player.line(targets);
                             player.popup('踏阵成功', 'wood');
                             game.log(player, '踏阵', '#g成功', '击败了', targets);
