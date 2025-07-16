@@ -12946,7 +12946,7 @@ const packs = function () {
                     const suit = get.suit(trigger.card);
                     const number = get.number(trigger.card);
                     const cards = [];
-                    for (var i = 0; i < ui.cardPile.childNodes.length; i++) {
+                    for (var i = 0; i < ui.cardPile.childElementCount; i++) {
                         const card = ui.cardPile.childNodes[i];
                         if (card.suit == suit && card.number == number) cards.push(card);
                     }
@@ -19122,7 +19122,7 @@ const packs = function () {
                     global: 'loseAsyncAfter',
                 },
                 filter(event, player) {
-                    if (!ui.discardPile.childNodes.length) return false;
+                    if (!ui.discardPile.childElementCount) return false;
                     if (event.name == 'useCard') return true;
                     return event.type == 'discard' && event.getl(player).cards2.length > 0;
                 },
@@ -19131,7 +19131,7 @@ const packs = function () {
                     var mark = false;
                     var red = 0,
                         black = 0;
-                    for (var i = 0; i < ui.discardPile.childNodes.length; i++) {
+                    for (var i = 0; i < ui.discardPile.childElementCount; i++) {
                         var color = get.color(ui.discardPile.childNodes[i]);
                         if (color == 'red') red++;
                         if (color == 'black') black++;
@@ -33452,58 +33452,142 @@ const packs = function () {
                     return lib.skill.mininianxinghan.filterGroup(player).length;
                 },
                 usable: 1,
-                //整理棋子给点反应时间，就不自动发动了
-                //frequent:true,
                 async content(event, trigger, player) {
-                    player.addTempSkill('mininianxinghan_timeOut');
-                    let list = [], groups = lib.skill.mininianxinghan.filterGroup(player);
+                    const groups = lib.skill.mininianxinghan.filterGroup(player);
+                    console.log(groups);
                     if (!groups.length) {
                         player.popup('杯具');
                         game.log('没有势力可进行', '#g定乱', '操作');
                         return;
                     }
-                    for (let i = 1; i <= 2; i++) {
-                        for (let k = 0; k < groups.length; k++) {
-                            const group = groups[k];
-                            if (i == 1) {
-                                game.addVideo('skill', player, ['mininianxinghan', [group]]);
-                                if (!lib.card['group_' + group]) game.broadcastAll(group => lib.skill.mininianxinghan.video(group), group);
-                                list.push([get.translation(group + '2'), []]);
-                            }
-                            else {
-                                const groupPuts = lib.skill.mininianxinghan.putResult(4, groups.length);
-                                for (let j = 0; j < groupPuts.length; j++) {
-                                    //if(j==0) list[k][1].addArray(Array.from({length:groups.length}).map(object=>game.createCard('du',' ',' ')));
-                                    list[j][1].addArray(Array.from({ length: groupPuts[j] }).map(object => game.createCard('group_' + group, ' ', ' ')));
-                                }
-                            }
+                    await Promise.all(event.next);
+                    event.videoId = lib.status.videoId++;
+                    //AI直接走结果
+                    const switchToAuto = function () {
+                        _status.imchoosing = false;
+                        if (event.dialog) event.dialog.close();
+                        if (event.control) event.control.close();
+                        game.resume();
+                        event._result = { successGroup: groups.randomGet() };
+                        return Promise.resolve(event._result);
+                    };
+                    const zhugeliang_PlayChess = function (player, groups) {
+                        const event = _status.event, { promise, resolve } = Promise.withResolvers();
+                        //如果以自己视角进入流程后AI直接走结果
+                        event.switchToAuto = function () {
+                            _status.imchoosing = false;
+                            event._result = { successGroup: groups.randomGet() };
+                            resolve(event._result);
+                            if (event.dialog) event.dialog.close();
+                        };
+                        //创建dialog
+                        const dialog = event.dialog = ui.create.dialog('定乱', 'hidden');
+                        dialog.classList.add('fullheight');
+                        //设置dialog样式
+                        dialog.style.width = '90%';
+                        dialog.style.height = '85%';
+                        dialog.style.left = '5%';
+                        dialog.style.top = '5%';
+                        dialog.style.overflow = 'auto';
+                        dialog.style.display = 'flex';
+                        dialog.style.flexDirection = 'column';
+                        dialog.style.alignItems = 'center';
+                        dialog.style.justifyContent = 'center';
+                        //设置contentContainer样式
+                        dialog.contentContainer = ui.create.div('.content-container', dialog);
+                        dialog.contentContainer.style.display = 'flex';
+                        dialog.contentContainer.style.flexDirection = 'column';
+                        dialog.contentContainer.style.alignItems = 'center';
+                        dialog.contentContainer.style.justifyContent = 'center';
+                        dialog.contentContainer.style.width = '100%';
+                        dialog.contentContainer.style.height = '100%';
+                        //创建tube容器
+                        const container = ui.create.div('.dingluan-tube-container', dialog.contentContainer);
+                        //检测赢
+                        function checkWin(tube) {
+                            if (tube.childElementCount !== 4) return false;
+                            const group = tube.childNodes[0].dataset.group;
+                            return Array.from(tube.childNodes).every(p => p.dataset.group === group);
                         }
+                        //创建棋子
+                        function createPiece(group, text) {
+                            const piece = ui.create.div('.dingluan-piece', text);
+                            piece.dataset.group = group;
+                            return piece;
+                        }
+                        let selectedTube = null, dingluanSuccess = null, tubes = [];
+                        let allPieces = groups.map(group => Array.from({ length: 4 }).map(() => { return { group, text: get.translation(group) } }));
+                        allPieces = allPieces.flat().randomSort();
+                        for (let i = 0; i < groups.length + 2; i++) {
+                            const tube = ui.create.div('.dingluan-tube', container);
+                            tube.dataset.index = i;
+                            tube.addEventListener(lib.config.touchscreen ? 'touchend' : 'click', () => {
+                                if (dingluanSuccess !== null) return;
+                                if (!selectedTube) {
+                                    if (tube.childElementCount > 0) {
+                                        selectedTube = tube;
+                                        tube.classList.add('selected');
+                                    }
+                                }
+                                else if (tube === selectedTube) {
+                                    tube.classList.remove('selected');
+                                    selectedTube = null;
+                                }
+                                else {
+                                    if (tube.childElementCount < 4 && selectedTube.childElementCount > 0) {
+                                        const piece = selectedTube.lastChild;
+                                        tube.appendChild(piece);
+                                        selectedTube.classList.remove('selected');
+                                        selectedTube = null;
+                                        if (checkWin(tube)) {
+                                            event.dialog.close();
+                                            game.resume();
+                                            _status.imchoosing = false;
+                                            event._result = { successGroup: tube.childNodes[0].dataset.group };
+                                            resolve(event._result);
+                                        }
+                                    }
+                                    else {
+                                        selectedTube.classList.remove('selected');
+                                        selectedTube = null;
+                                    }
+                                }
+                            });
+                            tubes.push(tube);
+                        }
+                        allPieces.forEach(piece => {
+                            let eligible = tubes.filter(t => t.childElementCount < 4);
+                            eligible.randomGet().appendChild(createPiece(piece.group, piece.text));
+                        });
+                        //打开dialog
+                        dialog.open();
+                        game.pause();
+                        game.countChoose();
+                        return promise;
+                    };
+                    let next;
+                    if (event.isMine()) next = zhugeliang_PlayChess(player, groups);
+                    else if (event.isOnline()) {
+                        const { promise, resolve } = Promise.withResolvers();
+                        event.player.send(zhugeliang_PlayChess, player, groups);
+                        event.player.wait(async result => {
+                            if (result == 'ai') result = await switchToAuto();
+                            resolve(result);
+                        });
+                        game.pause();
+                        next = promise;
                     }
-                    for (let l of list) l[1].randomSort();
-                    list.push(['垃圾桶（充当空白区）']);
-                    const result = await player.chooseToMove().set('list', list)
-                        .set('prompt', '###定乱：在规定的时间内将一个势力的卡牌整理完毕###<div class="text center">使一个势力的区域只存在此势力的卡牌</div>').set('filterOk', moved => {
-                            const groups = get.event('groups');
-                            return Array.from({ length: groups.length }).map((_, i) => i).filter(i => moved[i].length == 4 && moved[i].every(card => card.name.endsWith(groups[i]))).length == 1;
-                        }).set('processAI', () => {
-                            const player = get.event('player'), group = get.event('groups');
-                            let groups = group.slice();
-                            const finalGroup = groups.sort((a, b) => game.countPlayer(target => target.group == b) - game.countPlayer(target => target.group == a))[0];
-                            let list = Array.from({ length: group.length + 1 }).map(object => []);
-                            for (let i = 0; i < 4; i++) {
-                                list[group.indexOf(finalGroup)].push(game.createCard('group_' + finalGroup, ' ', ' '));
-                            }
-                            return list;
-                        }).set('chooseTime', parseFloat(40 + 10 * Math.max(0, groups.length - 5))).set('groups', groups).forResult();
-                    if (result.bool) {
-                        let resultGroup = Array.from({ length: result.moved.length - 1 }).map((_, i) => i).find(i => result.moved[i].length == 4 && result.moved[i].every(card => card.name.endsWith(groups[i])));
-                        resultGroup = result.moved[resultGroup][0].name.slice('group_'.length);
-                        player.popup('洗具·' + get.translation(resultGroup));
-                        game.log(player, '#g定乱（' + (get.translation(resultGroup + '2') || get.translation(resultGroup)) + '）', '成功');
-                        player.markAuto('mininianxinghan', [resultGroup]);
+                    else next = switchToAuto();
+                    const result = await next;
+                    game.resume();
+                    const { successGroup } = result;
+                    if (successGroup) {
+                        player.markAuto('mininianxinghan', [successGroup]);
+                        player.popup(successGroup);
+                        game.log(player, '#g定乱', '#y成功', `#g（${get.translation(successGroup)}势力）`);
                         await player.gainMaxHp();
                         await player.recover();
-                        const targets = game.filterPlayer(target => target.group == resultGroup);
+                        const targets = game.filterPlayer(target => target.group == successGroup);
                         if (targets.length) {
                             player.line(targets);
                             for (const t of targets) await t.changeGroup('shu');
@@ -33515,59 +33599,13 @@ const packs = function () {
                     }
                 },
                 derivation: 'mininianxinghan_faq',
-                ai: { threaten: 5 },
                 intro: { content: '已“定乱”成功过$势力' },
-                video(group) {
-                    const name = 'group_' + group;
-                    lib.card[name] = { fullskin: true };
-                    lib.translate[name] = get.translation(group) + '势力';
-                    lib.translate[name + '_bg'] = get.translation(group);
-                },
-                //返回由和为num个的maxNum个随机自然数组成的数组
-                putResult(num, maxNum) {
-                    if (typeof maxNum != 'number' || typeof num != 'number') {
-                        console.warn('你是故意找茬的是吧[doge]');
-                        return;
-                    }
-                    let list = [];
-                    for (let i = 0; i < maxNum; i++) {
-                        const put = ((i == maxNum - 1) ? num : get.rand(0, num - (maxNum - i - 1)));
-                        list.push(put);
-                        num -= put;
-                    }
-                    return list.randomSort();
-                },
                 filterGroup(player) {
-                    let groups = (lib.group || []).slice().concat(game.players.slice().concat(game.dead).reduce((list, i) => list.add(i.group), [])).unique();
-                    groups.removeArray(['shu'].concat(player.getStorage('mininianxinghan')));
+                    let groups = [...lib.group, ...[...game.players, ...game.dead].map(i => i.group)].unique();
+                    groups.removeArray(['shu', ...player.getStorage('mininianxinghan')]);
                     return groups;
                 },
-                subSkill: {
-                    timeOut: {
-                        trigger: { player: ['chooseToMoveBegin', 'chooseToMoveEnd'] },
-                        filter(event, player) {
-                            if (_status.connectMode || !event.isMine()) return false;
-                            return event.getParent().name == 'mininianxinghan' && event.chooseTime;
-                        },
-                        charlotte: true,
-                        forced: true,
-                        popup: false,
-                        firstDo: true,
-                        content() {
-                            if (event.triggername.endsWith('End')) {
-                                game.stopCountChoose();
-                                return;
-                            }
-                            const num = parseInt(trigger.chooseTime);
-                            ui.timer.show();
-                            game.countDown(num, function () {
-                                _status.event.result = { bool: false };
-                                ui.click.cancel();
-                                ui.timer.hide();
-                            });
-                        },
-                    },
-                },
+                subSkill: { faq: { nopop: true } },
             },
             mininianliaoyuan: {
                 audio: 'ext:活动武将/audio/skill:2',
@@ -37700,7 +37738,7 @@ const packs = function () {
             mininianxinghan: '兴汉',
             mininianxinghan_info: '每回合限一次，回合开始时或当你受到伤害时，若默认势力和场上的势力的并集存在非蜀势力和你此前未因“定乱”成功的势力，则你可以进行一次“定乱”。若“定乱”成功，则你增加1点体力上限并回复1点体力，然后将场上的“定乱”势力角色均改为蜀势力。',
             mininianxinghan_faq: '关于“定乱”',
-            mininianxinghan_faq_info: '<br>系统为默认势力和场上的势力的并集存在非蜀势力和你此前未因“定乱”成功的势力各建立一个势力卡牌框，然后将这些势力的各四张对应势力卡牌随机分配至各个势力卡牌框中，玩家需要在[40+10*max(0,X-5)]秒内将其中仅一个势力卡牌框的所有卡牌调整为此势力的牌，则“定乱”成功，“定乱”结果为你成功分配的这个势力（X为S所含元素个数）。',
+            mininianxinghan_faq_info: '<br>系统为默认势力和场上的势力的并集存在非蜀势力和你此前未因“定乱”成功的势力各创造四枚对应势力棋子并随机置入这些势力数+2的试管中，每个试管最多存在四枚棋子，点击一个试管后再点击一个未满的试管，第一个试管最上方的元素将进入第二个试管最上方，玩家需要将其中一个试管的棋子均调整为同一势力的弃置，则“定乱”成功，“定乱”结果为你成功分配的这个势力。',
             mininianliaoyuan: '燎原',
             mininianliaoyuan_info: '①出牌阶段限一次，你可以视为使用【火攻】。②你使用【火攻】可以指定任意名角色。',
             mininianying_zgl: '念影',
