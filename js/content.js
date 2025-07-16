@@ -1124,6 +1124,9 @@ export async function content(config, pack) {
 	game.HDsetAudioname2(['juxiang', 'juxiang1'], {
 		Mmiao_zhurong: 'minimiaojuxiang',
 	});
+	game.HDsetAudioname2('chengxiang', {
+		Mnian_caopi: 'chengxiang_Mnian_caopi',
+	});
 
 	//precCI
 	//武将信息

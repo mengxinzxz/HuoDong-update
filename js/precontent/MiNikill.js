@@ -14,8 +14,8 @@ const packs = function () {
                 MiNi_change: ['Mbaby_sb_sunquan', 'Mbaby_guanning', 'Mbaby_caoying', 'Mbaby_re_nanhualaoxian', 'Mbaby_re_sunyi', 'Mbaby_zhaoxiang', 'Mbaby_xushao', 'Mbaby_baosanniang', 'Mbaby_quanhuijie'],
                 MiNi_shengzhiyifa: ['Mbaby_jingwei', 'Mbaby_sunwukong', 'Mbaby_dalanmao', 'Mbaby_libai', 'Mbaby_change', 'Mbaby_nvwa', 'Mbaby_tunxingmenglix', 'Mbaby_xiaoshan'],
                 MiNi_sbCharacter: ['Mbaby_sb_guojia', 'Mbaby_sb_zhenji', 'Mbaby_sb_ganning', 'Mbaby_ol_sb_jiangwei', 'Mbaby_sb_huangyueying', 'Mbaby_ol_sb_guanyu', 'Mbaby_sb_sunshangxiang', 'Mbaby_sb_xuhuang', 'Mbaby_sb_zhaoyun', 'Mbaby_sb_liubei', 'Mbaby_sb_caocao', 'Mbaby_sb_huanggai', 'Mbaby_sb_yuanshao', 'Mbaby_sb_yujin', 'Mbaby_sb_machao', 'Mbaby_sb_lvmeng', 'Mbaby_sb_huangzhong'],
-                MiNi_miaoKill: ['Mmiao_caoying', 'Mmiao_caiwenji', 'Mmiao_diaochan', 'Mmiao_caifuren', 'Mmiao_zhangxingcai', 'Mmiao_zhurong', 'Mmiao_huangyueying', 'Mmiao_daqiao', 'Mmiao_wangyi', 'Mmiao_zhangchunhua', 'Mmiao_zhenji', 'Mmiao_sunshangxiang', 'Mmiao_xiaoqiao', 'Mmiao_lvlingqi'],
-                MiNi_nianKill: ['Mnian_zhugeliang', 'Mnian_lvbu', 'Mnian_zhouyu'],
+                MiNi_miaoKill: ['caoying', 'caiwenji', 'diaochan', 'caifuren', 'zhangxingcai', 'zhurong', 'huangyueying', 'daqiao', 'wangyi', 'zhangchunhua', 'zhenji', 'sunshangxiang', 'xiaoqiao', 'lvlingqi'].map(i => `Mmiao_${i}`),
+                MiNi_nianKill: ['caopi', 'zhugeliang', 'lvbu', 'zhouyu'].map(i => `Mnian_${i}`),
                 MiNi_fightKill: ['huangzhong', 'zhangliao'].map(i => `Mfight_${i}`),
             },
         },
@@ -390,6 +390,7 @@ const packs = function () {
             Mnian_zhugeliang: ['male', 'shu', 3, ['mininianxinghan', 'mininianliaoyuan', 'mininianying_zgl'], ['name:诸葛|亮']],
             Mnian_lvbu: ['male', 'qun', 5, ['mininiantazhen', 'mininiandoupo', 'mininianying_lb']],
             Mnian_zhouyu: ['male', 'wu', 4, ['mininiansuhui', 'mininianchongzou', 'mininianying_zy']],
+            Mnian_caopi: ['male', 'wei', 3, ['mininiandengji', 'mininianchengming', 'mininianying_cp', 'mininiansongwei'], ['zhu']],
             //战
             Mfight_huangzhong: ['male', 'shu', 4, ['minifightdingjun', 'minifightlizhan']],
             Mfight_zhangliao: ['male', 'wei', 4, ['minifightbiaoxi', 'minifightpozhen']],
@@ -1056,6 +1057,7 @@ const packs = function () {
             },
             minikangkai: {
                 audio: 'kaikang',
+                audioname2: { Mnian_caopi: 'minikangkai_Mnian_caopi' },
                 trigger: { global: 'useCardToTargeted' },
                 filter(event, player) {
                     return event.card.name == 'sha' && get.distance(player, event.target) <= 1;
@@ -1085,6 +1087,9 @@ const packs = function () {
                     'step 2'
                     if (trigger.target.getCards('h').includes(card) && get.type(card) == 'equip') trigger.target.chooseUseTarget(card);
                 },
+                subSkill: {
+                    Mnian_caopi: { audio: 'ext:活动武将/audio/skill:true' },
+                }
             },
             minishangshi: {
                 audio: 'shangshi',
@@ -1423,66 +1428,46 @@ const packs = function () {
                         if (name == 'phaseDiscard' && get.suit(card) == 'club') return false;
                     },
                 },
-                audio: 'luoying_discard',
-                group: ['miniluoying_discard', 'miniluoying_judge'],
-                subfrequent: ['judge'],
+                locked: false,
+                audio: 'luoying',
+                audioname2: { Mnian_caopi: 'miniluoying_Mnian_caopi' },
+                trigger: { global: ['loseAfter', 'loseAsyncAfter', 'cardsDiscardAfter'] },
+                filter(event, player) {
+                    if (event.name.startsWith('lose')) {
+                        if (event.type != 'discard' || event.getlx === false) return false;
+                        const cards = event.cards.slice(0);
+                        const evt = event.getl?.(player);
+                        if (evt?.cards) cards.removeArray(evt.cards);
+                        return cards.some(card => card.original != 'j' && get.suit(card, event.player) == 'club' && get.position(card, true) == 'd');
+                    }
+                    const evt = event.getParent().relatedEvent;
+                    if (!evt || evt.name != 'judge') return false;
+                    if (evt.player == player) return false;
+                    return event.cards.some(card => get.position(card, true) == 'd' && get.suit(card) == 'club');
+                },
+                frequent: true,
+                async cost(event, trigger, player) {
+                    let cards, cards2 = trigger.cards.slice(0);
+                    if (trigger.name.startsWith('lose')) {
+                        if (trigger.delay == false) await game.delay();
+                        const evt = trigger.getl(player);
+                        if (evt?.cards) cards2.removeArray(evt.cards);
+                        cards = cards2.filter(card => card.original != 'j' && get.suit(card, event.player) == 'club' && get.position(card, true) == 'd');
+                    }
+                    else cards = trigger.cards.filter(card => get.position(card, true) == 'd' && get.suit(card) == 'club');
+                    const { result } = await player.chooseButton(['落英：选择要获得的牌', cards], [1, cards.length]).set('ai', button => {
+                        return get.value(button.link, get.player(), "raw");
+                    });
+                    event.result = {
+                        bool: result?.bool,
+                        cost_data: result?.links,
+                    }
+                },
+                async content(event, trigger, player) {
+                    await player.gain(event.cost_data, 'gain2', 'log');
+                },
                 subSkill: {
-                    discard: {
-                        trigger: { global: 'loseAfter' },
-                        filter(event, player) {
-                            if (event.type != 'discard') return false;
-                            if (event.player == player) return false;
-                            for (var i = 0; i < event.cards2.length; i++) {
-                                if (get.suit(event.cards2[i], event.player) == 'club' && get.position(event.cards2[i], true) == 'd') return true;
-                            }
-                            return false;
-                        },
-                        direct: true,
-                        content() {
-                            'step 0'
-                            if (trigger.delay == false) game.delay();
-                            'step 1'
-                            var cards = [];
-                            for (var i = 0; i < trigger.cards2.length; i++) {
-                                if (get.suit(trigger.cards2[i], trigger.player) == 'club' && get.position(trigger.cards2[i], true) == 'd') {
-                                    cards.push(trigger.cards2[i]);
-                                }
-                            }
-                            if (cards.length) {
-                                player.chooseButton(['落英：选择要获得的牌', cards], [1, cards.length]).set('ai', function (button) {
-                                    return get.value(button.link, _status.event.player, 'raw');
-                                });
-                            }
-                            else event.finish();
-                            'step 2'
-                            if (result.bool) {
-                                player.logSkill('miniluoying');
-                                player.gain(result.links, 'gain2');
-                            }
-                        },
-                    },
-                    judge: {
-                        trigger: { global: 'cardsDiscardAfter' },
-                        filter(event, player) {
-                            var evt = event.getParent().relatedEvent;
-                            if (!evt || evt.name != 'judge') return;
-                            if (evt.player == player) return false;
-                            if (get.position(event.cards[0], true) != 'd') return false;
-                            return (get.suit(event.cards[0]) == 'club');
-                        },
-                        direct: true,
-                        content() {
-                            'step 0'
-                            player.chooseButton(['落英：选择要获得的牌', trigger.cards], [1, trigger.cards.length]).set('ai', function (button) {
-                                return get.value(button.link, _status.event.player, 'raw');
-                            });
-                            'step 1'
-                            if (result.bool) {
-                                player.logSkill('miniluoying');
-                                player.gain(result.links, 'gain2');
-                            }
-                        },
-                    },
+                    Mnian_caopi: { audio: 'ext:活动武将/audio/skill:true' },
                 },
             },
             miniquhu: {
@@ -3186,6 +3171,7 @@ const packs = function () {
             },
             minijiangchi: {
                 audio: 'jiangchi',
+                audioname2: { Mnian_caopi: 'minijiangchi_Mnian_caopi' },
                 trigger: { player: 'phaseUseBegin' },
                 direct: true,
                 content() {
@@ -3244,6 +3230,7 @@ const packs = function () {
                             },
                         },
                     },
+                    Mnian_caopi: { audio: 'ext:活动武将/audio/skill:true' },
                 },
             },
             //曹操
@@ -27257,9 +27244,7 @@ const packs = function () {
                     }
                     else {
                         player.addTempSkill(event.name + '_effect');
-                        player.markAuto(event.name + '_effect', [[target, choices[0]]]);
-                        const evt = trigger.getParent();
-                        if (!evt[event.name + '_effect']) evt[event.name + '_effect'] = true;
+                        player.markAuto(event.name + '_effect', [[target, choices[0], trigger.getParent()]]);
                     }
                 },
                 subSkill: {
@@ -27271,13 +27256,14 @@ const packs = function () {
                         },
                         filter(event, player) {
                             if (!game.hasPlayer(current => current.hasHistory('damage', evt => evt.card == event.card))) return false;
-                            return event.minimoukui_effect;
+                            return player.getStorage('minimoukui_effect').some(list => list[2] === event);
                         },
                         forced: true,
                         popup: false,
                         async content(event, trigger, player) {
                             const storage = player.getStorage(event.name);
-                            for (const [target, choice] of storage) {
+                            for (const [target, choice, evt] of storage) {
+                                if (evt !== trigger) continue;
                                 if (choice == 'draw') await player.draw();
                                 else if (target.isIn() && target.countDiscardableCards(player, 'he')) await player.discardPlayerCard(target, true, 'he').set('boolline', true);
                             }
@@ -33602,16 +33588,15 @@ const packs = function () {
             mininianying_zgl: {
                 audio: 'mininianying_Mnian_zhugeliang',
                 trigger: { player: 'phaseBegin', global: 'phaseEnd' },
-                filter(event, player, name) {
-                    const skills = Object.keys(lib.skill).filter(i => get.info(i) && get.info(i).nianyingSkill && get.info(i).nianyingFilter(event, player, name));
-                    if (!skills.length) return false;
+                filter(event, player, name, indexedData) {
+                    if (!Object.keys(lib.skill).some(i => get.info(i)?.nianyingSkill && get.info(i).nianyingFilter(event, player, name, indexedData))) return false;
                     if (name == 'phaseBegin') return !game.hasPlayer(target => target.group != 'shu');
                     return game.hasPlayer2(current => {
                         return current.getHistory('custom', evt => evt.name == 'changeGroup' && evt.originGroup != evt.group && [evt.originGroup, evt.group].includes('shu')).length;
                     }) || game.getGlobalHistory('everything', evt => evt.name == 'die' && evt.player.group == 'shu').length;
                 },
                 async cost(event, trigger, player) {
-                    const skills = Object.keys(lib.skill).filter(i => get.info(i) && get.info(i).nianyingSkill && get.info(i).nianyingFilter(trigger, player, name)).map(i => [i, get.info(i).nianyingSkill[0], get.info(i).nianyingSkill[1]]);
+                    const skills = Object.keys(lib.skill).filter(i => get.info(i)?.nianyingSkill && get.info(i).nianyingFilter(trigger, player, event.triggername, event.indexedData)).map(i => [i, get.info(i).nianyingSkill[0], get.info(i).nianyingSkill[1]]);
                     const result = await player.chooseControl(skills.map(i => i[1]), 'cancel2')
                         .set('prompt', get.prompt('mininianying_zgl')).set('prompt2', '选择一项念影效果执行')
                         .set('displayIndex', false)
@@ -34109,13 +34094,12 @@ const packs = function () {
                     player: 'damageEnd',
                     source: 'damageSource',
                 },
-                filter(event, player, name) {
-                    const skills = Object.keys(lib.skill).filter(i => get.info(i) && get.info(i).nianyingSkill && get.info(i).nianyingFilter(event, player, name));
-                    if (!skills.length) return false;
+                filter(event, player, name, indexedData) {
+                    if (!Object.keys(lib.skill).some(i => get.info(i)?.nianyingSkill && get.info(i).nianyingFilter(event, player, name, indexedData))) return false;
                     return player.countMark('mininianying_lb') >= 2;
                 },
                 async cost(event, trigger, player) {
-                    const skills = Object.keys(lib.skill).filter(i => get.info(i) && get.info(i).nianyingSkill && get.info(i).nianyingFilter(trigger, player, name)).map(i => [i, get.info(i).nianyingSkill[0], get.info(i).nianyingSkill[1]]);
+                    const skills = Object.keys(lib.skill).filter(i => get.info(i)?.nianyingSkill && get.info(i).nianyingFilter(trigger, player, event.triggername, event.indexedData)).map(i => [i, get.info(i).nianyingSkill[0], get.info(i).nianyingSkill[1]]);
                     const result = await player.chooseControl(skills.map(i => i[1]), 'cancel2')
                         .set('prompt', get.prompt('mininianying_lb')).set('prompt2', '选择一项念影效果执行')
                         .set('displayIndex', false)
@@ -34367,8 +34351,8 @@ const packs = function () {
             mininianying_zy: {
                 audio: 'mininianying_Mnian_zhouyu',
                 trigger: { global: 'phaseEnd' },
-                filter(event, player, name) {
-                    if (!Object.keys(lib.skill).some(i => get.info(i) && get.info(i).nianyingSkill && get.info(i).nianyingFilter(event, player, name))) return false;
+                filter(event, player, name, indexedData) {
+                    if (!Object.keys(lib.skill).some(i => get.info(i)?.nianyingSkill && get.info(i).nianyingFilter(event, player, name, indexedData))) return false;
                     const history = game.getGlobalHistory('everything', evt => evt.player === event.player && ['useCard', 'respond'].includes(evt.name));
                     const map = history.reduce((map, evt) => {
                         const { name } = evt.card;
@@ -34379,7 +34363,7 @@ const packs = function () {
                     return Object.keys(map).reduce((sum, item) => sum + Math.floor(map[item] / 2), 0) >= 2;
                 },
                 async cost(event, trigger, player) {
-                    const skills = Object.keys(lib.skill).filter(i => get.info(i) && get.info(i).nianyingSkill && get.info(i).nianyingFilter(trigger, player, name)).map(i => [i, get.info(i).nianyingSkill[0], get.info(i).nianyingSkill[1]]);
+                    const skills = Object.keys(lib.skill).filter(i => get.info(i)?.nianyingSkill && get.info(i).nianyingFilter(trigger, player, event.triggername, event.indexedData)).map(i => [i, get.info(i).nianyingSkill[0], get.info(i).nianyingSkill[1]]);
                     const result = await player.chooseControl(skills.map(i => i[1]), 'cancel2')
                         .set('prompt', get.prompt('mininianying_zy')).set('prompt2', '选择一项念影效果执行')
                         .set('displayIndex', false)
@@ -34408,6 +34392,986 @@ const packs = function () {
                     }
                 },
             },
+            mininiandengji: {
+                /**
+                 * 创建念曹丕的登阶游戏喵
+                 * 
+                 * 重要的事情说三遍，可乐喵万岁！可乐喵万岁！可乐喵万岁！
+                 * 
+                 * @author iceCola
+                 * @param {Player} player 
+                 * @param {unknown} [lastGameData=null] 上一次的游戏数据
+                 */
+                startDengjieGame(player, lastGameData = null) {
+                    // 在小游戏上面显示的武将图片来源于哪些武将ID喵
+                    const NAMES = [
+                        'caopi', // 曹丕
+                        'caoang', // 曹昂
+                        'caochong', // 曹冲
+                        'caozhang', // 曹彰
+                        'caozhi', // 曹植
+                        'liuxie', // 刘协
+                    ];
+                    // 游戏地图数据喵
+                    const MAPS = [
+                        'brrrbb(2,3)rrbb;brrbrrbrbr(3,4);(1,5)rb(0,3)brr(5,-12)rrr;brrbrrbrbrr;bbbrrbbrb(4,6)r',
+                        'rbbrb(0,2)bbrbr;rrbbrrrb(2,5)bb;bb(3,4)rbrbrrbr;bbrr(4,8)r(1,7)bbbr;rbbbr(5,-16)rbrbb',
+                        'brb(2,3)brrrbr(5,-10);rrrr(1,5)bbrrbr;brbbbrbb(3,4)bb;r(4,6)brrbbrrbr;rrrrbr(0,3)rrrb',
+                        'brbbrbbrbbb;(1,9)rbrbbbr(0,2)rb;rrbr(4,2)r(3,3)rbrr;br(5,-20)brbrbrr(2,4);rbbbbrbrbbr',
+                    ];
+                    // 游戏相邻格
+                    const NEIGHBORS = [
+                        ['left', -1, 0],
+                        ['up', 0, -1],
+                        ['right', 1, 0],
+                        ['down', 0, 1],
+                    ];
+
+                    // 解析地图函数
+                    function parseMap(map, names, mapString) {
+                        let slot = 0;
+                        for (let i = 0; i < mapString.length; i++) {
+                            const ch = mapString[i];
+                            switch (ch) {
+                                case 'b':
+                                    map[slot] = 1;
+                                    break;
+                                case 'r':
+                                    map[slot] = -1;
+                                    break;
+                                case '(':
+                                    const j = mapString.indexOf(')', i);
+                                    const [nameIndex, score] = mapString.slice(i + 1, j).split(',').map(x => parseInt(x));
+                                    map[slot] = [nameIndex, score];
+                                    names[NAMES[nameIndex]] = slot;
+                                    i = j;
+                                    break;
+                                case ';':
+                                    continue;
+                                default:
+                                    throw new Error(`无效的地图数据: ${ch}`);
+                            }
+                            slot++;
+                        }
+                    }
+
+                    // 游戏数据保存对象
+                    class GameData {
+                        map = [];
+                        names = {};
+                        width = 11;
+                        height = 5;
+                        x = -1;
+                        y = -1;
+                        score = 0;
+                        steps = 0;
+                        time = 0;
+                        walkedReds = [];
+
+                        constructor(mapString) {
+                            if (mapString.constructor.name === 'GameData') {
+                                this.map = mapString.map.slice();
+                                this.names = Object.assign({}, mapString.names);
+                                this.width = mapString.width;
+                                this.height = mapString.height;
+                                this.x = mapString.x;
+                                this.y = mapString.y;
+                                this.score = mapString.score;
+                                this.steps = mapString.steps;
+                                this.time = mapString.time;
+                                this.walkedReds = mapString.walkedReds.slice();
+                                return;
+                            }
+
+                            parseMap(this.map, this.names, mapString);
+                        }
+
+                        initPlayer() {
+                            if (this.x < 0 && this.y < 0) {
+                                const nameCaopi = NAMES[0];
+                                const slotCaopi = this.names[nameCaopi];
+                                const { x, y } = this.getPosFromSlot(slotCaopi);
+                                this.x = x;
+                                this.y = y;
+                                this.score = this.map[slotCaopi][1];
+                                this.map[slotCaopi] = 0;
+                            } else {
+                                const slotCaopi = this.getSlotFromPos(this.x, this.y);
+                                this.map[slotCaopi] = 0;
+                            }
+                        }
+
+                        getPosFromSlot(slot) {
+                            return {
+                                x: slot % this.width,
+                                y: Math.floor(slot / this.width)
+                            };
+                        }
+
+                        getSlotFromPos(x, y) {
+                            return x + y * this.width;
+                        }
+                    }
+
+                    // 构造UI喵
+                    /** @type {GameData} */
+                    const gameData = lastGameData || new GameData(MAPS.randomGet());
+                    const videoId = lib.status.videoId++;
+
+                    function createUI(videoId, gameWidth, gameHeight, gameMap, NAMES) {
+                        const dialog = ui.create.dialog('曹丕登阶Demo', 'forcebutton');
+                        dialog.videoId = videoId;
+                        dialog.addText('等待开始...');
+                        dialog.classList.add('dengjie-game');
+
+                        const gameContainer = ui.create.div(dialog.content);
+                        const table = document.createElement('table');
+                        table.classList.add('dengjie-game');
+                        gameContainer.appendChild(table);
+
+                        const tips = dialog.content.children[1].firstElementChild;
+                        tips.id = 'dengjie-tips';
+
+                        function remoteGetSlotFromPos(x, y, width) {
+                            return x + y * width;
+                        }
+
+                        function createCharacter(name, score) {
+                            const button = ui.create.button(get.info('mininiandengji').namesMap.get(name), 'character');
+
+                            for (const element of [...button.children]) {
+                                element.remove();
+                            }
+                            button.classList.add('noclick');
+
+                            if (name !== NAMES[0]) {
+                                const scoreDiv = ui.create.div('.score');
+                                scoreDiv.innerHTML = Math.abs(score);
+
+                                if (score > 0) {
+                                    scoreDiv.classList.add('gain');
+                                } else {
+                                    scoreDiv.classList.add('lose');
+                                }
+
+                                button.appendChild(scoreDiv);
+                            }
+
+                            return button;
+                        }
+
+                        function buildNodes() {
+                            for (let y = 0; y < gameHeight; y++) {
+                                const tr = document.createElement('tr');
+                                table.appendChild(tr);
+
+                                for (let x = 0; x < gameWidth; x++) {
+                                    const td = document.createElement('td');
+                                    td.classList.add('dengjie-game');
+                                    td.id = `dengjie-cell-${x}-${y}`;
+                                    tr.appendChild(td);
+
+                                    const slot = remoteGetSlotFromPos(x, y, gameWidth);
+                                    const data = gameMap[slot];
+
+                                    if (Array.isArray(data)) {
+                                        const button = createCharacter(NAMES[data[0]], data[1]);
+                                        td.appendChild(button);
+                                    }
+                                }
+                            }
+                        }
+
+                        buildNodes();
+                        dialog.open();
+
+                        const width = dialog.clientWidth + 1;
+                        const height = dialog.clientHeight + 1;
+                        dialog.style.width = width + 'px';
+                        dialog.style.height = height + 'px';
+                        dialog.style.left = `calc(50% - ${width / 2}px)`;
+                    }
+
+                    let isAI = false;
+
+                    if (player.isOnline()) {
+                        player.send(createUI, videoId, gameData.width, gameData.height, gameData.map, NAMES);
+                    } else if (player.isUnderControl(true)) {
+                        createUI(videoId, gameData.width, gameData.height, gameData.map, NAMES);
+                    } else {
+                        isAI = true;
+                    }
+
+                    const originalTimeout = lib.configOL.choose_timeout;
+
+                    game.broadcastAll(function (player, videoId) {
+                        if (_status.connectMode) {
+                            lib.configOL.choose_timeout = '30';
+                        }
+                        if (game.me !== player) {
+                            const dialog = ui.create.dialog(`${get.translation(player)}正在进行登阶...`);
+                            dialog.videoId = videoId;
+                            dialog.open();
+                        }
+                    }, player, videoId);
+
+                    // 游戏主逻辑
+                    const initialData = new GameData(gameData); // 备份当前的数据以便失败时回滚喵
+
+                    function checkPosition(x, y) {
+                        if (y < 0 || y >= gameData.height) {
+                            throw new Error('y out of range');
+                        }
+                        if (x < 0 || x >= gameData.width) {
+                            throw new Error('x out of range');
+                        }
+                    }
+
+                    function getTableCell(x, y) {
+                        return document.getElementById(`dengjie-cell-${x}-${y}`);
+                    }
+
+                    function* walkNearCells(x, y) {
+                        checkPosition(x, y);
+
+                        for (const [dir, ox, oy] of NEIGHBORS) {
+                            const nx = x + ox;
+                            const ny = y + oy;
+
+                            if (nx < 0 || nx >= gameData.width || ny < 0 || ny >= gameData.height) {
+                                continue;
+                            }
+
+                            yield [dir, x + ox, y + oy];
+                        }
+                    }
+
+                    function getCellScore(x, y) {
+                        checkPosition(x, y);
+
+                        const data = gameData.map[gameData.getSlotFromPos(x, y)];
+
+                        if (typeof data == 'number') {
+                            return data;
+                        } else if (Array.isArray(data)) {
+                            return data[1];
+                        } else {
+                            return 0;
+                        }
+                    }
+
+                    // 啊本来是准备做箭头的喵，但是后面感觉直接放收益更好哦喵
+                    function buildArrow(x, y, score) {
+                        const container = ui.create.div('.arrow-container');
+                        const arrow = ui.create.div('.arrow');
+                        const extraClass = score == 0 ? 'old' : (score > 0 ? 'new-gain' : 'new-lose');
+                        arrow.innerHTML = (score != 0 ? (score > 0 ? '+' : '-') : '') + Math.abs(score);
+                        container.appendChild(arrow);
+                        container.classList.add(extraClass);
+                        return container;
+                    }
+
+                    function buildArrowRemote(x, y) {
+                        const score = getCellScore(x, y);
+
+                        if (player.isUnderControl(true)) {
+                            const cell = getTableCell(x, y);
+                            const container = buildArrow(x, y, score);
+                            cell.appendChild(container);
+                            cell.classList.add('selectable');
+                        } else if (player.isOnline()) {
+                            player.send(function (x, y, score, buildArrow, getTableCell) {
+                                const container = buildArrow(x, y, score);
+                                const cell = getTableCell(x, y);
+                                cell.appendChild(container);
+                                cell.classList.add('selectable');
+                            }, x, y, score, buildArrow, getTableCell);
+                        }
+                    }
+
+                    function clearArrow(cell) {
+                        cell.querySelector('.arrow-container')?.remove();
+                    }
+
+                    function clearArrowRemote([x, y]) {
+                        if (player.isUnderControl(true)) {
+                            const cell = getTableCell(x, y);
+                            clearArrow(cell);
+                            cell.classList.remove('selectable');
+                        } else if (player.isOnline()) {
+                            player.send(function (x, y, clearArrow, getTableCell) {
+                                const cell = getTableCell(x, y);
+                                clearArrow(cell);
+                                cell.classList.remove('selectable');
+                            }, x, y, clearArrow, getTableCell);
+                        }
+                    }
+
+                    function markWalked(x, y) {
+                        checkPosition(x, y);
+
+                        const slot = gameData.getSlotFromPos(x, y);
+                        const data = gameData.map[slot];
+
+                        if (Array.isArray(data)) {
+                            const name = NAMES[data[0]];
+                            delete gameData.names[name];
+
+                            if (player.isUnderControl(true)) {
+                                const cell = getTableCell(x, y);
+                                cell.querySelector('.button')?.remove();
+                            } else if (player.isOnline()) {
+                                player.send(function (x, y, getTableCell) {
+                                    const cell = getTableCell(x, y);
+                                    cell.querySelector('.button')?.remove();
+                                }, x, y, getTableCell);
+                            }
+                        }
+
+                        gameData.map[slot] = 0;
+                    }
+
+                    function waitCellClick(locations) {
+                        function waitCellClickCore(cells) {
+                            const eventName = lib.config.touchscreen ? 'touchend' : 'click';
+                            const { promise, resolve } = Promise.withResolvers();
+
+                            function clearHandler() {
+                                cells.forEach(cell => cell.removeEventListener(eventName, clickHandler));
+                            }
+
+                            function clickHandler(event) {
+                                const cell = event.currentTarget;
+                                resolve(cells.indexOf(cell));
+                                clearHandler();
+                            }
+
+                            cells.forEach(cell => cell.addEventListener(eventName, clickHandler));
+
+                            game.countChoose();
+                            _status.noclearcountdown = 'direct';
+                            return promise;
+                        }
+
+                        function send(player, locations, id, waitCellClickCore, getTableCell) {
+                            const cells = [];
+
+                            for (const [x, y] of locations) {
+                                const cell = getTableCell(x, y);
+                                cells.push(cell);
+                            }
+
+                            const dialog = get.idDialog(id);
+
+                            game.me.chooseButton(dialog)
+                                .set('noconfirm', true)
+                                .setContent(async (event, trigger, player) => {
+                                    const promise = new Promise(resolve => {
+                                        event.switchToAuto = function () {
+                                            resolve('ai');
+                                        };
+                                    });
+
+                                    event.result = await Promise.race([promise, waitCellClickCore(cells)]);
+
+                                    if (event.result !== 'ai') {
+                                        event.result = { index: event.result, _noHidingTimer: true };
+                                    }
+                                });
+
+                            game.resume();
+                        }
+
+                        if (player.isOnline()) {
+                            player.send(send, player, locations, videoId, waitCellClickCore, getTableCell);
+
+                            const { promise, resolve, reject } = Promise.withResolvers();
+
+                            player.wait(result => {
+                                if (result === 'ai') {
+                                    reject('switchauto');
+                                    return;
+                                }
+
+                                resolve(result.index);
+                            });
+                            _status.noclearcountdown = 'direct';
+
+                            return promise;
+                        } else if (player.isUnderControl(true)) {
+                            return waitCellClickCore(locations.map(([x, y]) => getTableCell(x, y)));
+                        }
+                    }
+
+                    function setTips(text) {
+                        if (player.isOnline()) {
+                            player.send(text => {
+                                const tips = document.getElementById('dengjie-tips');
+
+                                if (tips) {
+                                    tips.innerHTML = text;
+                                }
+                            }, text);
+                        } else if (player.isUnderControl(true)) {
+                            const tips = document.getElementById('dengjie-tips');
+
+                            if (tips) {
+                                tips.innerHTML = text;
+                            }
+                        }
+                    }
+
+                    async function waitNextStep() {
+                        const px = gameData.x, py = gameData.y;
+                        const nextCells = [];
+
+                        for (const [_, x, y] of walkNearCells(px, py)) {
+                            buildArrowRemote(x, y);
+                            nextCells.push([x, y]);
+                        }
+
+                        setTips(`请选择下一步方向 (分数: ${gameData.score})`);
+
+                        const now = new Date();
+                        const index = await waitCellClick(nextCells);
+                        gameData.time += new Date() - now;
+                        gameData.steps++;
+                        nextCells.forEach(item => {
+                            clearArrowRemote(item);
+                        });
+                        return nextCells[index];
+                    }
+
+                    function finishStep(x, y) {
+                        checkPosition(x, y);
+
+                        const curScore = gameData.score;
+                        const slot = gameData.getSlotFromPos(x, y);
+                        const data = gameData.map[slot];
+                        const nextScore = getCellScore(x, y);
+                        let keepRed = false;
+                        let win = '';
+
+                        if (Array.isArray(data)) {
+                            if (curScore <= Math.abs(nextScore)) {
+                                return [false, 'character'];
+                            }
+
+                            win = NAMES[data[0]];
+                        } else if (curScore <= -nextScore) {
+                            return [false, 'zeroscore'];
+                        } else if (nextScore < 0) {
+                            keepRed = true;
+                        }
+
+                        gameData.score += +nextScore;
+
+                        if (!keepRed) {
+                            markWalked(x, y);
+                        } else {
+                            gameData.walkedReds.push(slot);
+                        }
+
+                        return [true, win];
+                    }
+
+                    async function movePlayer(x, y) {
+                        const px = gameData.x;
+                        const py = gameData.y;
+
+                        gameData.x = x;
+                        gameData.y = y;
+
+                        function movePlayerCore(x, y, px, py, getTableCell) {
+                            function asyncAnimate(element, keyframes, options) {
+                                return new Promise(function (resolve, reject) {
+                                    const animation = element.animate(keyframes, options);
+                                    animation.onfinish = resolve;
+                                });
+                            }
+
+                            const targetChess = getTableCell(px, py).querySelector(".button");
+                            const targetCell = getTableCell(x, y);
+
+                            (async () => {
+                                await asyncAnimate(targetChess, [
+                                    { transform: 'scale(1)' },
+                                    { transform: 'scale(1.25)' },
+                                ], {
+                                    duration: 100,
+                                    fill: 'forwards',
+                                });
+                                await game.$elementGoto(targetChess, targetCell, 'first', 300, 'ease-in-out');
+                                await asyncAnimate(targetChess, [
+                                    { transform: 'scale(1.25)' },
+                                    { transform: 'scale(1)' },
+                                ], {
+                                    duration: 100,
+                                    fill: 'forwards',
+                                });
+                            })();
+                        }
+
+                        if (player.isUnderControl(true)) {
+                            movePlayerCore(x, y, px, py, getTableCell);
+                        } else if (player.isOnline()) {
+                            player.send(movePlayerCore, x, y, px, py, getTableCell);
+                        }
+
+                        // 等待500ms后动画过去哦
+                        await new Promise(resolve => setTimeout(resolve, 500));
+                    }
+
+                    async function rollbackPlayer() {
+                        const px = gameData.x;
+                        const py = gameData.y;
+
+                        function rollbackPlayerCore(x, y, px, py, getTableCell) {
+                            function asyncAnimate(element, keyframes, options) {
+                                return new Promise(function (resolve, reject) {
+                                    const animation = element.animate(keyframes, options);
+                                    animation.onfinish = resolve;
+                                });
+                            }
+
+                            const targetChess = getTableCell(px, py).querySelector('.button');
+                            const targetCell = getTableCell(x, y);
+
+                            const promise = (async () => {
+                                await asyncAnimate(targetChess, [
+                                    { transform: 'scale(1)' },
+                                    { transform: 'scale(0)' },
+                                ], {
+                                    duration: 100,
+                                    fill: 'forwards',
+                                });
+                                await new Promise(resolve => setTimeout(resolve, 100));
+
+                                const first = targetCell.firstChild;
+                                if (first) {
+                                    targetCell.insertBefore(targetChess, targetCell.firstChild);
+                                } else {
+                                    targetCell.appendChild(targetChess);
+                                }
+
+                                await asyncAnimate(targetChess, [
+                                    { transform: 'scale(0)' },
+                                    { transform: 'scale(1)' },
+                                ], {
+                                    duration: 100,
+                                    fill: 'forwards',
+                                });
+                            })();
+                        }
+
+                        if (player.isUnderControl(true)) {
+                            rollbackPlayerCore(initialData.x, initialData.y, px, py, getTableCell);
+                        } else if (player.isOnline()) {
+                            player.send(rollbackPlayerCore, initialData.x, initialData.y, px, py, getTableCell);
+                        }
+
+                        // 等待300ms后动画过去哦
+                        await new Promise(resolve => setTimeout(resolve, 300));
+                    }
+
+                    const {
+                        promise: gamePromise,
+                        resolve: gameResolve,
+                    } = Promise.withResolvers();
+
+                    function onGameWin(name) {
+                        setTips('本次登阶成功!');
+
+                        // 清空走过的红色块
+                        for (const slot of gameData.walkedReds) {
+                            gameData.map[slot] = 0;
+                        }
+                        gameData.walkedReds.length = 0;
+
+                        // 重新放置曹丕
+                        const px = gameData.x;
+                        const py = gameData.y;
+                        const slot = gameData.getSlotFromPos(px, py);
+                        gameData.map[slot] = [0, 0];
+
+                        get.event().result = {
+                            bool: true,
+                            name: name,
+                            nextData: gameData,
+                            curData: gameData,
+                        }
+
+                        onGameOver();
+                    }
+
+                    function onGameFailed(reason) {
+                        setTips('本次登阶失败...');
+
+                        // 重新放置曹丕
+                        const px = initialData.x;
+                        const py = initialData.y;
+                        const slot = initialData.getSlotFromPos(px, py);
+                        initialData.map[slot] = [0, 0];
+
+                        get.event().result = {
+                            bool: false,
+                            reason: reason,
+                            nextData: initialData,
+                            curData: gameData,
+                        };
+
+                        onGameOver();
+                    }
+
+                    function onGameOver() {
+                        game.broadcastAll(function (id, timeout) {
+                            get.idDialog(id).close();
+                            if (_status.connectMode) {
+                                lib.configOL.choose_timeout = timeout;
+                            }
+                        }, videoId, originalTimeout);
+
+                        if (player.isUnderControl(true)) {
+                            game.stopCountChoose();
+                            delete _status.imchoosing;
+                            delete _status.noclearcountdown;
+                        } else if (player.isOnline()) {
+                            player.send(function () {
+                                game.stopCountChoose();
+                                delete _status.imchoosing;
+                                delete _status.noclearcountdown;
+                            });
+                        }
+
+                        player.hideTimer();
+                        delete _status.noclearcountdown;
+                        gameResolve();
+                    }
+
+                    const event = game.createEvent('dengjieGame', false);
+                    event.set('noconfirm', true);
+                    event.setContent(async function (event) {
+                        event.switchToAuto = function () {
+                            if (player.isUnderControl(true)) {
+                                // 喜欢偷懒让AI帮你玩是吧喵，看AI怎么摆烂制裁你哦喵
+                                onGameFailed('switchauto');
+                            }
+                        };
+
+                        // 游戏的主循环喵，主体逻辑都在这里喵
+                        async function gameLoop() {
+                            let win = '';
+                            let failedReason;
+
+                            gameData.initPlayer();
+                            initialData.initPlayer();
+
+                            try {
+                                while (true) {
+                                    const [x, y] = await waitNextStep();
+                                    const [ok, reason] = finishStep(x, y);
+
+                                    if (ok) {
+                                        await movePlayer(x, y);
+
+                                        if (reason) {
+                                            win = reason; // 这里其实是武将名称喵
+                                            break;
+                                        }
+                                    } else {
+                                        await rollbackPlayer();
+                                        failedReason = reason;
+                                        break;
+                                    }
+                                }
+                            } catch (e) {
+                                if (typeof e === 'string') {
+                                    failedReason = e;
+                                } else {
+                                    throw e;
+                                }
+                            }
+
+                            if (win) {
+                                onGameWin(win);
+                            } else {
+                                onGameFailed(failedReason);
+                            }
+                        }
+
+                        if (isAI) {
+                            onGameFailed('ai');
+                        } else {
+                            gameLoop();
+                        }
+
+                        await gamePromise;
+                    });
+
+                    // 创建事件并弹出对话框喵
+                    // 使用范例:
+                    // const { result } = await startDengjieGame(player); // 首次玩游戏不需要传游戏数据或传null
+                    // if (result.bool) { // 如果本次登阶成功
+                    //     if (result.name === "liuxie") { // 如果本次登阶的目标是刘协
+                    //         // ...
+                    //     } else {
+                    //         // ...
+                    //     }
+                    // } else { // 如果本次登阶失败
+                    //     // ...
+                    // }
+                    // const nextData = result.nextData; // 获取下一次登阶的游戏数据喵
+                    // // ...
+                    // const { result2 } = await startDengjieGame(player, nextData); // 第二次玩必须传数据哦，不然就变成首次了喵
+                    // // ...
+                    return event;
+                },
+                init(player, skill) {
+                    const effect = `${skill}_effect`;
+                    const storage = player.getStorage(effect);
+                    if (storage.length) {
+                        player.storage[effect].sort((a, b) => lib.suit.indexOf(b) - lib.suit.indexOf(a));
+                        player.addTip(effect, get.translation(effect) + player.getStorage(effect).reduce((str, suit) => str + get.translation(suit), ''));
+                    }
+                },
+                audio: 'ext:活动武将/audio/skill:2',
+                trigger: {
+                    global: 'phaseBefore',
+                    player: ['enterGame', 'damageEnd'],
+                },
+                filter(event, player) {
+                    if (Array.from(get.info('mininiandengji').namesMap.keys()).remove('caopi').every(name => player.hasAllHistory('custom', evt => evt[`mininiandengji_${name}`]))) return false;
+                    if (event.name == 'damage') return !player.hasMark('mininiandengji_used');
+                    return event.name != 'phase' || game.phaseNumber == 0;
+                },
+                async content(event, trigger, player) {
+                    if (trigger.name == 'damage') {
+                        player.addTempSkill(event.name + '_used');
+                        player.addMark(event.name + '_used', 1, false);
+                    }
+                    const { startDengjieGame } = get.info(event.name);
+                    let result;
+                    if (_status.startDengjieGame?.[player.playerid]) result = await startDengjieGame(player, _status.startDengjieGame[player.playerid]).forResult();
+                    else result = await startDengjieGame(player).forResult();
+                    _status.startDengjieGame ??= {};
+                    _status.startDengjieGame[player.playerid] = result?.nextData;
+                    if (result?.bool && result.name) {
+                        player.getHistory('custom').push({ [`${event.name}_${result.name}`]: true });
+                        player.markAuto(event.name, result.name);
+                        const { characterEffectMap } = get.info(event.name);
+                        if (characterEffectMap.has(result.name)) {
+                            const effect = `${event.name}_effect`;
+                            const suit = characterEffectMap.get(result.name)[1];
+                            player.addSkill(effect);
+                            player.markAuto(effect, suit);
+                            get.info(event.name).init(player, event.name);
+                            player.addAdditionalSkill(event.name, characterEffectMap.get(result.name)[0]);
+                        }
+                        else if (result.name == 'liuxie') {
+                            player.storage.mininianchengming = true;
+                            await player.gainMaxHp();
+                            await player.recover();
+                        }
+                    }
+                },
+                namesMap: new Map([
+                    ['caopi', 'Mnian_caopi'],
+                    ['liuxie', 'Mbaby_liuxie'],
+                    ['caoang', 'Mbaby_caoang'],
+                    ['caozhi', 'Mbaby_caozhi'],
+                    ['caozhang', 'Mbaby_caozhang'],
+                    ['caochong', 'caochong'],
+                ]),
+                characterEffectMap: new Map([
+                    ['caoang', ['minikangkai', 'spade']],
+                    ['caozhi', ['miniluoying', 'club']],
+                    ['caozhang', ['minijiangchi', 'diamond']],
+                    ['caochong', ['chengxiang', 'heart']],
+                ]),
+                derivation: ['mininiandengji_faq', 'minikangkai', 'miniluoying', 'minijiangchi', 'chengxiang'],
+                subSkill: {
+                    used: {
+                        charlotte: true,
+                        onremove: true,
+                    },
+                    effect: {
+                        charlotte: true,
+                        onremove(player, skill) {
+                            player.removeTip(skill);
+                        },
+                        intro: { content: '已解锁花色：$' },
+                    }
+                },
+                intro: {
+                    markcount: 'expansion',
+                    mark(dialog, storage = []) {
+                        if (!storage.length) return '未曾“登阶”成功';
+                        dialog.addText('已击败角色');
+                        dialog.addSmall([storage.map(i => get.info('mininiandengji').namesMap.get(i)), 'character']);
+                    },
+                },
+            },
+            mininiandengji_faq: { nopop: true },
+            mininianchengming: {
+                audio: 'ext:活动武将/audio/skill:2',
+                trigger: { target: 'useCardToTargeted' },
+                enable: 'phaseUse',
+                filter(event, player) {
+                    if (!player.hasCard(card => get.info('mininianchengming').filterCard(card, player), 'he')) return false;
+                    return event.name == 'chooseToUse' || (event.card?.name === 'sha' && player.storage.mininianchengming);
+                },
+                filterCard(card, player) {
+                    const suit = get.suit(card, player);
+                    if (!player.getStorage('mininiandengji_effect').includes(suit)) return false;
+                    if (ui.selected.cards.length && get.suit(ui.selected.cards[0], player) != suit) return false;
+                    const cards = player.getCards('he', cardx => player.canRecast(cardx));
+                    return cards.includes(card) && cards.filter(cardx => get.suit(cardx, player) == suit).length >= player.countMark('mininianchengming_used') + 1;
+                },
+                selectCard() {
+                    const player = get.player();
+                    return player.countMark('mininianchengming_used') + 1;
+                },
+                check(card) {
+                    const player = get.player();
+                    return 7 - get.value(card);
+                },
+                complexCard: true,
+                discard: false,
+                lose: false,
+                delay: false,
+                position: 'he',
+                async cost(event, trigger, player) {
+                    const info = get.info(event.skill);
+                    const next = player.chooseCard(get.prompt2(event.skill));
+                    for (const item of ['filterCard', 'selectCard', 'complexCard']) {
+                        next.set(item, info[item]);
+                    }
+                    next.set('ai', card => {
+                        const player = get.player();
+                        return 7 - get.value(card);
+                    });
+                    event.result = await next.forResult();
+                },
+                async content(event, trigger, player) {
+                    const { cards } = event;
+                    player.addTempSkill(event.name + '_used');
+                    player.addMark(event.name + '_used', 1, false);
+                    await player.recast(cards);
+                    const list = player.getStorage('mininiandengji_effect');
+                    if (!list.length) return;
+                    const result = list.length == 1 ? { bool: true, links: ['', '', `lukai_${list[0]}`] } : await player.chooseButton(['选择一种花色，从牌堆或弃牌堆中获得一张此花色的牌', [list.map(i => ['', '', `lukai_${i}`]), 'vcard']], true).forResult();
+                    if (result?.bool && result.links?.length) {
+                        const suit = result.links[0][2].slice(6);
+                        player.popup(suit);
+                        game.log(player, '声明了', '#g' + get.translation(suit));
+                        const card = get.cardPile(cardx => get.suit(cardx) == suit);
+                        if (card) await player.gain(card, 'gain2');
+                    }
+                },
+                ai: {
+                    combo: 'mininiandengji',
+                    order(item, player) {
+                        const num = player.countMark('mininianchengming_used') + 1;
+                        let cards = player.getCards('he', card => get.info('mininianchengming').filterCard(card, player));
+                        cards = cards.filter(card => cards.filter(i => get.suit(card, player) == get.suit(i, player)).length >= num);
+                        if (!cards.length) return 1;
+                        return num < 4 ? 10 : 3;
+                    },
+                    result: { player: 1 },
+                },
+                subSkill: {
+                    used: {
+                        charlotte: true,
+                        onremove: true,
+                        intro: { content: '本回合已发动过#次〖承命〗' },
+                    },
+                },
+            },
+            mininianying_cp: {
+                audio: 'mininianying_Mnian_caopi',
+                trigger: {
+                    player: 'gainAfter',
+                    global: 'loseAsyncAfter',
+                },
+                filter(event, player, name, indexedData) {
+                    if (!Object.keys(lib.skill).some(i => get.info(i)?.nianyingSkill && get.info(i).nianyingFilter(event, player, name, indexedData))) return false;
+                    const evt = event.getParent('phaseDraw');
+                    if (evt?.name == 'phaseDraw') return false;
+                    return event.getg?.(player)?.length;
+                },
+                usable: 1,
+                nianyingSkill: ['恣意而为', '选择一名其他角色和一种花色，随机获得其一张此花色的手牌'],
+                nianyingFilter(event, player, name, indexedData) {
+                    return game.hasPlayer(current => current != player && current.countCards('h'));
+                },
+                async cost(event, trigger, player) {
+                    const skills = Object.keys(lib.skill).filter(i => get.info(i)?.nianyingSkill && get.info(i).nianyingFilter(trigger, player, event.triggername, event.indexedData)).map(i => [i, get.info(i).nianyingSkill[0], get.info(i).nianyingSkill[1]]);
+                    const result = await player.chooseControl(skills.map(i => i[1]), 'cancel2')
+                        .set('prompt', get.prompt('mininianying_zy')).set('prompt2', '选择一项念影效果执行')
+                        .set('displayIndex', false)
+                        .set('choiceList', skills.map(i => {
+                            return '<div class="skill">' + i[1] + '</div><div>' + i[2] + '</div>';
+                        })).set('ai', () => get.event('controls').randomGet()).forResult();
+                    event.result = { bool: (result.control != 'cancel2'), cost_data: skills.find(i => i[1] == result.control) };
+                },
+                async content(event, trigger, player) {
+                    const choice = event.cost_data;
+                    player.popup(choice[1]);
+                    game.log(player, '选择了', '#g' + choice[1]);
+                    await lib.skill[choice[0]].nianyingContent(player);
+                },
+                async nianyingContent(player) {
+                    if (!game.hasPlayer(current => current != player && current.countCards('h'))) return;
+                    const { result } = await player.chooseButtonTarget({
+                        createDialog: ['###恣意而为###选择一名其他角色和一种花色，随机获得其一张此花色的手牌', [lib.suit.slice().map(i => ['', '', `lukai_${i}`]), 'vcard']],
+                        forced: true,
+                        complexSelect: true,
+                        filterTarget(card, player, target) {
+                            return target != player && target.countCards('h');
+                        },
+                        ai1(button) {
+                            const player = get.player();
+                            const link = button.link[2].slice(6);
+                            if (player.getStorage('mininiandengji_effect').includes(link)) return 10;
+                            if (link == 'diamond') return 0.9;
+                            return Math.random();
+                        },
+                        ai2(target) {
+                            const player = get.player(), att = get.attitude(player, target);
+                            if (att > 0) return 0;
+                            return -att * target.countCards('h');
+                        },
+                    })
+                    if (result?.bool && result.links?.length && result.targets?.length) {
+                        const [target] = result.targets;
+                        const suit = result.links[0][2].slice(6);
+                        player.popup(suit);
+                        game.log(player, '声明了', '#g' + get.translation(suit));
+                        player.line(target);
+                        const cards = target.getCards('h', card => {
+                            return lib.filter.canBeGained(card, target, player) && get.suit(card, target) == suit;
+                        });
+                        if (cards.length) await player.gain(cards.randomGet(), target, 'giveAuto');
+                    }
+                },
+            },
+            mininiansongwei: {
+                audio: 'ext:活动武将/audio/skill:2',
+                trigger: { global: 'judgeEnd' },
+                filter(event, player) {
+                    if (event.player == player || event.player.group != 'wei') return false;
+                    return player.hasZhuSkill('mininiansongwei', event.player);
+                },
+                async cost(event, trigger, player) {
+                    event.result = await trigger.player.chooseBool(`是否发动【颂威】，令${get.translation(player)}摸一张牌？`).set('choice', get.attitude(trigger.player, player) > 0).forResult();
+                },
+                zhuSkill: true,
+                async content(event, trigger, player) {
+                    trigger.player.line(player, 'green');
+                    await player.draw();
+                },
+            },
+            chengxiang_Mnian_caopi: { audio: 'ext:活动武将/audio/skill:true' },
             //战
             //黄忠
             minifightdingjun: {
@@ -34925,10 +35889,15 @@ const packs = function () {
                 if (storage) str += '</span>';
                 return str + '（X为你本回合不因使用装备牌而失去的牌数）';
             },
-            minixiafeng(player, skill) {
+            minixiafeng(player) {
                 let str = '每回合限一次。当你使用【杀】后，你可以对场上体力值最大的角色造成1点伤害或令场上体力值最小的角色回复1点体力。';
                 const storage = player.getStorage(skill);
                 if (storage.length) str = str.replace(/【杀】/, `【杀】/${storage.map(str => `【${get.translation(str)}】`).join('/')}`);
+                return str;
+            },
+            mininianchengming(player) {
+                let str = lib.translate[`mininianchengming_info`];
+                if (player.storage.mininianchengming) str = str.replace(/出牌阶段/, '出牌阶段或当你成为【杀】的目标时');
                 return str;
             },
         },
@@ -36742,6 +37711,7 @@ const packs = function () {
             Mnian_zhugeliang: '念诸葛亮',
             Mnian_lvbu: '念吕布',
             Mnian_zhouyu: '念周瑜',
+            Mnian_caopi: '念曹丕',
             mininianxinghan: '兴汉',
             mininianxinghan_info: '每回合限一次，回合开始时或当你受到伤害时，若默认势力和场上的势力的并集存在非蜀势力和你此前未因“定乱”成功的势力，则你可以进行一次“定乱”。若“定乱”成功，则你增加1点体力上限并回复1点体力，然后将场上的“定乱”势力角色均改为蜀势力。',
             mininianxinghan_faq: '关于“定乱”',
@@ -36777,6 +37747,16 @@ const packs = function () {
             zhouyu_角: '角',
             zhouyu_徵: '徵',
             zhouyu_羽: '羽',
+            mininiandengji: '登极',
+            mininiandengji_info: '游戏开始时，或每回合限一次，当你受到伤害后，若你未击败所有“登阶”目标，你可以进行一次“登阶”。',
+            mininiandengji_faq: '关于“登阶”',
+            mininiandengji_faq_info: '<br>系统随机分配四个11*5的地图中的一个，玩家需在地图中击败曹昂、曹植、曹冲、曹彰和刘协。击败前四名角色会失去此前因此获得的技能，然后获得对应技能并解锁〖承命〗对应的花色：曹昂：〖慷忾〗和♠；曹植：〖落英〗和♣；曹冲：〖称象〗和♥；曹彰：〖将驰〗和♦。击败刘协可增加1点体力上限并回复1点体力，并修改〖承命〗为“当你成为【杀】的目标时”也可发动。地图中有四种颜色的格子，其中黑色格子为未知格子，蓝色格子+1分，走过后变为灰色格子，红色格子-1分，本次“登阶”成功后所有走过的红色格子变为灰色格子，灰色格子不加不减。相邻格子颜色对你可见。在30秒内，你的分数大于需击败的角色分数为“登阶”成功。非首次进行“登阶”时，若你上次“登阶”成功，本次“登阶”从上次“登阶”的终点开始，否则从上次失败的起始点开始。',
+            mininianchengming: '承命',
+            mininianchengming_info: '出牌阶段，你可以重铸X张相同花色A的牌（X为本回合你发动过此技能的次数+1），然后你从牌堆或弃牌堆中获得一张指定花色B的牌（A、B均为〖登极〗已解锁的花色）。',
+            mininianying_cp: '念影',
+            mininianying_cp_info: '每回合限一次，当你于摸牌阶段外获得牌后，你可以选择一个存在“念影”效果的技能的“念影”效果执行。',
+            mininiansongwei: '颂威',
+            mininiansongwei_info: '主公技，其他魏势力的角色的判定生效后，其可以令你摸一张牌。',
             //战
             Mfight_huangzhong: '战黄忠',
             Mfight_zhangliao: '战张辽',
