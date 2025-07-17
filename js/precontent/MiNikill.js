@@ -33454,7 +33454,6 @@ const packs = function () {
                 usable: 1,
                 async content(event, trigger, player) {
                     const groups = lib.skill.mininianxinghan.filterGroup(player);
-                    console.log(groups);
                     if (!groups.length) {
                         player.popup('杯具');
                         game.log('没有势力可进行', '#g定乱', '操作');
@@ -33464,13 +33463,28 @@ const packs = function () {
                     event.videoId = lib.status.videoId++;
                     //AI直接走结果
                     const switchToAuto = function () {
-                        _status.imchoosing = false;
-                        if (event.dialog) event.dialog.close();
-                        if (event.control) event.control.close();
-                        game.resume();
-                        event._result = { successGroup: groups.randomGet() };
-                        return Promise.resolve(event._result);
+                        return new Promise((resolve) => {
+                            game.pause();
+                            game.countChoose();
+                            setTimeout(() => {
+                                _status.imchoosing = false;
+                                if (event.dialog) event.dialog.close();
+                                game.resume();
+                                event._result = { successGroup: groups.randomGet() };
+                                resolve(event._result);
+                            }, 5000);
+                        });
                     };
+                    //联机时间限制修改
+                    const originalTimeout = lib.configOL.choose_timeout;
+                    game.broadcastAll((player, videoId) => {
+                        if (_status.connectMode) lib.configOL.choose_timeout = '30';
+                        if (game.me !== player) {
+                            const dialog = ui.create.dialog(`${get.translation(player)}正在进行“定乱”...`);
+                            dialog.videoId = videoId;
+                            dialog.open();
+                        }
+                    }, player, event.videoId);
                     const zhugeliang_PlayChess = function (player, groups) {
                         const event = _status.event, { promise, resolve } = Promise.withResolvers();
                         //如果以自己视角进入流程后AI直接走结果
@@ -33481,7 +33495,8 @@ const packs = function () {
                             if (event.dialog) event.dialog.close();
                         };
                         //创建dialog
-                        const dialog = event.dialog = ui.create.dialog('定乱', 'hidden');
+                        const dialog = event.dialog = ui.create.dialog('定乱：请将一个容器的棋子全部操作为同一势力', 'hidden');
+                        dialog.add('<div class="text center">赤字青荒，唯记......</div>');
                         dialog.classList.add('fullheight');
                         dialog.style.backgroundImage = `url(${lib.assetURL}/extension/活动武将/image/default/background.png)`;
                         dialog.style.backgroundPosition = 'center';
@@ -33518,6 +33533,11 @@ const packs = function () {
                             piece.dataset.group = group;
                             return piece;
                         }
+                        //更新棋子位置
+                        function updatePiecePositions(tube) {
+                            const pieces = tube.querySelectorAll('.dingluan-piece');
+                            pieces.forEach((piece, index) => piece.style.bottom = `${index * 26}px`);
+                        }
                         let selectedTube = null, dingluanSuccess = null, tubes = [];
                         let allPieces = groups.map(group => Array.from({ length: 4 }).map(() => { return { group, text: get.translation(group) } }));
                         allPieces = allPieces.flat().randomSort();
@@ -33540,6 +33560,9 @@ const packs = function () {
                                     if (tube.childElementCount < 4 && selectedTube.childElementCount > 0) {
                                         const piece = selectedTube.lastChild;
                                         tube.appendChild(piece);
+                                        //更新两个试管的棋子位置
+                                        updatePiecePositions(selectedTube);
+                                        updatePiecePositions(tube);
                                         selectedTube.classList.remove('selected');
                                         selectedTube = null;
                                         if (checkWin(tube)) {
@@ -33560,7 +33583,10 @@ const packs = function () {
                         }
                         allPieces.forEach(piece => {
                             let eligible = tubes.filter(t => t.childElementCount < 4);
-                            eligible.randomGet().appendChild(createPiece(piece.group, piece.text));
+                            const targetTube = eligible.randomGet();
+                            const newPiece = createPiece(piece.group, piece.text);
+                            targetTube.appendChild(newPiece);
+                            updatePiecePositions(targetTube);
                         });
                         //打开dialog
                         dialog.open();
@@ -33583,6 +33609,11 @@ const packs = function () {
                     else next = switchToAuto();
                     const result = await next;
                     game.resume();
+                    game.broadcastAll((originalTimeout, videoId) => {
+                        const dialog = get.idDialog(videoId);
+                        if (dialog) dialog.close();
+                        if (_status.connectMode) lib.configOL.choose_timeout = originalTimeout;
+                    }, originalTimeout, event.videoId);
                     const { successGroup } = result;
                     if (successGroup) {
                         player.markAuto('mininianxinghan', [successGroup]);
@@ -33659,7 +33690,7 @@ const packs = function () {
                     return game.hasPlayer(target => target != player && target.group == player.group);
                 },
                 async nianyingContent(player) {
-                    const targets = game.filterPlayer(target => target != player && target.group == player.group);
+                    const targets = game.filterPlayer(target => target != player && target.group == player.group).sortBySeat();
                     player.line(targets);
                     let map = {};
                     for (let i = 0; i < targets.length; i++) {
