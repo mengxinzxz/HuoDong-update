@@ -33582,10 +33582,14 @@ const packs = function () {
                             tubes.push(tube);
                         }
                         allPieces.forEach(piece => {
-                            let eligible = tubes.filter(t => t.childElementCount < 4);
+                            let eligible = tubes.filter(tube => {
+                                const num = tube.childElementCount;
+                                if (num >= 4) return false;
+                                if (num < 3) return true;
+                                return [...Array.from(tube.children).map(p => p.dataset.group), piece.group].unique().length > 1;
+                            });
                             const targetTube = eligible.randomGet();
-                            const newPiece = createPiece(piece.group, piece.text);
-                            targetTube.appendChild(newPiece);
+                            targetTube.appendChild(createPiece(piece.group, piece.text));
                             updatePiecePositions(targetTube);
                         });
                         //打开dialog
@@ -33617,7 +33621,7 @@ const packs = function () {
                     const { successGroup } = result;
                     if (successGroup) {
                         player.markAuto('mininianxinghan', [successGroup]);
-                        player.popup(successGroup);
+                        player.popup(lib.translate[`${successGroup}2`] || successGroup);
                         game.log(player, '#g定乱', '#y成功', `#g（${get.translation(successGroup)}势力）`);
                         await player.gainMaxHp();
                         await player.recover();
