@@ -3216,6 +3216,7 @@ const packs = function () {
                     draw: {
                         charlotte: true,
                         audio: 'jiangchi',
+                        audioname2: { Mnian_caopi: 'minijiangchi_Mnian_caopi' },
                         trigger: { player: 'damageEnd' },
                         forced: true,
                         content() {
