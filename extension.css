@@ -14,7 +14,7 @@
 	text-align: center;
 	color: #ac9a82;
 	text-shadow: -1.3px 0px 2.2px #000, 0px -1.3px 2.2px #000, 1.3px 0px 2.2px #000, 0px 1.3px 2.2px #000;
-	font-family: shousha;
+	font-family: "shousha";
 	font-size: 18px;
 	font-weight: 700;
 	z-index: 8 !important;
@@ -36,7 +36,7 @@
 	text-align: center;
 	color: #ac9a82;
 	text-shadow: -1.3px 0px 2.2px #000, 0px -1.3px 2.2px #000, 1.3px 0px 2.2px #000, 0px 1.3px 2.2px #000;
-	font-family: shousha;
+	font-family: "shousha";
 	font-size: 17px;
 	font-weight: 500;
 	z-index: 8 !important;
@@ -58,7 +58,7 @@
 	text-align: center;
 	color: #ac9a82;
 	text-shadow: -1.3px 0px 2.2px #000, 0px -1.3px 2.2px #000, 1.3px 0px 2.2px #000, 0px 1.3px 2.2px #000;
-	font-family: shousha;
+	font-family: "shousha";
 	font-size: 17px;
 	font-weight: 500;
 	z-index: 8 !important;
@@ -85,7 +85,7 @@
 	text-align: center;
 	color: #e2e0dc;
 	text-shadow: -1.3px 0px 2.2px #000, 0px -1.3px 2.2px #000, 1.3px 0px 2.2px #000, 0px 1.3px 2.2px #000;
-	font-family: shousha;
+	font-family: "shousha";
 	font-size: 17px;
 	font-weight: 900;
 	z-index: 8 !important;
@@ -302,7 +302,7 @@ td.dengjie-game > .button.character > .score.lose {
 	text-align: center;
 	line-height: 24px;
 	font-size: 14px;
-	font-family: shousha;
+	font-family: "shousha";
 	color: #000;
 	border-radius: 6px;
 	box-shadow: inset 0 0 3px #000;
