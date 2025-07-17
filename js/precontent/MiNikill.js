@@ -35423,7 +35423,7 @@ const packs = function () {
                 async nianyingContent(player) {
                     if (!game.hasPlayer(current => current != player && current.countCards('h'))) return;
                     const { result } = await player.chooseButtonTarget({
-                        createDialog: ['###恣意而为###选择一名其他角色和一种花色，随机获得其一张此花色的手牌', [lib.suit.slice().map(i => ['', '', `lukai_${i}`]), 'vcard']],
+                        createDialog: ['###恣意而为###<div class="text center">选择一名其他角色和一种花色，随机获得其一张此花色的手牌</div>', [lib.suit.slice().map(i => ['', '', `lukai_${i}`]), 'vcard']],
                         forced: true,
                         complexSelect: true,
                         filterTarget(card, player, target) {
