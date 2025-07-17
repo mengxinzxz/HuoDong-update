@@ -33776,10 +33776,11 @@ const packs = function () {
                             dialog.videoId = videoId;
                             dialog.classList.add('fullheight');
                         }
-                        else dialog = ui.create.dialog(`${get.translation(player)}正在进行“定乱”...`);
+                        else dialog = ui.create.dialog(`${get.translation(player)}正在进行“踏阵”...`);
                         dialog.videoId = videoId;
+                        dialog.open();
                     }, player, videoId);
-                    const result = await player.chooseButton().set('dialog', get.idDialog(videoId)).set('selectButton', () => {
+                    const result = player === game.me ? await player.chooseButton().set('dialog', get.idDialog(videoId)).set('selectButton', () => {
                         const { player, dialog } = get.event(), kill = get.info('mininiantazhen').kill(ui.selected.buttons.map(i => i.link), player);
                         if (dialog && player === game.me) {
                             const nums = Array.from({ length: 3 }).map((_, i) => i);
@@ -33861,7 +33862,11 @@ const packs = function () {
                         },
                     }).set('filterOk', () => {
                         return ui.selected.buttons.some(i => i.link.split('|').length > 2)
-                    }).forResult();
+                    }).forResult() : await new Promise((resolve) => {
+                        setTimeout(() => {
+                            resolve({ bool: false });
+                        }, 5000);
+                    });
                     game.broadcastAll((originalTimeout, videoId) => {
                         const dialog = get.idDialog(videoId);
                         if (dialog) dialog.close();
