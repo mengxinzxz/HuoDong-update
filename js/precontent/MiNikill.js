@@ -33717,7 +33717,6 @@ const packs = function () {
                 trigger: { player: 'phaseBegin' },
                 forced: true,
                 async content(event, trigger, player) {
-                    game.addVideo("skill", player, ['mininiantazhen', []]);
                     let list = [[], [], []], items = game.filterPlayer(i => i != player).randomGets(3);
                     let jiu = 2, horse = 1;
                     while (jiu > 0 && items.length < 9) {
@@ -33762,26 +33761,38 @@ const packs = function () {
                     if (event.isMine()) func();
                     else if (event.isOnline()) event.player.send(func);
                     const videoId = lib.status.videoId++;
-                    const dialog = ui.create.dialog(
-                        '踏阵',
-                        '<div class="text center">剩余' + parseFloat(player.getHp() + 1) + '步；攻击力：0；酒：0；当前击败：无</div>',
-                        [list[0], lib.skill.mininiantazhen.tazhen],
-                        [list[1], lib.skill.mininiantazhen.tazhen],
-                        [list[2], lib.skill.mininiantazhen.tazhen],
-                    );
-                    dialog.videoId = videoId;
-                    dialog.classList.add('fullheight');
-                    const result = await player.chooseButton().set('dialog', dialog).set('selectButton', () => {
-                        const kill = get.info('mininiantazhen').kill(ui.selected.buttons.map(i => i.link), get.event().player);
-                        const dialog = get.event().dialog;
-                        if (dialog) {
+                    const originalTimeout = lib.configOL.choose_timeout;
+                    game.broadcastAll((player, videoId) => {
+                        if (_status.connectMode) lib.configOL.choose_timeout = '30';
+                        let dialog;
+                        if (game.me === player) {
+                            dialog = ui.create.dialog(
+                                '踏阵',
+                                '<div class="text center">剩余' + parseFloat(player.getHp() + 1) + '步；攻击力：0；酒：0；当前击败：无</div>',
+                                [list[0], lib.skill.mininiantazhen.tazhen],
+                                [list[1], lib.skill.mininiantazhen.tazhen],
+                                [list[2], lib.skill.mininiantazhen.tazhen],
+                            );
+                            dialog.videoId = videoId;
+                            dialog.classList.add('fullheight');
+                        }
+                        else dialog = ui.create.dialog(`${get.translation(player)}正在进行“定乱”...`);
+                        dialog.videoId = videoId;
+                    }, player, videoId);
+                    const result = await player.chooseButton().set('dialog', get.idDialog(videoId)).set('selectButton', () => {
+                        const { player, dialog } = get.event(), kill = get.info('mininiantazhen').kill(ui.selected.buttons.map(i => i.link), player);
+                        if (dialog && player === game.me) {
                             const nums = Array.from({ length: 3 }).map((_, i) => i);
                             const findXY = function (item) {
                                 const nums = item.split('|').reverse()[0].split('+');
                                 return [parseInt(nums[0]), parseInt(nums[1])];
                             };
-                            const allPosition = ui.selected.buttons.map(but => findXY(but.link));
+                            const allPosition = ui.selected.buttons.map(but => findXY(but.link)), defeatedPlayers = kill[2].map(i => i[1]);
                             dialog.content.childNodes[1].innerHTML = '<div class="text center">剩余' + parseFloat(kill[3]) + '步；攻击力：' + parseFloat(kill[0]) + '；酒：' + parseFloat(kill[1]) + '；当前击败：' + (kill[2].length ? get.translation(kill[2].map(i => i[0])) : '无') + '</div>';
+                            dialog.buttons.forEach(button => {
+                                const linkParts = button.link.split('|');
+                                if (linkParts.length > 2) button.style.filter = defeatedPlayers.includes(linkParts[2]) ? 'grayscale(100%)' : '';
+                            });
                         }
                         return [1, 1 + get.event().player.getHp() + ui.selected.buttons.filter(i => i.link.split('|')[0] == 'horse').length * 2];
                     }).set('filterButton', button => {
@@ -33837,7 +33848,8 @@ const packs = function () {
                                 if (counterNode) {
                                     counterNode = counterNode.childNodes[0];
                                     counterNode.innerHTML = `第${count}步`;
-                                } else {
+                                }
+                                else {
                                     counterNode = ui.create.caption(`<span style="font-size:24px; font-family:xinwei; text-shadow:#FFF 0 0 4px, #FFF 0 0 4px, rgba(74,29,1,1) 0 0 3px;">第${count}步</span>`, button);
                                     counterNode.style.right = '5px';
                                     counterNode.style.bottom = '2px';
@@ -33850,7 +33862,11 @@ const packs = function () {
                     }).set('filterOk', () => {
                         return ui.selected.buttons.some(i => i.link.split('|').length > 2)
                     }).forResult();
-                    game.broadcastAll('closeDialog', videoId);
+                    game.broadcastAll((originalTimeout, videoId) => {
+                        const dialog = get.idDialog(videoId);
+                        if (dialog) dialog.close();
+                        if (_status.connectMode) lib.configOL.choose_timeout = originalTimeout;
+                    }, originalTimeout, videoId);
                     if (result.bool) {
                         const kill = get.info('mininiantazhen').kill(result.links.slice(), player);
                         if (kill[2].length > 0) {
@@ -33871,7 +33887,7 @@ const packs = function () {
                             if (nums.some(num => !allPosition.some(l => l[1] == num))) {
                                 player.popup('一整列', 'wood');
                                 for (const i of targets) {
-                                    if (i.countCards('h')) await i.chooseToGive(player, 'he', true);
+                                    if (i.countCards('he')) await i.chooseToGive(player, 'he', true);
                                 }
                             }
                             if (nums.some(num => !allPosition.some(l => l[0] == num))) {
