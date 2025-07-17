@@ -33773,7 +33773,6 @@ const packs = function () {
                     dialog.classList.add('fullheight');
                     const result = await player.chooseButton().set('dialog', dialog).set('selectButton', () => {
                         const kill = get.info('mininiantazhen').kill(ui.selected.buttons.map(i => i.link), get.event().player);
-                        //const dialog = get.idDialog(get.event().videoId);
                         const dialog = get.event().dialog;
                         if (dialog) {
                             const nums = Array.from({ length: 3 }).map((_, i) => i);
@@ -34225,18 +34224,32 @@ const packs = function () {
                     await Promise.all(event.next);
                     event.videoId = lib.status.videoId++;
                     const switchToAuto = function () {
-                        _status.imchoosing = false;
-                        if (event.dialog) event.dialog.close();
-                        if (event.control) event.control.close();
-                        game.resume();
-                        event._result = { musicList: [0, 0, 0].concat([get.rand(0, 1)].concat([get.rand(0, 1)])) };
-                        return Promise.resolve(event._result);
+                        return new Promise((resolve) => {
+                            game.pause();
+                            game.countChoose();
+                            setTimeout(() => {
+                                _status.imchoosing = false;
+                                if (event.dialog) event.dialog.close();
+                                if (event.control) event.control.close();
+                                game.resume();
+                                event._result = { musicList: [0, 0, 0].concat([get.rand(0, 1)].concat([get.rand(0, 1)])) };
+                                resolve(event._result);
+                            }, 5000);
+                        });
                     };
+                    const originalTimeout = lib.configOL.choose_timeout;
+                    game.broadcastAll((player, videoId) => {
+                        if (_status.connectMode) lib.configOL.choose_timeout = '30';
+                        if (game.me !== player) {
+                            const dialog = ui.create.dialog(`${get.translation(player)}正在进行“奏乐”...`);
+                            dialog.videoId = videoId;
+                            dialog.open();
+                        }
+                    }, player, event.videoId);
                     const zhouyu_MusicPlay = function (player) {
                         const event = _status.event, { promise, resolve } = Promise.withResolvers();
                         //可以即兴/更换音符的最大次数
                         event.restNum = 5 + player.countMark('mininianchongzou_effect');
-                        event.resetNum = 1;
                         //定义初始五音和是否上锁的列表
                         const musicList = ['宫', '商', '角', '徵', '羽'].map(i => 'zhouyu_' + i);
                         event.musicList = [];
@@ -34257,20 +34270,22 @@ const packs = function () {
                         event.control_replace = ui.create.control('即兴', link => {
                             if (!event.restNum || event.musicList_Locked.length >= 5) return;
                             event.restNum--;
+                            if (!event.restNum && event.control_replace) event.control_replace.close();
+                            // 更新剩余次数显示
                             event.dialog.content.childNodes[0].innerHTML = event.dialog.content.childNodes[0].innerHTML.replace(/还可即兴\d+次/g, '还可即兴' + event.restNum + '次');
+                            //更新未被锁定的音符
                             for (let i = 0; i < 5; i++) {
-                                const container = event.dialog.itemContainers[i + event.resetNum];
-                                container.classList.remove('selected');
-                                if (!event.musicList_Locked.includes(container)) event.musicList[i] = musicList.randomGet();
+                                const container = event.dialog.itemContainers[1 + i];
+                                if (!event.musicList_Locked.includes(container)) {
+                                    event.musicList[i] = musicList.randomGet();
+                                    //直接更新对应容器的内容
+                                    const card = game.createCard(event.musicList[i], ' ', ' ');
+                                    container.innerHTML = '';
+                                    ui.create.button(card, 'card', container, true);
+                                }
                             }
-                            event.resetNum += 5;
-                            event.musicList_Locked = [];
-                            event.dialog.content.childNodes[1].remove();
-                            event.dialog.addNewRow(...event.musicList.map(item => {
-                                return {
-                                    item: [game.createCard(item, ' ', ' ')], ItemNoclick: true, clickItemContainer
-                                };
-                            }));
+                            //刷新，但是现在用不上了
+                            //event.musicList_Locked = [];
                         });
                         //获取结果
                         event.control_ok = ui.create.control('演奏', link => {
@@ -34284,7 +34299,6 @@ const packs = function () {
                         });
                         //点击容器事件的反馈
                         const clickItemContainer = function (container) {
-                            if (!event.restNum) return;//无法即兴则点击无效
                             const goon = event.musicList_Locked.includes(container);
                             event.musicList_Locked[goon ? 'remove' : 'add'](container);
                             container.classList[goon ? 'remove' : 'add']('selected');
@@ -34294,7 +34308,9 @@ const packs = function () {
                         dialog.addNewRow('溯洄：请进行演奏，根据最多的同名音符数执行后续效果<br><div class="text center">还可即兴' + event.restNum + '次，点击音符即可锁定，避免被即兴替换</div>');
                         dialog.addNewRow(...event.musicList.map(item => {
                             return {
-                                item: [game.createCard(item, ' ', ' ')], ItemNoclick: true, clickItemContainer
+                                item: [game.createCard(item, ' ', ' ')],
+                                ItemNoclick: true,
+                                clickItemContainer,
                             };
                         }));
                         dialog.open();
@@ -34319,6 +34335,11 @@ const packs = function () {
                     }
                     const result = await next;
                     game.resume();
+                    game.broadcastAll((originalTimeout, videoId) => {
+                        const dialog = get.idDialog(videoId);
+                        if (dialog) dialog.close();
+                        if (_status.connectMode) lib.configOL.choose_timeout = originalTimeout;
+                    }, originalTimeout, event.videoId);
                     const target = trigger.player, musicList = result.musicList;
                     const num = Math.max(...Object.values(musicList.reduce((map, name) => {
                         if (!map[name]) map[name] = 0;
