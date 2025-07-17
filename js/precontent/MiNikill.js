@@ -33483,6 +33483,9 @@ const packs = function () {
                         //创建dialog
                         const dialog = event.dialog = ui.create.dialog('定乱', 'hidden');
                         dialog.classList.add('fullheight');
+                        dialog.style.backgroundImage = `url(${lib.assetURL}/extension/活动武将/image/default/background.png)`;
+                        dialog.style.backgroundPosition = 'center';
+                        dialog.style.backgroundSize = 'cover';
                         //设置dialog样式
                         dialog.style.width = '90%';
                         dialog.style.height = '85%';
@@ -33972,10 +33975,9 @@ const packs = function () {
                         return (evt.targets.slice().reverse()[0] !== event.target) === (name === 'juedouBefore');
                     }
                     if (event.card.name != 'juedou' || !(event.targets || []).length) return false;
-                    if (!game.getGlobalHistory('everything', evt => {
-                        return evt.name === 'juedou' && evt.getParent() == event && evt.turn !== player;
-                    }).length) return false;
-                    return event.targets.some(target => target.isIn() && target.countGainableCards(player, 'h') > 0);
+                    const juedouEvent = game.getGlobalHistory('everything', evt => evt.name === 'juedou' && evt.getParent() == event && evt.turn)[0];
+                    if (!juedouEvent || juedouEvent.turn === player) return false;
+                    return event.targets.some(target => target.isIn() && target.countCards('h') > 0);
                 },
                 direct: true,
                 locked: true,
@@ -33984,9 +33986,7 @@ const packs = function () {
                         trigger.cancel();
                         return;
                     }
-                    const targets = trigger.name == 'juedou' ? trigger.getParent().targets : trigger.targets.filter(target => {
-                        return target.isIn() && target.countGainableCards(player, 'h') > 0;
-                    });
+                    const targets = trigger.name == 'juedou' ? trigger.getParent().targets : trigger.targets.filter(target => target.isIn() && target.countCards('h') > 0);
                     await player.logSkill('mininiandoupo', targets);
                     if (trigger.name == 'useCard') {
                         for (const target of targets) {
@@ -34438,9 +34438,9 @@ const packs = function () {
                     // 游戏地图数据喵
                     const MAPS = [
                         'brrrbb(2,3)rrbb;brrbrrbrbr(3,4);(1,5)rb(0,3)brr(5,-12)rrr;brrbrrbrbrr;bbbrrbbrb(4,6)r',
-                        'rbbrb(0,2)bbrbr;rrbbrrrb(2,5)bb;bb(3,4)rbrbrrbr;bbrr(4,8)r(1,7)bbbr;rbbbr(5,-16)rbrbb',
-                        'brb(2,3)brrrbr(5,-10);rrrr(1,5)bbrrbr;brbbbrbb(3,4)bb;r(4,6)brrbbrrbr;rrrrbr(0,3)rrrb',
-                        'brbbrbbrbbb;(1,9)rbrbbbr(0,2)rb;rrbr(4,2)r(3,3)rbrr;br(5,-20)brbrbrr(2,4);rbbbbrbrbbr',
+                        'rbbrb(0,2)bbrbr;rrbbrrrb(2,5)bb;br(3,4)rbrbrrbr;bbrr(4,8)r(1,7)rbrr;rbbbr(5,-16)rbrbb',
+                        'brb(2,3)rrrrbr(5,-10);rrrr(1,5)bbrrbr;brbbbrbb(3,4)bb;r(4,6)brrbbrrbr;rrrrbr(0,3)rrrb',
+                        'brbbrbbrbbb;(1,9)rbrbbbr(0,2)rb;rrbr(4,2)r(3,3)rbrr;br(5,-20)brbrbrr(2,4);rbbrbrbrbbr',
                     ];
                     // 游戏相邻格
                     const NEIGHBORS = [
