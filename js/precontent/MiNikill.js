@@ -33593,10 +33593,7 @@ const packs = function () {
                         if (savedData) {
                             for (let i = 0; i < savedData.length; i++) {
                                 const tubeData = savedData[i];
-                                tubeData.forEach(data => {
-                                    const piece = createPiece(data.group, data.text);
-                                    tubes[i].appendChild(piece);
-                                });
+                                tubeData.forEach(data => tubes[i].appendChild(createPiece(data.group, data.text)));
                                 updatePiecePositions(tubes[i]);
                             }
                         }
