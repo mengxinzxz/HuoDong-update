@@ -33500,6 +33500,7 @@ const packs = function () {
                         const dialog = event.dialog = ui.create.dialog('定乱：请将一个容器的棋子全部操作为同一势力', 'hidden');
                         dialog.add('<div class="text center">赤字青荒，唯记......</div>');
                         dialog.classList.add('fullheight');
+                        dialog.style.borderRadius = '10px';
                         dialog.style.backgroundImage = `url(${lib.assetURL}/extension/活动武将/image/default/background.png)`;
                         dialog.style.backgroundPosition = 'center';
                         dialog.style.backgroundSize = 'cover';
