@@ -33462,6 +33462,7 @@ const packs = function () {
                     }
                     await Promise.all(event.next);
                     event.videoId = lib.status.videoId++;
+                    if (player.isUnderControl()) game.swapPlayerAuto(player);
                     //AI直接走结果
                     const switchToAuto = function () {
                         return new Promise((resolve) => {
@@ -33757,6 +33758,7 @@ const packs = function () {
                             list[i].push(get.itemtype(item) == 'player' ? `${item.getSeatNum()}|${item.name}|${item.playerid}|${item.getHp()}|${parseFloat(i)}+${parseFloat(j)}` : `${item}|${parseFloat(i)}+${parseFloat(j)}`);
                         }
                     }
+                    if (player.isUnderControl()) game.swapPlayerAuto(player);
                     const func = () => {
                         const event = get.event();
                         const controls = [
@@ -34264,6 +34266,7 @@ const packs = function () {
                 async content(event, trigger, player) {
                     await Promise.all(event.next);
                     event.videoId = lib.status.videoId++;
+                    if (player.isUnderControl()) game.swapPlayerAuto(player);
                     const switchToAuto = function () {
                         return new Promise((resolve) => {
                             game.pause();
@@ -35269,6 +35272,7 @@ const packs = function () {
                         player.addTempSkill(event.name + '_used');
                         player.addMark(event.name + '_used', 1, false);
                     }
+                    if (player.isUnderControl()) game.swapPlayerAuto(player);
                     const { startDengjieGame } = get.info(event.name);
                     let result;
                     if (_status.startDengjieGame?.[player.playerid]) result = await startDengjieGame(player, _status.startDengjieGame[player.playerid]).forResult();
