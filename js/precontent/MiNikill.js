@@ -33884,11 +33884,11 @@ const packs = function () {
                         },
                     }).set('filterOk', () => {
                         return ui.selected.buttons.some(i => i.link.split('|').length > 2)
-                    }).forResult() : await new Promise((resolve) => {
+                    }).forResult() : { bool: false }/*await new Promise((resolve) => {
                         setTimeout(() => {
                             resolve({ bool: false });
                         }, 5000);
-                    });
+                    })*/;
                     game.broadcastAll((originalTimeout, videoId) => {
                         const dialog = get.idDialog(videoId);
                         if (dialog) dialog.close();
@@ -34274,7 +34274,8 @@ const packs = function () {
                             setTimeout(() => {
                                 _status.imchoosing = false;
                                 if (event.dialog) event.dialog.close();
-                                if (event.control) event.control.close();
+                                if (event.control_replace) event.control_replace.close();
+                                if (event.control_ok) event.control_ok.close();
                                 game.resume();
                                 event._result = { musicList: [0, 0, 0].concat([get.rand(0, 1)].concat([get.rand(0, 1)])) };
                                 resolve(event._result);
@@ -34363,9 +34364,8 @@ const packs = function () {
                         return promise;
                     };
                     let next;
-                    if (event.isMine()) {
-                        next = zhouyu_MusicPlay(player);
-                    } else if (event.isOnline()) {
+                    if (event.isMine()) next = zhouyu_MusicPlay(player);
+                    else if (event.isOnline()) {
                         const { promise, resolve } = Promise.withResolvers();
                         event.player.send(zhouyu_MusicPlay, player);
                         event.player.wait(async result => {
@@ -34374,9 +34374,8 @@ const packs = function () {
                         });
                         game.pause();
                         next = promise;
-                    } else {
-                        next = switchToAuto();
                     }
+                    else next = switchToAuto();
                     const result = await next;
                     game.resume();
                     game.broadcastAll((originalTimeout, videoId) => {
