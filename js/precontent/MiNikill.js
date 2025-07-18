@@ -33540,8 +33540,6 @@ const packs = function () {
                             pieces.forEach((piece, index) => piece.style.bottom = `${index * 26}px`);
                         }
                         let selectedTube = null, dingluanSuccess = null, tubes = [];
-                        let allPieces = groups.map(group => Array.from({ length: 4 }).map(() => { return { group, text: get.translation(group) } }));
-                        allPieces = allPieces.flat().randomSort();
                         for (let i = 0; i < groups.length + 2; i++) {
                             const tube = ui.create.div('.dingluan-tube', container);
                             tube.dataset.index = i;
@@ -33567,6 +33565,14 @@ const packs = function () {
                                         selectedTube.classList.remove('selected');
                                         selectedTube = null;
                                         if (checkWin(tube)) {
+                                            _status.mininianxinghan[player.playerid] = (() => {
+                                                return tubes.filter(t => t !== tube).map(t => {
+                                                    return [...t.children].map(piece => ({
+                                                        group: piece.dataset.group,
+                                                        text: piece.innerHTML,
+                                                    }));
+                                                });
+                                            })();
                                             event.dialog.close();
                                             game.resume();
                                             _status.imchoosing = false;
@@ -33582,17 +33588,33 @@ const packs = function () {
                             });
                             tubes.push(tube);
                         }
-                        allPieces.forEach(piece => {
-                            let eligible = tubes.filter(tube => {
-                                const num = tube.childElementCount;
-                                if (num >= 4) return false;
-                                if (num < 3) return true;
-                                return [...Array.from(tube.children).map(p => p.dataset.group), piece.group].unique().length > 1;
+                        _status.mininianxinghan ??= {};
+                        const savedData = _status.mininianxinghan[player.playerid];
+                        if (savedData) {
+                            for (let i = 0; i < savedData.length; i++) {
+                                const tubeData = savedData[i];
+                                tubeData.forEach(data => {
+                                    const piece = createPiece(data.group, data.text);
+                                    tubes[i].appendChild(piece);
+                                });
+                                updatePiecePositions(tubes[i]);
+                            }
+                        }
+                        else {
+                            let allPieces = groups.map(group => Array.from({ length: 4 }).map(() => { return { group, text: get.translation(group) } }));
+                            allPieces = allPieces.flat().randomSort();
+                            allPieces.forEach(piece => {
+                                let eligible = tubes.filter(tube => {
+                                    const num = tube.childElementCount;
+                                    if (num >= 4) return false;
+                                    if (num < 3) return true;
+                                    return [...Array.from(tube.children).map(p => p.dataset.group), piece.group].unique().length > 1;
+                                });
+                                const targetTube = eligible.randomGet();
+                                targetTube.appendChild(createPiece(piece.group, piece.text));
+                                updatePiecePositions(targetTube);
                             });
-                            const targetTube = eligible.randomGet();
-                            targetTube.appendChild(createPiece(piece.group, piece.text));
-                            updatePiecePositions(targetTube);
-                        });
+                        }
                         //打开dialog
                         dialog.open();
                         game.pause();
