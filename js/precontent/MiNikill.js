@@ -33570,7 +33570,9 @@ const packs = function () {
                         if (savedData) {
                             for (let i = 0; i < savedData.length; i++) {
                                 const tubeData = savedData[i];
-                                tubeData.forEach(data => tubes[i].appendChild(createPiece(data.group, data.text)));
+                                tubeData.forEach(data => {
+                                    if (groups.includes(data.group)) tubes[i].appendChild(createPiece(data.group, data.text));
+                                });
                                 updatePiecePositions(tubes[i]);
                             }
                         }
