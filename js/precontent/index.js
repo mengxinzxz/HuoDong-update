@@ -233,12 +233,6 @@ export async function precontent(bilibilicharacter) {
         },
     };
     //点击显示
-    //低配+仅限电脑版
-    get.bolInform = function (str1, str2) {
-        return '<abbr title=\"' + str2 + '\"><ins>' + str1 + '</ins></abbr>';
-    };
-    //高配
-    //感谢 雷 的技术支持
     game.getBolPhone = function () {
         //获取浏览器navigator对象的userAgent属性（浏览器用于HTTP请求的用户代理头的值）
         var info = navigator.userAgent;
@@ -247,6 +241,19 @@ export async function precontent(bilibilicharacter) {
         //如果包含“Mobile”（是手机设备）则返回true
         return isPhone;
     };
+    //低配
+    get.bolInform = function (str1, str2) {
+        if ((() => {
+            return game.getBolPhone();
+            //const info = navigator.userAgent;
+            //return /mobile|Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|OperaMini/i.test(info);
+        })()) {
+            return `<span onclick="alert('${str2}')"style="text-decoration:underline; cursor:pointer;">${str1}</span>`;
+        }
+        return `<abbr title=\"${str2}\"><ins>${str1}</ins></abbr>`;
+    };
+    //高配
+    //感谢 雷 的技术支持
     get.bolskillTips = function (tipname, id) {
         var dibeijing = ui.create.div('.bol-dibeijing', document.body);
         dibeijing.style.zIndex = 16;
