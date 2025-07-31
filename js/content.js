@@ -34,29 +34,20 @@ export async function content(config, pack) {
 		var packs = Object.keys(lib.characterPack).filter(pack => lib.characterPack[pack][name]);
 		if (packs.length) packs.forEach(pack => delete lib.characterPack[pack][name]);
 	};
-	game.HDaddCharacter = function (name, character, packss = '') {
+	game.HDaddCharacter = function (name, character, packs = '') {
 		game.HDdeleteCharacter(name);
-		const packs = packss.split(':').filter(p => lib.config.all.characters.includes(p));
-		if (!packs.length) lib.character[name] = character;
-		else {
-			packs.forEach(pack => {
-				lib.characterPack[pack][name] = character;
-				if (_status['extension_活动武将_files']?.image.character.files.includes(`${name}.jpg`)) {
-					lib.characterPack[pack][name][4] ??= [];
-					lib.characterPack[pack][name][4].push(`ext:活动武将/image/character/${name}.jpg`);
-				}
-			});
-			if (packs.some(p => lib.config.characters.includes(p))) lib.character[name] = character;
-			const forbidai = packs.some(pack => {
-				//return lib.config[`forbidai_user_${pack}`];等星语的PR合并后再使用这个简便方法
-				return lib.config.forbidai_user.containsSome(...Object.keys(lib.characterPack[pack]));
-			});
+		if (_status['extension_活动武将_files']?.image.character.files.includes(`${name}.jpg`)) {
+			character[4] ??= [];
+			character[4].push(`ext:活动武将/image/character/${name}.jpg`);
+		}
+		const pack = packs.split(':').filter(p => lib.config.all.characters.includes(p))[0];
+		if (pack) {
+			lib.characterPack[pack][name] = character;
+			if (lib.config.characters.includes(pack)) lib.character[name] = character;
+			const forbidai = lib.config.forbidai_user.containsSome(...Object.keys(lib.characterPack[pack]));//lib.config[`forbidai_user_${pack}`];等星语的PR合并后再使用这个简便方法
 			lib.config.forbidai[forbidai ? 'add' : 'remove'](name);
 		}
-		if (lib.character[name] && _status['extension_活动武将_files']?.image.character.files.includes(`${name}.jpg`)) {
-			lib.character[name][4] ??= [];
-			lib.character[name][4].push(`ext:活动武将/image/character/${name}.jpg`);
-		}
+		else lib.character[name] = character;
 	};
 	//移动武将所在武将包
 	game.HDmoveCharacter = function (name, packss) {
