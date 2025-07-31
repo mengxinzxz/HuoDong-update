@@ -34,11 +34,11 @@ export async function content(config, pack) {
 		var packs = Object.keys(lib.characterPack).filter(pack => lib.characterPack[pack][name]);
 		if (packs.length) packs.forEach(pack => delete lib.characterPack[pack][name]);
 	};
-	game.HDaddCharacter = function (name, character, packss) {
+	game.HDaddCharacter = function (name, character, packss = '') {
 		game.HDdeleteCharacter(name);
-		if (!packss) lib.character[name] = character;
+		const packs = packss.split(':').filter(p => lib.config.all.characters.includes(p));
+		if (!packs.length) lib.character[name] = character;
 		else {
-			var packs = packss.split(':').filter(p => lib.config.all.characters.includes(p));
 			packs.forEach(pack => {
 				lib.characterPack[pack][name] = character;
 				if (_status['extension_活动武将_files']?.image.character.files.includes(`${name}.jpg`)) {
@@ -47,6 +47,11 @@ export async function content(config, pack) {
 				}
 			});
 			if (packs.some(p => lib.config.characters.includes(p))) lib.character[name] = character;
+			const forbidai = packs.some(pack => {
+				//return lib.config[`forbidai_user_${pack}`];等星语的PR合并后再使用这个简便方法
+				return lib.config.forbidai_user.containsSome(...Object.keys(lib.characterPack[pack]));
+			});
+			lib.config.forbidai[forbidai ? 'add' : 'remove'](name);
 		}
 		if (lib.character[name] && _status['extension_活动武将_files']?.image.character.files.includes(`${name}.jpg`)) {
 			lib.character[name][4] ??= [];
