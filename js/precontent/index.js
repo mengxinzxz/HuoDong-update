@@ -12,21 +12,18 @@ import MX_feihongyinxue from './MX_feihongyinxue.js';
 import huodongcharacter from './huodongcharacter.js';
 
 export async function precontent(bilibilicharacter) {
+    //存储活动武将扩展的文件和文件夹分布
     _status['extension_活动武将_files'] = await (async () => {
         const getFileList = async function (path = 'extension/活动武将') {
             const [folders, files] = await game.promises.getFileList(path);
             const map = { files };
             if (Array.isArray(folders) && folders.length > 0) {
-                for (const folder of folders) {
-                    const subPath = path + '/' + folder;
-                    map[folder] = await getFileList(subPath);
-                }
+                for (const folder of folders) map[folder] = await getFileList(`${path}/${folder}`);
             }
             return map;
         };
         return await getFileList();
     })();
-
     //判断是否有XX扩展
     game.TrueHasExtension = function (ext) {
         const extensionMenu = Object.keys(lib.extensionMenu);
