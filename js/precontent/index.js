@@ -28,10 +28,11 @@ export async function precontent(bilibilicharacter) {
     })();
 
     //判断是否有XX扩展
-    game.TrueHasExtension = game.TrueHasExtension || function (ext) {
-        return lib.config.extensions && lib.config.extensions.includes(ext);
+    game.TrueHasExtension = function (ext) {
+        const extensionMenu = Object.keys(lib.extensionMenu);
+        return extensionMenu.includes(ext) || extensionMenu.includes(`extension_${ext}`);
     };
-    game.HasExtension = game.HasExtension || function (ext) {
+    game.HasExtension = function (ext) {
         return game.TrueHasExtension(ext) && lib.config['extension_' + ext + '_enable'];
     };
     //闪闪节

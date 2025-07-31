@@ -13,13 +13,14 @@ game.bolShowNewPack = function () {
 	var HuoDong_update = [
 		'/setPlayer/',
 		'bugfix',
-		'新武将：玄蝶祢衡、喵曹婴、葛玄、界曹叡、旧董翓、念曹丕',
+		'新武将：玄蝶祢衡、喵曹婴、葛玄、界曹叡、旧董翓、念曹丕、蔡瑁张允',
 		'优化念诸葛“定乱”、念吕布“踏阵”、念周瑜“奏乐”游戏流程',
 		'To be continued...',
 	];
 	//更新武将
 	var HuoDong_players = [
-		'bfake_miheng', 'Mmiao_caoying', 'Mbaby_gexuan', 'Mbaby_caorui', 'old_dongxie', 'Mnian_caopi'
+		'bfake_miheng', 'Mmiao_caoying', 'Mbaby_gexuan', 'Mbaby_caorui', 'old_dongxie', 'Mnian_caopi',
+		'Mbaby_caimaozhangyun',
 	];
 	//加载
 	var dialog = ui.create.dialog(
