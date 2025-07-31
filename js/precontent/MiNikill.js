@@ -26369,31 +26369,14 @@ const packs = function () {
             minianshi: {
                 audio: 'ext:活动武将/audio/skill:2',
                 trigger: { global: 'roundStart' },
+                filter(event, player) {
+                    return Array.from({ length: 5 }).map((_, i) => i + 1).some(num => !player.getStorage('minianshi_effect').includes(num));
+                },
                 forced: true,
                 async content(event, trigger, player) {
                     const num = Array.from({ length: 5 }).map((_, i) => i + 1).filter(num => !player.getStorage('minianshi_effect').includes(num)).randomGet();
-                    if (!num) return;
                     player.addTempSkill('minianshi_effect', 'roundStart');
                     player.markAuto('minianshi_effect', [num]);
-                    if (num == 2) {
-                        player.when({ global: 'roundStart' })
-                            .filter(evt => evt != trigger)
-                            .assign({ firstDo: true, priority: 114514 })
-                            .then(() => {
-                                player.removeSkill('minianshi_effect');
-                                const targets = game.filterPlayer(target => {
-                                    return !target.getRoundHistory('useCard', null, 1).slice().concat(target.getRoundHistory('respond', null, 1)).some(evt => {
-                                        return evt.card.name == 'shan';
-                                    }) && !target.getRoundHistory('lose', evt => {
-                                        return evt.type == 'discard' && evt.cards2 && evt.cards2.some(card => get.name(card, target) == 'shan' || get.name(card, false) == 'shan');
-                                    }, 1).length;
-                                }).sortBySeat();
-                                if (targets.length) {
-                                    player.logSkill('minianshi_effect', targets);
-                                    for (const target of targets) target.damage(1, 'thunder');
-                                }
-                            });
-                    }
                 },
                 subSkill: {
                     effect: {
@@ -26402,7 +26385,7 @@ const packs = function () {
                             content(storage, player) {
                                 const list = [
                                     '一名角色使用或打出【杀】时，其弃置所有手牌',
-                                    '下一轮开始时，所有未于本轮使用、打出或弃置过【闪】的角色各受到你对其造成的1点雷属性伤害',
+                                    '本轮结束时，所有未于本轮使用、打出或弃置过【闪】的角色各受到你对其造成的1点雷属性伤害',
                                     '一名角色的装备区的牌数发生变化后，其弃置所有装备牌',
                                     '一名角色使用或打出【桃】或【酒】后，其本回合无法使用或打出手牌',
                                     '一名角色使用单目标锦囊牌指定目标时，你摸一张牌',
@@ -26422,9 +26405,18 @@ const packs = function () {
                         charlotte: true,
                         onremove: true,
                         audio: 'minianshi',
-                        trigger: { global: ['loseAfter', 'equipAfter', 'addJudgeAfter', 'gainAfter', 'loseAsyncAfter', 'addToExpansionAfter', 'useCardToPlayer', 'useCard', 'respond'] },
-                        filter(event, player) {
+                        trigger: { global: ['loseAfter', 'equipAfter', 'addJudgeAfter', 'gainAfter', 'loseAsyncAfter', 'addToExpansionAfter', 'useCardToPlayer', 'useCard', 'respond', 'roundEnd'] },
+                        filter(event, player, name) {
                             const storage = player.getStorage('minianshi_effect');
+                            if (name === 'roundEnd') {
+                                return storage.includes(2) && game.hasPlayer(target => {
+                                    return !target.getRoundHistory('useCard', null).slice().concat(target.getRoundHistory('respond', null)).some(evt => {
+                                        return evt.card.name == 'shan';
+                                    }) && !target.getRoundHistory('lose', evt => {
+                                        return evt.type == 'discard' && evt.cards2 && evt.cards2.some(card => get.name(card, target) == 'shan' || get.name(card, false) == 'shan');
+                                    }).length;
+                                });
+                            }
                             if (event.name == 'useCard' || event.name == 'respond') {
                                 if (storage.includes(1) && event.card.name == 'sha' && event.player.countCards('h')) return true;
                                 if (storage.includes(4) && (event.card.name == 'tao' || event.card.name == 'jiu')) return true;
@@ -26447,8 +26439,19 @@ const packs = function () {
                                 return evt?.es?.length;
                             });
                         },
-                        logTarget(event, player) {
-                            if (event.name == 'useCard' || event.name == 'respond' || event.name == 'useCardToPlayer' || event.name == 'equip') return event.player;
+                        logTarget(event, player, name) {
+                            if (name === 'roundEnd') {
+                                return game.filterPlayer(target => {
+                                    return !target.getRoundHistory('useCard', null).slice().concat(target.getRoundHistory('respond', null)).some(evt => {
+                                        return evt.card.name == 'shan';
+                                    }) && !target.getRoundHistory('lose', evt => {
+                                        return evt.type == 'discard' && evt.cards2 && evt.cards2.some(card => get.name(card, target) == 'shan' || get.name(card, false) == 'shan');
+                                    }).length;
+                                }).sortBySeat();
+                            }
+                            if (event.name == 'useCard' || event.name == 'respond' || event.name == 'useCardToPlayer' || event.name == 'equip') {
+                                return event.player;
+                            }
                             return game.filterPlayer(target => {
                                 if (!target.countCards('e')) return false;
                                 const evt = event.getl(target);
@@ -26457,26 +26460,29 @@ const packs = function () {
                         },
                         forced: true,
                         async content(event, trigger, player) {
-                            const storage = player.getStorage('minianshi_effect');
+                            const storage = player.getStorage('minianshi_effect'), targets = event.targets;
+                            if (event.triggername === 'roundEnd') {
+                                player.markAuto('minianshi_effect', ['showed_2']);
+                                for (const target of targets) await target.damage(1, 'thunder');
+                            }
                             if (trigger.name == 'useCard' || trigger.name == 'respond') {
-                                if (trigger.card.name == 'sha' && trigger.player.countCards('h')) {
+                                const target = targets[0];
+                                if (trigger.card.name == 'sha' && target.countDiscardableCards(target, 'h')) {
                                     player.markAuto('minianshi_effect', ['showed_1']);
-                                    trigger.player.discard(trigger.player.getCards('h'));
+                                    await target.discard(target.getDiscardableCards(target, 'h'));
                                 }
                                 if (trigger.card.name == 'tao' || trigger.card.name == 'jiu') {
                                     player.markAuto('minianshi_effect', ['showed_4']);
-                                    trigger.player.addTempSkill('minianshi_ban');
+                                    target.addTempSkill('minianshi_ban');
                                 }
                             }
                             else if (trigger.name == 'useCardToPlayer') {
                                 player.markAuto('minianshi_effect', ['showed_5']);
-                                player.draw();
+                                await player.draw();
                             }
                             else {
                                 player.markAuto('minianshi_effect', ['showed_3']);
-                                let targets = lib.skill.minianshi.subSkill.effect.logTarget(trigger, player);
-                                if (!Array.isArray(targets)) targets = [targets];
-                                for (const target of targets) target.discard(target.getCards('e'));
+                                for (const target of targets) await target.discard(target.getDiscardableCards(target, 'e'));
                             }
                         },
                     },
@@ -37504,7 +37510,7 @@ const packs = function () {
             minishanshan: '闪闪',
             minishanshan_info: '①当你成为其他角色使用【杀】或普通锦囊牌的目标后，你可以打出一张【闪】令此牌对你无效，然后你摸一张牌。②你可以将一张装备牌当作【闪】使用或打出。',
             minianshi: '暗示',
-            minianshi_info: '锁定技，每轮开始时，你随机获得以下一个效果（仅对你可见）：①一名角色于本轮使用或打出【杀】时，其弃置所有手牌；②下一轮开始时，所有未于本轮使用、打出或弃置过【闪】的角色各受到你对其造成的1点雷属性伤害；③一名角色的装备区的牌数于本轮发生变化后，其弃置所有装备牌；④一名角色于本轮使用或打出【桃】或【酒】后，其本回合无法使用或打出手牌；⑤一名角色于本轮使用单目标锦囊牌指定目标时，你摸一张牌。',
+            minianshi_info: '锁定技，每轮开始时，你随机获得以下一个效果（仅对你可见）：①一名角色于本轮使用或打出【杀】时，其弃置所有手牌；②本轮结束时，所有未于本轮使用、打出或弃置过【闪】的角色各受到你对其造成的1点雷属性伤害；③一名角色的装备区的牌数于本轮发生变化后，其弃置所有装备牌；④一名角色于本轮使用或打出【桃】或【酒】后，其本回合无法使用或打出手牌；⑤一名角色于本轮使用单目标锦囊牌指定目标时，你摸一张牌。',
             miniyishe: '义舍',
             miniyishe_info: '①结束阶段，你可以摸两张牌，然后将两张牌置于武将牌上，称为「米」。②当有「米」移至其他区域后，若你的武将牌上没有「米」，则你回复1点体力。',
             minibushi: '布施',
