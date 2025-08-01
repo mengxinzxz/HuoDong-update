@@ -650,7 +650,7 @@ const packs = function () {
                 filter(event, player) {
                     if (!player.countMark('fh_wuku') || !player.countCards('hes')) return false;
                     for (var name of lib.inpile) {
-                        if (player.getStorage('fh_miewu_used').includes(i)) continue;
+                        if (player.getStorage('fh_miewu_used').includes(name)) continue;
                         var type = get.type(name);
                         if (type == 'basic' || type == 'trick') {
                             if (event.filterCard(get.autoViewAs({ name: name }, 'unsure'), player, event)) return true;
