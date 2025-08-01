@@ -2792,9 +2792,9 @@ const packs = function () {
                     if (result.bool) {
                         var targets = result.targets.sortBySeat();
                         player.logSkill('fh_qinqing', targets);
-                        targets.forEach(target => {
+                        for (const target of targets) {
                             if (target.countCards('he')) yield player.discardPlayerCard(target, 'he', true);
-                        });
+                        }
                         var zhu = game.filterPlayer(current => current.getSeatNum() == 1)[0];
                         if (zhu?.isIn()) {
                             var num = targets.filter(target => target.countCards('h') > zhu.countCards('h')).length;
