@@ -302,10 +302,10 @@ export async function precontent(bilibilicharacter) {
     lib.skill._bilibili_miaoshou = {
         charlotte: true,
         ruleSkill: true,
-        trigger: { global: 'xmiaoshou' },
+        trigger: { player: 'xmiaoshou' },
         filter(event, player) {
             const config = lib.config.extension_活动武将_HDfightAudio;
-            return config && config !== 'off' && event.player == player;
+            return config && config !== 'off';
         },
         direct: true,
         firstDo: true,
@@ -321,10 +321,10 @@ export async function precontent(bilibilicharacter) {
     lib.skill._bilibili_yishu = {
         charlotte: true,
         ruleSkill: true,
-        trigger: { global: 'xyishu' },
+        trigger: { player: 'xyishu' },
         filter(event, player) {
             const config = lib.config.extension_活动武将_HDfightAudio;
-            return config && config !== 'off' && event.player == player;
+            return config && config !== 'off';
         },
         direct: true,
         firstDo: true,
@@ -368,16 +368,16 @@ export async function precontent(bilibilicharacter) {
     lib.skill._jishaAudio = {
         charlotte: true,
         ruleSkill: true,
-        trigger: { global: 'dieBegin' },
+        trigger: { source: 'dieBegin' },
         filter(event, player) {
             const config = lib.config.extension_活动武将_HDfightAudio;
-            return config && config !== 'off' && event.source == player && event.player != player;
+            return config && config !== 'off' && event.player != player;
         },
         direct: true,
         firstDo: true,
         content() {
             'step 0'
-            if (!player.storage.bilibili_kill) player.storage.bilibili_kill = 0;
+            player.storage.bilibili_kill ??= 0;
             player.storage.bilibili_kill++;
             'step 1'
             let config = lib.config.extension_活动武将_HDfightAudio;

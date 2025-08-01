@@ -117,7 +117,7 @@ export async function content(config, pack) {
 		lib.extensionMenu['extension_活动武将'].HDcheckNew = {
 			name: '检查更新公告',
 			clear: true,
-			onclick(bool) {
+			onclick() {
 				game.bolShowNewPack();
 			},
 		};
