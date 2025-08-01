@@ -2595,24 +2595,19 @@ const packs = function () {
                 audio: 'qiexie',
                 inherit: 'qiexie',
                 getList: (() => {
-                    let map = new Map([]);
-                    for (const [number, setList, forced] of [//权重，武将组，是否强制在前三张武将牌出现
-                        [1, ['ol_sb_guanyu', 'zhangfei']],
-                        [2, ['clan_xuncan', 'ol_jiangwei']],
-                        [3, ['hansui', 'yadan']],
-                        [4, ['re_huangzhong', 're_xiahouyuan']],
-                        [5, ['guanyu', 'zhaoyun', 'machao', 'xuzhu', 'lvbu', 'lvmeng', 'daqiao', 'zhugeliang'], true],
-                        [5, ['huangyueying', 'liubei', 'sunquan', 'caocao', 'ganning', 'huanggai', 'zhangliao', 'xiahoudun', 'simayi', 'luxun', 'zhouyu', 'diaochan'], true],
-                    ]) {
-                        let list = setList.slice();
+                    const config = [//权重，武将组，是否强制在前三张武将牌出现
+                        { weight: 1, list: ['ol_sb_guanyu', 'zhangfei'] },
+                        { weight: 2, list: ['clan_xuncan', 'ol_jiangwei'] },
+                        { weight: 3, list: ['hansui', 'yadan'] },
+                        { weight: 4, list: ['re_huangzhong', 're_xiahouyuan'] },
+                        { weight: 5, list: ['guanyu', 'zhaoyun', 'machao', 'xuzhu', 'lvbu', 'lvmeng', 'daqiao', 'zhugeliang'], forced: true },
+                        { weight: 5, list: ['huangyueying', 'liubei', 'sunquan', 'caocao', 'ganning', 'huanggai', 'zhangliao', 'xiahoudun', 'simayi', 'luxun', 'zhouyu', 'diaochan'], forced: true },
+                    ];
+                    const map = new Map();
+                    config.forEach(({ weight, list, forced }, idx) => {
                         if (forced) list._fh_qiexie_fixed = true;
-                        map.set((() => {
-                            while (true) {
-                                const num = Math.random().toString(36).slice(-8) + number.toString();
-                                if (map.get(num) === undefined) return num;
-                            }
-                        })(), list);
-                    }
+                        map.set(`${idx}_${weight}`, list);
+                    });
                     return map;
                 })(),
                 derivation: 'fh_qiexie_faq',
@@ -2629,15 +2624,12 @@ const packs = function () {
                             return !['guanyu', 'zhangfei'].includes(i) || !list.includes(i === 'guanyu' ? 'zhangfei' : 'guanyu');
                         };
                         while (list.length < 5) {
-                            let name = lib.skill.fh_qiexie.getList.entries().reduce((limits, [num, listx]) => {
+                            let name = [...lib.skill.fh_qiexie.getList.entries()].reduce((limits, [key, listx]) => {
                                 if (list.length < 3 && !listx._fh_qiexie_fixed) return limits;
                                 let names = listx.filter(filter);
                                 if (names.length) {
-                                    let limit = parseInt(num.slice(8));
-                                    while (limit > 0) {
-                                        limit--;
-                                        limits.push(names);
-                                    }
+                                    let weight = parseInt(key.split('_')[1]);
+                                    limits.push(...Array(weight).fill(names));
                                 }
                                 return limits;
                             }, []);
@@ -2669,7 +2661,7 @@ const packs = function () {
                                 eff += get.skillRank(i, 'in');
                             }
                             return eff;
-                        })
+                        });
                     }
                     'step 1'
                     if (result.bool) {
@@ -4569,9 +4561,10 @@ const packs = function () {
                 let str, getList = lib?.skill?.fh_qiexie?.getList;
                 if (getList?.size) {
                     str = '';
-                    for (const [num, listx] of getList.entries()) {
-                        if (!listx.length) return;
-                        str += '<br>权重' + parseInt(num.slice(8)) + '：' + get.translation(listx) + (listx._fh_qiexie_fixed ? '（保底）' : '');
+                    for (const [key, listx] of getList.entries()) {
+                        if (!listx.length) continue;
+                        let weight = parseInt(key.split('_')[1]);
+                        str += `<br>权重${weight}：${get.translation(listx)}${listx._fh_qiexie_fixed ? '（保底）' : ''}`;
                     }
                     str += '<br><br><span style="font-weight: bold;">注：【挈挟】筛选的前三张武将牌必定从保底范围筛选</span>';
                 }
