@@ -44,8 +44,7 @@ export async function content(config, pack) {
 		if (pack) {
 			lib.characterPack[pack][name] = character;
 			if (lib.config.characters.includes(pack)) lib.character[name] = character;
-			const forbidai = lib.config.forbidai_user.containsSome(...Object.keys(lib.characterPack[pack]));//lib.config[`forbidai_user_${pack}`];等星语的PR合并后再使用这个简便方法
-			lib.config.forbidai[forbidai ? 'add' : 'remove'](name);
+			lib.config.forbidai[lib.config[`forbidai_user_${pack}`] ? 'add' : 'remove'](name);
 		}
 		else lib.character[name] = character;
 	};
