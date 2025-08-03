@@ -10649,39 +10649,48 @@ const packs = function () {
                     if (!froms?.length) return;
                     const [from] = froms;
                     const ToItems = lib.skill.olhedao.tianshuContent.filter(item => !item.filter || item.filter(from.name));
-                    const tos = await player.chooseButton(['###青书：请选择“天书”效果###<div class="text center">' + from.name + '</div>', [ToItems.randomGets(3).map(item => [item, item.name]), 'textbutton']], true).set('ai', () => 1 + Math.random()).forResult('links');
+                    const tos = await player.chooseButton([`###青书：请选择“天书”效果###<div class="text center">${from.name}</div>`, [ToItems.randomGets(3).map(item => [item, item.name]), 'textbutton']], true).set('ai', () => 1 + Math.random()).forResult('links');
                     if (!tos?.length) return;
                     const [to] = tos;
                     let skill;
                     while (true) {
-                        skill = 'olhedao_tianshu_' + Math.random().toString(36).slice(-8);
+                        skill = `olhedao_tianshu_${Math.random().toString(36).slice(-8)}`;
                         if (!lib.skill[skill]) break;
                     }
                     game.broadcastAll((skill, from, to) => {
                         const { filter: filterFrom, ...otherFrom } = from.effect;
                         const { filter: filterTo, ...otherTo } = to.effect;
-                        lib.skill[skill] = { nopop: true, olhedao: true, charlotte: true, onremove: true, ...otherFrom, ...otherTo };
-                        lib.skill[skill].filter = function (...args) {
-                            return (filterFrom ? filterFrom(...args) : true) && (filterTo ? filterTo(...args) : true);
-                        };
-                        lib.skill[skill].init = (player, skill) => (player.storage[skill] = player.storage[skill] || [0, skill]);
-                        lib.skill[skill].intro = {
-                            markcount: (storage = [0]) => storage[0],
-                            content(storage, player) {
-                                const book = storage?.[1];
-                                if (!book) return '查无此书';
-                                return [
-                                    '此书还可使用' + storage[0] + '次',
-                                    (() => {
-                                        if (!player.isUnderControl(true) && get.info(book)?.nopop) return '未翻开的天书，效果不可见';
-                                        return lib.translate[book + '_info'];
-                                    })(),
-                                ].map(str => '<li>' + str).join('<br>');
+                        lib.skill[skill] = {
+                            nopop: true,
+                            olhedao: true,
+                            charlotte: true,
+                            init(player, skill) {
+                                player.storage[skill] ??= [0, []];
                             },
+                            onremove: true,
+                            filter(...args) {
+                                return (filterFrom ? filterFrom(...args) : true) && (filterTo ? filterTo(...args) : true);
+                            },
+                            markimage: 'image/card/tianshu2.png',
+                            intro: {
+                                markcount: (storage = [0]) => storage[0],
+                                content(storage = [0, []], player, book) {
+                                    const [count, targets] = storage;
+                                    if (!book) return '查无此书';
+                                    return [
+                                        `此书还可使用${count}次`,
+                                        (() => {
+                                            if (!get.info(book)?.nopop || [player, ...targets].some(i => i.isUnderControl(true))) return lib.translate[`${book}_info`];
+                                            return '此书仍是个秘密';
+                                        })(),
+                                    ].map(str => `<li>${str}`).join('<br>');
+                                },
+                            },
+                            ...otherFrom,
+                            ...otherTo,
                         };
-                        lib.skill[skill].markimage = 'image/card/tianshu2.png';
                         lib.translate[skill] = '天书';
-                        lib.translate[skill + '_info'] = from.name + '，' + to.name + '。';
+                        lib.translate[`${skill}_info`] = `${from.name}，${to.name}。`;
                         game.finishSkill(skill);
                     }, skill, from, to);
                     player.addSkill(skill);
@@ -10689,11 +10698,10 @@ const packs = function () {
                     const skills = player.getSkills(null, false, false).filter(skill => get.info(skill)?.olhedao);
                     const num = skills.length - get.info('olhedao').getLimit(player);
                     if (num > 0) {
-                        const result = num < skills.length ? await player.chooseButton(['青书：选择失去' + get.cnNumber(num) + '册多余的“天书”', [skills.map(item => [item, '（剩余' + player.storage[item][0] + '次）' + lib.translate[item + '_info']]), 'textbutton']], true, num).set('ai', () => 1 + Math.random()).forResult() : { bool: true, links: skills };
+                        const result = num < skills.length ? await player.chooseButton([`青书：选择失去${get.cnNumber(num)}册多余的“天书”`, [skills.map(item => [item, `（剩余${player.storage[item][0]}次）${lib.translate[`${item}_info`]}`]), 'textbutton']], true, num).set('ai', () => 1 + Math.random()).forResult() : { bool: true, links: skills };
                         if (result?.bool && result.links?.length) player.removeSkill(result.links);
                     }
                 },
-                derivation: 'bilibili_qingshu_faq',
             },
             //逍遥如云
             bilibili_chuandu: {
@@ -11725,8 +11733,6 @@ const packs = function () {
             bolshicai_info: '出牌阶段，牌堆顶的一张牌对你可见。你可以弃置一张牌，然后获得牌堆顶的一张牌，且不能再发动〖恃才〗直到此牌离开你的手牌区。',
             bilibili_nanhualaoxian: '南华老仙',
             bilibili_qingshu: '青书',
-            bilibili_qingshu_faq: '关于天书',
-            bilibili_qingshu_faq_info: '<br>书写“天书”时，系统先从30个“天书”时机中随机筛选出三个，角色选择时机后，系统再从30个“天书”效果中随机筛选出三个可以和选择的时机匹配的效果，然后角色获得技能为你选择的“天书”时机+“天书”效果的〖天书〗，此技能被发动前对其余玩家不可见，发动三次时失去此〖天书〗。',
             bilibili_xiaoyaoruyun: '逍遥如云',
             bilibili_chuandu: '传毒',
             bilibili_chuandu_info: '锁定技，准备阶段/结束阶段，你令你与场上所有拥有“染”标记的相邻其他角色获得“染”标记，然后你摸一张牌/拥有“染”标记的角色各失去1点体力。',
