@@ -2586,8 +2586,9 @@ const packs = function () {
                 inherit: 'qiexie',
                 getList: (() => {
                     const config = [//权重，武将组，是否强制在前三张武将牌出现
-                        { weight: 1, list: ['ol_sb_guanyu', 'zhangfei'] },
+                        { weight: 1, list: ['ol_sb_guanyu'] },
                         { weight: 2, list: ['clan_xuncan', 'ol_jiangwei'] },
+                        { weight: 2, list: ['zhangfei'], forced: true },
                         { weight: 3, list: ['hansui', 'yadan'] },
                         { weight: 4, list: ['re_huangzhong', 're_xiahouyuan'] },
                         { weight: 5, list: ['guanyu', 'zhaoyun', 'machao', 'xuzhu', 'lvbu', 'lvmeng', 'daqiao', 'zhugeliang'], forced: true },

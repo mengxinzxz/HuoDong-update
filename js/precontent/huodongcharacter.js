@@ -10696,7 +10696,7 @@ const packs = function () {
                     player.addSkill(skill);
                     lib.skill.olhedao.tianshuClear(skill, player, -3);
                     const skills = player.getSkills(null, false, false).filter(skill => get.info(skill)?.olhedao);
-                    const num = skills.length - get.info('olhedao').getLimit(player);
+                    const num = skills.length - lib.skill.olhedao.getLimit(player);
                     if (num > 0) {
                         const result = num < skills.length ? await player.chooseButton([`青书：选择失去${get.cnNumber(num)}册多余的“天书”`, [skills.map(item => [item, `（剩余${player.storage[item][0]}次）${lib.translate[`${item}_info`]}`]), 'textbutton']], true, num).set('ai', () => 1 + Math.random()).forResult() : { bool: true, links: skills };
                         if (result?.bool && result.links?.length) player.removeSkill(result.links);
