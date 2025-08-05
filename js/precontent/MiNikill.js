@@ -23273,8 +23273,8 @@ const packs = function () {
                         for (var j = 0; j < skills2.length; j++) {
                             if (player.getStorage('minipingjian').includes(skills2[j])) continue;
                             if (player.hasSkill(skills2[j], null, null, false) || get.is.locked(skills2[j], player)) continue;
-                            var info = lib.translate[skills2[j] + '_info'];
-                            if (skills.includes(skills2[j]) || (info && info.indexOf('当你于出牌阶段') != -1 && info.indexOf('当你于出牌阶段外') != -1)) {
+                            var info = get.plainText(lib.translate[skills2[j] + '_info'] || '');
+                            if (skills.includes(skills2[j]) || (info.includes('当你于出牌阶段') && !info.includes('当你于出牌阶段外'))) {
                                 list.add(name);
                                 if (!map[name]) map[name] = [];
                                 map[name].push(skills2[j]);
