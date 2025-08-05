@@ -30668,7 +30668,7 @@ const packs = function () {
                         charlotte: true,
                         onremove: true,
                         marktext: '婷',
-                        intro: { content: '本回合发动【双姝】可多选择#项' },
+                        intro: { content: '本回合发动【娉婷】可多选择#项' },
                     },
                     yizheng: {
                         charlotte: true,
