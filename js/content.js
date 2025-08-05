@@ -649,7 +649,7 @@ export async function content(config, pack) {
 			else {
 				window.rkbg.onclick = function () {
 					if (!window.dialogguagua) {
-						window.dialogguagua = ui.create.dialog('仁库', _status.renku);
+						window.dialogguagua = ui.create.dialog('仁库', _status.renku, "peaceDialog");
 						window.rkbg.innerHTML = '❌';
 					}
 					else {
