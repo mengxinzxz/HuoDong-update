@@ -235,50 +235,6 @@ export let config = {
 			scej: '恃宠而骄',
 		},
 	},
-	clearFavoriteCharacter: {
-		name: '一键清除已收藏武将',
-		clear: true,
-		onclick() {
-			if (this.innerHTML == '<span>确认清除</span>') {
-				var list = [];
-				for (var i = 0; i < lib.config.favouriteCharacter.length; i++) {
-					var favname = lib.config.favouriteCharacter[i];
-					if (lib.character[favname]) list.push(favname);
-				}
-				lib.config.favouriteCharacter.removeArray(list);
-				game.saveConfig('favouriteCharacter', lib.config.favouriteCharacter);
-				game.uncheck();
-				game.check();
-				alert('已清除所有收藏武将');
-			}
-			else {
-				this.innerHTML = '<span>确认清除</span>';
-				var that = this;
-				setTimeout(function () {
-					that.innerHTML = '<span>一键清除已收藏武将</span>';
-				}, 1000);
-			}
-		},
-	},
-	clearRecentCharacter: {
-		name: '一键清除最近使用武将记录',
-		clear: true,
-		onclick() {
-			if (this.innerHTML == '<span>确认清除</span>') {
-				game.saveConfig('recentCharacter', [], true);
-				game.uncheck();
-				game.check();
-				alert('已清除本模式所有最近使用武将记录');
-			}
-			else {
-				this.innerHTML = '<span>确认清除</span>';
-				var that = this;
-				setTimeout(function () {
-					that.innerHTML = '<span>清除最近使用武将记录</span>';
-				}, 1000);
-			}
-		},
-	},
 	FenJieXianB: {
 		clear: true,
 		name: '<li>关于特效（点击折叠）',
