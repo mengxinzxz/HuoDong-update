@@ -33672,7 +33672,7 @@ const packs = function () {
                         if (dialog) dialog.close();
                         if (_status.connectMode) lib.configOL.choose_timeout = originalTimeout;
                     }, originalTimeout, event.videoId);
-                    const { successGroup } = result;
+                    const { successGroup } = result ?? {};
                     if (successGroup) {
                         player.markAuto('mininianxinghan', [successGroup]);
                         player.popup(lib.translate[`${successGroup}2`] || successGroup);
