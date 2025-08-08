@@ -2602,14 +2602,9 @@ const packs = function () {
                     return map;
                 })(),
                 derivation: 'fh_qiexie_faq',
-                content() {
-                    'step 0'
-                    if (!_status.characterlist) {
-                        lib.skill.pingjian.initList();
-                        _status.characterlist.randomSort();
-                    }
-                    if (!_status.characterlist.length || !lib.skill.fh_qiexie?.getList.size) event.finish();
-                    else {
+                async content(event, trigger, player) {
+                    if (!_status.characterlist) lib.skill.pingjian.initList();
+                    if (lib.skill.fh_qiexie?.getList.size > 0) {
                         let list = [], filter = i => {
                             if (!(_status.characterlist.includes(i) && !list.includes(i))) return false;
                             return !['guanyu', 'zhangfei'].includes(i) || !list.includes(i === 'guanyu' ? 'zhangfei' : 'guanyu');
@@ -2627,49 +2622,37 @@ const packs = function () {
                             if (name.length) list.push(name.flat().randomGet());
                             else break;
                         }
-                        if (!list.length) {
-                            event.finish();
-                            return;
-                        }
-                        var num = player.countEmptySlot(1);
-                        player.chooseButton([
-                            '挈挟：选择' + (num > 1 ? '至多' : '') + get.cnNumber(num) + '张武将置入武器栏',
-                            [list, function (item, type, position, noclick, node) {
-                                return lib.skill.qiexie.$createButton(item, type, position, noclick, node);
-                            }],
-                        ], [1, num], true).set('ai', function (button) {
-                            var name = button.link;
-                            var info = lib.character[name];
-                            var skills = info[3].filter(function (skill) {
-                                var info = get.skillInfoTranslation(skill);
-                                if (!info.includes('【杀】')) return false;
-                                var list = get.skillCategoriesOf(skill);
-                                list.remove('锁定技');
-                                return list.length == 0;
-                            });
-                            var eff = 0.2;
-                            for (var i of skills) {
-                                eff += get.skillRank(i, 'in');
+                        if (list.length > 0) {
+                            let num = player.countEmptySlot(1);
+                            let result = await player.chooseButton([
+                                '挈挟：选择' + (num > 1 ? '至多' : '') + get.cnNumber(num) + '张武将置入武器栏',
+                                [list, lib.skill.qiexie.$createButton],
+                            ], [1, num], true).set('ai', button => {
+                                let name = button.link, info = get.character(name);
+                                return (info.skills ?? []).reduce((sum, skill) => {
+                                    let info = get.skillInfoTranslation(skill);
+                                    if (info?.includes('【杀】')) {
+                                        let list = get.skillCategoriesOf(skill);
+                                        list.remove('锁定技');
+                                        if (!list.length) return sum + get.skillRank(skill, 'in');
+                                    }
+                                    return sum;
+                                }, 0.2);
+                            }).forResult();
+                            if (result?.bool && result.links?.length) {
+                                list = result.links;
+                                _status.characterlist.removeArray(list);
+                                game.addVideo('skill', player, ['qiexie', [list]])
+                                game.broadcastAll((player, list) => {
+                                    player.tempname.addArray(list);
+                                    for (let name of list) lib.skill.qiexie.createCard(name);
+                                }, player, list);
+                                let cards = list.map(name => game.createCard(`qiexie_${name}`, 'none', get.character(name).maxHp));
+                                player.$gain2(cards);
+                                await game.delayx();
+                                for (let card of cards) await player.equip(card);
                             }
-                            return eff;
-                        });
-                    }
-                    'step 1'
-                    if (result.bool) {
-                        var list = result.links;
-                        _status.characterlist.removeArray(list);
-                        game.addVideo('skill', player, ['qiexie', [list]])
-                        game.broadcastAll(function (player, list) {
-                            player.tempname.addArray(list);
-                            for (var name of list) lib.skill.qiexie.createCard(name);
-                        }, player, list);
-                        var cards = list.map(function (name) {
-                            var card = game.createCard('qiexie_' + name, 'none', get.infoMaxHp(lib.character[name][2]));
-                            return card;
-                        });
-                        player.$gain2(cards);
-                        game.delayx();
-                        for (var card of cards) player.equip(card);
+                        }
                     }
                 },
             },
