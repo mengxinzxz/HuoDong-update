@@ -6085,43 +6085,44 @@ const packs = function () {
                 onremove: true,
                 intro: { content: '已对$产生怨恨' },
                 audio: 'bolchouyou',
-                trigger: { global: ['useCardBefore', 'respondBefore', 'useSkillBefore'] },
+                trigger: { global: ['useSkill', 'logSkillBegin'] },
                 filter(event, player) {
                     if (!player.getStorage('bolchouyou2').includes(event.player)) return false;
-                    return get.info('bolchouyou2').getFilter(event[(event.name == 'useCard' || event.name == 'respond' || event.name == 'useSkill') ? 'skill' : 'name'], player);
+                    if (!event.player.getSkills(null, false, false).includes(get.sourceSkillFor(event.skill))) return false;
+                    const info = get.info(event.skill);
+                    return info && !info.charlotte && !get.is.locked(event.skill, event.player);
                 },
-                forced: true,
                 logTarget: 'player',
-                content() {
-                    'step 0'
-                    var skill = ((trigger.name == 'useCard' || trigger.name == 'respond' || trigger.name == 'useSkill') ? trigger.skill : trigger.name);
-                    if (get.info(skill).sourceSkill) skill = get.info(skill).sourceSkill;
-                    if (skill.indexOf('_backup') == skill.length - 7) skill = skill.slice(0, skill.length - 7);
-                    player.chooseBool('仇幽：是否同意' + get.translation(trigger.player) + '发动【' + get.translation(skill) + '】?').set('choice', get.attitude(player, trigger.player) > 0);
-                    'step 1'
-                    var skill = ((trigger.name == 'useCard' || trigger.name == 'respond' || trigger.name == 'useSkill') ? trigger.skill : trigger.name);
-                    if (get.info(skill).sourceSkill) skill = get.info(skill).sourceSkill;
-                    player.chat(result.bool ? '同意' : '拒绝');
-                    game.log(player, result.bool ? '#g同意' : '#y拒绝', trigger.player, '发动', '#g【' + get.translation(skill) + '】');
-                    if (!result.bool) {
-                        var info = get.info(skill);
-                        if (info.limited || info.juexingji) trigger.player.restoreSkill(skill);
-                        if (info.usable) {
-                            if (player.storage.counttrigger?.counttrigger[skill]) player.storage.counttrigger[skill]--;
-                            if (player.getStat('skill')[skill]) player.getStat('skill')[skill]--;
+                prompt2(event, player) {
+                    return `阻止${get.translation(event.player)}发动【${get.translation(event.skill)}】`;
+                },
+                check(event, player) {
+                    return get.attitude(player, event.player) < 0;
+                },
+                async content(event, trigger, player) {
+                    trigger.player.tempBanSkill(get.sourceSkillFor(trigger.skill), {
+                        player: ['useCard1', 'useSkillBegin'],
+                        global: ['phaseChange', 'phaseBefore', 'phaseAfter'],
+                    });
+                    player.chat('拒绝');
+                    game.log(player, '#y拒绝', trigger.player, '发动', '#g【' + get.translation(trigger.skill) + '】');
+                    if (trigger.name === 'useSkill') {
+                        if (!trigger._finished) {
+                            trigger.finish();
+                            trigger._triggered = 5;
                         }
-                        trigger.cancel();
-                        if (trigger.name == 'useCard' || trigger.name == 'respond') trigger.getParent().goto(0);
-                        trigger.player.addTempSkill('bolchouyou4', ['phaseBefore', 'phaseChange', 'phaseAfter']);
-                        trigger.player.storage.bolchouyou4.push(skill);
-                        trigger.player.disableSkill('bolchouyou4', trigger.player.storage.bolchouyou4);
+                    }
+                    else {
+                        const evt = trigger.getParent();
+                        if (!evt._finished) {
+                            evt.finish();
+                            evt._triggered = 5;
+                        }
+                        if (['useCard', 'respond'].includes(evt.name) || evt.name.startsWith('pre_')) evt.getParent().goto(0);
+                        evt.next = [];
                     }
                 },
-                group: ['bolchouyou3', 'bolchouyou5'],
-                getFilter(skill, player, info) {
-                    if (skill.indexOf('_') == 0 || !info || info.equipSkill || info.charlotte || info.silent || info.nopop || info.popup === false) return false;
-                    return !lib.skill.global.includes(skill) && !get.is.locked(skill, player);
-                },
+                group: ['bolchouyou3'],
             },
             bolchouyou3: {
                 charlotte: true,
@@ -6133,29 +6134,6 @@ const packs = function () {
                 firstDo: true,
                 content() {
                     player.unmarkAuto('bolchouyou2', [trigger.source]);
-                },
-            },
-            bolchouyou4: {
-                charlotte: true,
-                init(player) {
-                    if (!player.storage.bolchouyou4) player.storage.bolchouyou4 = [];
-                },
-                onremove(player) {
-                    player.enableSkill('bolchouyou4');
-                    delete player.storage.bolchouyou4;
-                },
-            },
-            bolchouyou5: {
-                charlotte: true,
-                trigger: { global: 'logSkillBegin' },
-                filter(event, player) {
-                    const { skill } = event, info = get.info(skill);
-                    return get.info('bolchouyou2').getFilter(skill, player, info);
-                },
-                forced: true,
-                popup: false,
-                content() {
-                    lib.skill.bolchouyou2.trigger.global.push(trigger.skill + 'Before');
                 },
             },
             //张仲景
