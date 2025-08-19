@@ -2656,6 +2656,106 @@ const packs = function () {
                     }
                 },
             },
+            fh_cuijue: {
+                audio: 'cuijue',
+                enable: 'phaseUse',
+                filter(event, player) {
+                    return player.countDiscardableCards(player, 'he') > 0;;
+                },
+                filterCard(card, player) {
+                    const event = get.event(), func = player => {
+                        if (!ui.selected.cards.length) {
+                            game.countPlayer(target => target.unprompt());
+                        }
+                        else {
+                            const targets = game.filterPlayer(target => {
+                                if (player.getStorage('fh_cuijue_used').includes(target) || !player.inRange(target)) return false;
+                                const distance = get.distance(player, target);
+                                return !game.hasPlayer(current => (current !== target && player.inRange(current) && get.distance(player, current) > distance));
+                            });
+                            if (targets.length > 0) {
+                                for (const target of targets) target.prompt(`可${ get.translation('fh_cuijue') }`);
+                            }
+                        }
+                    };
+                    if (event.player === game.me) func(player);
+                    else if (event.isOnline()) player.send(func, player);
+                    return !ui.selected.cards.length && lib.filter.cardDiscardable(card, player);
+                },
+                selectCard: [1, 2],
+                position: 'he',
+                complexCard: true,
+                check(card) {
+                    const player = get.player(), val = get.value(card);
+                    const targets = game.filterPlayer(target => {
+                        if (player.getStorage('fh_cuijue_used').includes(target) || get.damageEffect(target, player, player) <= Math.max(0, val)) return false;
+                        try {
+                            ui.selected.cards.add(card);
+                            if (!player.inRange(target)) return false;
+                            const distance = get.distance(player, target);
+                            return !game.hasPlayer(current => (current !== target && player.inRange(current) && get.distance(player, current) > distance));
+                        } catch (e) {
+                            console.trace(e);
+                            return false;
+                        }
+                    });
+                    if (!targets.length) return 0;
+                    return Math.max(...targets.map(target => get.damageEffect(target, player, player))) - val;
+                },
+                async content(event, trigger, player) {
+                    const targets = game.filterPlayer(target => {
+                        if (player.getStorage('fh_cuijue_used').includes(target) || !player.inRange(target)) return false;
+                        const distance = get.distance(player, target);
+                        return !game.hasPlayer(current => (current !== target && player.inRange(current) && get.distance(player, current) > distance));
+                    });
+                    if (targets.length) {
+                        const result = targets.length > 1 ? await player.chooseTarget((card, player, target) => {
+                            if (player.getStorage('fh_cuijue_used').includes(target) || !player.inRange(target)) return false;
+                            const distance = get.distance(player, target);
+                            return !game.hasPlayer(current => (current !== target && player.inRange(current) && get.distance(player, current) > distance));
+                        }, `${get.translation(event.name)}：对其中一名角色造成1点伤害`, true).set('ai', target => {
+                            const player = get.player();
+                            return get.damageEffect(target, player, player);
+                        }).forResult() : { bool: true, targets: targets };
+                        if (result?.bool && result.targets?.length) {
+                            const [target] = result.targets;
+                            player.line(target);
+                            player.addTempSkill('fh_cuijue_used', 'phaseUseAfter');
+                            player.markAuto('fh_cuijue_used', [target]);
+                            await target.damage('nocard');
+                        }
+                    }
+                },
+                ai: {
+                    order: 10,
+                    result: {
+                        player(player) {
+                            return player.hasCard(card => {
+                                if (!lib.filter.cardDiscardable(card, player)) return false;
+                                return game.hasPlayer(target => {
+                                    if (player.getStorage('fh_cuijue_used').includes(target) || get.damageEffect(target, player, player) <= Math.max(0, get.value(card))) return false;
+                                    try {
+                                        ui.selected.cards.add(card);
+                                        if (!player.inRange(target)) return false;
+                                        const distance = get.distance(player, target);
+                                        return !game.hasPlayer(current => (current !== target && player.inRange(current) && get.distance(player, current) > distance));
+                                    } catch (e) {
+                                        console.trace(e);
+                                        return false;
+                                    }
+                                });
+                            }, 'he');
+                        },
+                    },
+                    tag: { damage: 1 },
+                },
+                subSkill: {
+                    used: {
+                        onremove: true,
+                        charlotte: true,
+                    },
+                },
+            },
             //孙刘
             fh_weidang: {
                 audio: 'dcweidang',
@@ -4496,6 +4596,8 @@ const packs = function () {
                 }
                 return str || '<br>【挈挟】将池暂未加载';
             },
+            fh_cuijue: '摧决',
+            fh_cuijue_info: '出牌阶段每名角色各限一次，你可以弃置一张牌，然后对攻击范围内距离最远的一名其他角色造成1点伤害。',
             mx_fh_dc_sunziliufang: '飞鸿孙资刘放',
             mx_fh_liyan: '飞鸿李严',
             mx_fh_dc_huanghao: '飞鸿黄皓',
