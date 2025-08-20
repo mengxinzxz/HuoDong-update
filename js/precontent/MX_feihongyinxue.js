@@ -2674,7 +2674,7 @@ const packs = function () {
                                 return !game.hasPlayer(current => (current !== target && player.inRange(current) && get.distance(player, current) > distance));
                             });
                             if (targets.length > 0) {
-                                for (const target of targets) target.prompt(`可${ get.translation('fh_cuijue') }`);
+                                for (const target of targets) target.prompt(`可${get.translation('fh_cuijue')}`);
                             }
                         }
                     };
@@ -2689,15 +2689,18 @@ const packs = function () {
                     const player = get.player(), val = get.value(card);
                     const targets = game.filterPlayer(target => {
                         if (player.getStorage('fh_cuijue_used').includes(target) || get.damageEffect(target, player, player) <= Math.max(0, val)) return false;
+                        let bool = false;
                         try {
                             ui.selected.cards.add(card);
-                            if (!player.inRange(target)) return false;
-                            const distance = get.distance(player, target);
-                            return !game.hasPlayer(current => (current !== target && player.inRange(current) && get.distance(player, current) > distance));
+                            if (player.inRange(target)) {
+                                const distance = get.distance(player, target);
+                                bool = !game.hasPlayer(current => (current !== target && player.inRange(current) && get.distance(player, current) > distance));
+                            }
                         } catch (e) {
                             console.trace(e);
-                            return false;
                         }
+                        ui.selected.cards.remove(card);
+                        return bool;
                     });
                     if (!targets.length) return 0;
                     return Math.max(...targets.map(target => get.damageEffect(target, player, player))) - val;
@@ -2727,24 +2730,27 @@ const packs = function () {
                     }
                 },
                 ai: {
-                    order: 10,
+                    order: 1,
                     result: {
                         player(player) {
-                            return player.hasCard(card => {
+                            return Number(player.hasCard(card => {
                                 if (!lib.filter.cardDiscardable(card, player)) return false;
                                 return game.hasPlayer(target => {
                                     if (player.getStorage('fh_cuijue_used').includes(target) || get.damageEffect(target, player, player) <= Math.max(0, get.value(card))) return false;
+                                    let bool = false;
                                     try {
                                         ui.selected.cards.add(card);
-                                        if (!player.inRange(target)) return false;
-                                        const distance = get.distance(player, target);
-                                        return !game.hasPlayer(current => (current !== target && player.inRange(current) && get.distance(player, current) > distance));
+                                        if (player.inRange(target)) {
+                                            const distance = get.distance(player, target);
+                                            bool = !game.hasPlayer(current => (current !== target && player.inRange(current) && get.distance(player, current) > distance));
+                                        }
                                     } catch (e) {
                                         console.trace(e);
-                                        return false;
                                     }
+                                    ui.selected.cards.remove(card);
+                                    return bool;
                                 });
-                            }, 'he');
+                            }, 'he'));
                         },
                     },
                     tag: { damage: 1 },
