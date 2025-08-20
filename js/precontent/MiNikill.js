@@ -20993,7 +20993,7 @@ const packs = function () {
                         player.markAuto(event.name + '_effect', [target]);
                         player.addTempSkill(event.name + '_effect');
                         const cards = [result.player].filter(i => get.position(i, true) == 'd' && player.hasUseTarget(i));
-                        if (player.hasUseTarget(cards[0])) await player.chooseUseTarget(cards[0], false);
+                        if (cards[0]) await player.chooseUseTarget(cards[0], null, false);
                     } else {
                         const toGain = [];
                         for (const lose_list of next.lose_list) {
