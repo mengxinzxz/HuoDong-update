@@ -16,7 +16,7 @@ const packs = function () {
                 MiNi_sbCharacter: ['Mbaby_sb_guojia', 'Mbaby_sb_zhenji', 'Mbaby_sb_ganning', 'Mbaby_ol_sb_jiangwei', 'Mbaby_sb_huangyueying', 'Mbaby_ol_sb_guanyu', 'Mbaby_sb_sunshangxiang', 'Mbaby_sb_xuhuang', 'Mbaby_sb_zhaoyun', 'Mbaby_sb_liubei', 'Mbaby_sb_caocao', 'Mbaby_sb_huanggai', 'Mbaby_sb_yuanshao', 'Mbaby_sb_yujin', 'Mbaby_sb_machao', 'Mbaby_sb_lvmeng', 'Mbaby_sb_huangzhong'],
                 MiNi_miaoKill: ['caoying', 'caiwenji', 'diaochan', 'caifuren', 'zhangxingcai', 'zhurong', 'huangyueying', 'daqiao', 'wangyi', 'zhangchunhua', 'zhenji', 'sunshangxiang', 'xiaoqiao', 'lvlingqi'].map(i => `Mmiao_${i}`),
                 MiNi_nianKill: ['caopi', 'zhugeliang', 'lvbu', 'zhouyu'].map(i => `Mnian_${i}`),
-                MiNi_fightKill: ['huangzhong', 'zhangliao'].map(i => `Mfight_${i}`),
+                MiNi_fightKill: ['huangzhong', 'zhangliao', 'luxun'].map(i => `Mfight_${i}`),
             },
         },
         character: {
@@ -396,6 +396,7 @@ const packs = function () {
             //战
             Mfight_huangzhong: ['male', 'shu', 4, ['minifightdingjun', 'minifightlizhan']],
             Mfight_zhangliao: ['male', 'wei', 4, ['minifightbiaoxi', 'minifightpozhen']],
+            Mfight_zhangluxun: ['male', 'wu', 4, ['minifightxurui', 'minifightshijie']],
         },
         characterIntro: {
             Mbaby_change: '嫦娥，中国古代神话中的人物，又名恒我、恒娥、姮娥、常娥、素娥，羿之妻，因偷吃了不死药而飞升至月宫。嫦娥的故事最早出现在商朝卦书 《归藏》。而嫦娥奔月的完整故事最早记载于西汉《淮南子·览冥训》。东汉时期，嫦娥与羿的夫妻关系确立，而嫦娥在进入月宫后变成了捣药的蟾蜍。南北朝以后，嫦娥的形象回归为女儿身。汉画像中，嫦娥人头蛇身，头梳高髻，身着宽袖长襦，身后长尾上饰有倒钩状细短羽毛。南北朝以后，嫦娥的形象被描绘成绝世美女。南朝陈后主陈叔宝曾把宠妃张丽华比作嫦娥。唐朝诗人白居易曾用嫦娥夸赞邻家少女不可多得的容貌。',
@@ -35945,6 +35946,188 @@ const packs = function () {
                     }
                 }
             },
+            // 陆逊
+            minifightxurui: {
+                audio: 'ext:活动武将/audio/skill:2',
+                placeSkill: true,
+                categories: () => ['战场技'],
+                trigger: { global: ['loseAfter', 'equipAfter', 'addJudgeAfter', 'gainAfter', 'loseAsyncAfter', 'addToExpansionAfter', 'damageSource'] },
+                filter(event, player) {
+                    if (event.name == 'damage') {
+                        if (!ui._minifightxurui_yiling) return false;
+                        return event.hasNature('fire') && game.filterPlayer2(current => current.hasHistory('damage', evt => evt.hasNature('fire'))).flatMap(current => current.getHistory('damage', evt => evt.hasNature('fire'))).reduce((num, evt) => num + evt.num, 0) > 2;
+                    }
+                    return !ui._minifightxurui_yiling && game.hasPlayer(current => {
+                        if (current.countCards('h')) return false;
+                        return event.getl?.(player)?.hs?.length;
+                    });
+                },
+                locked: false,
+                forced: true,
+                async content(event, trigger, player) {
+                    if (ui._minifightxurui_yiling) {
+                        game.broadcastAll(() => {
+                            ui._minifightxurui_yiling.remove();
+                            delete ui._minifightxurui_yiling;
+                        });
+                    }
+                    else {
+                        player.$fullscreenpop('夷陵战场', 'fire');
+                        game.broadcastAll(() => {
+                            if (get.is.phoneLayout()) ui._minifightxurui_yiling = ui.create.div('.touchinfo.left', ui.window);
+                            else ui._minifightxurui_yiling = ui.create.div(ui.gameinfo);
+                            ui._minifightxurui_yiling.innerHTML = '<br>夷陵战场';
+                        });
+                    }
+                },
+                group: 'minifightxurui_effect',
+                subSkill: {
+                    effect: {
+                        trigger: { global: 'useCardToPlayer' },
+                        filter(event, player) {
+                            if (!ui._minifightxurui_yiling || event.player !== _status.currentPhase || !player.isMinHandcard()) return false;
+                            return event.targets?.length === 1 && event.targets[0] !== player && event.targets[0] !== event.player;
+                        },
+                        async cost(event, trigger, player) {
+                            const { targets: [target], card } = trigger;
+                            const { result } = await player.chooseButton([
+                                '蓄锐：你可以选择一项',
+                                [
+                                    [
+                                        ['previous', `${get.translation(card)}结算结束后对${get.translation(target)}的上家（${get.translation(target.getPrevious())}）造成1点火焰伤害`],
+                                        ['next', `${get.translation(card)}结算结束后对${get.translation(target)}的下家（${get.translation(target.getNext())}）造成1点火焰伤害`],
+                                        ['damage', `${get.translation(card)}造成的伤害+1且改为火属性`],
+                                    ],
+                                    'textbutton',
+                                ],
+                            ]).set('ai', button => {
+                                const { link } = button;
+                                const { player, target } = get.event();
+                                const next = target.getNext(), previous = target.getPrevious(), { currentPhase } = _status;
+                                const { card } = get.event().getTrigger();
+                                const att = get.attitude(player, target);
+                                let eff1 = 0, eff2 = 0;
+                                if (next?.isIn()) eff1 += get.damageEffect(next, player, player, 'fire');
+                                if (previous?.isIn()) eff2 += get.damageEffect(previous, player, player, 'fire');
+                                if (eff1 > 0 || eff2 > 0) {
+                                    if (link == 'previous' && eff1 > 0 && eff1 >= eff2) return 1;
+                                    if (link == 'next' && eff2 > 0 && eff2 >= eff1) return 1;
+                                }
+                                if (link == 'damage') return 1;
+                                return 0;
+                            }).set('target', target);
+                            event.result = {
+                                bool: result?.bool,
+                                cost_data: result?.links,
+                            }
+                        },
+                        async content(event, trigger, player) {
+                            const { cost_data: [link] } = event;
+                            const { targets: [target], card } = trigger;
+                            if (link == 'damage') {
+                                const evt = trigger.getParent();
+                                if (typeof evt.baseDamage != 'number') evt.baseDamage = 1;
+                                evt.baseDamage++;
+                                target.addTempSkill('minifightxurui_damage');
+                                target.markAuto('minifightxurui_damage', [card]);
+                            }
+                            else {
+                                const target = trigger.targets[0][`get${link[0].toUpperCase()}${link.slice(1)}`]();
+                                player.when({ global: 'useCardAfter' }).filter(evt => evt == trigger.getParent()).step(async () => {
+                                    if (target?.isIn()) await target.damage('fire');
+                                })
+                            }
+                            await player.draw(2);
+                            if (!player.countCards('h') || !game.hasPlayer(current => player != current)) return;
+                            const { result } = await player.chooseCardTarget({
+                                prompt: get.prompt('minifightxurui'),
+                                prompt2: '请选择要交给的牌并指定一名其他角色',
+                                filterCard: true,
+                                filterTarget: lib.filter.notMe,
+                                ai1(card) {
+                                    return 6 - get.value(card);
+                                },
+                                ai2(target) {
+                                    const player = get.player();
+                                    return get.attitude(player, target);
+                                },
+                            });
+                            if (result?.cards?.length && result.targets?.length) await player.give(result.cards, result.targets[0]);
+                        },
+                    },
+                    damage: {
+                        charlotte: true,
+                        onremove: true,
+                        trigger: { player: 'damageBegin3' },
+                        filter(event, player) {
+                            return event.card && player.getStorage('minifightxurui_damage').includes(event.card);
+                        },
+                        forced: true,
+                        popup: false,
+                        async content(event, trigger, player) {
+                            player.unmarkAuto(event.name, [trigger.card]);
+                            if (!player.getStorage(event.name).length) player.removeSkill(event.name);
+                            game.setNature(trigger, 'thunder');
+                        },
+                    }
+                }
+            },
+            minifightshijie: {
+                audio: 'ext:活动武将/audio/skill:2',
+                trigger: { global: 'roundStart' },
+                filter(event, player) {
+                    return !player.hasSkill('minifightshijie_gain') && player.countCards('h') && !player.countExpansions('minifightshijie');
+                },
+                async cost(event, trigger, player) {
+                    event.result = await player.chooseCard(get.prompt2(event.skill), 'h', [1, Infinity]).set('ai', card => {
+                        const player = get.player();
+                        if (player.countCards('h') < 5 && !ui._minifightxurui_yiling) return 1;
+                        return 6 - get.value(card);
+                    }).forResult();
+                },
+                async content(event, trigger, player) {
+                    const next = player.addToExpansion(event.cards, 'giveAuto', player);
+                    next.gaintag.add(event.name + '_gain');
+                    await next;
+                    player.addTempSkill(event.name + '_gain', { player: 'die' });
+                    player.storage[event.name + '_gain'] = player.countExpansions(event.name + '_gain');
+                },
+                subSkill: {
+                    gain: {
+                        charlotte: true,
+                        onremove: true,
+                        trigger: { global: 'phaseEnd' },
+                        forced: true,
+                        popup: false,
+                        async content(event, trigger, player) {
+                            player.storage[event.name]--;
+                            let num = player.storage[event.name];
+                            if (num == 0) {
+                                const cards = player.getExpansions(event.name);
+                                if (cards.length) {
+                                    await player.gain(cards, 'draw');
+                                    await player.draw(cards.length);
+                                }
+                                player.removeSkill(event.name);
+                            }
+                            else {
+                                game.log(player, '剩余', '#g' + num + '回合');
+                                player.markSkill(event.name);
+                            }
+                        },
+                        intro: {
+                            mark(dialog, storage, player) {
+                                const cards = player.getExpansions('minifightshijie_gain');
+                                if (typeof storage == 'number') dialog.addText(`剩余${storage}回合`);
+                                if (player.isUnderControl(true)) dialog.addAuto(cards);
+                                else return '共有' + get.cnNumber(cards.length) + '张牌';
+                            },
+                            content: 'expansion',
+                            markcount: 'expansion',
+                        },
+                    }
+                }
+            },
         },
         dynamicTranslate: {
             minizhongjian(player) {
@@ -37943,6 +38126,7 @@ const packs = function () {
             //战
             Mfight_huangzhong: '战黄忠',
             Mfight_zhangliao: '战张辽',
+            Mfight_zhangluxun: '战陆逊',
             minifightdingjun: '定军',
             minifightdingjun_info: '战场技。①一名角色使用【杀】造成伤害后，获得1层士气。②士气变化后，你摸一张牌。③士气变化时，若士气层数大于等于场上存活角色数，则进入“定军山战场”；若士气层数为0，则退出“定军山战场”。④一名角色于一回合首次使用【杀】时，若此时处于“定军山战场”，则你可以消耗2层士气，令其于此牌结算中视为拥有〖烈弓〗。',
             minifightliegong: '烈弓',
@@ -37953,6 +38137,13 @@ const packs = function () {
             minifightbiaoxi_info: '战场技。①一名角色于其出牌阶段失去第二张基本牌时，你可以进入“合淝战场”。②一名角色使用【杀】结算结束后，若此时处于“合淝战场”，你可令你或此【杀】的目标角色发动一次〖突袭〗，若该角色的手牌数因此成为全场唯一最多，则退出“合淝战场”。',
             minifightpozhen: '破阵',
             minifightpozhen_info: '当你获得其他角色的牌后，你可以重铸至多等量张牌，若被重铸的牌中包含：①基本牌：你本回合使用【杀】的次数上限+1；②非基本牌：你下个摸牌阶段摸牌数+1（至多+5）。',
+            minifightxurui: '蓄锐',
+            minifightxurui_info: `战场技。①一名角色失去所有手牌后，进入“合淝战场”。②当前回合角色使用牌指定其他角色A为唯一目标时，若此时处于“合淝战场”且你手牌数为全场最少，你可以选择一项并发动一次〖${get.poptip({
+                name: '连营',
+                info: '你可以摸两张牌，然后你可以将一张手牌交给一名其他角色',
+            })}〗：1.你于此牌结算结束后对A的上家造成1点火焰伤害；2.你于此牌结算结束后对A的下家造成1点火焰伤害；3.此牌造成的伤害+1且改为火属性。③一名角色造成火焰伤害后，若本回合所有角色受到的火焰伤害数大于2，则退出“合淝战场”。`,
+            minifightshijie: '势节',
+            minifightshijie_info: '每轮游戏开始时，若你的武将牌上没有“势”，你可以将任意张手牌置于武将牌上，称为“势”，且你于X个回合结束后，获得武将牌上的所有“势”并摸等量张牌（X为武将牌上的“势”数）。',
         },
     };
     for (var skill in MiNikill.skill) {
