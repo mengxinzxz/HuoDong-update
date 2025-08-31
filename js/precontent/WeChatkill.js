@@ -187,7 +187,7 @@ const packs = function () {
             wechat_sb_huanggai: ['male', 'wu', 4, ['wechatsbkurou', 'sbzhaxiang'], ['tempname:sb_huanggai']],
             wechat_sb_guojia: ['male', 'wei', 3, ['wechatsbtiandu', 'wechatsbyiji'], [`${(lib.device || lib.node) ? 'ext:' : 'db:extension-'}活动武将/image/character/bilibili_xizhicaikobe.jpg`, 'border:key', 'tempname:sb_guojia']],
             wechat_sb_handang: ['male', 'wu', 4, ['sbgongqi', 'wechatsbjiefan'], ['tempname:sb_handang']],
-            wechat_sb_gaoshun: ['male', 'wu', 4, ['wechatsbxianzhen', 'sbjinjiu'], ['tempname:sb_gaoshun']],
+            wechat_sb_gaoshun: ['male', 'qun', 4, ['wechatsbxianzhen', 'sbjinjiu'], ['tempname:sb_gaoshun']],
         },
         characterIntro: {
         },
@@ -13212,102 +13212,102 @@ const packs = function () {
                     player.addTempSkill(event.name + '_attack', 'phaseUseAfter');
                     player.markAuto(event.name + '_attack', target);
                 },
-            },
-            subSkill: {
-                attack: {
-                    audio: 'sbxianzhen',
-                    trigger: { player: 'useCardToPlayered' },
-                    filter(event, player) {
-                        if (event.card.name !== 'sha') return false;
-                        return player.getStorage('wechatsbxianzhen_attack').includes(event.target) && event.target.isIn() && player.canCompare(event.target);
-                    },
-                    charlotte: true,
-                    onremove: true,
-                    logTarget: 'target',
-                    check(event, player) {
-                        return get.attitude(player, event.target) < 0;
-                    },
-                    prompt(event, player) {
-                        return `陷阵：是否与${get.translation(event.target)}拼点？`;
-                    },
-                    prompt2(event, player) {
-                        const target = event.target, card = event.card;
-                        return `若你赢，${get.translation(card)}无视防具且不计入次数，且若你本回合未以此法造成过伤害，你对其造成1点伤害；<br>若其拼点牌为【杀】，则你获得之；<br>若其拼点牌为其最后的手牌，则${get.translation(card)}对其造成伤害时，此伤害+1。`;
-                    },
-                    group: 'wechatsbxianzhen_record',
-                    async content(event, trigger, player) {
-                        const target = trigger.target, card = trigger.card;
-                        const next = player.chooseToCompare(target);
-                        let result = await next.forResult();
-                        if (result.bool) {
-                            target.addTempSkill('qinggang2');
-                            target.storage.qinggang2.add(card);
-                            if (trigger.addCount !== false) {
-                                trigger.addCount = false;
-                                const stat = player.getStat("card");
-                                if (stat[card.name] && stat[card.name] > 0) {
-                                    stat[card.name]--;
+                subSkill: {
+                    attack: {
+                        audio: 'sbxianzhen',
+                        trigger: { player: 'useCardToPlayered' },
+                        filter(event, player) {
+                            if (event.card.name !== 'sha') return false;
+                            return player.getStorage('wechatsbxianzhen_attack').includes(event.target) && event.target.isIn() && player.canCompare(event.target);
+                        },
+                        charlotte: true,
+                        onremove: true,
+                        logTarget: 'target',
+                        check(event, player) {
+                            return get.attitude(player, event.target) < 0;
+                        },
+                        prompt(event, player) {
+                            return `陷阵：是否与${get.translation(event.target)}拼点？`;
+                        },
+                        prompt2(event, player) {
+                            const target = event.target, card = event.card;
+                            return `若你赢，${get.translation(card)}无视防具且不计入次数，且若你本回合未以此法造成过伤害，你对其造成1点伤害；<br>若其拼点牌为【杀】，则你获得之；<br>若其拼点牌为其最后的手牌，则${get.translation(card)}对其造成伤害时，此伤害+1。`;
+                        },
+                        group: 'wechatsbxianzhen_record',
+                        async content(event, trigger, player) {
+                            const target = trigger.target, card = trigger.card;
+                            const next = player.chooseToCompare(target);
+                            let result = await next.forResult();
+                            if (result.bool) {
+                                target.addTempSkill('qinggang2');
+                                target.storage.qinggang2.add(card);
+                                if (trigger.addCount !== false) {
+                                    trigger.addCount = false;
+                                    const stat = player.getStat("card");
+                                    if (stat[card.name] && stat[card.name] > 0) {
+                                        stat[card.name]--;
+                                    }
+                                }
+                                game.log(card, '无视防具且不计入次数限制');
+                                await target.damage();
+                                await game.delayx();
+                            }
+                            const toGain = [];
+                            for (const lose_list of next.lose_list) {
+                                let [comparer, cards] = lose_list;
+                                if (!Array.isArray(cards)) cards = [cards];
+                                if (comparer === player) continue;
+                                for (const card of cards) {
+                                    if (get.name(card, comparer) == 'sha' && get.position(card, true) == 'd') {
+                                        toGain.push(card);
+                                    }
                                 }
                             }
-                            game.log(card, '无视防具且不计入次数限制');
-                            await target.damage();
-                            await game.delayx();
-                        }
-                        const toGain = [];
-                        for (const lose_list of next.lose_list) {
-                            let [comparer, cards] = lose_list;
-                            if (!Array.isArray(cards)) cards = [cards];
-                            if (comparer === player) continue;
-                            for (const card of cards) {
-                                if (get.name(card, comparer) == 'sha' && get.position(card, true) == 'd') {
-                                    toGain.push(card);
+                            if (toGain.length) await player.gain(toGain, 'gain2');
+                            if (player.getStorage('wechatsbxianzhen_recorded').includes(target)) {
+                                const id = target.playerid;
+                                const map = trigger.getParent().customArgs;
+                                map[id] ??= {};
+                                if (typeof map[id].extraDamage != 'number') {
+                                    map[id].extraDamage = 0;
                                 }
+                                map[id].extraDamage++;
+                                game.log(card, '对', target, '造成的伤害+1');
                             }
-                        }
-                        if (toGain.length) await player.gain(toGain, 'gain2');
-                        if (player.getStorage('wechatsbxianzhen_recorded').includes(target)) {
-                            const id = target.playerid;
-                            const map = trigger.getParent().customArgs;
-                            map[id] ??= {};
-                            if (typeof map[id].extraDamage != 'number') {
-                                map[id].extraDamage = 0;
-                            }
-                            map[id].extraDamage++;
-                            game.log(card, '对', target, '造成的伤害+1');
-                        }
-                    },
-                    intro: { content: '本阶段对$使用牌无距离限制，且使用杀指定其为目标后可以与其拼点' },
-                    mod: {
-                        targetInRange(card, player, target) {
-                            if (player.getStorage('wechatsbxianzhen_attack').includes(target)) return true;
+                        },
+                        intro: { content: '本阶段对$使用牌无距离限制，且使用杀指定其为目标后可以与其拼点' },
+                        mod: {
+                            targetInRange(card, player, target) {
+                                if (player.getStorage('wechatsbxianzhen_attack').includes(target)) return true;
+                            },
                         },
                     },
-                },
-                record: {
-                    trigger: { global: 'loseAsyncEnd' },
-                    charlotte: true,
-                    silent: true,
-                    filter(event, player) {
-                        if (event.getParent(2).name !== 'wechatsbxianzhen_attack') return false;
-                        return game.hasPlayer(current => {
-                            if (current.countCards('h')) return false;
-                            return event.getl?.(current)?.hs?.length;
-                        });
-                    },
-                    async content(event, trigger, player) {
-                        const targets = [];
-                        game.countPlayer(current => {
-                            if (current.countCards('h')) return false;
-                            if (trigger.getl?.(current)?.hs?.length) {
-                                targets.add(current);
-                            }
-                        });
-                        if (!player.storage.wechatsbxianzhen_recorded) {
-                            player.when('wechatsbxianzhen_attackAfter').then(() => {
-                                delete player.storage.wechatsbxianzhen_recorded;
+                    record: {
+                        trigger: { global: 'loseAsyncEnd' },
+                        charlotte: true,
+                        silent: true,
+                        filter(event, player) {
+                            if (event.getParent(2).name !== 'wechatsbxianzhen_attack') return false;
+                            return game.hasPlayer(current => {
+                                if (current.countCards('h')) return false;
+                                return event.getl?.(current)?.hs?.length;
                             });
-                        }
-                        player.markAuto('wechatsbxianzhen_recorded', targets);
+                        },
+                        async content(event, trigger, player) {
+                            const targets = [];
+                            game.countPlayer(current => {
+                                if (current.countCards('h')) return false;
+                                if (trigger.getl?.(current)?.hs?.length) {
+                                    targets.add(current);
+                                }
+                            });
+                            if (!player.storage.wechatsbxianzhen_recorded) {
+                                player.when('wechatsbxianzhen_attackAfter').then(() => {
+                                    delete player.storage.wechatsbxianzhen_recorded;
+                                });
+                            }
+                            player.markAuto('wechatsbxianzhen_recorded', targets);
+                        },
                     },
                 },
             },
