@@ -13770,7 +13770,7 @@ const packs = function () {
                     player.awakenSkill(event.name);
                     const target = event.target;
                     const count = player.getAllHistory('useCard', evt => evt.targets?.includes(target)).length;
-                    target.addMark('dcfenhui_mark_mark', Math.min(5, count));
+                    target.addMark('dcfenhui_mark', Math.min(5, count));
                     await player.draw(Math.min(5, count));
                     player.addSkill(event.name + '_effect');
                     player.markAuto(event.name + '_effect', [target]);
