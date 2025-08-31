@@ -34135,25 +34135,44 @@ const packs = function () {
                     },
                 },
                 kill(steps, player) {
-                    let attack = 0, jiu = 0, killed = [], rest = player.getHp() + 1;
-                    rest -= steps.length;
+                    // 杀的攻击力 
+                    let attack = 0;
+                    // 两次击败目标之间出现的酒的数量  
+                    let jiuCount = 0;
+                    // 两次击败目标之间是否出现过杀
+                    let hasSha = false;
+                    // 击败目标
+                    let killed = [];
+                    // 剩余行动步数
+                    let rest = player.getHp() + 1 - steps.length;
                     for (const step of steps) {
                         const items = step.split('|');
                         if (items.length > 2) {
-                            if (attack + jiu >= items[3]) {
-                                killed.push([items[1], items[2]]);
-                            }
-                            jiu = 0;
-                        }
-                        else {
+                            // 遇到击败目标时的当前攻击力
+                            const jiuEffect = hasSha ? jiuCount * 2 : 0;
+                            const totalAttack = attack + jiuEffect;
+                            if (totalAttack >= items[3]) killed.push([items[1], items[2]]);
+                            // 重置酒的计数
+                            if (hasSha && jiuCount > 0) jiuCount = 0;
+                            // 重置当前段的杀的出现状态
+                            hasSha = false;
+                        } else {
                             switch (items[0]) {
-                                case 'sha': attack++; break;
-                                case 'horse': rest += 2; break;
-                                case 'jiu': jiu += 2; break;
+                                case 'sha':
+                                    attack++;
+                                    hasSha = true;
+                                    break;
+                                case 'horse':
+                                    rest += 2;
+                                    break;
+                                case 'jiu':
+                                    jiuCount += 1;
+                                    break;
+
                             }
                         }
                     }
-                    return [attack, jiu, killed, rest];
+                    return [attack + (hasSha ? jiuCount * 2 : 0), jiuCount, killed, rest];
                 },
                 tazhen(item, type, position, noclick, node) {
                     if (item.slice().split('|').length > 2) {
@@ -34164,7 +34183,7 @@ const packs = function () {
                             node.classList.add('character');
                             node.style.display = '';
                         }
-                        else node = ui.create.div('.button.character', position);
+                        else node = ui.create.buttonPresets.character(item, 'character', position, noclick);
                         node._link = item;
                         node.link = item;
                         const func = function (node, item) {
@@ -34174,7 +34193,7 @@ const packs = function () {
                             node.classList.add('tazhen');
                             if (node.node) {
                                 node.node.name.remove();
-                                node.node.hp.remove();
+                                // node.node.hp.remove();
                                 node.node.group.remove();
                                 node.node.intro.remove();
                                 if (node.node.replaceButton) node.node.replaceButton.remove();
