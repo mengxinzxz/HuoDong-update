@@ -36217,7 +36217,7 @@ const packs = function () {
                         async content(event, trigger, player) {
                             player.unmarkAuto(event.name, [trigger.card]);
                             if (!player.getStorage(event.name).length) player.removeSkill(event.name);
-                            game.setNature(trigger, 'thunder');
+                            game.setNature(trigger, 'fire');
                         },
                     }
                 }
