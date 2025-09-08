@@ -4819,7 +4819,7 @@ const packs = function () {
         //获取额外牌堆的牌
         get.fh_cardPile = function (filter) {
             if (!_status.fh_cardPile) {
-                console('本局游戏未开启额外牌堆');
+                console.warn('本局游戏未开启额外牌堆');
                 return;
             }
             if (!filter) filter = () => true;
