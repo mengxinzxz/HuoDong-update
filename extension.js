@@ -22,7 +22,7 @@ game.bolShowNewPack = function () {
 	//更新武将
 	var HuoDong_players = [
 		'bfake_miheng', 'Mmiao_caoying', 'Mbaby_gexuan', 'Mbaby_caorui', 'old_dongxie', 'Mnian_caopi',
-		'Mbaby_caimaozhangyun', 'Mbaby_xinpi', 'Mfight_zhangluxun', 'Mbaby_guanyue', 'Mbaby_jiling', 'Mbaby_star_yuanshu',
+		'Mbaby_caimaozhangyun', 'Mbaby_xinpi', 'Mfight_luxun', 'Mbaby_guanyue', 'Mbaby_jiling', 'Mbaby_star_yuanshu',
 		'wechat_sb_handang', 'wechat_sb_gaoshun', 'wechat_zhiyin_taishici', 'wechat_zhiyin_diaochan', 'wechat_zhiyin_bulianshi', 'wechat_zhiyin_mayunlu'
 	];
 	//加载
