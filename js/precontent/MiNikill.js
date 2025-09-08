@@ -34770,7 +34770,7 @@ const packs = function () {
 
                     if (player.isOnline()) {
                         player.send(createUI, videoId, gameData.width, gameData.height, gameData.map, NAMES);
-                    } else if (player.isUnderControl(true)) {
+                    } else if (player.isMine()) {
                         createUI(videoId, gameData.width, gameData.height, gameData.map, NAMES);
                     } else {
                         isAI = true;
@@ -34848,7 +34848,7 @@ const packs = function () {
                     function buildArrowRemote(x, y) {
                         const score = getCellScore(x, y);
 
-                        if (player.isUnderControl(true)) {
+                        if (player.isMine()) {
                             const cell = getTableCell(x, y);
                             const container = buildArrow(x, y, score);
                             cell.appendChild(container);
@@ -34868,7 +34868,7 @@ const packs = function () {
                     }
 
                     function clearArrowRemote([x, y]) {
-                        if (player.isUnderControl(true)) {
+                        if (player.isMine()) {
                             const cell = getTableCell(x, y);
                             clearArrow(cell);
                             cell.classList.remove('selectable');
@@ -34891,7 +34891,7 @@ const packs = function () {
                             const name = NAMES[data[0]];
                             delete gameData.names[name];
 
-                            if (player.isUnderControl(true)) {
+                            if (player.isMine()) {
                                 const cell = getTableCell(x, y);
                                 cell.querySelector('.button')?.remove();
                             } else if (player.isOnline()) {
@@ -34972,7 +34972,7 @@ const packs = function () {
                             _status.noclearcountdown = 'direct';
 
                             return promise;
-                        } else if (player.isUnderControl(true)) {
+                        } else if (player.isMine()) {
                             return waitCellClickCore(locations.map(([x, y]) => getTableCell(x, y)));
                         }
                     }
@@ -34986,7 +34986,7 @@ const packs = function () {
                                     tips.innerHTML = text;
                                 }
                             }, text);
-                        } else if (player.isUnderControl(true)) {
+                        } else if (player.isMine()) {
                             const tips = document.getElementById('dengjie-tips');
 
                             if (tips) {
@@ -35086,7 +35086,7 @@ const packs = function () {
                             })();
                         }
 
-                        if (player.isUnderControl(true)) {
+                        if (player.isMine()) {
                             movePlayerCore(x, y, px, py, getTableCell);
                         } else if (player.isOnline()) {
                             player.send(movePlayerCore, x, y, px, py, getTableCell);
@@ -35138,7 +35138,7 @@ const packs = function () {
                             })();
                         }
 
-                        if (player.isUnderControl(true)) {
+                        if (player.isMine()) {
                             rollbackPlayerCore(initialData.x, initialData.y, px, py, getTableCell);
                         } else if (player.isOnline()) {
                             player.send(rollbackPlayerCore, initialData.x, initialData.y, px, py, getTableCell);
@@ -35205,7 +35205,7 @@ const packs = function () {
                             }
                         }, videoId, originalTimeout);
 
-                        if (player.isUnderControl(true)) {
+                        if (player.isMine()) {
                             game.stopCountChoose();
                             delete _status.imchoosing;
                             delete _status.noclearcountdown;
@@ -35226,7 +35226,7 @@ const packs = function () {
                     event.set('noconfirm', true);
                     event.setContent(async function (event) {
                         event.switchToAuto = function () {
-                            if (player.isUnderControl(true)) {
+                            if (player.isMine()) {
                                 // 喜欢偷懒让AI帮你玩是吧喵，看AI怎么摆烂制裁你哦喵
                                 onGameFailed('switchauto');
                             }
