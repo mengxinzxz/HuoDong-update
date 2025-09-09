@@ -36,6 +36,11 @@ export let config = {
 			}
 		},
 	},
+	showDerivation: {
+		name: '技能翻译优化',
+		intro: '结合get.poptip方法优化有衍生技的技能翻译',
+		init: false,
+	},
 	HD_shanshan: {
 		name: '牌堆加入【闪闪】',
 		intro: '将牌堆中的一张方片5，一张方片6，一张方片7的【闪】替换为【闪闪】',

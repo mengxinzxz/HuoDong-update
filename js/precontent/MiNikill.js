@@ -35803,7 +35803,7 @@ const packs = function () {
                     if (trigger.name === 'damage') get.info(event.name).updateShiQi(player, trigger.num);
                     else player.draw(trigger.num);
                 },
-                derivation: 'minifightliegong',
+                derivation: 'minifightreliegong',
                 global: 'minifightdingjun_ai',
                 group: ['minifightdingjun_change', 'minifightdingjun_effect'],
                 subSkill: {
@@ -35849,8 +35849,8 @@ const packs = function () {
                         logTarget: 'player',
                         async content(event, trigger, player) {
                             await get.info('minifightdingjun').updateShiQi(player, -2);
-                            await trigger.player.addTempSkills('minifightliegong');
-                            trigger.player.when('useCardAfter').filter(evt => evt === trigger).then(() => player.removeSkills('minifightliegong'));
+                            await trigger.player.addTempSkills('minifightreliegong');
+                            trigger.player.when('useCardAfter').filter(evt => evt === trigger).then(() => player.removeSkills('minifightreliegong'));
                         },
                     },
                     ai: {
@@ -35904,6 +35904,14 @@ const packs = function () {
                         if (!arg?.card || !arg?.target || arg.card.name !== 'sha') return false;
                         const filter = card => !ui.selected.cards.includes(card) && !card.cards?.includes(card);
                         return arg.target.getHp() >= player.getHp() || arg.target.countCards('h', filter) >= player.countCards('h', filter);
+                    },
+                },
+            },
+            minifightreliegong: {
+                inherit: 'xinliegong',
+                mod: {
+                    targetInRange(card, player, target) {
+                        if (card.name == 'sha') return true;
                     },
                 },
             },
@@ -38355,6 +38363,8 @@ const packs = function () {
             minifightdingjun_info: '战场技。①一名角色使用【杀】造成1点伤害后，获得1层士气。②士气变化1点后，你摸一张牌。③士气变化时，若士气层数大于等于场上存活角色数，则进入“定军山战场”；若士气层数为0，则退出“定军山战场”。④一名角色使用【杀】时，若此时处于“定军山战场”，则你可以消耗2层士气，令其于此牌结算中视为拥有〖烈弓〗。',
             minifightliegong: '烈弓',
             minifightliegong_info: '锁定技，当你使用【杀】指定目标后，若目标角色的手牌数或体力值大于等于你的手牌数或体力值，则其不可响应此【杀】；目标角色的手牌数和体力值均大于等于你的手牌数或体力值，则此【杀】对其造成的伤害+1。',
+            minifightreliegong: '烈弓',
+            minifightreliegong_info: '①你使用【杀】无距离限制。②当你使用【杀】指定一个目标后，你可以根据下列条件执行相应的效果：1.其手牌数不大于你的手牌数，此【杀】不可被响应，2.其体力值不小于你的体力值，此【杀】伤害+1。',
             minifightlizhan: '力斩',
             minifightlizhan_info: '出牌阶段，你可以打出任意张【杀】，然后视为使用一张需要X张【闪】响应且伤害基数为X的【杀】（X为你打出的【杀】数），目标角色每使用【闪】响应一次此牌，此牌伤害基数-1。若此【杀】造成伤害，则你可以选择一名非此【杀】目标角色，视为对其使用一张无距离和次数限制的伤害牌。',
             minifightbiaoxi: '飚袭',

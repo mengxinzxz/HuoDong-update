@@ -1564,4 +1564,45 @@ export async function content(config, pack) {
 		bol_sp_huaxin: '仁望值弃稿',
 	};
 	for (const i in hdpj_characterTitle) lib.characterTitle[i] = hdpj_characterTitle[i];
+
+	// 含衍生技的技能翻译优化
+	if (game.getExtensionConfig('活动武将', 'showDerivation')) {
+		const setSkillDerivation = skills => {
+			let skills2 = [], skills3 = skills.slice();
+			while (true) {
+				let skills4 = skills3
+					.filter(skill => lib.skill[skill]?.derivation)
+					.map(skill => lib.skill[skill].derivation)
+					.flat()
+					.filter(skill => !skills3.includes(skill));
+				if (skills4.length > 0) {
+					skills2.addArray(skills4);
+					skills3.addArray(skills4);
+				}
+				else break;
+			}
+			if (skills2.length > 0) {
+				for (let skill of skills3) {
+					let str = lib.translate[`${skill}_info`];
+					if (str?.includes('〖')) {
+						lib.translate[`${skill}_info`] = str.replace(/〖(.*?)〗/g, (skillString, skillName) => {
+							const skill2 = skills2.find(i => {
+								if (i === skill) return false;
+								return lib.translate[`${i}_info`] && lib.translate[i] === skillName;
+							});
+							return skill2 ? get.poptip(skill2) : skillString;
+						});
+					}
+				}
+			}
+		};
+		for (const name in lib.character) setSkillDerivation(get.character(name).skills);
+		const originConvertedCharacter = get.convertedCharacter;
+		get.convertedCharacter = function () {
+			const data = originConvertedCharacter.apply(this, arguments);
+			setSkillDerivation(data.skills);
+			return data;
+		};
+	}
+
 }
