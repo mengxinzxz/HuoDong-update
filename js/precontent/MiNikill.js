@@ -332,7 +332,7 @@ const packs = function () {
             Mbaby_dongxie: ['female', 'qun', 4, ['minijiaoxia', 'minihumei']],
             Mbaby_guanning: ['male', 'qun', '3/7', ['minidunshi']],
             Mbaby_re_hansui: ['male', 'qun', 4, ['mininiluan', 'spweiwu']],
-            Mbaby_tadun: ['male', 'qun', 4, ['miniluanzhan']],
+            Mbaby_tadun: ['male', 'qun', 4, ['minireluanzhan']],
             Mbaby_gaolan: ['male', 'qun', 4, ['minixizhen'], ['die:dc_gaolan']],
             Mbaby_yl_luzhi: ['male', 'qun', 3, ['nzry_mingren', 'minizhenliang']],
             Mbaby_mengjie: ['male', 'qun', 3, ['dcyinlu', 'miniyouqi']],
@@ -399,7 +399,7 @@ const packs = function () {
             //战
             Mfight_huangzhong: ['male', 'shu', 4, ['minifightdingjun', 'minifightlizhan']],
             Mfight_zhangliao: ['male', 'wei', 4, ['minifightbiaoxi', 'minifightpozhen']],
-            Mfight_zhangluxun: ['male', 'wu', 4, ['minifightxurui', 'minifightshijie']],
+            Mfight_luxun: ['male', 'wu', 4, ['minifightxurui', 'minifightshijie']],
         },
         characterIntro: {
             Mbaby_change: '嫦娥，中国古代神话中的人物，又名恒我、恒娥、姮娥、常娥、素娥，羿之妻，因偷吃了不死药而飞升至月宫。嫦娥的故事最早出现在商朝卦书 《归藏》。而嫦娥奔月的完整故事最早记载于西汉《淮南子·览冥训》。东汉时期，嫦娥与羿的夫妻关系确立，而嫦娥在进入月宫后变成了捣药的蟾蜍。南北朝以后，嫦娥的形象回归为女儿身。汉画像中，嫦娥人头蛇身，头梳高髻，身着宽袖长襦，身后长尾上饰有倒钩状细短羽毛。南北朝以后，嫦娥的形象被描绘成绝世美女。南朝陈后主陈叔宝曾把宠妃张丽华比作嫦娥。唐朝诗人白居易曾用嫦娥夸赞邻家少女不可多得的容貌。',
@@ -27811,11 +27811,11 @@ const packs = function () {
                             const num = player.countMark('miniluanzhan');
                             const { card, targets } = trigger;
                             const prompt2 = '为' + get.translation(card) + '增加至多' + get.cnNumber(num) + '个目标';
-                            event.result = await player.chooseTarget(get.prompt("reluanzhan"), (card, player, target) => {
+                            event.result = await player.chooseTarget(get.prompt('miniluanzhan'), (card, player, target) => {
                                 const { card: card1, targets } = get.event();
                                 if (targets.includes(target)) return false;
                                 return lib.filter.targetEnabled2(card1, get.player(), target) && lib.filter.targetInRange(card1, get.player(), target);
-                            }, [1, num]).set('prompt2', prompt2).set("ai", target => {
+                            }, [1, num]).set('prompt2', prompt2).set('ai', target => {
                                 const trigger = get.event().getTrigger();
                                 const player = get.player();
                                 return get.effect(target, trigger.card, player, player);
@@ -27826,6 +27826,67 @@ const packs = function () {
                             trigger.targets.addArray(event.targets);
                         },
                     }
+                }
+            },
+            minireluanzhan: {
+                audio: 'luanzhan',
+                trigger: { player: 'useCardToPlayered', global: 'changeHp' },
+                forced: true,
+                locked: false,
+                filter(event, player) {
+                    if (event.name == 'changeHp') return event.num < 0;
+                    if (!event.isFirstTarget || (event.card.name != 'sha' && (get.color(event.card) != 'black' || get.type(event.card) != 'trick')) || !player.countMark('minireluanzhan') || player.hasSkill('minireluanzhan_used')) return false;
+                    const info = get.info(event.card);
+                    if (info.allowMultiple == false || info.multitarget) return false;
+                    return event.targets.length < player.countMark('minireluanzhan');
+                },
+                async content(event, trigger, player) {
+                    if (trigger.name == 'changeHp') player.addMark(event.name, 1, false);
+                    else {
+                        player.addTempSkill(event.name + '_used');
+                        const num = player.countMark(event.name);
+                        player.removeMark(event.name, Math.ceil(player.countMark(event.name) / 2), false);
+                        await player.draw(num);
+                    }
+                },
+                intro: { content: 'mark' },
+                ai: { notemp: true },
+                group: 'minireluanzhan_add',
+                subSkill: {
+                    add: {
+                        audio: 'luanzhan',
+                        trigger: { player: 'useCard2' },
+                        filter(event, player) {
+                            if ((event.card.name != 'sha' && (get.color(event.card) != 'black' || get.type(event.card) != 'trick')) || !player.countMark('minireluanzhan')) return false;
+                            const info = get.info(event.card);
+                            if (info.allowMultiple == false) return false;
+                            if (event.targets && !info.multitarget) {
+                                return game.hasPlayer(current => {
+                                    return !event.targets.includes(current) && lib.filter.targetEnabled2(event.card, player, current) && lib.filter.targetInRange(event.card, player, current);
+                                })
+                            }
+                            return false;
+                        },
+                        async cost(event, trigger, player) {
+                            const num = player.countMark('minireluanzhan');
+                            const { card, targets } = trigger;
+                            const prompt2 = '为' + get.translation(card) + '增加至多' + get.cnNumber(num) + '个目标';
+                            event.result = await player.chooseTarget(get.prompt('minireluanzhan'), (card, player, target) => {
+                                const { card: card1, targets } = get.event();
+                                if (targets.includes(target)) return false;
+                                return lib.filter.targetEnabled2(card1, get.player(), target) && lib.filter.targetInRange(card1, get.player(), target);
+                            }, [1, num]).set('prompt2', prompt2).set('ai', target => {
+                                const trigger = get.event().getTrigger();
+                                const player = get.player();
+                                return get.effect(target, trigger.card, player, player);
+                            }).set('card', card).set('targets', targets).forResult();
+                        },
+                        content() {
+                            if (!event.isMine() && !event.isOnline()) game.delayx();
+                            trigger.targets.addArray(event.targets);
+                        },
+                    },
+                    used: {},
                 }
             },
             //高览
@@ -36160,8 +36221,8 @@ const packs = function () {
                                 if (next?.isIn()) eff1 += get.damageEffect(next, player, player, 'fire');
                                 if (previous?.isIn()) eff2 += get.damageEffect(previous, player, player, 'fire');
                                 if (eff1 > 0 || eff2 > 0) {
-                                    if (link == 'previous' && eff1 > 0 && eff1 >= eff2) return 1;
-                                    if (link == 'next' && eff2 > 0 && eff2 >= eff1) return 1;
+                                    if (link == 'next' && eff1 > 0 && eff1 >= eff2) return 1;
+                                    if (link == 'previous' && eff2 > 0 && eff2 >= eff1) return 1;
                                 }
                                 if (link == 'damage') return 1;
                                 return 0;
@@ -36229,7 +36290,7 @@ const packs = function () {
                     return !player.hasSkill('minifightshijie_gain') && player.countCards('h') && !player.countExpansions('minifightshijie');
                 },
                 async cost(event, trigger, player) {
-                    event.result = await player.chooseCard(get.prompt2(event.skill), 'h', [1, Infinity]).set('ai', card => {
+                    event.result = await player.chooseCard(get.prompt2(event.skill), 'h', [1, Infinity], 'allowChooseAll').set('ai', card => {
                         const player = get.player();
                         if (player.countCards('h') < 5 && !ui._minifightxurui_yiling) return 1;
                         return 6 - get.value(card);
@@ -37925,6 +37986,8 @@ const packs = function () {
             mininiluan_info: '①你可以将一张黑色牌当作【杀】使用或打出。②当你使用【杀】结算完毕后，若此【杀】未造成过伤害，则此【杀】不计入次数限制。',
             miniluanzhan: '乱战',
             miniluanzhan_info: '①当你造成伤害后，你获得一个“乱”。②当你使用【杀】或黑色普通锦囊牌选择目标后，你可以令至多X名角色也成为此牌的目标；当你使用这些牌指定第一个目标后，若此牌目标数小于X，则你移去X/2（向上取整）个“乱”（X为“乱”数）。',
+            minireluanzhan: '乱战',
+            minireluanzhan_info: '①当一名角色体力值减少后，你获得一个“乱”。②当你使用【杀】或黑色普通锦囊牌选择目标后，你可以令至多X名角色也成为此牌的目标。③每回合限一次。当你使用使用【杀】或黑色普通锦囊牌指定第一个目标后，若此牌目标数小于X，则你移去X/2（向上取整）个“乱”，然后摸X张牌（X为“乱”数）。',
             minixizhen: '袭阵',
             minixizhen_info: '出牌阶段开始时，你可选择一名其他角色，视为对其使用【杀】或【决斗】。然后当有角色于本阶段内使用或打出牌响应你时，该角色回复1点体力，你摸两张牌。',
             minizhenliang: '贞良',
@@ -38287,7 +38350,7 @@ const packs = function () {
             //战
             Mfight_huangzhong: '战黄忠',
             Mfight_zhangliao: '战张辽',
-            Mfight_zhangluxun: '战陆逊',
+            Mfight_luxun: '战陆逊',
             minifightdingjun: '定军',
             minifightdingjun_info: '战场技。①一名角色使用【杀】造成1点伤害后，获得1层士气。②士气变化1点后，你摸一张牌。③士气变化时，若士气层数大于等于场上存活角色数，则进入“定军山战场”；若士气层数为0，则退出“定军山战场”。④一名角色使用【杀】时，若此时处于“定军山战场”，则你可以消耗2层士气，令其于此牌结算中视为拥有〖烈弓〗。',
             minifightliegong: '烈弓',
@@ -38299,10 +38362,10 @@ const packs = function () {
             minifightpozhen: '破阵',
             minifightpozhen_info: '当你获得其他角色的牌后，你可以重铸至多等量张牌，若被重铸的牌中包含：①基本牌：你本回合使用【杀】的次数上限+1；②非基本牌：你下个摸牌阶段摸牌数+1（至多+5）。',
             minifightxurui: '蓄锐',
-            minifightxurui_info: `战场技。①一名角色失去所有手牌后，进入“合淝战场”。②当前回合角色使用牌指定其他角色A为唯一目标时，若此时处于“合淝战场”且你手牌数为全场最少，你可以选择一项并发动一次〖${get.poptip({
+            minifightxurui_info: `战场技。①一名角色失去所有手牌后，进入“夷陵战场”。②当前回合角色使用牌指定其他角色A为唯一目标时，若此时处于“夷陵战场”且你手牌数为全场最少，你可以选择一项并发动一次〖${get.poptip({
                 name: '连营',
                 info: '你可以摸两张牌，然后你可以将一张手牌交给一名其他角色',
-            })}〗：1.你于此牌结算结束后对A的上家造成1点火焰伤害；2.你于此牌结算结束后对A的下家造成1点火焰伤害；3.此牌造成的伤害+1且改为火属性。③一名角色造成火焰伤害后，若本回合所有角色受到的火焰伤害数大于2，则退出“合淝战场”。`,
+            })}〗：1.你于此牌结算结束后对A的上家造成1点火焰伤害；2.你于此牌结算结束后对A的下家造成1点火焰伤害；3.此牌造成的伤害+1且改为火属性。③一名角色造成火焰伤害后，若本回合所有角色受到的火焰伤害数大于2，则退出“夷陵战场”。`,
             minifightshijie: '势节',
             minifightshijie_info: '每轮游戏开始时，若你的武将牌上没有“势”，你可以将任意张手牌置于武将牌上，称为“势”，且你于X个回合结束后，获得武将牌上的所有“势”并摸等量张牌（X为武将牌上的“势”数）。',
         },

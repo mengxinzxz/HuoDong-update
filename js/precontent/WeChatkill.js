@@ -12747,15 +12747,7 @@ const packs = function () {
             wechatsblijian: {
                 audio: 'sblijian',
                 inherit: 'sblijian',
-                filterCard(card, player) {
-                    if (game.countPlayer(current => player != current) == 2) return false;
-                    return true;
-                },
-                selectCard() {
-                    const player = get.player();
-                    if (game.countPlayer(current => player != current) == 2) return -1;
-                    return [1, Infinity]
-                },
+                selectCard: [0, Infinity],
                 selectTarget() {
                     return ui.selected.cards.length + 2;
                 },
