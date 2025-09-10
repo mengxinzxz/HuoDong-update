@@ -230,6 +230,7 @@ export async function precontent(bilibilicharacter) {
             });
         },
     };
+    /*
     //点击显示
     game.getBolPhone = function () {
         //获取浏览器navigator对象的userAgent属性（浏览器用于HTTP请求的用户代理头的值）
@@ -274,12 +275,8 @@ export async function precontent(bilibilicharacter) {
         const id = Math.random().toString(36).slice(-8);
         return "<a id='" + id + "' style='color:unset' href=\"javascript:get.bolskillTips('" + str2 + "','" + id + "');\">" + str1 + "※</a>";
     };
-    get.YunLvInform = () => get.bolInformX('韵律技', '韵律技分为平和仄两种状态，韵律技初始默认状态为平，满足转韵条件时韵律技会转成另一种状态并重置技能的发动次数');
-    get.RenWangInform = () => get.bolInformX('仁望值', '拥有涉及仁望值技能的角色于游戏开始时获得1点仁望值，且其出牌阶段结束时，其根据以下满足的条件数增加等量的仁望值：①本阶段有角色获得过累计两张牌；②本阶段有角色回复过体力；③本阶段未对其他角色造成过伤害。一名角色的仁望值上限为5。');
-    get.ZhengSuInform = () => get.bolInformX('整肃', '<li>技能发动者从“擂进”、“变阵”、“鸣止”三个选项中选择一个令目标执行，若其于其本回合弃牌阶段结束后达成选项条件，则选择整肃奖励。<br><li>整肃奖励：选择摸两张牌或回复1点体力<br><li>擂进：回合内所有于出牌阶段使用的牌点数递增且不少于三张。<br><li>变阵：回合内所有于出牌阶段使用的牌花色相同且不少于两张。<br><li>鸣止：回合内所有于弃牌阶段弃置的牌花色均不相同且不少于两张。');
-    get.MouLveInform = () => get.bolInformX('谋略值', '上限为5，拥有谋略值的角色可以发动技能【妙计】（每回合限一次，你可以：①失去1点谋略值，视为使用【过河拆桥】；②失去2点谋略值，视为使用【无懈可击】；③失去3点谋略值，视为使用【无中生有】）');
-    get.ShiwuInform = () => get.bolInformX('奋武技', '奋武技的使用次数为本轮你造成和受到的伤害值+1，至多为5');
-    // 适配poptip
+    */
+    //适配poptip
     lib.poptip.add({
         name: '韵律技',
         id: 'rule_yunlvSkill',

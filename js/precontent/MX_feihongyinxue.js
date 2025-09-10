@@ -4856,7 +4856,7 @@ const packs = function () {
                                     if (cfgNodes[i].textContent === '仅点将可用') {
                                         const addIntro = document.createElement('div');
                                         addIntro.classList.add('config', 'pointerspan');
-                                        addIntro.innerHTML = '<span style="font-family: yuanli">本包前言：<br>2023年活动武将年底大活，开启此包游戏将会加入额外牌堆机制，游戏牌堆会加入一张方片12的' + get.bolInformX(...['fh_yinyueqiang', 'fh_yinyueqiang_info'].map(i => lib.translate[i])) + '，此包建议单独开启使用</span>';
+                                        addIntro.innerHTML = '<span style="font-family: yuanli">本包前言：<br>2023年活动武将年底大活，开启此包游戏将会加入额外牌堆机制，游戏牌堆会加入一张方片12的' + get.poptip('fh_yinyueqiang') + '，此包建议单独开启使用</span>';
                                         cfgNodes[i].parentNode.insertBefore(addIntro, cfgNodes[i].nextSibling);
                                         break;
                                     }

@@ -8473,60 +8473,6 @@ const packs = function () {
                 },
             },
             yicong_jsp_zhaoyun: { audio: 2 },
-            //NBA宿舍群球员宿舍
-            dom_chouxiang: {
-                dormSkill: true,
-                mod: {
-                    cardUsableTarget(card, player, target) {
-                        if (target != player && target.group == 'mx_dom') return true;
-                    },
-                    targetInRange(card, player, target) {
-                        if (target != player && target.group == 'mx_dom') return true;
-                    },
-                },
-                trigger: { player: ['useCard', 'useSkill', 'logSkillBegin'] },
-                filter(event, player) {
-                    return (event.targets || event.target) && (event.targets || [event.target]).some(i => i != player && i.group == 'mx_dom');
-                },
-                logTarget(event, player) {
-                    return (event.targets || [event.target]).filter(i => i != player && i.group == 'mx_dom');
-                },
-                forced: true,
-                async content(event, trigger, player) {
-                    let loser = [];
-                    const targets = (trigger.targets || [trigger.target]).filter(i => i != player && i.group == 'mx_dom');
-                    const list = [player].concat(targets);
-                    await game.asyncDraw(list);
-                    if (!player.countCards('h') || player.hasSkillTag('noCompareSource')) loser.push(player);
-                    const losers = targets.filter(i => !player.canCompare(i));
-                    loser.addArray(losers);
-                    if (targets.some(i => player.canCompare(i))) {
-                        const { result: { winner } } = await player.chooseToCompare(targets.filter(i => player.canCompare(i)), card => {
-                            return get.number(card);
-                        }).setContent('chooseToCompareMeanwhile');
-                        loser.addArray(list.filter(i => !winner || winner != i));
-                    }
-                    if (loser.length) {
-                        loser.sortBySeat();
-                        player.when({ global: ['useCardAfter', 'useSkillAfter', 'logSkill'] })
-                            .filter(evt => evt == event)
-                            .then(() => {
-                                loser.forEach(i => i.addTempSkill('diaohulishan', 'roundStart'));
-                                var cards = Array.from(ui.ordering.childNodes);
-                                while (cards.length) {
-                                    cards.shift().discard();
-                                }
-                                var evt = _status.event.getParent('phase');
-                                if (evt) {
-                                    game.resetSkills();
-                                    _status.event = evt;
-                                    _status.event.finish();
-                                    _status.event.untrigger(true);
-                                }
-                            }).vars({ loser: loser });
-                    }
-                },
-            },
             //牢狂
             BTmakeBug: {
                 charlotte: true,
@@ -11573,9 +11519,6 @@ const packs = function () {
             bolyingtu_info: '①当你的上家于摸牌阶段外获得牌后，你可以获得其等量的牌，然后将等量的牌交给你的下家。②当你的下家使用【杀】或【决斗】指定第一个目标时，若目标角色不包含你和你的上家，则你可以取消此牌的所有目标，然后将此牌目标改为你的上家。',
             bolcongshi: '从势',
             bolcongshi_info: '锁定技。①体力值最大的角色对你的上家和下家使用牌无距离限制。②有角色使用因〖从势①〗增加距离的牌对你的上家或下家造成伤害后，你回复1点体力。',
-            dom_chouxiang: '抽象',
-            dom_chouxiang_info: '锁定技，你对其他宿舍成员使用牌无距离和次数限制；当你使用牌或发动技能时，若其中包含其他宿舍成员，则你和这些角色各摸一张牌，然后进行同时拼点，不能拼点和拼点没赢的角色于此牌或技能结算完毕后于本轮移出游戏。',
-            dom_chouxiang_append: '<span style="font-family:yuanli">抽象对抽象，不抽象的陪' + get.bolInformX('牢大', '仅娱乐，请勿过度解读') + '打复活赛</span>',
             'bilibili_kuangshen04': '狂神',
             BTmakeBug: 'PR',
             BTmakeBug_info: '锁定技，回合结束时，你将手牌数摸至七张，然后若你没有手牌，你结束本局游戏，否则你随机伪装你的一张手牌的花色点数，然后X须猜测其中哪一张为此伪装牌，若X猜错，你获得两张【影】，然后在牌堆中洗入20张【影】（洗入的【影】无花色且点数为114514，X为game.me，若game.me与你同阵容或game.me未存活则改为随机一名敌方角色）。',

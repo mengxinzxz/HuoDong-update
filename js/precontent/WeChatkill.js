@@ -14981,7 +14981,7 @@ const packs = function () {
                                     if (cfgNodes[i].textContent === '仅点将可用') {
                                         const addIntro = document.createElement('div');
                                         addIntro.classList.add('config', 'pointerspan');
-                                        addIntro.innerHTML = '<span style="font-family: yuanli">点击查看小程序专属名词解释：<br>' + [get.YunLvInform(), get.MouLveInform(), get.ShiwuInform()].map(str => '<li>' + str).join('<br>') + '</span>';
+                                        addIntro.innerHTML = '<span style="font-family: yuanli">点击查看小程序专属名词解释：<br>' + [get.poptip('rule_yunlvSkill'), get.poptip('rule_moulvenum'), get.poptip('rule_shiwuSkill')].map(str => '<li>' + str).join('<br>') + '</span>';
                                         cfgNodes[i].parentNode.insertBefore(addIntro, cfgNodes[i].nextSibling);
                                         break;
                                     }

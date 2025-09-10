@@ -91,7 +91,7 @@
 	z-index: 8 !important;
 }
 
-/*感谢 雷 的技术支持*/
+/*感谢 雷 的技术支持
 .bol-dibeijing {
 	height: 100%;
 	width: 100%;
@@ -118,7 +118,9 @@
 	transform: translate(-50%, -50%);
 	transition: none;
 }
+*/
 
+/*曹丕登阶*/
 .dialog.dengjie-game:not(.player) {
 	width: fit-content;
 	height: fit-content;
@@ -247,6 +249,7 @@ td.dengjie-game > .button.character > .score.lose {
 	background-color: #c50000;
 }
 
+/*吕布踏阵*/
 .button.character.tazhen {
 	width: 108px !important;
 	height: 150px !important;
@@ -257,6 +260,7 @@ td.dengjie-game > .button.character > .score.lose {
 	height: 150px !important;
 }
 
+/*诸葛亮定乱*/
 .dingluan-tube-container {
 	display: flex;
 	justify-content: center;

@@ -1565,7 +1565,7 @@ export async function content(config, pack) {
 	};
 	for (const i in hdpj_characterTitle) lib.characterTitle[i] = hdpj_characterTitle[i];
 
-	// 含衍生技的技能翻译优化
+	//含衍生技的技能翻译优化
 	if (game.getExtensionConfig('活动武将', 'showDerivation')) {
 		const setSkillDerivation = skills => {
 			let skills2 = [], skills3 = skills.slice();
