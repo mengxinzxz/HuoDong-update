@@ -2658,7 +2658,7 @@ const packs = function () {
                 charlotte: true,
                 trigger: { global: 'judgeAfter' },
                 filter(event, player) {
-                    return event.result.color == 'black' && event.getParent().name == 'miniqingxi' && event.getParent().player == player;
+                    return event.result?.color == 'black' && event.getParent().name == 'miniqingxi' && event.getParent().player == player;
                 },
                 lastDo: true,
                 direct: true,
