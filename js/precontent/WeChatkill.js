@@ -11635,7 +11635,7 @@ const packs = function () {
                     effect: {
                         charlotte: true,
                         onremove: true,
-                        intro: { content: '下次发动〖妙计〗时失去的谋略值-#' },
+                        intro: { content: `下次发动〖妙计〗时失去的${get.poptip('rule_moulvenum')}-#` },
                         trigger: { player: 'useCard' },
                         filter(event, player) {
                             return event.skill == 'wechatmiaoji_backup' && player.hasMark('wechatquanbian_effect');
@@ -12932,7 +12932,7 @@ const packs = function () {
                     content(storage, player, skill) {
                         let str = '出牌阶段限一次，你可以';
                         str += storage ? '与一名手牌数小于X的角色各弃置一张牌' : '对一名手牌数大于X的角色造成1点伤害';
-                        str += '。（X为你的谋略值且至少为1）。然后你获得1点谋略值。';
+                        str += `。（X为你的${get.poptip('rule_moulvenum')}且至少为1）。然后你获得1点${get.poptip('rule_moulvenum')}。`;
                         return str;
                     },
                 },
@@ -14079,7 +14079,7 @@ const packs = function () {
                 let yang = '对一名手牌数大于X的角色造成1点伤害', yin = '与一名手牌数小于X的角色各弃置一张牌';
                 if (bool) yin = `<span class='bluetext'>${yin}</span>`;
                 else yang = `<span class='firetext'>${yang}</span>`;
-                let start = '转换技。出牌阶段限一次，你可以：', end = '。（X为你的谋略值且至少为1）。然后你获得1点谋略值。';
+                let start = '转换技。出牌阶段限一次，你可以：', end = `。（X为你的${get.poptip('rule_moulvenum')}且至少为1）。然后你获得1点${get.poptip('rule_moulvenum')}。`;
                 return `${start}阳：${yang}；阴：${yin}${end}`;
             },
             wechatsbtiandu(player) {
@@ -14814,11 +14814,11 @@ const packs = function () {
             wechatjijian_info: '出牌阶段限一次，你可记录一张基本牌或锦囊牌。当此牌于你的回合外进入弃牌堆后，你可以对一名其他角色造成1点伤害。',
             wechat_zhiyin_jiaxu: '极贾诩',
             wechatquanbian: '权变',
-            wechatquanbian_info: '锁定技。当一名角色成为伤害牌的唯一目标后，若此牌与上一张指定该角色的伤害牌：①颜色相同，你获得1点谋略值；牌名相同，你下次发动〖妙计〗时失去的谋略值-1。',
+            wechatquanbian_info: `锁定技。当一名角色成为伤害牌的唯一目标后，若此牌与上一张指定该角色的伤害牌：①颜色相同，你获得1点${get.poptip('rule_moulvenum')}；牌名相同，你下次发动〖妙计〗时失去的${get.poptip('rule_moulvenum')}-1。`,
             wechatkuangshi: '匡势',
             wechatkuangshi_info: '出牌阶段结束时，你可选择一名角色。然后若：X小于Y，则其将手牌摸至Y（至多5张），然后你可观看并使用其获得牌中的一张牌；X大于Y，则其将手牌弃至Y（至多5张），然后你可使用其弃置牌中的一张牌（X为其区域内的牌数，Y为其体力上限）。',
             wechatchenjie: '沉节',
-            wechatchenjie_info: '限定技。每轮开始时，你可消耗5点谋略值，令所有其他角色选择一项：1.当你下次受到伤害时，此伤害转移给其；2.减1点体力上限，然后当你下次受到伤害后，其加1点体力上限。',
+            wechatchenjie_info: `限定技。每轮开始时，你可消耗5点${get.poptip('rule_moulvenum')}，令所有其他角色选择一项：1.当你下次受到伤害时，此伤害转移给其；2.减1点体力上限，然后当你下次受到伤害后，其加1点体力上限。`,
             wechat_zhiyin_guohuanghou: '极郭皇后',
             wechatjichong: '积宠',
             wechatjichong_info: '当你受到伤害或回复体力后，你可以选择一项：1.观看牌堆顶X+1张牌并获得其中X张牌；2.摸一张牌，然后X+1（X初始为1，且至多为3）。',
@@ -14877,9 +14877,9 @@ const packs = function () {
             wechatsblijian_info: '出牌阶段限一次。你可以选择至少两名其他角色并弃置X张牌（X为你选择的角色数-2）。然后每名你选择的角色依次视为对这些角色中与其逆时针座次最近的另一名角色使用一张【决斗】。',
             wechat_zhiyin_luxun: '极陆逊',
             wechatqianmou: '谦谋',
-            wechatqianmou_info: '①游戏开始时，你可以弃置至多两张手牌，然后你获得3倍弃牌数的谋略值。②当你的谋略值或手牌数变化后，若二者数量相同，你摸一张牌。',
+            wechatqianmou_info: `①游戏开始时，你可以弃置至多两张手牌，然后你获得3倍弃牌数的${get.poptip('rule_moulvenum')}。②当你的${get.poptip('rule_moulvenum')}或手牌数变化后，若二者数量相同，你摸一张牌。`,
             wechatweiwo: '帷幄',
-            wechatweiwo_info: '转换技。出牌阶段限一次，你可以：阳：对一名手牌数大于X的角色造成1点伤害；阴：与一名手牌数小于X的角色各弃置一张牌。（X为你的谋略值且至少为1）。然后你获得1点谋略值。',
+            wechatweiwo_info: `转换技。出牌阶段限一次，你可以：阳：对一名手牌数大于X的角色造成1点伤害；阴：与一名手牌数小于X的角色各弃置一张牌。（X为你的${get.poptip('rule_moulvenum')}且至少为1）。然后你获得1点${get.poptip('rule_moulvenum')}。`,
             wechat_sb_huanggai: '微信谋黄盖',
             wechatsbkurou: '苦肉',
             wechatsbkurou_info: '①出牌阶段开始时，你可以交给其他角色一张牌，然后你失去1点体力。②当你失去1点体力后，你获得2点护甲。',
