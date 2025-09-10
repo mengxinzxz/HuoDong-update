@@ -36205,7 +36205,7 @@ const packs = function () {
                         trigger: { global: 'useCardToPlayer' },
                         filter(event, player) {
                             if (!ui._minifightxurui_yiling || event.player !== _status.currentPhase || !player.isMinHandcard()) return false;
-                            return event.targets?.length === 1 && event.targets[0] !== player && event.targets[0] !== event.player;
+                            return event.targets?.length === 1 && event.targets[0] !== event.player;
                         },
                         async cost(event, trigger, player) {
                             const { targets: [target], card } = trigger;
