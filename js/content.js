@@ -566,9 +566,9 @@ export async function content(config, pack) {
 			},
 			intro: { content: '<li>条件：回合内所有于弃牌阶段弃置的牌花色均不相同且不少于两张。' },
 		};
-		lib.translate.spyanji_info = '出牌阶段开始时，你可以进行' + get.ZhengSuInform() + '。若如此做，弃牌阶段结束时，若你整肃成功，你获得整肃奖励。';
-		lib.translate.spzhengjun_info = '出牌阶段开始时，你可以进行' + get.ZhengSuInform() + '。若如此做，弃牌阶段结束时，若你整肃成功，你获得整肃奖励，然后你可以选择一名其他角色，令其也获得整肃奖励。';
-		lib.translate.houfeng_info = '每轮限一次，一名其他角色的出牌阶段开始时，若其在你的攻击范围内，则你可以令其进行' + get.ZhengSuInform() + '。若如此做，其本回合弃牌阶段结束时，若其整肃成功，你与其获得整肃奖励。';
+		lib.translate.spyanji_info = `出牌阶段开始时，你可以进行${get.poptip('rule_zhengsu')}。若如此做，弃牌阶段结束时，若你整肃成功，你获得整肃奖励。`;
+		lib.translate.spzhengjun_info = `出牌阶段开始时，你可以进行${get.poptip('rule_zhengsu')}。若如此做，弃牌阶段结束时，若你整肃成功，你获得整肃奖励，然后你可以选择一名其他角色，令其也获得整肃奖励。`;
+		lib.translate.houfeng_info = `每轮限一次，一名其他角色的出牌阶段开始时，若其在你的攻击范围内，则你可以令其进行${get.poptip('rule_zhengsu')}。若如此做，其本回合弃牌阶段结束时，若其整肃成功，你与其获得整肃奖励。`;
 	}
 	//仁库
 	if (lib.config.extension_活动武将_HD_renku) {

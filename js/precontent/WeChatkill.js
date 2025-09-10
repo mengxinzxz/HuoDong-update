@@ -2543,7 +2543,7 @@ const packs = function () {
                 marktext: '谋',
                 intro: {
                     name: '谋略值',
-                    content: '当前拥有#点' + get.MouLveInform(),
+                    content: `当前拥有#点${get.poptip('rule_moulvenum')}`,
                 },
                 getMax: 5,
             },
@@ -2619,7 +2619,7 @@ const packs = function () {
                         }
                     },
                     prompt(links, player) {
-                        return '失去' + (1 + player.countMark('wechatsuanlve_count')) + '点' + get.MouLveInform() + '，将一张牌当做' + (get.translation(links[0][3]) || '') + get.translation(links[0][2]) + '使用';
+                        return '失去' + (1 + player.countMark('wechatsuanlve_count')) + `点${get.poptip('rule_moulvenum')}，将一张牌当做` + (get.translation(links[0][3]) || '') + get.translation(links[0][2]) + '使用';
                     },
                 },
                 ai: {
@@ -2753,7 +2753,7 @@ const packs = function () {
                     prompt(links, player) {
                         const name = links[0][2];
                         const num = lib.skill.wechatmiaoji.list[name](player);
-                        return '失去' + num + '点' + get.MouLveInform() + '，视为使用' + get.translation(name);
+                        return `失去${num}点${get.poptip('rule_moulvenum')}，视为使用${get.translation(name)}`;
                     },
                 },
                 ai: {
@@ -4769,7 +4769,7 @@ const packs = function () {
                                 return ((storage || 0) % 3).toString();
                             },
                             content(storage, player) {
-                                return '获得' + get.MouLveInform() + '进度：' + ((storage || 0) % 3) + '/3';
+                                return `获得${get.poptip('rule_moulvenum')}进度：${((storage || 0) % 3)}/3`;
                             },
                         },
                     },
@@ -9048,7 +9048,7 @@ const packs = function () {
                     const cards = game.getGlobalHistory('cardMove', evt => evt.type == 'discard' && evt.getParent(3) == event).map(evt => evt.cards).flat();
                     if (player.countMark('wechatmoulvenum') < 2 || cards.map(card => get.color(card)).toUniqued().length != 1) return;
                     const effect = targets.reduce((sum, i) => sum + get.damageEffect(i, player, player, 'fire'), 0);
-                    const bool = await player.chooseBool(`是否再消耗2点${get.MouLveInform()}，对${get.translation(targets)}各造成1点伤害`).set('choice', effect > 0).forResultBool();
+                    const bool = await player.chooseBool(`是否再消耗2点${get.poptip('rule_moulvenum')}，对${get.translation(targets)}各造成1点伤害`).set('choice', effect > 0).forResultBool();
                     if (!bool) return;
                     lib.skill.wechatmoulvenum.changeNum(-2, player);
                     for (const target of targets) await target.damage('fire');
@@ -11452,34 +11452,70 @@ const packs = function () {
                 trigger: { global: 'phaseEnd' },
                 filter(event, player) {
                     const { currentPhase } = _status;
-                    if (!currentPhase?.isIn() || !game.hasPlayer(current => current != currentPhase) || !game.hasPlayer(current => current.hasHistory('damage'))) return false;
-                    const num = player.countMark('wechatzhengren_record') + 1;
-                    return (num == 1 && currentPhase.countCards('he')) || (num == 2 && currentPhase.countCards('he') > 1) || (num == 3 && currentPhase.countCards('h') && game.hasPlayer(current => current != currentPhase && current.countCards('h')));
+                    if (!currentPhase?.isIn() || !game.hasPlayer(current => current != currentPhase) || !game.hasPlayer2(current => current.hasHistory('damage'))) return false;
+                    const list = player.getStorage('wechatzhengren_used');
+                    return ([0, 1].some(num => !list.includes(num)) && currentPhase.countCards('he') > 1) || (!list.includes(2) && currentPhase.countCards('h') || game.hasPlayer(current => current != currentPhase && current.countCards('h')));
                 },
-                locked: true,
                 async cost(event, trigger, player) {
-                    event.result = await player.chooseTarget(get.prompt2(event.skill), (card, player, target) => {
-                        if (target == _status.currentPhase) return false;
-                        const num = player.countMark('wechatzhengren_record') + 1;
-                        return num != 3 || target.countCards('h');
-                    }, true).set('ai', target => {
-                        const player = get.player();
-                        return get.attitude(player, target);
-                    }).forResult();
+                    const { currentPhase } = _status;
+                    const str = get.translation(currentPhase);
+                    const list = [`选项一：${str}交给B两张牌`, `选项二：${str}弃置两张牌并令B摸两张牌`, `选项三：${str}以手牌中花色最多的牌交换B手牌中花色最少的牌`];
+                    const { result } = await player.chooseButtonTarget({
+                        createDialog: [
+                            `诤仁：是否选择一名其他角色并令${str}执行一项？`,
+                            [
+                                list.map((item, i) => [i, item]),
+                                'textbutton',
+                            ]
+                        ],
+                        complexSelect: true,
+                        filterButton(button) {
+                            const player = get.player();
+                            const { link } = button;
+                            const { currentPhase } = _status;
+                            if (player.getStorage('wechatzhengren_used').includes(link)) return false;
+                            if (link != 2) return currentPhase.countCards('he') > 1;
+                            return currentPhase.countCards('h') || game.hasPlayer(current => current != currentPhase && current.countCards('h'));
+                        },
+                        filterTarget(card, player, target) {
+                            if (target == _status.currentPhase) return false;
+                            const { link } = ui.selected.buttons[0];
+                            const { currentPhase } = _status;
+                            return link != 2 || (currentPhase.countCards('h') || target.countCards('h'));
+                        },
+                        ai1(button) {
+                            const player = get.player()
+                            const { link } = button;
+                            const { currentPhase } = _status;
+                            const att = get.attitude(player, currentPhase);
+                            if (att > 0) return 0;
+                            if (link == 1) return 2;
+                            return 1;
+                        },
+                        ai2(target) {
+                            const player = get.player(), att = get.attitude(player, target);
+                            return att;
+                        },
+                    });
+                    event.result = {
+                        bool: result?.bool,
+                        targets: result?.targets,
+                        cost_data: result?.links,
+                    }
                 },
                 async content(event, trigger, player) {
-                    const { targets: [target] } = event, { currentPhase } = _status;
-                    const record = event.name + '_record';
+                    const { targets: [target], cost_data: [choice] } = event, { currentPhase } = _status;
+                    game.log(player, '选择了', '#g【诤仁】', '的', '#y选项' + get.cnNumber(1 + choice, true));
+                    const record = event.name + '_used';
                     player.addTempSkill(record, 'roundStart');
-                    player.addMark(record, 1, false);
+                    player.markAuto(record, [choice]);
                     if (!currentPhase?.isIn()) return;
-                    const num = player.countMark(record);
-                    if (num == 1 && currentPhase.countCards('he') && target.isIn()) await currentPhase.chooseToGive(target, 'he', true);
-                    else if (num == 2) {
+                    if (choice == 0) await currentPhase.chooseToGive(target, 'he', true, 2);
+                    else if (choice == 1) {
                         if (currentPhase.countCards('he')) await currentPhase.chooseToDiscard('he', true, 2);
                         await target.draw(2);
                     }
-                    else {
+                    else if (choice == 2) {
                         if ([currentPhase, target].every(current => !current.countCards('h'))) return;
                         let cards1, cards2;
                         for (const current of [currentPhase, target].sortBySeat()) {
@@ -11507,10 +11543,10 @@ const packs = function () {
                     }
                 },
                 subSkill: {
-                    record: {
+                    used: {
                         charlotte: true,
                         onremove: true,
-                        intro: { content: '本轮〖诤仁〗已执行#项' },
+                        intro: { content: (storage, player) => `本轮〖诤仁〗已执行选项${storage.map(i => get.cnNumber(i + 1, true)).join('、')}`, },
                     }
                 }
             },
@@ -11546,25 +11582,26 @@ const packs = function () {
                     tag: {
                         mod: {
                             aiOrder(player, card, num) {
-                                if (get.itemtype(card) == 'card' && card.hasGaintag('wechatjijian_tag') && _status.currentPhase && get.damageEffect(_status.currentPhase, player, player) > 0) return num + 0.1;
+                                if (get.itemtype(card) == 'card' && card.hasGaintag('wechatjijian_tag') && player != _status.currentPhase && game.hasPlayer(current => get.damageEffect(current, player, player) > 0 && player != current)) return num + 0.1;
                             },
                         },
                         charlotte: true,
                         onremove: true,
                         trigger: { global: ['loseAfter', 'loseAsyncAfter', 'cardsDiscardAfter'], },
-                        forced: true,
                         filter(event, player) {
-                            const { currentPhase } = _status;
-                            return currentPhase?.isIn() && event.getd?.().some(card => get.position(card) == 'd' && player.getStorage('wechatjijian_tag').includes(card));
+                            return player !== _status.currentPhase && event.getd?.().some(card => get.position(card) == 'd' && player.getStorage('wechatjijian_tag').includes(card)) && game.hasPlayer(current => player != current);
                         },
-                        logTarget: () => _status.currentPhase,
+                        async cost(event, trigger, player) {
+                            const cards = trigger.getd().filter(card => get.position(card) == 'd' && player.getStorage(event.skill).includes(card));
+                            if (cards.length) player.unmarkAuto(event.skill, cards);
+                            if (!player.getStorage(event.skill).length) player.removeSkill(event.skill);
+                            event.result = await player.chooseTarget('选择一名其他角色对其造成1点伤害', lib.filter.notMe).set('ai', target => {
+                                const player = get.player();
+                                return get.damageEffect(target, player, player);
+                            }).forResult();
+                        },
                         async content(event, trigger, player) {
-                            const cards = trigger.getd().filter(card => get.position(card) == 'd' && player.getStorage(event.name).includes(card));
-                            if (cards.length) {
-                                player.unmarkAuto(event.name, cards);
-                                await _status.currentPhase.damage();
-                                if (!player.getStorage(event.name).length) player.removeSkill(event.name);
-                            }
+                            await event.targets[0].damage();
                         },
                     }
                 }
@@ -13789,7 +13826,7 @@ const packs = function () {
                 },
                 enable: 'phaseUse',
                 filter(event, player) {
-                    if (!game.hasPlayer(current => current.hasSkill('jiu'))) return false;
+                    if (game.hasPlayer(current => current.hasSkill('jiu'))) return false;
                     return player.countDiscardableCards(player, 'he') >= event.wechatxianshang_num;
                 },
                 filterCard: lib.filter.cardDiscardable,
@@ -14022,20 +14059,20 @@ const packs = function () {
         },
         dynamicTranslate: {
             wechatxiangzhi(player) {
-                if (player.storage.wechatxiangzhi) return get.YunLvInform() + '，出牌阶段限一次，<br>平：你可以摸一张牌。<br><span class="bluetext">仄：你可以回复1点体力。</span><br>转韵：你发动〖节烈〗结算完成后。';
-                return get.YunLvInform() + '，出牌阶段限一次，<br><span class="bluetext">平：你可以摸一张牌。</span><br>仄：你可以回复1点体力。<br>转韵：你发动〖节烈〗结算完成后。';
+                if (player.storage.wechatxiangzhi) return `${get.poptip('rule_yunlvSkill')}，出牌阶段限一次，<br>平：你可以摸一张牌。<br><span class="bluetext">仄：你可以回复1点体力。</span><br>转韵：你发动〖节烈〗结算完成后。`;
+                return `${get.poptip('rule_yunlvSkill')}，出牌阶段限一次，<br><span class="bluetext">平：你可以摸一张牌。</span><br>仄：你可以回复1点体力。<br>转韵：你发动〖节烈〗结算完成后。`;
             },
             wechattongxin(player) {
-                if (player.storage.wechattongxin) return get.YunLvInform() + '，出牌阶段限一次，<br>平：出牌阶段限一次，你可以令一名其他角色交给你一张手牌，然后若其手牌数不大于你，其摸一张牌。<br><span class="bluetext">仄：出牌阶段限一次，你可以交给一名其他角色一张手牌，然后若其手牌数不小于你，你对其造成1点伤害。</span><br>转韵：你于出牌阶段使用本回合未使用过的类型的牌。';
-                return get.YunLvInform() + '，出牌阶段限一次，<br><span class="bluetext">平：出牌阶段限一次，你可以令一名其他角色交给你一张手牌，然后若其手牌数不大于你，其摸一张牌。</span><br>仄：出牌阶段限一次，你可以交给一名其他角色一张手牌，然后若其手牌数不小于你，你对其造成1点伤害。<br>转韵：你于出牌阶段使用本回合未使用过的类型的牌。';
+                if (player.storage.wechattongxin) return `${get.poptip('rule_yunlvSkill')}，出牌阶段限一次，<br>平：出牌阶段限一次，你可以令一名其他角色交给你一张手牌，然后若其手牌数不大于你，其摸一张牌。<br><span class="bluetext">仄：出牌阶段限一次，你可以交给一名其他角色一张手牌，然后若其手牌数不小于你，你对其造成1点伤害。</span><br>转韵：你于出牌阶段使用本回合未使用过的类型的牌。`;
+                return `${get.poptip('rule_yunlvSkill')}，出牌阶段限一次，<br><span class="bluetext">平：出牌阶段限一次，你可以令一名其他角色交给你一张手牌，然后若其手牌数不大于你，其摸一张牌。</span><br>仄：出牌阶段限一次，你可以交给一名其他角色一张手牌，然后若其手牌数不小于你，你对其造成1点伤害。<br>转韵：你于出牌阶段使用本回合未使用过的类型的牌。`;
             },
             wechatsblongdan(player) {
                 if (player.storage.wechatsblongdan) return '你可以将一张基本牌当本回合未以此法使用的基本牌使用或打出并摸一张牌。';
                 return '你可以将【杀】当【闪】、【闪】当【杀】使用或打出，若你本回合未造成过伤害，你摸一张牌。';
             },
             wechatbeijia(player) {
-                if (player.storage.wechatbeijia) return get.YunLvInform() + '。每回合限一次，<br>平：你可以将一张点数大于上一张你使用的牌当任意锦囊牌使用；<br><span class="bluetext">仄：你可以将一张点数小于上一张你使用的牌当任意基本牌使用。</span><br>转韵：你于出牌阶段使用一张点数等于上一张你使用的牌。';
-                return get.YunLvInform() + '。每回合限一次，<br><span class="bluetext">平：你可以将一张点数大于上一张你使用的牌当任意锦囊牌使用；</span><br>仄：你可以将一张点数小于上一张你使用的牌当任意基本牌使用。<br>转韵：你于出牌阶段使用一张点数等于上一张你使用的牌。';
+                if (player.storage.wechatbeijia) return `${get.poptip('rule_yunlvSkill')}。每回合限一次，<br>平：你可以将一张点数大于上一张你使用的牌当任意锦囊牌使用；<br><span class="bluetext">仄：你可以将一张点数小于上一张你使用的牌当任意基本牌使用。</span><br>转韵：你于出牌阶段使用一张点数等于上一张你使用的牌。`;
+                return `${get.poptip('rule_yunlvSkill')}。每回合限一次，<br><span class="bluetext">平：你可以将一张点数大于上一张你使用的牌当任意锦囊牌使用；</span><br>仄：你可以将一张点数小于上一张你使用的牌当任意基本牌使用。<br>转韵：你于出牌阶段使用一张点数等于上一张你使用的牌。`;
             },
             wechatweiwo(player) {
                 const bool = player.storage.wechatweiwo;
@@ -14064,7 +14101,7 @@ const packs = function () {
                     ping = `<br><span class='firetext'>${ping}</span>`;
                     ze = `<br>${ze}</span>`;
                 }
-                let start = get.YunLvInform() + '。出牌阶段限一次，你可以：', end = '<br>转韵：出牌阶段有角色使用【酒】结算结束后。';
+                let start = `${get.poptip('rule_yunlvSkill')}。出牌阶段限一次，你可以：`, end = '<br>转韵：出牌阶段有角色使用【酒】结算结束后。';
                 return `${start}${ping}；${ze}${end}`;
             },
         },
@@ -14216,10 +14253,10 @@ const packs = function () {
             wechatjielie: '节烈',
             wechatjielie_info: '出牌阶段限一次，你可以选择一名其他角色，然后你选择一项：①令其选择是否使用一张牌，若其使用了红色的【杀】，你失去1点体力且本回合可以继续发动〖节烈〗；②你下次发动〖相知〗时，令该角色获得相同的效果。',
             wechatxiangzhi: '相知',
-            wechatxiangzhi_info: get.YunLvInform() + '，出牌阶段限一次，<br>平：你可以摸一张牌。<br>仄：你可以回复1点体力。<br>转韵：你发动〖节烈〗结算完成后。',
+            wechatxiangzhi_info: `${get.poptip('rule_yunlvSkill')}，出牌阶段限一次，<br>平：你可以摸一张牌。<br>仄：你可以回复1点体力。<br>转韵：你发动〖节烈〗结算完成后。`,
             wechat_zhiyin_xiaoqiao: '极小乔',
             wechattongxin: '同心',
-            wechattongxin_info: get.YunLvInform() + '，出牌阶段限一次，<br>平：出牌阶段限一次，你可以令一名其他角色交给你一张手牌，然后若其手牌数不大于你，其摸一张牌。<br>仄：出牌阶段限一次，你可以交给一名其他角色一张手牌，然后若其手牌数不小于你，你对其造成1点伤害。<br>转韵：你于出牌阶段使用本回合未使用过的类型的牌。',
+            wechattongxin_info: `${get.poptip('rule_yunlvSkill')}，出牌阶段限一次，<br>平：出牌阶段限一次，你可以令一名其他角色交给你一张手牌，然后若其手牌数不大于你，其摸一张牌。<br>仄：出牌阶段限一次，你可以交给一名其他角色一张手牌，然后若其手牌数不小于你，你对其造成1点伤害。<br>转韵：你于出牌阶段使用本回合未使用过的类型的牌。`,
             wechatzhaoyan: '昭颜',
             wechatzhaoyan_info: '每回合限一次，当你成为其他角色使用牌的目标后，若其手牌数大于你，你摸一张牌。',
             wechat_caiwenji: '微信蔡琰',
@@ -14261,11 +14298,11 @@ const packs = function () {
             wechatmoulvenum: '谋略值',
             wechat_zhiyin_guojia: '极郭嘉',
             wechatdingce: '定策',
-            wechatdingce_info: '①游戏开始时，你获得3点' + get.MouLveInform() + '。②一名角色的回合结束时，你获得X点' + get.MouLveInform() + '（X为你本回合使用的牌的类型数）。',
+            wechatdingce_info: `①游戏开始时，你获得3点${get.poptip('rule_moulvenum')}。②一名角色的回合结束时，你获得X点${get.poptip('rule_moulvenum')}（X为你本回合使用的牌的类型数）。`,
             wechatsuanlve: '算略',
-            wechatsuanlve_info: '每回合限一次，你可以失去1+X点' + get.MouLveInform() + '，将一张牌当作你本回合使用的上一张基本牌或普通锦囊牌使用（X为你本轮发动〖算略〗的次数）。',
+            wechatsuanlve_info: `每回合限一次，你可以失去1+X点${get.poptip('rule_moulvenum')}，将一张牌当作你本回合使用的上一张基本牌或普通锦囊牌使用（X为你本轮发动〖算略〗的次数）。`,
             wechatmiaoji: '妙计',
-            wechatmiaoji_info: '每回合限一次，你可以：①失去1点' + get.MouLveInform() + '，视为使用【过河拆桥】；②失去2点' + get.MouLveInform() + '，视为使用【无懈可击】；③失去3点' + get.MouLveInform() + '，视为使用【无中生有】。',
+            wechatmiaoji_info: `每回合限一次，你可以：①失去1点${get.poptip('rule_moulvenum')}，视为使用【过河拆桥】；②失去2点${get.poptip('rule_moulvenum')}，视为使用【无懈可击】；③失去3点${get.poptip('rule_moulvenum')}，视为使用【无中生有】。`,
             wechat_guanyu: '微信关羽',
             wechatqinglong: '青龙',
             wechatqinglong_info: '锁定技，若你有空置的且未被废除的武器栏，则你视为装备【青龙偃月刀】。',
@@ -14403,7 +14440,7 @@ const packs = function () {
             wechatzhujiu_info: '出牌阶段限一次，你可以与一名其他角色交换一张手牌，若这两张手牌的颜色：相同，你回复1点体力；不相同，你对其造成1点伤害。',
             wechat_zhiyin_zhugeliang: '极诸葛亮',
             wechatsangu: '三顾',
-            wechatsangu_info: '锁定技，当你每三次成为牌的目标后，你获得3点' + get.MouLveInform() + '，然后你占卜3。',
+            wechatsangu_info: `锁定技，当你每三次成为牌的目标后，你获得3点${get.poptip('rule_moulvenum')}，然后你卜算3。`,
             wechatyanshi: '演势',
             wechatyanshi_backup: '演势',
             wechatyanshi_info: '出牌阶段限一次，你可以从牌堆顶或牌堆底摸一张牌，且当你于本阶段使用此牌时，你可以弃置一张牌并发动从另一端摸牌的〖演势〗。',
@@ -14633,7 +14670,7 @@ const packs = function () {
             wechatxionghuo_info: '游戏开始时，你获得3个“暴戾”标记（标记上限为3）。出牌阶段，你可以交给一名其他角色一个“暴戾”标记。当你对有“暴戾”标记的其他角色造成伤害时，此伤害+1。有“暴戾”标记的其他角色的出牌阶段开始时，其移去所有“暴戾”标记并随机执行一项：1.受到1点火焰伤害且本回合不能使用【杀】；2.失去1点体力且本回合手牌上限-1；3.你随机获得其两张牌。',
             wechat_zhiyin_caiwenji: '极蔡琰',
             wechatbeijia: '悲笳',
-            wechatbeijia_info: '韵律技。每回合限一次，平：你可以将一张点数大于上一张你使用的牌当任意锦囊牌使用；仄：你可以将一张点数小于上一张你使用的牌当任意基本牌使用。转韵：你于出牌阶段使用一张点数等于上一张你使用的牌。',
+            wechatbeijia_info: `${get.poptip('rule_yunlvSkill')}。每回合限一次，平：你可以将一张点数大于上一张你使用的牌当任意锦囊牌使用；仄：你可以将一张点数小于上一张你使用的牌当任意基本牌使用。转韵：你于出牌阶段使用一张点数等于上一张你使用的牌。`,
             wechatsifu: '思赋',
             wechatsifu_info: '出牌阶段各限一次，你可以选择一个你本回合使用过或未使用过的牌的点数，然后随机从牌堆中获得一张此点数的牌。',
             wechatresifu: '思赋',
@@ -14651,9 +14688,9 @@ const packs = function () {
             wechatjiewei_info: '出牌阶段限一次，你可以将X张手牌交给一名其他角色（X为你的手牌数与体力值之差）。',
             wechat_zhiyin_zhouyu: '极周瑜',
             wechatyingrui: '英锐',
-            wechatyingrui_info: '摸牌阶段结束时或当你杀死一名角色后，你获得4点' + get.MouLveInform() + '。',
+            wechatyingrui_info: `摸牌阶段结束时或当你杀死一名角色后，你获得4点${get.poptip('rule_moulvenum')}。`,
             wechatfenli: '焚离',
-            wechatfenli_info: '出牌阶段限一次。你可以消耗2点' + get.MouLveInform() + '并弃置至多两名座位连续的角色一张牌。若以此弃置的牌颜色相同，你可以消耗2点' + get.MouLveInform() + '对这些角色造成1点火焰伤害。',
+            wechatfenli_info: `出牌阶段限一次。你可以消耗2点${get.poptip('rule_moulvenum')}并弃置至多两名座位连续的角色一张牌。若以此弃置的牌颜色相同，你可以消耗2点${get.poptip('rule_moulvenum')}对这些角色造成1点火焰伤害。`,
             wechatqugu: '曲顾',
             wechatqugu_info: '当你每回合首次成为其他角色使用牌的目标后，你可以从牌堆中获得一张与此牌类别不同的牌。',
             wechat_zhiyin_sunquan: '极孙权',
@@ -14665,7 +14702,7 @@ const packs = function () {
             wechatyihan: '翊汉',
             wechatyihan_info: '出牌阶段限一次，你可以展示一名其他角色的一张手牌，然后令其选择一项：1.交给你展示牌；2.你视为对其使用一张无次数限制的【杀】。',
             wechatgywuwei: '武威',
-            wechatgywuwei_info: get.ShiwuInform() + '，出牌阶段，你可以弃置X+1张牌并弃置一名角色的等量张牌（X为你本阶段发动〖武威〗的次数）。若你以此法弃置的牌的点数之和不大于其因此被弃置的牌的点数之和，你对其造成1点雷电伤害。',
+            wechatgywuwei_info: `${get.poptip('rule_shiwuSkill')}，出牌阶段，你可以弃置X+1张牌并弃置一名角色的等量张牌（X为你本阶段发动〖武威〗的次数）。若你以此法弃置的牌的点数之和不大于其因此被弃置的牌的点数之和，你对其造成1点雷电伤害。`,
             wechat_sb_huangzhong: '微信谋黄忠',
             wechatsbliegong: '烈弓',
             wechatsbliegong_info: '当你使用牌时或成为其他角色使用牌的目标后，若你未记录此牌的花色，你记录此牌的花色。当你使用【杀】指定唯一目标后，若〖烈弓〗存在记录花色，则你可亮出牌堆顶的X张牌（X为〖烈弓〗记录过的花色数-1），令此【杀】的伤害值基数+Y（Y为亮出牌中被〖烈弓〗记录过花色的牌的数量），且目标角色不能使用〖烈弓〗记录过花色的牌响应此【杀】。此【杀】使用结算结束后，你清除〖烈弓〗记录的的花色。',
@@ -14709,14 +14746,14 @@ const packs = function () {
             wechataoxiang_info: '每回合限一次，你可以视为使用一张【酒】并从牌堆中获得一张你手牌中未拥有类别的牌。若如此做，则本回合结束时，你选择一项：①若你的武将牌正面朝上，则将武将牌翻面；②令〖才溢〗于本轮失效。',
             wechat_zhiyin_jiangwei: '极姜维',
             wechatgujin: '鼓进',
-            wechatgujin_info: '①一名角色的回合结束时，若你本回合未成为过其他角色使用牌的目标，则你获得1点' + get.MouLveInform() + '。②当你抵消其他角色使用的【杀】后，你获得2点' + get.MouLveInform() + '。',
+            wechatgujin_info: `①一名角色的回合结束时，若你本回合未成为过其他角色使用牌的目标，则你获得1点${get.poptip('rule_moulvenum')}。②当你抵消其他角色使用的【杀】后，你获得2点${get.poptip('rule_moulvenum')}。`,
             wechatqumou: '屈谋',
             wechatqumou_info: '出牌阶段开始时，你可以令你本回合无法使用、打出、弃置基本牌/锦囊牌。若如此做，你使用的下三张锦囊牌/基本牌无距离和任何次数限制且可以额外指定一个目标。',
             wechat_zhiyin_zhurong: '极祝融',
             wechatxiangwei: '象威',
             wechatxiangwei_info: '准备阶段，你可以视为使用【南蛮入侵】。然后你选择一项：①本回合对未受到此牌造成的伤害的角色使用牌无任何次数限制；②本回合使用的下X张【杀】造成的伤害+1（X为受到此牌造成的伤害的角色数）。',
             wechatyanfeng: '炎锋',
-            wechatyanfeng_info: get.ShiwuInform() + '，出牌阶段，你可以将一张牌当作火【杀】使用。此牌结算完毕后，若此牌未造成伤害且仅指定唯一目标，则你令目标角色选择一项：①对你造成1点伤害，然后随机弃置一张牌；②令你摸一张牌，然后本回合你对其使用的下一张【杀】无效。',
+            wechatyanfeng_info: `${get.poptip('rule_shiwuSkill')}，出牌阶段，你可以将一张牌当作火【杀】使用。此牌结算完毕后，若此牌未造成伤害且仅指定唯一目标，则你令目标角色选择一项：①对你造成1点伤害，然后随机弃置一张牌；②令你摸一张牌，然后本回合你对其使用的下一张【杀】无效。`,
             wechat_zhiyin_hetaihou: '极何太后',
             wechatfuyin: '覆胤',
             wechatfuyin_info: '①游戏开始时，你可令一名其他角色获得1枚“覆胤”标记。拥有“覆胤”标记的角色跳过其摸牌阶段。②摸牌阶段，你额外摸三张牌，然后此阶段结束时你依次交给场上拥有“覆胤”标记的存活角色两张牌。',
@@ -14736,7 +14773,7 @@ const packs = function () {
             wechatbianguan_info: '锁定技。①当你本轮首次参加共同拼点后，你获得所有拼点牌中的伤害牌和基本牌。②当你死亡时，你令所有其他角色进行共同拼点，然后所有败者各失去1点体力。',
             wechat_zhiyin_zhangfei: '极张飞',
             wechathupo: '虎魄',
-            wechathupo_info: get.ShiwuInform() + '，出牌阶段，你可以展示你与一名其他角色的所有手牌，然后你选择一项：1.弃置你与其一个牌名的所有牌；2.获得其一张你没有的牌名的牌。',
+            wechathupo_info: `${get.poptip('rule_shiwuSkill')}，出牌阶段，你可以展示你与一名其他角色的所有手牌，然后你选择一项：1.弃置你与其一个牌名的所有牌；2.获得其一张你没有的牌名的牌。`,
             wechatrehupo: '虎魄',
             wechatrehupo_info: '出牌阶段每项各限一次，你可以展示你与一名其他角色的所有手牌，然后你选择一项：1.弃置你与其一个牌名的所有牌；2.获得其一张你没有的牌名的牌。',
             wechathanxing: '酣兴',
@@ -14772,9 +14809,9 @@ const packs = function () {
             wechatenshe_info: '锁定技。①当你进行共同拼点时，你令拼点牌点数+X（X为本局游戏你发动〖恩赦②〗的次数）。②每名角色限一次，当你对一名角色造成伤害时，你防止此伤害并获得其手牌中所有点数最大的牌，且其不可使用其中包含类别的牌直到其下个回合开始。',
             wechat_zhiyin_kongrong: '极孔融',
             wechatzhengren: '诤仁',
-            wechatzhengren_info: '锁定技。一名角色A的回合结束时，若本回合有角色受到过伤害，你选择一名不为A的角色B，然后令A依次执行本轮未被执行的一项：①交给B一张牌；②弃置两张牌并令B摸两张牌；③以手牌中花色最多的牌交换B手牌中花色最少的牌。',
+            wechatzhengren_info: '一名角色A的回合结束时，若本回合有角色受到过伤害，你选择一名不为A的角色B，然后令A执行本轮未被执行的一项：①交给B两张牌；②弃置两张牌并令B摸两张牌；③以手牌中花色最多的牌交换B手牌中花色最少的牌。',
             wechatjijian: '讥谏',
-            wechatjijian_info: '出牌阶段限一次，你可记录一张基本牌或锦囊牌。当此牌进入弃牌堆后，你对当前回合角色造成1点伤害。',
+            wechatjijian_info: '出牌阶段限一次，你可记录一张基本牌或锦囊牌。当此牌于你的回合外进入弃牌堆后，你可以对一名其他角色造成1点伤害。',
             wechat_zhiyin_jiaxu: '极贾诩',
             wechatquanbian: '权变',
             wechatquanbian_info: '锁定技。当一名角色成为伤害牌的唯一目标后，若此牌与上一张指定该角色的伤害牌：①颜色相同，你获得1点谋略值；牌名相同，你下次发动〖妙计〗时失去的谋略值-1。',
@@ -14805,7 +14842,7 @@ const packs = function () {
             wechatsbhunzi_info: '觉醒技。当你脱离濒死状态后，你减1点体力上限，回复1点体力，摸三张牌。然后你获得〖英姿〗和〖英魂〗。',
             wechat_zhiyin_zhaoyun: '极赵云',
             wechatlongyi: '龙翊',
-            wechatlongyi_info: get.ShiwuInform() + '，当你使用或打出一张牌A时，你可以展示牌堆顶至多X张牌，若这些牌与A花色均不同，你令一名角色获得这些牌，否则你将这些牌置入弃牌堆（X为存活角色数的一半，且向下取整）。',
+            wechatlongyi_info: `${get.poptip('rule_shiwuSkill')}，当你使用或打出一张牌A时，你可以展示牌堆顶至多X张牌，若这些牌与A花色均不同，你令一名角色获得这些牌，否则你将这些牌置入弃牌堆（X为存活角色数的一半，且向下取整）。`,
             wechattalan: '踏澜',
             wechattalan_tag: 'invisible',
             wechattalan_info: '锁定技。你使用实体牌中包含你于出牌阶段或回合外获得的牌的牌无任何次数限制。',
@@ -14813,7 +14850,7 @@ const packs = function () {
             wechatjueya_info: '限定技。当你进入濒死状态时，你可以将你的所有手牌以任意顺序置于牌堆顶。若如此做，你将体力值回复至1点，当前回合结束后，你执行一个额外回合。',
             wechat_zhiyin_dianwei: '极典韦',
             wechatkangyong: '亢勇',
-            wechatkangyong_info: get.ShiwuInform() + '，出牌阶段或当你受到伤害后，你可以亮出牌堆顶X张牌（X为你的已损失体力值），然后你选择其中一张牌A并令一名其他角色选择一项：1.你获得牌A，本回合其不能使用或打出与此牌花色相同的牌；2.你获得其余不为A的牌，本回合你对其使用这些牌无距离和次数限制。',
+            wechatkangyong_info: `${get.poptip('rule_shiwuSkill')}，出牌阶段或当你受到伤害后，你可以亮出牌堆顶X张牌（X为你的已损失体力值），然后你选择其中一张牌A并令一名其他角色选择一项：1.你获得牌A，本回合其不能使用或打出与此牌花色相同的牌；2.你获得其余不为A的牌，本回合你对其使用这些牌无距离和次数限制。`,
             wechatqingqu: '勍躯',
             wechatqingqu_info: '每回合限一次。当你进入濒死状态时，你可以判定。若判定结果的花色与当前回合角色本回合使用过的牌花色均不同，你回复1点体力。',
             wechat_zhiyin_xunyou: '极荀攸',
@@ -14823,7 +14860,7 @@ const packs = function () {
             wechatlance_info: '出牌阶段限一次，你可以将一张牌A置于武将牌上，称为“帷谟”。然后你可以视为使用一张普通锦囊牌（此牌合法目标数须不大于A的合法目标数）。',
             wechat_zhiyin_sunshangxiang: '极孙尚香',
             wechatxiaojie: '枭捷',
-            wechatxiaojie_info: get.ShiwuInform() + '，出牌阶段，你可以弃置场上的一张牌并视为使用一张【杀】或【酒】，然后你与失去牌的角色本回合受到的伤害+1。若你以此法弃置了自己场上的牌，则此牌不计入次数。',
+            wechatxiaojie_info: `${get.poptip('rule_shiwuSkill')}，出牌阶段，你可以弃置场上的一张牌并视为使用一张【杀】或【酒】，然后你与失去牌的角色本回合受到的伤害+1。若你以此法弃置了自己场上的牌，则此牌不计入次数。`,
             wechatjiaohao: '骄豪',
             wechatjiaohao_tag: 'invisible',
             wechatjiaohao_info: '出牌阶段限一次。你可以选择一名手牌数与体力值之差不大于2的其他角色。你与其重复此流程：同时选择一张未以此法选择过的手牌并展示，直到你与其以此法展示的牌中有相同牌名的牌或有角色因此展示了所有手牌。然后你弃置此流程中你与其未展示的所有手牌，若这些牌有装备牌，你获得并使用之。',
@@ -14871,7 +14908,7 @@ const packs = function () {
             wechattscjizhi_info: '①每轮每名角色限一次。当你使用【杀】或【决斗】造成伤害后，你可以令一名角色于其下个摸牌阶段的额定摸牌数和出牌阶段使用【杀的次数上限+1。②当你死亡后，你可以令一名其他角色获得〖赍志〗。',
             wechat_zhiyin_diaochan: '极貂蝉',
             wechatxiaoshao: '萧韶',
-            wechatxiaoshao_info: '韵律技。出牌阶段限一次，你可以：平：弃置一名角色一张牌，然后其视为一张无距离和次数限制的【杀】，且其以此法使用的【杀】指定你为目标时，你可以为此牌指定一个额外目标；仄：令一名角色摸一张牌，然后其本回合内使用的下一张牌无效。转韵：出牌阶段有角色使用【酒】结算结束后。',
+            wechatxiaoshao_info: `${get.poptip('rule_yunlvSkill')}。出牌阶段限一次，你可以：平：弃置一名角色一张牌，然后其视为一张无距离和次数限制的【杀】，且其以此法使用的【杀】指定你为目标时，你可以为此牌指定一个额外目标；仄：令一名角色摸一张牌，然后其本回合内使用的下一张牌无效。转韵：出牌阶段有角色使用【酒】结算结束后。`,
             wechatxianshang: '献觞',
             wechatxianshang_info: '出牌阶段，若场上没有处于【酒】状态的角色，你可以弃置X张牌并选择一名角色（X为本阶段此技能发动的次数），你摸一张牌并令其视为使用一张无次数限制的【酒】。',
             wechataoyan: '㜜妍',
