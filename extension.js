@@ -61,7 +61,7 @@ game.bolShowNewPack = function () {
 };
 
 let extensionPackage = {
-	name: "活动武将",
+	name: '活动武将',
 	editable: false,
 	content: content,
 	precontent: precontent,

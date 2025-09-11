@@ -33106,7 +33106,7 @@ const packs = function () {
             minimiaoshangshi: {
                 group: 'minishangshi',
                 audio: 'ext:活动武将/audio/skill:2',
-                trigger: { global: 'changeSkillsAfter' },
+                trigger: { player: 'changeSkillsAfter' },
                 filter(event, player) {
                     return event.addSkill.includes('minidoumao') ^ event.removeSkill.includes('minidoumao');
                 },
