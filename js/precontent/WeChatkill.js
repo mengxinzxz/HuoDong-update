@@ -11895,7 +11895,7 @@ const packs = function () {
             },
             wechatgaojie: {
                 audio: 'ext:活动武将/audio/skill:2',
-                trigger: { player: 'phaseDrawBegin1' },
+                trigger: { player: 'phaseUseBegin' },
                 filter(event, player) {
                     const numbers = player.getCards('hej').map(card => get.number(card));
                     const max = Math.max(...numbers);
@@ -11921,7 +11921,6 @@ const packs = function () {
                     })()).forResult();
                 },
                 async content(event, trigger, player) {
-                    trigger.changeToZero();
                     const { cards } = event;
                     await player.recast(cards);
                     const list = cards.map(card => get.number(card)).sort((a, b) => a - b);
