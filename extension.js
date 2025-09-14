@@ -13,17 +13,13 @@ game.bolShowNewPack = function () {
 	var HuoDong_update = [
 		'/setPlayer/',
 		'bugfix',
-		'欢杀新武将：喵曹婴、葛玄、界曹叡、念曹丕、蔡瑁张允、辛毗、战陆逊、关樾、纪灵、星袁术',
-		'微杀新武将：谋韩当、谋高顺、极太史慈、极貂蝉、极步练师、极马云騄',
-		'其他新武将：旧董翓、玄蝶祢衡',
-		'优化念诸葛“定乱”、念吕布“踏阵”、念周瑜“奏乐”游戏流程',
+		'重新分配微信三国杀的武将分包',
+		'重新添加微信赵云，并单独增加微信界赵云',
 		'To be continued...',
 	];
 	//更新武将
 	var HuoDong_players = [
-		'bfake_miheng', 'Mmiao_caoying', 'Mbaby_gexuan', 'Mbaby_caorui', 'old_dongxie', 'Mnian_caopi',
-		'Mbaby_caimaozhangyun', 'Mbaby_xinpi', 'Mfight_luxun', 'Mbaby_guanyue', 'Mbaby_jiling', 'Mbaby_star_yuanshu',
-		'wechat_sb_handang', 'wechat_sb_gaoshun', 'wechat_zhiyin_taishici', 'wechat_zhiyin_diaochan', 'wechat_zhiyin_bulianshi', 'wechat_zhiyin_mayunlu'
+		'wechat_zhaoyun', 'wechat_re_zhaoyun',
 	];
 	//加载
 	var dialog = ui.create.dialog(

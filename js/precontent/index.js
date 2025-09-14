@@ -295,12 +295,17 @@ export async function precontent(bilibilicharacter) {
     lib.poptip.add({
         name: '谋略值',
         id: 'rule_moulvenum',
-        info: '上限为5，拥有谋略值的角色可以发动技能〖妙计〗（每回合限一次，你可以：①失去1点谋略值，视为使用【过河拆桥】；②失去2点谋略值，视为使用【无懈可击】；③失去3点谋略值，视为使用【无中生有】）。',
+        info: `上限为5，拥有谋略值的角色可以发动技能${get.poptip('wechatmiaoji')}。`,
     });
     lib.poptip.add({
         name: '奋武技',
         id: 'rule_shiwuSkill',
         info: '奋武技的使用次数为本轮你造成和受到的伤害值+1，至多为5。',
+    });
+    lib.poptip.add({
+        name: '牢大',
+        id: 'rule_mamba',
+        info: 'Man! What can I say? Mamba out!',
     });
     //----------------游戏播报·始----------------
     lib.skill._OpenTheGame = {
