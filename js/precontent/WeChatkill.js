@@ -705,7 +705,7 @@ const packs = function () {
                         if (_status.event.skill == 'wechatshemao') return true;
                     },
                 },
-                audio: 'zhangba_skill.mp3',
+                audio: 'zhangba_skill',
                 enable: 'chooseToUse',
                 usable: 1,
                 filterCard: true,
