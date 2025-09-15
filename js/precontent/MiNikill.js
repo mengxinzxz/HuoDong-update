@@ -28930,7 +28930,7 @@ const packs = function () {
                     }
                 }
             },
-            // 星袁术
+            //星袁术
             ministarpizhi: {
                 audio: 'starpizhi',
                 inherit: 'starpizhi',
@@ -28940,7 +28940,7 @@ const packs = function () {
                 },
                 filter(event, player) {
                     let groups = player.getSkills().filter(skill => skill.startsWith('starcanxi_') && lib.group.includes(skill.slice(10))).map(group => group.slice(10));
-                    if (event.name == 'phaseJieshu') return groups.length < 4;
+                    if (event.name == 'phaseJieshu') return groups.length < lib.group.length;
                     if (!game.hasPlayer(current => current != event.player && current.group == event.player.group)) return true;
                     if (!player.getStorage('starcanxi_wangsheng').includes(event.player.group) && !player.getStorage('starcanxi_xiangsi').includes(event.player.group)) return false;
                     return groups.includes(event.player.group);
