@@ -36178,7 +36178,7 @@ const packs = function () {
                     }
                     return !ui._minifightxurui_yiling && game.hasPlayer(current => {
                         if (current.countCards('h')) return false;
-                        return event.getl?.(player)?.hs?.length;
+                        return event.getl?.(current)?.hs?.length;
                     });
                 },
                 locked: false,
