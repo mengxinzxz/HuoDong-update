@@ -35832,6 +35832,7 @@ const packs = function () {
                                     _status.tempBackground = bg;
                                     game.updateBackground();
                                 }, background);
+                                game.addVideo('skill', player, ['minifightdingjun', [true, background]]);
                             }
                             else {
                                 game.broadcastAll(() => {
