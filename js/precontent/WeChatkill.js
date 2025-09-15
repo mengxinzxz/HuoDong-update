@@ -7691,8 +7691,9 @@ const packs = function () {
                     backup: (links) => get.copy(lib.skill['wechatpingcai_' + (links[0][0].slice(0, -'_card'.length))]),
                     prompt: (links) => '###评才 - ' + get.translation(links[0][0]) + '###' + links[0][1],
                 },
-                get ai() {
-                    return get.info('xinfu_pingcai').ai;
+                ai: {
+                    order: 7,
+                    result: { player: 1 },
                 },
                 list: [
                     ['wolong_card', '对一名角色造成1点火属性伤害'],
@@ -7710,8 +7711,8 @@ const packs = function () {
                         },
                         ai: {
                             result: {
-                                target(player, target) {
-                                    return get.damageEffect(target, player, player, 'fire') * (Math.sign(Math.sign(get.attitude(player, target)) - 0.5));
+                                player(player, target) {
+                                    return get.damageEffect(target, player, player, 'fire');
                                 },
                             },
                         },
@@ -7727,8 +7728,8 @@ const packs = function () {
                         },
                         ai: {
                             result: {
-                                target(player, target) {
-                                    return get.effect(target, { name: 'tiesuo' }, player, player) * (Math.sign(Math.sign(get.attitude(player, target)) - 0.5));
+                                player(player, target) {
+                                    return get.effect(target, { name: 'tiesuo' }, player, player);
                                 },
                             },
                         },
@@ -7749,8 +7750,8 @@ const packs = function () {
                         },
                         ai: {
                             result: {
-                                target(player, target) {
-                                    return (get.recoverEffect(target, player, player) + get.effect(target, { name: 'draw' }, player, player)) * (Math.sign(Math.sign(get.attitude(player, target)) - 0.5));
+                                player(player, target) {
+                                    return get.recoverEffect(target, player, player) + get.effect(target, { name: 'draw' }, player, player);
                                 },
                             },
                         },
