@@ -28950,7 +28950,7 @@ const packs = function () {
                         let skills = player.getSkills().filter(skill => skill.startsWith('starcanxi_') && skill.slice(10) == trigger.player.group);
                         player.removeSkill(skills);
                     }
-                    const num = 4 - player.getSkills().filter(skill => skill.startsWith('starcanxi_') && lib.group.includes(skill.slice(10))).length;
+                    const num = lib.group.length - player.getSkills().filter(skill => skill.startsWith('starcanxi_') && lib.group.includes(skill.slice(10))).length;
                     if (num > 0) await player.draw(num);
                     if (player.isDamaged() && trigger.name == 'die') await player.recover();
                 },
@@ -38029,7 +38029,7 @@ const packs = function () {
             minishuangren: '双刃',
             minishuangren_info: '出牌阶段开始时，你可以与一名角色拼点。若你：赢，你可以视为对计算与其距离为1的至多两名角色各使用一张无距离和次数限制的【杀】；没赢，你本阶段不能使用【杀】。',
             ministarpizhi: '圮秩',
-            ministarpizhi_info: `锁定技。①一名角色死亡后，若你拥有该角色对应的“玺角”标记且你本轮发动${get.poptip('starcanxi')}的势力与其相同，或其是该势力最后一名角色，你失去之，然后摸X张牌并回复1点体力。②结束阶段，你摸X张牌。（X为4-你的“玺角”标记数）`,
+            ministarpizhi_info: '锁定技。①一名角色死亡后，若你拥有该角色对应的“玺角”标记且你本轮发动〖残玺〗的势力与其相同，或其是该势力最后一名角色，你失去之，然后摸X张牌并回复1点体力。②结束阶段，你摸X张牌。（X为初始势力数-你的“玺角”标记数）',
             ministarzhonggu: '冢骨',
             ministarzhonggu_info: '主公技，锁定技。摸牌阶段，若游戏轮数大于等于场上的群势力角色数，则你额外摸两张牌。',
             //神
