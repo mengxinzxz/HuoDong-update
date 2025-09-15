@@ -32650,7 +32650,7 @@ const packs = function () {
                 filter(event, player) {
                     if (event.type != 'discard' || event.getlx === false) return false;
                     if (event.name == 'lose' && event.player == player) return false;
-                    var cards = event.cards2.slice(0);
+                    var cards = event.cards.slice(0);
                     var evt = event.getl(player);
                     if (evt?.cards?.length) cards.removeArray(evt.cards);
                     return cards.filter(function (card) {
@@ -35803,6 +35803,11 @@ const packs = function () {
                     if (trigger.name === 'damage') get.info(event.name).updateShiQi(player, trigger.num);
                     else player.draw(trigger.num);
                 },
+                video(player, info) {
+                    if (info[0]) _status.tempBackground = info[1];
+                    else delete _status.tempBackground;
+                    game.updateBackground();
+                },
                 derivation: 'minifightreliegong',
                 global: 'minifightdingjun_ai',
                 group: ['minifightdingjun_change', 'minifightdingjun_effect'],
@@ -35819,17 +35824,24 @@ const packs = function () {
                         content() {
                             if (!ui._minifightdingjun_dingjunshan) {
                                 player.$fullscreenpop('定军山战场', 'fire');
-                                game.broadcastAll(() => {
+                                const background = 'ext:活动武将/image/background/battlefield_dingjun.jpg';
+                                game.broadcastAll(bg => {
                                     if (get.is.phoneLayout()) ui._minifightdingjun_dingjunshan = ui.create.div('.touchinfo.left', ui.window);
                                     else ui._minifightdingjun_dingjunshan = ui.create.div(ui.gameinfo);
                                     ui._minifightdingjun_dingjunshan.innerHTML = '<br>定军山战场';
-                                });
+                                    _status.tempBackground = bg;
+                                    game.updateBackground();
+                                }, background);
+                                game.addVideo('skill', player, ['minifightdingjun', [true, background]]);
                             }
                             else {
                                 game.broadcastAll(() => {
                                     ui._minifightdingjun_dingjunshan.remove();
                                     delete ui._minifightdingjun_dingjunshan;
+                                    delete _status.tempBackground;
+                                    game.updateBackground();
                                 });
+                                game.addVideo('skill', player, ['minifightdingjun', [false]]);
                             }
                         },
                     },
@@ -36029,11 +36041,20 @@ const packs = function () {
                 prompt2: '进入合淝战场？',
                 async content(event, trigger, player) {
                     player.$fullscreenpop('合淝战场', 'fire');
-                    game.broadcastAll(() => {
+                    const background = 'ext:活动武将/image/background/battlefield_hefei.jpg';
+                    game.broadcastAll(bg => {
                         if (get.is.phoneLayout()) ui._minifightbiaoxi_hefei = ui.create.div('.touchinfo.left', ui.window);
                         else ui._minifightbiaoxi_hefei = ui.create.div(ui.gameinfo);
                         ui._minifightbiaoxi_hefei.innerHTML = '<br>合淝战场';
-                    });
+                        _status.tempBackground = bg;
+                        game.updateBackground();
+                    }, background);
+                    game.addVideo('skill', player, [event.name, [true, background]]);
+                },
+                video(player, info) {
+                    if (info[0]) _status.tempBackground = info[1];
+                    else delete _status.tempBackground;
+                    game.updateBackground();
                 },
                 derivation: 'new_retuxi',
                 group: ['minifightbiaoxi_effect', 'minizhengbing_mark'],
@@ -36069,7 +36090,10 @@ const packs = function () {
                                 if (target.isMaxHandcard(true) && ui._minifightbiaoxi_hefei) game.broadcastAll(() => {
                                     ui._minifightbiaoxi_hefei.remove();
                                     delete ui._minifightbiaoxi_hefei;
+                                    delete _status.tempBackground;
+                                    game.updateBackground();
                                 });
+                                game.addVideo('skill', player, ['minifightbiaoxi', [false]]);
                             }
                         },
                     },
@@ -36178,7 +36202,7 @@ const packs = function () {
                     }
                     return !ui._minifightxurui_yiling && game.hasPlayer(current => {
                         if (current.countCards('h')) return false;
-                        return event.getl?.(player)?.hs?.length;
+                        return event.getl?.(current)?.hs?.length;
                     });
                 },
                 locked: false,
@@ -36188,16 +36212,28 @@ const packs = function () {
                         game.broadcastAll(() => {
                             ui._minifightxurui_yiling.remove();
                             delete ui._minifightxurui_yiling;
+                            delete _status.tempBackground;
+                            game.updateBackground();
                         });
+                        game.addVideo('skill', player, [event.name, [false]]);
                     }
                     else {
                         player.$fullscreenpop('夷陵战场', 'fire');
-                        game.broadcastAll(() => {
+                        const background = 'ext:活动武将/image/background/battlefield_yiling.jpg';
+                        game.broadcastAll(bg => {
                             if (get.is.phoneLayout()) ui._minifightxurui_yiling = ui.create.div('.touchinfo.left', ui.window);
                             else ui._minifightxurui_yiling = ui.create.div(ui.gameinfo);
                             ui._minifightxurui_yiling.innerHTML = '<br>夷陵战场';
-                        });
+                            _status.tempBackground = bg;
+                            game.updateBackground();
+                        }, background);
+                        game.addVideo('skill', player, [event.name, [true, background]]);
                     }
+                },
+                video(player, info) {
+                    if (info[0]) _status.tempBackground = info[1];
+                    else delete _status.tempBackground;
+                    game.updateBackground();
                 },
                 group: 'minifightxurui_effect',
                 subSkill: {
