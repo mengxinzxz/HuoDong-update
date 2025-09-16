@@ -5188,20 +5188,18 @@ const packs = function () {
                 audio: 'shefu',
                 trigger: { player: ['phaseJieshuBegin', 'damageEnd'] },
                 filter(event, player) {
-                    return player.countCards('h');
+                    return player.countCards('he');
                 },
-                direct: true,
-                async content(event, trigger, player) {
+                async cost(event, trigger, player) {
                     const list = get.inpileVCardList(info => {
                         if (info[2] == 'sha' && info[3]) return false;
-                        return info[0] != 'equip';
+                        return ['basic', 'trick'].includes(get.type2(info[2]));
                     });
-                    let dialog = [get.prompt('minishefu'), '<div class="text center">选择一个牌名和一张手牌组成「伏兵」</div>'];
-                    dialog.push('<div class="text center">牌名选择</div>');
-                    dialog.push([list, 'vcard']);
-                    dialog.push('<div class="text center">手牌区</div>');
-                    dialog.push([player.getCards('h'), 'vcard']);
-                    const { result: { bool, links } } = await player.chooseButton(dialog, 2).set('ai', button => {
+                    let dialog = [get.prompt('minishefu'), '<div class="text center">选择一个牌名和一张牌组成「伏兵」</div>'];
+                    dialog.addArray(['<div class="text center">牌名选择</div>', [list, 'vcard']]);
+                    if (player.countCards('h')) dialog.addArray(['<div class="text center">你的手牌</div>', player.getCards('h')]);
+                    if (player.countCards('e')) dialog.addArray(['<div class="text center">你的装备</div>', player.getCards('e')]);
+                    const { result } = await player.chooseButton(dialog, 2).set('ai', button => {
                         const player = get.event('player');
                         if (!get.owner(button.link)) {
                             switch (button.link[2]) {
@@ -5222,13 +5220,18 @@ const packs = function () {
                         if (!get.owner(button.link) && player.getStorage('minishefu').map(i => i[1]).includes(button.link[2])) return false;
                         return !ui.selected.buttons.length || get.owner(ui.selected.buttons[0].link) != get.owner(button.link);
                     });
-                    if (bool) {
-                        player.logSkill('minishefu');
-                        let fjks = links.slice();//伏击狂神[doge]
-                        if (get.owner(fjks[0])) fjks.reverse();
-                        player.addToExpansion([fjks[1]], player, 'give').gaintag.add('minishefu');
-                        player.markAuto('minishefu', [[[get.translation(fjks[0][2]), '', fjks[1].name, fjks[1].nature], fjks[0][2], fjks[1],]]);
+                    event.result = {
+                        bool: result?.bool,
+                        cost_data: result?.links,
                     }
+                },
+                async content(event, trigger, player) {
+                    let fjks = event.cost_data.slice();//伏击狂神[doge]
+                    if (get.owner(fjks[0])) fjks.reverse();
+                    const next = player.addToExpansion([fjks[1]], player, 'give');
+                    next.gaintag.add(event.name);
+                    await next;
+                    player.markAuto(event.name, [[[get.translation(fjks[0][2]), '', fjks[1].name, fjks[1].nature], fjks[0][2], fjks[1]]]);
                 },
                 onremove(player, skill) {
                     const cards = player.getExpansions(skill);
@@ -5253,7 +5256,7 @@ const packs = function () {
                         audio: 'shefu',
                         trigger: { global: 'useCard' },
                         filter(event, player) {
-                            return _status.currentPhase != player && event.player != player && player.getStorage('minishefu').some(i => i[1] == event.card.name);
+                            return _status.currentPhase != player && event.player != player && player.getStorage('minishefu').some(i => i[1] == event.card.name) && !event.all_excluded;
                         },
                         check(event, player) {
                             return get.info('sbkanpo').subSkill.kanpo.check(event, player);
@@ -35795,7 +35798,7 @@ const packs = function () {
                 },
                 trigger: { global: ['damageSource', 'minifight_UpdateShiQiAfter'] },
                 filter(event, player) {
-                    return event.name !== 'damage' || (event.source?.isIn() && event.card?.name === 'sha');
+                    return (event.name !== 'damage' || (event.source?.isIn() && event.card?.name === 'sha')) && event.num > 0;
                 },
                 forced: true,
                 locked: false,
@@ -35814,10 +35817,13 @@ const packs = function () {
                 subSkill: {
                     change: {
                         audio: 'minifightdingjun',
-                        trigger: { global: 'minifight_UpdateShiQiEnd' },
+                        trigger: {
+                            global: 'minifight_UpdateShiQiEnd',
+                            player: 'phaseEnd',
+                        },
                         filter(event, player) {
-                            if (!ui._minifightdingjun_dingjunshan) return _status._minifightdingjun >= game.countPlayer();
-                            return _status._minifightdingjun === 0;
+                            if (event.name === 'phase') return _status._minifightdingjun === 0 && ui._minifightdingjun_dingjunshan;
+                            return !ui._minifightdingjun_dingjunshan && _status._minifightdingjun >= game.players.length + game.dead.length;
                         },
                         forced: true,
                         locked: false,
@@ -36811,7 +36817,7 @@ const packs = function () {
             minidaoshu: '盗书',
             minidaoshu_info: '出牌阶段限一次，你可以选择一个花色并获得一名其他角色的一张手牌。若此牌花色与你选择的相同，则你对其造成1点伤害且你〖盗书〗于此阶段内可使用的次数上限+1，否则你须交给一名其他角色一张手牌。',
             minishefu: '设伏',
-            minishefu_info: '结束阶段/当你受到伤害后，你可以记录一个当前「伏兵」未记录的基本牌或锦囊牌的名称并将一张牌移出游戏，称为「伏兵」。你的回合外，当有其他角色使用与你记录的「伏兵」牌名相同的手牌时，你可以取消此牌的所有目标，然后移去该「伏兵」，若此时处于使用者的回合内，则其本回合所有技能失效。',
+            minishefu_info: '结束阶段或当你受到伤害后，你可以记录一个当前「伏兵」未记录的基本牌或锦囊牌的名称并将一张牌移出游戏，称为「伏兵」。你的回合外，当有其他角色使用与你记录的「伏兵」牌名相同的手牌时，你可以取消此牌的所有目标，然后移去该「伏兵」，若此时处于使用者的回合内，则其本回合所有技能失效。',
             minibenyu: '贲育',
             minibenyu_info: '当你受到有来源造成的伤害后，你可以选择一项：①将手牌摸至与伤害来源相同（至多摸至五张）；②弃置一张手牌，然后对伤害来源造成1点伤害。',
             minisbduanliang: '断粮',
@@ -38396,7 +38402,7 @@ const packs = function () {
             Mfight_zhangliao: '战张辽',
             Mfight_luxun: '战陆逊',
             minifightdingjun: '定军',
-            minifightdingjun_info: '战场技。①一名角色使用【杀】造成1点伤害后，获得1层士气。②士气变化1点后，你摸一张牌。③士气变化时，若士气层数大于等于场上存活角色数，则进入“定军山战场”；若士气层数为0，则退出“定军山战场”。④一名角色使用【杀】时，若此时处于“定军山战场”，则你可以消耗2层士气，令其于此牌结算中视为拥有〖烈弓〗。',
+            minifightdingjun_info: '战场技。①一名角色使用【杀】造成1点伤害后，获得1层士气。②士气增加1点后，你摸一张牌。③士气变化时，若士气层数大于等于本局游戏人数，则进入“定军山战场”；回合结束时，若士气层数为0，则退出“定军山战场”。④一名角色使用【杀】时，若此时处于“定军山战场”，则你可以消耗2层士气，令其于此牌结算中视为拥有〖烈弓〗。',
             minifightliegong: '烈弓',
             minifightliegong_info: '锁定技，当你使用【杀】指定目标后，若目标角色的手牌数或体力值大于等于你的手牌数或体力值，则其不可响应此【杀】；目标角色的手牌数和体力值均大于等于你的手牌数或体力值，则此【杀】对其造成的伤害+1。',
             minifightreliegong: '烈弓',
