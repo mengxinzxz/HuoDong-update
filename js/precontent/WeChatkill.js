@@ -7625,13 +7625,13 @@ const packs = function () {
                 audio: 'ol_shichou',
                 trigger: { player: 'useCard2' },
                 filter(event, player) {
-                    if (player.isHealthy() || event.card.name != 'sha') return false;
+                    if (event.card.name != 'sha') return false;
                     return game.hasPlayer(target => {
                         return target != player && !event.targets.includes(target) && lib.filter.targetEnabled2(event.card, player, target) && lib.filter.targetInRange(event.card, player, target);
                     });
                 },
                 async cost(event, trigger, player) {
-                    var num = player.getDamagedHp();
+                    const num = Math.max(player.getDamagedHp(), 1);
                     event.result = await player.chooseTarget(get.prompt('wechatshichou'), '为' + get.translation(trigger.card) + '添加至多' + get.cnNumber(num) + '个目标', [1, num], (card, player, target) => {
                         var evt = _status.event.getTrigger();
                         return target != player && !evt.targets.includes(target) && lib.filter.targetEnabled2(evt.card, player, target) && lib.filter.targetInRange(evt.card, player, target);
@@ -7648,6 +7648,7 @@ const packs = function () {
                         filter(event, player) {
                             return event.card.name == 'sha' && event.cards?.someInD() && !player.getHistory('sourceDamage', evt => evt.card && evt.card == event.card).length;
                         },
+                        usable: 1,
                         forced: true,
                         locked: false,
                         content() {
@@ -14594,7 +14595,7 @@ const packs = function () {
             wechatjingzhong_info: '弃牌阶段结束时，若你于此阶段内弃置过黑色牌，则你可以选择一名其他角色并获得如下效果直到其回合结束：每阶段限三次，其于出牌阶段内使用的牌结算结束后，你获得此牌对应的实体牌。',
             wechat_sp_machao: 'SP微信马超',
             wechatshichou: '誓仇',
-            wechatshichou_info: '①你使用【杀】可以额外选择X名角色成为此【杀】的额外目标（X为你已损失的体力值）。②当你使用【杀】结算完毕后，若你未因此牌造成过伤害，则你获得此牌对应的实体牌。',
+            wechatshichou_info: '①你使用【杀】可以额外选择X名角色成为此【杀】的额外目标（X为你已损失的体力值，且至少为1）。②每回合限一次，当你使用【杀】结算完毕后，若你未因此牌造成过伤害，则你获得此牌对应的实体牌。',
             wechat_pangdegong: '微信庞德公',
             wechatpingcai: '评才',
             wechatpingcai_info: '出牌阶段限一次，你可以选择一项：①对一名角色造成1点火属性伤害；②横置至多四名角色；③移动场上的一张装备牌；④令一名角色摸一张牌并回复1点体力，然后你摸一张牌。',
@@ -14913,7 +14914,7 @@ const packs = function () {
             wechatjiaofeng: '绞锋',
             wechatjiaofeng_info: '出牌阶段开始时，你可以选择一名其他角色并选择至多两项：1.你获得一张【杀】并与其各视为使用一张【酒】；2.本回合其成为你【杀】或【决斗】的额外目标。若你选择了所有项，其可以视为使用一张无距离限制的【杀】。',
             wechattscjizhi: '赍志',
-            wechattscjizhi_info: '①每轮每名角色限一次。当你使用【杀】或【决斗】造成伤害后，你可以令一名角色于其下个摸牌阶段的额定摸牌数和出牌阶段使用【杀的次数上限+1。②当你死亡后，你可以令一名其他角色获得〖赍志〗。',
+            wechattscjizhi_info: '①每轮每名角色限一次。当你使用【杀】或【决斗】造成伤害后，你可以令一名角色于其下个摸牌阶段的额定摸牌数和出牌阶段使用【杀】的次数上限+1。②当你死亡后，你可以令一名其他角色获得〖赍志〗。',
             wechat_zhiyin_diaochan: '极貂蝉',
             wechatxiaoshao: '萧韶',
             wechatxiaoshao_info: `${get.poptip('rule_yunlvSkill')}。出牌阶段限一次，你可以：平：弃置一名角色一张牌，然后其视为一张无距离和次数限制的【杀】，且其以此法使用的【杀】指定你为目标时，你可以为此牌指定一个额外目标；仄：令一名角色摸一张牌，然后其本回合内使用的下一张牌无效。转韵：出牌阶段有角色使用【酒】结算结束后。`,
