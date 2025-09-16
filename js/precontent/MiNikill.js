@@ -35817,10 +35817,7 @@ const packs = function () {
                 subSkill: {
                     change: {
                         audio: 'minifightdingjun',
-                        trigger: {
-                            global: 'minifight_UpdateShiQiEnd',
-                            player: 'phaseEnd',
-                        },
+                        trigger: { global: ['minifight_UpdateShiQiEnd', 'phaseEnd'] },
                         filter(event, player) {
                             if (event.name === 'phase') return _status._minifightdingjun === 0 && ui._minifightdingjun_dingjunshan;
                             return !ui._minifightdingjun_dingjunshan && _status._minifightdingjun >= game.players.length + game.dead.length;
@@ -38402,7 +38399,7 @@ const packs = function () {
             Mfight_zhangliao: '战张辽',
             Mfight_luxun: '战陆逊',
             minifightdingjun: '定军',
-            minifightdingjun_info: '战场技。①一名角色使用【杀】造成1点伤害后，获得1层士气。②士气增加1点后，你摸一张牌。③士气变化时，若士气层数大于等于本局游戏人数，则进入“定军山战场”；回合结束时，若士气层数为0，则退出“定军山战场”。④一名角色使用【杀】时，若此时处于“定军山战场”，则你可以消耗2层士气，令其于此牌结算中视为拥有〖烈弓〗。',
+            minifightdingjun_info: '战场技。①一名角色使用【杀】造成1点伤害后，获得1层士气。②士气增加1点后，你摸一张牌。③士气变化时，若士气层数大于等于本局游戏人数，则进入“定军山战场”；一名角色的回合结束时，若士气层数为0，则退出“定军山战场”。④一名角色使用【杀】时，若此时处于“定军山战场”，则你可以消耗2层士气，令其于此牌结算中视为拥有〖烈弓〗。',
             minifightliegong: '烈弓',
             minifightliegong_info: '锁定技，当你使用【杀】指定目标后，若目标角色的手牌数或体力值大于等于你的手牌数或体力值，则其不可响应此【杀】；目标角色的手牌数和体力值均大于等于你的手牌数或体力值，则此【杀】对其造成的伤害+1。',
             minifightreliegong: '烈弓',
