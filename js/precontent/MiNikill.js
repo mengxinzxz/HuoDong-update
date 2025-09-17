@@ -28401,7 +28401,7 @@ const packs = function () {
                     let result;
                     if (!source.countCards('h', { type: 'basic' })) result = { bool: false };
                     else {
-                        const next = source.chooseToGive(target, 'h', { type: 'basic' }, true, `交给${get.translation(target)}一张基本牌，否则你失去1点体力其回复1点体力`);
+                        const next = source.chooseToGive(target, 'h', { type: 'basic' }, `交给${get.translation(target)}一张基本牌，否则你失去1点体力其回复1点体力`);
                         next.gaintag.add(effect);
                         next.set('ai', card => {
                             const { player, target } = get.event();
@@ -31613,6 +31613,7 @@ const packs = function () {
                                 return card.suit == cardx[0];
                             }).randomGet();
                             if (!card2) continue;
+                            game.addVideo('skill', player, [event.name, [true, [get.cardInfo(card), card2]]]);
                             game.broadcastAll((card, card2) => {
                                 card.init([card2[0], card2[1], card2[2], card2[3]]);
                             }, card, card2);
@@ -31648,11 +31649,41 @@ const packs = function () {
                                 }
                             }, gains);
                             await player.gain(gains, 'draw');
-                            game.log(player, '获得了', '#y' + get.cnNumber(gains.length) + '张', '#g“幻化”牌');
+                            game.addVideo('skill', player, ['minihuanshu', [false, get.cardsInfo(gains)]]);
+                            game.log(player, '获得了', '#y' + get.cnNumber(gains.length) + '张', '#g“幻术”牌');
                         }
                     }
                     game.log(length, gains.length);
                     if (length - gains.length > 0) await player.draw(length - gains.length);
+                },
+                video(player, info) {
+                    if (info[0]) {
+                        const [card, card2] = info[1];
+                        player.getCards('h').forEach(cardx => {
+                            if (cardx.cardid == card[4]) {
+                                cardx.init([card2[0], card2[1], card2[2], card2[3]]);
+                            }
+                        });
+                    }
+                    else {
+                        for (const card of info[1]) {
+                            player.getCards('h').forEach(cardx => {
+                                if (cardx.cardid == card[4]) {
+                                    cardx.minihuanshu = true;
+                                    cardx.classList.add('minihuanshu-glow');
+                                    const original = cardx.destroyed;
+                                    cardx.destroyed = function (card, position, player, event) {
+                                        let result = typeof original === 'function' ? original.apply(this, arguments) : false;
+                                        if (position === 'handcard' && !player.hasSkill('minihuanshu', null, null, true)) {
+                                            event.set('HuanShuDestroy', 1 + (event.HuanShuDestroy ?? 0));
+                                            result = true;
+                                        }
+                                        return result;
+                                    };
+                                }
+                            });
+                        }
+                    }
                 },
                 derivation: 'minihuanshu_faq',
                 subSkill: {
