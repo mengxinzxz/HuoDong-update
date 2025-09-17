@@ -14921,7 +14921,7 @@ const packs = function () {
             wechatxianshang: '献觞',
             wechatxianshang_info: '出牌阶段，若场上没有处于【酒】状态的角色，你可以弃置X张牌并选择一名角色（X为本阶段此技能发动的次数），你摸一张牌并令其视为使用一张无次数限制的【酒】。',
             wechataoyan: '㜜妍',
-            wechataoyan_info: '锁定技。一名角色的结束结束，若你本回合失去过牌，你摸一张牌。',
+            wechataoyan_info: '锁定技。一名角色的结束阶段，若你本回合失去过牌，你摸一张牌。',
             wechat_zhiyin_bulianshi: '极步练师',
             wechatshushan: '淑善',
             wechatshushan_info: '每回合限一次，一名角色失去手牌区或装备区的所有牌后，你可以令其摸X张牌（X为你的体力值），然后若其体力值不大于你，你令其回复1点体力 。',
