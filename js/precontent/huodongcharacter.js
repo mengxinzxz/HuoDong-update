@@ -55,7 +55,7 @@ const packs = function () {
             bilibili_xizhicaikobe: ['male', 'key', 4, ['bilibili_biexiao', 'bilibili_xingshi', 'bilibili_zhangcai'], ['doublegroup:wei:shu:wu:qun:jin', 'clan:肘家军|肘击群|活动群', 'name:戏|子宓']],
             bilibili_yanjing: ['male', 'key', 3, ['bilibili_dongxi', 'bilibili_mingcha', 'bilibili_huiyan'], ['clan:宿舍群|肘击群|活动群', 'name:tooenough|眼睛']],
             bilibili_caifuren: ['female', 'qun', 3, ['bilibili_kuilei'], ["name:蔡|null"]],
-            bilibili_nanhualaoxian: ['male', 'qun', 4, ['bilibili_qingshu', 'olshoushu', 'olhedao'], ['die:ol_nanhualaoxian', 'name:庄|周']],
+            bilibili_nanhualaoxian: ['male', 'qun', 4, ['bilibili_qingshu', 'bilibili_shoushu', 'bilibili_hedao'], ['die:ol_nanhualaoxian', 'name:庄|周']],
             bilibili_xiaoyaoruyun: ['female', 'key', 4, ['bilibili_chuandu', 'bilibili_huaikui', 'bilibili_xyduoyang'], ['clan:宿舍群|肘击群|活动群', 'name:鹿都|智川介']],
             bilibili_shuijiaobuboli: ['female', 'key', '3/4', ['bilibili_qicai', 'bilibili_jizhi', 'bilibili_fengliang', 'bilibili_guiyin'], ['clan:宿舍群|活动群', 'name:黄|月英']],
             bilibili_kuailiangkuaiyue: ['male', 'qun', 4, ['bilibili_chouhua'], ['character:kuailiangkuaiyue']],
@@ -3556,18 +3556,12 @@ const packs = function () {
                 audio: 'xinfu_dianhua',
                 trigger: { player: ['phaseZhunbeiBegin', 'phaseJieshuBegin'] },
                 filter(event, player) {
-                    for (var i = 0; i < lib.suit.length; i++) {
-                        if (player.hasMark('xinfu_falu_' + lib.suit[i])) return true;
-                    }
-                    return false;
+                    return lib.suit.some(suit => player.hasMark(`xinfu_falu_${suit}`));
                 },
                 frequent: true,
                 content() {
                     'step 0'
-                    var num = 0;
-                    for (var i = 0; i < lib.suit.length; i++) {
-                        if (player.hasMark('xinfu_falu_' + lib.suit[i])) num++;
-                    }
+                    var num = lib.suit.filter(suit => player.hasMark(`xinfu_falu_${suit}`)).length;
                     var cards = get.cards(num);
                     if (lib.config.extension_十周年UI_enable) {
                         var dialog = decadeUI.content.chooseGuanXing(player, cards, cards.length);
@@ -3644,12 +3638,7 @@ const packs = function () {
                 },
             },
             oldzhenyi: {
-                audio: 'xinfu_zhenyi',
                 inherit: 'xinfu_zhenyi',
-                filter(event, player) {
-                    if (!event.nature) return false;
-                    return player.hasMark('xinfu_falu_diamond');
-                },
                 group: ['oldzhenyi_spade', 'oldzhenyi_club', 'oldzhenyi_heart'],
                 subSkill: {
                     spade: {
@@ -3660,15 +3649,13 @@ const packs = function () {
                         direct: true,
                         content() {
                             'step 0'
-                            var str = get.translation(trigger.player) + '的' + (trigger.judgestr || '') + '判定为' +
-                                get.translation(trigger.player.judging[0]) + '，是否弃置「紫薇♠」标记并修改判定结果？';
-                            player.chooseControl('黑桃5', '红桃5', '取消').set('prompt', get.prompt('oldzhenyi')).set('prompt2', str).set('ai', function () {
-                                var judging = _status.event.judging;
-                                var cards = { name: judging.name, suit: 'spade', number: 5 };
-                                var cardh = { name: judging.name, suit: 'heart', number: 5 };
-                                var results = trigger.judge(cards) - trigger.judge(judging);
-                                var resulth = trigger.judge(cardh) - trigger.judge(judging);
-                                var attitude = get.attitude(player, trigger.player);
+                            var str = `${get.translation(trigger.player)}的${trigger.judgestr || ""}判定为${get.translation(trigger.player.judging[0])}，是否发动【真仪】，失去「紫薇♠」标记并修改判定结果？`;
+                            player.chooseControl('黑桃5', '红桃5', '取消').set('ai', function () {
+                                const { player, judging } = get.event();
+                                const trigger = get.event().getTrigger();
+                                const results = trigger.judge({ name: judging.name, suit: 'spade', number: 5 }) - trigger.judge(judging);
+                                const resulth = trigger.judge({ name: judging.name, suit: 'heart', number: 5 }) - trigger.judge(judging);
+                                const attitude = get.attitude(player, trigger.player);
                                 if (attitude == 0 || (resulth == 0 && results == 0)) return '取消';
                                 if (attitude > 0) {
                                     if (results > 0) {
@@ -3686,7 +3673,7 @@ const packs = function () {
                                     else if (resulth < 0) return '红桃5';
                                     return '取消';
                                 }
-                            }).set('judging', trigger.player.judging[0]);
+                            }).set('judging', trigger.player.judging[0]).set('prompt', get.prompt('oldzhenyi')).set('prompt2', str);
                             'step 1'
                             if (['黑桃5', '红桃5'].includes(result.control)) {
                                 player.removeMark('xinfu_falu_spade');
@@ -3713,6 +3700,8 @@ const packs = function () {
                             if (!player.isDying()) return false;
                             return player.hasMark('xinfu_falu_club') && player.countCards('hs');
                         },
+                        position: 'hs',
+                        prompt: "失去「后土♣」标记，将一张手牌当作【桃】使用",
                     },
                     heart: {
                         audio: 'xinfu_zhenyi',
@@ -3729,7 +3718,7 @@ const packs = function () {
                             return player.hasMark('xinfu_falu_spade') || get.color(ui.cardPile.firstChild) == 'black';
                         },
                         prompt2(event) {
-                            return '弃置「玉清♥」标记，然后进行判定。若结果为黑色，则对' + get.translation(event.player) + '即将造成的伤害+1。';
+                            return '失去「玉清♥」标记，然后进行判定。若结果为黑色，则即将对' + get.translation(event.player) + '造成的伤害+1';
                         },
                         logTarget: 'player',
                         content() {
@@ -10627,6 +10616,14 @@ const packs = function () {
                     }
                 },
             },
+            bilibili_shoushu: {
+                audio: 'olshoushu',
+                inherit: 'olshoushu',
+            },
+            bilibili_hedao: {
+                audio: 'olhedao',
+                inherit: 'olhedao',
+            },
             //逍遥如云
             bilibili_chuandu: {
                 trigger: { player: ['phaseZhunbeiBegin', 'phaseJieshuBegin'] },
@@ -11296,7 +11293,7 @@ const packs = function () {
             olddianhua: '点化',
             olddianhua_info: '准备阶段或结束阶段，你可以观看牌堆顶的X张牌（X为你的「紫薇」「后土」「玉清」「勾陈」标记数的总和）。若如此做，你将这些牌以任意顺序放回牌堆顶。',
             oldzhenyi: '真仪',
-            oldzhenyi_info: '你可以在以下时机弃置相应的标记来发动以下效果：一名角色的判定牌生效前，你可以弃置1枚「紫薇」，然后将判定结果改为黑桃5或红桃5；当你处于濒死状态时，你可以弃置1枚「后土」，然后将你的一张手牌当【桃】使用；当你造成伤害时，你可以弃置1枚「玉清」，然后你进行一次判定。若结果为黑色，此伤害+1；当你受到属性伤害后，你可以弃置一张「勾陈」，然后你从牌堆中随机获得三种类型的牌各一张。',
+            oldzhenyi_info: '你可以在以下时机弃置相应的标记来发动以下效果：一名角色的判定牌生效前，你可以失去「紫薇」标记，将判定结果改为黑桃5或红桃5；当你处于濒死状态时，你可以失去「后土」标记，将一张手牌当作【桃】使用；当你造成伤害时，你可以失去「玉清」标记，进行一次判定。若结果为黑色，此伤害+1；当你受到属性伤害后，你可以失去「勾陈」标记，从牌堆中随机获得三种类型的牌各一张。',
             bilibili_fushi: '附势',
             bilibili_fushi_info: '锁定技，若场上势力数：群大于魏，你视为拥有技能〖择主〗；魏大于群，你视为拥有技能〖逞功〗。',
             bilibili_zezhu: '择主',
@@ -11653,7 +11650,15 @@ const packs = function () {
             bolshicai_effect: '牌堆顶',
             bolshicai_info: '出牌阶段，牌堆顶的一张牌对你可见。你可以弃置一张牌，然后获得牌堆顶的一张牌，且不能再发动〖恃才〗直到此牌离开你的手牌区。',
             bilibili_nanhualaoxian: '南华老仙',
-            bilibili_qingshu: '青书',
+            bilibili_hedao_faq: '“天书”',
+            bilibili_hedao_faq_info: '关于“天书”：<br>' + [
+                '“天书”为随机三个时机和三个效果中各选择一个组成的技能，一名角色可至多拥有一册“天书”',
+                '“天书”初始为未翻开状态，发动一次后翻开此“天书”（未翻开的“天书”技能对其他角色不可见）',
+                '“天书”至多可发动三次，交给其他角色后至多可发动一次，“天书”次数用尽后失去此“天书”',
+            ].map(str => `<li>${str}`).join('<br>'),
+            bilibili_qingshu_info: `锁定技，游戏开始时/准备阶段/结束阶段，你书写一册${get.poptip("bilibili_hedao_faq")}。`,
+            bilibili_shoushu_info: `出牌阶段限一次，你可以将一册未翻开的${get.poptip("bilibili_hedao_faq")}交给一名其他角色。`,
+            bilibili_hedao_info: `锁定技。①游戏开始时，你可至多拥有两册${get.poptip("bilibili_hedao_faq")}。②你的首次濒死结算后，你可至多拥有三册${get.poptip("bilibili_hedao_faq")}。`,
             bilibili_xiaoyaoruyun: '逍遥如云',
             bilibili_chuandu: '传毒',
             bilibili_chuandu_info: '锁定技，准备阶段/结束阶段，你令你与场上所有拥有“染”标记的相邻其他角色获得“染”标记，然后你摸一张牌/拥有“染”标记的角色各失去1点体力。',

@@ -284,7 +284,7 @@ const packs = function () {
             Mbaby_liuxie: ['male', 'qun', 3, ['minitianming', 'minimizhao']],
             Mbaby_caiwenji: ['female', 'qun', 3, ['minibeige', 'duanchang'], ['name:蔡|琰']],
             Mbaby_fuhuanghou: ['female', 'qun', 3, ['minizhuikong', 'miniqiuyuan']],
-            Mbaby_zhangqiying: ['female', 'qun', 3, ['xinfu_falu', 'minidianhua', 'minizhenyi']],
+            Mbaby_zhangqiying: ['female', 'qun', 3, ['xinfu_falu', 'minidianhua', 'zhenyi']],
             Mbaby_chunyuqiong: ['male', 'qun', 4, ['minicangchu', 'miniliangying', 'minishishou']],
             Mbaby_beimihu: ['female', 'qun', 4, ['minizongkui', 'miniguju', 'bmcanshi']],
             Mbaby_dongbai: ['female', 'qun', 3, ['minilianzhu', 'minixiahui']],
@@ -22688,6 +22688,7 @@ const packs = function () {
                 },
             },
             //张琪瑛
+            //欢杀版本已改为十周年新版，实际扩展版本已经入牢字辈了（）
             minidianhua: {
                 audio: 'xinfu_dianhua',
                 trigger: { player: ['phaseZhunbeiBegin', 'phaseJieshuBegin'] },
@@ -22772,11 +22773,7 @@ const packs = function () {
                     }
                 },
             },
-            minizhenyi: {
-                group: ['oldzhenyi_spade', 'zhenyi_club', 'zhenyi_heart'],
-                audio: 'xinfu_zhenyi',
-                inherit: 'xinfu_zhenyi',
-            },
+            //乌巢酒仙
             minicangchu: {
                 mod: {
                     maxHandcard(player, num) {
@@ -37844,8 +37841,6 @@ const packs = function () {
             miniqiuyuan_info: '当你成为【杀】的目标时，你可以令至多三名不为此【杀】的使用者的其他角色选择一项：①交给你一张【闪】；②成为此【杀】的额外目标并弃置一张牌。',
             minidianhua: '点化',
             minidianhua_info: '准备阶段或结束阶段，你可以观看牌堆顶的X张牌（X为你的「紫薇」「后土」「玉清」「勾陈」标记数的总和+1），然后你将这些牌以任意顺序放回牌堆顶。',
-            minizhenyi: '真仪',
-            minizhenyi_info: '你可以在以下时机弃置相应的标记来发动以下效果：一名角色的判定牌生效前，你可以弃置一枚「紫薇」，然后将判定结果改为黑桃5或红桃5；你的回合外，你可以弃置一枚「后土」，然后将你的一张手牌当【桃】使用；当你造成伤害时，你可以弃置一枚「玉清」，然后令此伤害+1；当你受到伤害后，你可以弃置一张「勾陈」，然后你从牌堆中随机获得三种类型的牌各一张。',
             minicangchu: '仓储',
             minicangchu2: '仓储',
             minicangchu3: '仓储',
