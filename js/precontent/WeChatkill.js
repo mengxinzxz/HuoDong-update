@@ -9486,10 +9486,13 @@ const packs = function () {
                         forced: true,
                         locked: false,
                         content() {
-                            const evt = trigger.getParent();
+                            const evt = trigger.relatedEvent || trigger.getParent();
                             if (evt.name === 'useCard' && evt.player === player && evt.addCount !== false) {
                                 evt.addCount = false;
-                                player.getStat('card')[evt.card.name]--;
+                                const stat = player.getStat().card, name = evt.card.name;
+                                if (typeof stat[name] == "number") {
+                                    stat[name]--;
+                                }
                             }
                             const cards = trigger.ss.reduce((list, i) => {
                                 if (trigger.gaintag_map?.[i.cardid]?.includes('wechatjinfan')) {
