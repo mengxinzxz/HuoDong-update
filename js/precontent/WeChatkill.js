@@ -15,7 +15,7 @@ const packs = function () {
                 wechat_yijiang: ['quancong', 'guyong', 'liaohua', 'gongsunyuan', 'xusheng', 'yufan', 'handang', 'caochong', 'caoxiu', 'caozhang', 'masu', 'caifuren', 'jianyong', 'caozhi', 'gaoshun', 'xiahoushi', 'xushu', 'wuguotai', 'liubiao', 'liuchen'].map(i => `wechat_${i}`),
                 wechat_xianding: [
                     ...['caojie', 'xuezong', 'jikang', 'caiyong', 'xushi', 'sundeng', 'huanghao', 'guohuanghou', 'sp_zhenji', 'lizhaojiaobo', 'liucheng', 'sp_diaochan', 'sunluyu', 'sunhao', 'sp_wangcan', 'yj_zhoubuyi', 'jsp_huangyueying', 'sp_machao', 'wanglang', 'chendeng', 'sp_pangde', 'zhuling', 'caizhenji', 'sp_jiangwei', 'sp_taishici', 'sp_caiwenji', 'bianfuren', 'sunluban', 'zhangxingcai', 'huojun'].map(i => `wechat_${i}`),
-                    ...['gaoshun', 'handang', 'guojia', 'huanggai', 'diaochan', 'huangyueying', 'zhangliao', 'sunshangxiang', 'zhaoyun', 'machao', 'huangzhong', 'caocao', 'sunce'].map(i => `wechat_sb_${i}`),
+                    ...['xiahouyuan', 'gaoshun', 'handang', 'guojia', 'huanggai', 'diaochan', 'huangyueying', 'zhangliao', 'sunshangxiang', 'zhaoyun', 'machao', 'huangzhong', 'caocao', 'sunce'].map(i => `wechat_sb_${i}`),
                 ],
                 wechat_wanxiang: ['ruanhui', 'kanze', 'zumao', 'xiahouba', 'buzhi', 'liuqi', 'ganfuren', 'liuyao', 'zhugeguo', 'xurong', 'yj_weiyan', 'yj_huangzhong', 'yj_ganning', 'zhaoxiang', 'guozhao', 'sunhanhua', 'pangdegong', 'guanyinping', 'baosanniang', 'taoqian', 'guansuo', 'liuyan', 'shenpei', 'yangxiu', 'yj_xuhuang', 'mayunlu', 'litong'].map(i => `wechat_${i}`),
                 wechat_zhiyin: ['mayunlu', 'bulianshi', 'diaochan', 'taishici', 'luxun', 'sunshangxiang', 'xunyou', 'dianwei', 'zhaoyun', 'xinxianying', 'guohuanghou', 'kongrong', 'caopi', 'jiaxu', 'zhangfei', 'dongzhuo', 'wangyi', 'zhangchunhua', 'hetaihou', 'zhurong', 'jiangwei', 'caozhi', 'liubei', 'sunce', 'xunyu', 'zhenji', 'xuzhu', 'yuanshao', 'lusu', 'guojia', 'lvbu', 'daqiao', 'xiaoqiao', 'caocao', 'zhugeliang', 'simayi', 'machao', 'huangyueying', 'caiwenji', 'zhouyu', 'sunquan', 'guanyu'].map(i => `wechat_zhiyin_${i}`),
@@ -203,6 +203,7 @@ const packs = function () {
             wechat_sb_guojia: ['male', 'wei', 3, ['wechatsbtiandu', 'wechatsbyiji'], [`${(lib.device || lib.node) ? 'ext:' : 'db:extension-'}活动武将/image/character/bilibili_xizhicaikobe.jpg`, 'border:key', 'tempname:sb_guojia']],
             wechat_sb_handang: ['male', 'wu', 4, ['sbgongqi', 'wechatsbjiefan'], ['tempname:sb_handang']],
             wechat_sb_gaoshun: ['male', 'qun', 4, ['wechatsbxianzhen', 'sbjinjiu'], ['tempname:sb_gaoshun']],
+            wechat_sb_xiahouyuan: ['male', 'wei', 4, ['wechatsbshensu', 'sbzhengzi'], ['tempname:sb_xiahouyuan', 'name:夏侯|渊']],
         },
         characterIntro: {
         },
@@ -14067,6 +14068,100 @@ const packs = function () {
                     },
                 },
             },
+            // 谋夏侯渊
+            wechatsbshensu: {
+                audio: 'sbshensu',
+                trigger: { player: 'phaseBegin' },
+                filter(event, player) {
+                    return ['phaseJudge|phaseDraw', 'phaseDraw|phaseUse', 'phaseUse|phaseDiscard'].some(item => {
+                        return item.split('|').every(i => !player.skipList.includes(i));
+                    });
+                },
+                async cost(event, trigger, player) {
+                    const list = ['phaseJudge|phaseDraw', 'phaseDraw|phaseUse', 'phaseUse|phaseDiscard'];
+                    const { result } = await player.chooseButton(
+                        [
+                            get.prompt2(event.skill),
+                            [
+                                list.map(item => {
+                                    return [item, '跳过' + item.split('|').map(i => get.translation(i)).join('和')];
+                                }),
+                                'textbutton',
+                            ],
+                        ],
+                        [1, 3]
+                    ).set('filterButton', button => {
+                        const player = get.player();
+                        return button.link.split('|').every(i => !player.skipList.includes(i));
+                    }).set('ai', button => {
+                        const player = get.player(), item = button.link, skipList = item.split('|');
+                        const effectMap = new Map([
+                            ['phaseJudge', -player.getVCards('j').reduce((sum, card) => sum + get.effect(player, { name: card.name }, player, player), 0)],
+                            ['phaseDraw', -get.effect(player, { name: 'wuzhong' }, player, player)],
+                            ['phaseUse', -player.getCards('hs', card => player.hasValueTarget(card)).reduce((sum, card) => sum + player.getUseValue(card), 0)],
+                            ['phaseDiscard', player.needsToDiscard()],
+                        ]);
+                        const goon = skipList.includes('phaseUse');
+                        const vcard = get.inpileVCardList(info => info[2] === 'sha').filter(info => {
+                            const card = get.autoViewAs({ name: 'sha', nature: info[3], storage: { wechatsbshensu: goon }, isCard: true });
+                            return player.hasValueTarget(card, false);
+                        });
+                        return (() => {
+                            if (!vcard.length) return 0;
+                            return Math.max(
+                                ...vcard.map(info => {
+                                    const card = get.autoViewAs({ name: "sha", nature: info[3], storage: { wechatsbshensu: goon }, isCard: true });
+                                    return player.getUseValue(card, false);
+                                })
+                            );
+                        })() + skipList.reduce((sum, name) => sum + effectMap.get(name), 0);
+                    })
+                    event.result = { bool: result?.bool, cost_data: list.filter(item => (result?.links ?? []).includes(item)) };
+                },
+                async content(event, trigger, player) {
+                    const cost_data = event.cost_data.map(item => item.split('|')).flat();
+                    const skipList = cost_data.toUniqued();
+                    for (const i of skipList) {
+                        player.skip(i);
+                    }
+                    game.log(player, '跳过了', '#y' + get.translation(skipList));
+                    let num = 0;
+                    while (num < event.cost_data.length) {
+                        num++;
+                        const goon = event.cost_data[num - 1].includes('phaseUse');
+                        const vcard = get.inpileVCardList(info => info[2] === 'sha').filter(info => {
+                            const card = get.autoViewAs({ name: 'sha', nature: info[3], storage: { sbshensu: goon }, isCard: true });
+                            return player.hasUseTarget(card, false);
+                        });
+                        if (vcard.length > 0) {
+                            const result = vcard.length > 1 ? await player.chooseButton(['神速：请选择你要视为使用的【杀】', `<div class="text center">无距离限制${(goon ? '且不可被响应' : '')}</div>`, [vcard, "vcard"]], true).set("ai", button => {
+                                const { player, infoMap: [goon] } = get.event();
+                                const card = get.autoViewAs({ name: 'sha', nature: button.link[3], storage: { wechatsbshensu: goon }, isCard: true });
+                                return Math.max(...game.filterPlayer(target => player.canUse(card, target, false)).map(target => get.effect(target, card, player, player)));
+                            }).set('infoMap', [goon]).forResult() : { bool: true, links: vcard };
+                            if (result?.links?.length) {
+                                const card = new lib.element.VCard({ name: 'sha', nature: result.links[0][3], storage: { wechatsbshensu: goon }, isCard: true });
+                                await player.chooseUseTarget(card, true, false, 'nodistance').set('oncard', () => {
+                                    const event = get.event();
+                                    if (event.card.storage.wechatsbshensu) {
+                                        event.directHit.addArray(game.players);
+                                        game.log(event.card, '不可被响应');
+                                    }
+                                });
+                            }
+                        } else break;
+                    }
+                    if (cost_data.length !== skipList.length) {
+                        await player.turnOver();
+                    }
+                },
+                ai: {
+                    directHit_ai: true,
+                    skillTagFilter(playe, tag, arg) {
+                        if (!arg?.card?.storage?.wechatsbshensu) return false;
+                    },
+                },
+            }
         },
         dynamicTranslate: {
             wechatxiangzhi(player) {
@@ -14936,6 +15031,9 @@ const packs = function () {
             wechatchenglie: '骋烈',
             wechatchenglie_info: '锁定技。你计算与其他角色的距离-X（X为场上体力值不小于你的角色数）。',
             wechat_re_zhaoyun: '微信界赵云',
+            wechat_sb_xiahouyuan: '微信谋夏侯渊',
+            wechatsbshensu: '神速',
+            wechatsbshensu_info: '回合开始时，你可以选择并执行以下任意项：①跳过判定阶段和摸牌阶段；②跳过摸牌阶段和出牌阶段；③跳过出牌阶段和弃牌阶段。你每选择一项，视为使用一张无距离限制的【杀】（若对应选项包含出牌阶段，则此【杀】不可被响应）。若你选择的项中包含重复阶段，则你将武将牌翻面。',
         },
     };
     for (let i in WeChatkill.character) {
