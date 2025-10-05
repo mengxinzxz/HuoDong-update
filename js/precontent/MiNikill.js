@@ -33827,7 +33827,7 @@ const packs = function () {
                 viewAsFilter(player) {
                     return player.countCards('hes', (card, player) => get.color(card, player) == 'red') > 1;
                 },
-                viewAs: { name: 'sha', storage: { minimiaowuji: true } },
+                viewAs: { name: 'sha', nature: 'fire', storage: { minimiaowuji: true } },
                 filterCard(card, player) {
                     return get.color(card, player) == 'red';
                 },
@@ -33838,7 +33838,7 @@ const packs = function () {
                     if (ui.selected.cards.length) return 6 + (get.suit(card, player) == get.suit(ui.selected.cards[0], player) && !player.getStorage('minimiaowuji_used').includes(get.suit(card, player))) - get.value(card);
                     return 6 - get.value(card);
                 },
-                prompt: '将两张红色牌当【杀】使用或打出',
+                prompt: '将两张红色牌当无任何次数限制的火【杀】使用或打出',
                 async precontent(event, trigger, player) {
                     event.getParent().addCount = false;
                 },
@@ -36099,7 +36099,6 @@ const packs = function () {
                     return (event.name !== 'damage' || (event.source?.isIn() && event.card?.name === 'sha')) && event.num > 0;
                 },
                 forced: true,
-                locked: false,
                 content() {
                     if (trigger.name === 'damage') get.info(event.name).updateShiQi(player, trigger.num);
                     else player.draw(trigger.num);
@@ -38647,7 +38646,7 @@ const packs = function () {
             minimiaoxingshang: '行殇',
             minimiaoxingshang_info: '一名角色死亡时，你可以获得该角色的所有牌并摸一张牌，然后若其拥有〖逗猫〗，则你可以令一名角色获得〖逗猫〗。',
             minimiaowuji: '武继',
-            minimiaowuji_info: '①你可以将两张红色牌当无任何次数限制的【杀】使用或打出。②每回合每种花色限一次，当你因〖武继①〗使用【杀】时，若此牌对应的实体牌数为2且花色相同，则此牌伤害值+1。③当你使用的【杀】被抵消后，你可以横置场上至多两名角色。',
+            minimiaowuji_info: '①你可以将两张红色牌当无任何次数限制的火【杀】使用或打出。②每回合每种花色限一次，当你因〖武继①〗使用【杀】时，若此牌对应的实体牌数为2且花色相同，则此牌伤害值+1。③当你使用的【杀】被抵消后，你可以横置场上至多两名角色。',
             minimiaohuxiao: '虎啸',
             minimiaohuxiao_info: '锁定技。①每当你累计造成3点伤害后，你回复1点体力并令一名角色获得〖逗猫〗。②回合结束时，你从牌堆获得X张红色牌（X为场上拥有〖逗猫〗的角色数，且至少为1）。',
             //念
@@ -38705,7 +38704,7 @@ const packs = function () {
             Mfight_zhangliao: '战张辽',
             Mfight_luxun: '战陆逊',
             minifightdingjun: '定军',
-            minifightdingjun_info: '战场技。①一名角色使用【杀】造成1点伤害后，获得1层士气。②士气增加1点后，你摸一张牌。③士气变化时，若士气层数大于等于本局游戏人数，则进入“定军山战场”；一名角色的回合结束时，若士气层数为0，则退出“定军山战场”。④一名角色使用【杀】时，若此时处于“定军山战场”，则你可以消耗2层士气，令其于此牌结算中视为拥有〖烈弓〗。',
+            minifightdingjun_info: '战场技，锁定技。①一名角色使用【杀】造成1点伤害后，获得1层士气。②士气增加1点后，你摸一张牌。③士气变化时，若士气层数大于等于本局游戏人数，则进入“定军山战场”；一名角色的回合结束时，若士气层数为0，则退出“定军山战场”。④一名角色使用【杀】时，若此时处于“定军山战场”，则你可以消耗2层士气，令其于此牌结算中视为拥有〖烈弓〗。',
             minifightliegong: '烈弓',
             minifightliegong_info: '锁定技，当你使用【杀】指定目标后，若目标角色的手牌数或体力值大于等于你的手牌数或体力值，则其不可响应此【杀】；目标角色的手牌数和体力值均大于等于你的手牌数或体力值，则此【杀】对其造成的伤害+1。',
             minifightreliegong: '烈弓',
