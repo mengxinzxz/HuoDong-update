@@ -11413,7 +11413,6 @@ const packs = function () {
                     if (event.name == 'damage') return !storage.includes(event.player);
                     return event.targets?.length && !event.iwhile && storage.length;
                 },
-                locked: true,
                 async cost(event, trigger, player) {
                     event.result = { bool: true };
                     if (event.name == 'damage') event.result.targets = [trigger.player]
@@ -14815,7 +14814,7 @@ const packs = function () {
             wechatchaowei: '朝威',
             wechatchaowei_info: '出牌阶段限一次。你可以与至多三名角色进行共同拼点。赢的角色使用的下三张牌无次数限制且本次拼点没赢的角色选择一项：1.交给你一张牌；2.受到你的1点伤害。',
             wechatenshe: '恩赦',
-            wechatenshe_info: '锁定技。①当你进行共同拼点时，你令拼点牌点数+X（X为本局游戏你发动〖恩赦②〗的次数）。②每名角色限一次，当你对一名角色造成伤害时，你防止此伤害并获得其手牌中所有点数最大的牌，且其不可使用其中包含类别的牌直到其下个回合开始。',
+            wechatenshe_info: '①当你进行共同拼点时，你令拼点牌点数+X（X为本局游戏你发动〖恩赦②〗的次数）。②每名角色限一次，当你对一名角色造成伤害时，你可以防止此伤害并获得其手牌中所有点数最大的牌，且其不可使用其中包含类别的牌直到其下个回合开始。',
             wechat_zhiyin_kongrong: '极孔融',
             wechatzhengren: '诤仁',
             wechatzhengren_info: '一名角色A的回合结束时，若本回合有角色受到过伤害，你选择一名不为A的角色B，然后令A执行本轮未被执行的一项：①交给B两张牌；②弃置两张牌并令B摸两张牌；③以手牌中花色最多的牌交换B手牌中花色最少的牌。',
