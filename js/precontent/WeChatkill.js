@@ -11414,7 +11414,8 @@ const packs = function () {
                     return event.targets?.length && !event.iwhile && storage.length;
                 },
                 async cost(event, trigger, player) {
-                    event.result = { bool: true };
+                    const bool = event.name == 'damage' ? await player.chooseBool(get.prompt(event.skill, trigger.player), '防止' + get.translation(trigger.player) + '受到的伤害并获得其手牌中所有点数最大的牌，且其不可使用其中包含类别的牌直到其下个回合开始。').set('choice', trigger.player.getCards('h') > 0 && get.damageEffect(trigger.player, player, player) <= 0).forResultBool() : true;
+                    event.result = { bool: bool };
                     if (event.name == 'damage') event.result.targets = [trigger.player]
                 },
                 async content(event, trigger, player) {
