@@ -16,7 +16,7 @@ const packs = function () {
                 MiNi_sbCharacter: ['Mbaby_sb_zhenji', 'Mbaby_sb_ganning', 'Mbaby_sb_huangyueying', 'Mbaby_ol_sb_guanyu', 'Mbaby_sb_sunshangxiang', 'Mbaby_sb_xuhuang', 'Mbaby_sb_zhaoyun', 'Mbaby_sb_liubei', 'Mbaby_sb_caocao', 'Mbaby_sb_huanggai', 'Mbaby_sb_yuanshao', 'Mbaby_sb_yujin', 'Mbaby_sb_machao', 'Mbaby_sb_lvmeng', 'Mbaby_sb_huangzhong'],
                 MiNi_miaoKill: ['guanyinping', 'caoying', 'caiwenji', 'diaochan', 'caifuren', 'zhangxingcai', 'zhurong', 'huangyueying', 'daqiao', 'wangyi', 'zhangchunhua', 'zhenji', 'sunshangxiang', 'xiaoqiao', 'lvlingqi'].map(i => `Mmiao_${i}`),
                 MiNi_nianKill: ['caopi', 'zhugeliang', 'lvbu', 'zhouyu'].map(i => `Mnian_${i}`),
-                MiNi_fightKill: ['huangzhong', 'zhangliao', 'luxun'].map(i => `Mfight_${i}`),
+                MiNi_fightKill: ['huangzhong', 'zhangliao', 'luxun', 'dianwei'].map(i => `Mfight_${i}`),
             },
         },
         character: {
@@ -403,6 +403,7 @@ const packs = function () {
             Mfight_huangzhong: ['male', 'shu', 4, ['minifightdingjun', 'minifightlizhan']],
             Mfight_zhangliao: ['male', 'wei', 4, ['minifightbiaoxi', 'minifightpozhen']],
             Mfight_luxun: ['male', 'wu', 4, ['minifightxurui', 'minifightshijie']],
+            Mfight_dainwei: ['male', 'wei', 5, ['minifightchuanglie', 'minifightkuangji']],
         },
         characterIntro: {
             Mbaby_change: '嫦娥，中国古代神话中的人物，又名恒我、恒娥、姮娥、常娥、素娥，羿之妻，因偷吃了不死药而飞升至月宫。嫦娥的故事最早出现在商朝卦书 《归藏》。而嫦娥奔月的完整故事最早记载于西汉《淮南子·览冥训》。东汉时期，嫦娥与羿的夫妻关系确立，而嫦娥在进入月宫后变成了捣药的蟾蜍。南北朝以后，嫦娥的形象回归为女儿身。汉画像中，嫦娥人头蛇身，头梳高髻，身着宽袖长襦，身后长尾上饰有倒钩状细短羽毛。南北朝以后，嫦娥的形象被描绘成绝世美女。南朝陈后主陈叔宝曾把宠妃张丽华比作嫦娥。唐朝诗人白居易曾用嫦娥夸赞邻家少女不可多得的容貌。',
@@ -36741,6 +36742,253 @@ const packs = function () {
                     }
                 }
             },
+            // 典韦 
+            _minifightchuanglie_mark: {
+                charlotte: true,
+                trigger: { target: 'useCardToPlayer' },
+                firstDo: true,
+                silent: true,
+                content(event, trigger, player) {
+                    player.addTempSkill('minifightchuanglie_mark');
+                    player.addMark('minifightchuanglie_mark', 1, false);
+                }
+            },
+            minifightchuanglie: {
+                audio: 'ext:活动武将/audio/skill:2',
+                placeSkill: true,
+                categories: () => ['战场技'],
+                trigger: {
+                    global: 'useCardToPlayer',
+                    player: 'dying',
+                },
+                filter(event, player) {
+                    if (event.name == 'useCardToPlayer') return event.target.countMark('minifightchuanglie_mark') == 3;
+                    return ui._minifightchuanglie_wancheng;
+                },
+                forced: true,
+                locked: false,
+                async content(event, trigger, player) {
+                    if (trigger.name == 'useCardToPlayer') {
+                        player.$fullscreenpop('宛城战场', 'fire');
+                        const background = 'ext:活动武将/image/background/battlefield_wancheng.jpg';
+                        game.broadcastAll(bg => {
+                            ui._minifightchuanglie_wancheng?.remove();
+                            delete ui._minifightchuanglie_wancheng;
+                            if (get.is.phoneLayout()) ui._minifightchuanglie_wancheng = ui.create.div('.touchinfo.left', ui.window);
+                            else ui._minifightchuanglie_wancheng = ui.create.div(ui.gameinfo);
+                            ui._minifightchuanglie_wancheng.innerHTML = '<br>宛城战场';
+                            _status.tempBackground = bg;
+                            game.updateBackground();
+                        }, background);
+                        game.addVideo('skill', player, [event.name, [true, background]]);
+                    }
+                    else {
+                        game.broadcastAll(() => {
+                            ui._minifightchuanglie_wancheng?.remove();
+                            delete ui._minifightchuanglie_wancheng;
+                            delete _status.tempBackground;
+                            game.updateBackground();
+                        });
+                        game.addVideo('skill', player, [event.name, [false]]);
+                        await player.recover(2);
+                    }
+                },
+                video(player, info) {
+                    if (info[0]) _status.tempBackground = info[1];
+                    else delete _status.tempBackground;
+                    game.updateBackground();
+                },
+                group: 'minifightchuanglie_effect',
+                subSkill: {
+                    effect: {
+                        audio: 'minifightchuanglie',
+                        trigger: { global: ['useCardToTarget', 'useCardAfter'] },
+                        filter(event, player) {
+                            if (!ui._minifightchuanglie_wancheng || event.card?.name !== 'sha') return false;
+                            if (event.name == 'useCard') {
+                                if (game.hasPlayer2(current => current.hasHistory('damage', evt => evt.card == event.card))) return false;
+                                return [event.player].addArray(event.targets).some(current => current.isIn());
+                            }
+                            return event.player != player && !event.targets.includes(player) && event.targets.length == 1;
+                        },
+                        async cost(event, trigger, player) {
+                            if (trigger.name == 'useCard') {
+                                event.result = await player.chooseTarget(get.prompt(event.skill), '选择一名角色对其发动〖强袭〗', (card, player, target) => {
+                                    return get.event('targetsx')?.includes(target);
+                                }).set('ai', target => {
+                                    const player = get.player();
+                                    return get.damageEffect(target, player, player);
+                                }).set('targetsx', [trigger.player].addArray(trigger.targets).filter(current => current.isIn())).forResult();
+                            }
+                            else {
+                                const { target } = trigger;
+                                event.result = await player.chooseBool(get.prompt(event.skill, target), `将${get.translation(trigger.card)}转移给自己`).set('choice', get.effect(target, trigger.card, trigger.player, player) < 0).forResult();
+                                event.result.targets = [target];
+                            }
+                        },
+                        async content(event, trigger, player) {
+                            if (trigger.name == 'useCard') {
+                                const [target] = event.targets;
+                                await player.loseHp();
+                                await player.draw();
+                                player.addTempSkill('minifightchuanglie_damage');
+                                await target.damage();
+                            }
+                            else {
+                                const { target } = trigger;
+                                trigger.player.line(player);
+                                const evt = trigger.getParent();
+                                evt.triggeredTargets2.remove(target);
+                                evt.targets.remove(target);
+                                // 神秘结算
+                                target.removeMark('minifightchuanglie_mark', 1, false);
+                                evt.targets.push(player);
+                                player.addTempSkill('minifightchuanglie_mark');
+                                player.addMark('minifightchuanglie_mark', 1, false);
+                                await game.delayx();
+                            }
+                        },
+                    },
+                    damage: {
+                        audio: 'qiangxi',
+                        trigger: { source: 'damageBegin1' },
+                        filter(event, player) {
+                            return player.countCards('he', { type: 'equip' }) && event.getParent().name == 'minifightchuanglie_effect';
+                        },
+                        async cost(event, trigger, player) {
+                            const target = trigger.player;
+                            event.result = await player.chooseToDiscard('he', get.prompt(event.skill, target), '弃置一张装备牌令此伤害+1', card => {
+                                return get.type(card) == 'equip';
+                            }, 'chooseonly').set('goon', get.damageEffect(target, player, player) > 0).set('ai', card => {
+                                return get.event('goon') ? 12 - get.value(card) : 0;
+                            }).forResult();
+                        },
+                        logTarget: 'player',
+                        async content(event, trigger, player) {
+                            await player.discard(event.cards);
+                            trigger.num++;
+                        },
+                    },
+                    mark: {
+                        charlotte: true,
+                        onremove: true,
+                    }
+                }
+            },
+            minifightkuangji: {
+                audio: 'ext:活动武将/audio/skill:2',
+                locked: false,
+                mod: {
+                    cardUsable(card, player) {
+                        if (card?.storage?.minifightkuangji) return Infinity;
+                    },
+                },
+                enable: 'chooseToUse',
+                usable: 1,
+                filter(event, player) {
+                    if (['sha', 'shan'].every(name => !event.filterCard(get.autoViewAs({ name, storage: { minifightkuangji: true } }, 'unsure'), player, event))) return false;
+                    return player.hasCard(card => get.subtypes(card).includes('equip1'), 'hes');
+                },
+                chooseButton: {
+                    dialog(event, player) {
+                        const list = ['sha', 'shan'].filter(name => event.filterCard(get.autoViewAs({ name, storage: { minifightkuangji: true } }, 'unsure'), player, event)).map(name => ['基本', '', name]);
+                        const dialog = ui.create.dialog('狂戟', [list, 'vcard']);
+                        dialog.direct = true;
+                        return dialog;
+                    },
+                    check(button) {
+                        const player = get.player();
+                        return get.event().getParent().type == 'phase' ? player.getUseValue({ name: button.link[2] }) : 1;
+                    },
+                    backup(links, player) {
+                        return {
+                            audio: 'minifightkuangji',
+                            filterCard(card, player) {
+                                return get.subtypes(card).includes('equip1') && lib.filter.cardRespondable(card, player);
+                            },
+                            popname: true,
+                            viewAs: {
+                                name: links[0][2],
+                                storage: { minifightkuangji: true },
+                                suit: 'none',
+                                number: null,
+                                isCard: true,
+                            },
+                            position: 'hes',
+                            ignoreMod: true,
+                            ai1(card) {
+                                return 12 - get.value(card);
+                            },
+                            log: false,
+                            async precontent(event, trigger, player) {
+                                await player.respond(event.result.cards, 'minifightkuangji', 'highlight');
+                                event.getParent().addCount = false;
+                                event.result.card = {
+                                    name: event.result.card.name,
+                                    storage: { minifightkuangji: true },
+                                    suit: 'none',
+                                    number: null,
+                                    isCard: true,
+                                };
+                                let num = 1;
+                                const info = get.info(event.result.cards[0], false);
+                                if (typeof info.distance?.attackFrom == 'number') {
+                                    num -= info.distance.attackFrom;
+                                }
+                                num = Math.ceil(num / 2);
+                                if (num > 0) event.result._apply_args = { effectCount: num };
+                                player.when('useCard').filter(evt => evt.skill == 'minifightkuangji_backup' && evt.card.name == 'shan').step(async () => {
+                                    await player.draw(num);
+                                });
+                                event.result.cards = [];
+                            },
+                        };
+                    },
+                    prompt(links) {
+                        return `将一张武器牌当做【${get.translation(links[0][2])}】使用`;
+                    },
+                },
+                ai: {
+                    respondSha: true,
+                    respondShan: true,
+                    skillTagFilter(player, tag, arg) {
+                        if (arg == 'respond') return false;
+                        if (!player.hasCard(card => get.subtypes(card).includes('equip1'), 'hes')) return false;
+                    },
+                    order: 6,
+                    result: { player: 1 },
+                },
+                group: 'minifightkuangji_equip',
+                subSkill: {
+                    equip: {
+                        audio: 'minifightkuangji',
+                        trigger: {
+                            global: 'phaseBefore',
+                            player: 'enterGame',
+                        },
+                        filter(event, player) {
+                            if (player.countCards('h') < 2) return false;
+                            return event.name != 'phase' || game.phaseNumber == 0;
+                        },
+                        async cost(event, trigger, player) {
+                            event.result = await player.chooseCard(get.prompt(event.skill), '将两张手牌替换为武器牌', 2).set('ai', card => {
+                                return 6 - get.value(card);
+                            }).forResult();
+                        },
+                        async content(event, trigger, player) {
+                            const { cards } = event;
+                            await player.lose(cards, ui.cardPile);
+                            const gains = [];
+                            while (gains.length < 2) {
+                                const card = get.cardPile2(card => get.subtypes(card).includes('equip1') && !gains.includes(card));
+                                if (card) gains.push(card);
+                                else break;
+                            }
+                            if (gains.length) await player.gain(gains, 'draw');
+                        },
+                    }
+                }
+            },
         },
         dynamicTranslate: {
             minizhongjian(player) {
@@ -38764,6 +39012,7 @@ const packs = function () {
             Mfight_huangzhong: '战黄忠',
             Mfight_zhangliao: '战张辽',
             Mfight_luxun: '战陆逊',
+            Mfight_dainwei: '战典韦',
             minifightdingjun: '定军',
             minifightdingjun_info: '战场技，锁定技。①一名角色使用【杀】造成1点伤害后，获得1层士气。②士气增加1点后，你摸一张牌。③士气变化时，若士气层数大于等于本局游戏人数，则进入“定军山战场”；一名角色的回合结束时，若士气层数为0，则退出“定军山战场”。④一名角色使用【杀】时，若此时处于“定军山战场”，则你可以消耗2层士气，令其于此牌结算中视为拥有〖烈弓〗。',
             minifightliegong: '烈弓',
@@ -38783,6 +39032,13 @@ const packs = function () {
             })}〗：1.你于此牌结算结束后对A的上家造成1点火焰伤害；2.你于此牌结算结束后对A的下家造成1点火焰伤害；3.此牌造成的伤害+1且改为火属性。③一名角色造成火焰伤害后，若本回合所有角色受到的火焰伤害数大于2，则退出“夷陵战场”。`,
             minifightshijie: '势节',
             minifightshijie_info: '每轮游戏开始时，若你的武将牌上没有“势”，你可以将任意张手牌置于武将牌上，称为“势”，且你于X个回合结束后，获得武将牌上的所有“势”并摸等量张牌（X为武将牌上的“势”数）。',
+            minifightchuanglie: '创烈',
+            minifightchuanglie_info: `战场技。①一名角色一回合内对同一名角色使用三次牌时，进入“宛城战场”。②处于“宛城战场”时：1.当其他角色成为【杀】的唯一目标时，你可以将此【杀】的目标转移为你；2.一名角色使用【杀】结算完成后，若此牌未造成伤害，你可以对此【杀】的使用者或目标发动一次〖${get.poptip({
+                name: '强袭',
+                info: '你可以失去1点体力并摸一张牌，然后你对目标角色造成1点伤害；一名角色因此受到伤害时，你可以弃置一张装备牌令此伤害+1',
+            })}〗；3.当你进入濒死状态时，你回复2点体力并退出“宛城战场”。`,
+            minifightkuangji: '狂戟',
+            minifightkuangji_info: '①游戏开始时，你可以将两张手牌替换为牌堆中的等量张武器牌。②每回合限一次。你可以打出一张武器牌A并视为使用一张【闪】或额外结算X-1次的无任何次数限制的【杀】，且当你以此法使用【闪】时，你摸X张牌（X为A攻击范围的一半且向上取整）。',
         },
     };
     for (var skill in MiNikill.skill) {
