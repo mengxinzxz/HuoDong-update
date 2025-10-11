@@ -12202,6 +12202,13 @@ const packs = function () {
                     if (typeof stat[name] == 'number') stat[name]--;
                     game.log(trigger.card, '不计入次数');
                 },
+                init(player, skill) {
+                    const hs = player.getCards('h').filter(card => card.hasGaintag(`${skill}_tag`));
+                    if (hs.length) player.addGaintag(hs, skill);
+                },
+                onremove(player, skill) {
+                    player.removeGaintag(skill);
+                }
             },
             wechatjueya: {
                 audio: 'ext:活动武将/audio/skill:2',

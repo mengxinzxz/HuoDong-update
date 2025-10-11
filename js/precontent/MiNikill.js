@@ -36809,8 +36809,11 @@ const packs = function () {
                 firstDo: true,
                 silent: true,
                 content(event, trigger, player) {
+                    const target = trigger.player;
                     player.addTempSkill('minifightchuanglie_mark');
-                    player.addMark('minifightchuanglie_mark', 1, false);
+                    player.storage.minifightchuanglie_mark ??= {};
+                    if (typeof player.storage.minifightchuanglie_mark[target.playerid] != 'number') player.storage.minifightchuanglie_mark[target.playerid] = 0;
+                    player.storage.minifightchuanglie_mark[target.playerid]++;
                 }
             },
             minifightchuanglie: {
@@ -36822,7 +36825,12 @@ const packs = function () {
                     player: 'dying',
                 },
                 filter(event, player) {
-                    if (event.name == 'useCardToPlayer') return event.target.countMark('minifightchuanglie_mark') == 3 && !ui._minifightchuanglie_wancheng;
+                    if (event.name == 'useCardToPlayer') {
+                        const storage = event.target.storage.minifightchuanglie_mark;
+                        if (!storage) return false;
+                        const { playerid } = event.player;
+                        return storage[playerid] == 3 && !Object.keys(storage).some(id => storage[id] > 2 && id != playerid) && !ui._minifightchuanglie_wancheng;
+                    }
                     return ui._minifightchuanglie_wancheng;
                 },
                 forced: true,
@@ -36896,15 +36904,19 @@ const packs = function () {
                             }
                             else {
                                 const { target } = trigger;
-                                trigger.player.line(player);
+                                const user = trigger.player;
+                                player.line(target);
                                 const evt = trigger.getParent();
                                 evt.triggeredTargets2.remove(target);
                                 evt.targets.remove(target);
                                 // 神秘结算
-                                target.removeMark('minifightchuanglie_mark', 1, false);
+                                const num = target.storage.minifightchuanglie_mark?.[user.playerid]
+                                if (typeof num == 'number' && num > 0) target.storage.minifightchuanglie_mark[user.playerid]--;
                                 evt.targets.push(player);
                                 player.addTempSkill('minifightchuanglie_mark');
-                                player.addMark('minifightchuanglie_mark', 1, false);
+                                player.storage.minifightchuanglie_mark ??= {};
+                                if (typeof player.storage.minifightchuanglie_mark[user.playerid] != 'number') player.storage.minifightchuanglie_mark[user.playerid] = 0;
+                                player.storage.minifightchuanglie_mark[user.playerid]++;
                                 await game.delayx();
                             }
                         },
