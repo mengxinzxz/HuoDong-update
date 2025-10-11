@@ -15,7 +15,7 @@ const packs = function () {
                 wechat_yijiang: ['quancong', 'guyong', 'liaohua', 'gongsunyuan', 'xusheng', 'yufan', 'handang', 'caochong', 'caoxiu', 'caozhang', 'masu', 'caifuren', 'jianyong', 'caozhi', 'gaoshun', 'xiahoushi', 'xushu', 'wuguotai', 'liubiao', 'liuchen'].map(i => `wechat_${i}`),
                 wechat_xianding: [
                     ...['caojie', 'xuezong', 'jikang', 'caiyong', 'xushi', 'sundeng', 'huanghao', 'guohuanghou', 'sp_zhenji', 'lizhaojiaobo', 'liucheng', 'sp_diaochan', 'sunluyu', 'sunhao', 'sp_wangcan', 'yj_zhoubuyi', 'jsp_huangyueying', 'sp_machao', 'wanglang', 'chendeng', 'sp_pangde', 'zhuling', 'caizhenji', 'sp_jiangwei', 'sp_taishici', 'sp_caiwenji', 'bianfuren', 'sunluban', 'zhangxingcai', 'huojun'].map(i => `wechat_${i}`),
-                    ...['xiaoqiao', 'xiahouyuan', 'gaoshun', 'handang', 'guojia', 'huanggai', 'diaochan', 'huangyueying', 'zhangliao', 'sunshangxiang', 'zhaoyun', 'machao', 'huangzhong', 'caocao', 'sunce'].map(i => `wechat_sb_${i}`),
+                    ...['sunquan', 'xiaoqiao', 'xiahouyuan', 'gaoshun', 'handang', 'guojia', 'huanggai', 'diaochan', 'huangyueying', 'zhangliao', 'sunshangxiang', 'zhaoyun', 'machao', 'huangzhong', 'caocao', 'sunce'].map(i => `wechat_sb_${i}`),
                 ],
                 wechat_wanxiang: ['ruanhui', 'kanze', 'zumao', 'xiahouba', 'buzhi', 'liuqi', 'ganfuren', 'liuyao', 'zhugeguo', 'xurong', 'yj_weiyan', 'yj_huangzhong', 'yj_ganning', 'zhaoxiang', 'guozhao', 'sunhanhua', 'pangdegong', 'guanyinping', 'baosanniang', 'taoqian', 'guansuo', 'liuyan', 'shenpei', 'yangxiu', 'yj_xuhuang', 'mayunlu', 'litong'].map(i => `wechat_${i}`),
                 wechat_zhiyin: ['mayunlu', 'bulianshi', 'diaochan', 'taishici', 'luxun', 'sunshangxiang', 'xunyou', 'dianwei', 'zhaoyun', 'xinxianying', 'guohuanghou', 'kongrong', 'caopi', 'jiaxu', 'zhangfei', 'dongzhuo', 'wangyi', 'zhangchunhua', 'hetaihou', 'zhurong', 'jiangwei', 'caozhi', 'liubei', 'sunce', 'xunyu', 'zhenji', 'xuzhu', 'yuanshao', 'lusu', 'guojia', 'lvbu', 'daqiao', 'xiaoqiao', 'caocao', 'zhugeliang', 'simayi', 'machao', 'huangyueying', 'caiwenji', 'zhouyu', 'sunquan', 'guanyu'].map(i => `wechat_zhiyin_${i}`),
@@ -206,6 +206,7 @@ const packs = function () {
             wechat_sb_gaoshun: ['male', 'qun', 4, ['wechatsbxianzhen', 'sbjinjiu'], ['tempname:sb_gaoshun']],
             wechat_sb_xiahouyuan: ['male', 'wei', 4, ['wechatsbshensu', 'sbzhengzi'], ['tempname:sb_xiahouyuan', 'name:夏侯|渊']],
             wechat_sb_xiaoqiao: ['female', 'wu', 3, ['wechatsbtianxiang', 'xinhongyan'], ['tempname:sb_xiaoqiao', 'name:桥|null']],
+            wechat_sb_sunquan: ['male', 'wu', 4, ['wechatsbzhiheng', 'wechatsbtongye'], ['tempname:sb_sunquan', 'name:桥|null']],
         },
         characterIntro: {
         },
@@ -14320,6 +14321,194 @@ const packs = function () {
                     if (get.itemtype(cards) == 'cards' && cards.length > 3) await player.turnOver();
                 },
             },
+            // 谋孙权
+            wechatsbzhiheng: {
+                audio: 'sbzhiheng',
+                locked: false,
+                mod: {
+                    aiOrder(player, card, num) {
+                        if (num <= 0 || get.itemtype(card) !== 'card' || get.type(card) !== 'equip') return num;
+                        let eq = player.getEquip(get.subtype(card));
+                        if (eq && get.equipValue(card) - get.equipValue(eq) < Math.max(1.2, 6 - player.hp)) return 0;
+                    },
+                },
+                enable: 'phaseUse',
+                usable: 1,
+                position: 'he',
+                filterCard: lib.filter.cardDiscardable,
+                discard: false,
+                lose: false,
+                delay: false,
+                selectCard: [1, Infinity],
+                prompt(event) {
+                    const count = get.player().countMark('wechatsbtongye');
+                    return `出牌阶段限一次。你可以弃置任意张牌并摸等量的牌，若你以此法弃置的牌包括你所有手牌，则你多摸${get.cnNumber(count + 1)}张牌。`;
+                },
+                check(card) {
+                    let player = get.player();
+                    if (get.position(card) == 'h' && !player.countCards('h', 'du') && (player.hp > 2 - player.countMark('wechatsbtongye') || !player.countCards('h', i => {
+                        return get.value(i) >= 8 + player.countMark('wechatsbtongye');
+                    }))) {
+                        return 1;
+                    }
+                    if (get.position(card) == 'e') {
+                        let subs = get.subtypes(card);
+                        if (subs.includes('equip2') || subs.includes('equip3')) {
+                            return player.getHp() - get.value(card);
+                        }
+                    }
+                    return 6 - get.value(card);
+                },
+                allowChooseAll: true,
+                async content(event, trigger, player) {
+                    const next = player.discard(event.cards);
+                    event.num = 0;
+                    player.when({ player: 'loseAfter' }).filter(evt => evt.getParent() == next).step(async (event, trigger, player) => {
+                        if (!player.countCards('h') && trigger.getl(player)?.hs?.length) trigger.getParent(2).num++;
+                    });
+                    const { cards } = await next;
+                    event.num += cards.length;
+                    await player.draw(event.num + player.countMark('wechatsbtongye'));
+                },
+                ai: {
+                    order(item, player) {
+                        if (player.hasCard(i => get.value(i) > Math.max(6, 9 - player.hp), 'he')) return 1;
+                        return 10;
+                    },
+                    result: { player: 1 },
+                    nokeep: true,
+                    skillTagFilter(player, tag, arg) {
+                        if (tag === 'nokeep') {
+                            return (!arg || (arg && arg.card && get.name(arg.card) === 'tao')) && player.isPhaseUsing() && !player.getStat().skill.wechatsbzhiheng && player.hasCard(card => get.name(card) !== 'tao', 'h');
+                        }
+                    },
+                    threaten: 1.56,
+                },
+            },
+            wechatsbtongye: {
+                audio: 'sbtongye',
+                trigger: { player: 'phaseJieshuBegin' },
+                forced: true,
+                onremove: true,
+                async content(event, trigger, player) {
+                    const { result } = await player.chooseControl('变化', '不变').set('prompt', '统业：猜测场上装备数是否于你下回合准备阶段前发生变化').set('ai', () => {
+                        let player = _status.event.player;
+                        if (game.countPlayer() > 3) {
+                            return '变化';
+                        }
+                        if (game.countPlayer(current => {
+                            return current.hasCard({ type: 'equip' }, 'e');
+                        }) < game.countPlayer()) {
+                            return '变化';
+                        }
+                        if (game.countPlayer() == 2 && game.countPlayer(current => {
+                            if (current != player) {
+                                return current.countCards("e", { type: "equip" }) + current.countDisabledSlot();
+                            }
+                        }) >= 5) {
+                            return '不变';
+                        }
+                        if (Math.random() < 0.3) {
+                            return '变化';
+                        }
+                        return '不变';
+                    });
+                    if (!result?.control) return;
+                    if (result.control == '变化') {
+                        player.addSkill(event.name + '_change');
+                        player.chat('变！');
+                    } else if (result.control == '不变') {
+                        player.addSkill(event.name + '_nochange');
+                        player.chat('不变！');
+                    }
+                    const num = game.filterPlayer().map(i => i.countCards('e')).reduce((p, c) => p + c, 0);
+                    player.clearMark(event.name + '_settle', false);
+                    player.addSkill(event.name + '_settle');
+                    if (num > 0) player.addMark(event.name + '_settle', num, false);
+                },
+                marktext: '业',
+                intro: {
+                    name: '统业',
+                    name2: '业',
+                    content: 'mark',
+                },
+                ai: { combo: 'wechatsbzhiheng' },
+                subSkill: {
+                    broadcast: {
+                        trigger: { global: ['loseAfter', 'equipAfter', 'addJudgeAfter', 'gainAfter', 'loseAsyncAfter', 'addToExpansionAfter'] },
+                        charlotte: true,
+                        silent: true,
+                        filter(event, player) {
+                            let num = 0;
+                            game.countPlayer(current => {
+                                const evt = event.getl(current);
+                                if (evt?.es?.length) num += evt.es.length;
+                            });
+                            if (event.name == 'equip') num--;
+                            return num != 0;
+                        },
+                        async content(event, trigger, player) {
+                            for (const skill of ['wechatsbtongye_change', 'wechatsbtongye_nochange'].filter(skill => player.hasSkill(skill))) player.markSkill(skill);
+                        },
+                    },
+                    settle: {
+                        audio: 'sbtongye',
+                        getNum(player) {
+                            return game.filterPlayer().map(i => i.countCards('e')).reduce((p, c) => p + c, 0) - player.countMark('wechatsbtongye_count');
+                        },
+                        init(player) {
+                            player.addSkill('wechatsbtongye_broadcast');
+                        },
+                        trigger: { player: 'phaseZhunbeiBegin' },
+                        forced: true,
+                        charlotte: true,
+                        filter(event, player) {
+                            return ['wechatsbtongye_change', 'wechatsbtongye_nochange'].some(skill => player.hasSkill(skill));
+                        },
+                        async content(event, trigger, player) {
+                            const delta = get.info(event.name).getNum(player);
+                            if ((player.hasSkill('wechatsbtongye_change') && delta != 0) || (player.hasSkill('wechatsbtongye_nochange') && delta == 0)) {
+                                game.log(player, '猜测', '#g正确');
+                                if (player.countMark('wechatsbtongye') < 2) player.addMark('wechatsbtongye', 1);
+                            } else game.log(player, '猜测', '#y错误');
+                            player.removeSkill(event.name);
+                            ['wechatsbtongye_change', 'wechatsbtongye_nochange', 'wechatsbtongye_broadcast'].forEach(skill => player.removeSkill(skill));
+                        },
+                    },
+                    change: {
+                        charlotte: true,
+                        mark: true,
+                        marktext: '变',
+                        intro: {
+                            markcount(storage, player) {
+                                return get.info('wechatsbtongye_settle').getNum(player);
+                            },
+                            mark(dialog, storage, player) {
+                                dialog.addText(get.translation(player) + '猜测场上装备数发生变化');
+                                const delta = get.info('wechatsbtongye_settle').getNum(player);
+                                if (delta == 0) dialog.addText('(当前未发生变化)');
+                                else dialog.addText('(当前已' + (delta > 0 ? '增加' : '减少') + get.cnNumber(Math.abs(delta)) + '张装备牌)');
+                            },
+                        },
+                    },
+                    nochange: {
+                        charlotte: true,
+                        mark: true,
+                        marktext: '<span style="text-decoration:line-through;">变</span>',
+                        intro: {
+                            markcount(storage, player) {
+                                return get.info('wechatsbtongye_settle').getNum(player);
+                            },
+                            mark(dialog, storage, player) {
+                                dialog.addText(get.translation(player) + '猜测场上装备数发生不变化');
+                                const delta = get.info('wechatsbtongye_settle').getNum(player);
+                                if (delta == 0) dialog.addText('(当前未发生变化)');
+                                else dialog.addText('(当前已' + (delta > 0 ? '增加' : '减少') + get.cnNumber(Math.abs(delta)) + '张装备牌)');
+                            },
+                        },
+                    },
+                },
+            },
         },
         dynamicTranslate: {
             wechatxiangzhi(player) {
@@ -15198,6 +15387,11 @@ const packs = function () {
             wechat_shen_caocao: '微信神曹操',
             wechatguixin: '归心',
             wechatguixin_info: '当你受到1点伤害后，你可以获得所有其他角色区域各一张牌，若你本次以此法获得的牌不少于四张，你翻面。',
+            wechat_sb_sunquan: '微信谋孙权',
+            wechatsbzhiheng: '制衡',
+            wechatsbzhiheng_info: '出牌阶段限一次。你可以弃置任意张牌并摸等量的牌，若你以此法弃置的牌包括你所有手牌，则你多摸X张牌（X为你的“业”数+1）。”',
+            wechatsbtongye: '统业',
+            wechatsbtongye_info: '锁定技。结束阶段，你猜测场上装备牌数与你下一个准备阶段的场上装备牌数是否相等，并获得以下效果：你下一个准备阶段，若你猜对且“业”数小于2，你获得1枚“业”。',
         },
     };
     for (let i in WeChatkill.character) {
