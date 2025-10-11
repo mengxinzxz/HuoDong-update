@@ -206,7 +206,7 @@ const packs = function () {
             wechat_sb_gaoshun: ['male', 'qun', 4, ['wechatsbxianzhen', 'sbjinjiu'], ['tempname:sb_gaoshun']],
             wechat_sb_xiahouyuan: ['male', 'wei', 4, ['wechatsbshensu', 'sbzhengzi'], ['tempname:sb_xiahouyuan', 'name:夏侯|渊']],
             wechat_sb_xiaoqiao: ['female', 'wu', 3, ['wechatsbtianxiang', 'xinhongyan'], ['tempname:sb_xiaoqiao', 'name:桥|null']],
-            wechat_sb_sunquan: ['male', 'wu', 4, ['wechatsbzhiheng', 'wechatsbtongye'], ['tempname:sb_sunquan', 'name:桥|null']],
+            wechat_sb_sunquan: ['male', 'wu', 4, ['wechatsbzhiheng', 'wechatsbtongye'], ['tempname:sb_sunquan']],
         },
         characterIntro: {
         },
