@@ -119,7 +119,7 @@ const packs = function () {
                         var player = _status.event.player, target = _status.event.target;
                         if (get.attitude(player, target) <= 0) return 0;
                         var sum = target.countCards('hs', card => target.canSaveCard(card, target)) + target.hp;
-                        if ((player.hasSkill('fh_yuejian') && !player.hasSkill('fh_yuejian_used') && !get.is.blocked('fh_yuejian', player)) || (player.hasSkill('miniyuejian') && !player.hasSkill('miniyuejian_used') && !get.is.blocked('miniyuejian', player))) sum++;
+                        if ((player.hasSkill('fh_yuejian') && !player.hasSkill('fh_yuejian_used') && !get.is.blocked('fh_yuejian', player))) sum++;
                         if (player.countCards('hs', card => target.canSaveCard(card, target)) + sum <= 0) return 0;
                         if (target.canSaveCard(cardx, target) && ui.selected.cards.filter(card => target.canSaveCard(card, target)).length + sum > 0) return 12 - get.value(cardx);
                         return 7 - get.value(cardx);
