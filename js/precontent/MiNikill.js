@@ -71,7 +71,7 @@ const packs = function () {
             Mbaby_caohong: ['male', 'wei', 4, ['miniyuanhu', 'minijuezhu']],
             Mbaby_sb_caocao: ['male', 'wei', 4, ['minisbjianxiong', 'minisbqingzheng', 'sbhujia'], ['zhu']],
             Mbaby_zhugedan: ['male', 'wei', 4, ['minigongao', 'minijuyi'], ['tempname:zhugedan', 'name:诸葛|诞']],
-            Mbaby_bianfuren: ['female', 'wei', 3, ['fh_fuding', 'miniyuejian'], ['die:bianfuren', 'name:卞|null']],
+            Mbaby_bianfuren: ['female', 'wei', 3, ['miniwanwei', 'miniyuejian'], ['die:bianfuren', 'name:卞|null']],
             Mbaby_sb_yujin: ['male', 'wei', 4, ['minixiayuan', 'minijieyue']],
             Mbaby_yuejin: ['male', 'wei', 4, ['minixiaoguo']],
             Mbaby_jianggan: ["male", "wei", 3, ['miniweicheng', 'minidaoshu']],
@@ -4661,6 +4661,37 @@ const packs = function () {
                 derivation: ['minibenghuai', 'reweizhong'],
             },
             //卞夫人
+            miniwanwei: {
+                audio: 'wanwei',
+                trigger: { global: 'dying' },
+                filter(event, player) {
+                    return event.player != player && player.countCards('he');
+                },
+                round: 1,
+                async cost(event, trigger, player) {
+                    const target = trigger.player;
+                    event.result = await player.chooseCard(get.prompt2(event.skill, target), 'he', [1, 5], 'allowChooseAll').set('ai', cardx => {
+                        const { player, target } = get.event();
+                        if (get.attitude(player, target) <= 0) return 0;
+                        let sum = target.countCards('hs', card => target.canSaveCard(card, target)) + target.hp;
+                        if ((player.hasSkill('fh_yuejian') && !player.hasSkill('fh_yuejian_used') && !get.is.blocked('fh_yuejian', player))) sum++;
+                        if (player.countCards('hs', card => target.canSaveCard(card, target)) + sum <= 0) return 0;
+                        if (target.canSaveCard(cardx, target) && ui.selected.cards.filter(card => target.canSaveCard(card, target)).length + sum > 0) return 12 - get.value(cardx);
+                        return 7 - get.value(cardx);
+                    }).set('target', target).forResult();
+                },
+                logTarget: 'player',
+                async content(event, trigger, player) {
+                    const { cards, targets: [target] } = event;
+                    await player.give(cards, target);
+                    target.when('dyingAfter').filter(evt => evt == trigger).step(async () => {
+                        if (player.isIn()) {
+                            await player.draw(cards.length);
+                            await player.recover();
+                        }
+                    });
+                },
+            },
             miniyuejian: {
                 audio: 'yuejian',
                 mod: { maxHandcard: (player, num) => num + player.maxHp },
@@ -37435,6 +37466,8 @@ const packs = function () {
             minigongao_info: '锁定技，一名其他角色进入濒死状态时，你增加1点体力上限，然后回复1点体力。',
             minijuyi: '举义',
             minijuyi_info: '限定技，准备阶段，若你的体力上限大于场上的存活角色数，你将手牌数摸至体力上限，然后获得〖崩坏〗和〖威重〗。',
+            miniwanwei: '挽危',
+            miniwanwei_info: '每轮限一次，一名其他角色进入濒死状态时，你可以交给其至多五张牌。若如此做，若其脱离濒死状态，你摸等量的牌并回复1点体力。',
             miniyuejian: '约俭',
             miniyuejian_info: '你的手牌上限+X（X为你的体力上限）。当你需要使用基本牌时，若你本回合未使用过基本牌，则你可以视为使用之。',
             minixiayuan: '狭援',

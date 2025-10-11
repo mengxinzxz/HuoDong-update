@@ -14454,7 +14454,7 @@ const packs = function () {
                     settle: {
                         audio: 'sbtongye',
                         getNum(player) {
-                            return game.filterPlayer().map(i => i.countCards('e')).reduce((p, c) => p + c, 0) - player.countMark('wechatsbtongye_count');
+                            return game.filterPlayer().map(i => i.countCards('e')).reduce((p, c) => p + c, 0) - player.countMark('wechatsbtongye_settle');
                         },
                         init(player) {
                             player.addSkill('wechatsbtongye_broadcast');
