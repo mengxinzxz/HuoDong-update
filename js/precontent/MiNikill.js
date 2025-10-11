@@ -404,7 +404,7 @@ const packs = function () {
             Mfight_huangzhong: ['male', 'shu', 4, ['minifightdingjun', 'minifightlizhan']],
             Mfight_zhangliao: ['male', 'wei', 4, ['minifightbiaoxi', 'minifightpozhen']],
             Mfight_luxun: ['male', 'wu', 4, ['minifightxurui', 'minifightshijie']],
-            Mfight_dainwei: ['male', 'wei', 5, ['minifightchuanglie', 'minifightkuangji']],
+            Mfight_dianwei: ['male', 'wei', 5, ['minifightchuanglie', 'minifightkuangji']],
         },
         characterIntro: {
             Mbaby_change: '嫦娥，中国古代神话中的人物，又名恒我、恒娥、姮娥、常娥、素娥，羿之妻，因偷吃了不死药而飞升至月宫。嫦娥的故事最早出现在商朝卦书 《归藏》。而嫦娥奔月的完整故事最早记载于西汉《淮南子·览冥训》。东汉时期，嫦娥与羿的夫妻关系确立，而嫦娥在进入月宫后变成了捣药的蟾蜍。南北朝以后，嫦娥的形象回归为女儿身。汉画像中，嫦娥人头蛇身，头梳高髻，身着宽袖长襦，身后长尾上饰有倒钩状细短羽毛。南北朝以后，嫦娥的形象被描绘成绝世美女。南朝陈后主陈叔宝曾把宠妃张丽华比作嫦娥。唐朝诗人白居易曾用嫦娥夸赞邻家少女不可多得的容貌。',
@@ -36791,7 +36791,7 @@ const packs = function () {
                     player: 'dying',
                 },
                 filter(event, player) {
-                    if (event.name == 'useCardToPlayer') return event.target.countMark('minifightchuanglie_mark') == 3;
+                    if (event.name == 'useCardToPlayer') return event.target.countMark('minifightchuanglie_mark') == 3 && !ui._minifightchuanglie_wancheng;
                     return ui._minifightchuanglie_wancheng;
                 },
                 forced: true,
@@ -36966,7 +36966,7 @@ const packs = function () {
                                 }
                                 num = Math.ceil(num / 2);
                                 if (num > 0) event.result._apply_args = { effectCount: num };
-                                player.when('useCard').filter(evt => evt.skill == 'minifightkuangji_backup' && evt.card.name == 'shan').step(async () => {
+                                player.when('useCard').filter(evt => evt.skill == 'minifightkuangji_backup' && evt.card.name == 'shan' && evt.getParent() == event.getParent()).step(async () => {
                                     await player.draw(num);
                                 });
                                 event.result.cards = [];
@@ -36996,11 +36996,11 @@ const packs = function () {
                             player: 'enterGame',
                         },
                         filter(event, player) {
-                            if (player.countCards('h') < 2) return false;
+                            if (!player.countCards('h')) return false;
                             return event.name != 'phase' || game.phaseNumber == 0;
                         },
                         async cost(event, trigger, player) {
-                            event.result = await player.chooseCard(get.prompt(event.skill), '将两张手牌替换为武器牌', 2).set('ai', card => {
+                            event.result = await player.chooseCard(get.prompt(event.skill), '将至多两张手牌替换为武器牌', [1, 2]).set('ai', card => {
                                 return 6 - get.value(card);
                             }).forResult();
                         },
@@ -39044,7 +39044,7 @@ const packs = function () {
             Mfight_huangzhong: '战黄忠',
             Mfight_zhangliao: '战张辽',
             Mfight_luxun: '战陆逊',
-            Mfight_dainwei: '战典韦',
+            Mfight_dianwei: '战典韦',
             minifightdingjun: '定军',
             minifightdingjun_info: '战场技，锁定技。①一名角色使用【杀】造成1点伤害后，获得1层士气。②士气增加1点后，你摸一张牌。③士气变化时，若士气层数大于等于本局游戏人数，则进入“定军山战场”；一名角色的回合结束时，若士气层数为0，则退出“定军山战场”。④一名角色使用【杀】时，若此时处于“定军山战场”，则你可以消耗2层士气，令其于此牌结算中视为拥有〖烈弓〗。',
             minifightliegong: '烈弓',
@@ -39070,7 +39070,7 @@ const packs = function () {
                 info: '你可以失去1点体力并摸一张牌，然后你对目标角色造成1点伤害；一名角色因此受到伤害时，你可以弃置一张装备牌令此伤害+1',
             })}〗；3.当你进入濒死状态时，你回复2点体力并退出“宛城战场”。`,
             minifightkuangji: '狂戟',
-            minifightkuangji_info: '①游戏开始时，你可以将两张手牌替换为牌堆中的等量张武器牌。②每回合限一次。你可以打出一张武器牌A并视为使用一张【闪】或额外结算X-1次的无任何次数限制的【杀】，且当你以此法使用【闪】时，你摸X张牌（X为A攻击范围的一半且向上取整）。',
+            minifightkuangji_info: '①游戏开始时，你可以将至多两张手牌替换为牌堆中的等量张武器牌。②每回合限一次。你可以打出一张武器牌A并视为使用一张【闪】或额外结算X-1次的无任何次数限制的【杀】，且当你以此法使用【闪】时，你摸X张牌（X为A攻击范围的一半且向上取整）。',
         },
     };
     for (var skill in MiNikill.skill) {
