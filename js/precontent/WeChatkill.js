@@ -15,7 +15,7 @@ const packs = function () {
                 wechat_yijiang: ['quancong', 'guyong', 'liaohua', 'gongsunyuan', 'xusheng', 'yufan', 'handang', 'caochong', 'caoxiu', 'caozhang', 'masu', 'caifuren', 'jianyong', 'caozhi', 'gaoshun', 'xiahoushi', 'xushu', 'wuguotai', 'liubiao', 'liuchen'].map(i => `wechat_${i}`),
                 wechat_xianding: [
                     ...['caojie', 'xuezong', 'jikang', 'caiyong', 'xushi', 'sundeng', 'huanghao', 'guohuanghou', 'sp_zhenji', 'lizhaojiaobo', 'liucheng', 'sp_diaochan', 'sunluyu', 'sunhao', 'sp_wangcan', 'yj_zhoubuyi', 'jsp_huangyueying', 'sp_machao', 'wanglang', 'chendeng', 'sp_pangde', 'zhuling', 'caizhenji', 'sp_jiangwei', 'sp_taishici', 'sp_caiwenji', 'bianfuren', 'sunluban', 'zhangxingcai', 'huojun'].map(i => `wechat_${i}`),
-                    ...['xiahouyuan', 'gaoshun', 'handang', 'guojia', 'huanggai', 'diaochan', 'huangyueying', 'zhangliao', 'sunshangxiang', 'zhaoyun', 'machao', 'huangzhong', 'caocao', 'sunce'].map(i => `wechat_sb_${i}`),
+                    ...['xiaoqiao', 'xiahouyuan', 'gaoshun', 'handang', 'guojia', 'huanggai', 'diaochan', 'huangyueying', 'zhangliao', 'sunshangxiang', 'zhaoyun', 'machao', 'huangzhong', 'caocao', 'sunce'].map(i => `wechat_sb_${i}`),
                 ],
                 wechat_wanxiang: ['ruanhui', 'kanze', 'zumao', 'xiahouba', 'buzhi', 'liuqi', 'ganfuren', 'liuyao', 'zhugeguo', 'xurong', 'yj_weiyan', 'yj_huangzhong', 'yj_ganning', 'zhaoxiang', 'guozhao', 'sunhanhua', 'pangdegong', 'guanyinping', 'baosanniang', 'taoqian', 'guansuo', 'liuyan', 'shenpei', 'yangxiu', 'yj_xuhuang', 'mayunlu', 'litong'].map(i => `wechat_${i}`),
                 wechat_zhiyin: ['mayunlu', 'bulianshi', 'diaochan', 'taishici', 'luxun', 'sunshangxiang', 'xunyou', 'dianwei', 'zhaoyun', 'xinxianying', 'guohuanghou', 'kongrong', 'caopi', 'jiaxu', 'zhangfei', 'dongzhuo', 'wangyi', 'zhangchunhua', 'hetaihou', 'zhurong', 'jiangwei', 'caozhi', 'liubei', 'sunce', 'xunyu', 'zhenji', 'xuzhu', 'yuanshao', 'lusu', 'guojia', 'lvbu', 'daqiao', 'xiaoqiao', 'caocao', 'zhugeliang', 'simayi', 'machao', 'huangyueying', 'caiwenji', 'zhouyu', 'sunquan', 'guanyu'].map(i => `wechat_zhiyin_${i}`),
@@ -204,6 +204,7 @@ const packs = function () {
             wechat_sb_handang: ['male', 'wu', 4, ['sbgongqi', 'wechatsbjiefan'], ['tempname:sb_handang']],
             wechat_sb_gaoshun: ['male', 'qun', 4, ['wechatsbxianzhen', 'sbjinjiu'], ['tempname:sb_gaoshun']],
             wechat_sb_xiahouyuan: ['male', 'wei', 4, ['wechatsbshensu', 'sbzhengzi'], ['tempname:sb_xiahouyuan', 'name:夏侯|渊']],
+            wechat_sb_xiaoqiao: ['female', 'wu', 3, ['wechatsbtianxiang', 'xinhongyan'], ['tempname:sb_xiaoqiao', 'name:桥|null']],
         },
         characterIntro: {
         },
@@ -14161,7 +14162,117 @@ const packs = function () {
                         if (!arg?.card?.storage?.wechatsbshensu) return false;
                     },
                 },
-            }
+            },
+            // 谋小乔
+            wechatsbtianxiang: {
+                audio: 'sbtianxiang',
+                inherit: 'sbtianxiang',
+                enable: 'phaseUse',
+                filter(event, player) {
+                    return player.countCards('h', card => get.info('wechatsbtianxiang').filterCard(card, player)) && game.hasPlayer(target => get.info('wechatsbtianxiang').filterTarget(null, player, target));
+                },
+                filterTarget(card, player, target) {
+                    return target != player && !target.hasMark('wechatsbtianxiang');
+                },
+                prompt: '将一张红色手牌交给一名角色并令其获得“天香”标记',
+                async content(event, trigger, player) {
+                    const { cards, target } = event;
+                    await player.give(cards, target);
+                    target.addMark(event.name, 1);
+                },
+                marktext: '香',
+                intro: {
+                    name: '天香',
+                    name2: '天香',
+                    content: 'mark',
+                },
+                group: ['wechatsbtianxiang_draw', 'wechatsbtianxiang_effect'],
+                subSkill: {
+                    draw: {
+                        audio: 'sbtianxiang',
+                        trigger: { player: 'phaseZhunbeiBegin' },
+                        filter(event, player) {
+                            return game.hasPlayer(target => target.hasMark('wechatsbtianxiang'));
+                        },
+                        forced: true,
+                        locked: false,
+                        async content(event, trigger, player) {
+                            let num = 0;
+                            game.countPlayer(target => {
+                                const numx = target.countMark('wechatsbtianxiang');
+                                target.clearMark('wechatsbtianxiang');
+                                num += numx;
+                            });
+                            await player.draw(num);
+                        },
+                    },
+                    effect: {
+                        audio: 'sbtianxiang',
+                        trigger: { player: "damageBegin3" },
+                        filter(event, player) {
+                            return game.hasPlayer(target => target.hasMark('wechatsbtianxiang'));
+                        },
+                        async cost(event, trigger, player) {
+                            const { result } = await player.chooseButtonTarget({
+                                createDialog: [
+                                    `###天香###移去一名角色的“天香”标记并选择一项效果令其执行`,
+                                    [
+                                        [
+                                            ['damage', '你防止此伤害，其受到伤害来源对其造成的1点伤害（若没有伤害来源则改为无来源伤害）'],
+                                            ['give', '其交给你两张牌'],
+                                        ],
+                                        'textbutton',
+                                    ]
+                                ],
+                                filterButton(button) {
+                                    return button.link != 'give' || game.hasPlayer(current => current.hasMark('wechatsbtianxiang') && current.countCards('he'));
+                                },
+                                filterTarget(card, player, target) {
+                                    if (!target.hasMark('wechatsbtianxiang')) return false;
+                                    const { link } = ui.selected.buttons[0];
+                                    return link != 'give' || target.countCards('he');
+                                },
+                                ai1(button) {
+                                    const player = get.player();
+                                    const { link } = button;
+                                    if (link == 'damage') {
+                                        const { source, num } = get.event().getTrigger();
+                                        if (get.damageEffect(player, source, player, player) > 0) return 0;
+                                        if (!game.hasPlayer(current => current.hasMark('wechatsbtianxiang') && get.damageEffect(current, source, player, player) > 0)) return 0;
+                                        return 2;
+                                    }
+                                    if (link == 'give') return 2;
+                                    return 1;
+                                },
+                                ai2(target) {
+                                    const player = get.player(), att = get.attitude(player, target);
+                                    const { link } = ui.selected.buttons[0];
+                                    if (att > 0) return 0;
+                                    const { source, num } = get.event().getTrigger();
+                                    if (link == 'damage') return get.damageEffect(target, source, player, player);
+                                    return -att * (Math.min(1, 4 - target.countCards('he')));
+                                },
+                            })
+                            event.result = {
+                                bool: result?.bool,
+                                cost_data: result?.links,
+                                targets: result?.targets,
+                            };
+                        },
+                        async content(event, trigger, player) {
+                            const { targets: [target], cost_data: [link] } = event;
+                            target.clearMark('wechatsbtianxiang');
+                            if (link == 'damage') {
+                                trigger.cancel();
+                                await target.damage(trigger.source ? trigger.source : 'nosource');
+                            }
+                            else if (link == 'give') {
+                                await target.chooseToGive(player, 'he', true, 2, `交给${get.translation(player)}两张牌`);
+                            }
+                        },
+                    }
+                }
+            },
         },
         dynamicTranslate: {
             wechatxiangzhi(player) {
@@ -15034,6 +15145,9 @@ const packs = function () {
             wechat_sb_xiahouyuan: '微信谋夏侯渊',
             wechatsbshensu: '神速',
             wechatsbshensu_info: '回合开始时，你可以选择并执行以下任意项：①跳过判定阶段和摸牌阶段；②跳过摸牌阶段和出牌阶段；③跳过出牌阶段和弃牌阶段。你每选择一项，视为使用一张无距离限制的【杀】（若对应选项包含出牌阶段，则此【杀】不可被响应）。若你选择的项中包含重复阶段，则你将武将牌翻面。',
+            wechat_sb_xiaoqiao: '微信谋小乔',
+            wechatsbtianxiang: '天香',
+            wechatsbtianxiang_info: '①出牌阶段限三次，你可以交给一名没有“天香”标记的其他角色一张红色手牌，然后令其获得“天香”标记。②当你受到伤害时，你可以移去一名角色的“天香”标记并选择一项：1.你防止此伤害，其受到伤害来源对其造成的1点伤害（若没有伤害来源则改为无来源伤害）；2.其交给你两张牌。③准备阶段，你移去场上所有的“天香”标记，然后摸X张牌（X为移去的“天香”标记数）。',
         },
     };
     for (let i in WeChatkill.character) {
