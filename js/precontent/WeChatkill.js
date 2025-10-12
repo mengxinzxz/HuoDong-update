@@ -14630,7 +14630,7 @@ const packs = function () {
                     const num = player.countCards('e');
                     const delta = player.countCards('h') - num;
                     if (delta == 0) return;
-                    if (delta < 0) await player.draw(delta);
+                    if (delta < 0) await player.draw(-delta);
                     else if (player.countDiscardableCards(player, 'h')) await player.chooseToDiscard('h', delta, true, 'allowChooseAll');
                     const targets = game.filterPlayer(current => current.hp == num);
                     if (!targets.length) return;
@@ -15558,7 +15558,7 @@ const packs = function () {
             wechatsbtongye_info: '锁定技。结束阶段，你猜测场上装备牌数与你下一个准备阶段的场上装备牌数是否相等，并获得以下效果：你下一个准备阶段，若你猜对且“业”数小于2，你获得1枚“业”。',
             wechat_zhiyin_zhugeke: '极诸葛恪',
             wechatxingbi: '兴愎',
-            wechatxingbi_info: `锁定技。当你使用或打出伤害牌时，你依次执行本轮未被执行的一项：1.获得一张你手牌中缺少类型的牌；2.移动场上一张牌；3.重铸任意张同类型牌；4.获得${get.poptip('wechatchizu')}并横置。”`,
+            wechatxingbi_info: `锁定技。当你使用或打出伤害牌时，你依次执行本轮未被执行的一项：1.获得一张你手牌中缺少类型的牌；2.移动场上一张牌；3.重铸任意张同类型牌；4.获得${get.poptip('wechatchizu')}并横置。`,
             wechatxiangke: '飨恪',
             wechatxiangke_info: '当你装备区牌数发生变化后，你可以将手牌数调整至X，然后你可以对一名体力值为X的角色造成1点火焰伤害（X为你的装备区牌数）。',
             wechatchizu: '赤族',
