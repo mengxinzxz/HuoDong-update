@@ -37051,7 +37051,7 @@ const packs = function () {
                             const { cards } = event;
                             await player.lose(cards, ui.cardPile);
                             const gains = [];
-                            while (gains.length < 2) {
+                            while (gains.length < cards.length) {
                                 const card = get.cardPile2(card => get.subtypes(card).includes('equip1') && !gains.includes(card));
                                 if (card) gains.push(card);
                                 else break;
