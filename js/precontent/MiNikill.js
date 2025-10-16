@@ -29649,7 +29649,7 @@ const packs = function () {
                         forceDie: true,
                         content() {
                             'step 0'
-                            var num = game.findPlayer(target => target != player && !game.hasPlayer(current => current != player && current.countMark('miniwuhun_mark') < target.countMark('miniwuhun_mark'))).countMark('miniwuhun_mark');
+                            var num = game.findPlayer(target => target != player && !game.hasPlayer(current => current != player && current.countMark('miniwuhun_mark') > target.countMark('miniwuhun_mark'))).countMark('miniwuhun_mark');
                             player.chooseTarget('请选择【武魂】的目标', function (card, player, target) {
                                 return target != player && target.countMark('miniwuhun_mark') == _status.event.num;
                             }).set('ai', function (target) {
