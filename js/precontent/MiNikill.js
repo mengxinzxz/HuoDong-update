@@ -365,7 +365,18 @@ const packs = function () {
             Mbaby_shen_huatuo: ['male', 'shen', 1, ['minijishi', 'minitaoxian', 'minishenzhen'], ['qun']],
             Mbaby_shen_guojia: ['male', 'shen', 3, ['reshuishi', 'minigjtianyi', 'minihuishi'], ['wei']],
             Mbaby_shen_zhenji: ['female', 'shen', 3, ['minishenfu', 'miniqixian', 'minifeifu'], ['wei']],
-            Mbaby_shen_daxiaoqiao: ['female', 'shen', 4, ['minishuangshu', 'minipingting', 'miniyizheng'], ['wu', 'name:桥|null']],
+            Mbaby_shen_daxiaoqiao: ['female', 'shen', 4, ['minishuangshu', 'minipingting', 'miniyizheng'], ['wu', 'name:桥|null-桥|null']],
+            Mbaby_shen_daxiaoqiao1: {
+                sex: 'female',
+                group: 'shen',
+                hp: 3,
+                hp2: 3,
+                skills: [],
+                groupInGuozhan: 'wu',
+                img: 'extension/活动武将/image/character/Mbaby_shen_daxiaoqiao.jpg',
+                dieAudios: ['Mbaby_shen_daxiaoqiao'],
+                names: '桥|null-桥|null',
+            },
             Mbaby_shen_diaochan: ['female', 'shen', 3, ['minimeihun', 'minihuoxin'], ['qun']],
             Mbaby_sunwukong: ['male', 'shen', 4, ['mini72bian', 'miniruyi', 'miniqitian']],
             Mbaby_dalanmao: ['male', 'shen', 4, ['minizuzhou', 'minimoyu', 'minisanlian']],
@@ -38775,6 +38786,7 @@ const packs = function () {
             Mbaby_shen_guojia: '欢杀神郭嘉',
             Mbaby_shen_zhenji: '欢杀神甄宓',
             Mbaby_shen_daxiaoqiao: '欢杀神大乔小乔',
+            Mbaby_shen_daxiaoqiao1: '欢杀神大小乔①',
             Mbaby_shen_diaochan: '欢杀神貂蝉',
             Mbaby_sunwukong: '欢杀孙悟空',
             Mbaby_dalanmao: '欢杀大懒猫',
@@ -39171,6 +39183,174 @@ const packs = function () {
         color: '#ff6a6a',
         nature: 'MXpink',
         showName: '欢',
+    });
+    lib.arenaReady.push(function () {
+        //双武将牌机制
+        const ori1 = lib.element.player.init;
+        lib.element.player.init = function (character, character2) {
+            const player = this;
+            if (lib.character[character].hp2 || lib.character[character2]?.hp2) {
+                let hp1 = 0, hp2 = 0, maxHp1 = 0, maxHp2 = 0;
+                if (lib.character[character].hp2) {
+                    hp1 = lib.character[character].hp2;
+                    maxHp1 = lib.character[character].maxHp2 || lib.character[character].hp2;
+                }
+                if (lib.character[character2]?.hp2) {
+                    hp2 = lib.character[character2].hp2;
+                    maxHp2 = lib.character[character2].maxHp2 || lib.character[character2].hp2;
+                }
+                if (lib.character[character].hp2 && lib.character[character2]?.hp2) {
+                    let double_hp;
+                    if (_status.connectMode || get.mode() === 'single' && _status.mode === 'changban') double_hp = 'pingjun';
+                    else double_hp = get.config('double_hp');
+                    switch (double_hp) {
+                        case 'pingjun': {
+                            this.maxHp2 = Math.floor((maxHp1 + maxHp2) / 2);
+                            this.hp2 = Math.floor((hp1 + hp2) / 2);
+                            break;
+                        }
+                        case 'zuidazhi': {
+                            this.maxHp2 = Math.max(maxHp1, maxHp2);
+                            this.hp2 = Math.max(hp1, hp2);
+                            break;
+                        }
+                        case 'zuixiaozhi': {
+                            this.maxHp2 = Math.min(maxHp1, maxHp2);
+                            this.hp2 = Math.min(hp1, hp2);
+                            break;
+                        }
+                        case 'zonghe': {
+                            this.maxHp2 = maxHp1 + maxHp2;
+                            this.hp2 = hp1 + hp2;
+                            break;
+                        }
+                        default: {
+                            this.maxHp2 = maxHp1 + maxHp2 - 3;
+                            this.hp2 = hp1 + hp2 - 3;
+                        }
+                    }
+                }
+                else {
+                    this.maxHp2 = lib.character[character].hp2 ? maxHp1 : maxHp2;
+                    this.hp2 = lib.character[character].hp2 ? hp1 : hp2;
+                }
+            }
+            return ori1.apply(this, arguments);
+        };
+        const ori2 = lib.element.player.uninit;
+        lib.element.player.uninit = function () {
+            delete this.hp2;
+            delete this.maxHp2;
+            this.node.hp2?.remove();
+            return ori2.apply(this, arguments);
+        };
+        const ori3 = lib.element.player.$update;
+        lib.element.player.$update = function () {
+            const player = ori3.apply(this, arguments);
+            if (typeof player.hp2 === 'number' || typeof player.maxHp2 === 'number') {
+                const hidden = player.classList.contains("unseen_show") || player.classList.contains("unseen2_show");
+                const hp2 = this.querySelector('.hp2') || ui.create.div('.hp2', this);
+                const maxHp2 = hidden ? 1 : player.maxHp2 || player.maxHp;
+                if (maxHp2 == Infinity) {
+                    hp2.innerHTML = player.hp2 == Infinity ? "∞" : player.hp2 + "<br>/<br>∞<div></div>";
+                } else if (maxHp2 > 5) {
+                    hp2.innerHTML = player.hp2 + "<br>/<br>" + maxHp2 + "<div></div>";
+                    if (player.hp2 == 0) {
+                        hp2.lastChild.classList.add("lost");
+                    }
+                    hp2.classList.add("textstyle");
+                } else {
+                    hp2.innerHTML = "";
+                    hp2.classList.remove("text");
+                    hp2.classList.remove("textstyle");
+                    while (maxHp2 > hp2.childNodes.length) {
+                        ui.create.div(hp2);
+                    }
+                    while (Math.max(0, maxHp2) < hp2.childNodes.length) {
+                        hp2.removeChild(hp2.lastChild);
+                    }
+                    for (var i = 0; i < maxHp2; i++) {
+                        var index = i;
+                        if (get.is.newLayout()) {
+                            index = maxHp2 - i - 1;
+                        }
+                        if (i < player.hp2) {
+                            hp2.childNodes[index].classList.remove("lost");
+                        } else {
+                            hp2.childNodes[index].classList.add("lost");
+                        }
+                    }
+                }
+                if (hidden) {
+                    hp2.dataset.condition = "hidden";
+                } else if (hp2.classList.contains("room")) {
+                    hp2.dataset.condition = "high";
+                } else if (player.hp2 == 0) {
+                    hp2.dataset.condition = "";
+                } else if (player.hp2 > Math.round(maxHp2 / 2) || player.hp2 === maxHp2) {
+                    hp2.dataset.condition = "high";
+                } else if (player.hp2 > Math.floor(maxHp2 / 3)) {
+                    hp2.dataset.condition = "mid";
+                } else {
+                    hp2.dataset.condition = "low";
+                }
+            }
+            return player;
+        };
+        const ori4 = lib.element.player.isDamaged;
+        lib.element.player.isDamaged = function () {
+            if (typeof this.hp2 === 'number' && this.hp2 < this.maxHp2) return true;
+            return ori4.apply(this, arguments);
+        };
+        const ori5 = lib.element.player.getDamagedHp;
+        lib.element.player.getDamagedHp = function () {
+            const num = ori5.apply(this, arguments);
+            if (typeof this.hp2 === 'number' && this.hp2 < this.maxHp2) num += this.maxHp2 - this.hp2;
+            return num;
+        };
+        lib.element.content.changeHp = async function (event, trigger, player) {
+            game.getGlobalHistory().changeHp.push(event);
+            if (event.num < 0 && player.hujia > 0 && event.getParent().name === 'damage' && !player.hasSkillTag('nohujia') && !event.getParent().nohujia) {
+                event.hujia = Math.min(-event.num, player.hujia);
+                event.getParent().hujia = event.hujia;
+                event.num += event.hujia;
+                const next = player.changeHujia(-event.hujia);
+                next.type = 'damage';
+                await next;
+            }
+            let choice = 'hp';
+            if (event.num !== 0) {
+                if (typeof player.hp2 === 'number') {
+                    if (_status.dying.includes(player) && (player.hp <= 0 !== player.hp2 <= 0)) {
+                        choice = player.hp <= 0 ? 'hp' : 'hp2';
+                    }
+                    else if (event.num > 0 && ((player.hp === player.maxHp) !== (player.hp2 === player.maxHp2))) {
+                        choice = (player.hp2 === player.maxHp2) ? 'hp' : 'hp2';
+                    }
+                    else {
+                        choice = await player.chooseControl('主武将牌', '副武将牌').set('ai', () => {
+                            const { player, num } = get.event().getParent();
+                            return (player.hp - player.hp2) * num <= 0 ? 0 : 1;
+                        }).set('prompt', `请选择一张武将牌${event.num > 0 ? '+' : ''}${event.num}体力`).forResult('index');
+                        choice = (index === 0) ? 'hp' : 'hp2';
+                    }
+                }
+            }
+            player[choice] += event.num;
+            if (isNaN(player[choice])) player[choice] = 0;
+            if (player[choice] > player[`maxHp${choice[2]}`]) player[choice] = player[`maxHp${choice[2]}`];
+            player.update();
+            if (event.popup !== false) player.$damagepop(event.num, 'water');
+            if (_status.dying.includes(player) && player.hp > 0 && (typeof player.hp2 !== 'number' || player.hp2 > 0)) {
+                _status.dying.remove(player);
+                game.broadcast(list => _status.dying = list, _status.dying);
+                let evt = event.getParent('_save');
+                if (evt?.finish) evt.finish();
+                evt = event.getParent('dying');
+                if (evt?.finish) evt.finish();
+            }
+            await event.trigger('changeHp');
+        };
     });
     lib.config.all.characters.push('MiNikill');
     lib.config.all.sgscharacters.push('MiNikill');
