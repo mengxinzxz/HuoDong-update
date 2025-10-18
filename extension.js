@@ -13,8 +13,10 @@ game.bolShowNewPack = function () {
 	var HuoDong_update = [
 		'/setPlayer/',
 		'bugfix',
+		'素材补充',
 		'重新分配微信三国杀的武将分包',
-		'重新添加微信赵云，并单独增加微信界赵云',
+		'欢杀：星荀彧、神二乔①号',
+		'微信：微信赵云、微信界赵云',
 		'To be continued...',
 	];
 	//更新武将

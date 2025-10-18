@@ -332,3 +332,154 @@ td.dengjie-game > .button.character > .score.lose {
 	-webkit-filter: blur(5px);
 	filter: blur(5px);
 }
+
+.player .hp2 > div {
+	width: 10px;
+	height: 10px;
+	margin-left: 0;
+}
+
+/*新体力体力条*/
+.player .hp2 {
+	width: 18px;
+	line-height: 16px;
+	text-align: center;
+	bottom: 18px;
+	top: auto;
+	left: 102px;
+	z-index: 3;
+}
+
+#arena.slim_player .player .hp2,
+#window > .player:not(.minskin) .hp2 {
+	bottom: 15px;
+	left: 105px;
+}
+
+#window > .player.minskin .hp2 {
+	left: 91px;
+}
+
+.player .hp2.text {
+	font-family: "xinwei";
+	transform: none;
+	transition: all 0s;
+	left: 98px;
+}
+
+.player .hp2.text > div:last-child {
+	top: 4px;
+}
+
+.player .hp2.long {
+	bottom: 12px;
+	max-height: 160px;
+}
+
+#arena.slim_player .player .hp2.long {
+	bottom: 9px;
+}
+
+.player .hp2.long > div:first-child {
+	margin-top: 7px;
+}
+.hp2 {
+	left: 102px;
+	top: 14px;
+	width: 72px;
+	line-height: 14px;
+	text-align: left;
+}
+.hp2.text {
+	top: 18px;
+}
+.hp2.textstyle {
+	font-family: "xinwei";
+}
+.hp2 > div {
+	width: 8px;
+	height: 8px;
+	margin-left: 3px;
+	position: relative;
+	border-radius: 100%;
+	box-shadow: rgba(0, 0, 0, 0.2) 1px -1px 2px inset, rgba(255, 255, 255, 0.15) -1px 1px 5px inset;
+	filter: brightness(1.5);
+	-webkit-filter: brightness(1.5);
+	transition: all 0.5s;
+	background-repeat: no-repeat;
+}
+.button .hp2 > div {
+	width: 6px;
+	height: 6px;
+	background: white;
+	box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.5);
+	border: 1px solid #fff;
+}
+.button .hp2 > .shield {
+	background: rgba(63, 119, 173, 1);
+	border: 1px solid rgba(63, 119, 173, 1);
+}
+.hp2[data-condition="hidden"] > div:not(.lost):not(.shield) {
+	background-image: url("../../theme/style/hp/image/hidden_hp.png") !important;
+	width: 12px;
+	height: 12px;
+	background-size: 100% 100%;
+	box-shadow: none;
+}
+.hp2[data-condition="high"] > div:not(.lost):not(.shield) {
+	background: rgba(57, 123, 4, 1);
+	border: 1px solid rgba(39, 79, 7, 1);
+}
+.hp2[data-condition="mid"] > div:not(.lost):not(.shield) {
+	background: rgba(166, 140, 6, 1);
+	border: 1px solid rgba(79, 64, 7, 1);
+}
+.hp2[data-condition="low"] > div:not(.lost):not(.shield) {
+	background: rgba(148, 27, 27, 1);
+	border: 1px solid rgba(79, 7, 7, 1);
+}
+.hp2.actcount > div:not(.lost):not(.shield) {
+	background: rgba(63, 119, 173, 1);
+	border: 1px solid rgba(31, 82, 131, 1);
+}
+.treasure > .hp2 > div:not(.lost):not(.shield) {
+	background: rgba(63, 119, 173, 1) !important;
+	border: 1px solid rgba(31, 82, 131, 1) !important;
+}
+.hp2.actcount > div.overflow:not(.lost):not(.shield) {
+	background: rgb(154, 154, 154);
+	border: 1px solid rgb(109, 109, 109);
+}
+.hp2.actcount.overflow2 > div.overflow:not(.lost):not(.shield) {
+	background: rgb(173, 129, 63);
+	border: 1px solid rgb(131, 109, 31);
+}
+.hp2.actcount > .lost {
+	background: rgba(63, 119, 173, 1);
+	border: 1px solid rgba(31, 82, 131, 1);
+	filter: grayscale(1);
+	-webkit-filter: grayscale(1);
+}
+
+.hp2 > .lost {
+	background: rgba(57, 123, 4, 1);
+	border: 1px solid rgba(39, 79, 7, 1);
+	filter: grayscale(1);
+	-webkit-filter: grayscale(1);
+}
+.hp2 > .shield {
+	background: rgba(63, 119, 173, 1);
+	border: 1px solid rgba(31, 82, 131, 1);
+}
+.hp2.text[data-condition="low"],
+.hp2.textstyle[data-condition="low"] {
+	text-shadow: black 0 0 1px, rgba(232, 53, 53, 1) 0 0 2px, rgba(232, 53, 53, 1) 0 0 5px, rgba(232, 53, 53, 1) 0 0 10px;
+}
+.hp2.text[data-condition="mid"],
+.hp2.textstyle[data-condition="mid"] {
+	text-shadow: black 0 0 1px, rgba(255, 203, 0, 1) 0 0 2px, rgba(255, 203, 0, 1) 0 0 5px, rgba(255, 203, 0, 1) 0 0 10px;
+}
+.hp2.text[data-condition="high"],
+.hp2.textstyle[data-condition="high"] {
+	text-shadow: rgba(57, 123, 4, 1) 0 0 2px, rgba(57, 123, 4, 1) 0 0 5px, rgba(57, 123, 4, 1) 0 0 10px;
+}
