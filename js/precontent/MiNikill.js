@@ -39499,10 +39499,24 @@ const packs = function () {
             }
             return player;
         };
-        const ori4 = lib.element.player.isDamaged;
+        const { enable, filterTarget, modTarget, ...ori4 } = lib.card.tao;
+        lib.card.tao = {
+            enable(card, player) {
+                return player.isDamaged();
+            },
+            filterTarget(card, player, target) {
+                return target === player && target.isDamaged();
+            },
+            modTarget(card, player, target) {
+                return target.isDamaged();
+            },
+            ...ori4,
+        };
         lib.element.player.isDamaged = function () {
-            if (typeof this.hp2 === 'number' && this.hp2 < this.maxHp2) return true;
-            return ori4.apply(this, arguments);
+            return (this.hp < this.maxHp || typeof this.hp2 === 'number' && this.hp2 < this.maxHp2) && !this.storage.nohp;
+        };
+        lib.element.player.isHealthy = function () {
+            return (this.hp >= this.maxHp && (typeof this.hp2 !== 'number' || this.hp2 >= this.maxHp2)) || this.storage.nohp;
         };
         const ori5 = lib.element.player.getDamagedHp;
         lib.element.player.getDamagedHp = function () {
