@@ -39318,29 +39318,29 @@ const packs = function () {
                 next.type = 'damage';
                 await next;
             }
-            let choice = 'hp';
-            if (event.num !== 0) {
+            let num = event.num, choice = 'hp';
+            if (num !== 0) {
                 if (typeof player.hp2 === 'number') {
                     if (_status.dying.includes(player) && (player.hp <= 0 !== player.hp2 <= 0)) {
                         choice = player.hp <= 0 ? 'hp' : 'hp2';
                     }
-                    else if (event.num > 0 && ((player.hp === player.maxHp) !== (player.hp2 === player.maxHp2))) {
+                    else if (num > 0 && ((player.hp === player.maxHp) !== (player.hp2 === player.maxHp2))) {
                         choice = (player.hp2 === player.maxHp2) ? 'hp' : 'hp2';
                     }
                     else {
-                        choice = await player.chooseControl('主武将牌', '副武将牌').set('ai', () => {
+                        let index = await player.chooseControl('主武将牌', '副武将牌').set('ai', () => {
                             const { player, num } = get.event().getParent();
                             return (player.hp - player.hp2) * num <= 0 ? 0 : 1;
-                        }).set('prompt', `请选择一张武将牌${event.num > 0 ? '+' : ''}${event.num}体力`).forResult('index');
+                        }).set('prompt', `请选择一张武将牌${num > 0 ? '+' : ''}${num}体力`).forResult('index');
                         choice = (index === 0) ? 'hp' : 'hp2';
                     }
                 }
             }
-            player[choice] += event.num;
+            player[choice] += num;
             if (isNaN(player[choice])) player[choice] = 0;
             if (player[choice] > player[`maxHp${choice[2]}`]) player[choice] = player[`maxHp${choice[2]}`];
             player.update();
-            if (event.popup !== false) player.$damagepop(event.num, 'water');
+            if (event.popup !== false) player.$damagepop(num, 'water');
             if (_status.dying.includes(player) && player.hp > 0 && (typeof player.hp2 !== 'number' || player.hp2 > 0)) {
                 _status.dying.remove(player);
                 game.broadcast(list => _status.dying = list, _status.dying);
@@ -39350,6 +39350,55 @@ const packs = function () {
                 if (evt?.finish) evt.finish();
             }
             await event.trigger('changeHp');
+        };
+        lib.element.content.loseMaxHp = async function (event, trigger, player) {
+            const num = event.num;
+            let choice = 'maxHp';
+            if (typeof player.maxHp2 === 'number') {
+                let index = await player.chooseControl('主武将牌', '副武将牌').set('ai', () => {
+                    const player = get.player();
+                    return player.maxHp > player.maxHp2 ? 0 : 1;
+                }).set('prompt', `请选择一张武将牌-${num}体力上限`).forResult('index');
+                choice = (index === 0) ? 'maxHp' : 'maxHp2';
+            }
+            game.log(player, `减少了${get.cnNumber(num)}点体力上限`);
+            player[choice] -= num;
+            if (isNaN(player[choice])) player[choice] = 0;
+            event.loseHp = Math.max(0, player[choice === 'maxHp' ? 'hp' : 'hp2'] - player[choice]);
+            player.update();
+            if (player[choice] <= 0) await player.die(event);
+        };
+        lib.element.content.gainMaxHp = async function (event, trigger, player) {
+            const num = event.num;
+            let choice = 'maxHp';
+            if (typeof player.maxHp2 === 'number') {
+                let index = await player.chooseControl('主武将牌', '副武将牌').set('ai', () => {
+                    const player = get.player();
+                    return player.maxHp <= player.maxHp2 ? 0 : 1;
+                }).set('prompt', `请选择一张武将牌+${num}体力上限`).forResult('index');
+                choice = (index === 0) ? 'maxHp' : 'maxHp2';
+            }
+            game.log(player, `增加了${get.cnNumber(num)}点体力上限`);
+            player[choice] += num;
+            player.update();
+        };
+        const ori6 = ui.create.buttonPresets.character;
+        ui.create.buttonPresets.character = function (item) {
+            const node = ori6.apply(this, arguments);
+            const func = node.refresh;
+            node.refresh = function (node2, item2) {
+                func.apply(this, arguments);
+                const infoitem = lib.character[item2];
+                if (typeof infoitem?.hp2 === 'number' && node2.node.hp?.querySelector('.text')) {
+                    const { hp2, maxHp2 } = infoitem;
+                    node2.node.hp.querySelector('.text').textContent += `&${hp2}`;
+                    if (typeof maxHp2 === 'number' && maxHp2 !== hp2) {
+                        node2.node.hp.querySelector('.text').textContent += `/${maxHp2}`;
+                    }
+                }
+            };
+            node.refresh(node, item);
+            return node;
         };
     });
     lib.config.all.characters.push('MiNikill');
