@@ -31501,11 +31501,15 @@ const packs = function () {
             },
             minitongxin: {
                 audio: 'miniyizheng',
-                trigger: { global: 'recoverEnd' },
+                trigger: { global: ['recoverEnd', 'damageEnd', 'loseHpEnd'] },
                 filter(event, player) {
                     if (event.source !== player) return false;
                     const evt = event.getParent(2);
-                    return event.getParent().type === 'card' && evt.name === 'useCard' && evt.player === player && get.color(evt.card) === 'red';
+                    if (!(event.getParent().type === 'card' && evt.name === 'useCard' && evt.player === player && get.color(evt.card) === 'red')) return false;
+                    return (player.getHp() === Math.max(0, player.hp2) && player.isDamaged()) || (player.countCards('h', { suit: 'heart' }) === player.countCards('h', { suit: 'diamond' }) && player.hasCard(card => {
+                        if (_status.connectMode && get.color(card) === 'h') return true;
+                        return lib.filter.cardDiscardable(card, player);
+                    }, 'h'));
                 },
                 direct: true,
                 async content(event, trigger, player) {
@@ -32201,59 +32205,24 @@ const packs = function () {
             },
             //神邓艾
             minixianjin: {
-                init(player) {
-                    var num = game.getAllGlobalHistory('changeHp', evt => {
-                        return evt.getParent().name == 'damage' && (evt.getParent().player == player || (evt.getParent().source && evt.getParent().source == player));
-                    }).concat(game.getAllGlobalHistory('changeHp', evt => {
-                        return evt.getParent().name == 'damage' && evt.getParent().player == player && evt.getParent().source && evt.getParent().source == player;
-                    })).length;
-                    if (num) player.addMark('minixianjin', num, false);
-                },
-                onremove: true,
                 audio: 'dcxianjin',
-                trigger: {
-                    player: 'damageEnd',
-                    source: 'damageSource',
-                },
-                filter(event, player) {
-                    return player.countMark('minixianjin') % 2 == 0;
-                },
-                forced: true,
-                content() {
-                    'step 0'
-                    var tags = ['dctuoyu_fengtian', 'dctuoyu_qingqu', 'dctuoyu_junshan'];
+                inherit: 'dcxianjin',
+                async content(event, trigger, player) {
+                    let tags = ['dctuoyu_fengtian', 'dctuoyu_qingqu', 'dctuoyu_junshan'];
                     tags.removeArray(player.getStorage('dctuoyu'));
-                    if (!tags.length) {
-                        player.draw(3);
-                        event.finish();
+                    if (tags.length > 0) {
+                        const control = tags.length > 1 ? await player.chooseControl(tags).set('choiceList', tags.map(tag => {
+                            return `${get.translation(`${tag}_tag`)}：${{
+                                dctuoyu_fengtian: '伤害/回复值+1',
+                                dctuoyu_qingqu: '无次数和距离限制',
+                                dctuoyu_junshan: '不可被响应',
+                            }[tag]}`;
+                        })).set('displayIndex', false).set('prompt', '险峻：选择激活一个副区域标签').forResult('control') : tags[0];
+                        game.log(player, '激活了副区域', '#y' + get.translation(control));
+                        player.markAuto('dctuoyu', [control]);
+                        player.popup(get.translation(control + '_tag'));
                     }
-                    else if (tags.length == 1) {
-                        event._result = { control: tags[0] };
-                    }
-                    else player.chooseControl(tags).set('prompt', '险峻：选择激活一个副区域标签');
-                    'step 1'
-                    var control = result.control;
-                    game.log(player, '激活了副区域', '#y' + get.translation(control));
-                    player.markAuto('dctuoyu', [control]);
-                    player.popup(get.translation(control + '_tag'));
-                    player.draw(player.getStorage('dctuoyu').length)
-                },
-                group: 'minixianjin_mark',
-                intro: { content: '已造成或受到#次伤害' },
-                subSkill: {
-                    mark: {
-                        charlotte: true,
-                        trigger: {
-                            player: 'damageEnd',
-                            source: 'damageSource',
-                        },
-                        forced: true,
-                        popup: false,
-                        firstDo: true,
-                        content() {
-                            player.addMark('minixianjin', 1, false);
-                        },
-                    },
+                    await player.draw(player.getStorage('dctuoyu').length);
                 },
             },
             //神陆逊
@@ -39089,7 +39058,7 @@ const packs = function () {
             minishutu: '殊途',
             minishutu_info: '①大乔回复体力后，你可以选择一个红色花色，从牌堆或弃牌堆获得一张此花色的牌。②小乔受到伤害后，你可以使用一张红色牌（无次数限制且不可被响应）。',
             minitongxin: '同心',
-            minitongxin_info: '当你使用红色牌令一名角色回复体力后，你依次执行：①若大乔和小乔的体力值相同，则你可以回复1点体力；②若你手牌中的红桃牌和方片牌的数量相同，则你可以弃置一张红色牌，对一名角色造成1点伤害。',
+            minitongxin_info: '当你使用红色牌令一名角色的体力值变化后，你依次执行：①若大乔和小乔的体力值相同，则你可以回复1点体力；②若你手牌中的红桃牌和方片牌的数量相同，则你可以弃置一张红色牌，对一名角色造成1点伤害。',
             minimeihun: '魅魂',
             minimeihun_info: '结束阶段，或你于当前回合首次成为【杀】的目标后，你可以选择一名其他角色，然后声明一个花色，令其交给你所有你此花色的牌，若其没有此花色的牌，则你观看其手牌并获得其中一张。',
             minihuoxin: '惑心',
@@ -39513,7 +39482,7 @@ const packs = function () {
             ...ori4,
         };
         lib.element.player.isDamaged = function () {
-            return (this.hp < this.maxHp || typeof this.hp2 === 'number' && this.hp2 < this.maxHp2) && !this.storage.nohp;
+            return (this.hp < this.maxHp || (typeof this.hp2 === 'number' && this.hp2 < this.maxHp2)) && !this.storage.nohp;
         };
         lib.element.player.isHealthy = function () {
             return (this.hp >= this.maxHp && (typeof this.hp2 !== 'number' || this.hp2 >= this.maxHp2)) || this.storage.nohp;
