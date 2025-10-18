@@ -31509,7 +31509,7 @@ const packs = function () {
                 },
                 direct: true,
                 async content(event, trigger, player) {
-                    if (player.getHp() === Math.max(0, player.hp2)) {
+                    if (player.getHp() === Math.max(0, player.hp2) && player.isDamaged()) {
                         const result = await player.chooseBool(`${get.translation(event.name)}：是否回复1点体力？`).set('choice', get.recoverEffect(player, player, player) > 0).forResult();
                         if (result?.bool) {
                             player.logSkill(event.name);
@@ -31520,7 +31520,7 @@ const packs = function () {
                         if (_status.connectMode && get.color(card) === 'h') return true;
                         return lib.filter.cardDiscardable(card, player);
                     }, 'h')) {
-                        const result = await player.chooseCardTarget().forResult({
+                        const result = await player.chooseCardTarget({
                             prompt: get.prompt(event.name),
                             prompt2: '弃置一张红色牌，对一名角色造成1点伤害',
                             filterCard(card, player) {
