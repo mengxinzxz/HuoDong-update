@@ -39690,7 +39690,14 @@ const packs = function () {
                     }
                 }
             };
-            node.refresh(node, item);
+            const infoitem = lib.character[item];
+            if (typeof infoitem?.hp2 === 'number' && node.node.hp?.querySelector('.text')) {
+                const { hp2, maxHp2 } = infoitem;
+                node.node.hp.querySelector('.text').textContent += `&${hp2}`;
+                if (typeof maxHp2 === 'number' && maxHp2 !== hp2) {
+                    node.node.hp.querySelector('.text').textContent += `/${maxHp2}`;
+                }
+            }
             return node;
         };
     });
