@@ -39578,19 +39578,6 @@ const packs = function () {
             }
             return player;
         };
-        const { enable, filterTarget, modTarget, ...ori4 } = lib.card.tao;
-        lib.card.tao = {
-            enable(card, player) {
-                return player.isDamaged();
-            },
-            filterTarget(card, player, target) {
-                return target === player && target.isDamaged();
-            },
-            modTarget(card, player, target) {
-                return target.isDamaged();
-            },
-            ...ori4,
-        };
         lib.element.player.isDamaged = function () {
             return (this.hp < this.maxHp || (typeof this.hp2 === 'number' && this.hp2 < this.maxHp2)) && !this.storage.nohp;
         };
