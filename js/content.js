@@ -19,14 +19,40 @@ export async function content(config, pack) {
 		};
 	}
 	//更新公告
-	var version = lib.config.extension_活动武将_HDversion;
-	if (!version || version != lib.extensionPack.活动武将.version) {
-		lib.game.showChangeLog = function () {
-			game.saveConfig('extension_活动武将_HDversion', lib.extensionPack.活动武将.version);
-			game.bolShowNewPack();
-			lib.init.onfree();
-		};
-	}
+	// var version = lib.config.extension_活动武将_HDversion;
+	// if (!version || version != lib.extensionPack.活动武将.version) {
+	// 	lib.game.showChangeLog = function () {
+	// 		game.saveConfig('extension_活动武将_HDversion', lib.extensionPack.活动武将.version);
+	// 		game.bolShowNewPack();
+	// 		lib.init.onfree();
+	// 	};
+	// }
+	game.showExtensionChangeLog([
+		{
+			type: 'text', data: (() => {
+				return '<span class="text center">' +
+					'新人制作扩展，希望大家支持<br>新人技术不足，希望大家包涵' +
+					'<br>' +
+					'<a href="https://github.com/HuoDong-Update-Organization/HuoDong-update">点击前往活动武将Github仓库</a>' +
+					'</span>'
+			})()
+		},
+		{
+			type: 'players',
+			data: ['Mbaby_star_xunyu', 'Mbaby_shen1_daxiaoqiao', 'Mbaby_shen2_daxiaoqiao', 'wechat_zhaoyun', 'wechat_re_zhaoyun'],
+		},
+		{
+			type: 'text',
+			data: [
+				'bugfix',
+				'素材补充',
+				'重新分配微信三国杀的武将分包',
+				'欢杀：星荀彧、神二乔①号、神二乔②号',
+				'微信：微信赵云、微信界赵云',
+				'To be continued...'
+			],
+		},
+	])
 
 	//快捷添加/删除武将
 	game.HDdeleteCharacter = function (name) {
