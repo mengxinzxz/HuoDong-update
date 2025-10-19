@@ -18,41 +18,6 @@ export async function content(config, pack) {
 			return result;
 		};
 	}
-	//更新公告
-	// var version = lib.config.extension_活动武将_HDversion;
-	// if (!version || version != lib.extensionPack.活动武将.version) {
-	// 	lib.game.showChangeLog = function () {
-	// 		game.saveConfig('extension_活动武将_HDversion', lib.extensionPack.活动武将.version);
-	// 		game.bolShowNewPack();
-	// 		lib.init.onfree();
-	// 	};
-	// }
-	game.showExtensionChangeLog([
-		{
-			type: 'text', data: (() => {
-				return '<span class="text center">' +
-					'新人制作扩展，希望大家支持<br>新人技术不足，希望大家包涵' +
-					'<br>' +
-					'<a href="https://github.com/HuoDong-Update-Organization/HuoDong-update">点击前往活动武将Github仓库</a>' +
-					'</span>'
-			})()
-		},
-		{
-			type: 'players',
-			data: ['Mbaby_star_xunyu', 'Mbaby_shen1_daxiaoqiao', 'Mbaby_shen2_daxiaoqiao', 'wechat_zhaoyun', 'wechat_re_zhaoyun'],
-		},
-		{
-			type: 'text',
-			data: [
-				'bugfix',
-				'素材补充',
-				'重新分配微信三国杀的武将分包',
-				'欢杀：星荀彧、神二乔①号、神二乔②号',
-				'微信：微信赵云、微信界赵云',
-				'To be continued...'
-			],
-		},
-	])
 
 	//快捷添加/删除武将
 	game.HDdeleteCharacter = function (name) {
@@ -144,7 +109,53 @@ export async function content(config, pack) {
 			name: '检查更新公告',
 			clear: true,
 			onclick() {
-				game.bolShowNewPack();
+				const extname = '活动武将', dialog = ui.create.dialog();
+				dialog.classList.add('fullheight');
+				dialog.add(ui.create.div('.placeholder'));
+				dialog.add(`${extname} ${lib.extensionPack[extname].version} 更新内容`);
+				dialog.add(ui.create.div('.placeholder'));
+				const changeLogList = _status.HDWJ_ChangeLog;
+				changeLogList.forEach(item => {
+					switch (item.type) {
+						case 'text':
+							const list = Array.isArray(item.data) ? item.data : [item.data];
+							if (item.addText) list.forEach(value => dialog.addText(value));
+							else {
+								list.forEach(value => {
+									const li = document.createElement('li');
+									li.innerHTML = value;
+									li.style.textAlign = item.textAlign || 'center';
+									dialog.content.appendChild(li);
+								});
+							}
+							break;
+						case 'players':
+							dialog.addSmall([item.data, 'character']);
+							dialog.classList.add('forcebutton');
+							dialog.classList.add('withbg');
+							break;
+						case 'cards':
+							dialog.addSmall([item.data.map(value => [get.translation(get.type(value)), '', value]), 'vcard']);
+							dialog.classList.add('forcebutton');
+							dialog.classList.add('withbg');
+							break;
+						default:
+							return;
+					}
+				});
+				dialog.open();
+				let hidden = false;
+				if (!ui.auto.classList.contains('hidden')) {
+					ui.auto.hide();
+					hidden = true;
+				}
+				game.pause();
+				const control = ui.create.control('确定', function () {
+					dialog.close();
+					control.close();
+					if (hidden) ui.auto.show();
+					game.resume();
+				});
 			},
 		};
 	}
