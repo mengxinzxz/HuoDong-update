@@ -31474,7 +31474,7 @@ const packs = function () {
                         }
                     }
                     else {
-                        player.addTempSkill('minishutu_directHit');
+                        player.addTempSkill(event.name + '_directHit');
                         await player.chooseToUse(function (card, player, event) {
                             if (get.itemtype(card) !== 'card' || (get.color(card) !== 'red' && get.color(card) !== 'unsure')) return false;
                             return lib.filter.filterCard.apply(this, arguments);
@@ -31486,7 +31486,7 @@ const packs = function () {
                         charlotte: true,
                         trigger: { player: 'useCard' },
                         filter(event, player) {
-                            return event.getParent().name === 'chooseToUse' && event.getParent(2).name === 'minishutu' && event.getParent(2).player === player;
+                            return event.getParent().name === 'chooseToUse' && event.getParent(2).name === 'minishutu1' && event.getParent(2).player === player;
                         },
                         silent: true,
                         content() {
@@ -31497,7 +31497,7 @@ const packs = function () {
                             directHit_ai: true,
                             skillTagFilter(player) {
                                 const event = get.event();
-                                return event.name === 'chooseToUse' && event.getParent().name === 'minishutu' && event.getParent().player === player;
+                                return event?.name === 'chooseToUse' && event.getParent().name === 'minishutu1' && event.getParent().player === player;
                             },
                         },
                     },
@@ -31637,8 +31637,13 @@ const packs = function () {
                 skillAnimation: true,
                 animationColor: 'wood',
                 limited: true,
+                check(event, player) {
+                    if (player.countCards('hs', card => player.canSaveCard(card, player)) >= 1 - player.hp) return false;
+                    return player.maxHp > 1;
+                },
                 async content(event, trigger, player) {
                     player.awakenSkill(event.name);
+                    await player.loseMaxHp();
                     await player.recoverTo(2);
                     const { result } = await player.chooseControl('阳', '阴').set('prompt', '殊途：请选择〖双姝〗的一个分支移除').set('ai', () => '阳');
                     if (typeof result?.control !== 'string') return;
