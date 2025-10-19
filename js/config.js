@@ -43,6 +43,7 @@ export let config = {
 		})(),
 		clear: true,
 		onclick() {
+			game.closeMenu();
 			const extname = '活动武将', dialog = ui.create.dialog();
 			dialog.classList.add('fullwidth');
 			dialog.classList.add('fullheight');
