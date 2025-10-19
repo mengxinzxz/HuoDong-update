@@ -98,68 +98,6 @@ export async function content(config, pack) {
 		}
 	}
 
-	//Hidden--作者专属
-	if (lib.config.connect_nickname == '萌新（转型中）') {
-		lib.extensionMenu['extension_活动武将'].FenJieXianAuthor = {
-			name: '<li>作者专属',
-			clear: true,
-		};
-		//检查公告
-		lib.extensionMenu['extension_活动武将'].HDcheckNew = {
-			name: '检查更新公告',
-			clear: true,
-			onclick() {
-				const extname = '活动武将', dialog = ui.create.dialog();
-				dialog.classList.add('fullheight');
-				dialog.add(ui.create.div('.placeholder'));
-				dialog.add(`${extname} ${lib.extensionPack[extname].version} 更新内容`);
-				dialog.add(ui.create.div('.placeholder'));
-				const changeLogList = _status.HDWJ_ChangeLog;
-				changeLogList.forEach(item => {
-					switch (item.type) {
-						case 'text':
-							const list = Array.isArray(item.data) ? item.data : [item.data];
-							if (item.addText) list.forEach(value => dialog.addText(value));
-							else {
-								list.forEach(value => {
-									const li = document.createElement('li');
-									li.innerHTML = value;
-									li.style.textAlign = item.textAlign || 'center';
-									dialog.content.appendChild(li);
-								});
-							}
-							break;
-						case 'players':
-							dialog.addSmall([item.data, 'character']);
-							dialog.classList.add('forcebutton');
-							dialog.classList.add('withbg');
-							break;
-						case 'cards':
-							dialog.addSmall([item.data.map(value => [get.translation(get.type(value)), '', value]), 'vcard']);
-							dialog.classList.add('forcebutton');
-							dialog.classList.add('withbg');
-							break;
-						default:
-							return;
-					}
-				});
-				dialog.open();
-				let hidden = false;
-				if (!ui.auto.classList.contains('hidden')) {
-					ui.auto.hide();
-					hidden = true;
-				}
-				game.pause();
-				const control = ui.create.control('确定', function () {
-					dialog.close();
-					control.close();
-					if (hidden) ui.auto.show();
-					game.resume();
-				});
-			},
-		};
-	}
-
 	//官方武将包保护机制
 	//添加
 	lib.config.all.sgscharacters.push('diy');
