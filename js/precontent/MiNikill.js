@@ -37463,6 +37463,21 @@ const packs = function () {
                 if (player.storage.mininianchengming) str = str.replace(/出牌阶段/, '出牌阶段或当你成为【杀】的目标时');
                 return str;
             },
+            minishuangshu2(player) {
+                const bool1 = player.storage.minishuangshu2;
+                const bool2 = player.storage.minishutu2;
+                let yang = '当你使用或打出一张方片牌后，你摸X张牌（X为你装备区的红色牌数）', yin = '当你使用或打出一张红桃牌后，你可以弃置一张牌，然后从牌堆或弃牌堆获得两张与此牌花色不同的牌';
+                if (bool1) {
+                    yin = `<span class='bluetext'>${yin}</span>`;
+                    if (bool2) yang = `<span style="text-decoration: line-through;">${yang}</span>`;
+                }
+                else {
+                    yang = `<span class='firetext'>${yang}</span>`;
+                    if (bool2) yin = `<span style="text-decoration: line-through;">${yin}</span>`;
+                };
+                let start = '转换技。①游戏开始时，你可以转换此技能状态；', end = '。';
+                return `${start}阳：${yang}；阴：${yin}${end}`;
+            },
         },
         translate: {
             MiNi_wei: '欢乐三国杀·魏国',
@@ -39163,7 +39178,7 @@ const packs = function () {
             minitongxin: '同心',
             minitongxin_info: '当你使用红色牌令一名角色的体力值变化后，你依次执行：①若大乔和小乔的体力值相同，则你可以回复1点体力；②若你手牌中的红桃牌和方片牌的数量相同，则你可以弃置一张红色牌，对一名角色造成1点伤害。',
             minishuangshu2: '双姝',
-            minishuangshu2_info: '转换技。①游戏开始时，你可以转换此技能状态；②阳，当你使用或打出一张方片牌后，你摸X张牌（X为你装备区的红色牌数）；阴：当你使用或打出一张红桃牌后，你可以弃置一张牌，然后从牌堆或弃牌堆获得两张与此牌花色不同的牌。',
+            minishuangshu2_info: '转换技。①游戏开始时，你可以转换此技能状态；②阳：当你使用或打出一张方片牌后，你摸X张牌（X为你装备区的红色牌数）；阴：当你使用或打出一张红桃牌后，你可以弃置一张牌，然后从牌堆或弃牌堆获得两张与此牌花色不同的牌。',
             miniyizheng2: '移筝',
             miniyizheng2_info: '回合开始时，你可以失去1点体力并移动场上一张牌。',
             minishutu2: '殊途',
