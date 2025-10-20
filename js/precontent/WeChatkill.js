@@ -11,7 +11,7 @@ const packs = function () {
                     ...['yuanshao', 'caopi', 'xiahouyuan', 'caoren', 'zhangzhang', 'huangzhong', 'pangde', 'weiyan', 'wangping', 'jiaxu', 'pangtong', 'yanyan', 'sp_zhugeliang', 'lukang', 'sunliang', 'zhoutai', 'caiwenji', 'menghuo'].map(i => `wechat_${i}`),
                     ...['caocao', 'simayi', 'zhugeliang', 'lvbu', 'lvmeng', 'guanyu'].map(i => `wechat_shen_${i}`),
                 ],
-                wechat_refresh: ['zhaoyun', 'jushou', 'gongsunzan', 'xushu', 'luxun', 'zuoci'].map(i => `wechat_re_${i}`),
+                wechat_refresh: ['liubiao', 'zhaoyun', 'jushou', 'gongsunzan', 'xushu', 'luxun', 'zuoci'].map(i => `wechat_re_${i}`),
                 wechat_yijiang: ['quancong', 'guyong', 'liaohua', 'gongsunyuan', 'xusheng', 'yufan', 'handang', 'caochong', 'caoxiu', 'caozhang', 'masu', 'caifuren', 'jianyong', 'caozhi', 'gaoshun', 'xiahoushi', 'xushu', 'wuguotai', 'liubiao', 'liuchen'].map(i => `wechat_${i}`),
                 wechat_xianding: [
                     ...['caojie', 'xuezong', 'jikang', 'caiyong', 'xushi', 'sundeng', 'huanghao', 'guohuanghou', 'sp_zhenji', 'lizhaojiaobo', 'liucheng', 'sp_diaochan', 'sunluyu', 'sunhao', 'sp_wangcan', 'yj_zhoubuyi', 'jsp_huangyueying', 'sp_machao', 'wanglang', 'chendeng', 'sp_pangde', 'zhuling', 'caizhenji', 'sp_jiangwei', 'sp_taishici', 'sp_caiwenji', 'bianfuren', 'sunluban', 'zhangxingcai', 'huojun'].map(i => `wechat_${i}`),
@@ -140,6 +140,7 @@ const packs = function () {
             wechat_guozhao: ['female', 'wei', 3, ['yichong', 'wechatwufei'], ['die:xin_guozhao']],
             wechat_sp_zhenji: ['female', 'qun', 3, ['mbbojian', 'wechatjiwei']],
             wechat_re_zhaoyun: ['male', 'shu', 4, ['wechatlongdan', 'wechatyajiao'], ['tempname:re_zhaoyun', 'die:re_zhaoyun']],
+            wechat_re_liubiao: ['male', 'qun', 3, ['wechatrererezishou', 'wechatrerezongshi'], ['tempname:re_liubiao', 'die:re_liubiao']],
             //神武将
             wechat_shen_zhugeliang: ['male', 'shen', 3, ['wechatqixing', 'wechatjifeng', 'wechattianfa'], ['shu', 'name:诸葛|亮']],
             wechat_shen_lvmeng: ['male', 'shen', 3, ['shelie', 'wechatgongxin'], ['wu']],
@@ -14672,6 +14673,57 @@ const packs = function () {
                     }
                 },
             },
+            // 界刘表
+            wechatrererezishou: {
+                audio: 'zishou',
+                inherit: 'zishou',
+                check(event, player) {
+                    return player.countCards('h') <= (player.hasSkill('wechatrerezongshi') ? player.maxHp : player.hp - 2) || player.skipList.includes('phaseUse');
+                },
+                async content(event, trigger, player) {
+                    trigger.num += 3;
+                    player.addTempSkill(event.name + '_effect');
+                },
+                subSkill: {
+                    effect: {
+                        charlotte: true,
+                        mod: {
+                            playerEnabled(card, player, target) {
+                                if (card.name == 'sha' && target.hp < player.hp) return false;
+                            },
+                        },
+                        mark: true,
+                        intro: { content: '本回合不能使用体力值小于你的角色使用【杀】' },
+                    }
+                }
+            },
+            wechatrerezongshi: {
+                audio: 'rezongshi',
+                inherit: 'rezongshi',
+                mod: {
+                    maxHandcard(player, num) {
+                        return num + 3;
+                    },
+                },
+                async content(event, trigger, player) {
+                    player.addTempSkill(event.name + '_effect');
+                },
+                subSkill: {
+                    effect: {
+                        charlotte: true,
+                        mod: {
+                            cardUsable(card, player, num) {
+                                if (card.name == 'sha') return Infinity;
+                            },
+                            targetInRange(card, player, target) {
+                                if (card.name == 'sha') return true;
+                            },
+                        },
+                        mark: true,
+                        intro: { content: '本回合使用【杀】无距离和次数限制' },
+                    }
+                },
+            },
 
         },
         dynamicTranslate: {
@@ -15563,6 +15615,11 @@ const packs = function () {
             wechatxiangke_info: '当你装备区牌数发生变化后，你可以将手牌数调整至X，然后你可以对一名体力值为X的角色造成1点火焰伤害（X为你的装备区牌数）。',
             wechatchizu: '赤族',
             wechatchizu_info: '锁定技。当你使用伤害牌指定目标后，若所有角色均横置，你受到1点伤害，否则你令一名角色横置。',
+            wechat_re_liubiao: '微信界刘表',
+            wechatrererezishou: '自守',
+            wechatrererezishou_info: '摸牌阶段，你可以额外摸三张牌。然后你于本回合不能对体力值小于你的角色使用【杀】。',
+            wechatrerezongshi: '宗室',
+            wechatrerezongshi_info: '锁定技，你的手牌上限+3。准备阶段，若你的手牌数大于体力值，则你本回合内使用【杀】无距离和次数限制。',
         },
     };
     for (let i in WeChatkill.character) {
