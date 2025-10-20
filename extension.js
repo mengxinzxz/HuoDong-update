@@ -21,7 +21,7 @@ game.showExtensionChangeLog((() => {
 		},
 		{
 			type: 'players',
-			data: ['Mbaby_star_xunyu', 'Mbaby_shen1_daxiaoqiao', 'Mbaby_shen2_daxiaoqiao', 'wechat_zhaoyun', 'wechat_re_zhaoyun'],
+			data: ['Mbaby_dukui', 'Mmiao_guanyinping', 'Mbaby_mifangfushiren', 'Mfight_dianwei', 'Mbaby_zhugeruoxue', 'Mbaby_star_xunyu', 'Mbaby_shen1_daxiaoqiao', 'Mbaby_shen2_daxiaoqiao', 'wechat_zhaoyun', 'wechat_re_zhaoyun', 'wechat_sb_xiahouyuan', 'wechat_sb_xiaoqiao', 'wechat_shen_caocao', 'wechat_sb_sunquan', 'wechat_zhiyin_zhugeke', 'wechat_re_liubiao'],
 		},
 		{
 			type: 'text',
@@ -29,9 +29,10 @@ game.showExtensionChangeLog((() => {
 			data: [
 				'bugfix',
 				'素材补充',
+				'技能调整',
 				'重新分配微信三国杀的武将分包',
-				'欢杀：星荀彧、神二乔①号、神二乔②号',
-				'微信：微信赵云、微信界赵云',
+				'欢杀：杜夔、喵关银屏、糜芳傅士仁、战典韦、诸葛若雪、星荀彧、神二乔①号、神二乔②号',
+				'微信：微信赵云、微信界赵云、微信谋夏侯渊、微信谋小乔、微信神曹操、微信谋孙权、极诸葛恪、微信界刘表',
 				'To be continued...'
 			],
 		},

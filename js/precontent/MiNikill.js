@@ -36453,7 +36453,7 @@ const packs = function () {
             },
             chengxiang_Mnian_caopi: { audio: 'ext:活动武将/audio/skill:true' },
             //战
-            //黄忠
+            // 战黄忠
             minifightdingjun: {
                 init(player) {
                     if (!ui._minifightdingjun) {
@@ -36717,7 +36717,7 @@ const packs = function () {
                     },
                 },
             },
-            // 张辽
+            // 战张辽
             minifightbiaoxi: {
                 audio: 'ext:活动武将/audio/skill:2',
                 init(player, skill) {
@@ -36881,7 +36881,7 @@ const packs = function () {
                     }
                 }
             },
-            // 陆逊
+            // 战陆逊
             minifightxurui: {
                 audio: 'ext:活动武将/audio/skill:2',
                 placeSkill: true,
@@ -37075,7 +37075,7 @@ const packs = function () {
                     }
                 }
             },
-            // 典韦 
+            // 战典韦 
             _minifightchuanglie_mark: {
                 charlotte: true,
                 trigger: { target: 'useCardToPlayer' },
