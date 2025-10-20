@@ -1307,10 +1307,9 @@ const packs = function () {
                     player.chooseToDiscard('he', get.prompt('minituntian'), '弃置一张牌并进行〖屯田〗判定').set('ai', function (card) {
                         var player = _status.event.player;
                         return 7 - get.value(card, player);
-                    });
+                    }).logSkill = 'minituntian';
                     'step 1'
                     if (result.bool) {
-                        player.logSkill('minituntian');
                         var next = game.createEvent('minituntian');
                         next.player = player;
                         next.setContent(lib.skill.tuntian.content);
