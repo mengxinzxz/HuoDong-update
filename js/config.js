@@ -44,19 +44,17 @@ export let config = {
 		clear: true,
 		onclick() {
 			game.closeMenu();
-			const extname = '活动武将';
-			const dialog = ui.create.dialog('hidden');
-			dialog.style.width = `calc(80%)`;
-			dialog.style.height = `calc(70%)`;
-			dialog.style.left = `155px`;
-			dialog.style.top = `60px`;
-			dialog.classList.add('popped', 'static');
-			dialog.style['zIndex'] = 5;
-			ui.window.appendChild(dialog);
-			const closeButton = ui.create.div('.menubutton.round', '×', dialog, () => {
-				dialog.delete();
+			const extname = '活动武将', dialog = ui.create.dialog();
+			dialog.classList.add('fullwidth');
+			dialog.classList.add('fullheight');
+			dialog.add(ui.create.div('.placeholder'));
+			const controls = ui.controls.slice();
+			if (controls.length > 0) controls.forEach(i => i.hide());
+			const closeButton = ui.create.div('.menubutton.round', '<span style="font-size:22px;">×</span>', dialog, () => {
+				dialog.close();
+				if (controls.length > 0) controls.forEach(i => i.show());
 			});
-			closeButton.style.top = `60px`;
+			closeButton.style.top = `40px`;
 			closeButton.style.left = `calc(100% - 155px)`;
 			dialog.add(`${extname} ${lib.extensionPack[extname].version} 更新内容`);
 			dialog.add(ui.create.div('.placeholder'));
@@ -89,6 +87,7 @@ export let config = {
 						return;
 				}
 			});
+			dialog.open();
 		},
 	},
 	FenJieXianA: {
