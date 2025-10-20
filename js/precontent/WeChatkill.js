@@ -12,7 +12,7 @@ const packs = function () {
                     ...['caocao', 'simayi', 'zhugeliang', 'lvbu', 'lvmeng', 'guanyu'].map(i => `wechat_shen_${i}`),
                 ],
                 wechat_refresh: ['weiyan', 'liubiao', 'zhaoyun', 'jushou', 'gongsunzan', 'xushu', 'luxun', 'zuoci'].map(i => `wechat_re_${i}`),
-                wechat_yijiang: ['quancong', 'guyong', 'liaohua', 'gongsunyuan', 'xusheng', 'yufan', 'handang', 'caochong', 'caoxiu', 'caozhang', 'masu', 'caifuren', 'jianyong', 'caozhi', 'gaoshun', 'xiahoushi', 'xushu', 'wuguotai', 'liubiao', 'liuchen'].map(i => `wechat_${i}`),
+                wechat_yijiang: ['quancong', 'guyong', 'liaohua', 'gongsunyuan', 'xusheng', 'yufan', 'handang', 'caochong', 'caoxiu', 'caozhang', 'masu', 'caifuren', 'jianyong', 'caozhi', 'gaoshun', 'xiahoushi', 'xushu', 'wuguotai', 'liuchen'].map(i => `wechat_${i}`),
                 wechat_xianding: [
                     ...['caojie', 'xuezong', 'jikang', 'caiyong', 'xushi', 'sundeng', 'huanghao', 'guohuanghou', 'sp_zhenji', 'lizhaojiaobo', 'liucheng', 'sp_diaochan', 'sunluyu', 'sunhao', 'sp_wangcan', 'yj_zhoubuyi', 'jsp_huangyueying', 'sp_machao', 'wanglang', 'chendeng', 'sp_pangde', 'zhuling', 'caizhenji', 'sp_jiangwei', 'sp_taishici', 'sp_caiwenji', 'bianfuren', 'sunluban', 'zhangxingcai', 'huojun'].map(i => `wechat_${i}`),
                     ...['sunquan', 'xiaoqiao', 'xiahouyuan', 'gaoshun', 'handang', 'guojia', 'huanggai', 'diaochan', 'huangyueying', 'zhangliao', 'sunshangxiang', 'zhaoyun', 'machao', 'huangzhong', 'caocao', 'sunce'].map(i => `wechat_sb_${i}`),
@@ -38,7 +38,6 @@ const packs = function () {
             wechat_bianfuren: ['female', 'wei', 3, ['wechatwanwei', 'wechatyuejian'], ['die:ol_bianfuren', 'name:卞|null']],
             wechat_sunluban: ['female', 'wu', 3, ['wechatzenhui', 'wechatrejiaojin'], ['die:xin_sunluban']],
             wechat_wuguotai: ['female', 'wu', 3, ['wechatganlu', 'buyi']],
-            wechat_liubiao: ['male', 'qun', 3, ['wechatrerezishou', 'wechatrezongshi']],
             wechat_liuchen: ['male', 'shu', 4, ['zhanjue', 'wechatqinwang']],
             wechat_old_luxun: ['male', 'wu', 3, ['wechatqianxun', 'lianying']],
             wechat_re_luxun: ['male', 'wu', 3, ['wechatreqianxun', 'relianying']],
@@ -140,7 +139,7 @@ const packs = function () {
             wechat_guozhao: ['female', 'wei', 3, ['yichong', 'wechatwufei'], ['die:xin_guozhao']],
             wechat_sp_zhenji: ['female', 'qun', 3, ['mbbojian', 'wechatjiwei']],
             wechat_re_zhaoyun: ['male', 'shu', 4, ['wechatlongdan', 'wechatyajiao'], ['tempname:re_zhaoyun', 'die:re_zhaoyun']],
-            wechat_re_liubiao: ['male', 'qun', 3, ['wechatrererezishou', 'wechatrerezongshi'], ['tempname:re_liubiao', 'die:re_liubiao']],
+            wechat_re_liubiao: ['male', 'qun', 3, ['wechatrezishou', 'wechatrezongshi'], ['tempname:re_liubiao']],
             //神武将
             wechat_shen_zhugeliang: ['male', 'shen', 3, ['wechatqixing', 'wechatjifeng', 'wechattianfa'], ['shu', 'name:诸葛|亮']],
             wechat_shen_lvmeng: ['male', 'shen', 3, ['shelie', 'wechatgongxin'], ['wu']],
@@ -1265,63 +1264,6 @@ const packs = function () {
                     if (result.bool) player.recover();
                 },
             },
-            wechatzishou: {
-                audio: 'zishou',
-                trigger: { player: 'phaseUseEnd' },
-                filter(event, player) {
-                    return !player.getHistory('useCard', function (evt) {
-                        if (evt.targets && evt.targets.length && evt.isPhaseUsing()) {
-                            var targets = evt.targets.slice(0);
-                            while (targets.includes(player)) targets.remove(player);
-                            return targets.length > 0;
-                        }
-                        return false;
-                    }).length;
-                },
-                frequent: true,
-                content() {
-                    player.draw(game.players.length - 1);
-                },
-            },
-            wechatrezishou: {
-                audio: 'zishou',
-                inherit: 'zishou',
-                content() {
-                    trigger.num += 3;
-                    player.addTempSkill('zishou2');
-                },
-            },
-            wechatzongshi: {
-                audio: 'zongshi',
-                mod: {
-                    maxHandcard(player, num) {
-                        return num + game.players.length - 1;
-                    },
-                },
-                trigger: { player: 'phaseZhunbeiBegin' },
-                forced: true,
-                filter(event, player) {
-                    return player.countCards('h') > player.hp;
-                },
-                content() {
-                    player.addTempSkill('wechatzongshi_paoxiao');
-                    player.addMark('wechatzongshi_paoxiao', game.players.length - 1, false);
-                },
-                subSkill: {
-                    paoxiao: {
-                        charlotte: true,
-                        onremove: true,
-                        mark: true,
-                        marktext: '咆',
-                        intro: { content: '出杀次数+#' },
-                        mod: {
-                            cardUsable(card, player, num) {
-                                if (card.name == 'sha') return num + player.countMark('wechatzongshi_paoxiao');
-                            },
-                        },
-                    },
-                },
-            },
             //难蚌
             wechatrerezishou: {
                 audio: 'zishou',
@@ -1346,15 +1288,6 @@ const packs = function () {
                         intro: { content: '本回合不能使用【杀】' },
                     }
                 }
-            },
-            wechatrezongshi: {
-                audio: 'rezongshi',
-                inherit: 'rezongshi',
-                mod: {
-                    maxHandcard(player, num) {
-                        return num + 3;
-                    },
-                },
             },
             wechatqinwang: {
                 audio: 'qinwang1',
@@ -14674,11 +14607,11 @@ const packs = function () {
                 },
             },
             // 界刘表
-            wechatrererezishou: {
+            wechatrezishou: {
                 audio: 'zishou',
                 inherit: 'zishou',
                 check(event, player) {
-                    return player.countCards('h') <= (player.hasSkill('wechatrerezongshi') ? player.maxHp : player.hp - 2) || player.skipList.includes('phaseUse');
+                    return player.countCards('h') <= (player.hasSkill('wechatrezongshi') ? player.maxHp : player.hp - 2) || player.skipList.includes('phaseUse');
                 },
                 async content(event, trigger, player) {
                     trigger.num += 3;
@@ -14697,7 +14630,7 @@ const packs = function () {
                     }
                 }
             },
-            wechatrerezongshi: {
+            wechatrezongshi: {
                 audio: 'rezongshi',
                 inherit: 'rezongshi',
                 mod: {
@@ -14878,17 +14811,6 @@ const packs = function () {
             wechatbuyi: '补益',
             wechatbuyi2: '补益',
             wechatbuyi_info: '游戏开始时，你选择一名角色。你或其于每轮第一次受到伤害后，可以弃置一张非基本牌并回复1点体力。',
-            wechat_liubiao: '微信刘表',
-            wechatzishou: '自守',
-            wechatzishou_info: '出牌阶段结束时，若你本阶段未对其他角色使用过牌。则你可以摸X张牌（X为场上的其他角色数）。',
-            wechatrezishou: '自守',
-            wechatrezishou_info: '摸牌阶段，你可以额外摸三张牌。然后本回合你使用牌不能指定其他角色为目标。',
-            wechatzongshi: '宗室',
-            wechatzongshi_info: '锁定技，你的手牌上限+X。准备阶段，若你的手牌数大于你的体力值，你本回合可以额外使用X张【杀】（X为场上的其他角色数）。',
-            wechatrerezishou: '自守',
-            wechatrerezishou_info: '摸牌阶段，你可以额外摸三张牌。然后本回合你不能使用牌【杀】。',
-            wechatrezongshi: '宗室',
-            wechatrezongshi_info: '锁定技，你的手牌上限+3。准备阶段，若你的手牌数大于你的体力值，你本回合使用【杀】无次数限制。',
             wechat_liuchen: '微信刘谌',
             wechatqinwang: '勤王',
             wechatqinwang1: '勤王',
@@ -15616,10 +15538,10 @@ const packs = function () {
             wechatchizu: '赤族',
             wechatchizu_info: '锁定技。当你使用伤害牌指定目标后，若所有角色均横置，你受到1点伤害，否则你令一名角色横置。',
             wechat_re_liubiao: '微信界刘表',
-            wechatrererezishou: '自守',
-            wechatrererezishou_info: '摸牌阶段，你可以额外摸三张牌。然后你于本回合不能对体力值小于你的角色使用【杀】。',
-            wechatrerezongshi: '宗室',
-            wechatrerezongshi_info: '锁定技，你的手牌上限+3。准备阶段，若你的手牌数大于体力值，则你本回合内使用【杀】无距离和次数限制。',
+            wechatrezishou: '自守',
+            wechatrezishou_info: '摸牌阶段，你可以额外摸三张牌。然后你于本回合不能对体力值小于你的角色使用【杀】。',
+            wechatrezongshi: '宗室',
+            wechatrezongshi_info: '锁定技，你的手牌上限+3。准备阶段，若你的手牌数大于体力值，则你本回合内使用【杀】无距离和次数限制。',
         },
     };
     for (let i in WeChatkill.character) {
