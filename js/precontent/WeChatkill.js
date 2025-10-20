@@ -3177,7 +3177,7 @@ const packs = function () {
             },
             //魏延
             wechatkuanggu: {
-                audio: 'kuanggu_re_weiyan',
+                audio: 'kuanggu',
                 audioname: ['re_weiyan'],
                 trigger: { source: 'damageSource' },
                 filter(event, player) {
