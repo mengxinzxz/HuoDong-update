@@ -8,10 +8,10 @@ const packs = function () {
         characterSort: {
             huodongcharacter: {
                 CLongZhou: ['lz_sufei', 'lz_tangzi', 'lz_liuqi', 'lz_huangquan'],
-                CZhengHuo: ['bilibili_caifuren', 'bilibili_zhengxuan', 'bilibili_sp_xuyou', 'old_zuoci'],
+                CZhengHuo: ['bilibili_zhoutaigong', 'bilibili_zhouxiaomei', 'bilibili_caifuren', 'bilibili_zhengxuan', 'bilibili_sp_xuyou', 'old_zuoci'],
                 Chuodong: ['bilibili_shengxunyu', 'bilibili_Firewin', 'bilibili_jinglingqiu', 'bilibili_suixingsifeng', 'bilibili_Emptycity', 'bilibili_thunderlei', 'bilibili_lonelypatients', 'bilibili_ningjingzhiyuan', 'bilibili_xizhicaikobe'],
                 CDormitory: ['bilibili_yanjing', 'bilibili_xiaoyaoruyun', 'bilibili_shuijiaobuboli'],
-                Cothers: ['bilibili_kuailiangkuaiyue', 'bilibili_nanhualaoxian', 'bilibili_daxiao', 'bilibili_wangtao', 'bilibili_wangyue', 'bilibili_x_wangtao', 'bilibili_x_wangyue', 'bilibili_xushao', 'bilibili_shen_guojia', 'bilibili_re_xusheng', 'bilibili_kuangshen04', 'bilibili_adong', 'bilibili_zhangrang', 'bilibili_litiansuo', 'decade_huangwudie', 'bilibili_huanggai', 'bilibili_ekeshaoge', 'bilibili_guanning', 'bilibili_wangwang', 'bilibili_zhouxiaomei', 'diy_lvmeng'],
+                Cothers: ['bilibili_kuailiangkuaiyue', 'bilibili_daxiao', 'bilibili_wangtao', 'bilibili_wangyue', 'bilibili_x_wangtao', 'bilibili_x_wangyue', 'bilibili_xushao', 'bilibili_shen_guojia', 'bilibili_re_xusheng', 'bilibili_kuangshen04', 'bilibili_adong', 'bilibili_zhangrang', 'bilibili_litiansuo', 'decade_huangwudie', 'bilibili_huanggai', 'bilibili_ekeshaoge', 'bilibili_guanning', 'bilibili_wangwang', 'diy_lvmeng'],
                 CDanJi: ['DJ_caiyang', 'DJ_pujing', 'DJ_huban'],
                 CSCS: ['biliscs_shichangshi', 'biliscs_zhangrang', 'biliscs_zhaozhong', 'biliscs_sunzhang', 'biliscs_bilan', 'biliscs_xiayun', 'biliscs_hankui', 'biliscs_lisong', 'biliscs_duangui', 'biliscs_guosheng', 'biliscs_gaowang'],
                 CXuanDie: ['bfake_jiananfeng', 'bfake_shen_zhangjiao', 'bfake_shen_zhangfei', 'bfake_shen_jiaxu', 'bfake_huanwen', 'bfake_miheng'],
@@ -19,7 +19,8 @@ const packs = function () {
         },
         character: {
             bilibili_daxiao: ['female', 'wu', 3, ['bilibili_qiqin', 'dczixi', 'dcweiwan'], ['die:yue_daqiao', 'die:yue_xiaoqiao', 'name:桥|null-桥|null']],
-            bilibili_zhouxiaomei: ['female', 'wu', 3, ['dchuishu', 'dcyishu', 'yingzi', 'biyue'], ['name:周|null']],
+            bilibili_zhoutaigong: ['male', 'wu', 3, ['dcqiqin', 'olqingshu', 'olshoushu'], ['name:周|null']],
+            bilibili_zhouxiaomei: ['female', 'wu', 3, ['dchuishu', 'dcyishu', 'rebiyue'], ['name:周|null']],
             bilibili_zhangrang: ['male', 'qun', 3, ['bilibili_taoluan']],
             diy_lvmeng: ['male', 'wu', 4, ['BTkongju', 'BThouqi'], ['die:lvmeng']],
             bilibili_wangwang: ['female', 'shu', 3, ['huguan', 'yaopei', 'mingluan'], ['die:wangtao', 'die:wangyue', 'name:王|桃-王|悦']],
@@ -55,7 +56,6 @@ const packs = function () {
             bilibili_xizhicaikobe: ['male', 'key', 4, ['bilibili_biexiao', 'bilibili_xingshi', 'bilibili_zhangcai'], ['doublegroup:wei:shu:wu:qun:jin', 'clan:肘家军|肘击群|活动群', 'name:戏|子宓']],
             bilibili_yanjing: ['male', 'key', 3, ['bilibili_dongxi', 'bilibili_mingcha', 'bilibili_huiyan'], ['clan:宿舍群|肘击群|活动群', 'name:tooenough|眼睛']],
             bilibili_caifuren: ['female', 'qun', 3, ['bilibili_kuilei'], ["name:蔡|null"]],
-            bilibili_nanhualaoxian: ['male', 'qun', 4, ['bilibili_qingshu', 'bilibili_shoushu', 'bilibili_hedao'], ['die:ol_nanhualaoxian', 'name:庄|周']],
             bilibili_xiaoyaoruyun: ['female', 'key', 4, ['bilibili_chuandu', 'bilibili_huaikui', 'bilibili_xyduoyang'], ['clan:宿舍群|肘击群|活动群', 'name:鹿都|智川介']],
             bilibili_shuijiaobuboli: ['female', 'key', '3/4', ['bilibili_qicai', 'bilibili_jizhi', 'bilibili_fengliang', 'bilibili_guiyin'], ['clan:宿舍群|活动群', 'name:黄|月英']],
             bilibili_kuailiangkuaiyue: ['male', 'qun', 4, ['bilibili_chouhua'], ['character:kuailiangkuaiyue']],
@@ -92,6 +92,8 @@ const packs = function () {
             smile7: ['', '', 0, [], ['unseen', 'forbidai', 'ext:活动武将/image/default/smile7.jpg']],
         },
         characterIntro: {
+            bilibili_zhoutaigong: '编号5256',
+            bilibili_zhouxiaomei: '编号5257',
             get bilibili_wangwang() {
                 return [lib?.characterIntro?.wangtao || '暂无', lib?.characterIntro?.wangyue || '暂无'].join('<br>');
             },
@@ -10552,78 +10554,6 @@ const packs = function () {
                     },
                 },
             },
-            //牢登
-            bilibili_qingshu: {
-                audio: 'bilibili_qingshu',
-                inherit: 'olqingshu',
-                async content(event, trigger, player) {
-                    const FromItems = lib.skill.olhedao.tianshuTrigger.slice();
-                    const froms = await player.chooseButton(['青书：请选择“天书”时机', [FromItems.randomGets(3).map(item => [item, item.name]), 'textbutton']], true).set('ai', () => 1 + Math.random()).forResult('links');
-                    if (!froms?.length) return;
-                    const [from] = froms;
-                    const ToItems = lib.skill.olhedao.tianshuContent.filter(item => !item.filter || item.filter(from.name));
-                    const tos = await player.chooseButton([`###青书：请选择“天书”效果###<div class="text center">${from.name}</div>`, [ToItems.randomGets(3).map(item => [item, item.name]), 'textbutton']], true).set('ai', () => 1 + Math.random()).forResult('links');
-                    if (!tos?.length) return;
-                    const [to] = tos;
-                    let skill;
-                    while (true) {
-                        skill = `olhedao_tianshu_${Math.random().toString(36).slice(-8)}`;
-                        if (!lib.skill[skill]) break;
-                    }
-                    game.broadcastAll((skill, from, to) => {
-                        const { filter: filterFrom, ...otherFrom } = from.effect;
-                        const { filter: filterTo, ...otherTo } = to.effect;
-                        lib.skill[skill] = {
-                            nopop: true,
-                            olhedao: true,
-                            charlotte: true,
-                            init(player, skill) {
-                                player.storage[skill] ??= [0, []];
-                            },
-                            onremove: true,
-                            filter(...args) {
-                                return (filterFrom ? filterFrom(...args) : true) && (filterTo ? filterTo(...args) : true);
-                            },
-                            markimage: 'image/card/tianshu2.png',
-                            intro: {
-                                markcount: (storage = [0]) => storage[0],
-                                content(storage = [0, []], player, book) {
-                                    const [count, targets] = storage;
-                                    if (!book) return '查无此书';
-                                    return [
-                                        `此书还可使用${count}次`,
-                                        (() => {
-                                            if (!get.info(book)?.nopop || [player, ...targets].some(i => i.isUnderControl(true))) return lib.translate[`${book}_info`];
-                                            return '此书仍是个秘密';
-                                        })(),
-                                    ].map(str => `<li>${str}`).join('<br>');
-                                },
-                            },
-                            ...otherFrom,
-                            ...otherTo,
-                        };
-                        lib.translate[skill] = '天书';
-                        lib.translate[`${skill}_info`] = `${from.name}，${to.name}。`;
-                        game.finishSkill(skill);
-                    }, skill, from, to);
-                    player.addSkill(skill);
-                    lib.skill.olhedao.tianshuClear(skill, player, -3);
-                    const skills = player.getSkills(null, false, false).filter(skill => get.info(skill)?.olhedao);
-                    const num = skills.length - lib.skill.olhedao.getLimit(player);
-                    if (num > 0) {
-                        const result = num < skills.length ? await player.chooseButton([`青书：选择失去${get.cnNumber(num)}册多余的“天书”`, [skills.map(item => [item, `（剩余${player.storage[item][0]}次）${lib.translate[`${item}_info`]}`]), 'textbutton']], true, num).set('ai', () => 1 + Math.random()).forResult() : { bool: true, links: skills };
-                        if (result?.bool && result.links?.length) player.removeSkill(result.links);
-                    }
-                },
-            },
-            bilibili_shoushu: {
-                audio: 'olshoushu',
-                inherit: 'olshoushu',
-            },
-            bilibili_hedao: {
-                audio: 'olhedao',
-                inherit: 'olhedao',
-            },
             //逍遥如云
             bilibili_chuandu: {
                 trigger: { player: ['phaseZhunbeiBegin', 'phaseJieshuBegin'] },
@@ -11186,8 +11116,8 @@ const packs = function () {
             BT_puyuan_ab: '能工巧匠',
             BT_puyuan: '蒲元',
             diy_liuhong: '刘宏',
-            bilibili_zhouxiaomei: '萌设周小妹',
-            bilibili_zhouxiaomei_prefix: '萌设',
+            bilibili_zhoutaigong: '周太公',
+            bilibili_zhouxiaomei: '周小妹',
             bilibili_zhangrang: 'TW张让',
             bilibili_zhangrang_prefix: 'TW',
             decade_huangwudie: '黄舞蝶',
@@ -11649,16 +11579,6 @@ const packs = function () {
             bolshicai: '恃才',
             bolshicai_effect: '牌堆顶',
             bolshicai_info: '出牌阶段，牌堆顶的一张牌对你可见。你可以弃置一张牌，然后获得牌堆顶的一张牌，且不能再发动〖恃才〗直到此牌离开你的手牌区。',
-            bilibili_nanhualaoxian: '南华老仙',
-            bilibili_hedao_faq: '“天书”',
-            bilibili_hedao_faq_info: '关于“天书”：<br>' + [
-                '“天书”为随机三个时机和三个效果中各选择一个组成的技能，一名角色可至多拥有一册“天书”',
-                '“天书”初始为未翻开状态，发动一次后翻开此“天书”（未翻开的“天书”技能对其他角色不可见）',
-                '“天书”至多可发动三次，交给其他角色后至多可发动一次，“天书”次数用尽后失去此“天书”',
-            ].map(str => `<li>${str}`).join('<br>'),
-            bilibili_qingshu_info: `锁定技，游戏开始时/准备阶段/结束阶段，你书写一册${get.poptip("bilibili_hedao_faq")}。`,
-            bilibili_shoushu_info: `出牌阶段限一次，你可以将一册未翻开的${get.poptip("bilibili_hedao_faq")}交给一名其他角色。`,
-            bilibili_hedao_info: `锁定技。①游戏开始时，你可至多拥有两册${get.poptip("bilibili_hedao_faq")}。②你的首次濒死结算后，你可至多拥有三册${get.poptip("bilibili_hedao_faq")}。`,
             bilibili_xiaoyaoruyun: '逍遥如云',
             bilibili_chuandu: '传毒',
             bilibili_chuandu_info: '锁定技，准备阶段/结束阶段，你令你与场上所有拥有“染”标记的相邻其他角色获得“染”标记，然后你摸一张牌/拥有“染”标记的角色各失去1点体力。',

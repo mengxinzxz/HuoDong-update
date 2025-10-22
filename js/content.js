@@ -1043,12 +1043,20 @@ export async function content(config, pack) {
 		if (!Array.isArray(list)) list = [list];
 		skills.forEach(skill => {
 			if (!lib.skill[skill]) return;
-			if (!lib.skill[skill].audioname) lib.skill[skill].audioname = [];
+			lib.skill[skill].audioname ??= [];
 			lib.skill[skill].audioname.addArray(list);
+			if (lib.skill[skill].subSkill) {
+				for (const skill2 in lib.skill[skill].subSkill) {
+					if (lib.skill[skill2]?.audio === skill) {
+						lib.skill[skill2].audioname ??= [];
+						lib.skill[skill2].audioname.addArray(list);
+					}
+				}
+			}
 		});
 	};
-	game.HDsetAudioname(['dchuishu', 'dcyishu', 'yingzi', 'biyue'], 'bilibili_zhouxiaomei');
-	lib.skill.dchuishu.subSkill.effect.audioname = (lib.skill.dchuishu.subSkill.effect.audioname || []).concat(['bilibili_zhouxiaomei']);
+	game.HDsetAudioname(get.character('bilibili_zhoutaigong').skills, 'bilibili_zhoutaigong');
+	game.HDsetAudioname(get.character('bilibili_zhouxiaomei').skills, 'bilibili_zhouxiaomei');
 	game.HDsetAudioname('yijin', 'bilibili_litiansuo');
 	game.HDsetAudioname(['reqimou', 'zhaxiang', 'zhaxiang2', 'tairan', 'tairan2'], 'bilibili_kuangshen04');
 
