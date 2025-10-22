@@ -2671,17 +2671,22 @@ const packs = function () {
             miniqingxi: {
                 audio: 'qingxi',
                 inherit: 'reqingxi',
-            },
-            _miniqingxi_draw: {
-                charlotte: true,
-                trigger: { global: 'judgeAfter' },
-                filter(event, player) {
-                    return event.result?.color == 'black' && event.getParent().name == 'miniqingxi' && event.getParent().player == player;
+                init(player, skill) {
+                    player.addSkill(`${skill}_draw`);
                 },
-                lastDo: true,
-                direct: true,
-                content() {
-                    player.draw(2);
+                subSkill: {
+                    draw: {
+                        charlotte: true,
+                        trigger: { global: 'judgeAfter' },
+                        filter(event, player) {
+                            const evt = event.getParent();
+                            return event.result?.color == 'black' && evt.name == 'miniqingxi' && evt.player == player;
+                        },
+                        silent: true,
+                        content() {
+                            player.draw(2).set('relatedEvent', trigger.getParent());
+                        },
+                    },
                 },
             },
             minikunfen: {
