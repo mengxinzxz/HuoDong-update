@@ -433,7 +433,7 @@ const packs = function () {
         },
         characterSubstitute: {
             Mbaby_tunxingmenglix: [
-                ['Mbaby_tunxingmengli', [((lib.device || lib.node) ? 'ext:' : 'db:extension-') + '活动武将/image/character/Mbaby_tunxingmengli.jpg']],
+                ['Mbaby_tunxingmengli', ['ext:活动武将/image/character/Mbaby_tunxingmengli.jpg']],
             ],
         },
         card: {
@@ -39460,7 +39460,7 @@ const packs = function () {
         else {
             if (i.startsWith('Mbaby_') && !MiNikill.character[i][4].some(tag => typeof tag == 'string' && tag.startsWith('die:'))) MiNikill.character[i][4].push('die:' + i.slice(6));
         }
-        MiNikill.character[i][4].push(((lib.device || lib.node) ? 'ext:' : 'db:extension-') + '活动武将/image/character/' + i + '.jpg');
+        MiNikill.character[i][4].push('ext:活动武将/image/character/' + i + '.jpg');
     }
     lib.namePrefix.set('喵', {
         color: '#fdd559',

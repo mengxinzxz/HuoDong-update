@@ -190,31 +190,13 @@ export let config = {
 				container.code = code;
 				delete window.saveNonameInput;
 			};
-			window.saveNonameInput = saveInput;
-			var editor = ui.create.editor(container, saveInput);
-			if (node.aced) {
-				ui.window.appendChild(node);
-				node.editor.setValue(node.code, 1);
-			}
-			else if (lib.device == 'ios') {
-				ui.window.appendChild(node);
-				if (!node.textarea) {
-					var textarea = document.createElement('textarea');
-					editor.appendChild(textarea);
-					node.textarea = textarea;
-					lib.setScroll(textarea);
-				}
-				node.textarea.value = node.code;
-			}
-			else {
-				if (!window.CodeMirror) {
-					import('../../../game/codemirror.js').then(() => {
-						lib.codeMirrorReady(node, editor);
-					});
-					lib.init.css(lib.assetURL + 'layout/default', 'codemirror');
-				}
-				else lib.codeMirrorReady(node, editor);
-			}
+			ui.create.editor2(container, {
+				language: 'javascript',
+				value: str,
+				saveInput,
+			}).then(editor => {
+				window.saveNonameInput = () => saveInput(editor);
+			});
 		},
 	},
 	reset_PingJianName: {

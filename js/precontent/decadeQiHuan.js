@@ -928,7 +928,7 @@ const packs = function () {
             decadeQiHuan.character[i][4].push('die:ext:活动武将/audio/die:true');
             decadeQiHuan.translate[`#ext:活动武将/audio/die/${i}:die`] = '点击播放阵亡配音';
         }
-        decadeQiHuan.character[i][4].push(((lib.device || lib.node) ? 'ext:' : 'db:extension-') + '活动武将/image/character/' + i + '.jpg');
+        decadeQiHuan.character[i][4].push('ext:活动武将/image/character/' + i + '.jpg');
     }
     lib.config.all.characters.push('decadeQiHuan');
     lib.config.all.sgscharacters.push('decadeQiHuan');

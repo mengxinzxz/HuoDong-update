@@ -1510,7 +1510,7 @@ const packs = function () {
             hezongkangqincharacter.character[i][4].push('die:ext:活动武将/audio/die:true');
             hezongkangqincharacter.translate[`#ext:活动武将/audio/die/${i}:die`] = '点击播放阵亡配音';
         }
-        hezongkangqincharacter.character[i][4].push(((lib.device || lib.node) ? 'ext:' : 'db:extension-') + '活动武将/image/character/' + i + '.jpg');
+        hezongkangqincharacter.character[i][4].push('ext:活动武将/image/character/' + i + '.jpg');
     }
     game.addGroup('daqin', '秦', '秦朝', { color: '#FFA500', image: 'ext:活动武将/image/default/daqin.png' });
     lib.config.all.characters.push('hezongkangqincharacter');

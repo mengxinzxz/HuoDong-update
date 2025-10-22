@@ -489,7 +489,7 @@ const packs = function () {
             FaDongCharacter.character[i][4].push('die:ext:活动武将/audio/die:true');
             FaDongCharacter.translate[`#ext:活动武将/audio/die/${i}:die`] = '点击播放阵亡配音';
         }
-        FaDongCharacter.character[i][4].push(((lib.device || lib.node) ? 'ext:' : 'db:extension-') + '活动武将/image/character/' + i + '.jpg');
+        FaDongCharacter.character[i][4].push('ext:活动武将/image/character/' + i + '.jpg');
     }
     lib.config.all.characters.push('FaDongCharacter');
     lib.config.all.sgscharacters.push('FaDongCharacter');

@@ -46,7 +46,7 @@ translate:{
 },
 };
 for(const i in 武将包英文名.character){
-武将包英文名.character[i][4].push(((lib.device||lib.node)?'ext:':'db:extension-')+'活动武将/image/character/'+i+'.jpg');
+武将包英文名.character[i][4].push('ext:活动武将/image/character/'+i+'.jpg');
 }
 lib.config.all.characters.push('武将包英文名');
 lib.config.all.sgscharacters.push('武将包英文名');
