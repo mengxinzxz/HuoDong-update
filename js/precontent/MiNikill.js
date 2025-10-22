@@ -2684,7 +2684,9 @@ const packs = function () {
                         },
                         silent: true,
                         content() {
-                            player.draw(2).set('relatedEvent', trigger.getParent());
+                            const next = player.draw(2);
+                            event.next.remove(next);
+                            trigger.next.push(next);
                         },
                     },
                 },
