@@ -6599,11 +6599,11 @@ const packs = function () {
                 audio: 'staranshu',
                 trigger: { global: 'roundStart' },
                 filter(event, player) {
-                    return get.discardPile(card => get.type(card) === 'basic');
+                    return player.hasUseTarget(new lib.element.VCard({ name: 'wugu', isCard: true, anshu: true }));
                 },
                 async cost(event, trigger, player) {
                     const cards = Array.from(ui.discardPile.childNodes).filter(card => get.type(card) == 'basic');
-                    const result = await player.chooseButton([get.prompt2(event.skill), cards], [1, Infinity]).set('filterButton', button => {
+                    const result = await player.chooseButton([get.prompt2(event.skill), cards], [0, Infinity]).set('filterButton', button => {
                         return !ui.selected.buttons?.some(buttonx => buttonx.link.name == button.link.name);
                     }).set('ai', () => 1 + Math.random()).forResult();
                     event.result = {
@@ -6613,7 +6613,7 @@ const packs = function () {
                 },
                 async content(event, trigger, player) {
                     game.players.forEach(current => current.addTempSkill('minianshu_remove', 'roundStart'));
-                    await game.cardsGotoPile(event.cards, 'insert');
+                    if (event.cards?.length) await game.cardsGotoPile(event.cards, 'insert');
                     player.when({ global: 'useCardToTargeted' }).filter(evt => {
                         return evt.card?.anshu && evt?.targets?.length == evt.getParent()?.triggeredTargets4?.length;
                     }).then(() => {
@@ -6632,7 +6632,9 @@ const packs = function () {
                         trigger.getParent().targets = trigger.getParent().targets.sortBySeat(target);
                         trigger.getParent().triggeredTargets4 = trigger.getParent().triggeredTargets4.sortBySeat(target);
                     });
-                    await player.chooseUseTarget({ name: 'wugu', isCard: true, anshu: true }, true);
+                    if (player.hasUseTarget(new lib.element.VCard({ name: 'wugu', isCard: true, anshu: true }))) {
+                        await player.chooseUseTarget({ name: 'wugu', isCard: true, anshu: true }, true);
+                    }
                 },
                 group: 'minianshu_draw',
                 subSkill: {
@@ -37858,7 +37860,7 @@ const packs = function () {
             miniqiongying: '琼英',
             miniqiongying_info: '出牌阶段限一次。你可以移动场上的一张牌。',
             minianshu: '安庶',
-            minianshu_info: '①每轮开始时，你可以将弃牌堆中不同牌名的基本牌各一张置于牌堆顶，然后视为使用一张由你指定起点结算的【五谷丰登】；②一名角色的回合结束时，若有角色本回合失去了本轮因〖安庶〗获得的牌，你可令其将手牌调整至体力上限（至多摸五张）。',
+            minianshu_info: '①每轮开始时，你可以将弃牌堆中不同牌名的基本牌各一张置于牌堆顶（没有则跳过），视为使用一张由你指定起点结算的【五谷丰登】；②一名角色的回合结束时，若有角色本回合失去了本轮因〖安庶〗获得的牌，你可令其将手牌调整至体力上限（至多摸五张）。',
             //蜀
             Mbaby_guanyu: '欢杀关羽',
             Mbaby_zhugeliang: '欢杀诸葛亮',
