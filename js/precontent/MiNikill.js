@@ -31577,7 +31577,7 @@ const packs = function () {
                 },
                 trigger: { player: ['useCardAfter', 'respondAfter'] },
                 filter(event, player) {
-                    if (!player.storage.minishuangshu2) return get.suit(event.card) == 'diamond' && player.countCards('e', { color: 'red' });
+                    if (!player.storage.minishuangshu2) return get.suit(event.card) == 'diamond';
                     return get.suit(event.card) == 'heart' && player.hasCard(card => {
                         if (_status.connectMode) return true;
                         return lib.filter.cardDiscardable(card, player);
@@ -31602,7 +31602,10 @@ const packs = function () {
                         }
                         if (list.length) await player.gain(list, 'gain2');
                     }
-                    else await player.draw(player.countCards('e', { color: 'red' }));
+                    else {
+                        const num = player.countCards('e', { color: 'red' });
+                        if (num > 0) await player.draw(num);
+                    }
                 },
                 group: 'minishuangshu2_change',
                 subSkill: {
