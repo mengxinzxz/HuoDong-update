@@ -21,7 +21,7 @@ game.showExtensionChangeLog((() => {
 		},
 		{
 			type: 'players',
-			data: ['Mbaby_jiachong', 'wechat_re_weiyan', 'Mbaby_dukui', 'Mmiao_guanyinping', 'Mbaby_mifangfushiren', 'Mfight_dianwei', 'Mbaby_zhugeruoxue', 'Mbaby_star_xunyu', 'Mbaby_shen1_daxiaoqiao', 'Mbaby_shen2_daxiaoqiao', 'wechat_zhaoyun', 'wechat_re_zhaoyun', 'wechat_sb_xiahouyuan', 'wechat_sb_xiaoqiao', 'wechat_shen_caocao', 'wechat_sb_sunquan', 'wechat_zhiyin_zhugeke', 'wechat_re_liubiao'],
+			data: ['Mbaby_wuban', 'Mbaby_jiachong', 'wechat_re_weiyan', 'Mbaby_dukui', 'Mmiao_guanyinping', 'Mbaby_mifangfushiren', 'Mfight_dianwei', 'Mbaby_zhugeruoxue', 'Mbaby_star_xunyu', 'Mbaby_shen1_daxiaoqiao', 'Mbaby_shen2_daxiaoqiao', 'wechat_zhaoyun', 'wechat_re_zhaoyun', 'wechat_sb_xiahouyuan', 'wechat_sb_xiaoqiao', 'wechat_shen_caocao', 'wechat_sb_sunquan', 'wechat_zhiyin_zhugeke', 'wechat_re_liubiao'],
 		},
 		{
 			type: 'text',
@@ -31,7 +31,7 @@ game.showExtensionChangeLog((() => {
 				'素材补充',
 				'技能调整',
 				'重新分配微信三国杀的武将分包',
-				'欢杀：杜夔、喵关银屏、糜芳傅士仁、战典韦、诸葛若雪、星荀彧、神二乔①号、神二乔②号、贾充',
+				'欢杀：杜夔、喵关银屏、糜芳傅士仁、战典韦、诸葛若雪、星荀彧、神二乔①号、神二乔②号、贾充、吴班',
 				'微信：赵云、界赵云、谋夏侯渊、谋小乔、神曹操、谋孙权、极诸葛恪、界刘表、界魏延',
 				'To be continued...'
 			],
