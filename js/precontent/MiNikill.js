@@ -29280,7 +29280,7 @@ const packs = function () {
                             const [target] = event.targets;
                             player.line(target, 'green');
                             const type = get.type2(trigger.card);
-                            const { result } = await target.chooseToGive(player, `###滔乱###交给${get.translation(player)}一张不为${get.translation(type)}牌的牌，或于回合结束时失去1点体力且〖滔乱〗无效直到回合结束`, 'he', (card, player, target) => {
+                            const { result } = await target.chooseToGive(player, `###滔乱###交给${get.translation(player)}一张不为${get.translation(type)}牌的牌，或令其〖滔乱〗无效直到回合结束${target == _status.currentPhase ? '且你于回合结束时失去1点体力' : ''}`, 'he', (card, player, target) => {
                                 return get.type2(card) != get.event('cardType');
                             }).set('cardType', type).set('ai', card => {
                                 const { player, target } = get.event();
@@ -29291,8 +29291,10 @@ const packs = function () {
                             });
                             if (!result?.bool) {
                                 player.tempBanSkill('minitaoluan');
-                                target.addTempSkill('minitaoluan_buff');
-                                target.addMark('minitaoluan_buff', 1, false);
+                                if (player == _status.currentPhase) {
+                                    target.addTempSkill('minitaoluan_buff');
+                                    target.addMark('minitaoluan_buff', 1, false);
+                                }
                             }
                         },
                     },
@@ -29337,8 +29339,8 @@ const packs = function () {
                             const { goon } = get.event();
                             if (goon) return 7 - get.value(card);
                             return 0;
-                        }).set('goon', goon).set('logSkill', [event.skill, target]).forResult();
-                        event.result.skill_popup = false;
+                        }).set('goon', goon).forResult();
+                        if (event.result?.bool) event.result.targets = [target];
                     } else {
                         event.result = await player.chooseCardTarget({
                             prompt: get.prompt(event.skill),
@@ -29357,12 +29359,10 @@ const packs = function () {
                     }
                 },
                 async content(event, trigger, player) {
-                    const { cards, targets } = event;
-                    const { player: target } = trigger;
+                    const { cards, targets: [target] } = event;
                     const name = ['damage', 'phase'].includes(trigger.name) ? trigger.name : 'gain';
                     player.addTempSkill(event.name + '_used', 'roundStart');
                     player.markAuto(event.name + '_used', [name]);
-                    event.set(`${event.name}_${name}`, true);
                     await player.discard(cards);
                     if (trigger.name == 'damage') trigger.cancel();
                     else if (trigger.name == 'phase') {
@@ -29374,7 +29374,7 @@ const packs = function () {
                             next.gaintag.add(effect);
                             await next;
                         }
-                    } else await targets[0].draw(2);
+                    } else await target.draw(2);
                     const list = lib.inpile.filter(name => get.type(name) == 'basic' && !['sha'].concat(player.getStorage('minixiafeng')).includes(name));
                     if (['damage', 'phase', 'gain'].every(tag => game.getRoundHistory('everything', evt => evt.name == event.name && evt.player == player).some(evt => evt[`${event.name}_${tag}`])) && player.hasSkill('minixiafeng', null, null, false) && list.length) {
                         const { result } = await player.chooseButton(['逐义：你可以为〖侠锋〗添加一个基本牌牌名', [list, 'vcard']]).set('ai', button => {
@@ -29412,7 +29412,7 @@ const packs = function () {
                         filter(event, player) {
                             if (!event.cards?.length) return false;
                             return player.hasHistory('lose', evt => {
-                                if (evt.getParent() !== event) return false;
+                                if ((evt.relatedEvent || evt.getParent()) !== event) return false;
                                 return Object.values(evt.gaintag_map).flat().includes('minizhuyi_effect');
                             });
                         },
@@ -29421,7 +29421,7 @@ const packs = function () {
                         async content(event, trigger, player) {
                             const tag = event.name;
                             const evtx = player.getHistory('lose', evt => {
-                                if (evt.getParent() !== trigger) return false;
+                                if ((evt.relatedEvent || evt.getParent()) !== trigger) return false;
                                 return Object.values(evt.gaintag_map).flat().includes(tag);
                             })[0];
                             let num = 0;
@@ -39370,7 +39370,7 @@ const packs = function () {
             minixuefeng: '血奉',
             minixuefeng_info: '出牌阶段限一次。你可以展示一张基本牌并令一名其他角色A对你选择的一名不为A的角色的B执行一项：1.交给B一张基本牌且此牌伤害值/回复值+1；2.失去1点体力并令B回复1点体力。然后你执行另一项。',
             minitaoluan: '滔乱',
-            minitaoluan_info: '每回合每种花色限一次，你可将一张牌当做任意一张你未以此法使用过的基本牌或普通锦囊牌使用，然后你令一名其他角色选择一项：1.交给你一张与本次〖滔乱〗声明的牌类别不同的牌；2.本回合〖滔乱〗失效且回合结束时其失去1点体力。',
+            minitaoluan_info: '每回合每种花色限一次，你可将一张牌当做任意一张你未以此法使用过的基本牌或普通锦囊牌使用，然后你令一名其他角色选择一项：1.交给你一张与本次〖滔乱〗声明的牌类别不同的牌；2.本回合〖滔乱〗失效，若你为当前回合角色，则回合结束时其失去1点体力。',
             minizhuyi: '逐义',
             minizhuyi_info: '每轮每项各限一次。①当你获得牌后，你可以弃置一张牌令一名角色摸两张牌；②一名角色受到伤害时，你可以弃置一张牌防止之；③一名角色的回合的开始时，你可以弃置一张牌令其获得一张基本牌且以此法获得的牌的回复值或伤害值+1。然后若你执行了所有选项，你可以为〖侠锋〗添加一个基本牌牌名。',
             minixiafeng: '侠锋',
