@@ -15,7 +15,7 @@ const packs = function () {
                 wechat_yijiang: ['quancong', 'guyong', 'liaohua', 'gongsunyuan', 'xusheng', 'yufan', 'handang', 'caochong', 'caoxiu', 'caozhang', 'masu', 'caifuren', 'jianyong', 'caozhi', 'gaoshun', 'xiahoushi', 'xushu', 'wuguotai', 'liuchen'].map(i => `wechat_${i}`),
                 wechat_xianding: [
                     ...['caojie', 'xuezong', 'jikang', 'caiyong', 'xushi', 'sundeng', 'huanghao', 'guohuanghou', 'sp_zhenji', 'lizhaojiaobo', 'liucheng', 'sp_diaochan', 'sunluyu', 'sunhao', 'sp_wangcan', 'yj_zhoubuyi', 'jsp_huangyueying', 'sp_machao', 'wanglang', 'chendeng', 'sp_pangde', 'zhuling', 'caizhenji', 'sp_jiangwei', 'sp_taishici', 'sp_caiwenji', 'bianfuren', 'sunluban', 'zhangxingcai', 'huojun'].map(i => `wechat_${i}`),
-                    ...['sunquan', 'xiaoqiao', 'xiahouyuan', 'gaoshun', 'handang', 'guojia', 'huanggai', 'diaochan', 'huangyueying', 'zhangliao', 'sunshangxiang', 'zhaoyun', 'machao', 'huangzhong', 'caocao', 'sunce'].map(i => `wechat_sb_${i}`),
+                    ...['huaxiong', 'sunquan', 'xiaoqiao', 'xiahouyuan', 'gaoshun', 'handang', 'guojia', 'huanggai', 'diaochan', 'huangyueying', 'zhangliao', 'sunshangxiang', 'zhaoyun', 'machao', 'huangzhong', 'caocao', 'sunce'].map(i => `wechat_sb_${i}`),
                 ],
                 wechat_wanxiang: ['ruanhui', 'kanze', 'zumao', 'xiahouba', 'buzhi', 'liuqi', 'ganfuren', 'liuyao', 'zhugeguo', 'xurong', 'yj_weiyan', 'yj_huangzhong', 'yj_ganning', 'zhaoxiang', 'guozhao', 'sunhanhua', 'pangdegong', 'guanyinping', 'baosanniang', 'taoqian', 'guansuo', 'liuyan', 'shenpei', 'yangxiu', 'yj_xuhuang', 'mayunlu', 'litong'].map(i => `wechat_${i}`),
                 wechat_zhiyin: ['zhugeke', 'mayunlu', 'bulianshi', 'diaochan', 'taishici', 'luxun', 'sunshangxiang', 'xunyou', 'dianwei', 'zhaoyun', 'xinxianying', 'guohuanghou', 'kongrong', 'caopi', 'jiaxu', 'zhangfei', 'dongzhuo', 'wangyi', 'zhangchunhua', 'hetaihou', 'zhurong', 'jiangwei', 'caozhi', 'liubei', 'sunce', 'xunyu', 'zhenji', 'xuzhu', 'yuanshao', 'lusu', 'guojia', 'lvbu', 'daqiao', 'xiaoqiao', 'caocao', 'zhugeliang', 'simayi', 'machao', 'huangyueying', 'caiwenji', 'zhouyu', 'sunquan', 'guanyu'].map(i => `wechat_zhiyin_${i}`),
@@ -208,6 +208,7 @@ const packs = function () {
             wechat_sb_xiahouyuan: ['male', 'wei', 4, ['wechatsbshensu', 'sbzhengzi'], ['tempname:sb_xiahouyuan', 'name:夏侯|渊']],
             wechat_sb_xiaoqiao: ['female', 'wu', 3, ['wechatsbtianxiang', 'xinhongyan'], ['tempname:sb_xiaoqiao', 'name:桥|null']],
             wechat_sb_sunquan: ['male', 'wu', 4, ['wechatsbzhiheng', 'wechatsbtongye'], ['tempname:sb_sunquan']],
+            wechat_sb_huaxiong: ['male', 'qun', 4, ['wechatsbyaowu', 'sbyangwei'], ['tempname:sb_huaxiong']],
         },
         characterIntro: {
         },
@@ -7844,6 +7845,8 @@ const packs = function () {
                 async content(event, trigger, player) {
                     await player.damage('nosource');
                     await player.draw();
+                    player.addTempSkill(event.name + '_effect');
+                    player.addMark(event.name + '_effect', 1, false);
                     if (game.countPlayer() == 2) return;
                     const result = game.countPlayer() == 2 ? {
                         bool: true,
@@ -7861,6 +7864,19 @@ const packs = function () {
                         await targets[1].damage(targets[0], 'unreal');
                     }
                 },
+                subSkill: {
+                    effect: {
+                        charlotte: true,
+                        onremove: true,
+                        markimage: 'image/card/handcard.png',
+                        intro: { content: '手牌上限+#' },
+                        mod: {
+                            maxHandcard(player, num) {
+                                return num + player.countMark('wechathuiyao_effect');
+                            },
+                        },
+                    }
+                }
             },
             wechatquesong: {
                 audio: 'mbquesong',
@@ -14657,6 +14673,22 @@ const packs = function () {
                     }
                 },
             },
+            // 谋华雄
+            wechatsbyaowu: {
+                audio: 'new_reyaowu',
+                audioname: ['sb_huaxiong'],
+                inherit: 'new_reyaowu',
+                filter(event) {
+                    return event.card?.name == 'sha';
+                },
+                forced: true,
+                async content(event, trigger, player) {
+                    await player.draw();
+                    if (get.color(trigger.card) == 'red' && trigger.source?.isIn()) {
+                        await trigger.source.chooseDrawRecover(true);
+                    }
+                },
+            },
 
         },
         dynamicTranslate: {
@@ -15201,7 +15233,7 @@ const packs = function () {
             wechatqiaomeng_info: '当你使用黑色【杀】指定目标后，你可以弃置该角色的一张牌，然后若你弃置了装备牌，则你获得之。',
             wechat_yj_zhoubuyi: '微信周不疑',
             wechathuiyao: '慧夭',
-            wechathuiyao_info: '出牌阶段限一次。你可以受到1点无来源伤害并摸一张牌，然后你选择一名其他角色，令其视为对另一名角色造成过1点伤害。',
+            wechathuiyao_info: '出牌阶段限一次。你可以受到1点无来源伤害，然后你摸一张牌且本回合手牌上限+1，然后你选择一名其他角色，令其视为对另一名角色造成过1点伤害。',
             wechatquesong: '雀颂',
             wechatquesong_info: '一名角色的结束阶段，若你于回合内受到过伤害，则你可以令一名角色选择一项：1.摸三张牌并复原武将牌；2.回复1点体力。',
             wechat_litong: '微信李通',
@@ -15542,6 +15574,9 @@ const packs = function () {
             wechatrezishou_info: '摸牌阶段，你可以额外摸三张牌。然后你于本回合不能对体力值小于你的角色使用【杀】。',
             wechatrezongshi: '宗室',
             wechatrezongshi_info: '锁定技，你的手牌上限+3。准备阶段，若你的手牌数大于体力值，则你本回合内使用【杀】无距离和次数限制。',
+            wechat_sb_huaxiong: '微信谋华雄',
+            wechatsbyaowu: '耀武',
+            wechatsbyaowu_info: '锁定技，当一名角色使用【杀】对你造成伤害时，你摸一张牌。然后若此【杀】为红色，该角色回复1点体力或摸一张牌。',
         },
     };
     for (let i in WeChatkill.character) {
