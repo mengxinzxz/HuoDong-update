@@ -10190,116 +10190,70 @@ const packs = function () {
             minifuhan: {
                 inherit: 'refuhan',
                 Mbaby_characterlist: true,
-                content() {
-                    'step 0'
-                    if (player.storage.fanghun) player.draw(player.storage.fanghun);
-                    player.removeMark('fanghun', player.storage.fanghun);
-                    player.awakenSkill('minifuhan');
-                    'step 1'
-                    if (!_status.characterlist) lib.skill.pingjian.initList();
-                    var EditList = ((!_status.connectMode && lib.config.extension_活动武将_PingJianName) ? lib.config.extension_活动武将_PingJianName : lib.skill.minipingjian.getList()).filter(i => lib.character[i]);
-                    var list = EditList.filter(i => _status.characterlist.includes(i) && (lib.character[i][1] == 'shu' || (get.is.double(i, true) || []).includes('wu')));
-                    var players = game.players.concat(game.dead);
-                    for (var i = 0; i < players.length; i++) {
-                        list.remove(players[i].name);
-                        list.remove(players[i].name1);
-                        list.remove(players[i].name2);
+                async content(event, trigger, player) {
+                    player.awakenSkill(event.name);
+                    const num = player.countMark('fanghun');
+                    if (num) {
+                        player.clearMark('fanghun');
+                        await player.draw(num);
+                    }
+                    if (!_status.characterlist) game.initCharacterList();
+                    const EditList = ((!_status.connectMode && game.getExtensionConfig('活动武将', 'PingJianName')) ? game.getExtensionConfig('活动武将', 'PingJianName') : lib.skill.minipingjian.getList()).filter(i => lib.character[i]);
+                    let list = EditList.filter(i => _status.characterlist.includes(i) && (lib.character[i][1] == 'shu' || (get.is.double(i, true) || []).includes('wu')));
+                    for (const current of game.players.concat(game.dead)) {
+                        list.removeArray(get.nameList(current));
                     }
                     list = list.randomGets(Math.max(4, game.countPlayer()));
-                    var skills = [];
-                    for (var i of list) {
-                        skills.addArray((lib.character[i][3] || []).filter(function (skill) {
-                            var info = get.info(skill);
+                    const map = {};
+                    for (const name of list) {
+                        let skills = (lib.character[name][3] || []).filter(skill => {
+                            const info = get.info(skill);
                             return info && !info.zhuSkill && !info.limited && !info.juexingji && !info.hiddenSkill && !info.charlotte && !info.dutySkill;
-                        }));
-                    }
-                    if (!list.length || !skills.length) { event.finish(); return; }
-                    if (player.isUnderControl()) {
-                        game.swapPlayerAuto(player);
-                    }
-                    var switchToAuto = function () {
-                        _status.imchoosing = false;
-                        event._result = {
-                            bool: true,
-                            skills: skills.randomGets(2),
-                        };
-                        if (event.dialog) event.dialog.close();
-                        if (event.control) event.control.close();
-                    };
-                    var chooseButton = function (list, skills) {
-                        var event = _status.event;
-                        if (!event._result) event._result = {};
-                        event._result.skills = [];
-                        var rSkill = event._result.skills;
-                        var dialog = ui.create.dialog('请选择获得至多两个技能', [list, 'character'], 'hidden');
-                        event.dialog = dialog;
-                        var table = document.createElement('div');
-                        table.classList.add('add-setting');
-                        table.style.margin = '0';
-                        table.style.width = '100%';
-                        table.style.position = 'relative';
-                        for (var i = 0; i < skills.length; i++) {
-                            var td = ui.create.div('.shadowed.reduce_radius.pointerdiv.tdnode');
-                            td.link = skills[i];
-                            table.appendChild(td);
-                            td.innerHTML = '<span>' + get.translation(skills[i]) + '</span>';
-                            td.addEventListener(lib.config.touchscreen ? 'touchend' : 'click', function () {
-                                if (_status.dragged) return;
-                                if (_status.justdragged) return;
-                                _status.tempNoButton = true;
-                                setTimeout(function () {
-                                    _status.tempNoButton = false;
-                                }, 500);
-                                var link = this.link;
-                                if (!this.classList.contains('bluebg')) {
-                                    if (rSkill.length >= 2) return;
-                                    rSkill.add(link);
-                                    this.classList.add('bluebg');
-                                }
-                                else {
-                                    this.classList.remove('bluebg');
-                                    rSkill.remove(link);
-                                }
-                            });
-                        }
-                        dialog.content.appendChild(table);
-                        dialog.add('　　');
-                        dialog.open();
-
-                        event.switchToAuto = function () {
-                            event.dialog.close();
-                            event.control.close();
-                            game.resume();
-                            _status.imchoosing = false;
-                        };
-                        event.control = ui.create.control('ok', function (link) {
-                            event.dialog.close();
-                            event.control.close();
-                            game.resume();
-                            _status.imchoosing = false;
                         });
-                        for (var i = 0; i < event.dialog.buttons.length; i++) {
-                            event.dialog.buttons[i].classList.add('selectable');
-                        }
-                        game.pause();
-                        game.countChoose();
-                    };
-                    if (event.isMine()) {
-                        chooseButton(list, skills);
+                        if (skills.length) map[name] = skills;
                     }
-                    else if (event.isOnline()) {
-                        event.player.send(chooseButton, list, skills);
-                        event.player.wait();
-                        game.pause();
-                    }
-                    else {
-                        switchToAuto();
-                    }
-                    'step 2'
-                    var map = event.result || result;
-                    if (map?.skills?.length) player.addSkills(map.skills);
-                    'step 3'
-                    if (player.isMinHp()) player.recover();
+                    if (!Object.keys(map).length) return;
+                    const { result } = await player.chooseButton([
+                        `扶汉：请选择获得至多两个技能`,
+                        [dialog => {
+                            dialog.css({ top: '25%' });
+                            const { characterMap } = get.event();
+                            for (const name of Object.keys(map)) {
+                                const table = document.createElement('div');
+                                table.classList.add('add-setting');
+                                table.style.margin = '0';
+                                table.style.width = '100%';
+                                table.style.position = 'relative';
+                                table.style.display = 'flex';
+                                table.style.justifyContent = 'flex-start';
+                                table.style.alignItems = 'center';
+                                const tdc = ui.create.buttonPresets.character(name, 'character');
+                                for (const item in tdc.node) {
+                                    if (item == 'name') {
+                                        tdc.node.name.style.writingMode = 'horizontal-tb';
+                                    } else {
+                                        tdc.node[item].hide();
+                                    }
+                                }
+                                tdc.style.height = '40px';
+                                table.appendChild(tdc);
+                                const skills = map[name];
+                                for (let i = 0; i < skills.length; i++) {
+                                    const td = ui.create.button([skills[i], get.translation(skills[i])], 'tdnodes', table);
+                                    td.setNodeIntro(get.translation(skills[i]), get.skillInfoTranslation(skills[i], get.player()));
+                                    dialog.buttons.add(td);
+                                }
+                                dialog.content.appendChild(table);
+                            }
+                        }, 'handle'],
+                    ], [1, 2], true).set('characterMap', map).set('ai', button => {
+                        const { link } = button;
+                        const info = get.info(link);
+                        if (info?.ai?.neg) return 0;
+                        return get.skillRank(link, 'inout');
+                    });
+                    if (result?.links?.length) await player.addSkills(result.links);
+                    if (player.isMinHp()) await player.recover();
                 },
             },
             //夏侯霸
