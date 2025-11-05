@@ -19488,7 +19488,7 @@ const packs = function () {
                     const { result } = await player.chooseButton([
                         `###离宫###<div class="text center">请选择获得至多两个技能，或点击“取消”摸三张牌`,
                         [dialog => {
-                            dialog.css({ top: '25%' });
+                            dialog.css({ top: '20%' });
                             const { characterMap } = get.event();
                             for (const name of Object.keys(map)) {
                                 const table = document.createElement('div');
