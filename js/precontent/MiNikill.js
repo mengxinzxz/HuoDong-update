@@ -10227,7 +10227,7 @@ const packs = function () {
                                 table.style.display = 'flex';
                                 table.style.justifyContent = 'flex-start';
                                 table.style.alignItems = 'center';
-                                const tdc = ui.create.buttonPresets.character(name, 'character');
+                                const tdc = ui.create.button(name, 'character', table);
                                 for (const item in tdc.node) {
                                     if (item == 'name') {
                                         tdc.node.name.style.writingMode = 'horizontal-tb';
@@ -10236,7 +10236,7 @@ const packs = function () {
                                     }
                                 }
                                 tdc.style.height = '40px';
-                                table.appendChild(tdc);
+                                dialog.buttons.add(tdc);
                                 const skills = map[name];
                                 for (let i = 0; i < skills.length; i++) {
                                     const td = ui.create.button([skills[i], get.translation(skills[i])], 'tdnodes', table);
@@ -10247,10 +10247,13 @@ const packs = function () {
                             }
                         }, 'handle'],
                     ], [1, 2], true).set('characterMap', map).set('ai', button => {
+                        if (button._link) return 0;
                         const { link } = button;
                         const info = get.info(link);
                         if (info?.ai?.neg) return 0;
                         return get.skillRank(link, 'inout');
+                    }).set('filterOk', () => {
+                        return ui.selected.buttons.every(button => !button._link)
                     });
                     if (result?.links?.length) await player.addSkills(result.links);
                     if (player.isMinHp()) await player.recover();
@@ -19499,7 +19502,7 @@ const packs = function () {
                                 table.style.display = 'flex';
                                 table.style.justifyContent = 'flex-start';
                                 table.style.alignItems = 'center';
-                                const tdc = ui.create.buttonPresets.character(name, 'character');
+                                const tdc = ui.create.button(name, 'character', table);
                                 for (const item in tdc.node) {
                                     if (item == 'name') {
                                         tdc.node.name.style.writingMode = 'horizontal-tb';
@@ -19508,7 +19511,7 @@ const packs = function () {
                                     }
                                 }
                                 tdc.style.height = '40px';
-                                table.appendChild(tdc);
+                                dialog.buttons.add(tdc);
                                 const skills = map[name];
                                 for (let i = 0; i < skills.length; i++) {
                                     const td = ui.create.button([skills[i], get.translation(skills[i])], 'tdnodes', table);
@@ -19519,10 +19522,13 @@ const packs = function () {
                             }
                         }, 'handle'],
                     ], [1, 2]).set('characterMap', map).set('ai', button => {
+                        if (button._link) return 0;
                         const { link } = button;
                         const info = get.info(link);
                         if (info?.ai?.neg) return 0;
                         return get.skillRank(link, 'inout');
+                    }).set('filterOk', () => {
+                        return ui.selected.buttons.every(button => !button._link)
                     });
                     if (result?.links?.length) await player.changeSkills(result.links, ['dchuishu']);
                     else await player.draw(3);
