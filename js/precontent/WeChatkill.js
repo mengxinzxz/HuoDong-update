@@ -6760,9 +6760,7 @@ const packs = function () {
                 group: 'wechatpingjiang_buff',
                 subSkill: {
                     buff: {
-                        trigger: {
-                            player: 'juedouAfter',
-                        },
+                        trigger: { player: 'juedouAfter' },
                         filter(event, player) {
                             return event.card.storage?.wechatpingjiang;
                         },
@@ -6771,10 +6769,15 @@ const packs = function () {
                         popup: false,
                         async content(event, trigger, player) {
                             if (trigger.turn == player) player.tempBanSkill('wechatpingjiang');
-                            else player.addTempSkill('wechatpingjiang_wushuang');
+                            else {
+                                player.addTempSkill('wechatpingjiang_wushuang');
+                                player.addMark('wechatpingjiang_wushuang', 1, false);
+                            }
                         },
                     },
                     wushuang: {
+                        charlotte: true,
+                        intro: { content: '本回合使用的【决斗】获得〖无双〗效果且造成的伤害+#' },
                         trigger: {
                             player: 'useCardToPlayered',
                             source: 'damageBegin1',
@@ -6782,7 +6785,6 @@ const packs = function () {
                         filter(event, player) {
                             return event.card?.name == 'juedou';
                         },
-                        charlotte: true,
                         forced: true,
                         logTarget(event, player) {
                             return event.name == 'useCardToPlayered' ? event.target : event.player;
@@ -6797,7 +6799,7 @@ const packs = function () {
                                 if (!map[idt].shaReq[id]) map[idt].shaReq[id] = 1;
                                 map[idt].shaReq[id]++;
                             }
-                            else trigger.num++;
+                            else trigger.num += player.countMark(event.name);
                         },
                         ai: {
                             directHit_ai: true,
@@ -15182,7 +15184,7 @@ const packs = function () {
             wechattaoni: '讨逆',
             wechattaoni_info: '出牌阶段开始时，你可以失去任意点体力并摸等量张牌，然后令至多X名其他角色获得1枚“讨逆”标记（X为你以此法失去的体力值）。若如此做，本回合你的手牌上限等于你的体力上限。',
             wechatpingjiang: '平江',
-            wechatpingjiang_info: '出牌阶段，你可以视为移去一名角色的所有“讨逆”标记视为对其使用一张【决斗】。若你胜，本回合你使用的【决斗】获得〖无双〗效果且造成的伤害+1；否则此技能失效直到回合结束。',
+            wechatpingjiang_info: '出牌阶段，你可以视为移去一名角色的所有“讨逆”标记视为对其使用一张【决斗】。若你胜，本回合你使用的【决斗】获得〖无双〗效果且造成的伤害+1（可叠加）；否则此技能失效直到回合结束。',
             wechatdingye: '鼎业',
             wechatdingye_info: '锁定技，结束阶段，你回复X点体力（X为本回合受到过伤害的角色数）。',
             wechat_zhiyin_xunyu: '极荀彧',
