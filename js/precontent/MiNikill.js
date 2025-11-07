@@ -39814,6 +39814,22 @@ const packs = function () {
         lib.element.player.isHealthy = function () {
             return (this.hp >= this.maxHp && (typeof this.hp2 !== 'number' || this.hp2 >= this.maxHp2)) || this.storage.nohp;
         };
+        lib.element.content.recover = function () {
+            let list = [player.maxHp - player.hp];
+            if (typeof player.hp2 === 'number') list.push(player.maxHp2 - player.hp2);
+            event.num = num = Math.min(num, Math.max(...list));
+            if (num > 0) {
+                delete event.filterStop;
+                game.broadcastAll(player => {
+                    if (lib.config.background_audio) game.playAudio('effect', 'recover');
+                    if (lib.config.animation && !lib.config.low_performance) player.$recover();
+                }, player);
+                player.$damagepop(num, "wood");
+                game.log(player, `回复了${get.cnNumber(num)}点体力`);
+                player.changeHp(num, false);
+            }
+            else event._triggered = null;
+        };
         const ori5 = lib.element.player.getDamagedHp;
         lib.element.player.getDamagedHp = function () {
             const num = ori5.apply(this, arguments);
