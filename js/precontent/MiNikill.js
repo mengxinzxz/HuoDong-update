@@ -39791,7 +39791,7 @@ const packs = function () {
                         span.textContent = str;
                         return span.outerHTML;
                     };
-                    hp.innerHTML = `${getStr(getNum(player.hp))}${getStr('/')}${getStr(getNum(player.maxHp))}<div></div><br>${getStr(getNum(player.hp2))}${getStr('/')}${getStr(getNum(player.maxHp2))}<div></div>`;
+                    hp.innerHTML = `${getStr(getNum(player.hp2))}${getStr('/')}${getStr(getNum(player.maxHp2))}<div></div><br>${getStr(getNum(player.hp))}${getStr('/')}${getStr(getNum(player.maxHp))}<div></div>`;
                     if (player.hp === 0 || player.hp2 === 0) hp.lastChild.classList.add('lost');
                     hp.classList.add('textstyle');
                     if (player.dataset.maxHp) player.dataset.maxHp = 4;
@@ -39803,9 +39803,9 @@ const packs = function () {
         lib.element.player.getHandcardLimit = function () {
             let num = Math.max(this.hp, 0);
             if (typeof this.hp2 === 'number') num += Math.max(this.hp2, 0);
-            num = game.checkMod(this, num, "maxHandcardBase", this);
-            num = game.checkMod(this, num, "maxHandcard", this);
-            num = game.checkMod(this, num, "maxHandcardFinal", this);
+            num = game.checkMod(this, num, 'maxHandcardBase', this);
+            num = game.checkMod(this, num, 'maxHandcard', this);
+            num = game.checkMod(this, num, 'maxHandcardFinal', this);
             return Math.max(0, num);
         };
         lib.element.player.isDamaged = function () {
