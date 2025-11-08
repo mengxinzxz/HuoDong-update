@@ -39782,7 +39782,11 @@ const packs = function () {
                 if (!player.storage.nohp) {
                     const hp = player.node.hp;
                     hp.style.transition = 'none';
-                    hp.style.writingMode = 'vertical-rl';
+                    if (player.dataset) {
+                        player.dataset.maxHp = 4;
+                        hp.style.writingMode = hp.style.webkitWritingMode = 'horizontal-tb';
+                    }
+                    else hp.style.writingMode = hp.style.webkitWritingMode = 'vertical-rl';
                     //hp.style.textOrientation = 'upright';不用这个用getStr处理的原因是为了让多位数也能横向显示
                     const getNum = num => isNaN(num) ? '×' : num === Infinity ? '∞' : num;
                     const getStr = str => {
@@ -39792,10 +39796,6 @@ const packs = function () {
                         return span.outerHTML;
                     };
                     hp.innerHTML = `${getStr(getNum(player.hp2))}${getStr('/')}${getStr(getNum(player.maxHp2))}<div></div><br>${getStr(getNum(player.hp))}${getStr('/')}${getStr(getNum(player.maxHp))}<div></div>`;
-                    if (player.dataset) {
-                        player.dataset.maxHp = 4;
-                        hp.style.writingMode = hp.style.webkitWritingMode = 'horizontal-tb';
-                    }
                     if (player.hp === 0 || player.hp2 === 0) hp.lastChild.classList.add('lost');
                     hp.classList.add('textstyle');
                     setTimeout(() => hp.style.transition = '');
