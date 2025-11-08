@@ -39792,9 +39792,12 @@ const packs = function () {
                         return span.outerHTML;
                     };
                     hp.innerHTML = `${getStr(getNum(player.hp2))}${getStr('/')}${getStr(getNum(player.maxHp2))}<div></div><br>${getStr(getNum(player.hp))}${getStr('/')}${getStr(getNum(player.maxHp))}<div></div>`;
+                    if (player.dataset) {
+                        player.dataset.maxHp = 4;
+                        hp.style.writingMode = hp.style.webkitWritingMode = 'horizontal-tb';
+                    }
                     if (player.hp === 0 || player.hp2 === 0) hp.lastChild.classList.add('lost');
                     hp.classList.add('textstyle');
-                    if (player.dataset.maxHp) player.dataset.maxHp = 4;
                     setTimeout(() => hp.style.transition = '');
                 }
             }
