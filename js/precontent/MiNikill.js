@@ -15,6 +15,7 @@ const packs = function () {
                 MiNi_shengzhiyifa: ['Mbaby_jingwei', 'Mbaby_sunwukong', 'Mbaby_dalanmao', 'Mbaby_libai', 'Mbaby_change', 'Mbaby_nvwa', 'Mbaby_tunxingmenglix', 'Mbaby_xiaoshan'],
                 MiNi_sbCharacter: ['Mbaby_sb_zhenji', 'Mbaby_sb_ganning', 'Mbaby_sb_huangyueying', 'Mbaby_ol_sb_guanyu', 'Mbaby_sb_sunshangxiang', 'Mbaby_sb_xuhuang', 'Mbaby_sb_zhaoyun', 'Mbaby_sb_liubei', 'Mbaby_sb_caocao', 'Mbaby_sb_huanggai', 'Mbaby_sb_yuanshao', 'Mbaby_sb_yujin', 'Mbaby_sb_machao', 'Mbaby_sb_lvmeng', 'Mbaby_sb_huangzhong'],
                 MiNi_starCharacter: ['xunyu', 'yuanshu'].map(i => `Mbaby_star_${i}`),
+                MiNi_refreshCharacter: ['xunyu'].map(i => `Mbaby_re_${i}`),
                 MiNi_miaoKill: ['guanyinping', 'caoying', 'caiwenji', 'diaochan', 'caifuren', 'zhangxingcai', 'zhurong', 'huangyueying', 'daqiao', 'wangyi', 'zhangchunhua', 'zhenji', 'sunshangxiang', 'xiaoqiao', 'lvlingqi'].map(i => `Mmiao_${i}`),
                 MiNi_nianKill: ['caopi', 'zhugeliang', 'lvbu', 'zhouyu'].map(i => `Mnian_${i}`),
                 MiNi_fightKill: ['huangzhong', 'zhangliao', 'luxun', 'dianwei', 'machao'].map(i => `Mfight_${i}`),
@@ -103,6 +104,7 @@ const packs = function () {
             Mbaby_zhugeruoxue: ['female', 'wei', 3, ['miniqiongying', 'dcnuanhui'], ['name:诸葛|若雪']],
             Mbaby_star_xunyu: ['male', 'wei', 3, ['minianshu', 'starkuangzuo'], ['clan:颍川荀氏']],
             Mbaby_jiachong: ['male', 'wei', 3, ['minibeini', 'minishizong'], ['die:dc_jiachong', 'border:jin']],
+            Mbaby_re_xunyu: ['male', 'wei', 3, ['minirequhu', 'minirejieming'], ['clan:颍川荀氏', 'img:extension/活动武将/image/character/Mbaby_xunyu.jpg', 'tempname:ol_xunyu', 'die:ol_xunyu']],
             //蜀
             Mbaby_guanyu: ['male', 'shu', 4, ['minirewusheng', 'minituodao', 'jsrgguanjue']],
             Mbaby_zhugeliang: ['male', 'shu', 3, ['minireguanxing', 'minikongcheng'], ['name:诸葛|亮']],
@@ -6909,6 +6911,54 @@ const packs = function () {
                         charlotte: true,
                         onremove: true,
                     },
+                },
+            },
+            // 界荀彧
+            minirequhu: {
+                audio: 'quhu',
+                audioname: ['ol_xunyu'],
+                inherit: 'quhu',
+                async content(event, trigger, player) {
+                    const { target } = event;
+                    const { result } = await player.chooseToCompare(target);
+                    if (!result?.bool) {
+                        await game.asyncDraw([player, target].sortBySeat());
+                    }
+                    else if (game.hasPlayer(current => {
+                        return current != target && target.inRange(current);
+                    })) {
+                        const { result } = await player.chooseTarget((card, player, target) => {
+                            const { source } = get.event();
+                            return target != source && source.inRange(target);
+                        }, true).set('ai', target => {
+                            const { player, source } = get.event();
+                            return get.damageEffect(target, source, player);
+                        }).set('source', target);
+                        if (result?.targets?.length) {
+                            target.line(result.targets[0], 'green');
+                            await result.targets[0].damage(target);
+                        }
+                    }
+                },
+            },
+            minirejieming: {
+                audio: 'oljieming',
+                inherit: 'oljieming',
+                async content(event, trigger, player) {
+                    const { targets: [target] } = event;
+                    await target.draw(Math.min(5, target.maxHp));
+                    let num = target.countCards('h') - Math.min(5, target.maxHp);
+                    if (num > 0) {
+                        let { result } = await target.chooseToDiscard('h', true, num, 'allowChooseAll');
+                        let cards = result?.cards?.filterInD('d');
+                        if (!cards?.length) return;
+                        const maxNumber = Math.max(...cards.map(card => get.number(card)));
+                        cards = cards.filter(card => get.number(card) === maxNumber);
+                        result = cards.length == 1 ? { bool: true, links: cards } : await player.chooseButton(['节命：获得其中一张牌', cards], true).set('ai', button => {
+                            return get.value(button.link);
+                        }).forResult();
+                        if (result?.links?.length) await player.gain(result.links, 'gain2');
+                    }
                 },
             },
             //蜀
@@ -37888,6 +37938,7 @@ const packs = function () {
             MiNi_shengzhiyifa: '欢乐三国杀·杂谈',
             MiNi_sbCharacter: '欢乐三国杀·谋攻篇',
             MiNi_starCharacter: '欢乐三国杀·星河篇',
+            MiNi_refreshCharacter: '欢乐三国杀·界限突破',
             MiNi_miaoKill: '欢乐三国杀·喵系列',
             MiNi_nianKill: '欢乐三国杀·念系列',
             MiNi_fightKill: '欢乐三国杀·战系列',
@@ -37992,6 +38043,7 @@ const packs = function () {
             Mbaby_zhugeruoxue: '欢杀诸葛若雪',
             Mbaby_star_xunyu: '欢杀星荀彧',
             Mbaby_jiachong: '欢杀贾充',
+            Mbaby_re_xunyu: '欢杀界荀彧',
             miniluoshen: '洛神',
             miniluoshen_info: '准备阶段，你可以进行一次判定并获得判定牌，若判定结果为黑色，你可重复此流程。',
             minireluoshen: '洛神',
@@ -38256,6 +38308,10 @@ const packs = function () {
             minibeini_info: '出牌阶段限一次，你可以将手牌调整至体力上限+1，然后令一名角色视为对另一名角色使用一张【杀】，且这些角色的非锁定技失效直到回合结束。',
             minishizong: '恃纵',
             minishizong_info: '当你需要使用一张基本牌时，你可以交给一名其他角色X张牌，然后其可以将一张牌置于牌堆底，视为你使用之（X为你本回合发动〖恃纵〗的次数）。',
+            minirequhu: '驱虎',
+            minirequhu_info: '出牌阶段限一次，你可以与一名体力值大于你的角色拼点，若你赢，则该角色对其攻击范围内另一名由你指定的角色造成1点伤害。若你没赢，你与其各摸一张。',
+            minirejieming: '节命',
+            minirejieming_info: '当你受到1点伤害后或死亡时，你可令一名角色摸X张牌。然后若其手牌数大于X，则其将手牌弃置至X张，然后你获得其因此弃置的牌中位于弃牌堆且点数最大的一张（X为其体力上限且至多为5）。',
             //蜀
             Mbaby_guanyu: '欢杀关羽',
             Mbaby_zhugeliang: '欢杀诸葛亮',
@@ -39860,6 +39916,7 @@ const packs = function () {
             else if (MiNikill.translate[i].indexOf('SP欢杀神') == 0) MiNikill.translate[i + '_prefix'] = 'SP|欢杀|神';
             else if (MiNikill.translate[i].indexOf('欢杀谋') == 0) MiNikill.translate[i + '_prefix'] = '欢杀|谋';
             else if (MiNikill.translate[i].indexOf('欢杀星') == 0) MiNikill.translate[i + '_prefix'] = '欢杀|星';
+            else if (MiNikill.translate[i].indexOf('欢杀界') == 0) MiNikill.translate[i + '_prefix'] = '欢杀|界';
             else if (MiNikill.translate[i].indexOf('欢杀') == 0) MiNikill.translate[i + '_prefix'] = '欢杀';
             else if (MiNikill.translate[i].indexOf('SP欢杀') == 0) MiNikill.translate[i + '_prefix'] = 'SP|欢杀';
             else if (MiNikill.translate[i].indexOf('喵') == 0) MiNikill.translate[i + '_prefix'] = '喵';
