@@ -17,7 +17,7 @@ const packs = function () {
                 MiNi_starCharacter: ['xunyu', 'yuanshu'].map(i => `Mbaby_star_${i}`),
                 MiNi_miaoKill: ['guanyinping', 'caoying', 'caiwenji', 'diaochan', 'caifuren', 'zhangxingcai', 'zhurong', 'huangyueying', 'daqiao', 'wangyi', 'zhangchunhua', 'zhenji', 'sunshangxiang', 'xiaoqiao', 'lvlingqi'].map(i => `Mmiao_${i}`),
                 MiNi_nianKill: ['caopi', 'zhugeliang', 'lvbu', 'zhouyu'].map(i => `Mnian_${i}`),
-                MiNi_fightKill: ['huangzhong', 'zhangliao', 'luxun', 'dianwei'].map(i => `Mfight_${i}`),
+                MiNi_fightKill: ['huangzhong', 'zhangliao', 'luxun', 'dianwei', 'machao'].map(i => `Mfight_${i}`),
             },
         },
         character: {
@@ -417,6 +417,7 @@ const packs = function () {
             Mfight_zhangliao: ['male', 'wei', 4, ['minifightbiaoxi', 'minifightpozhen']],
             Mfight_luxun: ['male', 'wu', 4, ['minifightxurui', 'minifightshijie']],
             Mfight_dianwei: ['male', 'wei', 5, ['minifightchuanglie', 'minifightkuangji']],
+            Mfight_machao: ['male', 'qun', 4, ['minifightdangfeng', 'minifighthaiji']],
         },
         characterIntro: {
             Mbaby_change: '嫦娥，中国古代神话中的人物，又名恒我、恒娥、姮娥、常娥、素娥，羿之妻，因偷吃了不死药而飞升至月宫。嫦娥的故事最早出现在商朝卦书 《归藏》。而嫦娥奔月的完整故事最早记载于西汉《淮南子·览冥训》。东汉时期，嫦娥与羿的夫妻关系确立，而嫦娥在进入月宫后变成了捣药的蟾蜍。南北朝以后，嫦娥的形象回归为女儿身。汉画像中，嫦娥人头蛇身，头梳高髻，身着宽袖长襦，身后长尾上饰有倒钩状细短羽毛。南北朝以后，嫦娥的形象被描绘成绝世美女。南朝陈后主陈叔宝曾把宠妃张丽华比作嫦娥。唐朝诗人白居易曾用嫦娥夸赞邻家少女不可多得的容貌。',
@@ -37564,6 +37565,110 @@ const packs = function () {
                     }
                 }
             },
+            // 战马超
+            minifightdangfeng: {
+                audio: 'ext:活动武将/audio/skill:2',
+                trigger: { global: 'phaseEnd' },
+                filter(event, player) {
+                    return !game.hasPlayer2(current => current.hasHistory('damage')) || !game.hasPlayer2(current => current.hasHistory('useCard', evt => evt.card?.name == 'sha'));
+                },
+                forced: true,
+                locked: false,
+                async content(event, trigger, player) {
+                    if (!game.hasPlayer2(current => current.hasHistory('damage'))) {
+                        const card = get.cardPile(card => card.name == 'sha');
+                        if (card) await player.gain(card, 'gain2');
+                        else {
+                            player.chat('断杀术…');
+                            game.log('但是哪里都找不到没有符合条件的牌！');
+                        }
+                    }
+                    if (!game.hasPlayer2(current => current.hasHistory('useCard', evt => evt.card?.name == 'sha'))) {
+                        await player.chooseToUse('荡锋：你可以使用一张【杀】', function (card, player, event) {
+                            if (get.name(card) != 'sha' && get.number(card) != 'unsure') {
+                                return false;
+                            }
+                            return lib.filter.cardEnabled.apply(this, arguments);
+                        }).set('addCount', false);
+                    }
+                },
+            },
+            minifighthaiji: {
+                audio: 'ext:活动武将/audio/skill:2',
+                trigger: { player: 'useCardToPlayered' },
+                filter(event, player) {
+                    return event.card?.name == 'sha' && event.target.isIn();
+                },
+                forced: true,
+                logTarget: 'target',
+                check(event, player) {
+                    return get.attitude(player, event.target) < 0;
+                },
+                async content(event, trigger, player) {
+                    const { target, targets } = trigger;
+                    player.addTempSkill(event.name + '_distance', 'roundStart');
+                    player.addMark(event.name + '_distance', 1, false);
+                    if (targets.every(current => get.distance(player, current) <= 1)) await player.draw();
+                    if (game.filterPlayer(current => current != player).every(current => get.distance(player, current) <= 1)) {
+                        target.addTempSkill('fengyin');
+                        const { result } = await player.judge(card => {
+                            if (get.color(card) == 'red') return 2;
+                            return -1;
+                        }).set('judge2', result => result.bool);
+                        if (result?.bool) trigger.getParent().directHit.add(target);
+                        else await player.draw(2);
+                    }
+                },
+                ai: {
+                    ignoreSkill: true,
+                    directHit_ai: true,
+                    skillTagFilter(player, tag, arg) {
+                        if (!arg?.isLink || !arg?.card?.name != 'sha') {
+                            return false;
+                        }
+                        if (tag == 'directHit_ai') {
+                            return true;
+                        }
+                        if (game.filterPlayer(current => current != player).some(current => get.distance(player, current) > 1)) {
+                            return false;
+                        }
+                        if (!arg.skill || !lib.skill[arg.skill] || lib.skill[arg.skill].charlotte || lib.skill[arg.skill].persevereSkill || get.is.locked(arg.skill) || !arg.target.getSkills(true, false).includes(arg.skill)) {
+                            return false;
+                        }
+                    },
+                },
+                group: 'minifighthaiji_effect',
+                subSkill: {
+                    effect: {
+                        audio: 'minifighthaiji',
+                        trigger: { player: 'useCard2' },
+                        filter(event, player) {
+                            if (event.card?.name != 'sha') return false;
+                            return game.hasPlayer(target => {
+                                return !event.targets.includes(target) && lib.filter.targetEnabled2(event.card, player, target) && lib.filter.targetInRange(event.card, player, target);
+                            }) && player.getHistory('useCard', evt => evt.card?.name == 'sha').indexOf(event) == 0;
+                        },
+                        async cost(event, trigger, player) {
+                            event.result = await player.chooseTarget(get.prompt(event.skill), `为${get.translation(trigger.card)}额外指定一个目标`, (card, player, target) => {
+                                const evt = _status.event.getTrigger();
+                                return !evt.targets.includes(target) && lib.filter.targetEnabled2(evt.card, player, target) && lib.filter.targetInRange(evt.card, player, target);
+                            }).set('ai', target => get.effect(target, get.event().getTrigger().card, get.player(), get.player())).forResult();
+                        },
+                        async content(event, trigger, player) {
+                            trigger.targets.addArray(event.targets);
+                        },
+                    },
+                    distance: {
+                        charlotte: true,
+                        intro: { content: '本轮计算与其他角色的距离-#' },
+                        mod: {
+                            globalFrom(from, to, current) {
+                                return current - from.countMark('minifighthaiji_distance');
+                            },
+                        },
+                    },
+                }
+            },
         },
         dynamicTranslate: {
             minizhongjian(player) {
@@ -39632,6 +39737,7 @@ const packs = function () {
             Mfight_zhangliao: '战张辽',
             Mfight_luxun: '战陆逊',
             Mfight_dianwei: '战典韦',
+            Mfight_machao: '战马超',
             minifightdingjun: '定军',
             minifightdingjun_info: '战场技，锁定技。①一名角色使用【杀】造成1点伤害后，获得1层士气。②士气增加1点后，你摸一张牌。③士气变化时，若士气层数大于等于本局游戏人数，则进入“定军山战场”；一名角色的回合结束时，若士气层数为0，则退出“定军山战场”。④一名角色使用【杀】时，若此时处于“定军山战场”，则你可以消耗2层士气，令其于此牌结算中视为拥有〖烈弓〗。',
             minifightliegong: '烈弓',
@@ -39658,6 +39764,10 @@ const packs = function () {
             })}〗；3.当你进入濒死状态时，你回复2点体力并退出“宛城战场”。`,
             minifightkuangji: '狂戟',
             minifightkuangji_info: '①游戏开始时，你可以将至多两张手牌替换为牌堆中的等量张武器牌。②每回合限一次。你可以打出一张武器牌A并视为使用一张【闪】或额外结算X-1次的无任何次数限制的【杀】，且当你以此法使用【闪】时，你摸X张牌（X为A攻击范围的一半且向上取整）。',
+            minifightdangfeng: '荡锋',
+            minifightdangfeng_info: '一名角色的回合结束时，你依次执行以下项：1.若本回合没有角色受到过伤害，你从牌堆或弃牌堆中获得一张【杀】；2.若本回合没有角色使用过【杀】，你可以使用一张【杀】。',
+            minifighthaiji: '骇击',
+            minifighthaiji_info: `锁定技。①当你使用【杀】指定一名角色为目标后：1.本轮你计算与其他角色的距离-1；2.若此【杀】目标均在你距离1以内，你摸一张牌；3.若其他角色均在你距离1以内，此【杀】具有${get.poptip('minitieji')}效果。②每回合你使用的首张【杀】可以额外指定一个目标。`,
         },
     };
     for (var skill in MiNikill.skill) {
