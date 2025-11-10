@@ -571,7 +571,7 @@ const packs = function () {
                             ctrlBox.appendChild(rightBtn);
                             dialog.appendChild(ctrlBox);
                             //主角登场
-                            const player = { x: width / 2 - 15, y: height - 30, w: 30, h: 30, speed: 2 };
+                            const player = { x: width / 2 - 15, y: height - 30, w: 30, h: 30, speed: 5 };
                             const balls = [];
                             let score = 0, time = 10, running = true;
                             const keys = { left: false, right: false };
@@ -599,18 +599,23 @@ const packs = function () {
                                     y: -10,
                                     r: 8,
                                     color: good ? 'lime' : 'red',
-                                    speed: 1 + Math.random(),
+                                    speed: 1.8 + Math.random(),
                                     good,
                                 });
                             };
-                            const update = () => {
-                                if (keys.left || holdLeft) player.x -= player.speed;
-                                if (keys.right || holdRight) player.x += player.speed;
+                            //添加时间差变量
+                            let lastTime = 0;
+                            const update = (currentTime = 0) => {
+                                //计算时间差（将不同设备均标准化到60fps）
+                                const deltaTime = lastTime ? (currentTime - lastTime) / 16.67 : 1;
+                                lastTime = currentTime;
+                                if (keys.left || holdLeft) player.x -= player.speed * deltaTime;
+                                if (keys.right || holdRight) player.x += player.speed * deltaTime;
                                 player.x = Math.max(0, Math.min(width - player.w, player.x));
                                 if (Math.random() < 0.03) spawnBall();
                                 for (let i = balls.length - 1; i >= 0; i--) {
                                     const b = balls[i];
-                                    b.y += b.speed;
+                                    b.y += b.speed * deltaTime;
                                     if (
                                         b.x + b.r > player.x &&
                                         b.x < player.x + player.w &&
@@ -640,9 +645,9 @@ const packs = function () {
                                 ctx.fillText(`分数: ${score}`, 10, 20);
                                 ctx.fillText(`时间: ${time.toFixed(1)}s`, width - 110, 20);
                             };
-                            const loop = () => {
+                            const loop = (currentTime) => {
                                 if (!running) return;
-                                update();
+                                update(currentTime);
                                 draw();
                                 requestAnimationFrame(loop);
                             };
@@ -674,7 +679,7 @@ const packs = function () {
                                     resolve(event._result);
                                 }, 2000);
                             };
-                            loop();
+                            requestAnimationFrame(loop);
                             return dialog;
                         })();
                         event.switchToAuto = () => {
@@ -732,7 +737,7 @@ const packs = function () {
                     if (event.isMine()) func();
                     else if (event.isOnline()) event.player.send(func);
                     const { result } = await player.chooseButton([
-                        '###' + get.translation(event.name) + '###<div class="text center">本次共获得' + result2.score +'分，请选择执行项目</div>',
+                        '###' + get.translation(event.name) + '###<div class="text center">本次共获得' + result2.score + '分，请选择执行项目</div>',
                         [
                             [
                                 ['miaojian', '使用3积分升级【' + get.translation('miaojian') + '】'],
