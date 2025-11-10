@@ -10,7 +10,7 @@ const packs = function () {
                 CLongZhou: ['lz_sufei', 'lz_tangzi', 'lz_liuqi', 'lz_huangquan'],
                 Chuodong: ['bilibili_shengxunyu', 'bilibili_Firewin', 'bilibili_jinglingqiu', 'bilibili_suixingsifeng', 'bilibili_Emptycity', 'bilibili_thunderlei', 'bilibili_lonelypatients', 'bilibili_ningjingzhiyuan', 'bilibili_xizhicaikobe'],
                 CDormitory: ['bilibili_yanjing', 'bilibili_xiaoyaoruyun', 'bilibili_shuijiaobuboli'],
-                Cothers: ['bilibili_zhoutaigong', 'bilibili_zhouxiaomei', 'bilibili_caifuren', 'bilibili_zhengxuan', 'bilibili_sp_xuyou', 'old_zuoci','bilibili_kuailiangkuaiyue', 'bilibili_daxiao', 'bilibili_wangtao', 'bilibili_wangyue', 'bilibili_x_wangtao', 'bilibili_x_wangyue', 'bilibili_xushao', 'bilibili_shen_guojia', 'bilibili_re_xusheng', 'bilibili_kuangshen04', 'bilibili_adong', 'bilibili_zhangrang', 'bilibili_litiansuo', 'decade_huangwudie', 'bilibili_huanggai', 'bilibili_ekeshaoge', 'bilibili_guanning', 'bilibili_wangwang', 'diy_lvmeng'],
+                Cothers: ['bilibili_sunhanhua', 'bilibili_zhoutaigong', 'bilibili_zhouxiaomei', 'bilibili_caifuren', 'bilibili_zhengxuan', 'bilibili_sp_xuyou', 'old_zuoci', 'bilibili_kuailiangkuaiyue', 'bilibili_daxiao', 'bilibili_wangtao', 'bilibili_wangyue', 'bilibili_x_wangtao', 'bilibili_x_wangyue', 'bilibili_xushao', 'bilibili_shen_guojia', 'bilibili_re_xusheng', 'bilibili_kuangshen04', 'bilibili_adong', 'bilibili_zhangrang', 'bilibili_litiansuo', 'decade_huangwudie', 'bilibili_huanggai', 'bilibili_ekeshaoge', 'bilibili_guanning', 'bilibili_wangwang', 'diy_lvmeng'],
                 CDanJi: ['DJ_caiyang', 'DJ_pujing', 'DJ_huban'],
                 CSCS: ['biliscs_shichangshi', 'biliscs_zhangrang', 'biliscs_zhaozhong', 'biliscs_sunzhang', 'biliscs_bilan', 'biliscs_xiayun', 'biliscs_hankui', 'biliscs_lisong', 'biliscs_duangui', 'biliscs_guosheng', 'biliscs_gaowang'],
                 CXuanDie: ['bfake_jiananfeng', 'bfake_shen_zhangjiao', 'bfake_shen_zhangfei', 'bfake_shen_jiaxu', 'bfake_huanwen', 'bfake_miheng'],
@@ -46,6 +46,7 @@ const packs = function () {
             bilibili_Emptycity: ['male', 'key', 4, ['bilibili_zhiyou', 'bilibili_guanli'], ['clan:活动群|Thunder群', 'name:空|城']],
             bilibili_thunderlei: ['male', 'key', '2/4/3', ['bilibili_Thunder', 'bilibili_qianxi'], ['clan:Thunder群', 'name:雷|null']],
             bilibili_zhengxuan: ['male', 'qun', 3, ['bilibili_zhengjing'], ['character:zhengxuan', 'die:zhengxuan']],
+            bilibili_sunhanhua: ['female', 'wu', 3, ['bilibili_chongxu', 'miaojian', 'shhlianhua'], ['character:sunhanhua', 'die:sunhanhua']],
             bilibili_lonelypatients: ['male', 'key', 4, ['bilibili_meihua', 'bilibili_gongyou'], ['clan:活动群', 'name:独孤|null']],
             'bilibili_kuangshen04': ['male', 'shen', '4/6', ['BTmakeBug', 'BTtequ', 'BTguoshou', 'reqimou', 'zhaxiang', 'tairan']],
             bilibili_shen_guojia: ['male', 'wei', '9/9/5', ['stianyi', 'resghuishi', 'bilibili_huishi'], ['doublegroup:shen:wei:wu', 'die:shen_guojia']],
@@ -129,9 +130,6 @@ const packs = function () {
             },
             lz_tangzi(mode) {
                 return mode != 'identity' && mode != 'guozhan';
-            },
-            bilibili_zhengxuan() {
-                return !_status.connectMode;
             },
             'bilibili_kuangshen04'() {
                 return new Date().getDate() == 8 || new Date().getDate() == 24;
@@ -487,6 +485,328 @@ const packs = function () {
                     if (result.bool && trigger.name == 'phaseJudge' && [trigger.card].filterInD().length) player.gain([trigger.card].filterInD(), 'gain2');
                 },
             },
+            bilibili_chongxu: {
+                audio: 'chongxu',
+                inherit: 'chongxu',
+                usable: Infinity,
+                async content(event, trigger, player) {
+                    await Promise.all(event.next);
+                    if (_status.connectMode) event.time = lib.configOL.choose_timeout;
+                    event.videoId = lib.status.videoId++;
+                    if (player.isUnderControl()) game.swapPlayerAuto(player);
+                    const switchToAuto = () => {
+                        return new Promise((resolve) => {
+                            game.pause();
+                            game.countChoose();
+                            event._result = { score: 5 };
+                            setTimeout(() => {
+                                _status.imchoosing = false;
+                                if (event.dialog) event.dialog.close();
+                                game.resume();
+                                resolve(event._result);
+                            }, 5000);
+                        });
+                    };
+                    const createDialog = (player, id) => {
+                        if (_status.connectMode) lib.configOL.choose_timeout = "30";
+                        if (player === game.me) return;
+                        const dialog = ui.create.dialog(get.translation(player) + "正在进行“飞升”...<br>");
+                        dialog.videoId = id;
+                    };
+                    const chooseButton = () => {
+                        const { promise, resolve } = Promise.withResolvers(), event = _status.event;
+                        event.dialog = (() => {
+                            //游戏dialog
+                            const dialog = ui.create.dialog('hidden');
+                            dialog.classList.add('popped');
+                            dialog.classList.add('static');
+                            Object.assign(dialog.style, {
+                                height: '100%',
+                                width: '100%',
+                                top: '0px',
+                                left: '0px',
+                                background: 'rgba(0,0,0,0.85)',
+                                textAlign: 'center',
+                            });
+                            ui.window.appendChild(dialog);
+                            dialog.innerHTML = '';
+                            //游戏画布
+                            const canvas = document.createElement('canvas');
+                            const width = 480, height = 320;
+                            canvas.width = width;
+                            canvas.height = height;
+                            Object.assign(canvas.style, {
+                                display: 'block',
+                                margin: '40px auto 10px auto',
+                                background: '#000',
+                                borderRadius: '8px',
+                            });
+                            dialog.appendChild(canvas);
+                            const ctx = canvas.getContext('2d');
+                            //触控按钮，给手机端用的
+                            const ctrlBox = document.createElement('div');
+                            Object.assign(ctrlBox.style, {
+                                display: 'flex',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                width: '100%',
+                                margin: '0 auto',
+                                gap: '120px',
+                            });
+                            const leftBtn = document.createElement('button');
+                            const rightBtn = document.createElement('button');
+                            const styleBtn = {
+                                width: '180px',
+                                height: '40px',
+                                fontSize: '20px',
+                                borderRadius: '8px',
+                                background: '#333',
+                                color: '#fff',
+                                flex: 'none',
+                            };
+                            Object.assign(leftBtn.style, styleBtn);
+                            Object.assign(rightBtn.style, styleBtn);
+                            leftBtn.textContent = '←';
+                            rightBtn.textContent = '→';
+                            ctrlBox.appendChild(leftBtn);
+                            ctrlBox.appendChild(rightBtn);
+                            dialog.appendChild(ctrlBox);
+                            //主角登场
+                            const player = { x: width / 2 - 15, y: height - 30, w: 30, h: 30, speed: 2 };
+                            const balls = [];
+                            let score = 0, time = 10, running = true;
+                            const keys = { left: false, right: false };
+                            //电脑也干了
+                            const keyDown = e => {
+                                if (e.key === 'ArrowLeft' || e.key === 'a') keys.left = true;
+                                if (e.key === 'ArrowRight' || e.key === 'd') keys.right = true;
+                            };
+                            const keyUp = e => {
+                                if (e.key === 'ArrowLeft' || e.key === 'a') keys.left = false;
+                                if (e.key === 'ArrowRight' || e.key === 'd') keys.right = false;
+                            };
+                            window.addEventListener('keydown', keyDown);
+                            window.addEventListener('keyup', keyUp);
+                            //手机也干了
+                            let holdLeft = false, holdRight = false;
+                            leftBtn.addEventListener(lib.device ? 'touchstart' : 'mousedown', () => holdLeft = true);
+                            leftBtn.addEventListener(lib.device ? 'touchend' : 'mouseup', () => holdLeft = false);
+                            rightBtn.addEventListener(lib.device ? 'touchstart' : 'mousedown', () => holdRight = true);
+                            rightBtn.addEventListener(lib.device ? 'touchend' : 'mouseup', () => holdRight = false);
+                            const spawnBall = () => {
+                                const good = Math.random() < 0.6;
+                                balls.push({
+                                    x: Math.random() * (width - 15),
+                                    y: -10,
+                                    r: 8,
+                                    color: good ? 'lime' : 'red',
+                                    speed: 1 + Math.random(),
+                                    good,
+                                });
+                            };
+                            const update = () => {
+                                if (keys.left || holdLeft) player.x -= player.speed;
+                                if (keys.right || holdRight) player.x += player.speed;
+                                player.x = Math.max(0, Math.min(width - player.w, player.x));
+                                if (Math.random() < 0.03) spawnBall();
+                                for (let i = balls.length - 1; i >= 0; i--) {
+                                    const b = balls[i];
+                                    b.y += b.speed;
+                                    if (
+                                        b.x + b.r > player.x &&
+                                        b.x < player.x + player.w &&
+                                        b.y + b.r > player.y &&
+                                        b.y < player.y + player.h
+                                    ) {
+                                        score += b.good ? 1 : -1;
+                                        score = Math.max(0, score);
+                                        balls.splice(i, 1);
+                                        continue;
+                                    }
+                                    if (b.y > height + 10) balls.splice(i, 1);
+                                }
+                            };
+                            const draw = () => {
+                                ctx.clearRect(0, 0, width, height);
+                                ctx.fillStyle = 'white';
+                                ctx.fillRect(player.x, player.y, player.w, player.h);
+                                for (const b of balls) {
+                                    ctx.beginPath();
+                                    ctx.fillStyle = b.color;
+                                    ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
+                                    ctx.fill();
+                                }
+                                ctx.fillStyle = 'yellow';
+                                ctx.font = '16px monospace';
+                                ctx.fillText(`分数: ${score}`, 10, 20);
+                                ctx.fillText(`时间: ${time.toFixed(1)}s`, width - 110, 20);
+                            };
+                            const loop = () => {
+                                if (!running) return;
+                                update();
+                                draw();
+                                requestAnimationFrame(loop);
+                            };
+                            const timer = setInterval(() => {
+                                time -= 0.1;
+                                if (time <= 0 || score >= 5) {
+                                    running = false;
+                                    clearInterval(timer);
+                                    setTimeout(endGame, 500);
+                                }
+                            }, 100);
+                            const endGame = () => {
+                                ctx.clearRect(0, 0, width, height);
+                                ctx.fillStyle = 'white';
+                                ctx.font = '24px sans-serif';
+                                ctx.textAlign = 'center';
+                                ctx.fillText(`游戏结束！得分：${score}`, width / 2, height / 2);
+                                event._result = { score };
+                                //孩子们，玩完游戏记得对页面进行清理哦
+                                window.removeEventListener('keydown', keyDown);
+                                window.removeEventListener('keyup', keyUp);
+                                leftBtn.remove();
+                                rightBtn.remove();
+                                ctrlBox.remove();
+                                setTimeout(() => {
+                                    if (event.dialog) event.dialog.close();
+                                    _status.imchoosing = false;
+                                    game.resume();
+                                    resolve(event._result);
+                                }, 2000);
+                            };
+                            loop();
+                            return dialog;
+                        })();
+                        event.switchToAuto = () => {
+                            event._result = { score: 5 };
+                            game.resume();
+                            resolve(event._result);
+                        };
+                        _status.imchoosing = true;
+                        game.pause();
+                        game.countChoose();
+                        return promise;
+                    };
+                    game.broadcastAll(createDialog, player, event.videoId);
+                    let next;
+                    if (event.isMine()) next = chooseButton();
+                    else if (event.isOnline()) {
+                        const { promise, resolve } = Promise.withResolvers();
+                        event.player.send(chooseButton);
+                        event.player.wait(async result => {
+                            if (result == "ai") result = await switchToAuto();
+                            resolve(result);
+                        });
+                        game.pause();
+                        next = promise;
+                    }
+                    else next = switchToAuto();
+                    const result2 = await next;
+                    if (!result2 || !result2.score || result2.score < 2) return;
+                    game.broadcastAll((id, time) => {
+                        if (_status.connectMode) lib.configOL.choose_timeout = time;
+                        const dialog = get.idDialog(id);
+                        if (dialog) dialog.close();
+                    }, event.videoId, event.time);
+                    const func = () => {
+                        const event = get.event();
+                        const controls = [
+                            link => {
+                                const evt = get.event();
+                                if (evt.dialog && evt.dialog.buttons) {
+                                    for (let i = 0; i < evt.dialog.buttons.length; i++) {
+                                        const button = evt.dialog.buttons[i];
+                                        button.classList.remove('selectable');
+                                        button.classList.remove('selected');
+                                        const counterNode = button.querySelector('.caption');
+                                        if (counterNode) counterNode.childNodes[0].innerHTML = ``;
+                                    }
+                                    ui.selected.buttons.length = 0;
+                                    game.check();
+                                }
+                                return;
+                            },
+                        ];
+                        event.controls = [ui.create.control(controls.concat(['清除选择', 'stayleft']))];
+                    };
+                    if (event.isMine()) func();
+                    else if (event.isOnline()) event.player.send(func);
+                    const { result } = await player.chooseButton([
+                        '###' + get.translation(event.name) + '###<div class="text center">本次共获得' + result2.score +'分，请选择执行项目</div>',
+                        [
+                            [
+                                ['miaojian', '使用3积分升级【' + get.translation('miaojian') + '】'],
+                                ['shhlianhua', '使用3积分升级【' + get.translation('shhlianhua') + '】'],
+                                ['draw', '使用2积分摸一张牌'],
+                            ],
+                            'textbutton',
+                        ],
+                    ], [1, Infinity]).set('filterButton', button => {
+                        const player = get.player(), choice = ui.selected.buttons.map(i => i.link);
+                        if (button.link !== 'draw' && (!player.hasSkill(button.link, null, null, false) || choice.filter(i => i === button.link).length + player.countMark(button.link) > 1)) return false;
+                        return [...choice, button.link].reduce((sum, i) => sum + (i === 'draw' ? 2 : 3), 0) <= get.event().score;
+                    }).set('score', result2.score).set('custom', {
+                        add: {
+                            confirm(bool) {
+                                if (bool !== true) return;
+                                const event = get.event().parent;
+                                if (Array.isArray(event.controls)) event.controls.forEach(i => i.close());
+                                if (ui.confirm) ui.confirm.close();
+                                game.uncheck();
+                            },
+                            button() {
+                                if (ui.selected.buttons.length) return;
+                                const event = get.event();
+                                if (event.dialog && event.dialog.buttons) {
+                                    for (let i = 0; i < event.dialog.buttons.length; i++) {
+                                        const button = event.dialog.buttons[i];
+                                        const counterNode = button.querySelector('.caption');
+                                        if (counterNode) counterNode.childNodes[0].innerHTML = ``;
+                                    }
+                                }
+                                if (!ui.selected.buttons.length) event.parent?.controls?.[0]?.classList.add('disabled');
+                            },
+                        },
+                        replace: {
+                            button(button) {
+                                const event = get.event();
+                                if (!event.isMine() || !event.filterButton(button) || button.classList.contains('selectable') == false) return;
+                                button.classList.add('selected');
+                                ui.selected.buttons.push(button);
+                                let counterNode = button.querySelector('.caption');
+                                const count = ui.selected.buttons.filter(i => i == button).length;
+                                counterNode ? (((counterNode) => {
+                                    counterNode = counterNode.childNodes[0];
+                                    counterNode.innerHTML = `×${count}`;
+                                })(counterNode)) : counterNode = ui.create.caption(`<span style="font-family:xinwei; text-shadow:#FFF 0 0 4px, #FFF 0 0 4px, rgba(74,29,1,1) 0 0 3px;">×${count}</span>`, button);
+                                event.parent?.controls?.[0]?.classList.add('disabled');
+                                game.check();
+                            },
+                        },
+                    });
+                    if (result?.bool && result.links?.length) {
+                        const miaojian = result.links.filter(i => i === 'miaojian').length;
+                        if (miaojian > 0) {
+                            player.addMark('miaojian', miaojian, false);
+                            player.popup('miaojian');
+                            game.log(player, '升级了技能', '#g【' + get.translation('miaojian') + '】');
+                        }
+                        const shhlianhua = result.links.filter(i => i === 'shhlianhua').length;
+                        if (shhlianhua > 0) {
+                            player.addMark('shhlianhua', shhlianhua, false);
+                            player.popup('shhlianhua');
+                            game.log(player, '升级了技能', '#g【' + get.translation('shhlianhua') + '】');
+                        }
+                        const draw = result.links.filter(i => i === 'draw').length;
+                        if (draw > 0) await player.draw(draw);
+                    }
+                },
+                ai: {
+                    order: 10,
+                    result: { player: 1 },
+                },
+            },
             //水 果 忍 者
             bilibili_zhengjing: {
                 audio: 'zhengjing',
@@ -780,7 +1100,6 @@ const packs = function () {
                             resolve(event._result);
                         };
                         _status.imchoosing = true;
-                        game.pause();
                         game.pause();
                         game.countChoose();
                         return promise;
@@ -11020,6 +11339,10 @@ const packs = function () {
             bilibili_zhengxuan_ab: '水果忍者',
             bilibili_zhengjing: '整经',
             bilibili_zhengjing_info: '出牌阶段，你可以整理一次经典。然后，你将整理出的卡牌中的至少一张作为“经”置于一名角色的武将牌上，然后获得其余的牌。该角色的准备阶段获得这些牌，且跳过此回合的判定和摸牌阶段。',
+            bilibili_sunhanhua: '孙寒华',
+            bilibili_sunhanhua_ab: '天降奇兵',
+            bilibili_chongxu: '冲虚',
+            bilibili_chongxu_info: '出牌阶段限一次，你可以进行一次飞升。然后你可根据飞升获得的分数修改〖妙剑〗或〖莲华〗（消耗3分），并使用剩余的分数进行摸牌（每张2分）。',
             gz_huashen: '化身',
             gz_huashen_info: '准备阶段，若你的“化身”牌数：小于2，你可以观看剩余武将牌堆中的五张牌，然后将其中至多两张武将牌置于武将牌上，称为“化身”牌；大于等于2，你可以用剩余武将牌堆顶的一张牌替换一张“化身”牌。你可以于相应的时机明置并发动“化身”牌的一个无标签技能，然后你于技能结算完成后将此技能对应的“化身”牌放回剩余武将牌堆。',
             gz_xinsheng: '新生',
