@@ -24,6 +24,7 @@ game.showExtensionChangeLog((() => {
 			data: [
 				'Mbaby_dukui', 'Mmiao_guanyinping', 'Mbaby_mifangfushiren', 'Mfight_dianwei', 'Mbaby_zhugeruoxue', 'Mbaby_star_xunyu', 'Mbaby_shen_daxiaoqiao', 'Mbaby_jiachong', 'Mbaby_wuban', 'Mfight_machao', 'Mbabysp_sunjian', 'Mbaby_re_xunyu',
 				'wechat_zhaoyun', 'wechat_re_zhaoyun', 'wechat_sb_xiahouyuan', 'wechat_sb_xiaoqiao', 'wechat_shen_caocao', 'wechat_sb_sunquan', 'wechat_zhiyin_zhugeke', 'wechat_re_liubiao', 'wechat_re_weiyan', 'wechat_sb_huaxiong', 'wechat_zhi_yuanshu',
+				'bilibili_sunhanhua',
 			],
 		},
 		{
@@ -36,6 +37,7 @@ game.showExtensionChangeLog((() => {
 				'重新分配微信三国杀的武将分包',
 				'欢杀：杜夔、喵关银屏、糜芳傅士仁、战典韦、诸葛若雪、星荀彧、神二乔、贾充、吴班、战马超、SP欢杀孙坚、界荀彧',
 				'微信：赵云、界赵云、谋夏侯渊、谋小乔、神曹操、谋孙权、极诸葛恪、界刘表、界魏延、谋华雄、志袁术',
+				'其他：天降奇兵——孙寒华',
 				'To be continued...',
 			],
 		},
