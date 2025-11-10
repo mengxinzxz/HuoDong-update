@@ -15,7 +15,6 @@ const packs = function () {
                 MiNi_shengzhiyifa: ['Mbaby_jingwei', 'Mbaby_sunwukong', 'Mbaby_dalanmao', 'Mbaby_libai', 'Mbaby_change', 'Mbaby_nvwa', 'Mbaby_tunxingmenglix', 'Mbaby_xiaoshan'],
                 MiNi_sbCharacter: ['Mbaby_sb_zhenji', 'Mbaby_sb_ganning', 'Mbaby_sb_huangyueying', 'Mbaby_ol_sb_guanyu', 'Mbaby_sb_sunshangxiang', 'Mbaby_sb_xuhuang', 'Mbaby_sb_zhaoyun', 'Mbaby_sb_liubei', 'Mbaby_sb_caocao', 'Mbaby_sb_huanggai', 'Mbaby_sb_yuanshao', 'Mbaby_sb_yujin', 'Mbaby_sb_machao', 'Mbaby_sb_lvmeng', 'Mbaby_sb_huangzhong'],
                 MiNi_starCharacter: ['xunyu', 'yuanshu'].map(i => `Mbaby_star_${i}`),
-                MiNi_refreshCharacter: ['xunyu'].map(i => `Mbaby_re_${i}`),
                 MiNi_miaoKill: ['guanyinping', 'caoying', 'caiwenji', 'diaochan', 'caifuren', 'zhangxingcai', 'zhurong', 'huangyueying', 'daqiao', 'wangyi', 'zhangchunhua', 'zhenji', 'sunshangxiang', 'xiaoqiao', 'lvlingqi'].map(i => `Mmiao_${i}`),
                 MiNi_nianKill: ['caopi', 'zhugeliang', 'lvbu', 'zhouyu'].map(i => `Mnian_${i}`),
                 MiNi_fightKill: ['huangzhong', 'zhangliao', 'luxun', 'dianwei', 'machao'].map(i => `Mfight_${i}`),
@@ -34,7 +33,7 @@ const packs = function () {
             Mbaby_zhanghe: ['male', 'wei', 4, ['miniqiaobian']],
             Mbaby_yujin: ['male', 'wei', 4, ['miniyizhong', 'decadezhenjun']],
             Mbaby_xuhuang: ['male', 'wei', 4, ['duanliang', 'minijiezi']],
-            Mbaby_xunyu: ['male', 'wei', 3, ['miniquhu', 'minijieming'], ['clan:颍川荀氏']],
+            Mbaby_xunyu: ['male', 'wei', 3, ['minirequhu', 'minirejieming'], ['clan:颍川荀氏', 'tempname:ol_xunyu', 'die:ol_xunyu']],
             Mbaby_dengai: ['male', 'wei', 4, ['minituntian', 'zaoxian']],
             Mbaby_sp_caiwenji: ['female', 'wei', 3, ['minichenqing', 'mozhi'], ['name:蔡|琰']],
             Mbaby_caozhi: ['male', 'wei', 3, ['miniluoying', 'minijiushi']],
@@ -104,7 +103,6 @@ const packs = function () {
             Mbaby_zhugeruoxue: ['female', 'wei', 3, ['miniqiongying', 'dcnuanhui'], ['name:诸葛|若雪']],
             Mbaby_star_xunyu: ['male', 'wei', 3, ['minianshu', 'starkuangzuo'], ['clan:颍川荀氏']],
             Mbaby_jiachong: ['male', 'wei', 3, ['minibeini', 'minishizong'], ['die:dc_jiachong', 'border:jin']],
-            Mbaby_re_xunyu: ['male', 'wei', 3, ['minirequhu', 'minirejieming'], ['clan:颍川荀氏', 'img:extension/活动武将/image/character/Mbaby_xunyu.jpg', 'tempname:ol_xunyu', 'die:ol_xunyu']],
             //蜀
             Mbaby_guanyu: ['male', 'shu', 4, ['minirewusheng', 'minituodao', 'jsrgguanjue']],
             Mbaby_zhugeliang: ['male', 'shu', 3, ['minireguanxing', 'minikongcheng'], ['name:诸葛|亮']],
@@ -37938,7 +37936,6 @@ const packs = function () {
             MiNi_shengzhiyifa: '欢乐三国杀·杂谈',
             MiNi_sbCharacter: '欢乐三国杀·谋攻篇',
             MiNi_starCharacter: '欢乐三国杀·星河篇',
-            MiNi_refreshCharacter: '欢乐三国杀·界限突破',
             MiNi_miaoKill: '欢乐三国杀·喵系列',
             MiNi_nianKill: '欢乐三国杀·念系列',
             MiNi_fightKill: '欢乐三国杀·战系列',
@@ -38043,7 +38040,6 @@ const packs = function () {
             Mbaby_zhugeruoxue: '欢杀诸葛若雪',
             Mbaby_star_xunyu: '欢杀星荀彧',
             Mbaby_jiachong: '欢杀贾充',
-            Mbaby_re_xunyu: '欢杀界荀彧',
             miniluoshen: '洛神',
             miniluoshen_info: '准备阶段，你可以进行一次判定并获得判定牌，若判定结果为黑色，你可重复此流程。',
             minireluoshen: '洛神',
@@ -39916,7 +39912,6 @@ const packs = function () {
             else if (MiNikill.translate[i].indexOf('SP欢杀神') == 0) MiNikill.translate[i + '_prefix'] = 'SP|欢杀|神';
             else if (MiNikill.translate[i].indexOf('欢杀谋') == 0) MiNikill.translate[i + '_prefix'] = '欢杀|谋';
             else if (MiNikill.translate[i].indexOf('欢杀星') == 0) MiNikill.translate[i + '_prefix'] = '欢杀|星';
-            else if (MiNikill.translate[i].indexOf('欢杀界') == 0) MiNikill.translate[i + '_prefix'] = '欢杀|界';
             else if (MiNikill.translate[i].indexOf('欢杀') == 0) MiNikill.translate[i + '_prefix'] = '欢杀';
             else if (MiNikill.translate[i].indexOf('SP欢杀') == 0) MiNikill.translate[i + '_prefix'] = 'SP|欢杀';
             else if (MiNikill.translate[i].indexOf('喵') == 0) MiNikill.translate[i + '_prefix'] = '喵';
