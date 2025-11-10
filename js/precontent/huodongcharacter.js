@@ -488,7 +488,6 @@ const packs = function () {
             bilibili_chongxu: {
                 audio: 'chongxu',
                 inherit: 'chongxu',
-                usable: Infinity,
                 async content(event, trigger, player) {
                     await Promise.all(event.next);
                     if (_status.connectMode) event.time = lib.configOL.choose_timeout;
