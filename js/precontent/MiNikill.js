@@ -6916,19 +6916,20 @@ const packs = function () {
                 audio: 'quhu',
                 audioname: ['ol_xunyu'],
                 inherit: 'quhu',
+                filter(event, player) {
+                    return game.hasPlayer(current => player.canCompare(current));
+                },
+                filterTarget(card, player, target) {
+                    return player.canCompare(target);
+                },
                 async content(event, trigger, player) {
                     const { target } = event;
                     const { result } = await player.chooseToCompare(target);
                     if (!result?.bool) {
                         await game.asyncDraw([player, target].sortBySeat());
                     }
-                    else if (game.hasPlayer(current => {
-                        return current != target && target.inRange(current);
-                    })) {
-                        const { result } = await player.chooseTarget((card, player, target) => {
-                            const { source } = get.event();
-                            return target != source && source.inRange(target);
-                        }, true).set('ai', target => {
+                    else {
+                        const { result } = await player.chooseTarget(true, `驱虎：请选择${get.translation(target)}造成伤害的角色`).set('ai', target => {
                             const { player, source } = get.event();
                             return get.damageEffect(target, source, player);
                         }).set('source', target);
@@ -6937,6 +6938,24 @@ const packs = function () {
                             await result.targets[0].damage(target);
                         }
                     }
+                },
+                ai: {
+                    order: 0.5,
+                    result: {
+                        target(player, target) {
+                            const att = get.attitude(player, target);
+                            const oc = target.countCards('h') == 1;
+                            if (att > 0 && oc) {
+                                return 0;
+                            }
+                            if (game.hasPlayer(current => get.damageEffect(current, target, player) > 0)) {
+                                return att > 0 ? att / 2 : att - (oc ? 5 : 0);
+                            }
+                            return 0;
+                        },
+                        player: 1,
+                    },
+                    expose: 0.2,
                 },
             },
             minirejieming: {
@@ -38305,7 +38324,7 @@ const packs = function () {
             minishizong: '恃纵',
             minishizong_info: '当你需要使用一张基本牌时，你可以交给一名其他角色X张牌，然后其可以将一张牌置于牌堆底，视为你使用之（X为你本回合发动〖恃纵〗的次数）。',
             minirequhu: '驱虎',
-            minirequhu_info: '出牌阶段限一次，你可以与一名体力值大于你的角色拼点，若你赢，则该角色对其攻击范围内另一名由你指定的角色造成1点伤害。若你没赢，你与其各摸一张。',
+            minirequhu_info: '出牌阶段限一次，你可以与一名角色拼点，若你赢，则该角色对一名由你指定的角色造成1点伤害。若你没赢，你与其各摸一张。',
             minirejieming: '节命',
             minirejieming_info: '当你受到1点伤害后或死亡时，你可令一名角色摸X张牌。然后若其手牌数大于X，则其将手牌弃置至X张，然后你获得其因此弃置的牌中位于弃牌堆且点数最大的一张（X为其体力上限且至多为5）。',
             //蜀
