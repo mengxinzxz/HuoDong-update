@@ -15499,7 +15499,7 @@ const packs = function () {
             wechatyuhua_info: '锁定技，你的非基本牌不计入手牌上限。',
             wechat_sunhanhua: '微信孙寒华',
             wechatchongxu: '冲虚',
-            wechatchongxu_info: '出牌阶段限一次，你可以获得6点积分，然后你可修改〖妙剑〗或〖莲华〗（消耗3分），并使用剩余的分数进行摸牌（每张2分）。',
+            wechatchongxu_info: '出牌阶段限一次，你可以获得6点积分，然后你可修改〖妙剑〗或〖莲华〗（消耗3分），或者进行摸牌（每张2分）。',
             wechat_liucheng: '微信刘赪',
             wechatlveying: '掠影',
             wechatlveying_info: '①当你使用【杀】指定目标后，你获得1个“椎”。②当你使用的【杀】结算结束后，若你的“椎”数大于1，则你弃置2个“椎”并摸一张牌，然后可以视为使用一张【过河拆桥】。',
