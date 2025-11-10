@@ -10663,26 +10663,28 @@ const packs = function () {
                 multitarget: true,
                 multiline: true,
                 async content(event, trigger, player) {
-                    const { result: { winner } } = await player.chooseToCompare(event.targets, card => get.number(card)).setContent('chooseToCompareMeanwhile');
-                    if (winner) {
+                    const { result } = await player.chooseToCompare(event.targets.sortBySeat(), card => get.number(card)).setContent('chooseToCompareMeanwhile');
+                    if (result?.winner?.isIn()) {
+                        const { winner } = result;
                         const sha = get.autoViewAs({ name: 'sha', isCard: true });
-                        const targets = event.targets.filter(i => i != winner && winner.canUse(sha, i, false));
-                        event.losers = targets;
-                        if (!targets.length) return;
-                        const bool = await winner.chooseBool(`视为对${get.translation(targets)}使用一张【杀】？`).set('choice', targets.reduce((num, i) => num + get.effect(i, sha, winner, winner), 0) > 0).forResultBool();
-                        if (bool) {
+                        const losers = event.targets.slice().remove(winner);
+                        const list = losers.filter(current => winner.canUse(sha, current, false));
+                        if (!list.length) return;
+                        const { result: result2 } = await winner.chooseBool(`视为对${get.translation(list)}使用一张【杀】？`).set('choice', list.reduce((num, current) => num + get.effect(current, sha, winner, winner), 0) > 0);
+                        if (result2?.bool) {
                             winner.when({ global: 'useCardAfter' })
                                 .filter(evt => evt.card.name == 'sha' && evt.getParent() == event && (() => {
-                                    const targets = event.losers.filter(i => i.hasHistory('useCard', evtx => evtx.respondTo?.[1] == evt.card && evtx.card.name == 'shan'));
-                                    return targets.length > 0 && event.losers.some(i => !targets.includes(i) && i.isIn());
+                                    const targets = losers.filter(current => current.hasHistory('useCard', evtx => evtx.respondTo?.[1] == evt.card && evtx.card.name == 'shan'));
+                                    return targets.length > 0 && losers.some(current => !targets.includes(current) && current.isIn());
                                 })())
-                                .then(() => {
-                                    const targets = losers.filter(i => i.isIn() && !i.hasHistory('useCard', evtx => evtx.respondTo?.[1] == trigger.card && evtx.card.name == 'shan'));
-                                    if (targets.length) targets.forEach(i => i.loseHp());
+                                .step(async (event, trigger, player) => {
+                                    const targets = losers.filter(current => current.isIn() && !current.hasHistory('useCard', evtx => evtx.respondTo?.[1] == trigger.card && evtx.card.name == 'shan'));
+                                    for (const current of targets.sortBySeat()) {
+                                        await current.loseHp();
+                                    }
                                 })
                                 .assign({ forceDie: true })
-                                .vars({ losers: targets });
-                            await winner.useCard(sha, targets, false);
+                            await winner.useCard(sha, list, false);
                         }
                     }
                 },
@@ -10702,7 +10704,7 @@ const packs = function () {
                 },
                 filter(event, player) {
                     if (event.name == 'die') return game.hasPlayer(current => player != current && game.hasPlayer(currentx => current.canCompare(currentx)));
-                    if (player.hasSkill('wechatbianguan_record', null, null, false)) return false;
+                    if (game.getRoundHistory('everything', evt => evt.name === 'chooseToCompare' && evt.targets?.length && evt.targets.concat([evt.player]).includes(player)).indexOf(event) != 0) return false;
                     return event.targets?.length && event.lose_list.some(list => list[1].filter(card => get.tag(card, 'damage') || get.type(card) == 'basic').someInD());
                 },
                 locked: true,
@@ -10717,15 +10719,14 @@ const packs = function () {
                     if (trigger.name == 'die') {
                         const { targets } = event;
                         const list = targets.slice(1).filter(current => targets[0].canCompare(current));
-                        const { result: winner } = await targets[0].chooseToCompare(list, card => get.number(card)).setContent('chooseToCompareMeanwhile');
-                        for (const i of list.concat([targets[0]]).remove(winner).sortBySeat()) await i.loseHp();
+                        const { result } = await targets[0].chooseToCompare(list, card => get.number(card)).setContent('chooseToCompareMeanwhile');
+                        for (const current of list.concat([targets[0]]).remove(result.winner).sortBySeat()) await current.loseHp();
                     }
                     else {
-                        player.addTempSkill(event.name + '_record', { global: 'roundStart' });
-                        await player.gain(trigger.lose_list.map(list => list[1].filter(card => get.tag(card, 'damage') || get.type(card) == 'basic').filterInD()).flat(), 'gain2');
+                        const cards = trigger.lose_list.map(list => list[1].filter(card => get.tag(card, 'damage') || get.type(card) == 'basic').filterInD()).flat();
+                        if (cards.length) await player.gain(cards, 'gain2');
                     }
                 },
-                subSkill: { record: { charlotte: true } }
             },
             //极张飞
             wechathupo: {
