@@ -707,12 +707,12 @@ const packs = function () {
                     }
                     else next = switchToAuto();
                     const result2 = await next;
-                    if (!result2 || !result2.score || result2.score < 2) return;
                     game.broadcastAll((id, time) => {
                         if (_status.connectMode) lib.configOL.choose_timeout = time;
                         const dialog = get.idDialog(id);
                         if (dialog) dialog.close();
                     }, event.videoId, event.time);
+                    if (!result2 || !result2.score || result2.score < 2) return;
                     const func = () => {
                         const event = get.event();
                         const controls = [
@@ -737,7 +737,7 @@ const packs = function () {
                     if (event.isMine()) func();
                     else if (event.isOnline()) event.player.send(func);
                     const { result } = await player.chooseButton([
-                        '###' + get.translation(event.name) + '###<div class="text center">本次共获得' + result2.score + '分，请选择执行项目</div>',
+                        '###' + get.translation(event.name) + '###<div class="text center">本次共获得' + result2.score + '分，请选择你要执行的项目</div>',
                         [
                             [
                                 ['miaojian', '使用3积分升级【' + get.translation('miaojian') + '】'],
@@ -810,6 +810,7 @@ const packs = function () {
                     order: 10,
                     result: { player: 1 },
                 },
+                derivation: [],
             },
             //水 果 忍 者
             bilibili_zhengjing: {
