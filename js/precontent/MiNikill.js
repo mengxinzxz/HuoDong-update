@@ -10282,7 +10282,7 @@ const packs = function () {
                     const { result } = await player.chooseButton([
                         `扶汉：请选择获得至多两个技能`,
                         [dialog => {
-                            dialog.css({ top: '25%' });
+                            dialog.css({ top: get.is.phoneLayout() ? '20%' : '25%' });
                             const { characterMap } = get.event();
                             for (const name of Object.keys(map)) {
                                 const table = document.createElement('div');
@@ -19554,7 +19554,7 @@ const packs = function () {
                     const { result } = await player.chooseButton([
                         `###离宫###<div class="text center">请选择获得至多两个技能，或点击“取消”摸三张牌`,
                         [dialog => {
-                            dialog.css({ top: '20%' });
+                            dialog.css({ top: get.is.phoneLayout() ? '20%' : '25%' });
                             const { characterMap } = get.event();
                             for (const name of Object.keys(map)) {
                                 const table = document.createElement('div');
@@ -39896,9 +39896,9 @@ const packs = function () {
         const ori1 = lib.element.player.init;
         lib.element.player.init = function (character, character2) {
             const player = this;
-            if (lib.character[character].hp2 || lib.character[character2]?.hp2) {
+            if (lib.character[character]?.hp2 || lib.character[character2]?.hp2) {
                 let hp1 = 0, hp2 = 0, maxHp1 = 0, maxHp2 = 0;
-                if (lib.character[character].hp2) {
+                if (lib.character[character]?.hp2) {
                     hp1 = lib.character[character].hp2;
                     maxHp1 = lib.character[character].maxHp2 || lib.character[character].hp2;
                 }
@@ -39906,7 +39906,7 @@ const packs = function () {
                     hp2 = lib.character[character2].hp2;
                     maxHp2 = lib.character[character2].maxHp2 || lib.character[character2].hp2;
                 }
-                if (lib.character[character].hp2 && lib.character[character2]?.hp2) {
+                if (lib.character[character]?.hp2 && lib.character[character2]?.hp2) {
                     let double_hp;
                     if (_status.connectMode || get.mode() === 'single' && _status.mode === 'changban') double_hp = 'pingjun';
                     else double_hp = get.config('double_hp');
@@ -39938,8 +39938,8 @@ const packs = function () {
                     }
                 }
                 else {
-                    this.maxHp2 = lib.character[character].hp2 ? maxHp1 : maxHp2;
-                    this.hp2 = lib.character[character].hp2 ? hp1 : hp2;
+                    this.maxHp2 = lib.character[character]?.hp2 ? maxHp1 : maxHp2;
+                    this.hp2 = lib.character[character]?.hp2 ? hp1 : hp2;
                 }
             }
             return ori1.apply(this, arguments);
