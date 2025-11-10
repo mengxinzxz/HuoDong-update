@@ -37790,6 +37790,7 @@ const packs = function () {
                     },
                     distance: {
                         charlotte: true,
+                        onremove: true,
                         intro: { content: '本轮计算与其他角色的距离-#' },
                         mod: {
                             globalFrom(from, to, current) {
