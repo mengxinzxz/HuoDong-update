@@ -9789,7 +9789,7 @@ const packs = function () {
                                     counterNode = counterNode.childNodes[0];
                                     counterNode.innerHTML = `×${count}`;
                                 })(counterNode)) : counterNode = ui.create.caption(`<span style="font-family:xinwei; text-shadow:#FFF 0 0 4px, #FFF 0 0 4px, rgba(74,29,1,1) 0 0 3px;">×${count}</span>`, button);
-                                event.parent?.controls?.[0]?.classList.add('disabled');
+                                event.parent?.controls?.[0]?.classList.remove('disabled');
                                 game.check();
                             },
                         },
