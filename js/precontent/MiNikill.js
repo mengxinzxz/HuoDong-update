@@ -376,7 +376,7 @@ const packs = function () {
                 group: 'shen',
                 hp: 3,
                 hp2: 3,
-                skills: ['minishuangshu1', 'minishutu1', 'minitongxin'],
+                skills: ['minishuangshu1', 'minishutu1', 'minitongdi'],
                 groupInGuozhan: 'wu',
                 names: '桥|null-桥|null',
             },
@@ -31785,7 +31785,7 @@ const packs = function () {
                     },
                 },
             },
-            minitongxin: {
+            minitongdi: {
                 audio: 'miniyizheng',
                 trigger: { global: ['recoverEnd', 'damageEnd', 'loseHpEnd'] },
                 filter(event, player) {
@@ -39581,8 +39581,8 @@ const packs = function () {
             minishuangshu1_info: '锁定技。①回合开始时，你执行一个额外的摸牌阶段。②你拥有“大乔”和“小乔”两段体力，当你执行体力和体力上限的变化时，你选择“大乔”或“小乔”执行此操作，“大乔”或“小乔”阵亡即你阵亡。',
             minishutu1: '殊途',
             minishutu1_info: '①大乔回复体力后，你可以从牌堆或弃牌堆获得两张指定花色的红色牌。②小乔受到伤害后，你可以使用一张牌（无次数限制且不可被响应）。',
-            minitongxin: '同心',
-            minitongxin_info: '当你使用红色牌令一名角色的体力值变化后，你依次执行：①若大乔和小乔的体力值相同，则你可以回复1点体力；②若你手牌中的红桃牌和方片牌的数量相同，则你可以弃置一张红色牌，对一名角色造成1点伤害。',
+            minitongdi: '同蒂',
+            minitongdi_info: '当你使用红色牌令一名角色的体力值变化后，你依次执行：①若大乔和小乔的体力值相同，则你可以回复1点体力；②若你手牌中的红桃牌和方片牌的数量相同，则你可以弃置一张红色牌，对一名角色造成1点伤害。',
             minishuangshu2: '双姝',
             minishuangshu2_info: '转换技。①游戏开始时，你可以转换此技能状态；②阳：当你使用或打出一张方片牌后，你摸X张牌（X为你装备区的红色牌数）；阴：当你使用或打出一张红桃牌后，你可以弃置一张牌，然后从牌堆或弃牌堆获得两张与此牌花色不同的牌。',
             miniyizheng2: '移筝',
