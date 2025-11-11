@@ -48,7 +48,7 @@ const packs = function () {
             bilibili_zhengxuan: ['male', 'qun', 3, ['bilibili_zhengjing'], ['character:zhengxuan', 'die:zhengxuan', 'name:郑|玄']],
             bilibili_sunhanhua: ['female', 'wu', 3, ['bilibili_chongxu', 'miaojian', 'shhlianhua'], ['character:sunhanhua', 'die:sunhanhua', 'name:孙|寒华']],
             bilibili_lonelypatients: ['male', 'key', 4, ['bilibili_meihua', 'bilibili_gongyou'], ['clan:活动群', 'name:独孤|null']],
-            bilibili_kuangshen: ['male', 'key', '1/10/3', ['bilibili_runningking']],
+            bilibili_kuangshen: ['male', 'key', '1/10/3', ['bilibili_paoku']],
             bilibili_shen_guojia: ['male', 'wei', '9/9/5', ['stianyi', 'resghuishi', 'bilibili_huishi'], ['doublegroup:shen:wei:wu', 'die:shen_guojia']],
             bilibili_re_xusheng: ['male', 'wu', 4, ['bilibili_pojun', 'kuangcai', 'bilibili_baodao'], ['die:re_xusheng']],
             bilibili_xushao: ['male', 'qun', '1/6', ['bilibili_pingjian'], ['ext:活动武将/image/character/old_xushao.jpg', 'InitFilter:noZhuHp']],
@@ -11090,7 +11090,7 @@ const packs = function () {
                 },
             },
             //牢狂
-            bilibili_runningking: {
+            bilibili_paoku: {
                 enable: 'phaseUse',
                 trigger: { global: 'roundStart' },
                 check: () => false,
@@ -11349,6 +11349,7 @@ const packs = function () {
                 },
                 marktext: '🔥',
                 intro: {
+                    name: '复活赛',
                     name2: '复活币',
                     content: '复活赛进度条：#/1103',
                 },
@@ -11821,8 +11822,8 @@ const packs = function () {
             bolcongshi: '从势',
             bolcongshi_info: '锁定技。①体力值最大的角色对你的上家和下家使用牌无距离限制。②有角色使用因〖从势①〗增加距离的牌对你的上家或下家造成伤害后，你回复1点体力。',
             bilibili_kuangshen: '狂神',
-            bilibili_runningking: '跑酷',
-            bilibili_runningking_info:'每轮开始时/出牌阶段限一次，你可以游玩一次“狂神跑酷”，然后获得等量分数的复活币。当你拥有至少1103个复活币后，你所属阵营获得游戏胜利。',
+            bilibili_paoku: '跑酷',
+            bilibili_paoku_info:'每轮开始时/出牌阶段限一次，你可以游玩一次“狂神跑酷”，然后获得等量分数的复活币。当你拥有至少1103个复活币后，你所属阵营获得游戏胜利。',
             bilibili_shen_guojia: '知箸侠',
             bilibili_huishi: '慧识',
             bilibili_huishi_info: '限定技，出牌阶段限一次，若你的体力上限小于10，你可进行判定牌不置入弃牌堆的判定。若判定结果与本次发动技能时的其他判定结果的花色均不相同且你的体力上限小于10，则你加1点体力上限，且可以重复此流程。然后你将所有位于处理区的判定牌交给一名角色。若其手牌数为全场最多，则你减1点体力上限。',
