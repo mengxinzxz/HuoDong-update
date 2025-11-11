@@ -9,8 +9,8 @@ const packs = function () {
             huodongcharacter: {
                 CLongZhou: ['lz_sufei', 'lz_tangzi', 'lz_liuqi', 'lz_huangquan'],
                 Chuodong: ['bilibili_shengxunyu', 'bilibili_Firewin', 'bilibili_jinglingqiu', 'bilibili_suixingsifeng', 'bilibili_Emptycity', 'bilibili_thunderlei', 'bilibili_lonelypatients', 'bilibili_ningjingzhiyuan', 'bilibili_xizhicaikobe'],
-                CDormitory: ['bilibili_yanjing', 'bilibili_xiaoyaoruyun', 'bilibili_shuijiaobuboli'],
-                Cothers: ['bilibili_sunhanhua', 'bilibili_zhoutaigong', 'bilibili_zhouxiaomei', 'bilibili_caifuren', 'bilibili_zhengxuan', 'bilibili_sp_xuyou', 'old_zuoci', 'bilibili_kuailiangkuaiyue', 'bilibili_daxiao', 'bilibili_wangtao', 'bilibili_wangyue', 'bilibili_x_wangtao', 'bilibili_x_wangyue', 'bilibili_xushao', 'bilibili_shen_guojia', 'bilibili_re_xusheng', 'bilibili_kuangshen04', 'bilibili_adong', 'bilibili_zhangrang', 'bilibili_litiansuo', 'decade_huangwudie', 'bilibili_huanggai', 'bilibili_ekeshaoge', 'bilibili_guanning', 'bilibili_wangwang', 'diy_lvmeng'],
+                CDormitory: ['bilibili_kuangshen', 'bilibili_yanjing', 'bilibili_xiaoyaoruyun', 'bilibili_shuijiaobuboli'],
+                Cothers: ['bilibili_sunhanhua', 'bilibili_zhoutaigong', 'bilibili_zhouxiaomei', 'bilibili_caifuren', 'bilibili_zhengxuan', 'bilibili_sp_xuyou', 'old_zuoci', 'bilibili_kuailiangkuaiyue', 'bilibili_daxiao', 'bilibili_wangtao', 'bilibili_wangyue', 'bilibili_x_wangtao', 'bilibili_x_wangyue', 'bilibili_xushao', 'bilibili_shen_guojia', 'bilibili_re_xusheng', 'bilibili_adong', 'bilibili_zhangrang', 'bilibili_litiansuo', 'decade_huangwudie', 'bilibili_huanggai', 'bilibili_ekeshaoge', 'bilibili_guanning', 'bilibili_wangwang', 'diy_lvmeng'],
                 CDanJi: ['DJ_caiyang', 'DJ_pujing', 'DJ_huban'],
                 CSCS: ['biliscs_shichangshi', 'biliscs_zhangrang', 'biliscs_zhaozhong', 'biliscs_sunzhang', 'biliscs_bilan', 'biliscs_xiayun', 'biliscs_hankui', 'biliscs_lisong', 'biliscs_duangui', 'biliscs_guosheng', 'biliscs_gaowang'],
                 CXuanDie: ['bfake_jiananfeng', 'bfake_shen_zhangjiao', 'bfake_shen_zhangfei', 'bfake_shen_jiaxu', 'bfake_huanwen', 'bfake_miheng'],
@@ -48,7 +48,7 @@ const packs = function () {
             bilibili_zhengxuan: ['male', 'qun', 3, ['bilibili_zhengjing'], ['character:zhengxuan', 'die:zhengxuan', 'name:郑|玄']],
             bilibili_sunhanhua: ['female', 'wu', 3, ['bilibili_chongxu', 'miaojian', 'shhlianhua'], ['character:sunhanhua', 'die:sunhanhua', 'name:孙|寒华']],
             bilibili_lonelypatients: ['male', 'key', 4, ['bilibili_meihua', 'bilibili_gongyou'], ['clan:活动群', 'name:独孤|null']],
-            'bilibili_kuangshen04': ['male', 'shen', '4/6', ['BTmakeBug', 'BTtequ', 'BTguoshou', 'reqimou', 'zhaxiang', 'tairan']],
+            bilibili_kuangshen: ['male', 'key', '1/10/3', ['bilibili_runningking']],
             bilibili_shen_guojia: ['male', 'wei', '9/9/5', ['stianyi', 'resghuishi', 'bilibili_huishi'], ['doublegroup:shen:wei:wu', 'die:shen_guojia']],
             bilibili_re_xusheng: ['male', 'wu', 4, ['bilibili_pojun', 'kuangcai', 'bilibili_baodao'], ['die:re_xusheng']],
             bilibili_xushao: ['male', 'qun', '1/6', ['bilibili_pingjian'], ['ext:活动武将/image/character/old_xushao.jpg', 'InitFilter:noZhuHp']],
@@ -114,15 +114,12 @@ const packs = function () {
             thunderlei: '雷，过去萌新的同行（现在比萌新厉害太多），负责十周年武将的前瞻制作，活动群和Thunder群之间总保持着良好的关系，过去常常被群友成为在各方串门不累脚，现在主负责千幻的更新和更细致的特效制作。',
             lonelypatients: 'lonely patients，活动群群主，美化大佬，前活动武将二群成员，因完成了活动武将第一次的全露头制作晋升二群管理，后来因合群人数需求成为活动群群主，现负责不定期活动武将的露头包制作。因群主平时较忙，故在群聊内见到群主的次数较为稀少。',
             babybao: '活动群资深元老，隐藏自身实力的高校研究生，为萌新负责提供图片/配音素材、进行武将测试、管理小群' + '<span style="text-decoration:line-through;">' + '反正不要拿respect当作职务' + '</span>' + '等职务。',
-            'kuangshen04': '狂神，无名杀究极更新者，但因为其过于超前的思想和当前时间线的发展完全脱轨而致其PR惨遭扑杀，遂黑化为狂神1103形态，别名牢狂，蠢蠢欲动，准备于未来继续打破历史。',
+            'kuangshen': '狂神，无名杀究极更新者，但因为其过于超前的思想和当前时间线的发展完全脱轨而致其PR惨遭扑杀，遂黑化为狂神1103形态，别名牢狂，蠢蠢欲动，准备于未来继续打破历史。',
             ningjingzhiyuan: '宁静致远，俗称牢宁，赛尔号抽象玩家，“科密”萌新转型中的心腹，喜爱肘击群，现负责维持群内秩序并将违规群友抓进小黑屋肘击群，肘家军大将之一，抽象集大成者。',
             xizhicaikobe: '戏志才，抽象社恐人士，肘家军大将之一，无名杀<span style="text-decoration: line-through;">非</span>专业人士和爱好者，萌新转型中的任务召唤人。孩子们，其实牢戏<span style="text-decoration: line-through;">并不</span>想要。',
             yanjing: '路边一条',
             xiaoyaoruyun: '逍遥如云，肘击群内抽象人士之一<span style="text-decoration: line-through;">（孩子们，其实是牢萌干的，我有十分甚至九分确信是他害的）</span>，因在各大（其实仅一小部分）无名杀群聊内大肆（其实规模并没有那么大）传播病毒武将扩展（其实真的有病毒，还有木马和蠕虫），从而变得（其实并不怎么）出名，至今仍在各大无名杀群聊里逍遥法外（迫真）。',
             shuijiaobuboli: '睡觉不玻璃，活动群活跃元老之一，为懒狗萌新（转型中）做尽宣传和bug收集的任务。三年过去了，她终于得到了属于自己的专属武将<span style="text-decoration: line-through;">萌新（转型中）就是个大懒棒！</span>。',
-        },
-        characterTitle: {
-            'bilibili_kuangshen04': (() => (new Date().getDate() == 8 || new Date().getDate() == 24 || (new Date().getMonth() + 1 == 7 && new Date().getDate() == 2)) ? '孩子们，我回来了' : '复活赛ing')(),
         },
         characterFilter: {
             bilibili_sp_xuyou(mode) {
@@ -131,8 +128,9 @@ const packs = function () {
             lz_tangzi(mode) {
                 return mode != 'identity' && mode != 'guozhan';
             },
-            'bilibili_kuangshen04'() {
-                return new Date().getDate() == 8 || new Date().getDate() == 24;
+            bilibili_kuangshen() {
+                return true;
+                //return new Date().getDate() == 8 || new Date().getDate() == 24;
             },
         },
         perfectPair: {
@@ -507,9 +505,9 @@ const packs = function () {
                         });
                     };
                     const createDialog = (player, id) => {
-                        if (_status.connectMode) lib.configOL.choose_timeout = "30";
+                        if (_status.connectMode) lib.configOL.choose_timeout = '30';
                         if (player === game.me) return;
-                        const dialog = ui.create.dialog(get.translation(player) + "正在进行“飞升”...<br>");
+                        const dialog = ui.create.dialog(get.translation(player) + '正在进行“飞升”...<br>');
                         dialog.videoId = id;
                     };
                     const chooseButton = () => {
@@ -699,7 +697,7 @@ const packs = function () {
                         const { promise, resolve } = Promise.withResolvers();
                         event.player.send(chooseButton);
                         event.player.wait(async result => {
-                            if (result == "ai") result = await switchToAuto();
+                            if (result === 'ai') result = await switchToAuto();
                             resolve(result);
                         });
                         game.pause();
@@ -8714,146 +8712,6 @@ const packs = function () {
             },
             yicong_jsp_zhaoyun: { audio: 2 },
             //牢狂
-            BTmakeBug: {
-                charlotte: true,
-                trigger: { player: 'phaseEnd' },
-                forced: true,
-                async content(event, trigger, player) {
-                    if (player.countCards('h') < 7) await player.drawTo(7);
-                    const target = (game.me.isIn() && !game.me.isFriendOf(player)) ? game.me : game.me.getEnemies().randomGet();
-                    let cards = player.getCards('h');
-                    if (!cards.length) {
-                        player.chat('谁在阻止我提PR？');//[doge]
-                        game.over(game.me.isFriendOf(player));
-                        return;
-                    }
-                    const Original = cards.randomGet(), PR = lib.card.list.randomGet();
-                    const card = game.createCard(get.name(Original, false), PR[0], PR[1]);
-                    cards[cards.indexOf(Original)] = card;
-                    const { result: { bool, links } } = await target.chooseButton(['请猜测' + get.translation(player) + '伪装的手牌', cards], true).set('ai', button => {
-                        const cards = get.event('cards').slice();
-                        const card = cards.find(card => lib.card.list.some(cardx => cardx[2] == get.name(card, false)) && !lib.card.list.some(cardx => cardx[2] == get.name(card, false) && cardx[0] == get.suit(card, false) && cardx[0] == get.number(card, false) && cardx[3] == get.nature(card, false)));
-                        return button.link == card ? 3 : 1 + Math.random();
-                    }).set('cards', cards);
-                    if (bool) {
-                        if (links[0] == card) {
-                            target.popup('判断正确', 'wood');
-                            game.log(target, '猜测', '#g正确');
-                        }
-                        else {
-                            target.popup('判断错误', 'fire');
-                            game.log(target, '猜测', '#y错误');
-                            player.gain(lib.skill.BTmakeBug.getYing(2), 'gain2');
-                            game.cardsGotoPile(lib.skill.BTmakeBug.getYing(20), () => ui.cardPile.childNodes[get.rand(0, ui.cardPile.childNodes.length - 1)]);
-                        }
-                    }
-                },
-                getYing(count) {
-                    let cards = [];
-                    if (typeof count != 'number') count = 1;
-                    while (count--) {
-                        let card = game.createCard2('ying', 'none', 114514);
-                        cards.push(card);
-                    }
-                    return cards;
-                },
-            },
-            BTtequ: {
-                charlotte: true,
-                enable: ['chooseToUse', 'chooseToRespond'],
-                filter(event, player) {
-                    if (!player.countCards('hes', card => get.card(name, player) == 'ying')) return false;
-                    return get.inpileVCardList(info => info[0] != 'equip').some(info => event.filterCard({ name: info[2], nature: info[3] }, player, event));
-                },
-                chooseButton: {
-                    dialog(event, player) {
-                        var list = get.inpileVCardList(info => info[0] != 'equip').filter(info => event.filterCard({ name: info[2], nature: info[3] }, player, event));
-                        return ui.create.dialog('特取', [list, 'vcard']);
-                    },
-                    filter(button, player) {
-                        return get.event().getParent().filterCard({ name: button.link[2] }, player, _status.event.getParent());
-                    },
-                    check(button) {
-                        if (get.event().getParent().type != 'phase') return 1;
-                        const player = get.event('player');
-                        return player.getUseValue({ name: button.link[2], nature: button.link[3] });
-                    },
-                    backup(links, player) {
-                        return {
-                            charlotte: true,
-                            filterCard(card, player) {
-                                return get.name(card, player) == 'ying';
-                            },
-                            popname: true,
-                            check() { return 1 },
-                            position: 'hes',
-                            viewAs: { name: links[0][2], nature: links[0][3] },
-                        }
-                    },
-                    prompt(links, player) {
-                        return '将一张【影】当做' + (get.translation(links[0][3]) || '') + get.translation(links[0][2]) + '使用或打出';
-                    }
-                },
-                hiddenCard(player, name) {
-                    if (!lib.inpile.includes(name) || !player.countCards('hes')) return false;
-                    const type = get.type2(name);
-                    return type == 'basic' || type == 'trick';
-                },
-                ai: {
-                    fireAttack: true,
-                    respondSha: true,
-                    respondShan: true,
-                    skillTagFilter(player) {
-                        if (!player.countCards('hes')) return false;
-                    },
-                    order: 10,
-                    result: {
-                        player(player) {
-                            if (_status.event.dying) return get.attitude(player, _status.event.dying);
-                            return 1;
-                        },
-                    },
-                },
-                subSkill: { backup: {} },
-            },
-            BTguoshou: {
-                init() {
-                    game.broadcastAll(() => {
-                        if (lib.card.ying.destroy) delete lib.card.ying.destroy;
-                        lib.translate.ying_info = '此牌堆已被牢狂污染';
-                    });
-                },
-                charlotte: true,
-                trigger: { global: ['useCard1', 'damageBefore'] },
-                filter(event, player) {
-                    if (event.player == player) return false;
-                    if (event.name == 'useCard') return event.player != player && get.tag(event.card, 'damage');
-                    return !event.source || event.source != player;
-                },
-                forced: true,
-                logTarget: 'player',
-                async content(event, trigger, player) {
-                    if (trigger.name == 'useCard') trigger.customArgs.default.customSource = player;
-                    else trigger.source = player;
-                },
-                group: 'BTguoshou_win',
-                subSkill: {
-                    win: {
-                        charlotte: true,
-                        trigger: { global: ['dieAfter', 'washCard'] },
-                        filter(event, player) {
-                            if (event.name == 'die') return event.player == game.me;
-                            return Array.from(ui.cardPile.childNodes).filter(card => card.name == 'ying').length >= 300;
-                        },
-                        forced: true,
-                        forceDie: true,
-                        async content(event, trigger, player) {
-                            player.chat('我的PR已经深入了无名杀的骨髓！');//[doge]
-                            game.over(game.me.getFriends(true).includes(player));
-                        },
-                    },
-                },
-            },
             //知箸侠
             bilibili_huishi: {
                 audio: 'shuishi',
@@ -11231,6 +11089,270 @@ const packs = function () {
                     },
                 },
             },
+            //牢狂
+            bilibili_runningking: {
+                enable: 'phaseUse',
+                trigger: { global: 'roundStart' },
+                check: () => false,
+                usable: 1,
+                async content(event, trigger, player) {
+                    await Promise.all(event.next);
+                    if (_status.connectMode) event.time = lib.configOL.choose_timeout;
+                    event.videoId = lib.status.videoId++;
+                    if (player.isUnderControl()) game.swapPlayerAuto(player);
+                    const switchToAuto = () => {
+                        return new Promise((resolve) => {
+                            game.pause();
+                            game.countChoose();
+                            event._result = { score: 0 };
+                            setTimeout(() => {
+                                _status.imchoosing = false;
+                                if (event.dialog) event.dialog.close();
+                                game.resume();
+                                resolve(event._result);
+                            }, 5000);
+                        });
+                    };
+                    const createDialog = (player, id) => {
+                        if (_status.connectMode) lib.configOL.choose_timeout = '30';
+                        if (player === game.me) return;
+                        const dialog = ui.create.dialog(get.translation(player) + '正在进行"狂神快跑"...<br>');
+                        dialog.videoId = id;
+                    };
+                    const chooseButton = (player) => {
+                        const { promise, resolve } = Promise.withResolvers(), event = _status.event;
+                        event.dialog = (() => {
+                            //游戏dialog
+                            const dialog = ui.create.dialog('hidden');
+                            dialog.classList.add('popped');
+                            dialog.classList.add('static');
+                            Object.assign(dialog.style, {
+                                height: '100%',
+                                width: '100%',
+                                top: '0px',
+                                left: '0px',
+                                background: 'rgba(0,0,0,0.85)',
+                                textAlign: 'center',
+                            });
+                            ui.window.appendChild(dialog);
+                            dialog.innerHTML = '';
+                            //游戏画布
+                            const canvas = document.createElement('canvas');
+                            const width = 480, height = 320;
+                            canvas.width = width;
+                            canvas.height = height;
+                            Object.assign(canvas.style, {
+                                display: 'block',
+                                margin: '40px auto 10px auto',
+                                background: '#000',
+                                borderRadius: '8px',
+                            });
+                            dialog.appendChild(canvas);
+                            const ctx = canvas.getContext('2d');
+                            //触控按钮，给手机端用的
+                            const ctrlBox = document.createElement('div');
+                            Object.assign(ctrlBox.style, {
+                                display: 'flex',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                width: '100%',
+                                margin: '0 auto',
+                                gap: '120px',
+                            });
+                            const leftBtn = document.createElement('button');
+                            const rightBtn = document.createElement('button');
+                            const styleBtn = {
+                                width: '180px',
+                                height: '40px',
+                                fontSize: '20px',
+                                borderRadius: '8px',
+                                background: '#333',
+                                color: '#fff',
+                                flex: 'none',
+                            };
+                            Object.assign(leftBtn.style, styleBtn);
+                            Object.assign(rightBtn.style, styleBtn);
+                            leftBtn.textContent = '←';
+                            rightBtn.textContent = '→';
+                            ctrlBox.appendChild(leftBtn);
+                            ctrlBox.appendChild(rightBtn);
+                            dialog.appendChild(ctrlBox);
+                            //主角登场
+                            const playerObj = { x: width / 2 - 15, y: height - 30, w: 30, h: 30, speed: 5 };
+                            const barriers = [];
+                            let score = 0, time = 30, running = true;
+                            const keys = { left: false, right: false };
+                            //挡板参数
+                            const barrierWidth = width / 3;
+                            const barrierHeight = 15;
+                            const barrierSpeed = 3;
+                            let barrierSpawnTimer = 0;
+                            const barrierSpawnInterval = 1000;
+                            //电脑也干了
+                            const keyDown = e => {
+                                if (e.key === 'ArrowLeft' || e.key === 'a') keys.left = true;
+                                if (e.key === 'ArrowRight' || e.key === 'd') keys.right = true;
+                            };
+                            const keyUp = e => {
+                                if (e.key === 'ArrowLeft' || e.key === 'a') keys.left = false;
+                                if (e.key === 'ArrowRight' || e.key === 'd') keys.right = false;
+                            };
+                            window.addEventListener('keydown', keyDown);
+                            window.addEventListener('keyup', keyUp);
+                            //手机也干了
+                            let holdLeft = false, holdRight = false;
+                            leftBtn.addEventListener(lib.device ? 'touchstart' : 'mousedown', () => holdLeft = true);
+                            leftBtn.addEventListener(lib.device ? 'touchend' : 'mouseup', () => holdLeft = false);
+                            rightBtn.addEventListener(lib.device ? 'touchstart' : 'mousedown', () => holdRight = true);
+                            rightBtn.addEventListener(lib.device ? 'touchend' : 'mouseup', () => holdRight = false);
+                            //生成挡板
+                            const spawnBarrier = () => {
+                                const barrierCount = Math.random() < 0.6 ? 1 : 2;
+                                const positions = [0, 1, 2];//三个可能的位置
+                                //随机打乱位置并选择前barrierCount个
+                                for (let i = positions.length - 1; i > 0; i--) {
+                                    const j = Math.floor(Math.random() * (i + 1));
+                                    [positions[i], positions[j]] = [positions[j], positions[i]];
+                                }
+                                for (let i = 0; i < barrierCount; i++) {
+                                    const pos = positions[i];
+                                    barriers.push({
+                                        x: pos * barrierWidth,
+                                        y: -barrierHeight,
+                                        w: barrierWidth,
+                                        h: barrierHeight,
+                                        color: 'red',
+                                        speed: barrierSpeed,
+                                    });
+                                }
+                            };
+                            //添加时间差变量
+                            let lastTime = 0;
+                            const update = (currentTime = 0) => {
+                                //计算时间差（将不同设备均标准化到60fps）
+                                const deltaTime = lastTime ? (currentTime - lastTime) / 16.67 : 1;
+                                lastTime = currentTime;
+                                if (keys.left || holdLeft) playerObj.x -= playerObj.speed * deltaTime;
+                                if (keys.right || holdRight) playerObj.x += playerObj.speed * deltaTime;
+                                playerObj.x = Math.max(0, Math.min(width - playerObj.w, playerObj.x));
+                                barrierSpawnTimer += deltaTime * 16.67;
+                                if (barrierSpawnTimer >= barrierSpawnInterval) {
+                                    spawnBarrier();
+                                    barrierSpawnTimer = 0;
+                                }
+                                for (let i = barriers.length - 1; i >= 0; i--) {
+                                    const barrier = barriers[i];
+                                    barrier.y += barrier.speed * deltaTime;
+                                    if (
+                                        barrier.x < playerObj.x + playerObj.w &&
+                                        barrier.x + barrier.w > playerObj.x &&
+                                        barrier.y < playerObj.y + playerObj.h &&
+                                        barrier.y + barrier.h > playerObj.y
+                                    ) {
+                                        //碰到挡板顷刻坠机
+                                        running = false;
+                                        clearInterval(timer);
+                                        setTimeout(endGame, 500);
+                                        return;
+                                    }
+                                    if (barrier.y > height + 10) {
+                                        barriers.splice(i, 1);
+                                        score++;
+                                    }
+                                }
+                            };
+                            const draw = () => {
+                                ctx.clearRect(0, 0, width, height);
+                                ctx.fillStyle = 'white';
+                                ctx.fillRect(playerObj.x, playerObj.y, playerObj.w, playerObj.h);
+                                for (const barrier of barriers) {
+                                    ctx.fillStyle = barrier.color;
+                                    ctx.fillRect(barrier.x, barrier.y, barrier.w, barrier.h);
+                                }
+                                ctx.fillStyle = 'yellow';
+                                ctx.font = '16px monospace';
+                                ctx.fillText(`分数: ${score}`, 10, 20);
+                                ctx.fillText(`时间: ${time.toFixed(1)}s`, width - 110, 20);
+                            };
+                            const loop = (currentTime) => {
+                                if (!running) return;
+                                update(currentTime);
+                                draw();
+                                requestAnimationFrame(loop);
+                            };
+                            const timer = setInterval(() => {
+                                time -= 0.1;
+                                if (time <= 0 || score + player.countMark(event.name) >= 1103) {
+                                    running = false;
+                                    clearInterval(timer);
+                                    setTimeout(endGame, 500);
+                                }
+                            }, 100);
+                            const endGame = () => {
+                                ctx.clearRect(0, 0, width, height);
+                                ctx.fillStyle = 'white';
+                                ctx.font = '24px sans-serif';
+                                ctx.textAlign = 'center';
+                                ctx.fillText(score + player.countMark(event.name) >= 1103 ? '恭喜你，复活成功！' : `游戏结束！得分：${score}`, width / 2, height / 2);
+                                event._result = { score };
+                                //孩子们，玩完游戏记得对页面进行清理哦
+                                window.removeEventListener('keydown', keyDown);
+                                window.removeEventListener('keyup', keyUp);
+                                leftBtn.remove();
+                                rightBtn.remove();
+                                ctrlBox.remove();
+                                setTimeout(() => {
+                                    if (event.dialog) event.dialog.close();
+                                    _status.imchoosing = false;
+                                    game.resume();
+                                    resolve(event._result);
+                                }, 2000);
+                            };
+                            requestAnimationFrame(loop);
+                            return dialog;
+                        })();
+                        event.switchToAuto = () => {
+                            event._result = { score: 0 };
+                            game.resume();
+                            resolve(event._result);
+                        };
+                        _status.imchoosing = true;
+                        game.pause();
+                        game.countChoose();
+                        return promise;
+                    };
+                    game.broadcastAll(createDialog, player, event.videoId);
+                    let next;
+                    if (event.isMine()) next = chooseButton(player);
+                    else if (event.isOnline()) {
+                        const { promise, resolve } = Promise.withResolvers();
+                        event.player.send(chooseButton, player);
+                        event.player.wait(async result => {
+                            if (result === 'ai') result = await switchToAuto();
+                            resolve(result);
+                        });
+                        game.pause();
+                        next = promise;
+                    }
+                    else next = switchToAuto();
+                    const result2 = await next;
+                    game.broadcastAll((id, time) => {
+                        if (_status.connectMode) lib.configOL.choose_timeout = time;
+                        const dialog = get.idDialog(id);
+                        if (dialog) dialog.close();
+                    }, event.videoId, event.time);
+                    player.addMark(event.name, result2.score);
+                    if (player.countMark(event.name) >= 1103) {
+                        const winners = player.getFriends(true, true);
+                        game.over(player === game.me || winners.includes(game.me));
+                    }
+                },
+                marktext: '🔥',
+                intro: {
+                    name2: '复活币',
+                    content: '复活赛进度条：#/1103',
+                },
+            },
         },
         dynamicTranslate: {
             bilibili_xueji(player) {
@@ -11698,13 +11820,9 @@ const packs = function () {
             bolyingtu_info: '①当你的上家于摸牌阶段外获得牌后，你可以获得其等量的牌，然后将等量的牌交给你的下家。②当你的下家使用【杀】或【决斗】指定第一个目标时，若目标角色不包含你和你的上家，则你可以取消此牌的所有目标，然后将此牌目标改为你的上家。',
             bolcongshi: '从势',
             bolcongshi_info: '锁定技。①体力值最大的角色对你的上家和下家使用牌无距离限制。②有角色使用因〖从势①〗增加距离的牌对你的上家或下家造成伤害后，你回复1点体力。',
-            'bilibili_kuangshen04': '狂神',
-            BTmakeBug: 'PR',
-            BTmakeBug_info: '锁定技，回合结束时，你将手牌数摸至七张，然后若你没有手牌，你结束本局游戏，否则你随机伪装你的一张手牌的花色点数，然后X须猜测其中哪一张为此伪装牌，若X猜错，你获得两张【影】，然后在牌堆中洗入20张【影】（洗入的【影】无花色且点数为114514，X为game.me，若game.me与你同阵容或game.me未存活则改为随机一名敌方角色）。',
-            BTtequ: '特取',
-            BTtequ_info: '你可以将一张【影】当任意基本牌或锦囊牌使用或打出。',
-            BTguoshou: '锅首',
-            BTguoshou_info: '锁定技。①你删除【影】进入弃牌堆销毁和洗牌不进入牌堆的机制。②所有对其他角色造成的无来源伤害或伤害来源不为你的伤害均将伤害来源改为你。③其他角色使用的所有伤害类卡牌的伤害来源改为你。④game.me阵亡后，或洗牌后牌堆中的【影】数不小于300张，你结束本局游戏。',
+            bilibili_kuangshen: '狂神',
+            bilibili_runningking: '跑酷',
+            bilibili_runningking_info:'每轮开始时/出牌阶段限一次，你可以游玩一次“狂神跑酷”，然后获得等量分数的复活币。当你拥有至少1103个复活币后，你所属阵营获得游戏胜利。',
             bilibili_shen_guojia: '知箸侠',
             bilibili_huishi: '慧识',
             bilibili_huishi_info: '限定技，出牌阶段限一次，若你的体力上限小于10，你可进行判定牌不置入弃牌堆的判定。若判定结果与本次发动技能时的其他判定结果的花色均不相同且你的体力上限小于10，则你加1点体力上限，且可以重复此流程。然后你将所有位于处理区的判定牌交给一名角色。若其手牌数为全场最多，则你减1点体力上限。',
