@@ -1,4 +1,5 @@
 import { lib, game, ui, get, ai, _status } from '../../../noname.js';
+import security from '../../../noname/util/security.js';
 export let config = {
 	/*
 	//总有一天会维护好的功能
@@ -151,9 +152,9 @@ export let config = {
 		name: '编辑欢杀将池',
 		clear: true,
 		onclick() {
-			var container = ui.create.div('.popup-container.editor');
+			var container = ui.create.div(".popup-container.editor2", ui.window);
 			var node = container;
-			var map = lib.config.extension_活动武将_PingJianName || lib.skill.minipingjian.getList();
+			var map = game.getExtensionConfig('活动武将', 'PingJianName') || lib.skill.minipingjian.getList();
 			var str = '//编辑欢杀将池，此将池仅影响欢乐三国杀武将包中的角色发动技能的武将筛选范围，不会涉及禁将层面';
 			str += '\nPingJianName=[\n';
 			for (var i = 0; i < map.length; i++) {
@@ -164,30 +165,30 @@ export let config = {
 			node.code = str;
 			ui.window.classList.add('shortcutpaused');
 			ui.window.classList.add('systempaused');
-			var saveInput = function () {
-				var code;
-				if (container.editor) code = container.editor.getValue();
-				else if (container.textarea) code = container.textarea.value;
+			var saveInput = function (/**@type {import("@codemirror/view").EditorView}*/view) {
+				var resultCode = view.state.doc.toString();
+				var PingJianName = null;
 				try {
-					var PingJianName = null;
-					eval(code);
+					PingJianName = security.exec2(resultCode).PingJianName;
 					if (!Array.isArray(PingJianName)) {
-						throw ('err');
+						throw "err";
 					}
-				}
-				catch (e) {
-					var tip = lib.getErrorTip(e) || '';
-					alert('代码语法有错误，请仔细检查（' + e + '）' + tip);
+				} catch (e) {
+					if (e == "err") {
+						alert("代码格式有错误，请对比示例代码仔细检查");
+					} else {
+						var tip = lib.getErrorTip(e) || "";
+						alert("代码语法有错误，请仔细检查（" + e + "）" + tip);
+					}
 					window.focus();
-					if (container.editor) container.editor.focus();
-					else if (container.textarea) container.textarea.focus();
+					view.dom.focus();
 					return;
 				}
-				game.saveConfig('extension_活动武将_PingJianName', PingJianName);
+				game.saveExtensionConfig('活动武将', 'PingJianName', PingJianName);
 				ui.window.classList.remove('shortcutpaused');
 				ui.window.classList.remove('systempaused');
 				container.delete();
-				container.code = code;
+				container.code = resultCode;
 				delete window.saveNonameInput;
 			};
 			ui.create.editor2(container, {
