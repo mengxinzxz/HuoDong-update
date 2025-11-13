@@ -19,7 +19,7 @@ const packs = function () {
                 ],
                 wechat_wanxiang: ['ruanhui', 'kanze', 'zumao', 'xiahouba', 'buzhi', 'liuqi', 'ganfuren', 'liuyao', 'zhugeguo', 'xurong', 'yj_weiyan', 'yj_huangzhong', 'yj_ganning', 'zhaoxiang', 'guozhao', 'sunhanhua', 'pangdegong', 'guanyinping', 'baosanniang', 'taoqian', 'guansuo', 'liuyan', 'shenpei', 'yangxiu', 'yj_xuhuang', 'mayunlu', 'litong'].map(i => `wechat_${i}`),
                 wechat_zhiyin: ['zhugeke', 'mayunlu', 'bulianshi', 'diaochan', 'taishici', 'luxun', 'sunshangxiang', 'xunyou', 'dianwei', 'zhaoyun', 'xinxianying', 'guohuanghou', 'kongrong', 'caopi', 'jiaxu', 'zhangfei', 'dongzhuo', 'wangyi', 'zhangchunhua', 'hetaihou', 'zhurong', 'jiangwei', 'caozhi', 'liubei', 'sunce', 'xunyu', 'zhenji', 'xuzhu', 'yuanshao', 'lusu', 'guojia', 'lvbu', 'daqiao', 'xiaoqiao', 'caocao', 'zhugeliang', 'simayi', 'machao', 'huangyueying', 'caiwenji', 'zhouyu', 'sunquan', 'guanyu'].map(i => `wechat_zhiyin_${i}`),
-                wechat_zhi: ['yuanshu'].map(i => `wechat_zhi_${i}`),
+                wechat_zhi: ['yuanshu', 'fuhuanghou'].map(i => `wechat_zhi_${i}`),
                 wechat_trashBin: ['luxun', 'zuoci', 'zhaoxiang'].map(i => `wechat_old_${i}`),
             },
         },
@@ -212,6 +212,7 @@ const packs = function () {
             wechat_sb_huaxiong: ['male', 'qun', 4, ['wechatsbyaowu', 'sbyangwei'], ['tempname:sb_huaxiong']],
             // 志系列
             wechat_zhi_yuanshu: ['male', 'qun', 4, ['wechatshehuai', 'wechatzaochen']],
+            wechat_zhi_fuhuanghou: ['female', 'qun', 3, ['wechatweiluan', 'wechatqujian', 'wechatshutui']],
         },
         characterIntro: {
         },
@@ -14835,7 +14836,291 @@ const packs = function () {
                         intro: { content: '本回合你〖慑淮〗的发动目标改为所有其他角色' },
                     },
                 },
-            }
+            },
+            // 志伏皇后
+            wechatweiluan: {
+                init(player, skill) {
+                    if (!player.storage[skill]) {
+                        player.storage[skill] = {
+                            draw: 1,
+                            hand: 1,
+                            sha: 1,
+                            range: 1,
+                        };
+                    }
+                },
+                audio: 'ext:活动武将/audio/skill:2',
+                trigger: { global: 'roundStart' },
+                filter(event, player) {
+                    return game.hasPlayer(current => player != current) && Object.keys(player.getStorage('wechatweiluan') || {}).length > 1;
+                },
+                async cost(event, trigger, player) {
+                    const storage = player.getStorage(event.skill);
+                    const map = get.info(event.skill).translateMap;
+                    const { result } = await player.chooseButtonTarget({
+                        createDialog: [
+                            '危鸾：请选择你要分配的效果和角色',
+                            [
+                                Object.entries(storage).map(item => [item[0], `${map[item[0]]}（当前数值: ${item[1]}）`]),
+                                'textbutton',
+                            ]
+                        ],
+                        selectButton: [1, Object.keys(storage).length - 1],
+                        filterTarget: lib.filter.notMe,
+                        ai1(button) {
+                            const player = get.player();
+                            const { link } = button;
+                            const { numx } = get.event();
+                            const storage = player.getStorage('wechatweiluan');
+                            const total = Object.keys(storage).reduce((sum, key) => sum += storage[key], 0);
+                            if (!game.hasPlayer(current => player != current && get.attitude(player, current) > 0) && ui.selected.buttons.length) return 0;
+                            if (link == 'sha' && player.hasSkill('wechatqujian')) return 0;
+                            if (link == 'hand') return 2;
+                            if (link == 'range') return 1.5;
+                            if (link == 'draw') return 1;
+                            if ((ui.selected.buttons.reduce((sum, linkx) => sum += storage[linkx.link], 0) + storage[link]) * 2 != total && player.getHp() > 1) return 1;
+                            return 0;
+                        },
+                        ai2(target) {
+                            const player = get.player(), att = get.attitude(player, target);
+                            if (!game.hasPlayer(current => player != current && get.attitude(player, current) > 0)) return get.effect(target, { name: 'losehp' }, player, player);
+                            return att;
+                        },
+                        numx: Object.keys(storage).length - 1,
+                    });
+                    event.result = {
+                        bool: result?.bool,
+                        targets: result?.targets,
+                        cost_data: result?.links,
+                    }
+                },
+                async content(event, trigger, player) {
+                    const { targets: [target], cost_data } = event;
+                    const list = [0, 0];
+                    for (const [key, num] of Object.entries(player.getStorage(event.name, {
+                        draw: 1,
+                        hand: 1,
+                        sha: 1,
+                        range: 1,
+                    }))) {
+                        const current = cost_data.includes(key) ? target : player;
+                        list[player === current ? 0 : 1] += num;
+                        current.addTempSkill(event.name + '_' + key, 'roundEnd');
+                        current.addMark(event.name + '_' + key, num, false);
+                    }
+                    if (list[0] != list[1]) {
+                        for (const current of [player, target].sortBySeat()) await current.loseHp();
+                    }
+                },
+                subSkill: {
+                    draw: {
+                        charlotte: true,
+                        onremove: true,
+                        intro: { content: '本轮摸牌阶段额定摸牌数+#' },
+                        trigger: { player: 'phaseDrawBegin2' },
+                        filter(event, player) {
+                            return !event.numFixed && player.hasMark('wechatweiluan_draw');
+                        },
+                        forced: true,
+                        popup: false,
+                        async content(event, trigger, player) {
+                            trigger.num += player.countMark(event.name);
+                        },
+                    },
+                    hand: {
+                        charlotte: true,
+                        onremove: true,
+                        intro: { content: '本轮手牌上限+#' },
+                        markimage: 'image/card/handcard.png',
+                        mod: {
+                            maxHandcard(player, num) {
+                                return num + player.countMark('wechatweiluan_hand');
+                            },
+                        },
+                    },
+                    sha: {
+                        charlotte: true,
+                        onremove: true,
+                        intro: { content: '本轮使用【杀】的次数上限+#' },
+                        mod: {
+                            cardUsable(card, player, num) {
+                                if (card.name == "sha") return num + player.countMark('wechatweiluan_sha');
+                            }
+                        },
+                    },
+                    range: {
+                        charlotte: true,
+                        onremove: true,
+                        intro: { content: '本轮攻击范围+#' },
+                        mod: {
+                            attackRange(player, num) {
+                                return num + player.countMark('wechatweiluan_sha');
+                            },
+                        },
+                    },
+                },
+                mark: true,
+                marktext: '鸾',
+                intro: {
+                    content(storage, player, skill) {
+                        const record = player.getStorage(skill, {
+                            draw: 1,
+                            hand: 1,
+                            sha: 1,
+                            range: 1,
+                        });
+                        const map = get.info('wechatweiluan').translateMap;
+                        return `${Object.keys(map).map((key, index) => {
+                            const value = record[key] || 1;
+                            const label = map[key];
+                            const text = `${index + 1}.${label}+${value}`;
+                            if (!record[key]) return `<span style="text-decoration: line-through;">${text}</span>`;
+                            return `${text}`;
+                        }).join('<br>')}`;
+                    },
+                },
+                onremove: true,
+                translateMap: {
+                    draw: '摸牌阶段摸牌数',
+                    hand: '手牌上限',
+                    sha: '使用【杀】的次数上限',
+                    range: '攻击范围',
+                },
+            },
+            wechatqujian: {
+                audio: 'ext:活动武将/audio/skill:2',
+                enable: 'phaseUse',
+                usable: 1,
+                filter(event, player) {
+                    return Object.keys(player.getStorage('wechatweiluan') || {}).length && event.filterCard(get.autoViewAs({ name: 'sha', storage: { wechatqujian: true } }, 'unsure'), player, event);
+                },
+                chooseButton: {
+                    dialog(event, player) {
+                        const storage = player.getStorage('wechatweiluan');
+                        const map = get.info('wechatweiluan').translateMap;
+                        const dialog = ui.create.dialog(
+                            `祛僭：请选择要移除的〖危鸾〗效果`,
+                            [
+                                Object.entries(storage).map(item => [item[0], `${map[item[0]]}（当前数值: ${item[1]}）`]),
+                                'textbutton',
+                            ],
+                            'hidden'
+                        );
+                        return dialog;
+                    },
+                    check(button) {
+                        const player = get.player();
+                        if (player.getUseValue('sha') < 0) return 0;
+                        const { link } = button;
+                        if (link === 'sha') return 0;
+                        if (link === 'hand' && !player.needsToDiscard()) return 1.2;
+                        if (link === 'draw') return 1.1;
+                        return 1;
+                    },
+                    backup(links, player) {
+                        return {
+                            audio: 'wechatqujian',
+                            links,
+                            filterCard: () => false,
+                            selectCard: -1,
+                            viewAs: {
+                                name: 'sha',
+                                storage: { wechatqujian: true },
+                                isCard: true,
+                            },
+                            popname: true,
+                            log: false,
+                            async precontent(event, trigger, player) {
+                                const { links: [link] } = get.info('wechatqujian_backup');
+                                delete player.storage.wechatweiluan?.[link];
+                                player.when({ player: 'useCardAfter' })
+                                    .filter(evt => evt.getParent() == event.getParent() && game.hasPlayer2(current => current.hasHistory('damage', evtx => evtx.card == evt.card)))
+                                    .step(() => {
+                                        const storage = player.getStorage('wechatweiluan', {});
+                                        if (Object.keys(storage).length) {
+                                            for (const key in player.storage.wechatweiluan) {
+                                                if (typeof player.storage.wechatweiluan[key] !== 'number') player.storage.wechatweiluan[key] = 0;
+                                                storage[key]++;
+                                            }
+                                        }
+                                        player.markSkill('wechatweiluan');
+                                    });
+                            },
+                        }
+                    },
+                    prompt(links, player) {
+                        const map = get.info('wechatweiluan').translateMap;
+                        return `移除〖危鸾〗的“${map[links[0]]}+${player.getStorage('wechatweiluan')?.[links[0]]}”效果视为视为使用一张【杀】`;
+                    },
+                },
+                ai: {
+                    combo: 'wechatweiluan',
+                    order(item, player) {
+                        return get.order({ name: 'sha' }) - 0.1;
+                    },
+                    result: {
+                        player(player, target) {
+                            if (player.hasValueTarget({ name: 'sha' })) return 1;
+                            return 0;
+                        }
+                    }
+                },
+                subSkill: { backup: {} },
+            },
+            wechatshutui: {
+                audio: 'ext:活动武将/audio/skill:2',
+                enable: 'phaseUse',
+                filter(event, player) {
+                    return game.hasPlayer(current => get.info('wechatshutui').filterTarget(null, player, current));
+                },
+                filterTarget(card, player, target) {
+                    return target.isDamaged();
+                },
+                limited: true,
+                skillAnimation: true,
+                animationColor: 'fire',
+                async content(event, trigger, player) {
+                    const [target] = event.targets;
+                    player.awakenSkill(event.name);
+                    target.addSkill(event.name + '_effect');
+                    target.markAuto(event.name + '_effect', [player]);
+                },
+                ai: {
+                    order(item, player) {
+                        return get.order({ name: 'tao' }) - 0.1;
+                    },
+                    result: {
+                        target(player, target) {
+                            return Math.max(target.hp, 1);
+                        }
+                    },
+                },
+                subSkill: {
+                    effect: {
+                        charlotte: true,
+                        onremove: true,
+                        intro: { content: '不能成为其他角色普通锦囊牌的目标，直到下次回复体力或造成伤害或$死亡' },
+                        mod: {
+                            targetEnabled(card, player, target) {
+                                if (player != target && get.type(card) == 'trick') return false;
+                            },
+                        },
+                        trigger: {
+                            player: 'recoverEnd',
+                            source: 'damageSource',
+                            global: 'dieAfter',
+                        },
+                        filter(event, player) {
+                            return event.name != 'die' || player.getStorage('wechatshutui_effect').includes(event.player);
+                        },
+                        forced: true,
+                        popup: false,
+                        async content(event, trigger, player) {
+                            player.removeSkill(event.name);
+                        },
+                    },
+                },
+            },
         },
         dynamicTranslate: {
             wechatxiangzhi(player) {
@@ -14883,6 +15168,27 @@ const packs = function () {
                 }
                 let start = `${get.poptip('rule_yunlvSkill')}。出牌阶段限一次，你可以：`, end = '<br>转韵：出牌阶段有角色使用【酒】结算结束后。';
                 return `${start}${ping}；${ze}${end}`;
+            },
+            wechatweiluan(player, skill) {
+                const storage = player.getStorage(skill, {
+                    draw: 1,
+                    hand: 1,
+                    sha: 1,
+                    range: 1,
+                });
+                const map = {
+                    draw: '摸牌阶段摸牌数',
+                    hand: '手牌上限',
+                    sha: '使用【杀】的次数上限',
+                    range: '攻击范围',
+                };
+                return `每轮开始时，你可以将以下效果分配至你与一名其他角色直到本轮结束：${Object.keys(map).map((key, index) => {
+                    const value = storage[key] || 1;
+                    const label = map[key];
+                    const text = `${index + 1}.${label}+${value}`;
+                    if (!storage[key]) return `<span style="text-decoration: line-through;">${text}</span>`;
+                    return `${text}`;
+                }).join('；')}。若你与其的效果分配总值不相等，你与其各失去1点体力。`;
             },
         },
         translate: {
@@ -15729,6 +16035,13 @@ const packs = function () {
             wechatshehuai_info: '出牌阶段开始时，你可以令一名其他角色A本回合无法响应你使用的牌，然后所有不为A的其他角色可以秘密令你本阶段使用【杀】的次数上限+1。',
             wechatzaochen: '造谶',
             wechatzaochen_info: '准备阶段，你可以摸X张牌并展示之（X为当前轮次且至多为5），然后若这些牌中：有方片牌，本回合你〖慑淮〗的发动目标改为所有其他角色且你从牌堆中获得一张【万箭齐发】；均为方片牌，你选择一个主公技获得之。',
+            wechat_zhi_fuhuanghou: '志伏寿',
+            wechatweiluan: '危鸾',
+            wechatweiluan_info: '每轮开始时，你可以将以下效果分配至你与一名其他角色直到本轮结束：1.摸牌阶段额定摸牌数+1；2.手牌上限+1；3.使用【杀】的次数上限+1；4.攻击范围+1。若你与其的效果分配总值不相等，你与其各失去1点体力。',
+            wechatqujian: '祛僭',
+            wechatqujian_info: '出牌阶段限一次。你可以移除〖危鸾〗的一项效果视为使用一张【杀】。若此【杀】造成伤害，你令〖危鸾〗的剩余项数值+1。',
+            wechatshutui: '纾隤',
+            wechatshutui_info: '限定技。出牌阶段，你可以令一名已受伤的角色获得以下效果直到你死亡：其不能成为其他角色普通锦囊牌的目标，直到其下次回复体力或造成伤害。',
         },
     };
     for (let i in WeChatkill.character) {
