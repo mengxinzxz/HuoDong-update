@@ -720,7 +720,7 @@ const packs = function () {
                             };
                         }, skill);
                     }
-                    player.$handleEquipChange();
+                    setTimeout(() => player.$handleEquipChange());
                 },
                 onremove(player, skill) {
                     game.broadcastAll((player, skill) => {
@@ -2778,7 +2778,7 @@ const packs = function () {
                             };
                         }, skill);
                     }
-                    player.$handleEquipChange();
+                    setTimeout(() => player.$handleEquipChange());
                 },
                 onremove(player, skill) {
                     game.broadcastAll((player, skill) => {

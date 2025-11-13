@@ -7185,10 +7185,7 @@ const packs = function () {
                         content() {
                             const cards = player.getExpansions('minireguanxing');
                             player.gain(cards, 'gain2');
-                            if (cards.length >= Math.min(game.countPlayer() <= 2 ? 3 : 5)) {
-                                player.addTempSkill('minireguanxing_liannu');
-                                player.$handleEquipChange();
-                            }
+                            if (cards.length >= Math.min(game.countPlayer() <= 2 ? 3 : 5)) player.addTempSkill('minireguanxing_liannu');
                         },
                         ai: {
                             order: 9,
@@ -7222,7 +7219,7 @@ const packs = function () {
                                     };
                                 }, skill);
                             }
-                            player.$handleEquipChange();
+                            setTimeout(() => player.$handleEquipChange());
                         },
                         onremove(player, skill) {
                             game.broadcastAll((player, skill) => {
@@ -10137,7 +10134,7 @@ const packs = function () {
                             };
                         }, skill);
                     }
-                    player.$handleEquipChange();
+                    setTimeout(() => player.$handleEquipChange());
                 },
                 onremove(player, skill) {
                     game.broadcastAll((player, skill) => {
@@ -11101,7 +11098,7 @@ const packs = function () {
                             };
                         }, skill);
                     }
-                    player.$handleEquipChange();
+                    setTimeout(() => player.$handleEquipChange());
                 },
                 onremove(player, skill) {
                     game.broadcastAll((player, skill) => {
@@ -23141,7 +23138,7 @@ const packs = function () {
                             };
                         }, skill);
                     }
-                    player.$handleEquipChange();
+                    setTimeout(() => player.$handleEquipChange());
                 },
                 onremove(player, skill) {
                     game.broadcastAll((player, skill) => {
@@ -24355,7 +24352,7 @@ const packs = function () {
                             };
                         }, skill);
                     }
-                    player.$handleEquipChange();
+                    setTimeout(() => player.$handleEquipChange());
                 },
                 onremove(player, skill) {
                     game.broadcastAll((player, skill) => {
