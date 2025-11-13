@@ -186,7 +186,7 @@ const packs = function () {
             wechat_zhiyin_dianwei: ['male', 'wei', '4/5', ['wechatkangyong', 'wechatqingqu']],
             wechat_zhiyin_xunyou: ['male', 'wei', 3, ['wechatweimo', 'wechatlance']],
             wechat_zhiyin_sunshangxiang: ['female', 'wu', 3, ['wechatxiaojie', 'wechatjiaohao']],
-            wechat_zhiyin_luxun: ['male', 'wu', 3, ['wechatqianmou', 'wechatweiwo']],
+            wechat_zhiyin_luxun: ['male', 'wu', 3, ['wechatqianmou', 'wechatreweiwo']],
             wechat_zhiyin_taishici: ['male', 'wu', 4, ['wechatjiaofeng', 'wechattscjizhi'], ['name:太史|慈']],
             wechat_zhiyin_diaochan: ['female', 'qun', 3, ['wechatxiaoshao', 'wechatxianshang', 'wechataoyan'], ['name:null|null']],
             wechat_zhiyin_bulianshi: ['female', 'wu', 3, ['wechatshushan', 'wechatbuzhi']],
@@ -12974,6 +12974,7 @@ const packs = function () {
                     const storage = player.storage.wechatweiwo;
                     return storage ? lib.filter.cardDiscardable(card, player) : false;
                 },
+                position: 'he',
                 selectCard() {
                     const storage = get.player().storage.wechatweiwo;
                     return storage ? 1 : -1;
@@ -13004,6 +13005,69 @@ const packs = function () {
                         return 1;
                     },
                     result: { target: -1 },
+                }
+            },
+            wechatreweiwo: {
+                audio: 'wechatweiwo',
+                enable: 'phaseUse',
+                filter(event, player) {
+                    const storage = player.getStorage('wechatreweiwo_used');
+                    const num = Math.max(1, player.countMark('wechatmoulvenum'));
+                    return (!storage.includes('damage') && game.hasPlayer(current => current.countCards('h') > num)) || (!storage.includes('discard') && game.hasPlayer(current => current.countCards('he') && current.countCards('h') < num) && player.hasCard(card => {
+                        if (_status.connectMode) return true;
+                        return lib.filter.cardDiscardable(card, player, 'wechatreweiwo');
+                    }, 'he'))
+                },
+                filterCard: lib.filter.cardDiscardable,
+                position: 'he',
+                selectCard() {
+                    const player = get.player();
+                    const storage = player.getStorage('wechatreweiwo_used');
+                    if (storage.includes('damage')) return 1;
+                    return [0, 1];
+                },
+                filterTarget(card, player, target) {
+                    const num = Math.max(1, player.countMark('wechatmoulvenum'));
+                    if (!ui.selected.cards.length) return target.countCards('h') > num;
+                    return target.countCards('he') && target.countCards('h') < num;
+                },
+                complexSelect: true,
+                check(card) {
+                    const player = get.player();
+                    const storage = player.getStorage('wechatreweiwo_used');
+                    const numx = Math.max(1, player.countMark('wechatmoulvenum'));
+                    let num = 6.5;
+                    if (!storage.includes('damage') && game.hasPlayer(current => current.countCards('h') > numx)) return 0;
+                    if (player.countMark('wechatmoulvenum') - player.countCards('h') == 1 && get.position(card) == 'h') num += 2;
+                    return num - get.value(card);
+                },
+                async content(event, trigger, player) {
+                    const { target, cards } = event;
+                    const bool = get.itemtype(cards) == 'cards';
+                    player.addTempSkill(event.name + '_used', 'phaseUseEnd');
+                    player.markAuto(event.name + '_used', [bool ? 'discard' : 'damage']);
+                    if (bool) await target.chooseToDiscard('he', true);
+                    else await target.damage();
+                    lib.skill.wechatmoulvenum.changeNum(2, player);
+                },
+                ai: {
+                    order(item, player) {
+                        const storage = player.getStorage('wechatreweiwo_used');
+                        const num = Math.max(1, player.countMark('wechatmoulvenum'));
+                        if (!storage.includes('discard') && game.hasPlayer(current => current.countCards('he') && current.countCards('h') < num && get.effect(current, { name: 'guohe_copy2' }, player, player) > 0)) {
+                            if (player.countMark('wechatmoulvenum') - player.countCards('h') == 2) return 12;
+                            return 10;
+                        }
+                        if (!storage.includes('damage') && game.hasPlayer(current => current.countCards('h') > num && get.damageEffect(current, player, player) > 0)) return 10;
+                        return 1;
+                    },
+                    result: { target: -1 },
+                },
+                subSkill: {
+                    used: {
+                        charlotte: true,
+                        onremove: true,
+                    }
                 }
             },
             // 谋黄盖
@@ -15957,6 +16021,8 @@ const packs = function () {
             wechatqianmou_info: `①游戏开始时，你可以弃置至多两张手牌，然后你获得3倍弃牌数的${get.poptip('rule_moulvenum')}。②当你的${get.poptip('rule_moulvenum')}或手牌数变化后，若二者数量相同，你摸一张牌。`,
             wechatweiwo: '帷幄',
             wechatweiwo_info: `转换技。出牌阶段限一次，你可以：阳：对一名手牌数大于X的角色造成1点伤害；阴：与一名手牌数小于X的角色各弃置一张牌。（X为你的${get.poptip('rule_moulvenum')}且至少为1）。然后你获得1点${get.poptip('rule_moulvenum')}。`,
+            wechatreweiwo: '帷幄',
+            wechatreweiwo_info: `出牌阶段各限一次，你可以：1.对一名手牌数大于X的角色造成1点伤害；2.与一名手牌数小于X的角色各弃置一张牌（X为你的${get.poptip('rule_moulvenum')}且至少为1）。然后你获得2点${get.poptip('rule_moulvenum')}。`,
             wechat_sb_huanggai: '微信谋黄盖',
             wechatsbkurou: '苦肉',
             wechatsbkurou_info: '①出牌阶段开始时，你可以交给其他角色一张牌，然后你失去1点体力。②当你失去1点体力后，你获得2点护甲。',
