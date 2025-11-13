@@ -31792,14 +31792,15 @@ const packs = function () {
                     if (event.source !== player) return false;
                     const evt = event.getParent(2);
                     if (!(event.getParent().type === 'card' && evt.name === 'useCard' && evt.player === player && get.color(evt.card) === 'red')) return false;
-                    return (player.getHp() === Math.max(0, player.hp2) && player.isDamaged()) || (player.countCards('h', { suit: 'heart' }) === player.countCards('h', { suit: 'diamond' }) && player.hasCard(card => {
+                    if (typeof player.hp2 === 'number' && player.getHp() === Math.max(0, player.hp2) && player.isDamaged()) return true;
+                    return player.countCards('h', { suit: 'heart' }) === player.countCards('h', { suit: 'diamond' }) && player.hasCard(card => {
                         if (_status.connectMode && get.color(card) === 'h') return true;
                         return lib.filter.cardDiscardable(card, player);
-                    }, 'h'));
+                    }, 'h');
                 },
                 direct: true,
                 async content(event, trigger, player) {
-                    if (player.getHp() === Math.max(0, player.hp2) && player.isDamaged()) {
+                    if (typeof player.hp2 === 'number' && player.getHp() === Math.max(0, player.hp2) && player.isDamaged()) {
                         const result = await player.chooseBool(`${get.translation(event.name)}：是否回复1点体力？`).set('choice', get.recoverEffect(player, player, player) > 0).forResult();
                         if (result?.bool) {
                             player.logSkill(event.name);
@@ -37869,6 +37870,18 @@ const packs = function () {
                 };
                 let start = '转换技。①游戏开始时，你可以转换此技能状态；', end = '。';
                 return `${start}阳：${yang}；阴：${yin}${end}`;
+            },
+            minishuangshu1(player, skill) {
+                if (typeof player.hp2 === 'number') return lib.translate[`${skill}_info`];
+                return '锁定技。回合开始时，你执行一个额外的摸牌阶段。';
+            },
+            minishutu(player, skill) {
+                if (typeof player.hp2 === 'number') return lib.translate[`${skill}_info`];
+                return '当你回复体力后，你可以从牌堆或弃牌堆获得两张指定花色的红色牌。';
+            },
+            minitongdi(player, skill) {
+                if (typeof player.hp2 === 'number') return lib.translate[`${skill}_info`];
+                return '当你使用红色牌令一名角色的体力值变化后，若你手牌中的红桃牌和方片牌的数量相同，则你可以弃置一张红色牌，对一名角色造成1点伤害。';
             },
         },
         translate: {
