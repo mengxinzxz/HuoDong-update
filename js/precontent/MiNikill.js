@@ -7199,6 +7199,39 @@ const packs = function () {
                         nobracket: true,
                         intro: { content: '若你有空置的武器栏，则你视为装备【诸葛连弩】' },
                         group: 'minireguanxing_zhuge',
+                        init(player, skill) {
+                            if (!_status[`${skill}_virtualEquipped`]) {
+                                game.broadcastAll(skill => {
+                                    _status[`${skill}_virtualEquipped`] = lib.element.player.$handleEquipChange;
+                                    lib.element.player.$handleEquipChange = function () {
+                                        _status[`${skill}_virtualEquipped`].apply(this, arguments);
+                                        const player = this;
+                                        if (player.hasSkill(skill)) {
+                                            for (let j = 0; j < player.node.equips.childNodes.length; j++) {
+                                                const card = player.node.equips.childNodes[j];
+                                                if (card.name === 'empty_equip1') {
+                                                    card.node.name2.innerHTML = `${get.translation(skill)} ${get.translation(lib.skill[skill].group.split('_')[1])}`;
+                                                    card.classList.remove('hidden');
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                    };
+                                }, skill);
+                            }
+                            player.$handleEquipChange();
+                        },
+                        onremove(player, skill) {
+                            game.broadcastAll((player, skill) => {
+                                for (let j = 0; j < player.node.equips.childNodes.length; j++) {
+                                    const card = player.node.equips.childNodes[j];
+                                    if (card.name === 'empty_equip1' && card.node.name2.innerHTML === `${get.translation(skill)} ${get.translation(lib.skill[skill].group.split('_')[1])}`) {
+                                        card.classList.add('hidden');
+                                        break;
+                                    }
+                                }
+                            }, player, skill);
+                        },
                     },
                     zhuge: {
                         inherit: 'zhuge_skill',
@@ -10081,6 +10114,39 @@ const packs = function () {
                 content() {
                     player.draw();
                 },
+                init(player, skill) {
+                    if (!_status[`${skill}_virtualEquipped`]) {
+                        game.broadcastAll(skill => {
+                            _status[`${skill}_virtualEquipped`] = lib.element.player.$handleEquipChange;
+                            lib.element.player.$handleEquipChange = function () {
+                                _status[`${skill}_virtualEquipped`].apply(this, arguments);
+                                const player = this;
+                                if (player.hasSkill(skill)) {
+                                    for (let j = 0; j < player.node.equips.childNodes.length; j++) {
+                                        const card = player.node.equips.childNodes[j];
+                                        if (card.name === 'empty_equip2') {
+                                            card.node.name2.innerHTML = `${get.translation(skill)} ${get.translation(lib.skill[skill].group.split('_')[1])}`;
+                                            card.classList.remove('hidden');
+                                            break;
+                                        }
+                                    }
+                                }
+                            };
+                        }, skill);
+                    }
+                    player.$handleEquipChange();
+                },
+                onremove(player, skill) {
+                    game.broadcastAll((player, skill) => {
+                        for (let j = 0; j < player.node.equips.childNodes.length; j++) {
+                            const card = player.node.equips.childNodes[j];
+                            if (card.name === 'empty_equip2' && card.node.name2.innerHTML === `${get.translation(skill)} ${get.translation(lib.skill[skill].group.split('_')[1])}`) {
+                                card.classList.add('hidden');
+                                break;
+                            }
+                        }
+                    }, player, skill);
+                },
             },
             minihuoji: {
                 audio: 'huoji',
@@ -11000,8 +11066,6 @@ const packs = function () {
                 },
             },
             minidaopu: {
-                derivation: 'qinglong_skill',
-                group: 'wechatqinglong',
                 mod: {
                     aiOrder(player, card, num) {
                         if (!player.getEquip('qinglong')) return;
@@ -11012,6 +11076,63 @@ const packs = function () {
                 filter(event, player) {
                     if (!player.getEquip('qinglong')) return false;
                     return event.card && event.card.name == 'sha' && get.color(event.card) == 'red' && event.notLink();
+                },
+                group: 'minidaopu_qinglong',
+                init(player, skill) {
+                    if (!_status[`${skill}_virtualEquipped`]) {
+                        game.broadcastAll(skill => {
+                            _status[`${skill}_virtualEquipped`] = lib.element.player.$handleEquipChange;
+                            lib.element.player.$handleEquipChange = function () {
+                                _status[`${skill}_virtualEquipped`].apply(this, arguments);
+                                const player = this;
+                                if (player.hasSkill(skill)) {
+                                    for (let j = 0; j < player.node.equips.childNodes.length; j++) {
+                                        const card = player.node.equips.childNodes[j];
+                                        if (card.name === 'empty_equip1') {
+                                            card.node.name2.innerHTML = `${get.translation(skill)} ${get.translation(lib.skill[skill].group.split('_')[1])}`;
+                                            card.classList.remove('hidden');
+                                            break;
+                                        }
+                                    }
+                                }
+                            };
+                        }, skill);
+                    }
+                    player.$handleEquipChange();
+                },
+                onremove(player, skill) {
+                    game.broadcastAll((player, skill) => {
+                        for (let j = 0; j < player.node.equips.childNodes.length; j++) {
+                            const card = player.node.equips.childNodes[j];
+                            if (card.name === 'empty_equip1' && card.node.name2.innerHTML === `${get.translation(skill)} ${get.translation(lib.skill[skill].group.split('_')[1])}`) {
+                                card.classList.add('hidden');
+                                break;
+                            }
+                        }
+                    }, player, skill);
+                },
+                subSkill: {
+                    qinglong: {
+                        mod: {
+                            attackRange(player, num) {
+                                if (player.hasEmptySlot(1)) return num + 2;
+                            },
+                        },
+                        audio: 'qinglong_skill',
+                        trigger: { player: ['shaMiss', 'eventNeutralized'] },
+                        filter(event, player) {
+                            if (!player.hasEmptySlot(1) || !event.card || event.card.name != 'sha') return false;
+                            return event.target.isIn() && player.canUse('sha', event.target, false) && (player.hasSha() || _status.connectMode && player.countCards('h'));
+                        },
+                        direct: true,
+                        locked: true,
+                        content() {
+                            player.chooseToUse(get.prompt('qinglong', trigger.target), function (card, player, event) {
+                                if (get.name(card) != 'sha') return false;
+                                return lib.filter.filterCard.apply(this, arguments);
+                            }, trigger.target, -1).set('addCount', false).logSkill = event.name;
+                        },
+                    },
                 },
             },
             //吕凯
@@ -22997,6 +23118,39 @@ const packs = function () {
                         if (type == 'trick' || type == 'delay') return true;
                     },
                 },
+                init(player, skill) {
+                    if (!_status[`${skill}_virtualEquipped`]) {
+                        game.broadcastAll(skill => {
+                            _status[`${skill}_virtualEquipped`] = lib.element.player.$handleEquipChange;
+                            lib.element.player.$handleEquipChange = function () {
+                                _status[`${skill}_virtualEquipped`].apply(this, arguments);
+                                const player = this;
+                                if (player.hasSkill(skill)) {
+                                    for (let j = 0; j < player.node.equips.childNodes.length; j++) {
+                                        const card = player.node.equips.childNodes[j];
+                                        if (card.name === 'empty_equip2') {
+                                            card.node.name2.innerHTML = `${get.translation(skill)} ${get.translation(lib.skill[skill].group[0].split('_')[1])}`;
+                                            card.classList.remove('hidden');
+                                            break;
+                                        }
+                                    }
+                                }
+                            };
+                        }, skill);
+                    }
+                    player.$handleEquipChange();
+                },
+                onremove(player, skill) {
+                    game.broadcastAll((player, skill) => {
+                        for (let j = 0; j < player.node.equips.childNodes.length; j++) {
+                            const card = player.node.equips.childNodes[j];
+                            if (card.name === 'empty_equip2' && card.node.name2.innerHTML === `${get.translation(skill)} ${get.translation(lib.skill[skill].group[0].split('_')[1])}`) {
+                                card.classList.add('hidden');
+                                break;
+                            }
+                        }
+                    }, player, skill);
+                },
             },
             minilinglong_jizhi: {
                 audio: 'rejizhi',
@@ -24178,6 +24332,39 @@ const packs = function () {
                 audio: 'ext:活动武将/audio/skill:true',
                 derivation: 'miniruyi_jingubang',
                 group: ['miniruyi_jingubang', 'miniruyi_jingubang2'],
+                init(player, skill) {
+                    if (!_status[`${skill}_virtualEquipped`]) {
+                        game.broadcastAll(skill => {
+                            _status[`${skill}_virtualEquipped`] = lib.element.player.$handleEquipChange;
+                            lib.element.player.$handleEquipChange = function () {
+                                _status[`${skill}_virtualEquipped`].apply(this, arguments);
+                                const player = this;
+                                if (player.hasSkill(skill)) {
+                                    for (let j = 0; j < player.node.equips.childNodes.length; j++) {
+                                        const card = player.node.equips.childNodes[j];
+                                        if (card.name === 'empty_equip1') {
+                                            card.node.name2.innerHTML = `${get.translation(skill)} ${get.translation(lib.skill[skill].derivation)}`;
+                                            card.classList.remove('hidden');
+                                            break;
+                                        }
+                                    }
+                                }
+                            };
+                        }, skill);
+                    }
+                    player.$handleEquipChange();
+                },
+                onremove(player, skill) {
+                    game.broadcastAll((player, skill) => {
+                        for (let j = 0; j < player.node.equips.childNodes.length; j++) {
+                            const card = player.node.equips.childNodes[j];
+                            if (card.name === 'empty_equip1' && card.node.name2.innerHTML === `${get.translation(skill)} ${get.translation(lib.skill[skill].derivation)}`) {
+                                card.classList.add('hidden');
+                                break;
+                            }
+                        }
+                    }, player, skill);
+                },
                 ai: {
                     effect: {
                         target(card, player, target) {
@@ -38356,7 +38543,6 @@ const packs = function () {
             miniguanxing: '观星',
             miniguanxing_info: '准备阶段，你可以观看牌堆顶的X张牌（场上人数不大于2时X为3，否则X为5）并可以调整这些牌于牌堆顶或牌堆底。若你将所有牌置于牌堆底，则你可以于结束阶段再次发动〖观星〗。',
             minireguanxing: '观星',
-            minireguanxing_liannu: '诸葛连弩',
             minireguanxing_zhuge: '诸葛连弩',
             minireguanxing_info: '①准备阶段和结束阶段，你可以观看牌堆顶的X张牌并可以调整这些牌于牌堆顶或牌堆底，若你的“星”小于X张，你可以将其中一张牌称为“星”置于你的武将牌上。②出牌阶段，你可以获得你武将牌上的所有“星”，若这些牌不小于X张，则你本回合获得如下效果：若你有空置的装备栏，则你视为装备【诸葛连弩】。（X为5，场上人数不大于2时X为3）',
             minikongcheng: '空城',

@@ -700,6 +700,39 @@ const packs = function () {
                 audio: 'qinggang_skill',
                 locked: true,
                 group: 'wechatqinggang_qinggang',
+                init(player, skill) {
+                    if (!_status[`${skill}_virtualEquipped`]) {
+                        game.broadcastAll(skill => {
+                            _status[`${skill}_virtualEquipped`] = lib.element.player.$handleEquipChange;
+                            lib.element.player.$handleEquipChange = function () {
+                                _status[`${skill}_virtualEquipped`].apply(this, arguments);
+                                const player = this;
+                                if (player.hasSkill(skill)) {
+                                    for (let j = 0; j < player.node.equips.childNodes.length; j++) {
+                                        const card = player.node.equips.childNodes[j];
+                                        if (card.name === 'empty_equip1') {
+                                            card.node.name2.innerHTML = `${get.translation(skill)} ${get.translation(lib.skill[skill].group.split('_')[1])}`;
+                                            card.classList.remove('hidden');
+                                            break;
+                                        }
+                                    }
+                                }
+                            };
+                        }, skill);
+                    }
+                    player.$handleEquipChange();
+                },
+                onremove(player, skill) {
+                    game.broadcastAll((player, skill) => {
+                        for (let j = 0; j < player.node.equips.childNodes.length; j++) {
+                            const card = player.node.equips.childNodes[j];
+                            if (card.name === 'empty_equip1' && card.node.name2.innerHTML === `${get.translation(skill)} ${get.translation(lib.skill[skill].group.split('_')[1])}`) {
+                                card.classList.add('hidden');
+                                break;
+                            }
+                        }
+                    }, player, skill);
+                },
                 subSkill: {
                     qinggang: {
                         mod: {
@@ -2725,6 +2758,39 @@ const packs = function () {
                 audio: 'qinglong_skill',
                 locked: true,
                 group: 'wechatqinglong_qinglong',
+                init(player, skill) {
+                    if (!_status[`${skill}_virtualEquipped`]) {
+                        game.broadcastAll(skill => {
+                            _status[`${skill}_virtualEquipped`] = lib.element.player.$handleEquipChange;
+                            lib.element.player.$handleEquipChange = function () {
+                                _status[`${skill}_virtualEquipped`].apply(this, arguments);
+                                const player = this;
+                                if (player.hasSkill(skill)) {
+                                    for (let j = 0; j < player.node.equips.childNodes.length; j++) {
+                                        const card = player.node.equips.childNodes[j];
+                                        if (card.name === 'empty_equip1') {
+                                            card.node.name2.innerHTML = `${get.translation(skill)} ${get.translation(lib.skill[skill].group.split('_')[1])}`;
+                                            card.classList.remove('hidden');
+                                            break;
+                                        }
+                                    }
+                                }
+                            };
+                        }, skill);
+                    }
+                    player.$handleEquipChange();
+                },
+                onremove(player, skill) {
+                    game.broadcastAll((player, skill) => {
+                        for (let j = 0; j < player.node.equips.childNodes.length; j++) {
+                            const card = player.node.equips.childNodes[j];
+                            if (card.name === 'empty_equip1' && card.node.name2.innerHTML === `${get.translation(skill)} ${get.translation(lib.skill[skill].group.split('_')[1])}`) {
+                                card.classList.add('hidden');
+                                break;
+                            }
+                        }
+                    }, player, skill);
+                },
                 subSkill: {
                     qinglong: {
                         mod: {
