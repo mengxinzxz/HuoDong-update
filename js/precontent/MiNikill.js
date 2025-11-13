@@ -40059,9 +40059,9 @@ const packs = function () {
                 }
             };
             const infoitem = lib.character[item];
-            if (typeof infoitem?.hp2 === 'number' && node2.node.hp?.querySelector('.text')) {
+            if (typeof infoitem?.hp2 === 'number' && node.node.hp?.querySelector('.text')) {
                 const { hp, maxHp, hp2 } = infoitem, goon = hp === maxHp;
-                node2.node.hp.querySelector('.text').textContent = `${hp}&${hp2}${goon ? '' : `/${maxHp}`}`;
+                node.node.hp.querySelector('.text').textContent = `${hp}&${hp2}${goon ? '' : `/${maxHp}`}`;
             }
             return node;
         };
