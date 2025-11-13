@@ -37875,7 +37875,7 @@ const packs = function () {
                 if (typeof player.hp2 === 'number') return lib.translate[`${skill}_info`];
                 return '锁定技。回合开始时，你执行一个额外的摸牌阶段。';
             },
-            minishutu(player, skill) {
+            minishutu1(player, skill) {
                 if (typeof player.hp2 === 'number') return lib.translate[`${skill}_info`];
                 return '当你回复体力后，你可以从牌堆或弃牌堆获得两张指定花色的红色牌。';
             },
