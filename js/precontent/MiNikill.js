@@ -7185,7 +7185,10 @@ const packs = function () {
                         content() {
                             const cards = player.getExpansions('minireguanxing');
                             player.gain(cards, 'gain2');
-                            if (cards.length >= Math.min(game.countPlayer() <= 2 ? 3 : 5)) player.addTempSkill('minireguanxing_liannu');
+                            if (cards.length >= Math.min(game.countPlayer() <= 2 ? 3 : 5)) {
+                                player.addTempSkill('minireguanxing_liannu');
+                                player.$handleEquipChange();
+                            }
                         },
                         ai: {
                             order: 9,
