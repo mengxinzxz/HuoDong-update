@@ -39897,48 +39897,36 @@ const packs = function () {
         lib.element.player.init = function (character, character2) {
             const player = this;
             if (lib.character[character]?.hp2 || lib.character[character2]?.hp2) {
-                let hp1 = 0, hp2 = 0, maxHp1 = 0, maxHp2 = 0;
-                if (lib.character[character]?.hp2) {
-                    hp1 = lib.character[character].hp2;
-                    maxHp1 = lib.character[character].maxHp2 || lib.character[character].hp2;
-                }
-                if (lib.character[character2]?.hp2) {
-                    hp2 = lib.character[character2].hp2;
-                    maxHp2 = lib.character[character2].maxHp2 || lib.character[character2].hp2;
-                }
+                let hp1 = 0, hp2 = 0;
+                if (lib.character[character]?.hp2) hp1 = lib.character[character].hp2;
+                if (lib.character[character2]?.hp2) hp2 = lib.character[character2].hp2;
                 if (lib.character[character]?.hp2 && lib.character[character2]?.hp2) {
                     let double_hp;
                     if (_status.connectMode || get.mode() === 'single' && _status.mode === 'changban') double_hp = 'pingjun';
                     else double_hp = get.config('double_hp');
                     switch (double_hp) {
                         case 'pingjun': {
-                            this.maxHp2 = Math.floor((maxHp1 + maxHp2) / 2);
                             this.hp2 = Math.floor((hp1 + hp2) / 2);
                             break;
                         }
                         case 'zuidazhi': {
-                            this.maxHp2 = Math.max(maxHp1, maxHp2);
                             this.hp2 = Math.max(hp1, hp2);
                             break;
                         }
                         case 'zuixiaozhi': {
-                            this.maxHp2 = Math.min(maxHp1, maxHp2);
                             this.hp2 = Math.min(hp1, hp2);
                             break;
                         }
                         case 'zonghe': {
-                            this.maxHp2 = maxHp1 + maxHp2;
                             this.hp2 = hp1 + hp2;
                             break;
                         }
                         default: {
-                            this.maxHp2 = maxHp1 + maxHp2 - 3;
                             this.hp2 = hp1 + hp2 - 3;
                         }
                     }
                 }
                 else {
-                    this.maxHp2 = lib.character[character]?.hp2 ? maxHp1 : maxHp2;
                     this.hp2 = lib.character[character]?.hp2 ? hp1 : hp2;
                 }
             }
@@ -39947,15 +39935,13 @@ const packs = function () {
         const ori2 = lib.element.player.uninit;
         lib.element.player.uninit = function () {
             delete this.hp2;
-            delete this.maxHp2;
-            this.node.hp2?.remove();
             return ori2.apply(this, arguments);
         };
         const ori3 = lib.element.player.$update;
         lib.element.player.$update = function () {
             const player = ori3.apply(this, arguments);
-            if (typeof player.hp2 === 'number' || typeof player.maxHp2 === 'number') {
-                if (player.hp2 >= player.maxHp2) player.hp2 = player.maxHp2;
+            if (typeof player.hp2 === 'number') {
+                if (player.hp2 >= player.maxHp) player.hp2 = player.maxHp;
                 if (!player.storage.nohp) {
                     const hp = player.node.hp;
                     hp.style.transition = 'none';
@@ -39972,7 +39958,7 @@ const packs = function () {
                         span.textContent = str;
                         return span.outerHTML;
                     };
-                    hp.innerHTML = `${getStr(getNum(player.hp2))}${getStr('/')}${getStr(getNum(player.maxHp2))}<div></div><br>${getStr(getNum(player.hp))}${getStr('/')}${getStr(getNum(player.maxHp))}<div></div>`;
+                    hp.innerHTML = `${getStr(getNum(player.hp2))}${getStr('/')}${getStr(getNum(player.maxHp))}<div></div><br>${getStr(getNum(player.hp))}${getStr('/')}${getStr(getNum(player.maxHp))}<div></div>`;
                     if (player.hp === 0 || player.hp2 === 0) hp.lastChild.classList.add('lost');
                     hp.classList.add('textstyle');
                     setTimeout(() => hp.style.transition = '');
@@ -39989,14 +39975,14 @@ const packs = function () {
             return Math.max(0, num);
         };
         lib.element.player.isDamaged = function () {
-            return (this.hp < this.maxHp || (typeof this.hp2 === 'number' && this.hp2 < this.maxHp2)) && !this.storage.nohp;
+            return (this.hp < this.maxHp || (typeof this.hp2 === 'number' && this.hp2 < this.maxHp)) && !this.storage.nohp;
         };
         lib.element.player.isHealthy = function () {
-            return (this.hp >= this.maxHp && (typeof this.hp2 !== 'number' || this.hp2 >= this.maxHp2)) || this.storage.nohp;
+            return (this.hp >= this.maxHp && (typeof this.hp2 !== 'number' || this.hp2 >= this.maxHp)) || this.storage.nohp;
         };
         lib.element.content.recover = function () {
             let list = [player.maxHp - player.hp];
-            if (typeof player.hp2 === 'number') list.push(player.maxHp2 - player.hp2);
+            if (typeof player.hp2 === 'number') list.push(player.maxHp - player.hp2);
             event.num = num = Math.min(num, Math.max(...list));
             if (num > 0) {
                 delete event.filterStop;
@@ -40013,7 +39999,7 @@ const packs = function () {
         const ori5 = lib.element.player.getDamagedHp;
         lib.element.player.getDamagedHp = function () {
             const num = ori5.apply(this, arguments);
-            if (typeof this.hp2 === 'number' && this.hp2 < this.maxHp2) num += this.maxHp2 - this.hp2;
+            if (typeof this.hp2 === 'number' && this.hp2 < this.maxHp) num += this.maxHp - this.hp2;
             return num;
         };
         lib.element.content.changeHp = async function (event, trigger, player) {
@@ -40032,8 +40018,8 @@ const packs = function () {
                     if (_status.dying.includes(player) && (player.hp <= 0 !== player.hp2 <= 0)) {
                         choice = player.hp <= 0 ? 'hp' : 'hp2';
                     }
-                    else if (num > 0 && ((player.hp === player.maxHp) !== (player.hp2 === player.maxHp2))) {
-                        choice = (player.hp2 === player.maxHp2) ? 'hp' : 'hp2';
+                    else if (num > 0 && ((player.hp === player.maxHp) !== (player.hp2 === player.maxHp))) {
+                        choice = (player.hp2 === player.maxHp) ? 'hp' : 'hp2';
                     }
                     else {
                         let index = await player.chooseControl('主武将牌', '副武将牌').set('ai', () => {
@@ -40060,39 +40046,6 @@ const packs = function () {
             }
             await event.trigger('changeHp');
         };
-        lib.element.content.loseMaxHp = async function (event, trigger, player) {
-            const num = event.num;
-            let choice = 'maxHp';
-            if (typeof player.maxHp2 === 'number') {
-                let index = await player.chooseControl('主武将牌', '副武将牌').set('ai', () => {
-                    const player = get.player();
-                    return player.maxHp > player.maxHp2 ? 0 : 1;
-                }).set('prompt', `请选择一张武将牌-${num}体力上限`).forResult('index');
-                choice = (index === 0) ? 'maxHp' : 'maxHp2';
-            }
-            event.choice = choice;
-            game.log(player, `减少了${get.cnNumber(num)}点体力上限`);
-            player[choice] -= num;
-            if (isNaN(player[choice])) player[choice] = 0;
-            event.loseHp = Math.max(0, player[choice === 'maxHp' ? 'hp' : 'hp2'] - player[choice]);
-            player.update();
-            if (player[choice] <= 0) await player.die(event);
-        };
-        lib.element.content.gainMaxHp = async function (event, trigger, player) {
-            const num = event.num;
-            let choice = 'maxHp';
-            if (typeof player.maxHp2 === 'number') {
-                let index = await player.chooseControl('主武将牌', '副武将牌').set('ai', () => {
-                    const player = get.player();
-                    return player.maxHp <= player.maxHp2 ? 0 : 1;
-                }).set('prompt', `请选择一张武将牌+${num}体力上限`).forResult('index');
-                choice = (index === 0) ? 'maxHp' : 'maxHp2';
-            }
-            event.choice = choice;
-            game.log(player, `增加了${get.cnNumber(num)}点体力上限`);
-            player[choice] += num;
-            player.update();
-        };
         const ori6 = ui.create.buttonPresets.character;
         ui.create.buttonPresets.character = function (item) {
             const node = ori6.apply(this, arguments);
@@ -40101,20 +40054,12 @@ const packs = function () {
                 func.apply(this, arguments);
                 const infoitem = lib.character[item2];
                 if (typeof infoitem?.hp2 === 'number' && node2.node.hp?.querySelector('.text')) {
-                    const { hp2, maxHp2 } = infoitem;
-                    node2.node.hp.querySelector('.text').textContent += `&${hp2}`;
-                    if (typeof maxHp2 === 'number' && maxHp2 !== hp2) {
-                        node2.node.hp.querySelector('.text').textContent += `/${maxHp2}`;
-                    }
+                    node2.node.hp.querySelector('.text').textContent += `&${infoitem.hp2}`;
                 }
             };
             const infoitem = lib.character[item];
             if (typeof infoitem?.hp2 === 'number' && node.node.hp?.querySelector('.text')) {
-                const { hp2, maxHp2 } = infoitem;
-                node.node.hp.querySelector('.text').textContent += `&${hp2}`;
-                if (typeof maxHp2 === 'number' && maxHp2 !== hp2) {
-                    node.node.hp.querySelector('.text').textContent += `/${maxHp2}`;
-                }
+                node.node.hp.querySelector('.text').textContent += `&${infoitem.hp2}`;
             }
             return node;
         };
