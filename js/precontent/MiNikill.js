@@ -39941,7 +39941,7 @@ const packs = function () {
         lib.element.player.$update = function () {
             const player = ori3.apply(this, arguments);
             if (typeof player.hp2 === 'number') {
-                if (player.hp2 >= player.maxHp) player.hp2 = player.maxHp;
+                if (player.hp2 >= player.maxHp || _status.event?.name === 'chooseCharacter') player.hp2 = player.maxHp;
                 if (!player.storage.nohp) {
                     const hp = player.node.hp;
                     hp.style.transition = 'none';
