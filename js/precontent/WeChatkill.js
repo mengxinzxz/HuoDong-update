@@ -697,16 +697,23 @@ const packs = function () {
                 },
             },
             wechatqinggang: {
-                mod: {
-                    attackRange(player, num) {
-                        if (player.hasEmptySlot(1)) return num + 1;
-                    },
-                },
                 audio: 'qinggang_skill',
-                inherit: 'qinggang_skill',
-                filter(event, player) {
-                    if (!player.hasEmptySlot(1)) return false;
-                    return event.card.name == 'sha';
+                locked: true,
+                group: 'wechatqinggang_qinggang',
+                subSkill: {
+                    qinggang: {
+                        mod: {
+                            attackRange(player, num) {
+                                if (player.hasEmptySlot(1)) return num + 1;
+                            },
+                        },
+                        audio: 'qinggang_skill',
+                        inherit: 'qinggang_skill',
+                        filter(event, player) {
+                            if (!player.hasEmptySlot(1)) return false;
+                            return event.card.name == 'sha';
+                        },
+                    },
                 },
             },
             wechatshemao: {
@@ -2715,24 +2722,31 @@ const packs = function () {
             },
             //关羽
             wechatqinglong: {
-                mod: {
-                    attackRange(player, num) {
-                        if (player.hasEmptySlot(1)) return num + 2;
-                    },
-                },
-                audio: 'qinglong_skill.mp3',
-                trigger: { player: ['shaMiss', 'eventNeutralized'] },
-                filter(event, player) {
-                    if (!player.hasEmptySlot(1) || !event.card || event.card.name != 'sha') return false;
-                    return event.target.isIn() && player.canUse('sha', event.target, false) && (player.hasSha() || _status.connectMode && player.countCards('h'));
-                },
-                direct: true,
+                audio: 'qinglong_skill',
                 locked: true,
-                content() {
-                    player.chooseToUse(get.prompt('qinglong', trigger.target), function (card, player, event) {
-                        if (get.name(card) != 'sha') return false;
-                        return lib.filter.filterCard.apply(this, arguments);
-                    }, trigger.target, -1).set('addCount', false).logSkill = 'wechatqinglong';
+                group: 'wechatqinglong_qinglong',
+                subSkill: {
+                    qinglong: {
+                        mod: {
+                            attackRange(player, num) {
+                                if (player.hasEmptySlot(1)) return num + 2;
+                            },
+                        },
+                        audio: 'qinglong_skill',
+                        trigger: { player: ['shaMiss', 'eventNeutralized'] },
+                        filter(event, player) {
+                            if (!player.hasEmptySlot(1) || !event.card || event.card.name != 'sha') return false;
+                            return event.target.isIn() && player.canUse('sha', event.target, false) && (player.hasSha() || _status.connectMode && player.countCards('h'));
+                        },
+                        direct: true,
+                        locked: true,
+                        content() {
+                            player.chooseToUse(get.prompt('qinglong', trigger.target), function (card, player, event) {
+                                if (get.name(card) != 'sha') return false;
+                                return lib.filter.filterCard.apply(this, arguments);
+                            }, trigger.target, -1).set('addCount', false).logSkill = event.name;
+                        },
+                    },
                 },
             },
             //许褚
