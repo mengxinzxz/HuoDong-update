@@ -40054,12 +40054,14 @@ const packs = function () {
                 func.apply(this, arguments);
                 const infoitem = lib.character[item2];
                 if (typeof infoitem?.hp2 === 'number' && node2.node.hp?.querySelector('.text')) {
-                    node2.node.hp.querySelector('.text').textContent += `&${infoitem.hp2}`;
+                    const { hp, maxHp, hp2 } = infoitem, goon = hp === maxHp;
+                    node2.node.hp.querySelector('.text').textContent = `${hp}&${hp2}${goon ? '' : `/${maxHp}`}`;
                 }
             };
             const infoitem = lib.character[item];
-            if (typeof infoitem?.hp2 === 'number' && node.node.hp?.querySelector('.text')) {
-                node.node.hp.querySelector('.text').textContent += `&${infoitem.hp2}`;
+            if (typeof infoitem?.hp2 === 'number' && node2.node.hp?.querySelector('.text')) {
+                const { hp, maxHp, hp2 } = infoitem, goon = hp === maxHp;
+                node2.node.hp.querySelector('.text').textContent = `${hp}&${hp2}${goon ? '' : `/${maxHp}`}`;
             }
             return node;
         };
