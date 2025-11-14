@@ -10072,7 +10072,10 @@ const packs = function () {
             bilibili_zhangcai: {
                 trigger: { player: 'gainAfter', global: 'loseAsyncAfter' },
                 filter(event, player) {
-                    return event.getg?.(player)?.some(card => get.owner(card) == player && get.position(card) == 'h');
+                    return event.getg?.(player)?.some(card => {
+                        if (!(get.owner(card) === player && get.position(card) === 'h')) return false;
+                        return _status.connectMode || player.hasUseTarget(card, false);
+                    });
                 },
                 direct: true,
                 locked: false,
