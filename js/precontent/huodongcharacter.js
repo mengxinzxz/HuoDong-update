@@ -10187,16 +10187,15 @@ const packs = function () {
                         for (const i of [...game.players, ...game.dead].unique()) {
                             if (Number(i.dataset.position) >= num) i.dataset.position = (Number(i.dataset.position) + (i === target ? 1 : 2)).toString();
                         }
-                        ['guanyu', 'zhangfei'].forEach((name, index) => {
-                            console.log(name);
+                        ['DJ_pujing', 'DJ_huban'].forEach((name, index) => {
                             let fellow = game.addFellow(num + (index === 0 ? 0 : 2), name);
                             game.broadcast((target, name, index) => {
                                 target = game.addFellow(num + (index === 0 ? 0 : 2), name);
                             }, fellow, name, index);
                             fellow.uninit();
-                            fellow.init(name);
-                            fellow.$draw(4);
-                            fellow.directgain(get.cards(4));
+                            fellow.init(name, false);
+                            fellow.$draw(2 - index);
+                            fellow.directgain(get.cards(2 - index));
                             fellow.addTempSkill('bilibili_laosaozhipao_die', 'roundStart');
                             game.broadcastAll((target, player) => {
                                 target.master = player;
@@ -12287,10 +12286,10 @@ const packs = function () {
             huodongcharacter.translate[`#ext:活动武将/audio/die/${i}:die`] = '点击播放阵亡配音';
         }
         huodongcharacter.character[i][4].push('ext:活动武将/image/character/' + i + '.jpg');
-        huodongcharacter.connectBanned.addArray(huodongcharacter.characterSort.huodongcharacter.Cothers);
-        if (!lib.config.extension_活动武将_DanJi && i.indexOf('DJ_') == 0) delete huodongcharacter.character[i];
-        if (!lib.config.extension_活动武将_SCS && i.indexOf('biliscs_') != -1) delete huodongcharacter.character[i];
+        if (!lib.config.extension_活动武将_DanJi && huodongcharacter.characterSort.huodongcharacter.CDanJi.includes(i)) huodongcharacter.character[i][4].push('unseen');
+        if (!lib.config.extension_活动武将_SCS && huodongcharacter.characterSort.huodongcharacter.CSCS.includes(i)) huodongcharacter.character[i][4].push('unseen');
     }
+    huodongcharacter.connectBanned.addArray(['Cothers', 'CDanJi', 'CSCS'].map(i => huodongcharacter.characterSort.huodongcharacter[i]).flat());
     //“萌新自设”前缀
     lib.namePrefix.set('萌设', {
         color: '#ff6a6a',
