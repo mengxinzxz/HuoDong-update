@@ -15431,7 +15431,7 @@ const packs = function () {
                             if (player.storage.wechatweiqi) {
                                 const { name } = trigger.card;
                                 await player.chooseToUse(function (card, player, event) {
-                                    if (get.name(card) !== 'unsure' || get.name(card) !== get.event('cardName')) return false;
+                                    if (get.name(card) !== 'unsure' && get.name(card) !== get.event('cardName')) return false;
                                     return lib.filter.filterCard.apply(this, arguments);
                                 }, `违器：你可以使用一张${get.translation(name)}`).set('addCount', false).set('cardName', name);
                             }
