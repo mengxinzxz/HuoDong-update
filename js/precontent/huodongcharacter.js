@@ -11606,7 +11606,7 @@ const packs = function () {
             bilibili_qianzhi_append: '<span style="font-family:yuanli">千幻雷音的密码是thunder，不是什么“Thunder”、“thunder，憋问了。”不带符号，不带空格。小雷音寺已解散，Thunder小游戏扩展的密码是thunderXYX，求求你们不要私信问我密码为什么不对了，憋问了。</span>',
             bilibili_lonelypatients: 'lonely patients',
             bilibili_meihua: '美化',
-            bilibili_meihua_info: '分发起始手牌前，你将牌堆中的所有装备牌置于武将牌上（这些牌可如手牌般使用，且每回合每种副类别的牌限使用一次）。你的装备栏不会被废除。其他角色的出牌阶段限一次，其可以交给拥有〖美化〗的一名角色并将一张手牌当作本局游戏牌堆组成的一张装备牌装备之。',
+            bilibili_meihua_info: '分发起始手牌前，你将牌堆中的所有装备牌置于武将牌上（这些牌可如手牌般使用，且每回合每种副类别的牌限使用一次）。你的装备栏不会被废除。其他角色的出牌阶段限一次，其可以交给你一张牌并将一张手牌当作本局游戏牌堆组成的一张装备牌装备之。',
             bilibili_meihua_append: '<span style="font-family:yuanli">之前你说的，我把所有图抠好了给我管理的哈</span>',
             bilibili_renwang: '仁望值',
             bolyuanqing: '渊清',
