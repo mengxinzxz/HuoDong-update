@@ -53,7 +53,7 @@ const packs = function () {
             bilibili_re_xusheng: ['male', 'wu', 4, ['bilibili_pojun', 'kuangcai', 'bilibili_baodao'], ['die:re_xusheng']],
             bilibili_xushao: ['male', 'qun', '1/6', ['bilibili_pingjian'], ['ext:活动武将/image/character/old_xushao.jpg', 'InitFilter:noZhuHp']],
             bilibili_ningjingzhiyuan: ['male', 'key', 4, ['bilibili_liaoxing', 'bilibili_xiezhi', 'bilibili_fazhou'], ['clan:肘家军|宿舍群|肘击群|活动群', 'name:闹动|导近']],
-            bilibili_xizhicaikobe: ['male', 'key', 4, ['bilibili_biexiao', 'bilibili_xingshi', 'bilibili_zhangcai'], ['doublegroup:wei:shu:wu:qun:jin', 'clan:肘家军|肘击群|活动群', 'name:戏|子宓']],
+            bilibili_xizhicaikobe: ['male', 'key', 4, ['bilibili_xingshi', 'bilibili_zhangcai', 'bilibili_laosao'], ['doublegroup:wei:shu:wu:qun:jin', 'clan:肘家军|肘击群|活动群', 'name:戏|子宓']],
             bilibili_yanjing: ['male', 'key', 3, ['bilibili_dongxi', 'bilibili_mingcha', 'bilibili_huiyan'], ['clan:宿舍群|肘击群|活动群', 'name:tooenough|眼睛']],
             bilibili_caifuren: ['female', 'qun', 3, ['bilibili_kuilei'], ["name:蔡|null"]],
             bilibili_xiaoyaoruyun: ['female', 'key', 4, ['bilibili_chuandu', 'bilibili_huaikui', 'bilibili_xyduoyang'], ['clan:宿舍群|肘击群|活动群', 'name:鹿都|智川介']],
@@ -165,7 +165,7 @@ const packs = function () {
             //化身牌
             huashen_unknown: {
                 fullimage: true,
-                image: 'ext:活动武将/image/card/huashen_unknown.jpg'
+                image: 'ext:活动武将/image/card/huashen_unknown.jpg',
             },
             //吴起兵法
             bol_wuqibingfa: {
@@ -190,6 +190,19 @@ const packs = function () {
                         return player.getEquips('bol_wuqibingfa').length ? 0 : 5;
                     },
                     basic: { equipValue: 5 },
+                },
+            },
+            //牢骚之袍
+            bilibili_laosaozhipao: {
+                image: 'ext:活动武将/image/card/bilibili_laosaozhipao.png',
+                fullskin: true,
+                type: 'equip',
+                subtype: 'equip2',
+                skills: ['bilibili_laosaozhipao'],
+                destroy: true,
+                ai: {
+                    order: 10,
+                    basic: { equipValue: 15 },
                 },
             },
         },
@@ -10047,22 +10060,291 @@ const packs = function () {
                 },
             },
             //戏志才
-            bilibili_biexiao: {
-                charlotte: true,
-                superCharlotte: true,
+            bilibili_laosao: {
                 trigger: { player: ['useCard', 'respond', 'useCardToPlayer'] },
                 filter(event, player, name) {
                     if (name == 'useCardToPlayer') return event.target != player;
                     return Array.isArray(event.respondTo) && event.respondTo[0] != player;
                 },
-                forced: true,
-                popup: false,
-                firstDo: true,
-                *content(event, map) {
-                    const player = map.player, trigger = map.trigger;
+                silent: true,
+                async content(event, trigger, player) {
                     const target = event.triggername == 'useCardToPlayer' ? trigger.target : trigger.respondTo[0];
-                    player.flashAvatar('bilibili_biexiao', 'smile' + get.rand(1, 7));
+                    player.flashAvatar('bilibili_laosao', 'smile' + get.rand(1, 7));
                     if (target) target.flashAvatar(null, 'smile' + get.rand(1, 7));
+                },
+                init(player, skill) {
+                    if (!_status[`${skill}_virtualEquipped`]) {
+                        game.broadcastAll(skill => {
+                            _status[`${skill}_virtualEquipped`] = lib.element.player.$handleEquipChange;
+                            lib.element.player.$handleEquipChange = function () {
+                                _status[`${skill}_virtualEquipped`].apply(this, arguments);
+                                let player = this, equip = false, str = `${get.translation(skill)} ${get.translation(lib.skill[skill].group[0].slice(skill.length + 1))}`;
+                                if (player.hasSkill(skill)) {
+                                    for (let j = 0; j < player.node.equips.childNodes.length; j++) {
+                                        const card = player.node.equips.childNodes[j];
+                                        if (card.name === 'empty_equip2' && (card.classList.contains('hidden') || card.node.name2.innerHTML === str)) {
+                                            equip = true;
+                                            card.node.name2.innerHTML = str;
+                                            card.classList.remove('hidden');
+                                            break;
+                                        }
+                                    }
+                                    if (!equip && player.hasEmptySlot(2)) {
+                                        const card = game.createCard('empty_equip2', '', '');
+                                        card.fix();
+                                        card.style.transform = '';
+                                        card.classList.remove('drawinghidden');
+                                        card.classList.add('emptyequip');
+                                        card.node.name2.innerHTML = str;
+                                        delete card._transform;
+                                        const equipNum = get.equipNum(card);
+                                        let equipped = false;
+                                        for (let j = 0; j < player.node.equips.childNodes.length; j++) {
+                                            if (get.equipNum(player.node.equips.childNodes[j]) >= equipNum) {
+                                                player.node.equips.insertBefore(card, player.node.equips.childNodes[j]);
+                                                equipped = true;
+                                                break;
+                                            }
+                                        }
+                                        if (!equipped) {
+                                            player.node.equips.appendChild(card);
+                                            if (_status.discarded) _status.discarded.remove(card);
+                                        }
+                                    }
+                                }
+                            };
+                        }, skill);
+                    }
+                    setTimeout(() => player.$handleEquipChange());
+                },
+                onremove(player, skill) {
+                    game.broadcastAll((player, skill) => {
+                        for (let j = 0; j < player.node.equips.childNodes.length; j++) {
+                            const card = player.node.equips.childNodes[j];
+                            if (card.name === 'empty_equip2' && card.node.name2.innerHTML === `${get.translation(skill)} ${get.translation(lib.skill[skill].group[0].slice(skill.length + 1))}`) {
+                                card.classList.add('hidden');
+                                break;
+                            }
+                        }
+                    }, player, skill);
+                    setTimeout(() => player.$handleEquipChange());
+                },
+                ai: {
+                    effect: {
+                        target(card, player, target) {
+                            if (player == target && get.subtype(card) === 'equip2' && card.name !== 'bilibili_laosaozhipao') {
+                                if (get.equipValue(card) <= 15) return 0;
+                            }
+                        },
+                    },
+                },
+                group: ['bilibili_laosao_bilibili_laosaozhipao', 'bilibili_laosao_init'],
+                subSkill: {
+                    laosaozhipao: {
+                        inherit: 'bilibili_laosaozhipao',
+                        filter(event, player) {
+                            if (!player.hasEmptySlot(2)) return false;
+                            return game.countPlayer(target => target !== player) > 1 - Boolean(player.getEquips('bilibili_laosaozhipao').length);
+                        },
+                    },
+                    init: {
+                        trigger: {
+                            global: ['phaseBefore', 'washCard'],
+                            player: 'enterGame',
+                        },
+                        filter(event, player) {
+                            if (event.name === 'phase' && game.phaseNumber > 0) return false;
+                            return !player.getEquips('bilibili_laosaozhipao').length;
+                        },
+                        forced: true,
+                        async content(event, trigger, player) {
+                            const card = game.createCard('bilibili_laosaozhipao', Math.random() > 0.5 ? 'spade' : 'heart', 13);
+                            if (player.canEquip(card, true)) await player.equip(card);
+                        },
+                    },
+                },
+            },
+            bilibili_laosaozhipao: {
+                equipSkill: true,
+                trigger: { global: 'roundStart' },
+                filter(event, player) {
+                    return game.countPlayer(target => target !== player) > 1 - Boolean(player.getEquips('bilibili_laosaozhipao').length);
+                },
+                async cost(event, trigger, player) {
+                    event.result = await player.chooseTarget(get.prompt2('bilibili_laosaozhipao'), lib.filter.notMe).set('ai', target => {
+                        const player = get.player();
+                        return -get.attitude(player, target) / (target.getHp() + 1);
+                    }).forResult();
+                },
+                async content(event, trigger, player) {
+                    for (const target of game.filterPlayer()) {
+                        if (event.targets.includes(target) || target === player) continue;
+                        target.addTempSkill('bilibili_fazhou_mambaout', 'roundStart');
+                    }
+                    if (player.getEquips('bilibili_laosaozhipao').length > 0) {
+                        const target = event.targets[0], num = Number(target.dataset.position);
+                        ui.arena.setNumber(Number(ui.arena.dataset.number) + 2);
+                        for (const i of [...game.players, ...game.dead].unique()) {
+                            if (Number(i.dataset.position) >= num) i.dataset.position = (Number(i.dataset.position) + (i === target ? 1 : 2)).toString();
+                        }
+                        ['guanyu', 'zhangfei'].forEach((name, index) => {
+                            console.log(name);
+                            let fellow = game.addFellow(num + (index === 0 ? 0 : 2), name);
+                            game.broadcast((target, name, index) => {
+                                target = game.addFellow(num + (index === 0 ? 0 : 2), name);
+                            }, fellow, name, index);
+                            fellow.uninit();
+                            fellow.init(name);
+                            fellow.$draw(4);
+                            fellow.directgain(get.cards(4));
+                            fellow.addTempSkill('bilibili_laosaozhipao_die', 'roundStart');
+                            game.broadcastAll((target, player) => {
+                                target.master = player;
+                                const identity = (target.identity = (identity => {
+                                    switch (identity) {
+                                        case 'zhu':
+                                        case 'mingzhong':
+                                            return 'zhong';
+                                        case 'zhu_false':
+                                            return 'zhong_false';
+                                        case 'bZhu':
+                                            return 'bZhong';
+                                        case 'rZhu':
+                                            return 'rZhong';
+                                        default:
+                                            return identity;
+                                    }
+                                })(player.identity));
+                                if (!lib.translate[identity]) {
+                                    lib.translate[identity] = '从';
+                                    lib.translate[`${identity}2`] = '随从';
+                                }
+                                const goon = player !== game.me && target !== game.me && player.node.identity.classList.contains('guessing') && !player.identityShown;
+                                if (goon) {
+                                    if (target.identityShown) delete target.identityShown;
+                                    if (!target.node.identity.classList.contains('guessing')) target.node.identity.classList.add('guessing');
+                                }
+                                target.setIdentity(goon ? 'cai' : undefined);
+                                if (target.node.dieidentity) target.node.dieidentity.innerHTML = get.translation(`${identity}2`);
+                                if (typeof player.ai?.shown === 'number' && target.ai) target.ai.shown = player.ai.shown;
+                                if (typeof player.side == 'boolean') {
+                                    target.side = player.side;
+                                    target.node.identity.firstChild.innerHTML = player.node.identity.firstChild.innerHTML;
+                                    target.node.identity.dataset.color = player.node.identity.dataset.color;
+                                }
+                                if (!target._zhaohuan_dieAfter2) {
+                                    target._zhaohuan_dieAfter2 = target.dieAfter2;
+                                    target.dieAfter2 = function () {
+                                        const player = this;
+                                        player._zhaohuan_dieAfter2.apply(this, arguments);
+                                        lib.skill.bilibili_laosaozhipao_die.onremove(player);
+                                    };
+                                }
+                                if (!_status.zhaohuanMaster) {
+                                    _status.zhaohuanMaster = function () {
+                                        //检测游戏胜负
+                                        if (typeof game.checkResult === 'function') {
+                                            const origin_checkResult = game.checkResult;
+                                            game.checkResult = function () {
+                                                const player = game.me._trueMe || game.me;
+                                                if (game.players.filter(i => i !== player).every(i => i.master === (player.master || player))) {
+                                                    game.over(true);
+                                                }
+                                                return origin_checkResult.apply(this, arguments);
+                                            };
+                                        }
+                                        if (typeof game.checkOnlineResult === 'function') {
+                                            const origin_checkOnlineResult = game.checkOnlineResult;
+                                            game.checkOnlineResult = function (player) {
+                                                if (game.players.filter(i => i !== player).every(i => i.master === (player.master || player))) return true;
+                                                return origin_checkOnlineResult.apply(this, arguments);
+                                            };
+                                        }
+                                        if (typeof get.attitude === 'function') {
+                                            const origin_attitude = get.attitude;
+                                            get.attitude = function (from, to) {
+                                                if ((from.master || from) === (to.master || to)) return 114514;
+                                                return origin_attitude.apply(this, arguments);
+                                            };
+                                        }
+                                        if (typeof get.rawAttitude === 'function') {
+                                            const origin_rawAttitude = get.rawAttitude;
+                                            get.rawAttitude = function (from, to) {
+                                                if ((from.master || from) === (to.master || to)) return 114514;
+                                                return origin_rawAttitude.apply(this, arguments);
+                                            };
+                                        }
+                                        if (typeof lib.element.player.getFriends === 'function') {
+                                            const origin_getFriends = lib.element.player.getFriends;
+                                            const getFriends = function (func, includeDie) {
+                                                const player = this;
+                                                return [
+                                                    ...origin_getFriends.apply(this, arguments),
+                                                    ...game[includeDie ? 'filterPlayer2' : 'filterPlayer'](target => (target.master || target) === (player.master || player)),
+                                                ].filter(i => i !== player || func === true).unique().sortBySeat(player);
+                                            };
+                                            lib.element.player.getFriends = getFriends;
+                                            [...game.players, ...game.dead].forEach(i => (i.getFriends = getFriends));
+                                        }
+                                        if (typeof lib.element.player.isFriendOf === 'function') {
+                                            const origin_isFriendOf = lib.element.player.isFriendOf;
+                                            const isFriendOf = function (player) {
+                                                if ((this.master || this) === (player.master || player)) return true;
+                                                return origin_isFriendOf.apply(this, arguments);
+                                            };
+                                            lib.element.player.isFriendOf = isFriendOf;
+                                            [...game.players, ...game.dead].forEach(i => (i.isFriendOf = isFriendOf));
+                                        }
+                                        if (typeof lib.element.player.getEnemies === 'function') {
+                                            const origin_getEnemies = lib.element.player.getEnemies;
+                                            const getEnemies = function (func, includeDie) {
+                                                if (this.master) return this.master.getEnemies(func, includeDie);
+                                                else {
+                                                    const player = this;
+                                                    return [
+                                                        ...origin_getEnemies.apply(this, arguments),
+                                                        ...game[includeDie ? 'filterPlayer2' : 'filterPlayer'](target => origin_getEnemies.apply(this, arguments).includes(target.master || target)),
+                                                    ].filter(i => player != (i.master || i)).unique().sortBySeat(player);
+                                                }
+                                            };
+                                            lib.element.player.getEnemies = getEnemies;
+                                            [...game.players, ...game.dead].forEach(i => (i.getEnemies = getEnemies));
+                                        }
+                                    };
+                                    _status.zhaohuanMaster();
+                                }
+                            }, fellow, player);
+                        });
+                    }
+                },
+                subSkill: {
+                    die: {
+                        charlotte: true,
+                        trigger: { global: 'dieAfter' },
+                        filter(event, player) {
+                            return event.player === player.master;
+                        },
+                        silent: true,
+                        firstDo: true,
+                        async content(event, trigger, player) {
+                            await player.die();
+                        },
+                        onremove(player) {
+                            ui.arena.setNumber(Number(ui.arena.dataset.number) - 1);
+                            for (const i of [...game.players, ...game.dead].unique()) {
+                                if (i === player) continue;
+                                if (Number(i.dataset.position) >= Number(player.dataset.position)) i.dataset.position = (Number(i.dataset.position) - 1).toString();
+                            }
+                            player.out();
+                            const cards = player.getCards('hejsx');
+                            while (cards.length) {
+                                ui.discardPile.appendChild(cards.shift());
+                            }
+                            game.players.remove(player);
+                            game.dead.remove(player);
+                            player.remove();
+                        },
+                    }
                 },
             },
             bilibili_xingshi: {
@@ -10256,7 +10538,7 @@ const packs = function () {
             bilibili_zhangcai: {
                 trigger: { player: 'gainAfter', global: 'loseAsyncAfter' },
                 filter(event, player) {
-                    return event.getg && event.getg(player).some(card => get.owner(card) == player && get.position(card) == 'h');
+                    return event.getg?.(player)?.some(card => get.owner(card) == player && get.position(card) == 'h');
                 },
                 direct: true,
                 locked: false,
@@ -10269,13 +10551,30 @@ const packs = function () {
                         let cards = [card];
                         if (Array.isArray(card.cards)) cards.addArray(card.cards);
                         return cards.containsSome(...evt.cards);
-                    }, get.prompt2('bilibili_zhangcai')).set('addCount', false).set('cards', cards).set('logSkill', 'bilibili_zhangcai');
+                    }, get.prompt2(event.name)).set('addCount', false).set('cards', cards).set('logSkill', event.name);
                     if (result.bool) {
-                        const suits = player.getAllHistory('useCard', evt => {
-                            return evt.getParent(2).name == 'bilibili_zhangcai';
+                        let suits = player.getAllHistory('useCard', evt => {
+                            return evt.getParent(2).name == event.name;
                         }).reduce((list, evt) => list.add(get.suit(evt.card)), []);
-                        if (suits.length) yield player.addAdditionalSkills('bilibili_zhangcai', ['jueman', 'oljianman', 'aocai', 'nzry_shicai'].slice(0, Math.min(4, suits.length)));
+                        if (suits.length) {
+                            suits.sort((a, b) => lib.suit.indexOf(b) - lib.suit.indexOf(a));
+                            player.addTip(event.name, [event.name, ...suits].map(i => get.translation(i)).join(''));
+                            yield player.addAdditionalSkills(event.name, lib.skill[event.name].derivation.slice(0, Math.min(4, suits.length)));
+                        }
                     }
+                },
+                init(player, skill) {
+                    let suits = player.getAllHistory('useCard', evt => {
+                        return evt.getParent(2).name == skill;
+                    }).reduce((list, evt) => list.add(get.suit(evt.card)), []);
+                    if (suits.length) {
+                        suits.sort((a, b) => lib.suit.indexOf(b) - lib.suit.indexOf(a));
+                        player.addTip(skill, [skill, ...suits].map(i => get.translation(i)).join(''));
+                        player.addAdditionalSkills(skill, lib.skill[skill].derivation.slice(0, Math.min(4, suits.length)));
+                    }
+                },
+                onremove(player, skill) {
+                    player.removeTip(skill);
                 },
                 mod: {
                     targetInRange(card, player) {
@@ -11823,7 +12122,7 @@ const packs = function () {
             bolcongshi_info: '锁定技。①体力值最大的角色对你的上家和下家使用牌无距离限制。②有角色使用因〖从势①〗增加距离的牌对你的上家或下家造成伤害后，你回复1点体力。',
             bilibili_kuangshen: '狂神',
             bilibili_paoku: '跑酷',
-            bilibili_paoku_info:'每轮开始时/出牌阶段限一次，你可以游玩一次“狂神跑酷”，然后获得等量分数的复活币。当你拥有至少1103个复活币后，你所属阵营获得游戏胜利。',
+            bilibili_paoku_info: '每轮开始时/出牌阶段限一次，你可以游玩一次“狂神跑酷”，然后获得等量分数的复活币。当你拥有至少1103个复活币后，你所属阵营获得游戏胜利。',
             bilibili_shen_guojia: '知箸侠',
             bilibili_huishi: '慧识',
             bilibili_huishi_info: '限定技，出牌阶段限一次，若你的体力上限小于10，你可进行判定牌不置入弃牌堆的判定。若判定结果与本次发动技能时的其他判定结果的花色均不相同且你的体力上限小于10，则你加1点体力上限，且可以重复此流程。然后你将所有位于处理区的判定牌交给一名角色。若其手牌数为全场最多，则你减1点体力上限。',
@@ -11887,7 +12186,6 @@ const packs = function () {
             bilibili_fazhou_info: '每轮开始时，你可以选择任意名上一轮使用过三种类别的牌或造成过伤害的其他角色，对这些角色依次肘成1点伤害，然后本轮将其肘出游戏。',
             bilibili_fazhou_append: '<span style="font-family:yuanli">不顺群意者，当填黑屋之壑。<br>吾令不从者，当膏肘击群之锷。</span>',
             bilibili_xizhicaikobe: '戏志才',
-            bilibili_biexiao: '憋笑',
             bilibili_xingshi: '醒世',
             bilibili_xingshi_info: '锁定技。若你的势力为魏/蜀/吴/群/晋，则你视为拥有对应势力效果。',
             bilibili_xingshi_wei: '魏业',
@@ -11912,7 +12210,11 @@ const packs = function () {
             bilibili_xingshi_awaken_jin_info: '锁定技，结束阶段，若你手牌中的花色数小于3，则你摸一张牌。',
             bilibili_zhangcai: '彰才',
             bilibili_zhangcai_info: '当你获得牌后，你可以使用其中一张牌（无距离和次数限制），然后根据你本局游戏以此法使用过的花色数视为拥有对应技能：≥1，〖蟨蛮〗；≥2，〖鹣蛮〗；≥3，〖傲才〗；≥4，〖恃才〗。',
-            bilibili_zhangcai_append: '<span style="font-family:yuanli"><li>憋笑ing<br><li>seven!seven!</span>',
+            bilibili_laosao: '牢骚',
+            bilibili_laosao_info: `锁定技。你视为装备着${get.poptip('bilibili_laosaozhipao')}。游戏开始时或牌堆洗牌后，你将${get.poptip('bilibili_laosaozhipao')}置入装备区。`,
+            bilibili_laosaozhipao: '牢骚之袍',
+            bilibili_laosaozhipao_info: '每轮开始时，你可以选择一名其他角色，本轮将你与其外的角色移出游戏。若你的装备区有【牢骚之袍】，则你本轮在其上下家分别召唤关羽和张飞。',
+            bilibili_laosao_append: '<span style="font-family:yuanli"><li>憋笑ing<br><li>seven!seven!<br><li>偷菜狂&牢骚哥</span>',
             bol_pinjian: '品鉴',
             bol_pinjian_info: '每回合限一次，你可以于合适的时机发动武将牌堆顶四张牌中的一个技能并将这四张武将牌置入武将牌堆底。',
             bol_yuedan: '月旦',
