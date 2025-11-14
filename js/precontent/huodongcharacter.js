@@ -1501,11 +1501,8 @@ const packs = function () {
                     player.chooseButton([
                         get.prompt('gz_huashen'),
                         '<div class="text center">选择至多两张武将牌作为“化身”牌</div>',
-                        [characters,
-                            (item, type, position, noclick, node, player) => lib.skill.gz_huashen.$createButton(item, type, position, noclick, node, player)],
-                    ], [1, 2]).set('ai', function (button) {
-                        return get.rank(button.link, true);
-                    });
+                        [characters, lib.skill.gz_huashen.$createButton],
+                    ], [1, 2]).set('ai', button => get.rank(button.link, true));
                     'step 2'
                     if (result.bool) {
                         player.logSkill('gz_huashen');
@@ -1517,11 +1514,8 @@ const packs = function () {
                     player.chooseButton([
                         get.prompt('gz_huashen'),
                         '<div class="text center">替换一张“化身”牌</div>',
-                        [player.getStorage('gz_huashen'),
-                        (item, type, position, noclick, node, player) => lib.skill.gz_huashen.$createButton(item, type, position, noclick, node, player)],
-                    ]).set('ai', function (button) {
-                        return get.rank(button.link, true);
-                    });
+                        [player.getStorage('gz_huashen'), lib.skill.gz_huashen.$createButton],
+                    ]).set('ai', button => -get.rank(button.link, true));
                     'step 4'
                     if (result.bool) {
                         player.logSkill('gz_huashen');
@@ -1660,10 +1654,7 @@ const packs = function () {
                 intro: {
                     mark(dialog, storage, player) {
                         if (!storage || !storage.length) return '当前没有“化身”';
-                        if (player.isUnderControl(true)) {
-                            dialog.addText('<li>当前可用“化身”牌', false);
-                            dialog.addSmall([storage, (item, type, position, noclick, node, player) => lib.skill.gz_huashen.$createButton(item, type, position, noclick, node, player)]);
-                        }
+                        if (player.isUnderControl(true)) dialog.addSmall([storage, lib.skill.gz_huashen.$createButton]);
                         else return '共有' + get.cnNumber(storage.length) + '张“化身”';
                     },
                 },
