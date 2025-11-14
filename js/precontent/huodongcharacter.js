@@ -10262,6 +10262,7 @@ const packs = function () {
                                         if (typeof get.attitude === 'function') {
                                             const origin_attitude = get.attitude;
                                             get.attitude = function (from, to) {
+                                                if (!from || !to) return 0;
                                                 if ((from.master || from) === (to.master || to)) return 114514;
                                                 return origin_attitude.apply(this, arguments);
                                             };
@@ -10269,6 +10270,7 @@ const packs = function () {
                                         if (typeof get.rawAttitude === 'function') {
                                             const origin_rawAttitude = get.rawAttitude;
                                             get.rawAttitude = function (from, to) {
+                                                if (!from || !to) return 0;
                                                 if ((from.master || from) === (to.master || to)) return 114514;
                                                 return origin_rawAttitude.apply(this, arguments);
                                             };
