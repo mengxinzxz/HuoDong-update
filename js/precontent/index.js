@@ -303,6 +303,16 @@ export async function precontent(bilibilicharacter) {
         info: '奋武技的使用次数为本轮你造成和受到的伤害值+1，至多为5。',
     });
     lib.poptip.add({
+        name: '移志技',
+        id: 'rule_yizhiSkill',
+        info: '同普通转换技类似，移志技拥有“昔”和“今”两种状态及对应效果且只有在相应状态下拥有相应效果。技能初始状态为“昔”，在满足特定条件下转换状态至“今”。',
+    });
+    lib.poptip.add({
+        name: '移志',
+        id: 'rule_yizhi',
+        info: '移志技的转换状态操作，如无说明，则默认每局游戏仅可执行一次。',
+    });
+    lib.poptip.add({
         name: '牢大',
         id: 'rule_mamba',
         info: 'Man! What can I say? Mamba out!',
