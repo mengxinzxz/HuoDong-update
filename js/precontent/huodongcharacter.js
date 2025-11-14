@@ -10134,8 +10134,8 @@ const packs = function () {
                     bilibili_laosaozhipao: {
                         inherit: 'bilibili_laosaozhipao',
                         filter(event, player) {
-                            if (!player.hasEmptySlot(2)) return false;
-                            return game.countPlayer(target => target !== player) > 1 - Boolean(player.getEquips('bilibili_laosaozhipao').length);
+                            if (!player.hasEmptySlot(2) || player.getEquips('bilibili_laosaozhipao').length > 0) return false;
+                            return game.countPlayer(target => target !== player) > 1;
                         },
                     },
                     init: {
@@ -10159,7 +10159,7 @@ const packs = function () {
                 equipSkill: true,
                 trigger: { global: 'roundStart' },
                 filter(event, player) {
-                    return game.countPlayer(target => target !== player) > 1 - Boolean(player.getEquips('bilibili_laosaozhipao').length);
+                    return game.hasPlayer(target => target !== player);
                 },
                 async cost(event, trigger, player) {
                     event.result = await player.chooseTarget(get.prompt2('bilibili_laosaozhipao'), lib.filter.notMe).set('ai', target => {
