@@ -10140,7 +10140,7 @@ const packs = function () {
                 },
                 group: ['bilibili_laosao_bilibili_laosaozhipao', 'bilibili_laosao_init'],
                 subSkill: {
-                    laosaozhipao: {
+                    bilibili_laosaozhipao: {
                         inherit: 'bilibili_laosaozhipao',
                         filter(event, player) {
                             if (!player.hasEmptySlot(2)) return false;
