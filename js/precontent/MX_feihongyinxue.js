@@ -2647,7 +2647,7 @@ const packs = function () {
                                     player.tempname.addArray(list);
                                     for (let name of list) lib.skill.qiexie.createCard(name);
                                 }, player, list);
-                                let cards = list.map(name => game.createCard(`qiexie_${name}`, 'none', get.character(name).maxHp));
+                                let cards = list.map(name => game.createCard(`qiexie_${name}`, 'none', 'none'));
                                 player.$gain2(cards);
                                 await game.delayx();
                                 for (let card of cards) await player.equip(card);
