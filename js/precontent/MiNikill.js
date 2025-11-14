@@ -10397,7 +10397,7 @@ const packs = function () {
                         `扶汉：请选择获得至多两个技能`,
                         [dialog => {
                             dialog.css({ top: get.is.phoneLayout() ? '20%' : '25%' });
-                            const { characterMap } = get.event();
+                            const { characterMap: map } = get.event();
                             for (const name of Object.keys(map)) {
                                 const table = document.createElement('div');
                                 table.classList.add('add-setting');
@@ -19745,10 +19745,10 @@ const packs = function () {
                     }
                     if (!Object.keys(map).length) return;
                     const { result } = await player.chooseButton([
-                        `###离宫###<div class="text center">请选择获得至多两个技能，或点击“取消”摸三张牌`,
+                        `###离宫###<div class="text center">请选择获得至多两个技能，或点击“取消”摸三张牌</div>`,
                         [dialog => {
                             dialog.css({ top: get.is.phoneLayout() ? '20%' : '25%' });
-                            const { characterMap } = get.event();
+                            const { characterMap: map } = get.event();
                             for (const name of Object.keys(map)) {
                                 const table = document.createElement('div');
                                 table.classList.add('add-setting');
@@ -33203,6 +33203,7 @@ const packs = function () {
             },
             // 神鲁肃
             minitamo: {
+                audio: 'tamo',
                 inherit: 'tamo',
                 getTargets() {
                     return game.filterPlayer(current => {

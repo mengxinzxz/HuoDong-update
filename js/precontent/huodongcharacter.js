@@ -40,7 +40,7 @@ const packs = function () {
             bilibili_adong: ['male', 'qun', 4, ['jueman', 'oljianman'], ['die:ahuinan', 'die:dongtuna', 'name:null|null']],
             old_zuoci: ['male', 'qun', 3, ['gz_huashen', 'gz_xinsheng']],
             bilibili_shengxunyu: ['male', 'key', 4, ['bilibili_hehu', 'bilibili_jinyan', 'bilibili_yutai'], ['clan:宿舍群|肘击群', 'name:熏|鱼']],
-            bilibili_Firewin: ['male', 'key', 4, ['jsrgfeiyang', 'jsrgbahu', 'bilibili_tixiang'], ['clan:宿舍群|肘击群|活动群', 'name:火|赢']],
+            bilibili_Firewin: ['male', 'key', 4, ['bilibili_xianqu', 'bilibili_tixiang'], ['clan:宿舍群|肘击群|活动群', 'name:火|赢']],
             bilibili_jinglingqiu: ['male', 'key', '3/4', ['bilibili_tiyi', 'bilibili_zili'], ['clan:活动群', 'name:精灵|球']],
             bilibili_suixingsifeng: ['female', 'key', 4, ['bilibili_liaoxing', 'bilibili_daili', 'bilibili_duoyang'], ['clan:肘家军|宿舍群|肘击群|活动群', 'name:萌新|转型中']],
             bilibili_Emptycity: ['male', 'key', 4, ['bilibili_zhiyou', 'bilibili_guanli'], ['clan:活动群|Thunder群', 'name:空|城']],
@@ -6603,36 +6603,113 @@ const packs = function () {
                 ai: { order: () => get.order({ name: 'qizhengxiangsheng' }) },
             },
             //Fire.win
-            bilibili_tixiang: {
-                group: ['bilibili_tixiang_log'],
-                unique: true,
+            bilibili_xianqu: {
                 trigger: { global: 'roundStart' },
                 forced: true,
-                priority: 10,
-                content() {
-                    'step 0'
-                    var list = [];
-                    var group = ['wei', 'shu', 'wu', 'qun', 'jin'][player.countMark('bilibili_tixiang') % 5];
-                    while (list.length < 2) {
-                        var name = Object.keys(lib.character).filter(function (name) {
-                            if (list.includes(name) || lib.filter.characterDisabled(name)) return false;
-                            var double = get.is.double(name, true);
-                            return (double ? double.includes(group) : lib.character[name][1] == group) && lib.character[name][3].filter(function (skill) {
-                                return !get.skillCategoriesOf(skill, player).length;
-                            }).length;
-                        }).randomGet();
-                        if (name) {
-                            list.push(name);
-                            player.flashAvatar('bilibili_tixiang', name);
-                            for (var skill of lib.character[name][3].filter(function (skill) {
-                                return !get.skillCategoriesOf(skill, player).length;
-                            })) player.addTempSkill(skill, 'roundStart');
+                async content(event, trigger, player) {
+                    const next = player.insertPhase();
+                    player.addSkill(`${event.name}_effect`);
+                    player.markAuto(`${event.name}_effect`, [next]);
+                    if (!trigger._finished) {
+                        trigger.finish();
+                        trigger._triggered = 5;
+                        trigger.player.insertPhase();
+                    }
+                },
+                derivation: ['jsrgfeiyang', 'jsrgbahu'],
+                subSkill: {
+                    effect: {
+                        charlotte: true,
+                        onremove: true,
+                        trigger: { player: ['phaseBegin', 'phaseAfter'] },
+                        filter(event, player) {
+                            return player.getStorage('bilibili_xianqu_effect').includes(event);
+                        },
+                        silent: true,
+                        async content(event, trigger, player) {
+                            if (event.triggername === 'phaseBegin') {
+                                player.addTempSkills(lib.skill.bilibili_xianqu.derivation);
+                            }
+                            else {
+                                player.unmarkAuto(event.name, [trigger]);
+                                if (!player.getStorage(event.name).length) player.removeSkill(event.name);
+                            }
+                        },
+                    },
+                },
+            },
+            bilibili_tixiang: {
+                unique: true,
+                trigger: {
+                    global: 'phaseBefore',
+                    player: 'enterGame',
+                },
+                filter(event, player) {
+                    return event.name !== 'phase' || game.phaseNumber === 0;
+                },
+                forced: true,
+                async content(event, trigger, player) {
+                    if (!_status.characterlist) lib.skill.pingjian.initList();
+                    let map = {}, groups = [];
+                    while (true) {
+                        let names = _status.characterlist.filter(name => {
+                            const info = lib.character[name], double = get.is.double(name, true);
+                            if (!info || double ? groups.containsSome(...double) : groups.includes(info.group)) return false;
+                            return (info.skills ?? []).length > 0;
+                        });
+                        if (names.length) {
+                            const name = names.randomGet(), info = lib.character[name], double = get.is.double(name, true);
+                            groups[double ? 'addArray' : 'add'](double || info.group);
+                            map[name] = info.skills;
+                            if (Object.keys(map).length >= 5) break;
                         }
                         else break;
                     }
-                    'step 1'
-                    player.addMark('bilibili_tixiang', 1, false);
+                    if (!groups.length) {
+                        await player.draw(8);
+                        return;
+                    }
+                    const result = await player.chooseButton([
+                        `###${get.translation(event.name)}###<div class="text center">选择获得至多四个技能，每少获得一个技能则改为摸两张牌</div>`,
+                        [dialog => {
+                            dialog.classList.add('fullheight');
+                            dialog.css({ top: get.is.phoneLayout() ? '20%' : '25%' });
+                            const { characterMap: map } = get.event();
+                            for (const name of Object.keys(map)) {
+                                const table = document.createElement('div');
+                                table.classList.add('add-setting');
+                                table.style.margin = '0';
+                                table.style.width = '100%';
+                                table.style.position = 'relative';
+                                table.style.display = 'flex';
+                                table.style.justifyContent = 'flex-start';
+                                table.style.alignItems = 'center';
+                                const tdc = ui.create.button(name, 'character', table, true);
+                                for (const item in tdc.node) {
+                                    if (item == 'name') tdc.node.name.style.writingMode = 'horizontal-tb';
+                                    else tdc.node[item].hide();
+                                }
+                                tdc.style.height = '40px';
+                                lib.setIntro(tdc);
+                                const skills = map[name];
+                                for (let i = 0; i < skills.length; i++) {
+                                    const td = ui.create.button([skills[i], get.translation(skills[i])], 'tdnodes', table);
+                                    td.setNodeIntro(get.translation(skills[i]), get.skillInfoTranslation(skills[i], get.player()));
+                                    dialog.buttons.add(td);
+                                }
+                                dialog.content.appendChild(table);
+                            }
+                        }, 'handle'],
+                    ], [1, 4]).set('characterMap', map).set('ai', button => {
+                        const { link } = button, info = get.info(link);
+                        if (info?.ai?.neg) return 0;
+                        return get.skillRank(link, 'inout');
+                    }).forResult();
+                    if (result?.bool && result.links?.length) await player.addSkills(result.links);
+                    const num = 4 - (result?.links ?? []).length;
+                    if (num > 0) await player.draw(num * 2);
                 },
+                group: 'bilibili_tixiang_log',
                 subSkill: {
                     log: {
                         trigger: { player: ['useSkillAfter', 'logSkill'] },
@@ -12030,8 +12107,10 @@ const packs = function () {
             bilibili_yutai_info: '你可以将X张牌当作【奇正相生】使用（X为你本回合发动〖彧态〗的次数+1，且X至多为3）。',
             bilibili_yutai_append: '<span style="font-family:yuanli">我是活动群团宠，我最爱的就是惹事然后被宵禁</span>',
             bilibili_Firewin: 'Fire.win',
+            bilibili_xianqu: '先驱',
+            bilibili_xianqu_info: '锁定技。每轮开始时，你执行一个额外回合，且你于此回合获得〖飞扬〗和〖跋扈〗。',
             bilibili_tixiang: '替像',
-            bilibili_tixiang_info: '锁定技。①每轮开始时，你按照[魏、蜀、吴、群、晋]的顺序获得当前势力的随机两张武将牌的所有无标签技能直至下一轮开始。②当你发动无标签技能结算结束后，你触发一次扩展内置彩蛋。',
+            bilibili_tixiang_info: '锁定技。①游戏开始时，系统随机从剩余武将牌堆中筛选出五张不同势力的武将牌，你选择这些武将牌上的至多四个技能获得之（每少获得一个技能则改为摸两张牌）。②当你发动无标签技能结算结束后，你触发一次扩展内置彩蛋。',
             bilibili_tixiang_append: '<span style="font-family:yuanli">我每个月都要换头像，我这儿有很多的鸟可以换</span>',
             bilibili_jinglingqiu: '精灵球',
             bilibili_jinglingqiu_ab: '?',
