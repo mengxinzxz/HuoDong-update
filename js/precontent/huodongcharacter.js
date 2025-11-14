@@ -7054,7 +7054,7 @@ const packs = function () {
                                 const evt = event.getParent();
                                 if (evt.name === "orderingDiscard") {
                                     const evtx = evt.relatedEvent || evt.getParent();
-                                    if (evtx && ['useCard', 'respond'].includes(evtx.name) && evtx.skill === 'bilibili_duoyang_backup') return false;
+                                    if (evtx && ['useCard', 'respond'].includes(evtx.name) && evtx.player === player) return false;
                                 }
                             }
                             if (get.position(card, true) !== 'd' || get.type(card) === 'equip') return false;
@@ -7421,10 +7421,9 @@ const packs = function () {
             },
             //群主
             bilibili_meihua: {
-                group: 'bilibili_meihua_unmark',
-                global: 'bilibili_meihua_global',
                 init(player) {
                     for (var i = 1; i <= 5; i++) {
+                        player.expandEquip(i);
                         if (player.isDisabled(i)) player.enableEquip(i);
                     }
                 },
@@ -7474,6 +7473,8 @@ const packs = function () {
                         }
                     },
                 },
+                group: 'bilibili_meihua_unmark',
+                global: 'bilibili_meihua_global',
                 subSkill: {
                     unmark: {
                         charlotte: true,
@@ -11588,7 +11589,7 @@ const packs = function () {
             bilibili_liaoxing_tag: '星',
             bilibili_liaoxing_info: '锁定技。①你的初始手牌数不会少于X张（X为游戏人数）；分发起始手牌后，所有其他角色的手牌被标记为“星”。②一名角色失去“星”后，其获得等量的【影】。③一名角色失去【影】后，你摸等量的牌。',
             bilibili_duoyang: '多样',
-            bilibili_duoyang_info: '锁定技。①一张非装备牌非因〖多样②〗进入弃牌堆后，你将此牌以随机副类别置入装备区。②你可以使用或打出装备区里的非装备牌。',
+            bilibili_duoyang_info: '锁定技。①一张非装备牌非因你使用或打出进入弃牌堆后，你将此牌以随机副类别置入装备区。②你可以使用或打出装备区里的非装备牌。',
             bilibili_duoyang_append: '<span style="font-family:yuanli">萌新（转型中）御用第二人格</span>',
             bilibili_xuxiang: '虚像',
             bilibili_xuxiang_info: '锁定技，防止你受到的伤害。',
@@ -11606,7 +11607,7 @@ const packs = function () {
             bilibili_qianzhi_append: '<span style="font-family:yuanli">千幻雷音的密码是thunder，不是什么“Thunder”、“thunder，憋问了。”不带符号，不带空格。小雷音寺已解散，Thunder小游戏扩展的密码是thunderXYX，求求你们不要私信问我密码为什么不对了，憋问了。</span>',
             bilibili_lonelypatients: 'lonely patients',
             bilibili_meihua: '美化',
-            bilibili_meihua_info: '分发起始手牌前，你将牌堆中的所有装备牌置于武将牌上（这些牌可如手牌般使用，且每回合每种副类别的牌限使用一次）。你的装备栏不会被废除。其他角色的出牌阶段限一次，其可以交给你一张牌并将一张手牌当作本局游戏牌堆组成的一张装备牌装备之。',
+            bilibili_meihua_info: '锁定技。①分发起始手牌前，你将牌堆中的所有装备牌置于武将牌上（这些牌可如手牌般使用，且每回合每种副类别的牌限使用一次）。②你的装备栏不会被废除且你的装备栏数量翻倍。③其他角色的出牌阶段限一次，其可以交给你一张牌并将一张手牌当作本局游戏牌堆组成的一张装备牌装备之。',
             bilibili_meihua_append: '<span style="font-family:yuanli">之前你说的，我把所有图抠好了给我管理的哈</span>',
             bilibili_renwang: '仁望值',
             bolyuanqing: '渊清',
