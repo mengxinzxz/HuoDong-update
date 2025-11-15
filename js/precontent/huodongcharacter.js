@@ -11704,7 +11704,7 @@ const packs = function () {
             bilibili_xiezhi_info: '锁定技，其他角色的回合开始时，你选择X次牌的类别，其本回合至多使用选择类别次数的对应类别的牌（X为其手牌数且至少为3，仅限选择基本、锦囊、装备且每种类别至少选择一次）。',
             bilibili_fazhou: '罚肘',
             bilibili_fazhou_info: '每轮开始时，你可以选择任意名上一轮使用过三种类别的牌或造成过伤害的其他角色，对这些角色依次肘成1点伤害，然后本轮将其肘出游戏。',
-            bilibili_fazhou_append: '<span style="font-family:yuanli">不顺群意者，当填黑屋之壑。<br>吾令不从者，当膏肘击群之锷。</span>',
+            bilibili_fazhou_append: '<span style="font-family:yuanli">不顺群意者，当填黑屋之壑<br>吾令不从者，当膏肘击之锷</span>',
             bilibili_xizhicaikobe: '戏志才',
             bilibili_zhangcai: '彰才',
             bilibili_zhangcai_info: '当你获得牌后，你可以使用其中一张牌，然后根据你本局游戏以此法使用过的花色数视为拥有对应技能：≥1，〖蟨蛮〗；≥2，〖鹣蛮〗；≥3，〖傲才〗；≥4，〖恃才〗。',
