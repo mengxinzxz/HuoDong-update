@@ -6972,7 +6972,13 @@ const packs = function () {
                 },
                 enable: ['chooseToUse', 'chooseToRespond'],
                 filter(event, player) {
-                    return player.hasCard(card => get.type(card) !== 'equip' && event.filterCard(card, player, event), 'e');
+                    return player.hasCard(card => {
+                        if (get.type(card) === 'equip') return false;
+                        _status.bilibili_duoyang_check = true;
+                        const bool = event.filterCard(card, player, event);
+                        delete _status.bilibili_duoyang_check;
+                        return bool;
+                    }, 'e');
                 },
                 chooseButton: {
                     dialog(event, player) {
@@ -6980,8 +6986,11 @@ const packs = function () {
                     },
                     filter(button, player) {
                         if (get.type(button.link) === 'equip') return false;
+                        _status.bilibili_duoyang_check = true;
                         const evt = get.event().getParent();
-                        return evt?.filterCard?.(button.link, player, evt) ?? true;
+                        const bool = evt?.filterCard?.(button.link, player, evt) ?? true;
+                        delete _status.bilibili_duoyang_check;
+                        return bool;
                     },
                     check(button) {
                         if (get.event().getParent().type !== 'phase') return 1;
@@ -7004,6 +7013,9 @@ const packs = function () {
                             selectCard: -1,
                             position: 'e',
                             viewAs: links[0],
+                            precontent() {
+                                event.getParent().addCount = false;
+                            },
                         }
                     },
                 },
@@ -7040,6 +7052,14 @@ const packs = function () {
                             if (_status.event.dying) return get.attitude(player, _status.event.dying);
                             return 1;
                         },
+                    },
+                },
+                mod: {
+                    targetInRange() {
+                        if (_status.event.skill === 'bilibili_duoyang_backup' || _status.bilibili_duoyang_check) return true;
+                    },
+                    cardUsable() {
+                        if (_status.event.skill === 'bilibili_duoyang_backup' || _status.bilibili_duoyang_check) return Infinity;
                     },
                 },
                 group: 'bilibili_duoyang_put',
@@ -9865,7 +9885,7 @@ const packs = function () {
                         inherit: 'bilibili_laosaozhipao',
                         filter(event, player) {
                             if (!player.hasEmptySlot(2) || player.getEquips('bilibili_laosaozhipao').length > 0) return false;
-                            return game.countPlayer(target => target !== player) > 1;
+                            return game.hasPlayer(target => target !== player);
                         },
                     },
                     init: {
@@ -9892,153 +9912,156 @@ const packs = function () {
                     return game.hasPlayer(target => target !== player);
                 },
                 async cost(event, trigger, player) {
-                    event.result = await player.chooseTarget(get.prompt2('bilibili_laosaozhipao'), lib.filter.notMe).set('ai', target => {
+                    const goon = event.skill === 'bilibili_laosaozhipao';
+                    event.result = await player.chooseTarget(`请选择【${get.translation(event.skill)}】的目标`, (() => {
+                        return `选择一名其他角色，本轮将你与其外的角色移出游戏，然后${goon ? '你' : '其'}在${goon ? '其' : '你'}上下家分别召唤普净和胡班`;
+                    })(), lib.filter.notMe, true).set('ai', target => {
                         const player = get.player();
                         return -get.attitude(player, target) / (target.getHp() + 1);
                     }).forResult();
                 },
+                locked: true,
                 async content(event, trigger, player) {
                     for (const target of game.filterPlayer()) {
                         if (event.targets.includes(target) || target === player) continue;
                         target.addTempSkill('bilibili_fazhou_mambaout', 'roundStart');
                     }
-                    if (player.getEquips('bilibili_laosaozhipao').length > 0) {
-                        const target = event.targets[0], num = Number(target.dataset.position);
-                        ui.arena.setNumber(Number(ui.arena.dataset.number) + 2);
-                        for (const i of [...game.players, ...game.dead].unique()) {
-                            if (Number(i.dataset.position) >= Math.max(1, num)) {
-                                i.dataset.position = (Number(i.dataset.position) + ((i === target || num === 0) ? 1 : 2)).toString();
-                            }
+                    const goon = event.name === 'bilibili_laosaozhipao';
+                    const target = goon ? event.targets[0] : player, num = Number(target.dataset.position);
+                    ui.arena.setNumber(Number(ui.arena.dataset.number) + 2);
+                    for (const i of [...game.players, ...game.dead].unique()) {
+                        if (Number(i.dataset.position) >= Math.max(1, num)) {
+                            i.dataset.position = (Number(i.dataset.position) + ((i === target || num === 0) ? 1 : 2)).toString();
                         }
-                        ['DJ_pujing', 'DJ_huban'].forEach((name, index) => {
-                            let fellow = game.addFellow(num === 0 ? (index === 0 ? 1 : Number(ui.arena.dataset.number) - 1) : (num + (index === 0 ? 0 : 2)), name);
-                            game.broadcast((target, name, index) => {
-                                target = game.addFellow(num === 0 ? (index === 0 ? 1 : Number(ui.arena.dataset.number) - 1) : (num + (index === 0 ? 0 : 2)), name);
-                            }, fellow, name, index);
-                            fellow.uninit();
-                            fellow.init(name, false);
-                            fellow.$draw(2 - index);
-                            fellow.directgain(get.cards(2 - index));
-                            fellow.addTempSkill('bilibili_laosaozhipao_die', 'roundStart');
-                            game.broadcastAll((target, player) => {
-                                target.bilibili_master = player;
-                                const identity = (target.identity = (identity => {
-                                    switch (identity) {
-                                        case 'zhu':
-                                        case 'mingzhong':
-                                            return 'zhong';
-                                        case 'zhu_false':
-                                            return 'zhong_false';
-                                        case 'bZhu':
-                                            return 'bZhong';
-                                        case 'rZhu':
-                                            return 'rZhong';
-                                        default:
-                                            return identity;
+                    }
+                    ['DJ_pujing', 'DJ_huban'].forEach((name, index) => {
+                        let fellow = game.addFellow(num === 0 ? (index === 0 ? 1 : Number(ui.arena.dataset.number) - 1) : (num + (index === 0 ? 0 : 2)), name);
+                        game.broadcast((target, name, index) => {
+                            target = game.addFellow(num === 0 ? (index === 0 ? 1 : Number(ui.arena.dataset.number) - 1) : (num + (index === 0 ? 0 : 2)), name);
+                        }, fellow, name, index);
+                        fellow.uninit();
+                        fellow.init(name, false);
+                        fellow.$draw(2 - index);
+                        fellow.directgain(get.cards(2 - index));
+                        fellow.addTempSkill('bilibili_laosaozhipao_die', 'roundStart');
+                        game.broadcastAll((target, player) => {
+                            target.bilibili_master = player;
+                            const identity = (target.identity = (identity => {
+                                switch (identity) {
+                                    case 'zhu':
+                                    case 'mingzhong':
+                                        return 'zhong';
+                                    case 'zhu_false':
+                                        return 'zhong_false';
+                                    case 'bZhu':
+                                        return 'bZhong';
+                                    case 'rZhu':
+                                        return 'rZhong';
+                                    default:
+                                        return identity;
+                                }
+                            })(player.identity));
+                            if (!lib.translate[identity]) {
+                                lib.translate[identity] = '从';
+                                lib.translate[`${identity}2`] = '随从';
+                            }
+                            const goon = player !== game.me && target !== game.me && player.node.identity.classList.contains('guessing') && !player.identityShown;
+                            if (goon) {
+                                if (target.identityShown) delete target.identityShown;
+                                if (!target.node.identity.classList.contains('guessing')) target.node.identity.classList.add('guessing');
+                            }
+                            target.setIdentity(goon ? 'cai' : undefined);
+                            if (target.node.dieidentity) target.node.dieidentity.innerHTML = get.translation(`${identity}2`);
+                            if (typeof player.ai?.shown === 'number' && target.ai) target.ai.shown = player.ai.shown;
+                            if (typeof player.side == 'boolean') {
+                                target.side = player.side;
+                                target.node.identity.firstChild.innerHTML = player.node.identity.firstChild.innerHTML;
+                                target.node.identity.dataset.color = player.node.identity.dataset.color;
+                            }
+                            target.dieAfter2 = function () {
+                                lib.skill.bilibili_laosaozhipao_die.onremove(this);
+                            };
+                            if (!_status.zhaohuanMaster) {
+                                _status.zhaohuanMaster = function () {
+                                    //检测游戏胜负
+                                    if (typeof game.checkResult === 'function') {
+                                        const origin_checkResult = game.checkResult;
+                                        game.checkResult = function () {
+                                            const event = _status.event;
+                                            if (event && event.name === 'die' && event.player.bilibili_master) return;
+                                            const player = game.me._trueMe || game.me;
+                                            if (game.players.filter(i => i !== player).every(i => i.bilibili_master === (player.bilibili_master || player))) {
+                                                game.over(true);
+                                            }
+                                            return origin_checkResult.apply(this, arguments);
+                                        };
                                     }
-                                })(player.identity));
-                                if (!lib.translate[identity]) {
-                                    lib.translate[identity] = '从';
-                                    lib.translate[`${identity}2`] = '随从';
-                                }
-                                const goon = player !== game.me && target !== game.me && player.node.identity.classList.contains('guessing') && !player.identityShown;
-                                if (goon) {
-                                    if (target.identityShown) delete target.identityShown;
-                                    if (!target.node.identity.classList.contains('guessing')) target.node.identity.classList.add('guessing');
-                                }
-                                target.setIdentity(goon ? 'cai' : undefined);
-                                if (target.node.dieidentity) target.node.dieidentity.innerHTML = get.translation(`${identity}2`);
-                                if (typeof player.ai?.shown === 'number' && target.ai) target.ai.shown = player.ai.shown;
-                                if (typeof player.side == 'boolean') {
-                                    target.side = player.side;
-                                    target.node.identity.firstChild.innerHTML = player.node.identity.firstChild.innerHTML;
-                                    target.node.identity.dataset.color = player.node.identity.dataset.color;
-                                }
-                                target.dieAfter2 = function () {
-                                    lib.skill.bilibili_laosaozhipao_die.onremove(this);
-                                };
-                                if (!_status.zhaohuanMaster) {
-                                    _status.zhaohuanMaster = function () {
-                                        //检测游戏胜负
-                                        if (typeof game.checkResult === 'function') {
-                                            const origin_checkResult = game.checkResult;
-                                            game.checkResult = function () {
-                                                const event = _status.event;
-                                                if (event && event.name === 'die' && event.player.bilibili_master) return;
-                                                const player = game.me._trueMe || game.me;
-                                                if (game.players.filter(i => i !== player).every(i => i.bilibili_master === (player.bilibili_master || player))) {
-                                                    game.over(true);
-                                                }
-                                                return origin_checkResult.apply(this, arguments);
-                                            };
-                                        }
-                                        if (typeof game.checkOnlineResult === 'function') {
-                                            const origin_checkOnlineResult = game.checkOnlineResult;
-                                            game.checkOnlineResult = function (player) {
-                                                const event = _status.event;
-                                                if (event && event.name === 'die' && event.player.bilibili_master) return;
-                                                if (game.players.filter(i => i !== player).every(i => i.bilibili_master === (player.bilibili_master || player))) return true;
-                                                return origin_checkOnlineResult.apply(this, arguments);
-                                            };
-                                        }
-                                        if (typeof get.attitude === 'function') {
-                                            const origin_attitude = get.attitude;
-                                            get.attitude = function (from, to) {
-                                                if (!from || !to) return 0;
-                                                if ((from.bilibili_master || from) === (to.bilibili_master || to)) return 114514;
-                                                return origin_attitude.apply(this, arguments);
-                                            };
-                                        }
-                                        if (typeof get.rawAttitude === 'function') {
-                                            const origin_rawAttitude = get.rawAttitude;
-                                            get.rawAttitude = function (from, to) {
-                                                if (!from || !to) return 0;
-                                                if ((from.bilibili_master || from) === (to.bilibili_master || to)) return 114514;
-                                                return origin_rawAttitude.apply(this, arguments);
-                                            };
-                                        }
-                                        if (typeof lib.element.player.getFriends === 'function') {
-                                            const origin_getFriends = lib.element.player.getFriends;
-                                            const getFriends = function (func, includeDie) {
+                                    if (typeof game.checkOnlineResult === 'function') {
+                                        const origin_checkOnlineResult = game.checkOnlineResult;
+                                        game.checkOnlineResult = function (player) {
+                                            const event = _status.event;
+                                            if (event && event.name === 'die' && event.player.bilibili_master) return;
+                                            if (game.players.filter(i => i !== player).every(i => i.bilibili_master === (player.bilibili_master || player))) return true;
+                                            return origin_checkOnlineResult.apply(this, arguments);
+                                        };
+                                    }
+                                    if (typeof get.attitude === 'function') {
+                                        const origin_attitude = get.attitude;
+                                        get.attitude = function (from, to) {
+                                            if (!from || !to) return 0;
+                                            if ((from.bilibili_master || from) === (to.bilibili_master || to)) return 114514;
+                                            return origin_attitude.apply(this, arguments);
+                                        };
+                                    }
+                                    if (typeof get.rawAttitude === 'function') {
+                                        const origin_rawAttitude = get.rawAttitude;
+                                        get.rawAttitude = function (from, to) {
+                                            if (!from || !to) return 0;
+                                            if ((from.bilibili_master || from) === (to.bilibili_master || to)) return 114514;
+                                            return origin_rawAttitude.apply(this, arguments);
+                                        };
+                                    }
+                                    if (typeof lib.element.player.getFriends === 'function') {
+                                        const origin_getFriends = lib.element.player.getFriends;
+                                        const getFriends = function (func, includeDie) {
+                                            const player = this;
+                                            return [
+                                                ...origin_getFriends.apply(this, arguments),
+                                                ...game[includeDie ? 'filterPlayer2' : 'filterPlayer'](target => (target.bilibili_master || target) === (player.bilibili_master || player)),
+                                            ].filter(i => i !== player || func === true).unique().sortBySeat(player);
+                                        };
+                                        lib.element.player.getFriends = getFriends;
+                                        [...game.players, ...game.dead].forEach(i => (i.getFriends = getFriends));
+                                    }
+                                    if (typeof lib.element.player.isFriendOf === 'function') {
+                                        const origin_isFriendOf = lib.element.player.isFriendOf;
+                                        const isFriendOf = function (player) {
+                                            if ((this.bilibili_master || this) === (player.bilibili_master || player)) return true;
+                                            return origin_isFriendOf.apply(this, arguments);
+                                        };
+                                        lib.element.player.isFriendOf = isFriendOf;
+                                        [...game.players, ...game.dead].forEach(i => (i.isFriendOf = isFriendOf));
+                                    }
+                                    if (typeof lib.element.player.getEnemies === 'function') {
+                                        const origin_getEnemies = lib.element.player.getEnemies;
+                                        const getEnemies = function (func, includeDie) {
+                                            if (this.bilibili_master) return this.bilibili_master.getEnemies(func, includeDie);
+                                            else {
                                                 const player = this;
                                                 return [
-                                                    ...origin_getFriends.apply(this, arguments),
-                                                    ...game[includeDie ? 'filterPlayer2' : 'filterPlayer'](target => (target.bilibili_master || target) === (player.bilibili_master || player)),
-                                                ].filter(i => i !== player || func === true).unique().sortBySeat(player);
-                                            };
-                                            lib.element.player.getFriends = getFriends;
-                                            [...game.players, ...game.dead].forEach(i => (i.getFriends = getFriends));
-                                        }
-                                        if (typeof lib.element.player.isFriendOf === 'function') {
-                                            const origin_isFriendOf = lib.element.player.isFriendOf;
-                                            const isFriendOf = function (player) {
-                                                if ((this.bilibili_master || this) === (player.bilibili_master || player)) return true;
-                                                return origin_isFriendOf.apply(this, arguments);
-                                            };
-                                            lib.element.player.isFriendOf = isFriendOf;
-                                            [...game.players, ...game.dead].forEach(i => (i.isFriendOf = isFriendOf));
-                                        }
-                                        if (typeof lib.element.player.getEnemies === 'function') {
-                                            const origin_getEnemies = lib.element.player.getEnemies;
-                                            const getEnemies = function (func, includeDie) {
-                                                if (this.bilibili_master) return this.bilibili_master.getEnemies(func, includeDie);
-                                                else {
-                                                    const player = this;
-                                                    return [
-                                                        ...origin_getEnemies.apply(this, arguments),
-                                                        ...game[includeDie ? 'filterPlayer2' : 'filterPlayer'](target => origin_getEnemies.apply(this, arguments).includes(target.bilibili_master || target)),
-                                                    ].filter(i => player != (i.bilibili_master || i)).unique().sortBySeat(player);
-                                                }
-                                            };
-                                            lib.element.player.getEnemies = getEnemies;
-                                            [...game.players, ...game.dead].forEach(i => (i.getEnemies = getEnemies));
-                                        }
-                                    };
-                                    _status.zhaohuanMaster();
-                                }
-                            }, fellow, player);
-                        });
-                    }
+                                                    ...origin_getEnemies.apply(this, arguments),
+                                                    ...game[includeDie ? 'filterPlayer2' : 'filterPlayer'](target => origin_getEnemies.apply(this, arguments).includes(target.bilibili_master || target)),
+                                                ].filter(i => player != (i.bilibili_master || i)).unique().sortBySeat(player);
+                                            }
+                                        };
+                                        lib.element.player.getEnemies = getEnemies;
+                                        [...game.players, ...game.dead].forEach(i => (i.getEnemies = getEnemies));
+                                    }
+                                };
+                                _status.zhaohuanMaster();
+                            }
+                        }, fellow, goon ? player : event.targets[0]);
+                    });
                 },
                 subSkill: {
                     die: {
@@ -11593,7 +11616,7 @@ const packs = function () {
             bilibili_liaoxing_tag: '星',
             bilibili_liaoxing_info: '锁定技。①你的初始手牌数不会少于X张（X为游戏人数）；分发起始手牌后，所有其他角色的手牌被标记为“星”。②一名角色失去“星”后，其获得等量的【影】。③一名角色失去【影】后，你摸等量的牌。',
             bilibili_duoyang: '多样',
-            bilibili_duoyang_info: '锁定技。①一张非装备牌非因你使用或打出进入弃牌堆后，你将此牌以随机副类别置入装备区。②你可以使用或打出装备区里的非装备牌。',
+            bilibili_duoyang_info: '锁定技。①一张非装备牌非因你使用或打出进入弃牌堆后，你将此牌以随机副类别置入装备区。②你可以使用或打出装备区里的非装备牌（无距离和任何次数限制）。',
             bilibili_duoyang_append: '<span style="font-family:yuanli">萌新（转型中）御用第二人格</span>',
             bilibili_xuxiang: '虚像',
             bilibili_xuxiang_info: '锁定技，防止你受到的伤害。',
@@ -11724,7 +11747,7 @@ const packs = function () {
             bilibili_laosao: '牢骚',
             bilibili_laosao_info: `锁定技。你视为装备着${get.poptip('bilibili_laosaozhipao')}。游戏开始时或牌堆洗牌后，你将${get.poptip('bilibili_laosaozhipao')}置入装备区。`,
             bilibili_laosaozhipao: '牢骚之袍',
-            bilibili_laosaozhipao_info: '每轮开始时，你可以选择一名其他角色，本轮将你与其外的角色移出游戏。若你的装备区有【牢骚之袍】，则你本轮在其上下家分别召唤普净和胡班。',
+            bilibili_laosaozhipao_info: '锁定技。每轮开始时，你选择一名其他角色，本轮将你与其外的角色移出游戏。然后若你的装备区有【牢骚之袍】，则你本轮在其上下家分别召唤普净和胡班；否则其本轮在你上下家分别召唤普净和胡班。',
             bilibili_laosao_append: '<span style="font-family:yuanli"><li>seven!seven!<br><li>憋笑ing的偷菜狂&牢骚哥</span>',
             bol_pinjian: '品鉴',
             bol_pinjian_info: '每回合限一次，你可以于合适的时机发动武将牌堆顶四张牌中的一个技能并将这四张武将牌置入武将牌堆底。',
