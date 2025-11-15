@@ -56,7 +56,7 @@ const packs = function () {
             bilibili_xizhicaikobe: ['male', 'key', 4, ['bilibili_zhangcai', 'bilibili_laosao'], ['clan:肘家军|肘击群|活动群', 'name:戏|子宓']],
             bilibili_yanjing: ['male', 'key', 3, ['bilibili_dongxi', 'bilibili_mingcha', 'bilibili_huiyan'], ['clan:宿舍群|肘击群|活动群', 'name:tooenough|眼睛']],
             bilibili_caifuren: ['female', 'qun', 3, ['bilibili_kuilei'], ["name:蔡|null"]],
-            bilibili_xiaoyaoruyun: ['female', 'key', 4, ['bilibili_chuandu', 'bilibili_huaikui', 'bilibili_xyduoyang'], ['clan:宿舍群|肘击群|活动群', 'name:鹿都|智川介']],
+            bilibili_xiaoyaoruyun: ['female', 'key', 4, ['bilibili_chuandu', 'bilibili_huaikui'], ['clan:宿舍群|肘击群|活动群', 'name:鹿都|智川介']],
             bilibili_shuijiaobuboli: ['female', 'key', '3/4', ['bilibili_qicai', 'bilibili_jizhi', 'bilibili_fengliang', 'bilibili_guiyin'], ['clan:宿舍群|活动群', 'name:黄|月英']],
             bilibili_kuailiangkuaiyue: ['male', 'qun', 4, ['bilibili_chouhua'], ['character:kuailiangkuaiyue']],
             //千里走单骑
@@ -6540,7 +6540,7 @@ const packs = function () {
                         event.finish();
                         return;
                     }
-                    trigger.player.chooseCard('交给' + get.translation(player) + '两张牌以示对其的关爱', true, 'he', 2, (card, player) => get.name(card).indexOf('bilibili_xyduoyang_') == -1);
+                    trigger.player.chooseCard('交给' + get.translation(player) + '两张牌以示对其的关爱', true, 'he', 2);
                     'step 1'
                     if (result.bool) {
                         trigger.player.give(result.cards, player);
@@ -10557,109 +10557,6 @@ const packs = function () {
                     result: { player: 1 },
                 },
             },
-            bilibili_xyduoyang: {
-                unique: true,
-                derivation: ['bilibili_xyduoyang_faq', 'jianxiong', 'rende', 'zhiheng'],
-                trigger: { global: 'phaseBefore', player: 'enterGame' },
-                filter(event, player) {
-                    return event.name != 'phase' || game.phaseNumber == 0;
-                },
-                forced: true,
-                content() {
-                    game.addGlobalSkill('bilibili_xyduoyangx');
-                    game.addGlobalSkill('bilibili_xyduoyangx_jianxiong');
-                    game.addGlobalSkill('bilibili_xyduoyangx_rende');
-                    game.addGlobalSkill('bilibili_xyduoyangx_zhiheng');
-                    var names = ['caocao', 'liubei', 'sunquan'];
-                    var skills = ['jianxiong', 'rende', 'zhiheng'];
-                    var cards = [];
-                    for (var i = 0; i < 3; i++) {
-                        var card = 'bilibili_xyduoyang_' + skills[i];
-                        lib.card[card] = {
-                            fullimage: true,
-                            image: 'character:' + names[i],
-                            ai: { basic: { value: 11 + 45 + 14 + 19 + 19 + 810 } },
-                        };
-                        lib.translate[card] = lib.translate[skills[i]];
-                        lib.translate['bilibili_xyduoyangx_' + skills[i]] = lib.translate[skills[i]];
-                        lib.translate[card + '_info'] = '<li>此牌在手牌中时，视为拥有技能【' + lib.translate[skills[i]] + '】' + '<br><li>' + lib.translate[skills[i] + '_info'];
-                        lib.translate['bilibili_xyduoyangx_' + skills[i] + '_info'] = lib.translate[skills[i] + '_info'];
-                        cards.push(game.createCard(card, 'heart', '10'));
-                    }
-                    player.gain(cards.reverse(), 'gain2');
-                },
-            },
-            bilibili_xyduoyangx: {
-                mod: {
-                    ignoredHandcard(card, player) {
-                        if (['bilibili_xyduoyang_jianxiong', 'bilibili_xyduoyang_rende', 'bilibili_xyduoyang_zhiheng'].includes(get.name(card))) return true;
-                    },
-                    cardDiscardable(card, player, name) {
-                        if (name == 'phaseDiscard' && ['bilibili_xyduoyang_jianxiong', 'bilibili_xyduoyang_rende', 'bilibili_xyduoyang_zhiheng'].includes(get.name(card))) return false;
-                    },
-                    canBeDiscarded(card) {
-                        if (['bilibili_xyduoyang_jianxiong', 'bilibili_xyduoyang_rende', 'bilibili_xyduoyang_zhiheng'].includes(get.name(card))) return false;
-                    },
-                    canBeGained(card) {
-                        if (['bilibili_xyduoyang_jianxiong', 'bilibili_xyduoyang_rende', 'bilibili_xyduoyang_zhiheng'].includes(get.name(card))) return false;
-                    },
-                },
-                //group:['bilibili_xyduoyangx_jianxiong','bilibili_xyduoyangx_rende','bilibili_xyduoyangx_zhiheng'],
-                subSkill: {
-                    jianxiong: {
-                        audio: 'jianxiong',
-                        inherit: 'jianxiong',
-                        filter(event, player) {
-                            return lib.skill.jianxiong.filter(event, player) && player.countCards('h', { name: 'bilibili_xyduoyang_jianxiong' });
-                        },
-                        ai: {},
-                    },
-                    rende: {
-                        audio: 'rende',
-                        inherit: 'rende',
-                        filter(event, player) {
-                            return player.countCards('h', { name: 'bilibili_xyduoyang_rende' });
-                        },
-                        check(card) {
-                            if (ui.selected.cards.length > 1) return 0;
-                            if (ui.selected.cards.length && ui.selected.cards[0].name == 'du') return 0;
-                            if (!ui.selected.cards.length && card.name == 'du') return 20;
-                            var player = get.owner(card);
-                            var num = 0;
-                            var evt2 = _status.event.getParent();
-                            var num = 0;
-                            player.getHistory('lose', function (evt) {
-                                if (evt.getParent().skill == 'bilibili_xyduoyangx_rende' && evt.getParent(3) == evt2) num += evt.cards.length;
-                            });
-                            if (player.hp == player.maxHp || num > 1 || player.countCards('h') <= 1) {
-                                if (ui.selected.cards.length) {
-                                    return -1;
-                                }
-                                if (player.countCards('h') > player.hp) return 10 - get.value(card);
-                                if (player.countCards('h') > 2) return 6 - get.value(card);
-                                return -1;
-                            }
-                            return 10 - get.value(card);
-                        },
-                        content() {
-                            player.give(cards, target);
-                            var evt2 = event.getParent(3);
-                            var num = 0;
-                            player.getHistory('lose', function (evt) {
-                                if (evt.getParent(2).name == 'bilibili_xyduoyangx_rende' && evt.getParent(5) == evt2) num += evt.cards.length;
-                            });
-                            if (num < 2 && num + cards.length > 1) player.recover();
-                        },
-                    },
-                    zhiheng: {
-                        audio: 'zhiheng',
-                        inherit: 'zhiheng',
-                        filter(event, player) {
-                            return player.countCards('h', { name: 'bilibili_xyduoyang_zhiheng' });
-                        },
-                    },
-                },
-            },
             //睡觉不玻璃
             bilibili_qicai: {
                 trigger: { global: ['roundStart', 'useCard'] },
@@ -11771,12 +11668,7 @@ const packs = function () {
             bilibili_chuandu_info: '锁定技，准备阶段/结束阶段，你令你与场上所有拥有“染”标记的相邻其他角色获得“染”标记，然后你摸一张牌/拥有“染”标记的角色各失去1点体力。',
             bilibili_huaikui: '坏溃',
             bilibili_huaikui_info: '出牌阶段限一次，你可以进行一次判定，若结果为红/黑色，则场上所有拥有“染”标记的角色依次选择一项：①弃置两张牌/交给你一张牌；②受到1点伤害。',
-            bilibili_xyduoyang: '多样',
-            bilibili_xyduoyangx: '多样',
-            bilibili_xyduoyang_info: '锁定技，游戏开始时，你获得“曹操”、“刘备”、“孙权”卡牌各一张。',
-            bilibili_xyduoyang_faq: '〖多样〗衍生武将卡功能',
-            bilibili_xyduoyang_faq_info: '<br>衍生武将卡无主动使用方法，不计入手牌上限，当“曹操”/“刘备”/“孙权”处于你的手牌区时，你视为拥有技能〖奸雄〗/〖仁德〗/〖制衡〗。',
-            bilibili_xyduoyang_append: '〖多样〗衍生武将卡功能：<br>衍生武将卡无主动使用方法，不计入手牌上限，不可被弃置或获得，当“曹操”/“刘备”/“孙权”处于你的手牌区时，你视为拥有技能〖奸雄〗/〖仁德〗/〖制衡〗。<br><br><span style="font-family:yuanli">不好孩子们，我们的群聊都被病毒攻陷了！</span>',
+            bilibili_huaikui_append: '<span style="font-family:yuanli">不好孩子们，我们的群聊都被病毒攻陷了！</span>',
             bilibili_shuijiaobuboli: '睡觉不玻璃',
             bilibili_qicai: '奇才',
             bilibili_qicai_info: '每轮开始时，你可以记录一个牌名。其他角色使用记录牌名的牌时，其须弃置一张同名牌，否则其失去1点体力。',
