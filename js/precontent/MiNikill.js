@@ -40318,15 +40318,15 @@ const packs = function () {
             else event._triggered = null;
         };
         const ori4 = lib.element.player.getHp;
-        lib.element.player.getHp = function () {
-            const num = ori4.apply(this, arguments);
-            if (typeof this.hp2 === 'number') num += Math.max(0, this.hp2);
+        lib.element.player.getHp = function (raw) {
+            let num = ori4.apply(this, arguments);
+            if (typeof this.hp2 === 'number') num += raw ? this.hp2 : Math.max(0, this.hp2);
             return num;
         };
         const ori5 = lib.element.player.getDamagedHp;
-        lib.element.player.getDamagedHp = function () {
-            const num = ori5.apply(this, arguments);
-            if (typeof this.hp2 === 'number' && this.hp2 < this.maxHp) num += this.maxHp - this.hp2;
+        lib.element.player.getDamagedHp = function (raw) {
+            let num = this.maxHp - (raw ? this.hp : Math.max(0, this.hp));
+            if (typeof this.hp2 === 'number') num += this.maxHp;
             return num;
         };
         lib.element.content.changeHp = async function (event, trigger, player) {
