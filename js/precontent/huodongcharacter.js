@@ -10143,7 +10143,7 @@ const packs = function () {
                         if (evt.name == 'chooseToUse' && evt.player == player && evt.getParent().name == 'bilibili_zhangcai' && evt.getParent().player == player) return true;
                     },
                 },
-                derivation: ['jueman', 'oljianman', 'junkshicai', 'kuangcai'],
+                derivation: ['jueman', 'oljianman', 'miniaocai', 'junkshicai'],
             },
             //乐大小乔
             bilibili_qiqin: {
@@ -11743,7 +11743,7 @@ const packs = function () {
             bilibili_fazhou_append: '<span style="font-family:yuanli">不顺群意者，当填黑屋之壑。<br>吾令不从者，当膏肘击群之锷。</span>',
             bilibili_xizhicaikobe: '戏志才',
             bilibili_zhangcai: '彰才',
-            bilibili_zhangcai_info: '当你获得牌后，你可以使用其中一张牌（无距离和次数限制），然后根据你本局游戏以此法使用过的花色数视为拥有对应技能：≥1，〖蟨蛮〗；≥2，〖鹣蛮〗；≥3，〖恃才〗；≥4，〖狂才〗。',
+            bilibili_zhangcai_info: '当你获得牌后，你可以使用其中一张牌（无距离和次数限制），然后根据你本局游戏以此法使用过的花色数视为拥有对应技能：≥1，〖蟨蛮〗；≥2，〖鹣蛮〗；≥3，〖傲才〗；≥4，〖恃才〗。',
             bilibili_laosao: '牢骚',
             bilibili_laosao_info: `锁定技。你视为装备着${get.poptip('bilibili_laosaozhipao')}。游戏开始时或牌堆洗牌后，你将${get.poptip('bilibili_laosaozhipao')}置入装备区。`,
             bilibili_laosaozhipao: '牢骚之袍',
