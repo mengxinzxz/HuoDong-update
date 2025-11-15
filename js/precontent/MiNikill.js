@@ -40325,7 +40325,7 @@ const packs = function () {
         };
         const ori5 = lib.element.player.getDamagedHp;
         lib.element.player.getDamagedHp = function (raw) {
-            let num = this.maxHp - (raw ? this.hp : Math.max(0, this.hp));
+            let num = ori5.apply(this, arguments);
             if (typeof this.hp2 === 'number') num += this.maxHp;
             return num;
         };
