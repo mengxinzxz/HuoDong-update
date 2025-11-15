@@ -15640,7 +15640,7 @@ const packs = function () {
                     let str = `你可以获得${get.cnNumber(num)}张点数为6-9的牌`;
                     const { source } = event;
                     const gain = event.cards?.filterInD();
-                    if (source?.isIn()) {
+                    if (source?.isIn() && event.card) {
                         str += `，然后你可以交给${get.translation(source)}其中任意张牌（你以此法交给其的牌的牌名字数之和须不小于${get.cardNameLength(event.card)}）`;
                         if (gain?.length) str += `，然后获得${get.translation(gain)}。`;
                     }
@@ -15656,7 +15656,7 @@ const packs = function () {
                     if (!list.length) return;
                     await player.gain(list, 'draw');
                     const { source } = trigger, cards = player.getCards('h').filter(card => list.includes(card));
-                    if (!source?.isIn() || !cards.length) return;
+                    if (!source?.isIn() || !cards.length || !trigger.card) return;
                     const gain = trigger.cards?.filterInD();
                     let prompt = `你可以交给${get.translation(source)}其中任意张牌（你以此法交给其的牌的牌名字数之和须不小于${get.cardNameLength(trigger.card)}）`;
                     if (gain?.length) prompt += `，并获得${get.translation(gain)}`;
