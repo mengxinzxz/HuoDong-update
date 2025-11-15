@@ -11273,7 +11273,7 @@ const packs = function () {
                 let start = '锁定技，转换技。你仅使用明置牌造成伤害的回合结束后，', end = '。';
                 return `${start}阳：${yang}；阴：${yin}${end}`;
             },
-            bilibili_huiyan(player) {
+            bilibili_huiyan(player, skill) {
                 if (typeof player.hp2 === 'number') return lib.translate[`${skill}_info`];
                 return '锁定技。准备阶段，你令一名其他角色选择一项：1.你回复1点体力；2.你摸一张牌。';
             },
