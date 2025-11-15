@@ -6974,23 +6974,18 @@ const packs = function () {
                 filter(event, player) {
                     return player.hasCard(card => {
                         if (get.type(card) === 'equip') return false;
-                        _status.bilibili_duoyang_check = true;
-                        const bool = event.filterCard(card, player, event);
-                        delete _status.bilibili_duoyang_check;
-                        return bool;
+                        return event.filterCard(card, player, event);
                     }, 'e');
                 },
+                locked: true,
                 chooseButton: {
                     dialog(event, player) {
                         return ui.create.dialog('多样', player.getCards('e'), 'hidden');
                     },
                     filter(button, player) {
                         if (get.type(button.link) === 'equip') return false;
-                        _status.bilibili_duoyang_check = true;
                         const evt = get.event().getParent();
-                        const bool = evt?.filterCard?.(button.link, player, evt) ?? true;
-                        delete _status.bilibili_duoyang_check;
-                        return bool;
+                        return evt?.filterCard?.(button.link, player, evt) ?? true;
                     },
                     check(button) {
                         if (get.event().getParent().type !== 'phase') return 1;
@@ -7052,14 +7047,6 @@ const packs = function () {
                             if (_status.event.dying) return get.attitude(player, _status.event.dying);
                             return 1;
                         },
-                    },
-                },
-                mod: {
-                    targetInRange() {
-                        if (_status.event.skill === 'bilibili_duoyang_backup' || _status.bilibili_duoyang_check) return true;
-                    },
-                    cardUsable() {
-                        if (_status.event.skill === 'bilibili_duoyang_backup' || _status.bilibili_duoyang_check) return Infinity;
                     },
                 },
                 group: 'bilibili_duoyang_put',
@@ -10102,7 +10089,6 @@ const packs = function () {
                     });
                 },
                 direct: true,
-                locked: false,
                 *content(event, map) {
                     const player = map.player, trigger = map.trigger;
                     const cards = trigger.getg(player);
@@ -10136,12 +10122,6 @@ const packs = function () {
                 },
                 onremove(player, skill) {
                     player.removeTip(skill);
-                },
-                mod: {
-                    targetInRange(card, player) {
-                        const evt = _status.event;
-                        if (evt.name == 'chooseToUse' && evt.player == player && evt.getParent().name == 'bilibili_zhangcai' && evt.getParent().player == player) return true;
-                    },
                 },
                 derivation: ['jueman', 'oljianman', 'miniaocai', 'junkshicai'],
             },
@@ -11616,7 +11596,7 @@ const packs = function () {
             bilibili_liaoxing_tag: '星',
             bilibili_liaoxing_info: '锁定技。①你的初始手牌数不会少于X张（X为游戏人数）；分发起始手牌后，所有其他角色的手牌被标记为“星”。②一名角色失去“星”后，其获得等量的【影】。③一名角色失去【影】后，你摸等量的牌。',
             bilibili_duoyang: '多样',
-            bilibili_duoyang_info: '锁定技。①一张非装备牌非因你使用或打出进入弃牌堆后，你将此牌以随机副类别置入装备区。②你可以使用或打出装备区里的非装备牌（无距离和任何次数限制）。',
+            bilibili_duoyang_info: '锁定技。①一张非装备牌非因你使用或打出进入弃牌堆后，你将此牌以随机副类别置入装备区。②你可以使用或打出装备区里的非装备牌。',
             bilibili_duoyang_append: '<span style="font-family:yuanli">萌新（转型中）御用第二人格</span>',
             bilibili_xuxiang: '虚像',
             bilibili_xuxiang_info: '锁定技，防止你受到的伤害。',
@@ -11743,7 +11723,7 @@ const packs = function () {
             bilibili_fazhou_append: '<span style="font-family:yuanli">不顺群意者，当填黑屋之壑。<br>吾令不从者，当膏肘击群之锷。</span>',
             bilibili_xizhicaikobe: '戏志才',
             bilibili_zhangcai: '彰才',
-            bilibili_zhangcai_info: '当你获得牌后，你可以使用其中一张牌（无距离和次数限制），然后根据你本局游戏以此法使用过的花色数视为拥有对应技能：≥1，〖蟨蛮〗；≥2，〖鹣蛮〗；≥3，〖傲才〗；≥4，〖恃才〗。',
+            bilibili_zhangcai_info: '当你获得牌后，你可以使用其中一张牌，然后根据你本局游戏以此法使用过的花色数视为拥有对应技能：≥1，〖蟨蛮〗；≥2，〖鹣蛮〗；≥3，〖傲才〗；≥4，〖恃才〗。',
             bilibili_laosao: '牢骚',
             bilibili_laosao_info: `锁定技。你视为装备着${get.poptip('bilibili_laosaozhipao')}。游戏开始时或牌堆洗牌后，你将${get.poptip('bilibili_laosaozhipao')}置入装备区。`,
             bilibili_laosaozhipao: '牢骚之袍',
