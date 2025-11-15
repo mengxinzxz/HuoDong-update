@@ -7042,21 +7042,16 @@ const packs = function () {
                             const lose = result.moved[1].slice();
                             const gain = result.moved[0].slice().filter(i => !get.owner(i));
                             if (lose.some(i => get.owner(i))) await target.lose(lose.filter(i => get.owner(i)), ui.special);
-                            for (let i = lose.length - 1; i--; i >= 0) {
-                                ui.cardPile.insertBefore(lose[i], ui.cardPile.firstChild);
-                            }
-                            game.updateRoundNumber();
+                            await game.cardsGotoPile(lose.reverse(), 'insert')
                             if (gain.length) await target.gain(gain, 'draw');
                         }
                         else {
                             if (!showCards.length) return;
-                            for (let i = showCards.length - 1; i--; i >= 0) {
-                                ui.cardPile.insertBefore(showCards[i], ui.cardPile.firstChild);
-                            }
-                            game.updateRoundNumber();
+                            await game.cardsGotoPile(showCards.reverse(), 'insert')
                         }
                     }
                 },
+                subSkill: { tag: {} },
             },
             //蜀
             //关羽
@@ -38232,7 +38227,7 @@ const packs = function () {
                 if (storage) str += '</span>';
                 return str + '（X为你本回合不因使用装备牌而失去的牌数）';
             },
-            minixiafeng(player,skill) {
+            minixiafeng(player, skill) {
                 let str = '每回合限一次。当你使用【杀】后，你可以对场上体力值最大的角色造成1点伤害或令场上体力值最小的角色回复1点体力。';
                 const storage = player.getStorage(skill);
                 if (storage.length) str = str.replace(/【杀】/, `【杀】/${storage.map(str => `【${get.translation(str)}】`).join('/')}`);
