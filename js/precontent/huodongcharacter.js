@@ -56,7 +56,7 @@ const packs = function () {
             bilibili_xizhicaikobe: ['male', 'key', 4, ['bilibili_zhangcai', 'bilibili_laosao'], ['clan:肘家军|肘击群|活动群', 'name:戏|子宓']],
             bilibili_yanjing: ['male', 'key', 3, ['bilibili_dongxi', 'bilibili_mingcha', 'bilibili_huiyan'], ['clan:宿舍群|肘击群|活动群', 'name:tooenough|眼睛']],
             bilibili_caifuren: ['female', 'qun', 3, ['bilibili_kuilei'], ["name:蔡|null"]],
-            bilibili_xiaoyaoruyun: ['female', 'key', 4, ['bilibili_chuandu', 'bilibili_huaikui'], ['clan:宿舍群|肘击群|活动群', 'name:鹿都|智川介']],
+            bilibili_xiaoyaoruyun: ['female', 'key', 4, ['bilibili_chuandu', 'bilibili_shuaiwei', 'bilibili_huaikui'], ['clan:宿舍群|肘击群|活动群', 'name:鹿都|智川介']],
             bilibili_shuijiaobuboli: ['female', 'key', '3/4', ['bilibili_qicai', 'bilibili_jizhi', 'bilibili_fengliang', 'bilibili_guiyin'], ['clan:宿舍群|活动群', 'name:黄|月英']],
             bilibili_kuailiangkuaiyue: ['male', 'qun', 4, ['bilibili_chouhua'], ['character:kuailiangkuaiyue']],
             //千里走单骑
@@ -10533,6 +10533,63 @@ const packs = function () {
                     content: 'mark',
                 },
             },
+            bilibili_shuaiwei: {
+                trigger: {
+                    player: 'useCardToPlayered',
+                    target: 'useCardToTargeted',
+                },
+                filter(event, player) {
+                    return lib.skill.bilibili_shuaiwei.logTarget(event, player).hasMark('bilibili_chuandu');
+                },
+                logTarget(event, player) {
+                    return event[event.name === 'useCardToPlayered' ? 'target' : 'player'];
+                },
+                check(event, player) {
+                    return get.effect(event.target, event.card, player, player) * ((event.name === 'useCardToPlayered' && !get.tag(event.card, 'norepeat')) ? 1 : -1) > 0;
+                },
+                prompt2(event, player) {
+                    if (event.name === 'useCardToPlayered') return `令${get.translation(event.card)}对${get.translation(event.target)}额外结算一次`;
+                    return `令${get.translation(event.card)}对你无效`;
+                },
+                async content(event, trigger, player) {
+                    event.targets[0].clearMark('bilibili_chuandu');
+                    if (trigger.name === 'useCardToPlayered') {
+                        player.addTempSkill('bilibili_shuaiwei_effect');
+                        const list = (player.storage['bilibili_shuaiwei_effect'].get(trigger.getParent()) || []).slice();
+                        player.storage['bilibili_shuaiwei_effect'].set(trigger.getParent(), [...list, event.targets[0]].sortBySeat());
+                        game.log(trigger.card, '对', event.targets[0], '额外结算一次');
+                    }
+                    else {
+                        trigger.getParent().excluded.add(player);
+                        game.log(trigger.card, '对', player, '无效');
+                    }
+                },
+                subSkill: {
+                    effect: {
+                        charlotte: true,
+                        init(player, skill) {
+                            player.storage[skill] ??= new Map([]);
+                        },
+                        onremove: true,
+                        trigger: { global: 'useCardAfter' },
+                        filter(event, player) {
+                            return player.storage['bilibili_shuaiwei_effect'].has(event);
+                        },
+                        forced: true,
+                        popup: false,
+                        async content(event, trigger, player) {
+                            while (player.storage[event.name].get(trigger).length > 0) {
+                                let list = player.storage[event.name].get(trigger).slice(), targets = [...list].unique();
+                                player.storage[event.name].set(trigger, list.slice().removeArray(targets));
+                                targets = targets.filter(target => player.canUse(trigger.card, target, false)).sortBySeat();
+                                if (targets.length > 0) await player.useCard(trigger.card, targets, false);
+                                else break;
+                            }
+                        },
+                    },
+                },
+                ai: { combo: 'bilibili_chuandu' },
+            },
             bilibili_huaikui: {
                 enable: 'phaseUse',
                 usable: 1,
@@ -10554,6 +10611,7 @@ const packs = function () {
                 },
                 ai: {
                     order: 7,
+                    combo: 'bilibili_chuandu',
                     result: { player: 1 },
                 },
             },
@@ -11666,6 +11724,8 @@ const packs = function () {
             bilibili_xiaoyaoruyun: '逍遥如云',
             bilibili_chuandu: '传毒',
             bilibili_chuandu_info: '锁定技，准备阶段/结束阶段，你令你与场上所有拥有“染”标记的相邻其他角色获得“染”标记，然后你摸一张牌/拥有“染”标记的角色各失去1点体力。',
+            bilibili_shuaiwei: '衰萎',
+            bilibili_shuaiwei_info: '当你使用牌指定拥有“染”的角色为目标后/当你成为拥有“染”的角色使用牌的目标后，你可以移除其“染”标记，令此牌对其额外结算一次/对你无效。',
             bilibili_huaikui: '坏溃',
             bilibili_huaikui_info: '出牌阶段限一次，你可以进行一次判定，若结果为红/黑色，则场上所有拥有“染”标记的角色依次选择一项：①弃置两张牌/交给你一张牌；②受到1点伤害。',
             bilibili_huaikui_append: '<span style="font-family:yuanli">不好孩子们，我们的群聊都被病毒攻陷了！</span>',
