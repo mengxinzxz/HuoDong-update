@@ -9930,9 +9930,9 @@ const packs = function () {
                         }
                     }
                     ['DJ_pujing', 'DJ_huban'].forEach((name, index) => {
-                        let fellow = game.addFellow(num === 0 ? (index === 0 ? 1 : Number(ui.arena.dataset.number) - 1) : (num + (index === 0 ? 0 : 2)), name);
+                        let fellow = game.addFellow(num === 0 ? (index === 1 ? 1 : Number(ui.arena.dataset.number) - 1) : (num + (index === 0 ? 0 : 2)), name);
                         game.broadcast((target, name, index) => {
-                            target = game.addFellow(num === 0 ? (index === 0 ? 1 : Number(ui.arena.dataset.number) - 1) : (num + (index === 0 ? 0 : 2)), name);
+                            target = game.addFellow(num === 0 ? (index === 1 ? 1 : Number(ui.arena.dataset.number) - 1) : (num + (index === 0 ? 0 : 2)), name);
                         }, fellow, name, index);
                         fellow.uninit();
                         fellow.init(name, false);
