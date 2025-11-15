@@ -9906,12 +9906,14 @@ const packs = function () {
                         const target = event.targets[0], num = Number(target.dataset.position);
                         ui.arena.setNumber(Number(ui.arena.dataset.number) + 2);
                         for (const i of [...game.players, ...game.dead].unique()) {
-                            if (Number(i.dataset.position) >= num) i.dataset.position = (Number(i.dataset.position) + (i === target ? 1 : 2)).toString();
+                            if (Number(i.dataset.position) >= Math.max(1, num)) {
+                                i.dataset.position = (Number(i.dataset.position) + ((i === target || num === 0) ? 1 : 2)).toString();
+                            }
                         }
                         ['DJ_pujing', 'DJ_huban'].forEach((name, index) => {
-                            let fellow = game.addFellow(num + (index === 0 ? 0 : 2), name);
+                            let fellow = game.addFellow(num === 0 ? (index === 0 ? 1 : Number(ui.arena.dataset.number) - 1) : (num + (index === 0 ? 0 : 2)), name);
                             game.broadcast((target, name, index) => {
-                                target = game.addFellow(num + (index === 0 ? 0 : 2), name);
+                                target = game.addFellow(num === 0 ? (index === 0 ? 1 : Number(ui.arena.dataset.number) - 1) : (num + (index === 0 ? 0 : 2)), name);
                             }, fellow, name, index);
                             fellow.uninit();
                             fellow.init(name, false);
