@@ -15385,7 +15385,7 @@ const packs = function () {
                             const target = trigger.player;
                             player.unmarkAuto('wechatweiqi_target', [target]);
                             if (!player.getStorage('wechatweiqi').length) player.removeSkill('wechatweiqi_target');
-                            const targets = game.players.filter(current => current != target && player != current);
+                            const targets = game.filterPlayer(current => current != target && player != current);
                             if (!targets.length) return;
                             const { result } = await player.chooseTarget(true, (card, player, target) => {
                                 return get.event('list')?.includes(target);
@@ -15394,6 +15394,7 @@ const packs = function () {
                             }).set('list', targets);
                             if (result?.targets?.length) {
                                 const [target] = result.targets;
+                                player.line(target);
                                 player.addSkill('wechatweiqi_target');
                                 player.markAuto('wechatweiqi_target', [target]);
                             }
