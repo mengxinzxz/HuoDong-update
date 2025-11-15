@@ -1181,15 +1181,15 @@ export async function content(config, pack) {
 	game.HDaddCharacter('junk_zhangrang', ['male', 'qun', 3, ['junktaoluan'], ['die:zhangrang']], 'sp2');
 
 	//OL专属
-	lib.characterSort.onlyOL.bilibili_buchong_onlyOL = ['junk_lidian'];
+	lib.characterSort.onlyOL.bilibili_buchong_onlyOL = ['junk_lidian', 'junk_xuyou'];
 	game.HDmoveCharacter('junk_lidian', 'onlyOL');
 	lib.characterPack.onlyOL.junk_lidian[4].add('die:lidian');
 	if (lib.config.characters.includes('onlyOL')) lib.character.junk_lidian[4].add('die:lidian');
+	game.HDaddCharacter('junk_xuyou', ['male', 'qun', 3, ['nzry_chenglve', 'junkshicai', 'nzry_cunmu'], []], 'onlyOL');
 
 	//移动服
-	lib.characterSort.mobile.bilibili_buchong_mobile = ['old_zhaoxiang', 'ol_maliang', 'ol_yuanshu', 'old_bulianshi', 'old_zhangqiying', 'junk_xuyou'];
+	lib.characterSort.mobile.bilibili_buchong_mobile = ['old_zhaoxiang', 'ol_maliang', 'ol_yuanshu', 'old_bulianshi', 'old_zhangqiying'];
 	game.HDaddCharacter('old_zhangqiying', ['female', 'qun', 3, ['xinfu_falu', 'olddianhua', 'oldzhenyi'], ['die:zhangqiying']], 'mobile');
-	game.HDaddCharacter('junk_xuyou', ['male', 'qun', 3, ['nzry_chenglve', 'junkshicai', 'nzry_cunmu'], []], 'mobile');
 	game.HDaddCharacter('old_bulianshi', ['female', 'wu', 3, ['anxu', 'zhuiyi'], []], 'mobile');
 	game.HDaddCharacter('ol_yuanshu', ['male', 'qun', 4, ['rewangzun', 'retongji'], []], 'mobile');
 	game.HDaddCharacter('ol_maliang', ['male', 'shu', 3, ['zishu', 'yingyuan'], []], 'mobile');
@@ -1515,6 +1515,8 @@ export async function content(config, pack) {
 		'#ext:活动武将/audio/die/old_dengai:die': '点击播放阵亡配音',
 		old_sp_jianggan: '旧蒋干',
 		old_sp_jianggan_prefix: '旧',
+		junk_xuyou: 'OL许攸',
+		junk_xuyou_prefix: 'OL',
 
 		//武将分包翻译
 		bilibili_buchong_shenhua: '武将补充·神话再临',

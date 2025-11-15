@@ -10143,7 +10143,7 @@ const packs = function () {
                         if (evt.name == 'chooseToUse' && evt.player == player && evt.getParent().name == 'bilibili_zhangcai' && evt.getParent().player == player) return true;
                     },
                 },
-                derivation: ['jueman', 'oljianman', 'nzry_shicai', 'kuangcai'],
+                derivation: ['jueman', 'oljianman', 'junkshicai', 'kuangcai'],
             },
             //乐大小乔
             bilibili_qiqin: {
