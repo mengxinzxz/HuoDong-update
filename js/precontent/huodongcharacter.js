@@ -9919,7 +9919,7 @@ const packs = function () {
                             fellow.directgain(get.cards(2 - index));
                             fellow.addTempSkill('bilibili_laosaozhipao_die', 'roundStart');
                             game.broadcastAll((target, player) => {
-                                target.master = player;
+                                target.bilibili_master = player;
                                 const identity = (target.identity = (identity => {
                                     switch (identity) {
                                         case 'zhu':
@@ -9966,8 +9966,10 @@ const packs = function () {
                                         if (typeof game.checkResult === 'function') {
                                             const origin_checkResult = game.checkResult;
                                             game.checkResult = function () {
+                                                const event = _status.event;
+                                                if (event && event.name === 'die' && event.player.bilibili_master) return;
                                                 const player = game.me._trueMe || game.me;
-                                                if (game.players.filter(i => i !== player).every(i => i.master === (player.master || player))) {
+                                                if (game.players.filter(i => i !== player).every(i => i.bilibili_master === (player.bilibili_master || player))) {
                                                     game.over(true);
                                                 }
                                                 return origin_checkResult.apply(this, arguments);
@@ -9976,7 +9978,9 @@ const packs = function () {
                                         if (typeof game.checkOnlineResult === 'function') {
                                             const origin_checkOnlineResult = game.checkOnlineResult;
                                             game.checkOnlineResult = function (player) {
-                                                if (game.players.filter(i => i !== player).every(i => i.master === (player.master || player))) return true;
+                                                const event = _status.event;
+                                                if (event && event.name === 'die' && event.player.bilibili_master) return;
+                                                if (game.players.filter(i => i !== player).every(i => i.bilibili_master === (player.bilibili_master || player))) return true;
                                                 return origin_checkOnlineResult.apply(this, arguments);
                                             };
                                         }
@@ -9984,7 +9988,7 @@ const packs = function () {
                                             const origin_attitude = get.attitude;
                                             get.attitude = function (from, to) {
                                                 if (!from || !to) return 0;
-                                                if ((from.master || from) === (to.master || to)) return 114514;
+                                                if ((from.bilibili_master || from) === (to.bilibili_master || to)) return 114514;
                                                 return origin_attitude.apply(this, arguments);
                                             };
                                         }
@@ -9992,7 +9996,7 @@ const packs = function () {
                                             const origin_rawAttitude = get.rawAttitude;
                                             get.rawAttitude = function (from, to) {
                                                 if (!from || !to) return 0;
-                                                if ((from.master || from) === (to.master || to)) return 114514;
+                                                if ((from.bilibili_master || from) === (to.bilibili_master || to)) return 114514;
                                                 return origin_rawAttitude.apply(this, arguments);
                                             };
                                         }
@@ -10002,7 +10006,7 @@ const packs = function () {
                                                 const player = this;
                                                 return [
                                                     ...origin_getFriends.apply(this, arguments),
-                                                    ...game[includeDie ? 'filterPlayer2' : 'filterPlayer'](target => (target.master || target) === (player.master || player)),
+                                                    ...game[includeDie ? 'filterPlayer2' : 'filterPlayer'](target => (target.bilibili_master || target) === (player.bilibili_master || player)),
                                                 ].filter(i => i !== player || func === true).unique().sortBySeat(player);
                                             };
                                             lib.element.player.getFriends = getFriends;
@@ -10011,7 +10015,7 @@ const packs = function () {
                                         if (typeof lib.element.player.isFriendOf === 'function') {
                                             const origin_isFriendOf = lib.element.player.isFriendOf;
                                             const isFriendOf = function (player) {
-                                                if ((this.master || this) === (player.master || player)) return true;
+                                                if ((this.bilibili_master || this) === (player.bilibili_master || player)) return true;
                                                 return origin_isFriendOf.apply(this, arguments);
                                             };
                                             lib.element.player.isFriendOf = isFriendOf;
@@ -10020,13 +10024,13 @@ const packs = function () {
                                         if (typeof lib.element.player.getEnemies === 'function') {
                                             const origin_getEnemies = lib.element.player.getEnemies;
                                             const getEnemies = function (func, includeDie) {
-                                                if (this.master) return this.master.getEnemies(func, includeDie);
+                                                if (this.bilibili_master) return this.bilibili_master.getEnemies(func, includeDie);
                                                 else {
                                                     const player = this;
                                                     return [
                                                         ...origin_getEnemies.apply(this, arguments),
-                                                        ...game[includeDie ? 'filterPlayer2' : 'filterPlayer'](target => origin_getEnemies.apply(this, arguments).includes(target.master || target)),
-                                                    ].filter(i => player != (i.master || i)).unique().sortBySeat(player);
+                                                        ...game[includeDie ? 'filterPlayer2' : 'filterPlayer'](target => origin_getEnemies.apply(this, arguments).includes(target.bilibili_master || target)),
+                                                    ].filter(i => player != (i.bilibili_master || i)).unique().sortBySeat(player);
                                                 }
                                             };
                                             lib.element.player.getEnemies = getEnemies;
@@ -10044,7 +10048,7 @@ const packs = function () {
                         charlotte: true,
                         trigger: { global: 'dieAfter' },
                         filter(event, player) {
-                            return event.player === player.master;
+                            return event.player === player.bilibili_master;
                         },
                         silent: true,
                         firstDo: true,
@@ -10119,7 +10123,7 @@ const packs = function () {
                         if (evt.name == 'chooseToUse' && evt.player == player && evt.getParent().name == 'bilibili_zhangcai' && evt.getParent().player == player) return true;
                     },
                 },
-                derivation: ['jueman', 'oljianman', 'aocai', 'nzry_shicai'],
+                derivation: ['jueman', 'oljianman', 'nzry_shicai', 'kuangcai'],
             },
             //乐大小乔
             bilibili_qiqin: {
@@ -11719,12 +11723,12 @@ const packs = function () {
             bilibili_fazhou_append: '<span style="font-family:yuanli">不顺群意者，当填黑屋之壑。<br>吾令不从者，当膏肘击群之锷。</span>',
             bilibili_xizhicaikobe: '戏志才',
             bilibili_zhangcai: '彰才',
-            bilibili_zhangcai_info: '当你获得牌后，你可以使用其中一张牌（无距离和次数限制），然后根据你本局游戏以此法使用过的花色数视为拥有对应技能：≥1，〖蟨蛮〗；≥2，〖鹣蛮〗；≥3，〖傲才〗；≥4，〖恃才〗。',
+            bilibili_zhangcai_info: '当你获得牌后，你可以使用其中一张牌（无距离和次数限制），然后根据你本局游戏以此法使用过的花色数视为拥有对应技能：≥1，〖蟨蛮〗；≥2，〖鹣蛮〗；≥3，〖恃才〗；≥4，〖狂才〗。',
             bilibili_laosao: '牢骚',
             bilibili_laosao_info: `锁定技。你视为装备着${get.poptip('bilibili_laosaozhipao')}。游戏开始时或牌堆洗牌后，你将${get.poptip('bilibili_laosaozhipao')}置入装备区。`,
             bilibili_laosaozhipao: '牢骚之袍',
             bilibili_laosaozhipao_info: '每轮开始时，你可以选择一名其他角色，本轮将你与其外的角色移出游戏。若你的装备区有【牢骚之袍】，则你本轮在其上下家分别召唤普净和胡班。',
-            bilibili_laosao_append: '<span style="font-family:yuanli"><li>憋笑ing<br><li>seven!seven!<br><li>偷菜狂&牢骚哥</span>',
+            bilibili_laosao_append: '<span style="font-family:yuanli"><li>seven!seven!<br><li>憋笑ing的偷菜狂&牢骚哥</span>',
             bol_pinjian: '品鉴',
             bol_pinjian_info: '每回合限一次，你可以于合适的时机发动武将牌堆顶四张牌中的一个技能并将这四张武将牌置入武将牌堆底。',
             bol_yuedan: '月旦',
