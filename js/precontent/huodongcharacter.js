@@ -10251,6 +10251,23 @@ const packs = function () {
                     if (result.index == 0) await player.recover();
                     else await player.draw();
                 },
+                ai: {
+                    viewHandcard: true,
+                    skillTagFilter(player, tag, arg) {
+                        if (player === arg || typeof player.hp2 !== 'number' || Math.max(0, player.hp) !== Math.max(0, player.hp2)) return false;
+                    },
+                },
+                global: 'bilibili_huiyan_global',
+                subSkill: {
+                    global: {
+                        ai: {
+                            viewHandcard: true,
+                            skillTagFilter(player, tag, arg) {
+                                if (player === arg || !arg.hasSkill('bilibili_huiyan') || typeof arg.hp2 !== 'number' || Math.max(0, arg.hp) === Math.max(0, arg.hp2)) return false;
+                            },
+                        },
+                    },
+                },
             },
             //暗黑傀儡师蔡夫人
             bilibili_kuilei: {
@@ -11256,6 +11273,10 @@ const packs = function () {
                 let start = '锁定技，转换技。你仅使用明置牌造成伤害的回合结束后，', end = '。';
                 return `${start}阳：${yang}；阴：${yin}${end}`;
             },
+            bilibili_huiyan(player) {
+                if (typeof player.hp2 === 'number') return lib.translate[`${skill}_info`];
+                return '锁定技。准备阶段，你令一名其他角色选择一项：1.你回复1点体力；2.你摸一张牌。';
+            },
         },
         translate: {
             CLongZhou: '龙舟武将',
@@ -11707,7 +11728,7 @@ const packs = function () {
             bilibili_mingcha: '明察',
             bilibili_mingcha_info: '出牌阶段限一次，你可以展示一名其他角色的手牌，然后选择一项：1.其交给一张牌；2.你交给其一张牌。若你以此法交出的牌与其以此法展示的牌类别不同，你摸一张牌。',
             bilibili_huiyan: '慧眼',
-            bilibili_huiyan_info: '锁定技。准备阶段，你令一名其他角色选择一项：1.你回复1点体力；2.你摸一张牌。',
+            bilibili_huiyan_info: '锁定技。①准备阶段，你令一名其他角色选择一项：1.你回复1点体力；2.你摸一张牌。②你拥有“左眼”和“右眼”两段体力，当你执行体力变化时，你选择“左眼”或“右眼”执行此操作，“左眼”或“右眼”阵亡即你阵亡。③若你的“左眼”和“右眼”体力值相同，其他角色的手牌对你可见，否则你的手牌对其他角色可见。',
             bilibili_huiyan_append: '<span style="font-family:yuanli"><span style="text-decoration: line-through;">看个几八，你个沙沟</span><br>孩子们，真没啥可写的</span><br><img style=width:160px src=' + lib.assetURL + 'extension/活动武将/image/default/smile8.jpg>',
             bilibili_caifuren: '蔡夫人-暗黑傀儡师',
             bilibili_caifuren_ab: '蔡夫人',

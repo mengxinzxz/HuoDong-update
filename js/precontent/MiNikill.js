@@ -39898,7 +39898,7 @@ const packs = function () {
             miniyizheng: '移筝',
             miniyizheng_info: '出牌阶段结束时，你可以移动场上至多一张装备牌（只能移动武器、防具和坐骑牌，且一次技能结算中每种副类别的装备限移动一次），然后若你于本次技能结算中移动了：一张装备牌，你回复1点体力；两张装备牌，直到你的下回合开始，当你失去一张牌时，摸一张牌。',
             minishuangshu1: '双姝',
-            minishuangshu1_info: '锁定技。①回合开始时，你执行一个额外的摸牌阶段。②你拥有“大乔”和“小乔”两段体力，当你执行体力和体力上限的变化时，你选择“大乔”或“小乔”执行此操作，“大乔”或“小乔”阵亡即你阵亡。',
+            minishuangshu1_info: '锁定技。①回合开始时，你执行一个额外的摸牌阶段。②你拥有“大乔”和“小乔”两段体力，当你执行体力变化时，你选择“大乔”或“小乔”执行此操作，“大乔”或“小乔”阵亡即你阵亡。',
             minishutu1: '殊途',
             minishutu1_info: '①大乔回复体力后，你可以从牌堆或弃牌堆获得两张指定花色的红色牌。②小乔受到伤害后，你可以使用一张牌（无次数限制且不可被响应）。',
             minitongdi: '同蒂',
@@ -40316,6 +40316,12 @@ const packs = function () {
                 player.changeHp(num, false);
             }
             else event._triggered = null;
+        };
+        const ori4 = lib.element.player.getHp;
+        lib.element.player.getHp = function () {
+            const num = ori4.apply(this, arguments);
+            if (typeof this.hp2 === 'number') num += Math.max(0, this.hp2);
+            return num;
         };
         const ori5 = lib.element.player.getDamagedHp;
         lib.element.player.getDamagedHp = function () {
