@@ -9954,14 +9954,9 @@ const packs = function () {
                                     target.node.identity.firstChild.innerHTML = player.node.identity.firstChild.innerHTML;
                                     target.node.identity.dataset.color = player.node.identity.dataset.color;
                                 }
-                                if (!target._zhaohuan_dieAfter2) {
-                                    target._zhaohuan_dieAfter2 = target.dieAfter2;
-                                    target.dieAfter2 = function () {
-                                        const player = this;
-                                        player._zhaohuan_dieAfter2.apply(this, arguments);
-                                        lib.skill.bilibili_laosaozhipao_die.onremove(player);
-                                    };
-                                }
+                                target.dieAfter2 = function () {
+                                    lib.skill.bilibili_laosaozhipao_die.onremove(this);
+                                };
                                 if (!_status.zhaohuanMaster) {
                                     _status.zhaohuanMaster = function () {
                                         //检测游戏胜负
