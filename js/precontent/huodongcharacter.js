@@ -133,7 +133,7 @@ const packs = function () {
             bilibili_shuijiaobuboli: '睡觉不玻璃，活动群活跃元老之一，为懒狗萌新（转型中）做尽宣传和bug收集的任务。三年过去了，她终于得到了属于自己的专属武将<span style="text-decoration: line-through;">萌新（转型中）就是个大懒棒！</span>。',
             bilibili_wuzhuwanshui: '你说得对但是我的名字是凤凰院凶真，年龄十九岁，家住在秋叶原，天天在lab里面忙着拯救世界，我每天都要熬到凌晨六点，从来不做保健操，静静观测这个世界并且爱护我亲爱的助手——克里斯蒂↑～娜↓～，我每天都要灌大量的胡椒博士，不经常看医生但是我的身体一定非常健康。<br>噫！这搬史，可真是一门学问啊！要如何把热乎的构思端给群友呢？倘若是直接呈上去，未免馨香扑鼻让人倍感惊恐，所以就需要用聊天记录套一层，来欢迎大家细细品味啊！<br>有人问，天下的构思如此之多，你搬得完吗？那当然是搬不完的，可是让眼前之人吃好吃饱，就是我们史官的溯源与目标。我们一定会为了群友的营养健康勤奋工作，积极投喂各种内容，保证群友身体健康营养均衡。',
             bilibili_murufengchen: '《星主宝诰》有云：志心皈命礼。大罗天阙，紫微星宫。尊居北极之高，位正中天之上，法号金轮炽盛，道称玉斗玄尊。璇玑玉衡，齐七政；总天经地，纬日月。星宿约，四时行，黄道紫垣，万象宗师，诸天统御。大悲大愿、大圣大慈、万星教主、无极元皇、中天紫微北极大帝。<br>————肘击群：沐如风晨',
-            bilibili_diandian: '点点',
+            bilibili_diandian: '点点',//等点点补介绍
         },
         characterFilter: {
             bilibili_sp_xuyou(mode) {
@@ -11460,8 +11460,121 @@ const packs = function () {
                 },
             },
             //点点
-            bilibili_siyu: {},
-            bilibili_tamen: {},
+            bilibili_siyu: {
+                trigger: {
+                    global: 'phaseBefore',
+                    player: ['damageEnd', 'phaseBegin'],
+                },
+                filter(event, player, name) {
+                    return name === 'phaseBegin' || event.name !== 'phase' || game.phaseNumber === 0;
+                },
+                forced: true,
+                getIndex: event => event.name === 'damage' ? event.num : 1,
+                async content(event, trigger, player) {
+                    if (event.triggername === 'phaseBegin') await player.chooseToGuanxing(player.getExpansions(event.name).length + 1);
+                    else {
+                        const next = player.addToExpansion(get.cards(trigger.name === 'damage' ? 1 : 3), 'gain2');
+                        next.gaintag.add(event.name);
+                        await next;
+                    }
+                },
+                marktext: '🐖',
+                intro: {
+                    name: '小菲',
+                    content: 'expansion',
+                    markcount: 'expansion',
+                },
+                onremove(player, skill) {
+                    const cards = player.getExpansions(skill);
+                    if (cards.length) player.loseToDiscardpile(cards);
+                },
+            },
+            bilibili_tamen: {
+                trigger: { player: 'useCardToPlayered' },
+                filter(event, player) {
+                    if (!event.isFirstTarget || !player.getExpansions('bilibili_siyu').some(i => get.color(i) === 'black')) return false;
+                    if (get.type(event.card) === 'basic') return get.tag(event.card, 'damage') >= 0.5;
+                    return get.type(event.card) === 'trick';
+                },
+                async cost(event, trigger, player) {
+                    const result = await player.chooseButton([
+                        `###${get.prompt(event.skill)}###<div class='text center'>${(() => {
+                            let str = lib.translate[`${event.skill}_info`];
+                            return str.split('②')[1].split('③')[0];
+                        })()}</div>`,
+                        player.getExpansions('bilibili_siyu'),
+                    ]).set('filterButton', button => {
+                        return get.color(button.link) === 'black';
+                    }).set('ai', button => {
+                        const player = get.player(), event = get.event().getTrigger();
+                        if (event.targets.reduce((sum, target) => sum + get.effect(target, event.card, player, player), 0) <= 0) return 0;
+                        return get.tag(event.card, 'damage') >= 0.5 ? (1 + Math.random()) : (-0.5 + Math.random());
+                    }).forResult();
+                    if (result?.bool && result.links?.length) event.result = { bool: true, cards: result.links };
+                },
+                async content(event, trigger, player) {
+                    await player.loseToDiscardpile(event.cards);
+                    const [card] = get.cards();
+                    await player.showCards([card], `${get.translation(player)}发动了【${get.translation(event.name)}】`);
+                    if (get.color(card) === get.color(trigger.card)) {
+                        trigger.getParent().directHit.addArray(game.players);
+                        game.log(trigger.card, '不可被响应');
+                    }
+                    if (get.type(card) === get.type(trigger.card)) {
+                        trigger.getParent().baseDamage++;
+                        game.log(trigger.card, '造成的伤害', '#g+1');
+                    }
+                },
+                group: ['bilibili_tamen_draw', 'bilibili_tamen_recover'],
+                subSkill: {
+                    draw: {
+                        trigger: { global: ['loseAfter', 'loseAsyncAfter', 'equipAfter', 'addJudgeAfter', 'gainAfter', 'addToExpansionAfter', 'cardsGotoSpecialAfter'] },
+                        filter(event, player) {
+                            if (game.hasPlayer(current => {
+                                const evt = event.getl(current);
+                                return evt && (evt.xs.length > 0 || evt.ss.length > 0);
+                            })) return true;
+                            if (event.name === 'lose' || event.name === 'loseAsync') return event.getlx !== false && event.toStorage === true;
+                            return event.name === 'addToExpansion' || (event.name === 'cardsGotoSpecial' && !event.notrigger);
+                        },
+                        forced: true,
+                        locked: false,
+                        async content(event, trigger, player) {
+                            await player.draw();
+                        },
+                    },
+                    recover: {
+                        trigger: { global: 'dying' },
+                        filter(event, player) {
+                            return player.getExpansions('bilibili_siyu').some(i => get.color(i) === 'red');
+                        },
+                        async cost(event, trigger, player) {
+                            const skill = get.sourceSkillFor(event.skill);
+                            const result = await player.chooseButton([
+                                `###${get.prompt(skill, trigger.player)}###<div class='text center'>${lib.translate[`${skill}_info`].split('③')[1]}</div>`,
+                                player.getExpansions('bilibili_siyu'),
+                            ]).set('filterButton', button => {
+                                return get.color(button.link) === 'red';
+                            }).set('ai', button => {
+                                const player = get.player(), event = get.event().getTrigger();
+                                return get.recoverEffect(event.player, player, player) > 0 ? (1 + Math.random()) : -1;
+                            }).forResult();
+                            if (result?.bool && result.links?.length) event.result = { bool: true, cards: result.links };
+                        },
+                        logTarget: 'player',
+                        async content(event, trigger, player) {
+                            await player.loseToDiscardpile(event.cards);
+                            await trigger.player.recover();
+                            if (!trigger.player.isDying()) {
+                                const next = player.addToExpansion(get.cards(), 'gain2');
+                                next.gaintag.add('bilibili_siyu');
+                                await next;
+                            }
+                        },
+                    },
+                },
+                ai: { combo: 'bilibili_siyu' },
+            },
         },
         dynamicTranslate: {
             bilibili_xueji(player) {
@@ -12072,10 +12185,10 @@ const packs = function () {
             bilibili_murufengchen: '沐如风晨',
             bilibili_diandian: '点点',
             bilibili_siyu: '饲育',
-            bilibili_siyu_info: '饲育',
+            bilibili_siyu_info: '锁定技。①游戏开始时/当你受到伤害后，你将牌堆顶的三/一张牌称为“小菲”置于武将牌上。②回合开始时，你占卜X+1（X为你的“小菲”数）。',
             bilibili_tamen: '塔门',
-            bilibili_tamen_info: '塔门',
-            bilibili_tamen_append: '<span style="font-family:yuanli">点点</span>',
+            bilibili_tamen_info: '①有牌移入或移出游戏后，你摸一张牌。②当你使用伤害类基本牌或普通锦囊牌指定目标后，你可以移去一只黑色“小菲”，然后亮出牌堆顶的一张牌，若使用的牌和亮出的牌的：颜色相同，你令此牌不可被响应；类别相同，你令此牌伤害+1。③一名角色进入濒死状态时，你可以移去一只红色“小菲”，令其回复1点体力，然后若其因此脱离濒死状态，你将牌堆顶的一张牌称为“小菲”置于武将牌上。',
+            //bilibili_tamen_append: '<span style="font-family:yuanli">点点</span>',等点点补结语
         },
     };
     for (let i in huodongcharacter.character) {
