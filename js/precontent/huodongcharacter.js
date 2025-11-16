@@ -12065,7 +12065,7 @@ const packs = function () {
             bilibili_diaowen_info: `①每轮开始时，你将牌堆顶三张牌称为“矢”置于武将牌上。②每轮结束时，你可以任意分配“矢”给场上本轮未使用过此“矢”牌面的牌的角色并令这些角色获得一张${get.poptip('bilibili_shi')}。③一名角色使用牌后，你移去武将牌上与此牌牌名相同的“矢”，然后将牌堆顶X张牌称为“矢”置于武将牌上（X为本回合发动此分支的次数）。`,
             bilibili_banyun: '搬运',
             bilibili_banyun_info: '每回合限一次，你可以使用一张“矢”，然后你将一名角色的一张牌称为“矢”置于武将牌上。',
-            bilibili_banyun_append: '<span style="font-family:yuanli">搬史纲要：<br><li>有节奏地搬，有规律地搬<br><li>史之不尽，赤之不竭</span>',
+            bilibili_banyun_append: '<span style="font-family:yuanli">搬史纲要：<br><li>搬出节奏，搬出风采<br><li>史之不尽，赤之不竭</span>',
             bilibili_murufengchen: '沐如风晨',
             bilibili_diandian: '点点',
         },
