@@ -313,6 +313,11 @@ export async function precontent(bilibilicharacter) {
         info: '移志技的转换状态操作，如无说明，则默认每局游戏仅可执行一次。',
     });
     lib.poptip.add({
+        name: '强攻',
+        id: 'rule_qianggong',
+        info: '强攻是一种特殊的选项。选择强攻时，先执行此项，然后依次执行其余选项。执行完毕后，须从所有选项删除不为强攻的一项。当所有选项仅剩余强攻和另一选项时，不能选择强攻。',
+    });
+    lib.poptip.add({
         name: '牢大',
         id: 'rule_mamba',
         info: 'Man! What can I say? Mamba out!',
