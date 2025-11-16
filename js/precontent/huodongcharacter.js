@@ -10105,7 +10105,7 @@ const packs = function () {
                         if (!lib.filter.cardEnabled(card, evt.player, evt)) return false;
                         let cards = [card];
                         if (Array.isArray(card.cards)) cards.addArray(card.cards);
-                        return cards.containsSome(...evt.cards);
+                        return cards.containsSome(...(evt.cards ?? []));
                     }, get.prompt2(event.name)).set('addCount', false).set('cards', cards).set('logSkill', event.name);
                     if (result.bool) {
                         let suits = player.getAllHistory('useCard', evt => {
