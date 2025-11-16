@@ -652,28 +652,21 @@ export async function content(config, pack) {
 						const buttons = ui.create.div('.buttons.smallzoom.scrollbuttons');
 						lib.setMousewheel(buttons);
 						const nameskin = avatar2 ? node.name2 : node.name1;
+						const originButton = ui.create.div('.button.character.pointerdiv', buttons, function () {
+							delete lib.config.skin[nameskin];
+							node.node[avatar2 ? 'avatar2' : 'avatar'].setBackground(nameskin, 'character');
+							game.saveConfig('skin', lib.config.skin);
+						});
+						originButton._link = -1;
+						originButton.setBackground(nameskin, 'character');
 						for (let i = 0; i <= num; i++) {
 							const button = ui.create.div('.button.character.pointerdiv', buttons, function () {
-								if (this._link) {
-									if (avatar2) {
-										lib.config.skin[nameskin] = this._link;
-										node.node.avatar2.style.backgroundImage = this.style.backgroundImage;
-									}
-									else {
-										lib.config.skin[nameskin] = this._link;
-										node.node.avatar.style.backgroundImage = this.style.backgroundImage;
-									}
-								}
-								else {
-									delete lib.config.skin[nameskin];
-									if (avatar2) node.node.avatar2.setBackground(nameskin, 'character');
-									else node.node.avatar.setBackground(nameskin, 'character');
-								}
+								lib.config.skin[nameskin] = this._link;
+								node.node[avatar2 ? 'avatar2' : 'avatar'].style.backgroundImage = this.style.backgroundImage;
 								game.saveConfig('skin', lib.config.skin);
 							});
 							button._link = i;
-							if (i) button.setBackgroundImage(`extension/活动武将/image/character/skin/${nameskin}/${_status['extension_活动武将_files'].image.character.skin[nameskin].files[i]}`);
-							else button.setBackground(nameskin, 'character', 'noskin');
+							button.setBackgroundImage(`extension/活动武将/image/character/skin/${nameskin}/${_status['extension_活动武将_files'].image.character.skin[nameskin].files[i]}`);
 						}
 						uiintro.add(buttons);
 					};
@@ -719,22 +712,21 @@ export async function content(config, pack) {
 							}
 							const buttons = ui.create.div('.buttons.smallzoom.scrollbuttons');
 							lib.setMousewheel(buttons);
+							const originBtn = ui.create.div('.button.character.pointerdiv', buttons, function () {
+								delete lib.config.skin[nameskin];
+								node.setBackground(nameskin, 'character');
+								game.saveConfig('skin', lib.config.skin);
+							});
+							originBtn._link = -1;
+							originBtn.setBackground(nameskin, 'character');
 							for (let i = 0; i <= num; i++) {
 								const button = ui.create.div('.button.character.pointerdiv', buttons, function () {
-									if (this._link) {
-										lib.config.skin[nameskin] = this._link;
-										node.style.backgroundImage = this.style.backgroundImage;
-										game.saveConfig('skin', lib.config.skin);
-									}
-									else {
-										delete lib.config.skin[nameskin];
-										node.setBackground(nameskin, 'character');
-										game.saveConfig('skin', lib.config.skin);
-									}
+									lib.config.skin[nameskin] = this._link;
+									node.style.backgroundImage = this.style.backgroundImage;
+									game.saveConfig('skin', lib.config.skin);
 								});
 								button._link = i;
-								if (i) button.setBackgroundImage(`extension/活动武将/image/character/skin/${nameskin}/${_status['extension_活动武将_files'].image.character.skin[nameskin].files[i]}`);
-								else button.setBackground(nameskin, 'character', 'noskin');
+								button.setBackgroundImage(`extension/活动武将/image/character/skin/${nameskin}/${_status['extension_活动武将_files'].image.character.skin[nameskin].files[i]}`);
 							}
 							uiintro.add(buttons);
 						};
@@ -782,27 +774,27 @@ export async function content(config, pack) {
 								avatars.classList.add('scroll');
 								if (lib.config.touchscreen) lib.setScroll(avatars);
 							}
+							const originButton = ui.create.div(avatars, function () {
+								playerbg.classList.remove('scroll');
+								delete lib.config.skin[nameskin];
+								bg.setBackground(nameskin, 'character');
+								if (sourcenode) sourcenode.setBackground(nameskin, 'character');
+								if (avatar) avatar.setBackground(nameskin, 'character');
+								game.saveConfig('skin', lib.config.skin);
+							});
+							originButton._link = null;
+							originButton.setBackground(nameskin, 'character');
 							for (let i = 0; i <= num; i++) {
 								const button = ui.create.div(avatars, function () {
 									playerbg.classList.remove('scroll');
-									if (this._link) {
-										lib.config.skin[nameskin] = this._link;
-										bg.style.backgroundImage = this.style.backgroundImage;
-										if (sourcenode) sourcenode.style.backgroundImage = this.style.backgroundImage;
-										if (avatar) avatar.style.backgroundImage = this.style.backgroundImage;
-										game.saveConfig('skin', lib.config.skin);
-									}
-									else {
-										delete lib.config.skin[nameskin];
-										bg.setBackground(nameskin, 'character');
-										if (sourcenode) sourcenode.setBackground(nameskin, 'character');
-										if (avatar) avatar.setBackground(nameskin, 'character');
-										game.saveConfig('skin', lib.config.skin);
-									}
+									lib.config.skin[nameskin] = this._link;
+									bg.style.backgroundImage = this.style.backgroundImage;
+									if (sourcenode) sourcenode.style.backgroundImage = this.style.backgroundImage;
+									if (avatar) avatar.style.backgroundImage = this.style.backgroundImage;
+									game.saveConfig('skin', lib.config.skin);
 								});
 								button._link = i;
-								if (i) if (i) button.setBackgroundImage(`extension/活动武将/image/character/skin/${nameskin}/${_status['extension_活动武将_files'].image.character.skin[nameskin].files[i]}`);
-								else button.setBackground(nameskin, 'character', 'noskin');
+								button.setBackgroundImage(`extension/活动武将/image/character/skin/${nameskin}/${_status['extension_活动武将_files'].image.character.skin[nameskin].files[i]}`);
 							}
 						};
 						let num = 1;
