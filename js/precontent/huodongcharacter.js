@@ -147,7 +147,23 @@ const packs = function () {
                 //return new Date().getDate() == 8 || new Date().getDate() == 24;
             },
         },
-        perfectPair: {
+        characterTitle: {
+            bilibili_shengxunyu: '偏宠之余晖',
+            bilibili_Firewin: '昔往之鸟中左慈',
+            bilibili_jinglingqiu: '最初的合伙人',
+            bilibili_suixingsifeng: '一将功成万骨枯',
+            bilibili_Emptycity: '跨时间的支持',
+            bilibili_thunderlei: '始之友邦邦主',
+            bilibili_lonelypatients: '群中流砥柱',
+            bilibili_kuangshen: '幺幺零叁之心',
+            bilibili_ningjingzhiyuan: '神秘光之国牢师',
+            bilibili_xizhicaikobe: '风流之姿牢骚哥',
+            bilibili_yanjing: '路边一条',
+            bilibili_xiaoyaoruyun: '三界通之邻',
+            bilibili_shuijiaobuboli: '催更传话一条龙',
+            bilibili_wuzhuwanshui: '搬矢/史大王',
+            bilibili_murufengchen: '殚精竭虑群书记',
+            bilibili_diandian: '唐氏指定合伙人',
         },
         card: {
             //闪闪
