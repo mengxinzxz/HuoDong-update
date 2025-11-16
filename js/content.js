@@ -636,6 +636,201 @@ export async function content(config, pack) {
 			}
 		};
 	}
+	//扩展换肤系统
+	if (get.nodeintro) {
+		const nodeintro = get.nodeintro;
+		get.nodeintro = function (node, simple) {
+			const uiintro = nodeintro.apply(this, arguments);
+			if ((lib.config.change_skin || lib.skin) && (!simple || get.is.phoneLayout())) {
+				if (node.classList.contains('player')) {
+					let num = 1, introadded = false;
+					const createButtons = function (num, avatar2) {
+						if (!introadded) {
+							introadded = true;
+							uiintro.add('<div class="text center">更改皮肤</div>');
+						}
+						const buttons = ui.create.div('.buttons.smallzoom.scrollbuttons');
+						lib.setMousewheel(buttons);
+						const nameskin = avatar2 ? node.name2 : node.name1;
+						for (let i = 0; i <= num; i++) {
+							const button = ui.create.div('.button.character.pointerdiv', buttons, function () {
+								if (this._link) {
+									if (avatar2) {
+										lib.config.skin[nameskin] = this._link;
+										node.node.avatar2.style.backgroundImage = this.style.backgroundImage;
+									}
+									else {
+										lib.config.skin[nameskin] = this._link;
+										node.node.avatar.style.backgroundImage = this.style.backgroundImage;
+									}
+								}
+								else {
+									delete lib.config.skin[nameskin];
+									if (avatar2) node.node.avatar2.setBackground(nameskin, 'character');
+									else node.node.avatar.setBackground(nameskin, 'character');
+								}
+								game.saveConfig('skin', lib.config.skin);
+							});
+							button._link = i;
+							if (i) button.setBackgroundImage(`extension/活动武将/image/character/skin/${nameskin}/${_status['extension_活动武将_files'].image.character.skin[nameskin].files[i]}`);
+							else button.setBackground(nameskin, 'character', 'noskin');
+						}
+						uiintro.add(buttons);
+					};
+					const loadImage = function (avatar2) {
+						const img = new Image();
+						img.onload = function () {
+							num++;
+							loadImage(avatar2);
+						};
+						img.onerror = function () {
+							num--;
+							if (num) createButtons(num, avatar2);
+							if (!avatar2) {
+								if (!node.classList.contains('unseen2') && node.name2) {
+									num = 1;
+									loadImage(true);
+								}
+							}
+						};
+						const nameskin = avatar2 ? node.name2 : node.name1;
+						img.src = `${lib.assetURL}extension/活动武将/image/character/skin/${nameskin}/${_status['extension_活动武将_files'].image.character.skin[nameskin].files[num]}`;
+					};
+					if (lib.config.change_skin) {
+						if (!node.isUnseen(0)) loadImage();
+						else if (node.name2) loadImage(true);
+					}
+					else {
+						setTimeout(function () {
+							let nameskin1 = node.name1, nameskin2 = node.name2;
+							if (!node.isUnseen(0) && lib.skin[nameskin1]) createButtons(lib.skin[nameskin1]);
+							if (!node.isUnseen(1) && lib.skin[nameskin2]) createButtons(lib.skin[nameskin2], true);
+						});
+					}
+				}
+				else if (node.classList.contains('character')) {
+					if (_status['extension_活动武将_files'].image.character.skin[node.link]) {
+						let num = 1, introadded = false, nameskin = node.link;
+						const createButtons = function (num) {
+							if (!num) return;
+							if (!introadded) {
+								introadded = true;
+								uiintro.add('<div class="text center">更改皮肤</div>');
+							}
+							const buttons = ui.create.div('.buttons.smallzoom.scrollbuttons');
+							lib.setMousewheel(buttons);
+							for (let i = 0; i <= num; i++) {
+								const button = ui.create.div('.button.character.pointerdiv', buttons, function () {
+									if (this._link) {
+										lib.config.skin[nameskin] = this._link;
+										node.style.backgroundImage = this.style.backgroundImage;
+										game.saveConfig('skin', lib.config.skin);
+									}
+									else {
+										delete lib.config.skin[nameskin];
+										node.setBackground(nameskin, 'character');
+										game.saveConfig('skin', lib.config.skin);
+									}
+								});
+								button._link = i;
+								if (i) button.setBackgroundImage(`extension/活动武将/image/character/skin/${nameskin}/${_status['extension_活动武将_files'].image.character.skin[nameskin].files[i]}`);
+								else button.setBackground(nameskin, 'character', 'noskin');
+							}
+							uiintro.add(buttons);
+						};
+						const loadImage = function () {
+							const img = new Image();
+							img.onload = function () {
+								num++;
+								loadImage();
+							};
+							img.onerror = function () {
+								num--;
+								createButtons(num);
+							};
+							img.src = `${lib.assetURL}extension/活动武将/image/character/skin/${nameskin}/${_status['extension_活动武将_files'].image.character.skin[nameskin].files[num]}`;
+						};
+						if (lib.config.change_skin) loadImage();
+						else setTimeout(() => createButtons(lib.skin[nameskin]));
+					}
+				}
+			}
+			return uiintro;
+		};
+	}
+	if (ui.click.charactercard) {
+		const charactercard = ui.click.charactercard;
+		ui.click.charactercard = function (name, sourcenode, _, __, avatar) {
+			charactercard.apply(this, arguments);
+			if (!_status['extension_活动武将_files'].image.character.skin[name]) return;
+			const bg = document.querySelector('.avatar'), playerbg = document.querySelector('.menubutton.large.ava');
+			if (bg && playerbg) {
+				let changeskinfunc = null, nameskin = name;
+				bg.onclick = function () {
+					changeskinfunc?.();
+				};
+				const changeskin = function () {
+					const node = ui.create.div('.changeskin', '可换肤', playerbg);
+					const avatars = ui.create.div('.avatars', playerbg);
+					changeskinfunc = function () {
+						playerbg.classList.add('scroll');
+						if (node._created) return;
+						node._created = true;
+						const createButtons = function (num) {
+							if (!num) return;
+							if (num >= 4) {
+								avatars.classList.add('scroll');
+								if (lib.config.touchscreen) lib.setScroll(avatars);
+							}
+							for (let i = 0; i <= num; i++) {
+								const button = ui.create.div(avatars, function () {
+									playerbg.classList.remove('scroll');
+									if (this._link) {
+										lib.config.skin[nameskin] = this._link;
+										bg.style.backgroundImage = this.style.backgroundImage;
+										if (sourcenode) sourcenode.style.backgroundImage = this.style.backgroundImage;
+										if (avatar) avatar.style.backgroundImage = this.style.backgroundImage;
+										game.saveConfig('skin', lib.config.skin);
+									}
+									else {
+										delete lib.config.skin[nameskin];
+										bg.setBackground(nameskin, 'character');
+										if (sourcenode) sourcenode.setBackground(nameskin, 'character');
+										if (avatar) avatar.setBackground(nameskin, 'character');
+										game.saveConfig('skin', lib.config.skin);
+									}
+								});
+								button._link = i;
+								if (i) if (i) button.setBackgroundImage(`extension/活动武将/image/character/skin/${nameskin}/${_status['extension_活动武将_files'].image.character.skin[nameskin].files[i]}`);
+								else button.setBackground(nameskin, 'character', 'noskin');
+							}
+						};
+						let num = 1;
+						const loadImage = function () {
+							const img = new Image();
+							img.onload = function () {
+								num++;
+								loadImage();
+							};
+							img.onerror = function () {
+								num--;
+								createButtons(num);
+							};
+							img.src = `${lib.assetURL}extension/活动武将/image/character/skin/${nameskin}/${_status['extension_活动武将_files'].image.character.skin[nameskin].files[num]}`;
+						};
+						if (lib.config.change_skin) loadImage();
+						else createButtons(lib.skin[nameskin]);
+					};
+				};
+				if (lib.config.change_skin) {
+					const img = new Image();
+					img.onload = changeskin;
+					img.src = `${lib.assetURL}extension/活动武将/image/character/skin/${nameskin}/${_status['extension_活动武将_files'].image.character.skin[nameskin].files[0]}`;
+				}
+				else if (lib.config.debug && lib.skin[nameskin]) changeskin();
+			}
+		};
+	}
 
 	//precGuoZhan(分界线，便于我搜过来)
 	if (get.mode() == 'guozhan') {

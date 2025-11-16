@@ -69,7 +69,7 @@ const packs = function () {
             bilibili_kuailiangkuaiyue: ['male', 'qun', 4, ['bilibili_chouhua'], ['character:kuailiangkuaiyue']],
             bilibili_wuzhuwanshui: ['male', 'key', 3, ['bilibili_diaowen', 'bilibili_banyun'], ['clan:肘击群', 'name:猪|大将军']],
             bilibili_murufengchen: ['double', 'key', 3, [], ['unseen', 'clan:肘击群|活动群', 'name:风|晨']],
-            bilibili_diandian: ['female', 'key', 3, [], ['clan:宿舍群|肘击群|活动群', 'name:永雏|塔菲']],
+            bilibili_diandian: ['female', 'key', 3, ['bilibili_siyu', 'bilibili_tamen'], ['clan:宿舍群|肘击群|活动群', 'name:永雏|塔菲']],
             //千里走单骑
             DJ_caiyang: ['male', 'qun', 1, ['yinka', 'zhuixi'], ['character:caiyang']],
             DJ_pujing: ['male', 'qun', 1, ['yinka'], ['character:pujing']],
@@ -11459,6 +11459,9 @@ const packs = function () {
                     },
                 },
             },
+            //点点
+            bilibili_siyu: {},
+            bilibili_tamen: {},
         },
         dynamicTranslate: {
             bilibili_xueji(player) {
@@ -12068,6 +12071,11 @@ const packs = function () {
             bilibili_banyun_append: '<span style="font-family:yuanli">长史曰：<br>“史之不尽，赤之不竭。<br>搬出节奏，搬出风采。”</span>',
             bilibili_murufengchen: '沐如风晨',
             bilibili_diandian: '点点',
+            bilibili_siyu: '饲育',
+            bilibili_siyu_info: '饲育',
+            bilibili_tamen: '塔门',
+            bilibili_tamen_info: '塔门',
+            bilibili_tamen_append: '<span style="font-family:yuanli">点点</span>',
         },
     };
     for (let i in huodongcharacter.character) {
