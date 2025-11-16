@@ -9,7 +9,7 @@ const packs = function () {
             huodongcharacter: {
                 CLongZhou: ['lz_sufei', 'lz_tangzi', 'lz_liuqi', 'lz_huangquan'],
                 Chuodong: ['bilibili_shengxunyu', 'bilibili_Firewin', 'bilibili_jinglingqiu', 'bilibili_suixingsifeng', 'bilibili_Emptycity', 'bilibili_thunderlei', 'bilibili_lonelypatients', 'bilibili_ningjingzhiyuan', 'bilibili_xizhicaikobe'],
-                CDormitory: ['bilibili_kuangshen', 'bilibili_yanjing', 'bilibili_xiaoyaoruyun', 'bilibili_shuijiaobuboli'],
+                CDormitory: ['bilibili_diandian', 'bilibili_murufengchen', 'bilibili_wuzhuwanshui', 'bilibili_kuangshen', 'bilibili_yanjing', 'bilibili_xiaoyaoruyun', 'bilibili_shuijiaobuboli'],
                 Cothers: ['bilibili_sunhanhua', 'bilibili_zhoutaigong', 'bilibili_zhouxiaomei', 'bilibili_caifuren', 'bilibili_zhengxuan', 'bilibili_sp_xuyou', 'old_zuoci', 'bilibili_kuailiangkuaiyue', 'bilibili_daxiao', 'bilibili_wangtao', 'bilibili_wangyue', 'bilibili_x_wangtao', 'bilibili_x_wangyue', 'bilibili_xushao', 'bilibili_shen_guojia', 'bilibili_re_xusheng', 'bilibili_adong', 'bilibili_zhangrang', 'bilibili_litiansuo', 'decade_huangwudie', 'bilibili_huanggai', 'bilibili_ekeshaoge', 'bilibili_guanning', 'bilibili_wangwang', 'diy_lvmeng'],
                 CDanJi: ['DJ_caiyang', 'DJ_pujing', 'DJ_huban'],
                 CSCS: ['biliscs_shichangshi', 'biliscs_zhangrang', 'biliscs_zhaozhong', 'biliscs_sunzhang', 'biliscs_bilan', 'biliscs_xiayun', 'biliscs_hankui', 'biliscs_lisong', 'biliscs_duangui', 'biliscs_guosheng', 'biliscs_gaowang'],
@@ -67,6 +67,9 @@ const packs = function () {
             bilibili_xiaoyaoruyun: ['female', 'key', 3, ['bilibili_chuandu', 'bilibili_shuaiwei', 'bilibili_huaikui'], ['clan:宿舍群|肘击群|活动群', 'name:鹿都|智川介']],
             bilibili_shuijiaobuboli: ['female', 'key', 3, ['bilibili_qicai', 'bilibili_jizhi', 'bilibili_fengliang', 'bilibili_guiyin'], ['clan:宿舍群|活动群', 'name:黄|月英']],
             bilibili_kuailiangkuaiyue: ['male', 'qun', 4, ['bilibili_chouhua'], ['character:kuailiangkuaiyue']],
+            bilibili_wuzhuwanshui: ['male', 'key', 3, ['bilibili_diaowen', 'bilibili_banyun'], ['clan:肘击群', 'name:猪|大将军']],
+            bilibili_murufengchen: ['male', 'key', 3, [], ['clan:肘击群|活动群', 'name:风|晨']],
+            bilibili_diandian: ['female', 'key', 3, [], ['clan:宿舍群|肘击群|活动群', 'name:永雏|塔菲']],
             //千里走单骑
             DJ_caiyang: ['male', 'qun', 1, ['yinka', 'zhuixi'], ['character:caiyang']],
             DJ_pujing: ['male', 'qun', 1, ['yinka'], ['character:pujing']],
@@ -114,20 +117,23 @@ const packs = function () {
             huanwen: '桓温（312年～373年），字元子，谯国龙亢县（今安徽省怀远县）人，出身谯国桓氏。东晋时期权臣、政治家、军事家、书法家，官至大司马，封爵南郡公。晋明帝司马绍女婿，宣城内史桓彝长子，丰城公桓冲之兄。桓温姿貌伟岸，豪爽大度，文武双全，英略过人。初迎娶南康公主，官拜驸马都尉，袭封万宁县男。咸康元年（335年），出任琅琊内史、辅国将军。后参与庾翼北伐，升迁徐州刺史。永和元年（345年），官拜使持节、安西将军、护南蛮校尉、荆州都督，掌握长江上游地区的兵权。溯江而上，灭亡成汉，官拜征西大将军、开府仪同三司，册封临贺郡公，声名大振。累迁大司马，册封南郡公。掌权期间，劝课农桑，改善吏治，抑制兼并，实施土断，重视疾苦，改善教育。三次出兵北伐，击败羌族首领姚襄，收复西晋旧都洛阳，但败北于苻健、慕容垂，在声望受损后，奢求朝廷加九锡，但受制于王谢势力阻碍，终未能如愿。宁康元年（373年）七月，桓温病逝于姑孰，享年六十二岁，东晋朝廷追赠丞相，谥号宣武公，丧礼依照西晋安平王司马孚、西汉大司马霍光旧例。',
             ekeshaoge: '俄何烧戈，羌将。正始八年，陇西、南安、金城、西平诸羌饿何、烧戈、伐同、蛾遮塞等相结叛乱，攻围城邑，南招蜀兵，凉州名胡治无戴复叛应之。讨蜀护军夏侯霸督诸军屯为翅。郭淮退姜维，维遁退。进讨叛羌，斩饿何、烧戈，降服者万馀落。',
             litiansuo: '刘秉义家的婚事被李荣先辈知道了，本来李荣先辈和刘家没什么深仇大恨，但是李荣先辈赚了些黑钱就想强买下刘家的房子，一直希望这刘家没落变卖家产，提高强买的几率。',
-            shengxunyu: '活动武将群聊团宠，群管理萌新（转型中）致力于对生熏鱼进行管制和保护以希望生熏鱼能够在群里拥有真正的既健康又快乐的生活。',
-            Firewin: '从活动武将群创立至今留存时间最久的人员之一，属于活动武将群元老级人员，现为活动群和管理之一，擅长素材提供。最大特征为每个月都会更换一个愤怒的小鸟的头像，因此别称“鸟鸟”。',
-            jinglingqiu: '活动武将群最最最元老级成员，活动武将群聊开创者之一，萌新于无名杀扩展群推广群聊时便使用活动武将，并且经常提供一些可靠的意见，于2022年2月2日劝说萌新创建活动武将扩展交流群。',
-            suixingsifeng: '萌新转型中的小号。',
-            Emptycity: 'Empty city°，活动武将群骨干级成员，于萌新高考时加入活动武将群，给予萌新素材支持，现为活动群管理之一。',
-            thunderlei: '雷，过去萌新的同行（现在比萌新厉害太多），负责十周年武将的前瞻制作，活动群和Thunder群之间总保持着良好的关系，过去常常被群友成为在各方串门不累脚，现在主负责千幻的更新和更细致的特效制作。',
-            lonelypatients: 'lonely patients，活动群群主，美化大佬，前活动武将二群成员，因完成了活动武将第一次的全露头制作晋升二群管理，后来因合群人数需求成为活动群群主，现负责不定期活动武将的露头包制作。因群主平时较忙，故在群聊内见到群主的次数较为稀少。',
-            babybao: '活动群资深元老，隐藏自身实力的高校研究生，为萌新负责提供图片/配音素材、进行武将测试、管理小群' + '<span style="text-decoration:line-through;">' + '反正不要拿respect当作职务' + '</span>' + '等职务。',
-            'kuangshen': '狂神，无名杀究极更新者，但因为其过于超前的思想和当前时间线的发展完全脱轨而致其PR惨遭扑杀，遂黑化为狂神1103形态，别名牢狂，蠢蠢欲动，准备于未来继续打破历史。',
-            ningjingzhiyuan: '宁静致远，俗称牢宁，赛尔号抽象玩家，“科密”萌新转型中的心腹，喜爱肘击群，现负责维持群内秩序并将违规群友抓进小黑屋肘击群，肘家军大将之一，抽象集大成者。',
-            xizhicaikobe: '戏志才，抽象社恐人士，肘家军大将之一，无名杀<span style="text-decoration: line-through;">非</span>专业人士和爱好者，萌新转型中的任务召唤人。孩子们，其实牢戏<span style="text-decoration: line-through;">并不</span>想要。',
-            yanjing: '路边一条',
-            xiaoyaoruyun: '逍遥如云，肘击群内抽象人士之一<span style="text-decoration: line-through;">（孩子们，其实是牢萌干的，我有十分甚至九分确信是他害的）</span>，因在各大（其实仅一小部分）无名杀群聊内大肆（其实规模并没有那么大）传播病毒武将扩展（其实真的有病毒，还有木马和蠕虫），从而变得（其实并不怎么）出名，至今仍在各大无名杀群聊里逍遥法外（迫真）。',
-            shuijiaobuboli: '睡觉不玻璃，活动群活跃元老之一，为懒狗萌新（转型中）做尽宣传和bug收集的任务。三年过去了，她终于得到了属于自己的专属武将<span style="text-decoration: line-through;">萌新（转型中）就是个大懒棒！</span>。',
+            bilibili_shengxunyu: '活动武将群聊团宠，群管理萌新（转型中）致力于对生熏鱼进行管制和保护以希望生熏鱼能够在群里拥有真正的既健康又快乐的生活。',
+            bilibili_Firewin: '从活动武将群创立至今留存时间最久的人员之一，属于活动武将群元老级人员，现为活动群和管理之一，擅长素材提供。最大特征为每个月都会更换一个愤怒的小鸟的头像，因此别称“鸟鸟”。',
+            bilibili_jinglingqiu: '活动武将群最最最元老级成员，活动武将群聊开创者之一，萌新于无名杀扩展群推广群聊时便使用活动武将，并且经常提供一些可靠的意见，于2022年2月2日劝说萌新创建活动武将扩展交流群。',
+            bilibili_suixingsifeng: '随性似风，活动武将原作者萌新（转型中）的小号，无名杀资深牢玩家（指时间上的牢）。现因即将毕业，将扩展托付戏志才后，随性似风于2025年5月末消失于江湖之中，偶尔会以其他形态作为戏志才发副手进行活动武将的辅助更新。',
+            bilibili_Emptycity: 'Empty city°，活动武将群骨干级成员，于萌新高考时加入活动武将群，给予萌新素材支持，现为活动群管理之一。',
+            bilibili_thunderlei: '雷，过去萌新的同行（现在比萌新厉害太多），负责十周年武将的前瞻制作，活动群和Thunder群之间总保持着良好的关系，过去常常被群友成为在各方串门不累脚，现在主负责千幻的更新和更细致的特效制作。',
+            bilibili_lonelypatients: 'lonely patients，活动群群主，美化大佬，前活动武将二群成员，因完成了活动武将第一次的全露头制作晋升二群管理，后来因合群人数需求成为活动群群主，现负责不定期活动武将的露头包制作。因群主平时较忙，故在群聊内见到群主的次数较为稀少。',
+            //bilibili_babybao: '活动群资深元老，隐藏自身实力的高校研究生，为萌新负责提供图片/配音素材、进行武将测试、管理小群' + '<span style="text-decoration:line-through;">' + '反正不要拿respect当作职务' + '</span>' + '等职务。',
+            bilibili_kuangshen: '狂神，无名杀究极更新者，但因为其过于超前的思想和当前时间线的发展完全脱轨而致其PR惨遭扑杀，遂黑化为狂神1103形态，别名牢狂，蠢蠢欲动，准备于未来继续打破历史。',
+            bilibili_ningjingzhiyuan: '宁静致远，俗称牢宁，赛尔号抽象玩家，“科密”萌新转型中的心腹，喜爱肘击群，现负责维持群内秩序并将违规群友抓进小黑屋肘击群，肘家军大将之一，抽象集大成者。',
+            bilibili_xizhicaikobe: '戏志才，抽象社恐人士，肘家军大将之一，无名杀<span style="text-decoration: line-through;">非</span>专业人士和爱好者，萌新转型中的任务召唤人。孩子们，其实牢戏<span style="text-decoration: line-through;">并不</span>想要。',
+            bilibili_yanjing: '路边一条',
+            bilibili_xiaoyaoruyun: '逍遥如云，肘击群内抽象人士之一<span style="text-decoration: line-through;">（孩子们，其实是牢萌干的，我有十分甚至九分确信是他害的）</span>，因在各大（其实仅一小部分）无名杀群聊内大肆（其实规模并没有那么大）传播病毒武将扩展（其实真的有病毒，还有木马和蠕虫），从而变得（其实并不怎么）出名，至今仍在各大无名杀群聊里逍遥法外（迫真）。',
+            bilibili_shuijiaobuboli: '睡觉不玻璃，活动群活跃元老之一，为懒狗萌新（转型中）做尽宣传和bug收集的任务。三年过去了，她终于得到了属于自己的专属武将<span style="text-decoration: line-through;">萌新（转型中）就是个大懒棒！</span>。',
+            bilibili_wuzhuwanshui: '你说得对但是我的名字是凤凰院凶真，年龄十九岁，家住在秋叶原，天天在lab里面忙着拯救世界，我每天都要熬到凌晨六点，从来不做保健操，静静观测这个世界并且爱护我亲爱的助手——克里斯蒂↑～娜↓～，我每天都要灌大量的胡椒博士，不经常看医生但是我的身体一定非常健康。<br>噫！这搬史，可真是一门学问啊！要如何把热乎的构思端给群友呢？倘若是直接呈上去，未免馨香扑鼻让人倍感惊恐，所以就需要用聊天记录套一层，来欢迎大家细细品味啊！<br>有人问，天下的构思如此之多，你搬得完吗？那当然是搬不完的，可是让眼前之人吃好吃饱，就是我们史官的溯源与目标。我们一定会为了群友的营养健康勤奋工作，积极投喂各种内容，保证群友身体健康营养均衡。',
+            bilibili_murufengchen: '沐如风晨',
+            bilibili_diandian: '点点',
         },
         characterFilter: {
             bilibili_sp_xuyou(mode) {
@@ -199,6 +205,7 @@ const packs = function () {
                     },
                     basic: { equipValue: 5 },
                 },
+                derivation: 'bfake_shen_jiaxu',
             },
             //牢骚之袍
             bilibili_laosaozhipao: {
@@ -212,6 +219,32 @@ const packs = function () {
                     order: 10,
                     basic: { equipValue: 15 },
                 },
+                derivation: 'bilibili_xizhicaikobe',
+            },
+            //屎————OL的毒
+            bilibili_shi: {
+                image: 'ext:活动武将/image/card/bilibili_shi.png',
+                fullskin: true,
+                type: 'basic',
+                enable: true,
+                toself: true,
+                filterTarget: lib.filter.isMe,
+                selectTarget: -1,
+                cardcolor: 'black',
+                content() { },
+                ai: {
+                    value: -5,
+                    useful: 6,
+                    result: {
+                        player(player, target) {
+                            if (player.hasSkillTag('usedu')) return 5;
+                            return -1;
+                        },
+                    },
+                    order: 7.5,
+                },
+                global: 'bilibili_shi',
+                derivation: 'bilibili_wuzhuwanshui',
             },
         },
         skill: {
@@ -11174,6 +11207,257 @@ const packs = function () {
                     content: '复活赛进度条：#/1103',
                 },
             },
+            //吾猪万睡
+            bilibili_diaowen: {
+                trigger: { global: 'useCardAfter' },
+                filter(event, player) {
+                    return player.getExpansions('bilibili_diaowen').some(card => card.name == event.card.name);
+                },
+                forced: true,
+                locked: false,
+                async content(event, trigger, player) {
+                    await player.loseToDiscardpile(player.getExpansions('bilibili_diaowen').filter(card => card.name == trigger.card.name));
+                    const next = player.addToExpansion(get.cards(player.getHistory('useSkill', evt => evt.skill === event.name).length), 'gain2');
+                    next.gaintag.add('bilibili_diaowen');
+                    await next;
+                },
+                group: ['bilibili_diaowen_init', 'bilibili_diaowen_give'],
+                marktext: '矢',
+                intro: {
+                    content: 'expansion',
+                    markcount: 'expansion',
+                },
+                onremove(player, skill) {
+                    const cards = player.getExpansions(skill);
+                    if (cards.length) player.loseToDiscardpile(cards);
+                },
+                subSkill: {
+                    init: {
+                        trigger: { global: 'roundStart' },
+                        forced: true,
+                        locked: false,
+                        async content(event, trigger, player) {
+                            const next = player.addToExpansion(get.cards(3), 'gain2');
+                            next.gaintag.add('bilibili_diaowen');
+                            await next;
+                        },
+                    },
+                    give: {
+                        trigger: { global: 'roundEnd' },
+                        filter(event, player) {
+                            return player.getExpansions('bilibili_diaowen').some(card => {
+                                return game.hasPlayer(target => {
+                                    return !target.getRoundHistory('useCard', evt => card.name === evt.card.name).length;
+                                });
+                            });
+                        },
+                        direct: true,
+                        async content(event, trigger, player) {
+                            if (_status.connectMode) game.broadcastAll(() => (_status.noclearcountdown = true));
+                            const cards = player.getExpansions('bilibili_diaowen'), map = {};
+                            while (cards.some(card => {
+                                return game.hasPlayer(target => {
+                                    return !target.getRoundHistory('useCard', evt => card.name === evt.card.name).length;
+                                });
+                            })) {
+                                const result = await player.chooseButtonTarget({
+                                    createDialog: [`${get.translation(event.name)}：是否${Object.keys(map).length > 0 ? '继续' : ''}将矢“分享”给其他角色？`, cards],
+                                    filterButton(button) {
+                                        return game.hasPlayer(target => {
+                                            return !target.getRoundHistory('useCard', evt => button.link.name === evt.card.name).length;
+                                        });
+                                    },
+                                    selectButton: [1, cards.length],
+                                    filterTarget(card, player, target) {
+                                        return ui.selected.buttons.every(button => {
+                                            return !target.getRoundHistory('useCard', evt => button.link.name === evt.card.name).length;
+                                        });
+                                    },
+                                    ai1(button) {
+                                        const { player, map } = get.event();
+                                        return Math.max(...game.filterPlayer().map(target => {
+                                            return [...ui.selected.cards, button.link, ...(map[target.playerid] || [{ name: 'bilibili_shi' }])].reduce((sum, card) => {
+                                                return get.value(card, target) * get.attitude(player, target);
+                                            }, 0);
+                                        }));
+                                    },
+                                    ai2(target) {
+                                        const player = get.player();
+                                        const card = ui.selected.buttons[0].link;
+                                        if (card) return get.value(card, target) * get.attitude(player, target);
+                                        return 0;
+                                    },
+                                }).forResult();
+                                if (result?.bool && result.targets?.length && result.links?.length) {
+                                    cards.removeArray(result.links);
+                                    const id = result.targets[0].playerid;
+                                    map[id] ??= [game.createCard('bilibili_shi', 'spade', 13)];
+                                    map[id].addArray(result.links);
+                                }
+                                else break;
+                            }
+                            if (_status.connectMode) {
+                                game.broadcastAll(() => {
+                                    delete _status.noclearcountdown;
+                                    game.stopCountChoose();
+                                });
+                            }
+                            if (Object.keys(map).length) {
+                                const gain_list = [];
+                                for (const i in map) {
+                                    const source = (_status.connectMode ? lib.playerOL : game.playerMap)[i];
+                                    player.line(source, 'green');
+                                    gain_list.push([source, map[i]]);
+                                    game.log(source, "获得了", map[i]);
+                                }
+                                await game.loseAsync({
+                                    gain_list: gain_list,
+                                    player: player,
+                                    giver: player,
+                                    animate: 'give',
+                                }).setContent('gaincardMultiple');
+                            }
+                        },
+                    },
+                },
+            },
+            bilibili_shi: {
+                trigger: {
+                    player: ['loseAfter', 'compare'],
+                    global: ['equipAfter', 'addJudgeAfter', 'gainAfter', 'loseAsyncAfter', 'addToExpansionAfter'],
+                    target: 'compare',
+                },
+                cardSkill: true,
+                filter(event, player, name) {
+                    if (name === 'compare') {
+                        if (player == event.player) {
+                            if (event.iwhile > 0) return false;
+                            return event.card1.name === 'bilibili_shi';
+                        }
+                        return event.card2.name == 'bilibili_shi';
+                    }
+                    if (event.name !== 'equip' && !event.visible) return false;
+                    const evt = event.getl(player);
+                    return evt?.hs?.some(i => get.name(i, player) === 'shi' || i.name === 'bilibili_shi');
+                },
+                forced: true,
+                popup: false,
+                async content(event, trigger, player) {
+                    if (trigger.delay === false) await game.delayx();
+                    game.log('#g【屎】', '是', player, '想丢就能丢的吗？？！');
+                    let num = 1;
+                    if (typeof trigger.getl == 'function') {
+                        num = trigger.getl(player).hs.filter(i => get.name(i, player) === 'shi' || i.name === 'bilibili_shi').length;
+                    }
+                    await player.loseHp(num);
+                },
+            },
+            bilibili_banyun: {
+                enable: 'chooseToUse',
+                hiddenCard(player, name) {
+                    if (!player.hasSkill('bilibili_banyun_used') && player.getExpansions('bilibili_diaowen').some(card => card.name == name)) return true;
+                },
+                filter(event, player) {
+                    if (event.responded || event.bilibili_banyun) return false;
+                    return player.getExpansions('bilibili_diaowen').some(card => event.filterCard(card, player, event));
+                },
+                usable: 1,
+                chooseButton: {
+                    dialog(event, player) {
+                        return ui.create.dialog('输粮', player.getExpansions('bilibili_diaowen'), 'hidden');
+                    },
+                    filter(button, player) {
+                        const evt = _status.event.getParent();
+                        return evt.filterCard(button.link, player, evt);
+                    },
+                    check(button) {
+                        const card = button.link,
+                            player = get.player();
+                        return player.getUseValue(card);
+                    },
+                    backup(links, player) {
+                        return {
+                            audio: 'bilibili_banyun',
+                            filterCard(card) {
+                                return card === lib.skill.bilibili_banyun_backup.card;
+                            },
+                            selectCard: -1,
+                            viewAs: links[0],
+                            card: links[0],
+                            position: 'x',
+                            precontent() {
+                                player.addTempSkill('bilibili_banyun_effect');
+                            },
+                        };
+                    },
+                    prompt(links, player) {
+                        return '搬运：请选择' + get.translation(links[0]) + '的目标';
+                    },
+                },
+                ai: {
+                    combo: 'bilibili_diaowen',
+                    effect: {
+                        target(card, player, target, effect) {
+                            if (target.hasSkill('bilibili_banyun_used')) return;
+                            const cards = target.getExpansions('bilibili_diaowen');
+                            if (get.tag(card, 'respondSha') && cards.some(card => card.name === 'sha')) return 0.7;
+                            if (get.tag(card, 'respondShan') && cards.some(card => card.name === 'shan')) return 0.7;
+                        },
+                    },
+                    order(item, player) {
+                        if (player && _status.event.type === 'phase') {
+                            const cards = player.getExpansions('bilibili_diaowen').filter(card => player.getUseValue(card, true, true) > 0);
+                            if (!list.length) return 0;
+                            list.sort((a, b) => player.getUseValue(b, true, true) - player.getUseValue(a, true, true));
+                            return get.order(list[0], player) + 1;
+                        }
+                        return 10;
+                    },
+                    respondShan: true,
+                    respondSha: true,
+                    skillTagFilter(player, tag, arg) {
+                        if (arg === 'respond' || player.hasSkill('bilibili_banyun_used')) return false;
+                        const cards = player.getExpansions('bilibili_diaowen');
+                        return cards.some(card => card.name === (tag === 'respondSha' ? 'sha' : 'shan'));
+                    },
+                    result: {
+                        player(player) {
+                            if (_status.event.dying) return get.attitude(player, _status.event.dying);
+                            return 1;
+                        },
+                    },
+                },
+                subSkill: {
+                    backup: {},
+                    effect: {
+                        charlotte: true,
+                        trigger: { player: 'useCardAfter' },
+                        filter(event, player) {
+                            return event.skill === 'bilibili_banyun_backup' && game.hasPlayer(i => i.countCards('he') > 0);
+                        },
+                        forced: true,
+                        popup: false,
+                        async content(event, trigger, player) {
+                            const result = await player.chooseTarget((card, player, target) => {
+                                return target.countCards('he') > 0;
+                            }, `${get.translation(event.name)}：将一名角色的一张牌置于武将牌上`, true).set('ai', target => {
+                                const player = get.player();
+                                return get.effect(target, { name: 'guohe_copy2' }, player, player);
+                            }).forResult();
+                            if (result?.bool && result.targets?.length) {
+                                const target = result.targets[0];
+                                await player.line(target);
+                                const result2 = await player.choosePlayerCard(target, 'he', true).forResult();
+                                if (result2?.bool && result2.cards?.length) {
+                                    const next = player.addToExpansion(result2.cards, target, 'give');
+                                    next.gaintag.add('bilibili_diaowen');
+                                    await next;
+                                }
+                            }
+                        },
+                    },
+                },
+            },
         },
         dynamicTranslate: {
             bilibili_xueji(player) {
@@ -11773,6 +12057,15 @@ const packs = function () {
             bilibili_chouhua: '筹画',
             bilibili_chouhua_info: '准备阶段，若以下不为无限且数值大于等于0的项数不小于2且这些项的数值和大于0，则你可以分配这些项的数值：①摸牌阶段摸牌数；②使用【杀】的次数上限；③攻击范围；④手牌上限。',
             bilibili_chouhua_append: '<li>本技能由梦婉清投稿<br><li>真是数数又值值口阿',
+            bilibili_wuzhuwanshui: '吾猪万睡',
+            bilibili_shi: '屎',
+            bilibili_shi_info: '①出牌阶段，对你自己使用。②当你从手牌区正面朝上失去此牌后，你失去1点体力。',
+            bilibili_diaowen: '弔闻',
+            bilibili_diaowen_info: `①每轮开始时，你将牌堆顶三张牌称为“矢”置于武将牌上。②每轮结束时，你可以任意分配“矢”给场上本轮未使用过此“矢”牌面的牌的角色并令这些角色获得一张${get.poptip('bilibili_shi')}。③一名角色使用牌后，你移去武将牌上与此牌牌名相同的“矢”，然后将牌堆顶X张牌称为“矢”置于武将牌上（X为本回合发动此分支的次数）。`,
+            bilibili_banyun: '搬运',
+            bilibili_banyun_info: '每回合限一次，你可以使用一张“矢”，然后你将一名角色的一张牌称为“矢”置于武将牌上。',
+            bilibili_murufengchen: '沐如风晨',
+            bilibili_diandian: '点点',
         },
     };
     for (let i in huodongcharacter.character) {
