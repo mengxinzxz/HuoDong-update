@@ -132,7 +132,7 @@ const packs = function () {
             bilibili_xiaoyaoruyun: '逍遥如云，肘击群内抽象人士之一<span style="text-decoration: line-through;">（孩子们，其实是牢萌干的，我有十分甚至九分确信是他害的）</span>，因在各大（其实仅一小部分）无名杀群聊内大肆（其实规模并没有那么大）传播病毒武将扩展（其实真的有病毒，还有木马和蠕虫），从而变得（其实并不怎么）出名，至今仍在各大无名杀群聊里逍遥法外（迫真）。',
             bilibili_shuijiaobuboli: '睡觉不玻璃，活动群活跃元老之一，为懒狗萌新（转型中）做尽宣传和bug收集的任务。三年过去了，她终于得到了属于自己的专属武将<span style="text-decoration: line-through;">萌新（转型中）就是个大懒棒！</span>。',
             bilibili_wuzhuwanshui: '你说得对但是我的名字是凤凰院凶真，年龄十九岁，家住在秋叶原，天天在lab里面忙着拯救世界，我每天都要熬到凌晨六点，从来不做保健操，静静观测这个世界并且爱护我亲爱的助手——克里斯蒂↑～娜↓～，我每天都要灌大量的胡椒博士，不经常看医生但是我的身体一定非常健康。<br>噫！这搬史，可真是一门学问啊！要如何把热乎的构思端给群友呢？倘若是直接呈上去，未免馨香扑鼻让人倍感惊恐，所以就需要用聊天记录套一层，来欢迎大家细细品味啊！<br>有人问，天下的构思如此之多，你搬得完吗？那当然是搬不完的，可是让眼前之人吃好吃饱，就是我们史官的溯源与目标。我们一定会为了群友的营养健康勤奋工作，积极投喂各种内容，保证群友身体健康营养均衡。',
-            bilibili_murufengchen: '沐如风晨',
+            bilibili_murufengchen: '《星主宝诰》有云：志心皈命礼。大罗天阙，紫微星宫。尊居北极之高，位正中天之上，法号金轮炽盛，道称玉斗玄尊。璇玑玉衡，齐七政；总天经地，纬日月。星宿约，四时行，黄道紫垣，万象宗师，诸天统御。大悲大愿、大圣大慈、万星教主、无极元皇、中天紫微北极大帝。<br>————肘击群：沐如风晨',
             bilibili_diandian: '点点',
         },
         characterFilter: {
@@ -243,6 +243,7 @@ const packs = function () {
                     },
                     order: 7.5,
                 },
+                destroy: 'discardPile',
                 global: 'bilibili_shi',
                 derivation: 'bilibili_wuzhuwanshui',
             },
@@ -11355,7 +11356,7 @@ const packs = function () {
             bilibili_banyun: {
                 enable: 'chooseToUse',
                 hiddenCard(player, name) {
-                    if (!player.hasSkill('bilibili_banyun_used') && player.getExpansions('bilibili_diaowen').some(card => card.name == name)) return true;
+                    if (!player.getStat('skill').bilibili_banyun && player.getExpansions('bilibili_diaowen').some(card => card.name == name)) return true;
                 },
                 filter(event, player) {
                     if (event.responded || event.bilibili_banyun) return false;
@@ -11398,7 +11399,7 @@ const packs = function () {
                     combo: 'bilibili_diaowen',
                     effect: {
                         target(card, player, target, effect) {
-                            if (target.hasSkill('bilibili_banyun_used')) return;
+                            if (target.getStat('skill').bilibili_banyun) return;
                             const cards = target.getExpansions('bilibili_diaowen');
                             if (get.tag(card, 'respondSha') && cards.some(card => card.name === 'sha')) return 0.7;
                             if (get.tag(card, 'respondShan') && cards.some(card => card.name === 'shan')) return 0.7;
@@ -11416,7 +11417,7 @@ const packs = function () {
                     respondShan: true,
                     respondSha: true,
                     skillTagFilter(player, tag, arg) {
-                        if (arg === 'respond' || player.hasSkill('bilibili_banyun_used')) return false;
+                        if (arg === 'respond' || player.getStat('skill').bilibili_banyun) return false;
                         const cards = player.getExpansions('bilibili_diaowen');
                         return cards.some(card => card.name === (tag === 'respondSha' ? 'sha' : 'shan'));
                     },
