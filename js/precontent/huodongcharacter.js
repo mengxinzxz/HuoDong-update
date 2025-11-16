@@ -221,7 +221,7 @@ const packs = function () {
                 },
                 derivation: 'bilibili_xizhicaikobe',
             },
-            //屎————OL的毒
+            //史————OL的毒
             bilibili_shi: {
                 image: 'ext:活动武将/image/card/bilibili_shi.png',
                 fullskin: true,
@@ -11345,7 +11345,7 @@ const packs = function () {
                 popup: false,
                 async content(event, trigger, player) {
                     if (trigger.delay === false) await game.delayx();
-                    game.log('#g【屎】', '是', player, '想丢就能丢的吗？？！');
+                    game.log('#g【史】', '是', player, '想丢就能丢的吗？？！');
                     let num = 1;
                     if (typeof trigger.getl == 'function') {
                         num = trigger.getl(player).hs.filter(i => get.name(i, player) === 'shi' || i.name === 'bilibili_shi').length;
@@ -12059,12 +12059,13 @@ const packs = function () {
             bilibili_chouhua_info: '准备阶段，若以下不为无限且数值大于等于0的项数不小于2且这些项的数值和大于0，则你可以分配这些项的数值：①摸牌阶段摸牌数；②使用【杀】的次数上限；③攻击范围；④手牌上限。',
             bilibili_chouhua_append: '<li>本技能由梦婉清投稿<br><li>真是数数又值值口阿',
             bilibili_wuzhuwanshui: '吾猪万睡',
-            bilibili_shi: '屎',
+            bilibili_shi: '史',
             bilibili_shi_info: '①出牌阶段，对你自己使用。②当你从手牌区正面朝上失去此牌后，你失去1点体力。',
             bilibili_diaowen: '弔闻',
             bilibili_diaowen_info: `①每轮开始时，你将牌堆顶三张牌称为“矢”置于武将牌上。②每轮结束时，你可以任意分配“矢”给场上本轮未使用过此“矢”牌面的牌的角色并令这些角色获得一张${get.poptip('bilibili_shi')}。③一名角色使用牌后，你移去武将牌上与此牌牌名相同的“矢”，然后将牌堆顶X张牌称为“矢”置于武将牌上（X为本回合发动此分支的次数）。`,
             bilibili_banyun: '搬运',
             bilibili_banyun_info: '每回合限一次，你可以使用一张“矢”，然后你将一名角色的一张牌称为“矢”置于武将牌上。',
+            bilibili_banyun_append: '<span style="font-family:yuanli">搬史纲要：<br><li>有节奏地搬，有规律地搬<br><li>史之不尽，赤之不竭</span>',
             bilibili_murufengchen: '沐如风晨',
             bilibili_diandian: '点点',
         },
