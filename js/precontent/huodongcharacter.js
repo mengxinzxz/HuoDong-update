@@ -11315,6 +11315,7 @@ const packs = function () {
                                         if (card) return get.value(card, target) * get.attitude(player, target);
                                         return 0;
                                     },
+                                    map: map,
                                 }).forResult();
                                 if (result?.bool && result.targets?.length && result.links?.length) {
                                     cards.removeArray(result.links);
