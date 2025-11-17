@@ -7068,6 +7068,7 @@ const packs = function () {
                             viewAs: links[0],
                             precontent() {
                                 event.getParent().addCount = false;
+                                player.addTempSkill('bilibili_duoyang_effect2');
                             },
                         }
                     },
@@ -7112,20 +7113,18 @@ const packs = function () {
                 subSkill: {
                     backup: {},
                     put: {
-                        trigger: { global: ["loseAfter", "loseAsyncAfter", "cardsDiscardAfter", "equipAfter", "addJudgeAfter", "addToExpansionAfter"] },
+                        trigger: { global: ['loseAfter', 'loseAsyncAfter', 'cardsDiscardAfter', 'equipAfter', 'addJudgeAfter', 'addToExpansionAfter'] },
                         getIndex: event => event.getd() ?? [],
                         filter(event, player, name, card) {
                             if (event.name === 'cardsDiscard') {
                                 const evt = event.getParent();
-                                if (evt.name === "orderingDiscard") {
+                                if (evt.name === 'orderingDiscard') {
                                     const evtx = evt.relatedEvent || evt.getParent();
-                                    if (evtx && ['useCard', 'respond'].includes(evtx.name) && evtx.player === player) return false;
+                                    if (evtx.name !== 'judge' && evtx.player === player) return false;
                                 }
                             }
-                            if (get.position(card, true) !== 'd' || get.type(card) === 'equip') return false;
-                            return Array.from({ length: 5 }).map((_, i) => {
-                                return 'equip' + (i + 1);
-                            }).some(subtype => {
+                            if (get.position(card, true) !== 'd' || get.type(card) === 'equip' || event.getd(player).includes(card)) return false;
+                            return Array.from({ length: 5 }).map((_, i) => `equip${i + 1}`).some(subtype => {
                                 const card2 = get.autoViewAs(card);
                                 card2.subtypes = [subtype];
                                 return player.canEquip(card2);
@@ -7134,9 +7133,7 @@ const packs = function () {
                         forced: true,
                         async content(event, trigger, player) {
                             const card = event.indexedData;
-                            const subtype = Array.from({ length: 5 }).map((_, i) => {
-                                return 'equip' + (i + 1);
-                            }).filter(subtype => {
+                            const subtype = Array.from({ length: 5 }).map((_, i) => `equip${i + 1}`).filter(subtype => {
                                 const card2 = get.autoViewAs(card);
                                 card2.subtypes = [subtype];
                                 return player.canEquip(card2);
@@ -7144,6 +7141,19 @@ const packs = function () {
                             const card2 = get.autoViewAs(card);
                             card2.subtypes = [subtype];
                             await player.equip(card2);
+                        },
+                    },
+                    effect2: {
+                        charlotte: true,
+                        trigger: { player: ['useCardAfter', 'respondAfter'] },
+                        filter(event, player) {
+                            return event.skill === 'bilibili_duoyang_backup';
+                        },
+                        forced: true,
+                        popup: false,
+                        async content(event, trigger, player) {
+                            await player.draw();
+                            await player.chooseToDiscard('he', true);
                         },
                     },
                     /*
@@ -11998,7 +12008,7 @@ const packs = function () {
             bilibili_liaoxing_tag: '星',
             bilibili_liaoxing_info: '锁定技。①你的初始手牌数不会少于X张（X为游戏人数）；分发起始手牌后，所有其他角色的手牌被标记为“星”。②一名角色失去“星”后，其获得等量的【影】。③一名角色失去【影】后，你摸等量的牌。',
             bilibili_duoyang: '多样',
-            bilibili_duoyang_info: '锁定技。①一张非装备牌非因你使用或打出进入弃牌堆后，你将此牌以随机副类别置入装备区。②你可以使用或打出装备区里的非装备牌。',
+            bilibili_duoyang_info: '锁定技。①一张非装备牌不由你的区域进入弃牌堆后，你将此牌以随机副类别置入装备区。②你可以使用或打出装备区里的非装备牌，然后你摸一张牌并弃置一张牌。',
             bilibili_duoyang_append: '<span style="font-family:yuanli">萌新（转型中）御用第二人格</span>',
             bilibili_xuxiang: '虚像',
             bilibili_xuxiang_info: '锁定技，防止你受到的伤害。',
