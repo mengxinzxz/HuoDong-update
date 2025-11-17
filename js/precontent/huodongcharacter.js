@@ -4453,231 +4453,151 @@ const packs = function () {
                 onremove: true,
             },
             lzxingzhao: {
-                derivation: 'xunxun',
-                group: ['lzxingzhao_mark', 'lzxingzhao_xunxun', 'lzxingzhao_1', 'lzxingzhao_2'],
-                mark: true,
-                intro: {
-                    content(storage, player) {
-                        var list = game.filterPlayer2(function (target) {
-                            return target.isFriendOf(player);
-                        });
-                        var lznum = list.length;
-                        var num = 0;
-                        for (var target of list) {
-                            target.getAllHistory('sourceDamage', function (evt) {
-                                num += evt.num;
-                            });
-                        }
-                        var str = '<li>当前总共造成了';
-                        str += num;
-                        str += '点伤害。';
-                        if (num < lznum) {
-                            str += '<li>距离“所有友方角色视为拥有技能〖恂恂〗”还需要造成';
-                            str += lznum - num;
-                            str += '点伤害。';
-                        }
-                        if (num >= lznum) {
-                            str += '<br><li>所有友方角色视为拥有技能〖恂恂〗。';
-                        }
-                        if (num < lznum * 2) {
-                            str += '<li>距离“所有友方角色使用装备牌时摸一张牌”还需要造成';
-                            str += lznum * 2 - num;
-                            str += '点伤害。';
-                        }
-                        if (num >= lznum * 2) {
-                            str += '<br><li>所有友方角色使用装备牌时摸一张牌。';
-                        }
-                        if (num < lznum * 3) {
-                            str += '<li>距离“所有友方角色始终跳过弃牌阶段”还需要造成';
-                            str += lznum * 3 - num;
-                            str += '点伤害。';
-                        }
-                        if (num >= lznum * 3) {
-                            str += '<br><li>所有友方角色始终跳过弃牌阶段。';
-                        }
-                        if (num < lznum * 6) {
-                            str += '<li>距离“每轮开始时，你所属的阵营直接获得游戏胜利”还需要造成';
-                            str += lznum * 6 - num;
-                            str += '点伤害。';
-                        }
-                        if (num >= lznum * 6) {
-                            str += '<br><li>每轮开始时，你所属的阵营直接获得游戏胜利。';
-                        }
-                        return str;
-                    },
-                },
                 audio: 'xinfu_xingzhao',
                 trigger: { global: 'useCard' },
                 filter(event, player) {
-                    var list = game.filterPlayer2(function (target) {
-                        return target.isFriendOf(player);
-                    });
-                    var lznum = list.length;
-                    var num = 0;
-                    for (var target of list) {
-                        target.getAllHistory('sourceDamage', function (evt) {
-                            num += evt.num;
-                        });
-                    }
-                    if (get.type(event.card) != 'equip') return false;
-                    return num >= lznum * 2 && player.getFriends(true).includes(event.player);
+                    let list = game.filterPlayer2(i => i.isFriendOf(player), [], true);
+                    let num = list.reduce((sum, i) => {
+                        i.getAllHistory('sourceDamage', evt => sum += evt.num);
+                        return sum;
+                    }, 0);
+                    if (get.type(event.card) !== 'equip') return false;
+                    return num >= list.length * 2 && player.getFriends(true).includes(event.player);
                 },
                 forced: true,
                 logTarget: 'player',
                 content() {
                     trigger.player.draw();
                 },
+                mark: true,
+                intro: {
+                    markcount(storage, player) {
+                        let num = storage || 0;
+                        let count = game.countPlayer2(i => i.isFriendOf(player), [], true);
+                        let max = [count, count * 2, count * 3, count * 6].find(num2 => num < num2);
+                        return `${num}${max ? `/${max}` : ''}`;
+                    },
+                    content(storage, player) {
+                        let list = game.filterPlayer2(i => i.isFriendOf(player), [], true);
+                        let num = list.reduce((sum, i) => {
+                            i.getAllHistory('sourceDamage', evt => sum += evt.num);
+                            return sum;
+                        }, 0);
+                        var str = '<li>当前总共造成了';
+                        str += num;
+                        str += '点伤害。';
+                        if (num < list.length) {
+                            str += '<li>距离“所有友方角色视为拥有技能〖恂恂〗”还需要造成';
+                            str += list.length - num;
+                            str += '点伤害。';
+                        }
+                        if (num >= list.length) {
+                            str += '<br><li>所有友方角色视为拥有技能〖恂恂〗。';
+                        }
+                        if (num < list.length * 2) {
+                            str += '<li>距离“所有友方角色使用装备牌时摸一张牌”还需要造成';
+                            str += list.length * 2 - num;
+                            str += '点伤害。';
+                        }
+                        if (num >= list.length * 2) {
+                            str += '<br><li>所有友方角色使用装备牌时摸一张牌。';
+                        }
+                        if (num < list.length * 3) {
+                            str += '<li>距离“所有友方角色始终跳过弃牌阶段”还需要造成';
+                            str += list.length * 3 - num;
+                            str += '点伤害。';
+                        }
+                        if (num >= list.length * 3) {
+                            str += '<br><li>所有友方角色始终跳过弃牌阶段。';
+                        }
+                        if (num < list.length * 6) {
+                            str += '<li>距离“每轮开始时，你所属的阵营直接获得游戏胜利”还需要造成';
+                            str += list.length * 6 - num;
+                            str += '点伤害。';
+                        }
+                        if (num >= list.length * 6) {
+                            str += '<br><li>每轮开始时，你所属的阵营直接获得游戏胜利。';
+                        }
+                        return str;
+                    },
+                },
+                init(player, skill) {
+                    let list = game.filterPlayer2(i => i.isFriendOf(player), [], true);
+                    let num = list.reduce((sum, i) => {
+                        i.getAllHistory('sourceDamage', evt => sum += evt.num);
+                        return sum;
+                    }, 0);
+                    player.storage[skill] = num;
+                    player.markSkill(skill);
+                    player.addSkill(`${skill}_mark`);
+                },
+                onremove(player, skill) {
+                    player.removeSkill(`${skill}_mark`);
+                },
+                derivation: 'xunxun',
+                group: ['lzxingzhao_xunxun', 'lzxingzhao_1', 'lzxingzhao_2'],
                 subSkill: {
                     mark: {
                         charlotte: true,
                         trigger: { global: 'damage' },
-                        filter(event, player) {
-                            var list = game.filterPlayer2(function (target) {
-                                return target.isFriendOf(player);
-                            });
-                            var num = 0;
-                            for (var target of list) {
-                                target.getAllHistory('sourceDamage', function (evt) {
-                                    num += evt.num;
-                                });
-                            }
-                            return num > player.countMark('lzxingzhao');
-                        },
-                        priority: 114 + 514 - 1919 + 810,
-                        direct: true,
+                        silent: true,
+                        firstDo: true,
+                        forceOut: true,
                         content() {
-                            var list = game.filterPlayer2(function (target) {
-                                return target.isFriendOf(player);
-                            });
-                            var num = 0;
-                            for (var target of list) {
-                                target.getAllHistory('sourceDamage', function (evt) {
-                                    num += evt.num;
-                                });
-                            }
-                            player.addMark('lzxingzhao', num - player.countMark('lzxingzhao'), false);
+                            lib.skill['lzxingzhao'].init(player, 'lzxingzhao');
                         },
                     },
                     xunxun: {
                         trigger: { global: 'phaseDrawBegin1' },
                         filter(event, player) {
-                            var list = game.filterPlayer2(function (target) {
-                                return target.isFriendOf(player);
-                            });
-                            var lznum = list.length;
-                            var num = 0;
-                            for (var target of list) {
-                                target.getAllHistory('sourceDamage', function (evt) {
-                                    num += evt.num;
-                                });
-                            }
-                            return num >= lznum && player.getFriends(true).includes(event.player);
+                            let list = game.filterPlayer2(i => i.isFriendOf(player), [], true);
+                            let num = list.reduce((sum, i) => {
+                                i.getAllHistory('sourceDamage', evt => sum += evt.num);
+                                return sum;
+                            }, 0);
+                            return num >= list.length && player.getFriends(true).includes(event.player);
                         },
-                        direct: true,
+                        async cost(event, trigger, player) {
+                            event.result = await trigger.player.chooseBool(get.prompt2('xunxun')).forResult();
+                        },
+                        popup: false,
                         content() {
-                            'step 0'
-                            trigger.player.chooseBool(get.prompt2('xunxun'));
-                            'step 1'
-                            if (result.bool) {
-                                trigger.player.logSkill('lzxingzhao');
-                                var next = game.createEvent('lzxingzhao_xunxun');
-                                next.player = trigger.player;
-                                next.setContent(lib.skill.xunxun.content);
-                            }
-                            /*
-                            'step 1'
-                            if(result.bool){
                             trigger.player.logSkill('lzxingzhao');
-                            event.cards=get.cards(4);
-                            trigger.player.chooseCardButton(event.cards,2,'选择两张牌置于牌堆顶',true).set('ai',ai.get.buttonValue);
-                            }
-                            else event.finish();
-                            'step 2'
-                            if(result.bool){
-                            var choice=[];
-                            for(var i=0;i<result.links.length;i++){
-                            choice.push(result.links[i]);
-                            cards.remove(result.links[i]);
-                            }
-                            for(var i=0;i<cards.length;i++){
-                            ui.cardPile.appendChild(cards[i]);
-                            }
-                            while(choice.length){
-                            ui.cardPile.insertBefore(choice.pop(),ui.cardPile.firstChild);
-                            }
-                            }
-                            */
+                            const next = game.createEvent('lzxingzhao_xunxun');
+                            next.player = trigger.player;
+                            next.setContent(lib.skill.xunxun.content);
                         },
                     },
                     '1': {
                         trigger: { global: 'roundStart' },
                         audio: 'xinfu_xingzhao2',
                         filter(event, player) {
-                            var list = game.filterPlayer2(function (target) {
-                                return target.isFriendOf(player);
-                            });
-                            var lznum = list.length;
-                            var num = 0;
-                            for (var target of list) {
-                                target.getAllHistory('sourceDamage', function (evt) {
-                                    num += evt.num;
-                                });
-                            }
-                            return num >= lznum * 6;
+                            let list = game.filterPlayer2(i => i.isFriendOf(player), [], true);
+                            let num = list.reduce((sum, i) => {
+                                i.getAllHistory('sourceDamage', evt => sum += evt.num);
+                                return sum;
+                            }, 0);
+                            return num >= list.length * 6;
                         },
                         forced: true,
                         skillAnimation: true,
                         animationColor: 'water',
                         content() {
-                            var bool = false;
-                            if (player == game.me) bool = true;
-                            else switch (get.mode()) {
-                                case 'identity': {
-                                    game.showIdentity();
-                                    var id1 = player.identity;
-                                    var id2 = game.me.identity;
-                                    if (['zhu', 'zhong', 'mingzhong'].includes(id1)) {
-                                        if (['zhu', 'zhong', 'mingzhong'].includes(id2)) bool = true;
-                                        break;
-                                    }
-                                    else if (id1 == 'fan') {
-                                        if (id2 == 'fan') bool = true;
-                                        break;
-                                    }
-                                    break;
-                                }
-                                case 'guozhan': {
-                                    if (game.me.isFriendOf(player)) bool = true;
-                                    break;
-                                }
-                                case 'versus': {
-                                    if (player.side == game.me.side) bool = true;
-                                    break;
-                                }
-                                case 'boss': {
-                                    if (player.side == game.me.side) bool = true;
-                                    break;
-                                }
-                                default: { }
-                            }
-                            game.over(bool);
+                            const me = game.me._trueMe || game.me;
+                            const winners = game.filterPlayer2(i => i.isFriendOf(player), [], true);
+                            game.over(player === me || winners.includes(me));
                         },
                     },
                     '2': {
                         audio: 'xinfu_xingzhao2',
                         trigger: { global: 'phaseDiscardBefore' },
                         filter(event, player) {
-                            var list = game.filterPlayer2(function (target) {
-                                return target.isFriendOf(player);
-                            });
-                            var lznum = list.length;
-                            var num = 0;
-                            for (var target of list) {
-                                target.getAllHistory('sourceDamage', function (evt) {
-                                    num += evt.num;
-                                });
-                            }
-                            return num >= lznum * 3 && player.getFriends(true).includes(event.player);
+                            let list = game.filterPlayer2(i => i.isFriendOf(player), [], true);
+                            let num = list.reduce((sum, i) => {
+                                i.getAllHistory('sourceDamage', evt => sum += evt.num);
+                                return sum;
+                            }, 0);
+                            return num >= list.length * 3 && player.getFriends(true).includes(event.player);
                         },
                         forced: true,
                         logTarget: 'player',
@@ -11927,7 +11847,7 @@ const packs = function () {
             lzdianhu_info: '锁定技，游戏开始时，你选择一名其他角色。友方角色对其造成1点伤害后，摸一张牌。',
             lzxingzhao: '兴棹',
             lz_xunxun: '恂恂',
-            lzxingzhao_info: '锁定技，若本局游戏中所有友方角色（包含死亡的友方角色，其后同理）造成的伤害数合计为：<br><li>不少于友方角色数，所有友方角色视为拥有技能〖恂恂〗；<br><li>不少于友方角色数的两倍，所有友方角色使用装备牌时摸一张牌；<br><li>不少于友方角色数的三倍，所有友方角色跳过弃牌阶段；<br><li>不少于友方角色数的六倍，每轮开始时，你所属的阵营直接获得游戏胜利。',
+            lzxingzhao_info: '锁定技，若本局游戏中所有友方角色造成的伤害数合计为：<br><li>不少于友方角色数，所有友方角色视为拥有技能〖恂恂〗；<br><li>不少于友方角色数的两倍，所有友方角色使用装备牌时摸一张牌；<br><li>不少于友方角色数的三倍，所有友方角色跳过弃牌阶段；<br><li>不少于友方角色数的六倍，每轮开始时，你所属的阵营直接获得游戏胜利。',
             boss_tz: '等阶特权·玩家方',
             boss_tz_sha: '出杀',
             boss_tz_sha_info: '出【杀】次数+1。',
