@@ -13,7 +13,11 @@
 	/*字体*/
 	text-align: center;
 	color: #ac9a82;
-	text-shadow: -1.3px 0px 2.2px #000, 0px -1.3px 2.2px #000, 1.3px 0px 2.2px #000, 0px 1.3px 2.2px #000;
+	text-shadow:
+		-1.3px 0px 2.2px #000,
+		0px -1.3px 2.2px #000,
+		1.3px 0px 2.2px #000,
+		0px 1.3px 2.2px #000;
 	font-family: "shousha";
 	font-size: 18px;
 	font-weight: 700;
@@ -35,7 +39,11 @@
 	/*字体*/
 	text-align: center;
 	color: #ac9a82;
-	text-shadow: -1.3px 0px 2.2px #000, 0px -1.3px 2.2px #000, 1.3px 0px 2.2px #000, 0px 1.3px 2.2px #000;
+	text-shadow:
+		-1.3px 0px 2.2px #000,
+		0px -1.3px 2.2px #000,
+		1.3px 0px 2.2px #000,
+		0px 1.3px 2.2px #000;
 	font-family: "shousha";
 	font-size: 17px;
 	font-weight: 500;
@@ -57,7 +65,11 @@
 	/*字体*/
 	text-align: center;
 	color: #ac9a82;
-	text-shadow: -1.3px 0px 2.2px #000, 0px -1.3px 2.2px #000, 1.3px 0px 2.2px #000, 0px 1.3px 2.2px #000;
+	text-shadow:
+		-1.3px 0px 2.2px #000,
+		0px -1.3px 2.2px #000,
+		1.3px 0px 2.2px #000,
+		0px 1.3px 2.2px #000;
 	font-family: "shousha";
 	font-size: 17px;
 	font-weight: 500;
@@ -84,7 +96,11 @@
 	/*字体*/
 	text-align: center;
 	color: #e2e0dc;
-	text-shadow: -1.3px 0px 2.2px #000, 0px -1.3px 2.2px #000, 1.3px 0px 2.2px #000, 0px 1.3px 2.2px #000;
+	text-shadow:
+		-1.3px 0px 2.2px #000,
+		0px -1.3px 2.2px #000,
+		1.3px 0px 2.2px #000,
+		0px 1.3px 2.2px #000;
 	font-family: "shousha";
 	font-size: 17px;
 	font-weight: 900;
@@ -179,7 +195,9 @@ td.dengjie-game > .arrow-container > .arrow {
 	width: 50%;
 	height: 50%;
 	z-index: 3;
-	box-shadow: rgba(0, 0, 0, 0.2) 0 0 0 1px, rgba(0, 0, 0, 0.45) 0 3px 10px;
+	box-shadow:
+		rgba(0, 0, 0, 0.2) 0 0 0 1px,
+		rgba(0, 0, 0, 0.45) 0 3px 10px;
 }
 
 td.dengjie-game > .arrow-container.new-gain > .arrow {
@@ -196,17 +214,32 @@ td.dengjie-game > .arrow-container.old > .arrow {
 
 td.dengjie-game > .arrow-container.new-gain {
 	background-color: #007dbd;
-	box-shadow: rgba(0, 0, 0, 0.3) 0 0 0 1px, rgba(0, 125, 189, 1) 0 0 5px, rgba(0, 125, 189, 1) 0 0 5px, rgba(0, 125, 189, 1) 0 0 10px, rgba(0, 125, 189, 1) 0 0 10px !important;
+	box-shadow:
+		rgba(0, 0, 0, 0.3) 0 0 0 1px,
+		rgba(0, 125, 189, 1) 0 0 5px,
+		rgba(0, 125, 189, 1) 0 0 5px,
+		rgba(0, 125, 189, 1) 0 0 10px,
+		rgba(0, 125, 189, 1) 0 0 10px !important;
 }
 
 td.dengjie-game > .arrow-container.new-lose {
 	background-color: #c50000;
-	box-shadow: rgba(0, 0, 0, 0.3) 0 0 0 1px, rgba(197, 0, 0, 1) 0 0 5px, rgba(197, 0, 0, 1) 0 0 5px, rgba(197, 0, 0, 1) 0 0 10px, rgba(197, 0, 0, 1) 0 0 10px !important;
+	box-shadow:
+		rgba(0, 0, 0, 0.3) 0 0 0 1px,
+		rgba(197, 0, 0, 1) 0 0 5px,
+		rgba(197, 0, 0, 1) 0 0 5px,
+		rgba(197, 0, 0, 1) 0 0 10px,
+		rgba(197, 0, 0, 1) 0 0 10px !important;
 }
 
 td.dengjie-game > .arrow-container.old {
 	background-color: #494949;
-	box-shadow: rgba(0, 0, 0, 0.3) 0 0 0 1px, rgba(73, 73, 73, 1) 0 0 5px, rgba(73, 73, 73, 1) 0 0 5px, rgba(73, 73, 73, 1) 0 0 10px, rgba(73, 73, 73, 1) 0 0 10px !important;
+	box-shadow:
+		rgba(0, 0, 0, 0.3) 0 0 0 1px,
+		rgba(73, 73, 73, 1) 0 0 5px,
+		rgba(73, 73, 73, 1) 0 0 5px,
+		rgba(73, 73, 73, 1) 0 0 10px,
+		rgba(73, 73, 73, 1) 0 0 10px !important;
 }
 
 td.dengjie-game.selectable {
@@ -318,7 +351,10 @@ td.dengjie-game > .button.character > .score.lose {
 /*神左慈幻术卡牌颜色*/
 .card.minihuanshu-glow:before {
 	opacity: 0.2;
-	box-shadow: rgba(0, 0, 0, 0.2) 0 0 0 1px, rgb(255, 109, 12) 0 0 5px, rgb(255, 0, 0) 0 0 10px;
+	box-shadow:
+		rgba(0, 0, 0, 0.2) 0 0 0 1px,
+		rgb(255, 109, 12) 0 0 5px,
+		rgb(255, 0, 0) 0 0 10px;
 	background-color: #0000ff;
 	-webkit-filter: blur(5px);
 	filter: blur(5px);
@@ -327,7 +363,10 @@ td.dengjie-game > .button.character > .score.lose {
 /*神左慈幻化卡牌颜色*/
 .card.minihuanhua-glow:before {
 	opacity: 0.2;
-	box-shadow: rgba(0, 0, 0, 0.2) 0 0 0 1px, rgb(255, 109, 12) 0 0 5px, rgb(255, 0, 0) 0 0 10px;
+	box-shadow:
+		rgba(0, 0, 0, 0.2) 0 0 0 1px,
+		rgb(255, 109, 12) 0 0 5px,
+		rgb(255, 0, 0) 0 0 10px;
 	background-color: yellow;
 	-webkit-filter: blur(5px);
 	filter: blur(5px);
@@ -337,4 +376,35 @@ td.dengjie-game > .button.character > .score.lose {
 	width: 10px;
 	height: 10px;
 	margin-left: 0;
+}
+
+/*群聊势力：十周年样式＆手杀样式一*/
+.player > .camp-wrap[data-camp="bilibili_sushe"] > .camp-back {
+	background: linear-gradient(to bottom, rgb(98, 0, 128), rgb(255, 0, 221));
+}
+.player > .camp-wrap[data-camp="bilibili_zhouji"] > .camp-back {
+	background: linear-gradient(to bottom, rgb(43, 53, 193), rgb(0, 200, 255));
+}
+.player > .camp-wrap[data-camp="bilibili_huodong"] > .camp-back {
+	background: linear-gradient(to bottom, rgb(122, 128, 64), rgb(255, 255, 0));
+}
+
+/*群聊势力：手杀样式二*/
+.player > .camp-wrap[data-camp="bilibili_sushe"] > .camp-name {
+	text-shadow:
+		0 0 5px rgb(42, 0, 64),
+		0 0 10px rgb(98, 0, 128),
+		0 0 15px rgb(255, 0, 221);
+}
+.player > .camp-wrap[data-camp="bilibili_zhouji"] > .camp-name {
+	text-shadow:
+		0 0 5px rgb(43, 53, 193)
+		0 0 10px rgb(128, 189, 255),
+		0 0 15px rgb(0, 200, 255);
+}
+.player > .camp-wrap[data-camp="bilibili_huodong"] > .camp-name {
+	text-shadow:
+		0 0 5px rgb(122, 128, 64),
+		0 0 10px rgb(200, 199, 104),
+		0 0 15px rgb(255, 255, 0);
 }

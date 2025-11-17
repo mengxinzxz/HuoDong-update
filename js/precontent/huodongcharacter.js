@@ -41,11 +41,11 @@ const packs = function () {
             bilibili_jinglingqiu: ['male', 'key', '3/4', ['bilibili_tiyi', 'bilibili_zili'], ['clan:活动群', 'name:精灵|球']],
             bilibili_suixingsifeng: ['female', 'key', 4, ['bilibili_liaoxing', 'bilibili_duoyang'], ['clan:肘家军|宿舍群|肘击群|活动群', 'name:萌新|转型中']],
             bilibili_Emptycity: ['male', 'key', 4, ['bilibili_zhiyou', 'bilibili_guanli'], ['clan:活动群|Thunder群', 'name:空|城']],
-            bilibili_thunderlei: ['male', 'key', '4/4/5', ['bilibili_Thunder', 'bilibili_qianzhi'], ['clan:Thunder群', 'name:雷|null']],
+            bilibili_thunderlei: ['male', 'key', '4/4/5', ['bilibili_Thunder', 'bilibili_qianzhi'], ['clan:活动群|Thunder群', 'name:雷|null']],
             bilibili_zhengxuan: ['male', 'qun', 3, ['bilibili_zhengjing'], ['character:zhengxuan', 'die:zhengxuan', 'name:郑|玄']],
             bilibili_sunhanhua: ['female', 'wu', 3, ['bilibili_chongxu', 'miaojian', 'shhlianhua'], ['character:sunhanhua', 'die:sunhanhua', 'name:孙|寒华']],
             bilibili_lonelypatients: ['male', 'key', 4, ['bilibili_meihua'], ['clan:活动群', 'name:独孤|null']],
-            bilibili_kuangshen: ['male', 'key', '1/10/3', ['bilibili_paoku'], ['clan:肘家军|肘击群|活动群']],
+            bilibili_kuangshen: ['male', 'key', '1/10/3', ['bilibili_paoku'], ['clan:宿舍群|肘击群|活动群']],
             bilibili_shen_guojia: ['male', 'wei', '9/9/5', ['stianyi', 'resghuishi', 'bilibili_huishi'], ['doublegroup:shen:wei:wu', 'die:shen_guojia']],
             bilibili_re_xusheng: ['male', 'wu', 4, ['bilibili_pojun', 'kuangcai', 'bilibili_baodao'], ['die:re_xusheng']],
             bilibili_xushao: ['male', 'qun', '1/6', ['bilibili_pingjian'], ['ext:活动武将/image/character/old_xushao.jpg', 'InitFilter:noZhuHp']],
@@ -61,12 +61,12 @@ const packs = function () {
                 clans: ['宿舍群', '肘击群', '活动群'],
             },
             bilibili_caifuren: ['female', 'qun', 3, ['bilibili_kuilei'], ["name:蔡|null"]],
-            bilibili_xiaoyaoruyun: ['female', 'key', 3, ['bilibili_chuandu', 'bilibili_shuaiwei', 'bilibili_huaikui'], ['clan:宿舍群|肘击群|活动群', 'name:鹿都|智川介']],
+            bilibili_xiaoyaoruyun: ['female', 'key', 3, ['bilibili_chuandu', 'bilibili_shuaiwei', 'bilibili_huaikui'], ['clan:肘击群|活动群', 'name:鹿都|智川介']],
             bilibili_shuijiaobuboli: ['female', 'key', 3, ['bilibili_qicai', 'bilibili_jizhi', 'bilibili_fengliang', 'bilibili_guiyin'], ['clan:宿舍群|活动群', 'name:黄|月英']],
             bilibili_kuailiangkuaiyue: ['male', 'qun', 4, ['bilibili_chouhua'], ['character:kuailiangkuaiyue']],
-            bilibili_wuzhuwanshui: ['male', 'key', 3, ['bilibili_diaowen', 'bilibili_banyun'], ['clan:肘击群', 'name:猪|大将军']],
-            bilibili_murufengchen: ['double', 'key', 3, [], ['unseen', 'clan:肘击群|活动群', 'name:风|晨']],
-            bilibili_diandian: ['female', 'key', 3, ['bilibili_siyu', 'bilibili_tamen'], ['clan:宿舍群|肘击群|活动群', 'name:永雏|塔菲']],
+            bilibili_wuzhuwanshui: ['male', 'key', 3, ['bilibili_diaowen', 'bilibili_banyun'], ['clan:肘击群|活动群', 'name:猪|大将军']],
+            bilibili_murufengchen: ['double', 'key', 3, [], ['unseen', 'clan:宿舍群|肘击群|活动群', 'name:风|晨']],
+            bilibili_diandian: ['female', 'key', 3, ['bilibili_siyu', 'bilibili_tamen'], ['clan:肘击群|活动群', 'name:永雏|塔菲']],
             //双面武将--正面
             bilibili_wangtao: ['female', 'shu', 3, ['huguan', 'yaopei', 'dualside'], ['dualside:bilibili_x_wangyue', 'character:wangtao', 'die:wangtao']],
             bilibili_wangyue: ['female', 'shu', 3, ['huguan', 'mingluan', 'dualside'], ['dualside:bilibili_x_wangtao', 'character:wangyue', 'tempname:wangyue', 'die:wangyue']],
@@ -11724,7 +11724,7 @@ const packs = function () {
         translate: {
             CLongZhou: '龙舟武将',
             Chuodong: '活动群名人堂',
-            CDormitory: '寝室/肘击群杂谈',
+            CDormitory: '宿舍/肘击群杂谈',
             Cothers: '自嗨',
             Cothers_dualside: '自嗨·双面武将',
             CDanJi: '彩蛋·千里走单骑',
@@ -12264,6 +12264,12 @@ const packs = function () {
         huodongcharacter.character[i][4].push('ext:活动武将/image/character/' + i + '.jpg');
         if (!lib.config.extension_活动武将_DanJi && huodongcharacter.characterSort.huodongcharacter.CDanJi.includes(i)) huodongcharacter.character[i][4].push('unseen');
         if (!lib.config.extension_活动武将_SCS && huodongcharacter.characterSort.huodongcharacter.CSCS.includes(i)) huodongcharacter.character[i][4].push('unseen');
+        const clans = huodongcharacter.character[i].clans || huodongcharacter.character[i][4].find(i => i.startsWith('clan:'))?.split(':')[1].split('|');
+        if (clans?.containsSome('宿舍群', '肘击群', '活动群')) {
+            const groups = ['宿舍群', '肘击群', '活动群'].filter(i => clans.includes(i)).map(i => { return { '宿舍群': 'bilibili_sushe', '肘击群': 'bilibili_zhouji', '活动群': 'bilibili_huodong' }[i] });
+            if (groups.length === 1) huodongcharacter.character[i][1] = groups[0];
+            else huodongcharacter.character[i][4].push(['doublegroup', ...groups].join(':'));
+        }
     }
     huodongcharacter.connectBanned.addArray(['CDanJi', 'CSCS'].map(i => huodongcharacter.characterSort.huodongcharacter[i]).flat());
     //“萌新自设”前缀
@@ -12276,6 +12282,22 @@ const packs = function () {
         color: '#ff6a6a',
         nature: 'MXpink',
         showName: '蝶',
+    });
+    //添加群聊势力
+    game.addGroup('bilibili_sushe', '寝室', '宿舍群', { color: '#6F00FF', image: 'ext:活动武将/image/default/bilibili_sushe.png' });
+    game.addGroup('bilibili_zhouji', '肘击', '肘帝群', { color: '#00d9FF', image: 'ext:活动武将/image/default/bilibili_zhouji.png' });
+    game.addGroup('bilibili_huodong', '活动', '活动群', { color: '#FFee00', image: 'ext:活动武将/image/default/bilibili_huodong.png' });
+    lib.group.removeArray(['bilibili_sushe', 'bilibili_zhouji', 'bilibili_huodong']);
+    lib.arenaReady.push(function () {
+        lib.element.player.changeGroup = function (group, log, broadcast) {
+            const next = game.createEvent('changeGroup');
+            next.player = this;
+            next.group = group;
+            next.log = typeof log === 'boolean' ? log : true;
+            next.broadcast = broadcast !== 'nobroadcast';
+            next.setContent('changeGroup');
+            return next;
+        };
     });
     lib.config.all.characters.push('huodongcharacter');
     lib.config.all.sgscharacters.push('huodongcharacter');
