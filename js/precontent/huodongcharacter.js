@@ -7067,7 +7067,6 @@ const packs = function () {
                             position: 'e',
                             viewAs: links[0],
                             precontent() {
-                                event.getParent().addCount = false;
                                 player.addTempSkill('bilibili_duoyang_effect2');
                             },
                         }
