@@ -10,7 +10,8 @@ const packs = function () {
                 CLongZhou: ['lz_sufei', 'lz_tangzi', 'lz_liuqi', 'lz_huangquan'],
                 Chuodong: ['bilibili_shengxunyu', 'bilibili_Firewin', 'bilibili_jinglingqiu', 'bilibili_suixingsifeng', 'bilibili_Emptycity', 'bilibili_thunderlei', 'bilibili_lonelypatients', 'bilibili_ningjingzhiyuan', 'bilibili_xizhicaikobe'],
                 CDormitory: ['bilibili_diandian', 'bilibili_murufengchen', 'bilibili_wuzhuwanshui', 'bilibili_kuangshen', 'bilibili_yanjing', 'bilibili_xiaoyaoruyun', 'bilibili_shuijiaobuboli'],
-                Cothers: ['bilibili_sunhanhua', 'bilibili_zhoutaigong', 'bilibili_zhouxiaomei', 'bilibili_caifuren', 'bilibili_zhengxuan', 'bilibili_sp_xuyou', 'old_zuoci', 'bilibili_kuailiangkuaiyue', 'bilibili_daxiao', 'bilibili_wangtao', 'bilibili_wangyue', 'bilibili_x_wangtao', 'bilibili_x_wangyue', 'bilibili_xushao', 'bilibili_shen_guojia', 'bilibili_re_xusheng', 'bilibili_adong', 'bilibili_zhangrang', 'bilibili_litiansuo', 'decade_huangwudie', 'bilibili_huanggai', 'bilibili_ekeshaoge', 'bilibili_guanning', 'bilibili_wangwang', 'diy_lvmeng'],
+                Cothers: ['bilibili_sunhanhua', 'bilibili_zhoutaigong', 'bilibili_zhouxiaomei', 'bilibili_caifuren', 'bilibili_zhengxuan', 'bilibili_sp_xuyou', 'old_zuoci', 'bilibili_kuailiangkuaiyue', 'bilibili_daxiao', 'bilibili_xushao', 'bilibili_shen_guojia', 'bilibili_re_xusheng', 'bilibili_adong', 'bilibili_zhangrang', 'bilibili_litiansuo', 'decade_huangwudie', 'bilibili_huanggai', 'bilibili_ekeshaoge', 'bilibili_guanning', 'bilibili_wangwang', 'diy_lvmeng'],
+                Cothers_dualside: ['bilibili_wangtao', 'bilibili_wangyue', 'bilibili_x_wangtao', 'bilibili_x_wangyue', 'bilibili_daqiao', 'bilibili_xiaoqiao', 'bilibili_x_daqiao', 'bilibili_x_xiaoqiao', 'bilibili_ahuinan', 'bilibili_dongtuna', 'bilibili_x_ahuinan', 'bilibili_x_dongtuna'],
                 CDanJi: ['DJ_caiyang', 'DJ_pujing', 'DJ_huban'],
                 CSCS: ['biliscs_shichangshi', 'biliscs_zhangrang', 'biliscs_zhaozhong', 'biliscs_sunzhang', 'biliscs_bilan', 'biliscs_xiayun', 'biliscs_hankui', 'biliscs_lisong', 'biliscs_duangui', 'biliscs_guosheng', 'biliscs_gaowang'],
                 CXuanDie: ['bfake_jiananfeng', 'bfake_shen_zhangjiao', 'bfake_shen_zhangfei', 'bfake_shen_jiaxu', 'bfake_huanwen', 'bfake_miheng'],
@@ -23,10 +24,6 @@ const packs = function () {
             bilibili_zhangrang: ['male', 'qun', 3, ['bilibili_taoluan']],
             diy_lvmeng: ['male', 'wu', 4, ['BTkongju', 'BThouqi'], ['die:lvmeng']],
             bilibili_wangwang: ['female', 'shu', 3, ['huguan', 'yaopei', 'mingluan'], ['die:wangtao', 'die:wangyue', 'name:王|桃-王|悦']],
-            bilibili_wangtao: ['female', 'shu', 3, ['huguan', 'yaopei', 'dualside'], ['dualside:bilibili_x_wangyue', 'character:wangtao', 'die:wangtao']],
-            bilibili_wangyue: ['female', 'shu', 3, ['huguan', 'mingluan', 'dualside'], ['dualside:bilibili_x_wangtao', 'character:wangyue', 'tempname:wangyue', 'die:wangyue']],
-            bilibili_x_wangtao: ['female', 'shu', 3, ['huguan', 'yaopei', 'dualside'], ['unseen', 'character:wangtao', 'die:wangtao']],
-            bilibili_x_wangyue: ['female', 'shu', 3, ['huguan', 'mingluan', 'dualside'], ['unseen', 'character:wangyue', 'tempname:wangyue', 'die:wangyue']],
             bilibili_guanning: ['male', 'qun', '3/7', ['BTdunshi'], ['forbidai', 'die:guanning']],
             bilibili_huanggai: ['male', 'wu', 4, ['bilibili_kurou', 'bilibili_zhaxiang'], ['die:re_huanggai']],
             bilibili_ekeshaoge: ['male', 'qun', 4, ['bilibili_xueji', 'bilibili_hanran'], ['name:null|null']],
@@ -37,7 +34,7 @@ const packs = function () {
             lz_liuqi: ['male', 'shu', 3, ['spwenji', 'lztunjiang'], ['character:liuqi', 'doublegroup:shu:qun', 'die:sp_liuqi']],
             lz_tangzi: ['male', 'wu', 4, ['lzxingzhao'], ['character:tangzi', 'doublegroup:wu:wei', 'die:xf_tangzi']],
             lz_huangquan: ['male', 'wei', 3, ['lzdianhu', 'xinfu_jianji'], ['character:xf_huangquan', 'doublegroup:wei:shu', 'die:xf_huangquan']],
-            bilibili_adong: ['male', 'qun', 4, ['jueman', 'oljianman'], ['die:ahuinan', 'die:dongtuna', 'name:null|null']],
+            bilibili_adong: ['male', 'qun', 4, ['jueman', 'oljianman'], ['die:ahuinan', 'die:dongtuna', 'name:null|null-null|null']],
             old_zuoci: ['male', 'qun', 3, ['gz_huashen', 'gz_xinsheng']],
             bilibili_shengxunyu: ['male', 'key', 4, ['bilibili_hehu', 'bilibili_jinyan', 'bilibili_yutai'], ['clan:宿舍群|肘击群', 'name:熏|鱼']],
             bilibili_Firewin: ['male', 'key', 4, ['bilibili_xianqu', 'bilibili_tixiang'], ['clan:宿舍群|肘击群|活动群', 'name:火|赢']],
@@ -70,6 +67,20 @@ const packs = function () {
             bilibili_wuzhuwanshui: ['male', 'key', 3, ['bilibili_diaowen', 'bilibili_banyun'], ['clan:肘击群', 'name:猪|大将军']],
             bilibili_murufengchen: ['double', 'key', 3, [], ['unseen', 'clan:肘击群|活动群', 'name:风|晨']],
             bilibili_diandian: ['female', 'key', 3, ['bilibili_siyu', 'bilibili_tamen'], ['clan:宿舍群|肘击群|活动群', 'name:永雏|塔菲']],
+            //双面武将--正面
+            bilibili_wangtao: ['female', 'shu', 3, ['huguan', 'yaopei', 'dualside'], ['dualside:bilibili_x_wangyue', 'character:wangtao', 'die:wangtao']],
+            bilibili_wangyue: ['female', 'shu', 3, ['huguan', 'mingluan', 'dualside'], ['dualside:bilibili_x_wangtao', 'character:wangyue', 'tempname:wangyue', 'die:wangyue']],
+            bilibili_daqiao: ['female', 'wu', 3, ['dcqiqin', 'dczixi', 'dualside'], ['dualside:bilibili_x_xiaoqiao', 'character:yue_daqiao', 'tempname:yue_daqiao', 'die:yue_daqiao']],
+            bilibili_xiaoqiao: ['female', 'wu', 3, ['dcqiqin', 'dcweiwan', 'dualside'], ['dualside:bilibili_x_daqiao', 'character:yue_xiaoqiao', 'die:yue_xiaoqiao']],
+            bilibili_ahuinan: ['male', 'qun', 4, ['jueman', 'dualside'], ['dualside:bilibili_x_dongtuna', 'character:ahuinan', 'die:ahuinan']],
+            bilibili_dongtuna: ['male', 'qun', 4, ['oljianman', 'dualside'], ['dualside:bilibili_x_ahuinan', 'character:dongtuna', 'die:dongtuna']],
+            //双面武将--背面
+            bilibili_x_wangtao: ['female', 'shu', 3, ['huguan', 'yaopei', 'dualside'], ['unseen', 'character:wangtao', 'die:wangtao']],
+            bilibili_x_wangyue: ['female', 'shu', 3, ['huguan', 'mingluan', 'dualside'], ['unseen', 'character:wangyue', 'tempname:wangyue', 'die:wangyue']],
+            bilibili_x_daqiao: ['female', 'wu', 3, ['dcqiqin', 'dczixi', 'dualside'], ['unseen', 'character:yue_daqiao', 'tempname:yue_daqiao', 'die:yue_daqiao']],
+            bilibili_x_xiaoqiao: ['female', 'wu', 3, ['dcqiqin', 'dcweiwan', 'dualside'], ['unseen', 'character:yue_xiaoqiao', 'die:yue_xiaoqiao']],
+            bilibili_x_ahuinan: ['male', 'qun', 4, ['jueman', 'dualside'], ['unseen', 'character:ahuinan', 'die:ahuinan']],
+            bilibili_x_dongtuna: ['male', 'qun', 4, ['oljianman', 'dualside'], ['unseen', 'character:dongtuna', 'die:dongtuna']],
             //千里走单骑
             DJ_caiyang: ['male', 'qun', 1, ['yinka', 'zhuixi'], ['character:caiyang']],
             DJ_pujing: ['male', 'qun', 1, ['yinka'], ['character:pujing']],
@@ -10295,7 +10306,7 @@ const packs = function () {
                 },
                 locked: true,
                 async cost(event, trigger, player) {
-                    event.result = await player.chooseTarget(get.prompt2(event.name.slice(0, -5)), lib.filter.notMe, true).set('ai', target => {
+                    event.result = await player.chooseTarget(get.prompt(event.skill), '令一名其他角色选择一项：1.令你回复1点体力；2.令你摸一张牌', lib.filter.notMe, true).set('ai', target => {
                         const player = get.player();
                         return get.attitude(player, target);
                     }).forResult();
@@ -11713,6 +11724,7 @@ const packs = function () {
             Chuodong: '活动群名人堂',
             CDormitory: '寝室/肘击群杂谈',
             Cothers: '自嗨',
+            Cothers_dualside: '自嗨·双面武将',
             CDanJi: '彩蛋·千里走单骑',
             CSCS: '彩蛋·十常侍',
             CXuanDie: '蝶设堂',
@@ -11973,6 +11985,14 @@ const packs = function () {
             bolchouyou_info: '当你成为【杀】的目标后，你可以令另一名可以成为此牌目标的其他角色选择一项：①其代替你成为此牌目标；②其发动非锁定技前需经过你同意直到其令你回复体力。',
             bilibili_adong: '萌设阿会喃董荼纳',
             bilibili_adong_prefix: '萌设',
+            bilibili_ahuinan: '萌设阿会喃',
+            bilibili_ahuinan_prefix: '萌设',
+            bilibili_dongtuna: '萌设董荼纳',
+            bilibili_dongtuna_prefix: '萌设',
+            bilibili_x_ahuinan: '萌设阿会喃',
+            bilibili_x_ahuinan_prefix: '萌设',
+            bilibili_x_dongtuna: '萌设董荼纳',
+            bilibili_x_dongtuna_prefix: '萌设',
             oldx_zhangzhongjing: '旧张机',
             old_liaoyi: '疗疫',
             old_liaoyi_info: '其他角色的回合开始时，你可选择一项：①令其从仁库中获得一张牌。②若其手牌数不小于2，则令其将X张手牌置入仁库（X为其手牌数与体力值之差，至少为1，至多为9）。',
@@ -12149,6 +12169,14 @@ const packs = function () {
             bol_yuedan_info: '每轮开始时，若当前游戏轮数为4的倍数，则你洗切武将牌堆。',
             bilibili_daxiao: '乐大乔小乔',
             bilibili_daxiao_prefix: '乐',
+            bilibili_daqiao: '萌设大乔',
+            bilibili_daqiao_prefix: '萌设',
+            bilibili_xiaoqiao: '萌设小乔',
+            bilibili_xiaoqiao_prefix: '萌设',
+            bilibili_x_daqiao: '萌设大乔',
+            bilibili_x_daqiao_prefix: '萌设',
+            bilibili_x_xiaoqiao: '萌设小乔',
+            bilibili_x_xiaoqiao_prefix: '萌设',
             bilibili_qiqin: '绮琴',
             bilibili_qiqin_info: '锁定技。①你的起始手牌数×2；游戏开始时，你将所有手牌标记为“琴”。②你的“琴”牌不计入手牌上限。③准备阶段，你获得位于弃牌堆的所有“琴”。',
             bilibili_yanjing: '👁👃👁',
@@ -12156,9 +12184,9 @@ const packs = function () {
             bilibili_dongxi: '洞悉',
             bilibili_dongxi_info: '每回合限一次。当你成为其他角色使用牌的目标后，你可以判定，若结果为黑色，你令此牌对你无效且你摸一张牌。',
             bilibili_mingcha: '明察',
-            bilibili_mingcha_info: '出牌阶段限一次，你可以展示一名其他角色的手牌，然后选择一项：1.其交给一张牌；2.你交给其一张牌。若你以此法交出的牌与其以此法展示的牌类别不同，你摸一张牌。',
+            bilibili_mingcha_info: '出牌阶段限一次，你可以展示一名其他角色的手牌，然后选择一项：1.令其交给你一张牌；2.你交给其一张牌。若你以此法交出的牌与其以此法展示的牌类别不同，你摸一张牌。',
             bilibili_huiyan: '慧眼',
-            bilibili_huiyan_info: '锁定技。①准备阶段，你令一名其他角色选择一项：1.你回复1点体力；2.你摸一张牌。②你拥有“左眼”和“右眼”两段体力，当你执行体力变化时，你选择“左眼”或“右眼”执行此操作，“左眼”或“右眼”阵亡即你阵亡。③若你的“左眼”和“右眼”体力值相同，其他角色的手牌对你可见，否则你的手牌对其他角色可见。',
+            bilibili_huiyan_info: '锁定技。①准备阶段，你令一名其他角色选择一项：1.令你回复1点体力；2.令你摸一张牌。②你拥有“左眼”和“右眼”两段体力，当你执行体力变化时，你选择“左眼”或“右眼”执行此操作，“左眼”或“右眼”阵亡即你阵亡。③若你的“左眼”和“右眼”体力值相同，其他角色的手牌对你可见，否则你的手牌对其他角色可见。',
             bilibili_huiyan_append: '<span style="font-family:yuanli"><span style="text-decoration: line-through;">看个几八，你个沙沟</span><br>孩子们，真没啥可写的</span><br><img style=width:160px src=' + lib.assetURL + 'extension/活动武将/image/default/smile8.jpg>',
             bilibili_caifuren: '蔡夫人-暗黑傀儡师',
             bilibili_caifuren_ab: '蔡夫人',
@@ -12235,7 +12263,7 @@ const packs = function () {
         if (!lib.config.extension_活动武将_DanJi && huodongcharacter.characterSort.huodongcharacter.CDanJi.includes(i)) huodongcharacter.character[i][4].push('unseen');
         if (!lib.config.extension_活动武将_SCS && huodongcharacter.characterSort.huodongcharacter.CSCS.includes(i)) huodongcharacter.character[i][4].push('unseen');
     }
-    huodongcharacter.connectBanned.addArray(['Cothers', 'CDanJi', 'CSCS'].map(i => huodongcharacter.characterSort.huodongcharacter[i]).flat());
+    huodongcharacter.connectBanned.addArray(['CDanJi', 'CSCS'].map(i => huodongcharacter.characterSort.huodongcharacter[i]).flat());
     //“萌新自设”前缀
     lib.namePrefix.set('萌设', {
         color: '#ff6a6a',
