@@ -11523,8 +11523,7 @@ const packs = function () {
                 trigger: { player: 'useCardToPlayered' },
                 filter(event, player) {
                     if (!event.isFirstTarget || !player.getExpansions('bilibili_siyu').some(i => get.color(i) === 'black')) return false;
-                    if (get.type(event.card) === 'basic') return get.tag(event.card, 'damage') >= 0.5;
-                    return get.type(event.card) === 'trick';
+                    return (get.type(event.card) === 'basic' || get.type(event.card) === 'trick') && get.tag(event.card, 'damage') >= 0.5;
                 },
                 async cost(event, trigger, player) {
                     const result = await player.chooseButton([
@@ -11538,7 +11537,7 @@ const packs = function () {
                     }).set('ai', button => {
                         const player = get.player(), trigger = get.event().getTrigger(), card = button.link;
                         if (trigger.targets.reduce((sum, target) => sum + get.effect(target, trigger.card, player, player), 0) <= 0) return 0;
-                        return get.tag(trigger.card, 'damage') >= 0.5 ? (1 + Math.random()) : (-0.5 + Math.random());
+                        return 1 + Math.random();
                     }).forResult();
                     if (result?.bool && result.links?.length) event.result = { bool: true, cards: result.links };
                 },
