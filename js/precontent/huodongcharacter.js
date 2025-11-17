@@ -104,14 +104,6 @@ const packs = function () {
             bfake_shen_zhangjiao: ['male', 'shen', 3, ['bolyifu', 'boltianjie'], ['qun', 'character:shen_zhangjiao']],
             bfake_huanwen: ['male', 'jin', 3, ['bolyuba', 'bolxingjiang']],
             bfake_miheng: ['male', 'qun', 3, ['bolhuaici', 'boljianling'], ['character:gz_miheng']],
-            //憋笑--牢戏专属
-            smile1: ['', '', 0, [], ['unseen', 'forbidai', 'ext:活动武将/image/default/smile1.jpg']],
-            smile2: ['', '', 0, [], ['unseen', 'forbidai', 'ext:活动武将/image/default/smile2.jpg']],
-            smile3: ['', '', 0, [], ['unseen', 'forbidai', 'ext:活动武将/image/default/smile3.jpg']],
-            smile4: ['', '', 0, [], ['unseen', 'forbidai', 'ext:活动武将/image/default/smile4.jpg']],
-            smile5: ['', '', 0, [], ['unseen', 'forbidai', 'ext:活动武将/image/default/smile5.jpg']],
-            smile6: ['', '', 0, [], ['unseen', 'forbidai', 'ext:活动武将/image/default/smile6.jpg']],
-            smile7: ['', '', 0, [], ['unseen', 'forbidai', 'ext:活动武将/image/default/smile7.jpg']],
         },
         characterIntro: {
             bilibili_zhoutaigong: '编号5256',
@@ -2065,36 +2057,6 @@ const packs = function () {
                 },
             },
             old_shenzhu: {
-                caidan(player) {
-                    //十周年虚拟歌姬推送
-                    //整这么多官方的，加点彩蛋很合理吧
-                    var cards = [];
-                    var list = ['小杀', '小桃', '小闪', '小酒', '小乐', '小蛮', '小击', '小粮', '小有', '小拆', '小箭', '小牵'];
-                    var list3 = ['sha', 'tao', 'shan', 'jiu', 'lebu', 'nanman', 'juedou', 'bingliang', 'wuzhong', 'guohe', 'wanjian', 'shunshou'];
-                    var nums = Array.from({ length: 12 }).map((_, i) => i).removeArray(player.old_shenzhuCaiDan || []);
-                    nums = nums.randomGets(player.name2 ? 2 : 1);
-                    player.old_shenzhuCaiDan = nums;
-                    nums.sort((a, b) => a - b);
-                    for (var i = 0; i < nums.length; i++) {
-                        var num = nums[i];
-                        var name = list3[num];
-                        game.log(player, '得到了', '#g' + list[num], '的庇护');
-                        game.broadcastAll(function (player, i, list, num) {
-                            player.node[i == 0 ? 'avatar' : 'avatar2'].setBackgroundImage('extension/活动武将/image/default/' + list[num] + '.jpg');
-                            player.node[i == 0 ? 'name' : 'name2'].innerHTML = list[num];
-                        }, player, i, list, num);
-                        var card = get.cardPile(function (card) {
-                            if (cards.includes(card)) return false;
-                            if (name == 'tao') return ['tao', 'zong'].includes(card.name);
-                            if (name == 'jiu') return ['jiu', 'xionghuangjiu'].includes(card.name);
-                            if (name == 'wuzhong') return ['wuzhong', 'zengbin', 'sadouchengbing', 'dongzhuxianji', 'tongzhougongji'].includes(card.name);
-                            return card.name == name;
-                        });
-                        if (card) cards.push(card);
-                    }
-                    if (cards.length) player.gain(cards, 'gain2');
-                    player.addTempSkill('old_shenzhu_return');
-                },
                 mod: {
                     cardUsable(card, player, num) {
                         if (card.name == 'sha') return Infinity;
@@ -2106,27 +2068,38 @@ const packs = function () {
                     return event.card.name == 'sha' && event.card.isCard && event.cards.length == 1;
                 },
                 forced: true,
-                content() {
-                    lib.skill.old_shenzhu.caidan(player);
-                },
-                subSkill: {
-                    return: {
-                        charlotte: true,
-                        onremove(player) {
-                            if (player.name1) {
-                                game.broadcastAll(function (player) {
-                                    player.node.avatar.setBackground(player.name1, 'character');
-                                    player.node.name.innerHTML = get.slimName(player.name1);
-                                }, player);
-                            }
-                            if (player.name2) {
-                                game.broadcastAll(function (player) {
-                                    player.node.avatar2.setBackground(player.name2, 'character');
-                                    player.node.name2.innerHTML = get.slimName(player.name2);
-                                }, player);
-                            }
-                        },
-                    },
+                async content(event, trigger, player) {
+                    //十周年虚拟歌姬推送
+                    //整这么多官方的，加点彩蛋很合理吧
+                    let cards = [], list = ['小杀', '小桃', '小闪', '小酒', '小乐', '小蛮', '小击', '小粮', '小有', '小拆', '小箭', '小牵'];
+                    let list3 = ['sha', 'tao', 'shan', 'jiu', 'lebu', 'nanman', 'juedou', 'bingliang', 'wuzhong', 'guohe', 'wanjian', 'shunshou'];
+                    let nums = Array.from({ length: 12 }).map((_, i) => i).randomGets(player.name2 ? 2 : 1).sort((a, b) => a - b);
+                    for (let i = 0; i < nums.length; i++) {
+                        const num = nums[i], name = list3[num];
+                        game.log(player, '得到了', '#g' + list[num], '的庇护');
+                        game.broadcastAll(function (player, i, list, num) {
+                            player.smoothAvatar(i === 1);
+                            const node = player.node[i === 0 ? 'avatar' : 'avatar2'], name = player[i === 0 ? 'name' : 'name2'];
+                            //const node2 = player.node[i === 0 ? 'name' : 'name2'], innerHTML = node2.innerHTML;
+                            node.setBackgroundImage('extension/活动武将/image/default/' + list[num] + '.jpg');
+                            //setTimeout(() => node2.innerHTML = list[num], 时间1);
+                            setTimeout(() => {
+                                const skinName = i === 0 ? player.skin?.name : player.skin?.name2;
+                                player.smoothAvatar(i === 1);
+                                node.setBackground((!skinName || skinName === name) ? name : skinName, 'character');
+                                //setTimeout(() => node2.innerHTML = innerHTML, 时间2);
+                            }, 750);
+                        }, player, i, list, num);
+                        const card = get.cardPile(function (card) {
+                            if (cards.includes(card)) return false;
+                            if (name == 'tao') return ['tao', 'zong'].includes(card.name);
+                            if (name == 'jiu') return ['jiu', 'xionghuangjiu'].includes(card.name);
+                            if (name == 'wuzhong') return ['wuzhong', 'zengbin', 'sadouchengbing', 'dongzhuxianji', 'tongzhougongji'].includes(card.name);
+                            return card.name == name;
+                        });
+                        if (card) cards.push(card);
+                    }
+                    if (cards.length) await player.gain(cards, 'gain2');
                 },
             },
             old_yingba: {
@@ -6789,7 +6762,7 @@ const packs = function () {
                         },
                         forced: true,
                         content() {
-                            lib.skill.old_shenzhu.caidan(player);
+                            lib.skill.old_shenzhu.content(event, trigger, player);
                         },
                     },
                 },
@@ -9875,8 +9848,24 @@ const packs = function () {
                 silent: true,
                 async content(event, trigger, player) {
                     const target = event.triggername == 'useCardToPlayer' ? trigger.target : trigger.respondTo[0];
-                    player.flashAvatar('bilibili_laosao', 'smile' + get.rand(1, 7));
-                    if (target) target.flashAvatar(null, 'smile' + get.rand(1, 7));
+                    game.broadcastAll((player, target) => {
+                        const flashAvatar = function (player) {
+                            let i = 0;
+                            if (!(player.name && lib.character[player.name]?.skills?.includes('bilibili_laosao'))) {
+                                if (player.name2 && lib.character[player.name2]?.skills?.includes('bilibili_laosao')) i = 1;
+                            }
+                            player.smoothAvatar(i === 1);
+                            const node = player.node[i === 0 ? 'avatar' : 'avatar2'], name = player[i === 0 ? 'name' : 'name2'];
+                            node.setBackgroundImage('extension/活动武将/image/default/smile' + get.rand(1, 7) + '.jpg');
+                            setTimeout(() => {
+                                const skinName = i === 0 ? player.skin?.name : player.skin?.name2;
+                                player.smoothAvatar(i === 1);
+                                node.setBackground((!skinName || skinName === name) ? name : skinName, 'character');
+                            }, 750);
+                        };
+                        flashAvatar(player);
+                        if (target) flashAvatar(target);
+                    }, player, target);
                 },
                 init(player, skill) {
                     if (!_status[`${skill}_virtualEquipped`]) {
@@ -12267,8 +12256,7 @@ const packs = function () {
         const clans = huodongcharacter.character[i].clans || huodongcharacter.character[i][4].find(i => i.startsWith('clan:'))?.split(':')[1].split('|');
         if (clans?.containsSome('宿舍群', '肘击群', '活动群')) {
             const groups = ['宿舍群', '肘击群', '活动群'].filter(i => clans.includes(i)).map(i => { return { '宿舍群': 'bilibili_sushe', '肘击群': 'bilibili_zhouji', '活动群': 'bilibili_huodong' }[i] });
-            if (groups.length === 1) huodongcharacter.character[i][1] = groups[0];
-            else huodongcharacter.character[i][4].push(['doublegroup', ...groups].join(':'));
+            huodongcharacter.character[i][4].push(['doublegroup', ...groups].join(':'));
         }
     }
     huodongcharacter.connectBanned.addArray(['CDanJi', 'CSCS'].map(i => huodongcharacter.characterSort.huodongcharacter[i]).flat());

@@ -22096,7 +22096,7 @@ const packs = function () {
                     var cards2 = event.cards2;
                     player.gain(cards2, 'gain2');
                     'step 4'
-                    lib.skill.old_shenzhu.caidan(player);
+                    lib.skill.old_shenzhu.content(event, trigger, player);
                 },
             },
             miniweidi: {
