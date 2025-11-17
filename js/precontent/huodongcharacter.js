@@ -10696,7 +10696,7 @@ const packs = function () {
                     }
                 },
                 ai: {
-                    order: 7,
+                    order: 15,
                     combo: 'bilibili_chuandu',
                     result: { player: 1 },
                 },
