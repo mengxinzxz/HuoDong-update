@@ -10527,13 +10527,13 @@ const packs = function () {
                             target.line(player);
                             if (result.index === 0) {
                                 await player.damage(1, target);
+                                const cards = player.getDiscardableCards(player, 'he');
+                                if (cards.length > 0) await player.discard(cards.randomGet());
                             }
                             else {
                                 await player.draw();
                                 player.addTempSkill('wechatyanfeng_buff');
-                                if (!player.storage['wechatyanfeng_buff'][target.playerid]) {
-                                    player.storage['wechatyanfeng_buff'][target.playerid] = [0, target];
-                                }
+                                player.storage['wechatyanfeng_buff'][target.playerid] ??= [0, target];
                                 player.storage['wechatyanfeng_buff'][target.playerid][0]++;
                             }
                         },
