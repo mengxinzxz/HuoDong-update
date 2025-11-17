@@ -2103,7 +2103,7 @@ const packs = function () {
                                 //setTimeout(() => node2.innerHTML = innerHTML, 时间2);
                             }, 750);
                         }, player, i, list, num);
-                        const card = get.cardPile(function (card) {
+                        const card = get.cardPile(card => {
                             if (cards.includes(card)) return false;
                             if (name == 'tao') return ['tao', 'zong'].includes(card.name);
                             if (name == 'jiu') return ['jiu', 'xionghuangjiu'].includes(card.name);
