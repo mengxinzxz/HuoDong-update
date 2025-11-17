@@ -9940,7 +9940,7 @@ const packs = function () {
                         inherit: 'bilibili_laosaozhipao',
                         filter(event, player) {
                             if (!player.hasEmptySlot(2) || player.getEquips('bilibili_laosaozhipao').length > 0) return false;
-                            return game.hasPlayer(target => target !== player);
+                            return lib.skill.bilibili_laosaozhipao.filter(event, player);
                         },
                     },
                     init: {
@@ -9962,11 +9962,16 @@ const packs = function () {
             },
             bilibili_laosaozhipao: {
                 equipSkill: true,
-                trigger: { global: 'roundStart' },
+                trigger: { global: ['roundStart', 'die'] },
                 filter(event, player) {
-                    return game.hasPlayer(target => target !== player);
+                    if (event.name !== 'die') return game.hasPlayer(target => target !== player);
+                    return get.itemtype(event.player.master) === 'player' && event.player.countCards('he') > 0;
                 },
                 async cost(event, trigger, player) {
+                    if (trigger.name === 'die') {
+                        event.result = { bool: true, targets: [trigger.player] };
+                        return;
+                    }
                     const goon = event.skill === 'bilibili_laosaozhipao';
                     event.result = await player.chooseTarget(`请选择【${get.translation(event.skill)}】的目标`, (() => {
                         return `选择一名其他角色，本轮将你与其外的角色移出游戏，然后${goon ? '你' : '其'}在${goon ? '其' : '你'}上下家分别召唤普净和胡班`;
@@ -9977,6 +9982,11 @@ const packs = function () {
                 },
                 locked: true,
                 async content(event, trigger, player) {
+                    if (trigger.name === 'die') {
+                        event.togain = trigger.player.getCards('he');
+                        await player.gain(event.togain, trigger.player, 'giveAuto', 'bySelf');
+                        return;
+                    }
                     for (const target of game.filterPlayer()) {
                         if (event.targets.includes(target) || target === player) continue;
                         target.addTempSkill('bilibili_fazhou_mambaout', 'roundStart');
@@ -12139,7 +12149,7 @@ const packs = function () {
             bilibili_laosao: '牢骚',
             bilibili_laosao_info: `锁定技。你视为装备着${get.poptip('bilibili_laosaozhipao')}。游戏开始时或牌堆洗牌后，你将${get.poptip('bilibili_laosaozhipao')}置入装备区。`,
             bilibili_laosaozhipao: '牢骚之袍',
-            bilibili_laosaozhipao_info: '锁定技。每轮开始时，你选择一名其他角色，本轮将你与其外的角色移出游戏。然后若你的装备区有【牢骚之袍】，则你本轮在其上下家分别召唤普净和胡班；否则其本轮在你上下家分别召唤普净和胡班。',
+            bilibili_laosaozhipao_info: '锁定技。每轮开始时，你选择一名其他角色，本轮将你与其外的角色移出游戏。然后若你的装备区有【牢骚之袍】，则你本轮在其上下家分别召唤普净和胡班；否则其本轮在你上下家分别召唤普净和胡班。因此法召唤的角色死亡时，你获得其所有牌。',
             bilibili_laosao_append: '<span style="font-family:yuanli"><li>seven!seven!<br><li>憋笑ing的偷菜狂&牢骚哥</span>',
             bol_pinjian: '品鉴',
             bol_pinjian_info: '每回合限一次，你可以于合适的时机发动武将牌堆顶四张牌中的一个技能并将这四张武将牌置入武将牌堆底。',
