@@ -11423,7 +11423,7 @@ const packs = function () {
                     },
                     order(item, player) {
                         if (player && _status.event.type === 'phase') {
-                            const cards = player.getExpansions('bilibili_diaowen').filter(card => player.getUseValue(card, true, true) > 0);
+                            let list = player.getExpansions('bilibili_diaowen').filter(card => player.getUseValue(card, true, true) > 0);
                             if (!list.length) return 0;
                             list.sort((a, b) => player.getUseValue(b, true, true) - player.getUseValue(a, true, true));
                             return get.order(list[0], player) + 1;
