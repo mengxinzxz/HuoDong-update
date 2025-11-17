@@ -2078,6 +2078,19 @@ const packs = function () {
                         const num = nums[i], name = list3[num];
                         game.log(player, '得到了', '#g' + list[num], '的庇护');
                         game.broadcastAll(function (player, i, list, num) {
+                            /*
+                            (async () => {
+                                await lib.skill.old_shenzhu.smoothAvatarAsync(i === 1, null, player);
+                                const node = player.node[i === 0 ? 'avatar' : 'avatar2'], name = player[i === 0 ? 'name' : 'name2'];
+                                const node2 = player.node[i === 0 ? 'name' : 'name2'], innerHTML = node2.innerHTML;
+                                node.setBackgroundImage('extension/活动武将/image/default/' + list[num] + '.jpg');
+                                node2.innerHTML = list[num];
+                                await lib.skill.old_shenzhu.smoothAvatarAsync(i === 1, null, player);
+                                const skinName = i === 0 ? player.skin?.name : player.skin?.name2;
+                                node.setBackground((!skinName || skinName === name) ? name : skinName, 'character');
+                                node2.innerHTML = innerHTML;
+                            })();
+                            */
                             player.smoothAvatar(i === 1);
                             const node = player.node[i === 0 ? 'avatar' : 'avatar2'], name = player[i === 0 ? 'name' : 'name2'];
                             //const node2 = player.node[i === 0 ? 'name' : 'name2'], innerHTML = node2.innerHTML;
@@ -2101,6 +2114,24 @@ const packs = function () {
                     }
                     if (cards.length) await player.gain(cards, 'gain2');
                 },
+                /*
+                smoothAvatarAsync(vice, video, player) {
+                    return new Promise(resolve => {
+                        const div = ui.create.div('.fullsize');
+                        var target = vice ? player.node.avatar2 : player.node.avatar;
+                        div.style.background = getComputedStyle(target).background;
+                        target.appendChild(div);
+                        ui.refresh(div);
+                        div.style.transition = 'all 1s';
+                        div.addEventListener('transitionend', function handler() {
+                            div.removeEventListener('transitionend', handler);
+                            resolve();
+                        });
+                        setTimeout(() => div.classList.add('removing'), 50);
+                        if (video !== false) game.addVideo('smoothAvatar', player, vice);
+                    });
+                },
+                */
             },
             old_yingba: {
                 audio: 'yingba',
