@@ -10314,14 +10314,18 @@ const packs = function () {
                 async content(event, trigger, player) {
                     const { targets: [target] } = event;
                     let result;
-                    if (player.isDamaged()) result = await target.chooseControl().set('choiceList', [`${get.translation(player)}}回复1点体力`, `${get.translation(target)}摸一张牌`]).set('ai', () => {
-                        const player = get.player(), target = get.event().getParent().player;
-                        const eff1 = get.recoverEffect(target, player, player), eff2 = get.effect(target, { name: 'draw' }, player, player);
-                        return eff2 > eff1 ? 1 : 0;
-                    }).forResult();
+                    if (player.isDamaged()) {
+                        result = await target.chooseControl().set('choiceList', [
+                            `令${get.translation(player)}回复1点体力`,
+                            `令${get.translation(player)}摸一张牌`,
+                        ]).set('ai', () => {
+                            const player = get.player(), target = get.event().getParent().player;
+                            const eff1 = get.recoverEffect(target, player, player), eff2 = get.effect(target, { name: 'draw' }, player, player);
+                            return eff2 > eff1 ? 1 : 0;
+                        }).forResult();
+                    }
                     else result = { index: 1 };
-                    if (result.index == 0) await player.recover();
-                    else await player.draw();
+                    await player[result.index === 0 ? 'recover' : 'draw']();
                 },
                 ai: {
                     viewHandcard: true,
