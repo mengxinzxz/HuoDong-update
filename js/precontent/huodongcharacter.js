@@ -11557,12 +11557,11 @@ const packs = function () {
                     if (result?.bool && result.links?.length) event.result = { bool: true, cards: result.links };
                 },
                 async content(event, trigger, player) {
+                    const removedCard = event.cards?.[0];
                     await player.loseToDiscardpile(event.cards);
                     trigger.getParent().directHit.addArray(game.players);
                     game.log(trigger.card, '不可被响应');
-                    const [card] = get.cards();
-                    await player.showCards([card], `${get.translation(player)}发动了【${get.translation(event.name)}】`);
-                    if (get.color(card) === get.color(trigger.card) || get.type(card) === get.type(trigger.card)) {
+                    if (removedCard && get.color(removedCard) === get.color(trigger.card)) {
                         trigger.getParent().baseDamage++;
                         game.log(trigger.card, '造成的伤害', '#g+1');
                     }
@@ -12253,7 +12252,7 @@ const packs = function () {
             bilibili_tamen: '塔门',
             '#ext:活动武将/audio/skill/bilibili_tamen1': '塔不灭！塔不灭！雏草姬不灭！',
             '#ext:活动武将/audio/skill/bilibili_tamen2': '信塔门，得永生，仁慈的塔菲会宽恕你犯下的一切错误喵',
-            bilibili_tamen_info: '①有牌移入或移出游戏后，你摸一张牌。②当你使用伤害类基本牌或普通锦囊牌指定目标后，你可以移去一只黑色“小菲”，令此牌不可被响应，然后你亮出牌堆顶的一张牌，若使用的牌和亮出的牌的颜色或类别相同，你令此牌伤害+1。③一名角色进入濒死状态时，你可以移去一只红色“小菲”，令其回复1点体力，然后若其因此脱离濒死状态，你将牌堆顶的一张牌称为“小菲”置于武将牌上。',
+            bilibili_tamen_info: '①有牌移入或移出游戏后，你摸一张牌。②当你使用伤害类基本牌或伤害类锦囊牌指定目标后，你可以移去一只黑色“小菲”，令此牌不可被响应，若这两张牌颜色相同，此牌伤害+1。③一名角色进入濒死状态时，你可以移去一只红色“小菲”，令其回复1点体力，然后若其因此脱离濒死状态，你将牌堆顶的一张牌称为“小菲”置于武将牌上。',
             bilibili_tamen_append: '<span style="font-family:yuanli">无需王座与冠冕，我即是所有平行世界的奇迹，让流星焚尽虚妄，独属于永雏塔菲的传说，现在开演！</span>',
         },
     };
