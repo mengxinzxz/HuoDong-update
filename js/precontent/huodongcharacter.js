@@ -11524,9 +11524,9 @@ const packs = function () {
                     ]).set('filterButton', button => {
                         return get.color(button.link) === 'black';
                     }).set('ai', button => {
-                        const player = get.player(), event = get.event().getTrigger();
-                        if (event.targets.reduce((sum, target) => sum + get.effect(target, event.card, player, player), 0) <= 0) return 0;
-                        return get.tag(event.card, 'damage') >= 0.5 ? (1 + Math.random()) : (-0.5 + Math.random());
+                        const player = get.player(), trigger = get.event().getTrigger(), card = button.link;
+                        if (trigger.targets.reduce((sum, target) => sum + get.effect(target, trigger.card, player, player), 0) <= 0) return 0;
+                        return (get.tag(trigger.card, 'damage') >= 0.5 && (get.color(card) === get.color(trigger.card) || get.type(card) === get.type(trigger.card))) ? (1 + Math.random()) : (-0.5 + Math.random());
                     }).forResult();
                     if (result?.bool && result.links?.length) event.result = { bool: true, cards: result.links };
                 },
