@@ -22,7 +22,7 @@ game.showExtensionChangeLog((() => {
 		{
 			type: 'players',
 			data: [
-				'Mbaby_dukui', 'Mmiao_guanyinping', 'Mbaby_mifangfushiren', 'Mfight_dianwei', 'Mbaby_zhugeruoxue', 'Mbaby_star_xunyu', 'Mbaby_shen_daxiaoqiao', 'Mbaby_jiachong', 'Mbaby_wuban', 'Mfight_machao', 'Mbabysp_sunjian', 'Mbaby_re_xunyu', , 'Mbaby_dc_sb_chengyu',
+				'Mbaby_dukui', 'Mmiao_guanyinping', 'Mbaby_mifangfushiren', 'Mfight_dianwei', 'Mbaby_zhugeruoxue', 'Mbaby_star_xunyu', 'Mbaby_shen_daxiaoqiao', 'Mbaby_jiachong', 'Mbaby_wuban', 'Mfight_machao', 'Mbabysp_sunjian', 'Mbaby_re_xunyu', 'Mbaby_dc_sb_chengyu',
 				'wechat_zhaoyun', 'wechat_re_zhaoyun', 'wechat_sb_xiahouyuan', 'wechat_sb_xiaoqiao', 'wechat_shen_caocao', 'wechat_sb_sunquan', 'wechat_zhiyin_zhugeke', 'wechat_re_liubiao', 'wechat_re_weiyan', 'wechat_sb_huaxiong', 'wechat_zhi_yuanshu', 'wechat_zhi_fuhuanghou', 'wechat_zhi_caojie', 'wechat_zhi_caocao', 'wechat_zhi_zhangjiao',
 				'bilibili_sunhanhua', 'bilibili_kuangshen', 'bilibili_Firewin', 'bilibili_lonelypatients', 'bilibili_ningjingzhiyuan', 'bilibili_suixingsifeng', 'bilibili_thunderlei', 'bilibili_xizhicaikobe', 'bilibili_yanjing', 'bilibili_xiaoyaoruyun', 'bilibili_wuzhuwanshui', 'bilibili_murufengchen', 'bilibili_diandian',
 			],
