@@ -565,6 +565,7 @@ const packs = function () {
                     if (_status.connectMode) event.time = lib.configOL.choose_timeout;
                     event.videoId = lib.status.videoId++;
                     if (player.isUnderControl()) game.swapPlayerAuto(player);
+                    let time = 10;
                     const switchToAuto = () => {
                         return new Promise((resolve) => {
                             game.pause();
@@ -575,7 +576,7 @@ const packs = function () {
                                 if (event.dialog) event.dialog.close();
                                 game.resume();
                                 resolve(event._result);
-                            }, 5000);
+                            }, time * 1000);
                         });
                     };
                     const createDialog = (player, id) => {
@@ -584,7 +585,7 @@ const packs = function () {
                         const dialog = ui.create.dialog(get.translation(player) + '正在进行“飞升”...<br>');
                         dialog.videoId = id;
                     };
-                    const chooseButton = () => {
+                    const chooseButton = (time) => {
                         const { promise, resolve } = Promise.withResolvers(), event = _status.event;
                         event.dialog = (() => {
                             //游戏dialog
@@ -645,7 +646,7 @@ const packs = function () {
                             //主角登场
                             const player = { x: width / 2 - 15, y: height - 30, w: 30, h: 30, speed: 5 };
                             const balls = [];
-                            let score = 0, time = 10, running = true;
+                            let score = 0, running = true;
                             const keys = { left: false, right: false };
                             //电脑也干了
                             const keyDown = e => {
@@ -766,10 +767,10 @@ const packs = function () {
                     };
                     game.broadcastAll(createDialog, player, event.videoId);
                     let next;
-                    if (event.isMine()) next = chooseButton();
+                    if (event.isMine()) next = chooseButton(time);
                     else if (event.isOnline()) {
                         const { promise, resolve } = Promise.withResolvers();
-                        event.player.send(chooseButton);
+                        event.player.send(chooseButton, time);
                         event.player.wait(async result => {
                             if (result === 'ai') result = await switchToAuto();
                             resolve(result);
@@ -10945,6 +10946,7 @@ const packs = function () {
                     if (_status.connectMode) event.time = lib.configOL.choose_timeout;
                     event.videoId = lib.status.videoId++;
                     if (player.isUnderControl()) game.swapPlayerAuto(player);
+                    let time = 30;
                     const switchToAuto = () => {
                         return new Promise((resolve) => {
                             game.pause();
@@ -10964,7 +10966,7 @@ const packs = function () {
                         const dialog = ui.create.dialog(get.translation(player) + '正在进行"狂神快跑"...<br>');
                         dialog.videoId = id;
                     };
-                    const chooseButton = (player) => {
+                    const chooseButton = (player, time) => {
                         const { promise, resolve } = Promise.withResolvers(), event = _status.event;
                         event.dialog = (() => {
                             //游戏dialog
@@ -11025,7 +11027,7 @@ const packs = function () {
                             //主角登场
                             const playerObj = { x: width / 2 - 15, y: height - 30, w: 30, h: 30, speed: 5 };
                             const barriers = [];
-                            let score = 0, time = 30, running = true;
+                            let score = 0, running = true;
                             const keys = { left: false, right: false };
                             //挡板参数
                             const barrierWidth = width / 3;
@@ -11168,10 +11170,10 @@ const packs = function () {
                     };
                     game.broadcastAll(createDialog, player, event.videoId);
                     let next;
-                    if (event.isMine()) next = chooseButton(player);
+                    if (event.isMine()) next = chooseButton(player, time);
                     else if (event.isOnline()) {
                         const { promise, resolve } = Promise.withResolvers();
-                        event.player.send(chooseButton, player);
+                        event.player.send(chooseButton, player, time);
                         event.player.wait(async result => {
                             if (result === 'ai') result = await switchToAuto();
                             resolve(result);
@@ -11188,8 +11190,9 @@ const packs = function () {
                     }, event.videoId, event.time);
                     player.addMark(event.name, result2.score);
                     if (player.countMark(event.name) >= 1103) {
-                        const winners = player.getFriends(true, true);
-                        game.over(player === game.me || winners.includes(game.me));
+                        const me = game.me._trueMe || game.me;
+                        const winners = game.filterPlayer2(i => i.isFriendOf(player), [], true);
+                        game.over(player === me || winners.includes(me));
                     }
                 },
                 marktext: '🔥',
