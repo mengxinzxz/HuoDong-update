@@ -26826,11 +26826,20 @@ const packs = function () {
                     const target = lib.skill.dczecai.getMax();
                     let str = '令一名角色获得〖集智〗直到下一轮结束';
                     if (target) str += '；若选择的目标为' + get.translation(target) + '，则其获得一个额外的回合';
-                    event.result = await player.chooseTarget(get.prompt(event.skill), str).set('maximum', target).set("ai", target => {
+                    const next = player.chooseTarget(get.prompt(event.skill), str).set('maximum', target).set("ai", target => {
                         const { player, maximum } = get.event();
                         if (target != maximum) return 0;
                         return get.attitude(player, target);
-                    }).forResult();
+                    })
+                    next.set('targetprompt2', next.targetprompt2.concat([
+                        target => {
+                            if (!target.isIn() || !get.event().filterTarget(null, get.player(), target)) {
+                                return false;
+                            }
+                            return target == get.event('maximum') ? '额外回合' : '';
+                        },
+                    ]));
+                    event.result = await next.forResult();
                 },
                 async content(event, trigger, player) {
                     player.awakenSkill(event.name);
