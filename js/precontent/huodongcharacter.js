@@ -10955,7 +10955,7 @@ const packs = function () {
                                 if (event.dialog) event.dialog.close();
                                 game.resume();
                                 resolve(event._result);
-                            }, 5000);
+                            }, 30000);
                         });
                     };
                     const createDialog = (player, id) => {
