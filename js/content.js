@@ -645,6 +645,7 @@ export async function content(config, pack) {
 				if (node.classList.contains('player')) {
 					let num = 0, introadded = false;
 					const createButtons = function (num, avatar2) {
+						if (num < 0) return;
 						if (!introadded) {
 							introadded = true;
 							uiintro.add('<div class="text center">更改皮肤</div>');
@@ -678,7 +679,7 @@ export async function content(config, pack) {
 						};
 						img.onerror = function () {
 							num--;
-							if (num) createButtons(num, avatar2);
+							createButtons(num, avatar2);
 							if (!avatar2) {
 								if (!node.classList.contains('unseen2') && node.name2) {
 									num = 0;
