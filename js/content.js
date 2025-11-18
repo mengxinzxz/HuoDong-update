@@ -643,7 +643,7 @@ export async function content(config, pack) {
 			const uiintro = nodeintro.apply(this, arguments);
 			if ((lib.config.change_skin || lib.skin) && (!simple || get.is.phoneLayout())) {
 				if (node.classList.contains('player')) {
-					let num = 1, introadded = false;
+					let num = 0, introadded = false;
 					const createButtons = function (num, avatar2) {
 						if (!introadded) {
 							introadded = true;
@@ -681,7 +681,7 @@ export async function content(config, pack) {
 							if (num) createButtons(num, avatar2);
 							if (!avatar2) {
 								if (!node.classList.contains('unseen2') && node.name2) {
-									num = 1;
+									num = 0;
 									loadImage(true);
 								}
 							}
@@ -703,9 +703,9 @@ export async function content(config, pack) {
 				}
 				else if (node.classList.contains('character')) {
 					if (_status['extension_活动武将_files'].image.character.skin[node.link]) {
-						let num = 1, introadded = false, nameskin = node.link;
+						let num = 0, introadded = false, nameskin = node.link;
 						const createButtons = function (num) {
-							if (!num) return;
+							if (num < 0) return;
 							if (!introadded) {
 								introadded = true;
 								uiintro.add('<div class="text center">更改皮肤</div>');
@@ -770,7 +770,7 @@ export async function content(config, pack) {
 						if (node._created) return;
 						node._created = true;
 						const createButtons = function (num) {
-							if (!num) return;
+							if (num < 0) return;
 							if (num >= 4) {
 								avatars.classList.add('scroll');
 								if (lib.config.touchscreen) lib.setScroll(avatars);
@@ -798,7 +798,7 @@ export async function content(config, pack) {
 								button.setBackgroundImage(`extension/活动武将/image/character/skin/${nameskin}/${_status['extension_活动武将_files'].image.character.skin[nameskin].files[i]}`);
 							}
 						};
-						let num = 1;
+						let num = 0;
 						const loadImage = function () {
 							const img = new Image();
 							img.onload = function () {
