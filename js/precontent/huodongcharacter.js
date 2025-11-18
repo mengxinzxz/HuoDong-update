@@ -178,7 +178,7 @@ const packs = function () {
                             if (uiintros.length > 0) {
                                 const uiintro = uiintros[uiintros.length - 1];
                                 uiintro.addSmall([['bilibili_x_wangyue'], 'character']);
-                                uiintro.style.height = `${uiintro.offsetHeight + 100}px`;
+                                uiintro.style.height = `${uiintro.offsetHeight + (window.decadeUI ? 100 : 120)}px`;
                             }
                         });
                         return () => '正面武将翻面时或死亡后切换至背面';
@@ -196,7 +196,7 @@ const packs = function () {
                             if (uiintros.length > 0) {
                                 const uiintro = uiintros[uiintros.length - 1];
                                 uiintro.addSmall([['bilibili_x_wangtao'], 'character']);
-                                uiintro.style.height = `${uiintro.offsetHeight + 100}px`;
+                                uiintro.style.height = `${uiintro.offsetHeight + (window.decadeUI ? 100 : 120)}px`;
                             }
                         });
                         return () => '正面武将翻面时或死亡后切换至背面';
@@ -214,7 +214,7 @@ const packs = function () {
                             if (uiintros.length > 0) {
                                 const uiintro = uiintros[uiintros.length - 1];
                                 uiintro.addSmall([['bilibili_x_xiaoqiao'], 'character']);
-                                uiintro.style.height = `${uiintro.offsetHeight + 100}px`;
+                                uiintro.style.height = `${uiintro.offsetHeight + (window.decadeUI ? 100 : 120)}px`;
                             }
                         });
                         return () => '正面武将翻面时或死亡后切换至背面';
@@ -232,7 +232,7 @@ const packs = function () {
                             if (uiintros.length > 0) {
                                 const uiintro = uiintros[uiintros.length - 1];
                                 uiintro.addSmall([['bilibili_x_daqiao'], 'character']);
-                                uiintro.style.height = `${uiintro.offsetHeight + 100}px`;
+                                uiintro.style.height = `${uiintro.offsetHeight + (window.decadeUI ? 100 : 120)}px`;
                             }
                         });
                         return () => '正面武将翻面时或死亡后切换至背面';
@@ -250,7 +250,7 @@ const packs = function () {
                             if (uiintros.length > 0) {
                                 const uiintro = uiintros[uiintros.length - 1];
                                 uiintro.addSmall([['bilibili_x_dongtuna'], 'character']);
-                                uiintro.style.height = `${uiintro.offsetHeight + 100}px`;
+                                uiintro.style.height = `${uiintro.offsetHeight + (window.decadeUI ? 100 : 120)}px`;
                             }
                         });
                         return () => '正面武将翻面时或死亡后切换至背面';
@@ -268,7 +268,7 @@ const packs = function () {
                             if (uiintros.length > 0) {
                                 const uiintro = uiintros[uiintros.length - 1];
                                 uiintro.addSmall([['bilibili_x_ahuinan'], 'character']);
-                                uiintro.style.height = `${uiintro.offsetHeight + 100}px`;
+                                uiintro.style.height = `${uiintro.offsetHeight + (window.decadeUI ? 100 : 120)}px`;
                             }
                         });
                         return () => '正面武将翻面时或死亡后切换至背面';
