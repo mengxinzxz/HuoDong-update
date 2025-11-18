@@ -40472,7 +40472,7 @@ const packs = function () {
         const ori7 = ui.click.charactercard;
         ui.click.charactercard = function (name) {
             ori7.apply(this, arguments);
-            const hpTextDiv = document.querySelector('.text');
+            const hpTextDiv = document.querySelector('.menubg.charactercard')?.querySelector('.text');
             if (hpTextDiv && typeof lib.character[name]?.hp2 === 'number') {
                 const { hp, hp2, maxHp } = lib.character[name];
                 hpTextDiv.innerHTML = `×${hp}&${hp2}${hp === maxHp ? '' : `/${maxHp}`}`;

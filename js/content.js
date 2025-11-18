@@ -755,7 +755,8 @@ export async function content(config, pack) {
 		ui.click.charactercard = function (name, sourcenode, _, __, avatar) {
 			charactercard.apply(this, arguments);
 			if (!_status['extension_活动武将_files'].image.character.skin[name]) return;
-			const bg = document.querySelector('.avatar'), playerbg = document.querySelector('.menubutton.large.ava');
+			const uiintro = document.querySelector('.menubg.charactercard');
+			const bg = uiintro?.querySelector('.avatar'), playerbg = uiintro?.querySelector('.menubutton.large.ava');
 			if (bg && playerbg) {
 				let changeskinfunc = null, nameskin = name;
 				bg.onclick = function () {
