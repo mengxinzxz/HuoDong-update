@@ -65,7 +65,7 @@ const packs = function () {
             bilibili_shuijiaobuboli: ['female', 'key', 3, ['bilibili_qicai', 'bilibili_jizhi', 'bilibili_fengliang', 'bilibili_guiyin'], ['clan:宿舍群|活动群', 'name:黄|月英']],
             bilibili_kuailiangkuaiyue: ['male', 'qun', 4, ['bilibili_chouhua'], ['character:kuailiangkuaiyue']],
             bilibili_wuzhuwanshui: ['male', 'key', 3, ['bilibili_diaowen', 'bilibili_banyun'], ['clan:肘击群|活动群', 'name:猪|大将军']],
-            bilibili_murufengchen: ['double', 'key', 3, [], ['unseen', 'clan:宿舍群|肘击群|活动群', 'name:风|晨']],
+            bilibili_murufengchen: ['female', 'key', 3, [], ['unseen', 'clan:宿舍群|肘击群|活动群', 'name:风|晨']],
             bilibili_diandian: ['female', 'key', 3, ['bilibili_siyu', 'bilibili_tamen'], ['clan:肘击群|活动群', 'name:永雏|塔菲']],
             //双面武将--正面
             bilibili_wangtao: ['female', 'shu', 3, ['huguan', 'yaopei', 'dualside'], ['dualside:bilibili_x_wangyue', 'character:wangtao', 'die:wangtao']],
