@@ -26822,23 +26822,23 @@ const packs = function () {
                 audio: 'dczecai',
                 inherit: 'dczecai',
                 derivation: 'minirejizhi',
-                async content(event, trigger, player) {
-                    const targetx = lib.skill.dczecai.getMax();
-                    let str = '令一名角色于本轮内获得〖集智〗';
-                    if (targetx) str += ('；若选择的目标为' + get.translation(targetx) + '，则其获得一个额外的回合');
-                    const { result: { bool, targets } } = await player.chooseTarget(get.prompt('minizecai'), str).set('ai', target => {
-                        const player = get.event('player');
-                        if (target != get.event('targetx')) return 0;
+                async cost(event, trigger, player) {
+                    const target = lib.skill.dczecai.getMax();
+                    let str = '令一名角色获得〖集智〗直到下一轮结束';
+                    if (target) str += '；若选择的目标为' + get.translation(target) + '，则其获得一个额外的回合';
+                    event.result = await player.chooseTarget(get.prompt(event.skill), str).set('maximum', target).set("ai", target => {
+                        const { player, maximum } = get.event();
+                        if (target != maximum) return 0;
                         return get.attitude(player, target);
-                    }).set('targetx', targetx);
-                    if (bool) {
-                        const target = targets[0];
-                        player.logSkill('minizecai', target);
-                        player.awakenSkill('minizecai');
-                        target.addTempSkill('minizecai_effect', 'roundEnd');
-                        await target.addAdditionalSkills('minizecai_effect', 'minirejizhi');
-                        if (target == targetx) target.insertPhase();
-                    }
+                    }).forResult();
+                },
+                async content(event, trigger, player) {
+                    player.awakenSkill(event.name);
+                    const targetx = lib.skill.dczecai.getMax();
+                    const target = event.targets[0];
+                    target.addTempSkill('minizecai_effect', 'roundEnd');
+                    await target.addAdditionalSkills('minizecai_effect', 'minirejizhi');
+                    if (target == targetx) target.insertPhase();
                 },
             },
             minijianjie: {
