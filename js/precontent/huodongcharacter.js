@@ -3964,7 +3964,7 @@ const packs = function () {
                 },
             },
             oldzhenyi: {
-                inherit: 'xinfu_zhenyi',
+                inherit: 'zhenyi',
                 group: ['oldzhenyi_spade', 'oldzhenyi_club', 'oldzhenyi_heart'],
                 subSkill: {
                     spade: {
@@ -4020,14 +4020,23 @@ const packs = function () {
                     },
                     club: {
                         audio: 'xinfu_zhenyi',
-                        inherit: 'zhenyi_club',
                         enable: 'chooseToUse',
                         viewAsFilter(player) {
                             if (!player.isDying()) return false;
                             return player.hasMark('xinfu_falu_club') && player.countCards('hs');
                         },
                         position: 'hs',
-                        prompt: "失去「后土♣」标记，将一张手牌当作【桃】使用",
+                        filterCard: true,
+                        viewAs: { name: 'tao' },
+                        prompt: '失去「后土♣」标记，将一张手牌当作【桃】使用',
+                        check(card) {
+                            return 15 - get.value(card);
+                        },
+                        log: false,
+                        precontent() {
+                            player.logSkill('oldzhenyi_club');
+                            player.clearMark('xinfu_falu_club');
+                        },
                     },
                     heart: {
                         audio: 'xinfu_zhenyi',
