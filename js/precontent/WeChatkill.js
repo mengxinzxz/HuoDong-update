@@ -15665,7 +15665,7 @@ const packs = function () {
                         const { player, target, gain } = get.event();
                         const att = get.attitude(player, target);
                         if (att < 0 && get.value(gain) < 5) return 0;
-                        if (get.values(ui.selected.cards) >= get.value(gain)) return 0;
+                        if (get.value(ui.selected.cards) >= get.value(gain)) return 0;
                         return 6 - get.value(card) + get.cardNameLength(card);
                     }).set('numx', get.cardNameLength(trigger.card)).set('gain', gain).set('cardsx', cards);
                     if (result?.bool) {
