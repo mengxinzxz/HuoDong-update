@@ -658,7 +658,7 @@ export async function content(config, pack) {
 							game.saveConfig('skin', lib.config.skin);
 						});
 						originButton._link = -1;
-						originButton.setBackground(nameskin, 'character');
+						originButton.setBackground(nameskin, 'character', 'noskin');
 						for (let i = 0; i <= num; i++) {
 							const button = ui.create.div('.button.character.pointerdiv', buttons, function () {
 								lib.config.skin[nameskin] = this._link;
@@ -712,13 +712,13 @@ export async function content(config, pack) {
 							}
 							const buttons = ui.create.div('.buttons.smallzoom.scrollbuttons');
 							lib.setMousewheel(buttons);
-							const originBtn = ui.create.div('.button.character.pointerdiv', buttons, function () {
+							const originButton = ui.create.div('.button.character.pointerdiv', buttons, function () {
 								delete lib.config.skin[nameskin];
 								node.setBackground(nameskin, 'character');
 								game.saveConfig('skin', lib.config.skin);
 							});
-							originBtn._link = -1;
-							originBtn.setBackground(nameskin, 'character');
+							originButton._link = -1;
+							originButton.setBackground(nameskin, 'character', 'noskin');
 							for (let i = 0; i <= num; i++) {
 								const button = ui.create.div('.button.character.pointerdiv', buttons, function () {
 									lib.config.skin[nameskin] = this._link;
@@ -784,7 +784,7 @@ export async function content(config, pack) {
 								game.saveConfig('skin', lib.config.skin);
 							});
 							originButton._link = null;
-							originButton.setBackground(nameskin, 'character');
+							originButton.setBackground(nameskin, 'character', 'noskin');
 							for (let i = 0; i <= num; i++) {
 								const button = ui.create.div(avatars, function () {
 									playerbg.classList.remove('scroll');
@@ -824,6 +824,14 @@ export async function content(config, pack) {
 			}
 		};
 	}
+	const setBackground = HTMLDivElement.prototype.setBackground;
+	HTMLDivElement.prototype.setBackground = function (name, type, ext) {
+		const result = setBackground.apply(this, arguments);
+		if (type === 'character' && _status['extension_活动武将_files'].image.character.skin[name] && typeof lib.config.skin[name] === 'number' && ext !== 'noskin') {
+			result.setBackgroundImage(`extension/活动武将/image/character/skin/${name}/${_status['extension_活动武将_files'].image.character.skin[name].files[lib.config.skin[name]]}`);
+		}
+		return result;
+	};
 
 	//precGuoZhan(分界线，便于我搜过来)
 	if (get.mode() == 'guozhan') {

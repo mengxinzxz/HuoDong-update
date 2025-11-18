@@ -26833,10 +26833,9 @@ const packs = function () {
                     })
                     next.set('targetprompt2', next.targetprompt2.concat([
                         target => {
-                            if (!target.isIn() || !get.event().filterTarget(null, get.player(), target)) {
-                                return false;
-                            }
-                            return target == get.event('maximum') ? '额外回合' : '';
+                            const event = get.event();
+                            if (!target.isIn() || !event.filterTarget(null, event.player, target)) return false;
+                            return target === event.maximum ? '额外回合' : '';
                         },
                     ]));
                     event.result = await next.forResult();
