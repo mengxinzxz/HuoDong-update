@@ -59,6 +59,7 @@ const packs = function () {
                 skills: ['bilibili_dongxi', 'bilibili_mingcha', 'bilibili_huiyan'],
                 names: 'tooenough|眼睛',
                 clans: ['宿舍群', '肘击群', '活动群'],
+                transBin: ['sex: male_castrated'],
             },
             bilibili_caifuren: ['female', 'qun', 3, ['bilibili_kuilei'], ["name:蔡|null"]],
             bilibili_xiaoyaoruyun: ['female', 'key', 3, ['bilibili_chuandu', 'bilibili_shuaiwei', 'bilibili_huaikui'], ['clan:肘击群|活动群', 'name:鹿都|智川介']],
@@ -12331,18 +12332,20 @@ const packs = function () {
         },
     };
     for (let i in huodongcharacter.character) {
-        huodongcharacter.character[i][4] ??= [];
+        if (Array.isArray(huodongcharacter.character[i])) huodongcharacter.character[i] = get.convertedCharacter(huodongcharacter.character[i]);
+        huodongcharacter.character[i].transBin ??= [];
         if (_status['extension_活动武将_files']?.audio.die.files.includes(`${i}.mp3`)) {
-            huodongcharacter.character[i][4].push('die:ext:活动武将/audio/die:true');
+            huodongcharacter.character[i].dieAudios ??= [];
+            huodongcharacter.character[i].dieAudios.push('ext:活动武将/audio/die:true');
             huodongcharacter.translate[`#ext:活动武将/audio/die/${i}:die`] ??= '点击播放阵亡配音';
         }
-        huodongcharacter.character[i][4].push('ext:活动武将/image/character/' + i + '.jpg');
-        if (!lib.config.extension_活动武将_DanJi && huodongcharacter.characterSort.huodongcharacter.CDanJi.includes(i)) huodongcharacter.character[i][4].push('unseen');
-        if (!lib.config.extension_活动武将_SCS && huodongcharacter.characterSort.huodongcharacter.CSCS.includes(i)) huodongcharacter.character[i][4].push('unseen');
-        const clans = huodongcharacter.character[i].clans || huodongcharacter.character[i][4].find(i => i.startsWith('clan:'))?.split(':')[1].split('|');
+        if (_status['extension_活动武将_files']?.image.character.files.includes(`${i}.jpg`)) huodongcharacter.character[i].img = `extension/活动武将/image/character/${i}.jpg`;
+        if (!lib.config.extension_活动武将_DanJi && huodongcharacter.characterSort.huodongcharacter.CDanJi.includes(i)) huodongcharacter.character[i].isUnseen = true;
+        if (!lib.config.extension_活动武将_SCS && huodongcharacter.characterSort.huodongcharacter.CSCS.includes(i)) huodongcharacter.character[i].isUnseen = true;
+        const clans = huodongcharacter.character[i].clans;
         if (clans?.containsSome('宿舍群', '肘击群', '活动群')) {
             const groups = ['宿舍群', '肘击群', '活动群'].filter(i => clans.includes(i)).map(i => { return { '宿舍群': 'bilibili_sushe', '肘击群': 'bilibili_zhouji', '活动群': 'bilibili_huodong' }[i] });
-            huodongcharacter.character[i][4].push(['doublegroup', ...groups].join(':'));
+            huodongcharacter.character[i].doubleGroup = groups;
         }
     }
     huodongcharacter.connectBanned.addArray(['CDanJi', 'CSCS'].map(i => huodongcharacter.characterSort.huodongcharacter[i]).flat());

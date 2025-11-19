@@ -4698,16 +4698,13 @@ const packs = function () {
         },
     };
     for (let i in MX_feihongyinxue.character) {
-        MX_feihongyinxue.character[i][4] ??= [];
-        MX_feihongyinxue.character[i][4].add('character:' + i.slice(6));
-        if (_status['extension_活动武将_files']?.audio.die.files.includes(`${i}.mp3`)) {
-            MX_feihongyinxue.character[i][4].push('die:ext:活动武将/audio/die:true');
-            MX_feihongyinxue.translate[`#ext:活动武将/audio/die/${i}:die`] = '点击播放阵亡配音';
-        }
-        if (!MX_feihongyinxue.character[i][4].some(tag => tag.indexOf('die:') == 0)) MX_feihongyinxue.character[i][4].add('die:' + i.slice(6));
-        //MX_feihongyinxue.translate[i+'_ab']=MX_feihongyinxue.translate[i].slice(2);
-        var trans = MX_feihongyinxue.translate[i];
-        if (trans.indexOf('飞鸿神') == 0) MX_feihongyinxue.translate[i + '_prefix'] = '飞鸿|神';
+        if (Array.isArray(MX_feihongyinxue.character[i])) MX_feihongyinxue.character[i] = get.convertedCharacter(MX_feihongyinxue.character[i]);
+        MX_feihongyinxue.character[i].transBin ??= [];
+        MX_feihongyinxue.character[i].dieAudios ??= [];
+        if (!MX_feihongyinxue.character[i].dieAudios.length) MX_feihongyinxue.character[i].dieAudios.push(i.slice(6));
+        MX_feihongyinxue.character[i].img = `image/character/${i.slice(6)}.jpg`;
+        let trans = MX_feihongyinxue.translate[i];
+        if (trans.startsWith('飞鸿神')) MX_feihongyinxue.translate[i + '_prefix'] = '飞鸿|神';
         else MX_feihongyinxue.translate[i + '_prefix'] = trans.slice(0, 2);
     }
     lib.namePrefix.set('飞鸿', {

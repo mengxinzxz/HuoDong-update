@@ -484,12 +484,14 @@ const packs = function () {
         },
     };
     for (let i in FaDongCharacter.character) {
-        FaDongCharacter.character[i][4] ??= [];
+        if (Array.isArray(FaDongCharacter.character[i])) FaDongCharacter.character[i] = get.convertedCharacter(FaDongCharacter.character[i]);
+        FaDongCharacter.character[i].transBin ??= [];
         if (_status['extension_活动武将_files']?.audio.die.files.includes(`${i}.mp3`)) {
-            FaDongCharacter.character[i][4].push('die:ext:活动武将/audio/die:true');
-            FaDongCharacter.translate[`#ext:活动武将/audio/die/${i}:die`] = '点击播放阵亡配音';
+            FaDongCharacter.character[i].dieAudios ??= [];
+            FaDongCharacter.character[i].dieAudios.push('ext:活动武将/audio/die:true');
+            FaDongCharacter.translate[`#ext:活动武将/audio/die/${i}:die`] ??= '点击播放阵亡配音';
         }
-        FaDongCharacter.character[i][4].push('ext:活动武将/image/character/' + i + '.jpg');
+        if (_status['extension_活动武将_files']?.image.character.files.includes(`${i}.jpg`)) FaDongCharacter.character[i].img = `extension/活动武将/image/character/${i}.jpg`;
     }
     lib.config.all.characters.push('FaDongCharacter');
     lib.config.all.sgscharacters.push('FaDongCharacter');

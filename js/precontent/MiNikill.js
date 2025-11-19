@@ -40257,27 +40257,29 @@ const packs = function () {
         }
     }
     for (let i in MiNikill.character) {
-        if (!MiNikill.character[i][4]) MiNikill.character[i][4] = [];
-        if (MiNikill.translate[i]) {
-            if (MiNikill.translate[i].indexOf('欢杀神') == 0) MiNikill.translate[i + '_prefix'] = '欢杀|神';
-            else if (MiNikill.translate[i].indexOf('SP欢杀神') == 0) MiNikill.translate[i + '_prefix'] = 'SP|欢杀|神';
-            else if (MiNikill.translate[i].indexOf('欢杀谋') == 0) MiNikill.translate[i + '_prefix'] = '欢杀|谋';
-            else if (MiNikill.translate[i].indexOf('欢杀星') == 0) MiNikill.translate[i + '_prefix'] = '欢杀|星';
-            else if (MiNikill.translate[i].indexOf('欢杀界') == 0) MiNikill.translate[i + '_prefix'] = '欢杀|界';
-            else if (MiNikill.translate[i].indexOf('欢杀') == 0) MiNikill.translate[i + '_prefix'] = '欢杀';
-            else if (MiNikill.translate[i].indexOf('SP欢杀') == 0) MiNikill.translate[i + '_prefix'] = 'SP|欢杀';
-            else if (MiNikill.translate[i].indexOf('喵') == 0) MiNikill.translate[i + '_prefix'] = '喵';
-            else if (MiNikill.translate[i].indexOf('念') == 0) MiNikill.translate[i + '_prefix'] = '念';
-            else if (MiNikill.translate[i].indexOf('战') == 0) MiNikill.translate[i + '_prefix'] = '战';
-        }
+        if (Array.isArray(MiNikill.character[i])) MiNikill.character[i] = get.convertedCharacter(MiNikill.character[i]);
+        MiNikill.character[i].transBin ??= [];
+        MiNikill.character[i].dieAudios ??= [];
         if (_status['extension_活动武将_files']?.audio.die.files.includes(`${i}.mp3`)) {
-            MiNikill.character[i][4].push('die:ext:活动武将/audio/die:true');
-            MiNikill.translate[`#ext:活动武将/audio/die/${i}:die`] = '点击播放阵亡配音';
+            MiNikill.character[i].dieAudios.push('ext:活动武将/audio/die:true');
+            MiNikill.translate[`#ext:活动武将/audio/die/${i}:die`] ??= '点击播放阵亡配音';
         }
         else {
-            if (i.startsWith('Mbaby_') && !MiNikill.character[i][4].some(tag => typeof tag == 'string' && tag.startsWith('die:'))) MiNikill.character[i][4].push('die:' + i.slice(6));
+            if (i.startsWith('Mbaby_') && !MiNikill.character[i].dieAudios.length) MiNikill.character[i].dieAudios.push(i.slice(6));
         }
-        MiNikill.character[i][4].push('ext:活动武将/image/character/' + i + '.jpg');
+        if (_status['extension_活动武将_files']?.image.character.files.includes(`${i}.jpg`)) MiNikill.character[i].img = `extension/活动武将/image/character/${i}.jpg`;
+        if (MiNikill.translate[i]) {
+            if (MiNikill.translate[i].startsWith('欢杀神')) MiNikill.translate[i + '_prefix'] = '欢杀|神';
+            else if (MiNikill.translate[i].startsWith('SP欢杀神')) MiNikill.translate[i + '_prefix'] = 'SP|欢杀|神';
+            else if (MiNikill.translate[i].startsWith('欢杀谋')) MiNikill.translate[i + '_prefix'] = '欢杀|谋';
+            else if (MiNikill.translate[i].startsWith('欢杀星')) MiNikill.translate[i + '_prefix'] = '欢杀|星';
+            else if (MiNikill.translate[i].startsWith('欢杀界')) MiNikill.translate[i + '_prefix'] = '欢杀|界';
+            else if (MiNikill.translate[i].startsWith('欢杀')) MiNikill.translate[i + '_prefix'] = '欢杀';
+            else if (MiNikill.translate[i].startsWith('SP欢杀')) MiNikill.translate[i + '_prefix'] = 'SP|欢杀';
+            else if (MiNikill.translate[i].startsWith('喵')) MiNikill.translate[i + '_prefix'] = '喵';
+            else if (MiNikill.translate[i].startsWith('念')) MiNikill.translate[i + '_prefix'] = '念';
+            else if (MiNikill.translate[i].startsWith('战')) MiNikill.translate[i + '_prefix'] = '战';
+        }
     }
     lib.namePrefix.set('喵', {
         color: '#fdd559',

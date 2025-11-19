@@ -16909,28 +16909,30 @@ const packs = function () {
         },
     };
     for (let i in WeChatkill.character) {
-        WeChatkill.character[i][4] ??= [];
-        if (WeChatkill.translate[i]) {
-            if (WeChatkill.translate[i].indexOf('SP微信神') == 0) WeChatkill.translate[i + '_prefix'] = 'SP|微信|神';
-            else if (WeChatkill.translate[i].indexOf('微信牢') == 0) WeChatkill.translate[i + '_prefix'] = '微信|牢';
-            else if (WeChatkill.translate[i].indexOf('微信神') == 0) WeChatkill.translate[i + '_prefix'] = '微信|神';
-            else if (WeChatkill.translate[i].indexOf('微信☆') == 0) WeChatkill.translate[i + '_prefix'] = '微信|☆';
-            else if (WeChatkill.translate[i].indexOf('微信谋') == 0) WeChatkill.translate[i + '_prefix'] = '微信|谋';
-            else if (WeChatkill.translate[i].indexOf('微信界') == 0) WeChatkill.translate[i + '_prefix'] = '微信|界';
-            else if (WeChatkill.translate[i].indexOf('微信') == 0) WeChatkill.translate[i + '_prefix'] = '微信';
-            else if (WeChatkill.translate[i].indexOf('SP微信') == 0) WeChatkill.translate[i + '_prefix'] = 'SP|微信';
-            else if (WeChatkill.translate[i].indexOf('极') == 0) WeChatkill.translate[i + '_prefix'] = '极';
-            else if (WeChatkill.translate[i].indexOf('志') == 0) WeChatkill.translate[i + '_prefix'] = '志';
-        }
+        if (Array.isArray(WeChatkill.character[i])) WeChatkill.character[i] = get.convertedCharacter(WeChatkill.character[i]);
+        WeChatkill.character[i].transBin ??= [];
+        WeChatkill.character[i].dieAudios ??= [];
         if (_status['extension_活动武将_files']?.audio.die.files.includes(`${i}.mp3`)) {
-            WeChatkill.character[i][4].push('die:ext:活动武将/audio/die:true');
-            WeChatkill.translate[`#ext:活动武将/audio/die/${i}:die`] = '点击播放阵亡配音';
+            WeChatkill.character[i].dieAudios.push('ext:活动武将/audio/die:true');
+            WeChatkill.translate[`#ext:活动武将/audio/die/${i}:die`] ??= '点击播放阵亡配音';
         }
         else {
-            if (i.startsWith('wechat_') && !WeChatkill.character[i][4].some(tag => typeof tag == 'string' && tag.startsWith('die:'))) WeChatkill.character[i][4].push('die:' + i.slice(7));
+            if (i.startsWith('wechat_') && !WeChatkill.character[i].dieAudios.length) WeChatkill.character[i].dieAudios.push(i.slice(7));
         }
-        WeChatkill.character[i][4].push('ext:活动武将/image/character/' + i + '.jpg');
-        if (WeChatkill.characterSort.WeChatkill.wechat_trashBin.includes(i)) WeChatkill.character[i][4].push('unseen');
+        if (_status['extension_活动武将_files']?.image.character.files.includes(`${i}.jpg`)) WeChatkill.character[i].img = `extension/活动武将/image/character/${i}.jpg`;
+        if (WeChatkill.characterSort.WeChatkill.wechat_trashBin.includes(i)) WeChatkill.character[i].isUnseen = true;
+        if (WeChatkill.translate[i]) {
+            if (WeChatkill.translate[i].startsWith('SP微信神')) WeChatkill.translate[i + '_prefix'] = 'SP|微信|神';
+            else if (WeChatkill.translate[i].startsWith('微信牢')) WeChatkill.translate[i + '_prefix'] = '微信|牢';
+            else if (WeChatkill.translate[i].startsWith('微信神')) WeChatkill.translate[i + '_prefix'] = '微信|神';
+            else if (WeChatkill.translate[i].startsWith('微信☆')) WeChatkill.translate[i + '_prefix'] = '微信|☆';
+            else if (WeChatkill.translate[i].startsWith('微信谋')) WeChatkill.translate[i + '_prefix'] = '微信|谋';
+            else if (WeChatkill.translate[i].startsWith('微信界')) WeChatkill.translate[i + '_prefix'] = '微信|界';
+            else if (WeChatkill.translate[i].startsWith('微信')) WeChatkill.translate[i + '_prefix'] = '微信';
+            else if (WeChatkill.translate[i].startsWith('SP微信')) WeChatkill.translate[i + '_prefix'] = 'SP|微信';
+            else if (WeChatkill.translate[i].startsWith('极')) WeChatkill.translate[i + '_prefix'] = '极';
+            else if (WeChatkill.translate[i].startsWith('志')) WeChatkill.translate[i + '_prefix'] = '志';
+        }
     }
     lib.namePrefix.set('极', {
         color: '#fdd559',

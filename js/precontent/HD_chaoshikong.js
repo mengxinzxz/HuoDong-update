@@ -17,12 +17,12 @@ const packs = function () {
             //密探
             cike_wuliuqi: ['male', 'qun', 3, ['cike_feijian', 'cike_yirong', 'cike_qingsuo', 'cike_xuefa']],
             cike_meihuashisan: ['female', 'qun', 3, ['cike_meibiao', 'cike_biandao', 'cike_yingyue', 'cike_huti']],
-            cike_mitan: ['male', 'qun', 3, ['cike_zhibi'], ['unseen']],
+            cike_mitan: ['male', 'qun', 3, ['cike_zhibi']],
             //魏国
             cike_caocao: ['male', 'wei', 16, ['new_rejianxiong', 'cike_hujia', 'feiying']],
             cike_caopi: ['male', 'wei', 10, ['xingshang', 'fangzhu', 'cike_songwei', 'lxzhuixi', 'zhichi']],
             cike_caorui: ['male', 'wei', 18, ['huituo', 'mingjian', 'cike_xingshuai']],
-            cike_caomao: ['male', 'wei', 12, ['cike_wenhui', 'cike_qintao', 'cike_xianggong']],
+            cike_caomao: ['male', 'wei', 12, ['cike_wenhui', 'cike_qintao', 'cike_xianggong'], ['character:caomao', 'die:caomao']],
             cike_caosong: ['male', 'wei', 20, ['cslilu', 'csyizheng', 'cike_taiwang']],
             //蜀国
             cike_liubei: ['male', 'shu', 20, ['rerende', 'cike_jijiang']],
@@ -392,25 +392,45 @@ const packs = function () {
                         }
                     },
                 },
-                trigger: { global: 'loseAfter' },
+                audio: 'qianlong',
+                trigger: { global: ['loseAfter', 'loseAsyncAfter'] },
+                getIndex(event, player) {
+                    if (_status.currentPhase !== player || event.type !== 'discard' || (event.discarder || event.getParent(2).player) !== player) return false;
+                    return game.filterPlayer2(target => {
+                        if (target === player) return false;
+                        if (event.name === 'lose') return event.cards2.length > 0;
+                        return target.hasHistory('lose', evt => {
+                            if ((evt.relatedEvent || evt.getParent()) !== event) return false;
+                            return evt.cards2.length > 0;
+                        });
+                    }).sortBySeat();
+                },
                 forced: true,
                 locked: false,
-                filter(event, player) {
-                    var target = _status.currentPhase;
-                    if (!target || player != target || event.type != 'discard' || player == event.player || event.getParent(2).player != player) return false;
-                    return event.cards2 && event.cards2.length > 0;
-                },
-                content() {
+                logTarget: (event, player, name, target) => target,
+                async content(event, trigger, player) {
+                    const target = event.targets[0];
                     player.addTempSkill('cike_wenhui_keep');
-                    var cards = [], cardx = trigger.cards2;
-                    for (var i = 0; i < cardx.length; i++) {
-                        var card = get.cardPile2(function (card) {
-                            return !cards.includes(card) && get.type2(card, false) == get.type2(cardx[i], false);
+                    const cards2 = (trigger.name === 'lose' ? trigger : target.getHistory('lose', evt => (evt.relatedEvent || evt.getParent()) === trigger)[0]).cards2;
+                    let gains = [], count = 0;
+                    for (const card of cards2) {
+                        const gain = get.cardPile2(gain => {
+                            if (gains.includes(gain)) return false;
+                            return get.type2(gain) === get.type2(card);
                         });
-                        if (card) cards.push(card);
+                        if (gain) gains.push(gain);
+                        else count++;
                     }
-                    player.gain(cards, 'gain2').gaintag.add('cike_wenhui');
-                    player.draw(trigger.cards2.length - cards.length).gaintag = ['cike_wenhui'];
+                    if (gains.length > 0) {
+                        const next = player.gain(gains, 'gain2');
+                        next.gaintag.add('cike_wenhui');
+                        await next;
+                    }
+                    if (count > 0) {
+                        const next = player.draw(count);
+                        next.gaintag.add('cike_wenhui');
+                        await next;
+                    }
                 },
                 subSkill: {
                     keep: {
@@ -419,54 +439,76 @@ const packs = function () {
                             player.removeGaintag('cike_wenhui');
                         },
                         mod: {
-                            ignoredHandcard(card, player) {
+                            cardUsable(card) {
+                                if (!card.cards || card.cards.length !== 1) return;
+                                if (card.cards[0].hasGaintag('cike_wenhui')) return Infinity;
+                            },
+                            ignoredHandcard(card) {
                                 if (card.hasGaintag('cike_wenhui')) return true;
                             },
                             cardDiscardable(card, player, name) {
                                 if (name == 'phaseDiscard' && card.hasGaintag('cike_wenhui')) return false;
                             },
                         },
+                        trigger: { player: 'useCard1' },
+                        filter(event, player) {
+                            if (event.addCount === false) return false;
+                            return player.hasHistory('lose', evt => {
+                                const evtx = evt.relatedEvent || evt.getParent();
+                                if (evtx !== event) return false;
+                                return Object.values(evt.gaintag_map).flat().includes('cike_wenhui');
+                            });
+                        },
+                        silent: true,
+                        firstDo: true,
+                        async content(event, trigger, player) {
+                            trigger.addCount = false;
+                            const stat = player.getStat().card;
+                            const name = trigger.card.name;
+                            if (typeof stat[name] === 'number') stat[name]--;
+                        },
                     },
                 },
             },
             cike_qintao: {
-                shaRelated: true,
+                audio: 'juetao',
                 trigger: { player: 'useCardAfter' },
                 filter(event, player) {
-                    return event.card.name == 'sha' && !player.getHistory('sourceDamage', function (evt) {
-                        return evt.card == event.card;
-                    }).length && event.targets.length == 1;
+                    return event.card.name === 'sha' && event.targets.length === 1 && !game.hasPlayer2(target => {
+                        return !target.hasHistory('damage', evt => evt.card === event.card);
+                    });
                 },
                 check(event, player) {
-                    return player.hp >= 2;
+                    if (get.attitude(player, event.targets[0]) >= 0) return false;
+                    return player.hp + player.countCards('hs', card => player.canSaveCard(card, player)) > 0;
                 },
                 logTarget: 'targets',
-                content() {
-                    'step 0'
-                    player.loseHp();
-                    if (!trigger.targets[0].countCards('he')) result.index = 0;
-                    else trigger.targets[0].chooseControl().set('choiceList', ['失去1点体力', '令' + get.translation(player) + '弃置你两张牌']).set('ai', function () {
-                        if (trigger.targets[0].hp > 2 && trigger.targets[0].countCards('he') < 2) return 0;
-                        return 1;
-                    });
-                    'step 1'
-                    if (result.index == 0) trigger.targets[0].loseHp();
-                    else player.discardPlayerCard(trigger.targets[0], 'he', 2, true);
+                async content(event, trigger, player) {
+                    await player.loseHp();
+                    let target = trigger.targets[0], result;
+                    if (target.countCards('he') < 2) result.index = 0;
+                    else {
+                        result = await target.chooseControl().set('choiceList', ['失去1点体力', '令' + get.translation(player) + '弃置你两张牌']).set('ai', () => {
+                            const player = get.player();
+                            return 1 - (player.hp > 2 && player.countCards('he') < 2);
+                        });
+                    }
+                    if (result.index === 0) await target.loseHp();
+                    else await player.discardPlayerCard(target, 'he', 2, true);
                 },
             },
             cike_xianggong: {
+                audio: ['fensi', 'zhushi'],
                 trigger: { player: 'damageEnd' },
                 filter(event, player) {
-                    return event.source && event.source.countCards('he');
+                    if (player.isHealthy()) return false;
+                    return event.source?.isIn() && event.source.countCards('he');
                 },
                 forced: true,
                 logTarget: 'source',
-                content() {
-                    'step 0'
-                    var num = Math.min(player.getDamagedHp(), trigger.source.countCards('he'));
-                    trigger.source.chooseToDiscard(num, 'he', true);
-                    'step 1'
-                    trigger.source.draw();
+                async content(event, trigger, player) {
+                    await trigger.source.chooseToDiscard(player.getDamagedHp(), 'he', true);
+                    await trigger.source.draw();
                 },
             },
             //By 活动群群主--lonely patients
@@ -917,9 +959,9 @@ const packs = function () {
             _cike_gzchooseskill_meihuashishan: '技能选择',
             cike_caomao: '密探·曹髦',
             cike_wenhui: '文绘',
-            cike_wenhui_info: '当你于回合内弃置其他角色的牌后，你随机从牌堆中获得一张与此牌类别相同的牌（没有则改为摸一张牌）。你以此法获得的牌本回合不计入使用次数和手牌上限。',
+            cike_wenhui_info: '当你于回合内弃置其他角色的牌后，你随机从牌堆中获得一张与此牌类别相同的牌（没有则改为摸一张牌）。你以此法获得的牌本回合无使用次数限制且不计入和手牌上限。',
             cike_qintao: '亲讨',
-            cike_qintao_info: '若你使用的指定唯一目标的【杀】未造成伤害，结算完成后，你可以失去1点体力并令其选择一项：①失去1点体力；②令你弃置其两张牌。',
+            cike_qintao_info: '你使用指定唯一目标的【杀】结算完成后，若此牌未造成伤害，则你可以失去1点体力并令目标角色选择一项：①失去1点体力；②令你弃置其两张牌。',
             cike_xianggong: '乡公',
             cike_xianggong_info: '锁定技，当你受到伤害后，伤害来源须弃置X张牌，然后摸一张牌。（X为你已损失的体力值）',
             cike_mitan: '密探',
@@ -980,13 +1022,15 @@ const packs = function () {
         },
     };
     for (let i in HD_chaoshikong.character) {
-        HD_chaoshikong.character[i][4] ??= [];
+        if (Array.isArray(HD_chaoshikong.character[i])) HD_chaoshikong.character[i] = get.convertedCharacter(HD_chaoshikong.character[i]);
+        HD_chaoshikong.character[i].transBin ??= [];
         if (_status['extension_活动武将_files']?.audio.die.files.includes(`${i}.mp3`)) {
-            HD_chaoshikong.character[i][4].push('die:ext:活动武将/audio/die:true');
-            HD_chaoshikong.translate[`#ext:活动武将/audio/die/${i}:die`] = '点击播放阵亡配音';
+            HD_chaoshikong.character[i].dieAudios ??= [];
+            HD_chaoshikong.character[i].dieAudios.push('ext:活动武将/audio/die:true');
+            HD_chaoshikong.translate[`#ext:活动武将/audio/die/${i}:die`] ??= '点击播放阵亡配音';
         }
-        if (HD_chaoshikong.translate[i] && HD_chaoshikong.translate[i].indexOf('密探·') == 0) HD_chaoshikong.translate[i + '_ab'] = HD_chaoshikong.translate[i].slice(HD_chaoshikong.translate[i].indexOf('密探·') + 3, HD_chaoshikong.translate[i].length);
-        HD_chaoshikong.character[i][4].push('ext:活动武将/image/character/' + i + '.jpg');
+        if (_status['extension_活动武将_files']?.image.character.files.includes(`${i}.jpg`)) HD_chaoshikong.character[i].img = `extension/活动武将/image/character/${i}.jpg`;
+        if (HD_chaoshikong.translate[i]?.startsWith('密探·')) HD_chaoshikong.translate[i + '_ab'] = HD_chaoshikong.translate[i].slice(3);
     }
     lib.config.all.characters.push('HD_chaoshikong');
     lib.config.all.sgscharacters.push('HD_chaoshikong');

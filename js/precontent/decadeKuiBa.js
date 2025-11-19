@@ -687,12 +687,14 @@ const packs = function () {
         },
     };
     for (let i in decadeKuiBa.character) {
-        decadeKuiBa.character[i][4] ??= [];
+        if (Array.isArray(decadeKuiBa.character[i])) decadeKuiBa.character[i] = get.convertedCharacter(decadeKuiBa.character[i]);
+        decadeKuiBa.character[i].transBin ??= [];
         if (_status['extension_活动武将_files']?.audio.die.files.includes(`${i}.mp3`)) {
-            decadeKuiBa.character[i][4].push('die:ext:活动武将/audio/die:true');
-            decadeKuiBa.translate[`#ext:活动武将/audio/die/${i}:die`] = '点击播放阵亡配音';
+            decadeKuiBa.character[i].dieAudios ??= [];
+            decadeKuiBa.character[i].dieAudios.push('ext:活动武将/audio/die:true');
+            decadeKuiBa.translate[`#ext:活动武将/audio/die/${i}:die`] ??= '点击播放阵亡配音';
         }
-        decadeKuiBa.character[i][4].push('ext:活动武将/image/character/' + i + '.jpg');
+        if (_status['extension_活动武将_files']?.image.character.files.includes(`${i}.jpg`)) decadeKuiBa.character[i].img = `extension/活动武将/image/character/${i}.jpg`;
     }
     lib.config.all.characters.push('decadeKuiBa');
     lib.config.all.sgscharacters.push('decadeKuiBa');

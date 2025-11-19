@@ -1505,12 +1505,14 @@ const packs = function () {
         },
     };
     for (let i in hezongkangqincharacter.character) {
-        hezongkangqincharacter.character[i][4] ??= [];
+        if (Array.isArray(hezongkangqincharacter.character[i])) hezongkangqincharacter.character[i] = get.convertedCharacter(hezongkangqincharacter.character[i]);
+        hezongkangqincharacter.character[i].transBin ??= [];
         if (_status['extension_活动武将_files']?.audio.die.files.includes(`${i}.mp3`)) {
-            hezongkangqincharacter.character[i][4].push('die:ext:活动武将/audio/die:true');
-            hezongkangqincharacter.translate[`#ext:活动武将/audio/die/${i}:die`] = '点击播放阵亡配音';
+            hezongkangqincharacter.character[i].dieAudios ??= [];
+            hezongkangqincharacter.character[i].dieAudios.push('ext:活动武将/audio/die:true');
+            hezongkangqincharacter.translate[`#ext:活动武将/audio/die/${i}:die`] ??= '点击播放阵亡配音';
         }
-        hezongkangqincharacter.character[i][4].push('ext:活动武将/image/character/' + i + '.jpg');
+        if (_status['extension_活动武将_files']?.image.character.files.includes(`${i}.jpg`)) hezongkangqincharacter.character[i].img = `extension/活动武将/image/character/${i}.jpg`;
     }
     game.addGroup('daqin', '秦', '秦朝', { color: '#FFA500', image: 'ext:活动武将/image/default/daqin.png' });
     lib.config.all.characters.push('hezongkangqincharacter');
