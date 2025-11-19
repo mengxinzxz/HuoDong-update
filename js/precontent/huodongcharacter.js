@@ -11312,16 +11312,31 @@ const packs = function () {
             },
             //吾猪万睡
             bilibili_diaowen: {
-                trigger: { global: 'useCardAfter' },
+                trigger: { global: ['useCardAfter', 'damageBegin4'] },
                 filter(event, player) {
-                    return player.getExpansions('bilibili_diaowen').some(card => card.name == event.card.name);
+                    const cards = player.getExpansions('bilibili_diaowen');
+                    if (event.name === 'damage') return cards.map(i => i.name).unique().length >= 3;
+                    return cards.some(card => card.name == event.card.name);
                 },
                 forced: true,
-                locked: false,
                 async content(event, trigger, player) {
-                    await player.loseToDiscardpile(player.getExpansions('bilibili_diaowen').filter(card => card.name == trigger.card.name));
+                    const cards = player.getExpansions(event.name);
+                    if (trigger.name === 'damage') {
+                        const result = await player.chooseButton([
+                            `${get.translation(event.name)}：移去三张不同牌名的“矢”，防止此伤害`,
+                            cards,
+                        ], 3, true).set('filterButton', button => {
+                            return !ui.selected.buttons.some(but => but.link.name === button.link.name);
+                        }).set('ai', button => -get.value(button.link)).forResult();
+                        if (result?.bool && result.links?.length) {
+                            await player.loseToDiscardpile(result.links);
+                            trigger.cancel();
+                        }
+                        return;
+                    }
+                    await player.loseToDiscardpile(cards.filter(card => card.name == trigger.card.name));
                     const next = player.addToExpansion(get.cards(player.getHistory('useSkill', evt => evt.skill === event.name).length), 'gain2');
-                    next.gaintag.add('bilibili_diaowen');
+                    next.gaintag.add(event.name);
                     await next;
                 },
                 group: ['bilibili_diaowen_init', 'bilibili_diaowen_give'],
@@ -12297,7 +12312,7 @@ const packs = function () {
             bilibili_shi: '史',
             bilibili_shi_info: '①出牌阶段，对你自己使用。②当你从手牌区正面朝上失去此牌后，你失去1点体力。',
             bilibili_diaowen: '弔闻',
-            bilibili_diaowen_info: `①每轮开始时，你将牌堆顶三张牌称为“矢”置于武将牌上。②每轮结束时，你可以任意分配“矢”给场上本轮未使用过此“矢”牌面的牌的角色并令这些角色获得一张${get.poptip('bilibili_shi')}。③一名角色使用牌后，你移去武将牌上与此牌牌名相同的“矢”，然后将牌堆顶X张牌称为“矢”置于武将牌上（X为本回合发动此分支的次数）。`,
+            bilibili_diaowen_info: `锁定技。①每轮开始时，你将牌堆顶三张牌称为“矢”置于武将牌上。②每轮结束时，你可以任意分配“矢”给场上本轮未使用过此“矢”牌面的牌的角色并令这些角色获得一张${get.poptip('bilibili_shi')}。③一名角色使用牌后，你移去武将牌上与此牌牌名相同的“矢”，然后将牌堆顶X张牌称为“矢”置于武将牌上（X为本回合发动此分支的次数）。④当你受到伤害后，你移去三张牌名不同的“矢”，防止此伤害。`,
             bilibili_banyun: '搬运',
             bilibili_banyun_info: '每回合限一次，你可以使用一张“矢”，然后你将一名角色的一张牌称为“矢”置于武将牌上。',
             bilibili_banyun_append: '<span style="font-family:yuanli">长史曰：<br>“史之不尽，赤之不竭。<br>搬出节奏，搬出风采。”</span>',
