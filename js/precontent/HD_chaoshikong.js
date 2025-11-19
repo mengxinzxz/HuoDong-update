@@ -398,11 +398,7 @@ const packs = function () {
                     if (_status.currentPhase !== player || event.type !== 'discard' || (event.discarder || event.getParent(2).player) !== player) return false;
                     return game.filterPlayer2(target => {
                         if (target === player) return false;
-                        if (event.name === 'lose') return event.cards2.length > 0;
-                        return target.hasHistory('lose', evt => {
-                            if ((evt.relatedEvent || evt.getParent()) !== event) return false;
-                            return evt.cards2.length > 0;
-                        });
+                        return (event.getl(target)?.cards2 ?? []).length > 0;
                     }).sortBySeat();
                 },
                 forced: true,
@@ -411,7 +407,7 @@ const packs = function () {
                 async content(event, trigger, player) {
                     const target = event.targets[0];
                     player.addTempSkill('cike_wenhui_keep');
-                    const cards2 = (trigger.name === 'lose' ? trigger : target.getHistory('lose', evt => (evt.relatedEvent || evt.getParent()) === trigger)[0]).cards2;
+                    const cards2 = trigger.getl(target).cards2;
                     let gains = [], count = 0;
                     for (const card of cards2) {
                         const gain = get.cardPile2(gain => {
