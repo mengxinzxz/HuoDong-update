@@ -35112,7 +35112,7 @@ const packs = function () {
                         dialog.add('<div class="text center">赤字青荒，唯记......</div>');
                         dialog.classList.add('fullheight');
                         dialog.style.borderRadius = '10px';
-                        dialog.style.backgroundImage = `url(${lib.assetURL}/extension/活动武将/image/default/background.png)`;
+                        dialog.style.backgroundImage = `url(${lib.assetURL}/extension/活动武将/image/background/nanhualaoxian.png)`;
                         dialog.style.backgroundPosition = 'center';
                         dialog.style.backgroundSize = 'cover';
                         //设置dialog样式
