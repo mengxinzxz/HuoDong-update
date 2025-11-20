@@ -11828,7 +11828,7 @@ const packs = function () {
                                     }
                                 }, 'handle'],
                             ],
-                            selectButton: [1, num],
+                            selectButton: [0, num],
                             forced: true,
                             filterTarget: true,
                             ai1(button) {
