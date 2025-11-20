@@ -9729,136 +9729,140 @@ const packs = function () {
             bilibili_xiezhi: {
                 trigger: { global: 'phaseBegin' },
                 filter(event, player) {
-                    return event.player != player && !event.player.isOut();
+                    return event.player != player && event.player.isIn();
                 },
-                locked: true,
                 async cost(event, trigger, player) {
-                    const func = () => {
-                        const event = get.event();
-                        const controls = [link => {
-                            const evt = get.event();
-                            if (evt.dialog && evt.dialog.buttons) {
-                                for (let i = 0; i < evt.dialog.buttons.length; i++) {
-                                    const button = evt.dialog.buttons[i];
-                                    button.classList.remove('selectable');
-                                    button.classList.remove('selected');
-                                    const counterNode = button.querySelector('.caption');
-                                    if (counterNode) {
-                                        counterNode.childNodes[0].innerHTML = ``;
-                                    }
-                                }
-                                ui.selected.buttons.length = 0;
-                                game.check();
-                            }
-                            return;
-                        }];
-                        event.controls = [ui.create.control(controls.concat(['清除选择', 'stayleft']))];
-                    };
-                    if (event.isMine()) func();
-                    else if (event.isOnline()) event.player.send(func);
-                    const sum = Math.max(3, trigger.player.countCards('h'));
-                    let result = await player.chooseButton(['###协治###选择' + get.cnNumber(sum) + '次牌的类别作为' + get.translation(trigger.player) + '本回合的用牌标准', [['basic', 'trick', 'equip'], 'vcard']], true).set('filterButton', button => {
-                        const rest = get.event().selectButton - ui.selected.buttons.length;
-                        const noChoose = ['basic', 'trick', 'equip'].filter(type => !ui.selected.buttons.map(i => i.link[2]).includes(type));
-                        return noChoose.length != rest || noChoose.includes(button.link[2]);
-                    }).set('ai', button => {
-                        const player = get.event().player, target = get.event().getTrigger().player;
-                        const index = ['basic', 'trick', 'equip'].indexOf(button.link[2]);
-                        return 1 + Math.random() * (get.attitude(player, target) > 0 ? (3 - index) : (index + 1));
-                    }).set('custom', {
-                        add: {
-                            confirm(bool) {
-                                if (bool != true) return;
-                                const event = get.event().parent;
-                                if (event.controls) event.controls.forEach(i => i.close());
-                                if (ui.confirm) ui.confirm.close();
-                                game.uncheck();
-                            },
-                            button() {
-                                if (ui.selected.buttons.length) return;
-                                const event = get.event();
-                                if (event.dialog && event.dialog.buttons) {
-                                    for (let i = 0; i < event.dialog.buttons.length; i++) {
-                                        const button = event.dialog.buttons[i];
-                                        const counterNode = button.querySelector('.caption');
-                                        if (counterNode) {
-                                            counterNode.childNodes[0].innerHTML = ``;
-                                        }
-                                    }
-                                }
-                                if (!ui.selected.buttons.length) {
-                                    const evt = event.parent;
-                                    if (evt.controls) evt.controls[0].classList.add('disabled');
-                                }
-                            },
-                        },
-                        replace: {
-                            button(button) {
-                                const event = get.event(), sum = event.selectButton;
-                                if (!event.isMine() || !event.filterButton(button)) return;
-                                if (button.classList.contains('selectable') == false) return;
-                                if (ui.selected.buttons.length >= sum) return false;
-                                button.classList.add('selected');
-                                ui.selected.buttons.push(button);
-                                let counterNode = button.querySelector('.caption');
-                                const count = ui.selected.buttons.filter(i => i == button).length;
-                                if (counterNode) {
-                                    counterNode = counterNode.childNodes[0];
-                                    counterNode.innerHTML = `×${count}`;
-                                }
-                                else {
-                                    counterNode = ui.create.caption(`<span style="font-size:24px; font-family:xinwei; text-shadow:#FFF 0 0 4px, #FFF 0 0 4px, rgba(74,29,1,1) 0 0 3px;">×${count}</span>`, button);
-                                    counterNode.style.right = '5px';
-                                    counterNode.style.bottom = '2px';
-                                }
-                                const evt = event.parent;
-                                if (evt.controls) evt.controls[0].classList.remove('disabled');
-                                game.check();
-                            },
+                    const sum = Math.max(4, trigger.player.countCards('h')) + 1, types = lib.skill[event.skill].choice;
+                    let result = await player.chooseButton((() => {
+                        const dialog = ui.create.dialog('###协治###选择' + get.cnNumber(sum) + '次牌的类别作为' + get.translation(trigger.player) + '本回合的用牌标准');
+                        for (const type of types) {
+                            dialog.add(`<div class='text center'>${lib.translate[type] || '技能'}</div>`);
+                            dialog.add([Array.from({ length: sum }).map((_, i) => [`${type}|${i + 1}`, i + 1]), 'tdnodes']);
                         }
-                    }).set('selectButton', sum).forResult();
-                    if (result.bool) result.cost_data = result.links.map(i => i[2]);
-                    event.result = result;
+                        dialog.classList.add('fullheight');
+                        return dialog;
+                    })(), 4).set('filterButton', button => {
+                        let [type, select] = button.link.split('|');
+                        select = Number(select);
+                        if (ui.selected.buttons.some(but => but.link.split('|')[0] === type)) return false;
+                        let restNum = get.event().sum - ui.selected.buttons.reduce((num, but) => num + Number(but.link.split('|')[1]), 0);
+                        if (restNum < select || restNum - select < 4 - 1 - ui.selected.buttons.length) return false;
+                        return ui.selected.buttons.length < 3 || select === restNum;
+                    }).set('processAI', () => {
+                        const { player, sum } = get.event(), target = get.event().getTrigger().player;
+                        if (get.attitude(player, target) > 0) return { bool: false };
+                        const types = lib.skill['bilibili_xiezhi'].choice;
+                        return { bool: true, links: types.map(type => `${type}|${type === 'equip' ? (sum - 3) : 1}`) };
+                    }).set('sum', sum).forResult();
+                    if (result?.bool && result.links?.length) {
+                        event.result = {
+                            bool: true,
+                            cost_data: (() => {
+                                const map = {};
+                                for (const choice of result.links) {
+                                    let [type, select] = choice.split('|');
+                                    map[type] = Number(select);
+                                }
+                                return map;
+                            })(),
+                        };
+                    }
                 },
                 logTarget: 'player',
                 async content(event, trigger, player) {
-                    event.cost_data.forEach(type => trigger.player.addMark('bilibili_xiezhi_' + type, 1, false));
-                    trigger.player.addTempSkill('bilibili_xiezhi_buff');
-                    trigger.player.markSkill('bilibili_xiezhi_buff');
+                    const target = trigger.player;
+                    const skill = 'bilibili_xiezhi_buff';
+                    target.addTempSkill(skill);
+                    for (const type in event.cost_data) {
+                        target.storage[skill][type] ??= 0;
+                        target.storage[skill][type] += event.cost_data[type];
+                    }
+                    target.markSkill(skill);
+                    const types = lib.skill[event.name].choice;
+                    target.addTip(skill, [get.translation(skill), ...types.map(type => target.storage[skill][type].toString())].join(' '));
                 },
+                ai: {
+                    expose: 0.25,
+                    threaten: 11 + 45 + 14,
+                },
+                choice: ['basic', 'trick', 'equip', 'skill'],
                 subSkill: {
                     buff: {
                         charlotte: true,
-                        onremove(player) {
-                            ['basic', 'trick', 'equip'].forEach(type => player.clearMark('bilibili_xiezhi_' + type, false));
+                        init(player, skill) {
+                            player.storage[skill] ??= {};
+                            if (!_status[`${skill}_finishSkill`]) {
+                                game.broadcastAll(skill => {
+                                    _status[`${skill}_finishSkill`] = function (skill2) {
+                                        if (!lib.skill[skill2]) return;
+                                        const originUsable = lib.skill[skill2].usable;
+                                        lib.skill[skill2].usable = function (skill, player) {
+                                            let num = (() => {
+                                                const type = typeof originUsable;
+                                                if (type === 'function') return originUsable.apply(this, arguments);
+                                                return type === 'number' ? originUsable : Infinity;
+                                            })();
+                                            if (lib.skill[skill].charlotte || lib.skill[skill].ruleSkill || lib.skill[skill].equipSkill || typeof player.storage['bilibili_xiezhi_buff']?.skill !== 'number') return num;
+                                            return Math.min(num, player.storage['bilibili_xiezhi_buff'].skill);
+                                        };
+                                    };
+                                    const finishSkill = game.finishSkill;
+                                    game.finishSkill = function (skill2) {
+                                        finishSkill.apply(this, arguments);
+                                        _status[`${skill}_finishSkill`](skill2);
+                                    };
+                                    Object.keys(lib.skill).forEach(skill2 => {
+                                        const desc = Object.getOwnPropertyDescriptor(lib.skill[skill2], 'usable');
+                                        if (typeof desc?.get !== 'function') _status[`${skill}_finishSkill`](skill2);
+                                    });
+                                }, skill);
+                            }
+                        },
+                        onremove(player, skill) {
+                            player.removeTip(skill);
+                            delete player.storage[skill];
                         },
                         intro: {
-                            markcount: (_, player) => ['basic', 'trick', 'equip'].reduce((sum, type) => sum + player.countMark('bilibili_xiezhi_' + type), 0),
-                            content: (_, player) => '本回合仅限使用' + ['basic', 'trick', 'equip'].filter(type => {
-                                return player.hasMark('bilibili_xiezhi_' + type);
-                            }).map(type => {
-                                return player.countMark('bilibili_xiezhi_' + type) + '张' + get.translation(type) + '牌';
-                            }).join('，'),
+                            markcount(storage = {}) {
+                                const types = lib.skill['bilibili_xiezhi'].choice;
+                                return types.map(type => storage[type].toString()).join('');
+                            },
+                            content(storage = {}) {
+                                return Object.keys(storage).map(type => {
+                                    if (type === 'skill') return `限发动${storage[type]}次武将技能`;
+                                    return `限使用${storage[type]}次${get.translation(type)}牌`;
+                                }).join('<br>');
+                            },
                         },
                         mod: {
                             cardEnabled(card, player) {
                                 const type = get.type2(card);
-                                if (!player.hasMark('bilibili_xiezhi_' + type)) return;
+                                if (typeof player.storage['bilibili_xiezhi_buff'][type] !== 'number') return;
                                 const stat = player.getStat('card');
-                                if (Object.keys(stat).reduce((sum, cardx) => {
-                                    if (typeof stat[cardx] != 'number' || get.type2(cardx) != type) return sum;
-                                    return sum + stat[cardx];
-                                }, 0) >= player.countMark('bilibili_xiezhi_' + type)) return false;
+                                if (player.storage['bilibili_xiezhi_buff'][type] <= 0) return false;
                             },
                             cardSavable(card, player) {
                                 const type = get.type2(card);
-                                if (!player.hasMark('bilibili_xiezhi_' + type)) return;
+                                if (typeof player.storage['bilibili_xiezhi_buff'][type] !== 'number') return;
                                 const stat = player.getStat('card');
-                                if (Object.keys(stat).reduce((sum, cardx) => {
-                                    if (typeof stat[cardx] != 'number' || get.type2(cardx) != type) return sum;
-                                    return sum + stat[cardx];
-                                }, 0) >= player.countMark('bilibili_xiezhi_' + type)) return false;
+                                if (player.storage['bilibili_xiezhi_buff'][type] <= 0) return false;
                             },
+                        },
+                        trigger: { player: ['useCard0', 'useSkill', 'logSkillBegin'] },
+                        filter(event, player, name) {
+                            if (name === 'useCard0') return player.storage['bilibili_xiezhi_buff'][get.type2(event.card)];
+                            if (!player.storage['bilibili_xiezhi_buff'].skill) return false;
+                            const info = get.info(event.skill);
+                            if (!info || info.charlotte) return false;
+                            return event.type === 'player';
+                        },
+                        silent: true,
+                        firstDo: true,
+                        async content(event, trigger, player) {
+                            player.storage[event.name][event.triggername === 'useCard0' ? get.type2(trigger.card) : 'skill']--;
+                            player.markSkill(event.name);
+                            const types = lib.skill['bilibili_xiezhi'].choice;
+                            player.addTip(event.name, [get.translation(event.name), ...types.map(type => player.storage[event.name][type].toString())].join(' '));
                         },
                     },
                 },
@@ -9871,10 +9875,10 @@ const packs = function () {
                         return target != player && lib.skill.bilibili_fazhou.findTarget(target);
                     });
                 },
-                findTarget(player) {
-                    return player.getRoundHistory('useCard', () => true, 1).reduce((list, evt) => {
-                        return list.add(get.type2(evt.card));
-                    }, []).length >= 3 || player.getRoundHistory('sourceDamage', () => true, 1).length > 0;
+                findTarget(player, double) {
+                    let bool = player.getRoundHistory('useCard', () => true, 1).reduce((list, evt) => list.add(get.type2(evt.card)), []).length >= 3;
+                    let goon = player.getRoundHistory('sourceDamage', () => true, 1).length > 0
+                    return double === true ? (bool && goon) : (bool || goon);
                 },
                 async cost(event, trigger, player) {
                     event.result = await player.chooseTarget(get.prompt('bilibili_fazhou'), '对任意名角色肘成1点伤害，然后本轮将其肘出游戏', (card, player, target) => {
@@ -9886,7 +9890,8 @@ const packs = function () {
                 },
                 async content(event, trigger, player) {
                     for (const target of event.targets.sortBySeat(player)) {
-                        await target.damage(1);
+                        const manbaout = lib.skill[event.name].findTarget(target, true) && (get.nameList(target).includes('bilibili_xizhicaikobe') || Math.random() <= 0.08);
+                        await target.damage(manbaout ? 24 : 1);
                         if (target.isIn()) {
                             target.chat('mamba out');
                             target.addTempSkill('bilibili_fazhou_mambaout', 'roundStart');
@@ -12563,9 +12568,9 @@ const packs = function () {
             boljianling_info: '锁定技，转换技。你仅使用明置牌造成伤害的回合结束后，阳：你执行一个额外回合；阴：你令所有角色将武将牌翻至背面。',
             bilibili_ningjingzhiyuan: '宁静致远',
             bilibili_xiezhi: '协治',
-            bilibili_xiezhi_info: '锁定技，其他角色的回合开始时，你选择X次牌的类别，其本回合至多使用选择类别次数的对应类别的牌（X为其手牌数且至少为3，仅限选择基本、锦囊、装备且每种类别至少选择一次）。',
+            bilibili_xiezhi_info: '其他角色的回合开始时，你可以为其本回合基本牌、锦囊牌、装备、武将技能的最大使用次数任意分配数值，每个数值至少为1，数值之和须为X（X为max(其手牌数,4)+1）。',
             bilibili_fazhou: '罚肘',
-            bilibili_fazhou_info: '每轮开始时，你可以选择任意名上一轮使用过三种类别的牌或造成过伤害的其他角色，对这些角色依次肘成1点伤害，然后本轮将其肘出游戏。',
+            bilibili_fazhou_info: '每轮开始时，你可以选择任意名上一轮使用过三种类别的牌或造成过伤害的其他角色，对这些角色依次肘成1点伤害，然后本轮将其肘出游戏（同时满足两项条件的角色有8%几率改为肘成24点伤害）。',
             bilibili_fazhou_append: '<span style="font-family:yuanli">不顺群意者，当填黑屋之壑<br>吾令不从者，当膏肘击之锷</span>',
             bilibili_xizhicaikobe: '戏志才',
             bilibili_zhangcai: '彰才',
