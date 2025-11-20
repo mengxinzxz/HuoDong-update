@@ -11711,9 +11711,7 @@ const packs = function () {
                         const list = game.filterPlayer().reduce((list, target) => list.add(target.group), []).removeArray(player.getStorage(event.name));
                         list.sort((a, b) => lib.group.indexOf(a) - lib.group.indexOf(b));
                         player.markAuto(event.name, list);
-                        const num = list.length;
-                        await player.draw(num);
-                        await player.changeHujia(num);
+                        await player.draw(list.length);
                     }
                     const next = game.createEvent('bilibili_beichen', false);
                     next.player = player;
@@ -11884,7 +11882,7 @@ const packs = function () {
             bilibili_xingzhu: {
                 getStr(player) {
                     let str = '你可以';
-                    const num = game.roundNumber + 1;
+                    const num = game.countGroup();
                     const bool1 = player.hp != num;
                     const bool2 = player.hujia != num;
                     if (player.maxHp != num) {
@@ -11905,8 +11903,7 @@ const packs = function () {
                 enable: 'phaseUse',
                 trigger: { player: 'dieBefore' },
                 filter(event, player) {
-                    if (typeof game.roundNumber !== 'number') return false;
-                    return [player.maxHp, player.hp, player.hujia].some(num => num != game.roundNumber + 1);
+                    return [player.maxHp, player.hp].some(num => num != game.countGroup());
                 },
                 skillAnimation: true,
                 limited: true,
@@ -11923,7 +11920,7 @@ const packs = function () {
                 async content(event, trigger, player) {
                     player.awakenSkill(event.name);
                     if (trigger) trigger.cancel();
-                    const num = game.roundNumber + 1;
+                    const num = game.countGroup();
                     if (player.maxHp != num) {
                         const numx = player.maxHp - num;
                         await player[numx > 0 ? 'loseMaxHp' : 'gainMaxHp'](Math.abs(numx));
@@ -11932,7 +11929,6 @@ const packs = function () {
                         const numx = player.hp - num;
                         await player[numx > 0 ? 'loseHp' : 'recover'](Math.abs(numx));
                     }
-                    if (player.hujia != num) await player.changeHujia(player.hujia - num);
                     await player.addSkills('bilibili_wuji');
                     const next = game.createEvent('bilibili_beichen', false);
                     next.player = player;
@@ -11945,12 +11941,9 @@ const packs = function () {
                     order: 10,
                     result: {
                         player(player) {
-                            const num = game.roundNumber + 1;
-                            const bool1 = player.maxHp < num;
-                            const bool2 = player.hp < num;
-                            const bool3 = player.hujia < num;
-                            if (bool1) return 1;
-                            if (player.getDamagedHp() > 3 && num - player.hujia > 3) return 1;
+                            const num = game.countGroup();
+                            if (player.maxHp < num) return 1;
+                            if (player.getDamagedHp() > 2) return 1;
                             return 0;
                         },
                     },
@@ -12620,11 +12613,11 @@ const packs = function () {
             bilibili_banyun_append: '<span style="font-family:yuanli">长史曰：<br>“史之不尽，赤之不竭。<br>搬出节奏，搬出风采。”</span>',
             bilibili_murufengchen: '沐如风晨',
             bilibili_ziyuan: '紫垣',
-            bilibili_ziyuan_info: `锁定技。①当你获得此技能时或游戏开始时，你记录场上所有的势力，摸X张牌并获得X点护甲，然后你发动一次${get.poptip('bilibili_beichen')}（X为场上势力数）。②每轮开始时或当你造成或受到伤害后，你记录一个此技能未记录的势力，然后你发动一次${get.poptip('bilibili_beichen')}。`,
+            bilibili_ziyuan_info: `锁定技。①当你获得此技能时或游戏开始时，你记录场上所有的势力，摸X张牌（X为场上势力数），然后你发动一次${get.poptip('bilibili_beichen')}。②每轮开始时或当你造成或受到伤害后，你记录一个此技能未记录的势力，然后你发动一次${get.poptip('bilibili_beichen')}。`,
             bilibili_beichen: '北辰',
             bilibili_beichen_info: `出牌阶段限一次，若你${get.poptip('bilibili_ziyuan')}记录了势力，则根据记录其的势力，分配对应势力的技能并令一名角色获得之直到其下一次以此法获得对应势力的技能。`,
             bilibili_xingzhu: '星主',
-            bilibili_xingzhu_info: `限定技。出牌阶段或当你死亡前（死亡前发动则防止本次死亡），你可以将体力上限/体力值/护甲调整为X，然后发动一次永久保留技能的${get.poptip('bilibili_beichen')}（X为游戏轮数+1）并获得${get.poptip('bilibili_wuji')}。`,
+            bilibili_xingzhu_info: `限定技。出牌阶段或当你死亡前（死亡前发动则防止本次死亡），你可以将体力上限和体力值调整为X，然后发动一次永久保留技能的${get.poptip('bilibili_beichen')}并获得${get.poptip('bilibili_wuji')}。`,
             bilibili_wuji: '无极',
             bilibili_wuji_info: '锁定技。①当你获得此技能时，你本轮将所有手牌标记为“无极”。②当你获得牌时，你本轮将这些牌标记为“无极”。③每回合限一次，你使用的“无极”牌视为拥有全部应变效果且可以无条件发动。',
             bilibili_wuji_append: '<span style="font-family:yuanli">敬请期待</span>',
