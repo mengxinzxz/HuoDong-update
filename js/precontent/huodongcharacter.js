@@ -11700,7 +11700,6 @@ const packs = function () {
             },
             // 沐如风晨
             bilibili_ziyuan: {
-                audio: 'ext:活动武将/audio/skill:2',
                 trigger: {
                     global: ['phaseBefore', 'roundStart'],
                     player: ['enterGame', 'damageEnd', 'changeSkillsEnd'],
@@ -11713,7 +11712,6 @@ const packs = function () {
                     if (event.name == 'changeSkills') return event.addSkill.includes('bilibili_ziyuan');
                     return event.name != 'phase' || game.phaseNumber == 0;
                 },
-                persevereSkill: true,
                 forced: true,
                 async content(event, trigger, player) {
                     if (event.triggername == 'roundStart' || trigger.name.startsWith('damage')) {
@@ -11721,16 +11719,12 @@ const packs = function () {
                         if (!list.length) return;
                         const { result } = await player.chooseButton([
                             `${get.prompt(event.name)}：<div class='text center'>请选择要记录的势力</div>`,
-                            [
-                                list.map(group => [group, get.translation(group)]),
-                                'textbutton',
-                            ],
+                            [list.map(group => [group, get.translation(group)]), 'textbutton'],
                         ]);
                         if (result?.links?.length) {
                             const [group] = result.links;
                             player.markAuto(event.name, [group]);
                             player.popup(`${group}2`, get.groupnature(group, 'raw'));
-                            await player.changeHujia();
                         }
                     }
                     else {
@@ -11738,8 +11732,6 @@ const packs = function () {
                         list.sort((a, b) => lib.group.indexOf(a) - lib.group.indexOf(b));
                         player.markAuto(event.name, list);
                         const num = list.length;
-                        await player.gainMaxHp(num);
-                        await player.recover(num);
                         await player.draw(num);
                         await player.changeHujia(num);
                     }
@@ -11754,8 +11746,6 @@ const packs = function () {
                 derivation: 'bilibili_beichen',
             },
             bilibili_beichen: {
-                audio: 'ext:活动武将/audio/skill:2',
-                persevereSkill: true,
                 enable: 'phaseUse',
                 usable: 1,
                 filter(event, player) {
@@ -11906,10 +11896,10 @@ const packs = function () {
                                     str += `<li>${get.translation(key)}：${skills.map(skill => get.poptip(skill)).join('、')}`;
                                 }
                                 return str;
-                            }
-                        }
-                    }
-                }
+                            },
+                        },
+                    },
+                },
             },
             bilibili_xingzhu: {
                 getStr(player) {
@@ -11921,7 +11911,6 @@ const packs = function () {
                         const numx = player.maxHp - num;
                         str += `${numx > 0 ? '减少' : '获得'}${Math.abs(numx)}点体力上限${bool1 || bool2 ? '' : '，然后'}`;
                     }
-
                     if (bool1) {
                         const numx = player.hp - num;
                         str += `${bool2 ? '、' : '且'}${numx > 0 ? '失去' : '回复'}${Math.abs(numx)}点体力${bool2 ? '' : '，然后'}`;
@@ -11933,14 +11922,12 @@ const packs = function () {
                     str += '发动一次永久保留技能的〖北辰〗并获得〖无极〗。';
                     return str;
                 },
-                audio: 'ext:活动武将/audio/skill:2',
                 enable: 'phaseUse',
                 trigger: { player: 'dieBefore' },
                 filter(event, player) {
                     if (typeof game.roundNumber !== 'number') return false;
                     return [player.maxHp, player.hp, player.hujia].some(num => num != game.roundNumber + 1);
                 },
-                persevereSkill: true,
                 skillAnimation: true,
                 limited: true,
                 animationColor: 'orange',
@@ -11985,27 +11972,19 @@ const packs = function () {
                             if (bool1) return 1;
                             if (player.getDamagedHp() > 3 && num - player.hujia > 3) return 1;
                             return 0;
-                        }
-                    }
+                        },
+                    },
                 },
             },
             bilibili_wuji: {
-                audio: 'ext:活动武将/audio/skill:2',
                 init(player, skill) {
                     player.addGaintag(player.getCards('h'), skill);
+                    player.addTempSkill(`${skill}_clear`, 'roundStart');
                 },
                 onremove(player, skill) {
                     player.removeGaintag(skill);
                 },
-                trigger: {
-                    global: 'roundStart',
-                    player: 'gainBegin',
-                },
-                filter(event, player) {
-                    if (event.name == 'gain') return true;
-                    return player.countCards('h');
-                },
-                persevereSkill: true,
+                trigger: { player: 'gainBegin' },
                 forced: true,
                 async content(event, trigger, player) {
                     if (trigger.name == 'gain') {
@@ -12013,24 +11992,31 @@ const packs = function () {
                         trigger.gaintag.add(event.name);
                     }
                     else player.addGaintag(player.getCards('h'), event.name);
+                    player.addTempSkill(`${event.name}_clear`, 'roundStart');
                 },
                 group: 'bilibili_wuji_yingbian',
                 subSkill: {
+                    clear: {
+                        charlotte: true,
+                        onremove(player) {
+                            player.removeGaintag('bilibili_wuji');
+                        },
+                    },
                     yingbian: {
-                        audio: 'bilibili_wuji',
                         trigger: { player: 'yingbian' },
                         filter(event, player) {
+                            if (!Array.isArray(event.cards) || event.cards.length !== 1) return false;
                             return player.hasHistory('lose', evt => (evt.relatedEvent || evt.getParent()) == event && Object.values(evt.gaintag_map).flat().includes('bilibili_wuji'));
                         },
-                        persevereSkill: true,
+                        usable: 1,
                         forced: true,
                         async content(event, trigger, player) {
                             if (!Array.isArray(trigger.temporaryYingbian)) trigger.temporaryYingbian = [];
                             trigger.temporaryYingbian.add('force');
                             trigger.temporaryYingbian.addArray(get.yingbianEffects());
                         },
-                    }
-                }
+                    },
+                },
             },
         },
         dynamicTranslate: {
@@ -12658,13 +12644,13 @@ const packs = function () {
             bilibili_banyun_append: '<span style="font-family:yuanli">长史曰：<br>“史之不尽，赤之不竭。<br>搬出节奏，搬出风采。”</span>',
             bilibili_murufengchen: '沐如风晨',
             bilibili_ziyuan: '紫垣',
-            bilibili_ziyuan_info: `锁定技，持恒技。①当你获得此技能时或游戏开始时，你记录场上所有的势力，增加X点体力上限、回复X点体力、摸X张牌并获得X点护甲，然后你发动一次${get.poptip('bilibili_beichen')}（X为场上势力数）。②每轮开始时或当你造成或受到伤害后，你记录一个此技能未记录的势力并获得1点护甲，然后你发动一次${get.poptip('bilibili_beichen')}。`,
+            bilibili_ziyuan_info: `锁定技。①当你获得此技能时或游戏开始时，你记录场上所有的势力，摸X张牌并获得X点护甲，然后你发动一次${get.poptip('bilibili_beichen')}（X为场上势力数）。②每轮开始时或当你造成或受到伤害后，你记录一个此技能未记录的势力，然后你发动一次${get.poptip('bilibili_beichen')}。`,
             bilibili_beichen: '北辰',
-            bilibili_beichen_info: `持恒技。出牌阶段限一次，若你${get.poptip('bilibili_ziyuan')}记录了势力，则根据记录其的势力，分配对应势力的技能并令一名角色获得之直到其下一次以此法获得对应势力的技能。`,
+            bilibili_beichen_info: `出牌阶段限一次，若你${get.poptip('bilibili_ziyuan')}记录了势力，则根据记录其的势力，分配对应势力的技能并令一名角色获得之直到其下一次以此法获得对应势力的技能。`,
             bilibili_xingzhu: '星主',
-            bilibili_xingzhu_info: `限定技，持恒技。出牌阶段或当你死亡前（死亡前发动则防止本次死亡），你可以将体力上限/体力值/护甲调整为X，然后发动一次永久保留技能的${get.poptip('bilibili_beichen')}（X为游戏轮数+1）并获得${get.poptip('bilibili_wuji')}。`,
+            bilibili_xingzhu_info: `限定技。出牌阶段或当你死亡前（死亡前发动则防止本次死亡），你可以将体力上限/体力值/护甲调整为X，然后发动一次永久保留技能的${get.poptip('bilibili_beichen')}（X为游戏轮数+1）并获得${get.poptip('bilibili_wuji')}。`,
             bilibili_wuji: '无极',
-            bilibili_wuji_info: '锁定技，持恒技。①当你获得此技能时或每轮游戏开始时，你将所有手牌标记为“无极”。②当你获得牌时，你将这些牌标记为“无极”。③你的“无极”牌视为拥有全部应变效果且可以无条件发动。',
+            bilibili_wuji_info: '锁定技。①当你获得此技能时，你本轮将所有手牌标记为“无极”。②当你获得牌时，你本轮将这些牌标记为“无极”。③每回合限一次，你使用的“无极”牌视为拥有全部应变效果且可以无条件发动。',
             bilibili_wuji_append: '<span style="font-family:yuanli">敬请期待</span>',
             bilibili_diandian: '点点',
             '#ext:活动武将/audio/die/bilibili_diandian:die': '呜呜呜你们比石头还冷漠，你们都是虾仁松鼠！',
