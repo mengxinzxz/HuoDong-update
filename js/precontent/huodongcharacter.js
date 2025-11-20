@@ -66,7 +66,7 @@ const packs = function () {
             bilibili_shuijiaobuboli: ['female', 'key', 3, ['bilibili_qicai', 'bilibili_jizhi', 'bilibili_fengliang', 'bilibili_guiyin'], ['clan:宿舍群|活动群', 'name:黄|月英']],
             bilibili_kuailiangkuaiyue: ['male', 'qun', 4, ['bilibili_chouhua'], ['character:kuailiangkuaiyue']],
             bilibili_wuzhuwanshui: ['male', 'key', 3, ['bilibili_diaowen', 'bilibili_banyun'], ['clan:肘击群|活动群', 'name:猪|大将军']],
-            bilibili_murufengchen: ['female', 'key', 3, [], ['unseen', 'clan:宿舍群|肘击群|活动群', 'name:风|晨']],
+            bilibili_murufengchen: ['female', 'key', 3, ['bilibili_ziyuan', 'bilibili_beichen', 'bilibili_xingzhu'], ['clan:宿舍群|肘击群|活动群', 'name:风|晨']],
             bilibili_diandian: ['female', 'key', 3, ['bilibili_siyu', 'bilibili_tamen'], ['clan:肘击群|活动群', 'name:永雏|塔菲']],
             //双面武将--正面
             bilibili_wangtao: ['female', 'shu', 3, ['huguan', 'yaopei', 'dualside'], ['dualside:bilibili_x_wangyue', 'character:wangtao', 'die:wangtao']],
@@ -11693,6 +11693,340 @@ const packs = function () {
                 },
                 ai: { combo: 'bilibili_siyu' },
             },
+            // 沐如风晨
+            bilibili_ziyuan: {
+                audio: 'ext:活动武将/audio/skill:2',
+                trigger: {
+                    global: ['phaseBefore', 'roundStart'],
+                    player: ['enterGame', 'damageEnd', 'changeSkillsEnd'],
+                    source: 'damageSource',
+                },
+                filter(event, player, name) {
+                    if (name == 'roundStart' || name.startsWith('damage')) return lib.group.slice().removeArray(player.getStorage('bilibili_ziyuan')).length;
+                    const list = game.filterPlayer().reduce((list, target) => list.add(target.group), []).removeArray(player.getStorage('bilibili_ziyuan'));
+                    if (!list.length) return false;
+                    if (event.name == 'changeSkills') return event.addSkill.includes('bilibili_ziyuan');
+                    return event.name != 'phase' || game.phaseNumber == 0;
+                },
+                persevereSkill: true,
+                forced: true,
+                async content(event, trigger, player) {
+                    if (event.triggername == 'roundStart' || trigger.name.startsWith('damage')) {
+                        const list = lib.group.slice().removeArray(player.getStorage(event.name));
+                        if (!list.length) return;
+                        const { result } = await player.chooseButton([
+                            `${get.prompt(event.name)}：<div class='text center'>请选择要记录的势力</div>`,
+                            [
+                                list.map(group => [group, get.translation(group)]),
+                                'textbutton',
+                            ],
+                        ]);
+                        if (result?.links?.length) {
+                            const [group] = result.links;
+                            player.markAuto(event.name, [group]);
+                            player.popup(`${group}2`, get.groupnature(group, 'raw'));
+                            await player.changeHujia();
+                        }
+                    }
+                    else {
+                        const list = game.filterPlayer().reduce((list, target) => list.add(target.group), []).removeArray(player.getStorage(event.name));
+                        list.sort((a, b) => lib.group.indexOf(a) - lib.group.indexOf(b));
+                        player.markAuto(event.name, list);
+                        const num = list.length;
+                        await player.gainMaxHp(num);
+                        await player.recover(num);
+                        await player.draw(num);
+                        await player.changeHujia(num);
+                    }
+                    const next = game.createEvent('bilibili_beichen', false);
+                    next.player = player;
+                    next.setContent(lib.skill['bilibili_beichen'].content);
+                    await next;
+                },
+                marktext: '垣',
+                intro: { content: '已记录势力：$' },
+                onremove: true,
+                derivation: 'bilibili_beichen',
+            },
+            bilibili_beichen: {
+                audio: 'ext:活动武将/audio/skill:2',
+                persevereSkill: true,
+                enable: 'phaseUse',
+                usable: 1,
+                filter(event, player) {
+                    return player.getStorage('bilibili_ziyuan').length && typeof game.roundNumber == 'number';
+                },
+                prompt() {
+                    const list = get.player().getStorage('bilibili_ziyuan');
+                    return `你可以依次分配${get.translation(list)}势力的技能并令一名角色获得之直到其下一次以此法获得对应势力的技能`;
+                },
+                manualConfirm: true,
+                async content(event, trigger, player) {
+                    for (const group of player.getStorage('bilibili_ziyuan')) {
+                        const num = game.roundNumber + 1;
+                        if (!_status.characterlist) game.initCharacterList();
+                        let list = [];
+                        if (_status.characterlist) {
+                            list = _status.characterlist.filter(i => lib.character[i][1] == group);
+                        }
+                        else if (_status.connectMode) {
+                            list = get.charactersOL.filter(i => lib.character[i][1] != group);
+                        }
+                        else {
+                            list = get.gainableCharacters(info => info[1] == group);
+                        }
+                        for (const current of game.players.concat(game.dead)) {
+                            list.removeArray(get.nameList(current));
+                        }
+                        list = list.randomGets(num);
+                        const map = {};
+                        for (const name of list) {
+                            let skills = (lib.character[name][3] || []).filter(skill => {
+                                const info = get.info(skill);
+                                return info && get.skillInfoTranslation(skill, player) /* && !info.zhuSkill && !info.limited && !info.juexingji && !info.hiddenSkill && !info.charlotte && !info.dutySkill */;
+                            });
+                            if (skills.length) map[name] = skills;
+                        }
+                        if (!Object.keys(map).length) continue;
+                        const { result } = await player.chooseButtonTarget({
+                            createDialog: [
+                                `北辰：请选择至多${get.cnNumber(num)}个技能令一名角色获得`,
+                                [dialog => {
+                                    dialog.css({ top: get.is.phoneLayout() ? '20%' : '25%' });
+                                    const { characterMap: map } = get.event();
+                                    for (const name of Object.keys(map)) {
+                                        const table = document.createElement('div');
+                                        table.classList.add('add-setting');
+                                        table.style.margin = '0';
+                                        table.style.width = '100%';
+                                        table.style.position = 'relative';
+                                        table.style.display = 'flex';
+                                        table.style.justifyContent = 'flex-start';
+                                        table.style.alignItems = 'center';
+                                        const tdc = ui.create.button(name, 'character', table, true);
+                                        for (const item in tdc.node) {
+                                            if (item == 'name') {
+                                                tdc.node.name.style.writingMode = 'horizontal-tb';
+                                            } else {
+                                                tdc.node[item].hide();
+                                            }
+                                        }
+                                        tdc.style.height = '40px';
+                                        lib.setIntro(tdc);
+                                        const skills = map[name];
+                                        for (let i = 0; i < skills.length; i++) {
+                                            const td = ui.create.button([skills[i], get.translation(skills[i])], 'tdnodes', table);
+                                            td.setNodeIntro(get.translation(skills[i]), get.skillInfoTranslation(skills[i], get.player()));
+                                            dialog.buttons.add(td);
+                                        }
+                                        dialog.content.appendChild(table);
+                                    }
+                                }, 'handle'],
+                            ],
+                            selectButton: [1, num],
+                            forced: true,
+                            filterTarget: true,
+                            ai1(button) {
+                                const { link } = button;
+                                const info = get.info(link);
+                                if (info?.ai?.neg) return 0;
+                                return 1 + Math.random();
+                            },
+                            ai2(target) {
+                                const player = get.player();
+                                const att = get.sgnAttitude(player, target);
+                                if (att < 0) return 0;
+                                return att * (target.hasSkill('bilibili_beichen_effect') ? 1 : 2);
+                            }
+                        }).set('characterMap', map);
+                        if (result?.links?.length && result.targets?.length) {
+                            const skills = result.links;
+                            const [target] = result.targets;
+                            if (event.bilibili_beichen) {
+                                await target.addSkills(skills);
+                            }
+                            else {
+                                const effect = 'bilibili_beichen_effect';
+                                target.addSkill(effect);
+                                target.storage[effect] ??= {};
+                                const skillsToRemove = [];
+                                if (target.storage[effect][group]) skillsToRemove.addArray(target.storage[effect][group]);
+                                target.storage[effect][group] = skills;
+                                await target.changeSkills(skills, skillsToRemove).set('$handle', function (player, skillsToAdd, skillsToRemove) {
+                                    if (skillsToRemove.length > 0) {
+                                        player.removeSkillLog(skillsToRemove, get.event().popup);
+                                    }
+                                    if (skillsToAdd.length > 0) {
+                                        game.log(player, '获得了技能', ...skillsToAdd.map(i => {
+                                            if (get.event().popup) {
+                                                player.popup(i);
+                                            }
+                                            return '#g【' + get.translation(i) + '】';
+                                        }));
+                                        if (!Array.isArray(player.additionalSkills['bilibili_beichen_effect'])) {
+                                            player.additionalSkills['bilibili_beichen_effect'] = [];
+                                        }
+                                        for (var i = 0; i < skillsToAdd.length; i++) {
+                                            player.addSkill(skillsToAdd[i], null, true, true);
+                                            player.additionalSkills['bilibili_beichen_effect'].push(skillsToAdd[i]);
+                                        }
+                                        game.broadcast((player, map) => {
+                                            player.additionalSkills = map;
+                                        }, player, player.additionalSkills);
+                                        player.checkConflict();
+                                    }
+                                    _status.event.clearStepCache();
+                                });
+                            }
+                        }
+                    }
+                },
+                ai: {
+                    combo: 'bilibili_ziyuan',
+                    order: 10,
+                    result: { player: 1 },
+                },
+                subSkill: {
+                    effect: {
+                        charlotte: true,
+                        onremove: true,
+                        mark: true,
+                        marktext: '辰',
+                        intro: {
+                            content(storage, player) {
+                                if (!storage) return '暂未因〖北辰〗获得的非永久技能';
+                                const entries = Object.entries(storage).sort(([a], [b]) => lib.group.indexOf(a) - lib.group.indexOf(b));
+                                let str = '已因〖北辰〗获得的非永久技能：<br>';
+                                for (const [key, skills] of entries) {
+                                    str += `<li>${get.translation(key)}：${skills.map(skill => get.poptip(skill)).join('、')}`;
+                                }
+                                return str;
+                            }
+                        }
+                    }
+                }
+            },
+            bilibili_xingzhu: {
+                getStr(player) {
+                    let str = '你可以';
+                    const num = game.roundNumber + 1;
+                    const bool1 = player.hp != num;
+                    const bool2 = player.hujia != num;
+                    if (player.maxHp != num) {
+                        const numx = player.maxHp - num;
+                        str += `${numx > 0 ? '减少' : '获得'}${Math.abs(numx)}点体力上限${bool1 || bool2 ? '' : '，然后'}`;
+                    }
+
+                    if (bool1) {
+                        const numx = player.hp - num;
+                        str += `${bool2 ? '、' : '且'}${numx > 0 ? '失去' : '回复'}${Math.abs(numx)}点体力${bool2 ? '' : '，然后'}`;
+                    }
+                    if (bool2) {
+                        const numx = player.hujia - num;
+                        str += `且${numx > 0 ? '失去' : '获得'}${Math.abs(numx)}点护甲，然后`;
+                    }
+                    str += '发动一次永久保留技能的〖北辰〗并获得〖无极〗。';
+                    return str;
+                },
+                audio: 'ext:活动武将/audio/skill:2',
+                enable: 'phaseUse',
+                trigger: { player: 'dieBefore' },
+                filter(event, player) {
+                    if (typeof game.roundNumber !== 'number') return false;
+                    return [player.maxHp, player.hp, player.hujia].some(num => num != game.roundNumber + 1);
+                },
+                persevereSkill: true,
+                skillAnimation: true,
+                limited: true,
+                animationColor: 'orange',
+                check: () => true,
+                prompt(event) {
+                    const player = get.player();
+                    return event.name == 'die' ? get.prompt('bilibili_xingzhu') : get.info('bilibili_xingzhu').getStr(player);
+                },
+                prompt2(event, player) {
+                    return get.info('bilibili_xingzhu').getStr(player);
+                },
+                manualConfirm: true,
+                async content(event, trigger, player) {
+                    player.awakenSkill(event.name);
+                    if (trigger) trigger.cancel();
+                    const num = game.roundNumber + 1;
+                    if (player.maxHp != num) {
+                        const numx = player.maxHp - num;
+                        await player[numx > 0 ? 'loseMaxHp' : 'gainMaxHp'](Math.abs(numx));
+                    }
+                    if (player.hp != num) {
+                        const numx = player.hp - num;
+                        await player[numx > 0 ? 'loseHp' : 'recover'](Math.abs(numx));
+                    }
+                    if (player.hujia != num) await player.changeHujia(player.hujia - num);
+                    await player.addSkills('bilibili_wuji');
+                    const next = game.createEvent('bilibili_beichen', false);
+                    next.player = player;
+                    next.bilibili_beichen = true;
+                    next.setContent(lib.skill['bilibili_beichen'].content);
+                    await next;
+                },
+                derivation: ['bilibili_wuji', 'bilibili_beichen'],
+                ai: {
+                    order: 10,
+                    result: {
+                        player(player) {
+                            const num = game.roundNumber + 1;
+                            const bool1 = player.maxHp < num;
+                            const bool2 = player.hp < num;
+                            const bool3 = player.hujia < num;
+                            if (bool1) return 1;
+                            if (player.getDamagedHp() > 3 && num - player.hujia > 3) return 1;
+                            return 0;
+                        }
+                    }
+                },
+            },
+            bilibili_wuji: {
+                audio: 'ext:活动武将/audio/skill:2',
+                init(player, skill) {
+                    player.addGaintag(player.getCards('h'), skill);
+                },
+                onremove(player, skill) {
+                    player.removeGaintag(skill);
+                },
+                trigger: {
+                    global: 'roundStart',
+                    player: 'gainBegin',
+                },
+                filter(event, player) {
+                    if (event.name == 'gain') return true;
+                    return player.countCards('h');
+                },
+                persevereSkill: true,
+                forced: true,
+                async content(event, trigger, player) {
+                    if (trigger.name == 'gain') {
+                        if (!Array.isArray(trigger.gaintag)) trigger.gaintag = [];
+                        trigger.gaintag.add(event.name);
+                    }
+                    else player.addGaintag(player.getCards('h'), event.name);
+                },
+                group: 'bilibili_wuji_yingbian',
+                subSkill: {
+                    yingbian: {
+                        audio: 'bilibili_wuji',
+                        trigger: { player: 'yingbian' },
+                        filter(event, player) {
+                            return player.hasHistory('lose', evt => (evt.relatedEvent || evt.getParent()) == event && Object.values(evt.gaintag_map).flat().includes('bilibili_wuji'));
+                        },
+                        persevereSkill: true,
+                        forced: true,
+                        async content(event, trigger, player) {
+                            if (!Array.isArray(trigger.temporaryYingbian)) trigger.temporaryYingbian = [];
+                            trigger.temporaryYingbian.add('force');
+                            trigger.temporaryYingbian.addArray(get.yingbianEffects());
+                        },
+                    }
+                }
+            },
         },
         dynamicTranslate: {
             bilibili_xueji(player) {
@@ -12329,6 +12663,14 @@ const packs = function () {
             '#ext:活动武将/audio/skill/bilibili_tamen2': '信塔门，得永生，仁慈的塔菲会宽恕你犯下的一切错误喵',
             bilibili_tamen_info: '①有牌移入或移出游戏后，你摸一张牌。②当你使用伤害类基本牌或普通锦囊牌指定目标后，你可以移去一只黑色“小菲”，令此牌不可被响应。然后若这两张牌的类别相同，则令此牌伤害+1。③一名角色进入濒死状态时，你可以移去一只红色“小菲”，令其回复1点体力，然后若其因此脱离濒死状态，你将牌堆顶的一张牌称为“小菲”置于武将牌上。',
             bilibili_tamen_append: '<span style="font-family:yuanli">无需王座与冠冕，我即是所有平行世界的奇迹，让流星焚尽虚妄，独属于永雏塔菲的传说，现在开演！</span>',
+            bilibili_ziyuan: '紫垣',
+            bilibili_ziyuan_info: `锁定技，持恒技。①当你获得此技能时或游戏开始时，你记录场上所有的势力，增加X点体力上限、回复X点体力、摸X张牌并获得X点护甲，然后你发动一次${get.poptip('bilibili_beichen')}（X为场上势力数）。②每轮开始时或当你造成或受到伤害后，你记录一个此技能未记录的势力并获得1点护甲，然后你发动一次${get.poptip('bilibili_beichen')}。`,
+            bilibili_beichen: '北辰',
+            bilibili_beichen_info: `持恒技。出牌阶段限一次，若你${get.poptip('bilibili_ziyuan')}记录了势力，则根据记录其的势力，分配对应势力的技能并令一名角色获得之直到其下一次以此法获得对应势力的技能。`,
+            bilibili_xingzhu: '星主',
+            bilibili_xingzhu_info: `限定技，持恒技。出牌阶段或当你死亡前（死亡前发动则防止本次死亡），你可以将体力上限/体力值/护甲调整为X，然后发动一次永久保留技能的${get.poptip('bilibili_beichen')}（X为游戏轮数+1）并获得${get.poptip('bilibili_wuji')}。`,
+            bilibili_wuji: '无极',
+            bilibili_wuji_info: '锁定技，持恒技。①当你获得此技能时或每轮游戏开始时，你将所有手牌标记为“无极”。②当你获得牌时，你将这些牌标记为“无极”。③你的“无极”牌视为拥有全部应变效果且可以无条件发动。',
         },
     };
     for (let i in huodongcharacter.character) {
