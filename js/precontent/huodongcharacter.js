@@ -9734,7 +9734,7 @@ const packs = function () {
                 async cost(event, trigger, player) {
                     const sum = Math.max(4, trigger.player.countCards('h')) + 1, types = lib.skill[event.skill].choice;
                     let result = await player.chooseButton((() => {
-                        const dialog = ui.create.dialog('###协治###选择' + get.cnNumber(sum) + '次牌的类别作为' + get.translation(trigger.player) + '本回合的用牌标准');
+                        const dialog = ui.create.dialog(`###${lib.translate[event.skill]}###<div class='text center'>${lib.translate[`${event.skill}_info`]}</div>`);
                         for (const type of types) {
                             dialog.add(`<div class='text center'>${lib.translate[type] || '技能'}</div>`);
                             dialog.add([Array.from({ length: sum }).map((_, i) => [`${type}|${i + 1}`, i + 1]), 'tdnodes']);
