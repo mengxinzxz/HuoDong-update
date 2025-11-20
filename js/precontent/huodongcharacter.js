@@ -156,7 +156,7 @@ const packs = function () {
             bilibili_yanjing: '路边一条',
             bilibili_xiaoyaoruyun: '三界通之邻',
             bilibili_shuijiaobuboli: '催更传话一条龙',
-            bilibili_wuzhuwanshui: '搬矢/史大王',
+            bilibili_wuzhuwanshui: '搬史大王',
             bilibili_murufengchen: '殚精竭虑群书记',
             bilibili_diandian: '唐氏指定合伙人',
             bilibili_wangtao: get.poptip({
@@ -10305,12 +10305,11 @@ const packs = function () {
                         trigger.player.chat('孩子们，眼睛是也够');
                         await game.delayx();
                         trigger.getParent().excluded.add(player);
-                        await player.draw();
                     }
                     else {
                         player.chat('悲！（转圈圈.jpg）');
                         trigger.player.chat('飞舞眼睛');
-                        await game.delayx();
+                        await player.draw();
                     }
                 },
             },
@@ -11302,31 +11301,40 @@ const packs = function () {
                 filter(event, player) {
                     const cards = player.getExpansions('bilibili_diaowen');
                     if (event.name === 'damage') return cards.map(i => i.name).unique().length >= 3;
-                    return cards.some(card => card.name == event.card.name);
+                    return !player.getStorage('bilibili_diaowen_used').includes(event.card.name) && cards.some(card => card.name == event.card.name);
                 },
                 forced: true,
                 async content(event, trigger, player) {
                     const cards = player.getExpansions(event.name);
                     if (trigger.name === 'damage') {
                         const result = await player.chooseButton([
-                            `${get.translation(event.name)}：移去三张不同牌名的“矢”，防止此伤害`,
+                            get.prompt(event.name),
+                            '移去三张不同牌名的“史”，防止此伤害',
                             cards,
-                        ], 3, true).set('filterButton', button => {
+                        ], 3).set('filterButton', button => {
                             return !ui.selected.buttons.some(but => but.link.name === button.link.name);
-                        }).set('ai', button => -get.value(button.link)).forResult();
+                        }).set('ai', button => {
+                            const player = get.player(), trigger = get.event().getTrigger();
+                            if (get.damageEffect(player, trigger.source, player) > 0 || player.hp + player.countCards('hs', card => {
+                                return player.canSaveCard(card, player);
+                            }) - trigger.num > 0) return -1;
+                            return 1 / (get.value(button.link) || 0.5);
+                        }).forResult();
                         if (result?.bool && result.links?.length) {
                             await player.loseToDiscardpile(result.links);
                             trigger.cancel();
                         }
                         return;
                     }
+                    player.addTempSkill('bilibili_diaowen_used', 'roundStart');
+                    player.markAuto('bilibili_diaowen_used', [trigger.card.name]);
                     await player.loseToDiscardpile(cards.filter(card => card.name == trigger.card.name));
-                    const next = player.addToExpansion(get.cards(player.getHistory('useSkill', evt => evt.skill === event.name).length), 'gain2');
+                    const next = player.addToExpansion(get.cards(player.getRoundHistory('useSkill', evt => evt.skill === event.name).length), 'gain2');
                     next.gaintag.add(event.name);
                     await next;
                 },
                 group: ['bilibili_diaowen_init', 'bilibili_diaowen_give'],
-                marktext: '矢',
+                marktext: '史',
                 intro: {
                     content: 'expansion',
                     markcount: 'expansion',
@@ -11345,6 +11353,10 @@ const packs = function () {
                             next.gaintag.add('bilibili_diaowen');
                             await next;
                         },
+                    },
+                    used: {
+                        charlotte: true,
+                        onremove: true,
                     },
                     give: {
                         trigger: { global: 'roundEnd' },
@@ -11365,7 +11377,7 @@ const packs = function () {
                                 });
                             })) {
                                 const result = await player.chooseButtonTarget({
-                                    createDialog: [`${get.translation(event.name)}：是否${Object.keys(map).length > 0 ? '继续' : ''}将矢“分享”给其他角色？`, cards],
+                                    createDialog: [`${get.translation(event.name)}：是否${Object.keys(map).length > 0 ? '继续' : ''}将史“分享”给其他角色？`, cards],
                                     filterButton(button) {
                                         return game.hasPlayer(target => {
                                             return !target.getRoundHistory('useCard', evt => button.link.name === evt.card.name).length;
@@ -11458,7 +11470,7 @@ const packs = function () {
                 },
             },
             bilibili_banyun: {
-                enable: 'chooseToUse',
+                enable: ['chooseToUse', 'chooseToRespond'],
                 hiddenCard(player, name) {
                     if (!player.getStat('skill').bilibili_banyun && player.getExpansions('bilibili_diaowen').some(card => card.name == name)) return true;
                 },
@@ -11520,8 +11532,8 @@ const packs = function () {
                     },
                     respondShan: true,
                     respondSha: true,
-                    skillTagFilter(player, tag, arg) {
-                        if (arg === 'respond' || player.getStat('skill').bilibili_banyun) return false;
+                    skillTagFilter(player, tag) {
+                        if (player.getStat('skill').bilibili_banyun) return false;
                         const cards = player.getExpansions('bilibili_diaowen');
                         return cards.some(card => card.name === (tag === 'respondSha' ? 'sha' : 'shan'));
                     },
@@ -11536,7 +11548,7 @@ const packs = function () {
                     backup: {},
                     effect: {
                         charlotte: true,
-                        trigger: { player: 'useCardAfter' },
+                        trigger: { player: ['useCardAfter', 'respondAfter'] },
                         filter(event, player) {
                             return event.skill === 'bilibili_banyun_backup' && game.hasPlayer(i => i.countCards('he') > 0);
                         },
@@ -12554,7 +12566,7 @@ const packs = function () {
             bilibili_yanjing: '👁👃👁',
             bilibili_yanjing_ab: '眼睛👁',
             bilibili_dongxi: '洞悉',
-            bilibili_dongxi_info: '每回合限一次。当你成为其他角色使用牌的目标后，你可以判定，若结果为黑色，你令此牌对你无效且你摸一张牌。',
+            bilibili_dongxi_info: '每回合限一次。当你成为其他角色使用牌的目标后，你可以判定，若结果为黑色，你令此牌对你无效；否则你摸一张牌。',
             bilibili_mingcha: '明察',
             bilibili_mingcha_info: '出牌阶段限一次，你可以展示一名其他角色的手牌，然后选择一项：1.令其交给你一张牌；2.你交给其一张牌。若你以此法交出的牌与其以此法展示的牌类别不同，你摸一张牌。',
             bilibili_huiyan: '慧眼',
@@ -12607,9 +12619,9 @@ const packs = function () {
             bilibili_shi: '史',
             bilibili_shi_info: '①出牌阶段，对你自己使用。②当你从手牌区正面朝上失去此牌后，你失去1点体力。',
             bilibili_diaowen: '弔闻',
-            bilibili_diaowen_info: `锁定技。①每轮开始时，你将牌堆顶三张牌称为“矢”置于武将牌上。②每轮结束时，你可以任意分配“矢”给场上本轮未使用过此“矢”牌面的牌的角色并令这些角色获得一张${get.poptip('bilibili_shi')}。③一名角色使用牌后，你移去武将牌上与此牌牌名相同的“矢”，然后将牌堆顶X张牌称为“矢”置于武将牌上（X为本回合发动此分支的次数）。④当你受到伤害时，你移去三张牌名不同的“矢”，防止此伤害。`,
+            bilibili_diaowen_info: `锁定技。①每轮开始时，你将牌堆顶三张牌称为“史”置于武将牌上。②每轮结束时，你可以任意分配“史”给场上本轮未使用过此“史”牌面的牌的角色并令这些角色获得一张${get.poptip('bilibili_shi')}。③每轮每种牌名限一次，一名角色使用牌后，你移去武将牌上与此牌牌名相同的“史”，然后将牌堆顶X张牌称为“史”置于武将牌上（X为你本轮发动此分支的次数）。④当你受到伤害时，你可以移去三张牌名不同的“史”，防止此伤害。`,
             bilibili_banyun: '搬运',
-            bilibili_banyun_info: '每回合限一次，你可以使用一张“矢”，然后你将一名角色的一张牌称为“矢”置于武将牌上。',
+            bilibili_banyun_info: '每回合限一次，你可以使用或打出一张“史”，然后你将一名角色的一张牌称为“史”置于武将牌上。',
             bilibili_banyun_append: '<span style="font-family:yuanli">长史曰：<br>“史之不尽，赤之不竭。<br>搬出节奏，搬出风采。”</span>',
             bilibili_murufengchen: '沐如风晨',
             bilibili_ziyuan: '紫垣',
@@ -12707,7 +12719,12 @@ const packs = function () {
                                         addIntro.classList.add('config', 'pointerspan');
                                         addIntro.innerHTML = '<span style="font-family: yuanli">名人堂前言：<br>萌新特设，旨在纪念在萌新的身边对活动武将群聊发展起到重要作用的人</span>';
                                         cfgNodes[i].parentNode.insertBefore(addIntro, cfgNodes[i]);
-                                        break;
+                                    }
+                                    if (cfgNodes[i].textContent === '宿舍/肘击群杂谈') {
+                                        const addIntro = document.createElement('div');
+                                        addIntro.classList.add('config', 'pointerspan');
+                                        addIntro.innerHTML = '<span style="font-family: yuanli">杂谈前言：<br>双群自设系列，萌新转型中和戏志才帮你实现自设愿望（孩子们，不要搞军备竞赛）</span>';
+                                        cfgNodes[i].parentNode.insertBefore(addIntro, cfgNodes[i]);
                                     }
                                 }
                             }
