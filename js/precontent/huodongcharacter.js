@@ -51,16 +51,7 @@ const packs = function () {
             bilibili_xushao: ['male', 'qun', '1/6', ['bilibili_pingjian'], ['ext:活动武将/image/character/old_xushao.jpg', 'InitFilter:noZhuHp']],
             bilibili_ningjingzhiyuan: ['male', 'key', 4, ['bilibili_xiezhi', 'bilibili_fazhou'], ['clan:肘家军|宿舍群|肘击群|活动群', 'name:闹动|导近']],
             bilibili_xizhicaikobe: ['male', 'key', 4, ['bilibili_zhangcai', 'bilibili_laosao'], ['clan:肘家军|肘击群|活动群', 'name:戏|子宓']],
-            bilibili_yanjing: {
-                sex: 'male',
-                group: 'key',
-                hp: 2,
-                hp2: 2,
-                skills: ['bilibili_dongxi', 'bilibili_mingcha', 'bilibili_huiyan'],
-                names: 'tooenough|眼睛',
-                clans: ['宿舍群', '肘击群', '活动群'],
-                transBin: ['sex: male_castrated'],
-            },
+            bilibili_yanjing: ['male', 'key', 3, ['bilibili_dongxi', 'bilibili_mingcha', 'bilibili_huiyan'], ['clan:肘家军|肘击群|活动群', 'tooenough|眼睛']],
             bilibili_caifuren: ['female', 'qun', 3, ['bilibili_kuilei'], ["name:蔡|null"]],
             bilibili_xiaoyaoruyun: ['female', 'key', 3, ['bilibili_chuandu', 'bilibili_shuaiwei', 'bilibili_huaikui'], ['clan:肘击群|活动群', 'name:鹿都|智川介']],
             bilibili_shuijiaobuboli: ['female', 'key', 3, ['bilibili_qicai', 'bilibili_jizhi', 'bilibili_fengliang', 'bilibili_guiyin'], ['clan:宿舍群|活动群', 'name:黄|月英']],
@@ -10394,18 +10385,7 @@ const packs = function () {
                 ai: {
                     viewHandcard: true,
                     skillTagFilter(player, tag, arg) {
-                        if (player === arg || typeof player.hp2 !== 'number' || Math.max(0, player.hp) !== Math.max(0, player.hp2)) return false;
-                    },
-                },
-                global: 'bilibili_huiyan_global',
-                subSkill: {
-                    global: {
-                        ai: {
-                            viewHandcard: true,
-                            skillTagFilter(player, tag, arg) {
-                                if (player === arg || !arg.hasSkill('bilibili_huiyan') || typeof arg.hp2 !== 'number' || Math.max(0, arg.hp) === Math.max(0, arg.hp2)) return false;
-                            },
-                        },
+                        if (player === arg) return false;
                     },
                 },
             },
@@ -12117,10 +12097,6 @@ const packs = function () {
                 let start = '锁定技，转换技。你仅使用明置牌造成伤害的回合结束后，', end = '。';
                 return `${start}阳：${yang}；阴：${yin}${end}`;
             },
-            bilibili_huiyan(player, skill) {
-                if (typeof player.hp2 === 'number') return lib.translate[`${skill}_info`];
-                return '锁定技。准备阶段，你令一名其他角色选择一项：1.你回复1点体力；2.你摸一张牌。';
-            },
         },
         translate: {
             CLongZhou: '龙舟武将',
@@ -12589,7 +12565,7 @@ const packs = function () {
             bilibili_mingcha: '明察',
             bilibili_mingcha_info: '出牌阶段限一次，你可以展示一名其他角色的手牌，然后选择一项：1.令其交给你一张牌；2.你交给其一张牌。若你以此法交出的牌与其以此法展示的牌类别不同，你摸一张牌。',
             bilibili_huiyan: '慧眼',
-            bilibili_huiyan_info: '锁定技。①准备阶段，你令一名其他角色选择一项：1.令你回复1点体力；2.令你摸一张牌。②你拥有“左眼”和“右眼”两段体力，当你执行体力变化时，你选择“左眼”或“右眼”执行此操作，“左眼”或“右眼”阵亡即你阵亡。③若你的“左眼”和“右眼”体力值相同，其他角色的手牌对你可见，否则你的手牌对其他角色可见。',
+            bilibili_huiyan_info: '锁定技。①其他角色的手牌对你可见。②准备阶段，你令一名其他角色选择一项：1.令你回复1点体力；2.令你摸一张牌。',
             bilibili_huiyan_append: '<span style="font-family:yuanli"><span style="text-decoration: line-through;">看个几八，你个沙沟</span><br>孩子们，真没啥可写的</span><br><img style=width:160px src=' + lib.assetURL + 'extension/活动武将/image/default/smile8.jpg>',
             bilibili_caifuren: '蔡夫人-暗黑傀儡师',
             bilibili_caifuren_ab: '蔡夫人',
