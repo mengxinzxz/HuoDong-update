@@ -11775,7 +11775,7 @@ const packs = function () {
                             list = _status.characterlist.filter(i => lib.character[i][1] == group);
                         }
                         else if (_status.connectMode) {
-                            list = get.charactersOL.filter(i => lib.character[i][1] != group);
+                            list = get.charactersOL(i => lib.character[i][1] != group);
                         }
                         else {
                             list = get.gainableCharacters(info => info[1] == group);
