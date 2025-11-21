@@ -11799,8 +11799,7 @@ const packs = function () {
                                     }
                                 }, 'handle'],
                             ],
-                            selectButton: [0, num],
-                            forced: true,
+                            selectButton: [1, num],
                             filterTarget: true,
                             ai1(button) {
                                 const { link } = button;
