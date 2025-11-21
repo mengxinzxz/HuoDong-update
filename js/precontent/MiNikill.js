@@ -10453,7 +10453,7 @@ const packs = function () {
                     }
                     if (!_status.characterlist) game.initCharacterList();
                     const EditList = ((!_status.connectMode && game.getExtensionConfig('活动武将', 'PingJianName')) ? game.getExtensionConfig('活动武将', 'PingJianName') : lib.skill.minipingjian.getList()).filter(i => lib.character[i]);
-                    let list = EditList.filter(i => _status.characterlist.includes(i) && (lib.character[i][1] == 'shu' || (get.is.double(i, true) || []).includes('wu')));
+                    let list = EditList.filter(i => _status.characterlist.includes(i) && (get.character(i, 1) == 'shu' || (get.is.double(i, true) || []).includes('shu')));
                     for (const current of game.players.concat(game.dead)) {
                         list.removeArray(get.nameList(current));
                     }

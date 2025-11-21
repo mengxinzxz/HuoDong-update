@@ -11750,16 +11750,7 @@ const packs = function () {
                     for (const group of player.getStorage('bilibili_ziyuan')) {
                         const num = game.roundNumber + 1;
                         if (!_status.characterlist) game.initCharacterList();
-                        let list = [];
-                        if (_status.characterlist) {
-                            list = _status.characterlist.filter(i => lib.character[i][1] == group);
-                        }
-                        else if (_status.connectMode) {
-                            list = get.charactersOL(i => lib.character[i][1] != group);
-                        }
-                        else {
-                            list = get.gainableCharacters(info => info[1] == group);
-                        }
+                        let list = _status.characterlist.filter(i => (get.character(i, 1) == group || (get.is.double(i, true) || []).includes(group)));
                         for (const current of game.players.concat(game.dead)) {
                             list.removeArray(get.nameList(current));
                         }
