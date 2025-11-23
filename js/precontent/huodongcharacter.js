@@ -11764,7 +11764,7 @@ const packs = function () {
                             if (skills.length) map[name] = skills;
                         }
                         if (!Object.keys(map).length) continue;
-                        const { result } = await player.chooseButtonTarget({
+                        const next = player.chooseButtonTarget({
                             createDialog: [
                                 `北辰：请选择至多${get.cnNumber(num)}个技能令一名角色获得`,
                                 [dialog => {
@@ -11813,7 +11813,20 @@ const packs = function () {
                                 if (att < 0) return 0;
                                 return att * (target.hasSkill('bilibili_beichen_effect') ? 1 : 2);
                             }
-                        }).set('characterMap', map);
+                        }).set('characterMap', map).set('group', group);
+                        next.set('targetprompt2', next.targetprompt2.concat([
+                            target => {
+                                if (!target.isIn() || !get.event().filterTarget(null, get.player(), target)) {
+                                    return false;
+                                }
+                                let str = '';
+                                if (target.storage?.['bilibili_beichen_effect']?.[get.event('group')]) {
+                                    str += target.storage['bilibili_beichen_effect'][get.event('group')].map(skill => get.translation(skill)).join('<br>');
+                                }
+                                return str;
+                            },
+                        ]));
+                        const { result } = await next;
                         if (result?.links?.length && result.targets?.length) {
                             const skills = result.links;
                             const [target] = result.targets;
@@ -12617,9 +12630,13 @@ const packs = function () {
             bilibili_ziyuan: '紫垣',
             bilibili_ziyuan_info: `锁定技。①当你获得此技能时或游戏开始时，你记录场上所有的势力，摸X张牌（X为场上势力数），然后你发动一次${get.poptip('bilibili_beichen')}。②每轮开始时或当你造成或受到伤害后，你记录一个此技能未记录的势力，然后你发动一次${get.poptip('bilibili_beichen')}。`,
             bilibili_beichen: '北辰',
-            bilibili_beichen_info: `出牌阶段限一次，若你${get.poptip('bilibili_ziyuan')}记录了势力，则根据记录其的势力，分配对应势力的技能并令一名角色获得之直到其下一次以此法获得对应势力的技能。`,
+            bilibili_beichen_info: `出牌阶段限一次，若你${get.poptip('bilibili_ziyuan')}记录了势力，则依次根据记录势力${get.poptip({
+                name: '分配',
+                info: '展示X个对应势力的武将及其所有技能，然后从中选择[0,X]个技能令一名角色获得（X为游戏轮数+1）',
+                type: 'character',
+            })}对应势力的技能并令一名角色获得之直到其下一次以此法获得对应势力的技能。`,
             bilibili_xingzhu: '星主',
-            bilibili_xingzhu_info: `限定技。出牌阶段或当你死亡前（死亡前发动则防止本次死亡），你可以将体力上限和体力值调整为X，然后发动一次永久保留技能的${get.poptip('bilibili_beichen')}并获得${get.poptip('bilibili_wuji')}。`,
+            bilibili_xingzhu_info: `限定技。出牌阶段或当你死亡前（死亡前发动则防止本次死亡），你可以将体力上限和体力值调整为X（X为场上势力数），然后发动一次永久保留技能的${get.poptip('bilibili_beichen')}并获得${get.poptip('bilibili_wuji')}。`,
             bilibili_xingzhu_append: '<span style="font-family:yuanli">南华老仙真是最有操作感的武将，不是吗？当然，我也是（憋笑）<br>——华风夏韵，洛水天依</span>',
             bilibili_wuji: '无极',
             bilibili_wuji_info: '锁定技。①当你获得此技能时，你本轮将所有手牌标记为“无极”。②当你获得牌时，你本轮将这些牌标记为“无极”。③每回合限一次，你使用的“无极”牌视为拥有全部应变效果且可以无条件发动。',
