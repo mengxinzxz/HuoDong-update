@@ -50,7 +50,7 @@ const packs = function () {
             bilibili_re_xusheng: ['male', 'wu', 4, ['bilibili_pojun', 'kuangcai', 'bilibili_baodao'], ['die:re_xusheng']],
             bilibili_xushao: ['male', 'qun', '1/6', ['bilibili_pingjian'], ['ext:活动武将/image/character/old_xushao.jpg', 'InitFilter:noZhuHp']],
             bilibili_ningjingzhiyuan: ['male', 'key', 4, ['bilibili_xiezhi', 'bilibili_fazhou'], ['clan:肘家军|宿舍群|肘击群|活动群', 'name:闹动|导近']],
-            bilibili_xizhicaikobe: ['male', 'key', 4, ['bilibili_zhangcai', 'bilibili_laosao'], ['clan:肘家军|肘击群|活动群', 'name:戏|子宓']],
+            bilibili_xizhicaikobe: ['male', 'key', 4, ['bilibili_zhangcai', 'bilibili_laosao'], ['clan:肘家军|宿舍群|肘击群|活动群', 'name:戏|子宓']],
             bilibili_yanjing: ['male', 'key', 3, ['bilibili_dongxi', 'bilibili_mingcha', 'bilibili_huiyan'], ['clan:肘家军|肘击群|活动群', 'tooenough|眼睛']],
             bilibili_caifuren: ['female', 'qun', 3, ['bilibili_kuilei'], ["name:蔡|null"]],
             bilibili_xiaoyaoruyun: ['female', 'key', 3, ['bilibili_chuandu', 'bilibili_shuaiwei', 'bilibili_huaikui'], ['clan:肘击群|活动群', 'name:鹿都|智川介']],
