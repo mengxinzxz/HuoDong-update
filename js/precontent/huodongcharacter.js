@@ -9793,7 +9793,7 @@ const packs = function () {
                                                 if (type === 'function') return originUsable.apply(this, arguments);
                                                 return type === 'number' ? originUsable : Infinity;
                                             })();
-                                            if (lib.skill[skill].charlotte || lib.skill[skill].ruleSkill || lib.skill[skill].equipSkill || typeof player.storage['bilibili_xiezhi_buff']?.skill !== 'number') return num;
+                                            if (lib.skill[skill].charlotte || lib.skill[skill].ruleSkill || lib.skill[skill].equipSkill || lib.skill[skill].cardSkill || typeof player.storage['bilibili_xiezhi_buff']?.skill !== 'number') return num;
                                             return Math.min(num, player.storage['bilibili_xiezhi_buff'].skill);
                                         };
                                     };
@@ -11899,7 +11899,6 @@ const packs = function () {
                     let str = '你可以';
                     const num = game.countGroup();
                     const bool1 = player.hp != num;
-                    const bool2 = player.hujia != num;
                     if (player.maxHp != num) {
                         const numx = player.maxHp - num;
                         str += `${numx > 0 ? '减少' : '获得'}${Math.abs(numx)}点体力上限${bool1 || bool2 ? '' : '，然后'}`;
@@ -11907,10 +11906,6 @@ const packs = function () {
                     if (bool1) {
                         const numx = player.hp - num;
                         str += `${bool2 ? '、' : '且'}${numx > 0 ? '失去' : '回复'}${Math.abs(numx)}点体力${bool2 ? '' : '，然后'}`;
-                    }
-                    if (bool2) {
-                        const numx = player.hujia - num;
-                        str += `且${numx > 0 ? '失去' : '获得'}${Math.abs(numx)}点护甲，然后`;
                     }
                     str += '发动一次永久保留技能的〖北辰〗并获得〖无极〗。';
                     return str;
@@ -12632,7 +12627,7 @@ const packs = function () {
             bilibili_beichen: '北辰',
             bilibili_beichen_info: `出牌阶段限一次，若你${get.poptip('bilibili_ziyuan')}记录了势力，则依次根据记录势力${get.poptip({
                 name: '分配',
-                info: '展示X个对应势力的武将及其所有技能，然后从中选择[0,X]个技能令一名角色获得（X为游戏轮数+1）',
+                info: '展示Y个对应势力的武将及其所有技能，然后可以从中选择至多Y个技能令一名角色获得（Y为游戏轮数+1）',
                 type: 'character',
             })}对应势力的技能并令一名角色获得之直到其下一次以此法获得对应势力的技能。`,
             bilibili_xingzhu: '星主',
