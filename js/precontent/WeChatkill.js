@@ -15752,34 +15752,34 @@ const packs = function () {
                             for (const choice of choiceList.slice().remove(link)) {
                                 await get.info(event.name).effect[choice].content(player, target, cardName);
                             }
-                        }
-                    }
-                    const removeList = Object.keys(get.info(event.name).effect).removeArray((player.getStorage(event.name, [[], []])[1]).concat(['qianggong']));
-                    if (removeList.length) {
-                        const prompt = {
-                            give: '交牌',
-                            gain: '拿牌',
-                            damage: '加伤',
-                        };
-                        const result = removeList.length == 1 ? { bool: true, links: removeList } : await player
-                            .chooseButton([
-                                '众信：选择一项移除',
-                                [
-                                    removeList.map(item => [item, prompt[item]]),
-                                    'textbutton',
-                                ],
-                            ], true).set('ai', button => {
-                                const { link } = button;
-                                if (link === 'damage') return 2;
-                                if (link === 'give') return 1.1;
-                                return 1;
-                            }).forResult();
-                        if (result?.links?.length) {
-                            const [link] = result.links;
-                            player.storage['wechatzhongxin'] ??= [[], []];
-                            player.storage['wechatzhongxin'][1].add(link);
-                            player.markSkill('wechatzhongxin');
-                            game.log(player, '删除了', '#g【众信】', '的', `#g${prompt[link]}项`);
+                            const removeList = Object.keys(get.info(event.name).effect).removeArray((player.getStorage(event.name, [[], []])[1]).concat(['qianggong']));
+                            if (removeList.length) {
+                                const prompt = {
+                                    give: '交牌',
+                                    gain: '拿牌',
+                                    damage: '加伤',
+                                };
+                                const result = removeList.length == 1 ? { bool: true, links: removeList } : await player
+                                    .chooseButton([
+                                        '众信：选择一项移除',
+                                        [
+                                            removeList.map(item => [item, prompt[item]]),
+                                            'textbutton',
+                                        ],
+                                    ], true).set('ai', button => {
+                                        const { link } = button;
+                                        if (link === 'damage') return 2;
+                                        if (link === 'give') return 1.1;
+                                        return 1;
+                                    }).forResult();
+                                if (result?.links?.length) {
+                                    const [link] = result.links;
+                                    player.storage['wechatzhongxin'] ??= [[], []];
+                                    player.storage['wechatzhongxin'][1].add(link);
+                                    player.markSkill('wechatzhongxin');
+                                    game.log(player, '删除了', '#g【众信】', '的', `#g${prompt[link]}项`);
+                                }
+                            }
                         }
                     }
                 },
