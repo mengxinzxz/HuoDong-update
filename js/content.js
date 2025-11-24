@@ -654,7 +654,6 @@ export async function content(config, pack) {
 							}
 							const buttons = ui.create.div('.buttons.smallzoom.scrollbuttons');
 							lib.setMousewheel(buttons);
-							const nameskin = avatar2 ? node.name2 : node.name1;
 							const originButton = ui.create.div('.button.character.pointerdiv', buttons, function () {
 								delete lib.config.skin[nameskin];
 								node.node[avatar2 ? 'avatar2' : 'avatar'].setBackground(nameskin, 'character');
@@ -740,7 +739,7 @@ export async function content(config, pack) {
 								game.saveConfig('skin', lib.config.skin);
 							});
 							button._link = index;
-							button.setBackgroundImage(`extension/活动武将/image/character/skin/${nameskin}/${skin}`);
+							button.setBackgroundImage(`extension/活动武将/image/character/skin/${name}/${skin}`);
 						});
 					};
 				}
