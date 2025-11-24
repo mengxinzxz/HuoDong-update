@@ -642,12 +642,12 @@ export async function content(config, pack) {
 		if (get.nodeintro) {
 			const nodeintro = get.nodeintro;
 			get.nodeintro = function (node, simple) {
-				const uiintro = nodeintro.apply(this, arguments);
-				if ((lib.config.change_skin || lib.skin) && (!simple || get.is.phoneLayout())) {
+				const uiintro = nodeintro.apply(this, arguments), fileList = _status['extension_活动武将_files'];
+				if (fileList && (lib.config.change_skin || lib.skin) && (!simple || get.is.phoneLayout())) {
 					if (node.classList.contains('player')) {
-						let num = 0, introadded = false;
-						const createButtons = function (num, avatar2) {
-							if (num < 0) return;
+						let introadded = false;
+						for (const nameskin of [node.name1, node.name2]) {
+							if (!nameskin || !fileList.image.character.skin[nameskin] || !fileList.image.character.skin[nameskin].files.length) continue;
 							if (!introadded) {
 								introadded = true;
 								uiintro.add('<div class="text center">更改皮肤</div>');
@@ -662,91 +662,42 @@ export async function content(config, pack) {
 							});
 							originButton._link = -1;
 							originButton.setBackground(nameskin, 'character', 'noskin');
-							for (let i = 0; i <= num; i++) {
+							fileList.image.character.skin[nameskin].files.forEach((skin, index) => {
 								const button = ui.create.div('.button.character.pointerdiv', buttons, function () {
 									lib.config.skin[nameskin] = this._link;
 									node.node[avatar2 ? 'avatar2' : 'avatar'].style.backgroundImage = this.style.backgroundImage;
 									game.saveConfig('skin', lib.config.skin);
 								});
-								button._link = i;
-								button.setBackgroundImage(`extension/活动武将/image/character/skin/${nameskin}/${_status['extension_活动武将_files'].image.character.skin[nameskin].files[i]}`);
-							}
-							uiintro.add(buttons);
-						};
-						const loadImage = function (avatar2) {
-							const img = new Image();
-							img.onload = function () {
-								num++;
-								loadImage(avatar2);
-							};
-							img.onerror = function () {
-								num--;
-								createButtons(num, avatar2);
-								if (!avatar2) {
-									if (!node.classList.contains('unseen2') && node.name2) {
-										num = 0;
-										loadImage(true);
-									}
-								}
-							};
-							const nameskin = avatar2 ? node.name2 : node.name1;
-							img.src = `${lib.assetURL}extension/活动武将/image/character/skin/${nameskin}/${_status['extension_活动武将_files'].image.character.skin[nameskin].files[num]}`;
-						};
-						if (lib.config.change_skin) {
-							if (!node.isUnseen(0) && _status['extension_活动武将_files'].image.character.skin[node.name1]) loadImage();
-							else if (node.name2 && _status['extension_活动武将_files'].image.character.skin[node.name2]) loadImage(true);
-						}
-						else {
-							setTimeout(function () {
-								let nameskin1 = node.name1, nameskin2 = node.name2;
-								if (!node.isUnseen(0) && lib.skin[nameskin1]) createButtons(lib.skin[nameskin1]);
-								if (!node.isUnseen(1) && lib.skin[nameskin2]) createButtons(lib.skin[nameskin2], true);
+								button._link = index;
+								button.setBackgroundImage(`extension/活动武将/image/character/skin/${nameskin}/${skin}`);
 							});
+							uiintro.add(buttons);
 						}
 					}
 					else if (node.classList.contains('character')) {
-						if (_status['extension_活动武将_files'].image.character.skin[node.link]) {
-							let num = 0, introadded = false, nameskin = node.link;
-							const createButtons = function (num) {
-								if (num < 0) return;
-								if (!introadded) {
-									introadded = true;
-									uiintro.add('<div class="text center">更改皮肤</div>');
-								}
-								const buttons = ui.create.div('.buttons.smallzoom.scrollbuttons');
-								lib.setMousewheel(buttons);
-								const originButton = ui.create.div('.button.character.pointerdiv', buttons, function () {
-									delete lib.config.skin[nameskin];
-									node.setBackground(nameskin, 'character');
+						if (fileList.image.character.skin[node.link]?.files.length > 0) {
+							const nameskin = node.link;
+							console.log(nameskin);
+							uiintro.add('<div class="text center">更改皮肤</div>');
+							const buttons = ui.create.div('.buttons.smallzoom.scrollbuttons');
+							lib.setMousewheel(buttons);
+							const originButton = ui.create.div('.button.character.pointerdiv', buttons, function () {
+								delete lib.config.skin[nameskin];
+								node.setBackground(nameskin, 'character');
+								game.saveConfig('skin', lib.config.skin);
+							});
+							originButton._link = -1;
+							originButton.setBackground(nameskin, 'character', 'noskin');
+							fileList.image.character.skin[nameskin].files.forEach((skin, index) => {
+								const button = ui.create.div('.button.character.pointerdiv', buttons, function () {
+									lib.config.skin[nameskin] = this._link;
+									node.node[avatar2 ? 'avatar2' : 'avatar'].style.backgroundImage = this.style.backgroundImage;
 									game.saveConfig('skin', lib.config.skin);
 								});
-								originButton._link = -1;
-								originButton.setBackground(nameskin, 'character', 'noskin');
-								for (let i = 0; i <= num; i++) {
-									const button = ui.create.div('.button.character.pointerdiv', buttons, function () {
-										lib.config.skin[nameskin] = this._link;
-										node.style.backgroundImage = this.style.backgroundImage;
-										game.saveConfig('skin', lib.config.skin);
-									});
-									button._link = i;
-									button.setBackgroundImage(`extension/活动武将/image/character/skin/${nameskin}/${_status['extension_活动武将_files'].image.character.skin[nameskin].files[i]}`);
-								}
-								uiintro.add(buttons);
-							};
-							const loadImage = function () {
-								const img = new Image();
-								img.onload = function () {
-									num++;
-									loadImage();
-								};
-								img.onerror = function () {
-									num--;
-									createButtons(num);
-								};
-								img.src = `${lib.assetURL}extension/活动武将/image/character/skin/${nameskin}/${_status['extension_活动武将_files'].image.character.skin[nameskin].files[num]}`;
-							};
-							if (lib.config.change_skin) loadImage();
-							else setTimeout(() => createButtons(lib.skin[nameskin]));
+								button._link = index;
+								button.setBackgroundImage(`extension/活动武将/image/character/skin/${nameskin}/${skin}`);
+							});
+							uiintro.add(buttons);
 						}
 					}
 				}
@@ -757,73 +708,41 @@ export async function content(config, pack) {
 			const charactercard = ui.click.charactercard;
 			ui.click.charactercard = function (name, sourcenode, _, __, avatar) {
 				charactercard.apply(this, arguments);
-				if (!_status['extension_活动武将_files'].image.character.skin[name]) return;
+				const fileList = _status['extension_活动武将_files'];
+				if (!fileList?.image.character.skin[name] || !fileList.image.character.skin[name].files.length) return;
 				const uiintro = document.querySelector('.menubg.charactercard');
 				const bg = uiintro?.querySelector('.avatar'), playerbg = uiintro?.querySelector('.menubutton.large.ava');
 				if (bg && playerbg) {
-					let changeskinfunc = null, nameskin = name;
+					ui.create.div('.changeskin', '可换肤', playerbg);
 					bg.onclick = function () {
-						changeskinfunc?.();
-					};
-					const changeskin = function () {
-						const node = ui.create.div('.changeskin', '可换肤', playerbg);
 						const avatars = ui.create.div('.avatars', playerbg);
-						changeskinfunc = function () {
-							playerbg.classList.add('scroll');
-							if (node._created) return;
-							node._created = true;
-							const createButtons = function (num) {
-								if (num < 0) return;
-								if (num >= 4) {
-									avatars.classList.add('scroll');
-									if (lib.config.touchscreen) lib.setScroll(avatars);
-								}
-								const originButton = ui.create.div(avatars, function () {
-									playerbg.classList.remove('scroll');
-									delete lib.config.skin[nameskin];
-									bg.setBackground(nameskin, 'character');
-									if (sourcenode) sourcenode.setBackground(nameskin, 'character');
-									if (avatar) avatar.setBackground(nameskin, 'character');
-									game.saveConfig('skin', lib.config.skin);
-								});
-								originButton._link = null;
-								originButton.setBackground(nameskin, 'character', 'noskin');
-								for (let i = 0; i <= num; i++) {
-									const button = ui.create.div(avatars, function () {
-										playerbg.classList.remove('scroll');
-										lib.config.skin[nameskin] = this._link;
-										bg.style.backgroundImage = this.style.backgroundImage;
-										if (sourcenode) sourcenode.style.backgroundImage = this.style.backgroundImage;
-										if (avatar) avatar.style.backgroundImage = this.style.backgroundImage;
-										game.saveConfig('skin', lib.config.skin);
-									});
-									button._link = i;
-									button.setBackgroundImage(`extension/活动武将/image/character/skin/${nameskin}/${_status['extension_活动武将_files'].image.character.skin[nameskin].files[i]}`);
-								}
-							};
-							let num = 0;
-							const loadImage = function () {
-								const img = new Image();
-								img.onload = function () {
-									num++;
-									loadImage();
-								};
-								img.onerror = function () {
-									num--;
-									createButtons(num);
-								};
-								img.src = `${lib.assetURL}extension/活动武将/image/character/skin/${nameskin}/${_status['extension_活动武将_files'].image.character.skin[nameskin].files[num]}`;
-							};
-							if (lib.config.change_skin) loadImage();
-							else createButtons(lib.skin[nameskin]);
-						};
+						if (fileList.image.character.skin[name].files.length >= 4) {
+							avatars.classList.add('scroll');
+							if (lib.config.touchscreen) lib.setScroll(avatars);
+						}
+						const originButton = ui.create.div(avatars, function () {
+							playerbg.classList.remove('scroll');
+							delete lib.config.skin[name];
+							bg.setBackground(name, 'character');
+							if (sourcenode) sourcenode.setBackground(name, 'character');
+							if (avatar) avatar.setBackground(name, 'character');
+							game.saveConfig('skin', lib.config.skin);
+						});
+						originButton._link = -1;
+						originButton.setBackground(name, 'character', 'noskin');
+						fileList.image.character.skin[name].files.forEach((skin, index) => {
+							const button = ui.create.div(avatars, function () {
+								playerbg.classList.remove('scroll');
+								lib.config.skin[name] = this._link;
+								bg.style.backgroundImage = this.style.backgroundImage;
+								if (sourcenode) sourcenode.style.backgroundImage = this.style.backgroundImage;
+								if (avatar) avatar.style.backgroundImage = this.style.backgroundImage;
+								game.saveConfig('skin', lib.config.skin);
+							});
+							button._link = index;
+							button.setBackgroundImage(`extension/活动武将/image/character/skin/${nameskin}/${skin}`);
+						});
 					};
-					if (lib.config.change_skin && _status['extension_活动武将_files'].image.character.skin[nameskin]) {
-						const img = new Image();
-						img.onload = changeskin;
-						img.src = `${lib.assetURL}extension/活动武将/image/character/skin/${nameskin}/${_status['extension_活动武将_files'].image.character.skin[nameskin].files[0]}`;
-					}
-					else if (lib.config.debug && lib.skin[nameskin]) changeskin();
 				}
 			};
 		}
