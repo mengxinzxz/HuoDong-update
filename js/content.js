@@ -646,8 +646,8 @@ export async function content(config, pack) {
 				if (fileList && (lib.config.change_skin || lib.skin) && (!simple || get.is.phoneLayout())) {
 					if (node.classList.contains('player')) {
 						let introadded = false;
-						for (const nameskin of [node.name1, node.name2]) {
-							if (!nameskin || !fileList.image.character.skin[nameskin] || !fileList.image.character.skin[nameskin].files.length) continue;
+						[node.name1, node.name2].forEach((nameskin, avatar2) => {
+							if (!nameskin || !fileList.image.character.skin[nameskin] || !fileList.image.character.skin[nameskin].files.length) return;
 							if (!introadded) {
 								introadded = true;
 								uiintro.add('<div class="text center">更改皮肤</div>');
@@ -671,7 +671,7 @@ export async function content(config, pack) {
 								button.setBackgroundImage(`extension/活动武将/image/character/skin/${nameskin}/${skin}`);
 							});
 							uiintro.add(buttons);
-						}
+						});
 					}
 					else if (node.classList.contains('character')) {
 						if (fileList.image.character.skin[node.link]?.files.length > 0) {
@@ -690,7 +690,7 @@ export async function content(config, pack) {
 							fileList.image.character.skin[nameskin].files.forEach((skin, index) => {
 								const button = ui.create.div('.button.character.pointerdiv', buttons, function () {
 									lib.config.skin[nameskin] = this._link;
-									node.node[avatar2 ? 'avatar2' : 'avatar'].style.backgroundImage = this.style.backgroundImage;
+									node.style.backgroundImage = this.style.backgroundImage;
 									game.saveConfig('skin', lib.config.skin);
 								});
 								button._link = index;
