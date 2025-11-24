@@ -113,6 +113,11 @@ export let config = {
 			}
 		},
 	},
+	changeSkin: {
+		name: '修改本体资料页功能',
+		intro: '修改本体资料页以添加显示更改本扩展角色皮肤功能',
+		init: true,
+	},
 	showDerivation: {
 		name: '技能翻译优化',
 		intro: '结合get.poptip方法优化有衍生技的技能翻译',
