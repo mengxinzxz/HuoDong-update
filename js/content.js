@@ -691,8 +691,8 @@ export async function content(config, pack) {
 						img.src = `${lib.assetURL}extension/活动武将/image/character/skin/${nameskin}/${_status['extension_活动武将_files'].image.character.skin[nameskin].files[num]}`;
 					};
 					if (lib.config.change_skin) {
-						if (!node.isUnseen(0)) loadImage();
-						else if (node.name2) loadImage(true);
+						if (!node.isUnseen(0) && _status['extension_活动武将_files'].image.character.skin[node.name1]) loadImage();
+						else if (node.name2 && _status['extension_活动武将_files'].image.character.skin[node.name2]) loadImage(true);
 					}
 					else {
 						setTimeout(function () {
@@ -816,7 +816,7 @@ export async function content(config, pack) {
 						else createButtons(lib.skin[nameskin]);
 					};
 				};
-				if (lib.config.change_skin) {
+				if (lib.config.change_skin && _status['extension_活动武将_files'].image.character.skin[nameskin]) {
 					const img = new Image();
 					img.onload = changeskin;
 					img.src = `${lib.assetURL}extension/活动武将/image/character/skin/${nameskin}/${_status['extension_活动武将_files'].image.character.skin[nameskin].files[0]}`;

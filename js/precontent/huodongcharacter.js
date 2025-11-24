@@ -11712,7 +11712,7 @@ const packs = function () {
                         const { result } = await player.chooseButton([
                             `${get.prompt(event.name)}：<div class='text center'>请选择要记录的势力</div>`,
                             [list.map(group => [group, get.translation(group)]), 'textbutton'],
-                        ]);
+                        ], true);
                         if (result?.links?.length) {
                             const [group] = result.links;
                             player.markAuto(event.name, [group]);
