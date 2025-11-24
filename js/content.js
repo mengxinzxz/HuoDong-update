@@ -714,6 +714,7 @@ export async function content(config, pack) {
 				if (bg && playerbg) {
 					ui.create.div('.changeskin', '可换肤', playerbg);
 					bg.onclick = function () {
+						playerbg.classList.add('scroll');
 						const avatars = ui.create.div('.avatars', playerbg);
 						if (fileList.image.character.skin[name].files.length >= 4) {
 							avatars.classList.add('scroll');
