@@ -676,7 +676,6 @@ export async function content(config, pack) {
 					else if (node.classList.contains('character')) {
 						if (fileList.image.character.skin[node.link]?.files.length > 0) {
 							const nameskin = node.link;
-							console.log(nameskin);
 							uiintro.add('<div class="text center">更改皮肤</div>');
 							const buttons = ui.create.div('.buttons.smallzoom.scrollbuttons');
 							lib.setMousewheel(buttons);
