@@ -160,112 +160,100 @@ const packs = function () {
             bilibili_murufengchen: '殚精竭虑群书记',
             bilibili_diandian: '唐氏指定合伙人',
             bilibili_wangtao: get.poptip({
-                type: 'character',
                 id: 'dualside_wangyue',
                 name: '双面武将',
-                info: new Proxy({}, {
-                    get(target, prop) {
-                        setTimeout(() => {
-                            const uiintros = document.querySelectorAll('#poptip');//ById只能找第一个，这里要修改最后一个，即最新出现的poptip框，因为第一个框有可能是还没有完全消失的上一个poptip框
-                            if (uiintros.length > 0) {
-                                const uiintro = uiintros[uiintros.length - 1];
-                                uiintro.addSmall([['bilibili_x_wangyue'], 'character']);
-                                uiintro.style.height = `${uiintro.offsetHeight + (window.decadeUI ? 100 : 120)}px`;
-                            }
-                        });
-                        return () => '正面武将翻面时或死亡后切换至背面';
-                    }
-                }),
+                type: 'character',
+                dialog(dialog) {
+                    dialog.addSmall([['bilibili_x_wangyue'], 'character']);
+                    dialog.addText('正面武将翻面时或死亡后切换至背面');
+                    return dialog;
+                },
             }),
             bilibili_wangyue: get.poptip({
-                type: 'character',
                 id: 'dualside_wangtao',
                 name: '双面武将',
-                info: new Proxy({}, {
-                    get(target, prop) {
-                        setTimeout(() => {
-                            const uiintros = document.querySelectorAll('#poptip');
-                            if (uiintros.length > 0) {
-                                const uiintro = uiintros[uiintros.length - 1];
-                                uiintro.addSmall([['bilibili_x_wangtao'], 'character']);
-                                uiintro.style.height = `${uiintro.offsetHeight + (window.decadeUI ? 100 : 120)}px`;
-                            }
-                        });
-                        return () => '正面武将翻面时或死亡后切换至背面';
-                    }
-                }),
+                type: 'character',
+                dialog(dialog) {
+                    dialog.addSmall([['bilibili_x_wangtao'], 'character']);
+                    dialog.addText('正面武将翻面时或死亡后切换至背面');
+                    return dialog;
+                },
             }),
             bilibili_daqiao: get.poptip({
-                type: 'character',
                 id: 'dualside_xiaoqiao',
                 name: '双面武将',
-                info: new Proxy({}, {
-                    get(target, prop) {
-                        setTimeout(() => {
-                            const uiintros = document.querySelectorAll('#poptip');
-                            if (uiintros.length > 0) {
-                                const uiintro = uiintros[uiintros.length - 1];
-                                uiintro.addSmall([['bilibili_x_xiaoqiao'], 'character']);
-                                uiintro.style.height = `${uiintro.offsetHeight + (window.decadeUI ? 100 : 120)}px`;
-                            }
-                        });
-                        return () => '正面武将翻面时或死亡后切换至背面';
-                    }
-                }),
+                type: 'character',
+                dialog(dialog) {
+                    dialog.addSmall([['bilibili_x_xiaoqiao'], 'character']);
+                    dialog.addText('正面武将翻面时或死亡后切换至背面');
+                    return dialog;
+                },
             }),
             bilibili_xiaoqiao: get.poptip({
-                type: 'character',
                 id: 'dualside_daqiao',
                 name: '双面武将',
-                info: new Proxy({}, {
-                    get(target, prop) {
-                        setTimeout(() => {
-                            const uiintros = document.querySelectorAll('#poptip');
-                            if (uiintros.length > 0) {
-                                const uiintro = uiintros[uiintros.length - 1];
-                                uiintro.addSmall([['bilibili_x_daqiao'], 'character']);
-                                uiintro.style.height = `${uiintro.offsetHeight + (window.decadeUI ? 100 : 120)}px`;
-                            }
-                        });
-                        return () => '正面武将翻面时或死亡后切换至背面';
-                    }
-                }),
+                type: 'character',
+                dialog(dialog) {
+                    dialog.addSmall([['bilibili_x_daqiao'], 'character']);
+                    dialog.addText('正面武将翻面时或死亡后切换至背面');
+                    return dialog;
+                },
             }),
             bilibili_ahuinan: get.poptip({
-                type: 'character',
                 id: 'dualside_dongtuna',
                 name: '双面武将',
-                info: new Proxy({}, {
-                    get(target, prop) {
-                        setTimeout(() => {
-                            const uiintros = document.querySelectorAll('#poptip');
-                            if (uiintros.length > 0) {
-                                const uiintro = uiintros[uiintros.length - 1];
-                                uiintro.addSmall([['bilibili_x_dongtuna'], 'character']);
-                                uiintro.style.height = `${uiintro.offsetHeight + (window.decadeUI ? 100 : 120)}px`;
-                            }
-                        });
-                        return () => '正面武将翻面时或死亡后切换至背面';
-                    }
-                }),
+                type: 'character',
+                dialog(dialog) {
+                    dialog.addSmall([['bilibili_x_dongtuna'], 'character']);
+                    dialog.addText('正面武将翻面时或死亡后切换至背面');
+                    return dialog;
+                },
             }),
             bilibili_dongtuna: get.poptip({
-                type: 'character',
                 id: 'dualside_ahuinan',
                 name: '双面武将',
-                info: new Proxy({}, {
-                    get(target, prop) {
-                        setTimeout(() => {
-                            const uiintros = document.querySelectorAll('#poptip');
-                            if (uiintros.length > 0) {
-                                const uiintro = uiintros[uiintros.length - 1];
-                                uiintro.addSmall([['bilibili_x_ahuinan'], 'character']);
-                                uiintro.style.height = `${uiintro.offsetHeight + (window.decadeUI ? 100 : 120)}px`;
-                            }
-                        });
-                        return () => '正面武将翻面时或死亡后切换至背面';
-                    }
-                }),
+                type: 'character',
+                dialog(dialog) {
+                    dialog.addSmall([['bilibili_x_ahuinan'], 'character']);
+                    dialog.addText('正面武将翻面时或死亡后切换至背面');
+                    return dialog;
+                },
+            }),
+            bilibili_x_wangtao: get.poptip({
+                id: 'dualside2_wangyue',
+                name: '背面武将',
+                type: 'character',
+                info: '背景武将默认隐藏，正面武将翻面时或死亡后切换至背面',
+            }),
+            bilibili_x_wangyue: get.poptip({
+                id: 'dualside2_wangtao',
+                name: '背面武将',
+                type: 'character',
+                info: '背景武将默认隐藏，正面武将翻面时或死亡后切换至背面',
+            }),
+            bilibili_x_daqiao: get.poptip({
+                id: 'dualside2_xiaoqiao',
+                name: '背面武将',
+                type: 'character',
+                info: '背景武将默认隐藏，正面武将翻面时或死亡后切换至背面',
+            }),
+            bilibili_x_xiaoqiao: get.poptip({
+                id: 'dualside2_daqiao',
+                name: '背面武将',
+                type: 'character',
+                info: '背景武将默认隐藏，正面武将翻面时或死亡后切换至背面',
+            }),
+            bilibili_x_ahuinan: get.poptip({
+                id: 'dualside2_dongtuna',
+                name: '背面武将',
+                type: 'character',
+                info: '背景武将默认隐藏，正面武将翻面时或死亡后切换至背面',
+            }),
+            bilibili_x_dongtuna: get.poptip({
+                id: 'dualside2_ahuinan',
+                name: '背面武将',
+                type: 'character',
+                info: '背景武将默认隐藏，正面武将翻面时或死亡后切换至背面',
             }),
         },
         card: {
