@@ -10,7 +10,7 @@ const packs = function () {
                 CLongZhou: ['lz_sufei', 'lz_tangzi', 'lz_liuqi', 'lz_huangquan'],
                 Chuodong: ['bilibili_shengxunyu', 'bilibili_Firewin', 'bilibili_jinglingqiu', 'bilibili_suixingsifeng', 'bilibili_Emptycity', 'bilibili_thunderlei', 'bilibili_lonelypatients', 'bilibili_ningjingzhiyuan', 'bilibili_xizhicaikobe'],
                 CDormitory: ['bilibili_diandian', 'bilibili_murufengchen', 'bilibili_wuzhuwanshui', 'bilibili_kuangshen', 'bilibili_yanjing', 'bilibili_xiaoyaoruyun', 'bilibili_shuijiaobuboli'],
-                Cothers: ['bilibili_sunhanhua', 'bilibili_zhoutaigong', 'bilibili_zhouxiaomei', 'bilibili_caifuren', 'bilibili_zhengxuan', 'bilibili_sp_xuyou', 'old_zuoci', 'bilibili_kuailiangkuaiyue', 'bilibili_daxiao', 'bilibili_xushao', 'bilibili_shen_guojia', 'bilibili_re_xusheng', 'bilibili_adong', 'bilibili_zhangrang', 'bilibili_litiansuo', 'decade_huangwudie', 'bilibili_huanggai', 'bilibili_ekeshaoge', 'bilibili_guanning', 'bilibili_wangwang', 'diy_lvmeng'],
+                Cothers: ['bilibili_sunhanhua', 'bilibili_zhoutaigong', 'bilibili_zhouxiaomei', 'bilibili_caifuren', 'bilibili_zhengxuan', 'bilibili_sp_xuyou', 'old_zuoci', 'bilibili_kuailiangkuaiyue', 'bilibili_wuqiao', 'bilibili_daxiao', 'bilibili_xushao', 'bilibili_shen_guojia', 'bilibili_re_xusheng', 'bilibili_adong', 'bilibili_zhangrang', 'bilibili_litiansuo', 'decade_huangwudie', 'bilibili_huanggai', 'bilibili_ekeshaoge', 'bilibili_guanning', 'bilibili_wangwang', 'diy_lvmeng'],
                 Cothers_dualside: ['bilibili_wangtao', 'bilibili_wangyue', 'bilibili_x_wangtao', 'bilibili_x_wangyue', 'bilibili_daqiao', 'bilibili_xiaoqiao', 'bilibili_x_daqiao', 'bilibili_x_xiaoqiao', 'bilibili_ahuinan', 'bilibili_dongtuna', 'bilibili_x_ahuinan', 'bilibili_x_dongtuna'],
                 CDanJi: ['DJ_caiyang', 'DJ_pujing', 'DJ_huban'],
                 CSCS: ['biliscs_shichangshi', 'biliscs_zhangrang', 'biliscs_zhaozhong', 'biliscs_sunzhang', 'biliscs_bilan', 'biliscs_xiayun', 'biliscs_hankui', 'biliscs_lisong', 'biliscs_duangui', 'biliscs_guosheng', 'biliscs_gaowang'],
@@ -56,6 +56,7 @@ const packs = function () {
             bilibili_xiaoyaoruyun: ['female', 'key', 3, ['bilibili_chuandu', 'bilibili_shuaiwei', 'bilibili_huaikui'], ['clan:肘击群|活动群', 'name:鹿都|智川介']],
             bilibili_shuijiaobuboli: ['female', 'key', 3, ['bilibili_qicai', 'bilibili_jizhi', 'bilibili_fengliang', 'bilibili_guiyin'], ['clan:宿舍群|活动群', 'name:黄|月英']],
             bilibili_kuailiangkuaiyue: ['male', 'qun', 4, ['bilibili_chouhua'], ['character:kuailiangkuaiyue']],
+            bilibili_wuqiao: ['male', 'qun', 4, ['bilibili_qiajue', 'clanmuyin'], ['border:jin', ...['character', 'tempname', 'die'].map(i => `${i}:clan_wuqiao`)]],
             bilibili_wuzhuwanshui: ['male', 'key', 3, ['bilibili_diaowen', 'bilibili_banyun'], ['clan:肘击群|活动群', 'name:猪|大将军']],
             bilibili_murufengchen: ['female', 'key', 3, ['bilibili_ziyuan', 'bilibili_beichen', 'bilibili_xingzhu'], ['clan:宿舍群|肘击群|活动群', 'name:风|晨']],
             bilibili_diandian: ['female', 'key', 3, ['bilibili_siyu', 'bilibili_tamen'], ['clan:肘击群|活动群', 'name:永雏|塔菲']],
@@ -10906,7 +10907,7 @@ const packs = function () {
                     player.addTempSkill('diaohulishan', { player: 'phaseBegin' });
                 },
             },
-            //筹画--梦婉清
+            //梦婉清
             bilibili_chouhua: {
                 trigger: { player: 'phaseZhunbeiBegin' },
                 filter(event, player) {
@@ -11014,6 +11015,39 @@ const packs = function () {
                             },
                         },
                     },
+                },
+            },
+            bilibili_qiajue: {
+                audio: 'clanqiajue',
+                trigger: { player: ['phaseDrawEnd', 'phaseJieshuBegin'] },
+                filter(event, player) {
+                    const num = player.getCards('h').reduce((sum, card) => sum + get.number(card), 0);
+                    return num >= 30 ? player.getHandcardLimit() !== 2 : player.hasCard(card => {
+                        if (get.position(card) === 'h' && _status.connectMode) return true;
+                        return lib.filter.cardDiscardable(card, player);
+                    }, 'he');
+                },
+                async cost(event, trigger, player) {
+                    const num = player.getCards('h').reduce((sum, card) => sum + get.number(card), 0);
+                    if (num >= 30) event.result = { bool: true };
+                    else event.result = await player.chooseToDiscard(`${get.prompt(event.skill)}（当前手牌点数和：${num}）`, '弃置一张牌并执行一个额外的摸牌阶段', 'he').set('ai', card => {
+                        const player = get.player(), goon = get.position(card) === 'h';
+                        const num = player.getCards('h').reduce((sum, card) => sum + get.number(card), 0);
+                        if (num - (goon ? get.number(card) : 0) > 30) return 0;
+                        return goon ? get.number(card) : 1 / Math.max(get.value(card), 0.1);
+                    }).set('logSkill', event.skill).forResult();
+                },
+                popup: false,
+                async content(event, trigger, player) {
+                    if (!event.cards?.length) {
+                        player.logSkill(event.name);
+                        lib.skill.chenliuwushi.change(player, 2 - player.getHandcardLimit());
+                    }
+                    else {
+                        const next = player.phaseDraw();
+                        event.next.remove(next);
+                        trigger.next.push(next);
+                    }
                 },
             },
             //牢狂
@@ -12596,11 +12630,12 @@ const packs = function () {
             bilibili_guiyin: '归隐',
             bilibili_guiyin_info: '限定技，回合结束时，你可以将自己移出游戏直到下回合开始。',
             bilibili_guiyin_append: '<span style="font-family:yuanli">黄月英打了三年的复活赛，终于打赢了……</span>',
-            bilibili_kuailiangkuaiyue: '筷子兄弟',
-            bilibili_kuailiangkuaiyue_ab: '蒯良蒯越',
+            bilibili_kuailiangkuaiyue: '蒯良蒯越',
+            bilibili_wuqiao: '吴乔',
             bilibili_chouhua: '筹画',
             bilibili_chouhua_info: '准备阶段，若以下不为无限且数值大于等于0的项数不小于2且这些项的数值和大于0，则你可以分配这些项的数值：①摸牌阶段摸牌数；②使用【杀】的次数上限；③攻击范围；④手牌上限。',
-            bilibili_chouhua_append: '<li>本技能由梦婉清投稿<br><li>真是数数又值值口阿',
+            bilibili_qiajue: '跒倔',
+            bilibili_qiajue_info: '摸牌阶段结束时/结束阶段，若你的手牌数点数和小于30，你可以弃置一张牌并执行一个额外的摸牌阶段；否则你将手牌上限调整为2。',
             bilibili_wuzhuwanshui: '吾猪万睡',
             bilibili_shi: '史',
             bilibili_shi_info: '①出牌阶段，对你自己使用。②当你从手牌区正面朝上失去此牌后，你失去1点体力。',

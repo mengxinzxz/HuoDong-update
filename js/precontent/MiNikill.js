@@ -3914,8 +3914,7 @@ const packs = function () {
             },
             //筷子
             minishenshi: {
-                audio: 'nzry_shenshi_1',
-                group: 'minishenshi_2',
+                audio: ['nzry_shenshi_11.mp3', 'nzry_shenshi_12.mp3'],
                 enable: 'phaseUse',
                 filter(event, player) {
                     return player.countCards('he') > 0;
@@ -3956,12 +3955,13 @@ const packs = function () {
                     order: 1,
                     result: { target: -1 },
                 },
+                group: 'minishenshi_2',
                 subSkill: {
                     '2': {
-                        audio: 'nzry_shenshi_1',
+                        audio: ['nzry_shenshi_11.mp3', 'nzry_shenshi_12.mp3'],
                         trigger: { player: 'damageEnd' },
                         filter(event, player) {
-                            return player.countCards('he') > 0 && event.source && event.source != player;
+                            return player.countCards('he') > 0 && event.source?.isIn() && event.source != player;
                         },
                         logTarget: 'source',
                         prompt2: '观看该角色的手牌，然后交给其一张牌，其失去此牌后，你将手牌摸至四张',
@@ -3973,28 +3973,32 @@ const packs = function () {
                             });
                             'step 1'
                             if (result.bool) {
-                                var skill = 'minishenshi_' + player.playerid;
+                                const skill = 'minishenshi_' + player.playerid;
                                 if (!lib.skill[skill]) {
-                                    lib.skill[skill] = {};
-                                    lib.translate[skill] = '审时';
+                                    game.broadcastAll((initSkill, skill) => {
+                                        initSkill(skill);
+                                        _status.postReconnect['minishenshi'] ??= [initSkill, []];
+                                        _status.postReconnect['minishenshi'][1].add(skill);
+                                    }, skill => {
+                                        lib.skill[skill] = {};
+                                        lib.translate[skill] = '审时';
+                                    }, skill);
                                 }
-                                player.give(result.cards, trigger.source).gaintag.add(skill);
                                 player.addSkill('minishenshi_3');
+                                player.give(result.cards, trigger.source).gaintag.add(skill);
                             }
                         },
                     },
                     '3': {
                         charlotte: true,
-                        audio: 'nzry_shenshi_1',
+                        audio: ['nzry_shenshi_11.mp3', 'nzry_shenshi_12.mp3'],
                         trigger: { global: ['equipAfter', 'addJudgeAfter', 'loseAfter', 'gainAfter', 'loseAsyncAfter', 'addToExpansionAfter'] },
                         filter(event, player) {
                             if (player.countCards('h') >= 4) return false;
-                            return game.hasPlayer2(function (current) {
-                                var evt = event.getl(current);
+                            return game.hasPlayer2(current => {
+                                const evt = event.getl(current);
                                 if (evt?.gaintag_map) {
-                                    for (var i in evt.gaintag_map) {
-                                        if (evt.gaintag_map[i].includes('minishenshi_' + player.playerid)) return true;
-                                    }
+                                    return Object.values(evt.gaintag_map).flat().includes(`minishenshi_${player.playerid}`);
                                 }
                                 return false;
                             });
