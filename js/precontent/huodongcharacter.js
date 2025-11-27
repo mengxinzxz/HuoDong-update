@@ -10,7 +10,7 @@ const packs = function () {
                 CLongZhou: ['lz_sufei', 'lz_tangzi', 'lz_liuqi', 'lz_huangquan'],
                 Chuodong: ['bilibili_shengxunyu', 'bilibili_Firewin', 'bilibili_jinglingqiu', 'bilibili_suixingsifeng', 'bilibili_Emptycity', 'bilibili_thunderlei', 'bilibili_lonelypatients', 'bilibili_ningjingzhiyuan', 'bilibili_xizhicaikobe'],
                 CDormitory: ['bilibili_diandian', 'bilibili_murufengchen', 'bilibili_wuzhuwanshui', 'bilibili_kuangshen', 'bilibili_yanjing', 'bilibili_xiaoyaoruyun', 'bilibili_shuijiaobuboli'],
-                Cothers: ['bilibili_sunhanhua', 'bilibili_zhoutaigong', 'bilibili_zhouxiaomei', 'bilibili_caifuren', 'bilibili_zhengxuan', 'bilibili_sp_xuyou', 'old_zuoci', 'bilibili_kuailiangkuaiyue', 'bilibili_wuqiao', 'bilibili_daxiao', 'bilibili_xushao', 'bilibili_shen_guojia', 'bilibili_re_xusheng', 'bilibili_adong', 'bilibili_zhangrang', 'bilibili_litiansuo', 'decade_huangwudie', 'bilibili_huanggai', 'bilibili_ekeshaoge', 'bilibili_guanning', 'bilibili_wangwang', 'diy_lvmeng'],
+                Cothers: ['bilibili_simayi', 'old_dongxie', 'bilibili_sunhanhua', 'bilibili_zhoutaigong', 'bilibili_zhouxiaomei', 'bilibili_caifuren', 'bilibili_zhengxuan', 'bilibili_sp_xuyou', 'old_zuoci', 'bilibili_kuailiangkuaiyue', 'bilibili_wuqiao', 'bilibili_daxiao', 'bilibili_xushao', 'bilibili_shen_guojia', 'bilibili_re_xusheng', 'bilibili_adong', 'bilibili_zhangrang', 'bilibili_litiansuo', 'decade_huangwudie', 'bilibili_huanggai', 'bilibili_ekeshaoge', 'bilibili_guanning', 'bilibili_wangwang', 'diy_lvmeng'],
                 Cothers_dualside: ['bilibili_wangtao', 'bilibili_wangyue', 'bilibili_x_wangtao', 'bilibili_x_wangyue', 'bilibili_daqiao', 'bilibili_xiaoqiao', 'bilibili_x_daqiao', 'bilibili_x_xiaoqiao', 'bilibili_ahuinan', 'bilibili_dongtuna', 'bilibili_x_ahuinan', 'bilibili_x_dongtuna'],
                 CDanJi: ['DJ_caiyang', 'DJ_pujing', 'DJ_huban'],
                 CSCS: ['biliscs_shichangshi', 'biliscs_zhangrang', 'biliscs_zhaozhong', 'biliscs_sunzhang', 'biliscs_bilan', 'biliscs_xiayun', 'biliscs_hankui', 'biliscs_lisong', 'biliscs_duangui', 'biliscs_guosheng', 'biliscs_gaowang'],
@@ -48,7 +48,7 @@ const packs = function () {
             bilibili_kuangshen: ['male', 'key', '1/10/3', ['bilibili_paoku'], ['clan:宿舍群|肘击群|活动群']],
             bilibili_shen_guojia: ['male', 'wei', '9/9/5', ['stianyi', 'resghuishi', 'bilibili_huishi'], ['doublegroup:shen:wei:wu', 'die:shen_guojia']],
             bilibili_re_xusheng: ['male', 'wu', 4, ['bilibili_pojun', 'kuangcai', 'bilibili_baodao'], ['die:re_xusheng']],
-            bilibili_xushao: ['male', 'qun', '1/6', ['bilibili_pingjian'], ['ext:活动武将/image/character/old_xushao.jpg', 'InitFilter:noZhuHp']],
+            bilibili_xushao: ['male', 'qun', '1/6', ['bol_pinjian', 'bol_yuedan'], ['die:xushao']],
             bilibili_ningjingzhiyuan: ['male', 'key', 4, ['bilibili_xiezhi', 'bilibili_fazhou'], ['clan:肘家军|宿舍群|肘击群|活动群', 'name:闹动|导近']],
             bilibili_xizhicaikobe: ['male', 'key', 4, ['bilibili_zhangcai', 'bilibili_laosao'], ['clan:肘家军|宿舍群|肘击群|活动群', 'name:戏|子宓']],
             bilibili_yanjing: ['male', 'key', 3, ['bilibili_dongxi', 'bilibili_mingcha', 'bilibili_huiyan'], ['clan:肘家军|肘击群|活动群', 'tooenough|眼睛']],
@@ -60,6 +60,8 @@ const packs = function () {
             bilibili_wuzhuwanshui: ['male', 'key', 3, ['bilibili_diaowen', 'bilibili_banyun'], ['clan:肘击群|活动群', 'name:猪|大将军']],
             bilibili_murufengchen: ['female', 'key', 3, ['bilibili_ziyuan', 'bilibili_beichen', 'bilibili_xingzhu'], ['clan:宿舍群|肘击群|活动群', 'name:风|晨']],
             bilibili_diandian: ['female', 'key', 3, ['bilibili_siyu', 'bilibili_tamen'], ['clan:肘击群|活动群', 'name:永雏|塔菲']],
+            bilibili_simayi: ['male', 'shen', 3, ['reguicai', 'fangzhu', 'rewansha', 'rezhiheng', 'rejizhi'], ['wei', 'character:shen_simayi', ...['tempname', 'die'].map(i => `${i}:new_simayi`)]],
+            old_dongxie: ['female', 'qun', 4, ['juntun', 'jiaojie'], ['die:dongxie']],
             //双面武将--正面
             bilibili_wangtao: ['female', 'shu', 3, ['huguan', 'yaopei', 'dualside'], ['dualside:bilibili_x_wangyue', 'character:wangtao', 'die:wangtao']],
             bilibili_wangyue: ['female', 'shu', 3, ['huguan', 'mingluan', 'dualside'], ['dualside:bilibili_x_wangtao', 'character:wangyue', 'tempname:wangyue', 'die:wangyue']],
@@ -3398,33 +3400,19 @@ const packs = function () {
                         order: 8.9
                     },
                 },
-                group: ['oldluanji_count', 'oldluanji_reset', 'oldluanji_respond'],
+                onuse(result, player) {
+                    player.addTempSkill('oldluanji_count');
+                    player.markAuto('oldluanji_count', result.cards.map(card => get.suit(card, player)));
+                    player.storage['oldluanji_count'].sort((a, b) => lib.suit.indexOf(b) - lib.suit.indexOf(a));
+                    player.addTip('oldluanji_count', ['oldluanji_count', ...player.storage['oldluanji_count']].map(i => get.translation(i)).join(''));
+                },
+                group: ['oldluanji_respond'],
                 subSkill: {
-                    reset: {
-                        charlotte: true,
-                        trigger: { global: 'phaseBefore' },
-                        filter(event, player) {
-                            return player.storage.oldluanji;
-                        },
-                        direct: true,
-                        firstDo: true,
-                        content() {
-                            delete player.storage.oldluanji;
-                        },
-                    },
                     count: {
                         charlotte: true,
-                        trigger: { player: 'useCard1' },
-                        filter(event, player) {
-                            return event.skill == 'oldluanji';
-                        },
-                        direct: true,
-                        firstDo: true,
-                        content() {
-                            if (!player.storage.oldluanji) player.storage.oldluanji = [];
-                            for (var i = 0; i < trigger.cards.length; i++) {
-                                player.storage.oldluanji.add(get.suit(trigger.cards[i]));
-                            }
+                        onremove(player, skill) {
+                            player.removeTip(skill);
+                            delete player.storage[skill];
                         },
                     },
                     respond: {
@@ -3438,28 +3426,6 @@ const packs = function () {
                             trigger.player.draw();
                         },
                     },
-                },
-            },
-            oldshibei: {
-                audio: 'shibei',
-                trigger: { player: 'damageEnd' },
-                forced: true,
-                content() {
-                    'step 0'
-                    player.judge(function (card) {
-                        if (player.getHistory('damage', function (evt) {
-                            return evt != trigger;
-                        }).length) {
-                            if (get.color(card) == 'black') return -1;
-                        }
-                        else if (get.color(card) == 'red') return 1;
-                        return 0;
-                    });
-                    'step 1'
-                    switch (Math.sign(result.judge)) {
-                        case 1: player.recover(); break;
-                        case -1: player.loseHp(); break;
-                    }
                 },
             },
             //张仲景
@@ -3480,69 +3446,6 @@ const packs = function () {
                         },
                     },
                 },
-            },
-            //邓士载
-            bilibili_zhenggong: {
-                audio: 'ext:活动武将/audio/skill:true',
-                trigger: { global: 'phaseBeginStart' },
-                filter(event, player) {
-                    return event.player != player && !player.isTurnedOver();
-                },
-                check(event, player) {
-                    if (game.roundNumber <= 1 && !game.hasPlayer(current => get.attitude(player, current) < 0)) return false;
-                    return true;
-                },
-                content() {
-                    const target = trigger.player, players = game.players.slice().concat(game.dead);
-                    const next = player.insertPhase();
-                    player.when('phaseAfter').filter(evt => evt == next).then(() => player.turnOver());
-                    if (!trigger._finished) {
-                        trigger.finish();
-                        trigger.untrigger(true);
-                        trigger._triggered = 5;
-                        for (const current of players) {
-                            current.getHistory().isSkipped = true;
-                            current.getStat().isSkipped = true;
-                        }
-                        const evt = target.insertPhase();
-                        delete evt.skill;
-                        game.broadcastAll(player => {
-                            player.classList.remove('glow_phase');
-                            delete _status.currentPhase;
-                        }, target);
-                    }
-                },
-                ai: { expose: 0.2 },
-            },
-            bilibili_toudu: {
-                audio: 'ext:活动武将/audio/skill:true',
-                trigger: { player: 'damageEnd' },
-                filter(event, player) {
-                    return player.isTurnedOver();
-                },
-                direct: true,
-                content() {
-                    'step 0'
-                    player.chooseCardTarget({
-                        prompt: get.prompt2('bilibili_toudu'),
-                        ai1(card) {
-                            return 6 - get.value(card);
-                        },
-                        ai2(target) {
-                            return get.effect(target, { name: 'sha' }, player);
-                        },
-                        filterTarget(card, player, target) {
-                            return lib.filter.targetEnabled({ name: 'sha' }, player, target);
-                        },
-                    });
-                    'step 1'
-                    if (result.bool) {
-                        player.logSkill('bilibili_toudu');
-                        player.discard(result.cards);
-                        player.turnOver();
-                        player.useCard({ name: 'sha' }, result.targets, false);
-                    }
-                }
             },
             shen_sunquan_skill: {
                 init(player) {
@@ -8705,67 +8608,6 @@ const packs = function () {
                     },
                 },
             },
-            //萌新自设许劭
-            bilibili_pingjian: {
-                audio: false,//狂神
-                trigger: {
-                    global: 'phaseBefore',
-                    player: ['enterGame', 'subPlayerDie'],
-                },
-                filter(event, player) {
-                    if (!(_status.characterlist || []).some(name => {
-                        if (get.is.double(name)) return false;
-                        const group = get.character(name).group;
-                        return lib.skill.bilibili_pingjian.groups.includes(group) && !player.getStorage('bilibili_pingjianx').includes(group);
-                    })) return false;
-                    return event.name != 'phase' || game.phaseNumber == 0;
-                },
-                groups: ['wei', 'shu', 'wu', 'qun', 'jin'],
-                forced: true,
-                charlotte: true,
-                async content(event, trigger, player) {
-                    await player.loseMaxHp();
-                    const list = _status.characterlist.slice();
-                    let characters = list.filter(name => {
-                        if (get.is.double(name)) return false;
-                        const group = get.character(name).group;
-                        return lib.skill.bilibili_pingjian.groups.includes(group) && !player.getStorage('bilibili_pingjianx').includes(group);
-                    }).map(name => {
-                        return get.character(name).group;
-                    }).unique().sort((a, b) => lib.group.indexOf(a) - lib.group.indexOf(b)).map(group => {
-                        return list.filter(name => get.character(name).group == group).randomGets(2);
-                    }).flat();
-                    const result = await player.chooseButton([
-                        '评鉴：请选择一张武将牌',
-                        '<div class="text center">将此武将牌作为随从牌，然后将武将牌替换为此随从牌</div>',
-                        [characters, 'character'],
-                    ], true).set('ai', button => get.rank(button.link, true)).forResult();
-                    if (result.bool) {
-                        const name = result.links[0];
-                        player.markAuto('bilibili_pingjianx', [get.character(name).group]);
-                        _status.characterlist.remove(name);
-                        const subPlayer = player.addSubPlayer({
-                            name: name,
-                            skills: get.character(name).skills,
-                            sex: get.character(name).sex,
-                            hp: 2,
-                            maxHp: 2,
-                            hs: get.cards(4),
-                            group: get.character(name).group,
-                            skill: 'bilibili_pingjian',
-                            intro: '初始体力值和体力上限为2，手牌数为4',//主将视角
-                            intro2: '随从阵亡后切换为原武将牌',//随从视角
-                            onremove(player, name) {
-                                _status.characterlist.add(name);
-                            }
-                        });
-                        await player.callSubPlayer(subPlayer);
-                    }
-                },
-                init() {
-                    if (!_status.characterlist) lib.skill.pingjian.initList();
-                },
-            },
             //神贾诩
             boljiandai: {
                 init(player) {
@@ -12235,15 +12077,9 @@ const packs = function () {
             bilibili_hanran_info: '锁定技，当你对其他角色造成伤害时，若该角色体力上限大于你，你加1点体力上限。',
             oldluanji: '乱击',
             oldluanji_info: '你可以将两张与你本回合以此法转化的花色均不相同的手牌当【万箭齐发】使用。当一名已受伤的角色因响应此牌而打出【闪】时，该角色摸一张牌。',
-            oldshibei: '矢北',
-            oldshibei_info: '锁定技，当你受到伤害后，你进行一次判定，若此伤害为本回合第一次受到的伤害且判定结果为红色，你回复1点体力；若此伤害不为本回合第一次受到的伤害且判定结果为黑色，你失去1点体力。',
             old_zhangzhongjing: '旧张机',
             old_jishi: '济世',
             old_jishi_info: '锁定技。①当你使用的牌结算完成后，若你未因此牌造成过伤害，则你将此牌对应的所有实体牌置于仁库中。②当有牌离开仁库时，你摸一张牌。',
-            bilibili_zhenggong: '争功',
-            bilibili_zhenggong_info: '其他角色的回合开始时，若你的武将牌正面朝上，你可以进行一个额外的回合。此回合结束后，你将武将牌翻面。 ',
-            bilibili_toudu: '偷渡',
-            bilibili_toudu_info: '当你受到伤害后，若你的武将牌背面朝上，你可以弃置一张手牌，将你的武将牌翻面，然后视为使用一张无距离限制的【杀】。',
             shen_sunquan_skill: '驭衡',
             shen_sunquan_skill_info: '锁定技。①回合开始时/当你每回合使用第X张牌结算完成后，你随机获得吴势力角色的X个技能。②回合结束时/当你每回合使用第X张牌结算完成后，你随机失去你因〖废案〗获得的X个技能。（X为当前回合开始时你的体力值、已损失体力值和游戏轮数的中位数）',
             bilibili_litiansuo: '萌设李田所',
@@ -12504,10 +12340,6 @@ const packs = function () {
             bilibili_pojun: '破军',
             bilibili_pojun_info: '当你使用【杀】指定一个目标后，你可以获得其所有手牌。若你的手牌数为全场唯一最多，则你造成和受到的伤害均+1。',
             bilibili_baodao: '宝刀',
-            bilibili_xushao: '萌设许劭',
-            bilibili_xushao_prefix: '萌设',
-            bilibili_pingjian: '评鉴',
-            bilibili_pingjian_info: '持恒技，锁定技。游戏开始时，或当你的随从武将牌阵亡后，你减1点体力上限，从随机每个势力的各随机两张武将牌中选择一张武将牌作为随从武将牌，然后你将武将牌替换为此随从。（随从武将牌初始2血2上限4手牌，每个势力的武将牌每局游戏只能选择一次）',
             bfake_shen_jiaxu: '蝶设神贾诩',
             bfake_shen_jiaxu_prefix: '蝶设|神',
             boljiandai: '缄殆',
@@ -12567,6 +12399,8 @@ const packs = function () {
             bilibili_laosaozhipao: '牢骚之袍',
             bilibili_laosaozhipao_info: '锁定技。每轮开始时，你选择一名其他角色，本轮将你与其外的角色移出游戏。然后若你的装备区有【牢骚之袍】，则你本轮在其上下家分别召唤普净和胡班；否则你摸两张牌。',
             bilibili_laosao_append: '<span style="font-family:yuanli"><li>seven!seven!<br><li>憋笑ing的偷菜狂&牢骚哥</span>',
+            bilibili_xushao: '爆料许劭',
+            bilibili_xushao_prefix: '爆料',
             bol_pinjian: '品鉴',
             bol_pinjian_info: '每回合限一次，你可以于合适的时机发动武将牌堆顶四张牌中的一个技能并将这四张武将牌置入武将牌堆底。',
             bol_yuedan: '月旦',
@@ -12669,6 +12503,11 @@ const packs = function () {
             '#ext:活动武将/audio/skill/bilibili_tamen2': '信塔门，得永生，仁慈的塔菲会宽恕你犯下的一切错误喵',
             bilibili_tamen_info: '①有牌移入或移出游戏后，你摸一张牌。②当你使用伤害类基本牌或普通锦囊牌指定目标后，你可以移去一只黑色“小菲”，令此牌不可被响应。然后若这两张牌的类别相同，则令此牌伤害+1。③一名角色进入濒死状态时，你可以移去一只红色“小菲”，令其回复1点体力，然后若其因此脱离濒死状态，你将牌堆顶的一张牌称为“小菲”置于武将牌上。',
             bilibili_tamen_append: '<span style="font-family:yuanli">无需王座与冠冕，我即是所有平行世界的奇迹，让流星焚尽虚妄，独属于永雏塔菲的传说，现在开演！</span>',
+            bilibili_simayi: '单机神司马懿',
+            bilibili_simayi_ab: '神司马懿',
+            bilibili_simayi_prefix: '神',
+            old_dongxie: '列传董翓',
+            old_dongxie_ab: '董翓',
         },
     };
     for (let i in huodongcharacter.character) {
