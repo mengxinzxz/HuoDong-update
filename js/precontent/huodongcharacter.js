@@ -10093,17 +10093,17 @@ const packs = function () {
             },
             //乐大小乔
             bilibili_qiqin: {
-                audio: Array.from({ length: 2 }).map((_, i) => ['', '_yue_daqiao'].map(j => j + (i + 1))).flat().map(i => 'dcqiqin' + i),
+                audio: Array.from({ length: 2 }).map((_, i) => ['', '_yue_daqiao'].map(j => j + (i + 1))).flat().map(i => `dcqiqin${i}.mp3`),
                 inherit: 'dcqiqin',
                 group: ['bilibili_qiqin_restore', 'bilibili_qiqin_draw'],
                 subSkill: {
                     get restore() {
                         const info = lib.skill.dcqiqin.subSkill.restore;
-                        info.audio = Array.from({ length: 2 }).map((_, i) => ['', '_yue_daqiao'].map(j => j + (i + 1))).flat().map(i => 'dcqiqin' + i);
+                        info.audio = Array.from({ length: 2 }).map((_, i) => ['', '_yue_daqiao'].map(j => j + (i + 1))).flat().map(i => `dcqiqin${i}.mp3`);
                         return info;
                     },
                     draw: {
-                        audio: Array.from({ length: 2 }).map((_, i) => ['', '_yue_daqiao'].map(j => j + (i + 1))).flat().map(i => 'dcqiqin' + i),
+                        audio: Array.from({ length: 2 }).map((_, i) => ['', '_yue_daqiao'].map(j => j + (i + 1))).flat().map(i => `dcqiqin${i}.mp3`),
                         trigger: { global: "gameDrawBegin" },
                         forced: true,
                         content() {
