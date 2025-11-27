@@ -12297,7 +12297,7 @@ const packs = function () {
             bolshuchen_info: `当一名角色进入濒死状态时，你可以消耗至多3点${get.poptip('rule_renwangnum')}并摸等量张牌，然后你可以交给其至多等量张牌。`,
             bolxiezheng: '挟政',
             bolxiezheng_info: `弃牌阶段结束时，你可以消耗1点${get.poptip('rule_renwangnum')}并令一名角色弃置X张牌（X为本阶段你弃置的牌数）。`,
-            bol_zhangzhongjing: '废案张机',
+            bol_zhangzhongjing: 'TW张机',
             bolliaoyi: '疗疫',
             bolliaoyi_info: '出牌阶段开始时，你可以令一名角色获得从牌堆或弃牌堆中获得其上个回合开始至现在失去过的牌的类型的牌各一张。',
             bolbinglun: '病论',
