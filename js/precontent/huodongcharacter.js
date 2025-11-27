@@ -12400,7 +12400,7 @@ const packs = function () {
             bilibili_laosaozhipao_info: '锁定技。每轮开始时，你选择一名其他角色，本轮将你与其外的角色移出游戏。然后若你的装备区有【牢骚之袍】，则你本轮在其上下家分别召唤普净和胡班；否则你摸两张牌。',
             bilibili_laosao_append: '<span style="font-family:yuanli"><li>seven!seven!<br><li>憋笑ing的偷菜狂&牢骚哥</span>',
             bilibili_xushao: '爆料许劭',
-            bilibili_xushao_prefix: '爆料',
+            bilibili_xushao_ab: '爆料',
             bol_pinjian: '品鉴',
             bol_pinjian_info: '每回合限一次，你可以于合适的时机发动武将牌堆顶四张牌中的一个技能并将这四张武将牌置入武将牌堆底。',
             bol_yuedan: '月旦',
