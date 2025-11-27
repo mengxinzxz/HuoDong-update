@@ -1205,7 +1205,7 @@ export async function content(config, pack) {
 	game.HDaddCharacter('ol_manchong', ['male', 'wei', 3, ['xinjunxing', 'yuce'], ['die:manchong']], 'offline');
 
 	//怀旧包
-	lib.characterSort.old.bilibili_buchong_online = ['old_ol_xiaoqiao', 'old_zhangbao', 'old_sunluyu', 'old_ol_yuanji'];
+	lib.characterSort.old.bilibili_buchong_online = ['junk_guanyu', 'old_ol_xiaoqiao', 'old_zhangbao', 'old_sunluyu', 'old_ol_yuanji'];
 	lib.characterSort.old.bilibili_buchong_szn2 = ['old_yuanji', 'junk_duanwei'];
 	lib.characterSort.old.bilibili_buchong_mobile2 = ['old_sb_ganning', 'old_zhouchu', 'old_xunchen', 'old_sp_kongrong', 'old_zhangzhongjing', 'oldx_zhangzhongjing', 'old_zhangyì', 'old_yanghuiyu', 'old_liuzhang', 'old_sp_sunshao', 'old_wangling', 'old_sp_huaxin', 'old_sp_mifuren', 'old_sp_jianggan'];
 	lib.characterSort.old.bilibili_buchong_menfashizu = ['old_clan_xunshu', 'old_clan_xunchen', 'old_clan_xuncai', 'old_clan_xuncan', 'oldx_clan_xuncai'];
@@ -1239,6 +1239,7 @@ export async function content(config, pack) {
 	if (lib.config.characters.includes('old')) lib.character.junk_duanwei[4].add('die:duanwei');
 	game.HDaddCharacter('old_sp_jianggan', ['male', 'wei', 3, ['spdaoshu', 'spdaizui'], ['die:sp_jianggan']], 'old');
 	game.HDaddCharacter('old_yuanji', ['female', 'wu', 3, ['dcmengchi', 'dcjiexing'], ['die:yuanji']], 'old');
+	game.HDmoveCharacter('junk_guanyu', 'old');
 	game.HDaddCharacter('old_ol_xiaoqiao', ['female', 'wu', 3, ['oltianxiang', 'rehongyan'], [...['tempname', 'die'].map(i => `${i}:ol_xiaoqiao`)]], 'old');
 
 	//DIY
