@@ -2554,57 +2554,56 @@ const packs = function () {
             //2013年韩旭爆料版神甘宁
             old_jieying: {
                 unique: true,
-                group: 'old_jieying_die',
                 audio: 'drlt_jieying',
                 trigger: { global: 'phaseBefore', player: 'enterGame' },
                 filter(event, player) {
-                    return event.name != 'phase' || game.phaseNumber == 0;
+                    return event.name !== 'phase' || game.phaseNumber == 0;
                 },
-                direct: true,
-                content() {
-                    player.logSkill('old_jieying', _status.roundStart);
-                    _status.roundStart.addSkill('old_jieying_mark');
+                forced: true,
+                logTarget(event, player) {
+                    return game.findPlayer(current => current.getSeatNum() == 1) || _status.roundStart;
                 },
+                async content(event, trigger, player) {
+                    event.targets[0].addMark(event.name, 1);
+                },
+                marktext: '营',
+                intro: {
+                    name: '劫营',
+                    name2: '营',
+                    content: '已获得【营】标记',
+                },
+                onremove(player, skill) {
+                    game.countPlayer2(target => target.clearMark(skill));
+                },
+                group: ['old_jieying_phase', 'old_jieying_die'],
                 subSkill: {
-                    mark: {
-                        charlotte: true,
-                        mark: true,
-                        marktext: '营',
-                        intro: {
-                            name: '劫营',
-                            content: '已获得【营】标记',
-                        },
-                        audio: 'drlt_jieying',
-                        trigger: { player: ['phaseAfter', 'dieAfter'] },
+                    phase: {
+                        trigger: { global: ['phaseAfter', 'dieAfter'] },
                         filter(event, player) {
-                            return game.hasPlayer(function (current) {
-                                return current.hasSkill('old_jieying');
-                            });
+                            return event.player.hasMark('old_jieying');
                         },
                         forced: true,
-                        forceDie: true,
-                        content() {
-                            'step 0'
-                            player.removeSkill('old_jieying_mark');
-                            player.next.addSkill('old_jieying_mark');
-                            'step 1'
-                            for (var target of game.players) {
-                                if (target.hasSkill('old_jieying')) target.phase('old_jieying');
-                            }
+                        logTarget: 'player',
+                        async content(event, trigger, player) {
+                            const num = trigger.player.countMark('old_jieying');
+                            trigger.player.clearMark('old_jieying');
+                            trigger.player.getNext().addMark('old_jieying', num);
+                            player.insertPhase();
                         },
                     },
                     die: {
                         charlotte: true,
                         trigger: { player: 'die' },
                         filter(event, player) {
-                            return !game.hasPlayer(function (current) {
-                                return current != player && current.hasSkill('old_jieying');
-                            });
+                            return !game.hasPlayer(current => {
+                                return current !== player && current.hasSkill('old_jieying', null, null, false);
+                            }, [], true);
                         },
+                        silent: true,
+                        firstDo: true,
                         forceDie: true,
-                        direct: true,
-                        content() {
-                            for (var target of game.players) target.removeSkill('old_jieying_mark');
+                        async content(event, trigger, player) {
+                            lib.skill['old_jieying'].onremove(player, 'old_jieying');
                         },
                     },
                 },
@@ -12032,7 +12031,7 @@ const packs = function () {
             bilibili_taoluan: '滔乱',
             bilibili_taoluan_info: '你可以将一张牌当作任意一张基本牌或普通锦囊牌使用（此牌不得是本局游戏你以此法使用过的牌），然后你获得一名其他角色的一张牌，若你未获得你以此法使用的牌的类别不同的牌，你失去1点体力且〖滔乱〗无效直到回合结束。',
             old_jieying: '劫营',
-            old_jieying_info: '锁定技，游戏开始时，你令一号位角色获得【营】标记。有【营】标记的角色的回合结束或死亡后，将【营】移动至下家，然后你进行一个额外回合。',
+            old_jieying_info: '锁定技。①游戏开始时，你令一号位角色获得“营”标记。②有“营”标记的角色的回合结束后或死亡后，将其“营”标记移动至其下家，然后你进行一个额外回合。',
             old_tongling: '铜铃',
             old_tongling_info: '锁定技，当你成为一名角色使用牌指定的唯一目标后，或其他角色对你发动技能时，你摸两张牌。',
             boljingjia: '精甲',
