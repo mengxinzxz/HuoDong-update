@@ -1178,12 +1178,11 @@ export async function content(config, pack) {
 	game.HDmoveCharacter('old_huatuo', 'onlyOL');
 
 	//移动服
-	lib.characterSort.mobile.bilibili_buchong_mobile = ['old_zhoufei', 'ol_huaxiong', 'old_wanglang', 'old_shixie', 'old_zhangxingcai', 'old_zhaoxiang', 'ol_maliang', 'ol_yuanshu', 'old_bulianshi', 'old_zhangqiying'];
+	lib.characterSort.mobile.bilibili_buchong_mobile = ['old_zhoufei', 'ol_huaxiong', 'old_wanglang', 'old_shixie', 'old_zhangxingcai', 'ol_maliang', 'ol_yuanshu', 'old_bulianshi', 'old_zhangqiying'];
 	game.HDaddCharacter('old_zhangqiying', ['female', 'qun', 3, ['xinfu_falu', 'olddianhua', 'oldzhenyi'], ['die:zhangqiying']], 'mobile');
 	game.HDaddCharacter('old_bulianshi', ['female', 'wu', 3, ['anxu', 'zhuiyi'], []], 'mobile');
 	game.HDaddCharacter('ol_yuanshu', ['male', 'qun', 4, ['rewangzun', 'retongji'], []], 'mobile');
 	game.HDaddCharacter('ol_maliang', ['male', 'shu', 3, ['zishu', 'yingyuan'], []], 'mobile');
-	game.HDaddCharacter('old_zhaoxiang', ['female', 'shu', 4, ['xinfanghun', 'xinfuhan'], ['die:zhaoxiang']], 'mobile');
 	game.HDmoveCharacter('old_wanglang', 'mobile');
 	game.HDmoveCharacter('old_shixie', 'mobile');
 	game.HDmoveCharacter('old_zhangxingcai', 'mobile');
@@ -1207,7 +1206,7 @@ export async function content(config, pack) {
 	//怀旧包
 	lib.characterSort.old.bilibili_buchong_online = ['junk_guanyu', 'old_ol_xiaoqiao', 'old_zhangbao', 'old_sunluyu', 'old_ol_yuanji'];
 	lib.characterSort.old.bilibili_buchong_szn2 = ['old_yuanji', 'junk_duanwei'];
-	lib.characterSort.old.bilibili_buchong_mobile2 = ['old_sb_ganning', 'old_zhouchu', 'old_xunchen', 'old_sp_kongrong', 'old_zhangzhongjing', 'oldx_zhangzhongjing', 'old_zhangyì', 'old_yanghuiyu', 'old_liuzhang', 'old_sp_sunshao', 'old_wangling', 'old_sp_huaxin', 'old_sp_mifuren', 'old_sp_jianggan'];
+	lib.characterSort.old.bilibili_buchong_mobile2 = ['old_zhaoxiang', 'old_sb_ganning', 'old_zhouchu', 'old_xunchen', 'old_sp_kongrong', 'old_zhangzhongjing', 'oldx_zhangzhongjing', 'old_zhangyì', 'old_yanghuiyu', 'old_liuzhang', 'old_sp_sunshao', 'old_wangling', 'old_sp_huaxin', 'old_sp_mifuren', 'old_sp_jianggan'];
 	lib.characterSort.old.bilibili_buchong_menfashizu = ['old_clan_xunshu', 'old_clan_xunchen', 'old_clan_xuncai', 'old_clan_xuncan', 'oldx_clan_xuncai'];
 	lib.characterSort.old.bilibili_buchong_extra = ['old_shen_sunce', 'old_shen_taishici', 'old_shen_xunyu'];
 	game.HDaddCharacter('old_clan_xunshu', ['male', 'qun', 3, ['old_shenjun', 'old_balong', 'clandaojie'], ['clan:颍川荀氏', 'tempname:clan_xunshu', 'die:clan_xunshu']], 'old');
@@ -1241,6 +1240,7 @@ export async function content(config, pack) {
 	game.HDaddCharacter('old_yuanji', ['female', 'wu', 3, ['dcmengchi', 'dcjiexing'], ['die:yuanji']], 'old');
 	game.HDmoveCharacter('junk_guanyu', 'old');
 	game.HDaddCharacter('old_ol_xiaoqiao', ['female', 'wu', 3, ['oltianxiang', 'rehongyan'], [...['tempname', 'die'].map(i => `${i}:ol_xiaoqiao`)]], 'old');
+	game.HDaddCharacter('old_zhaoxiang', ['female', 'shu', 4, ['xinfanghun', 'xinfuhan'], ['die:zhaoxiang']], 'old');
 
 	//DIY
 	lib.characterSort.diy.diy_trashbin.addArray(['old_yj_ganning', 'lusu', 'yuanshao', 'bol_zhangzhongjing', 'bol_sp_huaxin', 'bfake_zuoci', 'bfake_yangfu', 'bfake_chengpu', 'bfake_sundeng', 'old_shen_sunquan', 'old_shen_ganning', 'bfake_chengui', 'old_ol_xiaoqiao', 'old_zhanghe', 'old_zhugejin', 'oldx_zhangfei', 'oldx_guanyu', 'oldx_zhaoyun', 'oldx_yujin']);
@@ -1423,8 +1423,8 @@ export async function content(config, pack) {
 		old_liuzhang_prefix: '旧',
 		old_sp_sunshao: '旧孙邵',
 		old_sp_sunshao_prefix: '旧',
-		old_zhaoxiang: '手杀赵襄',
-		old_zhaoxiang_prefix: '手杀',
+		old_zhaoxiang: '旧赵襄',
+		old_zhaoxiang_prefix: '旧',
 		old_bulianshi: '手杀步练师',
 		old_bulianshi_prefix: '手杀',
 		ol_yuanshu: '手杀袁术',
@@ -1496,7 +1496,7 @@ export async function content(config, pack) {
 		old_shixie: '手杀士燮',
 		old_shixie_prefix: '手杀',
 		old_zhangxingcai: '手杀张星彩',
-		old_zhangxingca_prefix: '手杀',
+		old_zhangxingcai_prefix: '手杀',
 		old_huatuo: 'OL界华佗',
 		old_huatuo_prefix: 'OL|界',
 		ol_huaxiong: '手杀界华雄',
