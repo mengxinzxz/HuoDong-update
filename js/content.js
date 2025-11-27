@@ -48,56 +48,6 @@ export async function content(config, pack) {
 		}
 	};
 
-	//十周年UI美化素材
-	if (game.HasExtension('十周年UI')) {
-		const [folders, files] = await game.promises.getFileList('extension/十周年UI/image/card');
-		if (files) {
-			for (const img of ['leijin', 'bianzhen', 'mingzhi']) lib.card['zhengsu_' + img].fullskin = true;
-			//整肃
-			if (!files.includes('zhengsu_leijin.png')) {
-				game.readFile('extension/活动武将/image/card/zhengsu_leijin.png', (data) => {
-					game.writeFile(data, 'extension/十周年UI/image/card', 'zhengsu_leijin.png', () => { });
-				});
-			}
-			if (!files.includes('zhengsu_bianzhen.png')) {
-				game.readFile('extension/活动武将/image/card/zhengsu_bianzhen.png', (data) => {
-					game.writeFile(data, 'extension/十周年UI/image/card', 'zhengsu_bianzhen.png', () => { });
-				});
-			}
-			if (!files.includes('zhengsu_mingzhi.png')) {
-				game.readFile('extension/活动武将/image/card/zhengsu_mingzhi.png', (data) => {
-					game.writeFile(data, 'extension/十周年UI/image/card', 'zhengsu_mingzhi.png', () => { });
-				});
-			}
-			if (!files.includes('zhengsu_leijin.webp')) {
-				game.readFile('extension/活动武将/image/card/zhengsu_leijin.webp', (data) => {
-					game.writeFile(data, 'extension/十周年UI/image/card', 'zhengsu_leijin.webp', () => { });
-				});
-			}
-			if (!files.includes('zhengsu_bianzhen.webp')) {
-				game.readFile('extension/活动武将/image/card/zhengsu_bianzhen.webp', (data) => {
-					game.writeFile(data, 'extension/十周年UI/image/card', 'zhengsu_bianzhen.webp', () => { });
-				});
-			}
-			if (!files.includes('zhengsu_mingzhi.webp')) {
-				game.readFile('extension/活动武将/image/card/zhengsu_mingzhi.webp', (data) => {
-					game.writeFile(data, 'extension/十周年UI/image/card', 'zhengsu_mingzhi.webp', () => { });
-				});
-			}
-			//闪闪
-			if (!files.includes('bol_shanshan.png')) {
-				game.readFile('extension/活动武将/image/card/bol_shanshan.png', (data) => {
-					game.writeFile(data, 'extension/十周年UI/image/card', 'bol_shanshan.png', () => { });
-				});
-			}
-			if (!files.includes('bol_shanshan.webp')) {
-				game.readFile('extension/活动武将/image/card/bol_shanshan.webp', (data) => {
-					game.writeFile(data, 'extension/十周年UI/image/card', 'bol_shanshan.webp', () => { });
-				});
-			}
-		}
-	}
-
 	//官方武将包保护机制
 	//添加
 	lib.config.all.sgscharacters.push('diy');
@@ -213,31 +163,12 @@ export async function content(config, pack) {
 	//对局机制优化
 	//整肃
 	if (lib.config.extension_活动武将_HD_zhengsu) {
-		lib.rank.rarity.epic.addArray(['sp_huangfusong', 'sp_zhujun']);
-		lib.skill.zhengsu.subSkill.leijin = {
-			mod: {
-				aiOrder(player, card, num) {
-					if (typeof card.number != 'number') return;
-					var history = player.getHistory('useCard', function (evt) {
-						return evt.isPhaseUsing();
-					});
-					if (history.length == 0) return num + 10 * (14 - card.number);
-					var num = get.number(history[0].card);
-					if (!num) return;
-					for (var i = 1; i < history.length; i++) {
-						var num2 = get.number(history[i].card);
-						if (!num2 || num2 <= num) return;
-						num = num2;
-					}
-					if (card.number > num) return num + 10 * (14 - card.number);
-				},
-			},
-			mark: true,
-			trigger: { player: 'useCard1' },
-			lastDo: true,
-			charlotte: true,
-			forced: true,
-			popup: false,
+		for (const name of ['leijin', 'bianzhen', 'mingzhi']) {
+			if (!lib.card[`zhengsi_${name}`]) continue;
+			lib.card[`zhengsi_${name}`].fullimage = true;
+			lib.card[`zhengsi_${name}`].image = `ext:活动武将/image/card/zhengsi_${name}.png`;
+		}
+		Object.assign(lib.skill.zhengsu_leijin ? lib.skill.zhengsu_leijin : lib.skill.zhengsu.subSkill.leijin, {
 			init(player) {
 				var zsbgxx = document.querySelector('.zhengsubeijing1');
 				var zsbggg = document.querySelector('.zhengsubeijing2');
@@ -267,9 +198,6 @@ export async function content(config, pack) {
 				delete player.storage.zhengsu_leijingua2;
 				delete player.storage.zhengsu_leijingua3;
 				delete player.storage.zhengsu_leijin;
-			},
-			filter(event, player) {
-				return player.isPhaseUsing() && player.storage.zhengsu_leijin !== false;
 			},
 			content() {
 				var list = player.getHistory('useCard', function (evt) {
@@ -329,15 +257,8 @@ export async function content(config, pack) {
 				}
 				player.markSkill('zhengsu_leijin');
 			},
-			intro: { content: '<li>条件：回合内所有于出牌阶段使用的牌点数递增且不少于三张。' },
-		};
-		lib.skill.zhengsu.subSkill.bianzhen = {
-			mark: true,
-			trigger: { player: 'useCard1' },
-			firstDo: true,
-			charlotte: true,
-			forced: true,
-			popup: false,
+		});
+		Object.assign(lib.skill.zhengsu_bianzhen ? lib.skill.zhengsu_bianzhen : lib.skill.zhengsu.subSkill.bianzhen, {
 			init(player) {
 				var zsbgxx = document.querySelector('.zhengsubeijing1');
 				var zsbggg = document.querySelector('.zhengsubeijing2');
@@ -366,9 +287,6 @@ export async function content(config, pack) {
 				delete player.storage.zhengsu_bianzhen;
 				delete player.storage.zhengsu_bianzhengua2;
 				delete player.storage.zhengsu_bianzhengua3;
-			},
-			filter(event, player) {
-				return player.isPhaseUsing() && player.storage.zhengsu_bianzhen !== false;
 			},
 			content() {
 				var list = player.getHistory('useCard', function (evt) {
@@ -413,45 +331,8 @@ export async function content(config, pack) {
 					}, player);
 				}
 			},
-			intro: { content: '<li>条件：回合内所有于出牌阶段使用的牌花色相同且不少于两张。' },
-			ai: {
-				effect: {
-					player_use(card, player, target) {
-						if (typeof card != 'object' || !player.isPhaseUsing()) return;
-						var suitx = get.suit(card);
-						var history = player.getHistory('useCard');
-						if (!history.length) {
-							var val = 0;
-							if (player.hasCard(function (cardx) {
-								return get.suit(cardx) == suitx && card != cardx && (!card.cards || !card.cards.includes(cardx)) && player.hasValueTarget(cardx);
-							}, 'hs')) val = [2, 0.1];
-							if (val) return val;
-							return;
-						}
-						var num = 0;
-						var suit = false;
-						for (var i = 0; i < history.length; i++) {
-							var suit2 = get.suit(history[i].card);
-							if (!lib.suit.includes(suit2)) return;
-							if (suit && suit != suit2) return;
-							suit = suit2;
-							num++;
-						}
-						if (suitx == suit && num == 1) return [1, 0.1];
-						if (suitx != suit && (num > 1 || num <= 1 && player.hasCard(function (cardx) {
-							return get.suit(cardx) == suit && player.hasValueTarget(cardx);
-						}, 'hs'))) return 'zeroplayertarget';
-					},
-				},
-			},
-		};
-		lib.skill.zhengsu.subSkill.mingzhi = {
-			mark: true,
-			trigger: { player: 'loseAfter' },
-			firstDo: true,
-			charlotte: true,
-			forced: true,
-			popup: false,
+		});
+		Object.assign(lib.skill.zhengsu_mingzhi ? lib.skill.zhengsu_mingzhi : lib.skill.zhengsu.subSkill.mingzhi, {
 			init(player) {
 				var zsbgxx = document.querySelector('.zhengsubeijing1');
 				var zsbggg = document.querySelector('.zhengsubeijing2');
@@ -482,11 +363,6 @@ export async function content(config, pack) {
 				delete player.storage.zhengsu_mingzhi_markcount;
 				delete player.storage.zhengsu_mingzhigua2;
 				delete player.storage.zhengsu_mingzhigua3;
-			},
-			filter(event, player) {
-				if (player.storage.zhengsu_mingzhi === false || event.type != 'discard') return false;
-				var evt = event.getParent('phaseDiscard');
-				return evt?.player == player;
 			},
 			content() {
 				var goon = true, list = [];
@@ -539,8 +415,7 @@ export async function content(config, pack) {
 				}
 				player.markSkill('zhengsu_mingzhi');
 			},
-			intro: { content: '<li>条件：回合内所有于弃牌阶段弃置的牌花色均不相同且不少于两张。' },
-		};
+		});
 		lib.translate.spyanji_info = `出牌阶段开始时，你可以进行${get.poptip('rule_zhengsu')}。若如此做，弃牌阶段结束时，若你整肃成功，你获得整肃奖励。`;
 		lib.translate.spzhengjun_info = `出牌阶段开始时，你可以进行${get.poptip('rule_zhengsu')}。若如此做，弃牌阶段结束时，若你整肃成功，你获得整肃奖励，然后你可以选择一名其他角色，令其也获得整肃奖励。`;
 		lib.translate.houfeng_info = `每轮限一次，一名其他角色的出牌阶段开始时，若其在你的攻击范围内，则你可以令其进行${get.poptip('rule_zhengsu')}。若如此做，其本回合弃牌阶段结束时，若其整肃成功，你与其获得整肃奖励。`;
