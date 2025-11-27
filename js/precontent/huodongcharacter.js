@@ -21,7 +21,7 @@ const packs = function () {
             bilibili_daxiao: ['female', 'wu', 3, ['bilibili_qiqin', 'dczixi', 'dcweiwan'], ['die:yue_daqiao', 'die:yue_xiaoqiao', 'name:桥|null-桥|null']],
             bilibili_zhoutaigong: ['male', 'wu', 3, ['dcqiqin', 'olqingshu', 'olshoushu'], ['name:周|null']],
             bilibili_zhouxiaomei: ['female', 'wu', 3, ['dchuishu', 'dcyishu', 'rebiyue'], ['name:周|null']],
-            bilibili_zhangrang: ['male', 'qun', 3, ['bilibili_taoluan']],
+            bilibili_zhangrang: ['male', 'qun', 3, ['bilibili_taoluan'], ['die:zhangrang']],
             diy_lvmeng: ['male', 'wu', 4, ['BTkongju', 'BThouqi'], ['die:lvmeng']],
             bilibili_wangwang: ['female', 'shu', 3, ['huguan', 'yaopei', 'mingluan'], ['die:wangtao', 'die:wangyue', 'name:王|桃-王|悦']],
             bilibili_guanning: ['male', 'qun', '3/7', ['BTdunshi'], ['forbidai', 'die:guanning']],
@@ -2494,7 +2494,7 @@ const packs = function () {
                     },
                     prompt(links, player) {
                         return '将一张牌当作' + (get.translation(links[0][3]) || '') + get.translation(links[0][2]) + '使用';
-                    }
+                    },
                 },
                 ai: {
                     order: 7,
@@ -12030,7 +12030,6 @@ const packs = function () {
             BTkongju_info: '恐惧技，出牌阶段结束时，若你于此阶段没有使用或打出过【杀】，你可以跳过弃牌阶段并令所有其他角色获得1枚“恐惧”标记。',
             BThouqi_info: '锁定技，准备阶段，若场上的“恐惧”标记数不少于100，你所属的阵营直接获得游戏胜利。',
             bilibili_taoluan: '滔乱',
-            bilibili_taoluan_backup: '滔乱',
             bilibili_taoluan_info: '你可以将一张牌当作任意一张基本牌或普通锦囊牌使用（此牌不得是本局游戏你以此法使用过的牌），然后你获得一名其他角色的一张牌，若你未获得你以此法使用的牌的类别不同的牌，你失去1点体力且〖滔乱〗无效直到回合结束。',
             old_jieying: '劫营',
             old_jieying_info: '锁定技，游戏开始时，你令一号位角色获得【营】标记。有【营】标记的角色的回合结束或死亡后，将【营】移动至下家，然后你进行一个额外回合。',
