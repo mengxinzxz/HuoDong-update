@@ -199,7 +199,7 @@ const packs = function () {
                     player.loseHp();
                     target.damage('nocard');
                     'step 1'
-                    if (!target.In() || target.hasHistory('damage', function (evt) {
+                    if (!target.isIn() || target.hasHistory('damage', function (evt) {
                         return evt.getParent('bilibili_kuangxi') == event && evt._dyinged;
                     })) player.addTempSkill('bilibili_kuangxi_silent');
                 },
