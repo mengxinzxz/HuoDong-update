@@ -20,6 +20,7 @@ const packs = function () {
                 wechat_wanxiang: ['ruanhui', 'kanze', 'zumao', 'xiahouba', 'buzhi', 'liuqi', 'ganfuren', 'liuyao', 'zhugeguo', 'xurong', 'yj_weiyan', 'yj_huangzhong', 'yj_ganning', 'zhaoxiang', 'guozhao', 'sunhanhua', 'pangdegong', 'guanyinping', 'baosanniang', 'taoqian', 'guansuo', 'liuyan', 'shenpei', 'yangxiu', 'yj_xuhuang', 'mayunlu', 'litong'].map(i => `wechat_${i}`),
                 wechat_zhiyin: ['zhugeke', 'mayunlu', 'bulianshi', 'diaochan', 'taishici', 'luxun', 'sunshangxiang', 'xunyou', 'dianwei', 'zhaoyun', 'xinxianying', 'guohuanghou', 'kongrong', 'caopi', 'jiaxu', 'zhangfei', 'dongzhuo', 'wangyi', 'zhangchunhua', 'hetaihou', 'zhurong', 'jiangwei', 'caozhi', 'liubei', 'sunce', 'xunyu', 'zhenji', 'xuzhu', 'yuanshao', 'lusu', 'guojia', 'lvbu', 'daqiao', 'xiaoqiao', 'caocao', 'zhugeliang', 'simayi', 'machao', 'huangyueying', 'caiwenji', 'zhouyu', 'sunquan', 'guanyu'].map(i => `wechat_zhiyin_${i}`),
                 wechat_zhi: ['yuanshu', 'fuhuanghou', 'caojie', 'caocao', 'zhangjiao'].map(i => `wechat_zhi_${i}`),
+                wechat_zhulinqixian: ['ruanji'].map(i => `wechat_${i}`),
                 wechat_trashBin: ['luxun', 'zuoci', 'zhaoxiang'].map(i => `wechat_old_${i}`),
             },
         },
@@ -217,6 +218,8 @@ const packs = function () {
             wechat_zhi_caojie: ['female', 'qun', 4, ['wechatweiqi', 'wechatxiangyi']],
             wechat_zhi_caocao: ['male', 'wei', 4, ['wechatjishi', 'wechatercai', 'wechatquanshi']],
             wechat_zhi_zhangjiao: ['male', 'qun', 4, ['wechatzhongxin', 'wechattianqi']],
+            // 竹林七贤
+            wechat_ruanji: ['male', 'wei', 3, ['wechatyonghuai', 'wechatqiongtu']],
         },
         characterIntro: {
         },
@@ -16063,6 +16066,189 @@ const packs = function () {
                     }
                 }
             },
+            // 阮籍
+            wechatyonghuai: {
+                audio: 'ext:活动武将/audio/skill:2',
+                enable: 'phaseUse',
+                usable: 1,
+                filterCard: lib.filter.cardDiscardable,
+                check(card) {
+                    const player = get.player();
+                    const type = get.type2(card);
+                    if (!['basic', 'trick', 'equip'].includes(type) || player.getStorage('wechatyonghuai').includes(type)) return 0;
+                    return 6.5 - get.value(card);
+                },
+                async content(event, trigger, player) {
+                    const type = get.type2(event.cards[0]);
+                    if (['basic', 'trick', 'equip'].includes(type)) await get.info(event.name).choices[type].content(player);
+                },
+                onremove: true,
+                intro: { content: (storage, player) => `已移除分支：${storage.map(i => get.translation(storage)).join('、')}` },
+                ai: {
+                    order(item, player) {
+                        if (player.hasCard(card => lib.filter.cardDiscardable(card, player, 'wechatyonghuai') && ['basic', 'trick', 'equip'].includes(get.type2(card)) && !player.getStorage('wechatyonghuai').includes(get.type2(card)), 'h')) return 10;
+                        return 0.1;
+                    },
+                    result: { player: 1 }
+                },
+                choices: {
+                    basic: {
+                        async content(player) {
+                            await player.draw(2);
+                            player.addTempSkill('wechatyonghuai_effect');
+                        },
+                    },
+                    trick: {
+                        async content(player) {
+                            const list = get.inpileVCardList(info => {
+                                return info[0] == 'trick' && player.hasUseTarget({ name: info[2], isCard: true });
+                            });
+                            if (!list.length) return;
+                            const result = list.length == 1 ? { bool: true, links: ['', '', list[0]] } : await player.chooseButton(['咏怀：请选择你要视为使用的牌', [list, 'vcard']]).set('ai', button => {
+                                const player = get.player();
+                                return player.getUseValue({ name: button.link[2], isCard: true });
+                            }).forResult();
+                            if (result?.links?.length) {
+                                const card = get.autoViewAs({ name: result.links[0][2], isCard: true });
+                                const next = player.chooseUseTarget(card, true, false);
+                                player.when({ player: 'useCard2' }).filter(evt => evt.getParent() == next).step(async (event, trigger, player) => {
+                                    player.removeSkill(event.name);
+                                    const info = get.info(trigger.card);
+                                    if (!info.multitarget) {
+                                        if (trigger.targets?.length > 1 || game.hasPlayer(current => {
+                                            return !trigger.targets.includes(current) && lib.filter.targetEnabled2(trigger.card, player, current) && lib.filter.targetInRange(trigger.card, player, current);
+                                        })) {
+                                            const { result } = await player.chooseTarget(`咏怀：你可以为${get.translation(trigger.card)}增加${trigger.targets.length > 1 ? '或减少' : ''}一个目标`, (card, player, target) => {
+                                                const { cardx, targets } = get.event();
+                                                if (targets.includes(target) && targets.length > 1) return true;
+                                                return !targets.includes(target) && lib.filter.targetEnabled2(cardx, player, target) && lib.filter.targetInRange(cardx, player, target);
+                                            }).set('ai', target => {
+                                                const { player, targets } = get.event();
+                                                const trigger = _status.event.getTrigger();
+                                                return get.effect(target, trigger.card, player, player) * (targets.includes(target) ? -1 : 1);
+                                            }).set('targets', trigger.targets).set('cardx', trigger.card);
+                                            if (result?.targets?.length) {
+                                                if (!event.isMine() && !event.isOnline()) await game.delayx();
+                                                const { targets } = result;
+                                                player.line(targets);
+                                                trigger.targets[trigger.targets.includes(targets[0]) ? 'removeArray' : 'addArray'](targets);
+                                            }
+                                        }
+                                    }
+                                });
+                                await next;
+                            }
+                        },
+                    },
+                    equip: {
+                        async content(player) {
+                            const cards = get.cards(3);
+                            await game.cardsGotoOrdering(cards);
+                            const next = player.chooseToMove(true);
+                            next.set('list', [
+                                ['牌堆顶', cards],
+                                ['牌堆底'],
+                                ['自己获得'],
+                            ]);
+                            next.set('prompt', '咏怀：获得其中一张牌，然后将另外两张牌移动到牌堆顶或牌堆底');
+                            next.set('filterOk', moved => {
+                                return moved[2].length == 1;
+                            });
+                            next.set('processAI', list => {
+                                const player = get.player();
+                                let cards = list[0][1];
+                                const gain = cards.sort((a, b) => get.value(b, player) - get.value(a, player))[0];
+                                cards.remove(gain);
+                                return [[cards], [], [gain]];
+                            });
+                            const { result } = await next;
+                            const top = result?.moved?.[0] || [];
+                            const bottom = result?.moved?.[1] || [];
+                            const gain = result?.moved?.[2] || [];
+                            top.reverse();
+                            await game.cardsGotoPile(top.concat(bottom), ['top_cards', top], (event, card) => {
+                                if (event.top_cards.includes(card)) return ui.cardPile.firstChild;
+                                return null;
+                            });
+                            game.addCardKnower(top, player);
+                            game.addCardKnower(bottom, player);
+                            player.popup(`${get.cnNumber(top.length)}上${get.cnNumber(bottom.length)}下`);
+                            game.log(player, `将${get.cnNumber(top.length)}张牌置于牌堆顶`);
+                            await game.delayx();
+                            if (gain.length) {
+                                await player.gain(gain, 'draw');
+                                game.log(player, '获得了一张牌');
+                            }
+                        },
+                    },
+                },
+                subSkill: {
+                    effect: {
+                        charlotte: true,
+                        mark: true,
+                        intro: { content: '本回合基本牌不计入手牌上限' },
+                        mod: {
+                            ignoredHandcard(card, player) {
+                                if (get.type(card, player) == 'basic') return true;
+                            },
+                            cardDiscardable(card, player, name) {
+                                if (name == 'phaseDiscard' && get.type(card, player) == 'basic') return false;
+                            },
+                        },
+                    }
+                },
+            },
+            wechatqiongtu: {
+                audio: 'ext:活动武将/audio/skill:2',
+                trigger: { player: 'dying' },
+                filter(event, player) {
+                    return player.hasSkill('wechatyonghuai', null, null, false) && player.getStorage('wechatyonghuai').length < 2;
+                },
+                async cost(event, trigger, player) {
+                    const list = ['basic', 'trick', 'equip'], storage = player.getStorage('wechatyonghuai');
+                    const choices = [];
+                    const choiceList = ['基本牌', '锦囊牌', '装备牌'];
+                    for (let i = 0; i < list.length; i++) {
+                        if (storage.includes(list[i])) choiceList[i] = `<span style="text-decoration: line-through; opacity:0.5; ">${choiceList[i]}</span>`;
+                        else choices.push(`选项${get.cnNumber(i + 1, true)}`);
+                    }
+                    const { result } = await player.chooseControl(choices, 'cancel2').set('prompt', `###${get.prompt(event.skill)}###<div class='text center'>你可以移去一个〖咏怀〗的分支将体力回复至1点</div>`).set('choiceList', choiceList).set("ai", () => {
+                        const player = get.player();
+                        if (player.countCards('hs', card => player.canSaveCard(card, player)) >= 1 - player.hp) return 'cancel2';
+                        const controls = get.event('controls').slice(0);
+                        const list = ['选项三', '选项一', '选项二'];
+                        for (const choice of list) {
+                            if (controls.includes(choice)) return choice;
+                        }
+                        return 'cancel2';
+                    });
+                    event.result = {
+                        bool: result?.control !== 'cancel2',
+                        cost_data: result?.control,
+                    }
+                },
+                async content(event, trigger, player) {
+                    const map = new Map([
+                        ['选项一', ['basic', '摸两张牌且本回合其的基本牌不计入手牌上限']],
+                        ['选项二', ['trick', '视为使用一张锦囊牌且其可以为此牌增加或减少一个目标（此牌目标数至少为1）']],
+                        ['选项三', ['equip', '观看牌堆顶的三张牌，获得其中一张牌并将剩余牌以任意顺序置于牌堆顶或牌堆底']],
+                    ]);
+                    const [type, prompt] = map.get(event.cost_data);
+                    player.markAuto('wechatyonghuai', [type]);
+                    game.log(player, '移去了', '#g【咏怀】', '的', `#y${get.translation(type)}`, '分支');
+                    await player.recoverTo(1);
+                    const targets = game.filterPlayer(current => current != player);
+                    if (targets.length) {
+                        const result = targets.length == 1 ? { bool: true, targets } : await player.chooseTarget(lib.filter.notMe, true, '穷途：令一名其他角色' + prompt).forResult();
+                        if (result?.targets?.length) {
+                            const [target] = result.targets;
+                            player.line(target);
+                            await get.info('wechatyonghuai').choices[type].content(target);
+                        }
+                    }
+                },
+                ai: { combo: 'wechatyonghuai' }
+            },
         },
         dynamicTranslate: {
             wechatxiangzhi(player) {
@@ -16168,6 +16354,18 @@ const packs = function () {
                     return text;
                 }).join('；')}。`;
             },
+            wechatyonghuai(player, skill) {
+                const map = new Map([
+                    ['basic', '基本牌，你摸两张牌且本回合你的基本牌不计入手牌上限'],
+                    ['trick', '锦囊牌，你视为使用一张锦囊牌且你可以为此牌增加或减少一个目标（此牌目标数至少为1）'],
+                    ['equip', '装备牌，你观看牌堆顶的三张牌，获得其中一张牌并将剩余牌以任意顺序置于牌堆顶或牌堆底+1'],
+                ]);
+                return `出牌阶段限一次，你可以弃置一张牌。若此牌的类型为：${['basic', 'trick', 'equip'].map((key, index) => {
+                    const text = `${index + 1}.${map.get(key)}`;
+                    if (player.getStorage(skill).includes(key)) return `<span style="text-decoration: line-through;">${text}</span>`;
+                    return text;
+                }).join('；')}。`;
+            },
         },
         translate: {
             //武将分包
@@ -16179,6 +16377,7 @@ const packs = function () {
             wechat_wanxiang: '小程序·万象森罗',
             wechat_zhiyin: '小程序·登峰造<span style="text-decoration: line-through;">只因</span>极',
             wechat_zhi: '小程序·志',
+            wechat_zhulinqixian: '小程序·竹林七贤',
             wechat_trashBin: `小程序·<span style="text-decoration: line-through;">${get.poptip('rule_mamba')}</span>垃圾桶`,
             //武将
             wechat_menghuo: '微信孟获',
@@ -17044,6 +17243,13 @@ const packs = function () {
             wechat_shen_zhangliao: '微信神张辽',
             wechatzhiti: '止啼',
             wechatzhiti_info: '锁定技。①已受伤的其他角色手牌上限-1；②当你和已受伤的角色拼点或【决斗】胜利或受到伤害后，你恢复一个装备栏。',
+            wechat_ruanji: '微信阮籍',
+            wechatzhiti: '止啼',
+            wechatzhiti_info: '锁定技。①已受伤的其他角色手牌上限-1；②当你和已受伤的角色拼点或【决斗】胜利或受到伤害后，你恢复一个装备栏。',
+            wechatyonghuai: '咏怀',
+            wechatyonghuai_info: '出牌阶段限一次，你可以弃置一张牌。若此牌的类型为：1.基本牌，你摸两张牌且本回合你的基本牌不计入手牌上限；2.锦囊牌，你视为使用一张锦囊牌且你可以为此牌增加或减少一个目标（此牌目标数至少为1）；3.装备牌，你观看牌堆顶的三张牌，获得其中一张牌并将剩余牌以任意顺序置于牌堆顶或牌堆底。',
+            wechatqiongtu: '穷途',
+            wechatqiongtu_info: `当你进入濒死状态时，若${get.poptip('wechatyonghuai')}剩余分支大于1，则你可以移去其中一个分支并将体力回复至1点，然后你令一名其他角色执行此分支的效果。`,
         },
     };
     for (let i in WeChatkill.character) {
