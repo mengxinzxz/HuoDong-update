@@ -9,7 +9,7 @@ const packs = function () {
                 wechat_standard: ['sunshangxiang', 'xuzhu', 'guanyu', 'caocao', 'zhaoyun', 'zhangfei', 'machao', 'lvmeng', 'zhenji', 'huangyueying', 're_yuanshu', 'huaxiong'].map(i => `wechat_${i}`),
                 wechat_extra: [
                     ...['yuanshao', 'caopi', 'xiahouyuan', 'caoren', 'zhangzhang', 'huangzhong', 'pangde', 'wangping', 'jiaxu', 'pangtong', 'yanyan', 'sp_zhugeliang', 'lukang', 'sunliang', 'zhoutai', 'caiwenji', 'menghuo'].map(i => `wechat_${i}`),
-                    ...['caocao', 'simayi', 'zhugeliang', 'lvbu', 'lvmeng', 'guanyu'].map(i => `wechat_shen_${i}`),
+                    ...['zhangliao', 'caocao', 'simayi', 'zhugeliang', 'lvbu', 'lvmeng', 'guanyu'].map(i => `wechat_shen_${i}`),
                 ],
                 wechat_refresh: ['weiyan', 'liubiao', 'zhaoyun', 'jushou', 'gongsunzan', 'xushu', 'luxun', 'zuoci'].map(i => `wechat_re_${i}`),
                 wechat_yijiang: ['quancong', 'guyong', 'liaohua', 'gongsunyuan', 'xusheng', 'yufan', 'handang', 'caochong', 'caoxiu', 'caozhang', 'masu', 'caifuren', 'jianyong', 'caozhi', 'gaoshun', 'xiahoushi', 'xushu', 'wuguotai', 'liuchen'].map(i => `wechat_${i}`),
@@ -148,6 +148,7 @@ const packs = function () {
             wechat_shen_lvbu: ['male', 'shen', 5, ['wushuang', 'baonu', 'wumou', 'ol_shenfen'], ['qun', 'die:shen_lvbu', 'tempname:shen_lvbu']],
             wechat_shen_simayi: ['male', 'shen', 4, ['xinrenjie', 'wechatbaiyin', 'wechatlianpo'], ['wei', 'die:new_simayi', 'tempname:new_simayi', 'name:司马|懿']],
             wechat_shen_caocao: ['male', 'shen', 3, ['wechatguixin', 'feiying'], ['wei', 'die:shen_caocao', 'tempname:shen_caocao']],
+            wechat_shen_zhangliao: ['male', 'shen', 4, ['drlt_duorui', 'wechatzhiti'], ['wei', 'die:shen_zhangliao', 'tempname:shen_zhangliao']],
             //只因武将
             wechat_zhiyin_lvbu: ['male', 'qun', 4, ['wushuang', 'wechatxiaohu']],
             wechat_zhiyin_daqiao: ['female', 'wu', 3, ['wechatjielie', 'wechatxiangzhi'], ['name:桥|null']],
@@ -15939,6 +15940,63 @@ const packs = function () {
                     }
                 }
             },
+            // 神张辽
+            wechatzhiti: {
+                inherit: 'drlt_zhiti',
+                filter(event, player) {
+                    if (!player.hasDisabledSlot()) {
+                        return false;
+                    }
+                    if (event.name == 'juedou') {
+                        if (![event.player, event.target].includes(player)) {
+                            return false;
+                        }
+                        if (!event.turn || event.turn === player) {
+                            return false;
+                        }
+                        const opposite = event.player === player ? event.target : event.player;
+                        return opposite?.isIn();
+                    } else if (event.name == 'damage') {
+                        return true;
+                    } else {
+                        if (![event.player, event.target].includes(player)) {
+                            return false;
+                        }
+                        if (event.preserve) {
+                            return false;
+                        }
+                        let opposite;
+                        if (player === event.player) {
+                            if (event.num1 > event.num2) {
+                                opposite = event.target;
+                            } else {
+                                return false;
+                            }
+                        } else {
+                            if (event.num1 < event.num2) {
+                                opposite = event.player;
+                            } else {
+                                return false;
+                            }
+                        }
+                        return opposite?.isIn() && opposite.isDamaged();
+                    }
+                },
+                global: 'wechatzhiti_global',
+                subSkill: {
+                    global: {
+                        mod: {
+                            maxHandcard(player, num) {
+                                if (player.isDamaged()) {
+                                    return num - game.countPlayer(current => {
+                                        return current != player && current.hasSkill('wechatzhiti');
+                                    });
+                                }
+                            },
+                        },
+                    }
+                }
+            },
         },
         dynamicTranslate: {
             wechatxiangzhi(player) {
@@ -16915,6 +16973,9 @@ const packs = function () {
             wechatzhongxin_info: `每回合每种牌名限一次，当你使用牌结算结束后，你可以令一名其他角色获得此牌对应的所有实体牌，然后你选择本回合你未选择的一项：1.令其交给你一张与此牌牌名不同的牌；2.你获得其手牌中所有此技能记录牌名的牌；3.令其本回合受到的伤害+1；4.${get.poptip('rule_qianggong')}：记录一个基本牌名。`,
             wechattianqi: '天启',
             wechattianqi_info: `出牌阶段限一次。你可以选择一名角色，令其将其手牌中本回合被使用过的牌名的牌置于其武将牌伤害，直到其下一次受到伤害后。若其因此扣置了${get.poptip('wechatzhongxin')}记录牌名的牌或所有手牌，你可以令其将手牌摸至体力上限。`,
+            wechat_shen_zhangliao: '微信神张辽',
+            wechatzhiti: '止啼',
+            wechatzhiti_info: '锁定技。①已受伤的其他角色手牌上限-1；②当你和已受伤的角色拼点或【决斗】胜利或受到伤害后，你恢复一个装备栏。',
         },
     };
     for (let i in WeChatkill.character) {
