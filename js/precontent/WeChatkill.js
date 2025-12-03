@@ -213,8 +213,8 @@ const packs = function () {
             wechat_sb_huaxiong: ['male', 'qun', 4, ['wechatsbyaowu', 'sbyangwei'], ['tempname:sb_huaxiong']],
             // 志系列
             wechat_zhi_yuanshu: ['male', 'qun', 4, ['wechatshehuai', 'wechatzaochen']],
-            wechat_zhi_fuhuanghou: ['female', 'qun', 3, ['wechatweiluan', 'wechatqujian', 'wechatshutui']],
-            wechat_zhi_caojie: ['female', 'qun', 3, ['wechatweiqi', 'wechatxiangyi']],
+            wechat_zhi_fuhuanghou: ['female', 'qun', 3, ['wechatweiluan', 'wechatrequjian', 'wechatshutui']],
+            wechat_zhi_caojie: ['female', 'qun', 4, ['wechatweiqi', 'wechatxiangyi']],
             wechat_zhi_caocao: ['male', 'wei', 4, ['wechatjishi', 'wechatercai', 'wechatquanshi']],
             wechat_zhi_zhangjiao: ['male', 'qun', 4, ['wechatzhongxin', 'wechattianqi']],
         },
@@ -11937,7 +11937,7 @@ const packs = function () {
                     }
                     else {
                         await player.draw();
-                        if (player.countMark(event.name) < 2) player.addMark(event.name, 1, false);
+                        player.addMark(event.name, 1, false);
                     }
                 },
                 mark: true,
@@ -15038,10 +15038,10 @@ const packs = function () {
                 init(player, skill) {
                     if (!player.storage[skill]) {
                         player.storage[skill] = {
-                            draw: 1,
-                            hand: 1,
-                            sha: 1,
-                            range: 1,
+                            draw: 2,
+                            hand: 2,
+                            sha: 2,
+                            range: 2,
                         };
                     }
                 },
@@ -15079,7 +15079,10 @@ const packs = function () {
                         },
                         ai2(target) {
                             const player = get.player(), att = get.attitude(player, target);
-                            if (!game.hasPlayer(current => player != current && get.attitude(player, current) > 0)) return get.effect(target, { name: 'losehp' }, player, player);
+                            if (!game.hasPlayer(current => player != current && get.attitude(player, current) > 0)) {
+                                // return get.effect(target, { name: 'losehp' }, player, player);
+                                return get.effect(player, { name: 'losehp' }, player, player) > 0 || player.getHp() > 1;
+                            }
                             return att;
                         },
                         numx: Object.keys(storage).length - 1,
@@ -15094,10 +15097,10 @@ const packs = function () {
                     const { targets: [target], cost_data } = event;
                     const list = [0, 0];
                     for (const [key, num] of Object.entries(player.getStorage(event.name, {
-                        draw: 1,
-                        hand: 1,
-                        sha: 1,
-                        range: 1,
+                        draw: 2,
+                        hand: 2,
+                        sha: 2,
+                        range: 2,
                     }))) {
                         const current = cost_data.includes(key) ? target : player;
                         list[player === current ? 0 : 1] += num;
@@ -15105,7 +15108,8 @@ const packs = function () {
                         current.addMark(event.name + '_' + key, num, false);
                     }
                     if (list[0] != list[1]) {
-                        for (const current of [player, target].sortBySeat()) await current.loseHp();
+                        // for (const current of [player, target].sortBySeat()) await current.loseHp();
+                        await player.loseHp();
                     }
                 },
                 subSkill: {
@@ -15160,14 +15164,14 @@ const packs = function () {
                 intro: {
                     content(storage, player, skill) {
                         const record = player.getStorage(skill, {
-                            draw: 1,
-                            hand: 1,
-                            sha: 1,
-                            range: 1,
+                            draw: 2,
+                            hand: 2,
+                            sha: 2,
+                            range: 2,
                         });
                         const map = get.info('wechatweiluan').translateMap;
                         return `${Object.keys(map).map((key, index) => {
-                            const value = record[key] || 1;
+                            const value = record[key] || 2;
                             const label = map[key];
                             const text = `${index + 1}.${label}+${value}`;
                             if (!record[key]) return `<span style="text-decoration: line-through;">${text}</span>`;
@@ -15263,6 +15267,69 @@ const packs = function () {
                 },
                 subSkill: { backup: {} },
             },
+            wechatrequjian: {
+                audio: 'wechatqujian',
+                enable: 'phaseUse',
+                usable: 1,
+                viewAs: { name: 'sha', isCard: true, storage: { wechatqujian: true } },
+                filterCard: () => false,
+                selectCard: -1,
+                async precontent(event, trigger, player) {
+                    player.when({ player: 'useCardAfter' })
+                        .filter(evt => evt.getParent() == event.getParent() && game.hasPlayer2(current => current.hasHistory('damage', evtx => evtx.card == evt.card)) && Object.keys(player.getStorage('wechatweiluan') || {}).length)
+                        .step(async (event, trigger, player) => {
+                            const storage = player.getStorage('wechatweiluan', {});
+                            const map = get.info('wechatweiluan').translateMap;
+                            const { result } = await player.chooseButton([
+                                '祛僭：你可以移除一项【危鸾】效果并令其余项数值+1',
+                                [
+                                    Object.entries(storage).map(item => [item[0], `${map[item[0]]}（当前数值: ${item[1]}）`]),
+                                    'textbutton',
+                                ]
+                            ]).set('ai', button => {
+                                const player = get.player();
+                                const { link } = button;
+                                if (Object.keys(player.storage.wechatweiluan).length == 1) return 0;
+                                if (link === 'sha') return 0;
+                                if (link === 'hand' && (!player.needsToDiscard() || !player.hasMark('wechatweiluan_hand'))) return 1.2;
+                                if (link === 'draw') return 1.1;
+                                return 0;
+                            });
+                            if (result?.links?.length) {
+                                const [link] = result.links;
+                                delete player.storage.wechatweiluan?.[link];
+                                const args = [player, '移除了', '#g【危鸾】', '的', `#y${map[link]}`, '效果'];
+                                const num = Object.keys(player.storage.wechatweiluan).length;
+                                if (num) {
+                                    for (const key in player.storage.wechatweiluan) {
+                                        if (typeof player.storage.wechatweiluan[key] !== 'number') player.storage.wechatweiluan[key] = 0;
+                                        storage[key]++;
+                                    }
+                                    args.push('并令其余效果（');
+                                    for (const [index, key] of Object.keys(player.storage.wechatweiluan).entries()) {
+                                        args.push(`#y${map[key]}`);
+                                        if (index < num - 1) args.push('、');
+                                    }
+                                    args.push('）数值+1');
+                                }
+                                game.log(...args);
+                            }
+                            player.markSkill('wechatweiluan');
+                        });
+                },
+                ai: {
+                    combo: 'wechatweiluan',
+                    order(item, player) {
+                        return get.order({ name: 'sha' }) - 0.1;
+                    },
+                    result: {
+                        player(player, target) {
+                            if (player.hasValueTarget({ name: 'sha' })) return 1;
+                            return 0;
+                        }
+                    }
+                },
+            },
             wechatshutui: {
                 audio: 'ext:活动武将/audio/skill:2',
                 enable: 'phaseUse',
@@ -15270,7 +15337,7 @@ const packs = function () {
                     return game.hasPlayer(current => get.info('wechatshutui').filterTarget(null, player, current));
                 },
                 filterTarget(card, player, target) {
-                    return target.isDamaged();
+                    return true;
                 },
                 limited: true,
                 skillAnimation: true,
@@ -15295,14 +15362,13 @@ const packs = function () {
                     effect: {
                         charlotte: true,
                         onremove: true,
-                        intro: { content: '不能成为其他角色普通锦囊牌的目标，直到下次回复体力或造成伤害或$死亡' },
+                        intro: { content: '不能成为其他角色普通锦囊牌的目标，直到下次造成伤害后或$死亡' },
                         mod: {
                             targetEnabled(card, player, target) {
                                 if (player != target && get.type(card) == 'trick') return false;
                             },
                         },
                         trigger: {
-                            player: 'recoverEnd',
                             source: 'damageSource',
                             global: 'dieAfter',
                         },
@@ -16047,10 +16113,10 @@ const packs = function () {
             },
             wechatweiluan(player, skill) {
                 const storage = player.getStorage(skill, {
-                    draw: 1,
-                    hand: 1,
-                    sha: 1,
-                    range: 1,
+                    draw: 2,
+                    hand: 2,
+                    sha: 2,
+                    range: 2,
                 });
                 const map = {
                     draw: '摸牌阶段摸牌数',
@@ -16059,7 +16125,7 @@ const packs = function () {
                     range: '攻击范围',
                 };
                 return `每轮开始时，你可以将以下效果分配至你与一名其他角色直到本轮结束：${Object.keys(map).map((key, index) => {
-                    const value = storage[key] || 1;
+                    const value = storage[key] || 2;
                     const label = map[key];
                     const text = `${index + 1}.${label}+${value}`;
                     if (!storage[key]) return `<span style="text-decoration: line-through;">${text}</span>`;
@@ -16810,7 +16876,7 @@ const packs = function () {
             wechatchenjie_info: `限定技。每轮开始时，你可消耗5点${get.poptip('rule_moulvenum')}，令所有其他角色选择一项：1.当你下次受到伤害时，此伤害转移给其；2.减1点体力上限，然后当你下次受到伤害后，其加1点体力上限。`,
             wechat_zhiyin_guohuanghou: '极郭皇后',
             wechatjichong: '积宠',
-            wechatjichong_info: '当你受到伤害或回复体力后，你可以选择一项：1.观看牌堆顶X+1张牌并获得其中X张牌；2.摸一张牌，然后X+1（X初始为1，且至多为3）。',
+            wechatjichong_info: '当你受到伤害或回复体力后，你可以选择一项：1.观看牌堆顶X+1张牌并获得其中X张牌；2.摸一张牌，然后X+1（X初始为1）。',
             wechatyifu: '易附',
             wechatyifu_info: '出牌阶段限一次，你可以判定。若结果为：红色，你令一名角色回复1点体力；黑色，你对一名角色造成1点伤害。然后若你以次此法选择的角色体力值与你相等，你可以移动其或你场上的一张牌。',
             wechat_zhiyin_xinxianying: '极辛宪英',
@@ -16951,11 +17017,13 @@ const packs = function () {
             wechatzaochen_info: '准备阶段，你可以摸X张牌并展示之（X为当前轮次且至多为5），然后若这些牌中：有方片牌，本回合你〖慑淮〗的发动目标改为所有其他角色且你从牌堆中获得一张【万箭齐发】；均为方片牌，你选择一个主公技获得之。',
             wechat_zhi_fuhuanghou: '志伏寿',
             wechatweiluan: '危鸾',
-            wechatweiluan_info: '每轮开始时，你可以将以下效果分配至你与一名其他角色直到本轮结束：1.摸牌阶段额定摸牌数+1；2.手牌上限+1；3.使用【杀】的次数上限+1；4.攻击范围+1。若你与其的效果分配总值不相等，你与其各失去1点体力。',
+            wechatweiluan_info: '每轮开始时，你可以将以下效果分配至你与一名其他角色直到本轮结束：1.摸牌阶段额定摸牌数+2；2.手牌上限+2；3.使用【杀】的次数上限+2；4.攻击范围+2。若你与其的效果分配总值不相等，你失去1点体力。',
             wechatqujian: '祛僭',
-            wechatqujian_info: '出牌阶段限一次。你可以移除〖危鸾〗的一项效果视为使用一张【杀】。若此【杀】造成伤害，你令〖危鸾〗的剩余项数值+1。',
+            wechatqujian_info: `出牌阶段限一次。你可以移除${get.poptip('wechatweiluan')}的一项效果视为使用一张【杀】。若此【杀】造成伤害，你令${get.poptip('wechatweiluan')}的剩余项数值+1。`,
+            wechatrequjian: '祛僭',
+            wechatrequjian_info: `出牌阶段限一次，你可以视为使用一张【杀】。若此【杀】造成伤害，你可以移除${get.poptip('wechatweiluan')}的一项效果并令${get.poptip('wechatweiluan')}的剩余项数值+1。`,
             wechatshutui: '纾隤',
-            wechatshutui_info: '限定技。出牌阶段，你可以令一名已受伤的角色获得以下效果直到你死亡：其不能成为其他角色普通锦囊牌的目标，直到其下次回复体力或造成伤害。',
+            wechatshutui_info: '限定技。出牌阶段，你可以令一名角色获得以下效果直到你死亡：其不能成为其他角色普通锦囊牌的目标，直到其下次造成伤害。',
             wechat_zhi_caojie: '志曹节',
             wechatweiqi: '违器',
             wechatweiqi_info: `${get.poptip('rule_yizhiSkill')}。①游戏开始时，你选择一名其他角色，称为“违器”角色。②“违器”角色的出牌阶段开始时，你可以观看其手牌并选择其中至多X张牌（X为你的体力值），本回合其使用以此法选择的牌结算结束后，昔：其须交给你一张手牌；今：你可以使用一张同名牌。③你对其发动过〖违器②〗的角色的出牌阶段结束时，或当“违器”角色死亡后，你重新执行一次选择“违器”角色并${get.poptip('rule_yizhi')}，然后你摸两张牌。`,
