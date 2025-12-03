@@ -15489,7 +15489,7 @@ const packs = function () {
             wechatjishi: {
                 audio: 'ext:活动武将/audio/skill:2',
                 hiddenCard(player, name) {
-                    return get.type(name) == 'basic' && player.getStorage('wechatjishi').concat(['tao']).includes(name) && !player.getStorage('wechatjishi_used').includes(name);
+                    return get.type(name) == 'basic' && player.getStorage('wechatjishi').concat(['tao']).includes(name) && !player.getStorage('wechatjishi_used').includes(name) && player.countCards('he');
                 },
                 enable: 'chooseToUse',
                 filter(event, player) {
@@ -15497,7 +15497,7 @@ const packs = function () {
                     return player.getStorage('wechatjishi').concat(['tao']).some(name => {
                         if (player.getStorage('wechatjishi_used').includes(name)) return false;
                         return event.filterCard(get.autoViewAs({ name }, 'unsure'), player, event)
-                    });
+                    }) && player.countCards('he');
                 },
                 chooseButton: {
                     dialog(event, player) {
@@ -15515,11 +15515,18 @@ const packs = function () {
                         return {
                             audio: 'wechatjishi',
                             popname: true,
-                            viewAs: { name: links[0][2], nature: links[0][3] },
-                            filterCard: () => false,
-                            selectCard: -1,
+                            viewAs: { name: links[0][2], nature: links[0][3], isCard: true },
+                            filterCard: lib.filter.cardDiscardable,
+                            position: 'he',
+                            ignoreMod: true,
+                            log: false,
+                            ai1(card) {
+                                let val = 6 - get.value(card);
+                                if (card.hasGaintag('wechatercai_yizhi')) val += 2;
+                                return val;
+                            },
                             async precontent(event, trigger, player) {
-                                player.addTempSkill('wechatjishi_used');
+                                player.addTempSkill('wechatjishi_used', 'roundEnd');
                                 player.markAuto('wechatjishi_used', [event.result.card.name]);
                                 player.when({
                                     global: 'roundEnd',
@@ -15529,21 +15536,22 @@ const packs = function () {
                                     return true;
                                 }).step(async (event, trigger, player) => {
                                     player.removeSkill(event.name);
-                                    if (trigger.name == 'useCard') {
-                                        const { result } = await player.chooseToDiscard('he', 2, `济时：弃置两张牌，否则${get.translation(trigger.card)}无效`).set('ai', card => {
-                                            return 6 - get.value(card);
-                                        });
-                                        if (!result?.bool) {
-                                            trigger.targets.length = 0;
-                                            trigger.all_excluded = true;
-                                        }
-                                    }
-                                })
+                                    if (trigger.name == 'useCard') player.loseHp();
+                                });
+                                player.logSkill('wechatjishi');
+                                const cards = event.result.cards;
+                                await player.discard(cards);
+                                event.result.card = {
+                                    name: event.result.card.name,
+                                    nature: event.result.card.nature,
+                                    isCard: true,
+                                };
+                                event.result.cards = [];
                             },
                         };
                     },
                     prompt(links, player) {
-                        return '视为使用' + (get.translation(links[0][3]) || '') + get.translation(links[0][2]);
+                        return '弃置一张牌并视为使用' + (get.translation(links[0][3]) || '') + get.translation(links[0][2]);
                     },
                 },
                 marktext: '济',
@@ -15632,6 +15640,7 @@ const packs = function () {
                 },
                 audio: 'ext:活动武将/audio/skill:2',
                 trigger: { player: 'damageEnd' },
+                usable: 1,
                 prompt2(event, player) {
                     const num = get.info('wechatquanshi').getNum(player);
                     let str = `你可以获得${get.cnNumber(num)}张点数为6-9的牌`;
@@ -16896,11 +16905,11 @@ const packs = function () {
             wechatxiangyi_info: '每回合各限一次。①当“违器”角色造成伤害后，你可以摸一张牌。②当你于回合外造成伤害后，你可以令所有“违器”角色将手牌摸至Y张（Y为你的手牌数且至多为5）。',
             wechat_zhi_caocao: '志曹操',
             wechatjishi: '济时',
-            wechatjishi_info: '每轮每种牌名限一次。你可视为使用一张【桃】。若如此做，本轮你下一次以此法使用牌时，须弃置两张牌，否则此牌无效。',
+            wechatjishi_info: '每轮每种牌名限一次。你可以弃置一张牌并视为使用一张【桃】。若如此做，本轮你下一次以此法使用牌时失去1点体力。',
             wechatercai: '贰材',
             wechatercai_info: `${get.poptip('rule_yizhiSkill')}。①你使用的牌：昔：令体力值小于你的角色回复体力时，此回复值+1；今：对手牌数小于你的角色造成伤害时，此伤害值+1。②当你使用牌结算结束后，若你手牌中没有你游戏开始时的牌或上次${get.poptip('rule_yizhi')}时拥有的牌，你可以为${get.poptip('wechatjishi')}增加一个基本牌牌名，然后你摸两张牌并${get.poptip('rule_yizhi')}（无次数限制）。`,
             wechatquanshi: '权时',
-            wechatquanshi_info: `当你受到伤害后，你可以获得X张点数为6-9的牌（X为${get.poptip('wechatjishi')}描述中的基本牌名数）。若如此做，你可以交给伤害来源其中任意张牌，然后获得此次对你造成伤害的牌A对应的所有实体牌（你以此法交给其的牌的牌名字数之和须不小于牌A的牌名字数）。`,
+            wechatquanshi_info: `每回合限一次。当你受到伤害后，你可以获得X张点数为6-9的牌（X为${get.poptip('wechatjishi')}描述中的基本牌名数）。若如此做，你可以交给伤害来源其中任意张牌，然后获得此次对你造成伤害的牌A对应的所有实体牌（你以此法交给其的牌的牌名字数之和须不小于牌A的牌名字数）。`,
             wechat_zhi_zhangjiao: '志张角',
             wechatzhongxin: '众信',
             wechatzhongxin_info: `每回合每种牌名限一次，当你使用牌结算结束后，你可以令一名其他角色获得此牌对应的所有实体牌，然后你选择本回合你未选择的一项：1.令其交给你一张与此牌牌名不同的牌；2.你获得其手牌中所有此技能记录牌名的牌；3.令其本回合受到的伤害+1；4.${get.poptip('rule_qianggong')}：记录一个基本牌名。`,
