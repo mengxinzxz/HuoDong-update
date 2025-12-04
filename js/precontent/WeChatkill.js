@@ -15514,11 +15514,13 @@ const packs = function () {
             wechatweiqi: {
                 audio: 'ext:活动武将/audio/skill:2',
                 yizhiSkill: true,
+                zhuanhuanji: 'number',
+                zhuanhuanji2: false,
                 mark: true,
                 marktext: '器',
                 intro: {
                     content(storage, player) {
-                        return `<li>当前志向：${storage ? '今' : '昔'}<br><li>“违器”角色使用你以此法选择的牌结算结束后${storage ? '你可以使用一张同名牌' : '其须交给你一张手牌'}`;
+                        return `<li>当前志向：${(storage || 0) % 2 ? '今' : '昔'}<br><li>“违器”角色使用你以此法选择的牌结算结束后${(storage || 0) % 2 ? '你可以使用一张同名牌' : '其须交给你一张手牌'}`;
                     },
                 },
                 trigger: {
@@ -15535,14 +15537,22 @@ const packs = function () {
                 },
                 async content(event, trigger, player) {
                     const [target] = event.targets;
-                    player.addSkill(event.name + '_target');
-                    player.markAuto(event.name + '_target', [target]);
+                    const effect = event.name + '_target';
+                    player.addSkill(effect);
+                    player.markAuto(effect, [target]);
+                    player.addTip(effect, get.translation(effect) + player.getStorage(effect).reduce((str, current) => str + get.translation(current), ''));
+                },
+                onremove(player, skill) {
+                    player.removeSkill(skill + '_target');
                 },
                 group: ['wechatweiqi_effect', 'wechatweiqi_yizhi'],
                 subSkill: {
                     target: {
                         charlotte: true,
-                        onremove: true,
+                        onremove(player, skill) {
+                            delete player.storage[skill];
+                            player.removeTip(skill);
+                        },
                         intro: { content: '已选择角色：$' },
                     },
                     effect: {
@@ -15591,11 +15601,12 @@ const packs = function () {
                             if (result?.targets?.length) {
                                 const [target] = result.targets;
                                 player.line(target);
-                                player.addSkill('wechatweiqi_target');
-                                player.markAuto('wechatweiqi_target', [target]);
+                                const effect = 'wechatweiqi_target';
+                                player.addSkill(effect);
+                                player.markAuto(effect, [target]);
+                                player.addTip(effect, get.translation(effect) + player.getStorage(effect).reduce((str, current) => str + get.translation(current), ''));
                             }
-                            if (!player.hasAllHistory('custom', evt => evt.yizhiSkill)) {
-                                player.getHistory('custom').push({ yizhiSkill: true });
+                            if (!game.getAllGlobalHistory('everything', evt => evt.name == 'changeZhuanhuanji' && evt.skill == 'wechatweiqi' && evt.player == player).length) {
                                 player.changeZhuanhuanji('wechatweiqi');
                             }
                             await player.draw(2);
@@ -15618,14 +15629,14 @@ const packs = function () {
                         filter(event, player) {
                             const target = event.player;
                             if (!player.getStorage('wechatweiqi_use').includes(target)) return false;
-                            return (player.storage.wechatweiqi || target.countCards('h')) && target.hasHistory('lose', evtx => evtx.getParent() === event && Object.keys(evtx.gaintag_map).some(i => {
+                            return ((player.storage.wechatweiqi || 0) % 2 || target.countCards('h')) && target.hasHistory('lose', evtx => evtx.getParent() === event && Object.keys(evtx.gaintag_map).some(i => {
                                 return evtx.gaintag_map[i].some(tag => tag.startsWith(`wechatweiqi_mark_${player.playerid}`));
                             }));;
                         },
                         forced: true,
                         popup: false,
                         async content(event, trigger, player) {
-                            if (player.storage.wechatweiqi) {
+                            if ((player.storage.wechatweiqi || 0) % 2) {
                                 const { name } = trigger.card;
                                 await player.chooseToUse(function (card, player, event) {
                                     if (get.name(card) !== 'unsure' && get.name(card) !== get.event('cardName')) return false;
@@ -15776,11 +15787,13 @@ const packs = function () {
             wechatercai: {
                 audio: 'ext:活动武将/audio/skill:2',
                 yizhiSkill: true,
+                zhuanhuanji: 'number',
+                zhuanhuanji2: false,
                 mark: true,
                 marktext: '材',
                 intro: {
                     content(storage, player) {
-                        return `<li>当前志向：${storage ? '今' : '昔'}<br><li>你使用的牌${storage ? '对手牌数小于你的角色造成伤害时，此伤害值+1' : '令体力值小于你的角色回复体力时，此回复值+1'}`;
+                        return `<li>当前志向：${(storage || 0) % 2 ? '今' : '昔'}<br><li>你使用的牌${(storage || 0) % 2 ? '对手牌数小于你的角色造成伤害时，此伤害值+1' : '令体力值小于你的角色回复体力时，此回复值+1'}`;
                     },
                 },
                 trigger: { global: ['recoverBegin', 'damageBegin1'] },
@@ -15789,8 +15802,8 @@ const packs = function () {
                     if (!source || player != source) return false;
                     const target = event.player;
                     const storage = player.storage.wechatercai;
-                    if (event.name == 'recover') return !storage && target.hp < player.hp;
-                    return storage && target.countCards('h') < player.countCards('h');
+                    if (event.name == 'recover') return (storage || 0) % 2 == 0 && target.hp < player.hp;
+                    return (storage || 0) % 2 && target.countCards('h') < player.countCards('h');
                 },
                 forced: true,
                 logTarget: 'player',
@@ -15804,7 +15817,7 @@ const packs = function () {
                         filter(event, player) {
                             const list = lib.inpile.filter(name => name != 'tao' && get.type(name) == 'basic' && !player.getStorage('wechatjishi').includes(name));
                             if (!list.length) return false;
-                            return (!player.hasCard(card => card.hasGaintag('wechatjishi_yizhi'), 'h') && player.hasAllHistory('custom', evt => evt.yizhiSkill)) || !player.hasCard(card => player._start_cards?.includes(card), 'h');
+                            return (!player.hasCard(card => card.hasGaintag('wechatjishi_yizhi'), 'h') && game.getAllGlobalHistory('everything', evt => evt.name == 'changeZhuanhuanji' && evt.skill == 'wechatercai' && evt.player == player).length) || !player.hasCard(card => player._start_cards?.includes(card), 'h');
                         },
                         async cost(event, trigger, player) {
                             const list = lib.inpile.filter(name => name != 'tao' && get.type(name) == 'basic' && !player.getStorage('wechatjishi').includes(name));
@@ -15822,7 +15835,6 @@ const packs = function () {
                             const next = player.draw(2);
                             next.gaintag.add('wechatercai_yizhi');
                             await next;
-                            player.getHistory('custom').push({ yizhiSkill: true });
                             player.changeZhuanhuanji('wechatercai');
                         },
                     }
@@ -16280,10 +16292,10 @@ const packs = function () {
                             });
                             next.set('processAI', list => {
                                 const player = get.player();
-                                let cards = list[0][1];
-                                const gain = cards.sort((a, b) => get.value(b, player) - get.value(a, player))[0];
+                                let cards = list[0][1].slice().sort((a, b) => get.value(b, player) - get.value(a, player));
+                                const gain = cards[0];
                                 cards.remove(gain);
-                                return [[cards], [], [gain]];
+                                return [cards, [], [gain]];
                             });
                             const { result } = await next;
                             const top = result?.moved?.[0] || [];
@@ -16657,9 +16669,9 @@ const packs = function () {
                 }).join('；')}。若你与其的效果分配总值不相等，你与其各失去1点体力。`;
             },
             wechatweiqi(player, skill) {
-                const bool = player.storage[skill];
+                const storage = player.storage[skill];
                 let xi = '昔：其须交给你一张手牌', jin = '今：你可以使用一张同名牌。';
-                if (bool) jin = `<span class='bluetext'>${jin}</span>`;
+                if ((storage || 0) % 2) jin = `<span class='bluetext'>${jin}</span>`;
                 else xi = `<span class='firetext'>${xi}</span>`;
                 let start = `${get.poptip('rule_yizhiSkill')}。①游戏开始时，你选择一名其他角色，称为“违器”角色。②“违器”角色的出牌阶段开始时，你可以观看其手牌并选择其中至多X张牌（X为你的体力值），本回合其使用以此法选择的牌结算结束后，`, end = `③你对其发动过〖违器②〗的角色的出牌阶段结束时，或当“违器”角色死亡后，你重新执行一次选择“违器”角色并${get.poptip('rule_yizhi')}，然后你摸两张牌。`;
                 return `${start}${xi}；${jin}${end}`;
@@ -16671,9 +16683,9 @@ const packs = function () {
                 return str;
             },
             wechatercai(player, skill) {
-                const bool = player.storage[skill];
+                const storage = player.storage[skill];
                 let xi = '昔：令体力值小于你的角色回复体力时，此回复值+1', jin = '今：对手牌数小于你的角色造成伤害时，此伤害值+1。';
-                if (bool) jin = `<span class='bluetext'>${jin}</span>`;
+                if ((storage || 0) % 2) jin = `<span class='bluetext'>${jin}</span>`;
                 else xi = `<span class='firetext'>${xi}</span>`;
                 let start = `${get.poptip('rule_yizhiSkill')}。①你使用的牌：`, end = `②当你使用牌结算结束后，若你手牌中没有你游戏开始时的牌或上次${get.poptip('rule_yizhi')}时拥有的牌，你可以为${get.poptip('wechatjishi')}增加一个基本牌牌名，然后你摸两张牌并${get.poptip('rule_yizhi')}（无次数限制）。`;
                 return `${start}${xi}；${jin}${end}`;
