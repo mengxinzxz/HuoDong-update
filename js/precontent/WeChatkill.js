@@ -130,7 +130,7 @@ const packs = function () {
             wechat_huojun: ['male', 'shu', 4, ['twsidai', 'jieyu']],
             wechat_yj_xuhuang: ['male', 'qun', 4, ['wechatxhzhiyan', 'wechatjiewei']],
             wechat_yj_ganning: ['male', 'qun', 4, ['wechatjinfan', 'wechatsheque']],
-            wechat_sunluyu: ['female', 'wu', 3, ['wechatmeibu', 'wechatmumu']],
+            wechat_sunluyu: ['female', 'wu', 3, ['wechatremeibu', 'wechatremumu']],
             wechat_sp_diaochan: ['female', 'qun', 3, ['lihun', 'wechatbiyue']],
             wechat_zhugeguo: ['female', 'shu', 3, ['wechatqirang', 'wechatyuhua']],
             wechat_sunhanhua: ['female', 'wu', 3, ['wechatchongxu', 'miaojian', 'shhlianhua']],
@@ -9774,6 +9774,129 @@ const packs = function () {
                     },
                 },
             },
+            wechatremeibu: {
+                audio: 'meibu',
+                trigger: { global: 'phaseUseBegin' },
+                filter(event, player) {
+                    return event.player != player && event.player.isIn() && event.player.inRange(player) && player.countCards('he') > 0;
+                },
+                async cost(event, trigger, player) {
+                    const target = trigger.player;
+                    event.result = await player.chooseToDiscard(get.prompt2(event.skill, target), 'he', 'chooseonly').set('ai', card => {
+                        if (_status.event.check) {
+                            return 6 - get.value(card);
+                        }
+                        return 0;
+                    }).set('check', (() => {
+                        if (get.attitude(player, target) >= 0) return false;
+                        return target.countCards('h') > target.hp;
+                    })()).forResult();
+                },
+                logTarget: 'player',
+                async content(event, trigger, player) {
+                    const target = trigger.player;
+                    await player.discard(event.cards);
+                    player.addTempSkill(event.name + '_gain');
+                    player.markAuto(event.name + '_gain', [target]);
+                    target.addTempSkills(get.info(event.name).derivation);
+                },
+                ai: { expose: 0.2 },
+                derivation: ['wechatrezhixi'],
+                subSkill: {
+                    gain: {
+                        charlotte: true,
+                        onremove: true,
+                        trigger: { global: 'loseAfter' },
+                        filter(event, player) {
+                            return event.getParent(3).name == 'wechatrezhixi' && player.getStorage('wechatremeibu_gain').includes(event.player) && event.cards?.someInD('d');
+                        },
+                        forced: true,
+                        popup: false,
+                        async content(event, trigger, player) {
+                            if (trigger.cards.someInD('d')) await player.gain(trigger.cards.filterInD('d'), 'gain2');
+                        },
+                        intro: { content: '获得$因【止息】弃置的牌' },
+                    }
+                }
+            },
+            wechatrezhixi: {
+                trigger: { player: 'useCard' },
+                forced: true,
+                filter(event, player) {
+                    return (event.card.name == 'sha' || get.type(event.card) == 'trick');
+                },
+                async content(event, trigger, player) {
+                    const result = !player.countCards('h') ? { bool: false } : await player.chooseToDiscard('h', '弃置一张牌，或令此牌无效').set('ai', card => {
+                        return 6.5 - get.value(card);
+                    }).forResult();
+                    if (!result.bool) {
+                        trigger.all_excluded = true;
+                        trigger.targets.length = 0;
+                    }
+                },
+                ai: {
+                    neg: true,
+                    nokeep: true,
+                },
+            },
+            wechatremumu: {
+                audio: 'mumu',
+                trigger: { player: 'phaseUseBegin' },
+                filter(event, player) {
+                    return game.hasPlayer(current => {
+                        return current.countDiscardableCards(player, 'e') > 0 || current.countGainableCards(player, 'e') > 0;
+                    });
+                },
+                async cost(event, trigger, player) {
+                    event.result = await player.chooseTarget(get.prompt2(event.skill), (card, player, target) => {
+                        return target.countDiscardableCards(player, 'e') > 0 || target.countGainableCards(player, 'e') > 0;
+                    }).set('ai', target => {
+                        const player = get.player();
+                        const att = get.attitude(player, target);
+                        let es = target.getCards('e'), val = 0;
+                        for (const card of es) {
+                            const eff = -(get.value(card, target) - 0.1) * att;
+                            if (eff > val) val = eff;
+                        }
+                        return val;
+                    }).forResult();
+                },
+                async content(event, trigger, player) {
+                    const [target] = event.targets;
+                    const bool1 = target.countDiscardableCards(player, 'e') > 0;
+                    const bool2 = target.countGainableCards(player, 'e') > 0;
+                    if (!bool1 && !bool2) return;
+                    const result = (bool1 && bool2) ? await player.chooseControl().set('choiceList', [`弃置${get.translation(target)}装备区的一张牌且本阶段使用【杀】的次数上限+1`, `获得${get.translation(target)}装备区的一张牌`]).set("ai", () => {
+                        const player = get.player();
+                        if (player.countCards('hs', card => {
+                            return get.name(card, player) == 'sha' && player.hasValueTarget(card);
+                        }) < Math.max(1, player.getCardUsable('sha'))) {
+                            return 1;
+                        }
+                        return 0;
+                    }).forResult() : { index: bool1 ? 0 : 1 };
+                    if (result?.index === 0) {
+                        await player.discardPlayerCard(target, 'e', true);
+                        player.addTempSkill(event.name + '_effect', 'phaseUseAfter');
+                        player.addMark(event.name + '_effect', 1, false);
+                    }
+                    else if (result?.index === 1) {
+                        await player.gainPlayerCard(target, 'e', true);
+                    }
+                },
+                subSkill: {
+                    effect: {
+                        charlotte: true,
+                        onremove: true,
+                        mod: {
+                            cardUsable: (card, player, num) => {
+                                if (card.name == 'sha') return num + player.countMark('wechatremumu_effect');
+                            },
+                        },
+                        intro: { content: '本阶段使用【杀】的次数上限+#' },
+                    }
+                }
+            },
             //SP貂蝉
             wechatbiyue: {
                 audio: 'biyue',
@@ -17187,6 +17310,12 @@ const packs = function () {
             wechatzhixi_info: '锁定技，当你于出牌阶段使用第一张【杀】或普通锦囊牌时，你进行一次判定。若判定结果为：黑色，你本回合非锁定技失效；红色，令此牌无效。',
             wechatmumu: '穆穆',
             wechatmumu_info: '①出牌阶段限一次，你可以弃置一张牌，将一名角色装备区的一张牌称为“刎”置于武将牌上。②当你造成伤害时，你可以将一张武将牌上的“刎”置入弃牌堆并令此伤害+1。③当你死亡时，杀死你的角色选择弃置2X张牌或失去1点体力（X为你武将牌上的“刎”数）。',
+            wechatremeibu: '魅步',
+            wechatremeibu_info: `其他角色的出牌阶段开始时，若你在其攻击范围内，你可以弃置一张牌，该角色于本回合内拥有${get.poptip('wechatrezhixi')}，且当其因${get.poptip('wechatrezhixi')}弃置牌时，你获得之。`,
+            wechatrezhixi: '止息',
+            wechatrezhixi_info: '锁定技。当你使用【杀】或普通锦囊牌时，你须弃置一张手牌，否则此牌无效。',
+            wechatremumu: '穆穆',
+            wechatremumu_info: '出牌阶段开始时，你可以选择一项：1.弃置一名角色装备区里的一张牌，然后你本阶段可使用【杀】的次数+1；2.获得一名角色装备区里的一张牌。',
             wechat_sp_diaochan: 'SP微信貂蝉',
             wechatbiyue: '闭月',
             wechatbiyue_info: '结束阶段，你可以摸X张牌（X为你本回合造成的伤害数+1，至多为3）。',
