@@ -6917,6 +6917,7 @@ const packs = function () {
                     },
                     wushuang: {
                         charlotte: true,
+                        onremove: true,
                         intro: { content: '本回合使用的【决斗】获得〖无双〗效果且造成的伤害+#' },
                         trigger: {
                             player: 'useCardToPlayered',
