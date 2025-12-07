@@ -15654,9 +15654,10 @@ const packs = function () {
                 trigger: { global: 'damageSource' },
                 filter(event, player) {
                     const { source } = event;
+                    if (!source) return false;
                     const storage = player.getStorage('wechatxiangyi_used');
                     const num = Math.min(5, player.countCards('h'));
-                    return (player.getStorage('wechatweiqi_target').includes(source) && !storage.includes('ohter')) || (player !== _status.currentPhase && !storage.includes('self') && game.hasPlayer(current => player.getStorage('wechatweiqi_target').includes(current) && current.countCards('h') < num));
+                    return (player.getStorage('wechatweiqi_target').includes(source) && !storage.includes('ohter')) || (player !== _status.currentPhase && player == source && !storage.includes('self') && game.hasPlayer(current => player.getStorage('wechatweiqi_target').includes(current) && current.countCards('h') < num));
                 },
                 async cost(event, trigger, player) {
                     const { source } = trigger;
