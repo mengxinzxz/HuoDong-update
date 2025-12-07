@@ -38552,7 +38552,7 @@ const packs = function () {
                         },
                         forced: true,
                         async content(event, trigger, player) {
-                            await player.drawTo(40);
+                            await player.drawTo(5);
                         },
                     },
                     backup: {
