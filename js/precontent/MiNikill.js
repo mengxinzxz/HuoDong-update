@@ -35283,7 +35283,7 @@ const packs = function () {
                         const num = target.hasSkill('minidoumao') ? Array.from(map.values()).toUniqued().length : 1;
                         if (color == 'black') {
                             player.when({ player: 'useCardAfter' }).filter(evt => evt == trigger.getParent()).step(async (event, trigger, player) => {
-                                const next = player.useCard(trigger.card, target, false);
+                                const next = player.useCard(trigger.card, trigger.cards, target, false);
                                 next.effectCount = num;
                                 next.minimiaofengpo = true;
                                 await next;
