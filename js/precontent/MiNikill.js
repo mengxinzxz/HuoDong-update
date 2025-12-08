@@ -610,6 +610,15 @@ const packs = function () {
                 fullimage: true,
                 image: 'ext:活动武将/image/default/zhouyu_羽.jpg',
             },
+            mini_yin: {
+                noname: true,
+                ai: {
+                    basic: {
+                        useful: 0,
+                        value: 0,
+                    },
+                },
+            },
         },
         skill: {
             //魏
@@ -38274,8 +38283,8 @@ const packs = function () {
             miniyinyinxing: {
                 // 过于神秘，先这样了
                 mod: {
-                    cardEnabled2(card) {
-                        if (get.position(card) == 'h') return false;
+                    cardname(card, player, name) {
+                        return 'mini_yin';
                     },
                 },
                 getType(cards, player) {
@@ -38298,16 +38307,20 @@ const packs = function () {
                             return '三条';
                         }
                         if (Object.keys(map).length == 3) {
-                            if (nums.includes(15)) {
-                                return null;
+                            // 234和A23
+                            if ([[15, 3, 4], [14, 15, 3]].some(list => list.every(num => nums.includes(num)))) {
+                                return '三顺';
                             }
+                            // if (nums.includes(15)) {
+                            //     return null;
+                            // }
                             for (let i = 0; i < 2; i++) {
                                 if (nums[i + 1] - nums[i] != 1) {
                                     return null;
                                 }
-                                if (nums[i + 1] == 15) {
-                                    return null;
-                                }
+                                // if (nums[i + 1] == 15) {
+                                //     return null;
+                                // }
                             }
                             return '三顺';
                         }
@@ -38373,11 +38386,11 @@ const packs = function () {
                 // },
                 async content(event, trigger, player) {
                     const evt = event.getParent(2);
-                    evt.set('miniyinyinxing', true);
                     const { cards } = event;
                     const type = get.info('miniyinyinxing').getType(cards, player);
                     switch (type) {
                         case '对子': {
+                            evt.set('miniyinyinxing', true);
                             player.popup(type);
                             const list = get.inpileVCardList(info => {
                                 if (!['basic'].includes(info[0])) return false;
@@ -38410,11 +38423,13 @@ const packs = function () {
                                         evt.redo();
                                         return;
                                     }
+                                    evt.goto(0);
                                 }
                             }
                         }
                             break;
                         case '三顺': {
+                            evt.set('miniyinyinxing', true);
                             player.popup(type);
                             let key;
                             switch (evt.name) {
@@ -38449,6 +38464,8 @@ const packs = function () {
                                         evt.set('openskilldialog', `请选择${get.translation(links[0][3])}【${get.translation(links[0][2])}】的目标`);
                                         evt.backup('miniyinyinxing_backup');
                                     } else {
+                                        player.addTempSkill('miniyinyinxing_used');
+                                        player.markAuto('miniyinyinxing_used', [links[0][2]]);
                                         delete evt[key].used;
                                         delete evt[key].skill;
                                         evt[key].card = get.autoViewAs({ name: links[0][2], nature: links[0][3] });
@@ -38456,6 +38473,7 @@ const packs = function () {
                                         evt.redo();
                                         return;
                                     }
+                                    evt.goto(0);
                                 }
                             }
                         }
@@ -38519,7 +38537,6 @@ const packs = function () {
                         }
                             break;
                     }
-                    evt.goto(0);
                 },
                 ai: {
                     sortCardByNum: true,
@@ -40864,6 +40881,8 @@ const packs = function () {
             })}，对所有其他角色造成X点伤害（X为炸弹的牌数-3）。若你以此法使用的牌花色相同，则此效果额外执行一次。③你的手牌数始终不小于5。`,
             miniyinjujian: '举荐',
             miniyinjujian_info: '准备阶段或结束阶段，你可以弃置一张手牌并令一名角色选择一项：1.获得两张点数大于其的牌；2.获得两张点数小于其的牌。',
+            mini_yin: '·隐',
+            mini_yin_info: '你看不见我。',
         },
     };
     for (var skill in MiNikill.skill) {

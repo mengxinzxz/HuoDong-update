@@ -626,4 +626,6 @@ export async function precontent(bilibilicharacter) {
         ];
         return _status.HDWJ_ChangeLog;
     })(), '活动武将');
+
+    lib.actualCardName.set('·隐', '');
 }
