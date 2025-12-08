@@ -15,7 +15,7 @@ const packs = function () {
                 MiNi_shengzhiyifa: ['Mbaby_jingwei', 'Mbaby_sunwukong', 'Mbaby_dalanmao', 'Mbaby_libai', 'Mbaby_change', 'Mbaby_nvwa', 'Mbaby_tunxingmenglix', 'Mbaby_xiaoshan'],
                 MiNi_sbCharacter: ['Mbaby_dc_sb_chengyu', 'Mbaby_sb_zhenji', 'Mbaby_sb_ganning', 'Mbaby_sb_huangyueying', 'Mbaby_ol_sb_guanyu', 'Mbaby_sb_sunshangxiang', 'Mbaby_sb_xuhuang', 'Mbaby_sb_zhaoyun', 'Mbaby_sb_liubei', 'Mbaby_sb_caocao', 'Mbaby_sb_huanggai', 'Mbaby_sb_yuanshao', 'Mbaby_sb_yujin', 'Mbaby_sb_machao', 'Mbaby_sb_lvmeng', 'Mbaby_sb_huangzhong'],
                 MiNi_starCharacter: ['xunyu', 'yuanshu'].map(i => `Mbaby_star_${i}`),
-                MiNi_miaoKill: ['guanyinping', 'caoying', 'caiwenji', 'diaochan', 'caifuren', 'zhangxingcai', 'zhurong', 'huangyueying', 'daqiao', 'wangyi', 'zhangchunhua', 'zhenji', 'sunshangxiang', 'xiaoqiao', 'lvlingqi'].map(i => `Mmiao_${i}`),
+                MiNi_miaoKill: ['mayunlu', 'guanyinping', 'caoying', 'caiwenji', 'diaochan', 'caifuren', 'zhangxingcai', 'zhurong', 'huangyueying', 'daqiao', 'wangyi', 'zhangchunhua', 'zhenji', 'sunshangxiang', 'xiaoqiao', 'lvlingqi'].map(i => `Mmiao_${i}`),
                 MiNi_nianKill: ['caopi', 'zhugeliang', 'lvbu', 'zhouyu'].map(i => `Mnian_${i}`),
                 MiNi_fightKill: ['huangzhong', 'zhangliao', 'luxun', 'dianwei', 'machao'].map(i => `Mfight_${i}`),
                 MiNi_yinKill: ['xushu'].map(i => `Myin_${i}`),
@@ -414,6 +414,7 @@ const packs = function () {
             Mmiao_lvlingqi: ['female', 'qun', 4, ['minimiaozhuangrong', 'minimiaoguowu', 'minidoumao']],
             Mmiao_caoying: ['female', 'wei', 4, ['minimiaolingren', 'minimiaofujian', 'minidoumao']],
             Mmiao_guanyinping: ['female', 'shu', 4, ['minimiaowuji', 'minimiaohuxiao', 'minidoumao']],
+            Mmiao_mayunlu: ['female', 'shu', 4, ['minimiaoyuma', 'minimiaofengpo', 'minidoumao']],
             //念
             Mnian_zhugeliang: ['male', 'shu', 3, ['mininianxinghan', 'mininianliaoyuan', 'mininianying_zgl'], ['name:诸葛|亮']],
             Mnian_lvbu: ['male', 'qun', 5, ['mininiantazhen', 'mininiandoupo', 'mininianying_lb'], ['forbidai']],
@@ -33559,7 +33560,10 @@ const packs = function () {
                         filterCard: lib.filter.cardDiscardable,
                         position: 'he',
                         ai1(card) {
-                            return 7 - get.value(card);
+                            const player = get.player();
+                            let val = 7 - get.value(card);
+                            if (player.hasSkill('minimiaoyuma') && get.position(card) == 'e' && ['equip3', 'equip4'].some(subtype => get.subtypes(card).includes(subtype))) val += 2;
+                            return val;
                         },
                         ai2(target) {
                             const player = get.player();
@@ -35209,6 +35213,96 @@ const packs = function () {
                 onremove: true,
                 intro: { content: '本局游戏已累计造成#点伤害' },
                 derivation: 'minidoumao',
+            },
+            // 喵马云騄
+            minimiaoyuma: {
+                audio: 'ext:活动武将/audio/skill:2',
+                mod: {
+                    globalFrom(from, to, distance) {
+                        return distance - 1;
+                    },
+                    globalTo(from, to, distance) {
+                        if (from.hasSkill('minidoumao')) return distance + 1;
+                    },
+                },
+                trigger: {
+                    player: 'loseAfter',
+                    global: ['equipAfter', 'addJudgeAfter', 'gainAfter', 'loseAsyncAfter', 'addToExpansionAfter'],
+                },
+                filter(event, player) {
+                    const evt = event.getl(player);
+                    return event.getl(player)?.es?.some(card => ['equip3', 'equip4'].some(subtype => get.subtypes(card).includes(subtype)));
+                },
+                forced: true,
+                async content(event, trigger, player) {
+                    await player.draw(2 * trigger.getl(player).es.filter(card => ['equip3', 'equip4'].some(subtype => get.subtypes(card).includes(subtype))).length);
+                },
+                derivation: 'minidoumao',
+            },
+            minimiaofengpo: {
+                audio: 'ext:活动武将/audio/skill:2',
+                trigger: { player: 'useCardToPlayered' },
+                filter(event, player) {
+                    if (get.tag(event.card, 'damage') < 0.5 || player.getStorage('minimiaofengpo_used').includes(get.color(event.card))) return false;
+                    return event.isFirstTarget && get.info('minimiaofengpo').logTarget(event, player).length;
+                },
+                logTarget(event, player) {
+                    return event.targets.filter(current => player != current && current.countCards('h')).sortBySeat();
+                },
+                check(event, player) {
+                    const targets = get.info('minimiaofengpo').logTarget(event, player);
+                    return targets.filter(current => get.attitude(player, current) > 0).length <= targets.filter(current => get.attitude(player, current) <= 0).length;
+                },
+                async content(event, trigger, player) {
+                    player.addTempSkill(event.name + '_used');
+                    player.markAuto(event.name + '_used', [get.color(trigger.card)]);
+                    let map = new Map();
+                    for (const target of event.targets.sortBySeat()) {
+                        if (!target.isIn() || !target.countCards('h')) continue;
+                        const { result } = await target.chooseCard('h', true, '凤魄：请选择一张手牌展示').set('ai', card => {
+                            const player = get.player();
+                            const evt = get.event().getTrigger();
+                            const target = evt.player;
+                            const att = get.attitude(player, target);
+                            const color = get.color(card, player);
+                            let val = 6 - get.value(card);
+                            if (color == 'red') {
+                                if (att > 0) val += 2;
+                                if (get.effect(player, evt.card, target, target) < 0) val += 1;
+                            }
+                            return val;
+                        });
+                        if (result?.cards?.length) {
+                            const { cards } = result;
+                            map.set(target, get.color(cards[0], target));
+                            await target.showCards(cards);
+                        }
+                    }
+                    if (!map.size) return;
+                    for (const [target, color] of map) {
+                        const num = target.hasSkill('minidoumao') ? Array.from(map.values()).toUniqued().length : 1;
+                        if (color == 'black') {
+                            player.when({ player: 'useCardAfter' }).filter(evt => evt == trigger.getParent()).step(async (event, trigger, player) => {
+                                const next = player.useCard(trigger.card, target, false);
+                                next.effectCount = num;
+                                next.minimiaofengpo = true;
+                                await next;
+                            });
+                        }
+                        else if (color == 'red') {
+                            const cards = target.getGainableCards(player, 'h');
+                            if (cards.length) await target.give(cards.randomGets(1), player);
+                        }
+                    }
+                },
+                derivation: 'minidoumao',
+                subSkill: {
+                    used: {
+                        charlotte: true,
+                        onremove: true,
+                        intro: { content: '已记录颜色：$' },
+                    },
+                }
             },
             //念
             mininianying: {
@@ -40704,75 +40798,80 @@ const packs = function () {
             Mmiao_lvlingqi: '喵吕玲绮',
             Mmiao_caoying: '喵曹婴',
             Mmiao_guanyinping: '喵关银屏',
+            Mmiao_mayunlu: '喵马云騄',
             minidoumao: '逗猫',
             minidoumao_info: '①回合开始时，你可以弃置一张牌并选择一名其他角色，你失去〖逗猫〗并令其获得〖逗猫〗，然后其摸一张牌。②回合结束时，你弃置一张牌。',
             minimiaobeige: '悲歌',
-            minimiaobeige_info: '当一名角色受到【杀】造成的伤害后，你可以弃置一张牌，根据此牌花色执行相应效果：红桃，其回复1点体力；方片：其摸两张牌；梅花，伤害来源弃置两张牌；黑桃，伤害来源将武将牌翻面。然后若你没有〖逗猫〗，则你可以选择一个效果执行。',
+            minimiaobeige_info: `当一名角色受到【杀】造成的伤害后，你可以弃置一张牌，根据此牌花色执行相应效果：红桃，其回复1点体力；方片：其摸两张牌；梅花，伤害来源弃置两张牌；黑桃，伤害来源将武将牌翻面。然后若你没有${get.poptip('minidoumao')}，则你可以选择一个效果执行。`,
             minimiaoduanchang: '断肠',
-            minimiaoduanchang_info: '锁定技。①杀死你的角色失去所有技能。②当你受到有来源的伤害进入濒死状态后，若你没有〖逗猫〗，则伤害来源须弃置两张牌。',
+            minimiaoduanchang_info: `锁定技。①杀死你的角色失去所有技能。②当你受到有来源的伤害进入濒死状态后，若你没有${get.poptip('minidoumao')}，则伤害来源须弃置两张牌。`,
             minimiaolijian: '离间',
-            minimiaolijian_info: '出牌阶段限一次，你可以选择至少两名角色并弃置X张牌（X为你选择的角色数，若你没有〖逗猫〗则改为弃置X-1张牌）。然后每名你选择的角色依次视为对这些角色中与其逆时针座次最近的另一名角色使用一张【决斗】。',
+            minimiaolijian_info: `出牌阶段限一次，你可以选择至少两名角色并弃置X张牌（X为你选择的角色数，若你没有${get.poptip('minidoumao')}则改为弃置X-1张牌）。然后每名你选择的角色依次视为对这些角色中与其逆时针座次最近的另一名角色使用一张【决斗】。`,
             minimiaobiyue: '闭月',
-            minimiaobiyue_info: '锁定技，结束阶段，你摸Y张牌（Y为本回合受到过伤害的角色数+1（若你没有〖逗猫〗则改为+2），且Y至多为5）。',
+            minimiaobiyue_info: `锁定技，结束阶段，你摸Y张牌（Y为本回合受到过伤害的角色数+1（若你没有${get.poptip('minidoumao')}则改为+2），且Y至多为5）。`,
             minimiaoqieting: '窃听',
-            minimiaoqieting_info: '其他角色的回合结束时，你可以选择[ ]中的一项：[“摸一张牌”]。若其拥有〖逗猫〗，[ ]中添加“观看其两张手牌并获得其中一张”，否则[ ]中添加“将其装备区里的一张牌置入自己的装备区”。',
+            minimiaoqieting_info: `其他角色的回合结束时，你可以选择[ ]中的一项：[“摸一张牌”]。若其拥有${get.poptip('minidoumao')}，[ ]中添加“观看其两张手牌并获得其中一张”，否则[ ]中添加“将其装备区里的一张牌置入自己的装备区”。`,
             minimiaoxianzhou: '献州',
-            minimiaoxianzhou_info: '限定技，出牌阶段，你可以交给一名其他角色任意张手牌，然后其选择令你回复X点体力或对其攻击范围内的至多X名角色各造成1点伤害（X为你交给其的牌数）。当你获得〖逗猫〗后，你重置技能〖献州〗。',
+            minimiaoxianzhou_info: `限定技，出牌阶段，你可以交给一名其他角色任意张手牌，然后其选择令你回复X点体力或对其攻击范围内的至多X名角色各造成1点伤害（X为你交给其的牌数）。当你获得${get.poptip('minidoumao')}后，你重置技能〖献州〗。`,
             minimiaoshenxian: '甚贤',
-            minimiaoshenxian_info: '每回合限一次，其他角色因弃置失去基本牌后（若你没有〖逗猫〗则改为非装备牌），你可以摸一张牌',
+            minimiaoshenxian_info: `每回合限一次，其他角色因弃置失去基本牌后（若你没有${get.poptip('minidoumao')}则改为非装备牌），你可以摸一张牌`,
             minimiaoqiangwu: '枪舞',
-            minimiaoqiangwu_info: '①你对没有/有技能〖逗猫〗的角色使用【杀】无距离/次数限制。②若你拥有〖逗猫〗，当你使用【杀】造成伤害后，你摸一张牌。',
+            minimiaoqiangwu_info: `①你对没有/有技能${get.poptip('minidoumao')}的角色使用【杀】无距离/次数限制。②若你拥有${get.poptip('minidoumao')}，当你使用【杀】造成伤害后，你摸一张牌。`,
             minimiaojuxiang: '巨象',
-            minimiaojuxiang_info: '锁定技。①【南蛮入侵】对你无效。②其他角色弃置【南蛮入侵】后，你获得之。③其他角色使用【南蛮入侵】结算完毕后，你获得此牌对应的所有实体牌。④拥有〖逗猫〗的角色无法响应你使用的【南蛮入侵】。⑤当你使用【南蛮入侵】对没有〖逗猫〗的角色造成伤害后，你摸一张牌。',
+            minimiaojuxiang_info: `锁定技。①【南蛮入侵】对你无效。②其他角色弃置【南蛮入侵】后，你获得之。③其他角色使用【南蛮入侵】结算完毕后，你获得此牌对应的所有实体牌。④拥有${get.poptip('minidoumao')}的角色无法响应你使用的【南蛮入侵】。⑤当你使用【南蛮入侵】对没有${get.poptip('minidoumao')}的角色造成伤害后，你摸一张牌。`,
             minimiaolieren: '烈刃',
-            minimiaolieren_info: '①当你使用【杀】指定目标后，你可以和目标角色进行拼点，然后你获得其的拼点牌。若你赢，你获得其一张牌。②出牌阶段开始时，若你本回合失去过〖逗猫〗，你可以选择一名角色，对其发动〖烈刃①〗。',
+            minimiaolieren_info: `①当你使用【杀】指定目标后，你可以和目标角色进行拼点，然后你获得其的拼点牌。若你赢，你获得其一张牌。②出牌阶段开始时，若你本回合失去过${get.poptip('minidoumao')}，你可以选择一名角色，对其发动〖烈刃①〗。`,
             minimiaochangbiao: '长标',
-            minimiaochangbiao_info: '出牌阶段限一次，你可以将任意张手牌当做【杀】使用（无距离限制，若你拥有〖逗猫〗，则此牌可以额外指定一名目标）。若你因此【杀】对目标角色造成过伤害，则你于出牌阶段结束时摸X张牌（X为此【杀】对应的实体牌数量）。',
+            minimiaochangbiao_info: `出牌阶段限一次，你可以将任意张手牌当做【杀】使用（无距离限制，若你拥有${get.poptip('minidoumao')}，则此牌可以额外指定一名目标）。若你因此【杀】对目标角色造成过伤害，则你于出牌阶段结束时摸X张牌（X为此【杀】对应的实体牌数量）。`,
             minimiaojizhi: '集智',
-            minimiaojizhi_info: '①当你使用锦囊牌时，你可以摸一张牌。②每回合限一次，其他角色使用锦囊牌时，若你没有〖逗猫〗，你可以摸一张牌。',
+            minimiaojizhi_info: `①当你使用锦囊牌时，你可以摸一张牌。②每回合限一次，其他角色使用锦囊牌时，若你没有${get.poptip('minidoumao')}，你可以摸一张牌。`,
             minimiaoqicai: '奇才',
-            minimiaoqicai_info: '锁定技。①你使用锦囊牌无距离限制，你装备区内的防具牌不能被其他角色弃置。②其他角色获得〖逗猫〗后，你从牌堆中获得一张锦囊牌。',
+            minimiaoqicai_info: `锁定技。①你使用锦囊牌无距离限制，你装备区内的防具牌不能被其他角色弃置。②其他角色获得${get.poptip('minidoumao')}后，你从牌堆中获得一张锦囊牌。`,
             minimiaoguose: '国色',
-            minimiaoguose_info: '出牌阶段限四次。你可以选择一项：1.将一张♦牌当【乐不思蜀】使用；2.弃置场上一张【乐不思蜀】。然后你摸一张牌（若目标角色拥有〖逗猫〗则改为摸两张牌并弃置一张牌）。',
+            minimiaoguose_info: `出牌阶段限四次。你可以选择一项：1.将一张♦牌当【乐不思蜀】使用；2.弃置场上一张【乐不思蜀】。然后你摸一张牌（若目标角色拥有${get.poptip('minidoumao')}则改为摸两张牌并弃置一张牌）。`,
             minimiaoliuli: '流离',
-            minimiaoliuli_info: '当你成为【杀】的目标时，你可以弃置一张牌并将此【杀】转移给一名你攻击范围内的不为此【杀】使用者的角色（若你没有〖逗猫〗，则改为至多两名角色）。',
+            minimiaoliuli_info: `当你成为【杀】的目标时，你可以弃置一张牌并将此【杀】转移给一名你攻击范围内的不为此【杀】使用者的角色（若你没有${get.poptip('minidoumao')}，则改为至多两名角色）。`,
             minimiaozhenlie: '贞烈',
-            minimiaozhenlie_info: '当你成为其他角色使用【杀】或普通锦囊牌的目标后，你可以失去1点体力并令此牌对你无效，然后弃置使用者一张牌（若你没有〖逗猫〗，则改为获得使用者一张牌）。',
+            minimiaozhenlie_info: `当你成为其他角色使用【杀】或普通锦囊牌的目标后，你可以失去1点体力并令此牌对你无效，然后弃置使用者一张牌（若你没有${get.poptip('minidoumao')}，则改为获得使用者一张牌）。`,
             minimiaomiji: '秘计',
-            minimiaomiji_info: '结束阶段，你可以摸X张牌，然后可以将等量的牌交给一名其他角色（X为Y已损失的体力值，Y为你，若你没有〖逗猫〗则本次技能结算中Y改为你发动〖秘计〗时选择场上的一名已受伤角色，且X至多为5）。',
+            minimiaomiji_info: `结束阶段，你可以摸X张牌，然后可以将等量的牌交给一名其他角色（X为Y已损失的体力值，Y为你，若你没有${get.poptip('minidoumao')}则本次技能结算中Y改为你发动〖秘计〗时选择场上的一名已受伤角色，且X至多为5）。`,
             minimiaojueqing: '绝情',
-            minimiaojueqing_info: '当你即将造成伤害时，你依次执行：①若你没有〖逗猫〗，你可以失去等同于伤害值的体力，然后令此伤害值翻倍；②你将此次伤害事件改为令受伤角色失去等同于伤害值的体力。',
+            minimiaojueqing_info: `当你即将造成伤害时，你依次执行：①若你没有${get.poptip('minidoumao')}，你可以失去等同于伤害值的体力，然后令此伤害值翻倍；②你将此次伤害事件改为令受伤角色失去等同于伤害值的体力。`,
             minimiaoshangshi: '伤逝',
-            minimiaoshangshi_info: '①当你的手牌数小于X时，你将手牌摸至X张（X为你已损失的体力值，且X至少为1）。②当你失去〖逗猫〗时，你加1点体力上限；当你获得〖逗猫〗时，你减1点体力上限。',
+            minimiaoshangshi_info: `①当你的手牌数小于X时，你将手牌摸至X张（X为你已损失的体力值，且X至少为1）。②当你失去${get.poptip('minidoumao')}时，你加1点体力上限；当你获得${get.poptip('minidoumao')}时，你减1点体力上限。`,
             minimiaoluoshen: '洛神',
-            minimiaoluoshen_info: '①准备阶段，你可以进行判定，然后你获得此牌，若结果为黑色，你可以重复此流程。②回合结束时，若你没有〖逗猫〗，则你可以发动〖洛神①〗。',
+            minimiaoluoshen_info: `①准备阶段，你可以进行判定，然后你获得此牌，若结果为黑色，你可以重复此流程。②回合结束时，若你没有${get.poptip('minidoumao')}，则你可以发动〖洛神①〗。`,
             minimiaoqingguo: '倾国',
-            minimiaoqingguo_info: '①你可以将一张黑色牌当作【闪】使用或打出。②若你没有〖逗猫〗，你可以将一张【闪】当作【桃】使用。',
+            minimiaoqingguo_info: `①你可以将一张黑色牌当作【闪】使用或打出。②若你没有${get.poptip('minidoumao')}，你可以将一张【闪】当作【桃】使用。`,
             minimiaojieyin: '结姻',
-            minimiaojieyin_info: '出牌阶段限一次，你可以将一张手牌交给一名其他角色或将一张装备牌置入一名其他角色的装备区，然后你回复1点体力并摸一张牌。然后若你没有〖逗猫〗，你可令其回复1点体力并摸一张牌。',
+            minimiaojieyin_info: `出牌阶段限一次，你可以将一张手牌交给一名其他角色或将一张装备牌置入一名其他角色的装备区，然后你回复1点体力并摸一张牌。然后若你没有${get.poptip('minidoumao')}，你可令其回复1点体力并摸一张牌。`,
             minimiaoxiaoji: '枭姬',
-            minimiaoxiaoji_info: '当你失去装备区里的一张牌后，你可以摸两张牌，然后若你没有〖逗猫〗，你可以弃置场上一张牌。',
+            minimiaoxiaoji_info: `当你失去装备区里的一张牌后，你可以摸两张牌，然后若你没有${get.poptip('minidoumao')}，你可以弃置场上一张牌。`,
             minimiaotianxiang: '天香',
             minimiaotianxiang2: '天香',
-            minimiaotianxiang_info: '当你受到伤害时，你可以将一张红桃牌交给一名其他角色并将此伤害转移给其。若如此做，此伤害结算完毕后，若其拥有〖逗猫〗，你对其造成1点伤害；没有〖逗猫〗，你弃置其一张牌。',
+            minimiaotianxiang_info: `当你受到伤害时，你可以将一张红桃牌交给一名其他角色并将此伤害转移给其。若如此做，此伤害结算完毕后，若其拥有${get.poptip('minidoumao')}，你对其造成1点伤害；没有${get.poptip('minidoumao')}，你弃置其一张牌。`,
             minimiaohongyan: '红颜',
-            minimiaohongyan_info: '锁定技。①你的黑桃牌视为红桃牌。②没有〖逗猫〗的角色的红桃判定牌生效后，你回复1点体力并摸一张牌。',
+            minimiaohongyan_info: `锁定技。①你的黑桃牌视为红桃牌。②没有${get.poptip('minidoumao')}的角色的红桃判定牌生效后，你回复1点体力并摸一张牌。`,
             minimiaozhuangrong: '妆戎',
-            minimiaozhuangrong_info: '觉醒技，每回合结束时，若你的体力值或手牌数为1，你减少1点体力上限并回复体力至上限，将手牌摸至体力上限，然后获得〖神威〗和〖无双〗。',
+            minimiaozhuangrong_info: `觉醒技，每回合结束时，若你的体力值或手牌数为1，你减少1点体力上限并回复体力至上限，将手牌摸至体力上限，然后获得${get.poptip('minillqshenwei')}和${get.poptip('miniwushuang')}。`,
             minillqshenwei: '神威',
-            minillqshenwei_info: '锁定技。摸牌阶段，你令额外摸牌数+X；你的手牌上限+Y（若你没有〖逗猫〗，则X为3，Y为1，否则X为2，Y为2）。',
+            minillqshenwei_info: `锁定技。摸牌阶段，你令额外摸牌数+X；你的手牌上限+Y（若你没有${get.poptip('minidoumao')}，则X为3，Y为1，否则X为2，Y为2）。`,
             minimiaoguowu: '帼武',
             minimiaoguowu_info: '出牌阶段开始时，你可以展示所有手牌，根据你展示的类型数，你获得对应效果：至少一类，从弃牌堆获得一张普通锦囊牌；至少两类，此阶段使用牌无次数限制；至少三类，此阶段使用首张【杀】或普通锦囊牌可以令之额外结算一次。',
             minimiaolingren: '凌人',
-            minimiaolingren_info: '每回合限一次，当你使用【杀】或伤害类锦囊牌指定目标后，你可以令所有其他目标角色选择以下两项（若这些角色数大于2则改为一项，拥有〖逗猫〗的角色须额外选择一项）：①令此牌对其造成的伤害+1；②令你摸两张牌；③获得1枚“伏间”标记，令你获得〖奸雄〗和〖行殇〗直到你的下回合开始。',
+            minimiaolingren_info: `每回合限一次，当你使用【杀】或伤害类锦囊牌指定目标后，你可以令所有其他目标角色选择以下两项（若这些角色数大于2则改为一项，拥有${get.poptip('minidoumao')}的角色须额外选择一项）：①令此牌对其造成的伤害+1；②令你摸两张牌；③获得1枚“伏间”标记，令你获得${get.poptip('minijianxiong')}和${get.poptip('minimiaoxingshang')}直到你的下回合开始。`,
             minimiaofujian: '伏间',
-            minimiaofujian_info: '锁定技，结束阶段，你令一名其他角色获得1枚“伏间”标记，然后所有拥有“伏间”标记的角色随机弃置一张手牌，然后你清除场上的“伏间”标记，获得其中拥有〖逗猫〗的角色弃置的牌。',
+            minimiaofujian_info: `锁定技，结束阶段，你令一名其他角色获得1枚“伏间”标记，然后所有拥有“伏间”标记的角色随机弃置一张手牌，然后你清除场上的“伏间”标记，获得其中拥有${get.poptip('minidoumao')}的角色弃置的牌。`,
             minimiaoxingshang: '行殇',
-            minimiaoxingshang_info: '一名角色死亡时，你可以获得该角色的所有牌并摸一张牌，然后若其拥有〖逗猫〗，则你可以令一名角色获得〖逗猫〗。',
+            minimiaoxingshang_info: `一名角色死亡时，你可以获得该角色的所有牌并摸一张牌，然后若其拥有${get.poptip('minijianxiong')}，则你可以令一名角色获得${get.poptip('minimiaoxingshang')}。`,
             minimiaowuji: '武继',
             minimiaowuji_info: '①你可以将两张红色牌当无任何次数限制的火【杀】使用或打出。②每回合每种花色限一次，当你因〖武继①〗使用【杀】时，若此牌对应的实体牌数为2且花色相同，则此牌伤害值+1。③当你使用的【杀】被抵消后，你可以横置场上至多两名角色。',
             minimiaohuxiao: '虎啸',
-            minimiaohuxiao_info: '锁定技。①每当你累计造成3点伤害后，你回复1点体力并令一名角色获得〖逗猫〗。②回合结束时，你从牌堆获得X张红色牌（X为场上拥有〖逗猫〗的角色数，且至少为1）。',
+            minimiaohuxiao_info: `锁定技。①每当你累计造成3点伤害后，你回复1点体力并令一名角色获得${get.poptip('minidoumao')}。②回合结束时，你从牌堆获得X张红色牌（X为场上拥有${get.poptip('minidoumao')}的角色数，且至少为1）。`,
+            minimiaoyuma: '驭马',
+            minimiaoyuma_info: `锁定技。①你计算与其他角色的距离-1；有${get.poptip('minidoumao')}的角色计算与你的距离+1。②当你失去装备区中的坐骑牌时，你摸两张牌。`,
+            minimiaofengpo: '凤魄',
+            minimiaofengpo_info: `每回合每种颜色限一次，当你使用伤害牌指定其他角色为目标后，你可令所有目标依次展示一张手牌A，若A的颜色为：1.黑色：随机交给你X张手牌；2.红色：此牌对其额外生效X次（X为1，若其拥有${get.poptip('minidoumao')}，则X为所有角色展示牌的颜色数）。`,
             //念
             Mnian_zhugeliang: '念诸葛亮',
             Mnian_lvbu: '念吕布',
