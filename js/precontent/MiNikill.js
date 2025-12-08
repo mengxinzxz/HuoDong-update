@@ -38516,7 +38516,7 @@ const packs = function () {
                                 const bool = typeof link == 'number';
                                 player.line(target);
                                 const card = get.cardPile(cardx => {
-                                    if (bool) return get.subtype(cardx, false) == `equip${link}` && target.canEquip(cardx);
+                                    if (bool) return get.subtype(cardx, false) == `equip${link}` && target.canEquip(cardx, true);
                                     return get.type(cardx, false) == 'delay' && target.canAddJudge(cardx);
                                 });
                                 if (card) {
