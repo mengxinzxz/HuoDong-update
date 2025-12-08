@@ -15352,7 +15352,7 @@ const packs = function () {
                 },
                 async cost(event, trigger, player) {
                     if (trigger.name == 'phaseUse') {
-                        const { result: { bool, links } } = await player.chooseButton([
+                        const { result } = await player.chooseButton([
                             get.prompt(event.name.slice(0, -5)),
                             [
                                 [
@@ -15373,15 +15373,15 @@ const packs = function () {
                             return 1;
                         }).set('selectButton', 2);
                         event.result = {
-                            bool: bool,
-                            cost_data: links,
+                            bool: result?.bool,
+                            cost_data: result?.links,
                         }
                     }
                     else {
                         const { target, card } = trigger;
-                        const bool = await player.chooseBool(get.prompt(event.name.slice(0, -5), target), `你可以与其拼点，若你赢，你可以为${get.translation(card)}额外指定一个目标`).set('choice', get.attitude(player, target) <= 0).forResultBool();
+                        const { result } = await player.chooseBool(get.prompt(event.name.slice(0, -5), target), `你可以与其拼点，若你赢，你可以为${get.translation(card)}额外指定一个目标`).set('choice', get.attitude(player, target) <= 0);
                         event.result = {
-                            bool: bool,
+                            bool: result?.bool,
                             targets: [target],
                         }
                     }
@@ -15451,12 +15451,18 @@ const packs = function () {
                     range: {
                         charlotte: true,
                         mod: {
-                            targetInRange(card, player, target, now) {
+                            targetInRange(card, player, target) {
                                 if (card.name == 'sha') return true;
                             },
                         },
                         mark: true,
                         intro: { content: '使用【杀】无距离限制且无视防具' },
+                        ai: {
+                            unequip: true,
+                            skillTagFilter(player, tag, arg) {
+                                if (!arg || !arg.card || arg.card.name != 'sha') return false;
+                            },
+                        },
                     },
                 },
             },
