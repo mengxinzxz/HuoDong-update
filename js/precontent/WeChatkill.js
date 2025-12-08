@@ -224,6 +224,11 @@ const packs = function () {
         },
         characterIntro: {
         },
+        characterSubstitute: {
+            wechat_zhi_caocao: [
+                ['wechat_zhi_caocao_shadow', ['ext:活动武将/image/character/wechat_zhi_caocao_shadow.jpg', 'die:ext:活动武将/audio/die/wechat_zhi_caocao_shadow.mp3']],
+            ],
+        },
         skill: {
             wechathuoshou: {
                 group: 'huoshou1',
@@ -15515,7 +15520,13 @@ const packs = function () {
             wechatweiqi: {
                 audio: 'ext:活动武将/audio/skill:2',
                 yizhiSkill: true,
-                zhuanhuanji: 'number',
+                init(player, skill) {
+                    player.addTip(skill, `${get.translation(skill)} ${(player.countMark(skill) % 2) ? '今' : '昔'}`);
+                },
+                zhuanhuanji(player, skill) {
+                    player.addMark(skill, 1, false);
+                    get.info(skill).init(player, skill);
+                },
                 zhuanhuanji2: false,
                 mark: true,
                 marktext: '器',
@@ -15523,6 +15534,7 @@ const packs = function () {
                     content(storage, player) {
                         return `<li>当前志向：${(storage || 0) % 2 ? '今' : '昔'}<br><li>“违器”角色使用你以此法选择的牌结算结束后${(storage || 0) % 2 ? '你可以使用一张同名牌' : '其须交给你一张手牌'}`;
                     },
+                    markcount: (storage, player) => (storage || 0) % 2 ? '今' : '昔',
                 },
                 trigger: {
                     global: 'phaseBefore',
@@ -15541,9 +15553,10 @@ const packs = function () {
                     const effect = event.name + '_target';
                     player.addSkill(effect);
                     player.markAuto(effect, [target]);
-                    player.addTip(effect, get.translation(effect) + player.getStorage(effect).reduce((str, current) => str + get.translation(current), ''));
+                    player.addTip(effect, get.translation(effect) + player.getStorage(effect).reduce((str, current) => str + get.translation(current), ' '));
                 },
                 onremove(player, skill) {
+                    player.removeTip(skill);
                     player.removeSkill(skill + '_target');
                 },
                 group: ['wechatweiqi_effect', 'wechatweiqi_yizhi'],
@@ -15605,7 +15618,7 @@ const packs = function () {
                                 const effect = 'wechatweiqi_target';
                                 player.addSkill(effect);
                                 player.markAuto(effect, [target]);
-                                player.addTip(effect, get.translation(effect) + player.getStorage(effect).reduce((str, current) => str + get.translation(current), ''));
+                                player.addTip(effect, get.translation(effect) + player.getStorage(effect).reduce((str, current) => str + get.translation(current), ' '));
                             }
                             if (!game.getAllGlobalHistory('everything', evt => evt.name == 'changeZhuanhuanji' && evt.skill == 'wechatweiqi' && evt.player == player).length) {
                                 player.changeZhuanhuanji('wechatweiqi');
@@ -15695,6 +15708,7 @@ const packs = function () {
             // 志曹操
             wechatjishi: {
                 audio: 'ext:活动武将/audio/skill:2',
+                audioname: ['wechat_zhi_caocao_shadow'],
                 hiddenCard(player, name) {
                     return get.type(name) == 'basic' && player.getStorage('wechatjishi').concat(['tao']).includes(name) && !player.getStorage('wechatjishi_used').includes(name) && player.countCards('he');
                 },
@@ -15788,8 +15802,19 @@ const packs = function () {
             },
             wechatercai: {
                 audio: 'ext:活动武将/audio/skill:2',
+                audioname: ['wechat_zhi_caocao_shadow'],
                 yizhiSkill: true,
-                zhuanhuanji: 'number',
+                init(player, skill) {
+                    player.addTip(skill, `${get.translation(skill)} ${(player.countMark(skill) % 2) ? '今' : '昔'}`);
+                },
+                zhuanhuanji(player, skill) {
+                    player.addMark(skill, 1, false);
+                    get.info(skill).init(player, skill);
+                    player.changeSkin({ characterName: 'wechat_zhi_caocao' }, 'wechat_zhi_caocao' + ((player.countMark(skill) % 2) ? '_shadow' : ''));
+                },
+                onremove(player, skill) {
+                    player.removeTip(skill);
+                },
                 zhuanhuanji2: false,
                 mark: true,
                 marktext: '材',
@@ -15797,6 +15822,7 @@ const packs = function () {
                     content(storage, player) {
                         return `<li>当前志向：${(storage || 0) % 2 ? '今' : '昔'}<br><li>你使用的牌${(storage || 0) % 2 ? '对手牌数小于你的角色造成伤害时，此伤害值+1' : '令体力值小于你的角色回复体力时，此回复值+1'}`;
                     },
+                    markcount: (storage, player) => (storage || 0) % 2 ? '今' : '昔',
                 },
                 trigger: { global: ['recoverBegin', 'damageBegin1'] },
                 filter(event, player) {
@@ -15847,6 +15873,7 @@ const packs = function () {
                     return player.getStorage('wechatjishi').length + 1;
                 },
                 audio: 'ext:活动武将/audio/skill:2',
+                audioname: ['wechat_zhi_caocao_shadow'],
                 trigger: { player: 'damageEnd' },
                 usable: 1,
                 prompt2(event, player) {
