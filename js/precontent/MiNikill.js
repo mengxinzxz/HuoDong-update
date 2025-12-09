@@ -611,15 +611,6 @@ const packs = function () {
                 fullimage: true,
                 image: 'ext:活动武将/image/default/zhouyu_羽.jpg',
             },
-            mini_yin: {
-                noname: true,
-                ai: {
-                    basic: {
-                        useful: 0,
-                        value: 0,
-                    },
-                },
-            },
         },
         skill: {
             //魏
@@ -38381,10 +38372,23 @@ const packs = function () {
             // 隐系列
             // 徐庶
             miniyinyinxing: {
-                // 过于神秘，先这样了
                 mod: {
-                    cardname(card, player, name) {
-                        return 'mini_yin';
+                    cardEnabled(card, player) {
+                        const evt = get.event();
+                        if (evt.name !== 'chooseToUse') return;
+                        const color = get.color(card);
+                        if (color == 'unsure' || evt.skill) return true;
+                        return !card.cards?.length;
+                    },
+                    cardRespondable(card, player) {
+                        const evt = get.event();
+                        if (evt.name !== 'chooseToRespond') return;
+                        const color = get.color(card);
+                        if (color == 'unsure' || evt.skill) return true;
+                        return !card.cards?.length;
+                    },
+                    cardSavable(card, player) {
+                        return lib.skill.miniyinyinxing.mod.cardEnabled.apply(this, arguments);
                     },
                 },
                 getType(cards, player) {
@@ -38581,48 +38585,51 @@ const packs = function () {
                         case '三条': {
                             player.popup(type);
                             await player.discard(cards);
-                            const targets = game.filterPlayer(current => {
-                                return Array.from({ length: 5 }).map((_, index) => index + 1).some(i => current.hasEmptySlot(i)) || !current.isDisabledJudge();
-                            });
-                            if (!targets.length) return;
-                            const list = Array.from({ length: 5 }).map((_, i) => [i + 1, get.translation(`equip${i + 1}`)]).concat([['judge', '判定区']])
-                            const { result } = await player.chooseButtonTarget({
-                                createDialog: [
-                                    '隐姓：请选择你要置入牌的角色和区域',
-                                    [list, 'tdnodes'],
-                                ],
-                                forced: true,
-                                filterTarget(card, player, target) {
-                                    const { link } = ui.selected.buttons[0];
-                                    if (link == 'judge') return !target.isDisabledJudge();
-                                    return target.hasEmptySlot(link);
-                                },
-                                ai1(button) {
-                                    const player = get.player();
-                                    const { link } = button;
-                                    if (link == 'judge') return game.hasPlayer(current => !current.isDisabledJudge() && get.attitude(player, target) < 0);
-                                    return game.hasPlayer(current => current.hasEmptySlot(link) && get.attitude(player, target) > 0);
-                                },
-                                ai2(target) {
-                                    const player = get.player(), att = get.attitude(player, target);
-                                    const { link } = ui.selected.buttons[0];
-                                    if (link == 'judge') return -att;
-                                    return att;
-                                },
-                            });
-                            if (result?.targets?.length && result.links?.length) {
-                                const [target] = result.targets;
-                                const [link] = result.links;
-                                const bool = typeof link == 'number';
-                                player.line(target);
-                                const card = get.cardPile(cardx => {
-                                    if (bool) return get.subtype(cardx, false) == `equip${link}` && target.canEquip(cardx, true);
-                                    return get.type(cardx, false) == 'delay' && target.canAddJudge(cardx);
+                            let num = cards.map(card => get.suit(card)).toUniqued().length == 1 ? 2 : 1;
+                            while (num--) {
+                                const targets = game.filterPlayer(current => {
+                                    return Array.from({ length: 5 }).map((_, index) => index + 1).some(i => current.hasEmptySlot(i)) || !current.isDisabledJudge();
                                 });
-                                if (card) {
-                                    target.$gain2(card);
-                                    await game.delayx();
-                                    await target[bool ? 'equip' : 'addJudge'](card);
+                                if (!targets.length) return;
+                                const list = Array.from({ length: 5 }).map((_, i) => [i + 1, get.translation(`equip${i + 1}`)]).concat([['judge', '判定区']])
+                                const { result } = await player.chooseButtonTarget({
+                                    createDialog: [
+                                        '隐姓：请选择你要置入牌的角色和区域',
+                                        [list, 'tdnodes'],
+                                    ],
+                                    forced: true,
+                                    filterTarget(card, player, target) {
+                                        const { link } = ui.selected.buttons[0];
+                                        if (link == 'judge') return !target.isDisabledJudge();
+                                        return target.hasEmptySlot(link);
+                                    },
+                                    ai1(button) {
+                                        const player = get.player();
+                                        const { link } = button;
+                                        if (link == 'judge') return game.hasPlayer(current => !current.isDisabledJudge() && get.attitude(player, target) < 0);
+                                        return game.hasPlayer(current => current.hasEmptySlot(link) && get.attitude(player, target) > 0);
+                                    },
+                                    ai2(target) {
+                                        const player = get.player(), att = get.attitude(player, target);
+                                        const { link } = ui.selected.buttons[0];
+                                        if (link == 'judge') return -att;
+                                        return att;
+                                    },
+                                });
+                                if (result?.targets?.length && result.links?.length) {
+                                    const [target] = result.targets;
+                                    const [link] = result.links;
+                                    const bool = typeof link == 'number';
+                                    player.line(target);
+                                    const card = get.cardPile(cardx => {
+                                        if (bool) return get.subtype(cardx, false) == `equip${link}` && target.canEquip(cardx, true);
+                                        return get.type(cardx, false) == 'delay' && target.canAddJudge(cardx);
+                                    });
+                                    if (card) {
+                                        target.$gain2(card);
+                                        await game.delayx();
+                                        await target[bool ? 'equip' : 'addJudge'](card);
+                                    }
                                 }
                             }
                         }
@@ -38630,9 +38637,12 @@ const packs = function () {
                         case '炸弹': {
                             player.popup(type);
                             await player.discard(cards);
-                            for (const target of game.filterPlayer(current => current != player).sortBySeat()) {
-                                player.line(target, 'fire');
-                                await target.damage(cards.length - 3);
+                            let num = cards.map(card => get.suit(card)).toUniqued().length == 1 ? 2 : 1;
+                            while (num--) {
+                                for (const target of game.filterPlayer(current => current != player).sortBySeat()) {
+                                    player.line(target, 'fire');
+                                    await target.damage(cards.length - 3);
+                                }
                             }
                         }
                             break;
@@ -40967,27 +40977,25 @@ const packs = function () {
             // 隐
             Myin_xushu: '隐徐庶',
             miniyinyinxing: '隐姓',
-            miniyinyinxing_info: `锁定技。①你的牌只有花色和点数。②你可将任意张手牌以如下方式使用或打出：1.${get.poptip({
+            miniyinyinxing_info: `锁定技。①当你需要使用或打出牌时，你只能使用或打出虚拟牌或转化，且你可以将任意张手牌按以下规则使用或打出：1.${get.poptip({
                 id: 'miniyinyinxing_duizi',
                 name: '对子',
                 info: '两张点数相同的牌',
-            })}，视为任意基本牌；2.${get.poptip({
+            })}：当任意基本牌；2.${get.poptip({
                 id: 'miniyinyinxing_sanshun',
                 name: '三顺',
                 info: '三张点数连续的牌（欢杀定义）',
-            })}，每回合每种牌名限一次，视为任意普通锦囊牌；3.${get.poptip({
+            })}：当任意普通锦囊牌（每回合每种牌名限一次）。若你以此法使用的牌花色相同，则此牌效果额外执行一次。②出牌阶段，你可以按以下规则弃置任意张手牌并执行对应效果：1.${get.poptip({
                 id: 'miniyinyinxing_santiao',
                 name: '三条',
                 info: '三张点数相同的牌',
-            })}，在场上一名角色的指定区域置入一张对应的牌；4.${get.poptip({
+            })}：选择一名角色和其的一个装备栏或者判定区，令其将一张对应的类别牌置入该区域（可以替换原装备）；2.${get.poptip({
                 id: 'miniyinyinxing_zhadan',
                 name: '炸弹',
                 info: '四张及以上点数相同的牌（欢杀定义）',
-            })}，对所有其他角色造成X点伤害（X为炸弹的牌数-3）。若你以此法使用的牌花色相同，则此效果额外执行一次。③你的手牌数始终不小于5。`,
+            })}，对所有其他角色造成X点伤害（X为你弃置的牌数-3）。若你以此法弃置的牌花色相同，则相应效果额外执行一次。③你的手牌数始终不小于5。`,
             miniyinjujian: '举荐',
             miniyinjujian_info: '准备阶段或结束阶段，你可以弃置一张手牌并令一名角色选择一项：1.获得两张点数大于其的牌；2.获得两张点数小于其的牌。',
-            mini_yin: '·隐',
-            mini_yin_info: '你看不见我。',
         },
     };
     for (var skill in MiNikill.skill) {
