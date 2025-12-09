@@ -38415,9 +38415,9 @@ const packs = function () {
                             if ([[15, 3, 4], [14, 15, 3]].some(list => list.every(num => nums.includes(num)))) {
                                 return '三顺';
                             }
-                            // if (nums.includes(15)) {
-                            //     return null;
-                            // }
+                            if (nums.includes(15)) {
+                                return null;
+                            }
                             for (let i = 0; i < 2; i++) {
                                 if (nums[i + 1] - nums[i] != 1) {
                                     return null;
