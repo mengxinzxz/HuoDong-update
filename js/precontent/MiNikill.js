@@ -35261,8 +35261,8 @@ const packs = function () {
                 audio: 'ext:活动武将/audio/skill:2',
                 trigger: { player: 'useCardToPlayered' },
                 filter(event, player) {
-                    if (get.tag(event.card, 'damage') < 0.5 || player.getStorage('minimiaofengpo_used').includes(get.color(event.card))) return false;
-                    return event.isFirstTarget && get.info('minimiaofengpo').logTarget(event, player).length;
+                    if (player.getStorage('minimiaofengpo_used').includes(get.color(event.card))) return false;
+                    return get.tag(event.card, 'damage') > 0.5 && event.isFirstTarget && get.info('minimiaofengpo').logTarget(event, player).length;
                 },
                 logTarget(event, player) {
                     return event.targets.filter(current => player != current && current.countCards('h')).sortBySeat();
