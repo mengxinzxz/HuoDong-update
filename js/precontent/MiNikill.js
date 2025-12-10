@@ -35145,8 +35145,6 @@ const packs = function () {
                     if (trigger.name == 'damage') {
                         const history = player.getAllHistory('sourceDamage');
                         if (history.length) history[history.length - 1][event.name] = true;
-                        player.storage[event.name] = player.getAllHistory('sourceDamage').reduce((num, evt) => num + evt.num, 0);
-                        player.markSkill(event.name);
                         await player.recover();
                         const { result } = await player.chooseTarget('虎啸：请选择一名角色令其获得【逗猫】', true).set('ai', target => {
                             const player = get.player();
@@ -35204,12 +35202,38 @@ const packs = function () {
                     }
                 },
                 init(player, skill) {
-                    const num = player.getAllHistory('sourceDamage').reduce((numx, evt) => numx + evt.num, 0);
+                    player.addSkill(skill + '_mark');
+                    let num = 0;
+                    let next = 3;
+                    const history = player.getAllHistory('sourceDamage');
+                    for (let i = 0; i < history.length; i++) {
+                        const evt = history[i];
+                        num += evt.num;
+                        if (num >= next) {
+                            if (!evt.minimiaohuxiao) evt.minimiaohuxiao = true;
+                            next = Math.floor(num / 3) * 3 + 3;
+                        }
+                    }
                     if (num) player.addMark(skill, num, false);
                 },
-                onremove: true,
+                onremove(player, skill) {
+                    player.removeSkill(skill + '_mark');
+                    delete player.storage[skill];
+                },
                 intro: { content: '本局游戏已累计造成#点伤害' },
                 derivation: 'minidoumao',
+                subSkill: {
+                    mark: {
+                        charlotte: true,
+                        trigger: { source: 'damageSource' },
+                        firstDo: true,
+                        forced: true,
+                        popup: false,
+                        async content(event, trigger, player) {
+                            player.addMark('minimiaohuxiao', trigger.num, false);
+                        },
+                    }
+                }
             },
             // 喵马云騄
             minimiaoyuma: {
