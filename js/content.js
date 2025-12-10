@@ -511,8 +511,6 @@ export async function content(config, pack) {
 			}
 		};
 	}
-	//扩展换肤系统
-	lib.character['ol_nanhualaoxian'].skinPath = 'ext:活动武将/image/skin/ol_nanhualaoxian/';
 
 	//precGuoZhan(分界线，便于我搜过来)
 	if (get.mode() == 'guozhan') {

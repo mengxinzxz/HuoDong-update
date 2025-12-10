@@ -38414,6 +38414,8 @@ const packs = function () {
                     cardSavable(card, player) {
                         return lib.skill.miniyinyinxing.mod.cardEnabled.apply(this, arguments);
                     },
+                    cardRecastable: (card, player, source) => false,
+                    cardGiftable: (card, player, target) => false,
                 },
                 getType(cards, player) {
                     const nums = cards.map(card => {
