@@ -27328,15 +27328,12 @@ const packs = function () {
                     }
                     if (targets[0].canUse(sha, targets[1], false)) await targets[0].useCard(sha, targets[1], false);
                     const cards = targets[0].getEquips(1);
-                    if (cards.length && game.hasPlayer(target => target != targets[0])) {
-                        const { result } = await player.chooseTarget('是否将' + get.translation(cards) + '交给一名其他角色？', (card, player, target) => {
-                            return target != get.event('target');
-                        }).set('ai', target => {
-                            const card = _status.event.getParent().cards;
-                            if (get.attitude(get.event('player'), get.event('target')) > 0) return false;
-                            return (target.hasSkillTag('nogain') ? 0 : get.attitude(get.event('player'), target)) * Math.max(0.1, target.getUseValue(cards[0]));
-                        }).set('target', targets[0]).set('cards', cards);
-                        if (result.bool) await result.targets[0].gain(cards, targets[0], 'give').set('giver', player);
+                    if (cards.length) {
+                        const { result } = await player.chooseTarget('将' + get.translation(cards) + '交给一名角色', true).set('ai', target => {
+                            const { player, cards } = get.event();
+                            return (target.hasSkillTag('nogain') ? 0 : get.attitude(player, target)) * Math.max(0.1, target.getUseValue(cards[0]));
+                        }).set('cards', cards);
+                        if (result?.bool) await result.targets[0].gain(cards, targets[0], 'give').set('giver', player);
                     }
                 },
             },
