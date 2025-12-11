@@ -35309,7 +35309,7 @@ const packs = function () {
                         }
                         else if (color == 'red') {
                             const cards = target.getGainableCards(player, 'h');
-                            if (cards.length) await target.give(cards.randomGets(1), player);
+                            if (cards.length) await target.give(cards.randomGets(num), player);
                         }
                     }
                 },

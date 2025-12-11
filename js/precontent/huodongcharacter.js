@@ -7509,6 +7509,7 @@ const packs = function () {
                             return target !== player && target.hasSkill('bilibili_meihua');
                         },
                         selectTarget() {
+                            const player = get.player();
                             if (game.countPlayer(current => current !== player && current.hasSkill('bilibili_meihua')) === 1) return -1;
                             return 1;
                         },
