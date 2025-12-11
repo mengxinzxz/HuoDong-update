@@ -35272,7 +35272,7 @@ const packs = function () {
                     let map = new Map();
                     for (const target of event.targets.sortBySeat()) {
                         if (!target.isIn() || !target.countCards('h')) continue;
-                        const { result } = await target.chooseCard('h', true, '凤魄：请选择一张手牌展示').set('ai', card => {
+                        const { result } = await target.chooseCard('h', true, '凤魄：请选择一张手牌展示', `若为黑色，你随机交给${get.translation(player)}手牌，若为红色，${get.translation(trigger.card)}将对你额外生效`).set('ai', card => {
                             const player = get.player();
                             const evt = get.event().getTrigger();
                             const target = evt.player;
