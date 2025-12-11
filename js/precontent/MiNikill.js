@@ -35279,7 +35279,7 @@ const packs = function () {
                             const att = get.attitude(player, target);
                             const color = get.color(card, player);
                             let val = 6 - get.value(card);
-                            if (color == 'red') {
+                            if (color == 'black') {
                                 if (att > 0) val += 2;
                                 if (get.effect(player, evt.card, target, target) < 0) val += 1;
                             }
