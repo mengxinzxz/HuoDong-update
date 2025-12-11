@@ -35294,7 +35294,7 @@ const packs = function () {
                     if (!map.size) return;
                     for (const [target, color] of map) {
                         const num = target.hasSkill('minidoumao') ? Array.from(map.values()).toUniqued().length : 1;
-                        if (color == 'black') {
+                        if (color == 'red') {
                             player.when({ player: 'useCardAfter' }).filter(evt => evt == trigger.getParent()).step(async (event, trigger, player) => {
                                 if (!player.canUse(trigger.card, target, false)) return;
                                 const next = player.useCard(trigger.card, trigger.cards, target, false);
@@ -35302,7 +35302,7 @@ const packs = function () {
                                 await next;
                             });
                         }
-                        else if (color == 'red') {
+                        else if (color == 'black') {
                             const cards = target.getGainableCards(player, 'h');
                             if (cards.length) await target.give(cards.randomGets(num), player);
                         }
