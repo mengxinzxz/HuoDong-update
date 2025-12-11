@@ -34290,15 +34290,13 @@ const packs = function () {
                 filter(event, player) {
                     if (event.card.name != 'sha') return false;
                     if (!player.countCards('he')) return false;
-                    return game.hasPlayer(function (current) {
+                    return game.hasPlayer(current => {
                         return player.inRange(current) && current != event.player && current != player && lib.filter.targetEnabled(event.card, event.player, current);
                     });
                 },
-                direct: true,
                 preHidden: true,
-                content() {
-                    "step 0"
-                    player.chooseCardTarget({
+                async cost(event, trigger, player) {
+                    event.result = await player.chooseCardTarget({
                         position: 'he',
                         filterCard: lib.filter.cardDiscardable,
                         filterTarget(card, player, target) {
@@ -34309,37 +34307,34 @@ const packs = function () {
                             return false;
                         },
                         selectTarget() {
-                            return _status.event.player.hasSkill('minidoumao') ? 1 : [1, 2];
+                            return get.player().hasSkill('minidoumao') ? 1 : [1, 2];
                         },
-                        complexSelect: true,
                         ai1(card) {
                             return get.unuseful(card) + 9;
                         },
                         ai2(target) {
-                            var player = _status.event.player;
-                            var att = get.attitude(player, target);
+                            const player = get.player();
+                            const att = get.attitude(player, target);
                             if (player.countCards('h', 'shan')) return -att;
                             if (!ui.selected.targets.length) {
                                 if (att < 5) return 6 - att;
-                                if (hp == 1 && !player.countCards('h', 'shan')) return 10 - att;
+                                if (player.hp == 1 && !player.countCards('h', 'shan')) return 10 - att;
                                 if (player.hp == 2 && !player.countCards('h', 'shan')) return 8 - att;
                             }
                             return -1;
                         },
-                        prompt: get.prompt2('minimiaoliuli'),
+                        prompt: get.prompt2(event.skill),
                         source: trigger.player,
                         card: trigger.card,
-                    }).setHiddenSkill('minimiaoliuli');
-                    "step 1"
-                    if (result.bool) {
-                        var targets = result.targets.sortBySeat();
-                        player.logSkill('minimiaoliuli', targets);
-                        player.discard(result.cards);
-                        var evt = trigger.getParent();
-                        evt.triggeredTargets2.remove(player);
-                        evt.targets.remove(player);
-                        evt.targets.addArray(targets);
-                    }
+                    }).setHiddenSkill(event.skill).forResult();
+                },
+                async content(event, trigger, player) {
+                    const { cards, targets } = event;
+                    await player.discard(cards);
+                    const evt = trigger.getParent();
+                    evt.triggeredTargets2.remove(player);
+                    evt.targets.remove(player);
+                    evt.targets.addArray(targets);
                 },
                 ai: {
                     effect: {
