@@ -16471,7 +16471,7 @@ const packs = function () {
                 async cost(event, trigger, player) {
                     event.result = await player.chooseTarget(get.prompt2(event.skill), (card, player, target) => {
                         return target.countCards('he') && player != target;
-                    }).set('ai', target => {
+                    }, [1, 4]).set('ai', target => {
                         const player = get.player();
                         return -get.attitude(player, target);
                     }).forResult();
