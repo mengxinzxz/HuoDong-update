@@ -511,6 +511,75 @@ export async function content(config, pack) {
 			}
 		};
 	}
+	//换肤逻辑补充
+	if (get.nodeintro) {
+		const nodeintro = get.nodeintro;
+		get.nodeintro = function (node, simple) {
+			const uiintro = nodeintro.apply(this, arguments);
+			if ((lib.config.change_skin || lib.skin) && (!simple || get.is.phoneLayout())) {
+				let created = false;
+				const createButtons = function (nameskin, avatarSetter) {
+					const srcBase = get.skinPath(nameskin);
+					if (!srcBase) return;
+					game.getFileList(srcBase, (folders, files) => {
+						if (!files.length) return;
+						if (!created) {
+							created = true;
+							uiintro.add('<div class="text center">更改皮肤</div>');
+						}
+						const avatars = ui.create.div('.buttons.smallzoom.scrollbuttons');
+						lib.setMousewheel(avatars);
+						uiintro.add(avatars);
+						const originButton = ui.create.div('.button.character.pointerdiv', avatars, function () {
+							delete lib.config.skin[nameskin];
+							if (lib.characterSubstitute[nameskin]) {
+								for (const list of lib.characterSubstitute[nameskin]) delete lib.config.skin[list[0]];
+							}
+							avatarSetter('origin');
+							game.saveConfig('skin', lib.config.skin);
+						});
+						originButton.setBackground(nameskin, 'character', 'noskin');
+						files.forEach(file => {
+							const src = `${srcBase}${file}`, skinname = file;
+							const button = ui.create.div('.button.character.pointerdiv', avatars, function () {
+								lib.config.skin[nameskin] = [skinname, src];
+								if (lib.characterSubstitute[nameskin]) {
+									for (const list of lib.characterSubstitute[nameskin]) {
+										const sub = list[0], [fold, prefix] = skinname.split('.');
+										lib.config.skin[sub] = [skinname, `${srcBase}${fold}/${sub}.${prefix}`];
+									}
+								}
+								avatarSetter(src);
+								game.saveConfig('skin', lib.config.skin);
+							});
+							button.setBackgroundImage(src);
+						});
+					}, () => { });
+				};
+				if (node.classList.contains('player')) {
+					[node.name1, node.name2].forEach((nameskin, index) => {
+						if (nameskin) {
+							createButtons(nameskin, src => {
+								const avatar = node.node[index ? 'avatar2' : 'avatar'];
+								if (src === 'origin') avatar.setBackground(nameskin, 'character');
+								else avatar.style.backgroundImage = `url('${src}')`;
+							});
+						}
+					});
+				}
+				else if (node.classList.contains('character')) {
+					const nameskin = node.link;
+					if (nameskin) {
+						createButtons(nameskin, src => {
+							if (src === 'origin') node.setBackground(nameskin, 'character');
+							else node.style.backgroundImage = `url('${src}')`;
+						});
+					}
+				}
+			}
+			return uiintro;
+		};
+	}
 
 	//precGuoZhan(分界线，便于我搜过来)
 	if (get.mode() == 'guozhan') {
