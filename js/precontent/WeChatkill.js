@@ -16244,7 +16244,7 @@ const packs = function () {
                 },
                 async content(event, trigger, player) {
                     const type = get.type2(event.cards[0]);
-                    if (['basic', 'trick', 'equip'].includes(type)) await get.info(event.name).choices[type].content(player);
+                    if (['basic', 'trick', 'equip'].includes(type) && !player.getStorage(event.name).includes(type)) await get.info(event.name).choices[type].content(player);
                 },
                 onremove: true,
                 intro: { content: (storage, player) => `已移除分支：${storage.map(i => get.translation(storage)).join('、')}` },
