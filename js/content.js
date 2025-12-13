@@ -586,9 +586,6 @@ export async function content(config, pack) {
 		//国战武将技能修复
 		if (get.config('onlyguozhan')) {
 			//------------------------------增改武将------------------------------//
-			//国战武将补充
-			lib.characterSort.mode_guozhan.bilibili_GuoZhan = [];
-			lib.translate.bilibili_GuoZhan = '国战补充';
 			//技能
 			lib.skill.gzwanwei = {
 				audio: 'wanwei',
