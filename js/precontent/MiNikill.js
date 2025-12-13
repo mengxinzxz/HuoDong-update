@@ -28719,7 +28719,7 @@ const packs = function () {
                             }
                             if (links.includes(2)) {
                                 await player.loseMaxHp();
-                                if (4 - storage.length > 0) await player.draw(storage.length);
+                                if (storage.length > 0) await player.draw(storage.length);
                             }
                         },
                     },
