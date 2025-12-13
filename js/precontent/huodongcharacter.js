@@ -12510,7 +12510,7 @@ const packs = function () {
             bilibili_simayi_prefix: '神',
             old_dongxie: '列传董翓',
             old_dongxie_ab: '董翓',
-            bilibili_longjiuzhen: '',
+            bilibili_longjiuzhen: '龙九帧',
         },
     };
     for (let i in huodongcharacter.character) {
