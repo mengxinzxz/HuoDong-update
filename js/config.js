@@ -365,38 +365,6 @@ export let config = {
 			'<br><li>进入残局激昂bgm',
 		init: false,
 	},
-	FenJieXianD: {
-		clear: true,
-		name: '<li>关于国战（点击折叠）',
-		onclick() {
-			const innerHTML = get.plainText(this.innerHTML);
-			const goon = innerHTML.endsWith('（点击折叠）'), config = `hdwj_config_${innerHTML.slice(0, -6)}}`;
-			this.innerHTML = `<li>${this.textContent.slice(0, -6)}${goon ? '（点击展开）' : '（点击折叠）'}`;
-			if (goon) {
-				_status[config] ??= [];
-				let item = this.nextSibling;
-				while (item && ['（点击折叠）', '（点击展开）', '删除此扩展'].every(i => !item.innerHTML.includes(i))) {
-					item.hide();
-					_status[config].add(item);
-					item = item.nextSibling;
-				}
-			}
-			else {
-				for (const item of _status[config]) item.show();
-				delete _status[config];
-			}
-		},
-	},
-	HD_gzfazheng: {
-		name: '法正修改',
-		intro: '开启此选项后，国战法正【眩惑】调整为OL/手杀版本（重启生效）',
-		init: false,
-	},
-	HD_gzbianfuren: {
-		name: '卞夫人修改',
-		intro: '开启此选项后，国战卞夫人【挽危】调整为OL/十周年版本（重启生效）',
-		init: false,
-	},
 	FenJieXianE: {
 		clear: true,
 		name: '<li>扩展彩蛋（点击折叠）',

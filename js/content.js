@@ -590,35 +590,14 @@ export async function content(config, pack) {
 			lib.characterSort.mode_guozhan.bilibili_GuoZhan = [];
 			lib.translate.bilibili_GuoZhan = '国战补充';
 			//技能
-			let change_pack = {
-				skill: {
-					//卞夫人
-					gzwanwei: {
-						audio: 'wanwei',
-						inherit: 'fuwei',
-					},
-				},
-				dynamicTranslate: {
-
-				},
-				translate: {
-
-				},
-				character: {
-					gz_bianfuren: ['female', 'wei', 3, ['gzwanwei', 'gzyuejian'], []],
-					gz_re_xushu: ['male', 'shu', 4, ['gzqiance', 'gzjujian'], ['gzskin']],
-					gz_wujing: ['male', 'wu', 4, ['donggui', 'fengyang_old'], ['gzskin']],
-				},
+			lib.skill.gzwanwei = {
+				audio: 'wanwei',
+				inherit: 'fuwei',
 			};
-			for (const i in change_pack) {
-				for (const j in change_pack[i]) {
-					if (i == 'character') {
-						if (!change_pack[i][j][4]) change_pack[i][j][4] = [];
-						lib.characterPack.mode_guozhan[j] = change_pack[i][j];
-					}
-					lib[i][j] = change_pack[i][j];
-				}
-			}
+			Object.assign(lib.character, {
+				gz_re_xushu: ['male', 'shu', 4, ['gzqiance', 'gzjujian'], ['gzskin']],
+				gz_wujing: ['male', 'wu', 4, ['donggui', 'fengyang_old'], ['gzskin']],
+			});
 		}
 		//------------------------------选项------------------------------//
 		//precGuozhan2
@@ -641,67 +620,6 @@ export async function content(config, pack) {
 		lib.skill.yigui.group = ['yigui_init', 'yigui_refrain', 'yigui_gzshan', 'yigui_gzwuxie'];
 		const yiguiInfo = lib.translate.yigui_info;
 		lib.translate.yigui_info = yiguiInfo.slice(0, yiguiInfo.indexOf('（')) + '（此牌指定或响应的角色须为未确定势力的角色或野心家或与此“魂”势力相同的角色）';
-		//法正
-		if (lib.config.extension_活动武将_HD_gzfazheng) {
-			lib.skill.gzxuanhuo.subSkill.others = {
-				forceaudio: true,
-				audio: 'rexuanhuo',
-				filter(event, player) {
-					return !player.isUnseen() && player.countCards('h') && player.countCards('he') >= 2 && game.hasPlayer(target => {
-						return lib.skill.gzxuanhuo.subSkill.others.filterTarget(null, player, target);
-					});
-				},
-				enable: 'phaseUse',
-				filterTarget(card, player, target) {
-					return target != player && target.hasSkill('gzxuanhuo') && player.isFriendOf(target);
-				},
-				selectTarget() {
-					var targets = game.filterPlayer(target => lib.skill.gzxuanhuo.subSkill.others.filterTarget(null, _status.event.player, target));
-					return targets.length > 1 ? 1 : -1;
-				},
-				prompt() {
-					var targets = game.filterPlayer(target => lib.skill.gzxuanhuo.subSkill.others.filterTarget(null, _status.event.player, target));
-					return '弃置一张手牌并交给' + get.translation(targets) + (targets.length > 1 ? '中的一人' : '') + '一张牌，然后获得以下技能中的一个：〖武圣〗〖咆哮〗〖龙胆〗〖铁骑〗〖烈弓〗〖狂骨〗';
-				},
-				filterCard(card) {
-					return ui.selected.cards.length || get.position(card) == 'h';
-				},
-				selectCard: 2,
-				position: 'he',
-				check(card) {
-					var player = _status.event.player;
-					if (player.hasSkill('gzpaoxiao', true) || player.getEquip('zhuge')) return 0;
-					if (player.countCards('h', function (cardx) {
-						return cardx != card && cardx.name == 'sha' && player.hasUseTarget(cardx);
-					}) < (player.getCardUsable('sha') + 1)) return 0;
-					return 7 - get.value(card);
-				},
-				usable: 1,
-				discard: false,
-				delay: false,
-				content() {
-					'step 0'
-					player.discard(cards[0]);
-					if (target) target.gain(cards[1], player, 'giveAuto');
-					'step 1'
-					var list = ['new_rewusheng', 'gzpaoxiao', 'new_longdan', 'new_tieji', 'liegong', 'xinkuanggu'];
-					player.chooseControl(list).set('ai', () => {
-						var list = _status.event.controls.slice();
-						if (list.includes('gzpaoxiao')) return 'gzpaoxiao';
-						return list.randomGet();
-					}).set('prompt', '选择并获得一项技能直到回合结束');
-					'step 2'
-					player.addTempSkills('fz_' + result.control);
-					'step 3'
-					game.delayx();
-				},
-				ai: {
-					order: 8,
-					result: { player: 1 },
-				},
-			};
-			lib.translate.gzxuanhuo_info = '与你势力相同的其他角色的出牌阶段限一次，其可弃置一张手牌并交给你一张牌，然后选择获得以下一项技能直到回合结束：〖武圣〗、〖咆哮〗、〖龙胆〗、〖铁骑〗、〖烈弓〗、〖狂骨〗。';
-		}
 		//唐咨
 		lib.skill.gzxingzhao.derivation = 'xunxun';
 		lib.skill.gzxingzhao.subSkill.use = {
@@ -970,9 +888,9 @@ export async function content(config, pack) {
 	//precA
 	//配音
 	//引用国战配音
-	if (!lib.skill.yigui) lib.skill.yigui = { audio: 2 };
-	if (!lib.skill.gzshilu) lib.skill.gzshilu = { audio: 2 };
-	if (!lib.skill.gzxiongnve) lib.skill.gzxiongnve = { audio: 2 };
+	lib.skill.yigui ??= { audio: 2 };
+	lib.skill.gzshilu ??= { audio: 2 };
+	lib.skill.gzxiongnve ??= { audio: 2 };
 
 	//技能配音修正
 	lib.skill.juntun.audio = 'ext:活动武将/audio/skill:true';
@@ -1266,26 +1184,28 @@ export async function content(config, pack) {
 	};
 	//神张角
 	delete lib.skill.yizhao.intro.markcount;
-	lib.skill.yizhao.filter = function (event, player) {
-		return typeof get.number(event.card) == 'number' && (player.countMark('yizhao') < 184 || !lib.config.extension_活动武将_ShenZhangJiao);
-	};
-	lib.skill.yizhao.content = function () {
-		'step 0'
-		event.num = player.countMark('yizhao');
-		player.addMark('yizhao', Math.min(get.number(trigger.card), (lib.config.extension_活动武将_ShenZhangJiao ? 184 - player.countMark('yizhao') : get.number(trigger.card))));
-		'step 1'
-		var num = Math.floor(num / 10) % 10, num2 = Math.floor(player.countMark('yizhao') / 10) % 10;
-		if (num != num2) {
-			var card = get.cardPile2(card => {
-				return get.number(card, false) == num2;
-			});
-			if (card) player.gain(card, 'gain2');
-			else {
-				player.chat('无牌可得？！');
-				game.log('但是牌堆中已经没有点数为', '#y' + num2, '的牌了！');
+	Object.assign(lib.skill.yizhao, {
+		filter(event, player) {
+			return typeof get.number(event.card) == 'number' && (player.countMark('yizhao') < 184 || !lib.config.extension_活动武将_ShenZhangJiao);
+		},
+		content() {
+			'step 0'
+			event.num = player.countMark('yizhao');
+			player.addMark('yizhao', Math.min(get.number(trigger.card), (lib.config.extension_活动武将_ShenZhangJiao ? 184 - player.countMark('yizhao') : get.number(trigger.card))));
+			'step 1'
+			var num = Math.floor(num / 10) % 10, num2 = Math.floor(player.countMark('yizhao') / 10) % 10;
+			if (num != num2) {
+				var card = get.cardPile2(card => {
+					return get.number(card, false) == num2;
+				});
+				if (card) player.gain(card, 'gain2');
+				else {
+					player.chat('无牌可得？！');
+					game.log('但是牌堆中已经没有点数为', '#y' + num2, '的牌了！');
+				}
 			}
-		}
-	};
+		},
+	});
 	//左慈
 	lib.skill.rehuashen.drawCharacter = function (player, list) {
 		game.broadcastAll(function (player, list) {
@@ -1302,11 +1222,20 @@ export async function content(config, pack) {
 		}, player, list);
 	};
 	//YYDSの蔡阳
-	lib.skill.yinka.charlotte = true;
-	lib.skill.yinka.trigger = { global: ['drawBegin', 'judgeBegin'] };
-	lib.skill.yinka.firstDo = true;
-	lib.skill.yinka.group = 'yinka_view';
-	lib.skill.yinka.subSkill = { view: { ai: { viewHandcard: true, skillTagFilter: (player, arg, target) => target != player } } };
+	Object.assign(lib.skill.yinka, {
+		charlotte: true,
+		trigger: { global: ['drawBegin', 'judgeBegin'] },
+		firstDo: true,
+		group: 'yinka_view',
+		subSkill: {
+			view: {
+				ai: {
+					viewHandcard: true,
+					skillTagFilter: (player, arg, target) => target != player,
+				},
+			},
+		},
+	});
 	//星黄忠
 	lib.skill.spshidi.intro.markcount = storage => (storage || 0) % 2 == 0 ? '攻' : '守';
 
@@ -1315,7 +1244,7 @@ export async function content(config, pack) {
 	//删除翻译
 	delete lib.translate.sp_shenpei_prefix;
 	delete lib.translate.jin_xiahouhui_prefix;
-	const hdpj_translate = {
+	Object.assign(lib.translate, {
 		//修改武将翻译
 		//手杀前缀
 		re_sunben: '手杀界孙策',
@@ -1473,19 +1402,17 @@ export async function content(config, pack) {
 		zunwei_info: '出牌阶段限一次，你可以：①将体力值回复至与一名其他角色相同；②将手牌数摸至与一名其他角色相同（至多摸五张）；③为空装备栏使用牌堆中的装备牌直至你装备区里的牌数与一名其他角色相等。（每个选项每局限选择一次）',
 		olpaoxiao_info: '锁定技。①你使用【杀】无次数限制。②当你使用的【杀】被【闪】抵消后，你令本回合下一次因【杀】造成的伤害+X（X为造成伤害前的抵消次数）。',
 		sbliegong_info: '若你的装备区内没有武器牌，则你手牌区内所有【杀】的属性视为无属性。当你使用牌时或成为其他角色使用牌的目标后，若此牌有花色且你未记录此牌的花色，你记录此牌的花色。当你使用【杀】指定唯一目标后，若〖烈弓〗存在记录花色，则你可亮出牌堆顶的X张牌（X为〖烈弓〗记录过的花色数-1），令此【杀】的伤害值基数+Y（Y为亮出牌中被〖烈弓〗记录过花色的牌的数量），且目标角色不能使用〖烈弓〗记录过花色的牌响应此【杀】。此【杀】使用结算结束后，你清除〖烈弓〗记录的的花色。',
-	};
-	for (const i in hdpj_translate) lib.translate[i] = hdpj_translate[i];
+	});
 
 	//precCT
 	//武将前缀
-	const hdpj_characterTitle = {
+	Object.assign(lib.translate, {
 		bol_sunluban: '测试专用，问题居多<br>仅供参考，娱乐为上',
 		old_zhangzhongjing: '第一版张仲景',
 		oldx_zhangzhongjing: '第三版张仲景',
 		bol_zhangzhongjing: '仁望值弃稿',
 		bol_sp_huaxin: '仁望值弃稿',
-	};
-	for (const i in hdpj_characterTitle) lib.characterTitle[i] = hdpj_characterTitle[i];
+	});
 
 	//含衍生技的技能翻译优化
 	if (game.getExtensionConfig('活动武将', 'showDerivation')) {
