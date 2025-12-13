@@ -786,7 +786,7 @@ export async function content(config, pack) {
 		}
 		for (const name of Object.keys(lib.characterPack['huodongcharacter'])) {
 			if (!Object.keys(rank.rarity).some(rarity => rank.rarity[rarity].includes(name))) {
-				if (['Chuodong', 'CDanJi', 'CXuanDie'].some(pack => lib.characterSort.huodongcharacter[pack].includes(name))) rank.rarity['legend'].push(name);
+				if (['Chuodong', 'CXuanDie'].some(pack => lib.characterSort.huodongcharacter[pack].includes(name))) rank.rarity['legend'].push(name);
 				else rank.rarity['rare'].push(name);
 			}
 		}

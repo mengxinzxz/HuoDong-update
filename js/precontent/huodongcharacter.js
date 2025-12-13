@@ -12,7 +12,6 @@ const packs = function () {
                 CDormitory: ['bilibili_diandian', 'bilibili_murufengchen', 'bilibili_wuzhuwanshui', 'bilibili_kuangshen', 'bilibili_yanjing', 'bilibili_xiaoyaoruyun', 'bilibili_shuijiaobuboli'],
                 Cothers: ['bilibili_gaowang', 'bilibili_simayi', 'old_dongxie', 'bilibili_sunhanhua', 'bilibili_zhoutaigong', 'bilibili_zhouxiaomei', 'bilibili_caifuren', 'bilibili_zhengxuan', 'bilibili_sp_xuyou', 'old_zuoci', 'bilibili_kuailiangkuaiyue', 'bilibili_wuqiao', 'bilibili_daxiao', 'bilibili_xushao', 'bilibili_shen_guojia', 'bilibili_re_xusheng', 'bilibili_adong', 'bilibili_zhangrang', 'bilibili_litiansuo', 'decade_huangwudie', 'bilibili_huanggai', 'bilibili_ekeshaoge', 'bilibili_guanning', 'bilibili_wangwang', 'diy_lvmeng'],
                 Cothers_dualside: ['bilibili_wangtao', 'bilibili_wangyue', 'bilibili_x_wangtao', 'bilibili_x_wangyue', 'bilibili_daqiao', 'bilibili_xiaoqiao', 'bilibili_x_daqiao', 'bilibili_x_xiaoqiao', 'bilibili_ahuinan', 'bilibili_dongtuna', 'bilibili_x_ahuinan', 'bilibili_x_dongtuna'],
-                CDanJi: ['DJ_caiyang', 'DJ_pujing', 'DJ_huban'],
                 CXuanDie: ['bfake_jiananfeng', 'bfake_shen_zhangjiao', 'bfake_shen_zhangfei', 'bfake_shen_jiaxu', 'bfake_huanwen', 'bfake_miheng'],
             },
         },
@@ -78,9 +77,8 @@ const packs = function () {
             bilibili_x_ahuinan: ['male', 'qun', 4, ['jueman', 'dualside'], ['unseen', 'character:ahuinan', 'die:ahuinan']],
             bilibili_x_dongtuna: ['male', 'qun', 4, ['oljianman', 'dualside'], ['unseen', 'character:dongtuna', 'die:dongtuna']],
             //千里走单骑
-            DJ_caiyang: ['male', 'qun', 1, ['yinka', 'zhuixi'], ['character:caiyang']],
-            DJ_pujing: ['male', 'qun', 1, [], ['character:pujing']],
-            DJ_huban: ['male', 'qun', 2, [], ['character:huban']],
+            DJ_pujing: ['male', 'qun', 1, [], ['unseen', 'character:pujing']],
+            DJ_huban: ['male', 'qun', 2, [], ['unseen', 'character:huban']],
             //蝶设堂
             bfake_jiananfeng: ['female', 'jin', 8, ['bolduliao', 'bolhuidu', 'bolfushou']],
             bfake_shen_jiaxu: ['male', 'shen', 3, ['boljiandai', 'bolfangcan', 'boljuemei', 'bolluoshu'], ['qun', 'character:le_shen_jiaxu']],
@@ -11979,7 +11977,6 @@ const packs = function () {
             CDormitory: '宿舍/肘击群杂谈',
             Cothers: '自嗨',
             Cothers_dualside: '自嗨·双面武将',
-            CDanJi: '彩蛋·千里走单骑',
             CXuanDie: '蝶设堂',
             huashen_unknown: ' ',
             bilibili_zhengxuan: '郑玄',
@@ -12312,8 +12309,6 @@ const packs = function () {
             bolhuidu_info: '当你造成或受到伤害时，若伤害来源为：男性，其可以重铸任意张牌并防止此伤害；女性，你可以选择一个区域，令其重铸此区域的所有牌。',
             bolfushou: '覆手',
             bolfushou_info: '觉醒技，一名角色的回合结束时，若你的体力值不为全场最高，则交换你的手牌和本回合进入且位于弃牌堆的牌，然后交换牌堆和弃牌堆，最后交换你的体力值和体力上限（溢出的体力值改为增加等量护甲）。',
-            //千里走单骑
-            DJ_caiyang: '蔡阳',
             DJ_pujing: '普净',
             DJ_huban: '胡班',
             bilibili_gaowang: '高望',
@@ -12512,7 +12507,6 @@ const packs = function () {
         }
         if (_status['extension_活动武将_files']?.image.character.files.includes(`${i}.jpg`)) huodongcharacter.character[i].img = `extension/活动武将/image/character/${i}.jpg`;
         if (_status['extension_活动武将_files']?.image.skin[i]) huodongcharacter.character[i].skinPath = `ext:活动武将/image/skin/${i}/`;
-        if (!lib.config.extension_活动武将_DanJi && huodongcharacter.characterSort.huodongcharacter.CDanJi.includes(i)) huodongcharacter.character[i].isUnseen = true;
         const clans = huodongcharacter.character[i].clans;
         if (clans?.containsSome('宿舍群', '肘击群', '活动群')) {
             const groups = ['宿舍群', '肘击群', '活动群'].filter(i => clans.includes(i)).map(i => { return { '宿舍群': 'bilibili_sushe', '肘击群': 'bilibili_zhouji', '活动群': 'bilibili_huodong' }[i] });

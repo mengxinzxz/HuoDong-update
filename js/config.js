@@ -397,9 +397,4 @@ export let config = {
 		intro: '开启此选项后，线下包的五个虚拟偶像将获得【虚像】',
 		init: false,
 	},
-	DanJi: {
-		name: '彩蛋·千里走单骑',
-		intro: '开启此选项后，在正常模式中可以使用：蔡阳，普净，胡班（位于活动武将“其他武将”包）',
-		init: false,
-	},
 }
