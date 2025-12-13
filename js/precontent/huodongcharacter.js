@@ -3310,7 +3310,6 @@ const packs = function () {
                         return get.attitude(player, target);
                     });
                     'step 1'
-                    event.sha = false;
                     if (result.bool) {
                         var target = result.targets[0];
                         player.logSkill('bilibili_xueji', target);
@@ -3321,13 +3320,14 @@ const packs = function () {
                         }
                         else {
                             player.loseHp();
-                            target.addTempSkill('bilibili_xueji2', 'roundAfter');
+                            target.addTempSkill('bilibili_xueji2', 'roundStart');
+                            event.finish();
                         }
                         player.changeZhuanhuanji('bilibili_xueji');
                     }
                     else event.finish();
                     'step 2'
-                    if (event.sha && game.hasPlayer2(function (current) {
+                    if (game.hasPlayer2(function (current) {
                         return current.getHistory('damage', function (evt) {
                             return evt.getParent(4) == event;
                         }).length > 0
@@ -3335,7 +3335,7 @@ const packs = function () {
                 },
             },
             bilibili_hanran: {
-                trigger: { source: 'damageSource' },
+                trigger: { source: 'damageBegin3' },
                 filter(event, player) {
                     return event.player != player && event.player.maxHp > player.maxHp;
                 },
