@@ -444,6 +444,7 @@ const packs = function () {
             bol_pinjian: {
                 init(player) {
                     if (!_status.characterlist) lib.skill.bol_pinjian.initList();
+                    /*
                     if (!_status.characterlist._bol_pinjian_init) {
                         _status.characterlist.randomSort();
                         function bol_pinjian_timeset(callback, delay) {
@@ -474,6 +475,37 @@ const packs = function () {
                         };
                         _status.characterlist = new Proxy(_status.characterlist, handler);
                         _status.characterlist._bol_pinjian_init = true;
+                    }
+                    */
+                    if (!_status.bol_pinjian_update) {
+                        _status.characterlist.randomSort();
+                        let updatePending = false;
+                        _status.bol_pinjian_update = function () {
+                            if (updatePending) return;
+                            updatePending = true;
+                            Promise.resolve().then(() => {
+                                updatePending = false;
+                                for (const player of game.filterPlayer()) {
+                                    if (player.getSkills(null, null, false).includes('bol_pinjian')) {
+                                        lib.skill.bol_pinjian.update(player);
+                                    }
+                                }
+                            });
+                        }
+                        const list = _status.characterlist;
+                        const methods = ['push', 'pop', 'shift', 'unshift', 'splice', 'sort', 'reverse'];
+                        for (const method of methods) {
+                            const original = list[method];
+                            Object.defineProperty(list, method, {
+                                configurable: true,
+                                writable: true,
+                                value(...args) {
+                                    const result = original.apply(this, args);
+                                    _status.bol_pinjian_update();
+                                    return result;
+                                }
+                            });
+                        }
                     }
                     lib.skill.bol_pinjian.update(player);
                 },
