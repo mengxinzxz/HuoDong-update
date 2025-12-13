@@ -10,10 +10,9 @@ const packs = function () {
                 CLongZhou: ['lz_sufei', 'lz_tangzi', 'lz_liuqi', 'lz_huangquan'],
                 Chuodong: ['bilibili_shengxunyu', 'bilibili_Firewin', 'bilibili_jinglingqiu', 'bilibili_suixingsifeng', 'bilibili_Emptycity', 'bilibili_thunderlei', 'bilibili_lonelypatients', 'bilibili_ningjingzhiyuan', 'bilibili_xizhicaikobe'],
                 CDormitory: ['bilibili_diandian', 'bilibili_murufengchen', 'bilibili_wuzhuwanshui', 'bilibili_kuangshen', 'bilibili_yanjing', 'bilibili_xiaoyaoruyun', 'bilibili_shuijiaobuboli'],
-                Cothers: ['bilibili_simayi', 'old_dongxie', 'bilibili_sunhanhua', 'bilibili_zhoutaigong', 'bilibili_zhouxiaomei', 'bilibili_caifuren', 'bilibili_zhengxuan', 'bilibili_sp_xuyou', 'old_zuoci', 'bilibili_kuailiangkuaiyue', 'bilibili_wuqiao', 'bilibili_daxiao', 'bilibili_xushao', 'bilibili_shen_guojia', 'bilibili_re_xusheng', 'bilibili_adong', 'bilibili_zhangrang', 'bilibili_litiansuo', 'decade_huangwudie', 'bilibili_huanggai', 'bilibili_ekeshaoge', 'bilibili_guanning', 'bilibili_wangwang', 'diy_lvmeng'],
+                Cothers: ['bilibili_gaowang', 'bilibili_simayi', 'old_dongxie', 'bilibili_sunhanhua', 'bilibili_zhoutaigong', 'bilibili_zhouxiaomei', 'bilibili_caifuren', 'bilibili_zhengxuan', 'bilibili_sp_xuyou', 'old_zuoci', 'bilibili_kuailiangkuaiyue', 'bilibili_wuqiao', 'bilibili_daxiao', 'bilibili_xushao', 'bilibili_shen_guojia', 'bilibili_re_xusheng', 'bilibili_adong', 'bilibili_zhangrang', 'bilibili_litiansuo', 'decade_huangwudie', 'bilibili_huanggai', 'bilibili_ekeshaoge', 'bilibili_guanning', 'bilibili_wangwang', 'diy_lvmeng'],
                 Cothers_dualside: ['bilibili_wangtao', 'bilibili_wangyue', 'bilibili_x_wangtao', 'bilibili_x_wangyue', 'bilibili_daqiao', 'bilibili_xiaoqiao', 'bilibili_x_daqiao', 'bilibili_x_xiaoqiao', 'bilibili_ahuinan', 'bilibili_dongtuna', 'bilibili_x_ahuinan', 'bilibili_x_dongtuna'],
                 CDanJi: ['DJ_caiyang', 'DJ_pujing', 'DJ_huban'],
-                CSCS: ['biliscs_shichangshi', 'biliscs_zhangrang', 'biliscs_zhaozhong', 'biliscs_sunzhang', 'biliscs_bilan', 'biliscs_xiayun', 'biliscs_hankui', 'biliscs_lisong', 'biliscs_duangui', 'biliscs_guosheng', 'biliscs_gaowang'],
                 CXuanDie: ['bfake_jiananfeng', 'bfake_shen_zhangjiao', 'bfake_shen_zhangfei', 'bfake_shen_jiaxu', 'bfake_huanwen', 'bfake_miheng'],
             },
         },
@@ -63,6 +62,7 @@ const packs = function () {
             bilibili_simayi: ['male', 'shen', 3, ['reguicai', 'fangzhu', 'rewansha', 'rezhiheng', 'rejizhi'], ['wei', 'character:shen_simayi', ...['tempname', 'die'].map(i => `${i}:new_simayi`)]],
             old_dongxie: ['female', 'qun', 4, ['juntun', 'jiaojie'], ['die:dongxie']],
             bilibili_longjiuzhen: ['female', 'key', 3, [], ['clan:宿舍群|肘击群|活动群', 'name:null|美', 'unseen']],
+            bilibili_gaowang: ['male', 'qun', 3, ['scsanruo', 'gaowangdead'], ['character:scs_gaowang']],
             //双面武将--正面
             bilibili_wangtao: ['female', 'shu', 3, ['huguan', 'yaopei', 'dualside'], ['dualside:bilibili_x_wangyue', 'character:wangtao', 'die:wangtao']],
             bilibili_wangyue: ['female', 'shu', 3, ['huguan', 'mingluan', 'dualside'], ['dualside:bilibili_x_wangtao', 'character:wangyue', 'tempname:wangyue', 'die:wangyue']],
@@ -79,20 +79,8 @@ const packs = function () {
             bilibili_x_dongtuna: ['male', 'qun', 4, ['oljianman', 'dualside'], ['unseen', 'character:dongtuna', 'die:dongtuna']],
             //千里走单骑
             DJ_caiyang: ['male', 'qun', 1, ['yinka', 'zhuixi'], ['character:caiyang']],
-            DJ_pujing: ['male', 'qun', 1, ['yinka'], ['character:pujing']],
-            DJ_huban: ['male', 'qun', 2, ['yinka'], ['character:huban']],
-            //十常侍
-            biliscs_shichangshi: ['male', 'qun', 1, ['scstaoluan', 'scschiyan', 'scszimou', 'scspicai', 'scsyaozhuo', 'scsxiaolu', 'scskuiji', 'scschihe', 'scsniqu', 'scsmiaoyu'], ['character:shichangshi', 'name:张|让-赵|忠-孙|璋-毕|岚-夏|恽-韩|悝-栗|嵩-段|珪-郭|胜-高|望']],
-            biliscs_zhangrang: ['male', 'qun', 1, ['scstaoluan'], ['character:scs_zhangrang']],
-            biliscs_zhaozhong: ['male', 'qun', 1, ['scschiyan'], ['character:scs_zhaozhong']],
-            biliscs_sunzhang: ['male', 'qun', 1, ['scszimou'], ['character:scs_sunzhang']],
-            biliscs_bilan: ['male', 'qun', 1, ['scspicai'], ['character:scs_bilan']],
-            biliscs_xiayun: ['male', 'qun', 1, ['scsyaozhuo'], ['character:scs_xiayun']],
-            biliscs_hankui: ['male', 'qun', 1, ['scsxiaolu'], ['character:scs_hankui']],
-            biliscs_lisong: ['male', 'qun', 1, ['scskuiji'], ['character:scs_lisong']],
-            biliscs_duangui: ['male', 'qun', 1, ['scschihe'], ['character:scs_duangui']],
-            biliscs_guosheng: ['male', 'qun', 1, ['scsniqu'], ['character:scs_guosheng']],
-            biliscs_gaowang: ['male', 'qun', 1, ['scsmiaoyu'], ['character:scs_gaowang']],
+            DJ_pujing: ['male', 'qun', 1, [], ['character:pujing']],
+            DJ_huban: ['male', 'qun', 2, [], ['character:huban']],
             //蝶设堂
             bfake_jiananfeng: ['female', 'jin', 8, ['bolduliao', 'bolhuidu', 'bolfushou']],
             bfake_shen_jiaxu: ['male', 'shen', 3, ['boljiandai', 'bolfangcan', 'boljuemei', 'bolluoshu'], ['qun', 'character:le_shen_jiaxu']],
@@ -261,6 +249,11 @@ const packs = function () {
                 info: '背景武将默认隐藏，正面武将翻面时或死亡后切换至背面',
             }),
             bilibili_longjiuzhen: '',
+        },
+        characterSubstitute: {
+            bilibili_gaowang: [
+                ['scs_gaowang_dead', []],
+            ],
         },
         card: {
             //闪闪
@@ -11868,6 +11861,18 @@ const packs = function () {
                     },
                 },
             },
+            //高望
+            gaowangdead: {
+                charlotte: true,
+                trigger: { player: 'dieBefore' },
+                silent: true,
+                firstDo: true,
+                forceDie: true,
+                async content(event, trigger, player) {
+                    player.changeSkin({ characterName: 'bilibili_gaowang' }, 'scs_gaowang_dead');
+                },
+            },
+            //龙九帧
         },
         dynamicTranslate: {
             bilibili_xueji(player) {
@@ -11975,7 +11980,6 @@ const packs = function () {
             Cothers: '自嗨',
             Cothers_dualside: '自嗨·双面武将',
             CDanJi: '彩蛋·千里走单骑',
-            CSCS: '彩蛋·十常侍',
             CXuanDie: '蝶设堂',
             huashen_unknown: ' ',
             bilibili_zhengxuan: '郑玄',
@@ -12002,10 +12006,6 @@ const packs = function () {
             old_lingce_info: '锁定技，一名角色使用智囊牌名的锦囊或【奇正相生】时，你摸一张牌。',
             old_dinghan: '定汉',
             old_dinghan_info: '锁定技，每种牌名每轮限一次，当你成为伤害类卡牌的目标时，取消之。',
-            golden_zuoci: '仙人之怒',
-            BT_puyuan_ab: '能工巧匠',
-            BT_puyuan: '蒲元',
-            diy_liuhong: '刘宏',
             bilibili_zhoutaigong: '周太公',
             bilibili_zhouxiaomei: '周小妹',
             bilibili_zhangrang: 'TW张让',
@@ -12316,18 +12316,7 @@ const packs = function () {
             DJ_caiyang: '蔡阳',
             DJ_pujing: '普净',
             DJ_huban: '胡班',
-            //十常侍
-            biliscs_shichangshi: '十常侍',
-            biliscs_zhangrang: '张让',
-            biliscs_zhaozhong: '赵忠',
-            biliscs_sunzhang: '孙璋',
-            biliscs_bilan: '毕岚',
-            biliscs_xiayun: '夏恽',
-            biliscs_hankui: '韩悝',
-            biliscs_lisong: '栗嵩',
-            biliscs_duangui: '段珪',
-            biliscs_guosheng: '郭胜',
-            biliscs_gaowang: '高望',
+            bilibili_gaowang: '高望',
             bolyingtu: '营图',
             bolyingtu_info: '①当你的上家于摸牌阶段外获得牌后，你可以获得其等量的牌，然后将等量的牌交给你的下家。②当你的下家使用【杀】或【决斗】指定第一个目标时，若目标角色不包含你和你的上家，则你可以取消此牌的所有目标，然后将此牌目标改为你的上家。',
             bolcongshi: '从势',
@@ -12524,14 +12513,12 @@ const packs = function () {
         if (_status['extension_活动武将_files']?.image.character.files.includes(`${i}.jpg`)) huodongcharacter.character[i].img = `extension/活动武将/image/character/${i}.jpg`;
         if (_status['extension_活动武将_files']?.image.skin[i]) huodongcharacter.character[i].skinPath = `ext:活动武将/image/skin/${i}/`;
         if (!lib.config.extension_活动武将_DanJi && huodongcharacter.characterSort.huodongcharacter.CDanJi.includes(i)) huodongcharacter.character[i].isUnseen = true;
-        if (!lib.config.extension_活动武将_SCS && huodongcharacter.characterSort.huodongcharacter.CSCS.includes(i)) huodongcharacter.character[i].isUnseen = true;
         const clans = huodongcharacter.character[i].clans;
         if (clans?.containsSome('宿舍群', '肘击群', '活动群')) {
             const groups = ['宿舍群', '肘击群', '活动群'].filter(i => clans.includes(i)).map(i => { return { '宿舍群': 'bilibili_sushe', '肘击群': 'bilibili_zhouji', '活动群': 'bilibili_huodong' }[i] });
             huodongcharacter.character[i].doubleGroup = groups;
         }
     }
-    huodongcharacter.connectBanned.addArray(['CDanJi', 'CSCS'].map(i => huodongcharacter.characterSort.huodongcharacter[i]).flat());
     //“萌新自设”前缀
     lib.namePrefix.set('萌设', {
         color: '#ff6a6a',

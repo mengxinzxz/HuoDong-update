@@ -624,7 +624,7 @@ export async function content(config, pack) {
 			trigger: { player: 'damageEnd' },
 			filter(event, player) {
 				var num = lib.skill.gzxingzhao.getNum();
-				return num >= 2 && event.source && event.source.isIn() && player.countCards('h') != event.source.countCards('h');
+				return num >= 2 && event.source?.isIn() && player.countCards('h') != event.source.countCards('h');
 			},
 			logTarget(event, player) {
 				return player.countCards('h') > event.source.countCards('h') ? event.source : player;
@@ -654,10 +654,7 @@ export async function content(config, pack) {
 					'old_zuoci',
 					'bilibili_guanning',
 					'bilibili_litiansuo',
-					'bilibili_kuangshen04',
 					'diy_lvmeng',
-					'golden_zuoci',
-					'BT_puyuan',
 					'lz_sufei',
 					'FD_huaxiong',
 					'bilibili_shen_guojia',
@@ -789,7 +786,7 @@ export async function content(config, pack) {
 		}
 		for (const name of Object.keys(lib.characterPack['huodongcharacter'])) {
 			if (!Object.keys(rank.rarity).some(rarity => rank.rarity[rarity].includes(name))) {
-				if (['Chuodong', 'CDanJi', 'CSCS', 'CXuanDie'].some(pack => lib.characterSort.huodongcharacter[pack].includes(name))) rank.rarity['legend'].push(name);
+				if (['Chuodong', 'CDanJi', 'CXuanDie'].some(pack => lib.characterSort.huodongcharacter[pack].includes(name))) rank.rarity['legend'].push(name);
 				else rank.rarity['rare'].push(name);
 			}
 		}
