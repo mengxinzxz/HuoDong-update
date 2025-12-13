@@ -62,6 +62,7 @@ const packs = function () {
             bilibili_diandian: ['female', 'key', 3, ['bilibili_siyu', 'bilibili_tamen'], ['clan:肘击群|活动群', 'name:永雏|塔菲']],
             bilibili_simayi: ['male', 'shen', 3, ['reguicai', 'fangzhu', 'rewansha', 'rezhiheng', 'rejizhi'], ['wei', 'character:shen_simayi', ...['tempname', 'die'].map(i => `${i}:new_simayi`)]],
             old_dongxie: ['female', 'qun', 4, ['juntun', 'jiaojie'], ['die:dongxie']],
+            bilibili_longjiuzhen: ['female', 'key', 3, [], ['clan:宿舍群|肘击群|活动群', 'name:null|美', 'unseen']],
             //双面武将--正面
             bilibili_wangtao: ['female', 'shu', 3, ['huguan', 'yaopei', 'dualside'], ['dualside:bilibili_x_wangyue', 'character:wangtao', 'die:wangtao']],
             bilibili_wangyue: ['female', 'shu', 3, ['huguan', 'mingluan', 'dualside'], ['dualside:bilibili_x_wangtao', 'character:wangyue', 'tempname:wangyue', 'die:wangyue']],
@@ -132,6 +133,7 @@ const packs = function () {
             bilibili_wuzhuwanshui: '你说得对但是我的名字是凤凰院凶真，年龄十九岁，家住在秋叶原，天天在lab里面忙着拯救世界，我每天都要熬到凌晨六点，从来不做保健操，静静观测这个世界并且爱护我亲爱的助手——克里斯蒂↑～娜↓～，我每天都要灌大量的胡椒博士，不经常看医生但是我的身体一定非常健康。<br>噫！这搬史，可真是一门学问啊！要如何把热乎的构思端给群友呢？倘若是直接呈上去，未免馨香扑鼻让人倍感惊恐，所以就需要用聊天记录套一层，来欢迎大家细细品味啊！<br>有人问，天下的构思如此之多，你搬得完吗？那当然是搬不完的，可是让眼前之人吃好吃饱，就是我们史官的溯源与目标。我们一定会为了群友的营养健康勤奋工作，积极投喂各种内容，保证群友身体健康营养均衡。',
             bilibili_murufengchen: '《星主宝诰》有云：志心皈命礼。大罗天阙，紫微星宫。尊居北极之高，位正中天之上，法号金轮炽盛，道称玉斗玄尊。璇玑玉衡，齐七政；总天经地，纬日月。星宿约，四时行，黄道紫垣，万象宗师，诸天统御。大悲大愿、大圣大慈、万星教主、无极元皇、中天紫微北极大帝。<br>————肘击群：沐如风晨',
             bilibili_diandian: '#地雷係#天使界限#天使界隈女子#水色#水色系統#水色ネイル#サプカル地雷#サプカル女子#サプカルチャ一病みかわいい病み垢#病み垢女子',
+            bilibili_longjiuzhen: '',
         },
         characterFilter: {
             bilibili_sp_xuyou(mode) {
@@ -258,6 +260,7 @@ const packs = function () {
                 type: 'character',
                 info: '背景武将默认隐藏，正面武将翻面时或死亡后切换至背面',
             }),
+            bilibili_longjiuzhen: '',
         },
         card: {
             //闪闪
@@ -12507,6 +12510,7 @@ const packs = function () {
             bilibili_simayi_prefix: '神',
             old_dongxie: '列传董翓',
             old_dongxie_ab: '董翓',
+            bilibili_longjiuzhen: '',
         },
     };
     for (let i in huodongcharacter.character) {

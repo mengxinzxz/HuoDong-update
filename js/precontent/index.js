@@ -589,7 +589,6 @@ export async function precontent(bilibilicharacter) {
         game.import('character', huodongcharacter);
         //--------------------卡牌包--------------------//
     }
-
     //更新公告
     game.showExtensionChangeLog((() => {
         //更新告示
@@ -602,23 +601,24 @@ export async function precontent(bilibilicharacter) {
                     '<a href="https://github.com/HuoDong-Update-Organization/HuoDong-update">点击前往活动武将Github仓库</a>'
                 ],
             },
-            /*
             {
                 type: 'players',
                 data: [
+                    [
+                        'bilibili_longjiuzhen',
+                    ],
                 ],
             },
-            */
             {
                 type: 'text',
                 textAlign: 'left',
                 data: [
                     'bugfix、素材补充、技能调整',
+                    '杂谈新武将：龙九帧',
                     'To be continued...',
                 ],
             },
         ];
         return _status.HDWJ_ChangeLog;
     })(), '活动武将');
-
 }
