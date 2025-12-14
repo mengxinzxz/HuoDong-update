@@ -1,6 +1,5 @@
 import { lib, game, ui, get, ai, _status } from '../../../../noname.js';
 import FaDongCharacter from './FaDongCharacter.js';
-import NianShouCharacter from './NianShouCharacter.js';
 import hezongkangqincharacter from './hezongkangqincharacter.js';
 import decadeQiHuan from './decadeQiHuan.js';
 import decadeZhuoGui from './decadeZhuoGui.js';
@@ -567,8 +566,6 @@ export async function precontent(bilibilicharacter) {
         //--------------------武将包--------------------//
         //诸侯伐董
         game.import('character', FaDongCharacter);
-        //生肖年兽
-        game.import('character', NianShouCharacter);
         //合纵抗秦
         game.import('character', hezongkangqincharacter);
         //戚宦之争——我补完了！！！

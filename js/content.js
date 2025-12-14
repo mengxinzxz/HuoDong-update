@@ -790,12 +790,6 @@ export async function content(config, pack) {
 				else rank.rarity['rare'].push(name);
 			}
 		}
-		for (const name of Object.keys(lib.characterPack['NianShouCharacter'])) {
-			if (!Object.keys(rank.rarity).some(rarity => rank.rarity[rarity].includes(name))) {
-				if (lib.characterSort.NianShouCharacter.NianShouCharacter2018.includes(name)) rank.rarity['legend'].push(name);
-				if (lib.characterSort.NianShouCharacter.NianShouCharacter2019.includes(name)) rank.rarity['legend'].push(name);
-			}
-		}
 		for (const name of lib.characterSort['diy'].diy_trashbin) {
 			if (!Object.keys(rank.rarity).some(rarity => rank.rarity[rarity].includes(name))) rank.rarity['junk'].add(name);
 		}

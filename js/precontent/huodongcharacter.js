@@ -12669,7 +12669,9 @@ const packs = function () {
         const clans = huodongcharacter.character[i].clans;
         if (clans?.containsSome('宿舍群', '肘击群', '活动群')) {
             const groups = ['宿舍群', '肘击群', '活动群'].filter(i => clans.includes(i)).map(i => { return { '宿舍群': 'bilibili_sushe', '肘击群': 'bilibili_zhouji', '活动群': 'bilibili_huodong' }[i] });
-            huodongcharacter.character[i].doubleGroup = groups;
+            huodongcharacter.character[i].groupBorder = 'key';
+            if (groups.length > 1) huodongcharacter.character[i].doubleGroup = groups;
+            else huodongcharacter.character[i].group = groups[0];
         }
     }
     //“萌新自设”前缀
