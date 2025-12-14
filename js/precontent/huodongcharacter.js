@@ -60,7 +60,7 @@ const packs = function () {
             bilibili_diandian: ['female', 'key', 3, ['bilibili_siyu', 'bilibili_tamen'], ['clan:肘击群|活动群', 'name:永雏|塔菲']],
             bilibili_simayi: ['male', 'shen', 3, ['reguicai', 'fangzhu', 'rewansha', 'rezhiheng', 'rejizhi'], ['wei', 'character:shen_simayi', ...['tempname', 'die'].map(i => `${i}:new_simayi`)]],
             old_dongxie: ['female', 'qun', 4, ['juntun', 'jiaojie'], ['die:dongxie']],
-            bilibili_longjiuzhen: ['female', 'key', 4, [], ['clan:宿舍群|肘击群|活动群', 'name:null|美', 'unseen']],
+            bilibili_longjiuzhen: ['female', 'key', 4, ['bilibili_linglai', 'bilibili_yongtan'], ['clan:宿舍群|肘击群|活动群', 'name:null|美']],
             bilibili_gaowang: ['male', 'qun', 3, ['scsanruo', 'gaowangdead'], ['character:scs_gaowang']],
             //双面武将--正面
             bilibili_wangtao: ['female', 'shu', 3, ['huguan', 'yaopei', 'dualside'], ['dualside:bilibili_x_wangyue', 'character:wangtao', 'die:wangtao']],
@@ -6601,9 +6601,7 @@ const packs = function () {
                 init: () => game.addGlobalSkill('tianzuo_global'),
                 getNum(player = _status.event.player) {
                     var num = 1 + (player.getStat('skill')['bilibili_yutai'] || 0);
-                    if (game.hasPlayer2(function (current) {
-                        return current.name1 == 'bilibili_suixingsifeng' || current.name2 == 'bilibili_suixingsifeng';
-                    })) return num;
+                    if (game.hasPlayer2(current => get.nameList(current).includes('bilibili_suixingsifeng'))) return num;
                     return Math.min(num, 3);
                 },
                 enable: 'chooseToUse',
@@ -9580,37 +9578,34 @@ const packs = function () {
                     return event.player != player && event.player.isIn();
                 },
                 async cost(event, trigger, player) {
-                    const sum = Math.max(4, trigger.player.countCards('h')) + 1, types = lib.skill[event.skill].choice;
-                    let result = await player.chooseButton((() => {
-                        const dialog = ui.create.dialog(`###${lib.translate[event.skill]}###<div class='text center'>${lib.translate[`${event.skill}_info`]}</div>`);
-                        for (const type of types) {
-                            dialog.add(`<div class='text center'>${lib.translate[type] || '技能'}</div>`);
-                            dialog.add([Array.from({ length: sum }).map((_, i) => [`${type}|${i + 1}`, i + 1]), 'tdnodes']);
-                        }
-                        dialog.classList.add('fullheight');
-                        return dialog;
-                    })(), 4).set('filterButton', button => {
-                        let [type, select] = button.link.split('|');
-                        select = Number(select);
-                        if (ui.selected.buttons.some(but => but.link.split('|')[0] === type)) return false;
-                        let restNum = get.event().sum - ui.selected.buttons.reduce((num, but) => num + Number(but.link.split('|')[1]), 0);
-                        if (restNum < select || restNum - select < 4 - 1 - ui.selected.buttons.length) return false;
-                        return ui.selected.buttons.length < 3 || select === restNum;
+                    const target = trigger.player, types = lib.skill[event.skill].choice;
+                    const sum = Math.max(4, target.countCards('h')) + 1;
+                    const result = await player.chooseNumbers(
+                        get.prompt2(event.skill, target),
+                        (() => {
+                            let list = [];
+                            for (const type of types) {
+                                list.push({
+                                    prompt: lib.translate[type] || '技能',
+                                    min: 1,
+                                    max: Math.floor(sum - (types.length - 1)),
+                                });
+                            }
+                            return list;
+                        })(),
+                    ).set('filterOk', event => {
+                        return event.numbers.reduce((sum, num) => sum + num, 0) === event.sum;
                     }).set('processAI', () => {
                         const { player, sum } = get.event(), target = get.event().getTrigger().player;
                         if (get.attitude(player, target) > 0) return { bool: false };
-                        const types = lib.skill['bilibili_xiezhi'].choice;
-                        return { bool: true, links: types.map(type => `${type}|${type === 'equip' ? (sum - 3) : 1}`) };
+                        return { bool: true, numbers: [1, 1, sum - 3, 1] };
                     }).set('sum', sum).forResult();
-                    if (result?.bool && result.links?.length) {
+                    if (result?.bool && result.numbers?.length) {
                         event.result = {
                             bool: true,
                             cost_data: (() => {
                                 const map = {};
-                                for (const choice of result.links) {
-                                    let [type, select] = choice.split('|');
-                                    map[type] = Number(select);
-                                }
+                                result.numbers.forEach((num, index) => map[types[index]] = num);
                                 return map;
                             })(),
                         };
@@ -9738,7 +9733,11 @@ const packs = function () {
                 },
                 async content(event, trigger, player) {
                     for (const target of event.targets.sortBySeat(player)) {
-                        const manbaout = lib.skill[event.name].findTarget(target, true) && (get.nameList(target).includes('bilibili_xizhicaikobe') || Math.random() <= 0.08);
+                        const manbaout = lib.skill[event.name].findTarget(target, true) && (() => {
+                            const list = get.nameList(target);
+                            if (list.containsSome('bilibili_suixingsifeng', 'bilibili_yanjing')) return false;
+                            return list.containsSome('bilibili_xizhicaikobe', 'bilibili_longjiuzhen') || Math.random() <= 0.08;
+                        })();
                         await target.damage(manbaout ? 24 : 1);
                         if (target.isIn()) {
                             target.chat('mamba out');
@@ -11903,6 +11902,133 @@ const packs = function () {
                 },
             },
             //龙九帧
+            bilibili_linglai: {
+                trigger: { global: ['loseAfter', 'loseAsyncAfter', 'cardsDiscardAfter'] },
+                filter(event, player) {
+                    const cards = event.getd();
+                    return cards.some(card => {
+                        const id = card.cardid;
+                        if (event.name !== 'cardsDiscard') {
+                            if (!event.getl) return false;
+                            return game.hasPlayer2(target => {
+                                const cards2 = event.getl(target).cards2;
+                                const evt = event.name === 'lose' ? event : target.getHistory('lose', evt2 => event === evt2.getParent())[0];
+                                return evt && cards2.includes(card) && evt.gaintag_map[id]?.includes('bilibili_linglai');
+                            });
+                        }
+                        const evt = event.getParent();
+                        if (evt.name !== 'orderingDiscard') return false;
+                        const evtx = (evt.relatedEvent || evt.getParent());
+                        return evtx.player.hasHistory('lose', evtxx => {
+                            if (evtx !== (evtxx.relatedEvent || evtxx.getParent())) return false;
+                            const cards2 = evtxx.getl(evtx.player).cards2;
+                            return cards2.includes(card) && evtxx.gaintag_map[id]?.includes('bilibili_linglai');
+                        });
+                    });
+                },
+                forced: true,
+                async content(event, trigger, player) {
+                    const cards = trigger.getd();
+                    await player.draw(cards.reduce((sum, card) => {
+                        const id = card.cardid;
+                        if (trigger.name !== 'cardsDiscard') {
+                            sum += game.countPlayer2(target => {
+                                const cards2 = trigger.getl(target).cards2;
+                                const evt = trigger.name === 'lose' ? trigger : target.getHistory('lose', evt2 => trigger === evt2.getParent())[0];
+                                return (evt && cards2.includes(card) && evt.gaintag_map[id]?.includes('bilibili_linglai')) ? 1 : 0;
+                            });
+                        }
+                        else {
+                            const evt = trigger.getParent();
+                            const evtx = (evt.relatedEvent || evt.getParent());
+                            evtx.player.getHistory('lose', evtxx => {
+                                if (evtx !== (evtxx.relatedEvent || evtxx.getParent())) return false;
+                                const cards2 = evtxx.getl(evtx.player).cards2;
+                                if (!cards2.includes(card) || !evtxx.gaintag_map[id]?.includes('bilibili_linglai')) return false;
+                                sum += ((evtxx.relatedEvent || evtxx.getParent()).name === 'useCard' ? 2 : 1);
+                            });
+                        }
+                        return sum;
+                    }, 0));
+                },
+                subfrequent: ['effect'],
+                group: 'bilibili_linglai_effect',
+                subSkill: {
+                    effect: {
+                        trigger: { global: 'phaseUseBegin' },
+                        filter(event, player) {
+                            return event.player.countCards('h') > 0;
+                        },
+                        frequent: true,
+                        logTarget: 'player',
+                        prompt2: () => '观看其手牌并标记其至多两张手牌',
+                        async content(event, trigger, player) {
+                            let target = trigger.player, result;
+                            if (target === player) {
+                                result = await player.chooseCard('h', true, [1, 2]).set('ai', card => {
+                                    return get.useful(card) * get.value(card);
+                                }).set('prompt', `${get.translation(event.name)}：标记至多两张手牌`).forResult();
+                            }
+                            else {
+                                result = await player.choosePlayerCard(target, 'visible', true, [1, 2]).set('ai', button => {
+                                    const card = button.link;
+                                    return get.useful(card) * get.value(card);
+                                }).set('prompt', `${get.translation(event.name)}：标记${get.translation(target)}至多两张手牌`).forResult();
+                            }
+                            if (result?.bool && result.cards?.length) target.addGaintag(result.cards, 'bilibili_linglai');
+                        },
+                    },
+                },
+            },
+            bilibili_yongtan: {
+                trigger: { player: 'useCardAfter' },
+                filter(event, player) {
+                    return player.isPhaseUsing() && game.hasPlayer(target => target !== player);
+                },
+                async cost(event, trigger, player) {
+                    const result = await player.chooseButtonTarget({
+                        createDialog: [
+                            get.prompt2(event.skill),
+                            [[1, 2, 3, 4].map(num => [num, get.strNumber(num)]), 'tdnodes'],
+                            [[5, 6, 7, 8, 9].map(num => [num, get.strNumber(num)]), 'tdnodes'],
+                            [[10, 11, 12, 13].map(num => [num, get.strNumber(num)]), 'tdnodes'],
+                        ],
+                        filterTarget: lib.filter.noeMe,
+                        ai1: () => 1 + Math.random(),
+                        ai2(target) {
+                            const player = get.player();
+                            return -get.attitude(player, target) * (1 + target.getHp());
+                        }
+                    }).forResult();
+                    if (result?.bool && result.links?.length && result.targets?.length) {
+                        event.result = {
+                            bool: true,
+                            targets: result.targets,
+                            cost_data: result.links[0],
+                        };
+                    }
+                },
+                async content(event, trigger, player) {
+                    const target = event.targets[0], number = event.cost_data;
+                    player.popup(get.strNumber(number));
+                    game.log(player, '选择了', '#y' + get.strNumber(number), '点');
+                    if (ui.cardPile.childElementCount > 0 && ['宿舍群', '肘击群', '活动群'].some(clan => target.hasClan(clan))) {
+                        for (let i = 0; i < ui.cardPile.childElementCount; i++) {
+                            const card = ui.cardPile.childNodes[i];
+                            if ((get.number(card) === number) === get.nameList(target).includes('bilibili_ningjingzhiyuan')) {
+                                ui.cardPile.removeChild(card);
+                                ui.cardPile.insertBefore(card, ui.cardPile.firstChild);
+                                break;
+                            }
+                        }
+                    }
+                    const result = await target.judge(card => {
+                        const number = get.event().getParent('bilibili_yongtan').cost_data ?? 0;
+                        return get.number(card) === number ? -10 : 1;
+                    }).set('judge2', result => result?.bool ? false : true).forResult();
+                    if (!result.bool && target.getHp() > 0) await target.loseHp(target.getHp());
+                },
+            },
         },
         dynamicTranslate: {
             bilibili_xueji(player) {
@@ -11950,9 +12076,7 @@ const packs = function () {
                 return '锁定技，当你于每轮第一次使用一种类型的牌后，你令一名其他角色获得此牌或交给你至少X张牌（X为该角色『' + str + '』之间的最小值，且X至多为3）。'
             },
             bilibili_yutai(player) {
-                var bool = game.hasPlayer2(function (current) {
-                    return current.name1 == 'bilibili_suixingsifeng' || current.name2 == 'bilibili_suixingsifeng';
-                });
+                var bool = game.hasPlayer2(current => get.nameList(current).includes('bilibili_suixingsifeng'));
                 return '你可以将X张牌当作【奇正相生】使用（X为你本回合发动〖彧态〗的次数+1' + (bool ? '<span style="text-decoration: line-through;">' : '') + '，且X至多为3' + (bool ? '</span>' : '') + '）。';
             },
             bolrenhai(player) {
@@ -12527,7 +12651,11 @@ const packs = function () {
             old_dongxie: '列传董翓',
             old_dongxie_ab: '董翓',
             bilibili_longjiuzhen: '龙九帧',
-            _append: `<span style='font-family:yuanli'>${[
+            bilibili_linglai: '灵赖',
+            bilibili_linglai_info: '一名角色的出牌阶段开始时，你可以观看其手牌并选择其中至多两张牌。这些牌因/不因使用进入弃牌堆后，你摸两/一张牌。',
+            bilibili_yongtan: '咏叹',
+            bilibili_yongtan_info: '当你于出牌阶段使用牌结算完毕后，你可以选择一个点数并令一名其他角色进行判定，若判定结果与选择的点数相同，则其失去所有体力。',
+            bilibili_yongtan_append: `<span style='font-family:yuanli'>${[
                 '神：现在你是世界上最强的赛尔号高手了。',
                 '牢宁：那牢美呢。',
                 '神：牢美吗，好久没有人这么叫我了。',
