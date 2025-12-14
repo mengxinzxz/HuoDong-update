@@ -11190,7 +11190,7 @@ const packs = function () {
                 filter(event, player) {
                     const cards = player.getExpansions('bilibili_diaowen');
                     if (event.name === 'damage') return cards.map(i => i.name).unique().length >= 3;
-                    return !player.getStorage('bilibili_diaowen_used').includes(event.card.name) && cards.some(card => card.name == event.card.name);
+                    return cards.some(card => card.name == event.card.name);
                 },
                 forced: true,
                 async content(event, trigger, player) {
@@ -11215,10 +11215,8 @@ const packs = function () {
                         }
                         return;
                     }
-                    player.addTempSkill('bilibili_diaowen_used', 'roundStart');
-                    player.markAuto('bilibili_diaowen_used', [trigger.card.name]);
                     await player.loseToDiscardpile(cards.filter(card => card.name == trigger.card.name));
-                    const next = player.addToExpansion(get.cards(player.getRoundHistory('useSkill', evt => evt.skill === event.name).length), 'gain2');
+                    const next = player.addToExpansion(get.cards(2), 'gain2');
                     next.gaintag.add(event.name);
                     await next;
                 },
@@ -11242,10 +11240,6 @@ const packs = function () {
                             next.gaintag.add('bilibili_diaowen');
                             await next;
                         },
-                    },
-                    used: {
-                        charlotte: true,
-                        onremove: true,
                     },
                     give: {
                         trigger: { global: 'roundEnd' },
@@ -12616,7 +12610,7 @@ const packs = function () {
             bilibili_shi: '史',
             bilibili_shi_info: '①出牌阶段，对你自己使用。②当你从手牌区正面朝上失去此牌后，你失去1点体力。',
             bilibili_diaowen: '弔闻',
-            bilibili_diaowen_info: `锁定技。①每轮开始时，你将牌堆顶三张牌称为“史”置于武将牌上。②每轮结束时，你可以任意分配“史”给场上本轮未使用过此“史”牌面的牌的角色并令这些角色获得一张${get.poptip('bilibili_shi')}。③每轮每种牌名限一次，一名角色使用牌后，你移去武将牌上与此牌牌名相同的“史”，然后将牌堆顶X张牌称为“史”置于武将牌上（X为你本轮发动此分支的次数）。④当你受到伤害时，你可以移去三张牌名不同的“史”，防止此伤害。`,
+            bilibili_diaowen_info: `锁定技。①每轮开始时，你将牌堆顶三张牌称为“史”置于武将牌上。②每轮结束时，你可以任意分配“史”给场上本轮未使用过此“史”牌面的牌的角色并令这些角色获得一张${get.poptip('bilibili_shi')}。③一名角色使用牌后，你移去武将牌上与此牌牌名相同的“史”，然后将牌堆顶两张牌称为“史”置于武将牌上。④当你受到伤害时，你可以移去三张牌名不同的“史”，防止此伤害。`,
             bilibili_banyun: '搬运',
             bilibili_banyun_info: '每回合限一次，你可以使用或打出一张“史”，然后你将一名角色的一张牌称为“史”置于武将牌上。',
             bilibili_banyun_append: '<span style="font-family:yuanli">长史曰：<br>“史之不尽，赤之不竭。<br>搬出节奏，搬出风采。”</span>',
