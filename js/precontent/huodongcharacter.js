@@ -10,7 +10,7 @@ const packs = function () {
                 CLongZhou: ['lz_sufei', 'lz_tangzi', 'lz_liuqi', 'lz_huangquan'],
                 Chuodong: ['bilibili_shengxunyu', 'bilibili_Firewin', 'bilibili_jinglingqiu', 'bilibili_suixingsifeng', 'bilibili_Emptycity', 'bilibili_thunderlei', 'bilibili_lonelypatients', 'bilibili_ningjingzhiyuan', 'bilibili_xizhicaikobe'],
                 CDormitory: ['bilibili_longjiuzhen', 'bilibili_diandian', 'bilibili_murufengchen', 'bilibili_wuzhuwanshui', 'bilibili_kuangshen', 'bilibili_yanjing', 'bilibili_xiaoyaoruyun', 'bilibili_shuijiaobuboli'],
-                Cothers: ['bilibili_gaowang', 'bilibili_simayi', 'old_dongxie', 'bilibili_sunhanhua', 'bilibili_zhoutaigong', 'bilibili_zhouxiaomei', 'bilibili_caifuren', 'bilibili_zhengxuan', 'bilibili_sp_xuyou', 'old_zuoci', 'bilibili_kuailiangkuaiyue', 'bilibili_wuqiao', 'bilibili_daxiao', 'bilibili_xushao', 'bilibili_shen_guojia', 'bilibili_re_xusheng', 'bilibili_adong', 'bilibili_zhangrang', 'bilibili_litiansuo', 'decade_huangwudie', 'bilibili_huanggai', 'bilibili_ekeshaoge', 'bilibili_guanning', 'bilibili_wangwang', 'diy_lvmeng'],
+                Cothers: ['bilibili_liuguanzhang', 'bilibili_gaowang', 'bilibili_simayi', 'old_dongxie', 'bilibili_sunhanhua', 'bilibili_zhoutaigong', 'bilibili_zhouxiaomei', 'bilibili_caifuren', 'bilibili_zhengxuan', 'bilibili_sp_xuyou', 'old_zuoci', 'bilibili_kuailiangkuaiyue', 'bilibili_wuqiao', 'bilibili_daxiao', 'bilibili_xushao', 'bilibili_shen_guojia', 'bilibili_re_xusheng', 'bilibili_adong', 'bilibili_zhangrang', 'bilibili_litiansuo', 'decade_huangwudie', 'bilibili_huanggai', 'bilibili_ekeshaoge', 'bilibili_guanning', 'bilibili_wangwang', 'diy_lvmeng'],
                 Cothers_dualside: ['bilibili_wangtao', 'bilibili_wangyue', 'bilibili_x_wangtao', 'bilibili_x_wangyue', 'bilibili_daqiao', 'bilibili_xiaoqiao', 'bilibili_x_daqiao', 'bilibili_x_xiaoqiao', 'bilibili_ahuinan', 'bilibili_dongtuna', 'bilibili_x_ahuinan', 'bilibili_x_dongtuna'],
                 CXuanDie: ['bfake_jiananfeng', 'bfake_shen_zhangjiao', 'bfake_shen_zhangfei', 'bfake_shen_jiaxu', 'bfake_huanwen', 'bfake_miheng'],
             },
@@ -62,6 +62,7 @@ const packs = function () {
             old_dongxie: ['female', 'qun', 4, ['juntun', 'jiaojie'], ['die:dongxie']],
             bilibili_longjiuzhen: ['female', 'key', 3, ['bilibili_xingcan', 'bilibili_linglai', 'bilibili_yongtan'], ['clan:宿舍群|肘击群|活动群', 'name:null|美']],
             bilibili_gaowang: ['male', 'qun', 3, ['scsanruo', 'gaowangdead'], ['character:scs_gaowang']],
+            bilibili_liuguanzhang: ['male', 'qun', 4, ['bilibili_waifa'], ['border:shen', 'name:戏|志才-陈|友谅-左|宗棠']],
             //双面武将--正面
             bilibili_wangtao: ['female', 'shu', 3, ['huguan', 'yaopei', 'dualside'], ['dualside:bilibili_x_wangyue', 'character:wangtao', 'die:wangtao']],
             bilibili_wangyue: ['female', 'shu', 3, ['huguan', 'mingluan', 'dualside'], ['dualside:bilibili_x_wangtao', 'character:wangyue', 'tempname:wangyue', 'die:wangyue']],
@@ -119,7 +120,8 @@ const packs = function () {
             bilibili_wuzhuwanshui: '你说得对但是我的名字是凤凰院凶真，年龄十九岁，家住在秋叶原，天天在lab里面忙着拯救世界，我每天都要熬到凌晨六点，从来不做保健操，静静观测这个世界并且爱护我亲爱的助手——克里斯蒂↑～娜↓～，我每天都要灌大量的胡椒博士，不经常看医生但是我的身体一定非常健康。<br>噫！这搬史，可真是一门学问啊！要如何把热乎的构思端给群友呢？倘若是直接呈上去，未免馨香扑鼻让人倍感惊恐，所以就需要用聊天记录套一层，来欢迎大家细细品味啊！<br>有人问，天下的构思如此之多，你搬得完吗？那当然是搬不完的，可是让眼前之人吃好吃饱，就是我们史官的溯源与目标。我们一定会为了群友的营养健康勤奋工作，积极投喂各种内容，保证群友身体健康营养均衡。',
             bilibili_murufengchen: '《星主宝诰》有云：志心皈命礼。大罗天阙，紫微星宫。尊居北极之高，位正中天之上，法号金轮炽盛，道称玉斗玄尊。璇玑玉衡，齐七政；总天经地，纬日月。星宿约，四时行，黄道紫垣，万象宗师，诸天统御。大悲大愿、大圣大慈、万星教主、无极元皇、中天紫微北极大帝。<br>————肘击群：沐如风晨',
             bilibili_diandian: '#地雷係#天使界限#天使界隈女子#水色#水色系統#水色ネイル#サプカル地雷#サプカル女子#サプカルチャ一病みかわいい病み垢#病み垢女子',
-            bilibili_longjiuzhen: '美少爱蒂朵，赛尔号著名宇宙圣皇。拥有极其精彩的操作，在与肘击群群主牢宁的赛尔号大战中经常因为手法和操作而赢得对战，现为肘击群管理之一，虽然自诩正人君子，实则抽象万分。蒂朵唯一指定老公',
+            bilibili_longjiuzhen: '美少爱蒂朵，赛尔号著名宇宙圣皇。拥有极其精彩的操作，在与肘击群群主牢宁的赛尔号大战中经常因为手法和操作而赢得对战，现为肘击群管理之一，虽然自诩正人君子，实则抽象万分。蒂朵唯一指定老公。',
+            bilibili_liuguanzhang: '为对抗风系大法师丁真，三英齐聚餐厅共议对策并向丁真寄送挑战书之事。虽三英为讨伐丁真之事制定了各种不同的策略，但因丁真过于强大，最终以失败告终。',
         },
         characterFilter: {
             bilibili_sp_xuyou(mode) {
@@ -12230,6 +12232,116 @@ const packs = function () {
                     if (!result.bool && target.getHp() > 0) await target.loseHp(target.getHp());
                 },
             },
+            //三人组
+            bilibili_waifa: {
+                trigger: { player: 'phaseUseBegin' },
+                filter(event, player) {
+                    return player.countCards('he', card => {
+                        if (_status.connectMode && get.position(card) === 'h') return true;
+                        return lib.filter.cardDiscardable(card, player);
+                    }) >= 3;
+                },
+                async cost(event, trigger, player) {
+                    event.result = await player.chooseToDiscard(get.prompt2(event.skill), 'he', 3).set('ai', lib.skill.zhiheng.check).set('logSkill', event.skill).forResult();
+                },
+                popup: false,
+                async content(event, trigger, player) {
+                    await player.draw(event.cards.length);
+                    for (const type of ['basic', 'trick', 'equip']) {
+                        if (!event.cards.some(i => get.type2(i, player) === type)) continue;
+                        const num = event.cards.filter(i => get.type2(i, player) !== type).length;
+                        if (num > 0) {
+                            player.addTempSkill(`${event.name}_${type}`);
+                            player.addMark(`${event.name}_${type}`, num, false);
+                        }
+                    }
+                },
+                subSkill: {
+                    basic: {
+                        charlotte: true,
+                        onremove(player, skill) {
+                            delete player.storage[skill];
+                            delete player.storage[`${skill}_count`];
+                        },
+                        marktext: '基',
+                        intro: { content: '本回合使用的前#张基本牌无距离和次数限制' },
+                        mod: {
+                            cardUsable(card, player) {
+                                if (get.type(card) === 'basic' && player.countMark('bilibili_waifa_basic_count') < player.countMark('bilibili_waifa_basic')) return Infinity;
+                            },
+                            targetInRange(card, player) {
+                                if (get.type(card) === 'basic' && player.countMark('bilibili_waifa_basic_count') < player.countMark('bilibili_waifa_basic')) return true;
+                            },
+                        },
+                        trigger: { player: 'useCard1' },
+                        filter(event, player) {
+                            return get.type(event.card) === 'basic' && player.countMark('bilibili_waifa_basic_count') < player.countMark('bilibili_waifa_basic');
+                        },
+                        forced: true,
+                        popup: false,
+                        async content(event, trigger, player) {
+                            player.addMark(`${event.name}_count`, 1, false);
+                            if (trigger.addCount !== false) {
+                                trigger.addCount = false;
+                                const stat = player.getStat();
+                                if (typeof stat?.card?.[trigger.card.name] === 'number') stat.card[trigger.card.name]--;
+                            }
+                        },
+                    },
+                    trick: {
+                        charlotte: true,
+                        onremove(player, skill) {
+                            delete player.storage[skill];
+                            delete player.storage[`${skill}_count`];
+                        },
+                        marktext: '锦',
+                        intro: { content: '本回合使用的前#张锦囊牌可以增加或减少至多#个目标' },
+                        trigger: { player: 'useCard2' },
+                        filter(event, player) {
+                            return get.type2(event.card) === 'trick' && player.countMark('bilibili_waifa_trick_count') < player.countMark('bilibili_waifa_trick');
+                        },
+                        async cost(event, trigger, player) {
+                            player.addMark(`${event.skill}_count`, 1, false);
+                            if (lib.skill.neifa_nobasic.filter(trigger, player)) {
+                                const num = player.countMark(event.skill);
+                                event.result = await player.chooseTarget(get.prompt(event.skill), [1, num], (card, player, target) => {
+                                    const trigger = get.event().getTrigger();
+                                    if (trigger.targets.includes(target)) return true;
+                                    return lib.filter.targetEnabled2(trigger.card, player, target) && lib.filter.targetInRange(trigger.card, player, target);
+                                }, `为${get.translation(trigger.card)}增加或减少至多${num}个目标`).set('ai', target => {
+                                    const player = get.player(), trigger = get.event().getTrigger();
+                                    return get.effect(target, trigger.card, player, player) * (_status.event.targets.includes(target) ? -1 : 1);
+                                }).forResult();
+                            }
+                        },
+                        async content(event, trigger, player) {
+                            const targets = [...event.targets].sortBySeat();
+                            for (const target of targets) {
+                                const goon = trigger.targets.includes(target);
+                                trigger.targets[goon ? 'remove' : 'push'](target);
+                            }
+                        },
+                    },
+                    equip: {
+                        charlotte: true,
+                        onremove(player, skill) {
+                            delete player.storage[skill];
+                            delete player.storage[`${skill}_count`];
+                        },
+                        marktext: '装',
+                        intro: { content: '本回合使用前#张装备牌时摸#张牌' },
+                        trigger: { player: 'useCard' },
+                        filter(event, player) {
+                            return get.type(event.card) === 'equip' && player.countMark('bilibili_waifa_equip_count') < player.countMark('bilibili_waifa_equip');
+                        },
+                        forced: true,
+                        async content(event, trigger, player) {
+                            player.addMark(`${event.name}_count`, 1, false);
+                            await player.draw(player.countMark(event.name));
+                        },
+                    },
+                },
+            },
         },
         dynamicTranslate: {
             bilibili_xueji(player) {
@@ -12868,6 +12980,10 @@ const packs = function () {
                 '牢宁：那牢美呢。',
                 '神：牢美吗，好久没有人这么叫我了。',
             ].join('<br>')}</span>`,
+            bilibili_liuguanzhang: '三人组',
+            bilibili_liuguanzhang_ab: '刘关张',
+            bilibili_waifa: '外伐',
+            bilibili_waifa_info: '出牌阶段开始时，你可以弃置三张牌并摸等量的牌。若你弃置的类别包含：基本牌，本回合你使用的前X张基本牌无距离和次数限制（X为其中的非基本牌数）；锦囊牌，本回合你使用的前Y张锦囊牌可以额外增加和减少至多Y名目标（Y为其中的非锦囊牌数）；装备牌，本回合你使用的前Z张装备牌时摸Z张牌（Z为其中的非装备牌数）。',
         },
     };
     for (let i in huodongcharacter.character) {
