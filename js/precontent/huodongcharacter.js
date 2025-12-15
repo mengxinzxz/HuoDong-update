@@ -60,7 +60,7 @@ const packs = function () {
             bilibili_diandian: ['female', 'key', 3, ['bilibili_siyu', 'bilibili_tamen'], ['clan:肘击群|活动群', 'name:永雏|塔菲']],
             bilibili_simayi: ['male', 'shen', 3, ['reguicai', 'fangzhu', 'rewansha', 'rezhiheng', 'rejizhi'], ['wei', 'character:shen_simayi', ...['tempname', 'die'].map(i => `${i}:new_simayi`)]],
             old_dongxie: ['female', 'qun', 4, ['juntun', 'jiaojie'], ['die:dongxie']],
-            bilibili_longjiuzhen: ['female', 'key', 4, ['bilibili_xingcan','bilibili_linglai', 'bilibili_yongtan'], ['clan:宿舍群|肘击群|活动群', 'name:null|美']],
+            bilibili_longjiuzhen: ['female', 'key', 4, ['bilibili_xingcan', 'bilibili_linglai', 'bilibili_yongtan'], ['clan:宿舍群|肘击群|活动群', 'name:null|美']],
             bilibili_gaowang: ['male', 'qun', 3, ['scsanruo', 'gaowangdead'], ['character:scs_gaowang']],
             //双面武将--正面
             bilibili_wangtao: ['female', 'shu', 3, ['huguan', 'yaopei', 'dualside'], ['dualside:bilibili_x_wangyue', 'character:wangtao', 'die:wangtao']],
@@ -12692,7 +12692,7 @@ const packs = function () {
             old_dongxie_ab: '董翓',
             bilibili_longjiuzhen: '龙九帧',
             bilibili_xingcan: '星璨',
-            bilibili_xingcan_info: '准备阶段和结束阶段，你可以选择一种花色进行判定，若判定结果包含你选择的花色，你可以令一名其他角色翻面。',
+            bilibili_xingcan_info: '准备阶段和结束阶段，你可以选择一种花色并进行判定，若判定结果与你选择的花色相同，你可以令一名其他角色翻面。',
             bilibili_linglai: '灵籁',
             bilibili_linglai_info: '一名角色的出牌阶段开始时，你可以观看其手牌并选择其中至多两张牌。这些牌因/不因使用进入弃牌堆后，你摸两/一张牌。',
             bilibili_yongtan: '咏叹',
