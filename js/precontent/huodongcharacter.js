@@ -11548,7 +11548,7 @@ const packs = function () {
                         if (typeof links[0] === 'string') links.reverse();
                         const [card, choice] = links;
                         return {
-                            audio: 'olfushi',
+                            audio: 'bilibili_olfushi',
                             filterCard: () => false,
                             selectCard: -1,
                             viewAs: {
@@ -12840,9 +12840,9 @@ const packs = function () {
             bilibili_siyu: '饲育',
             '#ext:活动武将/audio/skill/bilibili_siyu1': '我们要默认小菲是快乐喵，小菲不会伤心喵',
             '#ext:活动武将/audio/skill/bilibili_siyu2': '小菲自己会捡垃圾吃喵，所以是饿不死的喵',
-            bilibili_siyu_info: `锁定技。①游戏开始时/当你受到伤害后，你将牌堆顶的三/一张牌称为“小菲”置于武将牌上。②回合开始时，你占卜X+1（X为你的“小菲”数）。③其他角色视为拥有${get.poptip('bilibili_olfushi')}。`,
+            bilibili_siyu_info: `锁定技。①游戏开始时/当你受到伤害后，你将牌堆顶的三/一张牌称为“小菲”置于武将牌上。②回合开始时，你卜算X+1（X为你的“小菲”数）。③其他角色视为拥有${get.poptip('bilibili_olfushi')}。`,
             bilibili_olfushi: '缚豕',
-            bilibili_olfushi_info: '①当你使用【杀】结算完毕后，你将此牌称为“小菲”置于拥有【塔门】的角色的武将牌上。②你可以将一名角色的一只“小菲”置入弃牌堆并摸一张牌，视为使用一张目标数或伤害+1的【杀】。',
+            bilibili_olfushi_info: `①当你使用【杀】结算完毕后，你将此牌称为“小菲”置于拥有${get.poptip('bilibili_siyu')}的角色的武将牌上。②你可以将一名角色的一只“小菲”置入弃牌堆并摸一张牌，视为使用一张目标数或伤害+1的【杀】。`,
             '#ext:活动武将/audio/skill/bilibili_olfushi1': '猪头摸一摸，生活快乐多喵',
             '#ext:活动武将/audio/skill/bilibili_olfushi2': '猪猪不哭喵，到妈妈这里来喵',
             bilibili_tamen: '塔门',

@@ -3288,7 +3288,7 @@ const packs = function () {
                     const result = await player.chooseControl(choice, 'cancel2').set('ai', () => {
                         const { player, controls } = get.event(), trigger = get.event().getTrigger();
                         if (controls.length === 2 || !trigger.cards?.someInD('od')) return '摸两张牌';
-                        return trigger.cards.filterInD('od').reduce((sum, card) => sum + get.value(card), 0) > get.effect(player, { name: 'draw' }, player, player);
+                        return trigger.cards.filterInD('od').reduce((sum, card) => sum + get.value(card), 0) > get.effect(player, { name: 'draw' }, player, player) ? '拿牌摸牌' : '摸两张牌';
                     }).set('prompt', get.prompt2(event.skill)).forResult();
                     const control = result.control;
                     event.result = {
