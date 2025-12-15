@@ -11587,7 +11587,7 @@ const packs = function () {
                 subSkill: {
                     backup: {},
                     put: {
-                        audio: 'olfushi',
+                        audio: 'bilibili_olfushi',
                         forceaudio: true,
                         trigger: { player: 'useCardAfter' },
                         filter(event, player) {
