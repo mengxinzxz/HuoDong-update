@@ -11591,7 +11591,7 @@ const packs = function () {
                         forceaudio: true,
                         trigger: { player: 'useCardAfter' },
                         filter(event, player) {
-                            if (!event.cards?.someInD('od')) return false;
+                            if (event.card.name !== 'sha' || !event.cards?.someInD('od')) return false;
                             return game.hasPlayer(target => target !== player && target.hasSkill('bilibili_siyu'));
                         },
                         async cost(event, trigger, player) {
