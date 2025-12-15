@@ -11492,7 +11492,7 @@ const packs = function () {
                 derivation: 'bilibili_olfushi',
             },
             bilibili_olfushi: {
-                audio: 'olfushi',
+                audio: 'ext:活动武将/audio/skill:2',
                 forceaudio: true,
                 enable: 'chooseToUse',
                 filter(event, player) {
@@ -12843,6 +12843,8 @@ const packs = function () {
             bilibili_siyu_info: `锁定技。①游戏开始时/当你受到伤害后，你将牌堆顶的三/一张牌称为“小菲”置于武将牌上。②回合开始时，你占卜X+1（X为你的“小菲”数）。③其他角色视为拥有${get.poptip('bilibili_olfushi')}。`,
             bilibili_olfushi: '缚豕',
             bilibili_olfushi_info: '①当你使用【杀】结算完毕后，你将此牌称为“小菲”置于拥有【塔门】的角色的武将牌上。②你可以将一名角色的一只“小菲”置入弃牌堆并摸一张牌，视为使用一张目标数或伤害+1的【杀】。',
+            '#ext:活动武将/audio/skill/bilibili_olfushi1': '猪头摸一摸，生活快乐多喵',
+            '#ext:活动武将/audio/skill/bilibili_olfushi2': '猪猪不哭喵，到妈妈这里来喵',
             bilibili_tamen: '塔门',
             '#ext:活动武将/audio/skill/bilibili_tamen1': '塔不灭！塔不灭！雏草姬不灭！',
             '#ext:活动武将/audio/skill/bilibili_tamen2': '信塔门，得永生，仁慈的塔菲会宽恕你犯下的一切错误喵',
