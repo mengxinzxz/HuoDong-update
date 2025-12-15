@@ -11488,6 +11488,164 @@ const packs = function () {
                     const cards = player.getExpansions(skill);
                     if (cards.length) player.loseToDiscardpile(cards);
                 },
+                global: ['bilibili_olfushi', 'bilibili_olfushi_put'],
+                derivation: 'bilibili_olfushi',
+            },
+            bilibili_olfushi: {
+                audio: 'olfushi',
+                forceaudio: true,
+                enable: 'chooseToUse',
+                filter(event, player) {
+                    if (event.bilibili_olfushi || !event.filterCard({ name: 'sha', isCard: true }, player, event)) return false;
+                    return game.hasPlayer(target => target !== player && target.hasSkill('bilibili_siyu') && target.getExpansions('bilibili_siyu').length > 0);
+                },
+                chooseButton: {
+                    dialog(event, player) {
+                        const dialog = ui.create.dialog('缚豕', 'hidden');
+                        dialog.add('<div class="text center">请选择你要转化的“小菲”和额外效果</div>');
+                        dialog.add([(() => {
+                            let cards = [];
+                            game.countPlayer(target => {
+                                if (target !== player && target.hasSkill('bilibili_siyu')) {
+                                    cards.addArray(target.getExpansions('bilibili_siyu'));
+                                }
+                            });
+                            return cards.map(card => [card, get.translation(get.owner(card))]);
+                        })(), (item, type, position, noclick, node) => {
+                            node = ui.create.buttonPresets.card(item[0], type, position, noclick);
+                            game.createButtonCardsetion(item[1], node);
+                            return node;
+                        }]);
+                        dialog.add([['目标+1', '伤害+1'], 'tdnodes']);
+                        return dialog;
+                    },
+                    filter(button) {
+                        return !ui.selected.buttons.some(but => ['目标+1', '伤害+1'].includes(but.link) === ['目标+1', '伤害+1'].includes(button.link));
+                    },
+                    select: 2,
+                    check(button) {
+                        const player = get.player(), card = new lib.element.VCard({ name: 'sha', isCard: true });
+                        if (!['目标+1', '伤害+1'].includes(button.link)) return 2 - Math.sign(get.attitude(player, get.owner(button.link))) + Math.random();
+                        const targets = game.filterPlayer(target => player.canUse(card, target) && get.effect(target, card, player, player) > 0).sort((a, b) => {
+                            return get.effect(b, card, player, player) - get.effect(a, card, player, player);
+                        });
+                        if (!targets.length) return 0;
+                        const [first, second] = targets.slice(0, 2);
+                        if (!second && get.damageEffect(first, player, player) > 0) return button.link === '伤害+1' ? 1 : -1;
+                        if (first.hasSkillTag('filterDamage', null, {
+                            player: player,
+                            card: card,
+                        })) return button.link === '目标+1' ? 1 : -1;
+                        return button.link === (() => {
+                            return get.effect(second, card, player, player) > get.effect(first, card, player, player) ? '目标+1' : '伤害+1';
+                        })() ? 1 : -1;
+                    },
+                    prompt(links, player) {
+                        if (typeof links[0] === 'string') links.reverse();
+                        return `###缚豕###<div class="text center">将${get.translation(links[0])}置入弃牌堆，视为使用一张${links[1]}的【杀】</div>`;
+                    },
+                    backup(links, player) {
+                        if (typeof links[0] === 'string') links.reverse();
+                        const [card, choice] = links;
+                        return {
+                            audio: 'olfushi',
+                            filterCard: () => false,
+                            selectCard: -1,
+                            viewAs: {
+                                name: 'sha',
+                                storage: { bilibili_olfushi: [card, choice] },
+                                isCard: true,
+                            },
+                            log: false,
+                            async precontent(event, trigger, player) {
+                                const [card, choice] = event.result.card.storage.bilibili_olfushi;
+                                const owner = get.owner(card);
+                                if (owner) {
+                                    player.logSkill('bilibili_olfushi', owner);
+                                    player.popup(choice);
+                                    game.log(player, '选择了', `#g${choice}`);
+                                    await owner.loseToDiscardpile([card]);
+                                    await player.draw();
+                                    player.addTempSkill('bilibili_olfushi_effect');
+                                }
+                                else {
+                                    const evt = event.getParent();
+                                    evt.set('bilibili_olfushi', true);
+                                    evt.goto(0);
+                                }
+                            },
+                        };
+                    },
+                },
+                ai: {
+                    order(item, player) {
+                        return get.order({ name: 'sha' }, player) + ((game.hasPlayer(target => target !== player && target.hasSkill('bilibili_siyu') && get.attitude(player, target) > 0)) ? 0.1 : -0.1);
+                    },
+                    result: { player: 1 },
+                },
+                group: 'bilibili_olfushi_put',
+                subSkill: {
+                    backup: {},
+                    put: {
+                        audio: 'olfushi',
+                        forceaudio: true,
+                        trigger: { player: 'useCardAfter' },
+                        filter(event, player) {
+                            if (!event.cards?.someInD('od')) return false;
+                            return game.hasPlayer(target => target !== player && target.hasSkill('bilibili_siyu'));
+                        },
+                        async cost(event, trigger, player) {
+                            const cards = trigger.cards.filterInD('od');
+                            event.result = await player.chooseTarget(get.prompt(event.skill), (card, player, target) => {
+                                return target !== player && target.hasSkill('bilibili_siyu');
+                            }, `将${get.translation(cards)}置于一名拥有“小菲”技能的角色的武将牌上`).set('ai', target => {
+                                const player = get.player();
+                                return get.attitude(player, target);
+                            }).forResult();
+                        },
+                        async content(event, trigger, player) {
+                            const cards = trigger.cards.filterInD('od');
+                            const next = event.targets[0].addToExpansion(cards, 'gain2');
+                            next.gaintag.add('bilibili_siyu');
+                            await next;
+                        },
+                    },
+                    effect: {
+                        charlotte: true,
+                        trigger: { player: ['useCard', 'useCard2'] },
+                        filter(event, player, name) {
+                            if (!event.card.storage?.bilibili_olfushi || !event.card || !event.targets?.length) return false;
+                            const choice = event.card.storage.bilibili_olfushi[1];
+                            if (choice === '伤害+1') return name === 'useCard';
+                            return name === 'useCard2' && game.hasPlayer(target => {
+                                return !event.targets.includes(target) && lib.filter.targetEnabled2(event.card, player, target);
+                            });
+                        },
+                        forced: true,
+                        popup: false,
+                        async content(event, trigger, player) {
+                            if (event.triggername === 'useCard') {
+                                trigger.baseDamage++;
+                                game.log(trigger.card, '造成的伤害', '#y+1');
+                            }
+                            else {
+                                const result = await player.chooseTarget(`${get.translation(event.name)}：令一名角色成为${get.translation(trigger.card)}的额外目标`, (card, player, target) => {
+                                    const evt = get.event().getTrigger();
+                                    return !evt.targets.includes(target) && lib.filter.targetEnabled2(evt.card, player, target);
+                                }, true).set('ai', target => {
+                                    const player = get.player(), evt = get.event().getTrigger();
+                                    return get.effect(target, evt.card, player, player);
+                                }).forResult();
+                                if (result?.bool && result.targets?.length) {
+                                    const targets = result.targets.sortBySeat();
+                                    player.line(targets);
+                                    trigger.targets.addArray(targets);
+                                    game.log(targets, '成为了', trigger.card, '的额外目标');
+                                }
+                            }
+                        },
+                    },
+                },
             },
             bilibili_tamen: {
                 audio: 'ext:活动武将/audio/skill:2',
@@ -12682,7 +12840,9 @@ const packs = function () {
             bilibili_siyu: '饲育',
             '#ext:活动武将/audio/skill/bilibili_siyu1': '我们要默认小菲是快乐喵，小菲不会伤心喵',
             '#ext:活动武将/audio/skill/bilibili_siyu2': '小菲自己会捡垃圾吃喵，所以是饿不死的喵',
-            bilibili_siyu_info: '锁定技。①游戏开始时/当你受到伤害后，你将牌堆顶的三/一张牌称为“小菲”置于武将牌上。②回合开始时，你占卜X+1（X为你的“小菲”数）。',
+            bilibili_siyu_info: `锁定技。①游戏开始时/当你受到伤害后，你将牌堆顶的三/一张牌称为“小菲”置于武将牌上。②回合开始时，你占卜X+1（X为你的“小菲”数）。③其他角色视为拥有${get.poptip('bilibili_olfushi')}。`,
+            bilibili_olfushi: '缚豕',
+            bilibili_olfushi_info: '①当你使用【杀】结算完毕后，你将此牌称为“小菲”置于拥有【塔门】的角色的武将牌上。②你可以将一名角色的一只“小菲”置入弃牌堆并摸一张牌，视为使用一张目标数或伤害+1的【杀】。',
             bilibili_tamen: '塔门',
             '#ext:活动武将/audio/skill/bilibili_tamen1': '塔不灭！塔不灭！雏草姬不灭！',
             '#ext:活动武将/audio/skill/bilibili_tamen2': '信塔门，得永生，仁慈的塔菲会宽恕你犯下的一切错误喵',
