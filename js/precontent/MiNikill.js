@@ -7282,64 +7282,13 @@ const packs = function () {
                         mark: true,
                         markimage: 'image/card/zhuge.png',
                         nobracket: true,
-                        intro: { content: '若你有空置的武器栏，则你视为装备【诸葛连弩】' },
+                        intro: { content: '视为装备【诸葛连弩】' },
                         group: 'minireguanxing_zhuge',
                         init(player, skill) {
-                            if (!_status[`${skill}_virtualEquipped`]) {
-                                game.broadcastAll(skill => {
-                                    _status[`${skill}_virtualEquipped`] = lib.element.player.$handleEquipChange;
-                                    lib.element.player.$handleEquipChange = function () {
-                                        _status[`${skill}_virtualEquipped`].apply(this, arguments);
-                                        let player = this, equip = false, str = `${get.translation(skill)} ${get.translation(lib.skill[skill].group.split('_')[1])}`;
-                                        if (player.hasSkill(skill)) {
-                                            for (let j = 0; j < player.node.equips.childNodes.length; j++) {
-                                                const card = player.node.equips.childNodes[j];
-                                                if (card.name === 'empty_equip1' && (card.classList.contains('hidden') || card.node.name2.innerHTML === str)) {
-                                                    equip = true;
-                                                    card.node.name2.innerHTML = str;
-                                                    card.classList.remove('hidden');
-                                                    break;
-                                                }
-                                            }
-                                            if (!equip && player.hasEmptySlot(1)) {
-                                                const card = game.createCard('empty_equip1', '', '');
-                                                card.fix();
-                                                card.style.transform = '';
-                                                card.classList.remove('drawinghidden');
-                                                card.classList.add('emptyequip');
-                                                card.node.name2.innerHTML = str;
-                                                delete card._transform;
-                                                const equipNum = get.equipNum(card);
-                                                let equipped = false;
-                                                for (let j = 0; j < player.node.equips.childNodes.length; j++) {
-                                                    if (get.equipNum(player.node.equips.childNodes[j]) >= equipNum) {
-                                                        player.node.equips.insertBefore(card, player.node.equips.childNodes[j]);
-                                                        equipped = true;
-                                                        break;
-                                                    }
-                                                }
-                                                if (!equipped) {
-                                                    player.node.equips.appendChild(card);
-                                                    if (_status.discarded) _status.discarded.remove(card);
-                                                }
-                                            }
-                                        }
-                                    };
-                                }, skill);
-                            }
-                            setTimeout(() => player.$handleEquipChange());
+                            player.addExtraEquip(skill, 'zhuge', true, player => lib.card['zhuge']);
                         },
                         onremove(player, skill) {
-                            game.broadcastAll((player, skill) => {
-                                for (let j = 0; j < player.node.equips.childNodes.length; j++) {
-                                    const card = player.node.equips.childNodes[j];
-                                    if (card.name === 'empty_equip1' && card.node.name2.innerHTML === `${get.translation(skill)} ${get.translation(lib.skill[skill].group.split('_')[1])}`) {
-                                        card.classList.add('hidden');
-                                        break;
-                                    }
-                                }
-                            }, player, skill);
-                            setTimeout(() => player.$handleEquipChange());
+                            player.removeExtraEquip(skill);
                         },
                     },
                     zhuge: {
@@ -7350,7 +7299,7 @@ const packs = function () {
                         nobracket: true,
                         mod: {
                             cardUsable(card, player, num) {
-                                if (card.name != 'sha'/*||player.getEquips('zhuge').length||player.hasSkill('zhuge_skill',null,false)*/ || !player.hasEmptySlot(1)) return;
+                                if (card.name != 'sha'/*||player.getEquips('zhuge').length||player.hasSkill('zhuge_skill',null,false)*/) return;
                                 //if(get.is.versus()||get.is.changban()) return num+3;
                                 return Infinity;
                             },
@@ -10224,61 +10173,10 @@ const packs = function () {
                     player.draw();
                 },
                 init(player, skill) {
-                    if (!_status[`${skill}_virtualEquipped`]) {
-                        game.broadcastAll(skill => {
-                            _status[`${skill}_virtualEquipped`] = lib.element.player.$handleEquipChange;
-                            lib.element.player.$handleEquipChange = function () {
-                                _status[`${skill}_virtualEquipped`].apply(this, arguments);
-                                let player = this, equip = false, str = `${get.translation(skill)} ${get.translation(lib.skill[skill].group.split('_')[1])}`;
-                                if (player.hasSkill(skill)) {
-                                    for (let j = 0; j < player.node.equips.childNodes.length; j++) {
-                                        const card = player.node.equips.childNodes[j];
-                                        if (card.name === 'empty_equip2' && (card.classList.contains('hidden') || card.node.name2.innerHTML === str)) {
-                                            equip = true;
-                                            card.node.name2.innerHTML = str;
-                                            card.classList.remove('hidden');
-                                            break;
-                                        }
-                                    }
-                                    if (!equip && player.hasEmptySlot(2)) {
-                                        const card = game.createCard('empty_equip2', '', '');
-                                        card.fix();
-                                        card.style.transform = '';
-                                        card.classList.remove('drawinghidden');
-                                        card.classList.add('emptyequip');
-                                        card.node.name2.innerHTML = str;
-                                        delete card._transform;
-                                        const equipNum = get.equipNum(card);
-                                        let equipped = false;
-                                        for (let j = 0; j < player.node.equips.childNodes.length; j++) {
-                                            if (get.equipNum(player.node.equips.childNodes[j]) >= equipNum) {
-                                                player.node.equips.insertBefore(card, player.node.equips.childNodes[j]);
-                                                equipped = true;
-                                                break;
-                                            }
-                                        }
-                                        if (!equipped) {
-                                            player.node.equips.appendChild(card);
-                                            if (_status.discarded) _status.discarded.remove(card);
-                                        }
-                                    }
-                                }
-                            };
-                        }, skill);
-                    }
-                    setTimeout(() => player.$handleEquipChange());
+                    player.addExtraEquip(skill, 'bagua', true, player => player.hasEmptySlot(2) && lib.card['bagua']);
                 },
                 onremove(player, skill) {
-                    game.broadcastAll((player, skill) => {
-                        for (let j = 0; j < player.node.equips.childNodes.length; j++) {
-                            const card = player.node.equips.childNodes[j];
-                            if (card.name === 'empty_equip2' && card.node.name2.innerHTML === `${get.translation(skill)} ${get.translation(lib.skill[skill].group.split('_')[1])}`) {
-                                card.classList.add('hidden');
-                                break;
-                            }
-                        }
-                    }, player, skill);
-                    setTimeout(() => player.$handleEquipChange());
+                    player.removeExtraEquip(skill);
                 },
             },
             minihuoji: {
@@ -11212,61 +11110,10 @@ const packs = function () {
                 },
                 group: 'minidaopu_qinglong',
                 init(player, skill) {
-                    if (!_status[`${skill}_virtualEquipped`]) {
-                        game.broadcastAll(skill => {
-                            _status[`${skill}_virtualEquipped`] = lib.element.player.$handleEquipChange;
-                            lib.element.player.$handleEquipChange = function () {
-                                _status[`${skill}_virtualEquipped`].apply(this, arguments);
-                                let player = this, equip = false, str = `${get.translation(skill)} ${get.translation(lib.skill[skill].group.split('_')[1])}`;
-                                if (player.hasSkill(skill)) {
-                                    for (let j = 0; j < player.node.equips.childNodes.length; j++) {
-                                        const card = player.node.equips.childNodes[j];
-                                        if (card.name === 'empty_equip1' && (card.classList.contains('hidden') || card.node.name2.innerHTML === str)) {
-                                            equip = true;
-                                            card.node.name2.innerHTML = str;
-                                            card.classList.remove('hidden');
-                                            break;
-                                        }
-                                    }
-                                    if (!equip && player.hasEmptySlot(1)) {
-                                        const card = game.createCard('empty_equip1', '', '');
-                                        card.fix();
-                                        card.style.transform = '';
-                                        card.classList.remove('drawinghidden');
-                                        card.classList.add('emptyequip');
-                                        card.node.name2.innerHTML = str;
-                                        delete card._transform;
-                                        const equipNum = get.equipNum(card);
-                                        let equipped = false;
-                                        for (let j = 0; j < player.node.equips.childNodes.length; j++) {
-                                            if (get.equipNum(player.node.equips.childNodes[j]) >= equipNum) {
-                                                player.node.equips.insertBefore(card, player.node.equips.childNodes[j]);
-                                                equipped = true;
-                                                break;
-                                            }
-                                        }
-                                        if (!equipped) {
-                                            player.node.equips.appendChild(card);
-                                            if (_status.discarded) _status.discarded.remove(card);
-                                        }
-                                    }
-                                }
-                            };
-                        }, skill);
-                    }
-                    setTimeout(() => player.$handleEquipChange());
+                    player.addExtraEquip(skill, 'qinglong', true, player => player.hasEmptySlot(1) && lib.card['qinglong']);
                 },
                 onremove(player, skill) {
-                    game.broadcastAll((player, skill) => {
-                        for (let j = 0; j < player.node.equips.childNodes.length; j++) {
-                            const card = player.node.equips.childNodes[j];
-                            if (card.name === 'empty_equip1' && card.node.name2.innerHTML === `${get.translation(skill)} ${get.translation(lib.skill[skill].group.split('_')[1])}`) {
-                                card.classList.add('hidden');
-                                break;
-                            }
-                        }
-                    }, player, skill);
-                    setTimeout(() => player.$handleEquipChange());
+                    player.removeExtraEquip(skill);
                 },
                 subSkill: {
                     qinglong: {
@@ -23332,61 +23179,10 @@ const packs = function () {
                     },
                 },
                 init(player, skill) {
-                    if (!_status[`${skill}_virtualEquipped`]) {
-                        game.broadcastAll(skill => {
-                            _status[`${skill}_virtualEquipped`] = lib.element.player.$handleEquipChange;
-                            lib.element.player.$handleEquipChange = function () {
-                                _status[`${skill}_virtualEquipped`].apply(this, arguments);
-                                let player = this, equip = false, str = `${get.translation(skill)} ${get.translation(lib.skill[skill].group[0].split('_')[1])}`;
-                                if (player.hasSkill(skill)) {
-                                    for (let j = 0; j < player.node.equips.childNodes.length; j++) {
-                                        const card = player.node.equips.childNodes[j];
-                                        if (card.name === 'empty_equip2' && (card.classList.contains('hidden') || card.node.name2.innerHTML === str)) {
-                                            equip = true;
-                                            card.node.name2.innerHTML = str;
-                                            card.classList.remove('hidden');
-                                            break;
-                                        }
-                                    }
-                                    if (!equip && player.hasEmptySlot(2)) {
-                                        const card = game.createCard('empty_equip2', '', '');
-                                        card.fix();
-                                        card.style.transform = '';
-                                        card.classList.remove('drawinghidden');
-                                        card.classList.add('emptyequip');
-                                        card.node.name2.innerHTML = str;
-                                        delete card._transform;
-                                        const equipNum = get.equipNum(card);
-                                        let equipped = false;
-                                        for (let j = 0; j < player.node.equips.childNodes.length; j++) {
-                                            if (get.equipNum(player.node.equips.childNodes[j]) >= equipNum) {
-                                                player.node.equips.insertBefore(card, player.node.equips.childNodes[j]);
-                                                equipped = true;
-                                                break;
-                                            }
-                                        }
-                                        if (!equipped) {
-                                            player.node.equips.appendChild(card);
-                                            if (_status.discarded) _status.discarded.remove(card);
-                                        }
-                                    }
-                                }
-                            };
-                        }, skill);
-                    }
-                    setTimeout(() => player.$handleEquipChange());
+                    player.addExtraEquip(skill, 'bagua', true, player => player.hasEmptySlot(2) && lib.card['bagua']);
                 },
                 onremove(player, skill) {
-                    game.broadcastAll((player, skill) => {
-                        for (let j = 0; j < player.node.equips.childNodes.length; j++) {
-                            const card = player.node.equips.childNodes[j];
-                            if (card.name === 'empty_equip2' && card.node.name2.innerHTML === `${get.translation(skill)} ${get.translation(lib.skill[skill].group[0].split('_')[1])}`) {
-                                card.classList.add('hidden');
-                                break;
-                            }
-                        }
-                    }, player, skill);
-                    setTimeout(() => player.$handleEquipChange());
+                    player.removeExtraEquip(skill);
                 },
             },
             minilinglong_jizhi: {
@@ -24570,61 +24366,10 @@ const packs = function () {
                 derivation: 'miniruyi_jingubang',
                 group: ['miniruyi_jingubang', 'miniruyi_jingubang2'],
                 init(player, skill) {
-                    if (!_status[`${skill}_virtualEquipped`]) {
-                        game.broadcastAll(skill => {
-                            _status[`${skill}_virtualEquipped`] = lib.element.player.$handleEquipChange;
-                            lib.element.player.$handleEquipChange = function () {
-                                _status[`${skill}_virtualEquipped`].apply(this, arguments);
-                                let player = this, equip = false, str = `${get.translation(skill)} ${get.translation(lib.skill[skill].derivation)}`;
-                                if (player.hasSkill(skill)) {
-                                    for (let j = 0; j < player.node.equips.childNodes.length; j++) {
-                                        const card = player.node.equips.childNodes[j];
-                                        if (card.name === 'empty_equip1' && (card.classList.contains('hidden') || card.node.name2.innerHTML === str)) {
-                                            equip = true;
-                                            card.node.name2.innerHTML = str;
-                                            card.classList.remove('hidden');
-                                            break;
-                                        }
-                                    }
-                                    if (!equip && player.hasEmptySlot(1)) {
-                                        const card = game.createCard('empty_equip1', '', '');
-                                        card.fix();
-                                        card.style.transform = '';
-                                        card.classList.remove('drawinghidden');
-                                        card.classList.add('emptyequip');
-                                        card.node.name2.innerHTML = str;
-                                        delete card._transform;
-                                        const equipNum = get.equipNum(card);
-                                        let equipped = false;
-                                        for (let j = 0; j < player.node.equips.childNodes.length; j++) {
-                                            if (get.equipNum(player.node.equips.childNodes[j]) >= equipNum) {
-                                                player.node.equips.insertBefore(card, player.node.equips.childNodes[j]);
-                                                equipped = true;
-                                                break;
-                                            }
-                                        }
-                                        if (!equipped) {
-                                            player.node.equips.appendChild(card);
-                                            if (_status.discarded) _status.discarded.remove(card);
-                                        }
-                                    }
-                                }
-                            };
-                        }, skill);
-                    }
-                    setTimeout(() => player.$handleEquipChange());
+                    player.addExtraEquip(skill, 'miniruyi_jingubang', true, player => player.hasEmptySlot(1) && lib.card['miniruyi_jingubang']);
                 },
                 onremove(player, skill) {
-                    game.broadcastAll((player, skill) => {
-                        for (let j = 0; j < player.node.equips.childNodes.length; j++) {
-                            const card = player.node.equips.childNodes[j];
-                            if (card.name === 'empty_equip1' && card.node.name2.innerHTML === `${get.translation(skill)} ${get.translation(lib.skill[skill].derivation)}`) {
-                                card.classList.add('hidden');
-                                break;
-                            }
-                        }
-                    }, player, skill);
-                    setTimeout(() => player.$handleEquipChange());
+                    player.removeExtraEquip(skill);
                 },
                 ai: {
                     effect: {
@@ -39487,7 +39232,7 @@ const packs = function () {
             miniguanxing_info: '准备阶段，你可以观看牌堆顶的X张牌（场上人数不大于2时X为3，否则X为5）并可以调整这些牌于牌堆顶或牌堆底。若你将所有牌置于牌堆底，则你可以于结束阶段再次发动〖观星〗。',
             minireguanxing: '观星',
             minireguanxing_zhuge: '诸葛连弩',
-            minireguanxing_info: '①准备阶段和结束阶段，你可以观看牌堆顶的X张牌并可以调整这些牌于牌堆顶或牌堆底，若你的“星”小于X张，你可以将其中一张牌称为“星”置于你的武将牌上。②出牌阶段，你可以获得你武将牌上的所有“星”，若这些牌不小于X张，则你本回合获得如下效果：若你有空置的装备栏，则你视为装备【诸葛连弩】。（X为5，场上人数不大于2时X为3）',
+            minireguanxing_info: '①准备阶段和结束阶段，你可以观看牌堆顶的X张牌并可以调整这些牌于牌堆顶或牌堆底，若你的“星”小于X张，你可以将其中一张牌称为“星”置于你的武将牌上。②出牌阶段，你可以获得你武将牌上的所有“星”，若这些牌不小于X张，则你本回合视为装备【诸葛连弩】。（X为5，场上人数不大于2时X为3）',
             minikongcheng: '空城',
             minikongcheng_info: '锁定技，若你没有手牌，你不能成为【杀】、【决斗】和【顺手牵羊】的目标。',
             minirende: '仁德',

@@ -9792,61 +9792,10 @@ const packs = function () {
                     }, player, target);
                 },
                 init(player, skill) {
-                    if (!_status[`${skill}_virtualEquipped`]) {
-                        game.broadcastAll(skill => {
-                            _status[`${skill}_virtualEquipped`] = lib.element.player.$handleEquipChange;
-                            lib.element.player.$handleEquipChange = function () {
-                                _status[`${skill}_virtualEquipped`].apply(this, arguments);
-                                let player = this, equip = false, str = `${get.translation(skill)} ${get.translation(lib.skill[skill].group[0].slice(skill.length + 1))}`;
-                                if (player.hasSkill(skill)) {
-                                    for (let j = 0; j < player.node.equips.childNodes.length; j++) {
-                                        const card = player.node.equips.childNodes[j];
-                                        if (card.name === 'empty_equip2' && (card.classList.contains('hidden') || card.node.name2.innerHTML === str)) {
-                                            equip = true;
-                                            card.node.name2.innerHTML = str;
-                                            card.classList.remove('hidden');
-                                            break;
-                                        }
-                                    }
-                                    if (!equip && player.hasEmptySlot(2)) {
-                                        const card = game.createCard('empty_equip2', '', '');
-                                        card.fix();
-                                        card.style.transform = '';
-                                        card.classList.remove('drawinghidden');
-                                        card.classList.add('emptyequip');
-                                        card.node.name2.innerHTML = str;
-                                        delete card._transform;
-                                        const equipNum = get.equipNum(card);
-                                        let equipped = false;
-                                        for (let j = 0; j < player.node.equips.childNodes.length; j++) {
-                                            if (get.equipNum(player.node.equips.childNodes[j]) >= equipNum) {
-                                                player.node.equips.insertBefore(card, player.node.equips.childNodes[j]);
-                                                equipped = true;
-                                                break;
-                                            }
-                                        }
-                                        if (!equipped) {
-                                            player.node.equips.appendChild(card);
-                                            if (_status.discarded) _status.discarded.remove(card);
-                                        }
-                                    }
-                                }
-                            };
-                        }, skill);
-                    }
-                    setTimeout(() => player.$handleEquipChange());
+                    player.addExtraEquip(skill, 'bilibili_laosaozhipao', true, player => player.hasEmptySlot(2) && lib.card['bilibili_laosaozhipao']);
                 },
                 onremove(player, skill) {
-                    game.broadcastAll((player, skill) => {
-                        for (let j = 0; j < player.node.equips.childNodes.length; j++) {
-                            const card = player.node.equips.childNodes[j];
-                            if (card.name === 'empty_equip2' && card.node.name2.innerHTML === `${get.translation(skill)} ${get.translation(lib.skill[skill].group[0].slice(skill.length + 1))}`) {
-                                card.classList.add('hidden');
-                                break;
-                            }
-                        }
-                    }, player, skill);
-                    setTimeout(() => player.$handleEquipChange());
+                    player.removeExtraEquip(skill);
                 },
                 ai: {
                     effect: {
