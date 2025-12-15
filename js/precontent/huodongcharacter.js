@@ -11953,7 +11953,7 @@ const packs = function () {
                             return game.hasPlayer2(target => {
                                 const cards2 = event.getl(target).cards2;
                                 const evt = event.name === 'lose' ? event : target.getHistory('lose', evt2 => event === evt2.getParent())[0];
-                                return evt && cards2.includes(card) && evt.gaintag_map[id]?.includes('bilibili_linglai');
+                                return evt && cards2.includes(card) && evt.gaintag_map[id]?.includes('bilibili_linglai_tag');
                             });
                         }
                         const evt = event.getParent();
@@ -11962,7 +11962,7 @@ const packs = function () {
                         return evtx.player.hasHistory('lose', evtxx => {
                             if (evtx !== (evtxx.relatedEvent || evtxx.getParent())) return false;
                             const cards2 = evtxx.getl(evtx.player).cards2;
-                            return cards2.includes(card) && evtxx.gaintag_map[id]?.includes('bilibili_linglai');
+                            return cards2.includes(card) && evtxx.gaintag_map[id]?.includes('bilibili_linglai_tag');
                         });
                     });
                 },
@@ -11975,7 +11975,7 @@ const packs = function () {
                             sum += game.countPlayer2(target => {
                                 const cards2 = trigger.getl(target).cards2;
                                 const evt = trigger.name === 'lose' ? trigger : target.getHistory('lose', evt2 => trigger === evt2.getParent())[0];
-                                return (evt && cards2.includes(card) && evt.gaintag_map[id]?.includes('bilibili_linglai')) ? 1 : 0;
+                                return (evt && cards2.includes(card) && evt.gaintag_map[id]?.includes('bilibili_linglai_tag')) ? 1 : 0;
                             });
                         }
                         else {
@@ -11984,7 +11984,7 @@ const packs = function () {
                             evtx.player.getHistory('lose', evtxx => {
                                 if (evtx !== (evtxx.relatedEvent || evtxx.getParent())) return false;
                                 const cards2 = evtxx.getl(evtx.player).cards2;
-                                if (!cards2.includes(card) || !evtxx.gaintag_map[id]?.includes('bilibili_linglai')) return false;
+                                if (!cards2.includes(card) || !evtxx.gaintag_map[id]?.includes('bilibili_linglai_tag')) return false;
                                 sum += ((evtxx.relatedEvent || evtxx.getParent()).name === 'useCard' ? 2 : 1);
                             });
                         }
@@ -12015,7 +12015,10 @@ const packs = function () {
                                     return get.useful(card) * get.value(card);
                                 }).set('prompt', `${get.translation(event.name)}：标记${get.translation(target)}至多两张手牌`).forResult();
                             }
-                            if (result?.bool && result.cards?.length) target.addGaintag(result.cards, 'bilibili_linglai');
+                            if (result?.bool && result.cards?.length) {
+                                target.addGaintag(result.cards, 'bilibili_linglai_tag');
+                                if (target === player) target.addGaintag(result.cards, 'bilibili_linglai');
+                            }
                         },
                     },
                 },
@@ -12694,6 +12697,7 @@ const packs = function () {
             bilibili_xingcan: '星璨',
             bilibili_xingcan_info: '准备阶段和结束阶段，你可以选择一种花色并进行判定，若判定结果与你选择的花色相同，你可以令一名其他角色翻面。',
             bilibili_linglai: '灵籁',
+            bilibili_linglai_tag: 'invisible',
             bilibili_linglai_info: '一名角色的出牌阶段开始时，你可以观看其手牌并选择其中至多两张牌。这些牌因/不因使用进入弃牌堆后，你摸两/一张牌。',
             bilibili_yongtan: '咏叹',
             bilibili_yongtan_info: '当你于出牌阶段使用牌结算完毕后，你可以选择一个点数并令一名其他角色进行判定，若判定结果与选择的点数相同，则其失去所有体力。',
