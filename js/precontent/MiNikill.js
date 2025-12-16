@@ -269,7 +269,7 @@ const packs = function () {
             Mbaby_xuyou: ['male', 'qun', 3, ['minichenglve', 'nzry_shicai', 'nzry_cunmu']],
             Mbaby_gongsunzan: ['male', 'qun', 4, ['miniqiaomeng', 'miniyicong'], ['name:公孙|瓒']],
             Mbaby_pangde: ['male', 'qun', 4, ['mashu', 'minijianchu']],
-            Mbaby_jushou: ['male', 'qun', 3, ['jianying', 'minishibei']],
+            Mbaby_jushou: ['male', 'qun', 3, ['jianying', 'minishibei'], ['die:yj_jushou']],
             Mbaby_liru: ['male', 'qun', 3, ['xinjuece', 'minimieji', 'xinfencheng']],
             Mbaby_dongzhuo: ['male', 'qun', 8, ['minirejiuchi', 'miniroulin', 'minirebenghuai', 'olbaonue'], ['zhu', 'tempname:ol_dongzhuo', 'die:ol_dongzhuo']],
             Mbaby_zhangjiao: ['male', 'qun', 3, ['minileiji', 'xinguidao', 'minihuangtian'], ['zhu', 'tempname:sp_zhangjiao', 'die:sp_zhangjiao']],
