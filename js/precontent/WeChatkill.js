@@ -4618,7 +4618,7 @@ const packs = function () {
                     return player.canCompare(target) && target.getHp() <= player.getHp();
                 },
                 usable: 1,
-                selectTarget: [1, Infinity],
+                selectTarget: [1, 4],
                 multitarget: true,
                 multiline: true,
                 content() {
@@ -16964,7 +16964,7 @@ const packs = function () {
             wechatshouxi_info: '当你成为【杀】的目标后，你可声明一种牌的类别，使用者须选择一项：①弃置一张你声明的类别的牌；②令此【杀】对你无效。',
             wechat_zhiyin_caocao: '极曹操',
             wechatdelu: '得鹿',
-            wechatdelu_info: '出牌阶段限一次，你可以与任意名体力值不大于你的角色进行同时拼点，且你的拼点点数+X（X为此次参与拼点的角色数）。拼点赢的角色依次随机获得所有拼点没赢的角色区域内的一张牌。',
+            wechatdelu_info: '出牌阶段限一次，你可以与至多四名体力值不大于你的角色同时拼点，且你的拼点点数+X（X为此次参与拼点的角色数）。拼点赢的角色依次随机获得所有拼点没赢的角色区域内的一张牌。',
             wechatzhujiu: '煮酒',
             wechatzhujiu_info: '出牌阶段限一次，你可以与一名其他角色交换一张手牌，若这两张手牌的颜色：相同，你回复1点体力；不相同，你对其造成1点伤害。',
             wechat_zhiyin_zhugeliang: '极诸葛亮',
