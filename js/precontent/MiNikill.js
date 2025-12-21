@@ -2773,6 +2773,7 @@ const packs = function () {
                         return num + Math.min(5, player.getExpansions('quanji').length);
                     },
                 },
+                locked: false,
                 subSkill: {
                     phase: {
                         audio: 'quanji',
