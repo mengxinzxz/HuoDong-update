@@ -381,7 +381,7 @@ const packs = function () {
                 group: 'shen',
                 hp: 3,
                 hp2: 3,
-                skills: ['minishuangshu1', 'minishutu1', 'minitongdi'],
+                skills: ['minishuangshu1', 'minishutu', 'minitongdi'],
                 groupInGuozhan: 'wu',
                 names: '桥|null-桥|null',
             },
@@ -32024,8 +32024,8 @@ const packs = function () {
                     trigger.next.push(next);
                 },
             },
-            minishutu1: {
-                audio: 'minipingting',
+            minishutu: {
+                audio: 'ext:活动武将/audio/skill:2',
                 trigger: { player: ['recoverEnd', 'damageEnd'] },
                 filter(event, player) {
                     const choice = game.getGlobalHistory('changeHp', evt => evt.getParent() === event)[0]?.choice;
@@ -32033,13 +32033,14 @@ const packs = function () {
                 },
                 direct: true,
                 async content(event, trigger, player) {
+                    const list = [event.name, null, null, null, [2 - (trigger.name === 'recover')]];
                     if (trigger.name === 'recover') {
                         for (let num = 1; num <= 2; num++) {
                             const result = await player.chooseControl(lib.color.red, 'cancel2').set('ai', () => {
                                 return get.rand(0, 1);
                             }).set('prompt', get.prompt(event.name)).set('prompt2', '获得一张指定花色的红色牌').forResult();
                             if (result.control && result.control !== 'cancel2') {
-                                if (num === 1) player.logSkill(event.name);
+                                if (num === 1) player.logSkill(...list);
                                 player.chat(get.translation(result.control + 2));
                                 const card = get.cardPile({ suit: result.control });
                                 if (card) await player.gain(card, 'gain2');
@@ -32052,7 +32053,7 @@ const packs = function () {
                         await player.chooseToUse(function (card, player, event) {
                             //if (get.itemtype(card) !== 'card' || (get.color(card) !== 'red' && get.color(card) !== 'unsure')) return false;
                             return lib.filter.filterCard.apply(this, arguments);
-                        }, `${get.translation(event.name)}：是否使用一张牌（无次数限制且不可被响应）？`).set('logSkill', event.name).set('addCount', false);
+                        }, `${get.translation(event.name)}：是否使用一张牌（无次数限制且不可被响应）？`).set('logSkill', list).set('addCount', false);
                     }
                 },
                 subSkill: {
@@ -32060,7 +32061,7 @@ const packs = function () {
                         charlotte: true,
                         trigger: { player: 'useCard' },
                         filter(event, player) {
-                            return event.getParent().name === 'chooseToUse' && event.getParent(2).name === 'minishutu1' && event.getParent(2).player === player;
+                            return event.getParent().name === 'chooseToUse' && event.getParent(2).name === 'minishutu' && event.getParent(2).player === player;
                         },
                         silent: true,
                         content() {
@@ -32071,14 +32072,14 @@ const packs = function () {
                             directHit_ai: true,
                             skillTagFilter(player) {
                                 const event = get.event();
-                                return event?.name === 'chooseToUse' && event.getParent().name === 'minishutu1' && event.getParent().player === player;
+                                return event?.name === 'chooseToUse' && event.getParent().name === 'minishutu' && event.getParent().player === player;
                             },
                         },
                     },
                 },
             },
             minitongdi: {
-                audio: 'miniyizheng',
+                audio: 'ext:活动武将/audio/skill:2',
                 trigger: { global: ['recoverEnd', 'damageEnd', 'loseHpEnd'] },
                 filter(event, player) {
                     if (event.source !== player) return false;
@@ -32087,8 +32088,8 @@ const packs = function () {
                     if (typeof player.hp2 === 'number' && player.getHp() === Math.max(0, player.hp2) && player.isDamaged()) return true;
                     return player.countCards('h', { suit: 'heart' }) === player.countCards('h', { suit: 'diamond' }) && player.hasCard(card => {
                         if (_status.connectMode && get.color(card) === 'h') return true;
-                        return lib.filter.cardDiscardable(card, player);
-                    }, 'h');
+                        return get.color(card) === 'red' && lib.filter.cardDiscardable(card, player);
+                    }, 'he');
                 },
                 direct: true,
                 async content(event, trigger, player) {
@@ -32101,14 +32102,15 @@ const packs = function () {
                     }
                     if (player.countCards('h', { suit: 'heart' }) === player.countCards('h', { suit: 'diamond' }) && player.hasCard(card => {
                         if (_status.connectMode && get.color(card) === 'h') return true;
-                        return lib.filter.cardDiscardable(card, player);
-                    }, 'h')) {
+                        return get.color(card) === 'red' && lib.filter.cardDiscardable(card, player);
+                    }, 'he')) {
                         const result = await player.chooseCardTarget({
                             prompt: get.prompt(event.name),
                             prompt2: '弃置一张红色牌，对一名角色造成1点伤害',
                             filterCard(card, player) {
                                 return get.color(card) === 'red' && lib.filter.cardDiscardable(card, player);
                             },
+                            position: 'he',
                             filterTarget: true,
                             ai1(card) {
                                 return 7 - get.value(card);
@@ -32125,6 +32127,47 @@ const packs = function () {
                             await target.damage();
                         }
                     }
+                },
+                init(player, skill) {
+                    player.addSkill(`${skill}_record`);
+                    if (_status.gameDrawed) {
+                        const event = get.event(), func = lib.skill[`${skill}_record`].func;
+                        if (event.isMine()) func(player, `${skill}_record`);
+                        else if (player.isOnline2()) player.send(func, player, `${skill}_record`);
+                    }
+                },
+                onremove(player, skill) {
+                    delete player.storage[`${skill}_record`];
+                    player.removeTip(`${skill}_record`);
+                    player.removeSkill(`${skill}_record`);
+                },
+                subSkill: {
+                    record: {
+                        charlotte: true,
+                        trigger: {
+                            player: ['loseEnd', 'changeSkillsEnd'],
+                            global: ['gameDrawEnd', 'phaseBefore', 'loseAsyncEnd', 'equipEnd', 'addJudgeEnd', 'gainEnd', 'addToExpansionEnd'],
+                        },
+                        filter(event, player) {
+                            if (!Array.isArray(player.storage.minitongdi_record)) return true;
+                            if (['lose', 'loseAsync', 'equip', 'addJudge', 'gain', 'addToExpansion'].includes(event.name)) {
+                                if (!((event.getl?.(player)?.hs ?? []).length > 0 || (event.getg?.(player) ?? []).length > 0)) return false;
+                            }
+                            const list = [player.countCards('h', { suit: 'heart' }), player.countCards('h', { suit: 'diamond' })];
+                            return [0, 1].some(index => player.storage.minitongdi_record[index] !== list[index]);
+                        },
+                        silent: true,
+                        firstDo: true,
+                        content() {
+                            const func = lib.skill[event.name].func;
+                            if (event.isMine()) func(player, event.name);
+                            else if (player.isOnline2()) player.send(func, player, event.name);
+                        },
+                        func(player, name) {
+                            const list = player.storage[name] = [player.countCards('h', { suit: 'heart' }), player.countCards('h', { suit: 'diamond' })];
+                            player.addTip(name, `${get.translation('heart')}；${list[0]} ${get.translation('diamond')}：${list[1]}`);
+                        },
+                    },
                 },
             },
             // 神二乔②号
@@ -38747,7 +38790,7 @@ const packs = function () {
                 if (typeof player.hp2 === 'number') return lib.translate[`${skill}_info`];
                 return '锁定技。回合开始时，你执行一个额外的摸牌阶段。';
             },
-            minishutu1(player, skill) {
+            minishutu(player, skill) {
                 if (typeof player.hp2 === 'number') return lib.translate[`${skill}_info`];
                 return '当你回复体力后，你可以从牌堆或弃牌堆获得两张指定花色的红色牌。';
             },
@@ -40478,8 +40521,8 @@ const packs = function () {
             miniyizheng_info: '出牌阶段结束时，你可以移动场上至多一张装备牌（只能移动武器、防具和坐骑牌，且一次技能结算中每种副类别的装备限移动一次），然后若你于本次技能结算中移动了：一张装备牌，你回复1点体力；两张装备牌，直到你的下回合开始，当你失去一张牌时，摸一张牌。',
             minishuangshu1: '双姝',
             minishuangshu1_info: '锁定技。①回合开始时，你执行一个额外的摸牌阶段。②你拥有“大乔”和“小乔”两段体力，当你执行体力变化时，你选择“大乔”或“小乔”执行此操作，“大乔”或“小乔”阵亡即你阵亡。',
-            minishutu1: '殊途',
-            minishutu1_info: '①大乔回复体力后，你可以从牌堆或弃牌堆获得两张指定花色的红色牌。②小乔受到伤害后，你可以使用一张牌（无次数限制且不可被响应）。',
+            minishutu: '殊途',
+            minishutu_info: '①大乔回复体力后，你可以从牌堆或弃牌堆获得两张指定花色的红色牌。②小乔受到伤害后，你可以使用一张牌（无次数限制且不可被响应）。',
             minitongdi: '同蒂',
             minitongdi_info: '当你使用红色牌令一名角色的体力值变化后，你依次执行：①若大乔和小乔的体力值相同，则你可以回复1点体力；②若你手牌中的红桃牌和方片牌的数量相同，则你可以弃置一张红色牌，对一名角色造成1点伤害。',
             minishuangshu2: '双姝',
