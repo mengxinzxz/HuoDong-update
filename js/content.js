@@ -580,19 +580,6 @@ export async function content(config, pack) {
 			return uiintro;
 		};
 	}
-	//主公武将金色显示
-	const oriCharacter = ui.create.buttonPresets.character;
-	ui.create.buttonPresets.character = function (item) {
-		const node = oriCharacter.apply(this, arguments), func = node.refresh;
-		node.refresh = function (node2, item2) {
-			func.apply(this, arguments);
-			const infoitem = lib.character[item2];
-			if (infoitem?.isZhugong) node2.node.group.dataset.nature = get.groupnature('shen');
-		};
-		const infoitem = lib.character[item];
-		if (infoitem?.isZhugong) node.node.group.dataset.nature = get.groupnature('shen');
-		return node;
-	};
 
 	//precGuoZhan(分界线，便于我搜过来)
 	if (get.mode() == 'guozhan') {
