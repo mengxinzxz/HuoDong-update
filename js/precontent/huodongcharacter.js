@@ -12930,7 +12930,6 @@ const packs = function () {
                 '神：牢美吗，好久没有人这么叫我了。',
             ].join('<br>')}</span>`,
             bilibili_liuguanzhang: '三人组',
-            bilibili_liuguanzhang_ab: '刘关张',
             bilibili_waifa: '外伐',
             bilibili_waifa_info: '出牌阶段开始时，你可以弃置三张牌并摸等量的牌。若你弃置的类别包含：基本牌，本回合你使用的前X张基本牌无距离和次数限制（X为其中的非基本牌数）；锦囊牌，本回合你使用的前Y张锦囊牌可以额外增加和减少至多Y名目标（Y为其中的非锦囊牌数）；装备牌，本回合你使用的前Z张装备牌时摸Z张牌（Z为其中的非装备牌数）。',
         },

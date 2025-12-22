@@ -32165,7 +32165,7 @@ const packs = function () {
                         },
                         func(player, name) {
                             const list = player.storage[name] = [player.countCards('h', { suit: 'heart' }), player.countCards('h', { suit: 'diamond' })];
-                            player.addTip(name, `${get.translation('heart')}；${list[0]} ${get.translation('diamond')}：${list[1]}`);
+                            player.addTip(name, `${get.translation('heart')}：${list[0]}；${get.translation('diamond')}：${list[1]}`);
                         },
                     },
                 },
