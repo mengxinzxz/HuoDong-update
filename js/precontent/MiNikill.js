@@ -32852,7 +32852,7 @@ const packs = function () {
             },
             minihuanhua: {
                 audio: 'ext:活动武将/audio/skill:2',
-                enable: 'phaseUse',
+                enable: 'chooseToUse',
                 onChooseToUse(event) {
                     if (!game.online && event.type == 'phase' && !event.minihuanhua_count) {
                         const player = event.player;
@@ -32863,6 +32863,7 @@ const packs = function () {
                     }
                 },
                 filter(event, player) {
+                    if (event.type !== 'phase') return false;
                     const count = event.minihuanhua_count;
                     return count[0].length > 0 && count[1].length > 0;
                 },
@@ -40579,7 +40580,7 @@ const packs = function () {
             })(),
             minihuanhua: '幻化',
             minihuanhua_tag: '已选择',
-            minihuanhua_info: '出牌阶段限两次，你可选择一张未被〖幻化〗定向转化过的“幻术”牌和一张未被〖幻化〗选择过的非“幻术”牌，你将前者的牌名、属性、花色和点数转化为和后者一致，若两张牌的花色相同，你获得一张“幻术”牌。',
+            minihuanhua_info: '每回合限两次，出牌阶段，你可选择一张未被〖幻化〗定向转化过的“幻术”牌和一张未被〖幻化〗选择过的非“幻术”牌，你将前者的牌名、属性、花色和点数转化为和后者一致，若两张牌的花色相同，你获得一张“幻术”牌。',
             minihuanjing: '幻境',
             minihuanjing_info: '限定技，出牌阶段，你可令本回合发动〖幻化〗的次数+X且你发动〖幻化〗可以选择“幻术”牌为转化目标卡牌，然后你获得X张“幻术”牌。（X为你已损失的体力值的两倍且X至少为1）',
             minixianjin: '险进',
