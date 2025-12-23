@@ -38546,23 +38546,79 @@ const packs = function () {
                     },
                     plugin: {
                         charlotte: true,
-                        trigger: { player: 'gainBefore' },
-                        filter(event, player) {
-                            if (event.getParent().name !== 'draw') return false;
-                            return event.cards?.some(card => !(card._knowers ?? []).length);
-                        },
+                        trigger: { player: 'drawBefore' },
                         silent: true,
                         firstDo: true,
                         async content(event, trigger, player) {
-                            let cards = trigger.cards.slice(), cards3 = cards.filter(card => (card._knowers ?? []).length > 0);
-                            let cards2 = lib.skill[event.name].getBestCards(player.getCards('hs'), cards.length - cards3.length, player);
-                            if (cards2.length > 0) {
-                                console.log(cards2.map(i => get.number(i)));
-                                trigger.cards = [];
-                                for (let i = 0; i < cards.length; i++) {
-                                    trigger.cards.push((cards[i]._knowers ?? []).length > 0 ? cards[i] : cards2.shift());
+                            trigger.setContent(lib.skill[event.name].draw);
+                        },
+                        draw() {
+                            if (typeof event.minnum === 'number' && num < event.minnum) num = event.minnum;
+                            if (event.drawDeck) {
+                                if (event.drawDeck > num) event.drawDeck = num;
+                                num -= event.drawDeck;
+                            }
+                            let logList;
+                            if (event.log != false) {
+                                logList = [player];
+                                if (num > 0) logList.add(`${event.bottom ? '从牌堆底' : ''}摸了${get.cnNumber(num)}张牌`);
+                                if (event.drawDeck) logList.add(`从牌库中获得了${get.cnNumber(event.drawDeck)}张牌`);
+                            }
+                            let cards = [];
+                            if (num > 0) {
+                                if (event.otherGetCards) cards.addArray(event.otherGetCards(num));//从专属牌堆摸牌，没有再看其他的
+                                else if (event.bottom) cards.addArray(get.bottomCards(num, true));
+                                else if (player.getTopCards) {
+                                    let add = [];
+                                    if (player.storage.doudizhu_cardPile?.length) {
+                                        add = player.storage.doudizhu_cardPile.randomRemove(num);
+                                        player[player.storage.doudizhu_cardPile.length > 0 ? 'markSkill' : 'unmarkSkill']('doudizhu_cardPile');
+                                        if (add.length < num) add.addArray(get.cards(num - add.length, true));
+                                        else game.updateRoundNumber();
+                                    }
+                                    cards.addArray(add);
+                                }
+                                else cards.addArray(get.cards(num, true));
+                            }
+                            else cards = [];
+                            if (cards.length > 0) {
+                                /*
+                                let cards3 = cards.filter(card => (card._knowers ?? []).length > 0 || player.storage.doudizhu_cardPile?.includes(card));
+                                let cards2 = lib.skill['miniyinyinxing_plugin'].getBestCards([...player.getCards('hs'), ...cards3], cards.length - cards3.length, player);
+                                if (cards2.length > 0) {
+                                    let cards4 = [];
+                                    for (let i = 0; i < cards.length; i++) {
+                                        cards4.push((cards[i]._knowers ?? []).length > 0 ? cards[i] : cards2.shift());
+                                    }
+                                    cards = cards4;
+                                }
+                                */
+                                let replaceFlags = cards.map(card => !((card._knowers ?? []).length > 0 || player.storage.doudizhu_cardPile?.includes(card)));
+                                let need = replaceFlags.filter(Boolean).length;
+                                let cards2 = lib.skill['miniyinyinxing_plugin'].getBestCards([...player.getCards('hs'), ...cards.filter((_, i) => !replaceFlags[i])], need, player);
+                                if (cards2.length >= need) {
+                                    let idx = 0;
+                                    cards = cards.map((card, i) => replaceFlags[i] ? cards2[idx++] : card);
                                 }
                             }
+                            if (event.drawDeck) cards = cards.concat(player.getDeckCards(event.drawDeck));
+                            if (get.itemtype(cards) === 'cards') {
+                                let next;
+                                if (event.animate != false) {
+                                    if (event.visible) {
+                                        next = player.gain(cards, 'gain2').set('log', false);
+                                        logList.addArray(['（', cards, '）']);
+                                    }
+                                    else next = player.gain(cards, 'draw');
+                                }
+                                else {
+                                    next = player.gain(cards);
+                                    if (event.$draw) player.$draw(cards.length);
+                                }
+                                if (logList?.length) game.log(...logList);
+                                next.gaintag.addArray(event.gaintag);
+                            }
+                            event.result = cards;
                         },
                         getBestCards(cards, num, player) {
                             const getNum = card => {
