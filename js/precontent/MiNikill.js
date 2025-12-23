@@ -38399,7 +38399,7 @@ const packs = function () {
                                     return Array.from({ length: 5 }).map((_, index) => index + 1).some(i => current.hasEnabledSlot(i)) || !current.isDisabledJudge();
                                 });
                                 if (!targets.length) return;
-                                const list = Array.from({ length: 5 }).map((_, i) => [i + 1, get.translation(`equip${i + 1}`)]).concat([['judge', '判定区']])
+                                const list = Array.from({ length: 5 }).map((_, i) => [i + 1, get.translation(`equip${i + 1}`)]).concat([['judge', '判定区']]);
                                 const { result } = await player.chooseButtonTarget({
                                     createDialog: [
                                         '隐姓：请选择你要置入牌的角色和区域',
@@ -38474,6 +38474,12 @@ const packs = function () {
                         },
                     },
                 },
+                init(player, skill) {
+                    player.addSkill(`${skill}_plugin`);
+                },
+                onremove(player, skill) {
+                    player.removeSkill(`${skill}_plugin`);
+                },
                 group: ['miniyinyinxing_draw'],
                 subSkill: {
                     draw: {
@@ -38538,58 +38544,117 @@ const packs = function () {
                             }
                         },
                     },
-                    other: {
-                        audio: 'miniyinyinxing',
-                        filterCard: lib.filter.cardDiscardable,
-                        selectCard: [2, Infinity],
-                        position: 'h',
-                        filterOk() {
-                            const type = get.info('miniyinyinxing').getType(ui.selected.cards, get.player());
-                            return typeof type == 'string' && ['三条', '炸弹'].includes(type);
+                    plugin: {
+                        charlotte: true,
+                        trigger: { player: 'gainBefore' },
+                        filter(event, player) {
+                            if (event.getParent().name !== 'draw') return false;
+                            return event.cards?.some(card => !(card._knowers ?? []).length);
                         },
-                        ai1(card) {
-                            const player = get.player();
-                            if (game.hasPlayer(current => Array.from({ length: 5 }).map((_, index) => index + 1).some(i => current.countEmptySlot(i)))) {
-                                if (ui.selected.cards.length > 2) return 0;
-                                return 1;
-                            }
-                            return 1;
-                        },
-                        delay: false,
+                        silent: true,
+                        firstDo: true,
                         async content(event, trigger, player) {
-                            const { cards } = event;
-                            const type = get.info('miniyinyinxing').getType(cards, player);
-                            switch (type) {
-                                case '三条': {
-                                    const targets = game.filterPlayer(current => {
-                                        return Array.from({ length: 5 }).map((_, index) => index + 1).some(i => current.countEmptySlot(i)) || !current.isDisabledJudge();
-                                    });
-                                    const { result } = await player.chooseButtonTarget({
-
-                                    });
-                                    if (result?.targets?.length && result.links?.length) {
-                                        const [target] = result.targets;
-                                        const [link] = result.links;
-                                        const bool = typeof link == 'number'
-                                        const card = get.cardPile(cardx => {
-                                            if (bool) return get.subtype(cardx, false) == `equip_${link}` && target.canEquip(cardx);
-                                            return get.type(cardx, false) == 'delay' && target.canAddJudge(cardx);
-                                        });
-                                        if (card) {
-                                            target.$gain2(card);
-                                            await game.delayx();
-                                            await target[bool ? 'equip' : 'addJudge'](card);
+                            let cards = trigger.cards.slice(), cards3 = cards.filter(card => (card._knowers ?? []).length > 0);
+                            let cards2 = lib.skill[event.name].getBestCards(player.getCards('hs'), cards.length - cards3.length, player);
+                            if (cards2.length > 0) {
+                                console.log(cards2.map(i => get.number(i)));
+                                trigger.cards = [];
+                                for (let i = 0; i < cards.length; i++) {
+                                    trigger.cards.push((cards[i]._knowers ?? []).length > 0 ? cards[i] : cards2.shift());
+                                }
+                            }
+                        },
+                        getBestCards(cards, num, player) {
+                            const getNum = card => {
+                                let number = get.number(card, player);
+                                return number <= 2 ? number + 13 : number;
+                            };
+                            const haveMap = {}, pileMap = {};
+                            cards.forEach(card => {
+                                const number = getNum(card);
+                                haveMap[number] ??= 0;
+                                haveMap[number]++;
+                            });
+                            const pile = Array.from(ui.cardPile.childNodes).filter(card => !(card._knowers ?? []).length);
+                            pile.forEach(card => {
+                                const number = getNum(card);
+                                pileMap[number] ??= [];
+                                pileMap[number].push(card);
+                            });
+                            const buildCandidates = function (type) {
+                                const result = [];
+                                if (type === '炸弹') {
+                                    for (const n in pileMap) {
+                                        const have = haveMap[n] || 0;
+                                        const need = 4 - have;
+                                        if (need > 0 && need <= num && pileMap[n].length >= need) result.push(...pileMap[n].slice(0, need));
+                                    }
+                                    return result;
+                                }
+                                if (type === '对子') {
+                                    for (const n in pileMap) {
+                                        const have = haveMap[n] || 0;
+                                        const need = 2 - have;
+                                        if (need > 0 && need <= num && pileMap[n].length >= need) result.push(...pileMap[n].slice(0, need));
+                                    }
+                                    return result;
+                                }
+                                if (type === '三顺') {
+                                    const nums = Object.keys({ ...haveMap, ...pileMap }).map(Number).sort((a, b) => a - b);
+                                    for (let i = 0; i < nums.length - 2; i++) {
+                                        const seq = [nums[i], nums[i] + 1, nums[i] + 2];
+                                        if (!seq.every(n => pileMap[n] || haveMap[n])) continue;
+                                        for (const n of seq) {
+                                            if (!(haveMap[n] > 0) && pileMap[n]?.length) result.push(pileMap[n][0]);
                                         }
                                     }
+                                    return result;
                                 }
-                                    break;
-                                case '炸弹': {
-                                    for (const target of game.filterPlayer(current => current != player).sortBySeat()) {
-                                        await target.damage(cards.length - 3);
+                                return result;
+                            };
+                            const hasTypeSubset = function (allCards, needLen, type) {
+                                const len = allCards.length, max = 1 << len;
+                                for (let i = 1; i < max; i++) {
+                                    let pick = 0;
+                                    const subset = [];
+                                    for (let k = 0; k < len; k++) {
+                                        if (i & (1 << k)) {
+                                            pick++;
+                                            if (pick > needLen) break;
+                                            subset.push(allCards[k]);
+                                        }
+                                    }
+                                    if (pick === needLen) {
+                                        if (lib.skill.miniyinyinxing.getType(subset) === type) return true;
                                     }
                                 }
-                                    break;
+                                return false;
+                            };
+                            const search = function (candidates, type) {
+                                const len = candidates.length, max = 1 << len;
+                                const needLen = type === '对子' ? 2 : type === '三顺' ? 3 : 4;
+                                for (let i = 1; i < max; i++) {
+                                    let pick = 0;
+                                    const gain = [];
+                                    for (let k = 0; k < len; k++) {
+                                        if (i & (1 << k)) {
+                                            pick++;
+                                            if (pick > num) break;
+                                            gain.push(candidates[k]);
+                                        }
+                                    }
+                                    if (pick === 0 || pick > num) continue;
+                                    if (hasTypeSubset([...cards, ...gain], needLen, type)) return gain;
+                                }
+                                return null;
+                            };
+                            for (const type of ['炸弹', '三顺', '对子']) {
+                                const candidates = buildCandidates(type);
+                                if (!candidates.length) continue;
+                                const result = search(candidates, type);
+                                if (result) return result;
                             }
+                            return [];
                         },
                     },
                 },
