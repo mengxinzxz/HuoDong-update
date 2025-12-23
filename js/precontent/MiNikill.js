@@ -38704,7 +38704,11 @@ const packs = function () {
                                 }
                                 return null;
                             };
-                            for (const type of ['炸弹', '三顺', '对子']) {
+                            for (const type of (() => {
+                                let list = ['炸弹', '三顺', '对子'];
+                                if (_status.currentPhase !== player) list.reverse();
+                                return list;
+                            })()) {
                                 const candidates = buildCandidates(type);
                                 if (!candidates.length) continue;
                                 const result = search(candidates, type);
