@@ -41005,11 +41005,11 @@ const packs = function () {
                         choice = (player.hp2 === player.maxHp) ? 'hp' : 'hp2';
                     }
                     else {
-                        let index = await player.chooseControl('主武将牌', '副武将牌').set('ai', () => {
+                        let { result } = await player.chooseControl('主武将牌', '副武将牌').set('ai', () => {
                             const { player, num } = get.event().getParent();
                             return (player.hp - player.hp2) * num <= 0 ? 0 : 1;
-                        }).set('prompt', `请选择一张武将牌${num > 0 ? '+' : ''}${num}体力`).forResult('index');
-                        choice = (index === 0) ? 'hp' : 'hp2';
+                        }).set('prompt', `请选择一张武将牌${num > 0 ? '+' : ''}${num}体力`);
+                        choice = (result?.index === 0) ? 'hp' : 'hp2';
                     }
                 }
             }
