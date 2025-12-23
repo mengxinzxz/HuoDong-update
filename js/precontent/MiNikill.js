@@ -38395,7 +38395,7 @@ const packs = function () {
                             let num = cards.map(card => get.suit(card)).toUniqued().length == 1 ? 2 : 1;
                             while (num--) {
                                 const targets = game.filterPlayer(current => {
-                                    return Array.from({ length: 5 }).map((_, index) => index + 1).some(i => current.hasEmptySlot(i)) || !current.isDisabledJudge();
+                                    return Array.from({ length: 5 }).map((_, index) => index + 1).some(i => current.hasEnabledSlot(i)) || !current.isDisabledJudge();
                                 });
                                 if (!targets.length) return;
                                 const list = Array.from({ length: 5 }).map((_, i) => [i + 1, get.translation(`equip${i + 1}`)]).concat([['judge', '判定区']])
@@ -38408,13 +38408,13 @@ const packs = function () {
                                     filterTarget(card, player, target) {
                                         const { link } = ui.selected.buttons[0];
                                         if (link == 'judge') return !target.isDisabledJudge();
-                                        return target.hasEmptySlot(link);
+                                        return target.hasEnabledSlot(link);
                                     },
                                     ai1(button) {
                                         const player = get.player();
                                         const { link } = button;
                                         if (link == 'judge') return game.hasPlayer(current => !current.isDisabledJudge() && get.attitude(player, target) < 0);
-                                        return game.hasPlayer(current => current.hasEmptySlot(link) && get.attitude(player, target) > 0);
+                                        return game.hasPlayer(current => current.hasEnabledSlot(link) && get.attitude(player, target) > 0);
                                     },
                                     ai2(target) {
                                         const player = get.player(), att = get.attitude(player, target);
