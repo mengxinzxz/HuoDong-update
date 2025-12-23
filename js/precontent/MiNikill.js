@@ -38573,9 +38573,9 @@ const packs = function () {
                                     if (player.storage.doudizhu_cardPile?.length) {
                                         add = player.storage.doudizhu_cardPile.randomRemove(num);
                                         player[player.storage.doudizhu_cardPile.length > 0 ? 'markSkill' : 'unmarkSkill']('doudizhu_cardPile');
-                                        if (add.length < num) add.addArray(get.cards(num - add.length, true));
-                                        else game.updateRoundNumber();
                                     }
+                                    if (add.length < num) add.addArray(get.cards(num - add.length, true));
+                                    else game.updateRoundNumber();
                                     cards.addArray(add);
                                 }
                                 else cards.addArray(get.cards(num, true));
