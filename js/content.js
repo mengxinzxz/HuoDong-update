@@ -1393,8 +1393,8 @@ export async function content(config, pack) {
 	});
 
 	//precCT
-	//武将前缀
-	Object.assign(lib.translate, {
+	//武将称号
+	Object.assign(lib.characterTitle, {
 		bol_sunluban: '测试专用，问题居多<br>仅供参考，娱乐为上',
 		old_zhangzhongjing: '第一版张仲景',
 		oldx_zhangzhongjing: '第三版张仲景',
