@@ -742,23 +742,26 @@ const packs = function () {
             },
             minifujian: {
                 audio: 'xinfu_fujian',
-                trigger: { player: 'phaseJieshuBegin' },
+                trigger: { player: ['phaseZhunbeiBegin', 'phaseJieshuBegin'] },
                 filter(event, player) {
-                    return game.hasPlayer(function (current) {
+                    return game.hasPlayer(current => {
                         return current != player && current.countCards('h');
                     });
                 },
                 direct: true,
                 locked: true,
-                content() {
-                    var target = game.filterPlayer(function (target) {
-                        return player != target && target.countCards('h');
+                async content(event, trigger, player) {
+                    const target = game.filterPlayer(current => {
+                        return player != current && current.countCards('h');
                     }).randomGet();
-                    var cards = target.getCards('h').randomGets(1);
-                    player.logSkill('minifujian', target);
-                    var content = [get.translation(target) + '的一张手牌', cards];
-                    game.log(player, '观看了', target, '的一张手牌');
-                    player.chooseControl('ok').set('dialog', content);
+                    if (target) {
+                        player.logSkill(event.name, target);
+                        player.line(target);
+                        if (target.countCards('h')) {
+                            game.log(player, '观看了', target, '的手牌');
+                            await player.viewHandcards(target);
+                        }
+                    }
                 },
             },
             minijiezi: {
@@ -39097,7 +39100,7 @@ const packs = function () {
             minilingren: '凌人',
             minilingren_info: '每回合限一次，当你于出牌阶段使用带有「伤害」这一标签的基本牌或普通锦囊牌指定目标后，你可以猜测其中的一个目标的手牌中是否有基本牌，锦囊牌或装备牌。若你至少猜对了：一项，此牌对该角色的伤害+1；两项，你摸两张牌；三项，你获得〖奸雄〗和〖行殇〗直到下回合开始。',
             minifujian: '伏间',
-            minifujian_info: '锁定技，结束阶段，你随机观看一名的其他角色的一张手牌。',
+            minifujian_info: '锁定技，准备阶段和结束阶段，你随机观看一名其他角色的手牌。',
             minihuchi: '虎痴',
             minihuchi_info: '结束阶段，若你的手牌数小于2，则你将手牌数补至两张；当你使用的【杀】被抵消后，你获得1枚“痴”；出牌阶段限一次，你可以移去所有“痴”，然后摸等量的牌。',
             minijingce: '精策',
