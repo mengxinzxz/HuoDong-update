@@ -751,17 +751,15 @@ const packs = function () {
                     });
                 },
                 forced: true,
-                async content(event, trigger, player) {
-                    const target = game.filterPlayer(current => {
+                logTarget(event, player) {
+                    return game.filterPlayer(current => {
                         return player != current && current.countCards('h');
                     }).randomGet();
-                    if (target) {
-                        player.line(target);
-                        if (target.countCards('h')) {
-                            game.log(player, '观看了', target, '的手牌');
-                            await player.viewHandcards(target);
-                        }
-                    }
+                },
+                async content(event, trigger, player) {
+                    const target = event.targets[0];
+                    game.log(player, '观看了', target, '的手牌');
+                    await player.viewHandcards(target);
                 },
             },
             minijiezi: {
