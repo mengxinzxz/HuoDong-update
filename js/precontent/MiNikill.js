@@ -10356,7 +10356,6 @@ const packs = function () {
             },
             minifuhan: {
                 inherit: 'refuhan',
-                Mbaby_characterlist: true,
                 async content(event, trigger, player) {
                     player.awakenSkill(event.name);
                     const num = player.countMark('fanghun');
@@ -10422,6 +10421,7 @@ const packs = function () {
                     if (result?.links?.length) await player.addSkills(result.links);
                     if (player.isMinHp()) await player.recover();
                 },
+                derivation: 'Mbaby_characterlist_faq',
             },
             //夏侯霸
             minibaobian: {
@@ -19659,7 +19659,6 @@ const packs = function () {
                     var list = lib.skill.dchuishu.getList(player);
                     return list.some(i => i >= 5);
                 },
-                Mbaby_characterlist: true,
                 async content(event, trigger, player) {
                     player.awakenSkill(event.name);
                     await player.gainMaxHp();
@@ -19728,6 +19727,7 @@ const packs = function () {
                     if (result?.links?.length) await player.changeSkills(result.links, ['dchuishu']);
                     else await player.draw(3);
                 },
+                derivation: 'Mbaby_characterlist_faq',
             },
             //蒋钦
             minijianyi: {
@@ -23985,7 +23985,6 @@ const packs = function () {
                     const list = Object.keys(lib.characterPack.MiNikill).concat(_status.extra_pingjianList || []);
                     return list.filter(i => !_status.banned_pingjianList?.includes(i) && (!get.character(i, 4) || !get.character(i, 4).includes('unseen')));
                 },
-                Mbaby_characterlist: true,
                 init(player) {
                     player.addSkill('minipingjian_remove');
                     if (!player.storage.minipingjian_remove) player.storage.minipingjian_remove = {};
@@ -24051,6 +24050,7 @@ const packs = function () {
                     player.addTempSkill(result.control);
                     player.storage.minipingjian_remove[result.control] = (trigger.name == 'damage' ? trigger : 'phaseJieshu');
                 },
+                derivation: 'Mbaby_characterlist_faq',
             },
             minipingjian_use: {
                 audio: 'pingjian',
@@ -28285,7 +28285,6 @@ const packs = function () {
             },
             //管宁
             minidunshi: {
-                Mbaby_characterlist: true,
                 hiddenCard(player, name) {
                     return player.storage.minidunshi?.includes(name) && !player.getStat('skill').minidunshi;
                 },
@@ -28384,6 +28383,7 @@ const packs = function () {
                     }
                     _status.minidunshi_list = skills;
                 },
+                derivation: 'Mbaby_characterlist_faq',
                 subSkill: {
                     backup: { audio: 'dunshi' },
                     damage: {
@@ -41008,13 +41008,10 @@ const packs = function () {
     };
     for (var skill in MiNikill.skill) {
         //特定化身将池添加注释
-        if (MiNikill.skill[skill].Mbaby_characterlist) {
-            MiNikill.skill[skill].derivation = 'Mbaby_characterlist_faq';
-            MiNikill.translate[skill + '_append'] = MiNikill.translate.Mbaby_characterlist_append;
-        }
+        if (MiNikill.skill[skill].derivation === 'Mbaby_characterlist_faq') MiNikill.translate[skill + '_append'] = MiNikill.translate.Mbaby_characterlist_append;
         //念影效果添加注释
         if (MiNikill.skill[skill].nianyingSkill) {
-            if (!MiNikill.skill[skill].derivation) MiNikill.skill[skill].derivation = [];
+            MiNikill.skill[skill].derivation ??= [];
             MiNikill.skill[skill].derivation.push(skill + '_faq');
             MiNikill.translate[skill + '_faq'] = '念影——' + MiNikill.skill[skill].nianyingSkill[0];
             MiNikill.translate[skill + '_faq_info'] = '<br>' + MiNikill.skill[skill].nianyingSkill[1];
