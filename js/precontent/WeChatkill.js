@@ -813,7 +813,7 @@ const packs = function () {
                 position: 'hes',
                 viewAs: { name: 'sha' },
                 viewAsFilter(player) {
-                    return player.countCards('hes', { color: 'red' });
+                    return player.hasCard({ color: 'red' }, 'hes');
                 },
                 prompt: '将一张红色牌当作【杀】使用',
                 check(card) {
@@ -822,8 +822,25 @@ const packs = function () {
                 ai: {
                     respondSha: true,
                     skillTagFilter(player) {
-                        if (!player.countCards('hes', { color: 'red' })) return false;
+                        if (!player.hasCard({ color: 'red' }, 'hes')) return false;
                     },
+                },
+                trigger: { player: 'useCard1' },
+                filter(event, player) {
+                    if (event.name === 'chooseToUse') return player.hasCard(card => {
+                        if (get.color(card) !== 'red') return false;
+                        return event.filterCard(get.autoViewAs({ name: 'sha' }, [card]), player, event);
+                    }, 'hes');
+                    return event.addCount !== false && get.suit(event.card) === 'heart';
+                },
+                forced: true,
+                locked: false,
+                popup: false,
+                content() {
+                    trigger.addCount = false;
+                    const stat = player.getStat().card, name = trigger.card.name;
+                    if (typeof stat[name] == 'number') stat[name]--;
+                    game.log(trigger.card, '不计入次数');
                 },
             },
             wechatxiaohu: {
@@ -8697,6 +8714,9 @@ const packs = function () {
                 onuse(links, player) {
                     player.addTempSkill('wechatguli_effect', 'phaseUseAfter');
                 },
+                precontent() {
+                    event.getParent().addCount = false;
+                },
                 mod: {
                     cardUsable(card) {
                         if (card.storage?.wechatguli) return true;
@@ -8755,7 +8775,19 @@ const packs = function () {
                                 if (player.getStorage('wechataosi_effect').includes(target)) return true;
                             },
                         },
-                    }
+                        trigger: { player: 'useCard1' },
+                        filter(event, player) {
+                            return event.addCount !== false && event.targets?.some(target => player.getStorage('wechataosi_effect').includes(target));
+                        },
+                        forced: true,
+                        popup: false,
+                        content() {
+                            trigger.addCount = false;
+                            const stat = player.getStat().card, name = trigger.card.name;
+                            if (typeof stat[name] == 'number') stat[name]--;
+                            game.log(trigger.card, '不计入次数');
+                        },
+                    },
                 },
             },
             //孙皓
@@ -11564,13 +11596,11 @@ const packs = function () {
                             if (trigger.addCount !== false) {
                                 trigger.addCount = false;
                                 const stat = player.getStat().card, { name } = card;
-                                if (typeof stat[name] == 'number') {
-                                    stat[name]--;
-                                }
+                                if (typeof stat[name] == 'number') stat[name]--;
                             }
                             if (!player.hasMark(event.name)) player.removeSkill(event.name);
                         },
-                        intro: { content: '使用的下#张牌无次数限制' },
+                        intro: { content: '使用的下#张牌无任何次数限制' },
                     }
                 }
             },
@@ -16724,7 +16754,7 @@ const packs = function () {
             wechattieji_info: '当你使用【杀】指定目标后，你可以进行判定。若结果为红色，则此【杀】不可被闪避；若结果为黑色，你获得此判定牌。',
             wechat_shen_guanyu: '微信神关羽',
             wechatwushen: '武神',
-            wechatwushen_info: '你可以将一张红色牌当作【杀】使用。你使用方块【杀】无距离限制，使用红桃【杀】无次数限制。',
+            wechatwushen_info: '你可以将一张红色牌当作【杀】使用。你使用方块【杀】无距离限制，使用红桃【杀】无任何次数限制。',
             wechat_zhiyin_lvbu: '极吕布',
             wechatxiaohu: '虓虎',
             wechatxiaohu_info: '你使用【杀】可以额外指定一个目标；出牌阶段限一次，你可以弃置一张手牌并从牌堆中获得一张【杀】。',
@@ -17201,9 +17231,9 @@ const packs = function () {
             wechatkanpo_info: '每轮开始时，你可以记录一个锦囊牌的牌名（每种牌名限一次）。一名其他角色于本轮使用此牌名的牌时，你令此牌无效，然后摸一张牌。',
             wechat_yj_weiyan: '微信☆魏延',
             wechatguli: '孤厉',
-            wechatguli_info: '出牌阶段限一次。你可以将所有手牌当做一张无次数限制且无视防具的【杀】使用。此牌结算结束后，若此牌造成过伤害，你可以将手牌数摸至你的体力上限。',
+            wechatguli_info: '出牌阶段限一次。你可以将所有手牌当做一张无任何次数限制且无视防具的【杀】使用。此牌结算结束后，若此牌造成过伤害，你可以将手牌数摸至你的体力上限。',
             wechataosi: '骜肆',
-            wechataosi_info: '锁定技。当你于出牌阶段对一名角色造成伤害后，你于此阶段对其使用牌无次数限制。',
+            wechataosi_info: '锁定技。当你于出牌阶段对一名角色造成伤害后，你于此阶段对其使用牌无任何次数限制。',
             wechat_sunhao: '微信孙皓',
             wechatcanshi: '残蚀',
             wechatcanshi_info: '摸牌阶段，你可以多摸X张牌（X为已受伤的角色数且至少为2）.若如此做，当你于此回合内使用【杀】或普通锦囊牌时，你弃置一张牌。',
@@ -17357,7 +17387,7 @@ const packs = function () {
             wechatwufei_info: '若场上存在拥有“雀”标记的角色A，则：①当你使用【杀】或伤害类锦囊牌指定第一个目标后，你令A成为此牌伤害来源。②当你受到伤害后，若A的体力值大于1，则你可以令A受到1点无来源伤害。',
             wechat_zhiyin_caopi: '极曹丕',
             wechatchaowei: '朝威',
-            wechatchaowei_info: '出牌阶段限一次。你可以摸一张牌并与至多三名角色进行共同拼点。赢的角色使用的下三张牌无次数限制且本次拼点没赢的角色选择一项：1.交给你一张牌；2.受到你的1点伤害。',
+            wechatchaowei_info: '出牌阶段限一次。你可以摸一张牌并与至多三名角色进行共同拼点。赢的角色使用的下三张牌无任何次数限制且本次拼点没赢的角色选择一项：1.交给你一张牌；2.受到你的1点伤害。',
             wechatenshe: '恩赦',
             wechatenshe_info: '①当你进行共同拼点时，你令拼点牌点数+X（X为本局游戏你因〖恩赦②〗获得其牌的角色数）。②每轮每名角色限一次，当你对一名角色造成伤害时，你可以防止此伤害并获得其手牌中所有点数最大的牌，且其不可使用其中包含类别的牌直到其下个回合开始。',
             wechat_zhiyin_kongrong: '极孔融',
