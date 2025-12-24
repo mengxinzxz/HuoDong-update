@@ -41037,7 +41037,7 @@ const packs = function () {
             if (files.includes(`${i}.jpg`)) MiNikill.character[i].img = `extension/活动武将/image/character/${i}.jpg`;
             else {
                 const skin = MiNikill.character[i].trashBin.find(str => str.startsWith('character:'))?.split(':')[1];
-                if (skin) MiNikill.character[i].img = `extension/活动武将/image/character/${skin}.jpg`;
+                if (skin && files.includes(`${skin}.jpg`)) MiNikill.character[i].img = `extension/活动武将/image/character/${skin}.jpg`;
             }
         }
         if (MiNikill.translate[i]) {
