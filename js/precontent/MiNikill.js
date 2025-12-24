@@ -748,14 +748,12 @@ const packs = function () {
                         return current != player && current.countCards('h');
                     });
                 },
-                direct: true,
-                locked: true,
+                forced: true,
                 async content(event, trigger, player) {
                     const target = game.filterPlayer(current => {
                         return player != current && current.countCards('h');
                     }).randomGet();
                     if (target) {
-                        player.logSkill(event.name, target);
                         player.line(target);
                         if (target.countCards('h')) {
                             game.log(player, '观看了', target, '的手牌');
