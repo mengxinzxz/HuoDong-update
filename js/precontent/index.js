@@ -601,9 +601,8 @@ export async function precontent(bilibilicharacter) {
             {
                 type: 'players',
                 data: [
-                    [
-                        'bilibili_longjiuzhen',
-                    ],
+                    'Mbaby_caoying', 'Mbaby_xurong',
+                    'bilibili_longjiuzhen', 'bilibili_liuguanzhang',
                 ],
             },
             {
@@ -611,7 +610,8 @@ export async function precontent(bilibilicharacter) {
                 textAlign: 'left',
                 data: [
                     'bugfix、素材补充、技能调整',
-                    '杂谈新武将：龙九帧',
+                    '欢乐三国杀新增和修改武将：曹婴、徐荣',
+                    '杂谈新武将：龙九帧、三人组',
                     'To be continued...',
                 ],
             },

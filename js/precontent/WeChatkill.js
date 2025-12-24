@@ -125,7 +125,7 @@ const packs = function () {
             wechat_yj_weiyan: ['male', 'qun', 4, ['wechatguli', 'wechataosi']],
             wechat_sunhao: ['male', 'wu', 5, ['wechatcanshi', 'chouhai']],
             wechat_ganfuren: ['female', 'shu', 3, ['dcshushen', 'wechatshenzhi'], ['name:甘|null']],
-            wechat_xurong: ['male', 'qun', 4, ['wechatxionghuo', 'xinfu_shajue']],
+            wechat_xurong: ['male', 'qun', 4, ['wechatxionghuo', 'wechatshajue']],
             wechat_huojun: ['male', 'shu', 4, ['twsidai', 'jieyu']],
             wechat_yj_xuhuang: ['male', 'qun', 4, ['wechatxhzhiyan', 'wechatjiewei']],
             wechat_yj_ganning: ['male', 'qun', 4, ['wechatjinfan', 'wechatsheque']],
@@ -4206,7 +4206,7 @@ const packs = function () {
             //严颜
             wechatjuzhan: {
                 group: 'wechatjuzhan_gain',
-                audio: 'nzry_juzhan_1',
+                audio: 'nzry_juzhan',
                 trigger: { target: 'useCardToTargeted' },
                 prompt2: '当你成为其他角色【杀】的目标后，你可以与其各摸一张牌，然后其本回合内不能再对你使用牌。',
                 filter(event, player) {
@@ -4223,7 +4223,7 @@ const packs = function () {
                 },
                 subSkill: {
                     gain: {
-                        audio: 'nzry_juzhan_1',
+                        audio: 'nzry_juzhan',
                         trigger: { player: 'useCardToPlayered' },
                         prompt2: '当你使用【杀】指定一名角色为目标后，你可以获得其一张牌，然后你本回合内不能再对其使用牌',
                         filter(event, player) {
@@ -8848,11 +8848,27 @@ const packs = function () {
                                 if (card.name == 'sha') return false;
                             },
                         },
-                        intro: {
-                            content: '不能使用【杀】',
-                        },
+                        intro: { content: '不能使用【杀】' },
+                    },
+                },
+            },
+            wechatshajue: {
+                audio: 'xinfu_shajue',
+                inherit: 'xinfu_shajue',
+                filter(event, player) {
+                    if (event.player === player) return false;
+                    const bool = event.player.hp < 0 && get.itemtype(event.getParent().cards) === 'cards' && event.getParent().cards.someInD('od');
+                    return player.countMark('xinfu_xionghuo') < 3 || bool;
+                },
+                logTarget: 'player',
+                async content(event, trigger, player) {
+                    if (player.countMark('xinfu_xionghuo') < 3) player.addMark('xinfu_xionghuo', 1);
+                    if (trigger.player.hp < 0) {
+                        const cards = trigger.getParent().cards;
+                        if (get.itemtype(cards) === 'cards' && cards.someInD('od')) await player.gain(cards.filterInD('od'), 'gain2');
                     }
-                }
+                },
+                ai: { combo: ['xinfu_xionghuo', 'minixionghuo', 'wechatxionghuo'] },
             },
             // 孩子这是极略神马超
             wechatjlmashu: {
@@ -17196,7 +17212,9 @@ const packs = function () {
             wechatshenzhi_info: '准备阶段，若你的手牌数不小于体力值，则你可以回复1点体力。',
             wechat_xurong: '微信徐荣',
             wechatxionghuo: '凶镬',
-            wechatxionghuo_info: '游戏开始时，你获得3个“暴戾”标记（标记上限为3）。出牌阶段，你可以交给一名其他角色一个“暴戾”标记。当你对有“暴戾”标记的其他角色造成伤害时，此伤害+1。有“暴戾”标记的其他角色的出牌阶段开始时，其移去所有“暴戾”标记并随机执行一项：1.受到1点火焰伤害且本回合不能使用【杀】；2.失去1点体力且本回合手牌上限-1；3.你随机获得其两张牌。',
+            wechatxionghuo_info: '游戏开始时，你获得3枚“暴戾”标记（标记上限为3）。出牌阶段，你可以交给一名其他角色1枚“暴戾”标记。当你对有“暴戾”标记的其他角色造成伤害时，此伤害+1。有“暴戾”标记的其他角色的出牌阶段开始时，其移去所有“暴戾”标记并随机执行一项：1.受到1点火焰伤害且本回合不能使用【杀】；2.失去1点体力且本回合手牌上限-1；3.你随机获得其两张牌。',
+            wechatshajue: '杀绝',
+            wechatshajue_info: '锁定技，其他角色进入濒死状态时，你获得1枚“暴戾”标记。若其体力值小于0，你获得使其进入濒死状态的牌。',
             wechat_zhiyin_caiwenji: '极蔡琰',
             wechatbeijia: '悲笳',
             wechatbeijia_info: `${get.poptip('rule_yunlvSkill')}。每回合限一次，平：你可以将一张点数大于上一张你使用的牌当任意锦囊牌使用；仄：你可以将一张点数小于上一张你使用的牌当任意基本牌使用。转韵：你于出牌阶段使用一张点数等于上一张你使用的牌。`,
