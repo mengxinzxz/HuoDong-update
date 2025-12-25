@@ -960,6 +960,15 @@ export async function content(config, pack) {
 	game.HDsetAudioname2(['rejianxiong', 'new_rejianxiong'], {
 		Mbaby_caocao: 'jianxiong',
 	});
+	game.HDsetAudioname2('luoyi', {
+		Mbaby_xuzhu: 'reluoyi',
+	});
+	game.HDsetAudioname2('reganglie', {
+		Mbaby_xiahoudun: 'ganglie',
+	});
+	game.HDsetAudioname2('kurou', {
+		Mbaby_re_huanggai: 'rekurou',
+	});
 
 	//precCI
 	//武将信息
