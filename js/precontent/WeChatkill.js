@@ -67,7 +67,7 @@ const packs = function () {
             wechat_gaoshun: ['male', 'qun', 4, ['xianzhen', 'minijinjiu']],
             wechat_caozhi: ['male', 'wei', 3, ['wechatluoying', 'wechatjiushi']],
             wechat_huangyueying: ['female', 'shu', 3, ['wechatjizhi', 'wechatqicai']],
-            wechat_re_weiyan: ['male', 'shu', 4, ['wechatkuanggu', 'qimou'], ['tempname:re_weiyan']],
+            wechat_re_weiyan: ['male', 'shu', 4, ['wechatkuanggu', 'qimou']],
             wechat_lukang: ['male', 'wu', 4, ['drlt_qianjie', 'wechatjueyan', 'drlt_huairou']],
             wechat_jianyong: ['male', 'shu', 3, ['wechatqiaoshui', 'wechatjyzongshi']],
             wechat_caifuren: ['female', 'qun', 3, ['wechatxinqieting', 'rexianzhou'], ['name:蔡|null']],
@@ -76,12 +76,12 @@ const packs = function () {
             wechat_buzhi: ['male', 'wu', 3, ['hongde', 'wechatdingpan']],
             wechat_caozhang: ['male', 'wei', 4, ['wechatrejiangchi']],
             wechat_caopi: ['male', 'wei', 3, ['xingshang', 'wechatfangzhu']],
-            wechat_sp_jiangwei: ['male', 'wei', 4, ['wechatkunfen', 'wechatfengliang'], ['tempname:sp_jiangwei']],
+            wechat_sp_jiangwei: ['male', 'wei', 4, ['wechatkunfen', 'wechatfengliang']],
             wechat_caoxiu: ['male', 'wei', 4, ['qianju', 'wechatqingxi']],
             wechat_yuanshao: ['male', 'qun', 4, ['wechatluanji'], ['die:re_yuanshao']],
             wechat_sundeng: ['male', 'wu', 4, ['wechatkuangbi']],
             wechat_re_xushu: ['male', 'shu', 4, ['wechatzhuhai', 'qianxin']],
-            wechat_xiahouba: ['male', 'shu', 4, ['wechatrebaobian'], ['tempname:xiahouba', 'name:夏侯|霸']],
+            wechat_xiahouba: ['male', 'shu', 4, ['wechatrebaobian'], ['name:夏侯|霸']],
             wechat_liuyao: ['male', 'qun', 4, ['wechatkannan']],
             wechat_quancong: ['male', 'wu', 4, ['wechatyaoming']],
             wechat_liaohua: ['male', 'shu', 4, ['wechatdangxian', 'wechatfuli']],
@@ -93,7 +93,7 @@ const packs = function () {
             wechat_sp_pangde: ['male', 'wei', 4, ['mashu', 'wechatrejuesi']],
             wechat_re_jushou: ['male', 'qun', '2/3/2', ['wechatjianying', 'shibei'], [...['tempname', 'die'].map(str => str + ':xin_jushou')]],
             wechat_zumao: ['male', 'wu', 4, ['miniyinbing', 'wechatjuedi']],
-            wechat_guansuo: ['male', 'shu', 4, ['wechatzhengnan', 'xiefang'], ['tempname:guansuo']],
+            wechat_guansuo: ['male', 'shu', 4, ['wechatzhengnan', 'xiefang']],
             wechat_zhangzhang: ['male', 'wu', 3, ['wechatzhijian', 'guzheng']],
             wechat_chendeng: ['male', 'qun', 4, ['wechatzhouxuan', 'wechatfengji']],
             wechat_taoqian: ['male', 'qun', 3, ['zhaohuo', 'wechatyixiang', 'yirang']],
@@ -113,7 +113,7 @@ const packs = function () {
             wechat_pangdegong: ['male', 'qun', 3, ['wechatpingcai', 'xinfu_pdgyingshi']],
             wechat_guanyinping: ['female', 'shu', 3, ['wechatrexuehen', 'wechatrehuxiao', 'wechatwuji']],
             wechat_jsp_huangyueying: ['female', 'qun', 3, ['jiqiao', 'wechatlinglong', 'qicai']],
-            wechat_re_gongsunzan: ['male', 'qun', 4, ['yicong', 'wechatqiaomeng'], ['tempname:re_gongsunzan', 'name:公孙|瓒']],
+            wechat_re_gongsunzan: ['male', 'qun', 4, ['yicong', 'wechatqiaomeng'], ['name:公孙|瓒']],
             wechat_yj_zhoubuyi: ['male', 'wei', 3, ['wechathuiyao', 'wechatquesong']],
             wechat_litong: ['male', 'wei', 4, ['wechattuifeng']],
             wechat_baosanniang: ['female', 'shu', 3, ['wechatwuniang', 'wechatxushen', 'decadezhennan']],
@@ -139,16 +139,16 @@ const packs = function () {
             wechat_re_zuoci: ['male', 'qun', 3, ['rehuashen', 'wechatrexinsheng']],
             wechat_guozhao: ['female', 'wei', 3, ['yichong', 'wechatwufei'], ['die:xin_guozhao']],
             wechat_sp_zhenji: ['female', 'qun', 3, ['mbbojian', 'wechatjiwei']],
-            wechat_re_zhaoyun: ['male', 'shu', 4, ['wechatlongdan', 'wechatyajiao'], ['tempname:re_zhaoyun', 'die:re_zhaoyun']],
-            wechat_re_liubiao: ['male', 'qun', 3, ['wechatrezishou', 'wechatrezongshi'], ['tempname:re_liubiao']],
+            wechat_re_zhaoyun: ['male', 'shu', 4, ['wechatlongdan', 'wechatyajiao']],
+            wechat_re_liubiao: ['male', 'qun', 3, ['wechatrezishou', 'wechatrezongshi']],
             //神武将
             wechat_shen_zhugeliang: ['male', 'shen', 3, ['wechatqixing', 'wechatjifeng', 'wechattianfa'], ['shu', 'name:诸葛|亮']],
             wechat_shen_lvmeng: ['male', 'shen', 3, ['shelie', 'wechatgongxin'], ['wu']],
             wechat_shen_guanyu: ['male', 'shen', 5, ['wechatwushen'], ['shu']],
-            wechat_shen_lvbu: ['male', 'shen', 5, ['wushuang', 'baonu', 'wumou', 'ol_shenfen'], ['qun', 'die:shen_lvbu', 'tempname:shen_lvbu']],
+            wechat_shen_lvbu: ['male', 'shen', 5, ['wushuang', 'baonu', 'wumou', 'ol_shenfen'], ['qun']],
             wechat_shen_simayi: ['male', 'shen', 4, ['xinrenjie', 'wechatbaiyin', 'wechatlianpo'], ['wei', 'die:new_simayi', 'tempname:new_simayi', 'name:司马|懿']],
-            wechat_shen_caocao: ['male', 'shen', 3, ['wechatguixin', 'feiying'], ['wei', 'die:shen_caocao', 'tempname:shen_caocao']],
-            wechat_shen_zhangliao: ['male', 'shen', 4, ['drlt_duorui', 'wechatzhiti'], ['wei', 'die:shen_zhangliao', 'tempname:shen_zhangliao']],
+            wechat_shen_caocao: ['male', 'shen', 3, ['wechatguixin', 'feiying'], ['wei']],
+            wechat_shen_zhangliao: ['male', 'shen', 4, ['drlt_duorui', 'wechatzhiti'], ['wei']],
             //只因武将
             wechat_zhiyin_lvbu: ['male', 'qun', 4, ['wushuang', 'wechatxiaohu']],
             wechat_zhiyin_daqiao: ['female', 'wu', 3, ['wechatjielie', 'wechatxiangzhi'], ['name:桥|null']],
@@ -16119,6 +16119,7 @@ const packs = function () {
             },
             // 神张辽
             wechatzhiti: {
+                audio: 'drlt_zhiti',
                 inherit: 'drlt_zhiti',
                 filter(event, player) {
                     if (!player.hasDisabledSlot()) {
@@ -17597,7 +17598,10 @@ const packs = function () {
             WeChatkill.translate[`#ext:活动武将/audio/die/${i}:die`] ??= '点击播放阵亡配音';
         }
         else {
-            if (i.startsWith('wechat_') && !WeChatkill.character[i].dieAudios.length) WeChatkill.character[i].dieAudios.push(i.slice(7));
+            if (i.startsWith('wechat_')) {
+                if (!WeChatkill.character[i].dieAudios.length) WeChatkill.character[i].dieAudios.push(i.slice(7));
+                if (!WeChatkill.character[i].tempname.length) WeChatkill.character[i].tempname.push(i.slice(7));
+            }
         }
         if (_status['extension_活动武将_files']?.image.character.files.includes(`${i}.jpg`)) WeChatkill.character[i].img = `extension/活动武将/image/character/${i}.jpg`;
         if (WeChatkill.characterSort.WeChatkill.wechat_trashBin.includes(i)) WeChatkill.character[i].isUnseen = true;
