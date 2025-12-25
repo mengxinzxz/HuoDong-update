@@ -936,9 +936,11 @@ export async function content(config, pack) {
 	});
 	game.HDsetAudioname2('rerende', {
 		qin_lvbuwei: 'haoshi2',
+		Mbaby_liubei: 'rende',
 	});
 	game.HDsetAudioname2('rezhiheng', {
 		qin_lvbuwei: 'haoshi2',
+		Mbaby_sunquan: 'zhiheng',
 	});
 	game.HDsetAudioname2('relianying', {
 		wechat_lukang: 'rejizhi_lukang',
@@ -954,6 +956,9 @@ export async function content(config, pack) {
 	});
 	game.HDsetAudioname2('huguan', {
 		bilibili_wangwang: Array.from({ length: 2 }).map((_, i) => ['', '_wangyue'].map(j => j + (i + 1))).flat().map(i => `huguan${i}.mp3`),
+	});
+	game.HDsetAudioname2(['rejianxiong', 'new_rejianxiong'], {
+		Mbaby_caocao: 'jianxiong',
 	});
 
 	//precCI

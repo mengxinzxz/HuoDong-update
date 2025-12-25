@@ -12,7 +12,7 @@ const packs = function () {
                 MiNi_qun: ['Mbaby_xurong', 'Mbaby_taoqian', 'Mbaby_hejin', 'Mbabysp_sunjian', 'Mbaby_jiling', 'Mbaby_sb_huaxiong', 'Mbabysp_liubei', 'Mbaby_zhangrang', 'Mbabysp_xuhuang', 'Mbaby_duanwei', 'Mbaby_chendeng', 'Mbaby_caiyong', 'Mbaby_mengjie', 'Mbaby_gaolan', 'Mbaby_yl_luzhi', 'Mbaby_tadun', 'Mbaby_re_hansui', 'Mbaby_dongxie', 'Mbaby_fuwan', 'Mbaby_wutugu', 'Mbaby_huangfusong', 'Mbaby_fanchou', 'Mbaby_guosi', 'Mbaby_yanbaihu', 'Mbaby_dc_huangzu', 'Mbaby_licaiwei', 'Mbaby_ol_dingyuan', 'Mbaby_liubian', 'Mbaby_re_pangdegong', 'Mbaby_zhangning', 'Mbaby_zhanglu', 'Mbaby_wangyun', 'Mbaby_zoushi', 'Mbaby_dc_huangchengyan', 'Mbaby_simahui', 'Mbaby_tw_mateng', 'Mbaby_laiyinger', 'Mbaby_sp_kongrong', 'Mbaby_zhujun', 'Mbaby_gongsunyuan', 'Mbaby_sp_zhangliao', 'Mbaby_sp_ol_zhanghe', 'Mbaby_guotufengji', 'Mbaby_yanfuren', 'Mbaby_tangji', 'Mbaby_caojie', 'Mbaby_liangxing', 'Mbabysp_zhenji', 'Mbaby_caoxing', 'Mbaby_sp_menghuo', 'Mbaby_wangrong', 'Mbaby_hetaihou', 'Mbaby_sp_taishici', 'Mbaby_zhangji', 'Mbaby_dongbai', 'Mbaby_beimihu', 'Mbaby_chunyuqiong', 'Mbaby_zhangqiying', 'Mbaby_fuhuanghou', 'Mbaby_liuxie', 'Mbaby_quyi', 'Mbaby_jsp_huangyueying', 'Mbaby_sp_machao', 'Mbaby_lijue', 'Mbaby_panfeng', 'Mbaby_liuzhang', 'Mbaby_jiaxu', 'Mbaby_zhangbao', 'Mbaby_zhangliang', 'Mbaby_gaoshun', 'Mbaby_caifuren', 'Mbaby_xuyou', 'Mbaby_gongsunzan', 'Mbaby_pangde', 'Mbaby_jushou', 'Mbaby_liru', 'Mbaby_dongzhuo', 'Mbaby_zhangjiao', 'Mbaby_huatuo', 'Mbaby_lvbu', 'Mbaby_diaochan', 'Mbaby_sp_diaochan', 'Mbaby_huaxiong', 'Mbaby_yuji', 'Mbaby_yanwen', 'Mbaby_caiwenji', 'Mbaby_liubiao', 'Mbaby_yuanshao', 'Mbaby_yuanshu', 'Mbaby_chengong', 'Mbaby_zuoci'],
                 MiNi_shen: ['Mbaby_shen_lusu', 'Mbaby_shen_luxun', 'Mbaby_shen_dengai', 'Mbaby_shen_zuoci', 'Mbaby_shen_taishici', 'Mbaby_shen_diaochan', 'Mbaby_shen_daxiaoqiao', 'Mbaby_shen_zhenji', 'Mbaby_shen_guojia', 'Mbaby_shen_huatuo', 'Mbaby_shen_dianwei', 'Mbaby_shen_lvbu', 'Mbaby_shen_zhugeliang', 'Mbaby_shen_lvmeng', 'Mbaby_shen_zhouyu', 'Mbaby_shen_guanyu', 'Mbaby_shen_liubei', 'Mbaby_shen_caocao', 'Mbaby_shen_zhangliao', 'Mbaby_shen_sunquan', 'Mbaby_shen_simayi', 'Mbaby_shen_zhaoyun', 'Mbaby_shen_ganning', 'Mbaby_shen_pangtong'],
                 MiNi_change: ['Mbaby_sb_guojia', 'Mbaby_ol_sb_jiangwei', 'Mbaby_sb_sunquan', 'Mbaby_guanning', 'Mbaby_re_nanhualaoxian', 'Mbaby_re_sunyi', 'Mbaby_zhaoxiang', 'Mbaby_xushao', 'Mbaby_baosanniang', 'Mbaby_quanhuijie'],
-                MiNi_refresh: ['Mbaby_ol_xunyu', 'Mbaby_re_guanyu', 'Mbaby_re_zhangfei', 'Mbaby_re_zhaoyun', 'Mbaby_re_machao', 'Mbaby_re_huangzhong'],
+                MiNi_refresh: ['Mbaby_re_sunquan', 'Mbaby_re_caocao', 'Mbaby_re_liubei', 'Mbaby_ol_xunyu', 'Mbaby_re_guanyu', 'Mbaby_re_zhangfei', 'Mbaby_re_zhaoyun', 'Mbaby_re_machao', 'Mbaby_re_huangzhong'],
                 MiNi_sbCharacter: ['Mbaby_dc_sb_chengyu', 'Mbaby_sb_zhenji', 'Mbaby_sb_ganning', 'Mbaby_sb_huangyueying', 'Mbaby_ol_sb_guanyu', 'Mbaby_sb_sunshangxiang', 'Mbaby_sb_xuhuang', 'Mbaby_sb_zhaoyun', 'Mbaby_sb_liubei', 'Mbaby_sb_caocao', 'Mbaby_sb_huanggai', 'Mbaby_sb_yuanshao', 'Mbaby_sb_yujin', 'Mbaby_sb_machao', 'Mbaby_sb_lvmeng', 'Mbaby_sb_huangzhong'],
                 MiNi_starCharacter: ['xunyu', 'yuanshu'].map(i => `Mbaby_star_${i}`),
                 MiNi_miaoKill: ['mayunlu', 'guanyinping', 'caoying', 'caiwenji', 'diaochan', 'caifuren', 'zhangxingcai', 'zhurong', 'huangyueying', 'daqiao', 'wangyi', 'zhangchunhua', 'zhenji', 'sunshangxiang', 'xiaoqiao', 'lvlingqi'].map(i => `Mmiao_${i}`),
@@ -40,7 +40,7 @@ const packs = function () {
             Mbaby_sp_caiwenji: ['female', 'wei', 3, ['minichenqing', 'mozhi'], ['name:蔡|琰']],
             Mbaby_caozhi: ['male', 'wei', 3, ['miniluoying', 'minijiushi']],
             Mbaby_caorui: ['male', 'wei', 3, ['minihuituo', 'miniremingjian', 'minirexingshuai'], ['zhu']],
-            Mbaby_xizhicai: ['male', 'wei', 3, ['tiandu', 'xianfu', 'minichouce'], ['tempname:xizhicai']],
+            Mbaby_xizhicai: ['male', 'wei', 3, ['tiandu', 'xianfu', 'minichouce']],
             Mbaby_xiahouyuan: ['male', 'wei', 4, ['minishensu', 'minishebian'], ['name:夏侯|渊']],
             Mbaby_caoying: ['female', 'wei', 4, ['minilingren', 'minifujian']],
             Mbaby_xinxianying: ['female', 'wei', 3, ['minizhongjian', 'minicaishi']],
@@ -52,20 +52,21 @@ const packs = function () {
             Mbaby_zhangliao: ['male', 'wei', 4, ['new_retuxi', 'minizhengbing']],
             Mbaby_xunyou: ['male', 'wei', 3, ['miniqice', 'minizhiyu'], ['clan:颍川荀氏']],
             Mbaby_caoxiu: ['male', 'wei', 4, ['qianju', 'miniqingxi']],
-            Mbaby_sp_jiangwei: ['male', 'wei', 4, ['minikunfen', 'minifengliang'], ['tempname:sp_jiangwei']],
+            Mbaby_sp_jiangwei: ['male', 'wei', 4, ['minikunfen', 'minifengliang']],
             Mbaby_zhonghui: ['male', 'wei', 3, ['miniquanji', 'paiyi'], ['clan:颍川钟氏']],
             Mbaby_zhangchangpu: ['female', 'wei', 3, ['miniyanjiao', 'xingshen']],
             Mbaby_yangxiu: ['male', 'wei', 3, ['danlao', 'minijilei']],
             Mbaby_simayi: ['male', 'wei', 3, ['minifankui', 'miniguicai'], ['name:司马|懿']],
             Mbaby_dufuren: ['female', 'wei', 3, ['miniyise', 'minishunshi'], ['name:杜|null']],
             Mbaby_caozhang: ['male', 'wei', 4, ['minijiangchi']],
-            Mbaby_caocao: ['male', 'wei', 4, ['minijianxiong', 'minihujia'], ['zhu']],
+            Mbaby_caocao: ['male', 'wei', 4, ['new_rejianxiong', 'hujia'], ['zhu']],//？OL服外的界曹操拉这儿了？？？
+            Mbaby_re_caocao: ['male', 'wei', 4, ['minijianxiong', 'minihujia'], ['zhu', 'character:Mbaby_caocao']],
             Mbaby_sp_pangde: ['male', 'wei', 4, ['minijuesi', 'miniyuma']],
             Mbaby_wenyang: ['male', 'wei', 5, ['xinlvli', 'minichoujue']],
             Mbaby_xiahoulingnv: ['female', 'wei', 4, ['fuping', 'miniweilie'], ['name:夏侯|令女']],
             Mbaby_chenqun: ['male', 'wei', 3, ['pindi', 'minifaen']],
             Mbaby_wangji: ['male', 'wei', 3, ['miniqizhi', 'minijinqu']],
-            Mbaby_jsp_guanyu: ['male', 'wei', 4, ['minispwusheng', 'minidanji'], ['tempname:jsp_guanyu']],
+            Mbaby_jsp_guanyu: ['male', 'wei', 4, ['minispwusheng', 'minidanji']],
             Mbaby_kuailiangkuaiyue: ['male', 'wei', 3, ['nzry_jianxiang', 'minishenshi']],
             Mbaby_sp_jiaxu: ['male', 'wei', 3, ['zhenlue', 'minijianshu', 'miniyongdi']],
             Mbaby_yinfuren: ['female', 'wei', 3, ['dcyingyu', 'miniyongbi'], ['name:尹|null']],
@@ -73,7 +74,7 @@ const packs = function () {
             Mbaby_guojia: ['male', 'wei', 3, ['tiandu', 'new_reyiji', 'minishenglun'], ['tempname:re_guojia', 'die:re_guojia']],
             Mbaby_caohong: ['male', 'wei', 4, ['miniyuanhu', 'minijuezhu']],
             Mbaby_sb_caocao: ['male', 'wei', 4, ['minisbjianxiong', 'minisbqingzheng', 'sbhujia'], ['zhu']],
-            Mbaby_zhugedan: ['male', 'wei', 4, ['minigongao', 'minijuyi'], ['tempname:zhugedan', 'name:诸葛|诞']],
+            Mbaby_zhugedan: ['male', 'wei', 4, ['minigongao', 'minijuyi'], ['name:诸葛|诞']],
             Mbaby_bianfuren: ['female', 'wei', 3, ['miniwanwei', 'miniyuejian'], ['die:bianfuren', 'name:卞|null']],
             Mbaby_sb_yujin: ['male', 'wei', 4, ['minixiayuan', 'minijieyue']],
             Mbaby_yuejin: ['male', 'wei', 4, ['minixiaoguo']],
@@ -105,22 +106,23 @@ const packs = function () {
             Mbaby_zhugeruoxue: ['female', 'wei', 3, ['miniqiongying', 'dcnuanhui'], ['name:诸葛|若雪']],
             Mbaby_star_xunyu: ['male', 'wei', 3, ['minianshu', 'starkuangzuo'], ['clan:颍川荀氏']],
             Mbaby_jiachong: ['male', 'wei', 3, ['minibeini', 'minishizong'], ['die:dc_jiachong', 'border:jin']],
-            Mbaby_ol_xunyu: ['male', 'wei', 3, ['minirequhu', 'minirejieming'], ['clan:颍川荀氏', 'character:Mbaby_xunyu', 'tempname:ol_xunyu']],
+            Mbaby_ol_xunyu: ['male', 'wei', 3, ['minirequhu', 'minirejieming'], ['clan:颍川荀氏', 'character:Mbaby_xunyu']],
             Mbaby_dc_sb_chengyu: ['male', 'wei', 3, ['dcshizha', 'minigaojian']],
             //蜀
             Mbaby_guanyu: ['male', 'shu', 4, ['miniwusheng']],
-            Mbaby_re_guanyu: ['male', 'shu', 4, ['minirewusheng', 'minituodao', 'jsrgguanjue'], ['character:Mbaby_guanyu', 'tempname:re_guanyu']],
+            Mbaby_re_guanyu: ['male', 'shu', 4, ['minirewusheng', 'minituodao', 'jsrgguanjue'], ['character:Mbaby_guanyu']],
             Mbaby_zhugeliang: ['male', 'shu', 3, ['minireguanxing', 'minikongcheng'], ['name:诸葛|亮']],
-            Mbaby_liubei: ['male', 'shu', 4, ['minirerende', 'minijijiang'], ['zhu', 'tempname:re_liubei', 'die:re_liubei']],
+            Mbaby_liubei: ['male', 'shu', 4, ['rerende', 'minijijiang'], ['zhu']],
+            Mbaby_re_liubei: ['male', 'shu', 4, ['minirerende', 'minirejijiang'], ['zhu', 'character:Mbaby_liubei']],
             Mbaby_machao: ['male', 'shu', 4, ['mashu', 'minitieji']],
             Mbaby_re_machao: ['male', 'shu', 4, ['miniyuma', 'miniretieji'], ['character:Mbaby_machao']],
             Mbaby_zhurong: ['female', 'shu', 4, ['minijuxiang', 'minirelieren', 'changbiao'], ['name:null|null']],
             Mbaby_zhangfei: ['male', 'shu', 4, ['new_repaoxiao', 'minitishen']],
-            Mbaby_re_zhangfei: ['male', 'shu', 4, ['new_repaoxiao', 'miniretishen'], ['character:Mbaby_zhangfei', 'tempname:re_zhangfei']],
+            Mbaby_re_zhangfei: ['male', 'shu', 4, ['new_repaoxiao', 'miniretishen'], ['character:Mbaby_zhangfei']],
             Mbaby_zhaoyun: ['male', 'shu', 4, ['longdan', 'miniyajiao']],
-            Mbaby_re_zhaoyun: ['male', 'shu', 4, ['ollongdan', 'minireyajiao'], ['character:Mbaby_zhaoyun', 'tempname:re_zhaoyun']],
+            Mbaby_re_zhaoyun: ['male', 'shu', 4, ['ollongdan', 'minireyajiao'], ['character:Mbaby_zhaoyun']],
             Mbaby_huangzhong: ['male', 'shu', 4, ['miniliegong']],
-            Mbaby_re_huangzhong: ['male', 'shu', 4, ['minireliegong'], ['character:Mbaby_huangzhong', 'tempname:re_huangzhong']],
+            Mbaby_re_huangzhong: ['male', 'shu', 4, ['minireliegong'], ['character:Mbaby_huangzhong']],
             Mbaby_weiyan: ['male', 'shu', 4, ['minikuanggu', 'miniqimou']],
             Mbaby_liaohua: ['male', 'shu', 4, ['minidangxian', 'minifuli']],
             Mbaby_pangtong: ['male', 'shu', 3, ['minirelianhuan', 'mininiepan'], ['tempname:ol_pangtong', 'die:ol_pangtong']],
@@ -133,7 +135,7 @@ const packs = function () {
             Mbaby_liufeng: ['male', 'shu', 4, ['minixiansi']],
             Mbaby_guanyinping: ['female', 'shu', 3, ['minixueji', 'minirehuxiao', 'minirewuji']],
             Mbaby_dongyun: ['male', 'shu', 3, ['minibingzheng', 'sheyan']],
-            Mbaby_sp_sunshangxiang: ['female', 'shu', 3, ['miniliangzhu', 'minifanxiang'], ['tempname:sp_sunshangxiang']],
+            Mbaby_sp_sunshangxiang: ['female', 'shu', 3, ['miniliangzhu', 'minifanxiang']],
             Mbaby_xushu: ['male', 'shu', 3, ['xinwuyan', 'minijujian']],
             Mbaby_masu: ['male', 'shu', 3, ['minisanyao', 'rezhiman']],
             Mbaby_qinmi: ['male', 'shu', 3, ['jianzheng', 'minizhuandui', 'tianbian']],
@@ -142,7 +144,7 @@ const packs = function () {
             Mbaby_wuxian: ['female', 'shu', 3, ['minifumian', 'minidaiyan'], ['clan:陈留吴氏']],
             Mbaby_shamoke: ['male', 'shu', 4, ['minijili']],
             Mbaby_xiahoushi: ['female', 'shu', 3, ['miniqiaoshi', 'miniyanyu'], ['name:夏侯|null']],
-            Mbaby_guansuo: ['male', 'shu', 4, ['minizhengnan', 'minixiefang'], ['tempname:guansuo']],
+            Mbaby_guansuo: ['male', 'shu', 4, ['minizhengnan', 'minixiefang']],
             Mbaby_mayunlu: ['female', 'shu', 4, ['minifengpo', 'mashu']],
             Mbaby_wangping: ['male', 'shu', 4, ['minifeijun', 'minibinglve']],
             Mbaby_jianyong: ['male', 'shu', 3, ['miniqiaoshui', 'jyzongshi']],
@@ -151,7 +153,7 @@ const packs = function () {
             Mbaby_baosanniang: ['female', 'shu', 3, ['decadewuniang', 'minixushen']],
             Mbaby_huaman: ['female', 'shu', 4, ['manyi', 'mansi', 'minisouying', 'minizhanyuan']],
             Mbaby_zhaoxiang: ['female', 'shu', 4, ['refanghun', 'minifuhan']],
-            Mbaby_xiahouba: ['male', 'shu', 4, ['minibaobian'], ['tempname:xiahouba', 'name:夏侯|霸']],
+            Mbaby_xiahouba: ['male', 'shu', 4, ['minibaobian'], ['name:夏侯|霸']],
             Mbaby_yanyan: ['male', 'shu', 4, ['minijuzhan']],
             Mbaby_chendao: ['male', 'shu', 4, ['miniwanglie']],
             Mbaby_liyan: ['male', 'shu', 4, ['miniduliang', 'fulin']],
@@ -165,12 +167,12 @@ const packs = function () {
             Mbaby_liuyong: ['male', 'shu', 3, ['zhuning', 'minifengxiang']],
             Mbaby_mizhu: ['male', 'shu', 3, ['miniziyuan', 'minijugu']],
             Mbaby_mifuren: ['female', 'shu', 3, ['miniguixiu', 'minicunsi'], ['name:糜|null']],
-            Mbaby_wangyue: ['female', 'shu', 3, ['minihuguan', 'minimingluan'], ['tempname:wangyue']],
+            Mbaby_wangyue: ['female', 'shu', 3, ['minihuguan', 'minimingluan']],
             Mbaby_xf_yiji: ['male', 'shu', 3, ['minijijie', 'minijiyuan']],
             Mbabysp_zhangfei: ['male', 'shu', 4, ['minisppaoxiao', 'minixvhe']],
             Mbaby_wangtao: ['female', 'shu', 3, ['minihuguan', 'miniyaopei']],
             Mbaby_wolongfengchu: ['male', 'shu', 4, ['miniyoulong', 'miniluanfeng'], ['name:诸葛|亮-庞|统']],
-            Mbaby_guanzhang: ['male', 'shu', 4, ['minifuhun', 'retongxin'], ['tempname:guanzhang', 'name:关|兴-张|苞']],
+            Mbaby_guanzhang: ['male', 'shu', 4, ['minifuhun', 'retongxin'], ['name:关|兴-张|苞']],
             Mbaby_sb_liubei: ['male', 'shu', 4, ['minisbrende', 'minisbzhangwu', 'minisbjijiang'], ['zhu']],
             Mbaby_sb_machao: ['male', 'shu', 4, ['miniyuma', 'minisbtieji']],
             Mbaby_sb_huangzhong: ['male', 'shu', 4, ['minisbliegong']],
@@ -204,10 +206,11 @@ const packs = function () {
             Mbaby_lusu: ['male', 'wu', 3, ['miniolhaoshi', 'minidimeng'], ['die:ol_lusu']],
             Mbaby_luxun: ['male', 'wu', 3, ['minireqianxun', 'minilianying']],
             Mbaby_lvmeng: ['male', 'wu', 4, ['minikeji', 'miniqinxue', 'rebotu'], ['tempname:re_lvmeng', 'die:re_lvmeng']],
-            Mbaby_sunce: ['male', 'wu', 4, ['minijiang', 'minihunzi', 'minizhiba'], ['zhu', 'tempname:sunce']],
+            Mbaby_sunce: ['male', 'wu', 4, ['minijiang', 'minihunzi', 'minizhiba'], ['zhu']],
             Mbaby_sunluban: ['female', 'wu', 3, ['minizenhui', 'minijiaojin']],
             Mbaby_sunluyu: ['female', 'wu', 3, ['minimeibu', 'remumu']],
-            Mbaby_sunquan: ['male', 'wu', 4, ['minirezhiheng', 'minijiuyuan'], ['zhu']],
+            Mbaby_sunquan: ['male', 'wu', 4, ['rezhiheng', 'minijiuyuan'], ['zhu']],
+            Mbaby_re_sunquan: ['male', 'wu', 4, ['minirezhiheng', 'minirejiuyuan'], ['zhu', 'character:Mbaby_sunquan']],
             Mbaby_sunshangxiang: ['female', 'wu', 3, ['minijieyin', 'xiaoji']],
             Mbaby_taishici: ['male', 'wu', 4, ['miniretianyi', 'minihanzhan'], [...['die', 'tempname'].map(i => i + ':re_taishici'), 'name:太史|慈']],
             Mbaby_wuguotai: ['female', 'wu', 3, ['minireganlu', 'minirebuyi']],
@@ -219,21 +222,21 @@ const packs = function () {
             Mbaby_zumao: ['male', 'wu', 4, ['miniyinbing', 'minijuedi']],
             Mbabysp_xiaoqiao: ['female', 'wu', 3, ['minixingwu', 'miniluoyan', 'minihuimou'], ['name:桥|null']],
             Mbaby_zhuzhi: ['male', 'wu', 4, ['minianguo']],
-            Mbaby_ol_sunjian: ['male', 'wu', 4, ['miniyinghun', 'miniwulie'], ['tempname:ol_sunjian']],
+            Mbaby_ol_sunjian: ['male', 'wu', 4, ['miniyinghun', 'miniwulie']],
             Mbaby_sunliang: ['male', 'wu', 3, ['minikuizhu', 'minichezheng', 'minilijun'], ['zhu']],
             Mbaby_zhangzhang: ['male', 'wu', 3, ['rezhijian', 'miniguzheng']],
             Mbaby_zhoufei: ['female', 'wu', 3, ['miniliangyin', 'kongsheng'], ['name:周|null']],
             Mbaby_zhugeke: ['male', 'wu', 3, ['miniaocai', 'miniduwu'], ['name:诸葛|恪']],
             Mbaby_xushi: ['female', 'wu', 3, ['miniwengua', 'minifuzhu'], ['name:徐|null']],
             Mbaby_buzhi: ['male', 'wu', 3, ['minihongde', 'minidingpan']],
-            Mbaby_lukang: ['male', 'wu', 4, ['drlt_qianjie', 'minijueyan', 'minihuairou'], ['tempname:lukang']],
+            Mbaby_lukang: ['male', 'wu', 4, ['drlt_qianjie', 'minijueyan', 'minihuairou']],
             Mbabysp_daqiao: ['female', 'wu', 3, ['miniyanxiao', 'miniwanrong', 'minianxian'], ['die:re_daqiao', 'name:桥|null']],
             Mbaby_sunhao: ['male', 'wu', 5, ['minicanshi', 'minichouhai', 'guiming'], ['zhu']],
             Mbaby_re_jsp_pangtong: ['male', 'wu', 3, ['miniguolun', 'minisongsang', 'xinfu_zhanji']],
             Mbaby_luyusheng: ['female', 'wu', 3, ['minizhente', 'minizhiwei']],
             Mbaby_zhuhuan: ['male', 'wu', 4, ['minifenli', 'minipingkou']],
             Mbaby_yanjun: ['male', 'wu', 3, ['miniguanchao', 'minixunxian']],
-            Mbaby_re_sunyi: ['male', 'wu', 5, ['syjiqiao', 'minisyxiongyi'], ['tempname:re_sunyi']],
+            Mbaby_re_sunyi: ['male', 'wu', 5, ['syjiqiao', 'minisyxiongyi']],
             Mbaby_zhangxuan: ['female', 'wu', 4, ['tongli', 'minishezang']],
             Mbaby_zhoufang: ['male', 'wu', 3, ['xinfu_duanfa', 'miniyoudi']],
             Mbaby_luji: ['male', 'wu', 3, ['nzry_huaiju', 'nzry_yili', 'minizhenglun']],
@@ -252,7 +255,7 @@ const packs = function () {
             Mbaby_quanhuijie: ['female', 'wu', 3, ['dchuishu', 'dcyishu', 'miniligong']],
             Mbaby_jiangqing: ['male', 'wu', 4, ['minijianyi', 'minishangyi']],
             Mbaby_lvdai: ['male', 'wu', 4, ['miniqinguo']],
-            Mbaby_heqi: ['male', 'wu', 4, ['miniqizhou', 'minishanxi'], ['tempname:heqi']],
+            Mbaby_heqi: ['male', 'wu', 4, ['miniqizhou', 'minishanxi']],
             Mbaby_sunhanhua: ['female', 'wu', 3, ['minihuiling', 'minichongxu'], ['die:dc_sunhanhua']],
             Mbaby_zhangwen: ['male', 'wu', 3, ['minisongshu', 'minisibian'], ['die:zhangwen']],
             Mbaby_weiwenzhugezhi: ['male', 'wu', 4, ['minifuhai'], ['die:weiwenzhugezhi', 'name:卫|温-诸葛|直']],
@@ -265,8 +268,8 @@ const packs = function () {
             Mbaby_sb_sunquan: ['male', 'wu', 4, ['jdsbzhiheng', 'minitongye', 'jdsbjiuyuan'], ['zhu']],
             Mbaby_xielingyu: ['female', 'wu', 3, ['miniyuandi', 'dcxinyou']],
             Mbaby_lvfan: ['male', 'wu', 3, ['minidiaodu', 'minidiancai']],
-            Mbaby_gexuan: ['male', 'wu', 3, ['minilianhua', 'zhafu'], ['tempname:gexuan']],
-            Mbaby_sunhuan: ['male', 'wu', 4, ['mininiji'], ['tempname:sunhuan', 'die:sunhuan']],
+            Mbaby_gexuan: ['male', 'wu', 3, ['minilianhua', 'zhafu']],
+            Mbaby_sunhuan: ['male', 'wu', 4, ['mininiji'], ['die:sunhuan']],
             //群
             Mbaby_gaoshun: ['male', 'qun', 4, ['minirexianzhen', 'minirejinjiu']],
             Mbaby_caifuren: ['female', 'qun', 3, ['minireqieting', 'minirexianzhou'], ['name:蔡|null']],
@@ -441,7 +444,6 @@ const packs = function () {
             Mbaby_nvwa: '女娲，中国上古神话中的创世女神。又称娲皇、女阴，史记女娲氏，是华夏民族人文先始，是福佑社稷之正神。相传女娲造人，一日中七十化变，以黄泥仿照自己抟土造人，创造人类社会并建立婚姻制度；因世间天塌地陷，于是熔彩石以补苍天，斩鳌足以立四极，留下了女娲补天的神话传说。女娲不但是补天救世的英雄和抟土造人的女神，还是一个创造万物的自然之神，神通广大化生万物，每天至少能创造出七十样东西。她开世造物，因此被称为大地之母，是被民间广泛而又长久崇拜的创世神和始母神。',
             Mbaby_tunxingmenglix: '据《王子年拾遗记》记载：蜀先主甘后；生而体貌特异，年至十八，玉质柔肌，态媚容冶…河南献玉人高三尺…甘后与玉人洁白齐润，观者殆相乱惑。刘备非常喜爱这尊玉雕，“夕则用后而玩玉人”。白玉美人怀抱一只白玉狸猫，甘夫人常对玉人倾诉渴望为刘备诞下一子的心愿，然而久盼未果。偶有一日，在梦中化身成一只饥肠辘辘、失去理智的白玉狸猫，闯入到幻境当中，吞掉了幻境中的启明星。事后，梦醒的甘夫人发现已怀有身孕，甚是欣喜。而白玉美人怀抱的玉狸猫则留在了幻境中，化身为吞星梦狸守护着幻境里的星星。',
             Mbaby_jingwei: '精卫，中国古代神话中的一种鸟。上古神话传说里，女娃是炎帝最小的女儿，后溺水而亡，化作精卫鸟；另一说，女娃是上古的一个部落，由于气候变暖，海平面上升，女娃部落遭到灭顶之灾，后化作精卫。据《山海经》记载：精卫婀娜多姿、长发飘逸、背生双翼，花头颅、白嘴壳、红脚爪，样子有点儿像乌鸦。',
-
         },
         characterFilter: {
         },
@@ -3283,7 +3285,7 @@ const packs = function () {
             },
             //曹操
             minijianxiong: {
-                audio: 'jianxiong',
+                audio: 'rejianxiong',
                 audioname2: {
                     Mbaby_caoying: 'lingren_jianxiong',
                     Mmiao_caoying: 'minijianxiong_caoying',
@@ -7519,15 +7521,11 @@ const packs = function () {
                 },
             },
             minijijiang: {
+                zhuSkill: true,
                 audio: 'jijiang1',
                 audioname: ['ol_liushan', 're_liubei'],
-                unique: true,
-                group: ['minijijiang1', 'minijijiang3'],
-                zhuSkill: true,
                 filter(event, player) {
-                    if (!game.hasPlayer(function (current) {
-                        return current != player && current.group == 'shu';
-                    })) return false;
+                    if (!game.hasPlayer(current => current !== player && current.group == 'shu')) return false;
                     return !event.jijiang && (event.type != 'phase' || !player.hasSkill('jijiang3'));
                 },
                 enable: ['chooseToUse', 'chooseToRespond'],
@@ -7540,19 +7538,22 @@ const packs = function () {
                     },
                     respondSha: true,
                     skillTagFilter(player) {
-                        if (!game.hasPlayer(function (current) {
-                            return current != player && current.group == 'shu';
-                        })) return false;
+                        if (player.hasSkill('jijiang3') && !game.hasPlayer(current => current !== player && current.group == 'shu')) return false;
                     },
                 },
+                group: 'minirejijiang1',
             },
-            minijijiang1: {
+            minirejijiang: {
+                inherit: 'minijijiang',
+                group: ['minirejijiang1', 'minirejijiang3'],
+            },
+            minirejijiang1: {
                 audio: 'jijiang1',
                 audioname: ['ol_liushan', 're_liubei'],
                 trigger: { player: ['useCardBegin', 'respondBegin'] },
                 logTarget: 'targets',
                 filter(event, player) {
-                    return event.skill == 'minijijiang';
+                    return event.skill == 'minirejijiang';
                 },
                 forced: true,
                 content() {
@@ -7601,7 +7602,7 @@ const packs = function () {
                     }
                 }
             },
-            minijijiang3: {
+            minirejijiang3: {
                 audio: 'jijiang1',
                 audioname: ['ol_liushan', 're_liubei'],
                 trigger: { global: ['useCard', 'respond'] },
@@ -7619,11 +7620,11 @@ const packs = function () {
                     });
                     'step 1'
                     if (result.bool) {
-                        player.logSkill('minijijiang');
+                        player.logSkill('minirejijiang');
                         trigger.player.line(player, 'fire');
                         player.draw();
                     }
-                    else player.storage.counttrigger.minijijiang3--;
+                    else player.storage.counttrigger.minirejijiang3--;
                 },
             },
             //马超
@@ -8479,7 +8480,7 @@ const packs = function () {
             miniruoyu: {
                 unique: true,
                 keepSkill: true,
-                derivation: 'minijijiang',
+                derivation: 'minirejijiang',
                 audio: 'ruoyu',
                 trigger: { player: 'phaseZhunbeiBegin' },
                 filter(event, player) {
@@ -8497,7 +8498,7 @@ const packs = function () {
                     'step 1'
                     player.recover();
                     'step 2'
-                    player.addSkills('minijijiang');
+                    player.addSkills('minirejijiang');
                     'step 3'
                     if (player.isZhu2()) event.trigger('zhuUpdate');
                 },
@@ -8619,7 +8620,7 @@ const packs = function () {
             minireruoyu: {
                 audio: 'olruoyu',
                 inherit: 'olruoyu',
-                derivation: ['minijijiang', 'sishu'],
+                derivation: ['minirejijiang', 'sishu'],
                 filter(event, player) {
                     if (!player.hasZhuSkill('minireruoyu')) return false;
                     return player.isMinHp();
@@ -14694,12 +14695,11 @@ const packs = function () {
                 },
             },
             minijiuyuan: {
-                group: 'minijiuyuan_tao',
-                audio: 'rejiuyuan',
-                trigger: { global: 'recoverBefore' },
+                audio: 'jiuyuan',
+                trigger: { global: 'taoBefore' },
                 filter(event, player) {
-                    if (player == event.player || player.isHealthy() || !_status.currentPhase || _status.currentPhase != event.player) return false;
-                    return event.player.group == 'wu' && event.getParent().name != 'minijiuyuan' && player.hasZhuSkill('minijiuyuan', event.player);
+                    if (event.player === player || !player.hasZhuSkill('minijiuyuan', event.player)) return false;
+                    return event.player.group == 'wu' && event.target === event.player && player.isDamaged();
                 },
                 direct: true,
                 zhuSkill: true,
@@ -14711,20 +14711,62 @@ const packs = function () {
                     });
                     'step 1'
                     if (result.bool) {
-                        player.logSkill('minijiuyuan');
+                        player.logSkill('minirejiuyuan');
                         trigger.player.line(player, 'green');
                         trigger.cancel();
                         player.recover();
                         trigger.player.draw();
                     }
                 },
+                group: 'minijiuyuan_tao',
+                subSkill: {
+                    tao: {
+                        audio: 'jiuyuan',
+                        trigger: { target: 'taoBegin' },
+                        filter(event, player) {
+                            if (event.player === player || !player.hasZhuSkill('minijiuyuan', event.player)) return false;
+                            return player.isDying() && event.player.group == 'wu';
+                        },
+                        forced: true,
+                        locked: false,
+                        content() {
+                            trigger.baseDamage++;
+                        },
+                    },
+                },
+            },
+            minirejiuyuan: {
+                audio: 'rejiuyuan',
+                trigger: { global: 'recoverBefore' },
+                filter(event, player) {
+                    if (event.player === player || !player.hasZhuSkill('minirejiuyuan', event.player)) return false;
+                    return event.player.group == 'wu' && player.isDamaged();
+                },
+                direct: true,
+                zhuSkill: true,
+                content() {
+                    'step 0'
+                    trigger.player.chooseBool('是否对' + get.translation(player) + '发动【救援】？', '改为令其回复1点体力，然后你摸一张牌').set('ai', function () {
+                        var evt = _status.event;
+                        return get.attitude(evt.player, evt.getParent().player) > 0 && evt.getParent().player.hp <= evt.player.hp && !evt.player.isDying();
+                    });
+                    'step 1'
+                    if (result.bool) {
+                        player.logSkill('minirejiuyuan');
+                        trigger.player.line(player, 'green');
+                        trigger.cancel();
+                        player.recover();
+                        trigger.player.draw();
+                    }
+                },
+                group: 'minirejiuyuan_tao',
                 subSkill: {
                     tao: {
                         audio: 'rejiuyuan',
                         trigger: { target: 'taoBegin' },
                         filter(event, player) {
-                            if (!player.hasZhuSkill('minijiuyuan', event.player)) return false;
-                            return event.player != player && event.player.group == 'wu';
+                            if (event.player === player || !player.hasZhuSkill('minirejiuyuan', event.player)) return false;
+                            return player.isDying() && event.player.group == 'wu';
                         },
                         forced: true,
                         locked: false,
@@ -39098,6 +39140,7 @@ const packs = function () {
             Mbaby_dufuren: '欢杀杜夫人',
             Mbaby_caozhang: '欢杀曹彰',
             Mbaby_caocao: '欢杀曹操',
+            Mbaby_re_caocao: '欢杀界曹操',
             Mbaby_sp_pangde: 'SP欢杀庞德',
             Mbaby_wenyang: '欢杀文鸯',
             Mbaby_xiahoulingnv: '欢杀夏侯令女',
@@ -39421,6 +39464,7 @@ const packs = function () {
             Mbaby_re_guanyu: '欢杀界关羽',
             Mbaby_zhugeliang: '欢杀诸葛亮',
             Mbaby_liubei: '欢杀刘备',
+            Mbaby_re_liubei: '欢杀界刘备',
             Mbaby_machao: '欢杀马超',
             Mbaby_re_machao: '欢杀界马超',
             Mbaby_zhurong: '欢杀祝融',
@@ -39519,7 +39563,9 @@ const packs = function () {
             minirerende: '仁德',
             minirerende_info: '出牌阶段，你可以将至少一张手牌交给其他角色，然后你于此阶段内不能再以此法交给该角色牌，且该角色使用红色【杀】不能指定你为目标直到你的下个回合开始；若你于此阶段内给出的牌首次达到两张，你可以视为使用一张基本牌或普通锦囊牌。',
             minijijiang: '激将',
-            minijijiang_info: '主公技。①当你需要使用或打出【杀】时，蜀势力角色可以代替你进行此操作，若如此做，你与响应【激将】的角色各摸一张牌。②每回合限一次，你的回合外，一名其他蜀势力角色使用或打出【杀】时，其可以令你摸一张牌。',
+            minijijiang_info: '主公技。当你需要使用或打出【杀】时，蜀势力角色可以代替你进行此操作，若如此做，你与响应【激将】的角色各摸一张牌。',
+            minirejijiang: '激将',
+            minirejijiang_info: '主公技。①当你需要使用或打出【杀】时，蜀势力角色可以代替你进行此操作，若如此做，你与响应【激将】的角色各摸一张牌。②每回合限一次，你的回合外，一名其他蜀势力角色使用或打出【杀】时，其可以令你摸一张牌。',
             miniyuma: '驭马',
             miniyuma_info: '锁定技，你计算与其他角色的距离-1；当你失去装备区中的坐骑牌时，你摸两张牌。',
             minitieji: '铁骑',
@@ -39818,6 +39864,7 @@ const packs = function () {
             Mbaby_sunluban: '欢杀孙鲁班',
             Mbaby_sunluyu: '欢杀孙鲁育',
             Mbaby_sunquan: '欢杀孙权',
+            Mbaby_re_sunquan: '欢杀界孙权',
             Mbaby_sunshangxiang: '欢杀孙尚香',
             Mbaby_taishici: '欢杀太史慈',
             Mbaby_wuguotai: '欢杀吴国太',
@@ -39882,7 +39929,9 @@ const packs = function () {
             minirezhiheng: '制衡',
             minirezhiheng_info: '出牌阶段限一次，你可以弃置任意张牌并摸等量张牌。若你以此法弃置了全部手牌，则你额外摸一张牌。若本阶段你第一次发动〖制衡〗获得的牌未包含延时锦囊牌，则本阶段你可以额外发动一次〖制衡〗。若本阶段你第二次发动〖制衡〗获得的牌均为基本牌，则本阶段你可以额外发动一次〖制衡〗。',
             minijiuyuan: '救援',
-            minijiuyuan_info: '主公技。①其他吴势力角色对你使用的【桃】的回复值+1。②其他吴势力角色于其回合内回复体力时，可以改为令你回复1点体力，然后其摸一张牌。',
+            minijiuyuan_info: '主公技。①当你处于濒死状态时，其他吴势力角色对你使用的【桃】的回复值+1。②其他吴势力角色使用【桃】对自己生效时，可以改为令你回复1点体力，然后其摸一张牌。',
+            minirejiuyuan: '救援',
+            minirejiuyuan_info: '主公技。①其他吴势力角色对你使用的【桃】的回复值+1。②其他吴势力角色于其回合内回复体力时，可以改为令你回复1点体力，然后其摸一张牌。',
             miniqixi: '奇袭',
             miniqixi_info: '你可以将一张黑色牌当作【过河拆桥】使用。出牌阶段开始时，你可以弃置一名角色区域里的一张牌。',
             minifenwei: '奋威',
@@ -41074,7 +41123,10 @@ const packs = function () {
             MiNikill.translate[`#ext:活动武将/audio/die/${i}:die`] ??= '点击播放阵亡配音';
         }
         else {
-            if (i.startsWith('Mbaby_') && !MiNikill.character[i].dieAudios.length) MiNikill.character[i].dieAudios.push(i.slice(6));
+            if (i.startsWith('Mbaby_')) {
+                if (!MiNikill.character[i].dieAudios.length) MiNikill.character[i].dieAudios.push(i.slice(6));
+                if (!MiNikill.character[i].tempname.length) MiNikill.character[i].tempname.push(i.slice(6));
+            }
         }
         if (_status['extension_活动武将_files']) {
             const { files } = _status['extension_活动武将_files']?.image.character;
