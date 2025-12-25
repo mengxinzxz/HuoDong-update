@@ -46,7 +46,7 @@ const packs = function () {
             Mbaby_caoying: ['female', 'wei', 4, ['minilingren', 'minifujian']],
             Mbaby_xinxianying: ['female', 'wei', 3, ['minizhongjian', 'minicaishi']],
             Mbaby_xiahoudun: ['male', 'wei', 4, ['reganglie'], ['name:夏侯|惇']],
-            Mbaby_re_xiahoudun: ['male', 'wei', 4, ['reganglie', 'miniqingjian'], ['name:夏侯|惇', 'character:re_xiahoudun']],
+            Mbaby_re_xiahoudun: ['male', 'wei', 4, ['reganglie', 'miniqingjian'], ['name:夏侯|惇', 'character:Mbaby_xiahoudun']],
             Mbaby_guohuanghou: ['female', 'wei', 3, ['minijiaozhao', 'minidanxin']],
             Mbaby_caozhen: ['male', 'wei', 4, ['minisidi']],
             Mbaby_zhongyao: ['male', 'wei', 3, ['minihomo', 'minizuoding'], ['clan:颍川钟氏']],
