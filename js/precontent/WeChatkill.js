@@ -17593,6 +17593,7 @@ const packs = function () {
         if (Array.isArray(WeChatkill.character[i])) WeChatkill.character[i] = get.convertedCharacter(WeChatkill.character[i]);
         WeChatkill.character[i].transBin ??= [];
         WeChatkill.character[i].dieAudios ??= [];
+        WeChatkill.character[i].tempname ??= [];
         if (_status['extension_活动武将_files']?.audio.die.files.includes(`${i}.mp3`)) {
             WeChatkill.character[i].dieAudios.push('ext:活动武将/audio/die:true');
             WeChatkill.translate[`#ext:活动武将/audio/die/${i}:die`] ??= '点击播放阵亡配音';
