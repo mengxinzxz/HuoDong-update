@@ -41334,11 +41334,9 @@ const packs = function () {
             MiNikill.character[i].dieAudios.push('ext:活动武将/audio/die:true');
             MiNikill.translate[`#ext:活动武将/audio/die/${i}:die`] ??= '点击播放阵亡配音';
         }
-        else {
-            if (i.startsWith('Mbaby_')) {
-                if (!MiNikill.character[i].dieAudios.length) MiNikill.character[i].dieAudios.push(i.slice(6));
-                if (!MiNikill.character[i].tempname.length) MiNikill.character[i].tempname.push(i.slice(6));
-            }
+        if (i.startsWith('Mbaby_')) {
+            if (!MiNikill.character[i].dieAudios.length) MiNikill.character[i].dieAudios.push(i.slice(6));
+            if (!MiNikill.character[i].tempname.length) MiNikill.character[i].tempname.push(i.slice(6));
         }
         if (_status['extension_活动武将_files']) {
             const { files } = _status['extension_活动武将_files']?.image.character;

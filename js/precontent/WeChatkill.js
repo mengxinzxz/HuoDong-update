@@ -17597,11 +17597,9 @@ const packs = function () {
             WeChatkill.character[i].dieAudios.push('ext:活动武将/audio/die:true');
             WeChatkill.translate[`#ext:活动武将/audio/die/${i}:die`] ??= '点击播放阵亡配音';
         }
-        else {
-            if (i.startsWith('wechat_')) {
-                if (!WeChatkill.character[i].dieAudios.length) WeChatkill.character[i].dieAudios.push(i.slice(7));
-                if (!WeChatkill.character[i].tempname.length) WeChatkill.character[i].tempname.push(i.slice(7));
-            }
+        if (i.startsWith('wechat_')) {
+            if (!WeChatkill.character[i].dieAudios.length) WeChatkill.character[i].dieAudios.push(i.slice(7));
+            if (!WeChatkill.character[i].tempname.length) WeChatkill.character[i].tempname.push(i.slice(7));
         }
         if (_status['extension_活动武将_files']?.image.character.files.includes(`${i}.jpg`)) WeChatkill.character[i].img = `extension/活动武将/image/character/${i}.jpg`;
         if (WeChatkill.characterSort.WeChatkill.wechat_trashBin.includes(i)) WeChatkill.character[i].isUnseen = true;
