@@ -41330,6 +41330,7 @@ const packs = function () {
         if (Array.isArray(MiNikill.character[i])) MiNikill.character[i] = get.convertedCharacter(MiNikill.character[i]);
         MiNikill.character[i].transBin ??= [];
         MiNikill.character[i].dieAudios ??= [];
+        MiNikill.character[i].tempname ??= [];
         if (_status['extension_活动武将_files']?.audio.die.files.includes(`${i}.mp3`)) {
             MiNikill.character[i].dieAudios.push('ext:活动武将/audio/die:true');
             MiNikill.translate[`#ext:活动武将/audio/die/${i}:die`] ??= '点击播放阵亡配音';
