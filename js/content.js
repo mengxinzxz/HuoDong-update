@@ -951,9 +951,6 @@ export async function content(config, pack) {
 	game.HDsetAudioname2(['juxiang', 'juxiang1'], {
 		Mmiao_zhurong: 'minimiaojuxiang',
 	});
-	game.HDsetAudioname2('chengxiang', {
-		Mnian_caopi: 'chengxiang_Mnian_caopi',
-	});
 	game.HDsetAudioname2('huguan', {
 		bilibili_wangwang: Array.from({ length: 2 }).map((_, i) => ['', '_wangyue'].map(j => j + (i + 1))).flat().map(i => `huguan${i}.mp3`),
 	});

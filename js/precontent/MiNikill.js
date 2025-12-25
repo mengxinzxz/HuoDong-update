@@ -6,7 +6,7 @@ const packs = function () {
         connect: true,
         characterSort: {
             MiNikill: {
-                MiNi_wei: ['Mbaby_caoying', 'Mbaby_jiachong', 'Mbaby_zhugeruoxue', 'Mbaby_dukui', 'Mbaby_xinpi', 'Mbaby_caimaozhangyun', 'Mbaby_bianyue', 'Mbaby_caoanmin', 'Mbaby_zhaoang', 'Mbaby_zhanggong', 'Mbaby_simalang', 'Mbaby_hanhaoshihuan', 'Mbaby_chentai', 'Mbaby_zhenghun', 'Mbaby_guanlu', 'Mbaby_guanqiujian', 'Mbaby_wenqin', 'Mbaby_liuye', 'Mbaby_chenlin', 'Mbaby_wangshuang', 'Mbaby_yanrou', 'Mbaby_dc_yanghu', 'Mbaby_ruanyu', 'Mbaby_chengyu', 'Mbaby_jianggan', 'Mbaby_yuejin', 'Mbaby_bianfuren', 'Mbaby_zhugedan', 'Mbaby_caohong', 'Mbaby_sp_caoren', 'Mbaby_yinfuren', 'Mbaby_sp_jiaxu', 'Mbaby_kuailiangkuaiyue', 'Mbaby_jsp_guanyu', 'Mbaby_wangji', 'Mbaby_chenqun', 'Mbaby_xiahoulingnv', 'Mbaby_wenyang', 'Mbaby_sp_pangde', 'Mbaby_caocao', 'Mbaby_caozhang', 'Mbaby_dufuren', 'Mbaby_yangxiu', 'Mbaby_zhangchangpu', 'Mbaby_zhonghui', 'Mbaby_sp_jiangwei', 'Mbaby_caoxiu', 'Mbaby_xunyou', 'Mbaby_lidian', 'Mbaby_zhongyao', 'Mbaby_caozhen', 'Mbaby_guohuanghou', 'Mbaby_xinxianying', 'Mbaby_xiahouyuan', 'Mbaby_xizhicai', 'Mbaby_caorui', 'Mbaby_xunyu', 'Mbaby_dengai', 'Mbaby_caozhi', 'Mbaby_sp_caiwenji', 'Mbaby_caopi', 'Mbaby_caoang', 'Mbaby_guojia', 'Mbaby_zhenji', 'Mbaby_caoren', 'Mbaby_wangyi', 'Mbaby_zhangchunhua', 'Mbaby_xiahoudun', 'Mbaby_guohuai', 'Mbaby_dianwei', 'Mbaby_zhanghe', 'Mbaby_yujin', 'Mbaby_xuhuang'],
+                MiNi_wei: ['Mbaby_caochong', 'Mbaby_caochun', 'Mbaby_caoying', 'Mbaby_jiachong', 'Mbaby_zhugeruoxue', 'Mbaby_dukui', 'Mbaby_xinpi', 'Mbaby_caimaozhangyun', 'Mbaby_bianyue', 'Mbaby_caoanmin', 'Mbaby_zhaoang', 'Mbaby_zhanggong', 'Mbaby_simalang', 'Mbaby_hanhaoshihuan', 'Mbaby_chentai', 'Mbaby_zhenghun', 'Mbaby_guanlu', 'Mbaby_guanqiujian', 'Mbaby_wenqin', 'Mbaby_liuye', 'Mbaby_chenlin', 'Mbaby_wangshuang', 'Mbaby_yanrou', 'Mbaby_dc_yanghu', 'Mbaby_ruanyu', 'Mbaby_chengyu', 'Mbaby_jianggan', 'Mbaby_yuejin', 'Mbaby_bianfuren', 'Mbaby_zhugedan', 'Mbaby_caohong', 'Mbaby_sp_caoren', 'Mbaby_yinfuren', 'Mbaby_sp_jiaxu', 'Mbaby_kuailiangkuaiyue', 'Mbaby_jsp_guanyu', 'Mbaby_wangji', 'Mbaby_chenqun', 'Mbaby_xiahoulingnv', 'Mbaby_wenyang', 'Mbaby_sp_pangde', 'Mbaby_caocao', 'Mbaby_caozhang', 'Mbaby_dufuren', 'Mbaby_yangxiu', 'Mbaby_zhangchangpu', 'Mbaby_zhonghui', 'Mbaby_sp_jiangwei', 'Mbaby_caoxiu', 'Mbaby_xunyou', 'Mbaby_lidian', 'Mbaby_zhongyao', 'Mbaby_caozhen', 'Mbaby_guohuanghou', 'Mbaby_xinxianying', 'Mbaby_xiahouyuan', 'Mbaby_xizhicai', 'Mbaby_caorui', 'Mbaby_xunyu', 'Mbaby_dengai', 'Mbaby_caozhi', 'Mbaby_sp_caiwenji', 'Mbaby_caopi', 'Mbaby_caoang', 'Mbaby_guojia', 'Mbaby_zhenji', 'Mbaby_caoren', 'Mbaby_wangyi', 'Mbaby_zhangchunhua', 'Mbaby_xiahoudun', 'Mbaby_guohuai', 'Mbaby_dianwei', 'Mbaby_zhanghe', 'Mbaby_yujin', 'Mbaby_xuhuang'],
                 MiNi_shu: ['Mbaby_wuban', 'Mbaby_mifangfushiren', 'Mbaby_guanyue', 'Mbaby_xianglang', 'Mbaby_huanghao', 'Mbaby_ganfurenmifuren', 'Mbaby_zhaotongzhaoguang', 'Mbaby_wulan', 'Mbaby_leitong', 'Mbaby_zongyu', 'Mbaby_mazhong', 'Mbaby_dengzhi', 'Mbaby_hujinding', 'Mbaby_sp_xiahoushi', 'Mbaby_jiangfei', 'Mbaby_zhangyi', 'Mbaby_guanzhang', 'Mbaby_wolongfengchu', 'Mbaby_wangtao', 'Mbabysp_zhangfei', 'Mbaby_wangyue', 'Mbaby_xf_yiji', 'Mbaby_mizhu', 'Mbaby_mifuren', 'Mbaby_liuyong', 'Mbaby_ganfuren', 'Mbaby_sunqian', 'Mbaby_lvkai', 'Mbaby_zhoucang', 'Mbaby_huangyueying', 'Mbaby_yangwan', 'Mbaby_liuchen', 'Mbaby_liyan', 'Mbaby_chendao', 'Mbaby_yanyan', 'Mbaby_xiahouba', 'Mbaby_huaman', 'Mbaby_sp_zhugeliang', 'Mbaby_zhugeguo', 'Mbaby_jianyong', 'Mbaby_wangping', 'Mbaby_mayunlu', 'Mbaby_guansuo', 'Mbaby_xiahoushi', 'Mbaby_shamoke', 'Mbaby_wuxian', 'Mbaby_zhugezhan', 'Mbaby_qinmi', 'Mbaby_guanyinping', 'Mbaby_guanyu', 'Mbaby_zhugeliang', 'Mbaby_liubei', 'Mbaby_machao', 'Mbaby_zhurong', 'Mbaby_zhangfei', 'Mbaby_zhaoyun', 'Mbaby_huangzhong', 'Mbaby_weiyan', 'Mbaby_liaohua', 'Mbaby_pangtong', 'Mbaby_menghuo', 'Mbaby_jiangwei', 'Mbaby_liushan', 'Mbaby_fazheng', 'Mbaby_madai', 'Mbaby_guanping', 'Mbaby_liufeng', 'Mbaby_wuyi', 'Mbaby_zhangxingcai', 'Mbaby_dongyun', 'Mbaby_sp_sunshangxiang', 'Mbaby_xushu', 'Mbaby_masu'],
                 MiNi_wu: ['Mbaby_sunhuan', 'Mbaby_gexuan', 'Mbaby_lvfan', 'Mbaby_xielingyu', 'Mbaby_zhupeilan', 'Mbaby_xugong', 'Mbaby_chendong', 'Mbaby_kanze', 'Mbaby_panzhangmazhong', 'Mbaby_weiwenzhugezhi', 'Mbaby_zhangwen', 'Mbaby_sunhanhua', 'Mbaby_heqi', 'Mbaby_lvdai', 'Mbaby_jiangqing', 'Mbaby_re_guyong', 'Mbaby_quancong', 'Mbaby_yufan', 'Mbaby_dc_sunru', 'Mbaby_sunxiu', 'Mbaby_zhangfen', 'Mbaby_xuezong', 'Mbaby_dingfeng', 'Mbaby_panjun', 'Mbaby_sundeng', 'Mbaby_luji', 'Mbaby_zhoufang', 'Mbaby_zhangxuan', 'Mbaby_yanjun', 'Mbaby_zhuhuan', 'Mbaby_luyusheng', 'Mbaby_re_jsp_pangtong', 'Mbaby_sunhao', 'Mbabysp_daqiao', 'Mbaby_lukang', 'Mbaby_buzhi', 'Mbaby_xushi', 'Mbaby_zhugeke', 'Mbaby_zhoufei', 'Mbaby_zhangzhang', 'Mbaby_sunliang', 'Mbaby_ol_sunjian', 'Mbaby_zhuzhi', 'Mbaby_bulianshi', 'Mbaby_chengpu', 'Mbaby_daqiao', 'Mbaby_ganning', 'Mbaby_huanggai', 'Mbaby_lusu', 'Mbaby_luxun', 'Mbaby_lvmeng', 'Mbaby_sunce', 'Mbaby_sunluban', 'Mbaby_sunluyu', 'Mbaby_sunquan', 'Mbaby_sunshangxiang', 'Mbaby_taishici', 'Mbaby_wuguotai', 'Mbaby_xiaoqiao', 'Mbaby_xusheng', 'Mbaby_zhoutai', 'Mbaby_zhouyu', 'Mbaby_zhugejin', 'Mbaby_zumao', 'Mbabysp_xiaoqiao'],
                 MiNi_qun: ['Mbaby_xurong', 'Mbaby_taoqian', 'Mbaby_hejin', 'Mbabysp_sunjian', 'Mbaby_jiling', 'Mbaby_ol_sb_huaxiong', 'Mbabysp_liubei', 'Mbaby_zhangrang', 'Mbabysp_xuhuang', 'Mbaby_duanwei', 'Mbaby_chendeng', 'Mbaby_caiyong', 'Mbaby_mengjie', 'Mbaby_gaolan', 'Mbaby_yl_luzhi', 'Mbaby_tadun', 'Mbaby_re_hansui', 'Mbaby_dongxie', 'Mbaby_fuwan', 'Mbaby_wutugu', 'Mbaby_huangfusong', 'Mbaby_fanchou', 'Mbaby_guosi', 'Mbaby_yanbaihu', 'Mbaby_dc_huangzu', 'Mbaby_licaiwei', 'Mbaby_ol_dingyuan', 'Mbaby_liubian', 'Mbaby_re_pangdegong', 'Mbaby_zhangning', 'Mbaby_zhanglu', 'Mbaby_wangyun', 'Mbaby_zoushi', 'Mbaby_dc_huangchengyan', 'Mbaby_simahui', 'Mbaby_tw_mateng', 'Mbaby_laiyinger', 'Mbaby_sp_kongrong', 'Mbaby_zhujun', 'Mbaby_gongsunyuan', 'Mbaby_sp_zhangliao', 'Mbaby_sp_ol_zhanghe', 'Mbaby_guotufengji', 'Mbaby_yanfuren', 'Mbaby_tangji', 'Mbaby_caojie', 'Mbaby_liangxing', 'Mbabysp_zhenji', 'Mbaby_caoxing', 'Mbaby_sp_menghuo', 'Mbaby_wangrong', 'Mbaby_hetaihou', 'Mbaby_sp_taishici', 'Mbaby_zhangji', 'Mbaby_dongbai', 'Mbaby_beimihu', 'Mbaby_chunyuqiong', 'Mbaby_zhangqiying', 'Mbaby_fuhuanghou', 'Mbaby_liuxie', 'Mbaby_quyi', 'Mbaby_jsp_huangyueying', 'Mbaby_sp_machao', 'Mbaby_lijue', 'Mbaby_panfeng', 'Mbaby_liuzhang', 'Mbaby_jiaxu', 'Mbaby_zhangbao', 'Mbaby_zhangliang', 'Mbaby_gaoshun', 'Mbaby_caifuren', 'Mbaby_xuyou', 'Mbaby_gongsunzan', 'Mbaby_pangde', 'Mbaby_jushou', 'Mbaby_liru', 'Mbaby_dongzhuo', 'Mbaby_zhangjiao', 'Mbaby_huatuo', 'Mbaby_lvbu', 'Mbaby_sp_diaochan', 'Mbaby_huaxiong', 'Mbaby_yuji', 'Mbaby_yanwen', 'Mbaby_caiwenji', 'Mbaby_liubiao', 'Mbaby_yuanshao', 'Mbaby_yuanshu', 'Mbaby_chengong', 'Mbaby_zuoci'],
@@ -110,6 +110,8 @@ const packs = function () {
             Mbaby_jiachong: ['male', 'wei', 3, ['minibeini', 'minishizong'], ['die:dc_jiachong', 'border:jin']],
             Mbaby_ol_xunyu: ['male', 'wei', 3, ['minirequhu', 'minirejieming'], ['clan:颍川荀氏', 'character:Mbaby_xunyu']],
             Mbaby_dc_sb_chengyu: ['male', 'wei', 3, ['dcshizha', 'minigaojian']],
+            Mbaby_caochong: ['male', 'wei', 3, ['minichengxiang', 'renxin']],
+            Mbaby_caochun: ['male', 'wei', 4, ['minishanjia']],
             //蜀
             Mbaby_guanyu: ['male', 'shu', 4, ['miniwusheng']],
             Mbaby_re_guanyu: ['male', 'shu', 4, ['minirewusheng', 'minituodao', 'jsrgguanjue'], ['character:Mbaby_guanyu']],
@@ -7089,6 +7091,107 @@ const packs = function () {
                     }
                 },
                 subSkill: { tag: {} },
+            },
+            //曹纯曹冲
+            minichengxiang: {
+                audio: 'chengxiang',
+                audioname2: { Mnian_caopi: 'chengxiang_Mnian_caopi' },
+                inherit: 'chengxiang',
+                forced: true,
+            },
+            minishanjia: {
+                init(player, skill) {
+                    player.addSkill(`${skill}_count`);
+                    if (typeof player.storage[skill] !== 'number') {
+                        player.addMark('minishanjia', 3, false);
+                        player.addTip(skill, `${get.translation(skill)}弃牌：3`);
+                    }
+                },
+                onremove(player, skill) {
+                    player.removeSkill(`${skill}_count`);
+                    player.removeTip(skill);
+                    player.unmarkSkill(skill);
+                    delete player.storage[skill];
+                },
+                audio: 'shanjia',
+                trigger: { player: 'phaseUseBegin' },
+                frequent: true,
+                async content(event, trigger, player) {
+                    await player.draw(3);
+                    let result;
+                    if (player.hasMark('minishanjia')) result = await player.chooseToDiscard('he', true, player.countMark('minishanjia')).set('ai', get.disvalue).forResult();
+                    let bool1 = true, bool2 = true;
+                    if (result?.cards?.length) {
+                        result.cards.forEach(card => {
+                            const type = get.type2(card, player);
+                            if (type === 'basic') bool1 = false;
+                            if (type === 'trick') bool2 = false;
+                        });
+                    }
+                    if (bool1) {
+                        player.addTempSkill('minishanjia_sha', 'phaseUseAfter');
+                        player.addMark('minishanjia_sha', 1, false);
+                    }
+                    if (bool2) player.addTempSkill('xinshanjia_nodis', 'phaseUseAfter');
+                    if (bool1 && bool2) await player.chooseUseTarget({ name: "sha" }, false);
+                },
+                ai: {
+                    threaten: 3,
+                    noe: true,
+                    reverseOrder: true,
+                    skillTagFilter(player) {
+                        if (!player.hasMark('minishanjia')) return false;
+                    },
+                    effect: {
+                        target(card, player, target) {
+                            if (target.hasMark('minishanjia') && get.type(card) === 'equip' && !get.cardtag(card, 'gifts')) return [1, 3];
+                        },
+                    },
+                },
+                marktext: '甲',
+                intro: {
+                    content(storage = 0) {
+                        return `本局游戏已失去${3 - storage}张装备牌`;
+                    },
+                },
+                locked: false,
+                mod: {
+                    aiValue(player, card, num) {
+                        if (player.hasMark('minishanjia') && get.type(card) === 'equip' && !get.cardtag(card, 'gifts')) return num / (player.getHp() + 1);
+                    },
+                },
+                subSkill: {
+                    sha: {
+                        charlotte: true,
+                        onremove: true,
+                        intro: { content: '使用【杀】的次数上限+#' },
+                        mod: {
+                            cardUsable(card, player, num) {
+                                if (card.name === 'sha') return num + player.countMark('minishanjia_sha');
+                            },
+                        },
+                    },
+                    count: {
+                        charlotte: true,
+                        trigger: {
+                            player: 'loseEnd',
+                            global: ['loseAsyncEnd', 'gainEnd', 'equipEnd', 'addJudgeEnd', 'addToExpansionEnd'],
+                        },
+                        filter(event, player) {
+                            if (!player.hasMark('minishanjia')) return false;
+                            return event.getl?.(player).cards2.some(card => get.type2(card, player) === 'equip');
+                        },
+                        silent: true,
+                        firstDo: true,
+                        content() {
+                            const skill = 'minishanjia';
+                            player.removeMark(skill, trigger.getl(player).cards2.filter(card => get.type2(card, player) === 'equip').length, false);
+                            const num = player.countMark(skill);
+                            if (num > 0) player.addTip(skill, `${get.translation(skill)}弃牌：${num}`);
+                            else player.removeTip(skill);
+                        },
+                    },
+                },
             },
             //蜀
             //关羽
@@ -37217,15 +37320,15 @@ const packs = function () {
                     ['caoang', 'Mbaby_caoang'],
                     ['caozhi', 'Mbaby_caozhi'],
                     ['caozhang', 'Mbaby_caozhang'],
-                    ['caochong', 'caochong'],
+                    ['caochong', 'Mbaby_caochong'],
                 ]),
                 characterEffectMap: new Map([
                     ['caoang', ['minikangkai', 'spade']],
                     ['caozhi', ['miniluoying', 'club']],
                     ['caozhang', ['minijiangchi', 'diamond']],
-                    ['caochong', ['chengxiang', 'heart']],
+                    ['caochong', ['minichengxiang', 'heart']],
                 ]),
-                derivation: ['mininiandengji_faq', 'minikangkai', 'miniluoying', 'minijiangchi', 'chengxiang'],
+                derivation: ['mininiandengji_faq', 'minikangkai', 'miniluoying', 'minijiangchi', 'minichengxiang'],
                 subSkill: {
                     used: {
                         charlotte: true,
@@ -39268,6 +39371,8 @@ const packs = function () {
             Mbaby_jiachong: '欢杀贾充',
             Mbaby_ol_xunyu: '欢杀界荀彧',
             Mbaby_dc_sb_chengyu: '欢杀谋程昱',
+            Mbaby_caochong: '欢杀曹冲',
+            Mbaby_caochun: '欢杀曹纯',
             miniluoshen: '洛神',
             miniluoshen_info: '准备阶段，你可以进行一次判定并获得判定牌，若判定结果为黑色，你可重复此流程。',
             minireluoshen: '洛神',
@@ -39538,6 +39643,10 @@ const packs = function () {
             minirejieming_info: '当你受到1点伤害后或死亡时，你可令一名角色摸X张牌。然后若其手牌数大于X，则其将手牌弃置至X张，然后你获得其因此弃置的牌中位于弃牌堆且点数最大的一张（X为其体力上限且至多为5）。',
             minigaojian: '告谏',
             minigaojian_info: '当你于出牌阶段使用的锦囊牌结算完成进入弃牌堆后，你可以选择一名角色。其依次展示牌堆顶的牌直到出现锦囊牌（至多展示五张），然后选择一项：1.若其不为你，使用此牌，2.用任意张手牌与等量展示牌交换。',
+            minichengxiang: '称象',
+            minichengxiang_info: '锁定技，当你受到伤害后，你亮出牌堆顶的四张牌，然后获得其中任意张点数和不大于13的牌。',
+            minishanjia: '缮甲',
+            minishanjia_info: '出牌阶段开始时，你可以摸三张牌，然后弃置三张牌（本局游戏你每失去过一张装备牌则少弃置一张）。若你没有以此法弃置：基本牌，此阶段你使用【杀】的次数上限+1；锦囊牌，此阶段你使用牌无距离限制；基本牌和锦囊牌，你可以视为使用一张【杀】。',
             //蜀
             Mbaby_guanyu: '欢杀关羽',
             Mbaby_re_guanyu: '欢杀界关羽',
