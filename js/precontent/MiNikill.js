@@ -7862,7 +7862,7 @@ const packs = function () {
                     player.chooseToCompare(trigger.target).clear = false;
                     'step 1'
                     if (result) {
-                        if (result.card2 && get.position(result.card2) === 'd') player.gain(result.card2, 'gain2');
+                        if (result.target && get.position(result.target) === 'd') player.gain(result.target, 'gain2');
                         if (result.bool && trigger.target.countGainableCards(player, 'he')) player.gainPlayerCard(trigger.target, true, 'he');
                         ui.clear();
                     }
