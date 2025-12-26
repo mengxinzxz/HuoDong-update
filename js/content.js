@@ -1044,9 +1044,9 @@ export async function content(config, pack) {
 
 	//移动服
 	lib.characterSort.mobile.bilibili_buchong_mobile = ['ol_huaxiong', 'old_zhangxingcai', 'ol_maliang', 'ol_yuanshu', 'old_bulianshi'];
-	game.HDaddCharacter('old_bulianshi', ['female', 'wu', 3, ['anxu', 'zhuiyi'], []], 'mobile');
-	game.HDaddCharacter('ol_yuanshu', ['male', 'qun', 4, ['rewangzun', 'retongji'], []], 'mobile');
-	game.HDaddCharacter('ol_maliang', ['male', 'shu', 3, ['zishu', 'yingyuan'], []], 'mobile');
+	game.HDaddCharacter('old_bulianshi', ['female', 'wu', 3, ['anxu', 'zhuiyi'], ['die:bulianshi']], 'mobile');
+	game.HDaddCharacter('ol_yuanshu', ['male', 'qun', 4, ['rewangzun', 'retongji'], ['die:re_yuanshu']], 'mobile');
+	game.HDaddCharacter('ol_maliang', ['male', 'shu', 3, ['zishu', 'yingyuan'], ['die:maliang']], 'mobile');
 	game.HDmoveCharacter('old_zhangxingcai', 'mobile');
 	game.HDmoveCharacter('ol_huaxiong', 'mobile');
 

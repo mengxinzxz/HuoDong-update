@@ -32,8 +32,8 @@ const packs = function () {
             Mbaby_caoren: ['male', 'wei', 4, ['minijushou', 'xinjiewei']],
             Mbaby_zhangchunhua: ['female', 'wei', 3, ['minijueqing', 'minireshangshi']],
             Mbaby_xuzhu: ['male', 'wei', 4, ['luoyi', 'minihuchi'], ['die:re_xuzhu']],
-            Mbaby_guohuai: ['male', 'wei', 4, ['jingce']],
-            Mbaby_re_guohuai: ['male', 'wei', 4, ['minijingce'], ['character:Mbaby_guohuai']],
+            Mbaby_guohuai: ['male', 'wei', 4, ['jingce']],//不是你怎么也复活了？？？
+            Mbaby_re_guohuai: ['male', 'wei', 4, ['minijingce']],
             Mbaby_dianwei: ['male', 'wei', 4, ['miniqiangxi']],
             Mbaby_zhanghe: ['male', 'wei', 4, ['miniqiaobian']],
             Mbaby_yujin: ['male', 'wei', 4, ['miniyizhong', 'decadezhenjun']],
@@ -660,15 +660,11 @@ const packs = function () {
         skill: {
             //魏
             minijingce: {
-                audio: 'jingce',
+                audio: 'decadejingce',
                 trigger: { player: 'phaseJieshuBegin' },
                 forced: true,
                 content() {
-                    var list = [];
-                    player.getHistory('useCard', function (evt) {
-                        list.add(get.suit(evt.card));
-                    });
-                    player.draw(Math.min(list.length + 1, 3));
+                    player.draw(Math.min(player.getHistory('useCard').reduce((list, evt) => list.add(get.suit(evt.card)),[]).length + 1, 3));
                 },
             },
             minihuchi: {
