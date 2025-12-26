@@ -814,7 +814,7 @@ const packs = function () {
                 usable: 1,
                 trigger: { global: 'useCardAfter' },
                 filter(event, player) {
-                    return event.player.isPhaseUsing() && event.card.name == 'tao' && event.player != player && player.hp < player.maxHp;
+                    return event.player.isPhaseUsing() && event.card.name == 'tao' && event.player != player &&player.isDamaged();
                 },
                 content() {
                     player.recover();
