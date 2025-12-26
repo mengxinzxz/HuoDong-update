@@ -3971,124 +3971,6 @@ const packs = function () {
                     if (cards.length) player.gain(cards, 'gain2');
                 },
             },
-            //张琪瑛
-            olddianhua: {
-                audio: 'xinfu_dianhua',
-                trigger: { player: ['phaseZhunbeiBegin', 'phaseJieshuBegin'] },
-                filter(event, player) {
-                    return lib.suit.some(suit => player.hasMark(`xinfu_falu_${suit}`));
-                },
-                frequent: true,
-                content() {
-                    player.chooseToGuanxing(lib.suit.filter(suit => player.hasMark(`xinfu_falu_${suit}`)).length);
-                },
-            },
-            oldzhenyi: {
-                inherit: 'zhenyi',
-                group: ['oldzhenyi_spade', 'oldzhenyi_club', 'oldzhenyi_heart'],
-                subSkill: {
-                    spade: {
-                        trigger: { global: 'judge' },
-                        filter(event, player) {
-                            return player.hasMark('xinfu_falu_spade');
-                        },
-                        direct: true,
-                        content() {
-                            'step 0'
-                            var str = `${get.translation(trigger.player)}的${trigger.judgestr || ""}判定为${get.translation(trigger.player.judging[0])}，是否发动【真仪】，失去「紫薇♠」标记并修改判定结果？`;
-                            player.chooseControl('黑桃5', '红桃5', '取消').set('ai', function () {
-                                const { player, judging } = get.event();
-                                const trigger = get.event().getTrigger();
-                                const results = trigger.judge({ name: judging.name, suit: 'spade', number: 5 }) - trigger.judge(judging);
-                                const resulth = trigger.judge({ name: judging.name, suit: 'heart', number: 5 }) - trigger.judge(judging);
-                                const attitude = get.attitude(player, trigger.player);
-                                if (attitude == 0 || (resulth == 0 && results == 0)) return '取消';
-                                if (attitude > 0) {
-                                    if (results > 0) {
-                                        if (resulth > results) return '红桃5';
-                                        return '黑桃5';
-                                    }
-                                    else if (resulth > 0) return '红桃5';
-                                    return '取消';
-                                }
-                                else {
-                                    if (results < 0) {
-                                        if (resulth < results) return '红桃5';
-                                        return '黑桃5';
-                                    }
-                                    else if (resulth < 0) return '红桃5';
-                                    return '取消';
-                                }
-                            }).set('judging', trigger.player.judging[0]).set('prompt', get.prompt('oldzhenyi')).set('prompt2', str);
-                            'step 1'
-                            if (['黑桃5', '红桃5'].includes(result.control)) {
-                                player.removeMark('xinfu_falu_spade');
-                                player.logSkill('oldzhenyi', trigger.player);
-                                player.popup(result.control);
-                                game.log(player, '将判定结果改为了', '#y' + result.control);
-                                trigger.fixedResult = {
-                                    suit: result.control == '黑桃5' ? 'spade' : 'heart',
-                                    color: result.control == '黑桃5' ? 'black' : 'red',
-                                    number: 5,
-                                };
-                            }
-                        },
-                        ai: {
-                            rejudge: true,
-                            tag: { rejudge: 1 },
-                        },
-                    },
-                    club: {
-                        audio: 'xinfu_zhenyi',
-                        enable: 'chooseToUse',
-                        viewAsFilter(player) {
-                            if (!player.isDying()) return false;
-                            return player.hasMark('xinfu_falu_club') && player.countCards('hs');
-                        },
-                        position: 'hs',
-                        filterCard: true,
-                        viewAs: { name: 'tao' },
-                        prompt: '失去「后土♣」标记，将一张手牌当作【桃】使用',
-                        check(card) {
-                            return 15 - get.value(card);
-                        },
-                        log: false,
-                        precontent() {
-                            player.logSkill('oldzhenyi_club');
-                            player.clearMark('xinfu_falu_club');
-                        },
-                    },
-                    heart: {
-                        audio: 'xinfu_zhenyi',
-                        trigger: { source: 'damageBegin1' },
-                        filter(event, player) {
-                            return player.hasMark('xinfu_falu_heart');
-                        },
-                        check(event, player) {
-                            if (get.attitude(player, event.player) >= 0) return false;
-                            if (event.player.hasSkillTag('filterDamage', null, {
-                                player: player,
-                                card: event.card,
-                            })) return false;
-                            return player.hasMark('xinfu_falu_spade') || get.color(ui.cardPile.firstChild) == 'black';
-                        },
-                        prompt2(event) {
-                            return '失去「玉清♥」标记，然后进行判定。若结果为黑色，则即将对' + get.translation(event.player) + '造成的伤害+1';
-                        },
-                        logTarget: 'player',
-                        content() {
-                            'step 0'
-                            player.removeMark('xinfu_falu_heart')
-                            player.judge(function (card) {
-                                if (get.color(card) == 'black') return 4;
-                                return -1;
-                            });
-                            'step 1'
-                            if (result.bool) trigger.num++;
-                        },
-                    },
-                },
-            },
             ljxc: {
                 mod: {
                     maxHandcard(player, num) {
@@ -12518,10 +12400,6 @@ const packs = function () {
             old_qixi_info: '你可以将一张黑色牌当作【过河拆桥】使用。你使用非转化非虚拟的【过河拆桥】可以改为：出牌阶段，对一名区域内有牌的角色使用，你弃置其区域内的所有牌。',
             old_fenwei: '奋威',
             old_fenwei_info: '限定技，当一名角色使用的锦囊牌指定了至少两名角色为目标时，你可以令此牌对其中任意名角色无效，然后你获得牌堆中的X张【过河拆桥】（X为你选择的角色数且X至多为4）。',
-            olddianhua: '点化',
-            olddianhua_info: '准备阶段或结束阶段，你可以观看牌堆顶的X张牌（X为你的「紫薇」「后土」「玉清」「勾陈」标记数的总和）。若如此做，你将这些牌以任意顺序放回牌堆顶。',
-            oldzhenyi: '真仪',
-            oldzhenyi_info: '你可以在以下时机弃置相应的标记来发动以下效果：一名角色的判定牌生效前，你可以失去「紫薇」标记，将判定结果改为黑桃5或红桃5；当你处于濒死状态时，你可以失去「后土」标记，将一张手牌当作【桃】使用；当你造成伤害时，你可以失去「玉清」标记，进行一次判定。若结果为黑色，此伤害+1；当你受到属性伤害后，你可以失去「勾陈」标记，从牌堆中随机获得三种类型的牌各一张。',
             bilibili_fushi: '附势',
             bilibili_fushi_info: '锁定技，若场上势力数：群大于魏，你视为拥有技能〖择主〗；魏大于群，你视为拥有技能〖逞功〗。',
             bilibili_zezhu: '择主',
