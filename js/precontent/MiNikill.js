@@ -8396,6 +8396,8 @@ const packs = function () {
                     },
                     ban: {
                         charlotte: true,
+                        mark: true,
+                        marktext: '<span style="text-decoration: line-through;">蛮</span>',
                         intro: { content: '不能使用【南蛮入侵】' },
                         mod: {
                             cardEnabled(card, player) {
