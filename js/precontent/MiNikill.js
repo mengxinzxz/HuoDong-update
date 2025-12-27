@@ -37,7 +37,7 @@ const packs = function () {
             Mbaby_guohuai: ['male', 'wei', 4, ['jingce']],//不是你怎么也复活了？？？
             Mbaby_re_guohuai: ['male', 'wei', 4, ['minijingce']],
             Mbaby_dianwei: ['male', 'wei', 4, ['miniqiangxi']],
-            Mbaby_re_dianwei: ['male', 'wei', 4, ['minireqiangxi'], ['character:Mbaby_dianwei']],
+            Mbaby_re_dianwei: ['male', 'wei', 4, ['minireqiangxi']],
             Mbaby_zhanghe: ['male', 'wei', 4, ['miniqiaobian']],
             Mbaby_yujin: ['male', 'wei', 4, ['miniyizhong', 'decadezhenjun']],
             Mbaby_xuhuang: ['male', 'wei', 4, ['duanliang', 'minijiezi']],
@@ -245,7 +245,8 @@ const packs = function () {
             Mbaby_xiaoqiao: ['female', 'wu', 3, ['minitianxiang', 'hongyan'], ['name:桥|null']],
             Mbaby_ol_xiaoqiao: ['female', 'wu', 3, ['miniretianxiang', 'olhongyan'], ['name:桥|null']],
             Mbaby_xusheng: ['male', 'wu', 4, ['minipojun']],
-            Mbaby_re_xusheng: ['male', 'wu', 4, ['minirepojun', 'miniyicheng'], ['character:Mbaby_xusheng']],
+            Mbaby_re_xusheng: ['male', 'wu', 4, ['minirepojun']],
+            Mbaby_xin_xusheng: ['male', 'wu', 4, ['minidcpojun', 'miniyicheng'], ['character:bilibili_re_xusheng', 'unseen']],
             Mbaby_old_zhoutai: ['male', 'wu', 4, ['minibuqu', 'fenji'], ['character:Mbaby_zhoutai']],
             Mbaby_zhoutai: ['male', 'wu', 4, ['minirebuqu', 'fenji', 'miniqingchuang']],
             Mbaby_zhouyu: ['male', 'wu', 3, ['reyingzi', 'minifanjian']],
@@ -334,7 +335,7 @@ const packs = function () {
             Mbaby_yanwen: ['male', 'qun', 4, ['minishuangxiong']],
             Mbaby_liubiao: ['male', 'qun', 3, ['minizishou', 'minizongshi']],
             Mbaby_re_liubiao: ['male', 'qun', 3, ['rezishou', 'rezongshi'], ['character:Mbaby_liubiao']],
-            Mbaby_yuanshao: ['male', 'qun', 4, ['miniluanji', 'minixueyi'], ['zhu']],
+            Mbaby_yuanshao: ['male', 'qun', 4, ['miniluanji', 'minixueyi'], ['zhu', 'tempname:re_yuanshao']],
             Mbaby_xin_yuanshao: ['male', 'qun', 4, ['minireluanji', 'minixueyi'], ['zhu', 'character:Mbaby_yuanshao']],
             Mbaby_yuanshu: ['male', 'qun', 4, ['yongsi', 'miniweidi']],
             Mbaby_yl_yuanshu: ['male', 'qun', 4, ['miniyongsi', 'minireweidi'], ['character:Mbaby_yuanshu']],
@@ -874,8 +875,7 @@ const packs = function () {
                 },
             },
             minireqiangxi: {
-                group: 'minireqiangxi_qiangxi',
-                audio: 'qiangxi',
+                audio: 'reqiangxi',
                 trigger: { global: 'damageBegin2' },
                 filter(event, player) {
                     return event.player != player && player.countCards('he', { type: 'equip' }) > 0;
@@ -893,9 +893,10 @@ const packs = function () {
                     if (result.bool) trigger.num++;
                 },
                 ai: { expose: 0.25 },
+                group: 'minireqiangxi_qiangxi',
                 subSkill: {
                     qiangxi: {
-                        audio: 'qiangxi',
+                        audio: 'reqiangxi',
                         enable: 'phaseUse',
                         filter(event, player) {
                             return game.hasPlayer(function (target) {
@@ -16104,13 +16105,13 @@ const packs = function () {
             },
             minirepojun: {
                 inherit: 'minipojun',
+                audio: 'repojun',
                 filter(event, player) {
                     return event.card.name == 'sha' && event.target.countCards('he');
                 },
-                group: 'minirepojun_damage',
-                subSkill: { damage: { audio: 'decadepojun', inherit: 'repojun3' } },
+                group: 'repojun3',
             },
-            minirepojunx: {
+            minidcpojun: {
                 audio: 'decadepojun',
                 trigger: {
                     player: 'useCardToPlayered',
@@ -16118,10 +16119,10 @@ const packs = function () {
                 },
                 filter(event, player) {
                     if (event.player == event.target || event.card.name != 'sha') return false;
-                    return player.maxHp > 0 && get.info('minirepojunx').logTarget(event, player).countCards('he') > 0;
+                    return player.maxHp > 0 && get.info('minidcpojun').logTarget(event, player).countCards('he') > 0;
                 },
                 async cost(event, trigger, player) {
-                    const target = get.info('minirepojunx').logTarget(trigger, player);
+                    const target = get.info('minidcpojun').logTarget(trigger, player);
                     const next = player.choosePlayerCard(target, 'he', [1, Math.min(player.maxHp, target.countCards('he'))], get.prompt(event.name.slice(0, -5), target));
                     next.set('ai', button => {
                         if (!_status.event.goon) return 0;
@@ -16147,7 +16148,7 @@ const packs = function () {
                     unequip_ai: true,
                     directHit_ai: true,
                     skillTagFilter(player, tag, arg) {
-                        const target = get.info('minirepojunx').logTarget(arg, player);
+                        const target = get.info('minidcpojun').logTarget(arg, player);
                         if (get.attitude(player, target) > 0) return false;
                         if (tag == 'directHit_ai') return player == arg.player && player.maxHp >= Math.max(1, arg.target.countCards('h') - 1);
                         return arg?.card?.name == 'sha' && arg.target?.getEquip(2);
@@ -16158,7 +16159,7 @@ const packs = function () {
                         charlotte: true,
                         trigger: { global: 'phaseEnd' },
                         filter(event, player) {
-                            return player.getExpansions('minirepojunx_gain').length > 0;
+                            return player.getExpansions('minidcpojun_gain').length > 0;
                         },
                         forced: true,
                         popup: false,
@@ -16171,7 +16172,7 @@ const packs = function () {
                         intro: {
                             markcount: 'expansion',
                             mark(dialog, storage, player) {
-                                var cards = player.getExpansions('minirepojunx_gain');
+                                var cards = player.getExpansions('minidcpojun_gain');
                                 if (player.isUnderControl(true)) dialog.addAuto(cards);
                                 else return '共有' + get.cnNumber(cards.length) + '张牌';
                             },
@@ -22246,15 +22247,13 @@ const packs = function () {
                 firstDo: true,
                 trigger: { player: 'useCard1' },
                 filter(event, player) {
-                    return event.card && event.card.name == 'sha' && event.addCount !== false && event.cards &&
-                        event.cards.length == 1 && event.cards[0].name == 'jiu';
+                    if (event.addCount === false) return false;
+                    return event.card.name == 'sha' && event.cards && event.cards.length == 1 && event.cards[0].name == 'jiu';
                 },
                 forced: true,
                 content() {
                     trigger.addCount = false;
-                    if (player.stat[player.stat.length - 1].card.sha > 0) {
-                        player.stat[player.stat.length - 1].card.sha--;
-                    }
+                    if (player.stat[player.stat.length - 1].card.sha > 0) player.stat[player.stat.length - 1].card.sha--;
                 },
                 subSkill: {
                     gain: {
@@ -22282,7 +22281,7 @@ const packs = function () {
                 },
             },
             minirexianzhen: {
-                audio: 'xianzhen',
+                audio: 'rexianzhen',
                 inherit: 'xianzhen',
                 async content(event, trigger, player) {
                     const { target } = event;
@@ -22343,7 +22342,7 @@ const packs = function () {
                         },
                     },
                     damage: {
-                        audio: 'xianzhen',
+                        audio: 'rexianzhen',
                         trigger: { source: 'damageBegin1' },
                         filter(event, player) {
                             return player == _status.currentPhase && game.getGlobalHistory('everything', evt => {
@@ -22357,7 +22356,7 @@ const packs = function () {
                         },
                     },
                     draw: {
-                        audio: 'xianzhen',
+                        audio: 'rexianzhen',
                         trigger: { player: 'shaMiss' },
                         forced: true,
                         locked: false,
@@ -22376,6 +22375,7 @@ const packs = function () {
                         if (card.name == 'jiu') return 13;
                     },
                 },
+                audio: 'rejinjiu',
                 inherit: 'minijinjiu',
             },
             minishendao: {
@@ -22822,6 +22822,7 @@ const packs = function () {
             minixueyi: {
                 unique: true,
                 audio: 'xueyi',
+                audioname: ['re_yuanshao'],
                 enable: 'chooseToUse',
                 trigger: { global: 'phaseBefore', player: 'enterGame' },
                 filter(event, player) {
@@ -29352,7 +29353,7 @@ const packs = function () {
             },
             //界袁术
             miniyongsi: {
-                audio: 'yongsi',
+                audio: 'drlt_yongsi',
                 trigger: { player: ['phaseDrawBegin2', 'phaseDiscardBegin', 'phaseEnd'] },
                 forced: true,
                 filter(event, player) {
@@ -29368,7 +29369,7 @@ const packs = function () {
                 },
             },
             minireweidi: {
-                audio: 'weidi',
+                audio: 'drlt_weidi',
                 getCards(event) {
                     const cards = [];
                     game.getGlobalHistory('cardMove', evt => {
@@ -40451,6 +40452,8 @@ const packs = function () {
             Mbaby_ol_xiaoqiao: '欢杀界小乔',
             Mbaby_xusheng: '欢杀徐盛',
             Mbaby_re_xusheng: '欢杀界徐盛',
+            Mbaby_xin_xusheng: '界界界徐盛',
+            Mbaby_xin_xusheng_prefix: '界|界|界',
             Mbaby_old_zhoutai: '欢杀周泰',
             Mbaby_zhoutai: '欢杀界周泰',
             Mbaby_zhouyu: '欢杀周瑜',
@@ -40569,8 +40572,8 @@ const packs = function () {
             minipojun_info: '当你使用【杀】指定目标时，你可以将其至多X张牌移出游戏直至回合结束（X为其体力值），然后若其中有：装备牌，你弃置其中的一张；【闪】，你摸一张牌。',
             minirepojun: '破军',
             minirepojun_info: '①当你使用【杀】指定目标后，你可以将其至多X张牌移出游戏直至回合结束（X为其体力值），然后若其中有：装备牌，你弃置其中的一张；【闪】，你摸一张牌。②你使用【杀】对手牌数和装备区牌数均不大于你的角色造成的伤害+1。',
-            minirepojunx: '破军',
-            minirepojunx_info: '当你使用【杀】指定目标或成为【杀】的目标后，你可以将对方的至多X张牌置于其武将牌上（X为你的体力上限），然后其于当前回合结束时获得这些牌。',
+            minidcpojun: '破军',
+            minidcpojun_info: '当你使用【杀】指定目标或成为【杀】的目标后，你可以将对方的至多X张牌置于其武将牌上（X为你的体力上限），然后其于当前回合结束时获得这些牌。',
             miniyicheng: '疑城',
             miniyicheng_info: '锁定技，一名角色的武将牌的牌数变化后，若其武将牌上的类别数：为1，其本回合非锁定技失效且不能使用或打出手牌；为2，其本回合受到的伤害+1；为3，你摸三张牌。',
             minianxu: '安恤',
@@ -41759,7 +41762,7 @@ const packs = function () {
                 if (skin && files.includes(`${skin}.jpg`)) MiNikill.character[i].img = `extension/活动武将/image/character/${skin}.jpg`;
             }
         }
-        if (MiNikill.translate[i]) {
+        if (MiNikill.translate[i] && !MiNikill.translate[i + '_prefix']) {
             if (MiNikill.translate[i].startsWith('欢杀神')) MiNikill.translate[i + '_prefix'] = '欢杀|神';
             else if (MiNikill.translate[i].startsWith('SP欢杀神')) MiNikill.translate[i + '_prefix'] = 'SP|欢杀|神';
             else if (MiNikill.translate[i].startsWith('欢杀谋')) MiNikill.translate[i + '_prefix'] = '欢杀|谋';
