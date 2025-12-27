@@ -17603,14 +17603,14 @@ const packs = function () {
         if (_status['extension_活动武将_files']?.image.character.files.includes(`${i}.jpg`)) WeChatkill.character[i].img = `extension/活动武将/image/character/${i}.jpg`;
         if (WeChatkill.characterSort.WeChatkill.wechat_trashBin.includes(i)) WeChatkill.character[i].isUnseen = true;
         if (WeChatkill.translate[i]) {
-            if (WeChatkill.translate[i].startsWith('SP小程序神')) WeChatkill.translate[i + '_prefix'] = 'SP|微信|神';
+            if (WeChatkill.translate[i].startsWith('SP小程序神')) WeChatkill.translate[i + '_prefix'] = 'SP|小程序|神';
             else if (WeChatkill.translate[i].startsWith('小程序牢')) WeChatkill.translate[i + '_prefix'] = '小程序|牢';
             else if (WeChatkill.translate[i].startsWith('小程序神')) WeChatkill.translate[i + '_prefix'] = '小程序|神';
             else if (WeChatkill.translate[i].startsWith('小程序☆')) WeChatkill.translate[i + '_prefix'] = '小程序|☆';
             else if (WeChatkill.translate[i].startsWith('小程序谋')) WeChatkill.translate[i + '_prefix'] = '小程序|谋';
             else if (WeChatkill.translate[i].startsWith('小程序界')) WeChatkill.translate[i + '_prefix'] = '小程序|界';
             else if (WeChatkill.translate[i].startsWith('小程序')) WeChatkill.translate[i + '_prefix'] = '小程序';
-            else if (WeChatkill.translate[i].startsWith('SP小程序')) WeChatkill.translate[i + '_prefix'] = 'SP|微信';
+            else if (WeChatkill.translate[i].startsWith('SP小程序')) WeChatkill.translate[i + '_prefix'] = 'SP|小程序';
             else if (WeChatkill.translate[i].startsWith('极')) WeChatkill.translate[i + '_prefix'] = '极';
             else if (WeChatkill.translate[i].startsWith('志')) WeChatkill.translate[i + '_prefix'] = '志';
         }
