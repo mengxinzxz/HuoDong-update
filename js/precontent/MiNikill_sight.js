@@ -16,6 +16,7 @@ export default function () {
         leftNav.id = 'overlay-left-nav';
         const leftNavScrollContainer = document.createElement('div');
         leftNavScrollContainer.id = 'left-nav-scroll-container';
+        leftNavScrollContainer.style.overflow = 'scroll';
         leftNav.appendChild(leftNavScrollContainer);
         overlay.appendChild(leftNav);
         //创建右侧内容区域
@@ -23,36 +24,10 @@ export default function () {
         dialog.id = 'overlay-dialog';
         const dialogContent = document.createElement('div');
         dialogContent.className = 'dialog-content';
+        dialogContent.style.overflow = 'scroll';
         dialog.appendChild(dialogContent);
         overlay.appendChild(dialog);
         //大的来了孩子们
-        //滚动控制函数
-        const updateScrollBehavior = function () {
-            const leftContainer = document.getElementById('left-nav-scroll-container');
-            const dialogContent = document.querySelector('.dialog-content');
-            if (leftContainer) {
-                const shouldLeftScroll = leftContainer.scrollHeight > leftContainer.clientHeight;
-                if (shouldLeftScroll) {
-                    leftContainer.classList.remove('scroll-disabled');
-                    leftContainer.classList.add('scroll-enabled');
-                }
-                else {
-                    leftContainer.classList.remove('scroll-enabled');
-                    leftContainer.classList.add('scroll-disabled');
-                }
-            }
-            if (dialogContent) {
-                const shouldRightScroll = dialogContent.scrollHeight > dialogContent.clientHeight;
-                if (shouldRightScroll) {
-                    dialogContent.classList.remove('scroll-disabled');
-                    dialogContent.classList.add('scroll-enabled');
-                }
-                else {
-                    dialogContent.classList.remove('scroll-enabled');
-                    dialogContent.classList.add('scroll-disabled');
-                }
-            }
-        };
         //页面更迭函数
         const changeDialog = function (item, dialogContainer) {
             if (!dialogContainer) return;
@@ -73,12 +48,6 @@ export default function () {
                     });
                 });
                 dialogContainer.appendChild(container);
-                setTimeout(() => {
-                    dialogContainer.style.display = 'none';
-                    dialogContainer.offsetHeight;
-                    dialogContainer.style.display = '';
-                    updateScrollBehavior();
-                }, 10);
             }
         };
         //创建导航项
@@ -98,24 +67,17 @@ export default function () {
             leftNavScrollContainer.appendChild(navItem);
             if (index === 0) currentActiveItem = navItem;//默认选中第一个
         });
-        //加载界面，确保背景不能滚动
         document.body.appendChild(overlay);
-        document.body.style.overflow = 'hidden';
         setTimeout(() => {
             if (currentActiveItem) {
                 currentActiveItem.classList.add('active');
                 changeDialog(currentActiveItem, dialogContent);
             }
-            //确保滚动功能正常工作
-            updateScrollBehavior();
-            window.addEventListener('resize', updateScrollBehavior);
         }, 0);
-        //确保滚动功能的辅助函数
         const closeOverlay = function () {
             if (document.body.contains(overlay)) {
                 document.body.removeChild(overlay);
                 document.body.style.overflow = '';
-                window.removeEventListener('resize', updateScrollBehavior);
             }
         };
         backButton.onclick = closeOverlay;
