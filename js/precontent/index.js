@@ -578,7 +578,7 @@ export async function precontent(bilibilicharacter) {
         game.import('character', HD_chaoshikong);
         //欢乐三国杀
         game.import('character', MiNikill);
-        //微信三国杀
+        //三国杀小程序
         game.import('character', WeChatkill);
         //线下--飞鸿印雪
         game.import('character', MX_feihongyinxue);

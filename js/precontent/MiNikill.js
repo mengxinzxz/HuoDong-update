@@ -446,7 +446,7 @@ const packs = function () {
             Mbaby_shen_caocao: ['male', 'shen', 3, ['miniguixin', 'feiying'], ['wei']],
             Mbaby_shen_liubei: ['male', 'shen', 6, ['minilongnu', 'minijieyig'], ['shu']],
             Mbaby_shen_zhangliao: ['male', 'shen', 4, ['miniduorui', 'minizhiti'], ['wei']],
-            Mbaby_shen_sunquan: ['male', 'shen', 4, ['miniquantui', 'minishehu', 'minidingli'], ['wu']],
+            Mbaby_shen_sunquan: ['male', 'shen', 4, ['miniquanxue', 'minishehu', 'minidingli'], ['wu']],
             Mbaby_shen_simayi: ['male', 'shen', 3, ['minirenjie', 'minijilve', 'lianpo'], ['wei', 'name:司马|懿']],
             Mbaby_shen_zhaoyun: ['male', 'shen', 2, ['minijuejing', 'minilonghun'], ['shu']],
             Mbaby_shen_ganning: ['male', 'shen', '3/6', ['minipoxi', 'drlt_jieying'], ['wu']],
@@ -464,7 +464,7 @@ const packs = function () {
                 names: '桥|null-桥|null',
             },
             Mbaby_shen_diaochan: ['female', 'shen', 3, ['minimeihun', 'minihuoxin'], ['qun']],
-            Mbaby_sunwukong: ['male', 'shen', 4, ['mini72bian', 'miniruyi', 'miniqitian']],
+            Mbaby_sunwukong: ['male', 'shen', 4, ['minisevenbian', 'miniruyi', 'miniqitian']],
             Mbaby_dalanmao: ['male', 'shen', 4, ['minizuzhou', 'minimoyu', 'minisanlian']],
             Mbaby_change: ['female', 'shen', '1/4', ['minidaoyao', 'minibenyue']],
             Mbaby_shen_taishici: ['male', 'shen', 4, ['minidulie', 'minichongwei', 'minipowei'], ['wu', 'name:太史|慈']],
@@ -700,7 +700,7 @@ const packs = function () {
                 },
             },
             minihuchi: {
-                audio: 'ext:活动武将/audio/skill:true',
+                audio: 'ext:活动武将/audio/skill:1',
                 group: ['minihuchi_miss', 'minihuchi_draw'],
                 trigger: { player: 'phaseJieshuBegin' },
                 frequent: true,
@@ -2630,7 +2630,7 @@ const packs = function () {
                     },
                 },
                 group: 'minizhengbing_mark',
-                audio: 'ext:活动武将/audio/skill:true',
+                audio: 'ext:活动武将/audio/skill:1',
                 enable: 'phaseUse',
                 filter(event, player) {
                     return player.countCards('h', function (card) {
@@ -4333,7 +4333,7 @@ const packs = function () {
             },
             //郭嘉
             minishenglun: {
-                audio: 'ext:活动武将/audio/skill:true',
+                audio: 'ext:活动武将/audio/skill:1',
                 enable: 'phaseUse',
                 filterTarget: lib.filter.notMe,
                 selectTarget: [1, 2],
@@ -11974,6 +11974,7 @@ const packs = function () {
                     },
                 },
             },
+            miniguanjue: { audio: 'ext:活动武将/audio/skill:2' },
             //王桃
             miniyaopei: {
                 audio: 'yaopei',
@@ -24735,32 +24736,32 @@ const packs = function () {
                 },
             },
             //孙悟空
-            'mini72bian': {
+            minisevenbian: {
                 onChooseToUse(event) {
-                    if (event.type == 'phase' && !game.online && !event['mini72bian_type']) {
+                    if (event.type == 'phase' && !game.online && !event['minisevenbian_type']) {
                         var evtx = event.getParent('phaseUse');
                         var list = ['basic', 'trick', 'equip'], player = event.player;
                         player.getHistory('lose', function (evt) {
                             var evt2 = evt.getParent();
-                            if (evt2.name == 'useSkill' && evt2.skill == 'mini72bian') list.remove(get.type2(evt.cards2[0]));
+                            if (evt2.name == 'useSkill' && evt2.skill == 'minisevenbian') list.remove(get.type2(evt.cards2[0]));
                         });
-                        event.set('mini72bian_type', list);
+                        event.set('minisevenbian_type', list);
                     }
                 },
                 nobracket: true,
-                audio: 'ext:活动武将/audio/skill:true',
+                audio: 'ext:活动武将/audio/skill:1',
                 enable: 'phaseUse',
                 filter(event, player) {
                     return player.countCards('he', function (card) {
-                        return event['mini72bian_type'].includes(get.type2(card));
+                        return event['minisevenbian_type'].includes(get.type2(card));
                     });
                 },
                 filterCard(card, player) {
-                    return _status.event['mini72bian_type'].includes(get.type2(card));
+                    return _status.event['minisevenbian_type'].includes(get.type2(card));
                 },
                 check(card) {
                     var player = _status.event.player;
-                    if (player.hasSkill('mini72bian_' + get.type2(card))) return -1;
+                    if (player.hasSkill('minisevenbian_' + get.type2(card))) return -1;
                     return 5 - get.value(card);
                 },
                 position: 'he',
@@ -24784,7 +24785,7 @@ const packs = function () {
                     else {
                         player.chat('无牌可得了吗？');
                         game.log('但是牌堆中已经没有', '#g' + get.translation(type) + '牌', '了！');
-                        player.addTempSkill('mini72bian_' + get.type2(cards[0]), 'washCard');
+                        player.addTempSkill('minisevenbian_' + get.type2(cards[0]), 'washCard');
                     }
                 },
                 ai: {
@@ -24795,7 +24796,7 @@ const packs = function () {
             },
             miniruyi: {
                 locked: true,
-                audio: 'ext:活动武将/audio/skill:true',
+                audio: 'ext:活动武将/audio/skill:1',
                 derivation: 'miniruyi_jingubang',
                 group: ['miniruyi_jingubang', 'miniruyi_jingubang2'],
                 init(player, skill) {
@@ -24916,7 +24917,7 @@ const packs = function () {
                 },
             },
             miniqitian: {
-                audio: 'ext:活动武将/audio/skill:true',
+                audio: 'ext:活动武将/audio/skill:1',
                 derivation: ['minihuoyan', 'minijindouyun'],
                 trigger: { player: ['changeHp', 'enterGame'], global: 'phaseBefore' },
                 filter(event, player) {
@@ -24958,7 +24959,7 @@ const packs = function () {
             },
             //大懒猫
             minizuzhou: {
-                audio: 'ext:活动武将/audio/skill:true',
+                audio: 'ext:活动武将/audio/skill:1',
                 trigger: { global: 'phaseBegin' },
                 check(event, player) {
                     if (player.hp + player.countCards('hs', { name: 'tao' }) <= 1) return false;
@@ -24995,7 +24996,7 @@ const packs = function () {
                 },
             },
             minimoyu: {
-                audio: 'ext:活动武将/audio/skill:true',
+                audio: 'ext:活动武将/audio/skill:1',
                 trigger: { player: 'phaseUseBegin' },
                 check(event, player) {
                     return player.hp + player.countCards('hs', { name: 'tao' }) <= 2;
@@ -25050,7 +25051,7 @@ const packs = function () {
                 },
             },
             minisanlian: {
-                audio: 'ext:活动武将/audio/skill:true',
+                audio: 'ext:活动武将/audio/skill:1',
                 enable: 'phaseUse',
                 filter(event, player) {
                     return player.countCards('h', function (card) {
@@ -25661,7 +25662,7 @@ const packs = function () {
                     //将进酒
                     qiangjinjiu: {
                         nobracket: true,
-                        audio: 'ext:活动武将/audio/skill:true',
+                        audio: 'ext:活动武将/audio/skill:1',
                         trigger: { global: 'phaseBegin' },
                         filter(event, player) {
                             if (event.player == player) return false;
@@ -25700,7 +25701,7 @@ const packs = function () {
                     //静夜思
                     jingyesi: {
                         nobracket: true,
-                        audio: 'ext:活动武将/audio/skill:true',
+                        audio: 'ext:活动武将/audio/skill:1',
                         trigger: { player: ['phaseUseEnd', 'phaseDiscardEnd'] },
                         direct: true,
                         content() {
@@ -25724,7 +25725,7 @@ const packs = function () {
                     //侠客行
                     xiakexing: {
                         nobracket: true,
-                        audio: 'ext:活动武将/audio/skill:true',
+                        audio: 'ext:活动武将/audio/skill:1',
                         trigger: { player: 'useCard', source: 'damageSource' },
                         filter(event, player) {
                             if (event.name == 'useCard') return get.translation(event.card.name).indexOf('剑') != -1 && player.hasUseTarget(get.autoViewAs({ name: 'wanjian' }, []));
@@ -25758,7 +25759,7 @@ const packs = function () {
                     //行路难
                     xinglunan: {
                         nobracket: true,
-                        audio: 'ext:活动武将/audio/skill:true',
+                        audio: 'ext:活动武将/audio/skill:1',
                         trigger: { global: 'useCardAfter' },
                         filter(event, player) {
                             if (player == _status.currentPhase || event.card.name != 'sha' || event.player == player) return false;
@@ -31226,23 +31227,23 @@ const packs = function () {
                 },
             },
             //劝退
-            miniquantui: {
+            miniquanxue: {
                 marktext: '学',
                 intro: { content: 'mark', name2: '学' },
-                audio: 'ext:活动武将/audio/skill:true',
+                audio: 'ext:活动武将/audio/skill:1',
                 trigger: { player: 'phaseUseBegin' },
                 direct: true,
                 content() {
                     'step 0'
-                    game.addGlobalSkill('miniquantui_remove');
-                    player.chooseTarget(get.prompt2('miniquantui'), [1, 2], lib.filter.notMe).set('ai', function (target) {
-                        return !target.hasMark('miniquantui') && -get.attitude(player, target);
+                    game.addGlobalSkill('miniquanxue_remove');
+                    player.chooseTarget(get.prompt2('miniquanxue'), [1, 2], lib.filter.notMe).set('ai', function (target) {
+                        return !target.hasMark('miniquanxue') && -get.attitude(player, target);
                     });
                     'step 1'
                     if (result.bool) {
                         var targets = result.targets.sortBySeat();
-                        player.logSkill('miniquantui', targets);
-                        for (var i of targets) i.addMark('miniquantui', 1);
+                        player.logSkill('miniquanxue', targets);
+                        for (var i of targets) i.addMark('miniquanxue', 1);
                     }
                 },
                 ai: {
@@ -31254,14 +31255,14 @@ const packs = function () {
                         charlotte: true,
                         trigger: { player: 'phaseBegin' },
                         filter(event, player) {
-                            return player.hasMark('miniquantui') && game.hasPlayer(function (current) {
-                                return current.hasSkill('miniquantui');
+                            return player.hasMark('miniquanxue') && game.hasPlayer(function (current) {
+                                return current.hasSkill('miniquanxue');
                             });
                         },
                         forced: true,
                         content() {
                             'step 0'
-                            player.removeMark('miniquantui', player.countMark('miniquantui'));
+                            player.removeMark('miniquanxue', player.countMark('miniquanxue'));
                             'step 1'
                             player.chooseControl().set('choiceList', [
                                 '本回合不能对其他角色使用牌',
@@ -31271,7 +31272,7 @@ const packs = function () {
                                 return 1;
                             });
                             'step 2'
-                            if (result.index == 0) player.addTempSkill('miniquantui_block');
+                            if (result.index == 0) player.addTempSkill('miniquanxue_block');
                             else player.loseHp();
                         },
                     },
@@ -31289,7 +31290,7 @@ const packs = function () {
             minishehu: {
                 trigger: { player: 'useCardToPlayer' },
                 filter(event, player) {
-                    return event.card.name == 'sha' && event.target.hasMark('miniquantui') && event.target.countCards('h');
+                    return event.card.name == 'sha' && event.target.hasMark('miniquanxue') && event.target.countCards('h');
                 },
                 forced: true,
                 logTarget: 'target',
@@ -31298,9 +31299,9 @@ const packs = function () {
                 },
                 ai: {
                     unequip_ai: true,
-                    combo: 'miniquantui',
+                    combo: 'miniquanxue',
                     skillTagFilter(player, tag, arg) {
-                        if (arg?.name == 'sha' && arg.target && arg.target.hasMark('miniquantui')) return true;
+                        if (arg?.name == 'sha' && arg.target && arg.target.hasMark('miniquanxue')) return true;
                         return false;
                     },
                 },
@@ -31309,7 +31310,7 @@ const packs = function () {
                 audio: 'ext:活动武将/audio/skill:2',
                 trigger: { global: 'logSkill' },
                 filter(event, player) {
-                    return event.skill == 'miniquantui_remove' && event.player != player;
+                    return event.skill == 'miniquanxue_remove' && event.player != player;
                 },
                 check(event, player) {
                     if (event.player.hp >= player.hp && player.isHealthy()) return false;
@@ -31321,7 +31322,7 @@ const packs = function () {
                     if (trigger.player.hp >= player.hp) player.recover();
                     else player.draw(Math.min(2, player.hp - trigger.player.hp));
                 },
-                ai: { combo: 'miniquantui' },
+                ai: { combo: 'miniquanxue' },
             },
             minirenjie: {
                 group: 'minirenjie_lose',
@@ -31914,7 +31915,7 @@ const packs = function () {
                 },
             },
             minishenzhen: {
-                audio: 'ext:活动武将/audio/skill:true',
+                audio: 'ext:活动武将/audio/skill:1',
                 trigger: { player: 'phaseZhunbeiBegin' },
                 filter(event, player) {
                     return player.hasMark('minijishi');
@@ -33909,7 +33910,7 @@ const packs = function () {
             //喵
             //核心逗猫
             minidoumao: {
-                audio: 'ext:活动武将/audio/skill:true',
+                audio: 'ext:活动武将/audio/skill:1',
                 trigger: { player: ['phaseBegin', 'phaseEnd'] },
                 filter(event, player) {
                     return player.countCards('he');
@@ -35354,7 +35355,7 @@ const packs = function () {
             },
             minimiaoxingshang: {
                 preHidden: true,
-                audio: 'ext:活动武将/audio/skill:true',
+                audio: 'ext:活动武将/audio/skill:1',
                 trigger: { global: 'die' },
                 logTarget: 'player',
                 async content(event, trigger, player) {
@@ -40738,7 +40739,7 @@ const packs = function () {
             Mbaby_liuzhang: '欢杀刘璋',
             Mbaby_panfeng: '欢杀潘凤',
             Mbaby_sp_machao: 'SP欢杀马超',
-            Mbaby_jsp_huangyueying: '欢杀黄月英',
+            Mbaby_jsp_huangyueying: 'SP欢杀黄月英',
             Mbaby_quyi: '欢杀麴义',
             Mbaby_liuxie: '欢杀刘协',
             Mbaby_fuhuanghou: '欢杀伏寿',
@@ -40974,8 +40975,8 @@ const packs = function () {
             minizhendu_info: '一名角色的出牌阶段开始时，你可以弃置一张牌，令该角色视为使用一张【酒】；若该角色不是你，你对其造成1点伤害，且本回合其计算与他人的距离时+1。',
             miniqiluan: '戚乱',
             miniqiluan_info: '①一名角色进入濒死状态时，你可以摸一张牌。②当你杀死一名角色后，你摸两张牌。',
-            'mini72bian': '７２变',
-            'mini72bian_info': '每回合每种类型限一次，出牌阶段，你可以将一张基本牌/锦囊牌/装备牌置入弃牌堆，然后从牌堆中获得一张锦囊牌/装备牌/基本牌。',
+            minisevenbian: '７２变',
+            'minisevenbian_info': '每回合每种类型限一次，出牌阶段，你可以将一张基本牌/锦囊牌/装备牌置入弃牌堆，然后从牌堆中获得一张锦囊牌/装备牌/基本牌。',
             miniruyi: '如意',
             miniruyi_info: '锁定技，若你未装备武器且你的武器栏未被废除，你视为装备【如意金箍棒】。',
             miniruyi_jingubang: '如意金箍棒',
@@ -41275,8 +41276,8 @@ const packs = function () {
             miniduorui_info: '出牌阶段开始时，你可以观看一名其他角色的手牌并获得其中一张，本回合你使用该颜色的牌不能被其响应。',
             minizhiti: '止啼',
             minizhiti_info: '锁定技，若已受伤角色数：大于1，你摸牌阶段摸牌数+1；大于2， 你使用【杀】的次数上限+1。',
-            miniquantui: '劝学',
-            miniquantui_info: '出牌阶段开始时，你可令至多两名其他角色各获得1枚“学”。有“学”的角色回合开始时移除“学”并选择一项：① 出牌阶段不能对其他角色使用牌；②失去1点体力。',
+            miniquanxue: '劝学',
+            miniquanxue_info: '出牌阶段开始时，你可令至多两名其他角色各获得1枚“学”。有“学”的角色回合开始时移除“学”并选择一项：① 出牌阶段不能对其他角色使用牌；②失去1点体力。',
             minishehu: '射虎',
             minishehu_info: '锁定技，当你对拥有“学”的角色使用【杀】时，你弃置其一张手牌。',
             minidingli: '鼎立',
@@ -41619,7 +41620,7 @@ const packs = function () {
             miniyinjujian_info: '准备阶段或结束阶段，你可以弃置一张手牌并令一名角色选择一项：1.获得两张点数大于其的牌；2.获得两张点数小于其的牌。',
         },
     };
-    MiNikill_sight(MiNikill);//加载欢杀界面逻辑
+    MiNikill_sight();//加载欢杀界面逻辑
     for (var skill in MiNikill.skill) {
         //特定化身将池添加注释
         if (MiNikill.skill[skill].derivation === 'Mbaby_characterlist_faq') MiNikill.translate[skill + '_append'] = MiNikill.translate.Mbaby_characterlist_append;

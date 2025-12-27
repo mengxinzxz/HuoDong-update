@@ -3,7 +3,7 @@ import { lib, game, ui, get, ai, _status } from '../../../../noname.js';
 export default function () {
     if (!ui.create?.menu) return;
     const onclickInterface = function () {
-        const menuItems = Object.keys(lib.characterSort.MiNikill);
+        const menuItems = Object.keys(lib.characterSort.WeChatkill);
         const overlay = document.createElement('div');
         overlay.id = 'overlay-container';
         //创建返回按钮
@@ -32,7 +32,7 @@ export default function () {
         const changeDialog = function (item, dialogContainer) {
             if (!dialogContainer) return;
             dialogContainer.innerHTML = '';
-            const list = lib.characterSort.MiNikill[item.link];
+            const list = lib.characterSort.WeChatkill[item.link];
             if (list.length > 0) {
                 const container = document.createElement('div');
                 container.className = 'grid-layout';
@@ -57,7 +57,7 @@ export default function () {
             navItem.className = 'nav-item';
             navItem.link = link;
             navItem.innerHTML = lib.translate[link];
-            if (navItem.innerHTML.startsWith('欢乐三国杀·')) navItem.innerHTML = navItem.innerHTML.slice(6);
+            if (navItem.innerHTML.startsWith('小程序·')) navItem.innerHTML = navItem.innerHTML.slice(4);
             navItem.onclick = function () {
                 currentActiveItem?.classList.remove('active');
                 this.classList.add('active');
@@ -97,7 +97,7 @@ export default function () {
             const originClick = characterPack.onclick;
             characterPack.onclick = () => {
                 originClick?.apply(this, arguments);
-                const characterPackage = Array.from(document.querySelectorAll('.menubutton.large')).find(div => div.innerHTML === lib.translate['MiNikill_character_config']);
+                const characterPackage = Array.from(document.querySelectorAll('.menubutton.large')).find(div => div.innerHTML === lib.translate['WeChatkill_character_config']);
                 if (characterPackage) {
                     const originClick2 = characterPackage.onclick;
                     characterPackage.onclick = () => {
@@ -113,13 +113,13 @@ export default function () {
                                     addIntro.classList.add('config', 'pointerspan');
                                     addIntro.innerHTML = (() => {
                                         //孩子们，牢大在天上化为彩虹看着你们（bushi）
-                                        const text = '点击进入欢乐三国杀武将单独页';
-                                        if (!document.getElementById('MiNikill-rainbow-style')) {
+                                        const text = '点击进入三国杀小程序武将单独页';
+                                        if (!document.getElementById('WeChatkill-rainbow-style')) {
                                             const style = document.createElement('style');
-                                            style.id = 'MiNikill-rainbow-style';
+                                            style.id = 'WeChatkill-rainbow-style';
                                             let css = '';
                                             for (let i = 0; i < text.length; i++) {
-                                                const animName = `MiNikill-${i}`;
+                                                const animName = `WeChatkill-${i}`;
                                                 css += `@keyframes ${animName}{`;
                                                 for (let j = 0; j <= 20; j++) {
                                                     const r = Math.floor(Math.random() * 255);
@@ -134,7 +134,7 @@ export default function () {
                                         }
                                         return [...text].map((ch, i) => {
                                             const delay = (i * 0.3).toFixed(1);
-                                            return `<span style="display:inline-block; animation:MiNikill-${i} 3s linear ${delay}s infinite; font-family: 'SimSun','宋体',serif; font-weight:bold; transition:color 0.5s;">${ch}</span>`;
+                                            return `<span style="display:inline-block; animation:WeChatkill-${i} 3s linear ${delay}s infinite; font-family: 'SimSun','宋体',serif; font-weight:bold; transition:color 0.5s;">${ch}</span>`;
                                         }).join('');
                                     })();
                                     cfgNodes[i].parentNode.insertBefore(addIntro, cfgNodes[i].nextSibling);

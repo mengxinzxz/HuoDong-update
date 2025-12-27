@@ -967,6 +967,9 @@ export async function content(config, pack) {
 	game.HDsetAudioname2('reyingzi', {
 		Mbaby_zhouyu: 'yingzi',
 	});
+	game.HDsetAudioname2('jsrgguanjue', {
+		Mbaby_re_guanyu: 'miniguanjue',
+	});
 
 	//precCI
 	//武将信息
