@@ -5104,7 +5104,7 @@ const packs = function () {
             //界沮授
             //两服合体
             wechatjianying: {
-                audio: 'jianying',
+                audio: 'xinjianying',
                 enable: 'phaseUse',
                 filter(event, player) {
                     if (!player.countCards('he')) return false;
@@ -5181,7 +5181,7 @@ const packs = function () {
                 group: ['wechatjianying_draw'],
                 subSkill: {
                     draw: {
-                        audio: 'jianying',
+                        audio: 'xinjianying',
                         inherit: 'dcjianying',
                     },
                 },
