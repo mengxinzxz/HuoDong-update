@@ -13339,18 +13339,14 @@ const packs = function () {
             },
             // 神司马
             wechatbaiyin: {
-                audio: 'sbaiyin',
-                inherit: 'sbaiyin',
-                filter(event, player) {
-                    return player.countMark('xinrenjie') >= 4;
-                },
+                audio: 'xinbaiyin',
+                inherit: 'xinbaiyin',
                 async content(event, trigger, player) {
                     player.awakenSkill(event.name);
                     await player.loseMaxHp();
                     await player.addSkills('wechatjilve');
                 },
                 derivation: ['wechatjilve', 'reguicai', 'fangzhu', 'rejizhi', 'rezhiheng', 'wansha'],
-                ai: { combo: 'xinrenjie' },
             },
             wechatlianpo: {
                 inherit: 'xinlianpo',
