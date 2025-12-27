@@ -17388,7 +17388,6 @@ const packs = function () {
             wechatyinyi: '音忆',
             wechatyinyi_info: '①当你失去牌后，你获得1枚“音”标记（你至多拥有5枚“音”标记）。②一名角色的结束阶段，你可以弃置5枚“音”标记并选择一项：1.弃置一张牌并视为对该角色使用一张杀；2.摸一张牌。',
             wechat_re_zuoci: '小程序界左慈',
-            wechat_re_zuoci_prefix: '小程序界',
             wechatrexinsheng: '新生',
             wechatrexinsheng_info: '当你受到1点伤害后，若你拥有〖化身〗，你可以获得一张新的化身牌并摸一张牌。',
             wechat_xin_guozhao: '小程序郭照',
