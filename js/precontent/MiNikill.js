@@ -256,7 +256,7 @@ const packs = function () {
             Mbaby_re_zhouyu: ['male', 'wu', 3, ['minireyingzi', 'minirefanjian']],
             Mbaby_zhugejin: ['male', 'wu', 3, ['huanshi', 'minihongyuan', 'mingzhe'], ['name:诸葛|瑾']],
             Mbaby_zumao: ['male', 'wu', 4, ['miniyinbing', 'minijuedi']],
-            Mbabysp_xiaoqiao: ['female', 'wu', 3, ['minixingwu', 'miniluoyan', 'minihuimou'], ['name:桥|null']],
+            Mbabysp_xiaoqiao: ['female', 'wu', 3, ['minixingwu', 'miniluoyan', 'minihuimou'], ['tempname:ol_xiaoqiao', 'name:桥|null']],
             Mbaby_zhuzhi: ['male', 'wu', 4, ['minianguo']],
             Mbaby_sunjian: ['male', 'wu', 4, ['miniyinghun'], ['character:Mbaby_ol_sunjian']],
             Mbaby_ol_sunjian: ['male', 'wu', 4, ['minireyinghun', 'miniwulie']],
@@ -267,7 +267,7 @@ const packs = function () {
             Mbaby_xushi: ['female', 'wu', 3, ['miniwengua', 'minifuzhu'], ['name:徐|null']],
             Mbaby_buzhi: ['male', 'wu', 3, ['minihongde', 'minidingpan']],
             Mbaby_lukang: ['male', 'wu', 4, ['drlt_qianjie', 'minijueyan', 'minihuairou']],
-            Mbabysp_daqiao: ['female', 'wu', 3, ['miniyanxiao', 'miniguose', 'minianxian'], ['die:re_daqiao', 'name:桥|null']],
+            Mbabysp_daqiao: ['female', 'wu', 3, ['miniyanxiao', 'miniguose', 'minianxian'], ['name:桥|null']],
             Mbaby_sunhao: ['male', 'wu', 5, ['minicanshi', 'minichouhai', 'guiming'], ['zhu']],
             Mbaby_re_jsp_pangtong: ['male', 'wu', 3, ['miniguolun', 'minisongsang', 'xinfu_zhanji']],
             Mbaby_luyusheng: ['female', 'wu', 3, ['minizhente', 'minizhiwei']],
@@ -14982,6 +14982,7 @@ const packs = function () {
             //大乔
             miniguose: {
                 audio: ['wanrong1.mp3', 'wanrong2.mp3'],
+                audioname2: { Mbabysp_daqiao: 'miniguose_Mbabysp_daqiao' },
                 trigger: {
                     player: 'loseAfter',
                     global: ['equipAfter', 'addJudgeAfter', 'gainAfter', 'loseAsyncAfter', 'addToExpansionAfter'],
@@ -14994,6 +14995,9 @@ const packs = function () {
                 locked: true,
                 content() {
                     player.draw();
+                },
+                subSkill: {
+                    Mbabysp_daqiao: { audio: 'ext:活动武将/audio/skill:2' },
                 },
             },
             miniwanrong: {
@@ -17175,8 +17179,8 @@ const packs = function () {
                 },
             },
             minixingwu: {
+                audio: 'ext:活动武将/audio/skill:2',
                 enable: 'phaseUse',
-                usable: 1,
                 filter(event, player) {
                     return player.countCards('h');
                 },
@@ -17185,6 +17189,7 @@ const packs = function () {
                 check(card) {
                     return 8 - get.value(card);
                 },
+                usable: 1,
                 contentBefore() {
                     _status.event.player = player;
                     _status.event.trigger('useXingWu');
@@ -17210,6 +17215,7 @@ const packs = function () {
                 },
             },
             miniluoyan: {
+                audio: 'ext:活动武将/audio/skill:1',
                 derivation: ['miniretianxiang', 'olhongyan'],
                 trigger: { player: 'minixingwuAfter' },
                 forced: true,
@@ -17225,6 +17231,7 @@ const packs = function () {
                 },
             },
             minihuimou: {
+                audio: 'ext:活动武将/audio/skill:1',
                 trigger: { player: ['useCard', 'respond', 'loseAfter'], global: 'loseAsyncAfter' },
                 filter(event, player) {
                     if (!game.hasPlayer(function (current) {
@@ -18034,7 +18041,7 @@ const packs = function () {
                 subSkill: { used: { charlotte: true, onremove: true } },
             },
             miniyanxiao: {
-                audio: 'yanxiao',
+                audio: 'ext:活动武将/audio/skill:2',
                 enable: 'phaseUse',
                 filter(event, player) {
                     return player.countCards('he', { suit: 'diamond' }) && game.hasPlayer(function (target) {
@@ -18113,7 +18120,7 @@ const packs = function () {
                 },
             },
             minianxian: {
-                audio: 'anxian',
+                audio: 'ext:活动武将/audio/skill:1',
                 group: 'minianxian_target',
                 trigger: { player: 'useCardToPlayer' },
                 filter(event, player) {
