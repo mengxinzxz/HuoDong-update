@@ -2394,7 +2394,6 @@ const packs = function () {
                 },
             },
             fh_tianyi: {
-                unique: true,
                 audio: 'stianyi',
                 derivation: 'zuoxing',
                 trigger: { player: 'phaseZhunbeiBegin' },
@@ -2423,7 +2422,6 @@ const packs = function () {
                 },
             },
             fh_sghuishi: {
-                unique: true,
                 audio: 'sghuishi',
                 trigger: { player: 'dying' },
                 direct: true,
@@ -4095,7 +4093,6 @@ const packs = function () {
                 },
             },
             fh_hongju: {
-                unique: true,
                 derivation: 'fh_qingce',
                 audio: 'drlt_hongju',
                 trigger: { player: 'phaseZhunbeiBegin' },
@@ -4289,7 +4286,6 @@ const packs = function () {
             xuanfeng_xin_lingtong: { audio: 2 },
             //徐庶
             fh_qianxin: {
-                unique: true,
                 audio: 'xsqianxin',
                 trigger: { source: 'damageSource' },
                 filter(event, player) {

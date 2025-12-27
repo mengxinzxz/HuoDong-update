@@ -699,7 +699,6 @@ const packs = function () {
                 intro: { name: '虎痴', name2: '痴', content: 'mark' },
                 subSkill: {
                     miss: {
-                        shaRelated: true,
                         audio: 'minihuchi',
                         trigger: { player: 'shaMiss' },
                         forced: true,
@@ -1781,13 +1780,10 @@ const packs = function () {
                 },
             },
             minixingshuai: {
-                unique: true,
                 audio: 'xingshuai',
-                audioname2: { re_caorui: 'rexingshuai' },
                 trigger: { player: 'dying' },
                 zhuSkill: true,
                 filter(event, player) {
-                    if (player.hp > 0) return false;
                     return game.hasPlayer(function (current) {
                         return current != player && current.group == 'wei';
                     });
@@ -1914,6 +1910,7 @@ const packs = function () {
                 },
             },
             minirexingshuai: {
+                audio: 'rexingshuai',
                 inherit: 'minixingshuai',
                 subSkill: {
                     restore: {
@@ -2802,7 +2799,6 @@ const packs = function () {
                 },
             },
             minifengliang: {
-                unique: true,
                 derivation: 'minitiaoxin',
                 audio: 'fengliang',
                 trigger: { player: 'dying' },
@@ -3403,7 +3399,6 @@ const packs = function () {
                 },
             },
             minihujia: {
-                unique: true,
                 audio: 'hujia',
                 trigger: { player: ['chooseToRespondBefore', 'chooseToUseBefore'] },
                 filter(event, player) {
@@ -3524,7 +3519,6 @@ const packs = function () {
             },
             minichoujue: {
                 derivation: ['minibeishui', 'miniqingjiao'],
-                unique: true,
                 audio: 'choujue',
                 trigger: { global: 'phaseAfter' },
                 filter(event, player) {
@@ -3544,7 +3538,6 @@ const packs = function () {
                 },
             },
             minibeishui: {
-                unique: true,
                 audio: 'beishui',
                 trigger: { player: 'phaseZhunbeiBegin' },
                 filter(event, player) {
@@ -3959,7 +3952,6 @@ const packs = function () {
                 },
             },
             minidanji: {
-                unique: true,
                 derivation: ['miniyuma', 'mininuzhan'],
                 audio: 'danji',
                 trigger: { player: ['useCard', 'respond'], source: 'damageSource' },
@@ -4174,7 +4166,6 @@ const packs = function () {
                 },
             },
             miniyongdi: {
-                unique: true,
                 audio: 'yongdi',
                 mark: true,
                 limited: true,
@@ -4567,7 +4558,6 @@ const packs = function () {
                 },
             },
             minijuezhu: {
-                unique: true,
                 limited: true,
                 audio: 'twjuezhu',
                 enable: 'phaseUse',
@@ -7861,7 +7851,6 @@ const packs = function () {
                 },
             },
             minilieren: {
-                shaRelated: true,
                 audio: 'lieren',
                 trigger: { source: 'damageSource' },
                 filter(event, player) {
@@ -7882,7 +7871,6 @@ const packs = function () {
                 },
             },
             minirelieren: {
-                shaRelated: true,
                 audio: 'lieren',
                 audioname: ['ol_zhurong'],
                 audioname2: { Mmiao_zhurong: 'minimiaolieren' },
@@ -8117,7 +8105,6 @@ const packs = function () {
                 audio: 'xinfuli',
                 skillAnimation: true,
                 animationColor: 'soil',
-                unique: true,
                 limited: true,
                 enable: 'chooseToUse',
                 mark: true,
@@ -8150,7 +8137,6 @@ const packs = function () {
                 intro: { content: 'limited' },
             },
             miniqimou: {
-                unique: true,
                 limited: true,
                 audio: 'qimou',
                 enable: 'phaseUse',
@@ -8281,7 +8267,6 @@ const packs = function () {
                 },
             },
             mininiepan: {
-                unique: true,
                 limited: true,
                 audio: 'olniepan',
                 enable: 'chooseToUse',
@@ -8355,7 +8340,6 @@ const packs = function () {
             },
             minizhiji: {
                 audio: 'olzhiji',
-                unique: true,
                 juexingji: true,
                 trigger: { player: 'phaseZhunbeiBegin' },
                 forced: true,
@@ -8580,7 +8564,6 @@ const packs = function () {
                 },
             },
             miniruoyu: {
-                unique: true,
                 keepSkill: true,
                 derivation: 'minirejijiang',
                 audio: 'ruoyu',
@@ -9029,7 +9012,6 @@ const packs = function () {
             },
             minilongyin: {
                 audio: 'relongyin',
-                shaRelated: true,
                 trigger: { global: 'useCard' },
                 direct: true,
                 filter(event, player) {
@@ -9243,7 +9225,6 @@ const packs = function () {
                 skillAnimation: true,
                 animationColor: 'fire',
                 audio: 'fanxiang',
-                unique: true,
                 juexingji: true,
                 forceunique: true,
                 derivation: ['xiaoji', 'miniwujian'],
@@ -9547,7 +9528,6 @@ const packs = function () {
                 },
             },
             minizhuandui: {
-                shaRelated: true,
                 audio: 'zhuandui',
                 group: ['zhuandui_use', 'zhuandui_respond'],
                 trigger: { player: ['chooseToCompareAfter', 'compareMultipleAfter'], target: ['chooseToCompareAfter', 'compareMultipleAfter'] },
@@ -9940,7 +9920,6 @@ const packs = function () {
                 },
             },
             minifengpo: {
-                shaRelated: true,
                 audio: 'fengpo',
                 trigger: { player: 'useCardToPlayered' },
                 filter(event, player) {
@@ -10489,7 +10468,6 @@ const packs = function () {
                 },
             },
             minizhanyuan: {
-                unique: true,
                 derivation: 'hmxili',
                 audio: 'zhanyuan',
                 trigger: { player: 'mansiAfter' },
@@ -11460,7 +11438,6 @@ const packs = function () {
             },
             minihuangsi: {
                 audio: 'shenzhi',
-                unique: true,
                 enable: 'chooseToUse',
                 mark: true,
                 limited: true,
@@ -11607,7 +11584,6 @@ const packs = function () {
                 },
             },
             minicunsi: {
-                unique: true,
                 derivation: ['miniyongjue', 'miniguixiux'],
                 audio: 'cunsi',
                 enable: 'phaseUse',
@@ -12628,7 +12604,6 @@ const packs = function () {
                 }
             },
             minisbjijiang: {
-                unique: true,
                 zhuSkill: true,
                 audio: 'sbjijiang',
                 trigger: { player: 'phaseUseEnd' },
@@ -13296,7 +13271,6 @@ const packs = function () {
                 },
             },
             minisbfanxiang: {
-                unique: true,
                 limited: true,
                 audio: 'sbjieyin2.mp3',
                 enable: 'phaseUse',
@@ -14951,7 +14925,6 @@ const packs = function () {
                 audioname: ['heqi'],
                 skillAnimation: true,
                 animationColor: 'wood',
-                unique: true,
                 mark: true,
                 limited: true,
                 trigger: { global: 'useCardToPlayered' },
@@ -16025,7 +15998,6 @@ const packs = function () {
                 },
             },
             minipojun: {
-                shaRelated: true,
                 audio: 'decadepojun',
                 trigger: { player: 'useCardToPlayered' },
                 direct: true,
@@ -16266,7 +16238,6 @@ const packs = function () {
                 skillAnimation: true,
                 animationColor: 'wood',
                 audio: 'qinxue',
-                unique: true,
                 juexingji: true,
                 derivation: 'minigongxin',
                 trigger: { player: 'phaseJieshuBegin' },
@@ -16480,7 +16451,6 @@ const packs = function () {
                 },
             },
             miniolhunzi: {
-                unique: true,
                 audio: 'olhunzi',
                 audioname: ['re_sunyi'],
                 trigger: { player: ['changeHp', 'enterGame'], global: 'phaseBefore' },
@@ -16502,7 +16472,6 @@ const packs = function () {
                 derivation: ['minireyingzi', 'minireyinghun'],
             },
             minihunzi: {
-                unique: true,
                 audio: 'olhunzi',
                 audioname: ['re_sunyi'],
                 audioname2: { Mbaby_sunce: 'hunzi' },
@@ -16537,7 +16506,6 @@ const packs = function () {
                 },
             },
             minizhiba: {
-                unique: true,
                 audio: 'zhiba',
                 zhuSkill: true,
                 global: 'minizhiba_global',
@@ -16583,7 +16551,6 @@ const packs = function () {
                 },
             },
             miniolzhiba: {
-                unique: true,
                 audio: 'olzhiba',
                 zhuSkill: true,
                 global: 'miniolzhiba_global',
@@ -17349,7 +17316,6 @@ const packs = function () {
                 },
             },
             miniwulie: {
-                unique: true,
                 audio: 'wulie',
                 trigger: { player: 'phaseBegin' },
                 mark: true,
@@ -17491,7 +17457,6 @@ const packs = function () {
                 },
             },
             minilijun: {
-                unique: true,
                 audio: 'nzry_lijun1',
                 trigger: { global: 'useCardAfter' },
                 filter(event, player) {
@@ -21475,7 +21440,6 @@ const packs = function () {
                 },
             },
             minirexianzhou: {
-                unique: true,
                 limited: true,
                 audio: 'rexianzhou',
                 enable: 'phaseUse',
@@ -22731,7 +22695,6 @@ const packs = function () {
                 }
             },
             minixueyi: {
-                unique: true,
                 audio: 'xueyi',
                 audioname: ['re_yuanshao'],
                 enable: 'chooseToUse',
@@ -23361,7 +23324,6 @@ const packs = function () {
                 },
                 group: 'minihuaibi_discard',
                 audio: 'huaibi',
-                unique: true,
                 trigger: { player: 'damageEnd' },
                 filter(event, player) {
                     return event.source && event.source.hasMark('miniyinlang');
@@ -23449,7 +23411,6 @@ const packs = function () {
                         if (from.hp >= to.hp) return -Infinity;
                     },
                 },
-                shaRelated: true,
                 trigger: { player: 'useCardToPlayered' },
                 logTarget: 'target',
                 filter(event, player) {
@@ -24302,7 +24263,6 @@ const packs = function () {
                 },
             },
             minitunjun: {
-                unique: true,
                 mark: true,
                 limited: true,
                 audio: 'xinfu_tunjun',
@@ -24930,7 +24890,6 @@ const packs = function () {
                 },
             },
             miniqitian: {
-                unique: true,
                 audio: 'ext:活动武将/audio/skill:true',
                 derivation: ['minihuoyan', 'minijindouyun'],
                 trigger: { player: ['changeHp', 'enterGame'], global: 'phaseBefore' },
@@ -26481,7 +26440,6 @@ const packs = function () {
                 },
             },
             minibenyue: {
-                unique: true,
                 derivation: 'miniguanghan',
                 audio: 'ext:活动武将/audio/skill:2',
                 trigger: {
@@ -27077,7 +27035,6 @@ const packs = function () {
             miniluannian: {
                 audio: 'twluannian',
                 global: 'miniluannian_global',
-                unique: true,
                 zhuSkill: true,
                 subSkill: {
                     global: {
@@ -30510,7 +30467,6 @@ const packs = function () {
                 },
             },
             minishenfen: {
-                unique: true,
                 mark: true,
                 limited: true,
                 audio: 'ol_shenfen',
@@ -31342,7 +31298,6 @@ const packs = function () {
                 ai: { combo: 'miniquantui' },
             },
             minirenjie: {
-                unique: true,
                 group: 'minirenjie_lose',
                 audio: 'renjie2',
                 trigger: { player: ['enterGame', 'damageEnd'], global: 'phaseBefore' },
@@ -31374,7 +31329,6 @@ const packs = function () {
                 },
             },
             minijilve: {
-                unique: true,
                 audio: 'jilue',
                 derivation: ['minijilve_guicai', 'minijilve_fangzhu', 'minijilve_wansha', 'minijilve_jizhi'],
                 group: ['minijilve_guicai', 'minijilve_fangzhu', 'minijilve_wansha', 'minijilve_jizhi'],
@@ -33150,7 +33104,6 @@ const packs = function () {
                 },
             },
             minipowei: {
-                unique: true,
                 derivation: 'minishenzhu',
                 audio: 'tspowei1.mp3',
                 trigger: { global: 'phaseEnd' },
@@ -33504,7 +33457,6 @@ const packs = function () {
                 subSkill: { tag: {} },
             },
             minihuanjing: {
-                unique: true,
                 limited: true,
                 audio: 'ext:活动武将/audio/skill:2',
                 enable: 'phaseUse',
@@ -34316,7 +34268,6 @@ const packs = function () {
                 },
             },
             minimiaoxianzhou: {
-                unique: true,
                 limited: true,
                 audio: 'ext:活动武将/audio/skill:2',
                 enable: 'phaseUse',

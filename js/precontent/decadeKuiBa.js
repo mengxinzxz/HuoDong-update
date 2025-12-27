@@ -293,7 +293,6 @@ const packs = function () {
                 subSkill: {
                     hit: {
                         audio: 'kuiba_juli',
-                        shaRelated: true,
                         trigger: { player: 'useCardToPlayered' },
                         filter(event, player) {
                             return event.card && get.distance(event.target, player) > 1;

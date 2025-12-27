@@ -1222,7 +1222,6 @@ const packs = function () {
                 audio: 'ext:活动武将/audio/skill:true',
                 skillAnimation: true,
                 animationColor: 'thunfer',
-                unique: true,
                 trigger: { player: 'phaseZhunbeiBegin' },
                 forced: true,
                 filter(event, player) {
@@ -1326,7 +1325,6 @@ const packs = function () {
                 },
             },
             qin_xianji: {
-                unique: true,
                 mark: true,
                 limited: true,
                 audio: 'ext:活动武将/audio/skill:true',

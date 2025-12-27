@@ -1668,7 +1668,6 @@ const packs = function () {
             },
             //国战左慈
             gz_huashen: {
-                unique: true,
                 group: ['gz_huashen_trigger', 'gz_huashen_flash', 'gz_huashen_remove'],
                 audio: 'ext:活动武将/audio/skill:2',
                 trigger: { player: 'phaseZhunbeiBegin' },
@@ -1900,7 +1899,6 @@ const packs = function () {
                 },
             },
             gz_xinsheng: {
-                unique: true,
                 audio: 'ext:活动武将/audio/skill:2',
                 trigger: { player: 'damageEnd' },
                 frequent: true,
@@ -2581,7 +2579,6 @@ const packs = function () {
             },
             //2013年韩旭爆料版神甘宁
             old_jieying: {
-                unique: true,
                 audio: 'drlt_jieying',
                 trigger: { global: 'phaseBefore', player: 'enterGame' },
                 filter(event, player) {
@@ -2916,7 +2913,6 @@ const packs = function () {
                         map: {},
                     }
                 },
-                unique: true,
                 audio: 'huashen2',
                 trigger: { global: 'phaseBefore', player: ['phaseBegin', 'phaseEnd', 'enterGame'] },
                 filter(event, player, name) {
@@ -3185,7 +3181,6 @@ const packs = function () {
             },
             BTxinsheng: {
                 derivation: ['BTxinsheng_1', 'BTxinsheng_2', 'BThuanhua'],
-                unique: true,
                 audio: 'xinsheng',
                 trigger: { player: 'damageEnd', source: 'damageSource' },
                 filter(event, player, name) {
@@ -3204,7 +3199,6 @@ const packs = function () {
                 },
             },
             BThuanhua: {
-                unique: true,
                 audio: 'yigui',
                 enable: 'phaseUse',
                 filter(event, player) {
@@ -3651,7 +3645,6 @@ const packs = function () {
                 skillAnimation: true,
                 animationColor: 'fire',
                 forced: true,
-                unique: true,
                 juexingji: true,
                 filter(event, player) {
                     return player.countMark('fanghun') >= 4;
@@ -3928,7 +3921,6 @@ const packs = function () {
                 },
             },
             old_fenwei: {
-                unique: true,
                 mark: true,
                 limited: true,
                 audio: 'sbfenwei',
@@ -4543,7 +4535,6 @@ const packs = function () {
                     },
                     chongsheng: {
                         charlotte: true,
-                        unique: true,
                         enable: 'chooseToUse',
                         mark: true,
                         limited: true,
@@ -4621,7 +4612,6 @@ const packs = function () {
                     },
                     kunshou: {
                         charlotte: true,
-                        unique: true,
                         trigger: { player: 'dying' },
                         juexingji: true,
                         skillAnimation: true,
@@ -4646,7 +4636,6 @@ const packs = function () {
                 animationColor: 'water',
                 trigger: { player: 'phaseZhunbeiBegin' },
                 forced: true,
-                unique: true,
                 juexingji: true,
                 filter(event, player) {
                     var zhu = get.zhu(player);
@@ -6414,7 +6403,6 @@ const packs = function () {
             },
             //生熏鱼
             bilibili_jinyan: {
-                unique: true,
                 mod: {
                     playerEnabled(card, player, target) {
                         if (_status.currentPhase != player || target == player) return;
@@ -6426,7 +6414,6 @@ const packs = function () {
                 },
             },
             bilibili_hehu: {
-                unique: true,
                 global: 'bilibili_hehu_global',
                 trigger: { global: 'phaseEnd' },
                 filter(event, player) {
@@ -6481,7 +6468,6 @@ const packs = function () {
                 },
             },
             bilibili_yutai: {
-                unique: true,
                 init: () => game.addGlobalSkill('tianzuo_global'),
                 getNum(player = _status.event.player) {
                     var num = 1 + (player.getStat('skill')['bilibili_yutai'] || 0);
@@ -6541,7 +6527,6 @@ const packs = function () {
                 },
             },
             bilibili_tixiang: {
-                unique: true,
                 trigger: {
                     global: 'phaseBefore',
                     player: 'enterGame',
@@ -6629,7 +6614,6 @@ const packs = function () {
             },
             //？(精灵球)
             bilibili_tiyi: {
-                unique: true,
                 group: 'bilibili_tiyi_update',
                 enable: 'phaseUse',
                 filter(event, player) {
@@ -6732,7 +6716,6 @@ const packs = function () {
                 },
             },
             bilibili_zili: {
-                unique: true,
                 init(player) {
                     if (!player.storage.bilibili_zili) player.storage.bilibili_zili = [0, 0];
                 },
@@ -7108,7 +7091,6 @@ const packs = function () {
                     }
                     return list;
                 },
-                unique: true,
                 enable: 'phaseUse',
                 filter(event, player) {
                     //if(player.hasSkill('bilibili_zhiyou_remove')) return false;
@@ -7176,7 +7158,6 @@ const packs = function () {
                         if (target != player && !targets.includes(target)) return true;
                     },
                 },
-                unique: true,
                 trigger: { global: 'phaseDrawBegin2' },
                 filter(event, player) {
                     if (event.numFixed) return false;
@@ -7230,7 +7211,6 @@ const packs = function () {
             },
             //雷
             bilibili_Thunder: {
-                unique: true,
                 trigger: { global: ['useSkillAfter', 'logSkill'] },
                 filter(event, player) {
                     if (event.player == player || event.type != 'player') return false;
@@ -7293,7 +7273,6 @@ const packs = function () {
                 },
             },
             bilibili_qianzhi: {
-                unique: true,
                 trigger: { global: ['useSkillBegin', 'chooseTargetEnd', 'chooseCardTargetEnd', 'chooseToUseEnd', 'chooseToCompareEnd', 'choosePlayerCardEnd', 'discardPlayerCardEnd', 'gainPlayerCardEnd'] },
                 filter(event, player) {
                     if (event.bilibili_qianzhi || player === event.player || !player.hujia) return false;
@@ -8156,7 +8135,6 @@ const packs = function () {
                 },
             },
             bolfushou: {
-                unique: true,
                 trigger: { global: 'phaseEnd' },
                 filter(event, player) {
                     return !player.isMaxHp();
@@ -8369,7 +8347,6 @@ const packs = function () {
             bilibili_huishi: {
                 audio: 'shuishi',
                 inherit: 'reshuishi',
-                unique: true,
                 limited: true,
                 skillAnimation: true,
                 animationColor: 'thunder',
@@ -8696,7 +8673,6 @@ const packs = function () {
             },
             bolfenfou: {
                 limited: true,
-                unique: true,
                 trigger: { global: 'roundStart' },
                 logTarget: () => game.filterPlayer().sortBySeat(),
                 check: (_, player) => !player.hasUnknown(),
@@ -10079,7 +10055,6 @@ const packs = function () {
             },
             //暗黑傀儡师蔡夫人
             bilibili_kuilei: {
-                unique: true,
                 trigger: {
                     global: 'phaseBefore',
                     player: ['enterGame', 'dieBefore', 'showCharacterAfter'],

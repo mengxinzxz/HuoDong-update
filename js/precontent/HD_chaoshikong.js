@@ -50,7 +50,6 @@ const packs = function () {
         skill: {
             _cike_chooseskill_wuliuqi: {
                 forbid: ['guozhan'],
-                unique: true,
                 trigger: { global: 'gameStart', player: 'enterGame' },
                 filter(event, player) {
                     return player.name == 'cike_meihuashisan' || player.name2 == 'cike_meihuashisan';
@@ -89,7 +88,6 @@ const packs = function () {
             },
             _cike_chooseskill_meihuashishan: {
                 forbid: ['guozhan'],
-                unique: true,
                 trigger: { global: 'gameStart', player: 'enterGame' },
                 filter(event, player) {
                     return player.name == 'cike_wuliuqi' || player.name2 == 'cike_wuliuqi';
@@ -124,7 +122,6 @@ const packs = function () {
             },
             _cike_gzchooseskill_wuliuqi: {
                 mode: ['guozhan'],
-                unique: true,
                 trigger: { player: 'showCharacterAfter' },
                 filter(event, player) {
                     return event.toShow && event.toShow.includes('cike_meihuashisan');
@@ -163,7 +160,6 @@ const packs = function () {
             },
             _cike_gzchooseskill_meihuashishan: {
                 mode: ['guozhan'],
-                unique: true,
                 trigger: { player: 'showCharacterAfter' },
                 filter(event, player) {
                     return event.toShow && event.toShow.includes('cike_wuliuqi');
@@ -199,7 +195,6 @@ const packs = function () {
             cike_shenghu: {
                 group: 'cike_chooseskill',
                 derivation: 'cike_chooseskill',
-                unique: true,
                 forced: true,
                 trigger: { global: 'damageBegin4' },
                 filter(event, player) {
@@ -283,7 +278,6 @@ const packs = function () {
             cike_lingshou: {
                 group: 'cike_chooseskill',
                 derivation: 'cike_chooseskill',
-                unique: true,
                 forced: true,
                 trigger: { global: 'damageBegin4' },
                 filter(event, player) {
@@ -894,7 +888,6 @@ const packs = function () {
                 },
             },
             cike_guiming: {
-                unique: true,
                 audio: 'guiming',
                 trigger: { player: 'cike_canshiBegin' },
                 forced: true,

@@ -235,7 +235,6 @@ const packs = function () {
                 },
             },
             ZGmizui: {
-                shaRelated: true,
                 audio: 'ext:活动武将/audio/skill:true',
                 trigger: { source: 'damageSource' },
                 filter(event, player) {
@@ -325,7 +324,6 @@ const packs = function () {
             },
             //by萌新（转型中）
             ZGmanji: {
-                shaRelated: true,
                 audio: 'ext:活动武将/audio/skill:true',
                 trigger: { player: 'useCardToPlayer' },
                 filter(event, player) {
@@ -393,7 +391,6 @@ const packs = function () {
                 },
             },
             ZGsuoxue: {
-                shaRelated: true,
                 audio: 'ext:活动武将/audio/skill:true',
                 trigger: { player: 'useCardToTargeted' },
                 check(event, player) {

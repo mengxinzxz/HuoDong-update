@@ -767,7 +767,6 @@ const packs = function () {
             },
             wechattieji: {
                 audio: 'tieji',
-                shaRelated: true,
                 trigger: { player: 'useCardToPlayered' },
                 filter(event, player) {
                     return event.card.name == 'sha';
@@ -1624,7 +1623,6 @@ const packs = function () {
             },
             wechatniepan: {
                 audio: 'niepan',
-                unique: true,
                 enable: 'chooseToUse',
                 mark: true,
                 skillAnimation: true,
@@ -1931,7 +1929,6 @@ const packs = function () {
                 },
             },
             wechatfengpo: {
-                shaRelated: true,
                 audio: 'fengpo',
                 trigger: { player: 'useCardToPlayered' },
                 filter(event, player) {
@@ -2291,7 +2288,6 @@ const packs = function () {
             },
             wechatfuhan: {
                 derivation: ['new_yijue', 'new_repaoxiao', 'retieji', 'xinliegong'],
-                unique: true,
                 audio: 'fuhan',
                 trigger: { player: 'phaseZhunbeiBegin' },
                 filter(event, player) {
@@ -2324,7 +2320,6 @@ const packs = function () {
                 trigger: { player: 'useCardToPlayered' },
             },
             wechatrefuhan: {
-                unique: true,
                 audio: 'fuhan',
                 trigger: { player: 'phaseBegin' },
                 filter(event, player) {
@@ -2906,7 +2901,6 @@ const packs = function () {
             },
             //黄忠
             wechatliegong: {
-                shaRelated: true,
                 mod: {
                     targetInRange(card, player, target) {
                         if (card.name == 'sha') return true;
@@ -3350,7 +3344,6 @@ const packs = function () {
                 },
             },
             wechatposhi: {
-                unique: true,
                 derivation: 'drlt_huairou',
                 audio: 'drlt_poshi',
                 trigger: { player: 'phaseZhunbeiBegin' },
@@ -3803,7 +3796,6 @@ const packs = function () {
                 },
             },
             wechatfengliang: {
-                unique: true,
                 audio: 'fengliang',
                 derivation: 'retiaoxin',
                 trigger: { player: 'dying' },
@@ -4177,7 +4169,6 @@ const packs = function () {
                 inherit: 'redangxian',
             },
             wechatfuli: {
-                unique: true,
                 audio: 'fuli',
                 limited: true,
                 enable: 'chooseToUse',
@@ -8434,7 +8425,6 @@ const packs = function () {
                 trigger: {
                     player: 'phaseJieshuBegin',
                 },
-                unique: true,
                 forced: true,
                 juexingji: true,
                 skillAnimation: true,
@@ -8984,7 +8974,6 @@ const packs = function () {
                 filter(event, player) {
                     return event.card?.name == 'sha' && event.player != player;
                 },
-                shaRelated: true,
                 async cost(event, trigger, player) {
                     const target = trigger.player, str = get.translation(target);
                     const { result } = await player.chooseControl('cancel2').set('choiceList', [`令${str}失去${trigger.num}点体力`, `令${str}减少1点体力上限`]).set('prompt', get.prompt(event.name.slice(0, -5))).set('ai', () => {
