@@ -41654,7 +41654,7 @@ const packs = function () {
                 if (skin && files.includes(`${skin}.jpg`)) MiNikill.character[i].img = `extension/活动武将/image/character/${skin}.jpg`;
             }
         }
-        if (MiNikill.translate[i] && !MiNikill.translate[i + '_prefix']) {
+        if (MiNikill.translate[i] && !lib.translate[i + '_prefix'] && !MiNikill.translate[i + '_prefix']) {
             if (MiNikill.translate[i].startsWith('欢杀神')) MiNikill.translate[i + '_prefix'] = '欢杀|神';
             else if (MiNikill.translate[i].startsWith('SP欢杀神')) MiNikill.translate[i + '_prefix'] = 'SP|欢杀|神';
             else if (MiNikill.translate[i].startsWith('欢杀谋')) MiNikill.translate[i + '_prefix'] = '欢杀|谋';
