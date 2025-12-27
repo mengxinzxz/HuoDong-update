@@ -1,5 +1,5 @@
 import { lib, game, ui, get, ai, _status } from '../../../../noname.js';
-//孩子们，欢杀武将太多了（悲），新写一个界面来装这些武将吧
+
 export default function () {
     if (!ui.create?.menu) return;
     const onclickInterface = function () {
