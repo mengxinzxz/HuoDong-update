@@ -1034,8 +1034,10 @@ export async function content(config, pack) {
 	game.HDaddCharacter('dc_xushu', ['male', 'shu', 4, ['bolzhuhai', 'xsqianxin'], []], 'refresh');
 
 	//璀璨星河
+	lib.characterSort.sp.sp_tianzhu.addArray(['panfeng']);
 	game.HDaddCharacter('maliang', ['male', 'shu', 3, ['zishu', 'xinyingyuan'], []], 'sp');
 	game.HDaddCharacter('zhanghua', ['male', 'jin', 3, ['olbihun', 'oljianhe', 'bolchuanwu'], []], 'sp');
+	game.HDmoveCharacter('panfeng', 'sp');
 
 	//系列专属包
 	lib.characterSort.sp2.sp2_waitforsort.addArray(['junk_zhangrang']);
@@ -1239,6 +1241,7 @@ export async function content(config, pack) {
 	//删除翻译
 	delete lib.translate.sp_shenpei_prefix;
 	delete lib.translate.jin_xiahouhui_prefix;
+	delete lib.translate.panfeng_prefix;
 	Object.assign(lib.translate, {
 		//修改武将翻译
 		//手杀前缀
@@ -1249,6 +1252,8 @@ export async function content(config, pack) {
 		//新杀前缀
 		dc_zhuling: '新杀朱灵',
 		dc_zhuling_prefix: '新杀',
+		re_panfeng: '新杀潘凤',
+		re_panfeng_prefix: '新杀',
 		//其他前缀
 		jsrg_sunlubansunluyu: '合孙鲁班孙鲁育',
 		jsrg_sunlubansunluyu_ab: '合大小虎',
@@ -1259,6 +1264,7 @@ export async function content(config, pack) {
 		jin_xiahouhui: '夏侯徽',
 		gz_huangzu: '黄祖',
 		gz_liuba: '刘巴',
+		panfeng: '潘凤',
 
 		//添加武将翻译
 		old_clan_xunshu: '旧荀淑',
