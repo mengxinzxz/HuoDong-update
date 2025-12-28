@@ -917,20 +917,16 @@ export async function content(config, pack) {
 	game.HDsetAudioname2('yaowu', {
 		FD_huaxiong: 'haoshi2',
 	});
-	game.HDsetAudioname2('yinghun', {
+	game.HDsetAudioname2(['yinghun', 'gzyinghun'], {
 		FD_sunjian: 'haoshi2',
 	});
-	game.HDsetAudioname2('gzyinghun', {
-		FD_sunjian: 'haoshi2',
+	game.HDsetAudioname2(['yicong', 'reyicong'], {
+		jsp_zhaoyun: 'haoshi2',
+		oldx_zhaoyun: 'haoshi2',
 	});
-	game.HDsetAudioname2('reyicong', {
-		jsp_zhaoyun: 'yicong_jsp_zhaoyun',
-	});
-	game.HDsetAudioname2('yicong', {
-		oldx_zhaoyun: 'yicong_jsp_zhaoyun',
-	});
-	game.HDsetAudioname2('new_rejianxiong', {
+	game.HDsetAudioname2(['rejianxiong', 'new_rejianxiong'], {
 		qin_lvbuwei: 'haoshi2',
+		Mbaby_caocao: 'jianxiong',
 	});
 	game.HDsetAudioname2('rerende', {
 		qin_lvbuwei: 'haoshi2',
@@ -952,11 +948,8 @@ export async function content(config, pack) {
 	game.HDsetAudioname2('huguan', {
 		bilibili_wangwang: Array.from({ length: 2 }).map((_, i) => ['', '_wangyue'].map(j => j + (i + 1))).flat().map(i => `huguan${i}.mp3`),
 	});
-	game.HDsetAudioname2(['rejianxiong', 'new_rejianxiong'], {
-		Mbaby_caocao: 'jianxiong',
-	});
 	game.HDsetAudioname2('luoyi', {
-		Mbaby_xuzhu: 'reluoyi',
+		Mbaby_re_xuzhu: 'reluoyi',
 	});
 	game.HDsetAudioname2('reganglie', {
 		Mbaby_xiahoudun: 'ganglie',
