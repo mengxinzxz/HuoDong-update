@@ -34094,7 +34094,6 @@ const packs = function () {
                 ai: { expose: 0.25 },
             },
             minimiaoduanchang: {
-                group: 'duanchang',
                 audio: 'ext:活动武将/audio/skill:2',
                 trigger: { player: 'dying' },
                 filter(event, player) {
@@ -34105,6 +34104,13 @@ const packs = function () {
                 logTarget: 'source',
                 content() {
                     trigger.source.chooseToDiscard('he', true, 2);
+                },
+                group: 'minimiaoduanchang_duanchang',
+                subSkill: {
+                    duanchang: {
+                        audio: 'minimiaoduanchang',
+                        inherit: 'duanchang',
+                    },
                 },
             },
             //喵貂蝉
@@ -34424,51 +34430,71 @@ const packs = function () {
             },
             //喵祝融
             minimiaojuxiang: {
-                group: 'juxiang1',
                 audio: 'ext:活动武将/audio/skill:2',
-                preHidden: ['juxiang1', 'minimiaojuxiang'],
-                trigger: { player: 'useCard', source: 'damageSource', global: ['useCardAfter', 'loseAfter'] },
+                trigger: {
+                    player: 'useCard',
+                    target: 'nanmanBefore',
+                    source: 'damageSource',
+                    global: ['useCardAfter', 'loseAfter', 'loseAsyncAfter'],
+                },
                 filter(event, player, name) {
-                    if (event.name != 'lose' && (!event.card || event.card.name != 'nanman')) return false;
-                    if (name == 'useCard') return game.hasPlayer(function (current) {
-                        return current != player && current.hasSkill('minidoumao');
-                    });
-                    if (name == 'useCardAfter') return event.cards.filterInD().length && event.player != player;
-                    if (event.name == 'damage') return !event.player.hasSkill('minidoumao');
-                    if (event.type != 'discard' || event.getlx === false) return false;
-                    var cards = event.cards2.slice(0);
-                    var evt = event.getl(player);
-                    if (evt?.cards?.length) cards.removeArray(evt.cards);
-                    return cards.filter(function (card) {
-                        return card.name == 'nanman' && get.position(card, true) == 'd';
-                    }).length;
+                    switch (event.name) {
+                        case 'nanman':
+                            return true;
+                        case 'useCard':
+                            if (event.card.name !== 'nanman') return false;
+                            if (name === 'useCard') return game.hasPlayer(current => current !== player && current.hasSkill('minidoumao'));
+                            return event.player !== player && event.cards?.someInD();
+                        case 'damage':
+                            if (!event.card || event.card.name !== 'nanman') return false;
+                            return !event.player.hasSkill('minidoumao');
+                        default:
+                            if (event.type != 'discard' || event.getlx === false) return false;
+                            return game.hasPlayer2(target => {
+                                if (target === player) return false;
+                                return event.getl?.(target)?.cards2?.some(card => card.name === 'nanman' && get.position(card) === 'd');
+                            });
+                    }
                 },
                 forced: true,
-                content() {
-                    'step 0'
-                    var name = event.triggername;
-                    if (trigger.name == 'damage') player.draw();
-                    else if (trigger.name == 'lose') {
-                        var cards = trigger.cards2.slice(0);
-                        var evt = trigger.getl(player);
-                        if (evt?.cards?.length) cards.removeArray(evt.cards);
-                        player.gain(cards.filter(function (card) {
-                            return card.name == 'nanman' && get.position(card, true) == 'd';
-                        }), 'gain2');
+                preHidden: true,
+                async content(event, trigger, player) {
+                    switch(trigger.name){
+                        case 'nanman':
+                            trigger.cancel();
+                            game.log(trigger.card, '对', player, '无效');
+                            break;
+                        case 'useCard':
+                            if (event.triggername === 'useCard') {
+                                const targets = game.filterPlayer(current => current != player && current.hasSkill('minidoumao'));
+                                player.line(targets);
+                                trigger.directHit.addArray(targets);
+                                game.log(targets, '不可响应', trigger.card);
+                            }
+                            else await player.gain(trigger.cards.filterInD(), 'gain2');
+                            break;
+                        case 'damage':
+                            await player.draw();
+                            break;
+                        default:
+                            await player.gain(game.filterPlayer2(target => {
+                                if (target === player) return false;
+                                return trigger.getl?.(target)?.cards2?.some(card => card.name === 'nanman' && get.position(card) === 'd');
+                            }).reduce((list, target) => {
+                                list.addArray(trigger.getl(target).cards2.filter(card => card.name === 'nanman' && get.position(card) === 'd'));
+                                return list;
+                            },[]), 'gain2');
+                            break;
                     }
-                    else if (name == 'useCardAfter' && trigger.cards.filterInD().length) player.gain(trigger.cards.filterInD(), 'gain2');
-                    else trigger.directHit.addArray(game.filterPlayer(function (current) {
-                        return current != player && current.hasSkill('minidoumao');
-                    }));
                 },
                 ai: {
                     directHit_ai: true,
                     skillTagFilter(player, tag, arg) {
-                        return arg?.card && arg.card.name == 'nanman' && arg.target && arg.target != player && arg.target.hasSkill('minidoumao');
+                        return arg?.card && arg.card.name === 'nanman' && arg.target && arg.target !== player && arg.target.hasSkill('minidoumao');
                     },
                     effect: {
                         target(card) {
-                            if (card.name == 'nanman') return [0, 1];
+                            if (card.name == 'nanman') return [0, 1, 0, 0];
                         },
                     },
                 },
