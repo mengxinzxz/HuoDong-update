@@ -1,5 +1,5 @@
 import { lib, game, ui, get, ai, _status } from '../../../noname.js';
-import security from '../../../noname/util/security.js';
+
 export let config = {
 	/*
 	//总有一天会维护好的功能
