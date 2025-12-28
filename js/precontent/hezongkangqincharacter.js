@@ -1525,7 +1525,6 @@ const packs = function () {
         if (_status['extension_活动武将_files']?.image.character.files.includes(`${i}.jpg`)) hezongkangqincharacter.character[i].img = `extension/活动武将/image/character/${i}.jpg`;
     }
     game.addGroup('daqin', '秦', '秦朝', { color: '#FFA500', image: 'ext:活动武将/image/default/daqin.png' });
-    lib.config.all.characters.push('hezongkangqincharacter');
     lib.config.all.sgscharacters.push('hezongkangqincharacter');
     if (!lib.config.characters.includes('hezongkangqincharacter')) {
         lib.group.remove('daqin');

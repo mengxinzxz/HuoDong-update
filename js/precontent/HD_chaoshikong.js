@@ -1021,7 +1021,6 @@ const packs = function () {
         if (_status['extension_活动武将_files']?.image.character.files.includes(`${i}.jpg`)) HD_chaoshikong.character[i].img = `extension/活动武将/image/character/${i}.jpg`;
         if (HD_chaoshikong.translate[i]?.startsWith('密探·')) HD_chaoshikong.translate[i + '_ab'] = HD_chaoshikong.translate[i].slice(3);
     }
-    lib.config.all.characters.push('HD_chaoshikong');
     lib.config.all.sgscharacters.push('HD_chaoshikong');
     if (!lib.config.characters.includes('HD_chaoshikong')) lib.config.characters.remove('HD_chaoshikong');
     lib.translate['HD_chaoshikong_character_config'] = '<span style="font-family: xingkai">超时空密探</span>';

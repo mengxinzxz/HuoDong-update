@@ -12827,7 +12827,6 @@ const packs = function () {
             return next;
         };
     });
-    lib.config.all.characters.push('huodongcharacter');
     lib.config.all.sgscharacters.push('huodongcharacter');
     if (!lib.config.characters.includes('huodongcharacter')) lib.config.characters.remove('huodongcharacter');
     lib.translate['huodongcharacter_character_config'] = '<span style="font-family: xingkai">其他武将</span>';

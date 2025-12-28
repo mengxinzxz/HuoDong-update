@@ -4708,7 +4708,6 @@ const packs = function () {
         nature: 'IndianRed1',
         showName: '鸿',
     });
-    lib.config.all.characters.push('MX_feihongyinxue');
     lib.config.all.sgscharacters.push('MX_feihongyinxue');
     if (!_status.connectMode && lib.config.characters.includes('MX_feihongyinxue')) {
         //飞鸿新机制
