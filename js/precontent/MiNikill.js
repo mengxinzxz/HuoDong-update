@@ -34386,16 +34386,14 @@ const packs = function () {
                 audio: 'ext:活动武将/audio/skill:2',
                 trigger: { global: ['loseAfter', 'loseAsyncAfter'] },
                 filter(event, player) {
-                    if (event.type != 'discard' || event.getlx === false) return false;
-                    if (event.name == 'lose' && event.player == player) return false;
-                    var cards = event.cards.slice(0);
-                    var evt = event.getl(player);
-                    if (evt?.cards?.length) cards.removeArray(evt.cards);
-                    return cards.filter(function (card) {
-                        var type = get.type(card, null, event.hs && event.hs.includes(card) ? event.player : false);
-                        if (!player.hasSkill('minidoumao')) return type != 'equip';
-                        return type == 'basic';
-                    }).length;
+                    if (event.type !== 'discard' || event.getlx === false) return false;
+                    return game.hasPlayer2(target => {
+                        if (target === player) return false;
+                        return event.getl?.(target)?.cards2?.some(card => {
+                            const type = get.type2(card, target);
+                            return player.hasSkill('minidoumao') ? (type === 'basic') : (type !== 'equip');
+                        });
+                    });
                 },
                 usable: 1,
                 frequent: true,
