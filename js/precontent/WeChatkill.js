@@ -67,7 +67,7 @@ const packs = function () {
             wechat_re_luxun: ['male', 'wu', 3, ['wechatreqianxun', 'relianying']],
             wechat_pangtong: ['male', 'shu', 3, ['wechatlianhuan', 'wechatniepan', 'wechathuzhu']],
             wechat_zhangxingcai: ['female', 'shu', 3, ['wechatshenxian', 'wechatqiangwu']],
-            wechat_old_zuoci: ['male', 'qun', 3, ['wechatyigui', 'wechatshendao']],
+            wechat_old_zuoci: ['male', 'qun', 3, ['wechatyigui', 'wechatshendao'], ['die:zuoci']],
             wechat_mayunlu: ['female', 'shu', 4, ['wechatfengpo', 'mashu']],
             wechat_caiwenji: ['female', 'qun', 3, ['wechatbeige', 'wechatduanchang'], ['name:蔡|琰']],
             wechat_old_zhaoxiang: ['female', 'shu', 4, ['wechatfanghun', 'wechatfuhan'], ['die:zhaoxiang', 'tempname:zhaoxiang']],
