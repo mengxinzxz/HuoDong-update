@@ -11460,7 +11460,7 @@ const packs = function () {
                 trigger: { player: 'useCardToPlayered' },
                 filter(event, player) {
                     if (!event.isFirstTarget || !player.getExpansions('bilibili_siyu').some(i => get.color(i) === 'black')) return false;
-                    return (get.type(event.card) === 'basic' || get.type(event.card) === 'trick') && get.tag(event.card, 'damage') >= 0.5;
+                    return (get.type(event.card) === 'basic' || get.type(event.card) === 'trick') && get.tag(event.card, 'damage');
                 },
                 async cost(event, trigger, player) {
                     const result = await player.chooseButton([

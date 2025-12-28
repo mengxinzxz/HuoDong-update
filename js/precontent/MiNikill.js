@@ -37960,8 +37960,10 @@ const packs = function () {
                     if (player.hasHistory('sourceDamage', evt => evt.getParent('chooseUseTarget') === next)) {
                         const targets = game.filterPlayer(target => {
                             if (player.hasHistory('useCard', evt => evt.getParent() === next && evt.targets?.includes(target))) return false;
-                            return get.inpileVCardList().some(name => {
-                                return get.tag({ name: name[2] }, 'damage') >= 0.5 && player.canUse(new lib.element.VCard({ name: name[2] }), target, false);
+                            return get.inpileVCardList().some(info => {
+                                if (['delay', 'equip'].includes(info[0])) return false;
+                                const card = new lib.element.VCard({ name: info[2], nature: info[3] });
+                                return get.tag(card, 'damage') && player.canUse(card, target, false);
                             });
                         });
                         if (targets.length) {
@@ -37969,16 +37971,20 @@ const packs = function () {
                                 return get.event().targets.includes(target);
                             }).set('targets', targets).set('ai', target => {
                                 const player = get.player();
-                                return Math.max(...get.inpileVCardList().filter(name => {
-                                    return get.tag({ name: name[2] }, 'damage') >= 0.5 && player.canUse(new lib.element.VCard({ name: name[2], nature: name[3] }), target, false);
+                                return Math.max(...get.inpileVCardList().filter(info => {
+                                    if (['delay', 'equip'].includes(info[0])) return false;
+                                    const card = new lib.element.VCard({ name: info[2], nature: info[3] });
+                                    return get.tag(card, 'damage') && player.canUse(card, target, false);
                                 }).map(name => get.effect(target, new lib.element.VCard({ name: name[2], nature: name[3] }), player, player)));
                             }).set('animate', false).forResult();
                             if (result?.bool && result.targets?.length) {
                                 const [target] = result.targets;
                                 const links = await player.chooseButton([
                                     '###力斩###<div class="text center">视为' + get.translation(target) + '对使用一张无距离和次数限制的伤害类卡牌</div>',
-                                    [get.inpileVCardList().filter(name => {
-                                        return get.tag({ name: name[2] }, 'damage') >= 0.5 && player.canUse(new lib.element.VCard({ name: name[2], nature: name[3] }), target, false);
+                                    [get.inpileVCardList().filter(info => {
+                                        if (['delay', 'equip'].includes(info[0])) return false;
+                                        const card = new lib.element.VCard({ name: info[2], nature: info[3] });
+                                        return get.tag(card, 'damage') && player.canUse(card, target, false);
                                     }), 'vcard'],
                                 ], true).set('ai', button => {
                                     const { player, target } = get.event(), name = button.link;
