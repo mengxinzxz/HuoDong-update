@@ -7889,7 +7889,6 @@ const packs = function () {
             minirelieren: {
                 audio: 'lieren',
                 audioname: ['ol_zhurong'],
-                audioname2: { Mmiao_zhurong: 'minimiaolieren' },
                 trigger: { player: 'useCardToPlayered' },
                 filter(event, player) {
                     return event.card.name == 'sha' && player.canCompare(event.target);
@@ -34459,7 +34458,7 @@ const packs = function () {
                 forced: true,
                 preHidden: true,
                 async content(event, trigger, player) {
-                    switch(trigger.name){
+                    switch (trigger.name) {
                         case 'nanman':
                             trigger.cancel();
                             game.log(trigger.card, '对', player, '无效');
@@ -34483,7 +34482,7 @@ const packs = function () {
                             }).reduce((list, target) => {
                                 list.addArray(trigger.getl(target).cards2.filter(card => card.name === 'nanman' && get.position(card) === 'd'));
                                 return list;
-                            },[]), 'gain2');
+                            }, []), 'gain2');
                             break;
                     }
                 },
@@ -34500,7 +34499,6 @@ const packs = function () {
                 },
             },
             minimiaolieren: {
-                group: ['minirelieren', 'minimiaolieren_gain'],
                 audio: 'ext:活动武将/audio/skill:2',
                 trigger: { player: 'phaseUseBegin' },
                 filter(event, player) {
@@ -34526,23 +34524,18 @@ const packs = function () {
                     }
                     else event.finish();
                     'step 2'
-                    if (result.bool) {
-                        if (target.countGainableCards(player, 'he')) player.gainPlayerCard(target, true, 'he');
+                    if (result) {
+                        if (result.target && get.position(result.target) === 'd') player.gain(result.target, 'gain2');
+                        if (result.bool && target.countGainableCards(player, 'he')) player.gainPlayerCard(target, true, 'he');
                         ui.clear();
                     }
                 },
                 ai: { expose: 0.25 },
+                group: 'minimiaolieren_lieren',
                 subSkill: {
-                    gain: {
-                        trigger: { player: 'chooseToCompareAfter' },
-                        filter(event, player) {
-                            if (!['minimiaolieren', 'minirelieren'].includes(event.getParent().name)) return false;
-                            return get.position(event.card2, true) == 'o';
-                        },
-                        direct: true,
-                        content() {
-                            player.gain(trigger.card2, 'gain2');
-                        },
+                    lieren: {
+                        audio: 'minimiaolieren',
+                        inherit: 'minirelieren',
                     },
                 },
             },
