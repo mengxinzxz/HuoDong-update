@@ -970,6 +970,13 @@ export async function content(config, pack) {
 	game.HDsetAudioname2('jsrgguanjue', {
 		Mbaby_re_guanyu: 'miniguanjue',
 	});
+	game.HDsetAudioname2('jugu', {
+		qin_lvbuwei: 'qin_jugu',
+		bilibili_litiansuo: 'haoshi2',
+	});
+	game.HDsetAudioname2('yijin', {
+		bilibili_litiansuo: 'haoshi2',
+	});
 
 	//precCI
 	//武将信息

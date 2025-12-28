@@ -20,7 +20,7 @@ const packs = function () {
             qin_bubing: ['male', 'daqin', 5, ['qin_tongpao', 'qin_fangzhen', 'qin_changbing']],
             qin_baiqi: ['male', 'daqin', 5, ['qin_wuan', 'qin_shashen', 'qin_fachu', 'qin_changsheng']],
             qin_miyue: ['female', 'daqin', 3, ['qin_zhangzheng', 'qin_taihou', 'qin_youmie', 'qin_yintui']],
-            qin_lvbuwei: ['male', 'daqin', 4, ['qin_jugu', 'qin_qihuo', 'qin_chunqiu', 'qin_baixiang']],
+            qin_lvbuwei: ['male', 'daqin', 4, ['jugu', 'qin_qihuo', 'qin_chunqiu', 'qin_baixiang']],
             qin_zhaoji: ['female', 'daqin', 3, ['qin_shanwu', 'qin_daqi', 'qin_xianji', 'qin_huoluan']],
         },
         characterIntro: {
@@ -1042,14 +1042,13 @@ const packs = function () {
                 audio: 'ext:活动武将/audio/skill:true',
                 trigger: { target: 'useCardToTargeted' },
                 filter(event, player) {
-                    return event.player != player && event.player.sex == 'male' && event.card && (event.card.name == 'sha' || get.type(event.card) == 'trick');
+                    return event.player != player && event.player.hasSex('male') && (event.card.name == 'sha' || get.type(event.card) == 'trick');
                 },
                 forced: true,
                 logTarget: 'player',
                 content() {
                     'step 0'
-                    var type = get.type2(trigger.card);
-                    var eff = get.effect(player, trigger.card, trigger.player, trigger.player);
+                    var type = get.type2(trigger.card), eff = get.effect(player, trigger.card, trigger.player, trigger.player);
                     trigger.player.chooseToDiscard('弃置一张' + get.translation(type) + '牌，否则' + get.translation(trigger.card) + '对' + get.translation(player) + '无效', function (card) {
                         return get.type2(card) == type;
                     }).set('ai', function (card) {
@@ -1060,6 +1059,25 @@ const packs = function () {
                     }).set('type', type).set('eff', eff);
                     'step 1'
                     if (!result.bool) trigger.getParent().excluded.add(player);
+                },
+                ai: {
+                    effect: {
+                        target(card, player, target, current) {
+                            if (_status.event.name !== 'qin_taihou' && (card.name === 'sha' || get.type(card) === 'trick') && get.attitude(player, target) < 0) {
+                                if (get.attitude(player, target) > 0 && current < 0) return 0;
+                                const cards = player.getDiscardableCards(player, 'h', cardx => {
+                                    if (cardx === card || card.cards?.includes(cardx) || ui.selected.cards.includes(cardx)) return false;
+                                    return get.type2(cardx) === get.type2(card);
+                                });
+                                if (!cards.length) return 0;
+                                if (cards.length <= 2) {
+                                    if (cards.some(cardx => get.value(cardx) < 7)) return [1, 0, 1, -0.5];
+                                    return [1, 0, 0.3, 0];
+                                }
+                                return [1, 0, 1, -0.5];
+                            }
+                        },
+                    },
                 },
             },
             qin_youmie: {
@@ -1124,7 +1142,7 @@ const packs = function () {
                 ai: {
                     noh: true,
                     skillTagfilter(player, tag) {
-                        if (player.countCards('h') != 1) return false;
+                        if (player.countCards('h') !== 1) return false;
                     },
                     effect: {
                         target(card, player, target) {
@@ -1153,11 +1171,7 @@ const packs = function () {
                     },
                 },
             },
-            qin_jugu: {
-                audio: 'ext:活动武将/audio/skill:true',
-                audioname2: { bilibili_litiansuo: 'haoshi2' },
-                inherit: 'jugu',
-            },
+            qin_jugu: { audio: 'ext:活动武将/audio/skill:true' },
             qin_qihuo: {
                 audio: 'ext:活动武将/audio/skill:true',
                 enable: 'phaseUse',
@@ -1445,13 +1459,11 @@ const packs = function () {
             qin_zhangzheng: '掌政',
             qin_zhangzheng_info: '准备阶段，你可以选择任意名其他角色，这些角色依次选择一项：1.弃置一张手牌；2.失去1点体力。',
             qin_taihou: '太后',
-            qin_taihou_info: '锁定技，男性角色对你使用【杀】或普通锦囊牌时，需要额外弃置一张同种类型的牌，否则此牌无效。',
+            qin_taihou_info: '锁定技，男性角色使用【杀】或普通锦囊牌指定你为目标后，其需弃置一张同种类型的牌，否则此牌对你无效。',
             qin_youmie: '诱灭',
             qin_youmie_info: '出牌阶段限一次，你可以将一张牌交给一名角色，若如此做，直到你的下个回合开始，该角色于其回合外无法使用或打出牌。',
             qin_yintui: '隐退',
             qin_yintui_info: '锁定技，当你失去最后一张手牌时，你翻面。你的武将牌背面朝上时，若受到伤害，令此伤害-1，然后摸一张牌。',
-            qin_jugu: '巨贾',
-            qin_jugu_info: '锁定技，你的手牌上限+X；游戏开始时，你多摸X张牌（X为你的体力上限）。',
             qin_qihuo: '奇货',
             qin_qihuo_backup: '奇货',
             qin_qihuo_info: '出牌阶段限一次，你可以弃置一种类型的牌，然后摸等量的牌。',
