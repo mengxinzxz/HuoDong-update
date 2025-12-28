@@ -18,7 +18,7 @@ const packs = function () {
                     ...['jushou'].map(i => `xin_${i}`),
                     ...[],
                 ].map(i => `wechat_${i}`),
-                wechat_yijiang: ['quancong', 'guyong', 'liaohua', 'gongsunyuan', 'xusheng', 'yufan', 'handang', 'caochong', 'caoxiu', 'caozhang', 'masu', 'caifuren', 'jianyong', 'caozhi', 'gaoshun', 'xiahoushi', 'xushu', 'wuguotai', 'liuchen'].map(i => `wechat_${i}`),
+                wechat_yijiang: ['quancong', 'guyong', 'liaohua', 'gongsunyuan', 'xusheng', 'yufan', 'handang', 'caochong', 'caoxiu', 'caozhang', 'xin_masu', 'caifuren', 'jianyong', 'caozhi', 'gaoshun', 'xiahoushi', 'xushu', 'wuguotai', 'liuchen'].map(i => `wechat_${i}`),
                 wechat_xianding: [
                     ...(() => {
                         let list = ['liuling', 'wangrong', 'xiangxiu'].map(i => `mp_${i}`);
@@ -94,7 +94,7 @@ const packs = function () {
             wechat_lukang: ['male', 'wu', 4, ['drlt_qianjie', 'wechatjueyan', 'drlt_huairou']],
             wechat_jianyong: ['male', 'shu', 3, ['wechatqiaoshui', 'wechatjyzongshi']],
             wechat_caifuren: ['female', 'qun', 3, ['wechatxinqieting', 'rexianzhou'], ['name:蔡|null']],
-            wechat_masu: ['male', 'shu', 3, ['wechatsanyao', 'rezhiman']],
+            wechat_xin_masu: ['male', 'shu', 3, ['wechatsanyao', 'rezhiman']],
             wechat_sp_taishici: ['male', 'qun', 4, ['wechatjixu'], ['name:太史|慈']],
             wechat_buzhi: ['male', 'wu', 3, ['hongde', 'wechatdingpan']],
             wechat_caozhang: ['male', 'wei', 4, ['wechatrejiangchi']],
@@ -16946,7 +16946,7 @@ const packs = function () {
             wechat_caifuren: '小程序蔡夫人',
             wechatqieting: '窃听',
             wechatqieting_info: '其他角色的回合结束时，若其本回合内未对另一名角色造成过伤害，则你可选择一项：①摸一张牌。②随机获得其一张手牌。③将其装备区内的一张牌移动至你的装备区。',
-            wechat_masu: '小程序马谡',
+            wechat_xin_masu: '小程序马谡',
             wechatsanyao: '散谣',
             wechatsanyao_info: '出牌阶段限一次，你可以弃置一张牌并对一名其他角色造成1点伤害。',
             wechat_sp_taishici: '小程序太史慈',
