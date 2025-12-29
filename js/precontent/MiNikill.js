@@ -37521,10 +37521,9 @@ const packs = function () {
                     event.set('noconfirm', true);
                     event.setContent(async function (event) {
                         event.switchToAuto = function () {
-                            if (player.isMine()) {
-                                // 喜欢偷懒让AI帮你玩是吧喵，看AI怎么摆烂制裁你哦喵
-                                onGameFailed('switchauto');
-                            }
+                            // 喜欢偷懒让AI帮你玩是吧喵，看AI怎么摆烂制裁你哦喵
+                            // 孩子不行，AI也是有能力玩的
+                            onGameFailed('switchauto');
                         };
 
                         // 游戏的主循环喵，主体逻辑都在这里喵
@@ -37670,7 +37669,7 @@ const packs = function () {
                             player.removeTip(skill);
                         },
                         intro: { content: '已解锁花色：$' },
-                    }
+                    },
                 },
                 intro: {
                     markcount: 'expansion',
@@ -41814,15 +41813,15 @@ const packs = function () {
             '#ext:活动武将/audio/skill/mininiantazhen2': '且看我匹马踏连营。',
             '#ext:活动武将/audio/skill/mininiandoupo1': '哼！你们一起上吧。',
             '#ext:活动武将/audio/skill/mininiandoupo2': '哼！不过是乌合之众。',
-            '#ext:活动武将/audio/skill/mininianying_lb1': '哈哈哈，此间有功名，正可以汝首为阶。',
-            '#ext:活动武将/audio/skill/mininianying_lb2': '此身纵横天下，未逢敌手！',
+            '#ext:活动武将/audio/skill/mininianying_Mnian_lvbu1': '哈哈哈，此间有功名，正可以汝首为阶。',
+            '#ext:活动武将/audio/skill/mininianying_Mnian_lvbu2': '此身纵横天下，未逢敌手！',
             '#ext:活动武将/audio/die/Mnian_lvbu:die': '待我归来日，定斩一切敌。',
             '#ext:活动武将/audio/skill/mininianxinghan1': '汉贼不两立，王业不偏安！',
             '#ext:活动武将/audio/skill/mininianxinghan2': '著信义于四海，揽英杰于九州，诚如是，则汉室可兴。',
             '#ext:活动武将/audio/skill/mininianliaoyuan1': '星星之火，亦可燎原！',
             '#ext:活动武将/audio/skill/mininianliaoyuan2': '管乐用兵，未必过此。',
-            '#ext:活动武将/audio/skill/mininianying_zgl1': '今兵甲已足，当奖率三军。',
-            '#ext:活动武将/audio/skill/mininianying_zgl2': '策先定于内，功后成于外。',
+            '#ext:活动武将/audio/skill/mininianying_Mnian_zhugeliang1': '今兵甲已足，当奖率三军。',
+            '#ext:活动武将/audio/skill/mininianying_Mnian_zhugeliang2': '策先定于内，功后成于外。',
             '#ext:活动武将/audio/die/Mnian_zhugeliang:die': '运去英雄不自由。',
             '#ext:活动武将/audio/skill/minishuangshu1': '有乔选乔，无乔不杀。',
             '#ext:活动武将/audio/skill/minishuangshu2': '大乔，小乔，你要怎么选？',
@@ -41915,8 +41914,8 @@ const packs = function () {
             '#ext:活动武将/audio/skill/mininiansuhui2': '溯洄从之，道阻且长。',
             '#ext:活动武将/audio/skill/mininianchongzou1': '凤笙龙管，重奏人间曲。',
             '#ext:活动武将/audio/skill/mininianchongzou2': '再来一曲吧。',
-            '#ext:活动武将/audio/skill/mininianying_zy1': '奇姿联璧耀江东。',
-            '#ext:活动武将/audio/skill/mininianying_zy2': '双橹摇江催战鼓，虎踞江左霸业成。',
+            '#ext:活动武将/audio/skill/mininianying_Mnian_zhouyu1': '奇姿联璧耀江东。',
+            '#ext:活动武将/audio/skill/mininianying_Mnian_zhouyu2': '双橹摇江催战鼓，虎踞江左霸业成。',
             '#ext:活动武将/audio/die/Mnian_zhouyu:die': '今番不见，另有来日。',
             '#ext:活动武将/audio/skill/minifightbiaoxi1': '敌将无胆，一击可擒！',
             '#ext:活动武将/audio/skill/minifightbiaoxi2': '折敌锋锐，余众不足为惧！',
@@ -41925,16 +41924,12 @@ const packs = function () {
             '#ext:活动武将/audio/die/Mfight_zhangliao:die': '如此下场，徒令小儿耻笑……',
             '#ext:活动武将/audio/skill/mininiandengji1': '登阶踏星，以临紫微。',
             '#ext:活动武将/audio/skill/mininiandengji2': '充列于北辰，升降焉可知。',
-            '#ext:活动武将/audio/skill/mininianying_cp1': '人生居天壤之间，何不恣意遨游？',
-            '#ext:活动武将/audio/skill/mininianying_cp2': '嘉肴重叠来，珍果在一傍。',
-            '#ext:活动武将/audio/skill/mininiansongwei1': '行教化之道，彰四时之功。',
-            '#ext:活动武将/audio/skill/mininiansongwei2': '孤天威浩荡，当享四海九州！',
-            '#ext:活动武将/audio/skill/mininianying_cp1': '人生居天壤之间，何不恣意遨游？',
-            '#ext:活动武将/audio/skill/mininianying_cp2': '嘉肴重叠来，珍果在一傍。',
-            '#ext:活动武将/audio/skill/mininiansongwei1': '行教化之道，彰四时之功。',
-            '#ext:活动武将/audio/skill/mininiansongwei2': '孤天威浩荡，当享四海九州！',
+            '#ext:活动武将/audio/skill/mininianying_Mnian_caopi1': '人生居天壤之间，何不恣意遨游？',
+            '#ext:活动武将/audio/skill/mininianying_Mnian_caopi2': '嘉肴重叠来，珍果在一傍。',
             '#ext:活动武将/audio/skill/mininianchengming1': '天命在我！',
             '#ext:活动武将/audio/skill/mininianchengming2': '览公卿之议，顺皇天之命。',
+            '#ext:活动武将/audio/skill/mininiansongwei1': '行教化之道，彰四时之功。',
+            '#ext:活动武将/audio/skill/mininiansongwei2': '孤天威浩荡，当享四海九州！',
             '#ext:活动武将/audio/skill/minikangkai_Mnian_caopi': '列马踏阵，胆气纵横！',
             '#ext:活动武将/audio/skill/minijiangchi_Mnian_caopi': '猛虎破柙，干骑随风！',
             '#ext:活动武将/audio/skill/miniluoying_Mnian_caopi': '白鹤衔文，才蔽日月。',
