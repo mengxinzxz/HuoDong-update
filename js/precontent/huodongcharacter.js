@@ -9989,7 +9989,7 @@ const packs = function () {
                 },
                 async content(event, trigger, player) {
                     const { target } = event;
-                    const cards = await player.choosePlayerCard(target, true, 'h').forResultCards();
+                    const cards = await player.choosePlayerCard(target, true, 'h').forResult('cards');
                     if (!cards?.length) return;
                     await player.showCards(cards, get.translation(player) + '对' + get.translation(target) + '发动了【明察】');
                     const goon1 = player.countCards('he'), goon2 = target.countCards('he');
@@ -10008,7 +10008,7 @@ const packs = function () {
                                 const cardx = get.event().cards[0];
                                 if (get.attitude(player, target) > 0 && get.type2(card) != get.type2(cardx)) return 10;
                                 return 6 - get.value(card);
-                            }).set('cards', cards).forResultCards();
+                            }).set('cards', cards).forResult('cards');
                             if (give?.length && get.type2(give[0]) != get.type2(cards[0])) await player.draw();
                         };
                     }
@@ -10211,7 +10211,7 @@ const packs = function () {
                                     if (att < 3) return 0;
                                     if (target.hasSkillTag('nogain')) att /= 10;
                                     return att;
-                                }).forResultTargets();
+                                }).forResult('targets');
                                 if (targets && targets.length) {
                                     const next = targets[0].gain(cards, 'gain2');
                                     next.giver = player;
