@@ -15581,7 +15581,7 @@ const packs = function () {
                         onremove(player, skill) {
                             let tags = player.getCards('h', card => card.gaintag?.some(tag => tag.startsWith(skill)));
                             if (tags.length) {
-                                tags = tags.slice().map(card => card.gaintag.find(tag => tag.startsWith(skill))).unique();
+                                tags = tags.map(card => card.gaintag.find(tag => tag.startsWith(skill))).unique();
                                 tags.forEach(tag => player.removeGaintag(tag));
                             }
                         },

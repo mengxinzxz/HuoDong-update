@@ -495,7 +495,7 @@ const packs = function () {
             Mmiao_mayunlu: ['female', 'shu', 4, ['minimiaoyuma', 'minimiaofengpo', 'minidoumao']],
             //念
             Mnian_zhugeliang: ['male', 'shu', 3, ['mininianxinghan', 'mininianliaoyuan', 'mininianying_zgl'], ['name:诸葛|亮']],
-            Mnian_lvbu: ['male', 'qun', 5, ['mininiantazhen', 'mininiandoupo', 'mininianying_lb'], ['forbidai']],
+            Mnian_lvbu: ['male', 'qun', 5, ['mininiantazhen', 'mininiandoupo', 'mininianying_lb']],
             Mnian_zhouyu: ['male', 'wu', 4, ['mininiansuhui', 'mininianchongzou', 'mininianying_zy']],
             Mnian_caopi: ['male', 'wei', 3, ['mininiandengji', 'mininianchengming', 'mininianying_cp', 'mininiansongwei'], ['zhu', 'forbidai']],
             //战
@@ -36071,7 +36071,7 @@ const packs = function () {
                         dialog.videoId = videoId;
                         dialog.open();
                     }, player, videoId);
-                    const result = player === game.me ? await player.chooseButton().set('dialog', get.idDialog(videoId)).set('selectButton', () => {
+                    const result = await player.chooseButton(get.idDialog(videoId)).set('selectButton', () => {
                         const { player, dialog } = get.event(), kill = get.info('mininiantazhen').kill(ui.selected.buttons.map(i => i.link), player);
                         if (dialog && player === game.me) {
                             const nums = Array.from({ length: 3 }).map((_, i) => i);
@@ -36088,20 +36088,83 @@ const packs = function () {
                         }
                         return [1, 1 + get.event().player.getHp() + ui.selected.buttons.filter(i => i.link.split('|')[0] == 'horse').length * 2];
                     }).set('filterButton', button => {
-                        if (!get.event().list.slice().flat().includes(button.link)) return false;
-                        if (!ui.selected.buttons.length) return (button.link.split('|').length > 2) === false;
+                        if (!get.event().list.flat().includes(button.link)) return false;
+                        if (!ui.selected.buttons.length) return button.link.split('|').length <= 2;
                         const findXY = function (item) {
                             const nums = item.split('|').reverse()[0].split('+');
                             return [parseInt(nums[0]), parseInt(nums[1])];
                         };
-                        const buttonPosition = findXY(button.link);
-                        const itemPosition = findXY(ui.selected.buttons.slice().reverse()[0].link);
+                        const buttonPosition = findXY(button.link), itemPosition = findXY(ui.selected.buttons.slice().reverse()[0].link);
                         if (Math.abs(buttonPosition[0] - itemPosition[0]) > 1 || Math.abs(buttonPosition[1] - itemPosition[1]) > 1) return false;
                         if (buttonPosition[0] == itemPosition[0] || buttonPosition[1] == itemPosition[1]) return true;
                         const dx = buttonPosition[0] - itemPosition[0], dy = buttonPosition[1] - itemPosition[1];
                         const allPosition = ui.selected.buttons.map(but => findXY(but.link));
                         return !allPosition.some(p => p[0] == itemPosition[0] + dx && p[1] == itemPosition[1]) || !allPosition.some(p => p[0] == itemPosition[0] && p[1] == itemPosition[1] + dy);
-                    }).set('list', list).set('ai', () => 1 + Math.random()).set('custom', {
+                    }).set('list', list).set('processAI', () => {
+                        const event = get.event(), { player, list } = event;
+                        const findXY = function (item) {
+                            const nums = item.split('|').reverse()[0].split('+');
+                            return [parseInt(nums[0]), parseInt(nums[1])];
+                        };
+                        const canMove = function (path, next) {
+                            if (!path.length) return next.split('|').length <= 2;
+                            const [x1, y1] = findXY(path[path.length - 1]), [x2, y2] = findXY(next);
+                            if (Math.abs(x1 - x2) > 1 || Math.abs(y1 - y2) > 1) return false;
+                            if (x1 === x2 || y1 === y2) return true;
+                            const dx = x2 - x1, dy = y2 - y1;
+                            return !path.some(p => {
+                                const [px, py] = findXY(p);
+                                return (px === x1 + dx && py === y1) || (px === x1 && py === y1 + dy);
+                            });
+                        };
+                        let allPaths = [];
+                        const searchPath = function (path, used) {
+                            const horses = path.filter(i => i.split('|')[0] === 'horse').length;
+                            const kill = get.info('mininiantazhen').kill(path.slice(), player);
+                            if (kill[2].length > 0 || path.length < player.getHp() + 1 + horses * 2) allPaths.push(path.slice());
+                            for (const item of list.flat()) {
+                                if (used.has(item) || !canMove(path, item)) continue;
+                                if (path.length + 1 > player.getHp() + 1 + horses * 2) continue;
+                                used.add(item);
+                                path.push(item);
+                                searchPath(path, used);
+                                path.pop();
+                                used.delete(item);
+                            }
+                        };
+                        searchPath([], new Set());
+                        let bestScore = -Infinity, bestPath;
+                        for (const path of allPaths) {
+                            const kill = get.info('mininiantazhen').kill(path.slice(), player);
+                            if (kill[2].length > 0) {
+                                let score = 0;
+                                const targets = kill[2].map(i => (_status.connectMode ? lib.playerOL : game.playerMap)[i[1]]);
+                                const pos = path.map(findXY), nums = [0, 1, 2];
+                                if (nums.some(n => !pos.some(p => p[1] === n))) {
+                                    score += targets.reduce((sum, target) => sum + get.effect(target, { name: 'shunshou_copy2' }, player, player), 0);
+                                }
+                                if (nums.some(n => !pos.some(p => p[0] === n))) {
+                                    const card = new lib.element.VCard({ name: 'sha' });
+                                    score += targets.reduce((sum, target) => {
+                                        if (player.canUse(card, target, false)) sum += get.effect(target, card, player, player);
+                                        return sum;
+                                    }, 0);
+                                }
+                                if (!pos.some(p => p[0] === 1 && p[1] === 1)) {
+                                    const card = new lib.element.VCard({ name: 'sha' });
+                                    score += targets.reduce((sum, target) => {
+                                        if (target.canUse(card, player, false) && get.effect(player, card, target, target) > 0) sum -= get.effect(player, card, target, player);
+                                        return sum;
+                                    }, 0);
+                                }
+                                if (score > bestScore) {
+                                    bestScore = score;
+                                    bestPath = path;
+                                }
+                            }
+                        }
+                        return { bool: Boolean(bestPath), links: bestPath };
+                    }).set('custom', {
                         add: {
                             confirm(bool) {
                                 if (bool != true) return;
@@ -36153,17 +36216,13 @@ const packs = function () {
                         },
                     }).set('filterOk', () => {
                         return ui.selected.buttons.some(i => i.link.split('|').length > 2)
-                    }).forResult() : { bool: false }/*await new Promise((resolve) => {
-                        setTimeout(() => {
-                            resolve({ bool: false });
-                        }, 5000);
-                    })*/;
+                    }).forResult();
                     game.broadcastAll((originalTimeout, videoId) => {
                         const dialog = get.idDialog(videoId);
                         if (dialog) dialog.close();
                         if (_status.connectMode) lib.configOL.choose_timeout = originalTimeout;
                     }, originalTimeout, videoId);
-                    if (result.bool) {
+                    if (result?.bool && result.links?.length) {
                         const kill = get.info('mininiantazhen').kill(result.links.slice(), player);
                         if (kill[2].length > 0) {
                             const targets = kill[2].map(i => (_status.connectMode ? lib.playerOL : game.playerMap)[i[1]]).sortBySeat();
@@ -36178,7 +36237,7 @@ const packs = function () {
                                 const nums = item.split('|').reverse()[0].split('+');
                                 return [parseInt(nums[0]), parseInt(nums[1])];
                             };
-                            const allPosition = result.links.map(but => findXY(but));
+                            const allPosition = result.links.map(findXY);
                             const nums = Array.from({ length: 3 }).map((_, i) => i);
                             if (nums.some(num => !allPosition.some(l => l[1] == num))) {
                                 player.popup('一整列', 'wood');
@@ -37734,7 +37793,7 @@ const packs = function () {
                 async nianyingContent(player) {
                     if (!game.hasPlayer(current => current != player && current.countCards('h'))) return;
                     const { result } = await player.chooseButtonTarget({
-                        createDialog: ['###恣意而为###<div class="text center">选择一名其他角色和一种花色，随机获得其一张此花色的手牌</div>', [lib.suit.slice().map(i => ['', '', `lukai_${i}`]), 'vcard']],
+                        createDialog: ['###恣意而为###<div class="text center">选择一名其他角色和一种花色，随机获得其一张此花色的手牌</div>', [lib.suit.map(i => ['', '', `lukai_${i}`]), 'vcard']],
                         forced: true,
                         complexSelect: true,
                         filterTarget(card, player, target) {
