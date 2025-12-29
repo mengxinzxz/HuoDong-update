@@ -164,6 +164,7 @@ const packs = function () {
             wechat_sp_zhenji: ['female', 'qun', 3, ['mbbojian', 'wechatjiwei']],
             wechat_re_zhaoyun: ['male', 'shu', 4, ['wechatlongdan', 'wechatyajiao']],
             wechat_re_liubiao: ['male', 'qun', 3, ['wechatrezishou', 'wechatrezongshi']],
+            wechat_ruanji: ['male', 'wei', 3, ['wechatyonghuai', 'wechatqiongtu']],
             //神武将
             wechat_shen_zhugeliang: ['male', 'shen', 3, ['wechatqixing', 'wechatjifeng', 'wechattianfa'], ['shu', 'name:诸葛|亮']],
             wechat_shen_lvmeng: ['male', 'shen', 3, ['shelie', 'wechatgongxin'], ['wu']],
@@ -241,8 +242,6 @@ const packs = function () {
             wechat_zhi_caojie: ['female', 'qun', 4, ['wechatweiqi', 'wechatxiangyi']],
             wechat_zhi_caocao: ['male', 'wei', 4, ['wechatjishi', 'wechatercai', 'wechatquanshi']],
             wechat_zhi_zhangjiao: ['male', 'qun', 4, ['wechatzhongxin', 'wechattianqi']],
-            // 竹林七贤
-            wechat_ruanji: ['male', 'wei', 3, ['wechatyonghuai', 'wechatqiongtu']],
         },
         characterIntro: {
         },
@@ -17581,8 +17580,6 @@ const packs = function () {
             wechatzhiti: '止啼',
             wechatzhiti_info: '锁定技。①已受伤的其他角色手牌上限-1；②当你和已受伤的角色拼点或【决斗】胜利或受到伤害后，你恢复一个装备栏。',
             wechat_ruanji: '小程序阮籍',
-            wechatzhiti: '止啼',
-            wechatzhiti_info: '锁定技。①已受伤的其他角色手牌上限-1；②当你和已受伤的角色拼点或【决斗】胜利或受到伤害后，你恢复一个装备栏。',
             wechatyonghuai: '咏怀',
             wechatyonghuai_info: '出牌阶段限一次，你可以弃置一张牌。若此牌的类型为：1.基本牌，你摸两张牌且本回合你的基本牌不计入手牌上限；2.锦囊牌，你视为使用一张锦囊牌且你可以为此牌增加或减少一个目标（此牌目标数至少为1）；3.装备牌，你观看牌堆顶的三张牌，获得其中一张牌并将剩余牌以任意顺序置于牌堆顶或牌堆底。',
             wechatqiongtu: '穷途',
@@ -17789,6 +17786,11 @@ const packs = function () {
             "#ext:活动武将/audio/skill/wechatweiwo1": "且凭书生意气，指点万里舆图。",
             "#ext:活动武将/audio/skill/wechatweiwo2": "挥麈扬策，筹无不中。",
             "#ext:活动武将/audio/die/wechat_zhiyin_luxun:die": "若能消至尊之虑，臣愿以死了之！",
+            '#ext:活动武将/audio/skill/wechatyonghuai1': '吾言鄙钝，唯略抒吾怀耳。',
+            '#ext:活动武将/audio/skill/wechatyonghuai2': '自正史年来，时风如此，复何多论。',
+            '#ext:活动武将/audio/skill/wechatqiongtu1': '啊！欲行千里者，止于穷途；志怀八方者，空老林泉。',
+            '#ext:活动武将/audio/skill/wechatqiongtu2': '欲折吾志为糠秕？吾宁不涉此穷途！',
+            '#ext:活动武将/audio/die/wechat_ruanji:die': '时无英雄，使竖子成名。',
         },
     };
     WeChatkill_sight();//加载欢杀界面逻辑
