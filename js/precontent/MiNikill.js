@@ -28508,7 +28508,7 @@ const packs = function () {
                     else {
                         const links = cards.length > 1 ? await player.chooseButton(['兴乱：选择获得其中一张', cards], true).set('ai', button => {
                             return get.value(button.link, get.player());
-                        }).forResult('links'); : cards;
+                        }).forResult('links') : cards;
                         if (links?.length) await player.gain(links, 'gain2');
                     }
                 },
