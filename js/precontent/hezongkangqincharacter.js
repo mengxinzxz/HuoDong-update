@@ -80,6 +80,7 @@ const packs = function () {
                     },
                 },
                 fullimage: true,
+                derivation: 'qin_shangyang',
             },
             qin_zhenlongchangjian: {
                 type: 'equip',
