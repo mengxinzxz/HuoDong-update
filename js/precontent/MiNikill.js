@@ -505,7 +505,7 @@ const packs = function () {
             Mfight_dianwei: ['male', 'wei', 5, ['minifightchuanglie', 'minifightkuangji']],
             Mfight_machao: ['male', 'qun', 4, ['minifightdangfeng', 'minifighthaiji']],
             // 隐
-            Myin_xushu: ['male', 'wei', 3, ['miniyinyinxing', 'miniyinjujian'], ['forbidai']],
+            Myin_xushu: ['male', 'wei', 3, ['miniyinyinxing', 'miniyinjujian']],
         },
         characterIntro: {
             Mbaby_change: '嫦娥，中国古代神话中的人物，又名恒我、恒娥、姮娥、常娥、素娥，羿之妻，因偷吃了不死药而飞升至月宫。嫦娥的故事最早出现在商朝卦书 《归藏》。而嫦娥奔月的完整故事最早记载于西汉《淮南子·览冥训》。东汉时期，嫦娥与羿的夫妻关系确立，而嫦娥在进入月宫后变成了捣药的蟾蜍。南北朝以后，嫦娥的形象回归为女儿身。汉画像中，嫦娥人头蛇身，头梳高髻，身着宽袖长襦，身后长尾上饰有倒钩状细短羽毛。南北朝以后，嫦娥的形象被描绘成绝世美女。南朝陈后主陈叔宝曾把宠妃张丽华比作嫦娥。唐朝诗人白居易曾用嫦娥夸赞邻家少女不可多得的容貌。',
@@ -36133,7 +36133,7 @@ const packs = function () {
                             }
                         };
                         searchPath([], new Set());
-                        let bestScore = -Infinity, bestPath;
+                        let bestScore = 0, bestPath;
                         for (const path of allPaths) {
                             const kill = get.info('mininiantazhen').kill(path.slice(), player);
                             if (kill[2].length > 0) {
@@ -38931,32 +38931,136 @@ const packs = function () {
                 enable: ['chooseToUse', 'chooseToRespond'],
                 filter(event, player) {
                     if (event.miniyinyinxing) return false;
-                    if (event.type == 'phase') return true;
+                    if (event.type === 'phase') return true;
                     return event.miniyinyinxingList?.length;
                 },
                 filterCard: true,
                 selectCard: [2, Infinity],
                 filterOk() {
-                    const player = get.player();
-                    const type = get.info('miniyinyinxing').getType(ui.selected.cards, get.player());
-                    if (typeof type != 'string') return false;
-                    if (type === '对子') return get.event().miniyinyinxingList?.some(info => info[0] == 'basic');
-                    if (type === '三顺') return get.event().miniyinyinxingList?.some(info => info[0] == 'trick');
-                    if (get.event().type === 'phase' && ['三条', '炸弹'].includes(type)) {
-                        if (ui.selected.cards.some(card => get.position(card) == 's' || !lib.filter.cardDiscardable(card, player, 'miniyinyinxing'))) {
-                            return false;
+                    const event = get.event(), player = event.player, cards = ui.selected.cards;
+                    const type = get.info('miniyinyinxing').getType(cards, get.player());
+                    if (typeof type !== 'string' || !['三条', '炸弹', '对子', '三顺'].includes(type)) return false;
+                    if (['三条', '炸弹'].includes(type)) {
+                        if (event.type !== 'phase') return false;
+                        return !cards.some(card => get.position(card) == 's' || !lib.filter.cardDiscardable(card, player, 'miniyinyinxing'));
+                    }
+                    if (!event.miniyinyinxingList || !cards.every(card => {
+                        const mod2 = game.checkMod(card, player, 'unchanged', 'cardEnabled2', player);
+                        if (mod2 !== 'unchanged') return mod2;
+                        if (event.name === 'chooseToRespond') {
+                            const mod = game.checkMod(card, player, 'unchanged', 'cardRespondable', player);
+                            if (mod !== 'unchanged') return mod;
                         }
                         return true;
-                    }
+                    })) return false;
+                    if (type === '对子') return event.miniyinyinxingList.some(info => info[0] === 'basic');
+                    if (type === '三顺') return event.miniyinyinxingList.some(info => info[0] === 'trick');
                     return false;
                 },
                 position: 'hs',
                 discard: false,
                 lose: false,
                 delay: false,
-                // check(card){
-                //     // TODO
-                // },
+                check(card) {
+                    const player = get.player(), event = get.event(), cards = player.getCards('hs');
+                    const map = { '炸弹': [], '三条': [], '对子': [], '顺子': [] };
+                    const combinations = function (cards, num) {
+                        let result = [];
+                        const helper = function (start, combo) {
+                            if (combo.length === num) {
+                                result.push(combo.slice());
+                                return;
+                            }
+                            for (let i = start; i < cards.length; i++) {
+                                combo.push(cards[i]);
+                                helper(i + 1, combo);
+                                combo.pop();
+                            }
+                        }
+                        helper(0, []);
+                        return result;
+                    };
+                    if (cards.length >= 2) {
+                        const pairs = combinations(cards, 2);
+                        for (const list of pairs) {
+                            const type = lib.skill.miniyinyinxing.getType(list, player);
+                            if (type === '对子') map['对子'].push(list);
+                        }
+                    }
+                    if (cards.length >= 3) {
+                        const triples = combinations(cards, 3);
+                        for (const list of triples) {
+                            const type = lib.skill.miniyinyinxing.getType(list, player);
+                            if (event.type === 'phase' && type === '三条') map['三条'].push(list);
+                            if (type === '三顺') map['顺子'].push(list);
+                        }
+                    }
+                    if (event.type === 'phase' && cards.length >= 4) {
+                        const quads = combinations(cards, 4);
+                        for (const list of quads) {
+                            const type = lib.skill.miniyinyinxing.getType(list, player);
+                            if (type === '炸弹') map['炸弹'].push(list);
+                        }
+                    }
+                    let map2 = new Map([]);
+                    for (const item in map) {
+                        for (const list of map[item]) {
+                            if (item === '炸弹' || item === '三条') {
+                                if (list.some(cardx => get.position(cardx) == 's' || !lib.filter.cardDiscardable(cardx, player, 'miniyinyinxing'))) continue;
+                                if (item === '炸弹') map2.set(list, 9.1 * game.countPlayer(target => target === player ? 0 : get.damageEffect(target, player, player)));
+                                else {
+                                    const cards2 = [...Array.from(ui.cardPile.childNodes), ...Array.from(ui.discardPile.childNodes)].filter(card => {
+                                        const type = get.type(card);
+                                        if (type === 'equip') return game.hasPlayer(target => target.canEquip(card));
+                                        if (type === 'delay') return game.hasPlayer(target => target.canAddJudge(card));
+                                        return false;
+                                    });
+                                    map2.set(list, (() => {
+                                        if (!cards2.length) return 0;
+                                        return Math.max(...cards2.map(cardx => {
+                                            const type = get.type(cardx);
+                                            return game.filterPlayer(target => {
+                                                return type === 'equip' ? target.canEquip(cardx) : target.canAddJudge(cardx);
+                                            }).map(target => get.effect(target, cardx, player, player));
+                                        }).flat());
+                                    })());
+                                }
+                            }
+                            else {
+                                if (!list.every(cardx => {
+                                    const mod2 = game.checkMod(cardx, player, 'unchanged', 'cardEnabled2', player);
+                                    if (mod2 !== 'unchanged') return mod2;
+                                    if (event.name === 'chooseToRespond') {
+                                        const mod = game.checkMod(cardx, player, 'unchanged', 'cardRespondable', player);
+                                        if (mod !== 'unchanged') return mod;
+                                    }
+                                    return true;
+                                })) continue;
+                                if (event.name !== 'chooseToUse' || event.type !== 'phase') map2.set(list, 1 + Math.random());
+                                else {
+                                    const vcards = event.miniyinyinxingList.filter(info => {
+                                        if (info[0] !== { '对子': 'basic', '三顺': 'trick' }[item]) return false;
+                                        return event.filterCard(get.autoViewAs({ name: info[2], nature: info[3] }, list), player, event);
+                                    });
+                                    map2.set(list, (() => {
+                                        if (!vcards.length) return 0;
+                                        return Math.max(...vcards.map(info => {
+                                            return player.getUseValue(get.autoViewAs({ name: info[2], nature: info[3] }, list), true, true);
+                                        }));
+                                    })());
+                                }
+                            }
+                        }
+                    }
+                    let selected = [], score = 0;
+                    for (const [list, num] of Array.from(map2.entries())) {
+                        if (num > score) {
+                            score = num;
+                            selected = list;
+                        }
+                    }
+                    return (score > 0 && selected.includes(card)) ? 1 : -1;
+                },
                 async content(event, trigger, player) {
                     const evt = event.getParent(2);
                     const { cards } = event;
@@ -39123,9 +39227,7 @@ const packs = function () {
                     respondShan: true,
                     save: true,
                     order(item, player) {
-                        if (_status.event.type == 'phase') {
-                            return 7.1;
-                        }
+                        if (_status.event.type === 'phase') return 9.1;
                         return 4;
                     },
                     result: {
@@ -39304,7 +39406,8 @@ const packs = function () {
                                     for (const n in pileMap) {
                                         const have = haveMap[n] || 0;
                                         const need = 4 - have;
-                                        if (need > 0 && need <= num && pileMap[n].length >= need) result.push(...pileMap[n].slice(0, need));
+                                        if (need <= 0) continue;//炸弹需要处理手里已有完整炸弹，否则search+hasTypeSubset会引发指数爆炸导致卡死
+                                        if (need <= num && pileMap[n].length >= need) result.push(...pileMap[n].slice(0, need));
                                     }
                                     return result;
                                 }
