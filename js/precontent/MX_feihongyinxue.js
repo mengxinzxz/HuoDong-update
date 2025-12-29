@@ -2658,7 +2658,7 @@ const packs = function () {
                 audio: 'cuijue',
                 enable: 'phaseUse',
                 filter(event, player) {
-                    return player.countDiscardableCards(player, 'he') > 0;;
+                    return player.countDiscardableCards(player, 'he') > 0;
                 },
                 filterCard(card, player) {
                     const event = get.event(), func = player => {
