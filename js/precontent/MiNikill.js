@@ -497,7 +497,7 @@ const packs = function () {
             Mnian_zhugeliang: ['male', 'shu', 3, ['mininianxinghan', 'mininianliaoyuan', 'mininianying_zgl'], ['name:诸葛|亮']],
             Mnian_lvbu: ['male', 'qun', 5, ['mininiantazhen', 'mininiandoupo', 'mininianying_lb']],
             Mnian_zhouyu: ['male', 'wu', 4, ['mininiansuhui', 'mininianchongzou', 'mininianying_zy']],
-            Mnian_caopi: ['male', 'wei', 3, ['mininiandengji', 'mininianchengming', 'mininianying_cp', 'mininiansongwei'], ['zhu', 'forbidai']],
+            Mnian_caopi: ['male', 'wei', 3, ['mininiandengji', 'mininianchengming', 'mininianying_cp', 'mininiansongwei'], ['zhu']],
             //战
             Mfight_huangzhong: ['male', 'shu', 4, ['minifightdingjun', 'minifightlizhan']],
             Mfight_zhangliao: ['male', 'wei', 4, ['minifightbiaoxi', 'minifightpozhen']],
@@ -36990,6 +36990,7 @@ const packs = function () {
                     function createUI(videoId, gameWidth, gameHeight, gameMap, NAMES) {
                         const dialog = ui.create.dialog('曹丕登阶Demo', 'forcebutton');
                         dialog.videoId = videoId;
+                        dialog
                         dialog.addText('等待开始...');
                         dialog.classList.add('dengjie-game');
 
@@ -37055,10 +37056,10 @@ const packs = function () {
                         dialog.open();
 
                         const width = dialog.clientWidth + 1;
-                        const height = dialog.clientHeight + 1;
                         dialog.style.width = width + 'px';
-                        dialog.style.height = height + 'px';
                         dialog.style.left = `calc(50% - ${width / 2}px)`;
+                        dialog.style.height = 'auto';
+                        dialog.style.minHeight = 'max-content';
                     }
 
                     let isAI = false;
@@ -37232,7 +37233,7 @@ const packs = function () {
 
                             const dialog = get.idDialog(id);
 
-                            game.me.chooseButton(dialog)
+                            player.chooseButton(dialog)
                                 .set('noconfirm', true)
                                 .setContent(async (event, trigger, player) => {
                                     const promise = new Promise(resolve => {
@@ -37494,7 +37495,7 @@ const packs = function () {
 
                     function onGameOver() {
                         game.broadcastAll(function (id, timeout) {
-                            get.idDialog(id).close();
+                            get.idDialog(id)?.close();
                             if (_status.connectMode) {
                                 lib.configOL.choose_timeout = timeout;
                             }
@@ -37523,7 +37524,104 @@ const packs = function () {
                         event.switchToAuto = function () {
                             // 喜欢偷懒让AI帮你玩是吧喵，看AI怎么摆烂制裁你哦喵
                             // 孩子不行，AI也是有能力玩的
-                            onGameFailed('switchauto');
+                            const startX = gameData.x;
+                            const startY = gameData.y;
+
+                            let pathFound = null;
+                            let targetName = null;
+
+                            // 深度优先搜索函数
+                            function dfs(x, y, curScore, walkedReds, mapState, path) {
+                                // 检查当前位置是否越界
+                                if (x < 0 || x >= gameData.width || y < 0 || y >= gameData.height) return false;
+
+                                const slot = x + y * gameData.width;
+                                const cell = mapState[slot];
+
+                                // 角色格子
+                                if (Array.isArray(cell) && cell[0] !== 0) {
+                                    pathFound = path.concat([[x, y]]);
+                                    targetName = NAMES[cell[0]];
+                                    return true;
+                                }
+
+                                // 计算当前格子分数
+                                let scoreDelta = 0;
+                                let newWalkedReds = walkedReds.slice();
+                                let newMapState = mapState.slice();
+
+                                if (typeof cell === 'number') {
+                                    scoreDelta = cell;
+                                    if (cell !== 0) {
+                                        newMapState[slot] = 0;
+                                        if (cell < 0) newWalkedReds.push(slot);
+                                    }
+                                }
+
+                                const newScore = curScore + scoreDelta;
+                                if (newScore < 0) return false; // 分数不够走负格
+
+                                // 遍历方向，优先 +1，再 0，最后 -1
+                                const dirs = [[1, 0], [0, 1], [-1, 0], [0, -1]];
+                                dirs.sort(([dx1, dy1], [dx2, dy2]) => {
+                                    const s1 = mapState[(x + dx1) + (y + dy1) * gameData.width];
+                                    const s2 = mapState[(x + dx2) + (y + dy2) * gameData.width];
+                                    const v = val => (typeof val === 'number' ? val : val[1]);
+                                    return (v(s2) || 0) - (v(s1) || 0); // 大分数先走
+                                });
+
+                                for (const [dx, dy] of dirs) {
+                                    const nx = x + dx;
+                                    const ny = y + dy;
+
+                                    // 防止无限循环，允许回头
+                                    const key = nx + ',' + ny + ',' + newScore + ',' + newWalkedReds.join(',');
+                                    if (!dfs.visited) dfs.visited = new Set();
+                                    if (dfs.visited.has(key)) continue;
+                                    dfs.visited.add(key);
+
+                                    if (dfs(nx, ny, newScore, newWalkedReds, newMapState, path.concat([[x, y]]))) {
+                                        return true;
+                                    }
+                                }
+
+                                return false;
+                            }
+
+                            // 执行 DFS
+                            dfs.visited = new Set();
+                            const success = dfs(startX, startY, gameData.score, gameData.walkedReds.slice(), gameData.map.slice(), []);
+                            if (!success) {
+                                onGameFailed('switchauto');
+                                return;
+                            }
+
+                            // 同步执行路径，更新 gameData
+                            for (const [x, y] of pathFound) {
+                                const slot = gameData.getSlotFromPos(x, y);
+                                const cell = gameData.map[slot];
+
+                                if (Array.isArray(cell) && cell[0] !== 0) {
+                                    targetName = NAMES[cell[0]];
+                                    gameData.map[slot] = 0;
+                                } else if (typeof cell === 'number') {
+                                    gameData.score += cell;
+                                    if (cell !== 0) {
+                                        gameData.map[slot] = 0;
+                                        if (cell < 0) gameData.walkedReds.push(slot);
+                                    }
+                                }
+
+                                gameData.x = x;
+                                gameData.y = y;
+                            }
+
+                            event.result = {
+                                bool: true,
+                                name: targetName,
+                                curData: gameData,
+                                nextData: gameData,
+                            };
                         };
 
                         // 游戏的主循环喵，主体逻辑都在这里喵
@@ -37568,7 +37666,7 @@ const packs = function () {
                         }
 
                         if (isAI) {
-                            onGameFailed('ai');
+                            event.switchToAuto();
                         } else {
                             gameLoop();
                         }
@@ -37622,8 +37720,10 @@ const packs = function () {
                     let result;
                     if (_status.startDengjieGame?.[player.playerid]) result = await startDengjieGame(player, _status.startDengjieGame[player.playerid]).forResult();
                     else result = await startDengjieGame(player).forResult();
-                    _status.startDengjieGame ??= {};
-                    _status.startDengjieGame[player.playerid] = result?.nextData;
+                    game.broadcastAll((result, player) => {
+                        _status.startDengjieGame ??= {};
+                        _status.startDengjieGame[player.playerid] = result?.nextData;
+                    }, result, player);
                     if (result?.bool && result.name) {
                         player.getHistory('custom').push({ [`${event.name}_${result.name}`]: true });
                         player.markAuto(event.name, result.name);
