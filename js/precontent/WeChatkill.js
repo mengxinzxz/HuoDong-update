@@ -13339,7 +13339,10 @@ const packs = function () {
             // 神司马
             wechatbaiyin: {
                 audio: 'xinbaiyin',
-                inherit: 'xinbaiyin',
+                inherit: 'sbaiyin',
+                filter(event, player) {
+                    return player.countMark('xinrenjie') >= 4;
+                },
                 async content(event, trigger, player) {
                     player.awakenSkill(event.name);
                     await player.loseMaxHp();
