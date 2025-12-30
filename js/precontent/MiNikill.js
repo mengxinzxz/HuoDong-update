@@ -39264,18 +39264,10 @@ const packs = function () {
                         if (event.type !== 'phase') return false;
                         return !cards.some(card => get.position(card) == 's' || !lib.filter.cardDiscardable(card, player, 'miniyinyinxing'));
                     }
-                    if (!event.miniyinyinxingList || !cards.every(card => {
-                        const mod2 = game.checkMod(card, player, 'unchanged', 'cardEnabled2', player);
-                        if (mod2 !== 'unchanged') return mod2;
-                        if (event.name === 'chooseToRespond') {
-                            const mod = game.checkMod(card, player, 'unchanged', 'cardRespondable', player);
-                            if (mod !== 'unchanged') return mod;
-                        }
-                        return true;
-                    })) return false;
-                    if (type === '对子') return event.miniyinyinxingList.some(info => info[0] === 'basic');
-                    if (type === '三顺') return event.miniyinyinxingList.some(info => info[0] === 'trick');
-                    return false;
+                    return event.miniyinyinxingList?.some(info => {
+                        if (info[0] !== { '对子': 'basic', '三顺': 'trick' }[type]) return false;
+                        return event.filterCard(get.autoViewAs({ name: info[2], nature: info[3] }, cards), player, event);
+                    });
                 },
                 position: 'hs',
                 discard: false,
@@ -39283,7 +39275,7 @@ const packs = function () {
                 delay: false,
                 check(card) {
                     const player = get.player(), event = get.event(), cards = player.getCards('hs');
-                    const map = { '炸弹': [], '三条': [], '对子': [], '顺子': [] };
+                    const map = { '炸弹': [], '三条': [], '对子': [], '三顺': [] };
                     const combinations = function (cards, num) {
                         let result = [];
                         const helper = function (start, combo) {
@@ -39312,7 +39304,7 @@ const packs = function () {
                         for (const list of triples) {
                             const type = lib.skill.miniyinyinxing.getType(list, player);
                             if (event.type === 'phase' && type === '三条') map['三条'].push(list);
-                            if (type === '三顺') map['顺子'].push(list);
+                            if (type === '三顺') map['三顺'].push(list);
                         }
                     }
                     if (event.type === 'phase' && cards.length >= 4) {
@@ -39347,15 +39339,6 @@ const packs = function () {
                                 }
                             }
                             else {
-                                if (!list.every(cardx => {
-                                    const mod2 = game.checkMod(cardx, player, 'unchanged', 'cardEnabled2', player);
-                                    if (mod2 !== 'unchanged') return mod2;
-                                    if (event.name === 'chooseToRespond') {
-                                        const mod = game.checkMod(cardx, player, 'unchanged', 'cardRespondable', player);
-                                        if (mod !== 'unchanged') return mod;
-                                    }
-                                    return true;
-                                })) continue;
                                 if (event.name !== 'chooseToUse' || event.type !== 'phase') map2.set(list, 1 + Math.random());
                                 else {
                                     const vcards = event.miniyinyinxingList.filter(info => {
