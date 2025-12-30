@@ -36990,7 +36990,6 @@ const packs = function () {
                     function createUI(videoId, gameWidth, gameHeight, gameMap, NAMES) {
                         const dialog = ui.create.dialog('曹丕登阶Demo', 'forcebutton');
                         dialog.videoId = videoId;
-                        dialog
                         dialog.addText('等待开始...');
                         dialog.classList.add('dengjie-game');
 
