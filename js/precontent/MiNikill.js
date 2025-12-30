@@ -8323,6 +8323,7 @@ const packs = function () {
             minitiaoxin: {
                 audio: 'tiaoxin',
                 audioname: ['ol_jiangwei', 'sp_jiangwei', 'xiahouba'],
+                audioname2: { Mfight_jiangwei: 'minifightyilve' },
                 trigger: { player: 'phaseUseBegin' },
                 filter(event, player) {
                     return game.hasPlayer(current => {
@@ -39000,6 +39001,7 @@ const packs = function () {
                         intro: { content: `本回合${get.poptip('minifightyilve')}发动次数+#` },
                     },
                     tiaoxin: {
+                        audio: 'minifightyilve',
                         filterCard: () => false,
                         selectCard: -1,
                         selectTarget: 2,
@@ -39011,8 +39013,10 @@ const packs = function () {
                         targetprompt: ['挑衅者', '被挑衅者'],
                         async content(event, trigger, player) {
                             const [user, target] = event.targets;
+                            game.broadcastAll(player => player.tempname?.add('Mfight_jiangwei'), user);
                             const next = user.useSkill('minitiaoxin', [target]);
                             await next;
+                            game.broadcastAll(player => player.tempname?.remove('Mfight_jiangwei'), user);
                             if (game.getGlobalHistory('everything', evt => evt.getParent() == next && evt.minitiaoxin).length) await player.loseHp();
                         },
                         ai: {
@@ -39025,6 +39029,7 @@ const packs = function () {
                         }
                     },
                     gain: {
+                        audio: 'minifightyilve',
                         filterCard: () => false,
                         selectCard: -1,
                         prompt(event) {
