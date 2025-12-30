@@ -34,7 +34,7 @@ const packs = function () {
                 MiNi_starCharacter: ['xunyu', 'yuanshu'].map(i => `Mbaby_star_${i}`),
                 MiNi_miaoKill: ['mayunlu', 'guanyinping', 'caoying', 'caiwenji', 'diaochan', 'caifuren', 'zhangxingcai', 'zhurong', 'huangyueying', 'daqiao', 'wangyi', 'zhangchunhua', 'zhenji', 'sunshangxiang', 'xiaoqiao', 'lvlingqi'].map(i => `Mmiao_${i}`),
                 MiNi_nianKill: ['caopi', 'zhugeliang', 'lvbu', 'zhouyu'].map(i => `Mnian_${i}`),
-                MiNi_fightKill: ['huangzhong', 'zhangliao', 'luxun', 'dianwei', 'machao'].map(i => `Mfight_${i}`),
+                MiNi_fightKill: ['huangzhong', 'zhangliao', 'luxun', 'dianwei', 'machao', 'jiangwei'].map(i => `Mfight_${i}`),
                 MiNi_yinKill: ['xushu'].map(i => `Myin_${i}`),
                 MiNi_shengzhiyifa: ['jingwei', 'sunwukong', 'dalanmao', 'libai', 'change', 'nvwa', 'tunxingmenglix', 'xiaoshan'].map(i => `Mbaby_${i}`),
             },
@@ -504,6 +504,7 @@ const packs = function () {
             Mfight_luxun: ['male', 'wu', 4, ['minifightxurui', 'minifightshijie']],
             Mfight_dianwei: ['male', 'wei', 5, ['minifightchuanglie', 'minifightkuangji']],
             Mfight_machao: ['male', 'qun', 4, ['minifightdangfeng', 'minifighthaiji']],
+            Mfight_jiangwei: ['male', 'shu', 4, ['minifightyilve', 'minifightqizhi']],
             // 隐
             Myin_xushu: ['male', 'wei', 3, ['miniyinyinxing', 'miniyinjujian']],
         },
@@ -8324,33 +8325,28 @@ const packs = function () {
                 audioname: ['ol_jiangwei', 'sp_jiangwei', 'xiahouba'],
                 trigger: { player: 'phaseUseBegin' },
                 filter(event, player) {
-                    return game.hasPlayer(function (current) {
-                        return current.countCards('h') && current != player;
+                    return game.hasPlayer(current => {
+                        return current.countDiscardableCards(player, 'h') && current != player;
                     });
                 },
-                direct: true,
-                content() {
-                    'step 0'
-                    player.chooseTarget(get.prompt2('minitiaoxin'), function (card, player, target) {
-                        return target.countCards('h') && target != player;
-                    }, function (target) {
-                        var player = _status.event.player;
+                async cost(event, trigger, player) {
+                    event.result = await player.chooseTarget(get.prompt2(event.skill), (card, player, target) => {
+                        return target.countDiscardableCards(player, 'h') && target != player;
+                    }).set('ai', target => {
+                        const player = get.player();
                         if (target.countDiscardableCards(player, 'h') >= 2) return get.effect(target, { name: 'guohe_copy2' }, player, player) * 2;
                         return get.effect(target, { name: 'guohe_copy2' }, player, player);
-                    });
-                    'step 1'
-                    if (result.bool) {
-                        var target = result.targets[0];
-                        player.logSkill('minitiaoxin', target);
-                        player.discardPlayerCard(target, 'h', [1, 2], true);
+                    }).forResult();
+                },
+                async content(event, trigger, player) {
+                    const [target] = event.targets;
+                    if (target.countDiscardableCards(player, 'h')) {
+                        const result = await player.discardPlayerCard(target, 'h', [1, 2], true).forResult();
+                        if (result?.cards?.some(card => card.name == 'sha')) {
+                            event.minitiaoxin = true;
+                            if (player.countCards('he')) await player.chooseToDiscard(true, 'he');
+                        }
                     }
-                    else event.finish();
-                    'step 2'
-                    var bool = false;
-                    for (var i of result.cards) {
-                        if (i.name == 'sha') bool = true;
-                    }
-                    if (bool && player.countCards('he')) player.chooseToDiscard(true, 'he');
                 },
             },
             minizhiji: {
@@ -10355,7 +10351,7 @@ const packs = function () {
                     'step 1'
                     if (result.bool) {
                         player.logSkill(event.name);
-                        trigger.getParent().dialog.close();
+                        trigger.getParent().dialog?.close();
                         game.addVideo('cardDialog', null, trigger.getParent().videoId);
                         game.broadcast('closeDialog', trigger.getParent().videoId);
                         var cards = result.links;
@@ -38934,6 +38930,224 @@ const packs = function () {
                     },
                 }
             },
+            // 战姜维
+            minifightyilve: {
+                audio: 'ext:活动武将/audio/skill:2',
+                enable: 'phaseUse',
+                usable(skill, player) {
+                    return 1 + player.countMark(skill + '_add');
+                },
+                chooseButton: {
+                    dialog(event, player) {
+                        const dialog = ui.create.dialog(
+                            `毅略：请选择一项`,
+                            [
+                                [
+                                    ['tiaoxin', `令一名角色对你选择的一名其他角色发动${get.poptip('minitiaoxin')}`],
+                                    ['gain', '展示牌堆顶五张牌并选择至多等量名角色，这些角色依次获得其中一张牌'],
+                                ],
+                                'textbutton',
+                            ],
+                            'hidden'
+                        );
+                        return dialog;
+                    },
+                    filter(button, player) {
+                        return button.link !== 'tiaoxin' || game.hasPlayer(current => {
+                            return game.hasPlayer(currentx => currentx.countDiscardableCards(current, 'h') && currentx != player)
+                        });
+                    },
+                    check(button) {
+                        const player = get.player();
+                        const { link } = button;
+                        if (link == 'gain') return game.countPlayer(current => get.attitude(player, current) > 0) >= 2 ? 2.5 : 1.1;
+                        if (link == 'tiaoxin' && game.hasPlayer(current => {
+                            return game.hasPlayer(currentx => currentx.countDiscardableCards(current, 'h') && currentx != player && currentx != current && get.effect(currentx, { name: 'guohe_copy', position: 'h' }, current, current) > 0);
+                        })) return 2;
+                        return 1;
+                    },
+                    backup(links, player) {
+                        const backup = get.copy(lib.skill['minifightyilve_' + links[0]]);
+                        return backup;
+                    },
+                    prompt(links, player) {
+                        return `###毅略###${links[0] == 'tiaoxin' ? `令一名角色对你选择的一名其他角色发动${get.poptip('minitiaoxin')}` : '展示牌堆顶五张牌并选择至多等量名角色，这些角色依次获得其中一张牌，若其因此获得了【杀】，其可以使用之'}。若有角色因此使用或弃置了【杀】，你失去1点体力。`;
+                    },
+                },
+                ai: {
+                    order(item, player) {
+                        if (game.countPlayer(current => get.attitude(player, current) > 0) >= 2) {
+                            return 10;
+                        }
+                        if (game.hasPlayer(current => {
+                            return game.hasPlayer(currentx => currentx.countDiscardableCards(current, 'h') && currentx != player && currentx != current && get.effect(currentx, { name: 'guohe_copy', position: 'h' }, current, current) > 0);
+                        })) {
+                            return 10;
+                        }
+                        return 7;
+                    },
+                    result: { player: 1 },
+                },
+                derivation: 'minitiaoxin',
+                subSkill: {
+                    backup: {},
+                    add: {
+                        charlotte: true,
+                        onremove: true,
+                        intro: { content: `本回合${get.poptip('minifightyilve')}发动次数+#` },
+                    },
+                    tiaoxin: {
+                        filterCard: () => false,
+                        selectCard: -1,
+                        selectTarget: 2,
+                        filterTarget(card, player, target) {
+                            if (!ui.selected.targets.length) return true;
+                            return player != target && target.countDiscardableCards(ui.selected.targets[0], 'h');
+                        },
+                        multitarget: true,
+                        targetprompt: ['挑衅者', '被挑衅者'],
+                        async content(event, trigger, player) {
+                            const [user, target] = event.targets;
+                            const next = user.useSkill('minitiaoxin', [target]);
+                            await next;
+                            if (game.getGlobalHistory('everything', evt => evt.getParent() == next && evt.minitiaoxin).length) await player.loseHp();
+                        },
+                        ai: {
+                            result: {
+                                target(player, target) {
+                                    if (!ui.selected.targets.length) return 1;
+                                    return get.effect(target, { name: 'guohe_copy', position: 'h' }, ui.selected.targets[0], target);
+                                }
+                            }
+                        }
+                    },
+                    gain: {
+                        filterCard: () => false,
+                        selectCard: -1,
+                        prompt(event) {
+                            return '###毅略###展示牌堆顶五张牌并选择至多等量名角色，这些角色依次获得其中一张牌，若其因此获得了【杀】，其可以使用之，然后将剩余牌放回牌堆顶。若有角色因此使用或弃置了【杀】，你失去1点体力。';
+                        },
+                        selectTarget: [1, 5],
+                        filterTarget: true,
+                        multitarget: true,
+                        async content(event, trigger, player) {
+                            const targets = event.targets.slice().sortBySeat();
+                            const { cards } = await game.cardsGotoOrdering(get.cards(5));
+                            await player.showCards(cards).setContent(() => { });
+                            const dialog = ui.create.dialog(`###毅略###<div class='text center'>获得其中一张牌，若你因此获得了【杀】，你可以使用之</div>`, cards, true);
+                            _status.dieClose.push(dialog);
+                            dialog.videoId = lib.status.videoId++;
+                            game.addVideo('cardDialog', null, ['毅略', get.cardsInfo(cards), dialog.videoId]);
+                            game.broadcast((cards, id) => {
+                                const dialog = ui.create.dialog(`###毅略###<div class='text center'>获得其中一张牌，若你因此获得了【杀】，你可以使用之</div>`, cards, true);
+                                _status.dieClose.push(dialog);
+                                dialog.videoId = id;
+                            }, cards, dialog.videoId);
+                            await game.delay();
+                            let used = false;
+                            while (targets.length && cards.length) {
+                                const current = targets.shift();
+                                let result;
+                                if (cards.length == 1) {
+                                    result = { bool: true, links: cards };
+                                }
+                                else {
+                                    const next = current.chooseButton(true);
+                                    next.set('ai', button => {
+                                        const player = get.player();
+                                        const { link } = button;
+                                        if (player.hasSkill('minifightqizhi') && link.name == 'sha' && player.getUseValue(link) > 0) return 10;
+                                        return get.value(link);
+                                    });
+                                    next.set('dialog', dialog.videoId);
+                                    next.set('closeDialog', false);
+                                    next.set('dialogdisplay', true);
+                                    next.set('cardsx', cards.slice(0));
+                                    next.set('filterButton', button => {
+                                        return get.event().cardsx.includes(button.link);
+                                    });
+                                    result = await next.forResult();
+                                }
+                                if (!result?.bool || !result.links?.length) {
+                                    continue;
+                                }
+                                const { links } = result;
+                                cards.removeArray(links);
+                                await current.gain(links, 'gain2');
+                                const capt = get.translation(current) + '选择了' + get.translation(links);
+                                game.broadcastAll((card, id, name, capt) => {
+                                    const dialog = get.idDialog(id);
+                                    if (dialog) {
+                                        dialog.content.firstChild.innerHTML = capt;
+                                        for (var i = 0; i < dialog.buttons.length; i++) {
+                                            if (dialog.buttons[i].link == card) {
+                                                game.createButtonCardsetion(name, dialog.buttons[i]);
+                                                break;
+                                            }
+                                        }
+                                        game.addVideo('dialogCapt', null, [dialog.videoId, dialog.content.firstChild.innerHTML]);
+                                    }
+                                }, links[0], dialog.videoId, current.getName(true), capt);
+                                if (current.getCards('h').includes(links[0]) && get.name(links[0], current) == 'sha') {
+                                    const result = await current.chooseToUse({
+                                        filterCard(card) {
+                                            if (get.name(card) != 'sha' || !get.event().cardsx?.includes(card)) return false;
+                                            return lib.filter.filterCard.apply(this, arguments);
+                                        },
+                                        prompt: '毅略：是否使用其中一张牌？',
+                                    }).set('cardsx', links).set('addCount', false).forResult();
+                                    if (result?.bool) used = true;
+                                }
+                            }
+                            game.broadcastAll('closeDialog', dialog.videoId);
+                            game.broadcastAll(dialog => {
+                                _status.dieClose.remove(dialog);
+                            }, dialog);
+                            if (cards.length) {
+                                await game.cardsGotoPile(cards.reverse(), 'insert');
+                            }
+                            if (used) await player.loseHp();
+                        },
+                        ai: { result: { target: 1 } },
+                    },
+                }
+            },
+            minifightqizhi: {
+                audio: 'ext:活动武将/audio/skill:2',
+                trigger: { player: ['changeHp', 'recoverEnd'] },
+                filter(event, player) {
+                    if (event.name == 'recover') return player.isPhaseUsing() && player.countMark('minifightqizhi_used') < 5 && player.countCards('he');
+                    return event.num < 0 && player.isDamaged();
+                },
+                locked: true,
+                async cost(event, trigger, player) {
+                    if (trigger.name == 'recover') {
+                        event.result = await player.chooseToDiscard('he', get.prompt(event.skill), `你可以弃置一张牌令${get.poptip('minifightyilve')}本回合发动次数+1`, 'chooseonly').set('ai', card => {
+                            const player = get.player();
+                            if (!player.hasSkill('minifightyilve')) return 0;
+                            return 7 - get.value(card);
+                        }).forResult();
+                    }
+                    else event.result = { bool: true };
+                },
+                async content(event, trigger, player) {
+                    if (trigger.name == 'recover') {
+                        await player.discard(event.cards);
+                        player.addTempSkill(event.name + '_used', { player: ['phaseUseEnd', 'phaseChange'] });
+                        player.addMark(event.name + '_used', 1, false);
+                        player.addTempSkill('minifightyilve_add');
+                        player.addMark('minifightyilve_add', 1, false);
+                    }
+                    else await player.draw(player.getDamagedHp());
+                },
+                subSkill: {
+                    used: {
+                        charlotte: true,
+                        onremove: true,
+                        intro: { content: `本阶段${get.poptip('minifightqizhi')}已发动次数：#` },
+                    }
+                }
+            },
             // 隐系列
             // 徐庶
             miniyinyinxing: {
@@ -41849,6 +42063,7 @@ const packs = function () {
             Mfight_luxun: '战陆逊',
             Mfight_dianwei: '战典韦',
             Mfight_machao: '战马超',
+            Mfight_jiangwei: '战姜维',
             minifightdingjun: '定军',
             minifightdingjun_info: '战场技，锁定技。①一名角色使用【杀】造成1点伤害后，获得1层士气。②士气增加1点后，你摸一张牌。③士气变化时，若士气层数大于等于本局游戏人数，则进入“定军山战场”；一名角色的回合结束时，若士气层数为0，则退出“定军山战场”。④一名角色使用【杀】时，若此时处于“定军山战场”，则你可以消耗2层士气，令其于此牌结算中视为拥有〖烈弓〗。',
             minifightliegong: '烈弓',
@@ -41879,6 +42094,10 @@ const packs = function () {
             minifightdangfeng_info: '一名角色的回合结束时，你依次执行以下项：1.若本回合没有角色受到过伤害，你从牌堆或弃牌堆中获得一张【杀】；2.若本回合没有角色使用过【杀】，你可以使用一张【杀】。',
             minifighthaiji: '骇击',
             minifighthaiji_info: `锁定技。①当你使用【杀】指定目标后：1.本轮你计算与其他角色的距离-1；2.若此【杀】目标均在你距离1以内，你摸一张牌；3.若其他角色均在你距离1以内，此【杀】具有${get.poptip('miniretieji')}效果。②每回合你使用的首张【杀】可以额外指定一个目标。`,
+            minifightyilve: '毅略',
+            minifightyilve_info: `出牌阶段限一次。你可以选择一项：1.令一名角色对你选择的一名其他角色发动${get.poptip('minitiaoxin')}；2.展示牌堆顶五张牌并选择至多等量名角色，这些角色依次获得其中一张牌，若其因此获得了【杀】，其可以使用之，然后你将剩余牌放回牌堆顶。若有角色因此使用或弃置了【杀】，你失去1点体力。`,
+            minifightqizhi: '锲志',
+            minifightqizhi_info: `锁定技。①当你体力值减少后，你摸X张牌（X为你已损失体力值）。②出牌阶段限五次，当你回复体力后，你可以弃置一张牌令${get.poptip('minifightyilve')}本回合发动次数+1。`,
             // 隐
             Myin_xushu: '隐徐庶',
             miniyinyinxing: '隐姓',
