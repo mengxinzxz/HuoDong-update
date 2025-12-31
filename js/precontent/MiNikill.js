@@ -42115,6 +42115,11 @@ const packs = function () {
             miniyinjujian_info: '准备阶段或结束阶段，你可以弃置一张手牌并令一名角色选择一项：1.获得两张点数大于其的牌；2.获得两张点数小于其的牌。',
 
             // ----------------------- 台词部分 ----------------------- //
+            '#ext:活动武将/audio/skill/minifightyilve1': '敌军有隙可乘，伐魏更待何时！',
+            '#ext:活动武将/audio/skill/minifightyilve2': '君疑臣，则臣必死，岂不见邓艾乎？',
+            '#ext:活动武将/audio/skill/minifightqizhi1': '穷途锋芒未减，陌路方彰胆魄！',
+            '#ext:活动武将/audio/skill/minifightqizhi2': '山河破碎为局，肝胆嶙峋作旗。',
+            '#ext:活动武将/audio/die/Mfight_jiangwei:die': '梦碎剑阁关外，魂系五丈原头……',
             '#ext:活动武将/audio/skill/miniyinyinxing1': '福本山野之人，微名不足挂齿。',
             '#ext:活动武将/audio/skill/miniyinyinxing2': '小隐于野，大隐于朝。',
             '#ext:活动武将/audio/skill/miniyinjujian1': '庶腐草之荧，怎比得沧海皓月？',
