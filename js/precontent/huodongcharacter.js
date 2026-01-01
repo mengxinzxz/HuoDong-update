@@ -5003,8 +5003,8 @@ const packs = function () {
                             }
                             if (choice.length) {
                                 const result = yield player.chooseControl(choice).set('choiceList', choiceList).set('ai', () => {
-                                    if (get.event('controls').length == 1) return get.event('controls')[0];
-                                    var choice = get.event('choice'), player = get.event('player');
+                                    if (get.event().controls.length == 1) return get.event().controls[0];
+                                    var choice = get.event().choice, player = get.event().player;
                                     return choice[choice.length - player.storage.old_huanyin ? 2 : 1];
                                 }).set('prompt', '烈誓：请选择一项执行，然后' + get.translation(target) + '执行后一项').set('choice', choice);
                                 const index = ['选项一', '选项二', '选项三'].indexOf(result.control);
@@ -5320,7 +5320,7 @@ const packs = function () {
                             const { player: target } = trigger;
                             const num = Math.ceil(target.countCards('h'));
                             const { result } = await target.chooseCard('he', [0, num], get.prompt('old_fenchai'), '交给' + get.translation(player) + '至多' + get.cnNumber(num) + '张牌').set('ai', card => {
-                                if (get.event('goon')) return get.value(card);
+                                if (get.event().goon) return get.value(card);
                                 return -1;
                             }).set('goon', get.attitude(target, player) > 0).set('forceDie', true);
                             if (result?.bool && result?.cards?.length) {
@@ -5621,8 +5621,8 @@ const packs = function () {
                 async content(event, trigger, player) {
                     const target = trigger.player, judge = trigger.judge(target.judging[0]), attitude = get.attitude(target, player);
                     const { result: { bool, links } } = await target.choosePlayerCard('请选择代替判定的牌', 'he', 'visible', true, player).set('ai', button => {
-                        const card = button.link, judge = get.event('judge'), attitude = get.event('attitude');
-                        const trigger = get.event().getTrigger(), player = get.event('player'), result = trigger.judge(card) - judge;
+                        const card = button.link, judge = get.event().judge, attitude = get.event().attitude;
+                        const trigger = get.event().getTrigger(), player = get.event().player, result = trigger.judge(card) - judge;
                         if (result > 0) return 20 + result;
                         if (result == 0) {
                             if (_status.currentPhase == player) return 0;
@@ -5632,7 +5632,7 @@ const packs = function () {
                         if (attitude >= 0) return get.color(card) == 'red' ? 0 : -10 + result;
                         return get.color(card) == 'black' ? 0 : -10 + result;
                     }).set('filterButton', button => {
-                        const player = get.event('player'), card = button.link;
+                        const player = get.event().player, card = button.link;
                         const mod2 = game.checkMod(card, player, 'unchanged', 'cardEnabled2', player);
                         if (mod2 != 'unchanged') return mod2;
                         const mod = game.checkMod(card, player, 'unchanged', 'cardRespondable', player);
@@ -5656,7 +5656,7 @@ const packs = function () {
                         await game.asyncDelay(2);
                         if (player.countCards('h')) {
                             const { result: { bool, cards } } = await player.chooseCard('是否重铸任意张手牌？', [1, player.countCards('h')], lib.filter.cardRecastable).set('ai', card => {
-                                const player = get.event('player'), cards = ui.selected.cards;
+                                const player = get.event().player, cards = ui.selected.cards;
                                 if (!player.hasSkill('olmingzhe')) return 5 - get.value(card);
                                 if (!cards.some(i => get.color(i, player) == 'red') && get.color(card, player) == 'red') return 7.5 - get.value(card);
                                 return 5 - get.value(card);
@@ -9089,7 +9089,7 @@ const packs = function () {
                             },
                             check(button) {
                                 if (get.event().getParent().type != 'phase') return 1;
-                                const player = get.event('player');
+                                const player = get.event().player;
                                 return player.getUseValue({ name: button.link[2], nature: button.link[3], storage: { bolyifu: true } });
                             },
                             backup(links, player) {
@@ -9273,7 +9273,7 @@ const packs = function () {
                         await player.removeSkills(skill);
                     }
                     else await player.chooseToDiscard('he', true, card => {
-                        return get.number(card) == get.event('num');
+                        return get.number(card) == get.event().num;
                     }, `请弃置一张点数为${num}的牌`).set('num', num);
                 },
             },
@@ -9293,7 +9293,7 @@ const packs = function () {
                 position: 'he',
                 complexCard: true,
                 check(card) {
-                    const player = get.event('player');
+                    const player = get.event().player;
                     const num = player.getAllHistory('useSkill', evt => evt.skill == 'bolyuba').length;
                     const value = function (card, player) {
                         const num = player.getUseValue(card);
@@ -11669,8 +11669,8 @@ const packs = function () {
                                     return false;
                                 }
                                 let str = '';
-                                if (target.storage?.['bilibili_beichen_effect']?.[get.event('group')]) {
-                                    str += target.storage['bilibili_beichen_effect'][get.event('group')].map(skill => get.translation(skill)).join('<br>');
+                                if (target.storage?.['bilibili_beichen_effect']?.[get.event().group]) {
+                                    str += target.storage['bilibili_beichen_effect'][get.event().group].map(skill => get.translation(skill)).join('<br>');
                                 }
                                 return str;
                             },
@@ -11883,7 +11883,7 @@ const packs = function () {
                     player.popup(get.translation(suit));
                     game.log(player, '声明了', '#y' + get.translation(suit));
                     const next = player.judge(card => {
-                        if (get.suit(card) === get.event('suitx')) {
+                        if (get.suit(card) === get.event().suitx) {
                             return 1.5;
                         }
                         return -1.5;
