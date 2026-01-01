@@ -19,34 +19,6 @@ export async function content(config, pack) {
 		};
 	}
 
-	//快捷添加/删除武将
-	game.HDdeleteCharacter = function (name) {
-		if (lib.character[name]) delete lib.character[name];
-		var packs = Object.keys(lib.characterPack).filter(pack => lib.characterPack[pack][name]);
-		if (packs.length) packs.forEach(pack => delete lib.characterPack[pack][name]);
-	};
-	game.HDaddCharacter = function (name, character, packs = '') {
-		game.HDdeleteCharacter(name);
-		if (_status['extension_活动武将_files']?.image.character.files.includes(`${name}.jpg`)) {
-			character[4] ??= [];
-			character[4].push(`ext:活动武将/image/character/${name}.jpg`);
-		}
-		const pack = packs.split(':').filter(p => lib.config.all.characters.includes(p))[0];
-		if (pack) {
-			lib.characterPack[pack][name] = character;
-			if (lib.config.characters.includes(pack)) lib.character[name] = character;
-			lib.config.forbidai[lib.config[`forbidai_user_${pack}`] ? 'add' : 'remove'](name);
-		}
-		else lib.character[name] = character;
-	};
-	//移动武将所在武将包
-	game.HDmoveCharacter = function (name, packss) {
-		var nameinfo = get.character(name);
-		if (nameinfo) {
-			nameinfo[4] ??= [];
-			game.HDaddCharacter(name, nameinfo, packss);
-		}
-	};
 
 	//官方武将包保护机制
 	//添加
