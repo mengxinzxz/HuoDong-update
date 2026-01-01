@@ -601,8 +601,6 @@ export async function precontent(bilibilicharacter) {
             {
                 type: 'players',
                 data: [
-                    'Mbaby_caoying', 'Mbaby_xurong', 'Mbaby_caochong', 'Mbaby_caochun', 'Mfight_jiangwei',
-                    'bilibili_longjiuzhen', 'bilibili_liuguanzhang',
                 ],
             },
             {
@@ -610,9 +608,6 @@ export async function precontent(bilibilicharacter) {
                 textAlign: 'left',
                 data: [
                     'bugfix、素材补充、技能调整',
-                    '标界分离所有原欢乐三国杀界武将（无本体已有版本）',
-                    '欢乐三国杀新增和修改武将：曹婴、徐荣、曹冲、曹纯、战姜维',
-                    '杂谈新武将：龙九帧、三人组',
                     'To be continued...',
                 ],
             },
