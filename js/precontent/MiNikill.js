@@ -16721,7 +16721,8 @@ const packs = function () {
                 delay: 0,
                 lose: false,
                 async content(event, trigger, player) {
-                    const { target, cards: [card] } = event;
+                    const { target, cards } = event;
+                    const [card] = cards;
                     const hs = get.position(card) === 'h', canEquip = get.type(card) === 'equip' && target.canEquip(card);
                     let result;
                     if (!hs) result = { index: 1 };
@@ -16775,7 +16776,8 @@ const packs = function () {
                 audio: 'rejieyin',
                 inherit: 'minijieyin',
                 async content(event, trigger, player) {
-                    const { target, cards: [card] } = event;
+                    const { target, cards } = event;
+                    const [card] = cards;
                     const hs = get.position(card) === 'h', canEquip = get.type(card) === 'equip' && target.canEquip(card);
                     let result;
                     if (!hs) result = { index: 1 };
