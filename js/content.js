@@ -876,6 +876,7 @@ export async function content(config, pack) {
 	game.HDsetAudioname(get.character('bilibili_zhouxiaomei').skills, 'bilibili_zhouxiaomei');
 	game.HDsetAudioname('yijin', 'bilibili_litiansuo');
 	game.HDsetAudioname(['reqimou', 'zhaxiang', 'zhaxiang2', 'tairan', 'tairan2'], 'bilibili_kuangshen04');
+	game.HDsetAudioname('wushuang', 'wechat_zhi_lvbu');
 
 	//武将配音audioname2添加
 	game.HDsetAudioname2 = function (skills, map) {
