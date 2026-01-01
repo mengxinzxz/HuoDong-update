@@ -247,7 +247,7 @@ const packs = function () {
         },
         characterSubstitute: {
             wechat_zhi_caocao: [
-                ['wechat_zhi_caocao_shadow', ['ext:活动武将/image/character/wechat_zhi_caocao_shadow.jpg', 'die:ext:活动武将/audio/die/wechat_zhi_caocao_shadow.mp3']],
+                ['wechat_zhi_caocao_shadow', ['img:extension/活动武将/image/character/wechat_zhi_caocao_shadow.jpg', 'die:ext:活动武将/audio/die/wechat_zhi_caocao_shadow.mp3']],
             ],
         },
         skill: {
