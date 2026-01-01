@@ -17326,7 +17326,7 @@ const packs = function () {
                     if (num == 0) await target.draw();
                     else {
                         const result = await player.chooseControl([`摸${get.cnNumber(num)}张牌`, `摸一弃${get.cnNumber(num, true)}`]).set('prompt', `请选择一项令${get.translation(target)}执行`).set('ai', () => {
-                            const { player, target } = get.player();
+                            const { player, target } = get.event();
                             const num = (get.attitude(player, target) > 0 ? 0 : 1);
                             return (player.isHealthy() ? 1 - num : num);
                         }).set('target', target).forResult();
@@ -30403,7 +30403,7 @@ const packs = function () {
                                     player.line(target, 'green');
                                     let cards = [];
                                     ['h', 'e'].forEach(position => {
-                                        const card = target.getGainableCards(player, pisition).randomGet();
+                                        const card = target.getGainableCards(player, position).randomGet();
                                         if (card) cards.push(card);
                                     });
                                     if (cards.length) await player.gain(cards.randomGets(2), target, 'giveAuto', 'bySelf');
