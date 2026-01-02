@@ -12167,9 +12167,9 @@ const packs = function () {
                 check(event, player, name) {
                     if (name === 'damageEnd') return get.damageEffect(event.source, player, player) > 0;
                     _status._ganglie_check = true;
-                    const target = event.player, num = Math.min(event.num + 1, target.countDiscardableCards(target, 'he'));
+                    const target = event.player, num = Math.min(event.num + 1, target.countDiscardableCards(player, 'he'));
                     const orieffect = get.damageEffect(target, player, player) * event.num;
-                    const effect = get.effect(target, { name: 'guohe_copy2' }, target, player) * num + get.recoverEffect(target, player, player) * Math.max(1, num);
+                    const effect = get.effect(target, { name: 'guohe_copy2' }, player, player) * num + get.recoverEffect(target, player, player) * Math.max(1, num);
                     delete _status._ganglie_check;
                     return effect + orieffect > 0;
                 },
@@ -12184,7 +12184,7 @@ const packs = function () {
                         await target.damage(trigger.num + (target.getHp() > player.getHp() ? 1 : 0));
                     }
                     else {
-                        const result = await target.chooseToDiscard(trigger.num + 1, 'he', true).forResult();
+                        const result = await player.discardPlayerCard(trigger.num + 1, target, 'he', true).forResult();
                         if (result?.bool && result.cards?.length) {
                             await target.recover();
                             const cards = result.cards.filter(card => get.color(card) === 'red' && get.position(card) === 'd');
@@ -12210,8 +12210,8 @@ const packs = function () {
                             if (_status._ganglie_check || player.hasSkillTag('jueqing', false, target)) return;
                             if (get.type(card) !== 'delay' && get.tag(card, 'damage')) {
                                 _status._ganglie_check = true;
-                                const effect = get.effect(target, { name: 'guohe_copy2' }, target, player) * 2 + get.recoverEffect(target, player, player);
-                                const effect2 = get.effect(target, { name: 'guohe_copy2' }, target, target) * 2 + get.recoverEffect(target, player, target);
+                                const effect = get.effect(target, { name: 'guohe_copy2' }, player, player) * 2 + get.recoverEffect(target, player, player);
+                                const effect2 = get.effect(target, { name: 'guohe_copy2' }, player, target) * 2 + get.recoverEffect(target, player, target);
                                 delete _status._ganglie_check;
                                 return [1, effect, 1, effect2];
                             }
@@ -12858,7 +12858,7 @@ const packs = function () {
             bilibili_waifa_info: '出牌阶段开始时，你可以弃置三张牌并摸等量的牌。若你弃置的类别包含：基本牌，本回合你使用的前X张基本牌无距离和次数限制（X为其中的非基本牌数）；锦囊牌，本回合你使用的前Y张锦囊牌可以额外增加和减少至多Y名目标（Y为其中的非锦囊牌数）；装备牌，本回合你使用的前Z张装备牌时摸Z张牌（Z为其中的非装备牌数）。',
             bilibili_xiahoudun: '夏侯惇',
             bilibili_ganglie: '刚烈',
-            bilibili_ganglie_info: '①当你受到伤害后，你可以对伤害来源造成X点伤害（X为伤害值），若其体力值大于你则X+1。②当你造成伤害时，你可以令受伤角色弃置X张牌，然后其回复1点体力，且你可以将其弃置的红色牌交给一名角色。',
+            bilibili_ganglie_info: '①当你受到伤害后，你可以对伤害来源造成X点伤害（X为伤害值），若其体力值大于你则X+1。②当你造成伤害时，你可以弃置受伤角色X张牌，然后其回复1点体力，且你可以将其弃置的红色牌交给一名角色。',
         },
     };
     for (let i in huodongcharacter.character) {
