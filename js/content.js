@@ -704,7 +704,6 @@ export async function content(config, pack) {
 					'old_wangling',
 					'junk_zhangrang',
 					'old_zhaoxiang',
-					'ol_manchong',
 					'ol_yujin',
 				],
 				//普通
@@ -960,7 +959,6 @@ export async function content(config, pack) {
 		sunluyu: ['old_sunluyu'],
 		zhaoxiang: ['old_zhaoxiang'],
 		zhangyì: ['old_zhangyì'],
-		manchong: ['ol_manchong'],
 		yj_ganning: ['old_yj_ganning'],
 		ol_lusu: ['lusu'],
 		re_yuanshao: ['yuanshao'],
@@ -1001,10 +999,8 @@ export async function content(config, pack) {
 	game.HDaddCharacter('dc_xushu', ['male', 'shu', 4, ['bolzhuhai', 'xsqianxin'], []], 'refresh');
 
 	//璀璨星河
-	lib.characterSort.sp.sp_tianzhu.addArray(['panfeng']);
 	game.HDaddCharacter('maliang', ['male', 'shu', 3, ['zishu', 'xinyingyuan'], []], 'sp');
 	game.HDaddCharacter('zhanghua', ['male', 'jin', 3, ['olbihun', 'oljianhe', 'bolchuanwu'], []], 'sp');
-	game.HDmoveCharacter('panfeng', 'sp');
 
 	//系列专属包
 	lib.characterSort.sp2.sp2_waitforsort.addArray(['junk_zhangrang']);
@@ -1025,7 +1021,6 @@ export async function content(config, pack) {
 	//线下
 	lib.characterSort.offline.offline_star.add('bolx_jsp_guanyu');
 	lib.characterSort.offline.offline_yongjian.add('bol_sunluban');
-	lib.characterSort.offline.offline_yijiang.add('ol_manchong');
 	if (lib.config.extension_活动武将_XvXiang) {
 		for (const name of lib.characterSort.offline.offline_vtuber) {
 			lib.characterPack.offline[name].skills.add('bilibili_xuxiang');
@@ -1034,7 +1029,6 @@ export async function content(config, pack) {
 	}
 	game.HDaddCharacter('bolx_jsp_guanyu', ['male', 'wei', 4, ['wusheng', 'wzdanji'], ['tempname:jsp_guanyu', 'die:jsg_guanyu']], 'offline');
 	game.HDaddCharacter('bol_sunluban', ['female', 'wu', 3, ['boljiaozong', 'bolchouyou']], 'offline');
-	game.HDaddCharacter('ol_manchong', ['male', 'wei', 3, ['xinjunxing', 'yuce'], ['die:manchong']], 'offline');
 
 	//怀旧包
 	lib.characterSort.old.bilibili_buchong_online = ['junk_guanyu', 'old_ol_xiaoqiao', 'old_zhangbao', 'old_sunluyu', 'old_ol_yuanji'];
@@ -1208,7 +1202,6 @@ export async function content(config, pack) {
 	//删除翻译
 	delete lib.translate.sp_shenpei_prefix;
 	delete lib.translate.jin_xiahouhui_prefix;
-	delete lib.translate.panfeng_prefix;
 	Object.assign(lib.translate, {
 		//修改武将翻译
 		//手杀前缀
@@ -1219,8 +1212,6 @@ export async function content(config, pack) {
 		//新杀前缀
 		dc_zhuling: '新杀朱灵',
 		dc_zhuling_prefix: '新杀',
-		re_panfeng: '新杀潘凤',
-		re_panfeng_prefix: '新杀',
 		//其他前缀
 		jsrg_sunlubansunluyu: '合孙鲁班孙鲁育',
 		jsrg_sunlubansunluyu_ab: '合大小虎',
@@ -1231,7 +1222,6 @@ export async function content(config, pack) {
 		jin_xiahouhui: '夏侯徽',
 		gz_huangzu: '黄祖',
 		gz_liuba: '刘巴',
-		panfeng: '潘凤',
 
 		//添加武将翻译
 		old_clan_xunshu: '旧荀淑',
@@ -1294,8 +1284,6 @@ export async function content(config, pack) {
 		old_zhangbao_prefix: '旧',
 		old_sunluyu: '旧孙鲁育',
 		old_sunluyu_prefix: '旧',
-		ol_manchong: '将满宠',
-		ol_manchong_prefix: '将',
 		old_ol_xiaoqiao: '旧界小乔',
 		old_ol_xiaoqiao_prefix: '旧|界',
 		old_zhanghe: '张郃',
