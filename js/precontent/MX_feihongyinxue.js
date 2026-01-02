@@ -3,7 +3,7 @@ import { lib, game, ui, get, ai, _status } from '../../../../noname.js';
 const packs = function () {
     var MX_feihongyinxue = {
         name: 'MX_feihongyinxue',
-        connect: false,
+        connect: true,
         characterSort: {
             MX_feihongyinxue: {
                 fh_zhi: ['mx_fh_sp_bianfuren', 'mx_fh_sp_chenzhen', 'mx_fh_feiyi', 'mx_fh_luotong', 'mx_fh_sp_sunshao', 'mx_fh_sp_duyu', 'mx_fh_sp_xunchen'],
@@ -265,25 +265,20 @@ const packs = function () {
             //费祎
             fh_shengxi: {
                 init() {
-                    if (_status.fh_cardPile && !get.fh_cardPile('tiaojiyanmei')) {
-                        var card = game.createCard2('tiaojiyanmei', 'heart', 6);
-                        card.destroyed = (card, position, player, event) => {
-                            if (position === "discardPile") {
-                                if (!_status.fh_cardPile.includes(card)) {
-                                    game.broadcastAll(card => _status.fh_cardPile.add(card), card);
-                                    game.log(card, '被放回了', '#g额外牌堆');
+                    game.initFh_cardPile();
+                    if (!get.fh_cardPile('tiaojiyanmei')) {
+                        const card = game.createCard2('tiaojiyanmei', 'heart', 6);
+                        game.broadcastAll(card => {
+                            card.destroyed = (card, position, player, event) => {
+                                if (position === 'discardPile') {
+                                    game.cardsGotoSpecial(card, 'toFh_cardPile');
                                 }
-                            }
-                            else {
-                                if (_status.fh_cardPile.includes(card)) {
-                                    game.broadcastAll(card => _status.fh_cardPile.remove(card), card);
-                                    game.log('#g额外牌堆', '失去了', card);
-                                }
-                            }
-                            return false;
-                        };
-                        card.addGaintag('eternal_fh_tag');
-                        game.broadcastAll(card => _status.fh_cardPile.add(card), card);
+                                return false;
+                            };
+                            card.addGaintag('eternal_fh_tag');
+                            _status.fh_cardPile.add(card);
+                        }, card);
+                        game.broadcastAll(pile => _status.fh_cardPile = pile, _status.fh_cardPile);
                         game.log(card, '已加入额外牌堆');
                     }
                 },
@@ -401,6 +396,9 @@ const packs = function () {
             },
             //骆统
             fh_minshi: {
+                init() {
+                    game.initFh_cardPile();
+                },
                 audio: 'qinzheng',
                 enable: 'phaseUse',
                 filter(event, player) {
@@ -454,6 +452,9 @@ const packs = function () {
                 },
             },
             fh_xianming: {
+                init() {
+                    game.initFh_cardPile();
+                },
                 audio: 'qinzheng',
                 trigger: { global: ['gainAfter', 'loseAsyncAfter', 'equipAfter', 'addToExpansionAfter', 'addJudgeAfter', 'cardsGotoSpecialAfter'] },
                 filter(event, player) {
@@ -558,6 +559,9 @@ const packs = function () {
                 },
             },
             fh_zuici: {
+                init() {
+                    game.initFh_cardPile();
+                },
                 audio: 'zuici',
                 trigger: { player: 'damageEnd' },
                 filter(event, player) {
@@ -752,25 +756,20 @@ const packs = function () {
             //荀谌
             fh_weipo: {
                 init() {
-                    if (_status.fh_cardPile && !get.fh_cardPile('binglinchengxiax')) {
-                        var card = game.createCard2('binglinchengxiax', 'spade', 7);
-                        card.destroyed = (card, position, player, event) => {
-                            if (position === "discardPile") {
-                                if (!_status.fh_cardPile.includes(card)) {
-                                    game.broadcastAll(card => _status.fh_cardPile.add(card), card);
-                                    game.log(card, '被放回了', '#g额外牌堆');
+                    game.initFh_cardPile();
+                    if (!get.fh_cardPile('binglinchengxiax')) {
+                        const card = game.createCard2('binglinchengxiax', 'spade', 7);
+                        game.broadcastAll(card => {
+                            card.destroyed = (card, position, player, event) => {
+                                if (position === 'discardPile') {
+                                    game.cardsGotoSpecial(card, 'toFh_cardPile');
                                 }
-                            }
-                            else {
-                                if (_status.fh_cardPile.includes(card)) {
-                                    game.broadcastAll(card => _status.fh_cardPile.remove(card), card);
-                                    game.log('#g额外牌堆', '失去了', card);
-                                }
-                            }
-                            return false;
-                        };
-                        card.addGaintag('eternal_fh_tag');
-                        game.broadcastAll(card => _status.fh_cardPile.add(card), card);
+                                return false;
+                            };
+                            card.addGaintag('eternal_fh_tag');
+                            _status.fh_cardPile.add(card);
+                        }, card);
+                        game.broadcastAll(pile => _status.fh_cardPile = pile, _status.fh_cardPile);
                         game.log(card, '已加入额外牌堆');
                     }
                 },
@@ -986,6 +985,9 @@ const packs = function () {
             },
             //王凌
             fh_xingqi: {
+                init() {
+                    game.initFh_cardPile();
+                },
                 audio: 'xingqi',
                 trigger: { player: 'useCard' },
                 filter(event, player) {
@@ -1046,6 +1048,9 @@ const packs = function () {
                 },
             },
             fh_mibei: {
+                init() {
+                    game.initFh_cardPile();
+                },
                 audio: 'mibei',
                 trigger: { player: 'useCardAfter' },
                 dutySkill: true,
@@ -1171,6 +1176,9 @@ const packs = function () {
             },
             //周处
             fh_chuhai: {
+                init() {
+                    game.initFh_cardPile();
+                },
                 audio: 'chuhai',
                 dutySkill: true,
                 locked: true,
@@ -1352,6 +1360,9 @@ const packs = function () {
                 group: 'mingfa_add',
             },
             fh_rongbei: {
+                init() {
+                    game.initFh_cardPile();
+                },
                 audio: 'rongbei',
                 inherit: 'rongbei',
                 async content(event, trigger, player) {
@@ -1408,6 +1419,9 @@ const packs = function () {
             },
             //华歆
             fh_yuanqing: {
+                init() {
+                    game.initFh_cardPile();
+                },
                 audio: 'yuanqing',
                 inherit: 'yuanqing',
                 content() {
@@ -2085,6 +2099,9 @@ const packs = function () {
             },
             //王双
             fh_shanxie: {
+                init() {
+                    game.initFh_cardPile();
+                },
                 audio: 'shanxie',
                 enable: 'phaseUse',
                 filter(event, player) {
@@ -3033,6 +3050,9 @@ const packs = function () {
             },
             //吴苋
             fh_daiyan: {
+                init() {
+                    game.initFh_cardPile();
+                },
                 getList(player) {
                     var list = [], history = player.actionHistory;
                     for (var i = history.length - 2; i >= 0; i--) {
@@ -3203,6 +3223,9 @@ const packs = function () {
             },
             //嵇康
             fh_qingxian: {
+                init() {
+                    game.initFh_cardPile();
+                },
                 audio: 'qingxian',
                 group: ['fh_qingxian_jilie', 'fh_qingxian_rouhe', 'fh_qingxian_dying'],
                 ai: {
@@ -3338,6 +3361,9 @@ const packs = function () {
                 },
             },
             fh_juexiang: {
+                init() {
+                    game.initFh_cardPile();
+                },
                 audio: 'juexiang',
                 trigger: { player: 'die' },
                 direct: true,
@@ -4305,6 +4331,9 @@ const packs = function () {
                 derivation: 'fh_jianyan',
             },
             fh_jianyan: {
+                init() {
+                    game.initFh_cardPile();
+                },
                 audio: 'rejianyan',
                 enable: 'phaseUse',
                 filter(event, player) {
@@ -4371,6 +4400,9 @@ const packs = function () {
             },
             //廖化
             fh_dangxian: {
+                init() {
+                    game.initFh_cardPile();
+                },
                 audio: 'dangxian_re_liaohua',
                 trigger: { player: 'phaseBegin' },
                 forced: true,
@@ -4387,7 +4419,11 @@ const packs = function () {
             dangxian_re_liaohua: { audio: 2 },
             //朱治
             fh_anguo: {
+                init() {
+                    game.initFh_cardPile();
+                },
                 inherit: 'anguo',
+                filterTarget: lib.filter.notMe,
                 content() {
                     'step 0'
                     if (target.isMinHandcard()) {
@@ -4709,122 +4745,11 @@ const packs = function () {
         showName: '鸿',
     });
     lib.config.all.sgscharacters.push('MX_feihongyinxue');
-    if (!_status.connectMode && lib.config.characters.includes('MX_feihongyinxue')) {
-        //飞鸿新机制
-        lib.arenaReady.push(() => {
-            //把银月枪加入牌堆
-            lib.card.list.push(['diamond', 12, 'fh_yinyueqiang']);
-            //额外牌堆
-            if (!_status.fh_cardPile) {
-                _status.fh_cardPile = [];
-                var cardList = [
-                    //基本牌
-                    ['club', 4, 'sha'],
-                    ['diamond', 2, 'shan'],
-                    ['heart', 6, 'tao'],
-                    ['spade', 9, 'jiu'],
-                    ['heart', 4, 'sha', 'fire'],
-                    ['spade', 4, 'sha', 'thunder'],
-                    //锦囊牌
-                    ['heart', 8, 'wuzhong'],
-                    ['heart', 4, 'wugu'],
-                    ['spade', 3, 'guohe'],
-                    ['diamond', 3, 'shunshou'],
-                    ['diamond', 2, 'huogong'],
-                    ['diamond', 1, 'juedou'],
-                    ['spade', 13, 'nanman'],
-                    ['heart', 1, 'wanjian'],
-                    ['heart', 13, 'wuxie'],
-                    ['heart', 6, 'lebu'],
-                    ['spade', 10, 'bingliang'],
-                    ['club', 12, 'tiesuo'],
-                    ['heart', 12, 'shandian'],
-                    ['club', 13, 'jiedao'],
-                    ['heart', 1, 'taoyuan'],
-                    //装备牌
-                    ['spade', 2, 'baguazhen'],
-                    ['club', 2, 'renwang'],
-                    ['spade', 2, 'tengjia'],
-                    ['club', 1, 'baiyin'],
-                    ['club', 5, 'dilu'],
-                    ['heart', 5, 'chitu'],
-                    ['spade', 13, 'dayuan'],
-                    ['diamond', 13, 'zixin'],
-                    ['diamond', 13, 'hualiu'],
-                    ['heart', 13, 'zhuahuang'],
-                    ['spade', 5, 'jueying'],
-                    ['diamond', 1, 'zhuge'],
-                    ['spade', 6, 'qinggang'],
-                    ['spade', 1, 'guding'],
-                    ['spade', 2, 'hanbing'],
-                    ['spade', 2, 'cixiong'],
-                    ['spade', 5, 'qinglong'],
-                    ['spade', 12, 'zhangba'],
-                    ['diamond', 5, 'guanshi'],
-                    ['diamond', 1, 'zhuque'],
-                    ['diamond', 12, 'fangtian'],
-                    ['heart', 5, 'qilin'],
-                ];
-                _status.fh_cardPile.addArray(cardList.filter(card => {
-                    return lib.card.list.some(cardx => card[0] == cardx[0] && card[1] == cardx[1] && card[2] == cardx[2] && ((!card[3] && !cardx[3]) || (card[3] == cardx[3])));
-                }));
-                var names = lib.card.list.filter(cardx => !cardList.some(card => card[2] == cardx[2])).reduce((list, card) => list.add(card[2]), []);
-                names.forEach(name => {
-                    var card = lib.card.list.find(card => card[2] == name);
-                    if (card) _status.fh_cardPile.push(card);
-                });
-                _status.fh_cardPile = _status.fh_cardPile.map(info => {
-                    const card = game.createCard2(info[2], info[0], info[1], info[3]);
-                    card.destroyed = (card, position, player, event) => {
-                        if (position === "discardPile") {
-                            if (!_status.fh_cardPile.includes(card)) {
-                                game.broadcastAll(card => _status.fh_cardPile.add(card), card);
-                                game.log(card, '被放回了', '#g额外牌堆');
-                            }
-                        }
-                        else {
-                            if (_status.fh_cardPile.includes(card)) {
-                                game.broadcastAll(card => _status.fh_cardPile.remove(card), card);
-                                game.log('#g额外牌堆', '失去了', card);
-                            }
-                        }
-                        return false;
-                    };
-                    card.addGaintag('eternal_fh_tag');
-                    return card;
-                });
-                ui.fh_linfo = ui.create.system('飞鸿·额外牌堆', null, true);
-                lib.setPopped(ui.fh_linfo, function () {
-                    var uiintro = ui.create.dialog('hidden');
-                    if (!_status.fh_cardPile) uiintro.add('本局游戏未开启额外牌堆');
-                    else if (!_status.fh_cardPile.length) uiintro.add('额外牌堆暂时没有牌');
-                    else {
-                        uiintro.add('额外牌堆');
-                        uiintro.addSmall([_status.fh_cardPile, 'card']);
-                        uiintro.add('<div class="text center">额外牌堆由牌堆中所有牌的各一张组成，部分卡牌具有固定的花色点数，其余卡牌为随机花色点数</div>');
-                    }
-                    uiintro.add(ui.create.div('.placeholder'));
-                    return uiintro;
-                }, 250);
-            }
-        });
-        //获取额外牌堆的牌
-        get.fh_cardPile = function (filter) {
-            if (!_status.fh_cardPile) {
-                console.warn('本局游戏未开启额外牌堆');
-                return;
-            }
-            if (!filter) filter = () => true;
-            else if (typeof filter == 'string') {
-                var name = filter;
-                filter = (card) => card.name == name;
-            }
-            var cards = _status.fh_cardPile.filter(card => filter(card));
-            if (cards.length) return cards.randomGet();
-            return false;
-        };
-    }
-    else lib.config.characters.remove('MX_feihongyinxue');
+    //飞鸿新机制
+    lib.arenaReady.push(function addYinyueqiang() {
+        //把银月枪加入牌堆
+        if (lib.config.characters.includes('MX_feihongyinxue')) lib.card.list.push(['diamond', 12, 'fh_yinyueqiang']);
+    });
     lib.translate['MX_feihongyinxue_character_config'] = '<span style="font-family: xingkai">飞鸿印雪</span>';
     if (ui?.create?.menu) {
         const originLoading = ui.create.menu;

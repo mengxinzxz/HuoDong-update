@@ -590,6 +590,126 @@ export async function precontent(bilibilicharacter) {
         }
     };
 
+    // 飞鸿印雪
+    //创建额外牌堆的牌
+    game.initFh_cardPile = function () {
+        // 公共区域
+        if (!lib.commonArea.has('fh_cardPile')) {
+            lib.commonArea.set('fh_cardPile', {
+                translate: '飞鸿·额外牌堆',
+                areaStatusName: 'fh_cardPile',
+                toName: 'toFh_cardPile',
+                fromName: 'fromFh_cardPile',
+                async addHandeler(event, trigger, player) {
+                    const { cards } = event;
+                    const puts = cards.filter(card => {
+                        return !card.willBeDestroyed('fh_cardPile', null, event.relatedEvent);
+                    });
+                    _status.fh_cardPile.addArray(puts);
+                    game.log(puts, '被放回了', '#g额外牌堆');
+                    game.broadcast(pile => {
+                        _status.fh_cardPile = pile;
+                    }, _status.fh_cardPile);
+                },
+                /** 处理从相应区域中移出的卡牌*/
+                async removeHandeler(event, trigger, player) {
+                    _status.fh_cardPile.removeArray(event.cards);
+                    game.log('#g额外牌堆', '失去了', event.cards);
+                    game.broadcast(pile => {
+                        _status.fh_cardPile = pile;
+                    }, _status.fh_cardPile);
+                },
+            });
+        }
+        if (!_status.fh_cardPile) {
+            _status.fh_cardPile = [];
+            const cardList = [
+                //基本牌
+                ['club', 4, 'sha'],
+                ['diamond', 2, 'shan'],
+                ['heart', 6, 'tao'],
+                ['spade', 9, 'jiu'],
+                ['heart', 4, 'sha', 'fire'],
+                ['spade', 4, 'sha', 'thunder'],
+                //锦囊牌
+                ['heart', 8, 'wuzhong'],
+                ['heart', 4, 'wugu'],
+                ['spade', 3, 'guohe'],
+                ['diamond', 3, 'shunshou'],
+                ['diamond', 2, 'huogong'],
+                ['diamond', 1, 'juedou'],
+                ['spade', 13, 'nanman'],
+                ['heart', 1, 'wanjian'],
+                ['heart', 13, 'wuxie'],
+                ['heart', 6, 'lebu'],
+                ['spade', 10, 'bingliang'],
+                ['club', 12, 'tiesuo'],
+                ['heart', 12, 'shandian'],
+                ['club', 13, 'jiedao'],
+                ['heart', 1, 'taoyuan'],
+                //装备牌
+                ['spade', 2, 'baguazhen'],
+                ['club', 2, 'renwang'],
+                ['spade', 2, 'tengjia'],
+                ['club', 1, 'baiyin'],
+                ['club', 5, 'dilu'],
+                ['heart', 5, 'chitu'],
+                ['spade', 13, 'dayuan'],
+                ['diamond', 13, 'zixin'],
+                ['diamond', 13, 'hualiu'],
+                ['heart', 13, 'zhuahuang'],
+                ['spade', 5, 'jueying'],
+                ['diamond', 1, 'zhuge'],
+                ['spade', 6, 'qinggang'],
+                ['spade', 1, 'guding'],
+                ['spade', 2, 'hanbing'],
+                ['spade', 2, 'cixiong'],
+                ['spade', 5, 'qinglong'],
+                ['spade', 12, 'zhangba'],
+                ['diamond', 5, 'guanshi'],
+                ['diamond', 1, 'zhuque'],
+                ['diamond', 12, 'fangtian'],
+                ['heart', 5, 'qilin'],
+            ];
+            _status.fh_cardPile.addArray(cardList.filter(card => {
+                return lib.card.list.some(cardx => card[0] == cardx[0] && card[1] == cardx[1] && card[2] == cardx[2] && ((!card[3] && !cardx[3]) || (card[3] == cardx[3])));
+            }));
+            const names = lib.card.list.filter(cardx => !cardList.some(card => card[2] == cardx[2])).reduce((list, card) => list.add(card[2]), []);
+            names.forEach(name => {
+                var card = lib.card.list.find(card => card[2] == name);
+                if (card) _status.fh_cardPile.push(card);
+            });
+            _status.fh_cardPile = _status.fh_cardPile.map(info => {
+                const card = game.createCard2(info[2], info[0], info[1], info[3]);
+                game.broadcastAll(card => {
+                    card.destroyed = (card, position, player, event) => {
+                        if (position === 'discardPile') {
+                            game.cardsGotoSpecial(card, 'toFh_cardPile');
+                        }
+                        return false;
+                    };
+                    card.addGaintag('eternal_fh_tag');
+                }, card);
+                return card;
+            });
+            game.broadcast(pile => {
+                _status.fh_cardPile = pile;
+            }, _status.fh_cardPile);
+        }
+    };
+    //获取额外牌堆的牌
+    get.fh_cardPile = function (filter) {
+        game.initFh_cardPile();
+        if (!filter) filter = () => true;
+        else if (typeof filter == 'string') {
+            var name = filter;
+            filter = (card) => card.name == name;
+        }
+        var cards = _status.fh_cardPile.filter(card => filter(card));
+        if (cards.length) return cards.randomGet();
+        return false;
+    };
+
     //武将包和卡包
     if (bilibilicharacter.enable) {
         //--------------------武将包--------------------//
