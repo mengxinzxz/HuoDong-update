@@ -12210,12 +12210,10 @@ const packs = function () {
                             if (_status._ganglie_check || player.hasSkillTag('jueqing', false, target)) return;
                             if (get.type(card) !== 'delay' && get.tag(card, 'damage')) {
                                 _status._ganglie_check = true;
-                                const orieffect = get.effect(target, card, player, player);
                                 const effect = get.effect(target, { name: 'guohe_copy2' }, target, player) * 2 + get.recoverEffect(target, player, player);
-                                const orieffect2 = get.effect(target, card, player, target);
                                 const effect2 = get.effect(target, { name: 'guohe_copy2' }, target, target) * 2 + get.recoverEffect(target, player, target);
                                 delete _status._ganglie_check;
-                                return [0, effect + orieffect, 0, effect2 + orieffect2];
+                                return [1, effect, 1, effect2];
                             }
                         },
                         target(card, player, target) {
