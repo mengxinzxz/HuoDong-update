@@ -10,7 +10,7 @@ const packs = function () {
                 CLongZhou: ['lz_sufei', 'lz_tangzi', 'lz_liuqi', 'lz_huangquan'],
                 Chuodong: ['bilibili_shengxunyu', 'bilibili_Firewin', 'bilibili_jinglingqiu', 'bilibili_suixingsifeng', 'bilibili_Emptycity', 'bilibili_thunderlei', 'bilibili_lonelypatients', 'bilibili_ningjingzhiyuan', 'bilibili_xizhicaikobe'],
                 CDormitory: ['bilibili_longjiuzhen', 'bilibili_diandian', 'bilibili_murufengchen', 'bilibili_wuzhuwanshui', 'bilibili_kuangshen', 'bilibili_yanjing', 'bilibili_xiaoyaoruyun', 'bilibili_shuijiaobuboli'],
-                Cothers: ['bilibili_liuguanzhang', 'bilibili_gaowang', 'bilibili_simayi', 'old_dongxie', 'bilibili_sunhanhua', 'bilibili_zhoutaigong', 'bilibili_zhouxiaomei', 'bilibili_caifuren', 'bilibili_zhengxuan', 'bilibili_sp_xuyou', 'old_zuoci', 'bilibili_kuailiangkuaiyue', 'bilibili_wuqiao', 'bilibili_daxiao', 'bilibili_xushao', 'bilibili_shen_guojia', 'bilibili_re_xusheng', 'bilibili_adong', 'bilibili_zhangrang', 'bilibili_litiansuo', 'decade_huangwudie', 'bilibili_huanggai', 'bilibili_ekeshaoge', 'bilibili_guanning', 'bilibili_wangwang', 'diy_lvmeng'],
+                Cothers: ['bilibili_xiahoudun', 'bilibili_liuguanzhang', 'bilibili_gaowang', 'bilibili_simayi', 'old_dongxie', 'bilibili_sunhanhua', 'bilibili_zhoutaigong', 'bilibili_zhouxiaomei', 'bilibili_caifuren', 'bilibili_zhengxuan', 'bilibili_sp_xuyou', 'old_zuoci', 'bilibili_kuailiangkuaiyue', 'bilibili_wuqiao', 'bilibili_daxiao', 'bilibili_xushao', 'bilibili_shen_guojia', 'bilibili_re_xusheng', 'bilibili_adong', 'bilibili_zhangrang', 'bilibili_litiansuo', 'decade_huangwudie', 'bilibili_huanggai', 'bilibili_ekeshaoge', 'bilibili_guanning', 'bilibili_wangwang', 'diy_lvmeng'],
                 Cothers_dualside: ['bilibili_wangtao', 'bilibili_wangyue', 'bilibili_x_wangtao', 'bilibili_x_wangyue', 'bilibili_daqiao', 'bilibili_xiaoqiao', 'bilibili_x_daqiao', 'bilibili_x_xiaoqiao', 'bilibili_ahuinan', 'bilibili_dongtuna', 'bilibili_x_ahuinan', 'bilibili_x_dongtuna'],
                 CXuanDie: ['bfake_jiananfeng', 'bfake_shen_zhangjiao', 'bfake_shen_zhangfei', 'bfake_shen_jiaxu', 'bfake_huanwen', 'bfake_miheng'],
             },
@@ -63,6 +63,7 @@ const packs = function () {
             bilibili_longjiuzhen: ['female', 'key', 3, ['bilibili_xingcan', 'bilibili_linglai', 'bilibili_yongtan'], ['clan:宿舍群|肘击群|活动群', 'name:null|美']],
             bilibili_gaowang: ['male', 'qun', 3, ['scsanruo', 'gaowangdead'], ['character:scs_gaowang']],
             bilibili_liuguanzhang: ['male', 'qun', 4, ['bilibili_waifa'], ['border:shen', 'name:戏|志才-陈|友谅-左|宗棠']],
+            bilibili_xiahoudun: ['male', 'wei', 4, ['bilibili_ganglie', 'new_qingjian'], ['name:夏侯|惇', ...['character', 'tempname', 'die'].map(i => `${i}:re_xiahoudun`)]],
             //双面武将--正面
             bilibili_wangtao: ['female', 'shu', 3, ['huguan', 'yaopei', 'dualside'], ['dualside:bilibili_x_wangyue', 'character:wangtao', 'die:wangtao']],
             bilibili_wangyue: ['female', 'shu', 3, ['huguan', 'mingluan', 'dualside'], ['dualside:bilibili_x_wangtao', 'character:wangyue', 'tempname:wangyue', 'die:wangyue']],
@@ -12150,6 +12151,80 @@ const packs = function () {
                     },
                 },
             },
+            //惇
+            bilibili_ganglie: {
+                audio: 'reganglie',
+                trigger: {
+                    source: 'damageBegin2',
+                    player: 'damageEnd',
+                },
+                filter(event, player, name) {
+                    return event[name === 'damageEnd' ? 'source' : 'player']?.isIn();
+                },
+                logTarget(event, player, name) {
+                    return event[name === 'damageEnd' ? 'source' : 'player'];
+                },
+                check(event, player, name) {
+                    if (name === 'damageEnd') return get.damageEffect(event.source, player, player) > 0;
+                    _status._ganglie_check = true;
+                    const target = event.player, num = Math.min(event.num + 1, target.countDiscardableCards(target, 'he'));
+                    const orieffect = get.damageEffect(target, player, player) * event.num;
+                    const effect = get.effect(target, { name: 'guohe_copy2' }, target, player) * num + get.recoverEffect(target, player, player) * Math.max(1, num);
+                    delete _status._ganglie_check;
+                    return effect + orieffect > 0;
+                },
+                prompt2(event, player, name) {
+                    const target = event[name === 'damageEnd' ? 'source' : 'player'], str = get.translation(target);
+                    if (name === 'damageEnd') return `对${str}造成${event.num + (target.getHp() > player.getHp() ? 1 : 0)}点伤害`;
+                    return `令${str}弃置${get.cnNumber(event.num)}张牌，然后其回复1点体力，且你可以将其弃置的红色牌交给一名角色`;
+                },
+                async content(event, trigger, player) {
+                    const target = event.targets[0];
+                    if (event.triggername === 'damageEnd') {
+                        await target.damage(trigger.num + (target.getHp() > player.getHp() ? 1 : 0));
+                    }
+                    else {
+                        const result = await target.chooseToDiscard(trigger.num + 1, 'he', true).forResult();
+                        if (result?.bool && result.cards?.length) {
+                            await target.recover();
+                            const cards = result.cards.filter(card => get.color(card) === 'red' && get.position(card) === 'd');
+                            if (cards.length > 0) {
+                                const result2 = await player.chooseTarget(`是否令一名角色获得${get.translation(cards)}`).set('ai', card => {
+                                    const { player, cards } = get.event();
+                                    return Math.sign(get.attitude(player, target)) * cards.reduce((sum, card) => sum + get.value(card, target), 0);
+                                }).set('cards', cards).forResult();
+                                if (result2?.bool && result2.targets?.length) {
+                                    const gainner = result2.targets[0];
+                                    player.line(gainner);
+                                    await gainner.gain(cards, 'gain2').set('giver', player);
+                                }
+                            }
+                        }
+                    }
+                },
+                ai: {
+                    threaten: 0.6,
+                    maixie: true,
+                    effect: {
+                        player(card, player, target) {
+                            if (_status._ganglie_check || player.hasSkillTag('jueqing', false, target)) return;
+                            if (get.type(card) !== 'delay' && get.tag(card, 'damage')) {
+                                _status._ganglie_check = true;
+                                const orieffect = get.effect(target, card, player, player);
+                                const effect = get.effect(target, { name: 'guohe_copy2' }, target, player) * 2 + get.recoverEffect(target, player, player);
+                                const orieffect2 = get.effect(target, card, player, target);
+                                const effect2 = get.effect(target, { name: 'guohe_copy2' }, target, target) * 2 + get.recoverEffect(target, player, target);
+                                delete _status._ganglie_check;
+                                return [0, effect + orieffect, 0, effect2 + orieffect2];
+                            }
+                        },
+                        target(card, player, target) {
+                            if (player.hasSkillTag('jueqing', false, target)) return [1, -1.5];
+                            if (target.hasFriend() && get.tag(card, 'damage')) return [1, 0, 0, -0.7];
+                        },
+                    },
+                },
+            },
         },
         dynamicTranslate: {
             bilibili_xueji(player) {
@@ -12783,6 +12858,9 @@ const packs = function () {
             bilibili_liuguanzhang: '三人组',
             bilibili_waifa: '外伐',
             bilibili_waifa_info: '出牌阶段开始时，你可以弃置三张牌并摸等量的牌。若你弃置的类别包含：基本牌，本回合你使用的前X张基本牌无距离和次数限制（X为其中的非基本牌数）；锦囊牌，本回合你使用的前Y张锦囊牌可以额外增加和减少至多Y名目标（Y为其中的非锦囊牌数）；装备牌，本回合你使用的前Z张装备牌时摸Z张牌（Z为其中的非装备牌数）。',
+            bilibili_xiahoudun: '夏侯惇',
+            bilibili_ganglie: '刚烈',
+            bilibili_ganglie_info: '①当你受到伤害后，你可以对伤害来源造成X点伤害（X为伤害值），若其体力值大于你则X+1。②当你造成伤害时，你可以令受伤角色弃置X张牌，然后其回复1点体力，且你可以将其弃置的红色牌交给一名角色。',
         },
     };
     for (let i in huodongcharacter.character) {
