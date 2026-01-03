@@ -3219,40 +3219,39 @@ const packs = function () {
                 },
             },
             wechatjiushi: {
-                group: 'wechatjiushi2',
                 audio: 'jiushi1',
                 enable: 'chooseToUse',
                 filter(event, player) {
-                    return player.countCards('h', { suit: 'club' }) && !event.wechatjiushi;
+                    return player.hasCard(card => {
+                        if (get.position(card) === 'h' && _status.connectMode) return true;
+                        return get.suit(card) === 'club' && lib.filter.cardDiscardable(card, player);
+                    }, 'hs');
                 },
-                filterCard: () => false,
-                selectCard: -1,
-                viewAs: { name: 'jiu' },
-                prompt: '弃置一张梅花手牌，视为使用【酒】',
+                filterCard(card, player) {
+                    return get.suit(card) === 'club' && lib.filter.cardDiscardable(card, player);
+                },
+                viewAs: {
+                    name: 'jiu',
+                    suit: 'none',
+                    number: null,
+                    isCard: true,
+                },
+                log: false,
+                ignoreMod: true,
                 check(card) {
                     if (_status.event.type === 'dying') return 1 / Math.max(0.1, get.value(card));
                     return 7 - get.value(card);
                 },
-            },
-            wechatjiushi2: {
-                charlotte: true,
-                trigger: { player: 'useCardBefore' },
-                filter(event, player) {
-                    return event.skill == 'wechatjiushi';
-                },
-                firstDo: true,
-                direct: true,
-                content() {
-                    'step 0'
-                    delete trigger.skill;
-                    player.chooseToDiscard({ suit: 'club' }).logSkill = 'wechatjiushi';
-                    'step 1'
-                    if (result.bool) game.delay(0.5);
-                    else {
-                        trigger.cancel();
-                        trigger.getParent().wechatjiushi = true;
-                        trigger.getParent().goto(0);
-                    }
+                async precontent(event, trigger, player) {
+                    player.logSkill('wechatjiushi');
+                    await player.discard(event.result.cards.slice());
+                    Object.assign(event.result, {
+                        card: {
+                            name: event.result.card.name,
+                            nature: event.result.card.nature,
+                        },
+                        cards: [],
+                    });
                 },
             },
             //魏延
