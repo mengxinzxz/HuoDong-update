@@ -15134,10 +15134,10 @@ const packs = function () {
                                     return players[0] != player ? suit : lib.suit.filter(i => i != suit).randomGet();
                                 }).set('suit', playerSuit).set('prompt2', '若你选择的花色为' + str[1] + '，你摸一张牌并受到' + str + '对你造成1点伤害，否则' + str[0] + '对一名角色造成1点伤害').forResult('control');
                                 player.$compare(game.createCard('lukai_' + playerSuit, '', ''), target, game.createCard('lukai_' + targetSuit, '', ''));
-                                await game.asyncDelay(0, 1500);
+                                await game.delay(0, 1500);
                                 target.popup(targetSuit);
                                 game.log(target, '选择了', '#g' + get.translation(targetSuit));
-                                await game.asyncDelay(2);
+                                await game.delay(2);
                                 if (playerSuit == targetSuit) {
                                     player.line(target);
                                     await target.draw();
@@ -27170,7 +27170,7 @@ const packs = function () {
                         const target = result.targets[0];
                         player.line(target, 'fire');
                         lib.skill.minijianjie.addMark('huoji', player, target);
-                        await game.asyncDelayx();
+                        await game.delayx();
                         if (game.hasPlayer(current => current != target)) {
                             const result = await player.chooseTarget('荐杰：选择一名角色获得“凤印”', (card, player, target) => {
                                 return target != get.event().target;
@@ -27179,7 +27179,7 @@ const packs = function () {
                                 const targetx = result.targets[0];
                                 player.line(targetx, 'thunder');
                                 lib.skill.minijianjie.addMark('lianhuan', player, targetx);
-                                await game.asyncDelayx();
+                                await game.delayx();
                             }
                         }
                     }
@@ -27259,7 +27259,7 @@ const packs = function () {
                                 mark = (mark == '龙印' ? 'huoji' : 'lianhuan');
                                 skill.removeMark(mark, player, targets[0]);
                                 skill.addMark(mark, player, targets[1]);
-                                await game.asyncDelayx();
+                                await game.delayx();
                             }
                         },
                         ai: {
@@ -27289,7 +27289,7 @@ const packs = function () {
                                     const target = result.targets[0];
                                     player.line(target, 'fire');
                                     lib.skill.minijianjie.addMark('huoji', player, target);
-                                    await game.asyncDelayx();
+                                    await game.delayx();
                                 }
                             }
                             if (lib.skill.minijianjie.hasMark('lianhuan', player, trigger.player)) {
@@ -27298,7 +27298,7 @@ const packs = function () {
                                     const target = result.targets[0];
                                     player.line(target, 'thunder');
                                     lib.skill.minijianjie.addMark('lianhuan', player, target);
-                                    await game.asyncDelayx();
+                                    await game.delayx();
                                 }
                             }
                         },
@@ -27862,7 +27862,7 @@ const packs = function () {
                         trigger.player.judging[0] = links[0];
                         trigger.orderingCards.addArray(links);
                         game.log(trigger.player, '的判定牌改为', links[0]);
-                        await game.asyncDelay(2);
+                        await game.delay(2);
                         await player.draw();
                     }
                 },
@@ -27898,7 +27898,7 @@ const packs = function () {
                     player.addTempSkill('minitianze_block');
                     if (get.mode() != 'identity' || player.identity != 'nei') player.addExpose(0.2);
                     await trigger.player.damage();
-                    await game.asyncDelayx();
+                    await game.delayx();
                 },
                 group: 'minitianze_draw',
             },
@@ -35997,7 +35997,7 @@ const packs = function () {
                         const result = await targets[i].draw((i != targets.length - 1) ? 'nodelay' : '').forResult();
                         if (Array.isArray(result)) map[targets[i].playerid] = result;
                     }
-                    await game.asyncDelay();
+                    await game.delay();
                     for (const target of targets) {
                         const result = await target.chooseToGive(player, { type: ['trick', 'delay'] }, 'he', true).forResult();
                         if (!result.bool || !result.cards || !result.cards.length) {

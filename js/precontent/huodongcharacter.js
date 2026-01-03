@@ -5655,7 +5655,7 @@ const packs = function () {
                         target.judging[0] = card;
                         trigger.orderingCards.add(card);
                         game.log(target, '的判定牌改为', card);
-                        await game.asyncDelay(2);
+                        await game.delay(2);
                         if (player.countCards('h')) {
                             const result = await player.chooseCard('是否重铸任意张手牌？', [1, player.countCards('h')], lib.filter.cardRecastable).set('ai', card => {
                                 const player = get.event().player, cards = ui.selected.cards;
