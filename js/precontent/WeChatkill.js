@@ -3229,6 +3229,10 @@ const packs = function () {
                 selectCard: -1,
                 viewAs: { name: 'jiu' },
                 prompt: '弃置一张梅花手牌，视为使用【酒】',
+                check(card) {
+                    if (_status.event.type === 'dying') return 1 / Math.max(0.1, get.value(card));
+                    return 7 - get.value(card);
+                },
             },
             wechatjiushi2: {
                 charlotte: true,

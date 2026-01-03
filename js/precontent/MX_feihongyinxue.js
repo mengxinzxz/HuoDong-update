@@ -2057,6 +2057,7 @@ const packs = function () {
                     dialog(event, player) {
                         return ui.create.dialog('病论', _status.renku);
                     },
+                    prompt: () => '请选择【病论】的目标',
                     backup(links, player) {
                         return {
                             audio: 'binglun',
@@ -2079,20 +2080,19 @@ const packs = function () {
                             },
                             ai: {
                                 result: {
-                                    target(player, target) {
+                                    player(player, target) {
                                         return get.recoverEffect(target, player, player);
                                     },
                                 },
                             },
                         }
                     },
-                    prompt: () => '请选择【病论】的目标',
                 },
                 ai: {
                     order: 7,
                     result: {
-                        player(player, target) {
-                            return Math.min(1, game.countPlayer(target => target.isDamaged() && get.recoverEffect(target, player, player) > 0));
+                        player(player) {
+                            return game.countPlayer(target => get.recoverEffect(target, player, player) > 0);
                         },
                     },
                 },
