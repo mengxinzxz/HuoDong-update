@@ -43,7 +43,7 @@ const packs = function () {
             bilibili_zhengxuan: ['male', 'qun', 3, ['bilibili_zhengjing'], ['character:zhengxuan', 'die:zhengxuan', 'name:郑|玄']],
             bilibili_sunhanhua: ['female', 'wu', 3, ['bilibili_chongxu', 'miaojian', 'shhlianhua'], ['character:sunhanhua', 'die:sunhanhua', 'name:孙|寒华']],
             bilibili_lonelypatients: ['male', 'key', 4, ['bilibili_meihua'], ['clan:活动群', 'name:独孤|null']],
-            bilibili_kuangshen: ['male', 'key', '1/10/3', ['bilibili_paoku'], ['clan:宿舍群|肘击群|活动群']],
+            bilibili_kuangshen: ['male', 'key', '1/10/3', ['bilibili_paoku', 'bilibili_zhijiang'], ['clan:宿舍群|肘击群|活动群']],
             bilibili_shen_guojia: ['male', 'wei', '9/9/5', ['stianyi', 'resghuishi', 'bilibili_huishi'], ['doublegroup:shen:wei:wu', 'die:shen_guojia']],
             bilibili_re_xusheng: ['male', 'wu', 4, ['bilibili_pojun', 'kuangcai', 'bilibili_baodao'], ['die:re_xusheng']],
             bilibili_xushao: ['male', 'qun', 3, ['bol_pinjian', 'bol_yuedan'], ['die:xushao']],
@@ -10730,31 +10730,28 @@ const packs = function () {
             },
             //牢狂
             bilibili_paoku: {
-                enable: 'phaseUse',
-                trigger: { global: 'roundStart' },
-                check: () => false,
-                usable: 1,
+                trigger: { global: ['roundStart', 'roundEnd'] },
                 async content(event, trigger, player) {
                     await Promise.all(event.next);
                     if (_status.connectMode) event.time = lib.configOL.choose_timeout;
                     event.videoId = lib.status.videoId++;
                     if (player.isUnderControl()) game.swapPlayerAuto(player);
-                    let time = 30;
+                    const time = get.rand(300, 480);
                     const switchToAuto = () => {
                         return new Promise((resolve) => {
                             game.pause();
                             game.countChoose();
-                            event._result = { score: 0 };
+                            event._result = { score: time };
                             setTimeout(() => {
                                 _status.imchoosing = false;
                                 if (event.dialog) event.dialog.close();
                                 game.resume();
                                 resolve(event._result);
-                            }, 30000);
+                            }, time * 1000);
                         });
                     };
                     const createDialog = (player, id) => {
-                        if (_status.connectMode) lib.configOL.choose_timeout = '30';
+                        if (_status.connectMode) lib.configOL.choose_timeout = 'Infinity';
                         if (player === game.me) return;
                         const dialog = ui.create.dialog(get.translation(player) + '正在进行"狂神快跑"...<br>');
                         dialog.videoId = id;
@@ -10993,6 +10990,182 @@ const packs = function () {
                     name: '复活赛',
                     name2: '复活币',
                     content: '复活赛进度条：#/1103',
+                },
+            },
+            bilibili_zhijiang: {
+                enable: 'phaseUse',
+                usable: 1,
+                async content(event, trigger, player) {
+                    await Promise.all(event.next);
+                    if (_status.connectMode) event.time = lib.configOL.choose_timeout;
+                    event.videoId = lib.status.videoId++;
+                    if (player.isUnderControl()) game.swapPlayerAuto(player);
+                    const time = get.rand(300, 480);
+                    const switchToAuto = () => {
+                        return new Promise((resolve) => {
+                            game.pause();
+                            game.countChoose();
+                            event._result = { canceled: true, score: time };
+                            setTimeout(() => {
+                                _status.imchoosing = false;
+                                if (event.dialog) event.dialog.close();
+                                game.resume();
+                                resolve(event._result);
+                            }, time * 1000);
+                        });
+                    };
+                    const createDialog = (player, id) => {
+                        if (_status.connectMode) lib.configOL.choose_timeout = 'Infinity';
+                        if (player === game.me) return;
+                        const dialog = ui.create.dialog(get.translation(player) + '正在玩游戏...<br>');
+                        dialog.videoId = id;
+                    };
+                    const chooseButton = (time, url) => {
+                        const { promise, resolve } = Promise.withResolvers(), event = _status.event;
+                        const startTime = Date.now();
+                        let loaded = false, remain = time, timer;
+                        event.dialog = (() => {
+                            const dialog = ui.create.dialog('hidden');
+                            dialog.classList.add('popped', 'static');
+                            Object.assign(dialog.style, {
+                                width: '100%',
+                                height: '100%',
+                                top: '0',
+                                left: '0',
+                                background: 'rgba(0,0,0,0.85)',
+                                display: 'flex',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                zIndex: 1145141919810,
+                                overflowX: 'hidden',
+                            });
+                            ui.window.appendChild(dialog);
+                            const box = document.createElement('div');
+                            Object.assign(box.style, {
+                                width: 'calc(100% - 2px)',
+                                height: 'calc(100% - 2px)',
+                                background: '#111',
+                                borderRadius: '12px',
+                                position: 'relative',
+                                overflow: 'hidden',
+                            });
+                            dialog.appendChild(box);
+                            const timerText = document.createElement('div');
+                            Object.assign(timerText.style, {
+                                position: 'absolute',
+                                top: '10px',
+                                left: '12px',
+                                color: '#fff',
+                                fontSize: '16px',
+                                zIndex: 10,
+                                userSelect: 'none',
+                            });
+                            timerText.innerText = `剩余时间：${remain} 秒`;
+                            box.appendChild(timerText);
+                            const iframe = document.createElement('iframe');
+                            iframe.src = url;
+                            iframe.allow = 'fullscreen';
+                            Object.assign(iframe.style, {
+                                width: '100%',
+                                height: '100%',
+                                border: 'none',
+                                display: 'block',
+                            });
+                            iframe.onload = () => {
+                                loaded = true;
+                            };
+                            iframe.onerror = () => {
+                                end();
+                            };
+                            box.appendChild(iframe);
+                            const cancelBtn = document.createElement('div');
+                            cancelBtn.innerText = '✖';
+                            Object.assign(cancelBtn.style, {
+                                position: 'absolute',
+                                top: '10px',
+                                right: '12px',
+                                width: '32px',
+                                height: '32px',
+                                lineHeight: '32px',
+                                textAlign: 'center',
+                                cursor: 'pointer',
+                                fontSize: '20px',
+                                color: '#fff',
+                                background: 'rgba(0,0,0,0.6)',
+                                borderRadius: '50%',
+                                zIndex: 10,
+                                userSelect: 'none',
+                            });
+                            box.appendChild(cancelBtn);
+                            const end = () => {
+                                clearInterval(timer);
+                                const seconds = Math.floor((Date.now() - startTime) / 1000);
+                                event._result = {
+                                    canceled: true,
+                                    time: seconds,
+                                    score: seconds,
+                                };
+                                if (event.dialog) event.dialog.close();
+                                _status.imchoosing = false;
+                                game.resume();
+                                resolve(event._result);
+                            };
+                            cancelBtn.onclick = end;
+                            timer = setInterval(() => {
+                                remain--;
+                                timerText.innerText = `剩余时间：${remain} 秒`;
+                                if (remain <= 0) end();
+                            }, 1000);
+                            setTimeout(() => {
+                                if (!loaded) end();
+                            }, 3000);
+                            return dialog;
+                        })();
+                        event.switchToAuto = () => {
+                            const seconds = Math.floor((Date.now() - startTime) / 1000);
+                            event._result = {
+                                canceled: true,
+                                time: seconds,
+                                score: seconds,
+                            };
+                            game.resume();
+                            resolve(event._result);
+                        };
+                        _status.imchoosing = true;
+                        game.pause();
+                        game.countChoose();
+                        return promise;
+                    };
+                    game.broadcastAll(createDialog, player, event.videoId);
+                    let next, url = 'http://jspvz.com/plantsvszombies.htm';
+                    if (event.isMine()) next = chooseButton(time, url);
+                    else if (event.isOnline()) {
+                        const { promise, resolve } = Promise.withResolvers();
+                        event.player.send(chooseButton, time, url);
+                        event.player.wait(async result => {
+                            if (result === 'ai') result = await switchToAuto();
+                            resolve(result);
+                        });
+                        game.pause();
+                        next = promise;
+                    }
+                    else next = switchToAuto();
+                    const result2 = await next;
+                    game.broadcastAll((id, time) => {
+                        if (_status.connectMode) lib.configOL.choose_timeout = time;
+                        const dialog = get.idDialog(id);
+                        if (dialog) dialog.close();
+                    }, event.videoId, event.time);
+                    player.addMark('bilibili_paoku', result2.score);
+                    if (player.countMark('bilibili_paoku') >= 1103) {
+                        const me = game.me._trueMe || game.me;
+                        const winners = game.filterPlayer2(i => i.isFriendOf(player), [], true);
+                        game.over(player === me || winners.includes(me));
+                    }
+                },
+                ai: {
+                    order: 10,
+                    result: { player: 1 },
                 },
             },
             //吾猪万睡
@@ -12660,7 +12833,18 @@ const packs = function () {
             bolcongshi_info: '锁定技。①体力值最大的角色对你的上家和下家使用牌无距离限制。②有角色使用因〖从势①〗增加距离的牌对你的上家或下家造成伤害后，你回复1点体力。',
             bilibili_kuangshen: '狂神',
             bilibili_paoku: '跑酷',
-            bilibili_paoku_info: '每轮开始时/出牌阶段限一次，你可以游玩一次“狂神跑酷”，然后获得等量分数的复活币。当你拥有至少1103个复活币后，你所属阵营获得游戏胜利。',
+            bilibili_paoku_info: `每轮开始时和每轮结束时，你可以游玩5-8分钟的“狂神跑酷”，然后获得等量分数的${get.poptip({
+                id: 'manbaout',
+                name: '复活币',
+                type: 'character',
+                info: '牢狂的复活赛进度，拥有至少1103个复活币后，所属阵营获得游戏胜利',
+            })}。`,
+            bilibili_zhijiang: '植僵',
+            bilibili_zhijiang_info: `出牌阶段限一次，你可以游玩5-8分钟的“植物大战僵尸”，然后获得游戏秒数的的${get.poptip('manbaout')}。`,
+            bilibili_zhijiang_append: `<span style="font-family:yuanli">${[
+                'v1.10.3.1版本更新内容',
+                '※殴打@kuangshen04，回滚这位开发者提交的Pull Request，修复技能的group失效的bug',
+            ].join('<br>')}</span>`,
             bilibili_shen_guojia: '知箸侠',
             bilibili_huishi: '慧识',
             bilibili_huishi_info: '限定技，出牌阶段限一次，若你的体力上限小于10，你可进行判定牌不置入弃牌堆的判定。若判定结果与本次发动技能时的其他判定结果的花色均不相同且你的体力上限小于10，则你加1点体力上限，且可以重复此流程。然后你将所有位于处理区的判定牌交给一名角色。若其手牌数为全场最多，则你减1点体力上限。',
