@@ -11022,8 +11022,7 @@ const packs = function () {
                     };
                     const chooseButton = (time, url) => {
                         const { promise, resolve } = Promise.withResolvers(), event = _status.event;
-                        const startTime = Date.now();
-                        let loaded = false, remain = time, timer;
+                        let remain = time, timer;
                         event.dialog = (() => {
                             const dialog = ui.create.dialog('hidden');
                             dialog.classList.add('popped', 'static');
@@ -11071,9 +11070,6 @@ const packs = function () {
                                 border: 'none',
                                 display: 'block',
                             });
-                            iframe.onload = () => {
-                                loaded = true;
-                            };
                             iframe.onerror = () => {
                                 end();
                             };
@@ -11099,7 +11095,7 @@ const packs = function () {
                             box.appendChild(cancelBtn);
                             const end = () => {
                                 clearInterval(timer);
-                                const seconds = Math.floor((Date.now() - startTime) / 1000);
+                                const seconds = time - remain;
                                 event._result = {
                                     canceled: true,
                                     time: seconds,
@@ -11116,13 +11112,10 @@ const packs = function () {
                                 timerText.innerText = `剩余时间：${remain} 秒`;
                                 if (remain <= 0) end();
                             }, 1000);
-                            setTimeout(() => {
-                                if (!loaded) end();
-                            }, 3000);
                             return dialog;
                         })();
                         event.switchToAuto = () => {
-                            const seconds = Math.floor((Date.now() - startTime) / 1000);
+                            const seconds = time - remain;
                             event._result = {
                                 canceled: true,
                                 time: seconds,
