@@ -16007,7 +16007,7 @@ const packs = function () {
                 async content(event, trigger, player) {
                     const { player: target } = trigger;
                     let { cards } = event;
-                    if (get.itemtype(cards) != 'cards') (cards = await target.draw().forResult());
+                    if (get.itemtype(cards) != 'cards') { cards = await target.draw().forResult() };
                     if (get.itemtype(cards) != 'cards') return;
                     await player.showCards(cards, `${get.translation(player)}对${player === target ? '自己' : get.translation(target)}发动了【补益】`);
                     await target.discard(cards).set('discarder', player);
