@@ -8663,12 +8663,12 @@ const packs = function () {
                         game.log('已经没有可以获得的技能了！');
                         return;
                     }
-                    const skill = await player.chooseControl(list).set('choiceList', list.map(i => {
+                    const { control: skill } = await player.chooseControl(list).set('choiceList', list.map(i => {
                         return '<div class="skill">【' + get.translation(lib.translate[i + '_ab'] || get.translation(i).slice(0, 2)) + '】</div><div>' + get.skillInfoTranslation(i, player) + '</div>';
                     })).set('displayIndex', false).set('prompt', '络殊：请选择你要获得的技能').set('ai', () => {
                         let list = get.event().controls.slice();
                         return list.sort((a, b) => get.skillRank(b, 'in') - get.skillRank(a, 'in'))[0];
-                    }).forResult('control');
+                    }).forResult();
                     player.popup(skill);
                     await player.addSkills(skill);
                 },
@@ -8795,9 +8795,9 @@ const packs = function () {
                         }
                     }
                     if (!list.length) return;
-                    const skill = list.length == 1 ? list[0] : await player.chooseControl(list).set('choiceList', list.map(i => {
+                    const { control: skill } = list.length == 1 ? list[0] : await player.chooseControl(list).set('choiceList', list.map(i => {
                         return '<div class="skill">【' + get.translation(lib.translate[i + '_ab'] || get.translation(i).slice(0, 2)) + '】</div><div>' + get.skillInfoTranslation(i, player) + '</div>';
-                    })).set('displayIndex', false).set('prompt', `选择${get.translation(target)}一个限定技在回合结束后其重置之`).forResult('control');
+                    })).set('displayIndex', false).set('prompt', `选择${get.translation(target)}一个限定技在回合结束后其重置之`).forResult();
                     target.when({ global: 'phaseEnd' }).step(async () => {
                         target.restoreSkill(skill);
                         target.popup(get.translation(skill));
@@ -9992,7 +9992,7 @@ const packs = function () {
                 },
                 async content(event, trigger, player) {
                     const { target } = event;
-                    const cards = await player.choosePlayerCard(target, true, 'h').forResult('cards');
+                    const { cards } = await player.choosePlayerCard(target, true, 'h').forResult();
                     if (!cards?.length) return;
                     await player.showCards(cards, get.translation(player) + '对' + get.translation(target) + '发动了【明察】');
                     const goon1 = player.countCards('he'), goon2 = target.countCards('he');
@@ -10006,12 +10006,12 @@ const packs = function () {
                         else result = { index: goon2 ? 0 : 1 };
                         if (result.index == 0) await target.chooseToGive(player, 'he', true);
                         else {
-                            const give = await player.chooseToGive(target, 'he', true).set('ai', card => {
+                            const { cards: give } = await player.chooseToGive(target, 'he', true).set('ai', card => {
                                 const { player, target } = get.event();
                                 const cardx = get.event().cards[0];
                                 if (get.attitude(player, target) > 0 && get.type2(card) != get.type2(cardx)) return 10;
                                 return 6 - get.value(card);
-                            }).set('cards', cards).forResult('cards');
+                            }).set('cards', cards).forResult();
                             if (give?.length && get.type2(give[0]) != get.type2(cards[0])) await player.draw();
                         };
                     }
@@ -10206,7 +10206,7 @@ const packs = function () {
                             });
                             player.unmarkAuto('old_jieyan_gain', [target]);
                             if (cards.length && game.hasPlayer(current => current !== target)) {
-                                const targets = await player.chooseTarget(get.prompt(event.name), `令一名不为${get.translation(target)}的角色获得${get.translation(cards)}`, (card, player, target) => {
+                                const { targets } = await player.chooseTarget(get.prompt(event.name), `令一名不为${get.translation(target)}的角色获得${get.translation(cards)}`, (card, player, target) => {
                                     return target !== get.event().getTrigger().player;
                                 }).set('ai', target => {
                                     const player = get.player();
@@ -10214,7 +10214,7 @@ const packs = function () {
                                     if (att < 3) return 0;
                                     if (target.hasSkillTag('nogain')) att /= 10;
                                     return att;
-                                }).forResult('targets');
+                                }).forResult();
                                 if (targets && targets.length) {
                                     const next = targets[0].gain(cards, 'gain2');
                                     next.giver = player;
@@ -10413,7 +10413,7 @@ const packs = function () {
                             for (const target of targets) {
                                 const next = result.color === 'red' ? target.chooseToDiscard(2, 'he') : target.chooseToGive(player, 'he');
                                 next.set('prompt', result.color === 'red' ? '弃置两张牌，或受到1点伤害' : ('交给' + get.translation(player) + '一张牌，或受到1点伤害'));
-                                const bool = await next.forResult('bool');
+                                const { bool } = await next.forResult();
                                 if (!bool) await target.damage();
                                 await game.delayx();
                             }
