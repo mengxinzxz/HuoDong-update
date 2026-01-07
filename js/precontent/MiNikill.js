@@ -16007,8 +16007,10 @@ const packs = function () {
                 async content(event, trigger, player) {
                     const { player: target } = trigger;
                     let { cards } = event;
-                    if (get.itemtype(cards) != 'cards') { cards = await target.draw().forResult() };
-                    if (get.itemtype(cards) != 'cards') return;
+                    if (get.itemtype(cards) != 'cards') {
+                        cards = await target.draw().forResult();
+                        if (get.itemtype(cards) != 'cards') return;
+                    }
                     await player.showCards(cards, `${get.translation(player)}对${player === target ? '自己' : get.translation(target)}发动了【补益】`);
                     await target.discard(cards).set('discarder', player);
                     const num = cards.filter(card => get.type(card) == 'basic').length;
@@ -16721,8 +16723,7 @@ const packs = function () {
                 delay: 0,
                 lose: false,
                 async content(event, trigger, player) {
-                    const { target, cards } = event;
-                    const [card] = cards;
+                    const { target, cards } = event, [card] = cards;
                     const hs = get.position(card) === 'h', canEquip = get.type(card) === 'equip' && target.canEquip(card);
                     let result;
                     if (!hs) result = { index: 1 };
@@ -16776,8 +16777,7 @@ const packs = function () {
                 audio: 'rejieyin',
                 inherit: 'minijieyin',
                 async content(event, trigger, player) {
-                    const { target, cards } = event;
-                    const [card] = cards;
+                    const { target, cards } = event, [card] = cards;
                     const hs = get.position(card) === 'h', canEquip = get.type(card) === 'equip' && target.canEquip(card);
                     let result;
                     if (!hs) result = { index: 1 };
