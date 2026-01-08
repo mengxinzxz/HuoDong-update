@@ -11,6 +11,9 @@ import MX_feihongyinxue from './MX_feihongyinxue.js';
 import huodongcharacter from './huodongcharacter.js';
 
 export async function precontent(bilibilicharacter) {
+    //活动武将显示
+    lib.translate['extension_活动武将'] = `<img style="width:100px;" src="${lib.assetURL}extension/活动武将/image/default/活动武将.png">`;
+
     //存储活动武将扩展的文件和文件夹分布
     _status['extension_活动武将_files'] = await (async () => {
         const getFileList = async function (path = 'extension/活动武将') {

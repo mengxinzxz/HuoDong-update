@@ -1,24 +1,6 @@
 import { lib, game, ui, get, ai, _status } from '../../../noname.js';
 
 export async function content(config, pack) {
-	//活动武将显示
-	if (ui?.create?.menu) {
-		const originLoading = ui.create.menu;
-		ui.create.menu = function () {
-			const result = originLoading.apply(this, arguments);
-			const extensionPack = Array.from(document.getElementsByTagName('div')).find(div => div.innerHTML === '扩展');
-			if (extensionPack) {
-				const originClick = extensionPack.onclick || function () { };
-				extensionPack.onclick = () => {
-					originClick.apply(this, arguments);
-					const plagueExtension = Array.from(document.querySelectorAll('.menubutton.large')).find(div => div.innerHTML === '活动武将');
-					if (plagueExtension) plagueExtension.innerHTML = "<img style=width:100px src=" + lib.assetURL + "extension/活动武将/image/default/活动武将.png>";
-				};
-			}
-			return result;
-		};
-	}
-
 
 	//官方武将包保护机制
 	//添加
