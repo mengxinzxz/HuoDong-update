@@ -4946,11 +4946,10 @@ const packs = function () {
                             viewAs: { name: links[0][2] },
                             filterCard: () => false,
                             selectCard: -1,
-                            *precontent(event, map) {
-                                const player = map.player;
-                                const result = yield player.choosePlayerCard(player, 'ej', '请选择' + get.translation(event.result.card) + '转化的卡牌').set('ai', button => {
+                            async precontent(event, trigger, player) {
+                                const result = await player.choosePlayerCard(player, 'ej', '请选择' + get.translation(event.result.card) + '转化的卡牌').set('ai', button => {
                                     return get.value(button.link) * (get.position(button.link) == 'e' ? -1 : 1);
-                                });
+                                }).forResult();
                                 if (result.cards) {
                                     player.logSkill('old_lieshi');
                                     player.addTempSkill('old_lieshi_end');
@@ -4982,8 +4981,8 @@ const packs = function () {
                             return event.skill == 'old_lieshi_backup';
                         },
                         direct: true,
-                        *content(event, map) {
-                            const player = map.player, trigger = map.trigger, target = trigger.targets[0];
+                        async content(event, trigger, player) {
+                            const target = trigger.targets[0];
                             const bool = player.storage.old_huanyin;
                             player.line(target);
                             let choiceList = ['受到1点火属性伤害', '弃置所有【闪】', '弃置所有【杀】'], choice = [];
@@ -5003,11 +5002,11 @@ const packs = function () {
                                 else choiceList[2] = '<span style="opacity:0.5">' + choiceList[2] + '（无法执行）</span>';
                             }
                             if (choice.length) {
-                                const result = yield player.chooseControl(choice).set('choiceList', choiceList).set('ai', () => {
+                                const result = await player.chooseControl(choice).set('choiceList', choiceList).set('ai', () => {
                                     if (get.event().controls.length == 1) return get.event().controls[0];
                                     var choice = get.event().choice, player = get.event().player;
                                     return choice[choice.length - player.storage.old_huanyin ? 2 : 1];
-                                }).set('prompt', '烈誓：请选择一项执行，然后' + get.translation(target) + '执行后一项').set('choice', choice);
+                                }).set('prompt', '烈誓：请选择一项执行，然后' + get.translation(target) + '执行后一项').set('choice', choice).forResult();
                                 const index = ['选项一', '选项二', '选项三'].indexOf(result.control);
                                 const list = [[player, index], [target, index + 1]];
                                 for (const CT of list) {
@@ -9892,16 +9891,15 @@ const packs = function () {
                     });
                 },
                 direct: true,
-                *content(event, map) {
-                    const player = map.player, trigger = map.trigger;
+                async content(event, trigger, player) {
                     const cards = trigger.getg(player);
-                    const result = yield player.chooseToUse(function (card) {
+                    const result = await player.chooseToUse(function (card) {
                         const evt = _status.event;
                         if (!lib.filter.cardEnabled(card, evt.player, evt)) return false;
                         let cards = [card];
                         if (Array.isArray(card.cards)) cards.addArray(card.cards);
                         return cards.containsSome(...(evt.cards ?? []));
-                    }, get.prompt2(event.name)).set('addCount', false).set('cards', cards).set('logSkill', event.name);
+                    }, get.prompt2(event.name)).set('addCount', false).set('cards', cards).set('logSkill', event.name).forResult();
                     if (result.bool) {
                         let suits = player.getAllHistory('useCard', evt => {
                             return evt.getParent(2).name == event.name;
@@ -9909,7 +9907,7 @@ const packs = function () {
                         if (suits.length) {
                             suits.sort((a, b) => lib.suit.indexOf(b) - lib.suit.indexOf(a));
                             player.addTip(event.name, [event.name, ...suits].map(i => get.translation(i)).join(''));
-                            yield player.addAdditionalSkills(event.name, lib.skill[event.name].derivation.slice(0, Math.min(4, suits.length)));
+                            await player.addAdditionalSkills(event.name, lib.skill[event.name].derivation.slice(0, Math.min(4, suits.length)));
                         }
                     }
                 },

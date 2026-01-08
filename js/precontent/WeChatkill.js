@@ -1884,8 +1884,7 @@ const packs = function () {
                         return event.targets.includes(current) && !player.getStorage('wechatshendao_mark').includes(current);
                     }).sortBySeat();
                 },
-                *content(event, map) {
-                    var player = map.player;
+                async content(event, trigger, player) {
                     player.addTempSkill('wechatshendao_mark', { player: 'phaseUseAfter' });
                     player.markAuto('wechatshendao_mark', lib.skill.wechatshendao.logTarget(map.trigger, player));
                     player.storage.wechatshendao_mark.sortBySeat();
@@ -1893,14 +1892,14 @@ const packs = function () {
                         case 1:
                             var list = lib.inpile.reduce((list, name) => list.add(get.type2(name)), []);
                             if (list.length) {
-                                var result = yield player.chooseControl(list, 'cancel2').set('prompt', '神道：是否选择获得一种类型的牌？').set('ai', function () {
+                                var result = await player.chooseControl(list, 'cancel2').set('prompt', '神道：是否选择获得一种类型的牌？').set('ai', function () {
                                     var player = _status.event.player;
                                     var types = _status.event.controls.filter(i => i != 'cancel2');
                                     if (player.hp < 2 && !player.countCards('h', { name: ['shan', 'tao'] }) && types.includes('basic')) return 'basic';
                                     if (player.countCards('he', { type: 'equip' }) < 2 && types.includes('equip')) return 'equip';
                                     if (types.includes('trick')) return 'trick';
                                     return types.randomGet();
-                                });
+                                }).forResult();
                                 if (result.control != 'cancel2') {
                                     player.popup(result.control);
                                     game.log(player, '声明了', '#y' + get.translation(result.control) + '牌');
@@ -1910,29 +1909,29 @@ const packs = function () {
                             }
                             break;
                         case 2:
-                            var result = yield player.chooseTarget('神道：是否视为对一名角色使用一张普通锦囊牌？', function (card, player, target) {
+                            var result = await player.chooseTarget('神道：是否视为对一名角色使用一张普通锦囊牌？', function (card, player, target) {
                                 return lib.inpile.some(name => get.type(name) == 'trick' && player.canUse({ name: name, isCard: true }, target));
                             }).set('ai', target => {
                                 var player = _status.event.player;
                                 var list = lib.inpile.filter(name => get.type(name) == 'trick' && player.canUse({ name: name, isCard: true }, target));
                                 list = list.map(name => get.effect(target, { name: name }, player, player)).sort((a, b) => b - a);
                                 return list[0];
-                            }).set('animate', false);
+                            }).set('animate', false).forResult();
                             if (result.bool) {
                                 var target = result.targets[0];
                                 player.line(target);
                                 var list = lib.inpile.filter(name => get.type(name) == 'trick' && player.canUse({ name: name, isCard: true }, target));
-                                var result2 = yield player.chooseButton(['神道：视为对' + get.translation(target) + '使用一张普通锦囊牌', [list, 'vcard']], true).set('ai', button => {
+                                var result2 = await player.chooseButton(['神道：视为对' + get.translation(target) + '使用一张普通锦囊牌', [list, 'vcard']], true).set('ai', button => {
                                     var player = _status.event.player, target = _status.event.target;
                                     return get.effect(target, { name: button.link[2] }, player, player);
-                                }).set('target', target);
+                                }).set('target', target).forResult();
                                 if (result2.bool) player.useCard({ name: result2.links[0][2], isCard: true }, target, false);
                             }
                             break;
                         case 3:
                             var targets = player.getStorage('wechatshendao_mark').filter(target => target.isIn()).sortBySeat();
                             if (targets.length) {
-                                var result = yield player.chooseBool('神道：是否对' + get.translation(targets) + '各造成1点伤害？').set('choice', targets.reduce((num, target) => num + get.damageEffect(target, player, player), 0) > 0);
+                                var result = await player.chooseBool('神道：是否对' + get.translation(targets) + '各造成1点伤害？').set('choice', targets.reduce((num, target) => num + get.damageEffect(target, player, player), 0) > 0).forResult();
                                 if (result.bool) {
                                     player.line(targets);
                                     targets.forEach(target => target.damage());
@@ -4592,26 +4591,25 @@ const packs = function () {
                     return event.card.name == 'sha' && event.player.isIn();
                 },
                 direct: true,
-                *content(event, map) {
-                    var player = map.player, trigger = map.trigger;
-                    var result = yield player.chooseButton([get.prompt2('wechatshouxi'), [['basic', 'trick', 'equip'], 'vcard']]).set('ai', function (button) {
+                async content(event, trigger, player) {
+                    var result = await player.chooseButton([get.prompt2('wechatshouxi'), [['basic', 'trick', 'equip'], 'vcard']]).set('ai', function (button) {
                         var trigger = _status.event.getTrigger();
                         var name = button.link[2], target = trigger.player;
                         if (get.effect(player, trigger.card, target, player) > 0) return 0;
                         if (!target.getDiscardableCards(target, 'he').some(card => get.type2(card) == get.type2(trigger.card))) return 1.1 + Math.random();
                         return 0.1 + Math.random();
-                    });
+                    }).forResult();
                     if (result.bool) {
                         player.logSkill('wechatshouxi');
                         var name = result.links[0][2];
                         player.popup(name);
                         game.log(player, '声明了', '#y' + get.translation(name) + '牌');
-                        var result2 = yield trigger.player.chooseToDiscard('守玺：弃置一张' + get.translation(name) + '牌，或令【杀】对' + get.translation(player) + '无效', function (card) {
+                        var result2 = await trigger.player.chooseToDiscard('守玺：弃置一张' + get.translation(name) + '牌，或令【杀】对' + get.translation(player) + '无效', function (card) {
                             return get.type2(card) == _status.event.namex;
                         }, 'he').set('ai', function (card) {
                             if (_status.event.eff > 0) return 10 - get.value(card);
                             return 0;
-                        }).set('eff', get.effect(player, trigger.card, trigger.player, trigger.player)).set('namex', name);
+                        }).set('eff', get.effect(player, trigger.card, trigger.player, trigger.player)).set('namex', name).forResult();
                         if (!result2.bool) trigger.getParent().excluded.add(player);
                     }
                 },
@@ -5036,10 +5034,10 @@ const packs = function () {
                         },
                         forced: true,
                         popup: false,
-                        *content(event, map) {
-                            var player = map.player, cards = map.trigger.cards.filterInD('d').slice();
+                        async content(event, trigger, player) {
+                            var cards = trigger.cards.filterInD('d').slice();
                             while (cards.length) {
-                                var result = yield player.chooseButton(['是否使用其中的牌？', cards]).set('ai', button => _status.event.player.getUseValue(button.link));
+                                var result = await player.chooseButton(['是否使用其中的牌？', cards]).set('ai', button => _status.event.player.getUseValue(button.link)).forResult();
                                 if (result.bool) {
                                     cards.removeArray(result.links);
                                     player.$gain2(result.links[0], false);
@@ -5332,8 +5330,8 @@ const packs = function () {
                         trigger: { player: 'phaseZhunbeiBegin' },
                         forced: true,
                         popup: false,
-                        *content(event, map) {
-                            var player = map.player, storage = player.getStorage('wechatmiaobi_effect').slice();
+                        async content(event, trigger, player) {
+                            var storage = player.getStorage('wechatmiaobi_effect').slice();
                             var targets = storage.map(list => list[0]).sortBySeat();
                             while (targets.length) {
                                 var target = targets.shift();
@@ -5342,7 +5340,7 @@ const packs = function () {
                                 var cards = list[1], result;
                                 if (target.isIn()) target.line(player);
                                 if (!target.isIn() || !player.countCards('he', card => get.type2(card) == 'trick')) result = { index: 1 };
-                                else result = yield player.chooseControl().set('choiceList', [
+                                else result = await player.chooseControl().set('choiceList', [
                                     '交给' + get.translation(target) + '一张锦囊牌，然后移去' + get.translation(cards),
                                     '令' + get.translation(target) + (cards.length > 1 ? '依次' : '') + '对你使用' + get.translation(cards),
                                 ]).set('ai', () => {
@@ -5351,9 +5349,9 @@ const packs = function () {
                                     var cards = _status.event.cards.filter(card => target.canUse(card, player, false));
                                     if (cards.reduce((num, card) => num + get.effect(player, card, target, player), 0) >= 0) return 1;
                                     return 0;
-                                }).set('target', target).set('cards', cards);
+                                }).set('target', target).set('cards', cards).forResult();
                                 if (result.index == 0) {
-                                    var result2 = yield player.chooseCard('妙笔：交给' + get.translation(target) + '一张锦囊牌', (card, player) => get.type2(card) == 'trick', 'he', true);
+                                    var result2 = await player.chooseCard('妙笔：交给' + get.translation(target) + '一张锦囊牌', (card, player) => get.type2(card) == 'trick', 'he', true).forResult();
                                     if (result2.bool) player.give(result2.cards, target);
                                     player.loseToDiscardpile(cards);
                                 }
@@ -5548,24 +5546,23 @@ const packs = function () {
                 audio: 'jiexun',
                 trigger: { player: 'phaseJieshuBegin' },
                 direct: true,
-                *content(event, map) {
-                    var player = map.player;
+                async content(event, trigger, player) {
                     var num1 = game.countPlayer(current => current.countCards('ej', { suit: 'diamond' }));
                     var num2 = player.countMark('wechatjiexun');
                     var str = '令目标摸' + get.cnNumber(num1) + '张牌';
                     if (num2) {
                         str += '，然后弃置' + get.cnNumber(num2) + '张牌；若目标因此法弃置了所有牌，则你失去1点体力';
                     }
-                    var result = yield player.chooseTarget(get.prompt('wechatjiexun'), lib.filter.notMe).set('ai', ftarget => {
+                    var result = await player.chooseTarget(get.prompt('wechatjiexun'), lib.filter.notMe).set('ai', ftarget => {
                         var player = _status.event.player;
                         if (!_status.event.coeff) return 1 + Math.random();
                         return Math.sign(_status.event.coeff) * get.attitude(player, target);
-                    }).set('coeff', num1 - num2).set('prompt2', str);
+                    }).set('coeff', num1 - num2).set('prompt2', str).forResult();
                     if (result.bool) {
                         var target = result.targets[0];
                         player.logSkill('wechatjiexun', target);
                         player.addMark('wechatjiexun', 1, false);
-                        if (num1) yield target.draw(num1);
+                        if (num1) await target.draw(num1);
                         if (num2) {
                             target.chooseToDiscard(num2, true, 'he', '诫训：请弃置' + get.cnNumber(num2) + '张牌');
                         }
