@@ -16467,23 +16467,49 @@ const packs = function () {
             miniolhunzi: {
                 audio: 'olhunzi',
                 audioname: ['re_sunyi'],
-                trigger: { player: ['changeHp', 'enterGame'], global: 'phaseBefore' },
-                filter(event, player) {
-                    if (player.hp != 1) return false;
-                    return event.name != 'phase' || game.phaseNumber == 0;
+                trigger: {
+                    global: 'phaseBefore',
+                    player: ['miniolhunzi_awaken', 'enterGame'],
+                },
+                filter(event, player, name) {
+                    if (name === 'miniolhunzi_awaken') return _status.gameDrawed;
+                    return player.hp === 1 && (event.name !== 'phase' || game.phaseNumber === 0);
                 },
                 juexingji: true,
                 forced: true,
                 skillAnimation: true,
                 animationColor: 'wood',
-                content() {
-                    'step 0'
+                async content(event, trigger, player) {
                     player.awakenSkill('miniolhunzi');
-                    player.loseMaxHp();
-                    'step 1'
-                    player.addSkills(lib.skill[event.name].derivation);
+                    await player.loseMaxHp();
+                    await player.addSkills(lib.skill[event.name].derivation);
                 },
                 derivation: ['minireyingzi', 'minireyinghun'],
+                init(player, skill) {
+                    if (typeof player._miniolhunzi_hp !== 'number') {
+                        game.broadcastAll(player => {
+                            player._miniolhunzi_hp = player.hp;
+                            Object.defineProperties(player, {
+                                hp: {
+                                    configurable: true,
+                                    get() {
+                                        return this._miniolhunzi_hp;
+                                    },
+                                    set(num) {
+                                        game.broadcastAll((player, num) => {
+                                            player._miniolhunzi_hp = num;
+                                        }, this, num);
+                                        if (this._miniolhunzi_hp === 1) {
+                                            const event = _status.event;
+                                            const next = event.trigger('miniolhunzi_awaken');
+                                            next.player = player;
+                                        }
+                                    },
+                                },
+                            });
+                        }, player);
+                    }
+                },
             },
             minihunzi: {
                 audio: 'olhunzi',
