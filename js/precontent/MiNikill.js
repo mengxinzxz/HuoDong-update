@@ -16502,7 +16502,7 @@ const packs = function () {
                                         if (this._miniolhunzi_hp === 1) {
                                             const event = _status.event;
                                             const next = event.trigger('miniolhunzi_awaken');
-                                            next.player = player;
+                                            next.player = this;
                                         }
                                     },
                                 },
