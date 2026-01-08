@@ -7,10 +7,15 @@ const packs = function () {
         connect: true,
         characterSort: {
             WeChatkill: {
-                wechat_standard: ['sunshangxiang', 'xuzhu', 'guanyu', 'caocao', 'zhaoyun', 'zhangfei', 'machao', 'lvmeng', 'zhenji', 'huangyueying', 're_yuanshu', 'huaxiong'].map(i => `wechat_${i}`),
+                wechat_standard: [
+                    ...['sunshangxiang', 'xuzhu', 'guanyu', 'caocao', 'zhaoyun', 'zhangfei', 'machao', 'lvmeng', 'zhenji', 'huangyueying', 're_yuanshu', 'huaxiong'],
+                    ...['luxun'].map(i => `old_${i}`),
+                    ...[],
+                ].map(i => `wechat_${i}`),
                 wechat_extra: [
                     ...['new_simayi', 'yuanshao', 'caopi', 'xiahouyuan', 'caoren', 'zhangzhang', 'huangzhong', 'pangde', 'wangping', 'jiaxu', 'pangtong', 'yanyan', 'sb_sp_zhugeliang', 'lukang', 'sunliang', 'zhoutai', 'caiwenji', 'menghuo'],
                     ...['zhangliao', 'caocao', 'zhugeliang', 'lvbu', 'lvmeng', 'guanyu'].map(i => `shen_${i}`),
+                    ...['zuoci'].map(i => `old_${i}`),
                     ...[],
                 ].map(i => `wechat_${i}`),
                 wechat_refresh: [
@@ -40,10 +45,13 @@ const packs = function () {
                     ...['ruanji', 'jikang', 'caojie', 'xuezong', 'caiyong', 'xushi', 'sundeng', 'huanghao', 'guohuanghou', 'lizhaojiaobo', 'liucheng', 'sunluyu', 'sunhao', 'yj_zhoubuyi', 'jsp_huangyueying', 'wanglang', 'chendeng', 'zhuling', 'caizhenji', 'ol_bianfuren', 'xin_sunluban', 'zhangxingcai', 'huojun'].map(i => `wechat_${i}`),
                     ...[],
                 ],
-                wechat_wanxiang: ['ruanhui', 'kanze', 'zumao', 'xiahouba', 'buzhi', 'sp_liuqi', 'ganfuren', 'liuyao', 'zhugeguo', 'xurong', 'yj_weiyan', 'yj_huangzhong', 'yj_ganning', 'zhaoxiang', 'xin_guozhao', 'sunhanhua', 'pangdegong', 'guanyinping', 'baosanniang', 'taoqian', 'guansuo', 'liuyan', 'shenpei', 'yangxiu', 'yj_xuhuang', 'mayunlu', 'litong'].map(i => `wechat_${i}`),
+                wechat_wanxiang: [
+                    ...['ruanhui', 'kanze', 'zumao', 'xiahouba', 'buzhi', 'sp_liuqi', 'ganfuren', 'liuyao', 'zhugeguo', 'xurong', 'yj_weiyan', 'yj_huangzhong', 'yj_ganning', 'zhaoxiang', 'xin_guozhao', 'sunhanhua', 'pangdegong', 'guanyinping', 'baosanniang', 'taoqian', 'guansuo', 'liuyan', 'shenpei', 'yangxiu', 'yj_xuhuang', 'mayunlu', 'litong'],
+                    ...['zhaoxiang'].map(i => `old_${i}`),
+                    ...[],
+                ].map(i => `wechat_${i}`),
                 wechat_zhiyin: ['qinmi', 'zhugeke', 'mayunlu', 'bulianshi', 'diaochan', 'taishici', 'luxun', 'sunshangxiang', 'xunyou', 'dianwei', 'zhaoyun', 'xinxianying', 'guohuanghou', 'kongrong', 'caopi', 'jiaxu', 'zhangfei', 'dongzhuo', 'wangyi', 'zhangchunhua', 'hetaihou', 'zhurong', 'jiangwei', 'caozhi', 'liubei', 'sunce', 'xunyu', 'zhenji', 'xuzhu', 'yuanshao', 'lusu', 'guojia', 'lvbu', 'daqiao', 'xiaoqiao', 'caocao', 'zhugeliang', 'simayi', 'machao', 'huangyueying', 'caiwenji', 'zhouyu', 'sunquan', 'guanyu'].map(i => `wechat_zhiyin_${i}`),
                 wechat_zhi: ['yuanshu', 'fuhuanghou', 'caojie', 'caocao', 'zhangjiao'].map(i => `wechat_zhi_${i}`),
-                wechat_trashBin: ['luxun', 'zuoci', 'zhaoxiang'].map(i => `wechat_old_${i}`),
             },
         },
         character: {
@@ -16709,7 +16717,6 @@ const packs = function () {
             wechat_wanxiang: '小程序·万象森罗',
             wechat_zhiyin: '小程序·登峰造<span style="text-decoration: line-through;">只因</span>极',
             wechat_zhi: '小程序·志',
-            wechat_trashBin: `小程序·<span style="text-decoration: line-through;">${get.poptip('rule_mamba')}</span>垃圾桶`,
             //武将
             wechat_menghuo: '小程序孟获',
             wechathuoshou: '祸首',
@@ -16808,10 +16815,10 @@ const packs = function () {
             wechatqinwang: '勤王',
             wechatqinwang1: '勤王',
             wechatqinwang_info: '当你需要打出【杀】时，你可以选择一名其他角色，其可以替你打出一张【杀】。',
-            wechat_old_luxun: '小程序牢陆逊',
+            wechat_old_luxun: `${get.poptip('rule_mamba')}陆逊`,
             wechat_re_luxun: '小程序界陆逊',
             wechatqianxun: '谦逊',
-            wechatqianxun_info: '每名角色的回合限一次，若你的手牌数为1，你可以将所有手牌当作一张单体非延时锦囊牌使用。',
+            wechatqianxun_info: '每回合限一次，若你的手牌数为1，你可以将所有手牌当作一张单体非延时锦囊牌使用。',
             wechatreqianxun: '谦逊',
             wechatreqianxun2: '谦逊',
             wechatreqianxun_info: '每当一张延时类锦囊牌或其他角色使用的普通锦囊牌生效时，若你是此牌的唯一目标，你可以将任意张手牌置于你的武将牌上，若如此做，此回合结束时，你获得你武将牌上的所有牌。',
@@ -16828,7 +16835,7 @@ const packs = function () {
             wechatshenxian_info: '当有角色因弃置而失去基本牌时，你可以摸一张牌。',
             wechatqiangwu: '枪舞',
             wechatqiangwu_info: '出牌阶段限一次，你可以弃置一张手牌，然后本回合你使用大于此牌点数的【杀】无距离和次数限制。',
-            wechat_old_zuoci: '小程序牢左慈',
+            wechat_old_zuoci: `${get.poptip('rule_mamba')}左慈`,
             wechatyigui: '役鬼',
             wechatyigui_info: '出牌阶段限一次，当你使用普通锦囊牌时，你可以弃置一张牌并为此牌额外指定一个目标（无距离限制）。',
             wechatshendao: '神道',
@@ -16852,7 +16859,7 @@ const packs = function () {
             wechatduanchang: '断肠',
             wechatduanchang_info: '锁定技，杀死你的角色于本局游戏不能使用【桃】。',
             wechat_zhaoxiang: '小程序赵襄',
-            wechat_old_zhaoxiang: '小程序牢赵襄',
+            wechat_old_zhaoxiang: `${get.poptip('rule_mamba')}赵襄`,
             wechatfanghun: '芳魂',
             wechatfanghun_fengpo: '凤魄',
             wechatfanghun_info: '游戏开始时，你获得〖龙胆〗。当你发动〖龙胆〗后，你获得“梅影”标记。若你有“梅影”标记，你可以发动〖凤魄〗，然后失去“梅影”标记。',
@@ -17810,10 +17817,12 @@ const packs = function () {
             if (!WeChatkill.character[i].tempname.length) WeChatkill.character[i].tempname.push(i.slice(7));
         }
         if (_status['extension_活动武将_files']?.image.character.files.includes(`${i}.jpg`)) WeChatkill.character[i].img = `extension/活动武将/image/character/${i}.jpg`;
-        if (WeChatkill.characterSort.WeChatkill.wechat_trashBin.includes(i)) WeChatkill.character[i].isUnseen = true;
         if (WeChatkill.translate[i] && !lib.translate[i + '_prefix'] && !WeChatkill.translate[i + '_prefix']) {
-            if (WeChatkill.translate[i].startsWith('SP小程序神')) WeChatkill.translate[i + '_prefix'] = 'SP|小程序|神';
-            else if (WeChatkill.translate[i].startsWith('小程序牢')) WeChatkill.translate[i + '_prefix'] = '小程序|牢';
+            if (WeChatkill.translate[i].startsWith(get.poptip('rule_mamba'))) {
+                WeChatkill.translate[i + '_ab'] = `牢${WeChatkill.translate[i].slice(get.poptip('rule_mamba').length)}`;
+                WeChatkill.translate[i + '_prefix'] = '牢';
+            }
+            else if (WeChatkill.translate[i].startsWith('SP小程序神')) WeChatkill.translate[i + '_prefix'] = 'SP|小程序|神';
             else if (WeChatkill.translate[i].startsWith('小程序神')) WeChatkill.translate[i + '_prefix'] = '小程序|神';
             else if (WeChatkill.translate[i].startsWith('小程序☆')) WeChatkill.translate[i + '_prefix'] = '小程序|☆';
             else if (WeChatkill.translate[i].startsWith('小程序谋')) WeChatkill.translate[i + '_prefix'] = '小程序|谋';

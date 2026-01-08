@@ -11,7 +11,11 @@ const packs = function () {
                 MiNi_shu: ['dc_wuban', 'pangtong', 'mifangfushiren', 'guanyue', 'xianglang', 'huanghao', 'ganfurenmifuren', 'zhaotongzhaoguang', 'wulan', 'leitong', 'zongyu', 're_mazhong', 're_dengzhi', 'dc_hujinding', 'jiangfei', 'zhangyi', 'guanzhang', 'wolongfengchu', 'wangtao', 'wangyue', 'xf_yiji', 'mizhu', 'mifuren', 'liuyong', 'ganfuren', 'lvkai', 'zhoucang', 'yangwan', 'liuchen', 'liyan', 'chendao', 'yanyan', 'xiahouba', 'huaman', 'sp_zhugeliang', 'zhugeguo', 'jianyong', 'wangping', 'mayunlu', 'guansuo', 'xiahoushi', 'shamoke', 'wuxian', 'zhugezhan', 'qinmi', 'guanyinping', 'guanyu', 'zhugeliang', 'liubei', 'machao', 'zhurong', 'zhangfei', 'zhaoyun', 'huangzhong', 'weiyan', 'liaohua', 'menghuo', 'ol_jiangwei', 'liushan', 'xin_fazheng', 'madai', 'guanping', 'liufeng', 'zhangxingcai', 'dongyun', 'xushu', 'xin_masu'].map(i => `Mbaby_${i}`),
                 MiNi_wu: ['sunhuan', 'gexuan', 'lvfan', 'xielingyu', 'zhupeilan', 'xugong', 'chendong', 'kanze', 're_panzhangmazhong', 'weiwenzhugezhi', 'zhangwen', 'dc_sunhanhua', 'heqi', 'lvdai', 'jiangqing', 're_guyong', 'quancong', 'yufan', 'dc_sunru', 'sunxiu', 'zhangfen', 'xuezong', 'panjun', 'luji', 'zhoufang', 'zhangxuan', 'yanjun', 'zhuhuan', 'luyusheng', 're_jsp_pangtong', 'sunhao', 'lukang', 'buzhi', 'xushi', 'zhugeke', 'zhoufei', 'zhangzhang', 'sunliang', 'sunjian', 'zhuzhi', 'bulianshi', 'chengpu', 'daqiao', 'ganning', 'huanggai', 'lusu', 'luxun', 'lvmeng', 'sunce', 'sunluban', 'sunluyu', 'sunquan', 'sunshangxiang', 'taishici', 'wuguotai', 'xiaoqiao', 'xusheng', 'old_zhoutai', 'zhouyu', 'zhugejin', 'zumao'].map(i => `Mbaby_${i}`),
                 MiNi_qun: ['xurong', 're_taoqian', 'hejin', 'jiling', 'zhangrang', 'duanwei', 're_chendeng', 'caiyong', 'mengjie', 'dc_gaolan', 'yl_luzhi', 'tadun', 're_hansui', 'dongxie', 'fuwan', 'wutugu', 'huangfusong', 'fanchou', 'guosi', 'yanbaihu', 'dc_huangzu', 'licaiwei', 'ol_dingyuan', 'liubian', 're_pangdegong', 'zhangning', 'zhanglu', 'wangyun', 'zoushi', 'dc_huangchengyan', 'simahui', 'tw_mateng', 'laiyinger', 'sp_kongrong', 'zhujun', 'gongsunyuan', 'guotufengji', 'yanfuren', 'tangji', 'caojie', 'liangxing', 'caoxing', 'wangrong', 'hetaihou', 'zhangji', 'dongbai', 'beimihu', 'chunyuqiong', 'zhangqiying', 'fuhuanghou', 'liuxie', 'quyi', 'lijue', 'panfeng', 'liuzhang', 'jiaxu', 'zhangbao', 'zhangliang', 'gaoshun', 'caifuren', 'xuyou', 'pangde', 'yj_jushou', 'liru', 'dongzhuo', 'sp_zhangjiao', 'huatuo', 'lvbu', 'huaxiong', 'yuji', 'liubiao', 'yuanshao', 'yuanshu', 'chengong', 'zuoci'].map(i => `Mbaby_${i}`),
-                MiNi_shen: ['lusu', 'luxun', 'dengai', 'zuoci', 'taishici', 'diaochan', 'daxiaoqiao', 'zhenji', 'guojia', 'huatuo', 'dianwei', 'lvbu', 'zhugeliang', 'lvmeng', 'zhouyu', 'guanyu', 'liubei', 'caocao', 'zhangliao', 'sunquan', 'simayi', 'zhaoyun', 'ganning', 'pangtong'].map(i => `Mbaby_shen_${i}`),
+                MiNi_shen: [
+                    ...['lusu', 'luxun', 'dengai', 'zuoci', 'taishici', 'diaochan', 'daxiaoqiao', 'zhenji', 'guojia', 'huatuo', 'dianwei', 'lvbu', 'zhugeliang', 'lvmeng', 'zhouyu', 'guanyu', 'liubei', 'caocao', 'zhangliao', 'sunquan', 'simayi', 'zhaoyun', 'ganning', 'pangtong'].map(i => `shen_${i}`),
+                    ...['1_daxiaoqiao', '2_daxiaoqiao'].map(i => `old_${i}`),
+                    ...[],
+                ].map(i => `Mbaby_${i}`),
                 MiNi_change: ['sb_guojia', 'ol_sb_jiangwei', 'sb_sunquan', 'guanning', 're_nanhualaoxian', 're_sunyi', 'zhaoxiang', 'xushao', 'baosanniang', 'quanhuijie'].map(i => `Mbaby_${i}`),
                 MiNi_refresh: [
                     ...['liaohua', 'sundeng', 'zhangchunhua', 'gongsunyuan', 'caorui', 'chengong', 'fazheng', 'xusheng', 'taishici', 'dianwei', 'huangyueying', 'gongsunzan', 'tadun', 'menghuo', 'jiaxu', 'luxun', 'masu', 'zhangjiao', 'zhouyu', 'sunce', 'caifuren', 'liubiao', 'weiyan', 'guohuai', 'lvbu', 'huatuo', 'pangde', 'zhugeliang', 'guojia', 'simayi', 'lvmeng', 'sunshangxiang', 'zhenji', 'diaochan', 'daqiao', 'ganning', 'huanggai', 'xiahoudun', 'xuzhu', 'zhangliao', 'sunquan', 'caocao', 'liubei', 'guanyu', 'zhangfei', 'zhaoyun', 'machao', 'huangzhong'].map(i => `re_${i}`),
@@ -463,6 +467,8 @@ const packs = function () {
                 groupInGuozhan: 'wu',
                 names: '桥|null-桥|null',
             },
+            Mbaby_old_1_daxiaoqiao: ['female', 'shen', 4, ['minishuangshu', 'miniyizheng', 'minipingting'], ['wu', ...['character', 'die'].map(i => `${i}:Mbaby_shen_daxiaoqiao`)]],
+            Mbaby_old_2_daxiaoqiao: ['female', 'shen', 4, ['minishuangshu2', 'miniyizheng2', 'minishutu2'], ['wu', ...['character', 'die'].map(i => `${i}:Mbaby_shen_daxiaoqiao`)]],
             Mbaby_shen_diaochan: ['female', 'shen', 3, ['minimeihun', 'minihuoxin'], ['qun']],
             Mbaby_sunwukong: ['male', 'shen', 4, ['minisevenbian', 'miniruyi', 'miniqitian']],
             Mbaby_dalanmao: ['male', 'shen', 4, ['minizuzhou', 'minimoyu', 'minisanlian']],
@@ -32852,7 +32858,7 @@ const packs = function () {
                 },
             },
             minishutu2: {
-                audio: 'minipingting',
+                audio: 'minishutu',
                 trigger: { player: 'dying' },
                 skillAnimation: true,
                 animationColor: 'wood',
@@ -41253,7 +41259,7 @@ const packs = function () {
             Mbaby_quyi: '欢杀麴义',
             Mbaby_liuxie: '欢杀刘协',
             Mbaby_fuhuanghou: '欢杀伏寿',
-            Mbaby_zhangqiying: '欢杀张琪瑛',
+            Mbaby_zhangqiying: `${get.poptip('rule_mamba')}张琪瑛`,
             Mbaby_chunyuqiong: '欢杀淳于琼',
             Mbaby_beimihu: '欢杀卑弥呼',
             Mbaby_dongbai: '欢杀董白',
@@ -41743,6 +41749,8 @@ const packs = function () {
             Mbaby_shen_guojia: '欢杀神郭嘉',
             Mbaby_shen_zhenji: '欢杀神甄宓',
             Mbaby_shen_daxiaoqiao: '欢杀神大乔小乔',
+            Mbaby_old_1_daxiaoqiao: `${get.poptip('rule_mamba')}神大乔小乔`,
+            Mbaby_old_2_daxiaoqiao: `${get.poptip('rule_mamba')}神大乔小乔`,
             Mbaby_shen_diaochan: '欢杀神貂蝉',
             Mbaby_sunwukong: '欢杀孙悟空',
             Mbaby_dalanmao: '大懒猫',
@@ -42367,7 +42375,11 @@ const packs = function () {
             }
         }
         if (MiNikill.translate[i] && !lib.translate[i + '_prefix'] && !MiNikill.translate[i + '_prefix']) {
-            if (MiNikill.translate[i].startsWith('欢杀神')) MiNikill.translate[i + '_prefix'] = '欢杀|神';
+            if (MiNikill.translate[i].startsWith(get.poptip('rule_mamba'))) {
+                MiNikill.translate[i + '_ab'] = `牢${MiNikill.translate[i].slice(get.poptip('rule_mamba').length)}`;
+                MiNikill.translate[i + '_prefix'] = '牢';
+            }
+            else if (MiNikill.translate[i].startsWith('欢杀神')) MiNikill.translate[i + '_prefix'] = '欢杀|神';
             else if (MiNikill.translate[i].startsWith('SP欢杀神')) MiNikill.translate[i + '_prefix'] = 'SP|欢杀|神';
             else if (MiNikill.translate[i].startsWith('欢杀谋')) MiNikill.translate[i + '_prefix'] = '欢杀|谋';
             else if (MiNikill.translate[i].startsWith('欢杀星')) MiNikill.translate[i + '_prefix'] = '欢杀|星';
