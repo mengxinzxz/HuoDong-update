@@ -670,7 +670,7 @@ const packs = function () {
             kuiba_lingxun_info: '锁定技，己方角色成为敌方角色使用【杀】的目标后，你获得该敌方角色的随机一张手牌。',
             kuiba_lingluanjun: '灵乱军',
             kuiba_lingluan: '灵乱',
-            kuiba_lingluan_info: '锁定技，敌方角色的结束阶段开始时，其须弃置两张牌。',
+            kuiba_lingluan_info: '锁定技，敌方角色的结束阶段，其须弃置两张牌。',
             kuiba_shengdoujun: '圣斗军',
             kuiba_shengdou: '圣斗',
             kuiba_shengdou_info: '己方角色使用【杀】指定目标时，你可以随机弃置一张牌令此【杀】的目标上限+1。',
@@ -682,7 +682,7 @@ const packs = function () {
             kuiba_shengjie_info: '锁定技，己方角色成为敌方角色普通锦囊牌的目标后，你随机弃置一张牌并令此牌的所有目标各摸两张牌。',
             kuiba_shengzhujun: '圣助军',
             kuiba_shengzhu: '圣助',
-            kuiba_shengzhu_info: '锁定技，己方角色结束阶段开始时，其摸两张牌。',
+            kuiba_shengzhu_info: '锁定技，己方角色结束阶段，其摸两张牌。',
         },
     };
     for (let i in decadeKuiBa.character) {
