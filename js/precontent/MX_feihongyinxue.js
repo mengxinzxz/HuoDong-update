@@ -4855,41 +4855,7 @@ const packs = function () {
         };
     });
     lib.translate['MX_feihongyinxue_character_config'] = '<span style="font-family: xingkai">飞鸿印雪</span>';
-    if (ui?.create?.menu) {
-        const originLoading = ui.create.menu;
-        ui.create.menu = function () {
-            const result = originLoading.apply(this, arguments);
-            const characterPack = Array.from(document.getElementsByTagName('div')).find(div => div.innerHTML === '武将');
-            if (characterPack) {
-                const originClick = characterPack.onclick || function () { };
-                characterPack.onclick = () => {
-                    originClick.apply(this, arguments);
-                    const characterPackage = Array.from(document.querySelectorAll('.menubutton.large')).find(div => div.innerHTML === lib.translate['MX_feihongyinxue_character_config']);
-                    if (characterPackage) {
-                        const originClick2 = characterPackage.onclick || function () { };
-                        characterPackage.onclick = () => {
-                            originClick2.apply(this, arguments);
-                            const rightPane = document.querySelector('.menu-buttons.leftbutton');
-                            if (rightPane && !rightPane.init) {
-                                rightPane.init = true;
-                                const cfgNodes = rightPane.querySelectorAll('.config.toggle');
-                                for (let i = 0; i < cfgNodes.length; i++) {
-                                    if (cfgNodes[i].textContent === '仅点将可用') {
-                                        const addIntro = document.createElement('div');
-                                        addIntro.classList.add('config', 'pointerspan');
-                                        addIntro.innerHTML = '<span style="font-family: yuanli">本包前言：<br>2023年活动武将年底大活，开启此包游戏将会加入额外牌堆机制，游戏牌堆会加入一张方片12的' + get.poptip('fh_yinyueqiang') + '，此包建议单独开启使用</span>';
-                                        cfgNodes[i].parentNode.insertBefore(addIntro, cfgNodes[i].nextSibling);
-                                        break;
-                                    }
-                                }
-                            }
-                        };
-                    }
-                };
-            }
-            return result;
-        };
-    }
+    lib.translate['MX_feihongyinxue_charactersInfo'] = '<span style="font-family: yuanli">本包前言：<br>2023年活动武将年底大活，开启此包游戏将会加入额外牌堆机制，游戏牌堆会加入一张方片12的' + get.poptip('fh_yinyueqiang') + '，此包建议单独开启使用</span>';
     return MX_feihongyinxue;
 };
 
