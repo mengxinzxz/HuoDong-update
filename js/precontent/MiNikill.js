@@ -42321,7 +42321,7 @@ const packs = function () {
     }
     for (let i in MiNikill.character) {
         if (Array.isArray(MiNikill.character[i])) MiNikill.character[i] = get.convertedCharacter(MiNikill.character[i]);
-        MiNikill.character[i].transBin ??= [];
+        MiNikill.character[i].trashBin ??= [];
         MiNikill.character[i].dieAudios ??= [];
         MiNikill.character[i].tempname ??= [];
         if (_status['extension_活动武将_files']?.audio.die.files.includes(`${i}.mp3`)) {

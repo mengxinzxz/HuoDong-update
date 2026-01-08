@@ -1012,7 +1012,7 @@ const packs = function () {
     };
     for (let i in HD_chaoshikong.character) {
         if (Array.isArray(HD_chaoshikong.character[i])) HD_chaoshikong.character[i] = get.convertedCharacter(HD_chaoshikong.character[i]);
-        HD_chaoshikong.character[i].transBin ??= [];
+        HD_chaoshikong.character[i].trashBin ??= [];
         if (_status['extension_活动武将_files']?.audio.die.files.includes(`${i}.mp3`)) {
             HD_chaoshikong.character[i].dieAudios ??= [];
             HD_chaoshikong.character[i].dieAudios.push('ext:活动武将/audio/die:true');

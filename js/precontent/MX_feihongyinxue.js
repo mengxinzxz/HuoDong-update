@@ -4717,7 +4717,7 @@ const packs = function () {
     };
     for (let i in MX_feihongyinxue.character) {
         if (Array.isArray(MX_feihongyinxue.character[i])) MX_feihongyinxue.character[i] = get.convertedCharacter(MX_feihongyinxue.character[i]);
-        MX_feihongyinxue.character[i].transBin ??= [];
+        MX_feihongyinxue.character[i].trashBin ??= [];
         MX_feihongyinxue.character[i].dieAudios ??= [];
         if (!MX_feihongyinxue.character[i].dieAudios.length) MX_feihongyinxue.character[i].dieAudios.push(i.slice(6));
         MX_feihongyinxue.character[i].img = `image/character/${i.slice(6)}.jpg`;

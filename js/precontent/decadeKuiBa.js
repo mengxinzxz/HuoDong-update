@@ -687,7 +687,7 @@ const packs = function () {
     };
     for (let i in decadeKuiBa.character) {
         if (Array.isArray(decadeKuiBa.character[i])) decadeKuiBa.character[i] = get.convertedCharacter(decadeKuiBa.character[i]);
-        decadeKuiBa.character[i].transBin ??= [];
+        decadeKuiBa.character[i].trashBin ??= [];
         if (_status['extension_活动武将_files']?.audio.die.files.includes(`${i}.mp3`)) {
             decadeKuiBa.character[i].dieAudios ??= [];
             decadeKuiBa.character[i].dieAudios.push('ext:活动武将/audio/die:true');

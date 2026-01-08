@@ -17798,7 +17798,7 @@ const packs = function () {
     WeChatkill_sight();//加载欢杀界面逻辑
     for (let i in WeChatkill.character) {
         if (Array.isArray(WeChatkill.character[i])) WeChatkill.character[i] = get.convertedCharacter(WeChatkill.character[i]);
-        WeChatkill.character[i].transBin ??= [];
+        WeChatkill.character[i].trashBin ??= [];
         WeChatkill.character[i].dieAudios ??= [];
         WeChatkill.character[i].tempname ??= [];
         if (_status['extension_活动武将_files']?.audio.die.files.includes(`${i}.mp3`)) {

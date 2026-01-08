@@ -485,7 +485,7 @@ const packs = function () {
     };
     for (let i in FaDongCharacter.character) {
         if (Array.isArray(FaDongCharacter.character[i])) FaDongCharacter.character[i] = get.convertedCharacter(FaDongCharacter.character[i]);
-        FaDongCharacter.character[i].transBin ??= [];
+        FaDongCharacter.character[i].trashBin ??= [];
         if (_status['extension_活动武将_files']?.image.character.files.includes(`${i}.jpg`)) FaDongCharacter.character[i].img = `extension/活动武将/image/character/${i}.jpg`;
     }
     lib.config.all.sgscharacters.push('FaDongCharacter');

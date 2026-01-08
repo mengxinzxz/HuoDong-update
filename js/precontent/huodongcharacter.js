@@ -13038,7 +13038,7 @@ const packs = function () {
     };
     for (let i in huodongcharacter.character) {
         if (Array.isArray(huodongcharacter.character[i])) huodongcharacter.character[i] = get.convertedCharacter(huodongcharacter.character[i]);
-        huodongcharacter.character[i].transBin ??= [];
+        huodongcharacter.character[i].trashBin ??= [];
         if (_status['extension_活动武将_files']?.audio.die.files.includes(`${i}.mp3`)) {
             huodongcharacter.character[i].dieAudios ??= [];
             huodongcharacter.character[i].dieAudios.push('ext:活动武将/audio/die:true');

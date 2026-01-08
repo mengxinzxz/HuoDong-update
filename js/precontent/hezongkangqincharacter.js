@@ -1517,7 +1517,7 @@ const packs = function () {
     };
     for (let i in hezongkangqincharacter.character) {
         if (Array.isArray(hezongkangqincharacter.character[i])) hezongkangqincharacter.character[i] = get.convertedCharacter(hezongkangqincharacter.character[i]);
-        hezongkangqincharacter.character[i].transBin ??= [];
+        hezongkangqincharacter.character[i].trashBin ??= [];
         if (_status['extension_活动武将_files']?.audio.die.files.includes(`${i}.mp3`)) {
             hezongkangqincharacter.character[i].dieAudios ??= [];
             hezongkangqincharacter.character[i].dieAudios.push('ext:活动武将/audio/die:true');
