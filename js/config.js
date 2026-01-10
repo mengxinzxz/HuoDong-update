@@ -154,7 +154,7 @@ export let config = {
 		intro: "编辑欢杀将池，此将池仅影响欢乐三国杀武将包中的角色发动技能的武将筛选范围，不会涉及禁将层面",
 		onclick() {
 			var map = game.getExtensionConfig('活动武将', 'PingJianName') || lib.skill.minipingjian.getList();
-			ui.create.editor2({
+			ui.create.editor({
 				language: 'json',
 				value: JSON.stringify(map),
 				saveInput: result => {
