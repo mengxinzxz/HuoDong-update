@@ -4412,15 +4412,15 @@ const packs = function () {
                 async content(event, trigger, player) {
                     let [h, hp, e] = [false, false, false];
                     for (const target of [event.target, player]) {
-                        if (target.isMinHandcard() && (target !== player || h)) {
+                        if (target.isMinHandcard() && (target !== player || !h)) {
                             h = true;
                             await target.draw();
                         }
-                        if (target.isMinHp() && target.isDamaged() && (target !== player || hp)) {
+                        if (target.isMinHp() && target.isDamaged() && (target !== player || !hp)) {
                             hp = true;
                             await target.recover();
                         }
-                        if (target.isMinEquip() && (target !== player || e)) {
+                        if (target.isMinEquip() && (target !== player || !e)) {
                             const equip = get.fh_cardPile(card => get.type(card) == 'equip' && target.hasUseTarget(card));
                             if (equip) {
                                 e = true;
