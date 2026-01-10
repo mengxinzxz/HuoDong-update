@@ -4408,41 +4408,26 @@ const packs = function () {
                 init() {
                     game.initFh_cardPile();
                 },
-                inherit: 'anguo',
-                filterTarget: lib.filter.notMe,
-                content() {
-                    'step 0'
-                    if (target.isMinHandcard()) {
-                        target.draw();
-                        event.h = true;
+                inherit: 'xinanguo',
+                async content(event, trigger, player) {
+                    let [h, hp, e] = [false, false, false];
+                    for (const target of [event.target, player]) {
+                        if (target.isMinHandcard() && (target !== player || h)) {
+                            h = true;
+                            await target.draw();
+                        }
+                        if (target.isMinHp() && target.isDamaged() && (target !== player || hp)) {
+                            hp = true;
+                            await target.recover();
+                        }
+                        if (target.isMinEquip() && (target !== player || e)) {
+                            const equip = get.fh_cardPile(card => get.type(card) == 'equip' && target.hasUseTarget(card));
+                            if (equip) {
+                                e = true;
+                                await target.chooseUseTarget(equip, 'nothrow', 'nopopup', true);
+                            }
+                        }
                     }
-                    'step 1'
-                    if (target.isMinHp() && target.isDamaged()) {
-                        target.recover();
-                        event.hp = true;
-                    }
-                    'step 2'
-                    var equip = get.fh_cardPile(card => get.type(card) == 'equip' && target.hasUseTarget(card));
-                    if (target.isMinEquip() && equip) {
-                        target.chooseUseTarget(equip, 'nothrow', 'nopopup', true);
-                        event.e = true;
-                    }
-                    'step 3'
-                    game.updateRoundNumber();
-                    if (!event.h && player.isMinHandcard()) {
-                        player.draw();
-                    }
-                    'step 4'
-                    if (!event.hp && player.isMinHp() && player.isDamaged()) {
-                        player.recover();
-                    }
-                    'step 5'
-                    if (!event.e && player.isMinEquip()) {
-                        var equip = get.fh_cardPile(card => get.type(card) == 'equip' && player.hasUseTarget(card));
-                        if (equip) player.chooseUseTarget(equip, 'nothrow', 'nopopup', true);
-                    }
-                    'step 6'
-                    game.updateRoundNumber();
                 },
             },
         },
