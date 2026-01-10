@@ -151,52 +151,19 @@ export let config = {
 	edit_PingJianName: {
 		name: '编辑欢杀将池',
 		clear: true,
+		intro: "编辑欢杀将池，此将池仅影响欢乐三国杀武将包中的角色发动技能的武将筛选范围，不会涉及禁将层面",
 		onclick() {
-			var container = ui.create.div(".popup-container.editor2", ui.window);
-			var node = container;
 			var map = game.getExtensionConfig('活动武将', 'PingJianName') || lib.skill.minipingjian.getList();
-			var str = '//编辑欢杀将池，此将池仅影响欢乐三国杀武将包中的角色发动技能的武将筛选范围，不会涉及禁将层面';
-			str += '\nPingJianName=[\n';
-			for (var i = 0; i < map.length; i++) {
-				str += '"' + map[i] + '",';
-				if (i + 1 < map.length && (i + 1) % 5 == 0) str += '\n';
-			}
-			str += '\n];';
-			node.code = str;
-			ui.window.classList.add('shortcutpaused');
-			ui.window.classList.add('systempaused');
-			var saveInput = function (/**@type {import("@codemirror/view").EditorView}*/view) {
-				var resultCode = view.state.doc.toString();
-				var PingJianName = null;
-				try {
-					PingJianName = security.exec2(resultCode).PingJianName;
+			ui.create.editor2({
+				language: 'json',
+				value: JSON.stringify(map),
+				saveInput: result => {
+					const PingJianName = JSON.parse(result);
 					if (!Array.isArray(PingJianName)) {
-						throw "err";
+						throw new Error("代码格式有错误，请对比示例代码仔细检查");
 					}
-				} catch (e) {
-					if (e == "err") {
-						alert("代码格式有错误，请对比示例代码仔细检查");
-					} else {
-						var tip = lib.getErrorTip(e) || "";
-						alert("代码语法有错误，请仔细检查（" + e + "）" + tip);
-					}
-					window.focus();
-					view.dom.focus();
-					return;
-				}
-				game.saveExtensionConfig('活动武将', 'PingJianName', PingJianName);
-				ui.window.classList.remove('shortcutpaused');
-				ui.window.classList.remove('systempaused');
-				container.delete();
-				container.code = resultCode;
-				delete window.saveNonameInput;
-			};
-			ui.create.editor2(container, {
-				language: 'javascript',
-				value: str,
-				saveInput,
-			}).then(editor => {
-				window.saveNonameInput = () => saveInput(editor);
+					game.saveExtensionConfig('活动武将', 'PingJianName', PingJianName);
+				},
 			});
 		},
 	},
