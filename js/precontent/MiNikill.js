@@ -33412,7 +33412,7 @@ const packs = function () {
                     count = length - gains.length;
                     while (count > 0) {
                         count--;
-                        await lib.skill.old_shenzhu.content(event, trigger, player);
+                        await lib.skill.old_shenzhu.content(null, null, player);
                     }
                 },
                 video(player, info) {
