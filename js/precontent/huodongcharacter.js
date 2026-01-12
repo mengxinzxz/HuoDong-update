@@ -11128,7 +11128,7 @@ const packs = function () {
                         return promise;
                     };
                     game.broadcastAll(createDialog, player, event.videoId);
-                    let next, url = 'http://jspvz.com/plantsvszombies.htm';
+                    let next, url = 'https://berrypvz.github.io/mps/';//'http://jspvz.com/plantsvszombies.htm';
                     if (event.isMine()) next = chooseButton(time, url);
                     else if (event.isOnline()) {
                         const { promise, resolve } = Promise.withResolvers();
