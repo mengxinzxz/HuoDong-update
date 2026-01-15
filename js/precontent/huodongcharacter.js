@@ -5228,7 +5228,8 @@ const packs = function () {
                     'step 2'
                     if (event.links.includes(1)) {
                         player.choosePlayerCard(target, 'he', true).set('ai', function (button) {
-                            var player = _status.event.player;
+                            const { player, target } = get.event();
+                            const att = get.attitude(player, target);
                             return get.effect(player, button.link, player, player) * (att > 0 ? -1 : 1);
                         });
                     }
