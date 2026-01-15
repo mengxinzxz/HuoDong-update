@@ -33409,7 +33409,11 @@ const packs = function () {
                             game.log(player, '获得了', '#y' + get.cnNumber(gains.length) + '张', '#g“幻术”牌');
                         }
                     }
-                    if (length - gains.length > 0) await player.draw(length - gains.length);
+                    count = length - gains.length;
+                    while (count > 0) {
+                        count--;
+                        await lib.skill.old_shenzhu.content(null, null, player);
+                    }
                 },
                 video(player, info) {
                     if (info[0]) {

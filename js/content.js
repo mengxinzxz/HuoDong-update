@@ -471,35 +471,34 @@ export async function content(config, pack) {
 		//国战武将技能修复
 		if (get.config('onlyguozhan')) {
 			//------------------------------增改武将------------------------------//
-			//技能
-			lib.skill.gzwanwei = {
-				audio: 'wanwei',
-				inherit: 'fuwei',
-			};
 			Object.assign(lib.character, {
 				gz_re_xushu: ['male', 'shu', 4, ['gzqiance', 'gzjujian'], ['gzskin']],
 				gz_wujing: ['male', 'wu', 4, ['donggui', 'fengyang_old'], ['gzskin']],
 			});
 		}
 		//------------------------------选项------------------------------//
-		//precGuozhan2
-		//左慈---后续
-		lib.skill.gzhuashen.drawCharacter = function (player, list) {
-			game.broadcastAll(function (player, list) {
-				var cards = [];
-				for (var i = 0; i < list.length; i++) {
-					var cardname = 'huashen_card_' + list[i];
-					lib.card[cardname] = {
-						fullimage: true,
-						image: player.isUnderControl(true) ? 'character:' + list[i] : 'ext:活动武将/image/card/huashen_unknown.jpg'
-					}
-					lib.translate[cardname] = player.isUnderControl(true) ? get.rawName2(list[i]) : ' ';
-					cards.push(game.createCard(cardname, '', ''));
-				}
-				player.$draw(cards, 'nobroadcast');
-			}, player, list);
+		//卞夫人
+		lib.skill.gzwanwei = {
+			audio: 'wanwei',
+			inherit: 'fuwei',
 		};
-		lib.skill.yigui.group = ['yigui_init', 'yigui_refrain', 'yigui_gzshan', 'yigui_gzwuxie'];
+		//左慈
+		Object.assign(lib.skill.yigui, {
+			drawCharacter(player, list) {
+				game.broadcastAll((player, list) => {
+					player.$draw(list.map(name => {
+						const cardname = 'huashen_card_' + name;
+						lib.card[cardname] = {
+							fullimage: true,
+							image: player.isUnderControl(true) ? `character:${name}` : 'ext:活动武将/image/card/huashen_unknown.jpg',
+						}
+						lib.translate[cardname] = player.isUnderControl(true) ? get.rawName2(name) : ' ';
+						return game.createCard(cardname, '', '');
+					}), 'nobroadcast');
+				}, player, list);
+			},
+			group: ['yigui_init', 'yigui_refrain', 'yigui_gzshan', 'yigui_gzwuxie'],
+		});
 		const yiguiInfo = lib.translate.yigui_info;
 		lib.translate.yigui_info = yiguiInfo.slice(0, yiguiInfo.indexOf('（')) + '（此牌指定或响应的角色须为未确定势力的角色或野心家或与此“魂”势力相同的角色）';
 		//唐咨
@@ -516,10 +515,10 @@ export async function content(config, pack) {
 			},
 			forced: true,
 			content() {
-				lib.skill.gzxingzhao.subSkill.use.logTarget(trigger, player).draw();
+				event.targets[0].draw();
 			},
 		};
-		lib.translate.gzxingzhao_info = '锁定技，你根据场上存在受伤角色的势力数获得以下效果：1个或以上，你视为拥有〖恂恂〗；2个或以上，当你受到伤害后，你与伤害来源两者中手牌数唯一最少的角色摸一张牌；3个或以上，你的手牌上限+4；4个或以上，当你失去装备区的牌后，你摸一张牌。';
+		lib.translate.gzxingzhao_info = lib.translate.gzxingzhao_old_info;
 	}
 
 	//设置稀有度
