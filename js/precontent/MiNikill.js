@@ -478,7 +478,7 @@ const packs = function () {
                 groupInGuozhan: 'wu',
                 names: '桥|null-桥|null',
             },
-            Mbaby_old_1_daxiaoqiao: ['female', 'shen', 4, ['minishuangshu', 'miniyizheng', 'minipingting'], ['wu', ...['character', 'die'].map(i => `${i}:Mbaby_shen_daxiaoqiao`)]],
+            Mbaby_old_1_daxiaoqiao: ['female', 'shen', 4, ['minishuangshu', 'miniyizheng', 'minipingting'], ['wu', 'die:Mbaby_shen_daxiaoqiao']],
             Mbaby_old_2_daxiaoqiao: ['female', 'shen', 4, ['minishuangshu2', 'miniyizheng2', 'minishutu2'], ['wu', ...['character', 'die'].map(i => `${i}:Mbaby_shen_daxiaoqiao`)]],
             Mbaby_shen_diaochan: ['female', 'shen', 3, ['minimeihun', 'minihuoxin'], ['qun']],
             Mbaby_sunwukong: ['male', 'shen', 4, ['minisevenbian', 'miniruyi', 'miniqitian']],
