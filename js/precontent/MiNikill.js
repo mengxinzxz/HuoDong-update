@@ -10,7 +10,7 @@ const packs = function () {
                 MiNi_wei: ['old_liubei', 'guohuai', 'caochong', 'caochun', 'caoying', 'dc_jiachong', 'zhugeruoxue', 'dukui', 'xinpi', 'caimaozhangyun', 'bianyue', 'caoanmin', 'zhaoang', 'zhanggong', 'simalang', 'hanhaoshihuan', 'chentai', 'zhenghun', 'guanlu', 'guanqiujian', 'wenqin', 'dc_liuye', 'chenlin', 'wangshuang', 'yanrou', 'dc_yanghu', 'ruanyu', 'chengyu', 'jianggan', 'yuejin', 'bianfuren', 'zhugedan', 'caohong', 'yinfuren', 'kuailiangkuaiyue', 'chenqun', 'xiahoulingnv', 'wenyang', 'caocao', 'caozhang', 'dufuren', 'yangxiu', 'zhangchangpu', 'zhonghui', 'caoxiu', 'xunyou', 'lidian', 'zhongyao', 'caozhen', 'guohuanghou', 'xinxianying', 'xiahouyuan', 'xizhicai', 'caorui', 'xunyu', 'dengai', 'caozhi', 'caopi', 'caoang', 'zhenji', 'old_caoren', 'zhangchunhua', 'xiahoudun', 'dianwei', 'zhanghe', 'yujin', 'xuhuang'].map(i => `Mbaby_${i}`),
                 MiNi_shu: ['dc_wuban', 'pangtong', 'mifangfushiren', 'guanyue', 'xianglang', 'huanghao', 'ganfurenmifuren', 'zhaotongzhaoguang', 'wulan', 'leitong', 'zongyu', 're_mazhong', 're_dengzhi', 'dc_hujinding', 'jiangfei', 'zhangyi', 'guanzhang', 'wolongfengchu', 'wangtao', 'wangyue', 'xf_yiji', 'mizhu', 'mifuren', 'liuyong', 'ganfuren', 'lvkai', 'zhoucang', 'yangwan', 'liuchen', 'liyan', 'chendao', 'yanyan', 'xiahouba', 'huaman', 'sp_zhugeliang', 'zhugeguo', 'jianyong', 'wangping', 'mayunlu', 'guansuo', 'xiahoushi', 'shamoke', 'wuxian', 'zhugezhan', 'qinmi', 'guanyinping', 'guanyu', 'zhugeliang', 'liubei', 'machao', 'zhurong', 'zhangfei', 'zhaoyun', 'huangzhong', 'weiyan', 'liaohua', 'menghuo', 'ol_jiangwei', 'liushan', 'xin_fazheng', 'madai', 'guanping', 'liufeng', 'zhangxingcai', 'dongyun', 'xushu', 'xin_masu'].map(i => `Mbaby_${i}`),
                 MiNi_wu: ['old_sunquan', 'sunhuan', 'gexuan', 'lvfan', 'xielingyu', 'zhupeilan', 'xugong', 'chendong', 'kanze', 're_panzhangmazhong', 'weiwenzhugezhi', 'zhangwen', 'dc_sunhanhua', 'heqi', 'lvdai', 'jiangqing', 're_guyong', 'quancong', 'yufan', 'dc_sunru', 'sunxiu', 'zhangfen', 'xuezong', 'panjun', 'luji', 'zhoufang', 'zhangxuan', 'yanjun', 'zhuhuan', 'luyusheng', 're_jsp_pangtong', 'sunhao', 'lukang', 'buzhi', 'xushi', 'zhugeke', 'zhoufei', 'zhangzhang', 'sunliang', 'sunjian', 'zhuzhi', 'bulianshi', 'chengpu', 'daqiao', 'ganning', 'huanggai', 'lusu', 'luxun', 'lvmeng', 'sunce', 'sunluban', 'sunluyu', 'sunquan', 'sunshangxiang', 'taishici', 'wuguotai', 'xiaoqiao', 'xusheng', 'old_zhoutai', 'zhouyu', 'zhugejin', 'zumao'].map(i => `Mbaby_${i}`),
-                MiNi_qun: ['diaochan', 'xurong', 're_taoqian', 'hejin', 'jiling', 'zhangrang', 'duanwei', 're_chendeng', 'caiyong', 'mengjie', 'dc_gaolan', 'yl_luzhi', 'tadun', 're_hansui', 'dongxie', 'fuwan', 'wutugu', 'huangfusong', 'fanchou', 'guosi', 'yanbaihu', 'dc_huangzu', 'licaiwei', 'ol_dingyuan', 'liubian', 're_pangdegong', 'zhangning', 'zhanglu', 'wangyun', 'zoushi', 'dc_huangchengyan', 'simahui', 'tw_mateng', 'laiyinger', 'sp_kongrong', 'zhujun', 'gongsunyuan', 'guotufengji', 'yanfuren', 'tangji', 'caojie', 'liangxing', 'caoxing', 'wangrong', 'hetaihou', 'zhangji', 'dongbai', 'beimihu', 'chunyuqiong', 'zhangqiying', 'fuhuanghou', 'liuxie', 'quyi', 'lijue', 'panfeng', 'liuzhang', 'jiaxu', 'zhangbao', 'zhangliang', 'gaoshun', 'caifuren', 'xuyou', 'pangde', 'yj_jushou', 'liru', 'dongzhuo', 'sp_zhangjiao', 'huatuo', 'lvbu', 'huaxiong', 'yuji', 'liubiao', 'yuanshao', 'yuanshu', 'chengong', 'zuoci'].map(i => `Mbaby_${i}`),
+                MiNi_qun: ['wangcan', 'diaochan', 'xurong', 're_taoqian', 'hejin', 'jiling', 'zhangrang', 'duanwei', 're_chendeng', 'caiyong', 'mengjie', 'dc_gaolan', 'yl_luzhi', 'tadun', 're_hansui', 'dongxie', 'fuwan', 'wutugu', 'huangfusong', 'fanchou', 'guosi', 'yanbaihu', 'dc_huangzu', 'licaiwei', 'ol_dingyuan', 'liubian', 're_pangdegong', 'zhangning', 'zhanglu', 'wangyun', 'zoushi', 'dc_huangchengyan', 'simahui', 'tw_mateng', 'laiyinger', 'sp_kongrong', 'zhujun', 'gongsunyuan', 'guotufengji', 'yanfuren', 'tangji', 'caojie', 'liangxing', 'caoxing', 'wangrong', 'hetaihou', 'zhangji', 'dongbai', 'beimihu', 'chunyuqiong', 'zhangqiying', 'fuhuanghou', 'liuxie', 'quyi', 'lijue', 'panfeng', 'liuzhang', 'jiaxu', 'zhangbao', 'zhangliang', 'gaoshun', 'caifuren', 'xuyou', 'pangde', 'yj_jushou', 'liru', 'dongzhuo', 'sp_zhangjiao', 'huatuo', 'lvbu', 'huaxiong', 'yuji', 'liubiao', 'yuanshao', 'yuanshu', 'chengong', 'zuoci'].map(i => `Mbaby_${i}`),
                 MiNi_shen: [
                     ...['lusu', 'luxun', 'dengai', 'zuoci', 'taishici', 'diaochan', 'daxiaoqiao', 'zhenji', 'guojia', 'huatuo', 'dianwei', 'lvbu', 'zhugeliang', 'lvmeng', 'zhouyu', 'guanyu', 'liubei', 'caocao', 'zhangliao', 'sunquan', 'simayi', 'zhaoyun', 'ganning', 'pangtong'].map(i => `shen_${i}`),
                     ...['1_daxiaoqiao', '2_daxiaoqiao'].map(i => `old_${i}`),
@@ -30,12 +30,12 @@ const packs = function () {
                     ...[],
                 ],
                 MiNi_sbCharacter: [
-                    ...['zhenji', 'ganning', 'huangyueying', 'sunshangxiang', 'xuhuang', 'zhaoyun', 'liubei', 'caocao', 'huanggai', 'yuanshao', 'yujin', 'machao', 'lvmeng', 'huangzhong'].map(i => `Mbaby_sb_${i}`),
+                    ...['zhangjiao', 'zhenji', 'ganning', 'huangyueying', 'sunshangxiang', 'xuhuang', 'zhaoyun', 'liubei', 'caocao', 'huanggai', 'yuanshao', 'yujin', 'machao', 'lvmeng', 'huangzhong'].map(i => `Mbaby_sb_${i}`),
                     ...['huaxiong', 'guanyu'].map(i => `Mbaby_ol_sb_${i}`),
                     ...['chengyu'].map(i => `Mbaby_dc_sb_${i}`),
                     ...[],
                 ],
-                MiNi_starCharacter: ['xunyu', 'yuanshu'].map(i => `Mbaby_star_${i}`),
+                MiNi_starCharacter: ['sunshangxiang', 'xunyu', 'yuanshu'].map(i => `Mbaby_star_${i}`),
                 MiNi_miaoKill: ['mayunlu', 'guanyinping', 'caoying', 'caiwenji', 'diaochan', 'caifuren', 'zhangxingcai', 'zhurong', 'huangyueying', 'daqiao', 'wangyi', 'zhangchunhua', 'zhenji', 'sunshangxiang', 'xiaoqiao', 'lvlingqi'].map(i => `Mmiao_${i}`),
                 MiNi_nianKill: ['caopi', 'zhugeliang', 'lvbu', 'zhouyu'].map(i => `Mnian_${i}`),
                 MiNi_fightKill: ['huangzhong', 'zhangliao', 'luxun', 'dianwei', 'machao', 'jiangwei'].map(i => `Mfight_${i}`),
@@ -329,6 +329,7 @@ const packs = function () {
             Mbaby_lvfan: ['male', 'wu', 3, ['minidiaodu', 'minidiancai']],
             Mbaby_gexuan: ['male', 'wu', 3, ['minilianhua', 'zhafu']],
             Mbaby_sunhuan: ['male', 'wu', 4, ['mininiji']],
+            Mbaby_star_sunshangxiang: ['female', 'wu', 3, ['starsaying', 'ministarjiaohao']],
             //群
             Mbaby_gaoshun: ['male', 'qun', 4, ['minixianzhen', 'minijinjiu']],
             Mbaby_xin_gaoshun: ['male', 'qun', 4, ['minirexianzhen', 'minirejinjiu'], ['character:Mbaby_gaoshun']],
@@ -444,6 +445,8 @@ const packs = function () {
             Mbaby_hejin: ['male', 'qun', 4, ['minimouzhu', 'miniyanhuo']],
             Mbaby_re_taoqian: ['male', 'qun', 3, ['minizhaohuo', 'reyixiang', 'reyirang']],
             Mbaby_xurong: ['male', 'qun', 4, ['minixionghuo', 'minishajue']],
+            Mbaby_wangcan: ['male', 'qun', 4, ['xinfu_sanwen', 'xinfu_qiai', 'minidenglou']],
+            Mbaby_sb_zhangjiao: ['male', 'qun', 3, ['minisbsbleiji', 'minisbguidao', 'minisbhuangtian']],
             //神
             Mbaby_shen_zhugeliang: ['male', 'shen', 3, ['qixing', 'minikuangfeng', 'minidawu'], ['shu', 'name:诸葛|亮']],
             Mbaby_shen_lvbu: ['male', 'shen', 6, ['miniwuqian', 'minishenfen'], ['qun']],
@@ -21338,6 +21341,60 @@ const packs = function () {
                     }
                 }
             },
+            // 星孙尚香
+            ministarjiaohao: {
+                inherit: 'starjiaohao',
+                audio: 'starjiaohao',
+                filter(event, player) {
+                    return game.hasPlayer(current => get.info('ministarjiaohao').filterTarget(null, player, current));
+                },
+                filterTarget(card, player, target) {
+                    return player.canCompare(target);
+                },
+                async content(event, trigger, player) {
+                    const { target } = event;
+                    const result = await player.chooseToCompare(target).forResult();
+                    if (result?.winner?.isIn()) {
+                        const { winner } = result;
+                        if (player == winner) await player.addTempSkills(get.info(event.name).derivation, { player: 'phaseBegin' });
+                        const cards = [result.player, result.target].filterInD('d');
+                        const result2 = await player.chooseControl('cancel2').set('choiceList', ['令' + get.translation(winner) + '获得' + (cards.length ? get.translation(cards) : '空气'), '令' + get.translation(winner) + '使用一张杀']).set('ai', () => {
+                            return _status.event.check;
+                        }).set('check', (() => {
+                            if (get.attitude(player, winner) <= 0) {
+                                return 'cancel2';
+                            }
+                            if (!game.hasPlayer(current => {
+                                return winner.canUse({ name: 'sha' }, current, false) && get.effect(current, { name: 'sha' }, winner, winner) > 0;
+                            }) || !cards.length) {
+                                return '选项一';
+                            }
+                            let eff1 = winner.getUseValue({ name: 'sha' }), eff2 = 0;
+                            for (let card of cards) {
+                                eff2 += get.value(card, winner);
+                            }
+                            if (eff1 > eff2 * 2.5) {
+                                return '选项二';
+                            }
+                            return '选项一';
+                        })()).forResult();
+                        switch (result2?.control) {
+                            case '选项二': {
+                                const next = winner.chooseToUse('是否使用一张杀？', { name: 'sha' }).set('filterTarget', function (card, player, target) {
+                                    return lib.filter.filterTarget.apply(this, arguments);
+                                }).set('addCount', false);
+                                await next;
+                                break;
+                            }
+                            case '选项一': {
+                                await winner.gain(cards, 'gain2');
+                                break;
+                            }
+                        }
+                    }
+                },
+                derivation: 'xiaoji',
+            },
             //群
             miniqieting: {
                 audio: 'qieting',
@@ -30470,6 +30527,242 @@ const packs = function () {
                         return num + 2;
                     },
                 },
+            },
+            // 王粲
+            minidenglou: {
+                audio: 'xinfu_denglou',
+                trigger: { player: 'phaseJieshuBegin' },
+                filter(event, player) {
+                    return player.countCards('h') == 0;
+                },
+                async content(event, trigger, player) {
+                    const cards = get.cards(4);
+                    await game.cardsGotoOrdering(cards);
+                    const content = ['牌堆顶的四张牌', cards];
+                    game.log(player, '观看了', '#y牌堆顶的四张牌');
+                    await player.chooseControl('ok').set('dialog', content);
+                    const gains = [];
+                    const discards = [];
+                    while (cards.length) {
+                        const card = cards.shift();
+                        if (get.type(card) !== 'basic') gains.push(card);
+                        else if (player.hasUseTarget(card)) {
+                            await player.chooseUseTarget(card, true, false);
+                        }
+                        else discards.push(card);
+                    }
+                    if (gains.length) await player.gain(gains, 'gain2');
+                    if (discards.length) {
+                        player.$throw(discards);
+                        await game.cardsDiscard(discards);
+                    }
+                },
+            },
+            // 谋张角
+            minisbsbleiji: {
+                audio: 'sbleiji',
+                enable: 'phaseUse',
+                filter(event, player) {
+                    if (!game.hasPlayer(current => get.info('minisbsbleiji').filterTarget(null, player, current))) return false;
+                    return player.countMark('minisbguidao') >= 4;
+                },
+                filterTarget: lib.filter.notMe,
+                chooseButton: {
+                    dialog(event, player) {
+                        const name = get.translation(event.result.targets[0]);
+                        const dialog = ui.create.dialog(
+                            `雷击：请选择一项`,
+                            [
+                                [
+                                    [4, `移去4枚“道兵”对${name}造成1点雷电伤害`],
+                                    [6, `移去6枚“道兵”对${name}造成2点雷电伤害`],
+                                ],
+                                'textbutton',
+                            ],
+                            'hidden'
+                        );
+                        return dialog;
+                    },
+                    filter(button, player) {
+                        return player.countMark('minisbguidao') >= button.link;
+                    },
+                    check(button) {
+                        const player = get.player(), target = get.event().getParent().result.targets[0];
+                        const { link } = button;
+                        if (link === 6) return 2;
+                        return 1;
+                    },
+                    backup(links) {
+                        return {
+                            audio: 'minisbsbleiji',
+                            target: get.event().result.targets[0],
+                            link: links[0],
+                            filterTarget(card, player, target) {
+                                return target === lib.skill.minisbsbleiji_backup.target;
+                            },
+                            selectTarget: -1,
+                            async content(event, trigger, player) {
+                                const { link } = get.info('minisbsbleiji_backup');
+                                const { target } = event;
+                                const num = link == 4 ? 1 : 2;
+                                player.removeMark('minisbguidao', link);
+                                await target.damage(num, 'thunder');
+                            },
+                        };
+                    },
+                    prompt(links) {
+                        return '点击“确定”以执行效果';
+                    },
+                },
+                ai: {
+                    combo: 'minisbguidao',
+                    order: 9,
+                    result: {
+                        target(player, target) {
+                            return get.damageEffect(target, player, target, 'thunder');
+                        },
+                    },
+                },
+                subSkill: { backup: {} },
+            },
+            minisbguidao: {
+                init(player, skill) {
+                    player.addSkill(skill + '_mark');
+                    let num = 0;
+                    let next = 8;
+                    const history = game.getAllGlobalHistory('everything', evt => evt.name == 'removeMark' && evt.markName == 'minisbguidao' && evt.player == player);
+                    for (let i = 0; i < history.length; i++) {
+                        const evt = history[i];
+                        num += evt.num;
+                        if (num >= next) {
+                            if (!evt.minisbguidao) evt.minisbguidao = true;
+                            next = Math.floor(num / 8) * 8 + 8;
+                        }
+                    }
+                    if (num) player.addMark(skill + '_mark', num, false);
+                },
+                onremove(player, skill) {
+                    player.removeSkill(skill + '_mark');
+                    delete player.storage[skill];
+                },
+                audio: 'sbguidao',
+                trigger: { global: ['roundStart', 'damageEnd'] },
+                forced: true,
+                locked: false,
+                filter(event, player) {
+                    if (player.countMark('minisbguidao') >= 8) return false;
+                    if (event.name == 'damage') return event.hasNature();
+                    return true;
+                },
+                async content(event, trigger, player) {
+                    let num = trigger.name == 'damage' ? 2 : 1;
+                    num = Math.min(8 - player.countMark(event.name), num);
+                    if (num > 0) player.addMark(event.name, num);
+                },
+                marktext: '兵',
+                intro: {
+                    name: '道兵',
+                    name2: '道兵',
+                    content: '共有$枚“道兵”',
+                },
+                group: ['minisbguidao_defend', 'minisbguidao_shandian'],
+                subSkill: {
+                    defend: {
+                        audio: 'minisbguidao',
+                        trigger: { player: 'damageBegin4' },
+                        filter(event, player) {
+                            return player.countMark('minisbguidao') >= 2;
+                        },
+                        prompt2: '弃2枚“道兵”，防止伤害',
+                        check(event, player) {
+                            return event.num >= 2 || player.hp <= event.num;
+                        },
+                        async content(event, trigger, player) {
+                            player.removeMark('minisbguidao', 2);
+                            trigger.cancel();
+                        },
+                    },
+                    shandian: {
+                        audio: 'minisbguidao',
+                        trigger: { player: 'removeMark' },
+                        getIndex(event, player, triggername) {
+                            if (event.markName !== 'minisbguidao') return false;
+                            const history = game.getAllGlobalHistory('everything', evt => evt.name == 'removeMark' && evt.markName == 'minisbguidao' && evt.player == player);
+                            let num = 0;
+                            for (let i = history.length - 1; i >= 0; i--) {
+                                const evt = history[i];
+                                if (evt.minisbguidao) {
+                                    const historyx = game.getAllGlobalHistory('everything', evtx => evtx.name == 'removeMark' && evtx.markName == 'minisbguidao' && evtx.player == player, evt);
+                                    num += historyx.reduce((numx, evtx) => numx + evtx.num, 0) % 8;
+                                    break;
+                                }
+                                num += evt.num;
+                            }
+                            return parseInt(num / 8);
+                        },
+                        async cost(event, trigger, player) {
+                            const history = game.getAllGlobalHistory('everything', evt => evt.name == 'removeMark' && evt.markName == 'minisbguidao' && evt.player == player);
+                            if (history.length) history[history.length - 1]['minisbguidao'] = true;
+                            event.result = await player.chooseTarget(get.prompt(event.skill), '令任意名角色执行【闪电】判定', [1, Infinity]).set('ai', target => {
+                                const player = get.player();
+                                return get.damageEffect(target, player, player, 'thunder');
+                            }).forResult();
+                        },
+                        async content(event, trigger, player) {
+                            for (const target of event.targets.sortBySeat()) await target.executeDelayCardEffect('shandian');
+                        },
+                    },
+                    mark: {
+                        charlotte: true,
+                        onremove: true,
+                        marktext: '道',
+                        intro: { content: '本局游戏已累计移去#枚“道兵”' },
+                        trigger: { player: 'removeMark' },
+                        filter(event, player) {
+                            return event.num > 0 && event.markName == 'minisbguidao';
+                        },
+                        firstDo: true,
+                        forced: true,
+                        popup: false,
+                        async content(event, trigger, player) {
+                            player.addMark(event.name, trigger.num, false);
+                        },
+                    }
+                }
+            },
+            minisbhuangtian: {
+                mod: {
+                    maxHandcard(player, num) {
+                        return num + game.countGroup() - 1;
+                    },
+                },
+                audio: 'sbhuangtian',
+                trigger: { global: 'damageSource' },
+                forced: true,
+                zhuSkill: true,
+                filter(event, player) {
+                    if (!player.hasZhuSkill('minisbhuangtian') || !player.hasSkill('minisbguidao', null, false, false)) return false;
+                    if (!event.source || player == event.source || event.source.group != 'qun') return false;
+                    if (player.hasSkill('minisbguidao') && player.countMark('minisbguidao') >= 8) return false;
+                    if (player.countMark('minisbhuangtian_count') >= 4) return false;
+                    return true;
+                },
+                async content(event, trigger, player) {
+                    const count = event.name + '_count';
+                    let num = Math.min(8 - player.countMark(count), 2);
+                    if (num > 0) {
+                        player.addMark('minisbguidao', num);
+                        player.addTempSkill(count, 'roundStart');
+                        player.addMark(count, num, false);
+                    }
+                },
+                subSkill: {
+                    count: {
+                        charlotte: true,
+                        onremove: true,
+                        intro: { content: `本轮已因${get.poptip('minisbhuangtian')}获得#枚“道兵”` },
+                    }
+                }
             },
             //神
             miniwuqian: {
@@ -40924,6 +41217,7 @@ const packs = function () {
             Mbaby_lvfan: '欢杀吕范',
             Mbaby_gexuan: '欢杀葛玄',
             Mbaby_sunhuan: '欢杀孙桓',
+            Mbaby_star_sunshangxiang: '欢杀星孙尚香',
             minizhiheng: '制衡',
             minizhiheng_info: '出牌阶段结束时，你可以弃置任意张手牌并将手牌数补至四张。',
             minirezhiheng: '制衡',
@@ -41215,6 +41509,8 @@ const packs = function () {
             minilianhua_info: '①你的回合外，其他角色受到伤害后，你获得1枚“丹血”标记（该角色与你阵营一致时为红色，不一致为黑色，此颜色对所有玩家均不可见）。②准备阶段，你失去所有“丹血”标记，根据你失去的“丹血”标记的数量和颜色，从牌堆/弃牌堆中获得相应的牌以及相应技能直到回合结束：3枚或以下，〖英姿〗和【桃】；红色“丹血”较多，〖观星〗和【无中生有】；黑色“丹血”较多，〖直言〗和【顺手牵羊】；红色和黑色一样多，〖攻心〗和【杀】【决斗】。',
             mininiji: '逆击',
             mininiji_info: '①当你成为基本牌或锦囊牌的目标后，你可以摸一张牌，称为“逆击”。②一名角色的结束阶段，你可以使用一张手牌，然后弃置所有“逆击”牌。',
+            ministarjiaohao: '骄豪',
+            ministarjiaohao_info: `出牌阶段限一次，你可以拼点，然后你可令赢的角色A获得拼点牌或令其使用一张【杀】。若A为你，你获得${get.poptip('xiaoji')}直到你的下回合开始。`,
             //群
             Mbaby_zuoci: '欢杀左慈',
             Mbaby_gaoshun: '欢杀高顺',
@@ -41330,6 +41626,8 @@ const packs = function () {
             Mbaby_hejin: '欢杀何进',
             Mbaby_re_taoqian: '欢杀陶谦',
             Mbaby_xurong: '欢杀徐荣',
+            Mbaby_wangcan: '欢杀王粲',
+            Mbaby_sb_zhangjiao: '欢杀谋张角',
             miniweidi: '伪帝',
             miniweidi_info: '弃牌阶段结束时，你可以将其中一张弃置的牌交给一名其他角色。',
             minimingce: '明策',
@@ -41735,6 +42033,14 @@ const packs = function () {
             minizishou_info: '摸牌阶段，你可以额外摸两张牌。若如此做，本回合你使用牌不能指定其他角色为目标。',
             minizongshi: '宗室',
             minizongshi_info: '锁定技，你的手牌上限+2。',
+            minidenglou: '登楼',
+            minidenglou_info: '结束阶段，若你没有手牌，则你可以观看牌堆顶的四张牌，依次使用其中的所有基本牌（不能使用则弃置），然后获得其余的牌。',
+            minisbsbleiji: '雷击',
+            minisbsbleiji_info: '出牌阶段，你可以选择一名其他角色并移去4/6枚“道兵”，对其造成1/2点雷电伤害。',
+            minisbguidao: '鬼道',
+            minisbguidao_info: '①每轮开始时/一名角色受到属性伤害时，你获得2/1枚“道兵”（标记上限为8）。②当你受到伤害时，你可以弃2枚“道兵”并防止此伤害。③每当你累计弃置8枚“道兵”后，你可以令任意名角色依次进行【闪电】判定。',
+            minisbhuangtian: '黄天',
+            minisbhuangtian_info: `主公技，锁定技。①其他群势力角色造成伤害后，若你拥有${get.poptip('minisbguidao')}，你获得2枚“道兵”（每轮你至多以此法获得4枚“道兵”）。②你的手牌上限+X（X为场上势力数-1）。`,
             //神
             Mbaby_shen_lvbu: '欢杀神吕布',
             Mbaby_shen_guanyu: '欢杀神关羽',
