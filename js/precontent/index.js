@@ -633,7 +633,7 @@ export async function precontent(bilibilicharacter) {
             {
                 type: 'players',
                 data: [
-                    'Mbaby_wangcan', 'Mbaby_sb_zhangjiao', 'Mbaby_star_sunshangxiang',
+                    'Mbaby_wangcan', 'Mbaby_sb_zhangjiao', 'Mbaby_star_sunshangxiang', 'Mbaby_leibo',
                     'wechat_old_luxun', 'wechat_old_zuoci', 'wechat_old_zhaoxiang',
                     'Mbaby_old_liubei', 'Mbaby_old_sunquan', 'Mbaby_diaochan', 'Mbaby_old_1_daxiaoqiao', 'Mbaby_old_2_daxiaoqiao', 'Mbaby_zhangqiying',
                 ],
@@ -643,7 +643,7 @@ export async function precontent(bilibilicharacter) {
                 textAlign: 'left',
                 data: [
                     'bugfix、素材补充、技能调整',
-                    '欢杀：王粲、谋张角、星孙尚香',
+                    '欢杀：王粲、谋张角、星孙尚香、雷薄',
                     '恭喜小程序牢武将陆逊/左慈/赵襄、欢杀牢武将刘备/孙权/貂蝉/神二乔、欢杀落选武将神二乔打赢复活赛，将欢杀张琪瑛归入牢字辈',
                     'To be continued...',
                 ],
