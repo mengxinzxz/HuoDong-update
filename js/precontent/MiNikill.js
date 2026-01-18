@@ -30740,7 +30740,7 @@ const packs = function () {
                     delete player.storage[skill];
                 },
                 audio: 'sbguidao',
-                trigger: { global: ['roundStart', 'damageEnd'] },
+                trigger: { global: ['roundStart', 'damageBegin4'] },
                 forced: true,
                 locked: false,
                 filter(event, player) {
