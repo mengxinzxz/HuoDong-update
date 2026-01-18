@@ -8,7 +8,7 @@ const packs = function () {
         characterSort: {
             MiNikill: {
                 MiNi_wei: ['old_liubei', 'guohuai', 'caochong', 'caochun', 'caoying', 'dc_jiachong', 'zhugeruoxue', 'dukui', 'xinpi', 'caimaozhangyun', 'bianyue', 'caoanmin', 'zhaoang', 'zhanggong', 'simalang', 'hanhaoshihuan', 'chentai', 'zhenghun', 'guanlu', 'guanqiujian', 'wenqin', 'dc_liuye', 'chenlin', 'wangshuang', 'yanrou', 'dc_yanghu', 'ruanyu', 'chengyu', 'jianggan', 'yuejin', 'bianfuren', 'zhugedan', 'caohong', 'yinfuren', 'kuailiangkuaiyue', 'chenqun', 'xiahoulingnv', 'wenyang', 'caocao', 'caozhang', 'dufuren', 'yangxiu', 'zhangchangpu', 'zhonghui', 'caoxiu', 'xunyou', 'lidian', 'zhongyao', 'caozhen', 'guohuanghou', 'xinxianying', 'xiahouyuan', 'xizhicai', 'caorui', 'xunyu', 'dengai', 'caozhi', 'caopi', 'caoang', 'zhenji', 'old_caoren', 'zhangchunhua', 'xiahoudun', 'dianwei', 'zhanghe', 'yujin', 'xuhuang'].map(i => `Mbaby_${i}`),
-                MiNi_shu: ['dc_wuban', 'pangtong', 'mifangfushiren', 'guanyue', 'xianglang', 'huanghao', 'ganfurenmifuren', 'zhaotongzhaoguang', 'wulan', 'leitong', 'zongyu', 're_mazhong', 're_dengzhi', 'dc_hujinding', 'jiangfei', 'zhangyi', 'guanzhang', 'wolongfengchu', 'wangtao', 'wangyue', 'xf_yiji', 'mizhu', 'mifuren', 'liuyong', 'ganfuren', 'lvkai', 'zhoucang', 'yangwan', 'liuchen', 'liyan', 'chendao', 'yanyan', 'xiahouba', 'huaman', 'sp_zhugeliang', 'zhugeguo', 'jianyong', 'wangping', 'mayunlu', 'guansuo', 'xiahoushi', 'shamoke', 'wuxian', 'zhugezhan', 'qinmi', 'guanyinping', 'guanyu', 'zhugeliang', 'liubei', 'machao', 'zhurong', 'zhangfei', 'zhaoyun', 'huangzhong', 'weiyan', 'liaohua', 'menghuo', 'ol_jiangwei', 'liushan', 'xin_fazheng', 'madai', 'guanping', 'liufeng', 'zhangxingcai', 'dongyun', 'xushu', 'xin_masu'].map(i => `Mbaby_${i}`),
+                MiNi_shu: ['malingli', 'dc_wuban', 'pangtong', 'mifangfushiren', 'guanyue', 'xianglang', 'huanghao', 'ganfurenmifuren', 'zhaotongzhaoguang', 'wulan', 'leitong', 'zongyu', 're_mazhong', 're_dengzhi', 'dc_hujinding', 'jiangfei', 'zhangyi', 'guanzhang', 'wolongfengchu', 'wangtao', 'wangyue', 'xf_yiji', 'mizhu', 'mifuren', 'liuyong', 'ganfuren', 'lvkai', 'zhoucang', 'yangwan', 'liuchen', 'liyan', 'chendao', 'yanyan', 'xiahouba', 'huaman', 'sp_zhugeliang', 'zhugeguo', 'jianyong', 'wangping', 'mayunlu', 'guansuo', 'xiahoushi', 'shamoke', 'wuxian', 'zhugezhan', 'qinmi', 'guanyinping', 'guanyu', 'zhugeliang', 'liubei', 'machao', 'zhurong', 'zhangfei', 'zhaoyun', 'huangzhong', 'weiyan', 'liaohua', 'menghuo', 'ol_jiangwei', 'liushan', 'xin_fazheng', 'madai', 'guanping', 'liufeng', 'zhangxingcai', 'dongyun', 'xushu', 'xin_masu'].map(i => `Mbaby_${i}`),
                 MiNi_wu: ['old_sunquan', 'sunhuan', 'gexuan', 'lvfan', 'xielingyu', 'zhupeilan', 'xugong', 'chendong', 'kanze', 're_panzhangmazhong', 'weiwenzhugezhi', 'zhangwen', 'dc_sunhanhua', 'heqi', 'lvdai', 'jiangqing', 're_guyong', 'quancong', 'yufan', 'dc_sunru', 'sunxiu', 'zhangfen', 'xuezong', 'panjun', 'luji', 'zhoufang', 'zhangxuan', 'yanjun', 'zhuhuan', 'luyusheng', 're_jsp_pangtong', 'sunhao', 'lukang', 'buzhi', 'xushi', 'zhugeke', 'zhoufei', 'zhangzhang', 'sunliang', 'sunjian', 'zhuzhi', 'bulianshi', 'chengpu', 'daqiao', 'ganning', 'huanggai', 'lusu', 'luxun', 'lvmeng', 'sunce', 'sunluban', 'sunluyu', 'sunquan', 'sunshangxiang', 'taishici', 'wuguotai', 'xiaoqiao', 'xusheng', 'old_zhoutai', 'zhouyu', 'zhugejin', 'zumao'].map(i => `Mbaby_${i}`),
                 MiNi_qun: ['leibo', 'wangcan', 'diaochan', 'xurong', 're_taoqian', 'hejin', 'jiling', 'zhangrang', 'duanwei', 're_chendeng', 'caiyong', 'mengjie', 'dc_gaolan', 'yl_luzhi', 'tadun', 're_hansui', 'dongxie', 'fuwan', 'wutugu', 'huangfusong', 'fanchou', 'guosi', 'yanbaihu', 'dc_huangzu', 'licaiwei', 'ol_dingyuan', 'liubian', 're_pangdegong', 'zhangning', 'zhanglu', 'wangyun', 'zoushi', 'dc_huangchengyan', 'simahui', 'tw_mateng', 'laiyinger', 'sp_kongrong', 'zhujun', 'gongsunyuan', 'guotufengji', 'yanfuren', 'tangji', 'caojie', 'liangxing', 'caoxing', 'wangrong', 'hetaihou', 'zhangji', 'dongbai', 'beimihu', 'chunyuqiong', 'zhangqiying', 'fuhuanghou', 'liuxie', 'quyi', 'lijue', 'panfeng', 'liuzhang', 'jiaxu', 'zhangbao', 'zhangliang', 'gaoshun', 'caifuren', 'xuyou', 'pangde', 'yj_jushou', 'liru', 'dongzhuo', 'sp_zhangjiao', 'huatuo', 'lvbu', 'huaxiong', 'yuji', 'liubiao', 'yuanshao', 'yuanshu', 'chengong', 'zuoci'].map(i => `Mbaby_${i}`),
                 MiNi_shen: [
@@ -239,6 +239,7 @@ const packs = function () {
             Mbaby_guanyue: ['male', 'shu', 4, ['dcshouzhi', 'minifenhui']],
             Mbaby_mifangfushiren: ['male', 'shu', 4, ['minifengshi'], ['name:糜|芳-傅|士仁']],
             Mbaby_dc_wuban: ['male', 'shu', 4, ['miniyouzhan'], ['clan:陈留吴氏']],
+            Mbaby_malingli: ['female', 'shu', 3, ['dclima', 'minixiaoyin', 'dchuahuo']],
             //吴
             Mbaby_bulianshi: ['female', 'wu', 3, ['minianxu', 'zhuiyi']],
             Mbaby_chengpu: ['male', 'wu', 4, ['minilihuo', 'minichunlao']],
@@ -14758,6 +14759,69 @@ const packs = function () {
                             },
                         },
                     },
+                },
+            },
+            // 马伶俐
+            minixiaoyin: {
+                inherit: 'dcxiaoyin',
+                audio: 'dcxiaoyin',
+                group: 'minixiaoyin_damage',
+                subSkill: {
+                    damage: {
+                        audio: 'dcxiaoyin',
+                        trigger: { global: 'damageBegin3' },
+                        filter(event, player) {
+                            if (!event.source?.isIn()) return false;
+                            return event.player.countExpansions('dcxiaoyin');
+                        },
+                        async cost(event, trigger, player) {
+                            const source = trigger.source, target = trigger.player;
+                            const cards = target.getExpansions('dcxiaoyin');
+                            let next;
+                            if (trigger.hasNature('fire')) {
+                                next = source.chooseButton([`###硝引：选择移去${get.translation(target)}的一张“硝引”牌###<div class='text center'>若如此做，令你对其造成的伤害+1</div>`, cards]);
+                                next.set('ai', button => {
+                                    if (get.event().goon) return 7 - get.value(button.link);
+                                    return 0;
+                                });
+                                next.set('goon', get.damageEffect(target, player, player, 'fire') > 0 && get.attitude(player, target) <= 0);
+                            } else {
+                                next = source.chooseButton([`###是否响应${get.translation(player)}的【硝引】？###<div class='text center'>获得${get.translation(target)}的一张“硝引”牌，然后你下一次造成伤害改为火焰伤害</div>`, cards]);
+                                next.set('ai', button => {
+                                    get.value(button.link);
+                                });
+                            }
+                            const result = await next.forResult();
+                            event.result = {
+                                bool: result?.bool,
+                                cost_data: result?.links,
+                            };
+                        },
+                        async content(event, trigger, player) {
+                            const source = trigger.source, target = trigger.player;
+                            source.line(target, 'fire');
+                            if (trigger.hasNature('fire')) {
+                                await target.loseToDiscardpile(event.cost_data);
+                                trigger.num++;
+                            } else {
+                                await source.gain(event.cost_data, target, 'give');
+                                source.addSkill('minixiaoyin_effect');
+                            }
+                        },
+                    },
+                    effect: {
+                        trigger: { source: 'damageBegin1' },
+                        charlotte: true,
+                        onremove: true,
+                        forced: true,
+                        popup: false,
+                        async content(event, trigger, player) {
+                            player.removeSkill(event.name);
+                            game.setNature(trigger, 'fire');
+                        },
+                        mark: true,
+                        intro: { content: '下次造成伤害时，此伤害改为火属性' },
+                    }
                 },
             },
             //吴
@@ -40828,6 +40892,7 @@ const packs = function () {
             Mbaby_guanyue: '欢杀关樾',
             Mbaby_mifangfushiren: '欢杀糜芳傅士仁',
             Mbaby_dc_wuban: '欢杀吴班',
+            Mbaby_malingli: '欢杀马伶俐',
             miniwusheng: '武圣',
             miniwusheng_info: '锁定技。①你使用红色【杀】造成的伤害+1。②回合开始时，你从牌堆或弃牌堆中获得一张红色【杀】。',
             miniguanxing: '观星',
@@ -41135,6 +41200,8 @@ const packs = function () {
             minifengshi_info: '当你使用牌指定第一个目标后，你可弃置你与其中一名手牌数小于你的目标角色的各一张牌，并令此牌对其造成的伤害+1；当你成为其他角色使用牌的目标后，若你的手牌数小于其，则你可以弃置其一张牌，并令此牌对你造成的伤害+1。',
             miniyouzhan: '诱战',
             miniyouzhan_info: '锁定技，其他角色于你的回合内失去一张牌后，你摸一张牌（不计入本回合的手牌上限），且其获得如下效果：1.其于此回合下一次受到的伤害+1；2.结束阶段，若其于此回合未受到过伤害，其摸一张牌。',
+            minixiaoyin: '硝引',
+            minixiaoyin_info: '①准备阶段，你可以亮出牌堆顶的Y张牌，获得其中的红色牌，将其中任意张黑色牌置于等量名座次连续的其他角色的武将牌上，称为“硝引”（Y为你距离1以内的角色数）。②当一名有“硝引”牌的角色A受到伤害时，若此伤害为：火焰伤害，来源可以将A的一张“硝引”置入弃牌堆，令此伤害+1；非火焰伤害，来源可以获得A的一张“硝引”牌，并令其下一次造成伤害改为火焰伤害。',
             //吴
             Mbaby_bulianshi: '欢杀步练师',
             Mbaby_chengpu: '欢杀程普',
