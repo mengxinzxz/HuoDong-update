@@ -50,7 +50,7 @@ const packs = function () {
                     ...['zhaoxiang'].map(i => `old_${i}`),
                     ...[],
                 ].map(i => `wechat_${i}`),
-                wechat_zhiyin: ['pangtong', 'qinmi', 'zhugeke', 'mayunlu', 'bulianshi', 'diaochan', 'taishici', 'luxun', 'sunshangxiang', 'xunyou', 'dianwei', 'zhaoyun', 'xinxianying', 'guohuanghou', 'kongrong', 'caopi', 'jiaxu', 'zhangfei', 'dongzhuo', 'wangyi', 'zhangchunhua', 'hetaihou', 'zhurong', 'jiangwei', 'caozhi', 'liubei', 'sunce', 'xunyu', 'zhenji', 'xuzhu', 'yuanshao', 'lusu', 'guojia', 'lvbu', 'daqiao', 'xiaoqiao', 'caocao', 'zhugeliang', 'simayi', 'machao', 'huangyueying', 'caiwenji', 'zhouyu', 'sunquan', 'guanyu'].map(i => `wechat_zhiyin_${i}`),
+                wechat_zhiyin: ['caorui', 'pangtong', 'qinmi', 'zhugeke', 'mayunlu', 'bulianshi', 'diaochan', 'taishici', 'luxun', 'sunshangxiang', 'xunyou', 'dianwei', 'zhaoyun', 'xinxianying', 'guohuanghou', 'kongrong', 'caopi', 'jiaxu', 'zhangfei', 'dongzhuo', 'wangyi', 'zhangchunhua', 'hetaihou', 'zhurong', 'jiangwei', 'caozhi', 'liubei', 'sunce', 'xunyu', 'zhenji', 'xuzhu', 'yuanshao', 'lusu', 'guojia', 'lvbu', 'daqiao', 'xiaoqiao', 'caocao', 'zhugeliang', 'simayi', 'machao', 'huangyueying', 'caiwenji', 'zhouyu', 'sunquan', 'guanyu'].map(i => `wechat_zhiyin_${i}`),
                 wechat_zhi: ['yuanshu', 'fuhuanghou', 'caojie', 'caocao', 'zhangjiao'].map(i => `wechat_zhi_${i}`),
             },
         },
@@ -227,6 +227,7 @@ const packs = function () {
             wechat_zhiyin_zhugeke: ['male', 'wu', 4, ['wechatxingbi', 'wechatxiangke'], ['name:诸葛|恪']],
             wechat_zhiyin_qinmi: ['male', 'shu', 3, ['wechatgaogai', 'wechatluntian', 'wechatjuejian']],
             wechat_zhiyin_pangtong: ['male', 'shu', 3, ['wechattaohuan', 'wechatjiyu']],
+            wechat_zhiyin_caorui: ['male', 'wei', 3, ['wechatzhaoshou', 'wechathongye']],
             //谋攻
             wechat_sb_sunshangxiang: ['female', 'shu', 3, ['wechatsbliangzhu', 'wechatsbjieyin'], ['border:wu']],
             wechat_sb_zhaoyun: ['male', 'shu', 4, ['wechatsblongdan', 'wechatsbjizhu']],
@@ -16784,6 +16785,105 @@ const packs = function () {
                     }
                 }
             },
+            // 极曹叡
+            wechatzhaoshou: {
+                audio: 'ext:活动武将/audio/skill:2',
+                enable: 'phaseUse',
+                usable: 1,
+                filter(event, player) {
+                    return player.countCards('he') > 0 && game.hasPlayer(current => get.info('wechatzhaoshou').filterTarget(null, player, current));
+                },
+                filterTarget: lib.filter.notMe,
+                filterCard: true,
+                position: 'he',
+                selectCard: [1, Infinity],
+                allowChooseAll: true,
+                discard: false,
+                lose: false,
+                delay: false,
+                check(card) {
+                    const player = get.player();
+                    return 6 - get.value(card);
+                },
+                async content(event, trigger, player) {
+                    const { cards, target } = event;
+                    await player.give(cards, target);
+                    const types = [];
+                    let damage = 0, nodamage = 0;
+                    while (target?.isIn()) {
+                        const next = target.chooseToUse({
+                            filterCard(card) {
+                                if (get.itemtype(card) != 'card' || (get.position(card) != 'h' && get.position(card) != 's') || get.event().types?.includes(get.type2(card))) return false;
+                                return lib.filter.filterCard.apply(this, arguments);
+                            },
+                            prompt: '诏授：是否使用一张为以此法使用过类别的手牌?',
+                            addCount: false,
+                        });
+                        next.set('types', types);
+                        const result = await next.forResult();
+                        if (result?.bool) {
+                            types.add(get.type2(result.card));
+                            if (game.hasPlayer2(current => current.hasHistory('damage', evt => evt.getParent(3) == next))) damage++;
+                            else nodamage++;
+                        }
+                        else break;
+                    }
+                    if (types.length && ((damage > 0 && nodamage == 0) || (damage == 0 && nodamage > 0))) await player.draw(types.length);
+                },
+                ai: {
+                    order(item, player) {
+                        if (game.hasPlayer(current => get.attitude(player, current) > 0 && player != current)) return 10;
+                        return 1;
+                    },
+                    result: {
+                        target(player, target) {
+                            if (target.hasSkillTag('nogain')) return 0;
+                            if (player.countCards('h') == player.countCards('h', 'du')) return -1;
+                            if (target.hasJudge('lebu')) return 0;
+                            if (get.attitude(player, target) > 3) {
+                                var basis = get.threaten(target);
+                                if (player == get.zhu(player) && player.hp <= 2 && player.countCards('h', 'shan') && !game.hasPlayer(function (current) {
+                                    return get.attitude(current, player) > 3 && current.countCards('h', 'tao') > 0;
+                                })) {
+                                    return 0;
+                                }
+                                if (target.countCards('h') + player.countCards('h') > target.hp + 2) {
+                                    return basis * 0.8;
+                                }
+                                return basis;
+                            }
+                            return 0;
+                        },
+                    },
+                },
+            },
+            wechathongye: {
+                audio: 'ext:活动武将/audio/skill:2',
+                trigger: { global: 'phaseEnd' },
+                filter(event, player) {
+                    return player.hasHistory('lose');
+                },
+                forced: true,
+                async content(event, trigger, player) {
+                    const list1 = [], list2 = [];
+                    game.checkGlobalHistory('useCard', evt => {
+                        if (evt.player === player) list1.add(get.type2(evt.card));
+                        else list2.add(get.type2(evt.card));
+                    });
+                    const types = list2.filter(type => !list1.includes(type));
+                    if (types.length) {
+                        const cards = [];
+                        while (types.length) {
+                            const type = types.shift();
+                            const card = get.cardPile2(cardx => !cards.includes(cardx) && get.type2(cardx) == type);
+                            if (card) cards.push(card);
+                            else break;
+                        }
+                        if (cards.length) await player.gain(cards, 'gain2');
+                    }
+                    else await player.recover();
+                },
+            },
         },
         dynamicTranslate: {
             wechatxiangzhi(player) {
@@ -17800,6 +17900,11 @@ const packs = function () {
             wechattaohuan_info: `①你的回合内，未横置的角色受到的属性伤害+1。②准备阶段，你可以选择一名角色，然后从其开始的X名未横置的角色依次选择是否横置（X为其的体力值）。`,
             wechatjiyu: '戢羽',
             wechatjiyu_info: '①本局游戏限零次。你可以将一张手牌当做一张能造成属性伤害的非装备牌使用。②当你受到伤害后或抵消牌后，你可以重铸你或当前回合角色至多一张牌，若此牌花色与你本轮以此法重铸的牌均不同，你摸一张牌且〖戢羽①〗发动次数+1。',
+            wechat_zhiyin_caorui: '极曹叡',
+            wechatzhaoshou: '诏授',
+            wechatzhaoshou_info: `出牌阶段限一次。你可以交给一名其他角色任意张牌。然后其可以使用每种类别的手牌各一张。若其因此使用的牌均造成了伤害或均未造成伤害，你摸X张牌（X为其本次因此使用的牌数）。`,
+            wechathongye: '洪业',
+            wechathongye_info: '锁定技。你失去过牌的回合结束时，若有角色本回合使用了你本回合未使用过类别的牌，则你从牌堆中获得这些类别的牌各一张，否则你回复1点体力。',
 
             // ----------------------- 台词部分 ----------------------- //
             '#ext:活动武将/audio/skill/wechatzhongxin1': '苍生之愿，即贫道所愿也。',
