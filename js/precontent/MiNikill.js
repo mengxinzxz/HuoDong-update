@@ -38323,7 +38323,7 @@ const packs = function () {
                 position: 'he',
                 async cost(event, trigger, player) {
                     const info = get.info(event.skill);
-                    const next = player.chooseCard(get.prompt2(event.skill));
+                    const next = player.chooseCard(get.prompt2(event.skill), 'he');
                     for (const item of ['filterCard', 'selectCard', 'complexCard']) {
                         next.set(item, info[item]);
                     }
