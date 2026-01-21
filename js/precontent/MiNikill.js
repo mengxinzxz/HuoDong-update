@@ -7716,7 +7716,7 @@ const packs = function () {
                 trigger: { player: ['useCardBegin', 'respondBegin'] },
                 logTarget: 'targets',
                 filter(event, player) {
-                    return event.skill == 'minirejijiang';
+                    return ['minijijiang', 'minirejijiang'].includes(event.skill);
                 },
                 forced: true,
                 content() {
