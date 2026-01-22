@@ -38627,12 +38627,16 @@ const packs = function () {
                     if (player.hasSkill('minifightlizhan_blocker')) return false;
                     return player.hasSha('respond') && player.hasUseTarget(new lib.element.VCard({ name: 'sha' }));
                 },
+                delay: 0,
+                direct: true,
                 async content(event, trigger, player) {
                     let num = 0;
                     while (player.hasSha('respond')) {
-                        const result = await player.chooseToRespond('###力斩：请打出任意张【杀】###当前已经打出' + num + '张【杀】', (card, player) => {
+                        const next = player.chooseToRespond('###力斩：请打出任意张【杀】###当前已经打出' + num + '张【杀】', (card, player) => {
                             return get.name(card) === 'sha';
-                        }).set('ai', () => 1).forResult();
+                        }).set('ai', () => 1);
+                        if (num === 0) next.set('logSkill', event.name);
+                        const result = await next.forResult();
                         if (result?.bool) num++;
                         else break;
                     }
@@ -38642,7 +38646,7 @@ const packs = function () {
                     }
                     player.addTempSkill('minifightlizhan_effect');
                     const sha = new lib.element.VCard({ name: 'sha', storage: { minifightlizhan: num } });
-                    const next = player.chooseUseTarget(sha, true, '###力斩###<div class="text center">请选择【杀】的目标（需要' + num + '张【闪】响应，伤害基数为' + num + '）</div>');
+                    const next = player.chooseUseTarget(sha, true, false, '###力斩###<div class="text center">请选择【杀】的目标（需要' + num + '张【闪】响应，伤害基数为' + num + '）</div>');
                     await next;
                     if (player.hasHistory('sourceDamage', evt => evt.getParent('chooseUseTarget') === next)) {
                         const targets = game.filterPlayer(target => {
