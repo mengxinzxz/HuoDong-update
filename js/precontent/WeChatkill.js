@@ -12793,6 +12793,7 @@ const packs = function () {
                                 if (target.countDiscardableCards(player, player == target ? 'hej' : 'ej')) {
                                     const result = await player.discardPlayerCard(target, player == target ? 'hej' : 'ej', true).forResult();
                                     discards = result?.cards;
+                                    if (Array.isArray(discards) && target === player) event.getParent().addCount = false;
                                 }
                                 else {
                                     const evt = event.getParent();
