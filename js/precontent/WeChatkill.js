@@ -240,7 +240,7 @@ const packs = function () {
             wechat_sb_huangyueying: ['female', 'shu', 3, ['wechatsbjizhi', 'sbqicai'], ['tempname:sb_huangyueying']],
             wechat_sb_diaochan: ['female', 'qun', 3, ['wechatsblijian', 'sbbiyue'], ['tempname:sb_diaochan']],
             wechat_sb_huanggai: ['male', 'wu', 4, ['wechatsbkurou', 'sbzhaxiang'], ['tempname:sb_huanggai']],
-            wechat_sb_guojia: ['male', 'wei', 3, ['wechatsbtiandu', 'wechatsbyiji'], ['ext:活动武将/image/character/bilibili_xizhicaikobe.jpg', 'border:key', 'tempname:sb_guojia']],
+            wechat_sb_guojia: ['male', 'wei', 3, ['wechatsbtiandu', 'wechatsbyiji'], ['character:bilibili_xizhicaikobe', 'border:key', 'tempname:sb_guojia']],
             wechat_sb_handang: ['male', 'wu', 4, ['sbgongqi', 'wechatsbjiefan'], ['tempname:sb_handang']],
             wechat_sb_gaoshun: ['male', 'qun', 4, ['wechatsbxianzhen', 'sbjinjiu'], ['tempname:sb_gaoshun']],
             wechat_sb_xiahouyuan: ['male', 'wei', 4, ['wechatsbshensu', 'sbzhengzi'], ['tempname:sb_xiahouyuan', 'name:夏侯|渊']],
@@ -259,7 +259,7 @@ const packs = function () {
         },
         characterIntro: {
             get wechat_nailong() {
-                let list = ['bilibili_ningjingzhiyuan', 'bilibili_yanjing', 'bilibili_xizhicaikobe'].map(i => lib.characterIntro[i]);
+                let list = ['bilibili_ningjingzhiyuan', 'bilibili_yanjing', 'bilibili_xizhicaikobe', 'bilibili_kuangshen'].map(i => lib.characterIntro[i]);
                 return list.filter(i => i !== void 0).randomGet() || '奶龙是动画《奶龙》系列及其衍生作品中的主角。它是一只拥有“duangduang”大肚子的异星幼龙，呆萌可爱又带点小机灵的大吃货一枚。来到地球遇到了活泼搞笑、富有正义感、酷爱发明的中国少年小七，一人一龙一拍即合，迅速成为好友并开启了搞笑冒险之旅。持续给观众和粉丝们带来快乐和勇气。';
             },
         },
