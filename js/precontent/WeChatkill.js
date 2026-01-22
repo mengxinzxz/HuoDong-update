@@ -17368,7 +17368,7 @@ const packs = function () {
                         forceDie: true,
                         async content(event, trigger, player) {
                             const evt = trigger.player.getHistory('lose', evtx => evtx.getParent(2) == trigger)[0];
-                            if (evt.es?.length) {
+                            if (evt?.es?.length) {
                                 const list = Array.from(evt.vcard_map.values()).map(card => card.name).flat().toUniqued();
                                 let skills = get.info('wechattonggan').getSkills(list);
                                 const effect = event.name;
