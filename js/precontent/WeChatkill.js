@@ -16642,7 +16642,7 @@ const packs = function () {
                 audio: 'ext:活动武将/audio/skill:2',
                 trigger: { player: 'phaseZhunbeiBegin' },
                 async cost(event, trigger, player) {
-                    event.result = await player.chooseTarget(get.prompt2(event.skill)).set('ai', target => {
+                    event.result = await player.chooseTarget(get.prompt(event.skill), lib.translate[`${event.skill}_info`].split('②')[1]).set('ai', target => {
                         const player = get.player();
                         let num = target.hp;
                         if (num <= 0) return 0;
@@ -16739,7 +16739,7 @@ const packs = function () {
                 onremove: true,
                 mark: true,
                 intro: {
-                    markcount: (storage = 0) => storage,
+                    markcount: (storage = 0) => storage.toString(),
                     content: (storage = 0) => '当前最大发动次数：' + storage,
                 },
                 group: 'wechatjiyu_effect',
@@ -16788,19 +16788,18 @@ const packs = function () {
                                     }
                                 }
                                 if (target.countCards('e')) {
-                                    dialog.add([`<div class="text center">${get.translation(target)}的手牌</div>`, target.getCards('e')]);
+                                    dialog.addArray([`<div class="text center">${get.translation(target)}的手牌</div>`, target.getCards('e')]);
                                 }
                             }
                             const history = game.getRoundHistory('everything', evt => evt.name == 'recast' && evt.getParent().name == event.skill && evt.getParent().player == player);
                             const suits = history.map(evt => get.suit(evt.cards[0])).toUniqued();
-                            const result = await player.chooseButton().set('createDialog', dialog).set('filterButton', button => {
+                            const result = await player.chooseButton(dialog).set('filterButton', button => {
                                 const player = get.player();
-                                const link = { button }, owner = get.owner(link);
+                                const link = button.link, owner = get.owner(link);
                                 return !owner || owner.canRecast(link, player);
                             }).set('ai', button => {
                                 const { player, suits } = get.event();
-                                const link = { button };
-                                const owner = get.owner(link);
+                                const link = button.link, owner = get.owner(link);
                                 if (owner == player) {
                                     if (!suits.includes(get.suit(link))) return 15 - get.value(link);
                                     return 6 - get.value(link);
@@ -16810,7 +16809,6 @@ const packs = function () {
                                     if (att > 0) return (!suits.includes(get.suit(link)) ? 2 : 0) + 6 - get.value(link);
                                     return (!suits.includes(get.suit(link)) ? 3 : 0) + get.value(link);
                                 }
-
                             }).set('suits', suits).forResult();
                             event.result = {
                                 bool: result?.bool,
@@ -16821,6 +16819,10 @@ const packs = function () {
                         async content(event, trigger, player) {
                             const next = event.targets[0].recast(event.cost_data);
                             await next;
+                            player.addTempSkill('wechatjiyu_mark', 'roundStart');
+                            player.addTip('wechatjiyu_mark', ['wechatjiyu_mark', ...game.getRoundHistory('everything', evt => {
+                                return evt.name == 'recast' && evt.getParent().name == event.name && evt.getParent().player == player;
+                            }).map(evt => get.suit(evt.cards[0]))].map(i => get.translation(i)).join(''));
                             const history = game.getRoundHistory('everything', evt => evt.name == 'recast' && evt.getParent().name == event.name && evt.getParent().player == player, 0, false, next);
                             const suits = history.map(evt => get.suit(evt.cards[0]));
                             if (suits.filter(suit => suit == get.suit(event.cost_data[0])).length == 1) {
@@ -16828,8 +16830,14 @@ const packs = function () {
                                 player.addMark('wechatjiyu', 1, false);
                             }
                         },
-                    }
-                }
+                    },
+                    mark: {
+                        charlotte: true,
+                        onremove(player, skill) {
+                            player.removeTip(skill);
+                        },
+                    },
+                },
             },
             // 极曹叡
             wechatzhaoshou: {
@@ -18577,7 +18585,7 @@ const packs = function () {
             wechattaohuan: '韬环',
             wechattaohuan_info: `①你的回合内，未横置的角色受到的属性伤害+1。②准备阶段，你可以选择一名角色，然后从其开始的X名未横置的角色依次选择是否横置（X为其的体力值）。`,
             wechatjiyu: '戢羽',
-            wechatjiyu_info: '①本局游戏限零次。你可以将一张手牌当做一张能造成属性伤害的非装备牌使用。②当你受到伤害后或抵消牌后，你可以重铸你或当前回合角色至多一张牌，若此牌花色与你本轮以此法重铸的牌均不同，你摸一张牌且〖戢羽①〗发动次数+1。',
+            wechatjiyu_info: '①本局游戏限零次。你可以将一张手牌当做一张能造成属性伤害的非装备牌使用。②当你受到伤害后或抵消牌后，你可以重铸你或当前回合角色的一张牌，若此牌花色与你本轮以此法重铸的牌均不同，你摸一张牌且〖戢羽①〗发动次数+1。',
             wechat_zhiyin_caorui: '极曹叡',
             wechatzhaoshou: '诏授',
             wechatzhaoshou_info: `出牌阶段限一次。你可以交给一名其他角色任意张牌。然后其可以使用每种类别的手牌各一张。若其因此使用的牌均造成了伤害或均未造成伤害，你摸X张牌（X为其本次因此使用的牌数）。`,
