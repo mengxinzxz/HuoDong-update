@@ -1022,7 +1022,6 @@ const packs = function () {
         if (HD_chaoshikong.translate[i]?.startsWith('密探·')) HD_chaoshikong.translate[i + '_ab'] = HD_chaoshikong.translate[i].slice(3);
     }
     lib.config.all.sgscharacters.push('HD_chaoshikong');
-    if (!lib.config.characters.includes('HD_chaoshikong')) lib.config.characters.remove('HD_chaoshikong');
     lib.translate['HD_chaoshikong_character_config'] = '<span style="font-family: xingkai">超时空密探</span>';
     return HD_chaoshikong;
 };

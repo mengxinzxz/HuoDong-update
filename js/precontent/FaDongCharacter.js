@@ -489,7 +489,6 @@ const packs = function () {
         if (_status['extension_活动武将_files']?.image.character.files.includes(`${i}.jpg`)) FaDongCharacter.character[i].img = `extension/活动武将/image/character/${i}.jpg`;
     }
     lib.config.all.sgscharacters.push('FaDongCharacter');
-    if (!lib.config.characters.includes('FaDongCharacter')) lib.config.characters.remove('FaDongCharacter');
     lib.translate['FaDongCharacter_character_config'] = '<span style="font-family: xingkai">诸侯伐董</span>';
     return FaDongCharacter;
 };

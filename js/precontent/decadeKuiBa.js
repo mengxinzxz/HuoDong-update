@@ -696,7 +696,6 @@ const packs = function () {
         if (_status['extension_活动武将_files']?.image.character.files.includes(`${i}.jpg`)) decadeKuiBa.character[i].img = `extension/活动武将/image/character/${i}.jpg`;
     }
     lib.config.all.sgscharacters.push('decadeKuiBa');
-    if (!lib.config.characters.includes('decadeKuiBa')) lib.config.characters.remove('decadeKuiBa');
     lib.translate['decadeKuiBa_character_config'] = '<span style="font-family: xingkai">十周年魁拔</span>';
     return decadeKuiBa;
 };

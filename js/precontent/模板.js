@@ -49,7 +49,6 @@ for(const i in 武将包英文名.character){
 武将包英文名.character[i][4].push('ext:活动武将/image/character/'+i+'.jpg');
 }
 lib.config.all.sgscharacters.push('武将包英文名');
-if(!lib.config.characters.includes('武将包英文名')) lib.config.characters.remove('武将包英文名');
 lib.translate['武将包英文名_character_config']='武将包中文名';
 return 武将包英文名;
 });

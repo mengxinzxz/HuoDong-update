@@ -576,7 +576,7 @@ export async function precontent(bilibilicharacter) {
             character[4] ??= [];
             character[4].push(`ext:活动武将/image/character/${name}.jpg`);
         }
-        const pack = packs.split(':').filter(p => lib.config.all.characters.includes(p))[0];
+        const pack = packs.split(':').find(p => lib.characterPack[p]);
         if (pack) {
             lib.characterPack[pack][name] = character;
             if (lib.config.characters.includes(pack)) lib.character[name] = character;

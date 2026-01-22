@@ -18850,7 +18850,6 @@ const packs = function () {
         showName: '微',
     });
     lib.config.all.sgscharacters.push('WeChatkill');
-    if (!lib.config.characters.includes('WeChatkill')) lib.config.characters.remove('WeChatkill');
     lib.translate['WeChatkill_character_config'] = '<span style="font-family: xingkai">三国杀小程序</span>';
     return WeChatkill;
 };

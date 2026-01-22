@@ -43121,7 +43121,6 @@ const packs = function () {
         };
     });
     lib.config.all.sgscharacters.push('MiNikill');
-    if (!lib.config.characters.includes('MiNikill')) lib.config.characters.remove('MiNikill');
     lib.translate['MiNikill_character_config'] = '<span style="font-family: xingkai">欢乐三国杀</span>';
     return MiNikill;
 };

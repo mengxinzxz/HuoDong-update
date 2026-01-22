@@ -1527,10 +1527,7 @@ const packs = function () {
     }
     game.addGroup('daqin', '秦', '秦朝', { color: '#FFA500', image: 'ext:活动武将/image/default/daqin.png' });
     lib.config.all.sgscharacters.push('hezongkangqincharacter');
-    if (!lib.config.characters.includes('hezongkangqincharacter')) {
-        lib.group.remove('daqin');
-        lib.config.characters.remove('hezongkangqincharacter');
-    }
+    if (!lib.config.characters.includes('hezongkangqincharacter')) lib.group.remove('daqin');
     lib.translate['hezongkangqincharacter_character_config'] = '<span style="font-family: xingkai">合纵抗秦</span>';
     return hezongkangqincharacter;
 };

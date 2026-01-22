@@ -747,7 +747,6 @@ const packs = function () {
         if (_status['extension_活动武将_files']?.image.character.files.includes(`${i}.jpg`)) decadeZhuoGui.character[i].img = `extension/活动武将/image/character/${i}.jpg`;
     }
     lib.config.all.sgscharacters.push('decadeZhuoGui');
-    if (!lib.config.characters.includes('decadeZhuoGui')) lib.config.characters.remove('decadeZhuoGui');
     lib.translate['decadeZhuoGui_character_config'] = '<span style="font-family: xingkai">捉鬼驱邪</span>';
     return decadeZhuoGui;
 };

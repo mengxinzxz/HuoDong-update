@@ -4716,7 +4716,6 @@ const packs = function () {
         showName: '鸿',
     });
     lib.config.all.sgscharacters.push('MX_feihongyinxue');
-    if (!lib.config.characters.includes('MX_feihongyinxue')) lib.config.characters.remove('MX_feihongyinxue');
     //飞鸿新机制
     lib.arenaReady.push(function addYinyueqiang() {
         //把银月枪加入牌堆

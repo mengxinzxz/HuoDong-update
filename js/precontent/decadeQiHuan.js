@@ -933,7 +933,6 @@ const packs = function () {
         if (_status['extension_活动武将_files']?.image.character.files.includes(`${i}.jpg`)) decadeQiHuan.character[i].img = `extension/活动武将/image/character/${i}.jpg`;
     }
     lib.config.all.sgscharacters.push('decadeQiHuan');
-    if (!lib.config.characters.includes('decadeQiHuan')) lib.config.characters.remove('decadeQiHuan');
     lib.translate['decadeQiHuan_character_config'] = '<span style="font-family: xingkai">戚宦之争</span>';
     return decadeQiHuan;
 };
