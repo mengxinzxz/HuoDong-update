@@ -12362,7 +12362,7 @@ const packs = function () {
                 prompt2(event, player, name) {
                     const target = event[name === 'damageEnd' ? 'source' : 'player'], str = get.translation(target);
                     if (name === 'damageEnd') return `对${str}造成${event.num + (target.getHp() > player.getHp() ? 1 : 0)}点伤害`;
-                    return `令${str}弃置${get.cnNumber(Math.max(1, player.getDamagedHp()))}张牌，然后其回复1点体力，且你可以将其弃置的红色牌交给一名角色`;
+                    return `弃置${str}${get.cnNumber(Math.max(1, player.getDamagedHp()))}张牌，然后其回复1点体力，且你可以将其弃置的红色牌交给一名角色`;
                 },
                 async content(event, trigger, player) {
                     const target = event.targets[0];
