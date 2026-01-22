@@ -17438,7 +17438,6 @@ const packs = function () {
                             }
                         }
                         if (cards.length > 0) {
-                            await game.cardsGotoOrdering(cards);
                             let gains = [], puts = [], cardPile = true;
                             while (cards.length) {
                                 let exchange = false;
@@ -17451,7 +17450,7 @@ const packs = function () {
                                             cards.remove(put);
                                             gains.add(card);
                                             puts.add(put);
-                                            ui.cardPile.insertBefore(put, card);
+                                            await player.lose([put], ui.cardPile).set('insert_index', () => ui.cardPile.childNodes[get.event().num]).set('num', i);
                                             await game.cardsGotoOrdering([card]);
                                             break;
                                         }
@@ -17467,7 +17466,7 @@ const packs = function () {
                                             cards.remove(put);
                                             gains.add(card);
                                             puts.add(put);
-                                            await game.cardsDiscard([put]);
+                                            await player.loseToDiscardpile([put]);
                                             await game.cardsGotoOrdering([card]);
                                             break;
                                         }
