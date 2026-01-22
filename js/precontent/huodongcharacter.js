@@ -37,7 +37,7 @@ const packs = function () {
             bilibili_shengxunyu: ['male', 'key', 4, ['bilibili_hehu', 'bilibili_jinyan', 'bilibili_yutai'], ['clan:宿舍群|肘击群', 'name:熏|鱼']],
             bilibili_Firewin: ['male', 'key', 4, ['bilibili_xianqu', 'bilibili_tixiang'], ['clan:宿舍群|肘击群|活动群', 'name:火|赢']],
             bilibili_jinglingqiu: ['male', 'key', '3/4', ['bilibili_tiyi', 'bilibili_zili'], ['clan:活动群', 'name:精灵|球']],
-            bilibili_suixingsifeng: ['female', 'key', 4, ['bilibili_waifa', 'bilibili_liaoxing', 'bilibili_duoyang'], ['clan:肘家军|宿舍群|肘击群|活动群', 'name:萌新|转型中']],
+            bilibili_suixingsifeng: ['female', 'key', 4, ['bilibili_waifa_rewrite', 'bilibili_liaoxing', 'bilibili_duoyang'], ['clan:肘家军|宿舍群|肘击群|活动群', 'name:萌新|转型中']],
             bilibili_Emptycity: ['male', 'key', 4, ['bilibili_zhiyou', 'bilibili_guanli'], ['clan:活动群|Thunder群', 'name:空|城']],
             bilibili_thunderlei: ['male', 'key', '4/4/5', ['bilibili_Thunder', 'bilibili_qianzhi'], ['clan:活动群|Thunder群', 'name:雷|null']],
             bilibili_zhengxuan: ['male', 'qun', 3, ['bilibili_zhengjing'], ['character:zhengxuan', 'die:zhengxuan', 'name:郑|玄']],
@@ -47,8 +47,8 @@ const packs = function () {
             bilibili_shen_guojia: ['male', 'wei', '9/9/5', ['stianyi', 'resghuishi', 'bilibili_huishi'], ['doublegroup:shen:wei:wu', 'die:shen_guojia']],
             bilibili_re_xusheng: ['male', 'wu', 4, ['bilibili_pojun', 'kuangcai', 'bilibili_baodao'], ['die:re_xusheng']],
             bilibili_xushao: ['male', 'qun', 3, ['bol_pinjian', 'bol_yuedan'], ['die:xushao']],
-            bilibili_ningjingzhiyuan: ['male', 'key', 4, ['bilibili_waifa', 'bilibili_xiezhi', 'bilibili_fazhou'], ['clan:肘家军|宿舍群|肘击群|活动群', 'name:闹动|导近']],
-            bilibili_xizhicaikobe: ['male', 'key', 4, ['bilibili_waifa', 'bilibili_zhangcai', 'bilibili_laosao'], ['clan:肘家军|宿舍群|肘击群|活动群', 'name:戏|子宓']],
+            bilibili_ningjingzhiyuan: ['male', 'key', 4, ['bilibili_waifa_rewrite', 'bilibili_xiezhi', 'bilibili_fazhou'], ['clan:肘家军|宿舍群|肘击群|活动群', 'name:闹动|导近']],
+            bilibili_xizhicaikobe: ['male', 'key', 4, ['bilibili_waifa_rewrite', 'bilibili_zhangcai', 'bilibili_laosao'], ['clan:肘家军|宿舍群|肘击群|活动群', 'name:戏|子宓']],
             bilibili_yanjing: ['male', 'key', 3, ['bilibili_dongxi', 'bilibili_mingcha', 'bilibili_huiyan'], ['clan:肘家军|肘击群|活动群', 'tooenough|眼睛']],
             bilibili_caifuren: ['female', 'qun', 3, ['bilibili_kuilei'], ["name:蔡|null"]],
             bilibili_xiaoyaoruyun: ['female', 'key', 3, ['bilibili_chuandu', 'bilibili_shuaiwei', 'bilibili_huaikui'], ['clan:肘击群|活动群', 'name:鹿都|智川介']],
@@ -12320,6 +12320,23 @@ const packs = function () {
                     },
                 },
             },
+            bilibili_waifa_rewrite: {
+                inherit: 'bilibili_waifa',
+                async cost(event, trigger, player) {
+                    event.result = await player.chooseToDiscard(get.prompt2(event.skill), 'he', 3).set('ai', lib.skill.zhiheng.check).set('logSkill', event.skill).forResult();
+                },
+                async content(event, trigger, player) {
+                    await player.draw(event.cards.length);
+                    for (const type of ['basic', 'trick', 'equip']) {
+                        if (!event.cards.some(i => get.type2(i, player) === type)) continue;
+                        const num = event.cards.filter(i => get.type2(i, player) !== type).length;
+                        if (num > 0) {
+                            player.addTempSkill(`bilibili_waifa_${type}`);
+                            player.addMark(`bilibili_waifa_${type}`, num, false);
+                        }
+                    }
+                },
+            },
             //惇
             bilibili_ganglie: {
                 audio: 'reganglie',
@@ -12336,7 +12353,7 @@ const packs = function () {
                 check(event, player, name) {
                     if (name === 'damageEnd') return get.damageEffect(event.source, player, player) > 0;
                     _status._ganglie_check = true;
-                    const target = event.player, num = Math.min(event.num + 1, target.countDiscardableCards(player, 'he'));
+                    const target = event.player, num = Math.min(Math.max(1, player.getDamagedHp()), target.countDiscardableCards(player, 'he'));
                     const orieffect = get.damageEffect(target, player, player) * event.num;
                     const effect = get.effect(target, { name: 'guohe_copy2' }, player, player) * num + get.recoverEffect(target, player, player) * Math.max(1, num);
                     delete _status._ganglie_check;
@@ -12345,7 +12362,7 @@ const packs = function () {
                 prompt2(event, player, name) {
                     const target = event[name === 'damageEnd' ? 'source' : 'player'], str = get.translation(target);
                     if (name === 'damageEnd') return `对${str}造成${event.num + (target.getHp() > player.getHp() ? 1 : 0)}点伤害`;
-                    return `令${str}弃置${get.cnNumber(event.num)}张牌，然后其回复1点体力，且你可以将其弃置的红色牌交给一名角色`;
+                    return `令${str}弃置${get.cnNumber(Math.max(1, player.getDamagedHp()))}张牌，然后其回复1点体力，且你可以将其弃置的红色牌交给一名角色`;
                 },
                 async content(event, trigger, player) {
                     const target = event.targets[0];
@@ -12353,7 +12370,7 @@ const packs = function () {
                         await target.damage(trigger.num + (target.getHp() > player.getHp() ? 1 : 0));
                     }
                     else {
-                        const result = await player.discardPlayerCard(trigger.num + 1, target, 'he', true).forResult();
+                        const result = await player.discardPlayerCard(Math.max(1, player.getDamagedHp()), target, 'he', true).forResult();
                         if (result?.bool && result.cards?.length) {
                             await target.recover();
                             const cards = result.cards.filter(card => get.color(card) === 'red' && get.position(card) === 'd');
@@ -13036,9 +13053,10 @@ const packs = function () {
             bilibili_liuguanzhang: '三人组',
             bilibili_waifa: '外伐',
             bilibili_waifa_info: '出牌阶段开始时，你可以弃置三的倍数张牌并摸三倍数量的牌。若你弃置的类别包含：基本牌，本回合你使用的前X张基本牌无距离和次数限制（X为其中的非基本牌数）；锦囊牌，本回合你使用的前Y张锦囊牌可以额外增加和减少至多Y名目标（Y为其中的非锦囊牌数）；装备牌，本回合你使用的前Z张装备牌时摸Z张牌（Z为其中的非装备牌数）。',
+            bilibili_waifa_rewrite_info: '出牌阶段开始时，你可以弃置三张牌并摸等量张牌。若你弃置的类别包含：基本牌，本回合你使用的前X张基本牌无距离和次数限制（X为其中的非基本牌数）；锦囊牌，本回合你使用的前Y张锦囊牌可以额外增加和减少至多Y名目标（Y为其中的非锦囊牌数）；装备牌，本回合你使用的前Z张装备牌时摸Z张牌（Z为其中的非装备牌数）。',
             bilibili_xiahoudun: '夏侯惇',
             bilibili_ganglie: '刚烈',
-            bilibili_ganglie_info: '①当你受到伤害后，你可以对伤害来源造成X点伤害（X为伤害值），若其体力值大于你则X+1。②当你造成伤害时，你可以弃置受伤角色X张牌，然后其回复1点体力，且你可以将其弃置的红色牌交给一名角色。',
+            bilibili_ganglie_info: '①当你受到伤害后，你可以对伤害来源造成X点伤害（X为伤害值），若其体力值大于你则X+1。②当你造成伤害时，你可以弃置受伤角色Y张牌（Y为你已损失的体力值且至少为1），然后其回复1点体力，且你可以将其弃置的红色牌交给一名角色。',
         },
     };
     for (let i in huodongcharacter.character) {
