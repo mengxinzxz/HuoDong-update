@@ -326,22 +326,15 @@ const packs = function () {
                     game.addVideo('showCards', player, ['再起', get.cardsInfo(event.cards)]);
                     game.addVideo('delay', null, 2);
                     'step 1'
-                    var suits = lib.suit.slice(0).filter(function (suit) {
-                        return cards.filter(function (card) {
-                            return get.suit(card) == suit;
-                        }).length;
-                    });
-                    suits.reverse();
+                    var suits = cards.map(i => get.suit(i)).sort((a, b) => lib.suit.indexOf(b) - lib.suit.indexOf(a));
                     player.chooseControl(suits).set('ai', function () {
                         var map = {};
                         for (var card of _status.event.cards) {
                             var suit = get.suit(card);
-                            if (!map[suit]) map[suit] = 0;
-                            map[suit]++;
+                            map[suit] ??= 0;
+                            map[suit] += get.value(card);
                         }
-                        return Object.keys(map).sort(function (a, b) {
-                            return map[b] - map[a];
-                        })[0];
+                        return Object.keys(map).sort((a, b) => map[b] - map[a])[0];
                     }).set('cards', cards);
                     'step 2'
                     event.cards = cards.filter(function (card) {
@@ -18601,8 +18594,6 @@ const packs = function () {
             wechatgongzhi_info: `每轮开始时，你可以选择至多两名其他角色，称为“共志”角色。然后你再选择一名角色A。若如此做，直到本轮结束，当你或你“共志”记录的角色对A造成伤害后，你从牌堆或弃弃牌堆获得两张点数为2-5的牌，若这些牌中有装备牌，你可以使用之，然后你可以交给伤害来源至多两张牌。`,
             wechattonggan: '同甘',
             wechattonggan_info: '锁定技。“共志”角色的空置装备栏视为装备与你对应装备栏中相同牌名的牌。',
-            //wechat_nailong: '奶龙',
-            //wechat_nailong_ab: '？？',
             wechat_nailong: '贝利亚',
             wechatdunshi: '吨势',
             wechatdunshi_info: '锁定技，准备阶段，你展示至多四张手牌，然后其他角色依次选择弃置任意张牌并选择其中你展示的等量张牌，然后你将未被其他角色选择的展示牌和牌堆或弃牌堆中的等量【无中生有】进行替换，且本回合其他角色不能使用这些牌名的牌。',
