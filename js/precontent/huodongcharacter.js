@@ -6119,7 +6119,7 @@ const packs = function () {
                 intro: { content: 'expansion' },
             },
             old_yingbing: {
-                audio: 'reyingbin',
+                audio: 'reyingbing',
                 trigger: { global: 'old_zhoufu_judgeAfter' },
                 frequent: true,
                 content() {
