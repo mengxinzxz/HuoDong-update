@@ -532,18 +532,6 @@ export async function content(config, pack) {
 			rarity: {
 				//传说
 				legend: [
-					//活动武将包武将
-					'bilibili_zhengxuan',
-					'bilibili_nanhualaoxian',
-					'old_zuoci',
-					'bilibili_guanning',
-					'bilibili_litiansuo',
-					'diy_lvmeng',
-					'lz_sufei',
-					'FD_huaxiong',
-					'bilibili_shen_guojia',
-					'bilibili_re_xusheng',
-					//原活动配件武将
 					//SSS传说武将评级
 					//DDDD
 					'sunce',
@@ -566,16 +554,6 @@ export async function content(config, pack) {
 				],
 				//史诗
 				epic: [
-					//活动武将包武将
-					'FD_sunjian',
-					'FD_feixiongjunyou',
-					'FD_fengyaojun',
-					'lz_tangzi',
-					'lz_liuqi',
-					'bol_zhangxiu',
-					'bol_sunjian',
-					'FD_dongyue',
-					//原活动配件武将
 					'old_sp_jianggan',
 					'ol_maliang',
 					'old_clan_xunshu',
@@ -592,18 +570,6 @@ export async function content(config, pack) {
 				],
 				//稀有
 				rare: [
-					//活动武将包武将
-					'bilibili_sp_xuyou',
-					'bol_liuyu',
-					'bol_liuxie',
-					'bol_zhanglu',
-					'GD_gaolan',
-					'FD_niufudongxie',
-					'FD_guosi',
-					'FD_lijue',
-					'lz_huangquan',
-					'FD_feixiongjunzuo',
-					//原活动配件武将
 					'old_yuanji',
 					'old_ol_yuanji',
 					'junk_duanwei',
@@ -623,12 +589,10 @@ export async function content(config, pack) {
 				],
 				//平凡
 				junk: [
-					//活动武将包武将
-					'FD_baolvejun',
-					//原活动配件武将
 					'old_ol_xiaoqiao',
 					'old_zhanghe',
 					'old_zhugejin',
+					'old_pot_dengai',
 				],
 			},
 			//出场率
@@ -890,6 +854,7 @@ export async function content(config, pack) {
 		jsp_guanyu: ['bolx_jsp_guanyu'],
 		shen_dianwei: ['ol_shen_dianwei'],
 		jianggan: ['old_sp_jianggan'],
+		dengai: ['old_pot_dengai'],
 	};
 	for (const i in hdpj_characterReplace) {
 		let list = lib.characterReplace[i] || [];
@@ -945,9 +910,8 @@ export async function content(config, pack) {
 	//怀旧包
 	lib.characterSort.old.bilibili_buchong_online = ['junk_guanyu', 'old_ol_xiaoqiao', 'old_zhangbao', 'old_sunluyu', 'old_ol_yuanji'];
 	lib.characterSort.old.bilibili_buchong_szn2 = ['old_yuanji', 'junk_duanwei', 'old_zhoufei'];
-	lib.characterSort.old.bilibili_buchong_mobile2 = ['old_zhaoxiang', 'old_sb_ganning', 'old_zhouchu', 'old_xunchen', 'old_sp_kongrong', 'old_zhangzhongjing', 'oldx_zhangzhongjing', 'old_zhangyì', 'old_yanghuiyu', 'old_liuzhang', 'old_sp_sunshao', 'old_wangling', 'old_sp_huaxin', 'old_sp_mifuren', 'old_sp_jianggan'];
+	lib.characterSort.old.bilibili_buchong_mobile2 = ['old_pot_dengai', 'old_shen_sunce', 'old_shen_taishici', 'old_shen_xunyu', 'old_zhaoxiang', 'old_sb_ganning', 'old_zhouchu', 'old_xunchen', 'old_sp_kongrong', 'old_zhangzhongjing', 'oldx_zhangzhongjing', 'old_zhangyì', 'old_yanghuiyu', 'old_liuzhang', 'old_sp_sunshao', 'old_wangling', 'old_sp_huaxin', 'old_sp_mifuren', 'old_sp_jianggan'];
 	lib.characterSort.old.bilibili_buchong_menfashizu = ['old_clan_xunshu', 'old_clan_xunchen', 'old_clan_xuncai', 'old_clan_xuncan', 'oldx_clan_xuncai'];
-	lib.characterSort.old.bilibili_buchong_extra = ['old_shen_sunce', 'old_shen_taishici', 'old_shen_xunyu'];
 	game.HDaddCharacter('old_clan_xunshu', ['male', 'qun', 3, ['old_shenjun', 'old_balong', 'clandaojie'], ['clan:颍川荀氏', 'tempname:clan_xunshu', 'die:clan_xunshu']], 'old');
 	game.HDaddCharacter('old_clan_xunchen', ['male', 'qun', 3, ['old_sankuang', 'old_beishi', 'clandaojie'], ['clan:颍川荀氏', 'tempname:clan_xunchen', 'die:clan_xunchen']], 'old');
 	game.HDaddCharacter('old_clan_xuncai', ['female', 'qun', 3, ['old_lieshi', 'old_dianzhan', 'old_huanyin', 'clandaojie'], ['clan:颍川荀氏', 'tempname:clan_xuncai', 'die:clan_xuncai']], 'old');
@@ -981,6 +945,7 @@ export async function content(config, pack) {
 	game.HDaddCharacter('old_ol_xiaoqiao', ['female', 'wu', 3, ['oltianxiang', 'rehongyan'], [...['tempname', 'die'].map(i => `${i}:ol_xiaoqiao`)]], 'old');
 	game.HDaddCharacter('old_zhaoxiang', ['female', 'shu', 4, ['xinfanghun', 'xinfuhan'], ['die:zhaoxiang']], 'old');
 	game.HDaddCharacter('old_zhoufei', ['female', 'wu', 3, ['liangyin', 'kongsheng'], ['die:zhoufei']], 'old');
+	game.HDaddCharacter('old_pot_dengai', ['male', 'wei', 3, ['old_pottuntian', 'old_potjixi', 'old_potzaoxian'], ['die:pot_dengai']], 'old');
 
 	//DIY
 	lib.characterSort.diy.diy_trashbin.addArray(['old_yj_ganning', 'lusu', 'yuanshao', 'bol_zhangzhongjing', 'bol_sp_huaxin', 'bfake_zuoci', 'bfake_yangfu', 'bfake_chengpu', 'bfake_sundeng', 'old_shen_sunquan', 'old_shen_ganning', 'bfake_chengui', 'old_ol_xiaoqiao', 'old_zhanghe', 'old_zhugejin', 'oldx_zhangfei', 'oldx_guanyu', 'oldx_zhaoyun', 'oldx_yujin']);
@@ -1245,13 +1210,14 @@ export async function content(config, pack) {
 		ol_huaxiong: '手杀界华雄',
 		ol_huaxiong_prefix: '手杀|界',
 		'#junk_guanyu:die': '点击播放阵亡配音',
+		old_pot_dengai: '旧势邓艾',
+		old_pot_dengai_prefix: '旧|势',
 
 		//武将分包翻译
 		bilibili_buchong_shenhua: '武将补充·神话再临',
 		bilibili_buchong_yijiang: '武将补充·一将成名',
 		bilibili_buchong_menfashizu: '武将补充·门阀士族',
-		bilibili_buchong_extra: '武将补充·神武将',
-		bilibili_buchong_online: '武将补充·OL',
+		bilibili_buchong_online: '武将补充·Online',
 		bilibili_buchong_szn2: '武将补充·十周年服',
 		bilibili_buchong_mobile: '武将补充·移动服',
 		bilibili_buchong_mobile2: '武将补充·移动服',
