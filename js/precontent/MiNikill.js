@@ -450,8 +450,8 @@ const packs = function () {
             Mbaby_wangcan: ['male', 'qun', 3, ['xinfu_sanwen', 'xinfu_qiai', 'minidenglou']],
             Mbaby_sb_zhangjiao: ['male', 'qun', 3, ['minisbsbleiji', 'minisbguidao', 'minisbhuangtian']],
             Mbaby_leibo: ['male', 'qun', 4, ['dcsilve', 'minishuaijie']],
-            Mbaby_zhangchu: ['female', 'qun', 3, ['dcjizhong', 'minirihui', 'dcguangshi']],
-            Mbaby_ol_lisu: ['male', 'qun', 3, ['qiaoyan', 'minixianzhu']],
+            Mbaby_zhangchu: ['female', 'qun', 3, ['dcjizhong', 'minirihui', 'miniguangshi']],
+            Mbaby_ol_lisu: ['male', 'qun', 3, ['qiaoyan', 'minilsxianzhu']],
             //神
             Mbaby_shen_zhugeliang: ['male', 'shen', 3, ['qixing', 'minikuangfeng', 'minidawu'], ['shu', 'name:诸葛|亮']],
             Mbaby_shen_lvbu: ['male', 'shen', 6, ['miniwuqian', 'minishenfen'], ['qun']],
@@ -14617,7 +14617,7 @@ const packs = function () {
                     player.awakenSkill(event.name);
                     const target = event.target;
                     const count = player.getAllHistory('useCard', evt => evt.targets?.includes(target)).length;
-                    target.addMark('dcfenhui_mark', Math.min(5, count));
+                    target.addMark(event.name + '_mark', Math.min(5, count));
                     await player.draw(Math.min(5, count));
                     player.addSkill(event.name + '_effect');
                     player.markAuto(event.name + '_effect', [target]);
@@ -14625,10 +14625,10 @@ const packs = function () {
                 subSkill: {
                     effect: {
                         audio: 'dcfenhui',
-                        trigger: { global: ['damageBegin1', 'die'] },
+                        trigger: { global: ['damageBegin1', 'die', 'dieAfter'] },
                         filter(event, player) {
                             if (!player.getStorage('minifenhui_effect').includes(event.player)) return false;
-                            return event.name == 'die' || event.player.hasMark('dcfenhui_mark');
+                            return event.name == 'die' || event.player.hasMark('minifenhui_mark');
                         },
                         logTarget: 'player',
                         forced: true,
@@ -14636,13 +14636,21 @@ const packs = function () {
                         onremove: true,
                         async content(event, trigger, player) {
                             if (trigger.name === 'damage') {
-                                trigger.player.removeMark('dcfenhui_mark', 1);
+                                trigger.player.removeMark('minifenhui_mark', 1);
                                 trigger.num++;
                             } else {
                                 await player.loseMaxHp();
                                 player.storage.dcshouzhi_modified = true;
                                 await player.addSkills('dcxingmen');
                             }
+                        },
+                    },
+                    mark: {
+                        marktext: '恨',
+                        intro: {
+                            name: '恨(奋恚)',
+                            name2: '恨',
+                            content: 'mark',
                         },
                     },
                 },
@@ -30929,8 +30937,18 @@ const packs = function () {
                     }
                 },
             },
+            miniguangshi: {
+                inherit: 'dcguangshi',
+                audio: 'dcguangshi',
+                forced: false,
+                check(event, player) {
+                    const num = game.filterPlayer().reduce((sum, current) => (sum += current.countMark('dcjizhong')), 0)
+                    if (get.effect(player, { name: 'losehp' }, player, player) > 0) return true;
+                    return num >= 2;
+                },
+            },
             // 李肃
-            minixianzhu: {
+            minilsxianzhu: {
                 inherit: 'xianzhu',
                 audio: 'xianzhu',
                 async content(event, trigger, player) {
@@ -41319,7 +41337,7 @@ const packs = function () {
             miniqianzheng: '愆正',
             miniqianzheng_info: '每回合限两次。当你使用【杀】或成为其他角色使用【杀】或普通锦囊牌的目标后，你可以重铸两张牌。若你以此法重铸的牌中没有与指定你为目标的牌类别相同的牌，你于此牌对应的实体牌进入弃牌堆后获得此牌对应的所有实体牌。',
             minifenhui: '奋恚',
-            minifenhui_info: `限定技。出牌阶段，你可以令一名角色获得X枚“恨”标记，你摸等量的牌（X为本局游戏你使用牌指定其为目标的次数，至多为5）。你获得如下效果：⒈当其受到伤害时，你移去其1枚“恨”，令此伤害+1；⒉当其死亡时，你减1点体力上限，修改${get.poptip('dcshouzhi')}并获得${get.poptip('dcxingmen')}。`,
+            minifenhui_info: `限定技。出牌阶段，你可以令一名角色获得X枚“恨”标记，你摸等量的牌（X为本局游戏你使用牌指定其为目标的次数，至多为5）。你获得如下效果：⒈当其受到伤害时，你移去其1枚“恨”，令此伤害+1；⒉当其死亡时或脱离濒死状态后，你减1点体力上限，修改${get.poptip('dcshouzhi')}并获得${get.poptip('dcxingmen')}。`,
             minifengshi: '锋势',
             minifengshi_info: '当你使用牌指定第一个目标后，你可弃置你与其中一名手牌数小于你的目标角色的各一张牌，并令此牌对其造成的伤害+1；当你成为其他角色使用牌的目标后，若你的手牌数小于其，则你可以弃置其一张牌，并令此牌对你造成的伤害+1。',
             miniyouzhan: '诱战',
@@ -42249,8 +42267,10 @@ const packs = function () {
             minishuaijie_info: '限定技。出牌阶段，若你的体力值小于“私掠”角色，或没有角色有“私掠”，你可以减1点体力上限，然后选择一项：1.获得“私掠”角色至多三张牌；2.从牌堆随机获得三张类型各不同的牌。最后将你的“私掠”角色改为你。',
             minirihui: '日彗',
             minirihui_info: '出牌阶段限一次。当你使用普通锦囊牌或基本牌结算结束后，若此牌的目标数为1，且其：没有“信众”，则你可以令所有有“信众”的角色依次视为对其使用一张与此牌牌名和属性相同的牌；有“信众”，则你可以获得其区域里的一张牌。',
-            minixianzhu: '献珠',
-            minixianzhu_info: '锁定技，出牌阶段开始时，你令一名角色A获得“珠”。然后若A不为你，则你可以选择你攻击范围内的一名角色B，令A对视为B使用一张【杀】。',
+            miniguangshi: '光噬',
+            miniguangshi_info: '准备阶段，若所有其他角色均有“信众”，你可以摸X张牌并失去1点体力（X为全场“信众”数）。',
+            minilsxianzhu: '献珠',
+            minilsxianzhu_info: '锁定技，出牌阶段开始时，你令一名角色A获得“珠”。然后若A不为你，则你可以选择你攻击范围内的一名角色B，令A对视为B使用一张【杀】。',
             //神
             Mbaby_shen_lvbu: '欢杀神吕布',
             Mbaby_shen_guanyu: '欢杀神关羽',

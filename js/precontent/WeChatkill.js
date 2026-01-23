@@ -12793,7 +12793,7 @@ const packs = function () {
                                 if (target.countDiscardableCards(player, player == target ? 'hej' : 'ej')) {
                                     const result = await player.discardPlayerCard(target, player == target ? 'hej' : 'ej', true).forResult();
                                     discards = result?.cards;
-                                    if (Array.isArray(discards) && target === player) event.getParent().addCount = false;
+                                    if (get.itemtype(discards) == 'cards' && target === player) event.getParent().addCount = false;
                                 }
                                 else {
                                     const evt = event.getParent();
@@ -18600,7 +18600,7 @@ const packs = function () {
             wechattonggan_info: '锁定技。“共志”角色的空置装备栏视为装备与你对应装备栏中相同牌名的牌。',
             //wechat_nailong: '奶龙',
             //wechat_nailong_ab: '？？',
-            wechat_nailong: '？？',
+            wechat_nailong: '贝利亚',
             wechatdunshi: '吨势',
             wechatdunshi_info: '锁定技，准备阶段，你展示至多四张手牌，然后其他角色依次选择弃置任意张牌并选择其中你展示的等量张牌，然后你将未被其他角色选择的展示牌和牌堆或弃牌堆中的等量【无中生有】进行替换，且本回合其他角色不能使用这些牌名的牌。',
             wechattanchi: '贪吃',
