@@ -6055,24 +6055,22 @@ const packs = function () {
                 audio: 'rezhoufu',
                 enable: 'phaseUse',
                 filter(event, player) {
-                    return player.countCards('h') && game.hasPlayer(function (target) {
-                        return target != player && !target.getExpansions('old_zhoufu2').length;
-                    });
+                    return player.countCards('h') && game.hasPlayer(target => lib.skill.old_zhoufu.filterTarget(null, player, target));
                 },
                 filterCard: true,
                 filterTarget(card, player, target) {
-                    return target != player && !target.getExpansions('old_zhoufu2').length;
+                    return target != player && !target.getExpansions('old_zhoufu').length;
                 },
                 check(card) {
-                    return 6 - get.value(card)
+                    return 6 - get.value(card);
                 },
                 usable: 1,
                 discard: false,
                 lose: false,
                 delay: false,
                 content() {
-                    player.addSkill(['old_zhoufu_judge', 'old_zhoufu_gain']);
-                    target.addToExpansion(cards, player, 'give').gaintag.add('old_zhoufu2');
+                    target.addSkill('old_zhoufu_judge');
+                    target.addToExpansion(cards, player, 'give').gaintag.add('old_zhoufu');
                 },
                 ai: {
                     order: 1,
@@ -6080,48 +6078,50 @@ const packs = function () {
                         target: -1,
                     },
                 },
+                marktext: '咒',
+                intro: {
+                    content: 'expansion',
+                    markcount: 'expansion',
+                },
+                group: 'old_zhoufu_gain',
                 subSkill: {
                     judge: {
                         charlotte: true,
                         audio: 'rezhoufu',
-                        trigger: { global: 'judgeBefore' },
+                        trigger: { player: 'judgeBefore' },
                         filter(event, player) {
-                            return !event.directresult && event.player.getExpansions('old_zhoufu2').length;
+                            return !event.directresult && player.getExpansions('old_zhoufu').length;
                         },
-                        logTarget: 'player',
                         forced: true,
                         locked: false,
                         content() {
-                            var cards = [trigger.player.getExpansions('old_zhoufu2')[0]];
-                            trigger.directresult = cards[0];
-                            trigger.player.unmarkSkill('old_zhoufu2');
+                            trigger.directresult = player.getExpansions('old_zhoufu')[0];
                         },
                     },
                     gain: {
-                        charlotte: true,
                         audio: 'rezhoufu',
                         trigger: { global: 'phaseEnd' },
                         filter(event, player) {
-                            return event.player.getExpansions('old_zhoufu2').length;
+                            return event.player.getExpansions('old_zhoufu').length;
                         },
-                        logTarget: 'player',
                         forced: true,
                         locked: false,
+                        logTarget: 'player',
                         content() {
-                            player.gain(trigger.player.getExpansions('old_zhoufu2'), trigger.player, 'give');
-                            trigger.player.unmarkSkill('old_zhoufu2');
+                            player.gain(trigger.player.getExpansions('old_zhoufu'), trigger.player, 'give');
                         },
                     },
                 },
             },
-            old_zhoufu2: {
-                marktext: '咒',
-                intro: { content: 'expansion' },
-            },
             old_yingbing: {
                 audio: 'reyingbing',
-                trigger: { global: 'old_zhoufu_judgeAfter' },
+                trigger: { global: 'loseAfter' },
+                filter(event, player) {
+                    if (event.getParent().name !== 'judge' || event.xs?.[0] !== event.getParent().directresult) return false;
+                    return event.gaintag_map[event.xs[0].cardid].includes('old_zhoufu');
+                },
                 frequent: true,
+                logTarget: 'player',
                 content() {
                     player.draw(2);
                 },
@@ -6189,7 +6189,7 @@ const packs = function () {
                     player.chooseTarget(get.prompt2('bolchouyou'), function (card, player, target) {
                         return _status.event.targets.includes(target);
                     }).set('ai', function (target) {
-                        var player = _status.event.player, trigger = _status.event.getTrigger(), storage = player.getStorage('bolchouyou2');
+                        var player = _status.event.player, trigger = _status.event.getTrigger(), storage = player.getStorage('bolchouyou_effect');
                         if (get.effect(player, trigger.card, trigger.player, player) > 0) return 0;
                         return get.effect(target, trigger.card, trigger.player, player) * (!storage.includes(target) ? 3 : 1);
                     }).set('targets', game.filterPlayer(function (current) {
@@ -6212,65 +6212,67 @@ const packs = function () {
                     else {
                         target.chat('拒绝');
                         game.log(target, '拒绝代替', player, '成为', trigger.card, '的目标');
-                        player.addSkill('bolchouyou2');
-                        player.markAuto('bolchouyou2', [target]);
+                        player.addSkill('bolchouyou_effect');
+                        player.markAuto('bolchouyou_effect', [target]);
                     }
                 },
-            },
-            bolchouyou2: {
-                charlotte: true,
-                onremove: true,
-                intro: { content: '已对$产生怨恨' },
-                audio: 'bolchouyou',
-                trigger: { global: ['useSkill', 'logSkillBegin'] },
-                filter(event, player) {
-                    if (!player.getStorage('bolchouyou2').includes(event.player)) return false;
-                    if (!event.player.getSkills(null, false, false).includes(get.sourceSkillFor(event.skill))) return false;
-                    const info = get.info(event.skill);
-                    return info && !info.charlotte && !get.is.locked(event.skill, event.player);
-                },
-                logTarget: 'player',
-                prompt2(event, player) {
-                    return `阻止${get.translation(event.player)}发动【${get.translation(event.skill)}】`;
-                },
-                check(event, player) {
-                    return get.attitude(player, event.player) < 0;
-                },
-                async content(event, trigger, player) {
-                    trigger.player.tempBanSkill(get.sourceSkillFor(trigger.skill), {
-                        player: ['useCard1', 'useSkillBegin'],
-                        global: ['phaseChange', 'phaseBefore', 'phaseAfter'],
-                    });
-                    player.chat('拒绝');
-                    game.log(player, '#y拒绝', trigger.player, '发动', '#g【' + get.translation(trigger.skill) + '】');
-                    if (trigger.name === 'useSkill') {
-                        if (!trigger._finished) {
-                            trigger.finish();
-                            trigger._triggered = 5;
-                        }
-                    }
-                    else {
-                        const evt = trigger.getParent();
-                        if (!evt._finished) {
-                            evt.finish();
-                            evt._triggered = 5;
-                        }
-                        if (['useCard', 'respond'].includes(evt.name) || evt.name.startsWith('pre_')) evt.getParent().goto(0);
-                        evt.next = [];
-                    }
-                },
-                group: ['bolchouyou3'],
-            },
-            bolchouyou3: {
-                charlotte: true,
-                trigger: { player: 'recoverEnd' },
-                filter(event, player) {
-                    return event.source && player.getStorage('bolchouyou2').includes(event.source);
-                },
-                direct: true,
-                firstDo: true,
-                content() {
-                    player.unmarkAuto('bolchouyou2', [trigger.source]);
+                subSkill: {
+                    effect: {
+                        charlotte: true,
+                        onremove: true,
+                        intro: { content: '已对$产生怨恨' },
+                        audio: 'bolchouyou',
+                        trigger: { global: ['useSkill', 'logSkillBegin'] },
+                        filter(event, player) {
+                            if (!player.getStorage('bolchouyou_effect').includes(event.player)) return false;
+                            if (!event.player.getSkills(null, false, false).includes(get.sourceSkillFor(event.skill))) return false;
+                            const info = get.info(event.skill);
+                            return info && !info.charlotte && !get.is.locked(event.skill, event.player);
+                        },
+                        logTarget: 'player',
+                        prompt2(event, player) {
+                            return `阻止${get.translation(event.player)}发动【${get.translation(event.skill)}】`;
+                        },
+                        check(event, player) {
+                            return get.attitude(player, event.player) < 0;
+                        },
+                        async content(event, trigger, player) {
+                            trigger.player.tempBanSkill(get.sourceSkillFor(trigger.skill), {
+                                player: ['useCard1', 'useSkillBegin'],
+                                global: ['phaseChange', 'phaseBefore', 'phaseAfter'],
+                            });
+                            player.chat('拒绝');
+                            game.log(player, '#y拒绝', trigger.player, '发动', '#g【' + get.translation(trigger.skill) + '】');
+                            if (trigger.name === 'useSkill') {
+                                if (!trigger._finished) {
+                                    trigger.finish();
+                                    trigger._triggered = 5;
+                                }
+                            }
+                            else {
+                                const evt = trigger.getParent();
+                                if (!evt._finished) {
+                                    evt.finish();
+                                    evt._triggered = 5;
+                                }
+                                if (['useCard', 'respond'].includes(evt.name) || evt.name.startsWith('pre_')) evt.getParent().goto(0);
+                                evt.next = [];
+                            }
+                        },
+                        group: 'bolchouyou_unmark',
+                    },
+                    unmark: {
+                        charlotte: true,
+                        trigger: { player: 'recoverEnd' },
+                        filter(event, player) {
+                            return event.source && player.getStorage('bolchouyou_effect').includes(event.source);
+                        },
+                        direct: true,
+                        firstDo: true,
+                        content() {
+                            player.unmarkAuto('bolchouyou_effect', [trigger.source]);
+                        },
+                    },
                 },
             },
             //张仲景
@@ -12742,14 +12744,12 @@ const packs = function () {
             bol_shanshan: '闪闪',
             bol_shanshan_info: '当一张基本牌或锦囊牌即将对你生效前，对此牌使用，抵消此牌的效果，然后获得此牌对应的所有实体牌。',
             old_zhoufu: '咒缚',
-            old_zhoufu2: '咒缚',
             old_zhoufu_info: '出牌阶段限一次，你可以将一张手牌置于一名武将牌旁没有“咒”的其他角色的武将牌旁，称为“咒”。当有“咒”的角色判定时，将“咒”作为判定牌。有“咒”的角色的回合结束时，你获得其武将牌旁的“咒”。',
             old_yingbing: '影兵',
             old_yingbing_info: '当一张“咒”成为判定牌后，你可以摸两张牌。',
             boljiaozong: '骄纵',
             boljiaozong_info: '锁定技，其他角色出牌阶段使用的第一张红色牌无距离限制且目标必须为你。',
             bolchouyou: '仇幽',
-            bolchouyou2: '仇幽',
             bolchouyou_info: '当你成为【杀】的目标后，你可以令另一名可以成为此牌目标的其他角色选择一项：①其代替你成为此牌目标；②其发动非锁定技前需经过你同意直到其令你回复体力。',
             bilibili_adong: '阿会喃董荼纳',
             bilibili_ahuinan: '萌设阿会喃',
