@@ -10132,7 +10132,8 @@ const packs = function () {
                         }, player);
                     }
                 },
-            },	//OL袁姬
+            },
+            //OL袁姬
             old_jieyan: {
                 audio: 'oljieyan',
                 trigger: { player: 'phaseZhunbeiBegin' },
