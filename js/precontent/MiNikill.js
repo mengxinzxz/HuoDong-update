@@ -14571,6 +14571,25 @@ const packs = function () {
             minifenhui: {
                 audio: 'dcfenhui',
                 inherit: 'dcfenhui',
+                filterTarget(card, player, target) {
+                    const list = get.event().minifenhui_enabled;
+                    if (!list?.size) return false
+                    return list.has(target);
+                },
+                onChooseToUse(event) {
+                    event.targetprompt2.add(target => {
+                        if (event.skill !== 'minifenhui' || !target.classList.contains('selectable')) return;
+                        const count = get.event().minifenhui_enabled.get(target);
+                        const num = Math.min(5, count);
+                        return `${num}恨`;
+                    });
+                    if (game.online) return;
+                    const player = event.player;
+                    const evts = player.getAllHistory('useCard', evt => evt.targets?.length);
+                    event.set('minifenhui_enabled', game.filterPlayer(current => {
+                        return evts.filter(evt => evt.targets.includes(current)).length;
+                    }).reduce((map, current) => map.set(current, evts.filter(evt => evt.targets.includes(current)).length), new Map()));
+                },
                 async content(event, trigger, player) {
                     player.awakenSkill(event.name);
                     const target = event.target;
@@ -14586,7 +14605,8 @@ const packs = function () {
                         trigger: { global: ['damageBegin1', 'die', 'dyingAfter'] },
                         filter(event, player) {
                             if (event.name == 'damage') return event.player.hasMark('minifenhui_mark');
-                            return player.getStorage('minifenhui_effect').includes(event.player) && !player.storage.dcshouzhi_modified;
+                            if (event.name == 'dying') return event.player.isIn() && player.getStorage('minifenhui_effect').includes(event.player);
+                            return player.getStorage('minifenhui_effect').includes(event.player);
                         },
                         logTarget: 'player',
                         forced: true,
