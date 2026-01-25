@@ -14583,10 +14583,10 @@ const packs = function () {
                 subSkill: {
                     effect: {
                         audio: 'dcfenhui',
-                        trigger: { global: ['damageBegin1', 'die', 'dieAfter'] },
+                        trigger: { global: ['damageBegin1', 'die', 'dyingAfter'] },
                         filter(event, player) {
-                            if (!player.getStorage('minifenhui_effect').includes(event.player)) return false;
-                            return event.name == 'die' || event.player.hasMark('minifenhui_mark');
+                            if (event.name == 'damage') return event.player.hasMark('minifenhui_mark');
+                            return player.getStorage('minifenhui_effect').includes(event.player) && !player.storage.dcshouzhi_modified;
                         },
                         logTarget: 'player',
                         forced: true,

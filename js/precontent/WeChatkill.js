@@ -17171,7 +17171,7 @@ const packs = function () {
                         audio: 'wechatgongzhi',
                         trigger: { global: 'damageSource' },
                         filter(event, player) {
-                            return player.getStorage('wechatgongzhi_effect').some(item => (item[0].includes(event.source) || player == event.source) && item[0].includes(event.player));
+                            return player.getStorage('wechatgongzhi_effect').some(item => (item[0].includes(event.source) || player == event.source) && item[1].includes(event.player));
                         },
                         forced: true,
                         locked: false,
