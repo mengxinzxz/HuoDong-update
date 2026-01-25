@@ -9234,12 +9234,30 @@ const packs = function () {
                     player: 'damageEnd',
                     source: 'damageSource',
                 },
-                filter(event, player) {
-                    const num = player.getAllHistory('useSkill', evt => evt.skill == 'bolyuba').length + 1;
-                    return player.countCards('h') < num;
+                filter(event, player, name) {
+                    let history = game.getAllGlobalHistory('everything', evt => {
+                        if (evt.name !== 'damage' || !evt.player.getAllHistory('damage').includes(evt)) return false;
+                        return evt.player === player || evt.source === player;
+                    }).map(evt => {
+                        let list = [];
+                        if (evt.source === player) list.push([evt, 'damageSource']);
+                        if (evt.player === player) list.push([evt, 'damageEnd']);
+                        return list;
+                    }).flat();
+                    let list = history.find(lit => lit[0] === event && lit[1] === name);
+                    return list && player.countCards('h') < history.indexOf(list) + 1;
                 },
                 async content(event, trigger, player) {
-                    const num = player.getAllHistory('useSkill', evt => evt.skill == event.name).length;
+                    let history = game.getAllGlobalHistory('everything', evt => {
+                        if (evt.name !== 'damage' || !evt.player.getAllHistory('damage').includes(evt)) return false;
+                        return evt.player === player || evt.source === player;
+                    }).map(evt => {
+                        let list = [];
+                        if (evt.source === player) list.push([evt, 'damageSource']);
+                        if (evt.player === player) list.push([evt, 'damageEnd']);
+                        return list;
+                    }).flat();
+                    const num = history.indexOf(history.find(lit => lit[0] === event && lit[1] === event.triggername)) + 1;
                     await player.drawTo(num);
                     const skills = player.getSkills(null, false, false).filter(skill => {
                         const info = get.info(skill);
@@ -12901,7 +12919,7 @@ const packs = function () {
             bfake_huanwen: '蝶设桓温',
             bfake_huanwen_prefix: '蝶设',
             bolyuba: '欲罢',
-            bolyuba_info: '当你造成或受到伤害后，你可以将手牌摸至X张牌（X为此技能发动的次数+1），然后弃置一张点数为X的牌或失去一个技能。',
+            bolyuba_info: '当你造成或受到伤害后，你可以将手牌摸至X张，然后弃置一张点数为X的牌或失去一个技能（X为你本局游戏造成和受到伤害的次数之和）。',
             bolxingjiang: '行将',
             bolxingjiang_info: '出牌阶段限一次，你可以弃置至少两张同名基本牌或普通锦囊牌，若如此做，你获得一个技能效果为“每回合限一次，你可以视为使用一张【XXX】”的技能（XXX为你本次弃置牌的牌名）。',
             bfake_miheng: '蝶设祢衡',
