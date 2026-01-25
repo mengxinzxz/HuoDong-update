@@ -9228,13 +9228,13 @@ const packs = function () {
                     },
                 },
             },
-            // 桓温
+            //桓温
             bolyuba: {
                 trigger: {
                     player: 'damageEnd',
                     source: 'damageSource',
                 },
-                filter(event, player, name) {
+                prompt2(event, trigger, name) {
                     let history = game.getAllGlobalHistory('everything', evt => {
                         if (evt.name !== 'damage' || !evt.player.getAllHistory('damage').includes(evt)) return false;
                         return evt.player === player || evt.source === player;
@@ -9244,8 +9244,20 @@ const packs = function () {
                         if (evt.player === player) list.push([evt, 'damageEnd']);
                         return list;
                     }).flat();
-                    let list = history.find(lit => lit[0] === event && lit[1] === name);
-                    return list && player.countCards('h') < history.indexOf(list) + 1;
+                    const num = history.indexOf(history.find(lit => lit[0] === event && lit[1] === name)) + 1;
+                    return `将手牌数摸至${num}张，然后弃置一张点数为${num}的牌或失去一个技能`;
+                },
+                check(event, trigger, name) {
+                    let history = game.getAllGlobalHistory('everything', evt => {
+                        if (evt.name !== 'damage' || !evt.player.getAllHistory('damage').includes(evt)) return false;
+                        return evt.player === player || evt.source === player;
+                    }).map(evt => {
+                        let list = [];
+                        if (evt.source === player) list.push([evt, 'damageSource']);
+                        if (evt.player === player) list.push([evt, 'damageEnd']);
+                        return list;
+                    }).flat();
+                    return player.countCards('h') < history.indexOf(history.find(lit => lit[0] === event && lit[1] === name)) + 1;
                 },
                 async content(event, trigger, player) {
                     let history = game.getAllGlobalHistory('everything', evt => {
