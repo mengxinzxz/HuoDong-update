@@ -17295,7 +17295,7 @@ const packs = function () {
                         if (player == target) {
                             const storage = game.filterPlayer(current => player.getStorage('wechatgongzhi_effect').some(item => item[0].includes(current))).sortBySeat();
                             for (const current of storage) {
-                                const list = Array.from(trigger.vcard_map.values()).map(card => card.name).flat().toUniqued();
+                                const list = Array.from(trigger.getl(player).vcard_map.values()).map(card => card.name).flat().toUniqued();
                                 let skills = get.info(event.name).getSkills(list);
                                 current.unmarkAuto(effect, list);
                                 list.forEach(name => current.removeExtraEquip(effect, name));
