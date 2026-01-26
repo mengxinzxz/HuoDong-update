@@ -9380,22 +9380,7 @@ const packs = function () {
                     },
                 },
             },
-            // 祢衡
-            _boljianlingCheck: {
-                charlotte: true,
-                trigger: { player: 'loseBefore' },
-                filter(event, player) {
-                    if (event.getParent().name != 'useCard') return false;
-                    return event.cards?.some(card => get.is.shownCard(card));
-                },
-                firstDo: true,
-                silent: true,
-                async content(event, trigger, player) {
-                    const { card } = trigger.getParent();
-                    card.storage ??= {};
-                    card.storage.boljianling = true;
-                },
-            },
+            //祢衡
             bolhuaici: {
                 trigger: { global: ['roundStart', 'roundEnd', 'useCard2'] },
                 filter(event, player, name) {
@@ -9451,9 +9436,17 @@ const packs = function () {
                 },
                 trigger: { global: 'phaseAfter' },
                 filter(event, player) {
-                    if (!player.hasHistory('sourceDamage') || !player.getHistory('sourceDamage').every(evt => evt.card?.storage?.boljianling)) return false;
-                    if (!player.storage.boljianling) return true;
-                    return game.hasPlayer(current => !current.isTurnedOver());
+                    if (!player.hasHistory('sourceDamage') || player.hasHistory('sourceDamage', evt => {
+                        const history = player.getHistory('lose', evt2 => {
+                            return evt2.getParent().name === 'useCard' && evt2.getParent().card === evt.card;
+                        })[0];
+                        return !history?.cards?.some(card => {
+                            return history.gaintag_map[card.cardid]?.some(tag => {
+                                return tag.slice(tag.startsWith('eternal_') ? 8 : 0).startsWith('visible_');
+                            });
+                        });
+                    })) return false;
+                    return player.storage.boljianling || game.hasPlayer(current => !current.isTurnedOver());
                 },
                 forced: true,
                 async content(event, trigger, player) {
@@ -12939,7 +12932,7 @@ const packs = function () {
             visible_bolhuaici: '怀刺',
             bolhuaici: '怀刺',
             bolhuaici_info: '锁定技。①每轮开始时，你亮出牌堆顶X张牌，获得其中任意张并明置之。②你成为与你的明置手牌花色相同的基本牌或普通锦囊牌的额外目标。③你于第X轮结束时死亡。（X为场上角色数）',
-            boljianling: '剪翎',
+            boljianling: '翦翎',
             boljianling_info: '锁定技，转换技。你仅使用明置牌造成伤害的回合结束后，阳：你执行一个额外回合；阴：你令所有角色将武将牌翻至背面。',
             bilibili_ningjingzhiyuan: '宁静致远',
             bilibili_xiezhi: '协治',
