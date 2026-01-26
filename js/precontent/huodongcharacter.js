@@ -9234,7 +9234,7 @@ const packs = function () {
                     player: 'damageEnd',
                     source: 'damageSource',
                 },
-                prompt2(event, trigger, name) {
+                prompt2(event, player, name) {
                     let history = game.getAllGlobalHistory('everything', evt => {
                         if (evt.name !== 'damage' || !evt.player.getAllHistory('damage').includes(evt)) return false;
                         return evt.player === player || evt.source === player;
@@ -9247,7 +9247,7 @@ const packs = function () {
                     const num = history.indexOf(history.find(lit => lit[0] === event && lit[1] === name)) + 1;
                     return `将手牌数摸至${num}张，然后弃置一张点数为${num}的牌或失去一个技能`;
                 },
-                check(event, trigger, name) {
+                check(event, player, name) {
                     let history = game.getAllGlobalHistory('everything', evt => {
                         if (evt.name !== 'damage' || !evt.player.getAllHistory('damage').includes(evt)) return false;
                         return evt.player === player || evt.source === player;
@@ -9269,7 +9269,7 @@ const packs = function () {
                         if (evt.player === player) list.push([evt, 'damageEnd']);
                         return list;
                     }).flat();
-                    const num = history.indexOf(history.find(lit => lit[0] === event && lit[1] === event.triggername)) + 1;
+                    const num = history.indexOf(history.find(lit => lit[0] === trigger && lit[1] === event.triggername)) + 1;
                     await player.drawTo(num);
                     const skills = player.getSkills(null, false, false).filter(skill => {
                         const info = get.info(skill);
