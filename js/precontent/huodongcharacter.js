@@ -86,7 +86,7 @@ const packs = function () {
             bfake_shen_jiaxu: ['male', 'shen', 3, ['boljiandai', 'bolfangcan', 'boljuemei', 'bolluoshu'], ['qun', 'character:le_shen_jiaxu']],
             bfake_shen_zhangfei: ['male', 'shen', 5, ['bolbaohe', 'bolrenhai', 'boltiandong'], ['shu', 'character:shen_zhangfei']],
             bfake_shen_zhangjiao: ['male', 'shen', 3, ['bolyifu', 'boltianjie'], ['qun', 'character:shen_zhangjiao']],
-            bfake_huanwen: ['male', 'jin', 3, ['bolyuba', 'bolxingjiang']],
+            bfake_huanwen: ['male', 'jin', 4, ['bolyuba', 'bolxingjiang']],
             bfake_miheng: ['male', 'qun', 3, ['bolhuaici', 'boljianling'], ['character:gz_miheng']],
             bfake_zhanghua: ['male', 'jin', 3, ['boljianhe', 'bolbihun'], ['character', 'die'].map(i => `${i}:zhanghua`)],
             bfake_hanshao: ['male', 'qun', 3, ['bollianhe', 'bolhuanjia', 'bolxumin'], ['character', 'die', 'tempname'].map(i => `${i}:clan_hanshao`)],
