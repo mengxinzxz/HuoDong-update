@@ -12,7 +12,7 @@ const packs = function () {
                 CDormitory: ['bilibili_longjiuzhen', 'bilibili_diandian', 'bilibili_murufengchen', 'bilibili_wuzhuwanshui', 'bilibili_kuangshen', 'bilibili_yanjing', 'bilibili_xiaoyaoruyun', 'bilibili_shuijiaobuboli'],
                 Cothers: ['bilibili_xiahoudun', 'bilibili_liuguanzhang', 'bilibili_gaowang', 'bilibili_simayi', 'old_dongxie', 'bilibili_sunhanhua', 'bilibili_zhoutaigong', 'bilibili_zhouxiaomei', 'bilibili_caifuren', 'bilibili_zhengxuan', 'bilibili_sp_xuyou', 'old_zuoci', 'bilibili_kuailiangkuaiyue', 'bilibili_wuqiao', 'bilibili_daxiao', 'bilibili_xushao', 'bilibili_shen_guojia', 'bilibili_re_xusheng', 'bilibili_zhangrang', 'bilibili_litiansuo', 'decade_huangwudie', 'bilibili_huanggai', 'bilibili_ekeshaoge', 'bilibili_guanning', 'bilibili_wangwang', 'diy_lvmeng'],
                 Cothers_dualside: ['bilibili_wangtao', 'bilibili_wangyue', 'bilibili_x_wangtao', 'bilibili_x_wangyue', 'bilibili_daqiao', 'bilibili_xiaoqiao', 'bilibili_x_daqiao', 'bilibili_x_xiaoqiao', 'bilibili_ahuinan', 'bilibili_dongtuna', 'bilibili_x_ahuinan', 'bilibili_x_dongtuna'],
-                CXuanDie: ['bilibili_adong', 'bfake_jiananfeng', 'bfake_shen_zhangjiao', 'bfake_shen_zhangfei', 'bfake_shen_jiaxu', 'bfake_huanwen', 'bfake_miheng'],
+                CXuanDie: ['bfake_zhanghua', 'bfake_hanshao', 'bfake_hanrong', 'bilibili_adong', 'bfake_jiananfeng', 'bfake_shen_zhangjiao', 'bfake_shen_zhangfei', 'bfake_shen_jiaxu', 'bfake_huanwen', 'bfake_miheng'],
             },
         },
         character: {
@@ -88,6 +88,9 @@ const packs = function () {
             bfake_shen_zhangjiao: ['male', 'shen', 3, ['bolyifu', 'boltianjie'], ['qun', 'character:shen_zhangjiao']],
             bfake_huanwen: ['male', 'jin', 3, ['bolyuba', 'bolxingjiang']],
             bfake_miheng: ['male', 'qun', 3, ['bolhuaici', 'boljianling'], ['character:gz_miheng']],
+            bfake_zhanghua: ['male', 'jin', 3, ['boljianhe', 'bolbihun'], ['character', 'die'].map(i => `${i}:zhanghua`)],
+            bfake_hanshao: ['male', 'qun', 3, ['bollianhe', 'bolhuanjia', 'bolxumin'], ['character', 'die', 'tempname'].map(i => `${i}:clan_hanshao`)],
+            bfake_hanrong: ['male', 'qun', 3, ['bolfangzhen', 'bolliuju', 'bolxumin'], ['character', 'die', 'tempname'].map(i => `${i}:clan_hanrong`)],
         },
         characterIntro: {
             bilibili_zhoutaigong: '编号5256',
@@ -12435,6 +12438,165 @@ const packs = function () {
                     },
                 },
             },
+            //结束专栏剩余的大差异蝶将
+            //蝶设张华
+            boljianhe: {
+                audio: 'oljianhe',
+                inherit: 'oljianhe',
+                filterTarget: true,
+                delay: 0,
+                async content(event, trigger, player) {
+                    const { cards, target } = event, type = get.type2(cards[0], player), num = event.cards.length - 1;
+                    await player.recast(cards);
+                    const result = await target.chooseCard(get.translation(player) + '对你发动了【剑合】', num, 'he', (card, player) => {
+                        return get.type2(card) == _status.event.type && player.canRecast(card);
+                    }, '重铸' + get.cnNumber(num) + '张' + get.translation(type) + '牌，或受到1点伤害').set('ai', card => {
+                        if (!_status.event.goon) return 0;
+                        return (get.type(card) == 'equip' ? 15 : 7) - get.value(card);
+                    }).set('type', type).set('goon', get.damageEffect(target, player, target) < 0).forResult();
+                    if (result?.bool && result.cards?.length) await target.recast(result.cards);
+                    else await target.damage(player);
+                    await game.delayx();
+                },
+                ai: {
+                    order(item, player) {
+                        return (player.hasSkill('bolbihun') && _status.currentPhase?.isIn() && player.getStorage('bolbihun_choosed').length < 3) ? 1 : 7;
+                    },
+                    expose: 0.1,
+                    threaten: 3,
+                    result: {
+                        player: 1,
+                        target(player, target) {
+                            const cards = ui.selected.cards, type = get.type2(cards[0]);
+                            const damage = get.damageEffect(target, player, target);
+                            if (player === target) {
+                                if (target.countCards('he', card => {
+                                    return !cards.includes(card) && get.type(card) === type && get.value(card) < 6;
+                                }) >= cards.length) return Math.max(2, damage);
+                                return damage;
+                            }
+                            const he = target.getCards('he'), known = target.getKnownCards(player);
+                            let num = { 'basic': 0.4, 'trick': 0.25, 'equip': 0.1 }[type] || 0;
+                            if (known.filter(card => {
+                                return get.type(card) === type && get.value(card) < 6;
+                            }).length + (he - known.length) * num >= cards.length + 1) return Math.max(3, damage);
+                            return damage;
+                        },
+                    },
+                },
+            },
+            bolbihun: {
+                audio: 'olbihun',
+                trigger: { player: 'gainAfter' },
+                filter(event, player) {
+                    if (!_status.currentPhase?.isIn()) return false;
+                    return event.getParent().name === 'draw' && player.getStorage('bolbihun_choosed').length < 3;
+                },
+                forced: true,
+                async content(event, trigger, player) {
+                    let choice = [
+                        ['wuzhong', '摸两张牌'],
+                        ['zhengu', `将手牌数弃置至${get.cnNumber(_status.currentPhase.getHandcardLimit())}张`],
+                        ['zishou', '本回合不能对其他角色使用牌'],
+                    ];
+                    let restChoice = choice.map(i => i[0]).removeArray(player.getStorage('bolbihun_choosed'));
+                    const result = restChoice.length > 1 ? await player.chooseButton([
+                        `${get.translation(event.name)}：请选择一项`,
+                        [choice, 'textbutton'],
+                    ], true).set('filterButton', button => {
+                        return !get.player().getStorage('bolbihun_choosed').includes(button.link);
+                    }).set('ai', button => {
+                        const player = get.player(), target = _status.currentPhase;
+                        const { num, phaseList } = get.event().getTrigger('phase', true);
+                        if (target !== player || !phaseList?.slice(num - phaseList.length).includes('phaseUse')) {
+                            return 3 - ['wuzhong', 'zishou', 'zhengu'].indexOf(button.link);
+                        }
+                        let restChoice = ['wuzhong', 'zhengu', 'zishou'].removeArray(player.getStorage('bolbihun_choosed'));
+                        const hand = player.countCards('h'), maxHand = player.getHandcardLimit(), delta = hand - maxHand;
+                        const goon = player.hasCard(card => player.hasValueTarget(card, true, true), 'hs');
+                        switch (button.link) {
+                            case 'wuzhong':
+                                if (restChoice.length === 1) return 1145141919810;
+                                let wuzhong = 10;
+                                if (hand <= maxHand - 1) wuzhong += 4;
+                                if (hand >= maxHand) wuzhong -= 4;
+                                wuzhong -= Math.max(0, delta) * 3;
+                                return wuzhong;
+                            case 'zhengu':
+                                let zhengu = 5;
+                                if (delta <= 0) return zhengu + 5;
+                                if (delta === 1 && !goon) zhengu += 8;
+                                zhengu -= delta * 4;
+                                if (restChoice.includes('wuzhong')) zhengu += 2;
+                                return zhengu;
+                            case 'zishou':
+                                return goon ? 2 : -10;
+                        }
+                    }).forResult() : { bool: true, links: restChoice };
+                    if (result?.bool && result.links?.length) {
+                        const choice = result.links[0];
+                        player.addTempSkill('bolbihun_choosed');
+                        player.markAuto('bolbihun_choosed', [choice]);
+                        switch (choice) {
+                            case 'wuzhong':
+                                await player.draw(2);
+                                break;
+                            case 'zhengu':
+                                const num = player.countCards('h') - _status.currentPhase.getHandcardLimit();
+                                if (num > 0) await player.chooseToDiscard(num, true);
+                                break;
+                            case 'zishou':
+                                player.addTempSkill('bolbihun_ban');
+                                player.markAuto('bolbihun_ban', [player]);
+                                break;
+                        }
+                    }
+                },
+                subSkill: {
+                    choosed: {
+                        charlotte: true,
+                        onremove: true,
+                    },
+                    ban: {
+                        charlotte: true,
+                        onremove: true,
+                        intro: { content: 'players' },
+                        mod: {
+                            playerEnabled(card, player, target) {
+                                if (!player.getStorage('bolbihun_ban').includes(target)) return false;
+                            },
+                        },
+                    },
+                },
+            },
+            //蝶设韩融
+            bollianhe: {
+                audio: 'clanlianhe',
+            },
+            bolhuanjia: {
+                audio: 'clanhuanjia',
+            },
+            bolxumin: {
+                audio: 'clanxumin',
+                inherit: 'clanxumin',
+                filterTarget(card, player, target) {
+                    return target.countCards('h') < player.countCards('h') && player.canUse(card, target);
+                },
+                filterCard: () => false,
+                selectCard: -1,
+                async precontent(event, trigger, player) {
+                    player.logSkill(event.result.skill);
+                    player.awakenSkill(event.result.skill);
+                    await player.turnOver();
+                },
+            },
+            //蝶设韩韶
+            bolfangzhen: {
+                audio: 'clanfangzhen',
+            },
+            bolliuju: {
+                audio: 'clanliuju',
+            },
         },
         dynamicTranslate: {
             bilibili_xueji(player) {
@@ -13083,6 +13245,26 @@ const packs = function () {
             bilibili_xiahoudun: '夏侯惇',
             bilibili_ganglie: '刚烈',
             bilibili_ganglie_info: '①当你受到伤害后，你可以对伤害来源造成X点伤害（X为伤害值），若其体力值大于你则X+1。②当你造成伤害时，你可以弃置受伤角色Y张牌（Y为你已损失的体力值且至少为1），然后其回复1点体力，且你可以将其弃置的红色牌交给一名角色。',
+            bfake_zhanghua: '蝶设张华',
+            bfake_zhanghua_prefix: '蝶设',
+            boljianhe: '剑合',
+            boljianhe_info: '出牌阶段，你可以重铸至少两张同名牌或装备牌，令一名角色选择一项：①重铸X-1张与本次重铸的牌类别相同的牌；②受到1点伤害。',
+            bolbihun: '弼昏',
+            bolbihun_info: '锁定技，当你于一名角色的回合内摸牌后，你选择本回合未选择过的一项：①摸两张牌；②将手牌数弃置至当前回合角色的手牌上限；③本回合不能对回合角色外的角色使用牌。',
+            bfake_hanshao: '蝶设韩融',
+            bfake_hanshao_prefix: '蝶设',
+            bollianhe: '连和',
+            bollianhe_info: '还没写',
+            bolhuanjia: '缓颊',
+            bolhuanjia_info: '还没写',
+            bolxumin: '恤民',
+            bolxumin_info: '宗族技，限定技。出牌阶段，你可以将武将牌翻面，视为对任意名手牌数少于你的角色使用【五谷丰登】。',
+            bfake_hanrong: '蝶设韩韶',
+            bfake_hanrong_prefix: '蝶设',
+            bolfangzhen: '放赈',
+            bolfangzhen_info: '还没写',
+            bolliuju: '留驹',
+            bolliuju_info: '还没写',
         },
     };
     for (let i in huodongcharacter.character) {
