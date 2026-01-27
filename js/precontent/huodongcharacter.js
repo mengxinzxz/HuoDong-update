@@ -1906,22 +1906,9 @@ const packs = function () {
                 audio: 'ext:活动武将/audio/skill:2',
                 trigger: { player: 'damageEnd' },
                 frequent: true,
+                getIndex: event => event.num,
                 content() {
-                    'step 0'
-                    event.count = trigger.num;
-                    'step 1'
-                    event.count--;
                     lib.skill.gz_huashen.addVisitors(lib.skill.gz_huashen.getCharacter(player).randomGets(1), player);
-                    'step 2'
-                    if (event.count > 0 && player.hasSkill('gz_xinsheng')) player.chooseBool(get.prompt2('gz_xinsheng')).set('frequentSkill', 'gz_xinsheng');
-                    else event.goto(4);
-                    'step 3'
-                    if (result.bool) {
-                        event.count--;
-                        player.logSkill('gz_xinsheng');
-                        event.goto(1);
-                    }
-                    'step 4'
                     game.delayx();
                 },
                 ai: { combo: 'gz_huashen' },

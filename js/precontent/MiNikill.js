@@ -1718,11 +1718,9 @@ const packs = function () {
                 audio: 'jieming',
                 trigger: { player: 'damageEnd' },
                 direct: true,
+                getIndex: event => event.num,
                 content() {
                     'step 0'
-                    event.count = trigger.num;
-                    'step 1'
-                    event.count--;
                     player.chooseTarget(get.prompt2('minijieming')).set('ai', function (target) {
                         var att = get.attitude(_status.event.player, target);
                         if (target.countCards('h') >= Math.min(target.maxHp, 4)) return -1;
@@ -1730,15 +1728,12 @@ const packs = function () {
                         if (att > 0) return Math.min(4, target.maxHp) - target.countCards('h');
                         return -1;
                     });
-                    'step 2'
+                    'step 1'
                     if (result.bool) {
                         var target = result.targets[0];
                         player.logSkill('minijieming', target);
                         target.drawTo(Math.min(4, target.maxHp));
                     }
-                    else event.finish();
-                    'step 3'
-                    if (event.count > 0 && player.hasSkill('minijieming')) event.goto(1);
                 },
                 ai: {
                     maixie: true,
@@ -1964,12 +1959,11 @@ const packs = function () {
             minichouce: {
                 audio: 'chouce',
                 trigger: { player: 'damageEnd' },
+                getIndex: event => event.num,
                 content() {
                     'step 0'
-                    event.num = trigger.num;
-                    'step 1'
                     player.judge();
-                    'step 2'
+                    'step 1'
                     event.color = result.color;
                     if (event.color == 'black') {
                         player.chooseTarget('获得一名角色区域内的一张牌', function (card, player, target) {
@@ -1995,14 +1989,14 @@ const packs = function () {
                             return att;
                         })
                     }
-                    'step 3'
+                    'step 2'
                     if (result.bool) {
                         var target = result.targets[0];
                         player.line(target, 'green');
                         if (event.color == 'black') player.gainPlayerCard(target, 'hej', true);
                         else {
-                            if (player.storage.xianfu2 && player.storage.xianfu2.includes(target)) {
-                                if (!target.storage.xianfu_mark) target.storage.xianfu_mark = [];
+                            if (player.storage.xianfu2?.includes(target)) {
+                                target.storage.xianfu_mark ??= [];
                                 target.storage.xianfu_mark.add(player);
                                 target.storage.xianfu_mark.sortBySeat();
                                 target.markSkill('xianfu_mark');
@@ -2010,14 +2004,6 @@ const packs = function () {
                             }
                             else target.draw();
                         }
-                    }
-                    'step 4'
-                    if (--event.num > 0) player.chooseBool(get.prompt2('minichouce'));
-                    else event.finish();
-                    'step 5'
-                    if (result.bool) {
-                        player.logSkill('minichouce');
-                        event.goto(1);
                     }
                 },
                 ai: {
@@ -2851,25 +2837,11 @@ const packs = function () {
                 group: 'miniquanji_phase',
                 audio: 'quanji',
                 trigger: { player: 'damageEnd' },
-                filter(event, player) {
-                    return event.num > 0;
-                },
+                getIndex: event => event.num,
                 frequent: true,
                 prompt2: '摸两张牌',
                 content() {
-                    'step 0'
-                    event.count = trigger.num;
-                    'step 1'
-                    event.count--;
                     player.draw(2);
-                    'step 2'
-                    if (event.count > 0 && player.hasSkill('miniquanji')) player.chooseBool(get.prompt('miniquanji'), '摸两张牌').set('frequentSkill', 'miniquanji');
-                    else event.finish();
-                    'step 3'
-                    if (result.bool) {
-                        player.logSkill('miniquanji');
-                        event.goto(1);
-                    }
                 },
                 onremove(player, skill) {
                     var cards = player.getExpansions('quanji');
@@ -3005,24 +2977,16 @@ const packs = function () {
             minifankui: {
                 audio: 'refankui',
                 trigger: { player: 'damageEnd' },
+                getIndex: event => event.num,
                 frequent: true,
                 content() {
                     'step 0'
-                    event.count = trigger.num;
-                    'step 1'
-                    event.count--;
                     player.judge();
-                    'step 2'
+                    'step 1'
                     if (!game.hasPlayer(function (current) {
                         return current.countGainableCards(player, 'he');
-                    })) {
-                        event.goto(4);
-                        return;
-                    }
-                    if (result.suit != 'heart' && (!trigger.source || !trigger.source.countCards('he'))) {
-                        event.goto(4);
-                        return;
-                    }
+                    })) return;
+                    if (result.suit != 'heart' && !trigger.source?.countCards('he')) return;
                     if (result.suit != 'heart') event._result = { bool: true, targets: [trigger.source] };
                     else player.chooseTarget('请选择【反馈】的目标', '获得一名角色的一张牌', true, function (card, player, target) {
                         return target.countGainableCards(player, 'he');
@@ -3030,20 +2994,11 @@ const packs = function () {
                         var player = _status.event.player;
                         return get.effect(target, { name: 'guohe_copy2' }, player, player);
                     });
-                    'step 3'
+                    'step 2'
                     if (result.bool) {
                         var target = result.targets[0];
                         player.line(target);
                         player.gainPlayerCard(target, 'he', true);
-                    }
-                    else event.finish();
-                    'step 4'
-                    if (event.count > 0 && player.hasSkill('minifankui')) player.chooseBool(get.prompt2('minifankui')).set('frequentSkill', 'minifankui');
-                    else event.finish();
-                    'step 5'
-                    if (result.bool) {
-                        player.logSkill('minifankui');
-                        event.goto(1);
                     }
                 },
                 ai: {
@@ -8088,15 +8043,10 @@ const packs = function () {
                 audio: 'kuanggu',
                 audioname: ['re_weiyan'],
                 trigger: { source: 'damageSource' },
+                getIndex: event => event.num,
                 frequent: true,
                 content() {
-                    'step 0'
-                    event.count = trigger.num;
-                    'step 1'
-                    event.count--;
                     player.chooseDrawRecover(true);
-                    'step 2'
-                    if (event.count > 0 && player.hasSkill('minikuanggu')) event.goto(1);
                 },
             },
             minidangxian: {
@@ -31244,15 +31194,14 @@ const packs = function () {
                     });
                     return num >= 2;
                 },
+                getIndex: event => event.num,
                 content() {
                     'step 0'
                     var targets = game.filterPlayer();
                     targets.remove(player);
                     targets.sort(lib.sort.seat);
                     event.targets = targets;
-                    event.count = trigger.num;
                     'step 1'
-                    event.count--;
                     event.num = 0;
                     event.numx = 0;
                     player.line(targets, 'green');
@@ -31287,13 +31236,6 @@ const packs = function () {
                     if (num < event.targets.length) event.goto(3);
                     'step 5'
                     if (event.numx > 4 && !player.isTurnedOver()) player.turnOver();
-                    'step 6'
-                    if (event.count > 0 && player.hasSkill('miniguixin')) player.chooseBool(get.prompt2('new_guixin')).ai = function () {
-                        return lib.skill.miniguixin.check({ num: event.count }, player);
-                    };
-                    else event.finish();
-                    'step 7'
-                    if (event.count && result.bool) event.goto(1);
                 },
                 ai: {
                     maixie: true,
@@ -35505,13 +35447,14 @@ const packs = function () {
                     return evt?.player == player && evt.es && evt.es.length > 0;
                 },
                 frequent: true,
+                getIndex(event, player) {
+                    return event.getl(player).getl(player).es.length;
+                },
                 content() {
                     'step 0'
-                    event.count = trigger.getl(player).es.length;
-                    'step 1'
-                    event.count--;
                     player.draw(2);
-                    if (player.hasSkill('minidoumao')) { event.goto(3); return; }
+                    'step 1'
+                    if (player.hasSkill('minidoumao')) return;
                     player.chooseTarget('是否弃置场上的一张牌？', function (card, player, target) {
                         return target.countDiscardableCards(player, 'ej');
                     }).set('ai', target => {
@@ -35525,14 +35468,6 @@ const packs = function () {
                     });
                     'step 2'
                     if (result.bool) player.discardPlayerCard(result.targets[0], 'ej', true);
-                    'step 3'
-                    if (event.count > 0 && player.hasSkill('minimiaoxiaoji')) player.chooseBool('是否再次发动【枭姬】？').set('frequentSkill', 'minimiaoxiaoji');
-                    else event.finish();
-                    'step 4'
-                    if (result.bool) {
-                        player.logSkill('minimiaoxiaoji');
-                        event.goto(1);
-                    }
                 },
                 ai: {
                     noe: true,

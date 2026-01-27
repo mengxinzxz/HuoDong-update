@@ -255,22 +255,15 @@ const packs = function () {
             kuiba_kuiqu: {
                 audio: 'ext:活动武将/audio/skill:true',
                 trigger: { player: 'damageEnd' },
-                filter(event, player) {
-                    return event.num > 0;
-                },
+                getIndex: event => event.num,
                 forced: true,
                 content() {
-                    'step 0'
-                    event.count = trigger.num;
-                    'step 1'
-                    event.count--;
                     player.draw();
-                    if (trigger.source && trigger.source.countCards('he')) {
+                    if (trigger.source?.isIn() && trigger.source.countCards('he')) {
                         player.line(trigger.source);
-                        trigger.source.discard(trigger.source.getCards('he').randomGet());
+                        const cards = trigger.source.getDiscardableCards(trigger.source, 'he');
+                        if (cards.length > 0) trigger.source.discard(cards.randomGet());
                     }
-                    'step 2'
-                    if (event.count > 0 && player.hasSkill('kuiba_kuiqu')) event.goto(1);
                 },
             },
             kuiba_juli: {
@@ -533,10 +526,10 @@ const packs = function () {
                         (
                             (get.mode() == 'identity' && get.attitude(player, event.player) > 0) ||
                             (get.mode() != 'identity' && event.player.isFriendOf(player))
-                        ) && 
+                        ) &&
                         game.hasPlayer(function (current) {
                             return (
-                                !event.targets.includes(current) && 
+                                !event.targets.includes(current) &&
                                 !current.isFriendsOf(player)
                             );
                         })

@@ -4435,20 +4435,9 @@ const packs = function () {
                 trigger: { player: 'damageEnd' },
                 frequent: true,
                 prompt2: '摸一张牌',
+                getIndex: event => event.num,
                 content() {
-                    'step 0'
-                    event.count = trigger.num;
-                    'step 1'
-                    event.count--;
                     player.draw();
-                    'step 2'
-                    if (event.count > 0 && player.hasSkill('wechatdanxin')) player.chooseBool(get.prompt('wechatdanxin'), '摸一张牌').set('frequentSkill', 'wechatdanxin');
-                    else event.finish();
-                    'step 3'
-                    if (result.bool) {
-                        player.logSkill('wechatdanxin');
-                        event.goto(1);
-                    }
                 },
             },
             //蔡贞姬
