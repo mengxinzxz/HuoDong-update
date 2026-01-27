@@ -1900,7 +1900,7 @@ const packs = function () {
                 },
                 async content(event, trigger, player) {
                     player.addTempSkill('wechatshendao_mark', { player: 'phaseUseAfter' });
-                    player.markAuto('wechatshendao_mark', lib.skill.wechatshendao.logTarget(map.trigger, player));
+                    player.markAuto('wechatshendao_mark', lib.skill.wechatshendao.logTarget(trigger, player));
                     player.storage.wechatshendao_mark.sortBySeat();
                     switch (player.getStorage('wechatshendao_mark').length) {
                         case 1:

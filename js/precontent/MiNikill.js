@@ -1904,6 +1904,7 @@ const packs = function () {
                 group: 'miniremingjian_mingjian',
                 subSkill: {
                     mingjian: {
+                        audio: 'remingjian',
                         inherit: 'minimingjian',
                         prompt: () => lib.translate['minimingjian_info'],
                         async content(event, trigger, player) {
