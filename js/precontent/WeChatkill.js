@@ -16921,7 +16921,7 @@ const packs = function () {
                 },
                 async content(event, trigger, player) {
                     const { cost_data: [link] } = event;
-                    player.addTempSkill(event.name + '_used');
+                    player.addTempSkill(event.name + '_used', 'roundStart');
                     player.markAuto(event.name + '_used', [link]);
                     game.log(player, '选择了', '#g【昭义】', '的', '#y选项' + get.cnNumber(1 + link, true));
                     await get.info(event.name).effect[link].content(event, trigger, player);
