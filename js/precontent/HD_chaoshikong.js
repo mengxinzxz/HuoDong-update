@@ -198,7 +198,7 @@ const packs = function () {
                 forced: true,
                 trigger: { global: 'damageBegin4' },
                 filter(event, player) {
-                    return event.player != player && ((get.mode() == 'identity' && get.attitude(player, event.player) > 0) || (get.mode() != 'identity' && event.player.isFriendOf(player)));
+                    return event.player != player && (get.mode() == 'identity' ? get.attitude(player, event.player) > 0 : event.player.isFriendOf(player));
                 },
                 logTarget: 'player',
                 content() {
@@ -281,7 +281,7 @@ const packs = function () {
                 forced: true,
                 trigger: { global: 'damageBegin4' },
                 filter(event, player) {
-                    return event.source && event.player != player && ((get.mode() == 'identity' && get.attitude(player, event.player) > 0) || (get.mode() != 'identity' && event.player.isFriendOf(player)));
+                    return event.source && event.player != player && (get.mode() == 'identity' ? get.attitude(player, event.player) > 0 : event.player.isFriendOf(player));
                 },
                 logTarget: 'player',
                 content() {

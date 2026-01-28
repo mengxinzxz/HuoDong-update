@@ -100,7 +100,7 @@ const packs = function () {
             kuiba_linyao: {
                 mod: {
                     targetEnabled(card, player, target) {
-                        if ((get.mode() == 'identity' ? get.attitude(player, target) < 0 : target.isEnemyOf(player)) && get.color(card) == 'red' && get.type2(card) == 'trick') return false;
+                        if (get.mode() == 'identity' ? get.attitude(player, target) < 0 : target.isEnemyOf(player) && get.color(card) == 'red' && get.type2(card) == 'trick') return false;
                     },
                 },
                 audio: 'ext:活动武将/audio/skill:true',
@@ -484,7 +484,7 @@ const packs = function () {
                 audio: 'ext:活动武将/audio/skill:true',
                 trigger: { global: 'useCardToTargeted' },
                 filter(event, player) {
-                    return event.card && event.card.name == 'sha' && event.player.countCards('h') && (get.mode() == 'identity' ? get.attitude(player, event.target) > 0 : event.target.isFriendOf(player)) && (get.mode() == 'identity' ? get.attitude(player, event.player) < 0 : event.player.isEnemyOf(player));
+                    return event.card && event.card.name == 'sha' && event.player.countCards('h') && (get.mode() == 'identity' ? get.attitude(player, event.target) > 0 : event.target.isFriendOf(player)) && get.mode() == 'identity' ? get.attitude(player, event.player) < 0 : event.player.isEnemyOf(player);
                 },
                 forced: true,
                 logTarget: 'player',
@@ -551,7 +551,7 @@ const packs = function () {
                 trigger: { global: 'useCardToTargeted' },
                 filter(event, player) {
                     if (event.getParent('useCard').kuiba_shengjie) return false;
-                    return event.card && get.type(event.card) == 'trick' && player.countCards('he') && (get.mode() == 'identity' ? get.attitude(player, event.target) > 0 : event.target.isFriendOf(player)) && (get.mode() == 'identity' ? get.attitude(player, event.player) < 0 : event.player.isEnemyOf(player));
+                    return event.card && get.type(event.card) == 'trick' && player.countCards('he') && (get.mode() == 'identity' ? get.attitude(player, event.target) > 0 : event.target.isFriendOf(player)) && get.mode() == 'identity' ? get.attitude(player, event.player) < 0 : event.player.isEnemyOf(player);
                 },
                 forced: true,
                 logTarget: 'targets',

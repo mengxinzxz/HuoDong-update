@@ -146,7 +146,7 @@ const packs = function () {
                 locked: true,
                 content() {
                     var target = game.filterPlayer(function (current) {
-                        return (get.mode() == 'identity' && get.attitude(player, current) < 0) || (get.mode() != 'identity' && current.isEnemyOf(player));
+                        return get.mode() == 'identity' ? get.attitude(player, current) < 0 : current.isEnemyOf(player);
                     }).randomGet();
                     player.logSkill('ZGaotang', target);
                     player.addSkill('ZGaotang_clear');
@@ -354,7 +354,7 @@ const packs = function () {
                 audio: 'ext:活动武将/audio/skill:true',
                 triggeer: { source: 'damageBegin2' },
                 filter(event, player) {
-                    return ((get.mode() == 'identity' && get.attitude(player, event.player) < 0) || (get.mode() != 'identity' && event.player.isEnemyOf(player))) && event.player.getAllHistory('damage').length == 0;
+                    return get.mode() == 'identity' ? get.attitude(player, event.player) < 0 : event.player.isEnemyOf(player) && event.player.getAllHistory('damage').length == 0;
                 },
                 forced: true,
                 logTarget: 'player',
@@ -434,7 +434,7 @@ const packs = function () {
                 trigger: { global: 'phaseJieshuBegin' },
                 filter(event, player) {
                     if (event.player.getHistory('sourceDamage').length && event.player.countMark('ZGanchao') == 0) return false;
-                    return (get.mode() == 'identity' && get.attitude(player, event.player) > 0) || (get.mode() != 'identity' && event.player.isFriendOf(player));
+                    return get.mode() == 'identity' ? get.attitude(player, event.player) > 0 : event.player.isFriendOf(player);
                 },
                 forced: true,
                 logTarget: 'player',
@@ -448,7 +448,7 @@ const packs = function () {
                         trigger: { global: 'phaseZhunbeiBegin' },
                         filter(event, player) {
                             if (event.player.countMark('ZGanchao') == 0) return false;
-                            return (get.mode() == 'identity' && get.attitude(player, event.player) > 0) || (get.mode() != 'identity' && event.player.isFriendOf(player));
+                            return get.mode() == 'identity' ? get.attitude(player, event.player) > 0 : event.player.isFriendOf(player);
                         },
                         forced: true,
                         logTarget: 'player',
@@ -466,7 +466,7 @@ const packs = function () {
                         trigger: { player: 'phaseDrawBegin2', source: 'damageBegin2' },
                         filter(event, player) {
                             if (event.name == 'phaseDraw') return !event.numFixed;
-                            return (get.mode() == 'identity' && get.attitude(player, event.player) < 0) || (get.mode() != 'identity' && event.player.isEnemyOf(player));
+                            return get.mode() == 'identity' ? get.attitude(player, event.player) < 0 : event.player.isEnemyOf(player);
                         },
                         forced: true,
                         logTarget: 'player',
@@ -480,7 +480,7 @@ const packs = function () {
                 audio: 'ext:活动武将/audio/skill:true',
                 trigger: { player: 'useCardToPlayered' },
                 filter(event, player) {
-                    return player.isPhaseUsing() && event.target.countCards('he') && (get.mode() == 'identity' && get.attitude(player, event.target) < 0) || (get.mode() != 'identity' && event.target.isEnemyOf(player)) && (event.card.name == 'sha' || get.type2(event.card) == 'trick');
+                    return player.isPhaseUsing() && event.target.countCards('he') && get.mode() == 'identity' ? get.attitude(player, event.target) < 0 : event.target.isEnemyOf(player) && (event.card.name == 'sha' || get.type2(event.card) == 'trick');
                 },
                 forced: true,
                 logTarget: 'target',
@@ -542,7 +542,7 @@ const packs = function () {
                 audio: 'ext:活动武将/audio/skill:true',
                 trigger: { global: 'phaseUseBegin' },
                 filter(event, player) {
-                    return event.player.countCards('h') > event.player.maxHp && ((get.mode() == 'identity' && get.attitude(player, event.player) < 0) || (get.mode() != 'identity' && event.player.isEnemyOf(player)));
+                    return event.player.countCards('h') > event.player.maxHp && get.mode() == 'identity' ? get.attitude(player, event.player) < 0 : event.player.isEnemyOf(player);
                 },
                 forced: true,
                 logTarget: 'player',

@@ -61,7 +61,7 @@ const packs = function () {
                                     if (get.mode() == 'identity') return get.attitude(current, target) > 0;
                                     return target.isFriendOf(current);
                                 })) {
-                                    if (((get.mode() == 'identity' && get.attitude(player, target) < 0) || (get.mode() != 'identity' && target.isEnemyOf(player))) && !game.hasPlayer(function (current) {
+                                    if (get.mode() == 'identity' ? get.attitude(player, target) < 0 : target.isEnemyOf(player) && !game.hasPlayer(function (current) {
                                         return current != target && current.hp <= target.hp;
                                     })) return false;
                                 }
