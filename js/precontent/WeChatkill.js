@@ -13547,7 +13547,7 @@ const packs = function () {
                 async content(event, trigger, player) {
                     const bool = trigger.name == 'damage';
                     let num = bool ? 2 : 1;
-                    const drawCards = await player.draw(num).forResult();
+                    const drawCards = (await player.draw(num).forResult())?.cards;
                     if (!game.hasPlayer(target => target != player) || get.itemtype(drawCards) != 'cards') return;
                     if (bool) {
                         if (_status.connectMode) game.broadcastAll(() => (_status.noclearcountdown = true));
