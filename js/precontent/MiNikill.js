@@ -1,4 +1,3 @@
-import { temporarilySetTabFocusMode } from '@codemirror/commands';
 import { lib, game, ui, get, ai, _status } from '../../../../noname.js';
 import MiNikill_sight from './MiNikill_sight.js';
 
