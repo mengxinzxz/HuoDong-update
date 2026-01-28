@@ -5759,7 +5759,7 @@ const packs = function () {
                 async content(event, trigger, player) {
                     let cards = [], count = 0;
                     while (true) {
-                        const result = await player.draw().forResult();
+                        const result = (await player.draw().forResult())?.cards;
                         if (get.itemtype(result) != 'cards') return;
                         count += result.length;
                         cards.addArray(result)
@@ -15677,7 +15677,7 @@ const packs = function () {
                     const { player: target } = trigger;
                     let { cards } = event;
                     if (get.itemtype(cards) != 'cards') {
-                        cards = await target.draw().forResult();
+                        cards = (await target.draw().forResult())?.cards;
                         if (get.itemtype(cards) != 'cards') return;
                     }
                     await player.showCards(cards, `${get.translation(player)}对${player === target ? '自己' : get.translation(target)}发动了【补益】`);
