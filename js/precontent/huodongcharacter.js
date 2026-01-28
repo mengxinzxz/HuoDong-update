@@ -89,8 +89,8 @@ const packs = function () {
             bfake_huanwen: ['male', 'jin', 4, ['bolyuba', 'bolxingjiang']],
             bfake_miheng: ['male', 'qun', 3, ['bolhuaici', 'boljianling'], ['character:gz_miheng']],
             bfake_zhanghua: ['male', 'jin', 3, ['boljianhe', 'bolbihun'], ['character', 'die'].map(i => `${i}:zhanghua`)],
-            bfake_hanshao: ['male', 'qun', 3, ['bollianhe', 'bolhuanjia', 'bolxumin'], ['character', 'die', 'tempname'].map(i => `${i}:clan_hanshao`)],
-            bfake_hanrong: ['male', 'qun', 3, ['bolfangzhen', 'bolliuju', 'bolxumin'], ['character', 'die', 'tempname'].map(i => `${i}:clan_hanrong`)],
+            bfake_hanshao: ['male', 'qun', 3, ['bolfangzhen', 'bolliuju', 'bolxumin'], ['character', 'die', 'tempname'].map(i => `${i}:clan_hanshao`)],
+            bfake_hanrong: ['male', 'qun', 3, ['bollianhe', 'bolhuanjia', 'bolxumin'], ['character', 'die', 'tempname'].map(i => `${i}:clan_hanrong`)],
         },
         characterIntro: {
             bilibili_zhoutaigong: '编号5256',
@@ -12559,9 +12559,182 @@ const packs = function () {
             //蝶设韩融
             bollianhe: {
                 audio: 'clanlianhe',
+                enable: 'phaseUse',
+                usable: 1,
+                filter(event, player) {
+                    return game.countPlayer(current => current => get.info('bollianhe').filterTarget(null, player, current)) > 1;
+                },
+                filterTarget(card, player, target) {
+                    return !target.isLinked();
+                },
+                selectTarget: 2,
+                multitarget: true,
+                async content(event, trigger, player) {
+                    event.choiceMap = new Map();
+                    const targets = event.targets.sortBySeat();
+                    const bool = event.name != 'bollianhe_choice';
+                    if (bool) {
+                        for (const target of targets) {
+                            await target.link(true);
+                        }
+                    }
+                    const map = await game.chooseAnyOL(targets, get.info('bollianhe').chooseButtonx, [player]).forResult();
+                    const list = [[], []];
+                    for (const target of targets) {
+                        target.addExpose(0.05);
+                        const choice = map.get(target).links?.[0];
+                        event.choiceMap.set(target, choice == 'draw' ? 1 : 2);
+                        const str = get.translation(player);
+                        const controls = { 'draw': `令${str}摸一张牌`, 'gain': `令${str}获得其一张牌并翻面` }[choice];
+                        game.log(target, '选择了', '#y' + controls);
+                        if (choice == 'draw') {
+                            list[0].push(target);
+                        } else {
+                            list[1].push(target);
+                        }
+                    }
+                    if (list[0].length) {
+                        for (const target of list[0].sortBySeat()) {
+                            target.line(player);
+                            await player.draw();
+                        }
+                    }
+                    if (list[1].length) {
+                        for (const target of list[1].sortBySeat()) {
+                            target.line(player);
+                            await player.gainPlayerCard(target, 'he', true);
+                            await player.turnOver();
+                        }
+                    }
+                    if (bool) {
+                        for (const target of targets) {
+                            target.addSkill(event.name + '_effect');
+                            target.markAuto(event.name + '_effect', [player]);
+                        }
+                    }
+                },
+                chooseButtonx(player, source, eventId) {
+                    const str = get.translation(source);
+                    return player.chooseButton([
+                        '连和：请选择一项',
+                        [[
+                            ['draw', `令${str}摸一张牌`],
+                            ['gain', `令${str}获得你一张牌并翻面`]
+                        ], 'textbutton']
+                    ], true).set('filterButton', button => {
+                        const { player, source } = get.event();
+                        return button.link != 'gain' || player.countGainableCards(source, player !== source ? 'he' : 'e');
+                    }).set('ai', button => {
+                        const { player, source } = get.event();
+                        const target = get.event().getParent().player;
+                        const link = button.link;
+                        const att = get.attitude(player, source);
+                        if (link == 'draw' && att > 0) return 1;
+                        if (link == 'gain') {
+                            if (!source.isTurnedOver() && att < 0) return 2;
+                            if (source.isTurnedOver() && att > 0) return 2;
+                            return get.event().getRand();
+                        }
+                        return 1;
+                    }).set('source', source).set('id', eventId).set('_global_waiting', true);
+                },
+                ai: {
+                    order: 7.5,
+                    result: {
+                        player: 1,
+                        target(player, target) {
+                            if (!ui.selected.targets.length && player == target) return 1;
+                            return -1;
+                        },
+                    },
+                },
+                subSkill: {
+                    effect: {
+                        charlotte: true,
+                        onremove: true,
+                        intro: { content: 'players' },
+                        trigger: { player: 'phaseUseEnd' },
+                        forced: true,
+                        popup: false,
+                        async content(event, trigger, player) {
+                            const targets = player.getStorage(event.name);
+                            player.removeSkill(event.name);
+                            let count = 0;
+                            player.checkHistory('gain', evt => {
+                                if (evt.getParent(trigger.name) !== trigger) return;
+                                count += evt.cards.length;
+                            });
+                            count = Math.min(5, count);
+                            for (const source of targets.sortBySeat()) {
+                                if (!source.isIn()) continue;
+                                let num = 0;
+                                while (num <= count) {
+                                    const next = game.createEvent('bollianhe_choice');
+                                    next.player = source;
+                                    next.targets = [player];
+                                    next.setContent(lib.skill.bollianhe.content);
+                                    await next;
+                                    num += next.choiceMap.get(player);
+                                }
+                            }
+                        },
+                    }
+                }
             },
             bolhuanjia: {
                 audio: 'clanhuanjia',
+                enable: 'phaseUse',
+                usable: 1,
+                filter(event, player) {
+                    return game.hasPlayer(current => get.info('bolhuanjia').filterTarget(null, player, current));
+                },
+                filterTarget(card, player, target) {
+                    return player.canCompare(target);
+                },
+                async content(event, trigger, player) {
+                    const { target } = event;
+                    const result = await player.chooseToCompare(target).forResult();
+                    if (result?.winner?.isIn() && result.winner.hasSex('male')) {
+                        const { winner } = result;
+                        winner.addSkill(event.name + '_effect')
+                        winner.markAuto(event.name + '_effect', [event.getParent()]);
+                    }
+                },
+                ai: {
+                    order: 8,
+                    result: {
+                        target(player, target) {
+                            return -1;
+                        },
+                    },
+                },
+                subSkill: {
+                    effect: {
+                        charlotte: true,
+                        onremove: true,
+                        mark: true,
+                        intro: { content: '下次发动“出牌阶段限一次”的技能后复原之' },
+                        trigger: { player: ['useSkillAfter', 'logSkill'] },
+                        filter(event, player) {
+                            if (event.type != 'player') return false;
+                            if (player.getStorage('bolhuanjia_effect').includes(event)) return false;
+                            const skill = get.sourceSkillFor(event);
+                            const info = get.info(skill);
+                            if (info.charlotte) return false;
+                            const translation = get.skillInfoTranslation(skill, event.player);
+                            if (!translation) return false;
+                            const match = get.plainText(translation).match(/“?出牌阶段限一次/g);
+                            if (!match || match.every(value => value != "出牌阶段限一次")) return false;
+                            return true;
+                        },
+                        forced: true,
+                        popup: false,
+                        async content(event, trigger, player) {
+                            player.removeSkill(event.name);
+                            player.refreshSkill(get.sourceSkillFor(trigger));
+                        }
+                    }
+                }
             },
             bolxumin: {
                 audio: 'clanxumin',
@@ -12580,9 +12753,162 @@ const packs = function () {
             //蝶设韩韶
             bolfangzhen: {
                 audio: 'clanfangzhen',
+                enable: 'phaseUse',
+                usable: 1,
+                filter(event, player) {
+                    return game.hasPlayer(current => get.info('bolfangzhen').filterTarget(null, player, current));
+                },
+                filterTarget(card, player, target) {
+                    return !target.isLinked();
+                },
+                async content(event, trigger, player) {
+                    const { target } = event;
+                    await target.link(true);
+                    const num1 = Math.min(5, target.getSeatNum());
+                    const num2 = player.getAllHistory('useSkill', evt => evt.skill == event.name).length;
+                    await player.drawTo(num1);
+                    if (player.countCards('he') && player != target) await player.chooseToGive(target, `你可以交给${get.translation(target)}任意张牌`, 'he', 'allowChooseAll', [1, Infinity]).set('ai', card => {
+                        const { player, target } = get.event();
+                        const att = get.attitude(player, target);
+                        if (att > 0) return 6 - get.value(card);
+                        return 0;
+                    });
+                    if (num1 == num2) await player.turnOver();
+                },
+                ai: {
+                    order: 6,
+                    result: {
+                        target(player, target) {
+                            return target.getSeatNum() * get.sgnAttitude(player, target);
+                        },
+                    },
+                }
             },
             bolliuju: {
                 audio: 'clanliuju',
+                getList(player) {
+                    const skills = game.expandSkills(player.getStockSkills(true, true));
+                    const resetSkills = [], suffixs = ['used', 'round', 'block', 'blocker', 'sunben'];
+                    for (const skill of skills) {
+                        const info = get.info(skill);
+                        if (info.usable !== undefined) {
+                            if (typeof player.getStat('triggerSkill')[skill] == 'number' && player.getStat('triggerSkill')[skill] >= 1) {
+                                resetSkills.add(skill);
+                            }
+                            if (typeof player.getStat('skill')[skill] == 'number' && player.getStat('skill')[skill] >= 1) {
+                                resetSkills.add(skill);
+                            }
+                        }
+                        if (info.round && player.storage[skill + '_roundcount']) {
+                            resetSkills.add(skill);
+                        }
+                        if (player.storage[`temp_ban_${skill}`]) {
+                            resetSkills.add(skill);
+                        }
+                        if (player.awakenedSkills.includes(skill)) {
+                            resetSkills.add(skill);
+                        }
+                        for (const suffix of suffixs) {
+                            if (player.hasSkill(skill + '_' + suffix)) {
+                                resetSkills.add(skill);
+                            }
+                        }
+                    }
+                    return resetSkills;
+                },
+                enable: 'phaseUse',
+                usable: 1,
+                filter(event, player) {
+                    return game.hasPlayer(current => get.info('bolhuanjia').filterTarget(null, player, current));
+                },
+                filterTarget(card, player, target) {
+                    return player.canCompare(target);
+                },
+                async content(event, trigger, player) {
+                    const { target } = event;
+                    const result = await player.chooseToCompare(target).set('small', true).forResult();
+                    let cards = [];
+                    game.getGlobalHistory('cardMove', evt => {
+                        if (evt.getParent(2).name === 'chooseToCompare' && evt.getParent(3) === event) {
+                            cards.addArray(evt.cards.filter(card => {
+                                return get.position(card, true) == 'd' && get.type(card, null, false) != 'basic';
+                            }));
+                        }
+                    });
+                    event.distance = [get.distance(player, target), get.distance(target, player)];
+                    cards = cards.filter(card => get.position(card, true) == 'd' && player.hasUseTarget(card));
+                    while (cards.length) {
+                        const result = await player.chooseButton(['留驹：是否使用其中的一张牌？', cards]).set('filterButton', button => {
+                            return get.player().hasUseTarget(button.link);
+                        }).set('ai', button => {
+                            return get.player().getUseValue(button.link) + 0.1;
+                        }).forResult();
+                        if (result?.bool) {
+                            const card = result.links[0];
+                            cards.remove(card);
+                            player.$gain2(card, false);
+                            await game.delayx();
+                            await player.chooseUseTarget(true, card, false);
+                        }
+                        else break;
+                    }
+                    const bool1 = !result?.tie && player !== result.winner;
+                    const bool2 = get.distance(player, target) != event.distance[0] || get.distance(target, player) != event.distance[1];
+                    if (bool1 || bool2) {
+                        const goon = player.isTurnedOver() || player.isLinked();
+                        const resetSkills = get.info(event.name).getList(player);
+                        if (!goon && !resetSkills.length) return;
+                        const list = resetSkills.map(skill => [
+                            skill,
+                            '<div class="popup text" style="width:calc(100% - 10px);display:inline-block"><div class="skill">' +
+                            (() => {
+                                let str = get.translation(skill);
+                                if (!lib.skill[skill]?.nobracket) {
+                                    str = '【' + str + '】';
+                                }
+                                return str;
+                            })() +
+                            '</div><div>' +
+                            lib.translate[skill + '_info'] +
+                            '</div></div>',
+                        ]);
+                        const result = await player.chooseButton([
+                            '留驹：复原武将牌或武将牌上的一个技能',
+                            [['复原武将牌'].concat(list), 'textbutton'],
+                        ], true).set('filterButton', button => {
+                            const player = get.player();
+                            if (button.link == '复原武将牌') {
+                                return player.isLinked() || player.isTurnedOver()
+                            }
+                            return true;
+                        }).set('resetSkills', resetSkills).set('ai', button => {
+                            const player = get.player();
+                            if (button.link == '复原武将牌') {
+                                if (player.isTurnedOver()) return 2;
+                                return 0.5;
+                            }
+                            return 1;
+                        }).set('direct', true).forResult();
+                        if (result?.links?.length) {
+                            const [link] = result.links;
+                            const bool = resetSkills.includes(link);
+                            if (bool) player.refreshSkill(link);
+                            else {
+                                game.log(player, '选择了', '#g复原武将牌');
+                                await player.turnOver(false);
+                                await player.link(false);
+                            }
+                        }
+                    }
+                },
+                ai: {
+                    order: 8,
+                    result: {
+                        target(player, target) {
+                            return -1;
+                        },
+                    },
+                },
             },
         },
         dynamicTranslate: {
@@ -13241,17 +13567,17 @@ const packs = function () {
             bfake_hanshao: '蝶设韩融',
             bfake_hanshao_prefix: '蝶设',
             bollianhe: '连和',
-            bollianhe_info: '还没写',
+            bollianhe_info: '出牌阶段限一次。你可以横置两名角色并令其同时选择一项：1.令你摸一张牌；2.令你获得其一张牌。然后其获得以下效果：其下个出牌阶段结束时，重复选择至其所选项序号数之和大于X（X为其此阶段获得牌数，且至多为5）。',
             bolhuanjia: '缓颊',
-            bolhuanjia_info: '还没写',
+            bolhuanjia_info: '出牌阶段限一次。你可以拼点。赢的男性角色下次发动“出牌阶段限一次”的技能后复原之。',
             bolxumin: '恤民',
             bolxumin_info: '宗族技，限定技。出牌阶段，你可以将武将牌翻面，视为对任意名手牌数少于你的角色使用【五谷丰登】。',
             bfake_hanrong: '蝶设韩韶',
             bfake_hanrong_prefix: '蝶设',
             bolfangzhen: '放赈',
-            bolfangzhen_info: '还没写',
+            bolfangzhen_info: '出牌阶段限一次。你可以横置一名角色，将手牌摸至X张并交给其任意张牌。若为第X次发动本技能，你翻面（X为其座次号且至多为5）。',
             bolliuju: '留驹',
-            bolliuju_info: '还没写',
+            bolliuju_info: '出牌阶段限一次。你可以拼点并使用拼点牌中的非基本牌。若你输或拼点者相互距离因此变化，你复原武将牌或武将牌上的一个技能。',
         },
     };
     for (let i in huodongcharacter.character) {
