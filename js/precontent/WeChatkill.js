@@ -255,12 +255,12 @@ const packs = function () {
             wechat_zhi_zhangjiao: ['male', 'qun', 4, ['wechatzhongxin', 'wechattianqi']],
             wechat_zhi_liubei: ['male', 'shu', 4, ['wechatzhaoyi', 'wechatgongzhi', 'wechattonggan']],
             //限时地主
-            wechat_nailong: ['male', 'qun', 5, ['wechatdunshi', 'wechattanchi']],
+            wechat_nailong: ['male', 'qun', 4, ['wechatdunshi', 'wechattanchi']],
         },
         characterIntro: {
             get wechat_nailong() {
-                let list = ['bilibili_ningjingzhiyuan', 'bilibili_yanjing', 'bilibili_xizhicaikobe', 'bilibili_kuangshen'].map(i => lib.characterIntro[i]);
-                return list.filter(i => i !== void 0).randomGet() || [
+                return [
+                    ...['bilibili_ningjingzhiyuan', 'bilibili_yanjing', 'bilibili_xizhicaikobe', 'bilibili_kuangshen'].map(i => lib.characterIntro[i]).filter(i => i !== void 0),
                     '奶龙是动画《奶龙》系列及其衍生作品中的主角。它是一只拥有“duangduang”大肚子的异星幼龙，呆萌可爱又带点小机灵的大吃货一枚。来到地球遇到了活泼搞笑、富有正义感、酷爱发明的中国少年小七，一人一龙一拍即合，迅速成为好友并开启了搞笑冒险之旅。持续给观众和粉丝们带来快乐和勇气。',
                     '贝利亚奥特曼（日语：ウルトラマンベリアル）是日本圆谷株式会社制作的特摄剧《奥特曼》系列作品中的反派角色之一，2009年在电影《宇宙英雄之超银河传说》中首次登场。原为光之国银族奥特曼，在奥特大战争中曾与奥特之父并肩作战，因受到黑暗宇宙大皇帝安培拉星人黑暗力量的影响对等离子火花塔产生欲望，后遭雷布朗多星人附体彻底堕落为黑暗奥特曼，拥有操控怪兽的能力。作为雷奥尼克斯中最强者，其体内寄宿着宇宙中“最邪恶的灵魂”，通过建立银河帝国与发动跨次元侵略成为全宇宙恐惧的存在。贝利亚形态包括手持终极战斗仪的黑暗形态、吸收艾美拉鲁矿石进化的电弧形态，以及侵占赛罗奥特曼身体的黑暗赛罗形态，掌握帝斯修姆光线、贝利亚灭杀雷电等技能，能通过终极战斗仪召唤百体怪兽。在与宿敌赛罗奥特曼展开命运对决后，其故事在《捷德奥特曼》中通过与儿子捷德的冲突迎来终章。该角色以暗红色皮肤、利爪和血红眼睛为特征，名称源于圣经中的邪恶象征“别利亚”，其中国风造型“吕布战袍·贝利亚”结合方天画戟与翎子元素成为衍生作品经典。',
                 ].randomGet();
@@ -18482,7 +18482,7 @@ const packs = function () {
             wechatgongzhi_info: `每轮开始时，你可以选择至多两名其他角色，称为“共志”角色。然后你再选择一名角色A。若如此做，直到本轮结束，当你或你“共志”记录的角色对A造成伤害后，你从牌堆或弃弃牌堆获得两张点数为2-5的牌，若这些牌中有装备牌，你可以使用之，然后你可以交给伤害来源至多两张牌。`,
             wechattonggan: '同甘',
             wechattonggan_info: '锁定技。“共志”角色的空置装备栏视为装备与你对应装备栏中相同牌名的牌。',
-            wechat_nailong: '贝利亚',
+            wechat_nailong: '奶龙',
             wechatdunshi: '吨势',
             wechatdunshi_info: '锁定技，准备阶段，你展示至多四张手牌，然后其他角色依次选择弃置任意张牌并选择其中你展示的等量张牌，然后你将未被其他角色选择的展示牌和牌堆或弃牌堆中的等量【无中生有】进行替换，且本回合其他角色不能使用这些牌名的牌。',
             wechattanchi: '贪吃',
