@@ -506,28 +506,12 @@ const packs = function () {
             },
             kuiba_shengdou: {
                 audio: 'ext:活动武将/audio/skill:true',
-                trigger: { global: 'useCardToTarget' },
+                trigger: { global: 'useCardToPlayer' },
                 filter(event, player) {
-                    return (
-                        !event.card.kuiba_shengdou &&
-                        event.card &&
-                        event.card.name == 'sha' &&
-                        player.countCards('he') &&
-                        (
-                            (get.mode() == 'identity' && get.attitude(player, event.player) > 0) ||
-                            (get.mode() != 'identity' && event.player.isFriendOf(player))
-                        ) &&
-                        game.hasPlayer(function (current) {
-                            return (
-                                !event.targets.includes(current) &&
-                                !current.isFriendsOf(player)
-                            );
-                        })
-                    );
-                },
-                async cost(event, trigger, player) {
-                    trigger.card.kuiba_shengdou = true;
-                    event.result = await player.chooseBool(get.prompt2(event.skill, trigger.player)).forResult();
+                    if (!event.isFirstTarget) return false;
+                    return event.card.name == 'sha' && player.countCards('he') && game.hasPlayer(function (current) {
+                        return !event.targets.includes(current) && !current.isFriendsOf(player);
+                    }) && (get.mode() == 'identity' ? get.attitude(player, event.player) > 0 : event.player.isFriendOf(player));
                 },
                 logTarget: 'player',
                 async content(event, trigger, player) {
