@@ -100,7 +100,7 @@ const packs = function () {
             kuiba_linyao: {
                 mod: {
                     targetEnabled(card, player, target) {
-                        if (((get.mode() == 'identity' && get.attitude(player, target) < 0) || (get.mode() != 'identity' && target.isEnemyOf(player))) && get.color(card) == 'red' && get.type2(card) == 'trick') return false;
+                        if ((get.mode() == 'identity' ? get.attitude(player, target) < 0 : target.isEnemyOf(player)) && get.color(card) == 'red' && get.type2(card) == 'trick') return false;
                     },
                 },
                 audio: 'ext:活动武将/audio/skill:true',
@@ -456,7 +456,7 @@ const packs = function () {
                 audio: 'ext:活动武将/audio/skill:true',
                 trigger: { global: 'damageBegin4' },
                 filter(event, player) {
-                    return event.player != player && ((get.mode() == 'identity' && get.attitude(player, event.player) > 0) || (get.mode() != 'identity' && event.player.isFriendOf(player)));
+                    return event.player != player && (get.mode() == 'identity' ? get.attitude(player, event.player) > 0 : event.player.isFriendOf(player));
                 },
                 forced: true,
                 logTarget: 'player',
@@ -471,7 +471,7 @@ const packs = function () {
                 trigger: { global: 'damageBegin2' },
                 usable: 1,
                 filter(event, player) {
-                    return player.countCards('he') && event.source && ((get.mode() == 'identity' && get.attitude(player, event.source) > 0) || (get.mode() != 'identity' && event.source.isFriendOf(player)));
+                    return player.countCards('he') && event.source && (get.mode() == 'identity' ? get.attitude(player, event.source) > 0 : event.source.isFriendOf(player));
                 },
                 forced: true,
                 logTarget: 'source',
@@ -484,7 +484,7 @@ const packs = function () {
                 audio: 'ext:活动武将/audio/skill:true',
                 trigger: { global: 'useCardToTargeted' },
                 filter(event, player) {
-                    return event.card && event.card.name == 'sha' && event.player.countCards('h') && ((get.mode() == 'identity' && get.attitude(player, event.target) > 0) || (get.mode() != 'identity' && event.target.isFriendOf(player))) && ((get.mode() == 'identity' && get.attitude(player, event.player) < 0) || (get.mode() != 'identity' && event.player.isEnemyOf(player)));
+                    return event.card && event.card.name == 'sha' && event.player.countCards('h') && (get.mode() == 'identity' ? get.attitude(player, event.target) > 0 : event.target.isFriendOf(player)) && (get.mode() == 'identity' ? get.attitude(player, event.player) < 0 : event.player.isEnemyOf(player));
                 },
                 forced: true,
                 logTarget: 'player',
@@ -496,7 +496,7 @@ const packs = function () {
                 audio: 'ext:活动武将/audio/skill:true',
                 trigger: { global: 'phaseJieshuBegin' },
                 filter(event, player) {
-                    return event.player.countCards('he') && ((get.mode() == 'identity' && get.attitude(player, event.player) < 0) || (get.mode() != 'identity' && event.player.isEnemyOf(player)));
+                    return event.player.countCards('he') && (get.mode() == 'identity' ? get.attitude(player, event.player) > 0 : event.player.isFriendOf(player));
                 },
                 forced: true,
                 logTarget: 'player',
@@ -535,7 +535,7 @@ const packs = function () {
                 audio: 'ext:活动武将/audio/skill:true',
                 trigger: { global: 'damageBegin4' },
                 filter(event, player) {
-                    return event.player != player && ((get.mode() == 'identity' && get.attitude(player, event.player) > 0) || (get.mode() != 'identity' && event.player.isFriendOf(player)));
+                    return event.player != player && (get.mode() == 'identity' ? get.attitude(player, event.player) > 0 : event.player.isFriendOf(player));
                 },
                 forced: true,
                 logTarget: 'player',
@@ -551,7 +551,7 @@ const packs = function () {
                 trigger: { global: 'useCardToTargeted' },
                 filter(event, player) {
                     if (event.getParent('useCard').kuiba_shengjie) return false;
-                    return event.card && get.type(event.card) == 'trick' && player.countCards('he') && ((get.mode() == 'identity' && get.attitude(player, event.target) > 0) || (get.mode() != 'identity' && event.target.isFriendOf(player))) && ((get.mode() == 'identity' && get.attitude(player, event.player) < 0) || (get.mode() != 'identity' && event.player.isEnemyOf(player)));
+                    return event.card && get.type(event.card) == 'trick' && player.countCards('he') && (get.mode() == 'identity' ? get.attitude(player, event.target) > 0 : event.target.isFriendOf(player)) && (get.mode() == 'identity' ? get.attitude(player, event.player) < 0 : event.player.isEnemyOf(player));
                 },
                 forced: true,
                 logTarget: 'targets',
@@ -565,7 +565,7 @@ const packs = function () {
                 audio: 'ext:活动武将/audio/skill:true',
                 trigger: { global: 'phaseJieshuBegin' },
                 filter(event, player) {
-                    return (get.mode() == 'identity' && get.attitude(player, event.player) > 0) || (get.mode() != 'identity' && event.player.isFriendOf(player));
+                    return get.mode() == 'identity' ? get.attitude(player, event.player) > 0 : event.player.isFriendOf(player);
                 },
                 forced: true,
                 logTarget: 'player',
