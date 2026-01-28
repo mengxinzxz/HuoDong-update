@@ -178,11 +178,9 @@ const packs = function () {
                     }
                     return false;
                 },
-                direct: true,
-                content() {
-                    'step 0'
+                async cost(event, trigger, player) {
                     var prompt2 = '为' + get.translation(trigger.card) + '增加或减少一个目标';
-                    player.chooseTarget(get.prompt('kuiba_huanguang'), function (card, player, target) {
+                    event.result = await player.chooseTarget(get.prompt(event.skill), function (card, player, target) {
                         var player = _status.event.player;
                         if (_status.event.targets.includes(target)) return true;
                         return lib.filter.targetEnabled2(_status.event.card, player, target) && lib.filter.targetInRange(_status.event.card, player, target);
@@ -190,19 +188,12 @@ const packs = function () {
                         var trigger = _status.event.getTrigger();
                         var player = _status.event.player;
                         return get.effect(target, trigger.card, player, player) * (_status.event.targets.includes(target) ? -1 : 1);
-                    }).set('targets', trigger.targets).set('card', trigger.card);
-                    'step 1'
-                    if (result.bool) {
-                        if (!event.isMine() && !event.isOnline()) game.delayx();
-                        event.targets = result.targets;
-                    }
-                    else event.finish();
-                    'step 2'
-                    if (event.targets) {
-                        player.logSkill('kuiba_huanguang', event.targets);
-                        if (trigger.targets.includes(event.targets[0])) trigger.targets.removeArray(event.targets);
-                        else trigger.targets.addArray(event.targets);
-                    }
+                    }).set('targets', trigger.targets).set('card', trigger.card).forResult();
+                },
+                async content(event, trigger, player) {
+                    if (!event.isMine() && !event.isOnline()) game.delayx();
+                    if (trigger.targets.includes(event.targets[0])) trigger.targets.removeArray(event.targets);
+                    else trigger.targets.addArray(event.targets);
                 },
             },
             kuiba_wangjian: {
@@ -269,19 +260,18 @@ const packs = function () {
             kuiba_juli: {
                 group: 'kuiba_juli_hit',
                 audio: 'ext:活动武将/audio/skill:true',
-                trigger: { source: 'damageBegin1' },
+                trigger: { player: 'useCard' },
                 filter(event, player) {
-                    return event.card && event.card.name == 'sha' && game.hasPlayer(function (current) {
+                    return event.card?.name == 'sha' && game.hasPlayer(function (current) {
                         return current != player && get.distance(player, current) == 1;
                     });
                 },
-                firstDo: true,
-                direct: true,
-                locked: true,
-                content() {
-                    trigger.num += (game.countPlayer(function (current) {
+                forced: true,
+                async content(event, trigger, player) {
+                    if (typeof trigger.baseDamage !== 'number') trigger.baseDamage = 1;
+                    trigger.baseDamage += game.countPlayer(current => {
                         return current != player && get.distance(player, current) == 1;
-                    }) - 1);
+                    }) - 1;
                 },
                 subSkill: {
                     hit: {
@@ -298,7 +288,7 @@ const packs = function () {
                         ai: {
                             directHit_ai: true,
                             skillTagFilter(player, tag, arg) {
-                                if (get.distance(arg.target, player) <= 1) return false;
+                                if (get.distance(arg?.target, player) <= 1) return false;
                             },
                         },
                     },
@@ -516,7 +506,7 @@ const packs = function () {
             },
             kuiba_shengdou: {
                 audio: 'ext:活动武将/audio/skill:true',
-                trigger: { global: 'useCardToTargeted' },
+                trigger: { global: 'useCardToTarget' },
                 filter(event, player) {
                     return (
                         !event.card.kuiba_shengdou &&
@@ -535,30 +525,25 @@ const packs = function () {
                         })
                     );
                 },
-                direct: true,
-                content() {
-                    'step 0'
+                async cost(event, trigger, player) {
                     trigger.card.kuiba_shengdou = true;
-                    player.chooseBool(get.prompt2('kuiba_shengdou', trigger.player));
-                    'step 1'
-                    if (result.bool) {
-                        player.logSkill('kuiba_shengdou', trigger.player);
-                        player.discard(player.getCards('he').randomGet());
-                        trigger.player.chooseTarget('为' + get.translation(trigger.card) + '增加一个目标', true, function (card, player, target) {
-                            var evt = _status.event.getTrigger(), player = trigger.player;
-                            return !evt.targets.includes(target) && lib.filter.filterTarget(evt.card, player, target);
-                        }).set('ai', function (target) {
-                            var evt = _status.event.getTrigger(), eff = get.effect(target, evt.card, evt.player, evt.player);
-                            return eff;
-                        });
-                    }
-                    else event.finish();
-                    'step 2'
-                    if (result.bool) {
-                        var target = result.targets[0];
+                    event.result = await player.chooseBool(get.prompt2(event.skill, trigger.player)).forResult();
+                },
+                logTarget: 'player',
+                async content(event, trigger, player) {
+                    await player.randomDiscard(player, 'he', 'random');
+                    const result = await trigger.player.chooseTarget('为' + get.translation(trigger.card) + '增加一个目标', true, (card, player, target) => {
+                        const evt = _status.event.getTrigger();
+                        return !evt.targets.includes(target) && lib.filter.filterTarget(evt.card, evt.player, target);
+                    }).set('ai', target => {
+                        const evt = _status.event.getTrigger(), eff = get.effect(target, evt.card, evt.player, evt.player);
+                        return eff;
+                    }).forResult();
+                    if (result?.bool) {
+                        const target = result.targets[0];
                         trigger.player.line(target);
                         game.log(target, '成为了', trigger.card, '的额外目标');
-                        trigger.targets.push(target);
+                        trigger.getParent().targets.add(target);
                     }
                 },
             },
