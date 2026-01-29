@@ -8730,7 +8730,7 @@ const packs = function () {
                         }).forResult();
                     }
                     else result = { index: goon ? 0 : 1 };
-                    if (result.index == 1) await player.gainPlayerCard(target, 'h', [1, Infinity], true, 'visible').set('ai', button => {
+                    if (result.index == 1) await player.gainPlayerCard(target, 'h', [1, Infinity], true, 'visible', 'allowChooseAll').set('ai', button => {
                         const { player, target } = get.event(), { link } = button;
                         const att = get.attitude(player, target);
                         if (att > 0) {
@@ -8770,7 +8770,7 @@ const packs = function () {
                         const links = vcards.length == 1 ? vcards : (await target.chooseButton([`请选择要对${get.translation(target2)}使用的牌`, [vcards, 'vcard']], true).set("ai", button => {
                             const player = get.player();
                             return get.effect(get.event().target2, { name: button.link[2], isCard: true, nature: button.link[3] }, player, player);
-                        }).set('target2', target2).forResult().links);
+                        }).set('target2', target2).forResult()).links;
                         if (!links?.length) return;
                         await target.useCard({ name: links[0][2], isCard: true, nature: links[0][3] }, false, target2);
                     }
