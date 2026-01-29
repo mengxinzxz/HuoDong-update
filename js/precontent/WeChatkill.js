@@ -5898,7 +5898,7 @@ const packs = function () {
                         }).set('goon', get.attitude(target, player) < 0);
                     }
                     else event.finish();
-                    'step 4';
+                    'step 4'
                     if (!result.bool) player.draw();
                 },
                 ai: {
