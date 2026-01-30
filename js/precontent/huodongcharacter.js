@@ -9,7 +9,7 @@ const packs = function () {
             huodongcharacter: {
                 CLongZhou: ['lz_sufei', 'lz_tangzi', 'lz_liuqi', 'lz_huangquan'],
                 Chuodong: ['bilibili_shengxunyu', 'bilibili_Firewin', 'bilibili_jinglingqiu', 'bilibili_suixingsifeng', 'bilibili_Emptycity', 'bilibili_thunderlei', 'bilibili_lonelypatients', 'bilibili_ningjingzhiyuan', 'bilibili_xizhicaikobe'],
-                CDormitory: ['bilibili_longjiuzhen', 'bilibili_diandian', 'bilibili_murufengchen', 'bilibili_wuzhuwanshui', 'bilibili_kuangshen', 'bilibili_yanjing', 'bilibili_xiaoyaoruyun', 'bilibili_shuijiaobuboli'],
+                CDormitory: ['bilibili_longjiuzhen', 'bilibili_diandian', 'bilibili_murufengchen', 'bilibili_wuzhuwanshui', 'bilibili_kuangshen', 'bilibili_yanjing', ...Array.from({ length: 3 }).map((_, index) => `bilibili_yanjing_friend${index + 1}`), 'bilibili_xiaoyaoruyun', 'bilibili_shuijiaobuboli'],
                 Cothers: ['bilibili_xiahoudun', 'bilibili_liuguanzhang', 'bilibili_gaowang', 'bilibili_simayi', 'old_dongxie', 'bilibili_sunhanhua', 'bilibili_zhoutaigong', 'bilibili_zhouxiaomei', 'bilibili_caifuren', 'bilibili_zhengxuan', 'bilibili_sp_xuyou', 'old_zuoci', 'bilibili_kuailiangkuaiyue', 'bilibili_wuqiao', 'bilibili_daxiao', 'bilibili_xushao', 'bilibili_shen_guojia', 'bilibili_re_xusheng', 'bilibili_zhangrang', 'bilibili_litiansuo', 'decade_huangwudie', 'bilibili_huanggai', 'bilibili_ekeshaoge', 'bilibili_guanning', 'bilibili_wangwang', 'diy_lvmeng'],
                 Cothers_dualside: ['bilibili_wangtao', 'bilibili_wangyue', 'bilibili_x_wangtao', 'bilibili_x_wangyue', 'bilibili_daqiao', 'bilibili_xiaoqiao', 'bilibili_x_daqiao', 'bilibili_x_xiaoqiao', 'bilibili_ahuinan', 'bilibili_dongtuna', 'bilibili_x_ahuinan', 'bilibili_x_dongtuna'],
                 CXuanDie: ['bfake_zhanghua', 'bfake_hanshao', 'bfake_hanrong', 'bilibili_adong', 'bfake_jiananfeng', 'bfake_shen_zhangjiao', 'bfake_shen_zhangfei', 'bfake_shen_jiaxu', 'bfake_huanwen', 'bfake_miheng'],
@@ -49,7 +49,10 @@ const packs = function () {
             bilibili_xushao: ['male', 'qun', 3, ['bol_pinjian', 'bol_yuedan'], ['die:xushao']],
             bilibili_ningjingzhiyuan: ['male', 'key', 4, ['bilibili_waifa_rewrite', 'bilibili_xiezhi', 'bilibili_fazhou'], ['clan:肘家军|宿舍群|肘击群|活动群', 'name:闹动|导近']],
             bilibili_xizhicaikobe: ['male', 'key', 4, ['bilibili_waifa_rewrite', 'bilibili_zhangcai', 'bilibili_laosao'], ['clan:肘家军|宿舍群|肘击群|活动群', 'name:戏|子宓']],
-            bilibili_yanjing: ['male', 'key', 3, ['bilibili_dongxi', 'bilibili_mingcha', 'bilibili_huiyan'], ['clan:肘家军|肘击群|活动群', 'tooenough|眼睛']],
+            bilibili_yanjing: ['male', 'key', 3, ['bilibili_dongxi', 'bilibili_mingcha', 'bilibili_huiyan', 'bilibili_kamiman'], ['clan:肘家军|肘击群|活动群', 'tooenough|眼睛']],
+            bilibili_yanjing_friend1: ['female', 'qun', 3, ['bilibili_roulin', 'bilibili_shenren'], ['unseen', 'character:bilibili_diandian']],
+            bilibili_yanjing_friend2: ['male', 'qun', '4/5', ['bilibili_benghuai', 'bilibili_shenren'], ['unseen', 'character:bilibili_kuangshen']],
+            bilibili_yanjing_friend3: ['male', 'qun', '3/4', ['bilibili_yaowu', 'bilibili_shenren'], ['unseen', 'character:bilibili_longjiuzhen']],
             bilibili_caifuren: ['female', 'qun', 3, ['bilibili_kuilei'], ["name:蔡|null"]],
             bilibili_xiaoyaoruyun: ['female', 'key', 3, ['bilibili_chuandu', 'bilibili_shuaiwei', 'bilibili_huaikui'], ['clan:肘击群|活动群', 'name:鹿都|智川介']],
             bilibili_shuijiaobuboli: ['female', 'key', 3, ['bilibili_qicai', 'bilibili_jizhi', 'bilibili_fengliang', 'bilibili_guiyin'], ['clan:宿舍群|活动群', 'name:黄|月英']],
@@ -10070,6 +10073,321 @@ const packs = function () {
                     },
                 },
             },
+            bilibili_shenren: {
+                trigger: {
+                    source: 'damageBegin1',
+                    player: 'damageBegin2',
+                },
+                filter(event, player, name) {
+                    if (!event.source?.isIn()) return false;
+                    return get.nameList(event[['player', 'source'][parseInt(name.slice(-1)) - 1]]).some(name => {
+                        return get.rawName(name).length === 4 || get.rawName(name, true).length === 4;
+                    });
+                },
+                forced: true,
+                logTarget(event, player, name) {
+                    return event[['player', 'source'][parseInt(name.slice(-1)) - 1]];
+                },
+                async content(event, trigger, player) {
+                    trigger.num++;
+                },
+            },
+            //大姐
+            bilibili_roulin: {
+                audio: false,
+                inherit: 'roulin',
+                filter(event, player) {
+                    if (event.card.name !== 'sha') return false;
+                    return player.differentSexFrom(event[player === event.player ? 'target' : 'player']);
+                },
+                ai: {
+                    halfneg: true,
+                    directHit_ai: true,
+                    skillTagFilter(player, tag, arg) {
+                        if (tag !== 'directHit_ai') return true;
+                        if (!arg?.card || !arg.target || arg.card.name !== 'sha' || !player.differentSexFrom(arg.target) || arg.target.countCards('hs', 'shan') > 1) return false;
+                    },
+                },
+                global: 'bilibili_roulin_global',
+                subSkill: {
+                    global: {
+                        ai: {
+                            halfneg: true,
+                            directHit_ai: true,
+                            skillTagFilter(player, tag, arg) {
+                                if (!arg?.card || !arg.target?.hasSkill('bilibili_roulin') || arg.card.name !== 'sha' || !player.differentSexFrom(arg.target) || arg.target.countCards('hs', 'shan') > 1) return false;
+                            },
+                        },
+                    },
+                },
+            },
+            //胖哥
+            bilibili_benghuai: {
+                audio: false,
+                inherit: 'benghuai',
+                async content(event, trigger, player) {
+                    const result = await player.chooseControl('体力', '体力上限').set('ai', function () {
+                        const player = get.player();
+                        return player.isDamaged() || player.maxHp <= 1 ? 0 : 1;
+                    }).set('prompt', '崩坏：失去1点体力或减1点体力上限').forResult();
+                    if (typeof result?.index === 'number') {
+                        await player[['loseHp', 'loseMaxHp'][result.index]](1);
+                        await player.draw(1 + result.index);
+                    }
+                },
+            },
+            //公鸭
+            bilibili_yaowu: {
+                audio: false,
+                inherit: 'reyaowu',
+                filter(event, player) {
+                    return !event.card || (get.color(event.card) === 'red' && event.source?.isIn());
+                },
+                async content(event, trigger, player) {
+                    await ((trigger.card && get.color(trigger.card) === 'red') ? trigger.source : player).draw();
+                },
+                ai: {
+                    effect: {
+                        target(card, player, target) {
+                            if (typeof card !== 'object' || !get.tag(card, 'damage') || player.hasSkillTag('jueqing', false, target)) return;
+                            if (get.color(card) === 'red') return [1, 0, 1, 0.6];
+                            return [1, 0.6];
+                        },
+                    },
+                },
+            },
+            //加强版眼睛
+            bilibili_kamiman: {
+                unique: true,
+                trigger: { player: 'phaseBegin' },
+                filter(event, player) {
+                    if (!get.nameList(player).includes('bilibili_yanjing')) return false;
+                    return !event._bilibili_shenren_phase;
+                },
+                forced: true,
+                async content(event, trigger, player) {
+                    trigger._bilibili_shenren_phase = true;
+                    const storage = player.storage['bilibili_kamiman'];
+                    const result = await player.chooseToMove(`${get.translation(event.name)}：请选择神人们的回合顺序`).set('list', [
+                        ['神人们', [
+                            Object.keys(storage),
+                            (item, type, position, noclick, node) => {
+                                let itemcharacter = { ...lib.character[item] };
+                                let { hp, maxHp, hujia, ...otheritem } = itemcharacter;
+                                lib.character[item] = {
+                                    ...otheritem,
+                                    hp: storage[item].hp,
+                                    maxHp: storage[item].maxHp,
+                                    hujia: storage[item].hujia,
+                                };
+                                node = ui.create.buttonPresets.character(item, 'character', position, noclick);
+                                lib.character[item] = itemcharacter;
+                                if (item === 'bilibili_yanjing') game.createButtonCardsetion(`本体`, node);
+                                return node;
+                            },
+                        ]],
+                    ]).set('processAI', list => {
+                        return [...list[0][1]].randomSort();
+                    }).forResult();
+                    if (result?.bool && result.moved?.[0]) {
+                        const [item2, ...sort] = result.moved[0];
+                        if (item2 !== 'bilibili_yanjing') {
+                            const storage = player.storage['bilibili_kamiman'];
+                            player.reinit('bilibili_yanjing', item2, [storage[item2].hp, storage[item2].maxHp, storage[item2].hujia]);
+                            player.markSkill('bilibili_kamiman');
+                        }
+                        player.addSkill('bilibili_kamiman_phase');
+                        player.storage['bilibili_kamiman_phase'] = {
+                            characters: sort,
+                            current: item2,
+                        };
+                    }
+                },
+                onRound(event) {
+                    return !event._bilibili_shenren_phase;
+                },
+                init(player, skill) {
+                    player.addSkill(`${skill}_effect`);
+                    lib.onround.add(lib.skill[skill].onRound);
+                    lib.hooks?.checkUpdate?.add(function _bilibili_shenren_update(player) {
+                        const storage = player.storage?.['bilibili_kamiman'];
+                        const names = get.nameList(player).filter(name => storage?.[name]);
+                        if (names.length > 0) {
+                            for (const item of names) {
+                                const { hp, maxHp, hujia } = player;
+                                player.storage['bilibili_kamiman'][item] = { hp, maxHp, hujia };
+                            }
+                        }
+                    });
+                },
+                group: ['bilibili_kamiman_shenren', 'bilibili_kamiman_init', 'bilibili_kamiman_defend'],
+                intro: {
+                    markcount(storage = {}) {
+                        return Object.keys(storage).length - 1;
+                    },
+                    mark(dialog, storage = {}) {
+                        dialog.add([
+                            Object.keys(storage),
+                            (item, type, position, noclick, node) => {
+                                let itemcharacter = { ...lib.character[item] };
+                                let { hp, maxHp, hujia, ...otheritem } = itemcharacter;
+                                lib.character[item] = {
+                                    ...otheritem,
+                                    hp: storage[item].hp,
+                                    maxHp: storage[item].maxHp,
+                                    hujia: storage[item].hujia,
+                                };
+                                node = ui.create.buttonPresets.character(item, 'character', position, noclick);
+                                lib.character[item] = itemcharacter;
+                                if (item === 'bilibili_yanjing') game.createButtonCardsetion(`本体`, node);
+                                return node;
+                            },
+                        ]);
+                    },
+                },
+                subSkill: {
+                    shenren: {
+                        inherit: 'bilibili_shenren',
+                    },
+                    init: {
+                        trigger: {
+                            global: 'phaseBefore',
+                            player: 'enterGame',
+                        },
+                        filter(event, player) {
+                            if (!get.nameList(player).includes('bilibili_yanjing')) return false;
+                            return event.name !== 'phase' || game.phaseNumber === 0;
+                        },
+                        forced: true,
+                        async content(event, trigger, player) {
+                            const list = Array.from({ length: 3 }).map((_, index) => `bilibili_yanjing_friend${index + 1}`);
+                            player.storage['bilibili_kamiman'] = (() => {
+                                const { hp, maxHp, hujia } = player;
+                                const map = {
+                                    'bilibili_yanjing': { hp, maxHp, hujia },
+                                };
+                                for (const name of list) {
+                                    const { hp, maxHp, hujia } = lib.character[name];
+                                    map[name] = { hp, maxHp, hujia };
+                                }
+                                return map;
+                            })();
+                            game.broadcastAll((player, list) => {
+                                player.$draw(list.map(name => {
+                                    const cardname = `huashen_card_${name}`;
+                                    lib.card[cardname] = {
+                                        fullimage: true,
+                                        image: `character:${name}`,
+                                    };
+                                    lib.translate[cardname] = get.rawName2(name);
+                                    return game.createCard(cardname, '', '');
+                                }), 'nobroadcast');
+                            }, player, list);
+                            player.markSkill('bilibili_kamiman');
+                        },
+                    },
+                    defend: {
+                        trigger: { player: 'phaseAfter' },
+                        filter(event, player) {
+                            if (!get.nameList(player).includes('bilibili_yanjing')) return false;
+                            return (!event._bilibili_shenren_phase || event._bilibili_shenren) && Object.keys(player.storage['bilibili_kamiman']).length > 1;
+                        },
+                        async cost(event, trigger, player) {
+                            const storage = player.storage['bilibili_kamiman'];
+                            const result = event.result = await player.chooseButton([
+                                `${get.translation(event.skill)}：选择一个神人朋友代替你在回合外站场`,
+                                [
+                                    Object.keys(storage),
+                                    (item, type, position, noclick, node) => {
+                                        let itemcharacter = { ...lib.character[item] };
+                                        let { hp, maxHp, hujia, ...otheritem } = itemcharacter;
+                                        lib.character[item] = {
+                                            ...otheritem,
+                                            hp: storage[item].hp,
+                                            maxHp: storage[item].maxHp,
+                                            hujia: storage[item].hujia,
+                                        };
+                                        node = ui.create.buttonPresets.character(item, 'character', position, noclick);
+                                        lib.character[item] = itemcharacter;
+                                        if (item === 'bilibili_yanjing') game.createButtonCardsetion(`本体`, node);
+                                        return node;
+                                    },
+                                ],
+                            ], true).set('filterButton', button => {
+                                return button.link !== 'bilibili_yanjing';
+                            }).set('ai', button => {
+                                const player = get.player(), item = button.link;
+                                return player.storage['bilibili_kamiman'][item].hp + player.storage['bilibili_kamiman'][item].hujia;
+                            }).forResult();
+                            if (result?.bool && result.links?.length) event.result.cost_data = result.links[0];
+                        },
+                        async content(event, trigger, player) {
+                            const item = event.cost_data, storage = player.storage['bilibili_kamiman'];
+                            player.reinit('bilibili_yanjing', item, [storage[item].hp, storage[item].maxHp, storage[item].hujia]);
+                            player.markSkill('bilibili_kamiman');
+                            player.when('phaseBeginStart').filter(() => {
+                                return get.nameList(player).includes(item);
+                            }).then(() => {
+                                const storage = player.storage['bilibili_kamiman'];
+                                player.reinit(item, 'bilibili_yanjing', [storage['bilibili_yanjing'].hp, storage['bilibili_yanjing'].maxHp, storage['bilibili_yanjing'].hujia]);
+                                player.markSkill('bilibili_kamiman');
+                            }).vars({ item });
+                        },
+                    },
+                    phase: {
+                        charlotte: true,
+                        onremove: true,
+                        trigger: { player: 'phaseAfter' },
+                        silent: true,
+                        firstDo: true,
+                        async content(event, trigger, player) {
+                            const storage = player.storage[event.name];
+                            if (!storage) {
+                                player.removeSkill(event.name);
+                                return;
+                            }
+                            const item = storage.characters[0], change = storage.current, storage2 = player.storage['bilibili_kamiman'];
+                            if (!item) {
+                                player.removeSkill(event.name);
+                                if (item !== 'bilibili_yanjing') {
+                                    player.reinit(change, 'bilibili_yanjing', [storage2['bilibili_yanjing'].hp, storage2['bilibili_yanjing'].maxHp, storage2['bilibili_yanjing'].hujia]);
+                                    player.markSkill('bilibili_kamiman');
+                                }
+                                return;
+                            }
+                            player.reinit(change, item, [storage2[item].hp, storage2[item].maxHp, storage2[item].hujia]);
+                            player.markSkill('bilibili_kamiman');
+                            player.storage[event.name].characters.remove(item);
+                            player.storage[event.name].current = item;
+                            const next = player.insertPhase();
+                            next._bilibili_shenren_phase = true;
+                            if (!player.storage[event.name].characters.length) next._bilibili_shenren = true;
+                        },
+                    },
+                    effect: {
+                        charlotte: true,
+                        trigger: { player: 'dieBefore' },
+                        filter(event, player) {
+                            const storage = player.storage['bilibili_kamiman'];
+                            return get.nameList(player).some(name => name !== 'bilibili_yanjing' && storage[name]);
+                        },
+                        silent: true,
+                        firstDo: true,
+                        forceDie: true,
+                        async content(event, trigger, player) {
+                            const storage = player.storage['bilibili_kamiman'];
+                            const names = get.nameList(player).filter(name => name !== 'bilibili_yanjing' && storage[name]);
+                            trigger.cancel();
+                            for (const item of names) {
+                                delete player.storage['bilibili_kamiman'][item];
+                                player.reinit(item, 'bilibili_yanjing', [storage['bilibili_yanjing'].hp, storage['bilibili_yanjing'].maxHp, storage['bilibili_yanjing'].hujia]);
+                            }
+                            if (player.storage['bilibili_kamiman_phase']?.current) player.storage['bilibili_kamiman_phase'].current = 'bilibili_yanjing';
+                            player[Object.keys(player.storage['bilibili_kamiman']).length > 1 ? 'markSkill' : 'unmarkSkill']('bilibili_kamiman');
+                        },
+                    },
+                },
+            },
             //暗黑傀儡师蔡夫人
             bilibili_kuilei: {
                 trigger: {
@@ -13451,7 +13769,37 @@ const packs = function () {
             bilibili_mingcha_info: '出牌阶段限一次，你可以展示一名其他角色的手牌，然后选择一项：1.令其交给你一张牌；2.你交给其一张牌。若你以此法交出的牌与其以此法展示的牌类别不同，你摸一张牌。',
             bilibili_huiyan: '慧眼',
             bilibili_huiyan_info: '锁定技。①其他角色的手牌对你可见。②准备阶段，你令一名其他角色选择一项：1.令你回复1点体力；2.令你摸一张牌。',
-            bilibili_huiyan_append: '<span style="font-family:yuanli"><span style="text-decoration: line-through;">看个几八，你个沙沟</span><br>孩子们，真没啥可写的</span><br><img style=width:160px src=' + lib.assetURL + 'extension/活动武将/image/default/smile8.jpg>',
+            bilibili_shenren: '神人',
+            bilibili_shenren_info: '锁定技，四字神人对你造成的伤害+1；你对四字神人造成的伤害+1。',
+            bilibili_shenren_append: '<span style="font-family:yuanli"><span style="text-decoration: line-through;">看个几八，你个沙沟</span><br>孩子们，真没啥可写的</span><br><img style=width:160px src=' + lib.assetURL + 'extension/活动武将/image/default/smile8.jpg>',
+            bilibili_yanjing_friend1: '大姐',
+            bilibili_roulin: '肉林',
+            bilibili_roulin_info: '锁定技，你对异性角色/异性角色对你使用的【杀】需要额外使用一张【闪】响应。',
+            bilibili_yanjing_friend2: '胖哥',
+            bilibili_benghuai: '崩坏',
+            bilibili_benghuai_info: '锁定技，结束阶段，若你的体力值不为全场最低，则你选择一项：①失去1点体力，摸一张牌；②减1点体力上限，摸两张牌。',
+            bilibili_yanjing_friend3: '公鸭嗓',
+            bilibili_yaowu: '耀武',
+            bilibili_yaowu_info: '锁定技，当你受到伤害时，若此伤害存在来源和牌且此牌为红色，则伤害来源摸一张牌，否则你摸一张牌。',
+            bilibili_kamiman: '神人',
+            bilibili_kamiman_info: [
+                '锁定技。①四字神人对你造成的伤害+1；你对四字神人造成的伤害+1。',
+                '②若你的武将牌有“眼睛”：' + [
+                    `游戏开始时，你获得“神人”朋友${(() => {
+                        return ['大姐', '胖哥', '公鸭嗓'].map((name, index) => {
+                            return get.poptip({
+                                id: `character_bilibili_yanjing_friend${index + 1}`,
+                                name: `“${name}”`,
+                                type: 'character',
+                                dialog: 'characterDialog',
+                            });
+                        }).join('、');
+                    })()}。`,
+                    '回合开始时，你可以任意调整“神人”朋友和“眼睛”的顺序，然后以这个顺序连续执行四个回合。',
+                    '回合结束后，你选择一个“神人”朋友代替本体出场，于回合结束前切换回本体。',
+                ].map(str => `<br><li>${str}`),
+            ].join('<br>'),
+            bilibili_kamiman_append: '<span style="font-family:yuanli"><span style="text-decoration: line-through;">看个几八，你个沙沟</span><br>孩子们，真没啥可写的</span><br><img style=width:160px src=' + lib.assetURL + 'extension/活动武将/image/default/smile8.jpg>',
             bilibili_caifuren: '蔡夫人-暗黑傀儡师',
             bilibili_caifuren_ab: '蔡夫人',
             bilibili_kuilei: '傀儡',
@@ -13583,13 +13931,20 @@ const packs = function () {
     for (let i in huodongcharacter.character) {
         if (Array.isArray(huodongcharacter.character[i])) huodongcharacter.character[i] = get.convertedCharacter(huodongcharacter.character[i]);
         huodongcharacter.character[i].trashBin ??= [];
-        if (_status['extension_活动武将_files']?.audio.die.files.includes(`${i}.mp3`)) {
-            huodongcharacter.character[i].dieAudios ??= [];
-            huodongcharacter.character[i].dieAudios.push('ext:活动武将/audio/die:true');
-            huodongcharacter.translate[`#ext:活动武将/audio/die/${i}:die`] ??= '点击播放阵亡配音';
+        huodongcharacter.character[i].dieAudios ??= [];
+        if (_status['extension_活动武将_files']) {
+            const files = _status['extension_活动武将_files'];
+            if (files.image.character.files.includes(`${i}.jpg`)) huodongcharacter.character[i].img = `extension/活动武将/image/character/${i}.jpg`;
+            else {
+                const skin = huodongcharacter.character[i].trashBin.find(str => str.startsWith('character:'))?.split(':')[1];
+                if (skin && files.image.character.files.includes(`${skin}.jpg`)) huodongcharacter.character[i].img = `extension/活动武将/image/character/${skin}.jpg`;
+            }
+            if (files.audio.die.files.includes(`${i}.mp3`)) {
+                huodongcharacter.character[i].dieAudios.push('ext:活动武将/audio/die:true');
+                huodongcharacter.translate[`#ext:活动武将/audio/die/${i}:die`] ??= '点击播放阵亡配音';
+            }
+            if (files.image.skin[i]) huodongcharacter.character[i].skinPath = `ext:活动武将/image/skin/${i}/`;
         }
-        if (_status['extension_活动武将_files']?.image.character.files.includes(`${i}.jpg`)) huodongcharacter.character[i].img = `extension/活动武将/image/character/${i}.jpg`;
-        if (_status['extension_活动武将_files']?.image.skin[i]) huodongcharacter.character[i].skinPath = `ext:活动武将/image/skin/${i}/`;
         const clans = huodongcharacter.character[i].clans;
         if (clans?.containsSome('宿舍群', '肘击群', '活动群')) {
             const groups = ['宿舍群', '肘击群', '活动群'].filter(i => clans.includes(i)).map(i => { return { '宿舍群': 'bilibili_sushe', '肘击群': 'bilibili_zhouji', '活动群': 'bilibili_huodong' }[i] });
