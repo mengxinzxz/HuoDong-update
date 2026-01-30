@@ -114,12 +114,12 @@ const packs = function () {
             hzlh: {
                 charlotte: true,
                 trigger: { global: 'roundStart' },
-                direct: true,
+                silent: true,
                 forceDie: true,
-                content() {
-                    game.countPlayer(function (current) {
-                        current.link(true);
-                    })
+                async content(event, trigger, player) {
+                    for (const current of game.filterPlayer()) {
+                        await current.link(true);
+                    }
                 },
             },
             cpzz: {
@@ -134,7 +134,7 @@ const packs = function () {
                 },
                 group: ['cpzz_gain', 'cpzz_sha', 'cpzz_shan'],
                 inherit: 'wushuang1',
-                direct: true,
+                popup: false,
                 subSkill: {
                     gain: {
                         charlotte: true,
@@ -301,22 +301,17 @@ const packs = function () {
                         return current.isFriendOf(player) && !event.targets.includes(current);
                     });
                 },
-                direct: true,
-                content() {
-                    'step 0'
-                    player.chooseTarget(get.prompt('qin_gaizhao'), '将' + get.translation(trigger.card) + '转移给其他友方角色', function (card, player, target) {
-                        var trigger = _status.event.getTrigger();
+                async cost(event, trigger, player) {
+                    event.result = await player.chooseTarget(get.prompt(event.skill), '将' + get.translation(trigger.card) + '转移给其他友方角色', function (card, player, target) {
+                        const trigger = _status.event.getTrigger();
                         return target.isFriendOf(player) && !trigger.targets.includes(target) && lib.filter.targetEnabled2(trigger.card, trigger.player, target);
-                    }).set('rawEffect', get.effect(player, trigger.card, trigger.player, player)).ai = function (target) {
-                        var trigger = _status.event.getTrigger();
+                    }).set('rawEffect', get.effect(player, trigger.card, trigger.player, player)).set('ai', target => {
+                        const trigger = _status.event.getTrigger();
                         return 0.1 + get.effect(target, trigger.card, trigger.player, _status.event.player) - _status.event.rawEffect;
-                    };
-                    'step 1'
-                    if (result.bool) {
-                        var target = result.targets[0];
-                        player.logSkill(event.name, target);
-                        trigger.targets[trigger.targets.indexOf(player)] = target;
-                    }
+                    }).forResult();
+                },
+                async content(event, trigger, player) {
+                    trigger.targets[trigger.targets.indexOf(player)] = event.targets[0];
                 },
             },
             qin_haizhong: {
@@ -344,34 +339,23 @@ const packs = function () {
             qin_zhangzheng: {
                 audio: 'ext:活动武将/audio/skill:true',
                 trigger: { player: 'phaseZhunbeiBegin' },
-                direct: true,
-                content() {
-                    'step 0'
-                    player.chooseTarget(get.prompt2('qin_zhangzheng'), lib.filter.notMe, [1, game.players.length]).set('ai', function (current) {
-                        var player = _status.event.player;
-                        return -get.attitude(player, current);
-                    });
-                    'step 1'
-                    if (result.bool) {
-                        result.targets.sortBySeat();
-                        player.logSkill('qin_zhangzheng', result.targets);
-                        event.targets = result.targets;
+                filter(event, player) {
+                    return game.hasPlayer(current => current != player);
+                },
+                async cost(event, trigger, player) {
+                    event.result = await player.chooseTarget(get.prompt2(event.skill), lib.filter.notMe, [1, Infinity]).set('ai', target => {
+                        const player = get.player();
+                        return -get.attitude(player, target);
+                    }).forResult();
+                },
+                async content(event, trigger, player) {
+                    for (const target of event.targets.sortBySeat()) {
+                        if (!target.isIn()) continue;
+                        const result = target.countDiscardableCards(target, 'h') ? await target.choosePlayerCard('h', '弃置一张手牌或失去1点体力', target).set('ai', card => {
+                            return lib.skill.qin_bianfa.check(card);
+                        }).forResult() : { bool: false };
+                        if (!result?.bool) await target.loseHp();
                     }
-                    else event.finish();
-                    'step 2'
-                    if (targets.length) {
-                        var target = targets.shift();
-                        event.target = target;
-                        if (target.countDiscardableCards(target, 'h')) target.chooseToDiscard('h', '掌政：弃置一张手牌或失去1点体力').ai = lib.skill.qin_bianfa.check;
-                        else {
-                            target.loseHp();
-                            event.redo();
-                        }
-                    }
-                    else event.finish();
-                    'step 3'
-                    if (!result.bool) target.loseHp();
-                    event.goto(2);
                 },
             },
             qin_wuan: {
@@ -644,23 +628,19 @@ const packs = function () {
             },
             qin_qiaoshe: {
                 audio: 'ext:活动武将/audio/skill:true',
-                trigger: {
-                    global: 'judge',
-                },
-                direct: true,
-                content() {
-                    'step 0'
-                    var card = trigger.player.judging[0];
-                    var judge0 = trigger.judge(card);
-                    var judge1 = 0;
-                    var choice = trigger.no6 && card.number == 6 ? '+1' : 'cancel2';
-                    var attitude = get.attitude(player, trigger.player);
-                    var list = [];
-                    for (var i = -3; i < 4; i++) {
+                trigger: { global: 'judge' },
+                async cost(event, trigger, player) {
+                    const card = trigger.player.judging[0];
+                    const judge0 = trigger.judge(card);
+                    let judge1 = 0;
+                    let choice = trigger.no6 && card.number == 6 ? '+1' : 'cancel2';
+                    const attitude = get.attitude(player, trigger.player);
+                    const list = [];
+                    for (let i = -3; i < 4; i++) {
                         if (i == 0) continue;
                         list.push((i > 0 ? '+' : '') + i);
                         if (!trigger.no6) {
-                            var judge2 = (trigger.judge({
+                            const judge2 = (trigger.judge({
                                 name: get.name(card),
                                 suit: get.suit(card),
                                 number: get.number(card) + i,
@@ -673,18 +653,22 @@ const packs = function () {
                         }
                     }
                     list.push('cancel2');
-                    player.chooseControl(list).set('ai', function () {
+                    const result = await player.chooseControl(list).set('ai', () => {
                         return _status.event.choice;
-                    }).set('choice', choice).prompt = get.prompt2(event.name);
-                    'step 1'
-                    if (result.control != 'cancel2') {
-                        player.logSkill(event.name, trigger.player);
-                        game.log(trigger.player, '判定结果点数', '#g' + result.control);
-                        player.popup(result.control, 'fire');
-                        if (!trigger.fixedResult) trigger.fixedResult = {};
-                        if (!trigger.fixedResult.number) trigger.fixedResult.number = get.number(trigger.player.judging[0]);
-                        trigger.fixedResult.number += parseInt(result.control);
-                    }
+                    }).set('choice', choice).set('prompt', get.prompt2(event.skill, player)).forResult();
+                    event.result = {
+                        bool: result?.control != 'cancel2',
+                        cost_data: result?.control,
+                    };
+                },
+                logTarget: 'player',
+                async content(event, trigger, player) {
+                    const control = event.cost_data;
+                    game.log(trigger.player, '判定结果点数', '#g' + control);
+                    player.popup(control, 'fire');
+                    trigger.fixedResult ??= {};
+                    if (!trigger.fixedResult.number) trigger.fixedResult.number = get.number(trigger.player.judging[0]);
+                    trigger.fixedResult.number += parseInt(control);
                 },
             },
             qin_shihuang: {
@@ -767,17 +751,21 @@ const packs = function () {
                 },
             },
             qin_chuanguoyuxi_skill: {
+                equipSkill: true,
                 trigger: { player: 'phaseUseBegin' },
-                direct: true,
-                content() {
-                    'step 0'
-                    var list = ['nanman', 'wanjian', 'taoyuan', 'wugu'];
-                    player.chooseButton([get.prompt2('qin_chuanguoyuxi_skill'), [list, 'vcard']]).set('ai', function (button) {
-                        var player = _status.event.player;
+                async cost(event, trigger, player) {
+                    const list = ['nanman', 'wanjian', 'taoyuan', 'wugu'];
+                    const result = await player.chooseButton([get.prompt2(event.skill), [list, 'vcard']]).set('ai', button => {
+                        const player = get.player();
                         return player.getUseValue({ name: button.link[2] });
-                    });
-                    'step 1'
-                    if (result.bool) player.chooseUseTarget(result.links[0][2], true, false).logSkill = 'qin_chuanguoyuxi_skill';
+                    }).forResult();
+                    event.result = {
+                        bool: result?.bool,
+                        cost_data: result?.links,
+                    }
+                },
+                async content(event, trigger, player) {
+                    await player.chooseUseTarget(event.cost_data[0][2], true, false);
                 },
             },
             qin_bianfa: {
@@ -830,9 +818,7 @@ const packs = function () {
                 trigger: { player: 'dying' },
                 forced: true,
                 popup: false,
-                direct: true,
                 charlotte: true,
-                locked: true,
                 filter(event, player) {
                     return event.getParent().type == 'qin_shangyangbianfa';
                 },
