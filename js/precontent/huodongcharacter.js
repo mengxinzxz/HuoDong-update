@@ -10187,12 +10187,11 @@ const packs = function () {
                             },
                         ]],
                     ]).set('processAI', list => {
-                        return [...list[0][1]].randomSort();
+                        return [[...list[0][1][0]].randomSort()];
                     }).forResult();
                     if (result?.bool && result.moved?.[0]) {
                         const [item2, ...sort] = result.moved[0];
                         if (item2 !== 'bilibili_yanjing') {
-                            const storage = player.storage['bilibili_kamiman'];
                             player.reinit('bilibili_yanjing', item2, [storage[item2].hp, storage[item2].maxHp, storage[item2].hujia]);
                             player.markSkill('bilibili_kamiman');
                         }
