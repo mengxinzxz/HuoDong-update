@@ -334,31 +334,26 @@ const packs = function () {
                 audio: 'ext:活动武将/audio/skill:true',
                 trigger: { player: 'useCard2' },
                 filter(event, player) {
-                    if (player != _status.currentPhase || !event.targets || event.targets.length != 1) return false;
-                    return (event.card.name == 'sha' || get.type(event.card) == 'trick') && game.hasPlayer(function (current) {
-                        return current != player && !event.targets.includes(current);
+                    const evt = event.getParent('phaseUse');
+                    if (evt?.name !== 'phaseUse') return false;
+                    if (player.getHistory('useCard', evtx => evtx.getParent('phaseUse') == evt && (evtx.card.name == 'sha' || get.type(evtx.card) == 'trick') && evtx.stocktargets?.length == 1).indexOf(event) != 0) return false;
+                    return game.hasPlayer(current => {
+                        return current != player && !event.targets.includes(current) && lib.filter.targetEnabled2(event.card, player, current);
                     });
                 },
-                usable: 1,
-                direct: true,
-                content() {
-                    'step 0'
-                    player.chooseTarget(get.prompt('cike_yingyue'), '为' + get.translation(trigger.card) + '增加一个目标', function (card, player, target) {
-                        var evt = _status.event.getTrigger();
-                        return !evt.targets.includes(target) && lib.filter.filterTarget(evt.card, player, target);
-                    }).set('ai', function (target) {
-                        var evt = _status.event.getTrigger(), eff = get.effect(target, evt.card, evt.player, evt.player);
+                async cost(event, trigger, player) {
+                    event.result = await player.chooseTarget(get.prompt(event.skill), '为' + get.translation(trigger.card) + '增加一个目标', function (card, player, target) {
+                        const evt = get.event().getTrigger()
+                        return !evt.targets.includes(target) && lib.filter.targetEnabled2(evt.card, player, target);
+                    }).set('ai', target => {
+                        const evt = get.event().getTrigger(), eff = get.effect(target, evt.card, evt.player, evt.player);
                         return eff;
-                    }).animate = false;
-                    'step 1'
-                    if (result.bool) {
-                        if (player != game.me && !player.isOnline()) game.delayx();
-                        event.target = result.targets[0];
-                    }
-                    else event.finish();
-                    'step 2'
-                    player.logSkill('cike_yingyue', target);
-                    trigger.targets.push(target);
+                    }).set('animate', false).forResult();
+                },
+                async content(event, trigger, player) {
+                    const target = event.targets[0];
+                    if (player != game.me && !player.isOnline()) await game.delayx();
+                    trigger.targets.add(target);
                     game.log(target, '成为了', trigger.card, '的额外目标');
                 },
             },
@@ -625,53 +620,43 @@ const packs = function () {
             cike_jijiang: {
                 group: ['cike_jijiang_refresh', 'cike_jijiang_clear', 'cike_jijiang_plus'],
                 audio: 'jijiang1',
-                forced: true,
                 trigger: { player: ['useCard', 'respond'] },
                 filter(event, player) {
                     return event.card.name == 'sha';
                 },
-                init(player) {
-                    player.storage.nownum = 0;
-                    player.storage.nextnum = 0;
-                },
-                content() {
-                    'step 0'
-                    player.draw();
-                    'step 1'
-                    event.card = result[0];
-                    if (get.type(event.card) == 'basic') {
-                        player.storage.nextnum++;
-                    }
-                },
-                mark: true,
-                intro: {
-                    content(storage, player) {
-                        var str = '';
-                        if (player.storage.nownum != 0) str += '<span class=\"texiaotext\" style=\"color:#00FF00\">本次</span>出牌阶段可额外使用' + player.storage.nownum + '张【杀】。<br>';
-                        if (player.storage.nextnum != 0) str += '<span class=\"texiaotext\" style=\"color:#FF8247\">下个</span>出牌阶段可额外使用' + player.storage.nextnum + '张【杀】。';
-                        return str;
+                forced: true,
+                async content(event, trigger, player) {
+                    const result = await target.draw().forResult();
+                    if (get.itemtype(result?.cards) !== 'card') return;
+                    if (result.cards.some(card => get.type(card) == 'basic')) {
+                        player.addSkill(event.name + '_mark');
+                        player.addMark(event.name + '_mark', 1, false);
                     }
                 },
                 subSkill: {
-                    refresh: {
-                        trigger: { player: 'phaseUseBefore' },
-                        direct: true,
-                        content() {
-                            player.storage.nownum = player.storage.nextnum;
-                            player.storage.nextnum = 0;
+                    mark: {
+                        charlotte: true,
+                        onremove: true,
+                        intro: { content: '下个出牌阶段使用【杀】的次数上限+#' },
+                        trigger: { player: 'phaseUseBegin' },
+                        forced: true,
+                        popup: false,
+                        async content(event, trigger, player) {
+                            const num = player.countMark(event.name);
+                            player.removeSkill(event.name);
+                            if (num > 0) {
+                                player.addTempSkill('cike_jijiang_effect');
+                                player.addMark('cike_jijiang_effect', num, false);
+                            }
                         },
                     },
-                    clear: {
-                        trigger: { player: 'phaseUseAfter' },
-                        direct: true,
-                        content() {
-                            player.storage.nownum = 0;
-                        }
-                    },
-                    plus: {
+                    effect: {
+                        charlotte: true,
+                        onremove: true,
+                        intro: { content: '出牌阶段使用【杀】的次数上限+#' },
                         mod: {
                             cardUsable(card, player, num) {
-                                if (card.name == 'sha') return num + player.storage.nownum;
+                                if (card.name == 'sha') return num + player.countMark('cike_jijiang_effect');
                             }
                         },
                     }
@@ -731,73 +716,46 @@ const packs = function () {
             },
             cike_fengxiang: {
                 audio: 'fengxiang',
-                trigger: { player: 'gainEnd' },
+                trigger: {
+                    player: 'gainAfter',
+                    global: 'loseAsyncAfter',
+                },
                 filter(event, player) {
-                    return event.source && event.source != player && event.cards?.length;
-                },
-                prompt(event, player) {
-                    return '封乡：是否将本次获得的' + get.translation(event.cards) + '当作【杀】使用？';
-                },
-                check(event, player) {
-                    var num = event.cards.length;
-                    if (num == 1) return true;
-                    else if (num == 2) return !player.hasHistory('useCard', function (evt) {
-                        return evt.card.name == 'sha';
+                    return game.hasPlayer(current => {
+                        if (current == player) return false;
+                        return event.getl?.(current)?.cards2?.some(card => event.getg?.(player)?.includes(card));
                     });
-                    else return false;
                 },
-                content() {
-                    'step 0'
-                    player.chooseTarget('请选择使用【杀】的目标', function (card, player, target) {
-                        return player.canUse('sha', target, false);
-                    }).set('ai', function (target) {
-                        return get.effect(target, { name: 'sha' }, player, player);
-                    });
-                    'step 1'
-                    if (result.bool) {
-                        var target = result.targets[0];
-                        var cards = trigger.cards;
-                        var next = player.useCard({ name: 'sha' }, cards, target, false);
-                    }
-                    else event.finish();
+                direct: true,
+                async content(event, trigger, player) {
+                    const cards = trigger.getg(player).filter(card => game.hasPlayer(current => {
+                        if (current == player) return false;
+                        return trigger.getl(current)?.cards2?.includes(card);
+                    }));
+                    await player.chooseUseTarget(get.prompt(event.name), '将' + get.translation(cards) + '当做【杀】使用', { name: 'sha' }, cards, false, 'nodistance').set('logSkill', event.name);
                 }
             },
             cike_jitong: {
                 audio: 'ext:活动武将/audio/skill:true',
-                group: ['cike_jitong_judge'],
-                direct: true,
-                trigger: { source: 'damageSource' },
+                trigger: { player: 'phaseJieshuBegin' },
                 filter(event, player) {
-                    return event.card && event.card.name == 'sha' && event.getParent().name == 'sha' && _status.currentPhase == player && !player.hasSkill('cike_jitong_ban');
+                    return !player.hasHistory('sourceDamage', evt => evt.card?.name == 'sha');
                 },
-                content() {
-                    player.addTempSkill('cike_jitong_ban');
+                forced: true,
+                async content(event, trigger, player) {
+                    player.addSkill(event.name + '_effect');
                 },
                 subSkill: {
-                    ban: {
-                        charlotte: true,
-                    },
-                    judge: {
-                        forced: true,
-                        trigger: { player: 'phaseEnd' },
-                        filter(event, player) {
-                            return !player.hasSkill('cike_jitong_ban') && !player.hasSkill('cike_jitong_pro');
-                        },
-                        content() {
-                            player.addTempSkill('cike_jitong_pro', { player: 'damageBegin4' });
-                        },
-                    },
-                    pro: {
-                        forced: true,
+                    effect: {
                         mark: true,
                         marktext: '护',
-                        intro: {
-                            content: '防止你受到的下次伤害',
-                        },
-                        trigger: { player: 'damageBegin2' },
-                        content() {
+                        intro: { content: '防止你受到的下次伤害' },
+                        trigger: { player: 'damageBegin4' },
+                        forced: true,
+                        popup: false,
+                        async content(event, trigger, player) {
+                            player.removeSkill(event.name);
                             trigger.cancel();
-                            player.removeSkill('cike_jitong_pro');
                         }
                     },
                 }
