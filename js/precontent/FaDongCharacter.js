@@ -158,10 +158,21 @@ const packs = function () {
                     return event.player.isEnemyOf(player);
                 },
                 direct: true,
-                content() {
-                    player.chooseToUse(get.prompt2('cxy_FanGong', trigger.player), { name: 'sha' }).set('filterTarget', function (card, player, target) {
-                        return target == _status.event.source;
-                    }).set('selectTarget', -1).set('source', trigger.player).set('logSkill', 'cxy_FanGong');
+                clearTime: true,
+                async content(event, trigger, player) {
+                    const target = trigger.player;
+                    const next = player.chooseToUse(function (card, player, event) {
+                        if (get.name(card) != 'sha') return false;
+                        return lib.filter.filterCard.apply(this, arguments);
+                    }, `反攻：是否对${get.translation(target)}使用一张无距离限制的杀？`);
+                    next.set('logSkill', event.name);
+                    next.set('complexSelect', true);
+                    next.set('filterTarget', function (card, player, target) {
+                        if (target != _status.event.sourcex && !ui.selected.targets.includes(_status.event.sourcex)) return false;
+                        return lib.filter.targetEnabled.apply(this, arguments);
+                    });
+                    next.set('sourcex', target);
+                    await next;
                 },
             },
             cxy_JiaoXia: {
@@ -318,18 +329,18 @@ const packs = function () {
                 derivation: 'choosejiangling',
                 trigger: { player: 'phaseUseBegin' },
                 filter(event, player) {
-                    var jiangling = player.storage.myjiangling;
+                    const jiangling = player.storage.myjiangling;
                     return jiangling?.isIn() && jiangling.isDamaged();
                 },
-                direct: true,
-                content() {
-                    'step 0'
-                    player.logSkill('bilibili_longying', player.storage.myjiangling);
-                    player.loseHp();
-                    'step 1'
-                    var jiangling = player.storage.myjiangling;
-                    jiangling.recover();
-                    jiangling.draw();
+                forced: true,
+                logTarget(event, player) {
+                    return player.storage.myjiangling;
+                },
+                async content(event, trigger, player) {
+                    const [target] = event.targets;
+                    await player.loseHp();
+                    await target.recover();
+                    await target.draw();
                 },
             },
             choosejiangling: {
@@ -339,19 +350,15 @@ const packs = function () {
                     return event.name != 'phase' || game.phaseNumber == 0;
                 },
                 direct: true,
-                content() {
-                    'step 0'
-                    player.chooseTarget('请选择你要跟随的将领', true, function (card, player, target) {
-                        return target != player;
-                    }).set('ai', function (target) {
-                        var att = get.attitude(_status.event.player, target);
+                async content(event, trigger, player) {
+                    const result = await player.chooseTarget('请选择你要跟随的将领', true, lib.filter.notMe).set('ai', target => {
+                        let att = get.attitude(get.player(), target);
                         if (att > 0) return att + 1;
                         if (att == 0) return Math.random();
                         return att;
-                    });
-                    'step 1'
-                    if (result.bool) {
-                        var target = result.targets[0];
+                    }).forResult();
+                    if (result?.bool) {
+                        const target = result.targets[0];
                         player.line(target, 'fire');
                         player.storage.myjiangling = target;
                         game.log(player, '选择了', target, '作为自己的将领');
