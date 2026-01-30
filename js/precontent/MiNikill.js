@@ -18001,7 +18001,7 @@ const packs = function () {
                         direct: true,
                         content() {
                             var target = player.storage.minizhiwei2;
-                            player.chooseToGive('h', '至微：是否将一张手牌交给' + get.translation(target) + '？').set('ai', function (card) {
+                            player.chooseToGive('h', '至微：是否将一张手牌交给' + get.translation(target) + '？', target).set('ai', function (card) {
                                 if (_status.event.goon) return 5 - get.value(card);
                                 return -get.value(card);
                             }).set('goon', get.attitude(player, target) > 0).logSkill = ['minizhiwei', target];

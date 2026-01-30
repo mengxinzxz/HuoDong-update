@@ -1448,9 +1448,8 @@ const packs = function () {
                     var card = event.card;
                     return card.name == 'sha' || get.type(card) == 'trick';
                 },
-                direct: true,
                 async cost(event, trigger, player) {
-                    event.result = await player.chooseTarget(get.prompt2('wechatzenhui'), function (card, player, target) {
+                    event.result = await player.chooseTarget(get.prompt2(event.skill), function (card, player, target) {
                         if (player == target) return false;
                         var evt = _status.event.getTrigger();
                         return !evt.targets.includes(target) && lib.filter.targetEnabled2(evt.card, player, target) && lib.filter.targetInRange(evt.card, player, target);
@@ -2771,6 +2770,7 @@ const packs = function () {
                             return event.target.isIn() && player.canUse('sha', event.target, false) && (player.hasSha() || _status.connectMode && player.countCards('h'));
                         },
                         direct: true,
+                        clearTime: true,
                         locked: true,
                         content() {
                             player.chooseToUse(get.prompt('qinglong', trigger.target), function (card, player, event) {
@@ -9474,6 +9474,7 @@ const packs = function () {
                     return event.player.isIn() && lib.filter.targetEnabled({ name: 'sha' }, player, event.player) && (player.hasSha() || _status.connectMode && player.countCards('hs') > 0);
                 },
                 direct: true,
+                clearTime: true,
                 content() {
                     player.chooseToUse(function (card, player, event) {
                         if (get.name(card) !== 'sha') return false;
