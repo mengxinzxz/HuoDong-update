@@ -50,9 +50,9 @@ const packs = function () {
             bilibili_ningjingzhiyuan: ['male', 'key', 4, ['bilibili_waifa_rewrite', 'bilibili_xiezhi', 'bilibili_fazhou'], ['clan:肘家军|宿舍群|肘击群|活动群', 'name:闹动|导近']],
             bilibili_xizhicaikobe: ['male', 'key', 4, ['bilibili_waifa_rewrite', 'bilibili_zhangcai', 'bilibili_laosao'], ['clan:肘家军|宿舍群|肘击群|活动群', 'name:戏|子宓']],
             bilibili_yanjing: ['male', 'key', 3, ['bilibili_dongxi', 'bilibili_mingcha', 'bilibili_huiyan', 'bilibili_kamiman'], ['clan:肘家军|肘击群|活动群', 'tooenough|眼睛']],
-            bilibili_yanjing_friend1: ['female', 'qun', 3, ['bilibili_roulin', 'bilibili_shenren'], ['unseen', 'character:bilibili_diandian']],
-            bilibili_yanjing_friend2: ['male', 'qun', '4/5', ['bilibili_benghuai', 'bilibili_shenren'], ['unseen', 'character:bilibili_kuangshen']],
-            bilibili_yanjing_friend3: ['male', 'qun', '3/4', ['bilibili_yaowu', 'bilibili_shenren'], ['unseen', 'character:bilibili_longjiuzhen']],
+            bilibili_yanjing_friend1: ['female', 'qun', 3, ['bilibili_roulin', 'bilibili_shenren'], ['unseen']],
+            bilibili_yanjing_friend2: ['male', 'qun', '4/5', ['bilibili_benghuai', 'bilibili_shenren'], ['unseen']],
+            bilibili_yanjing_friend3: ['male', 'qun', '3/4', ['bilibili_yaowu', 'bilibili_shenren'], ['unseen']],
             bilibili_caifuren: ['female', 'qun', 3, ['bilibili_kuilei'], ["name:蔡|null"]],
             bilibili_xiaoyaoruyun: ['female', 'key', 3, ['bilibili_chuandu', 'bilibili_shuaiwei', 'bilibili_huaikui'], ['clan:肘击群|活动群', 'name:鹿都|智川介']],
             bilibili_shuijiaobuboli: ['female', 'key', 3, ['bilibili_qicai', 'bilibili_jizhi', 'bilibili_fengliang', 'bilibili_guiyin'], ['clan:宿舍群|活动群', 'name:黄|月英']],
@@ -10030,6 +10030,7 @@ const packs = function () {
             bilibili_benghuai: {
                 audio: false,
                 inherit: 'benghuai',
+                filter: () => true,
                 async content(event, trigger, player) {
                     const result = await player.chooseControl('体力', '体力上限').set('ai', function () {
                         const player = get.player();
@@ -13676,13 +13677,12 @@ const packs = function () {
             bilibili_huiyan_info: '锁定技。①其他角色的手牌对你可见。②准备阶段，你令一名其他角色选择一项：1.令你回复1点体力；2.令你摸一张牌。',
             bilibili_shenren: '神人',
             bilibili_shenren_info: '锁定技，四字神人对你造成的伤害+1；你对四字神人造成的伤害+1。',
-            bilibili_shenren_append: '<span style="font-family:yuanli"><span style="text-decoration: line-through;">看个几八，你个沙沟</span><br>孩子们，真没啥可写的</span><br><img style=width:160px src=' + lib.assetURL + 'extension/活动武将/image/default/smile8.jpg>',
             bilibili_yanjing_friend1: '大姐',
             bilibili_roulin: '肉林',
             bilibili_roulin_info: '锁定技，你对异性角色/异性角色对你使用的【杀】需要额外使用一张【闪】响应。',
             bilibili_yanjing_friend2: '胖哥',
             bilibili_benghuai: '崩坏',
-            bilibili_benghuai_info: '锁定技，结束阶段，若你的体力值不为全场最低，则你选择一项：①失去1点体力，摸一张牌；②减1点体力上限，摸两张牌。',
+            bilibili_benghuai_info: '锁定技，结束阶段，你选择一项：①失去1点体力，摸一张牌；②减1点体力上限，摸两张牌。',
             bilibili_yanjing_friend3: '公鸭嗓',
             bilibili_yaowu: '耀武',
             bilibili_yaowu_info: '锁定技，当你受到伤害时，若此伤害存在来源和牌且此牌为红色，则伤害来源摸一张牌，否则你摸一张牌。',
