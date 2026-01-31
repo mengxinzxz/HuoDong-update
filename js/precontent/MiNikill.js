@@ -10115,7 +10115,7 @@ const packs = function () {
                         var check = _status.event.filterCard(button.link, _status.event.player);
                         _status.event = evt;
                         return check;
-                    }).set('ai', button => 1 + Math.random()).forResult().forResult();
+                    }).set('ai', button => 1 + Math.random()).forResult();
                     event.result = {
                         bool: result?.bool && result.links?.length,
                         cost_data: result?.links,
