@@ -27,7 +27,7 @@ const packs = function () {
             QH_yuanshao: ['male', 'qun', 15, ['luanji', 'QH_xueyi', 'qiluan'], ['character:re_yuanshao']],
             QH_yuanshu: ['male', 'qun', 16, ['drlt_yongsi', 'QH_wangzun', 'QH_weidi'], ['character:yl_yuanshu']],
             QH_guotufengji: ['male', 'qun', 15, ['rejigong', 'shifei', 'QH_chanmou'], ['character:guotufengji']],
-            QH_yanwen: ['male', 'qun', 16, ['shuangxiong', 'jianchu', 'QH_yongdou'], ['character:yanwen']],
+            QH_yanwen: ['male', 'qun', 16, ['shuangxiong', 'jianchu', 'QH_yongdou'], ['character:yanwen', 'name:颜|良-文|丑']],
             QH_caoang: ['male', 'wei', 15, ['kaikang', 'wushuang', 'feiying'], ['character:caoang']],
             QH_caoren: ['male', 'wei', 18, ['xinjushou', 'xinjiewei', 'xinshensu'], ['character:caoren']],
             QH_jushou: ['male', 'qun', 16, ['jianying', 'shibei', 'zhaxiang'], ['character:yj_jushou']],
