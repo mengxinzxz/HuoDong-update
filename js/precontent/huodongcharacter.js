@@ -10086,6 +10086,7 @@ const packs = function () {
                                     hujia: storage[item].hujia,
                                 };
                                 node = ui.create.buttonPresets.character(item, 'character', position, noclick);
+                                node.node.group?.hide();
                                 lib.character[item] = itemcharacter;
                                 if (item === 'bilibili_yanjing') game.createButtonCardsetion(`本体`, node);
                                 return node;
@@ -10142,6 +10143,7 @@ const packs = function () {
                                     hujia: storage[item].hujia,
                                 };
                                 node = ui.create.buttonPresets.character(item, 'character', position, noclick);
+                                node.node.group?.hide();
                                 lib.character[item] = itemcharacter;
                                 if (item === 'bilibili_yanjing') game.createButtonCardsetion(`本体`, node);
                                 return node;
@@ -10212,6 +10214,7 @@ const packs = function () {
                                             hujia: storage[item].hujia,
                                         };
                                         node = ui.create.buttonPresets.character(item, 'character', position, noclick);
+                                        node.node.group?.hide();
                                         lib.character[item] = itemcharacter;
                                         if (item === 'bilibili_yanjing') game.createButtonCardsetion(`本体`, node);
                                         return node;
