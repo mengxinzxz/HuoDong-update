@@ -358,7 +358,7 @@ const packs = function () {
             Mbaby_yuji: ['male', 'qun', 4, ['miniguhuo']],
             Mbaby_zhangliang: ['male', 'qun', 4, ['minijijun', 'minifangtong']],
             Mbaby_zhangbao: ['male', 'qun', 4, ['minizhoufu', 'miniyingbing']],
-            Mbaby_ol_yanwen: ['male', 'qun', 4, ['minishuangxiong']],
+            Mbaby_ol_yanwen: ['male', 'qun', 4, ['minishuangxiong'], ['name:颜|良-文|丑']],
             Mbaby_liubiao: ['male', 'qun', 3, ['minizishou', 'minizongshi']],
             Mbaby_re_liubiao: ['male', 'qun', 3, ['rezishou', 'rezongshi'], ['character:Mbaby_liubiao']],
             Mbaby_yuanshao: ['male', 'qun', 4, ['miniluanji', 'minixueyi'], ['zhu', 'tempname:re_yuanshao']],

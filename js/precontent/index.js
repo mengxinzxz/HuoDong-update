@@ -59,7 +59,7 @@ export async function precontent(bilibilicharacter) {
             if (event.parent.name != 'chooseCharacter' || get.mode() == 'boss') return false;
             return (lib.config.extension_活动武将_KQShiJian != 'off' && !game.hzkqshijianed) || (lib.config.extension_活动武将_GDShiJian != 'off' && !game.GDZZshijianed);
         },
-        direct: true,
+        silent: true,
         content() {
             'step 0'
             if (lib.config.extension_活动武将_KQShiJian != 'off' && !game.hzkqshijianed) {
@@ -152,7 +152,7 @@ export async function precontent(bilibilicharacter) {
         filter(event, player) {
             return game.hslh && (player.name && player.name == 'qin_yingzheng') || (player.name2 && player.name2 == 'qin_yingzheng');
         },
-        direct: true,
+        silent: true,
         priority: 1 + 1 + 4 + 5 + 1 + 4 + 1 + 9 + 1 + 9 + 8 + 1 + 0,
         content() {
             //传国玉玺
@@ -189,7 +189,7 @@ export async function precontent(bilibilicharacter) {
         filter(event, player) {
             return lib.config.extension_活动武将_HDdamageAudio && lib.config.background_audio;
         },
-        direct: true,
+        silent: true,
         priority: -Infinity,
         lastDo: true,
         content() {
@@ -207,7 +207,7 @@ export async function precontent(bilibilicharacter) {
             return (player.name == 'shen_zhangfei' || player.name2 == 'shen_zhangfei') && event.num1 == event.num2;
         },
         priority: -3,
-        direct: true,
+        silent: true,
         content() {
             player.chat('俺也一样');
             game.broadcastAll(function () {
@@ -224,7 +224,7 @@ export async function precontent(bilibilicharacter) {
             return (player.name == 'shen_zhangfei' || player.name2 == 'shen_zhangfei') && event.card.name == 'wugu';
         },
         priority: -3,
-        direct: true,
+        silent: true,
         content() {
             player.chat('俺颇有家资');
             game.broadcastAll(function () {
@@ -334,7 +334,7 @@ export async function precontent(bilibilicharacter) {
             const config = lib.config.extension_活动武将_HDfightAudio;
             return config && config !== 'off' && player == game.me && (!game.HasExtension('十周年UI') || !lib.config.extension_十周年UI_gameAnimationEffect);
         },
-        direct: true,
+        silent: true,
         firstDo: true,
         priority: Infinity,
         content() {
@@ -352,7 +352,7 @@ export async function precontent(bilibilicharacter) {
             const config = lib.config.extension_活动武将_HDfightAudio;
             return config && config !== 'off';
         },
-        direct: true,
+        silent: true,
         firstDo: true,
         forceDie: true,
         content() {
@@ -371,7 +371,7 @@ export async function precontent(bilibilicharacter) {
             const config = lib.config.extension_活动武将_HDfightAudio;
             return config && config !== 'off';
         },
-        direct: true,
+        silent: true,
         firstDo: true,
         forceDie: true,
         content() {
@@ -394,7 +394,7 @@ export async function precontent(bilibilicharacter) {
             if (_status.currentPhase === player) return true;
             return event.player != event.source && event.source == player;
         },
-        direct: true,
+        silent: true,
         firstDo: true,
         forceDie: true,
         content() {
@@ -418,12 +418,11 @@ export async function precontent(bilibilicharacter) {
             const config = lib.config.extension_活动武将_HDfightAudio;
             return config && config !== 'off' && event.player != player;
         },
-        direct: true,
+        silent: true,
         firstDo: true,
         content() {
             'step 0'
-            player.storage.bilibili_kill ??= 0;
-            player.storage.bilibili_kill++;
+            player.addMark('bilibili_kill', 1, false);
             'step 1'
             let config = lib.config.extension_活动武将_HDfightAudio;
             config = config === 'default' ? lib.config.extension_活动武将_HDkillAudio : config;
@@ -442,7 +441,7 @@ export async function precontent(bilibilicharacter) {
                     list = ['一血·卧龙出山', '双杀·一战成名', '三杀·举世皆惊', '四杀·天下无敌', '五杀·诛天灭地', '六杀·癫狂杀戮', '无双·万军取首'];
                     break;
             }
-            var num = Math.min(7, player.storage.bilibili_kill);
+            var num = Math.min(7, player.countMark('bilibili_kill'));
             player.$fullscreenpop(list[num - 1], ['water', 'wood', 'thunder', 'fire'][Math.min(3, num - 1)]);
             game.broadcastAll(function (num, config) {
                 if (lib.config.background_audio) {
@@ -459,7 +458,7 @@ export async function precontent(bilibilicharacter) {
             const config = lib.config.extension_活动武将_HDfightAudio;
             return ['decade', 'default'].includes(config) && event.player != player && event.num >= 3;
         },
-        direct: true,
+        silent: true,
         lastDo: true,
         priority: -Infinity,
         content() {
@@ -513,7 +512,7 @@ export async function precontent(bilibilicharacter) {
             if (!lib.config.extension_活动武将_HD_bgmPlay || !game.zhu || game.zhu.identity != 'zhu') return false;
             return !game.bol_playAudio1 && event.parent.name == 'chooseCharacter' && get.mode() == 'identity' && _status.mode == 'normal';
         },
-        direct: true,
+        silent: true,
         firstDo: true,
         priority: Infinity + 114 - 514,
         content() {
@@ -537,7 +536,7 @@ export async function precontent(bilibilicharacter) {
         filter(event, player) {
             return game.bol_playAudio1 && !game.bol_playAudio2;
         },
-        direct: true,
+        silent: true,
         firstDo: true,
         priority: Infinity + 114 - 514,
         content() {
@@ -555,7 +554,7 @@ export async function precontent(bilibilicharacter) {
         filter(event, player) {
             return game.bol_playAudio2 && !game.bol_playAudio3 && game.players.length <= 4;
         },
-        direct: true,
+        silent: true,
         firstDo: true,
         priority: Infinity + 114 - 514,
         content() {

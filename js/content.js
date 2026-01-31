@@ -26,7 +26,7 @@ export async function content(config, pack) {
 			trigger: { global: 'gameStart' },
 			firstDo: true,
 			priority: Infinity,
-			direct: true,
+			silent: true,
 			content() {
 				var num1 = lib.config.extension_活动武将_Boss_TZ_level;
 				var num2 = lib.config.extension_活动武将_Boss_YZ_level;

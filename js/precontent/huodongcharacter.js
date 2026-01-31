@@ -12071,9 +12071,7 @@ const packs = function () {
                         }).set('characterMap', map).set('group', group);
                         next.set('targetprompt2', next.targetprompt2.concat([
                             target => {
-                                if (!target.isIn() || !get.event().filterTarget(null, get.player(), target)) {
-                                    return false;
-                                }
+                                if (!target.isIn() || !get.event().filterTarget(null, get.player(), target)) return false;
                                 let str = '';
                                 if (target.storage?.['bilibili_beichen_effect']?.[get.event().group]) {
                                     str += target.storage['bilibili_beichen_effect'][get.event().group].map(skill => get.translation(skill)).join('<br>');

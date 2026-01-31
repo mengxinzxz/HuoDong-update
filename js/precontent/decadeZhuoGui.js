@@ -142,26 +142,31 @@ const packs = function () {
                 onremove: true,
                 audio: 'ext:活动武将/audio/skill:true',
                 trigger: { player: 'phaseZhunbeiBegin' },
-                direct: true,
-                locked: true,
-                content() {
-                    var target = game.filterPlayer(function (current) {
-                        return get.mode() == 'identity' ? get.attitude(player, current) < 0 : current.isEnemyOf(player);
-                    }).randomGet();
-                    player.logSkill('ZGaotang', target);
-                    player.addSkill('ZGaotang_clear');
-                    player.storage.ZGaotang_clear = target;
+                filter(event, player) {
+                    return game.hasPlayer(current => get.mode() == 'identity' ? get.attitude(player, current) < 0 : current.isEnemyOf(player))
+                },
+                forced: true,
+                logTarget(event, player) {
+                    return game.filterPlayer(current => get.mode() == 'identity' ? get.attitude(player, current) < 0 : current.isEnemyOf(player)).randomGet()
+                },
+                async content(event, trigger, player) {
+                    const target = event.targets[0];
+                    player.addSkill(event.name + '_clear');
+                    player.markAuto(event.name + '_clear', [target]);
                     target.addSkill('ZGaotang_fengyin');
                 },
                 subSkill: {
                     clear: {
-                        onremove: true,
+                        onremove(player, skill) {
+                            player.getStorage(skill).forEach(current => current.removeSkill('ZGaotang_fengyin'));
+                            delete player.storage[skill];
+                        },
+                        intro: { content: 'characters' },
                         charlotte: true,
                         trigger: { player: 'phaseBegin' },
-                        direct: true,
-                        content() {
-                            player.storage.ZGaotang_clear.removeSkill('ZGaotang_fengyin');
-                            player.removeSkill('ZGaotang_clear');
+                        silent: true,
+                        async content(event, trigger, player) {
+                            player.removeSkill(event.name);
                         },
                     },
                     fengyin: {
