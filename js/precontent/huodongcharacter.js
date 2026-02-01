@@ -49,7 +49,7 @@ const packs = function () {
             bilibili_xushao: ['male', 'qun', 3, ['bol_pinjian', 'bol_yuedan'], ['die:xushao']],
             bilibili_ningjingzhiyuan: ['male', 'key', 4, ['bilibili_waifa_rewrite', 'bilibili_xiezhi', 'bilibili_fazhou'], ['clan:肘家军|宿舍群|肘击群|活动群', 'name:闹动|导近']],
             bilibili_xizhicaikobe: ['male', 'key', 4, ['bilibili_waifa_rewrite', 'bilibili_zhangcai', 'bilibili_laosao'], ['clan:肘家军|宿舍群|肘击群|活动群', 'name:戏|子宓']],
-            bilibili_yanjing: ['male', 'key', 3, ['bilibili_dongxi', 'bilibili_mingcha', 'bilibili_huiyan', 'bilibili_kamiman'], ['clan:肘家军|肘击群|活动群', 'tooenough|眼睛']],
+            bilibili_yanjing: ['male', 'key', 3, ['bilibili_dongxi', 'bilibili_mingcha', 'bilibili_huiyan', 'bilibili_kamiman'], ['clan:肘家军|宿舍群|肘击群|活动群', 'tooenough|眼睛']],
             bilibili_yanjing_friend1: ['female', 'qun', 3, ['bilibili_roulin', 'bilibili_shenren'], ['unseen']],
             bilibili_yanjing_friend2: ['male', 'qun', '4/5', ['bilibili_benghuai', 'bilibili_shenren'], ['unseen']],
             bilibili_yanjing_friend3: ['male', 'qun', '3/4', ['bilibili_yaowu', 'bilibili_shenren'], ['unseen']],
@@ -10046,11 +10046,9 @@ const packs = function () {
             bilibili_yaowu: {
                 audio: false,
                 inherit: 'reyaowu',
-                filter(event, player) {
-                    return !event.card || (get.color(event.card) === 'red' && event.source?.isIn());
-                },
+                filter: () => true,
                 async content(event, trigger, player) {
-                    await ((trigger.card && get.color(trigger.card) === 'red') ? trigger.source : player).draw();
+                    await ((trigger.card && trigger.source?.isIn() && get.color(trigger.card) === 'red') ? trigger.source : player).draw();
                 },
                 ai: {
                     effect: {
@@ -10239,7 +10237,7 @@ const packs = function () {
                                 const storage = player.storage['bilibili_kamiman'];
                                 player.reinit(item, 'bilibili_yanjing', [storage['bilibili_yanjing'].hp, storage['bilibili_yanjing'].maxHp, storage['bilibili_yanjing'].hujia]);
                                 player.markSkill('bilibili_kamiman');
-                            }).vars({ item });
+                            }).vars({ item: item });
                         },
                     },
                     phase: {

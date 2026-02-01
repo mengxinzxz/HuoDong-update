@@ -30550,7 +30550,7 @@ const packs = function () {
                     return player.getExpansions('qixing').length;
                 },
                 async cost(event, trigger, player) {
-                    const result = event.result = await player.chooseButton([get.prompt('minidawu'), player.getExpansions('qixing')]).set('ai', button => {
+                    const result = event.result = await player.chooseButton([get.prompt2('minidawu'), player.getExpansions('qixing')]).set('ai', button => {
                         var player = _status.event.player;
                         if (!game.hasPlayer(current => get.attitude(current, player) < 0)) return 0;
                         return 1 / Math.max(0.01, get.value(button.link));
