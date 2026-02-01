@@ -34762,32 +34762,29 @@ const packs = function () {
                     player: 'loseAfter',
                     global: ['equipAfter', 'addJudgeAfter', 'gainAfter', 'loseAsyncAfter', 'addToExpansionAfter'],
                 },
-                filter(event, player) {
-                    var evt = event.getl(player);
-                    return evt?.player == player && evt.es && evt.es.length > 0;
-                },
                 frequent: true,
                 getIndex(event, player) {
-                    return event.getl(player).getl(player).es.length;
+                    return event.getl?.(player)?.es?.length;
                 },
-                content() {
-                    'step 0'
-                    player.draw(2);
-                    'step 1'
-                    if (player.hasSkill('minidoumao')) return;
-                    player.chooseTarget('是否弃置场上的一张牌？', function (card, player, target) {
+                async content(event, trigger, player) {
+                    await player.draw(2);
+                    if (player.hasSkill('minidoumao') || !game.hasPlayer(current => current.countDiscardableCards(player, 'ej'))) return;
+                    const result = await player.chooseTarget('是否弃置场上的一张牌？', (card, player, target) => {
                         return target.countDiscardableCards(player, 'ej');
                     }).set('ai', target => {
-                        var player = _status.event.player;
-                        var att = get.attitude(player, target);
-                        if (att > 0 && (target.countCards('j') > 0 || target.countCards('e', function (card) {
-                            return get.value(card, target) < 0;
-                        }))) return 2;
-                        if (att < 0 && target.countCards('e') > 0 && !target.hasSkillTag('noe')) return -1;
+                        const player = get.player();
+                        const att = get.attitude(player, target);
+                        if (att > 0 && (target.countCards('j') > 0 || target.countCards('e', card => get.value(card, target) < 0))) {
+                            return 2;
+                        }
+                        if (att < 0 && target.countCards('e') > 0 && !target.hasSkillTag('noe')) {
+                            return 1;
+                        }
                         return 0;
-                    });
-                    'step 2'
-                    if (result.bool) player.discardPlayerCard(result.targets[0], 'ej', true);
+                    }).forResult();
+                    if (result?.targets?.length) {
+                        await player.discardPlayerCard(result.targets[0], 'ej', true);
+                    }
                 },
                 ai: {
                     noe: true,
