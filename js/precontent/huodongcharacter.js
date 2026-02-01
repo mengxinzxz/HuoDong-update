@@ -9999,7 +9999,7 @@ const packs = function () {
             },
             //大姐
             bilibili_roulin: {
-                audio: false,
+                audio: 'ext:活动武将/audio/skill:1',
                 inherit: 'roulin',
                 filter(event, player) {
                     if (event.card.name !== 'sha') return false;
@@ -10028,7 +10028,7 @@ const packs = function () {
             },
             //胖哥
             bilibili_benghuai: {
-                audio: false,
+                audio: 'ext:活动武将/audio/skill:1',
                 inherit: 'benghuai',
                 filter: () => true,
                 async content(event, trigger, player) {
@@ -10044,7 +10044,7 @@ const packs = function () {
             },
             //公鸭
             bilibili_yaowu: {
-                audio: false,
+                audio: 'ext:活动武将/audio/skill:1',
                 inherit: 'reyaowu',
                 filter: () => true,
                 async content(event, trigger, player) {
@@ -10063,6 +10063,7 @@ const packs = function () {
             //加强版眼睛
             bilibili_kamiman: {
                 unique: true,
+                audio: 'ext:活动武将/audio/skill:1',
                 trigger: { player: 'phaseBegin' },
                 filter(event, player) {
                     if (!get.nameList(player).includes('bilibili_yanjing')) return false;
@@ -10155,6 +10156,7 @@ const packs = function () {
                         inherit: 'bilibili_shenren',
                     },
                     init: {
+                        audio: 'ext:活动武将/audio/skill:1',
                         trigger: {
                             global: 'phaseBefore',
                             player: 'enterGame',
@@ -10192,6 +10194,7 @@ const packs = function () {
                         },
                     },
                     defend: {
+                        audio: 'ext:活动武将/audio/skill:1',
                         trigger: { player: 'phaseAfter' },
                         filter(event, player) {
                             if (!get.nameList(player).includes('bilibili_yanjing')) return false;
