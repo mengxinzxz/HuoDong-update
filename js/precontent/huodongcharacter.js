@@ -13789,7 +13789,7 @@ const packs = function () {
             bilibili_simayi_prefix: '神',
             old_dongxie: '列传董翓',
             old_dongxie_ab: '董翓',
-            bilibili_longjiuzhen: '龙九帧',
+            bilibili_longjiuzhen: '美少爱蒂朵',
             bilibili_xingcan: '星璨',
             bilibili_xingcan_info: '准备阶段和结束阶段，你可以选择一种花色并进行判定，若判定结果与你选择的花色相同，你可以令一名其他角色翻面。',
             bilibili_linglai: '灵籁',

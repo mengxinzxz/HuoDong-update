@@ -282,7 +282,7 @@ export async function precontent(bilibilicharacter) {
     lib.poptip.add({
         name: '韵律技',
         id: 'rule_yunlvSkill',
-        info: '三国杀微服机制，和转换技类似，韵律技分为平和仄两种状态，韵律技初始默认状态为平，满足转韵条件时韵律技会转成另一种状态并重置技能的发动次数。',
+        info: '同普通转换技类似，韵律技分为平和仄两种状态，韵律技初始默认状态为平，满足转韵条件时韵律技会转成另一种状态并重置技能的发动次数。',
     });
     lib.poptip.add({
         name: '仁望值',
@@ -323,6 +323,11 @@ export async function precontent(bilibilicharacter) {
         name: '牢大',
         id: 'rule_mamba',
         info: 'Man! What can I say? Mamba out!',
+    });
+    lib.poptip.add({
+        name: '成器',
+        id: 'rule_xizifuSkill',
+        info: '成器后的数字为本局游戏发动此技能的次数上限，发动带有此标签的技能后，需满足技能“进学”条件才可继续发动此技能。',
     });
     //----------------游戏播报·始----------------
     lib.skill._OpenTheGame = {
@@ -633,7 +638,7 @@ export async function precontent(bilibilicharacter) {
                 type: 'players',
                 data: [
                     'Mbaby_wangcan', 'Mbaby_sb_zhangjiao', 'Mbaby_star_sunshangxiang', 'Mbaby_leibo', 'Mbaby_malingli', 'Mbaby_xiahoumao', 'Mbaby_zhangchu', 'Mbaby_ol_lisu',
-                    'wechat_zhiyin_pangtong', 'wechat_zhiyin_caorui', 'wechat_zhi_liubei', 'wechat_nailong',
+                    'wechat_zhiyin_pangtong', 'wechat_zhiyin_caorui', 'wechat_zhi_liubei', 'wechat_nailong', 'wechat_zhi_caopi',
                     'bfake_zhanghua', 'bfake_hanrong', 'bfake_hanshao',
                     'wechat_old_luxun', 'wechat_old_zuoci', 'wechat_old_zhaoxiang',
                     'Mbaby_old_liubei', 'Mbaby_old_sunquan', 'Mbaby_diaochan', 'Mbaby_old_1_daxiaoqiao', 'Mbaby_old_2_daxiaoqiao', 'Mbaby_zhangqiying',
@@ -645,7 +650,7 @@ export async function precontent(bilibilicharacter) {
                 data: [
                     'bugfix、素材补充、技能调整',
                     '欢杀：王粲、谋张角、星孙尚香、雷薄、马伶俐、夏侯楙、张楚、李肃',
-                    '小程序：极庞统、极曹叡、志刘备、贝利亚',
+                    '小程序：极庞统、极曹叡、志刘备、奶龙、志曹丕',
                     '蝶设堂：张华、韩融(暂未完工)、韩韶(暂未完工)、桓温(修改)',
                     '恭喜小程序牢武将陆逊/左慈/赵襄、欢杀牢武将刘备/孙权/貂蝉/神二乔、欢杀落选武将神二乔打赢复活赛，将欢杀张琪瑛归入牢字辈',
                     'To be continued...',
