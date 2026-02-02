@@ -17598,7 +17598,7 @@ const packs = function () {
                         player.popup('wechatweizhu');
                         player.markAuto('wechatweizhu', [event.cost_data]);
                         player.storage['wechatweizhu'].sort((a, b) => a - b);
-                        player.addTip('wechatweizhu', `${get.translation('wechatweizhu')} ${[1, ...player.storage['wechatweizhu']].join('、')}`);
+                        player.addTip('wechatweizhu', `${get.translation('wechatweizhu')} ${[1, ...player.storage['wechatweizhu']].join(' ')}`);
                         game.log(player, '发动', `#g【${get.translation('wechatweizhu')}】`, '额外获得一张', `#y${event.cost_data}字`, '牌');
                     }
                 },
@@ -17632,7 +17632,7 @@ const packs = function () {
                         async content(event, trigger, player) {
                             player.markAuto(event.name, trigger.getd().map(card => get.cardNameLength(card)));
                             player.storage[event.name].sort((a, b) => a - b);
-                            player.addTip(event.name, `进学 ${player.storage[event.name].join('、')}`);
+                            player.addTip(event.name, `进学 ${player.storage[event.name].join(' ')}`);
                             if (player.getStorage(event.name).length >= 4) {
                                 player.removeSkill(event.name);
                                 player.popup('wechatmaizhi');
@@ -17787,7 +17787,7 @@ const packs = function () {
                     player.addTempSkill(`${event.name}_recast`, 'phaseUseAfter');
                     player.markAuto(`${event.name}_recast`, [number]);
                     player.storage[`${event.name}_recast`].sort((a, b) => a - b);
-                    player.addTip(`${event.name}_recast`, `${get.translation(`${event.name}_recast`)} ${player.storage[`${event.name}_recast`].join('、')}`);
+                    player.addTip(`${event.name}_recast`, `${get.translation(`${event.name}_recast`)} ${player.storage[`${event.name}_recast`].join(' ')}`);
                     const next = player.recast([card]);
                     await next;
                     if (typeof number !== 'number') return;
@@ -17878,7 +17878,7 @@ const packs = function () {
                             markcount: (list = []) => `${list.length}/8`,
                             content(list = []) {
                                 if (!list.length) return '当前未使用过区间外的牌';
-                                return `已使用过${list}点的牌`;
+                                return `已使用过${list.join('、')}点的牌`;
                             },
                         },
                         trigger: { player: 'useCard' },
@@ -17892,7 +17892,7 @@ const packs = function () {
                         async content(event, trigger, player) {
                             player.markAuto(event.name, [get.number(trigger.card)]);
                             player.storage[event.name].sort((a, b) => a - b);
-                            player.addTip(event.name, `进学 ${player.storage[event.name].join('、')}`);
+                            player.addTip(event.name, `进学 ${player.storage[event.name].join(' ')}`);
                             if (player.getStorage(event.name).length >= 8) {
                                 player.removeSkill(event.name);
                                 player.popup('wechatlihai');
@@ -18049,7 +18049,7 @@ const packs = function () {
             },
             wechatweizhu(player, skill) {
                 const num = [1, ...player.getStorage(skill)].sort((a, b) => a - b);
-                return `出牌阶段限一次或当你受到伤害后，你可以获得${num.length > 1 ? '' : '一张'}牌名字数为1的牌${num.length > 1 ? '各一张' : ''}。`;
+                return `出牌阶段限一次或当你受到伤害后，你可以获得${num.length > 1 ? '' : '一张'}牌名字数为${num.join('、')}的牌${num.length > 1 ? '各一张' : ''}。`;
             },
             wechatchengfan(player, skill) {
                 const str = `10-${get.strNumber(11 + player.countMark(skill))}`;
