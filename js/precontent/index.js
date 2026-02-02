@@ -637,11 +637,6 @@ export async function precontent(bilibilicharacter) {
             {
                 type: 'players',
                 data: [
-                    'Mbaby_wangcan', 'Mbaby_sb_zhangjiao', 'Mbaby_star_sunshangxiang', 'Mbaby_leibo', 'Mbaby_malingli', 'Mbaby_xiahoumao', 'Mbaby_zhangchu', 'Mbaby_ol_lisu',
-                    'wechat_zhiyin_pangtong', 'wechat_zhiyin_caorui', 'wechat_zhi_liubei', 'wechat_nailong', 'wechat_zhi_caopi', 'wechat_zhi_sunquan',
-                    'bfake_zhanghua', 'bfake_hanrong', 'bfake_hanshao',
-                    'wechat_old_luxun', 'wechat_old_zuoci', 'wechat_old_zhaoxiang',
-                    'Mbaby_old_liubei', 'Mbaby_old_sunquan', 'Mbaby_diaochan', 'Mbaby_old_1_daxiaoqiao', 'Mbaby_old_2_daxiaoqiao', 'Mbaby_zhangqiying',
                 ],
             },
             {
@@ -649,10 +644,6 @@ export async function precontent(bilibilicharacter) {
                 textAlign: 'left',
                 data: [
                     'bugfix、素材补充、技能调整',
-                    '欢杀：王粲、谋张角、星孙尚香、雷薄、马伶俐、夏侯楙、张楚、李肃',
-                    '小程序：极庞统、极曹叡、志刘备、奶龙、志曹丕、志孙权',
-                    '蝶设堂：张华、韩融、韩韶、桓温(修改)',
-                    '复活小程序牢武将陆逊/左慈/赵襄、欢杀牢武将刘备/孙权/貂蝉/神二乔、欢杀落选武将神二乔，将欢杀张琪瑛归入牢字辈',
                     'To be continued...',
                 ],
             },
