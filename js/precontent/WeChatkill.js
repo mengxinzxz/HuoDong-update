@@ -17598,7 +17598,7 @@ const packs = function () {
                         player.popup('wechatweizhu');
                         player.markAuto('wechatweizhu', [event.cost_data]);
                         player.storage['wechatweizhu'].sort((a, b) => a - b);
-                        player.addTip('wechatweizhu', `${get.translation('wechatweizhu')} ${[1, ...player.storage['wechatweizhu']].join(' ')}`);
+                        player.addTip('wechatweizhu', [get.translation('wechatweizhu'), 1, ...player.storage['wechatweizhu']].join(' '));
                         game.log(player, '发动', `#g【${get.translation('wechatweizhu')}】`, '额外获得一张', `#y${event.cost_data}字`, '牌');
                     }
                 },
@@ -17632,7 +17632,7 @@ const packs = function () {
                         async content(event, trigger, player) {
                             player.markAuto(event.name, trigger.getd().map(card => get.cardNameLength(card)));
                             player.storage[event.name].sort((a, b) => a - b);
-                            player.addTip(event.name, `进学 ${player.storage[event.name].join(' ')}`);
+                            player.addTip(event.name, ['进学', ...player.storage[event.name]].join(' '));
                             if (player.getStorage(event.name).length >= 4) {
                                 player.removeSkill(event.name);
                                 player.popup('wechatmaizhi');
@@ -17783,11 +17783,11 @@ const packs = function () {
                     return `${lib.translate.wechatzhenxian_info}${event.wechatzhenxian ? `<br>※本回合上次重铸点数：${event.wechatzhenxian}` : ''}`;
                 },
                 async content(event, trigger, player) {
-                    const card = event.cards[0], number = get.number(card);
-                    player.addTempSkill(`${event.name}_recast`, 'phaseUseAfter');
-                    player.markAuto(`${event.name}_recast`, [number]);
-                    player.storage[`${event.name}_recast`].sort((a, b) => a - b);
-                    player.addTip(`${event.name}_recast`, `${get.translation(`${event.name}_recast`)} ${player.storage[`${event.name}_recast`].join(' ')}`);
+                    const card = event.cards[0], number = get.number(card), skill = `${event.name}_recast`;
+                    player.addTempSkill(skill, 'phaseUseAfter');
+                    player.markAuto(skill, [number]);
+                    player.storage[skill].sort((a, b) => a - b);
+                    player.addTip(skill, [get.translation(skill), ...player.storage[skill]].join(' '));
                     const next = player.recast([card]);
                     await next;
                     if (typeof number !== 'number') return;
@@ -17892,7 +17892,7 @@ const packs = function () {
                         async content(event, trigger, player) {
                             player.markAuto(event.name, [get.number(trigger.card)]);
                             player.storage[event.name].sort((a, b) => a - b);
-                            player.addTip(event.name, `进学 ${player.storage[event.name].join(' ')}`);
+                            player.addTip(event.name, ['进学', ...player.storage[event.name]].join(' '));
                             if (player.getStorage(event.name).length >= 8) {
                                 player.removeSkill(event.name);
                                 player.popup('wechatlihai');
