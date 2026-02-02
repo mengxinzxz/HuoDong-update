@@ -17661,7 +17661,7 @@ const packs = function () {
                     let gains = [];
                     const num = [1, ...player.getStorage(event.name)].sort((a, b) => a - b);
                     for (const number of num) {
-                        const card = get.cardPile(card => get.number(card) === number);
+                        const card = get.cardPile(card => get.cardNameLength(card) === number);
                         if (card) gains.push(card);
                     }
                     if (gains.length > 0) await player.gain(gains, 'gain2');
