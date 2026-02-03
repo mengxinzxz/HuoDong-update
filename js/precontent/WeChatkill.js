@@ -13185,6 +13185,7 @@ const packs = function () {
                 selectCard() {
                     const player = get.player();
                     const storage = player.getStorage('wechatreweiwo_used');
+                    if (storage.includes('discard')) return 0;
                     if (storage.includes('damage')) return 1;
                     return [0, 1];
                 },

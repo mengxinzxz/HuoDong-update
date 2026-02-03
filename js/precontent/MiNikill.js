@@ -29753,7 +29753,7 @@ const packs = function () {
                     const [target] = event.targets;
                     const hs = target.getCards('he').filter(card => get.color(card, target) == 'black');
                     if (!hs.length) return;
-                    let { cards } = await target.modedDiscard(hs);
+                    let { cards } = await target.modedDiscard(hs).forResult();
                     while (cards.some(card => get.position(card) == 'd' && player.canUse(get.autoViewAs({ name: 'sha' }, [card]), target, false)) && player.isIn()) {
                         const card = cards.filterInD('d').filter(card => get.position(card) == 'd' && player.canUse(get.autoViewAs({ name: 'sha' }, [card]), target, false)).shift();
                         cards.remove(card);
