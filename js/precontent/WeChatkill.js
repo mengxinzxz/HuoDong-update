@@ -200,7 +200,7 @@ const packs = function () {
             wechat_zhiyin_xunyu: ['male', 'wei', 3, ['wechatwangzuo', 'wechatrejuxian', 'wechatxianshi']],
             wechat_zhiyin_zhenji: ['female', 'wei', 3, ['wechatshenfu', 'wechatsiyuan']],
             wechat_zhiyin_caiwenji: ['female', 'qun', 3, ['wechatbeijia', 'wechatsifu'], ['name:蔡|琰']],
-            wechat_zhiyin_zhouyu: ['male', 'wu', 3, ['wechatyingrui', 'wechatfenli'/*, 'wechatqugu'*/]],
+            wechat_zhiyin_zhouyu: ['male', 'wu', 3, ['wechatyingrui', 'wechatfenli', 'wechatqugu']],
             wechat_zhiyin_sunquan: ['male', 'wu', 4, ['wechatzongxi', 'wechatluheng']],
             wechat_zhiyin_guanyu: ['male', 'shu', 4, ['wechatyihan', 'wechatgywuwei']],
             wechat_zhiyin_liubei: ['male', 'shu', 4, ['wechatguizhi', 'wechathengyi']],
@@ -9038,9 +9038,7 @@ const packs = function () {
             },
             wechatqugu: {
                 audio: 'ext:活动武将/audio/skill:2',
-                trigger: {
-                    target: 'useCardToTargeted',
-                },
+                trigger: { target: 'useCardToTargeted' },
                 filter(event, player) {
                     return player != event.player && game.getGlobalHistory('useCard', evt => evt.player != player).indexOf(event.getParent()) == 0;
                 },
