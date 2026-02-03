@@ -42,7 +42,7 @@ const packs = function () {
                     })(),
                     ...['zhenji', 'diaochan', 'wangcan', 'machao', 'pangde', 'jiangwei', 'taishici', 'caiwenji'].map(i => `wechat_sp_${i}`),
                     ...['huaxiong', 'sunquan', 'xiaoqiao', 'xiahouyuan', 'gaoshun', 'handang', 'guojia', 'huanggai', 'diaochan', 'huangyueying', 'zhangliao', 'sunshangxiang', 'zhaoyun', 'machao', 'huangzhong', 'caocao', 'sunce'].map(i => `wechat_sb_${i}`),
-                    ...['ruanji', 'jikang', 'caojie', 'xuezong', 'caiyong', 'xushi', 'sundeng', 'huanghao', 'guohuanghou', 'lizhaojiaobo', 'liucheng', 'sunluyu', 'sunhao', 'yj_zhoubuyi', 'jsp_huangyueying', 'wanglang', 'chendeng', 'zhuling', 'caizhenji', 'ol_bianfuren', 'xin_sunluban', 'zhangxingcai', 'huojun'].map(i => `wechat_${i}`),
+                    ...['shantao', 'ruanji', 'jikang', 'caojie', 'xuezong', 'caiyong', 'xushi', 'sundeng', 'huanghao', 'guohuanghou', 'lizhaojiaobo', 'liucheng', 'sunluyu', 'sunhao', 'yj_zhoubuyi', 'jsp_huangyueying', 'wanglang', 'chendeng', 'zhuling', 'caizhenji', 'ol_bianfuren', 'xin_sunluban', 'zhangxingcai', 'huojun'].map(i => `wechat_${i}`),
                     ...[],
                 ],
                 wechat_wanxiang: [
@@ -174,6 +174,7 @@ const packs = function () {
             wechat_re_zhaoyun: ['male', 'shu', 4, ['wechatlongdan', 'wechatyajiao']],
             wechat_re_liubiao: ['male', 'qun', 3, ['wechatrezishou', 'wechatrezongshi']],
             wechat_ruanji: ['male', 'wei', 3, ['wechatyonghuai', 'wechatqiongtu']],
+            wechat_shantao: ['male', 'qun', 3, ['wechatjieshen', 'wechatqishi']],
             //神武将
             wechat_shen_zhugeliang: ['male', 'shen', 3, ['wechatqixing', 'wechatjifeng', 'wechattianfa'], ['shu', 'name:诸葛|亮']],
             wechat_shen_lvmeng: ['male', 'shen', 3, ['shelie', 'wechatgongxin'], ['wu']],
@@ -17914,6 +17915,89 @@ const packs = function () {
                     },
                 },
             },
+            // 山涛
+            wechatjieshen: {
+                audio: 'ext:活动武将/audio/skill:2',
+                trigger: { player: 'phaseBegin' },
+                check(event, player) {
+                    return player.needsToDiscard() <= 2;
+                },
+                async content(event, trigger, player) {
+                    trigger.phaseList.splice(trigger.num, 0, `phaseDiscard|${event.name}`);
+                    player.addTempSkill(`${event.name}_effect`);
+                },
+                subSkill: {
+                    effect: {
+                        charlotte: true,
+                        trigger: { player: ['phaseDiscardEnd', 'phaseDiscardSkipped', 'phaseDiscardCancelled'] },
+                        filter(event, player) {
+                            return event._extraPhaseReason = 'wechatjieshen';
+                        },
+                        forced: true,
+                        popup: false,
+                        async content(event, trigger, player) {
+                            player.removeSkill(event.name);
+                            await player.draw(2);
+                            const result = await player.chooseTarget('节身：令一名角色于其下个弃牌阶段开始时跳过此阶段', true).set('ai', target => {
+                                const player = get.player();
+                                const att = get.attitude(player, target);
+                                if (att <= 0) return 0;
+                                return target.skipList.includes('phaseDiscard') ? 1 : att;
+                            }).forResult();
+                            if (result?.targets?.length) {
+                                const target = result.targets[0];
+                                player.line(target, 'green');
+                                target.addSkill('wechatjieshen_cancel');
+                            }
+                        }
+                    },
+                    cancel: {
+                        charlotte: true,
+                        mark: true,
+                        intro: { content: '跳过下个弃牌阶段' },
+                        trigger: { player: 'phaseDiscardBegin' },
+                        forced: true,
+                        popup: false,
+                        content(event, trigger, player) {
+                            player.removeSkill(event.name);
+                            trigger.cancel();
+                            game.log(player, '跳过了弃牌阶段');
+                        }
+                    }
+                }
+            },
+            wechatqishi: {
+                audio: 'ext:活动武将/audio/skill:2',
+                trigger: {
+                    player: 'loseAfter',
+                    global: 'loseAsyncAfter',
+                },
+                filter(event, player) {
+                    if (player.isHealthy()) return false;
+                    if (event.type != 'discard' || event.getlx === false) return false;
+                    const cards = (event.getl?.(player)?.hs || []).filterInD('d');
+                    if (!cards.length) return false;
+                    const types = cards.map(card => get.type2(card)).toUniqued();
+                    return types.length == 1 && types[0] !== 'equip';
+                },
+                usable: 1,
+                async content(event, trigger, player) {
+                    await player.recover();
+                    const [type] = trigger.getl(player).hs.filterInD('d').map(card => get.type2(card)).toUniqued();
+                    const list = get.inpileVCardList(info => {
+                        return info[0] == type && player.hasUseTarget({ name: info[2], isCard: true }, false, false);
+                    });
+                    if (!list.length) return;
+                    const result = await player.chooseButton(['咏怀：你可以视为使用其中一张牌', [list, 'vcard']]).set('ai', button => {
+                        const player = get.player();
+                        return player.getUseValue({ name: button.link[2], isCard: true });
+                    }).forResult();
+                    if (result.bool) {
+                        const card = get.autoViewAs({ name: result.links[0][2], isCard: true });
+                        const next = player.chooseUseTarget(card, true, false, 'nodistance');
+                    }
+                },
+            },
         },
         dynamicTranslate: {
             wechatxiangzhi(player) {
@@ -18978,7 +19062,7 @@ const packs = function () {
             wechatmingdian: '名典',
             wechatmingdian_info: '准备阶段，你可以展示至多两名角色的各一张牌并获得之，这些角色使用其当前手牌中牌名字数大于等于其被展示牌牌名字数的牌无任何次数限制直到其下个结束阶段。',
             wechatmaizhi: '迈志',
-            wechatmaizhi_info: `${get.poptip('rule_xizifuSkill')}(3)，当你使用点数最大的手牌造成伤害后，你可以选择一项：①令受〖名典〗影响的牌不可被响应；②为〖威著〗增加一个可获得的牌名字数。进学：四张牌名字数各不相同的牌进入弃牌堆。`,
+            wechatmaizhi_info: `${get.poptip('rule_xizifuSkill')}(3)，当你使用点数最大的手牌造成伤害后，你可以选择一项：①令受${get.poptip('wechatmingdian')}影响的牌不可被响应；②为${get.poptip('wechatweizhu')}增加一个可获得的牌名字数。进学：四张牌名字数各不相同的牌进入弃牌堆。`,
             wechatweizhu: '威著',
             wechatweizhu_info: '出牌阶段限一次或当你受到伤害后，你可以获得一张牌名字数为1的牌。',
             wechat_zhi_sunquan: '志孙权',
@@ -18987,8 +19071,12 @@ const packs = function () {
             wechatzhenxian: '镇舷',
             wechatzhenxian_info: '出牌阶段限两次，你可以重铸一张牌（不能重铸本阶段以此法重铸过的点数的牌）。若此牌点数与你本回合上次重铸的牌点数相邻，则你可以将其他角色场上的一张牌移动到你的对应区域或令此技能本阶段发动次数+1。',
             wechatlihai: '犁海',
-            wechatlihai_info: `${get.poptip('rule_xizifuSkill')}(2)，出牌阶段结束时，若你场上的牌数为全场最多，你令〖承帆〗点数区间上限+1，摸牌阶段摸牌数+1。进学：使用八张〖承帆〗点数区间外的牌。`,
-
+            wechatlihai_info: `${get.poptip('rule_xizifuSkill')}(2)，出牌阶段结束时，若你场上的牌数为全场最多，你令${get.poptip('wechatchengfan')}点数区间上限+1，摸牌阶段摸牌数+1。进学：使用八张${get.poptip('wechatchengfan')}点数区间外的牌。`,
+            wechat_shantao: '小程序山涛',
+            wechatjieshen: '节身',
+            wechatjieshen_info: '回合开始时，你可以执行一个额外的弃牌阶段。若如此做，你摸两张牌并令一名角色于其下个弃牌阶段开始时跳过此阶段。',
+            wechatqishi: '启事',
+            wechatqishi_info: '每回合限一次。你的回合内，当你的手牌因弃置进入弃牌堆后，你回复1点体力。若这些牌的类别均相同且不为装备牌，你可以视为使用一张无距离和次数限制的同类型的牌。',
             // ----------------------- 台词部分 ----------------------- //
             '#ext:活动武将/audio/skill/wechatzhongxin1': '苍生之愿，即贫道所愿也。',
             '#ext:活动武将/audio/skill/wechatzhongxin2': '汝可污我为贼，然逆万民之愿者亦当为贼。',

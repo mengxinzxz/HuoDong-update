@@ -637,6 +637,7 @@ export async function precontent(bilibilicharacter) {
             {
                 type: 'players',
                 data: [
+                    'wechat_shantao',
                 ],
             },
             {
@@ -644,6 +645,7 @@ export async function precontent(bilibilicharacter) {
                 textAlign: 'left',
                 data: [
                     'bugfix、素材补充、技能调整',
+                    '小程序：山涛',
                     'To be continued...',
                 ],
             },
