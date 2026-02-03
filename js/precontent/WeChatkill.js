@@ -19309,10 +19309,6 @@ const packs = function () {
         WeChatkill.character[i].trashBin ??= [];
         WeChatkill.character[i].dieAudios ??= [];
         WeChatkill.character[i].tempname ??= [];
-        if (i.startsWith('wechat_')) {
-            if (!WeChatkill.character[i].dieAudios.length) WeChatkill.character[i].dieAudios.push(i.slice(7));
-            if (!WeChatkill.character[i].tempname.length) WeChatkill.character[i].tempname.push(i.slice(7));
-        }
         if (_status['extension_活动武将_files']) {
             const files = _status['extension_活动武将_files'];
             if (files.image.character.files.includes(`${i}.jpg`)) WeChatkill.character[i].img = `extension/活动武将/image/character/${i}.jpg`;
@@ -19324,6 +19320,10 @@ const packs = function () {
                 WeChatkill.character[i].dieAudios.push('ext:活动武将/audio/die:true');
                 WeChatkill.translate[`#ext:活动武将/audio/die/${i}:die`] ??= '点击播放阵亡配音';
             }
+        }
+        if (i.startsWith('wechat_')) {
+            if (!WeChatkill.character[i].dieAudios.length) WeChatkill.character[i].dieAudios.push(i.slice(7));
+            if (!WeChatkill.character[i].tempname.length) WeChatkill.character[i].tempname.push(i.slice(7));
         }
         if (WeChatkill.translate[i] && !lib.translate[i + '_prefix'] && !WeChatkill.translate[i + '_prefix']) {
             if (WeChatkill.translate[i].startsWith(get.poptip('rule_mamba'))) {
