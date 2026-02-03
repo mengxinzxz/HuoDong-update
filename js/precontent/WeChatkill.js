@@ -13902,8 +13902,8 @@ const packs = function () {
                     player.addTempSkill(event.name + '_used', 'roundStart');
                     player.markAuto(event.name + '_used', [target]);
                     for (var phase of ['phaseDraw', 'phaseUse']) {
-                        target.addTempSkill(event.name + '_' + phase, { player: phase + 'After' });
-                        target.addMark(event.name + '_' + phase, 1, false);
+                        target.addTempSkill(event.name + '_' + phase, { player: event.name + '_' + phase + 'After' });
+                        target.addMark(event.name + '_' + phase, 2, false);
                     }
                 },
                 group: 'wechattscjizhi_gift',
@@ -13940,16 +13940,34 @@ const packs = function () {
                         forced: true,
                         popup: false,
                         async content(event, trigger, player) {
-                            trigger.num += player.countMark(event.name);
+                            const num = player.countMark(event.name);
+                            player.removeSkill(event.name);
+                            trigger.num += num;
                         },
                     },
                     phaseUse: {
                         charlotte: true,
                         onremove: true,
                         intro: { content: '下个出牌阶段使用【杀】的次数上限+#' },
+                        trigger: { player: 'phaseUseBegin' },
+                        forced: true,
+                        popup: false,
+                        async content(event, trigger, player) {
+                            const num = player.countMark(event.name);
+                            player.removeSkill(event.name);
+                            if (num > 0) {
+                                player.addTempSkill('wechattscjizhi_effect', { player: 'phaseUseAfter' });
+                                player.addMark('wechattscjizhi_effect', num, false);
+                            }
+                        },
+                    },
+                    effect: {
+                        charlotte: true,
+                        onremove: true,
+                        intro: { content: '本阶段使用【杀】的次数上限+#' },
                         mod: {
                             cardUsable(card, player, num) {
-                                if (player.isPhaseUsing() && card.name == 'sha') return num + player.countMark('wechattscjizhi_phaseUse');
+                                if (card.name == 'sha') return num + player.countMark('wechattscjizhi_effect');
                             },
                         },
                     }
@@ -18941,7 +18959,7 @@ const packs = function () {
             wechatjiaofeng: '绞锋',
             wechatjiaofeng_info: '出牌阶段开始时，你可以选择一名其他角色并选择至多两项：1.你获得一张【杀】并与其各视为使用一张【酒】；2.本回合其成为你【杀】或【决斗】的额外目标。若你选择了所有项，其可以视为使用一张无距离限制的【杀】。',
             wechattscjizhi: '赍志',
-            wechattscjizhi_info: '①每轮每名角色限一次。当你使用【杀】或【决斗】造成伤害后，你可以令一名角色于其下个摸牌阶段的额定摸牌数和出牌阶段使用【杀】的次数上限+1。②当你死亡后，你可以令一名其他角色获得〖赍志〗。',
+            wechattscjizhi_info: '①每轮每名角色限一次。当你使用【杀】或【决斗】造成伤害后，你可以令一名角色于其下个摸牌阶段的额定摸牌数和出牌阶段使用【杀】的次数上限+2。②当你死亡后，你可以令一名其他角色获得〖赍志〗。',
             wechat_zhiyin_diaochan: '极貂蝉',
             wechatxiaoshao: '萧韶',
             wechatxiaoshao_info: `${get.poptip('rule_yunlvSkill')}。出牌阶段限一次，你可以：平：弃置一名角色一张牌，然后其视为一张无距离和次数限制的【杀】，且其以此法使用的【杀】指定你为目标时，你可以为此牌指定一个额外目标；仄：令一名角色摸一张牌，然后其本回合内使用的下一张牌无效。转韵：出牌阶段有角色使用【酒】结算结束后。`,
