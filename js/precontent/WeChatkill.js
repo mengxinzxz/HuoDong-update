@@ -17862,6 +17862,7 @@ const packs = function () {
                     player.addMark(event.name, 1, false);
                     player.addSkill(`${event.name}_xizifu`);
                     player.addMark('wechatchengfan', 1, false);
+                    player.addTip('wechatchengfan', `${get.translation('wechatchengfan')} 10-${get.strNumber(11 + player.countMark('wechatchengfan'))}`);
                     player.addSkill(`${event.name}_effect`);
                     player.addMark(`${event.name}_effect`, 1, false);
                     game.log(player, `#g【${get.translation('wechatchengfan')}】`, '区间上限+1，', '#y摸牌阶段', '摸牌数+1');
