@@ -2890,7 +2890,7 @@ const packs = function () {
                 ai: {
                     unequip: true,
                     skillTagFilter(player, tag, arg) {
-                        if (!arg?.card?.wechatshensu != true) return false;
+                        if (!arg?.card?.wechatshensu) return false;
                     },
                 },
             },
@@ -18363,7 +18363,7 @@ const packs = function () {
             wechatmengjin_info: '当你使用【杀】指定目标后，你可以弃置目标角色的一张牌。若此牌为装备牌，则其无法响应此【杀】，否则你获得此牌。',
             wechat_xiahouyuan: '小程序夏侯渊',
             wechatshensu: '神速',
-            wechatshensu_info: '你可以选择一至两项：①跳过判定阶段和摸牌阶段；②跳过出牌阶段；③跳过弃牌阶段并失去1点体力。你每选择一项，视为你对一名其他角色使用一张无视距离和防具的【杀】。',
+            wechatshensu_info: '你可以选择任意项：①跳过判定阶段和摸牌阶段；②跳过出牌阶段；③跳过弃牌阶段并失去1点体力。你每选择一项，视为你对一名其他角色使用一张无视距离和防具的【杀】。',
             wechat_huangzhong: '小程序黄忠',
             wechatliegong: '烈弓',
             wechatliegong_info: '你使用【杀】无距离限制。当你使用【杀】指定目标后，若目标角色的手牌数小于等于你的手牌数，则此【杀】不可被【闪】响应。',
