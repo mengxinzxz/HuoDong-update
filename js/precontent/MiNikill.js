@@ -11184,13 +11184,17 @@ const packs = function () {
                 ai: { threaten: 0.8 },
                 subSkill: {
                     draw: {
+                        audio: 'shushen',
                         trigger: { player: 'recoverAfter' },
+                        filter(event, player) {
+                            return game.hasPlayer(current => current !== player);
+                        },
                         getIndex: event => event.num,
                         preHidden: true,
                         async cost(event, trigger, player) {
-                            const result = await player.chooseTarget(get.prompt2('minishushen'), lib.filter.notMe).set('ai', function (target) {
+                            event.result = await player.chooseTarget(get.prompt(event.skill), '令一名其他角色摸一张牌', lib.filter.notMe).set('ai', function (target) {
                                 return get.attitude(_status.event.player, target);
-                            }).setHiddenSkill('minishushen').forResult();
+                            }).setHiddenSkill(event.skill).forResult();
                         },
                         content() {
                             targets[0].draw();
