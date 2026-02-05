@@ -13902,7 +13902,7 @@ const packs = function () {
                     player.addTempSkill(event.name + '_used', 'roundStart');
                     player.markAuto(event.name + '_used', [target]);
                     for (var phase of ['phaseDraw', 'phaseUse']) {
-                        target.addTempSkill(event.name + '_' + phase, { player: event.name + '_' + phase + 'After' });
+                        target.addSkill(event.name + '_' + phase);
                         target.addMark(event.name + '_' + phase, 2, false);
                     }
                 },
