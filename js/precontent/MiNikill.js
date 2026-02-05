@@ -521,7 +521,7 @@ const packs = function () {
             Mfight_dianwei: ['male', 'wei', 5, ['minifightchuanglie', 'minifightkuangji']],
             Mfight_machao: ['male', 'qun', 4, ['minifightdangfeng', 'minifighthaiji']],
             Mfight_jiangwei: ['male', 'shu', 4, ['minifightyilve', 'minifightqizhi']],
-            // 隐
+            //隐
             Myin_xushu: ['male', 'wei', 3, ['miniyinyinxing', 'miniyinjujian']],
         },
         characterIntro: {
@@ -6076,7 +6076,7 @@ const packs = function () {
                     },
                 },
             },
-            // 赵昂
+            //赵昂
             minisushou: {
                 audio: 'dcsushou',
                 inherit: 'dcsushou',
@@ -6152,7 +6152,7 @@ const packs = function () {
                     }
                 },
             },
-            // 曹安民
+            //曹安民
             minixianwei: {
                 audio: 'xianwei',
                 inherit: 'xianwei',
@@ -6402,7 +6402,7 @@ const packs = function () {
                     },
                 },
             },
-            // 杜夔
+            //杜夔
             minifanyin: {
                 audio: 'dcfanyin',
                 enable: 'phaseUse',
@@ -6503,7 +6503,7 @@ const packs = function () {
                     await player.draw();
                 },
             },
-            // 诸葛若雪
+            //诸葛若雪
             miniqiongying: {
                 audio: 'dcqiongying',
                 inherit: 'dcqiongying',
@@ -6847,7 +6847,7 @@ const packs = function () {
                     },
                 },
             },
-            // 界荀彧
+            //界荀彧
             minirequhu: {
                 audio: 'quhu',
                 audioname: ['ol_xunyu'],
@@ -7088,7 +7088,7 @@ const packs = function () {
                     },
                 },
             },
-            // 夏侯楙
+            //夏侯楙
             minicuguo: {
                 audio: 'cuguo',
                 inherit: 'cuguo',
@@ -9265,7 +9265,7 @@ const packs = function () {
                 },
                 derivation: 'minirehuxiao_rewrite',
             },
-            // 马参军
+            //马参军
             miniresanyao: {
                 audio: 'resanyao',
                 enable: 'phaseUse',
@@ -14080,7 +14080,7 @@ const packs = function () {
                     player.addTempSkill('dcxunbie_muteki');
                 },
             },
-            // 黄皓
+            //黄皓
             miniqinqing: {
                 audio: 'dcqinqing',
                 trigger: { player: 'phaseJieshuBegin' },
@@ -14116,7 +14116,7 @@ const packs = function () {
                     if (player.countCards('he') && trigger.targets.length !== 1) await player.chooseToDiscard('he', true, '存畏：请弃置一张牌');
                 },
             },
-            // 向朗
+            //向朗
             miniqianzheng: {
                 audio: 'dcqianzheng',
                 inherit: 'dcqianzheng',
@@ -14164,7 +14164,7 @@ const packs = function () {
                     },
                 },
             },
-            // 关樾
+            //关樾
             minifenhui: {
                 audio: 'dcfenhui',
                 inherit: 'dcfenhui',
@@ -14373,7 +14373,7 @@ const packs = function () {
                     },
                 },
             },
-            // 马伶俐
+            //马伶俐
             minixiaoyin: {
                 inherit: 'dcxiaoyin',
                 audio: 'dcxiaoyin',
@@ -15368,7 +15368,7 @@ const packs = function () {
                     }
                 }
             },
-            // 吴国太
+            //吴国太
             miniganlu: {
                 moveCheck(player, target) {
                     if (target == player) return false;
@@ -16932,7 +16932,7 @@ const packs = function () {
                 inherit: 'xinanguo',
                 filterTarget: true,
             },
-            // 孙坚
+            //孙坚
             miniyinghun: {
                 audio: 'yinghun',
                 trigger: { player: 'phaseZhunbeiBegin' },
@@ -20020,7 +20020,7 @@ const packs = function () {
                     await targets[0].gain(cards, 'gain2');
                 },
             },
-            // 卫诸
+            //卫诸
             minifuhai: {
                 inherit: 'jsrgfuhai',
                 async content(event, trigger, player) {
@@ -20080,7 +20080,7 @@ const packs = function () {
                     await player.draw(result2?.index == 0 ? clock : anticlock);
                 },
             },
-            // 潘马
+            //潘马
             miniduodao: {
                 audio: 'reduodao',
                 inherit: 'reduodao',
@@ -20186,7 +20186,7 @@ const packs = function () {
                     }
                 }
             },
-            // 阚泽
+            //阚泽
             minikuanshi: {
                 audio: 'rekuanshi',
                 trigger: { player: 'phaseJieshuBegin' },
@@ -20421,7 +20421,7 @@ const packs = function () {
                     if (num > 0) await player.draw(num);
                 },
             },
-            // 许贡
+            //许贡
             minibiaozhao: {
                 audio: 'biaozhao',
                 trigger: { global: 'roundStart' },
@@ -20569,7 +20569,7 @@ const packs = function () {
                     }
                 }
             },
-            // 朱佩兰
+            //朱佩兰
             minicilv: {
                 audio: 'dccilv',
                 inherit: 'dccilv',
@@ -20660,7 +20660,7 @@ const packs = function () {
                     player.removeAdditionalSkills(skill);
                 },
             },
-            // 谢灵毓
+            //谢灵毓
             miniyuandi: {
                 init: () => { game.addGlobalSkill('miniyuandi_ai') },
                 onremove: () => {
@@ -20735,7 +20735,7 @@ const packs = function () {
                     }
                 }
             },
-            // 吕范
+            //吕范
             minidiaodu: {
                 audio: 'diaodu',
                 trigger: { player: 'phaseUseBegin' },
@@ -20842,7 +20842,7 @@ const packs = function () {
                 },
                 derivation: ['minireyingzi', 'minireguanxing', 'minizhiyan', 'minigongxin'],
             },
-            // 孙桓
+            //孙桓
             mininiji: {
                 audio: 'dcniji',
                 inherit: 'dcniji',
@@ -20892,7 +20892,7 @@ const packs = function () {
                     }
                 }
             },
-            // 星孙尚香
+            //星孙尚香
             ministarjiaohao: {
                 inherit: 'starjiaohao',
                 audio: 'starjiaohao',
@@ -21723,7 +21723,7 @@ const packs = function () {
                     },
                 },
             },
-            // 高顺
+            //高顺
             minixianzhen: {
                 group: 'minixianzhen_miss',
                 audio: 'xianzhen',
@@ -28077,7 +28077,7 @@ const packs = function () {
                     },
                 },
             },
-            // 伏完
+            //伏完
             minimoukui: {
                 audio: 'dcmoukui',
                 trigger: {
@@ -28178,7 +28178,7 @@ const packs = function () {
                     }
                 }
             },
-            // 董翓
+            //董翓
             minijiaoxia: {
                 audio: 'dcjiaoxia',
                 mod: {
@@ -29049,7 +29049,7 @@ const packs = function () {
                     }
                 },
             },
-            // SP徐晃
+            //SP徐晃
             minikuanmeng: {
                 audio: 'ext:活动武将/audio/skill:2',
                 trigger: { player: ['damageEnd', 'recoverEnd', 'loseHpEnd'] },
@@ -29270,7 +29270,7 @@ const packs = function () {
                     }
                 },
             },
-            // 张让
+            //张让
             minitaoluan: {
                 hiddenCard(player, name) {
                     return !player.getStorage('minitaoluan').includes(name) && player.countCards('hes', card => !player.getStorage('minitaoluan_used').includes(get.suit(card))) > 0 && lib.inpile.includes(name);
@@ -29431,7 +29431,7 @@ const packs = function () {
                     }
                 }
             },
-            // SP刘备
+            //SP刘备
             minizhuyi: {
                 audio: 'ext:活动武将/audio/skill:2',
                 trigger: {
@@ -29623,7 +29623,7 @@ const packs = function () {
                 onremove: true,
                 intro: { content: '已添加牌名：$' },
             },
-            // 谋华雄
+            //谋华雄
             minisbyangwei: {
                 audio: 'olsbyangwei',
                 inherit: 'olsbyangwei',
@@ -29642,7 +29642,7 @@ const packs = function () {
                     }
                 }
             },
-            // 纪灵
+            //纪灵
             minishuangren: {
                 audio: 'shuangren',
                 trigger: { player: 'phaseUseBegin' },
@@ -29732,7 +29732,7 @@ const packs = function () {
                     trigger.num += 2;
                 },
             },
-            // SP孙坚
+            //SP孙坚
             miniyingyi: {
                 audio: 'ext:活动武将/audio/skill:2',
                 trigger: { global: 'roundStart' },
@@ -29793,7 +29793,7 @@ const packs = function () {
                     await player.draw(player.getHistory('useSkill', evt => evt.skill == event.name).length);
                 },
             },
-            // 何进
+            //何进
             minimouzhu: {
                 audio: 'mouzhu',
                 enable: 'phaseUse',
@@ -29969,7 +29969,7 @@ const packs = function () {
                     },
                 },
             },
-            // 王粲
+            //王粲
             minidenglou: {
                 audio: 'xinfu_denglou',
                 trigger: { player: 'phaseJieshuBegin' },
@@ -29999,7 +29999,7 @@ const packs = function () {
                     }
                 },
             },
-            // 谋张角
+            //谋张角
             minisbsbleiji: {
                 audio: 'sbleiji',
                 enable: 'phaseUse',
@@ -30205,7 +30205,7 @@ const packs = function () {
                     }
                 }
             },
-            // 雷薄
+            //雷薄
             minishuaijie: {
                 inherit: 'dcshuaijie',
                 audio: 'dcshuaijie',
@@ -30214,7 +30214,7 @@ const packs = function () {
                     return !targets.length || targets.every(target => player.hp < target.hp);
                 },
             },
-            // 张楚
+            //张楚
             minirihui: {
                 inherit: 'dcrihui',
                 trigger: { player: 'useCardAfter' },
@@ -30286,7 +30286,7 @@ const packs = function () {
                     return num >= 2;
                 },
             },
-            // 李肃
+            //李肃
             minilsxianzhu: {
                 inherit: 'xianzhu',
                 audio: 'xianzhu',
@@ -32544,7 +32544,7 @@ const packs = function () {
                     },
                 },
             },
-            // 神二乔②号
+            //神二乔②号
             minishuangshu2: {
                 audio: 'minishuangshu',
                 mark: true,
@@ -33596,7 +33596,7 @@ const packs = function () {
                 },
                 ai: { combo: 'minitianhai' },
             },
-            // 神鲁肃
+            //神鲁肃
             minitamo: {
                 audio: 'tamo',
                 inherit: 'tamo',
@@ -34934,7 +34934,7 @@ const packs = function () {
                     }
                 }
             },
-            // 喵曹婴
+            //喵曹婴
             minimiaolingren: {
                 audio: 'ext:活动武将/audio/skill:2',
                 trigger: { player: 'useCardToPlayered' },
@@ -35182,7 +35182,7 @@ const packs = function () {
                     }
                 },
             },
-            // 喵关银屏
+            //喵关银屏
             minimiaowuji: {
                 locked: false,
                 mod: {
@@ -35372,7 +35372,7 @@ const packs = function () {
                     }
                 }
             },
-            // 喵马云騄
+            //喵马云騄
             minimiaoyuma: {
                 audio: 'ext:活动武将/audio/skill:2',
                 mod: {
@@ -36038,26 +36038,26 @@ const packs = function () {
                     },
                 },
                 kill(steps, player) {
-                    // 杀的攻击力 
+                    //杀的攻击力 
                     let attack = 0;
-                    // 两次击败目标之间出现的酒的数量  
+                    //两次击败目标之间出现的酒的数量  
                     let jiuCount = 0;
-                    // 两次击败目标之间是否出现过杀
+                    //两次击败目标之间是否出现过杀
                     let hasSha = false;
-                    // 击败目标
+                    //击败目标
                     let killed = [];
-                    // 剩余行动步数
+                    //剩余行动步数
                     let rest = player.getHp() + 1 - steps.length;
                     for (const step of steps) {
                         const items = step.split('|');
                         if (items.length > 2) {
-                            // 遇到击败目标时的当前攻击力
+                            //遇到击败目标时的当前攻击力
                             const jiuEffect = hasSha ? jiuCount * 2 : 0;
                             const totalAttack = attack + jiuEffect;
                             if (totalAttack >= items[3]) killed.push([items[1], items[2]]);
-                            // 重置酒的计数
+                            //重置酒的计数
                             if (hasSha && jiuCount > 0) jiuCount = 0;
-                            // 重置当前段的杀的出现状态
+                            //重置当前段的杀的出现状态
                             hasSha = false;
                         } else {
                             switch (items[0]) {
@@ -36096,7 +36096,7 @@ const packs = function () {
                             node.classList.add('tazhen');
                             if (node.node) {
                                 node.node.name.remove();
-                                // node.node.hp.remove();
+                                //node.node.hp.remove();
                                 node.node.group.remove();
                                 node.node.intro.remove();
                                 if (node.node.replaceButton) node.node.replaceButton.remove();
@@ -36422,7 +36422,7 @@ const packs = function () {
                             if (!event.restNum || event.musicList_Locked.length >= 5) return;
                             event.restNum--;
                             if (!event.restNum && event.control_replace) event.control_replace.close();
-                            // 更新剩余次数显示
+                            //更新剩余次数显示
                             event.dialog.content.childNodes[0].innerHTML = event.dialog.content.childNodes[0].innerHTML.replace(/还可即兴\d+次/g, '还可即兴' + event.restNum + '次');
                             //更新未被锁定的音符
                             for (let i = 0; i < 5; i++) {
@@ -36631,23 +36631,23 @@ const packs = function () {
                  * @param {unknown} [lastGameData=null] 上一次的游戏数据
                  */
                 startDengjieGame(player, lastGameData = null) {
-                    // 在小游戏上面显示的武将图片来源于哪些武将ID喵
+                    //在小游戏上面显示的武将图片来源于哪些武将ID喵
                     const NAMES = [
-                        'caopi', // 曹丕
-                        'caoang', // 曹昂
-                        'caochong', // 曹冲
-                        'caozhang', // 曹彰
-                        'caozhi', // 曹植
-                        'liuxie', // 刘协
+                        'caopi', //曹丕
+                        'caoang', //曹昂
+                        'caochong', //曹冲
+                        'caozhang', //曹彰
+                        'caozhi', //曹植
+                        'liuxie', //刘协
                     ];
-                    // 游戏地图数据喵
+                    //游戏地图数据喵
                     const MAPS = [
                         'brrrbb(2,3)rrbb;brrbrrbrbr(3,4);(1,5)rb(0,3)brr(5,-12)rrr;brrbrrbrbrr;bbbrrbbrb(4,6)r',
                         'rbbrb(0,2)bbrbr;rrbbrrrb(2,5)bb;br(3,4)rbrbrrbr;bbrr(4,8)r(1,7)rbrr;rbbbr(5,-16)rbrbb',
                         'brb(2,3)rrrrbr(5,-10);rrrr(1,5)bbrrbr;brbbbrbb(3,4)bb;r(4,6)brrbbrrbr;rrrrbr(0,3)rrrb',
                         'brbbrbbrbbb;(1,9)rbrbbbr(0,2)rb;rrbr(4,2)r(3,3)rbrr;br(5,-20)brbrbrr(2,4);rbbrbrbrbbr',
                     ];
-                    // 游戏相邻格
+                    //游戏相邻格
                     const NEIGHBORS = [
                         ['left', -1, 0],
                         ['up', 0, -1],
@@ -36655,7 +36655,7 @@ const packs = function () {
                         ['down', 0, 1],
                     ];
 
-                    // 解析地图函数
+                    //解析地图函数
                     function parseMap(map, names, mapString) {
                         let slot = 0;
                         for (let i = 0; i < mapString.length; i++) {
@@ -36683,7 +36683,7 @@ const packs = function () {
                         }
                     }
 
-                    // 游戏数据保存对象
+                    //游戏数据保存对象
                     class GameData {
                         map = [];
                         names = {};
@@ -36741,7 +36741,7 @@ const packs = function () {
                         }
                     }
 
-                    // 构造UI喵
+                    //构造UI喵
                     /** @type {GameData} */
                     const gameData = lastGameData || new GameData(MAPS.randomGet());
                     const videoId = lib.status.videoId++;
@@ -36843,8 +36843,8 @@ const packs = function () {
                         }
                     }, player, videoId);
 
-                    // 游戏主逻辑
-                    const initialData = new GameData(gameData); // 备份当前的数据以便失败时回滚喵
+                    //游戏主逻辑
+                    const initialData = new GameData(gameData); //备份当前的数据以便失败时回滚喵
 
                     function checkPosition(x, y) {
                         if (y < 0 || y >= gameData.height) {
@@ -36888,7 +36888,7 @@ const packs = function () {
                         }
                     }
 
-                    // 啊本来是准备做箭头的喵，但是后面感觉直接放收益更好哦喵
+                    //啊本来是准备做箭头的喵，但是后面感觉直接放收益更好哦喵
                     function buildArrow(x, y, score) {
                         const container = ui.create.div('.arrow-container');
                         const arrow = ui.create.div('.arrow');
@@ -37146,7 +37146,7 @@ const packs = function () {
                             player.send(movePlayerCore, x, y, px, py, getTableCell);
                         }
 
-                        // 等待500ms后动画过去哦
+                        //等待500ms后动画过去哦
                         await new Promise(resolve => setTimeout(resolve, 500));
                     }
 
@@ -37198,7 +37198,7 @@ const packs = function () {
                             player.send(rollbackPlayerCore, initialData.x, initialData.y, px, py, getTableCell);
                         }
 
-                        // 等待300ms后动画过去哦
+                        //等待300ms后动画过去哦
                         await new Promise(resolve => setTimeout(resolve, 300));
                     }
 
@@ -37210,13 +37210,13 @@ const packs = function () {
                     function onGameWin(name) {
                         setTips('本次登阶成功!');
 
-                        // 清空走过的红色块
+                        //清空走过的红色块
                         for (const slot of gameData.walkedReds) {
                             gameData.map[slot] = 0;
                         }
                         gameData.walkedReds.length = 0;
 
-                        // 重新放置曹丕
+                        //重新放置曹丕
                         const px = gameData.x;
                         const py = gameData.y;
                         const slot = gameData.getSlotFromPos(px, py);
@@ -37235,7 +37235,7 @@ const packs = function () {
                     function onGameFailed(reason) {
                         setTips('本次登阶失败...');
 
-                        // 重新放置曹丕
+                        //重新放置曹丕
                         const px = initialData.x;
                         const py = initialData.y;
                         const slot = initialData.getSlotFromPos(px, py);
@@ -37280,30 +37280,30 @@ const packs = function () {
                     event.set('noconfirm', true);
                     event.setContent(async function (event) {
                         event.switchToAuto = function () {
-                            // 喜欢偷懒让AI帮你玩是吧喵，看AI怎么摆烂制裁你哦喵
-                            // 孩子不行，AI也是有能力玩的
+                            //喜欢偷懒让AI帮你玩是吧喵，看AI怎么摆烂制裁你哦喵
+                            //孩子不行，AI也是有能力玩的
                             const startX = gameData.x;
                             const startY = gameData.y;
 
                             let pathFound = null;
                             let targetName = null;
 
-                            // 深度优先搜索函数
+                            //深度优先搜索函数
                             function dfs(x, y, curScore, walkedReds, mapState, path) {
-                                // 检查当前位置是否越界
+                                //检查当前位置是否越界
                                 if (x < 0 || x >= gameData.width || y < 0 || y >= gameData.height) return false;
 
                                 const slot = x + y * gameData.width;
                                 const cell = mapState[slot];
 
-                                // 角色格子
+                                //角色格子
                                 if (Array.isArray(cell) && cell[0] !== 0) {
                                     pathFound = path.concat([[x, y]]);
                                     targetName = NAMES[cell[0]];
                                     return true;
                                 }
 
-                                // 计算当前格子分数
+                                //计算当前格子分数
                                 let scoreDelta = 0;
                                 let newWalkedReds = walkedReds.slice();
                                 let newMapState = mapState.slice();
@@ -37317,22 +37317,22 @@ const packs = function () {
                                 }
 
                                 const newScore = curScore + scoreDelta;
-                                if (newScore < 0) return false; // 分数不够走负格
+                                if (newScore < 0) return false; //分数不够走负格
 
-                                // 遍历方向，优先 +1，再 0，最后 -1
+                                //遍历方向，优先 +1，再 0，最后 -1
                                 const dirs = [[1, 0], [0, 1], [-1, 0], [0, -1]];
                                 dirs.sort(([dx1, dy1], [dx2, dy2]) => {
                                     const s1 = mapState[(x + dx1) + (y + dy1) * gameData.width];
                                     const s2 = mapState[(x + dx2) + (y + dy2) * gameData.width];
                                     const v = val => (typeof val === 'number' ? val : val[1]);
-                                    return (v(s2) || 0) - (v(s1) || 0); // 大分数先走
+                                    return (v(s2) || 0) - (v(s1) || 0); //大分数先走
                                 });
 
                                 for (const [dx, dy] of dirs) {
                                     const nx = x + dx;
                                     const ny = y + dy;
 
-                                    // 防止无限循环，允许回头
+                                    //防止无限循环，允许回头
                                     const key = nx + ',' + ny + ',' + newScore + ',' + newWalkedReds.join(',');
                                     if (!dfs.visited) dfs.visited = new Set();
                                     if (dfs.visited.has(key)) continue;
@@ -37346,7 +37346,7 @@ const packs = function () {
                                 return false;
                             }
 
-                            // 执行 DFS
+                            //执行 DFS
                             dfs.visited = new Set();
                             const success = dfs(startX, startY, gameData.score, gameData.walkedReds.slice(), gameData.map.slice(), []);
                             if (!success) {
@@ -37354,7 +37354,7 @@ const packs = function () {
                                 return;
                             }
 
-                            // 同步执行路径，更新 gameData
+                            //同步执行路径，更新 gameData
                             for (const [x, y] of pathFound) {
                                 const slot = gameData.getSlotFromPos(x, y);
                                 const cell = gameData.map[slot];
@@ -37382,7 +37382,7 @@ const packs = function () {
                             };
                         };
 
-                        // 游戏的主循环喵，主体逻辑都在这里喵
+                        //游戏的主循环喵，主体逻辑都在这里喵
                         async function gameLoop() {
                             let win = '';
                             let failedReason;
@@ -37399,7 +37399,7 @@ const packs = function () {
                                         await movePlayer(x, y);
 
                                         if (reason) {
-                                            win = reason; // 这里其实是武将名称喵
+                                            win = reason; //这里其实是武将名称喵
                                             break;
                                         }
                                     } else {
@@ -37432,22 +37432,22 @@ const packs = function () {
                         await gamePromise;
                     });
 
-                    // 创建事件并弹出对话框喵
-                    // 使用范例:
-                    // const result = await startDengjieGame(player).forResult(); // 首次玩游戏不需要传游戏数据或传null
-                    // if (result.bool) { // 如果本次登阶成功
-                    //     if (result.name === "liuxie") { // 如果本次登阶的目标是刘协
-                    //         // ...
-                    //     } else {
-                    //         // ...
-                    //     }
-                    // } else { // 如果本次登阶失败
-                    //     // ...
-                    // }
-                    // const nextData = result.nextData; // 获取下一次登阶的游戏数据喵
-                    // // ...
-                    // const result2 = await startDengjieGame(player, nextData).forResult(); // 第二次玩必须传数据哦，不然就变成首次了喵
-                    // // ...
+                    //创建事件并弹出对话框喵
+                    //使用范例:
+                    //const result = await startDengjieGame(player).forResult(); //首次玩游戏不需要传游戏数据或传null
+                    //if (result.bool) { //如果本次登阶成功
+                    //    if (result.name === "liuxie") { //如果本次登阶的目标是刘协
+                    //        //...
+                    //    } else {
+                    //        //...
+                    //    }
+                    //} else { //如果本次登阶失败
+                    //    //...
+                    //}
+                    //const nextData = result.nextData; //获取下一次登阶的游戏数据喵
+                    ////...
+                    //const result2 = await startDengjieGame(player, nextData).forResult(); //第二次玩必须传数据哦，不然就变成首次了喵
+                    ////...
                     return event;
                 },
                 init(player, skill) {
@@ -37700,7 +37700,7 @@ const packs = function () {
             },
             chengxiang_Mnian_caopi: { audio: 'ext:活动武将/audio/skill:true' },
             //战
-            // 战黄忠
+            //战黄忠
             minifightdingjun: {
                 init(player) {
                     if (!ui._minifightdingjun) {
@@ -37974,7 +37974,7 @@ const packs = function () {
                     },
                 },
             },
-            // 战张辽
+            //战张辽
             minifightbiaoxi: {
                 audio: 'ext:活动武将/audio/skill:2',
                 init(player, skill) {
@@ -38138,7 +38138,7 @@ const packs = function () {
                     }
                 }
             },
-            // 战陆逊
+            //战陆逊
             minifightxurui: {
                 audio: 'ext:活动武将/audio/skill:2',
                 placeSkill: true,
@@ -38332,7 +38332,7 @@ const packs = function () {
                     }
                 }
             },
-            // 战典韦 
+            //战典韦 
             _minifightchuanglie_mark: {
                 charlotte: true,
                 trigger: { target: 'useCardToPlayer' },
@@ -38439,7 +38439,7 @@ const packs = function () {
                                 const evt = trigger.getParent();
                                 evt.triggeredTargets2.remove(target);
                                 evt.targets.remove(target);
-                                // 神秘结算
+                                //神秘结算
                                 const num = target.storage.minifightchuanglie_mark?.[user.playerid]
                                 if (typeof num == 'number' && num > 0) target.storage.minifightchuanglie_mark[user.playerid]--;
                                 evt.targets.push(player);
@@ -38591,7 +38591,7 @@ const packs = function () {
                     }
                 }
             },
-            // 战马超
+            //战马超
             minifightdangfeng: {
                 audio: 'ext:活动武将/audio/skill:2',
                 trigger: { global: 'phaseEnd' },
@@ -38697,7 +38697,7 @@ const packs = function () {
                     },
                 }
             },
-            // 战姜维
+            //战姜维
             minifightyilve: {
                 audio: 'ext:活动武将/audio/skill:2',
                 enable: 'phaseUse',
@@ -38919,8 +38919,8 @@ const packs = function () {
                     }
                 }
             },
-            // 隐系列
-            // 徐庶
+            //隐系列
+            //徐庶
             miniyinyinxing: {
                 mod: {
                     cardEnabled(card, player) {
@@ -38963,7 +38963,7 @@ const packs = function () {
                             return '三条';
                         }
                         if (Object.keys(map).length == 3) {
-                            // 234和A23
+                            //234和A23
                             if ([[15, 3, 4], [14, 15, 3]].some(list => list.every(num => nums.includes(num)))) {
                                 return '三顺';
                             }
@@ -38974,9 +38974,9 @@ const packs = function () {
                                 if (nums[i + 1] - nums[i] != 1) {
                                     return null;
                                 }
-                                // if (nums[i + 1] == 15) {
-                                //     return null;
-                                // }
+                                //if (nums[i + 1] == 15) {
+                                //    return null;
+                                //}
                             }
                             return '三顺';
                         }
@@ -39309,20 +39309,21 @@ const packs = function () {
                 onremove(player, skill) {
                     player.removeSkill(`${skill}_plugin`);
                 },
-                group: ['miniyinyinxing_draw'],
+                group: 'miniyinyinxing_draw',
                 subSkill: {
                     draw: {
                         audio: 'miniyinyinxing',
                         trigger: {
-                            player: 'loseAfter',
+                            player: ['loseAfter', 'damageEnd'],
                             global: ['equipAfter', 'addJudgeAfter', 'gainAfter', 'loseAsyncAfter', 'addToExpansionAfter'],
                         },
                         filter(event, player) {
+                            if (event.name === 'damage') return true;
                             return event.getl(player)?.hs?.length && player.countCards('h') < 5;
                         },
                         forced: true,
                         async content(event, trigger, player) {
-                            await player.drawTo(5);
+                            await player[trigger.name === 'damage' ? 'draw' : 'drawTo'](trigger.name === 'damage' ? 1 : 5);
                         },
                     },
                     backup: {
@@ -39573,22 +39574,31 @@ const packs = function () {
                 async content(event, trigger, player) {
                     const { cards, targets: [target] } = event;
                     await player.discard(cards);
-                    const number = get.number(cards[0]);
-                    const bool1 = number <= 1;
-                    const bool2 = number >= 13;
-                    const result = (!bool1 && !bool2) ? await target.chooseControl().set('choiceList', [`获得两张点数大于${number}的牌`, `获得两张点数小于${number}的牌`]).set("ai", () => {
+                    const number = get.number(cards[0], player);
+                    const choice = [], choiceList = [];
+                    if (number > 1) {
+                        choice.push('小于');
+                        choiceList.push(`获得两张点数小于${number}的牌`);
+                    }
+                    choice.push('等于');
+                    choiceList.push(`获得两张点数等于${number}的牌`);
+                    if (number < 13) {
+                        choice.push('大于');
+                        choiceList.push(`获得两张点数大于${number}的牌`);
+                    }
+                    const result = await target.chooseControl(choice).set('choiceList', choiceList).set('ai', () => {
                         const { player, numberx } = get.event();
-                        if (numberx == 2) return 1;
-                        if (numberx == 12) return 0;
-                        return [0, 1].randomGet();
-                    }).set('numberx', number).forResult() : { index: bool1 ? 0 : 1 };
-                    if ([0, 1].includes(result?.index)) {
-                        const { index } = result;
+                        if (player.hasSkill('miniyinyinxing')) return '等于';
+                        if (numberx === 2) return '大于';
+                        if (numberx === 12) return '小于';
+                        return ['大于', '小于'].randomGet();
+                    }).set('numberx', number).forResult();
+                    if (result?.control) {
                         const list = [];
                         while (list.length < 2) {
                             const card = get.cardPile(cardx => {
                                 const numberx = get.number(cardx);
-                                return (index == 0 ? numberx > number : numberx < number) && !list.includes(cardx);
+                                return ['小于', '等于', '大于'].indexOf(result.control) - 1 === Math.sign(numberx - number) && !list.includes(cardx);
                             });
                             if (card) list.push(card);
                             else break;
@@ -41882,7 +41892,7 @@ const packs = function () {
             minifightyilve_info: `出牌阶段限一次。你可以选择一项：1.令一名角色对你选择的一名其他角色发动${get.poptip('minitiaoxin')}；2.展示牌堆顶五张牌并选择至多等量名角色，这些角色依次获得其中一张牌，若其因此获得了【杀】，其可以使用之，然后你将剩余牌放回牌堆顶。若有角色因此使用或弃置了【杀】，你失去1点体力。`,
             minifightqizhi: '锲志',
             minifightqizhi_info: `锁定技。①当你体力值减少后，你摸X张牌（X为你已损失体力值）。②出牌阶段限五次，当你回复体力后，你可以弃置一张牌令${get.poptip('minifightyilve')}本回合发动次数+1。`,
-            // 隐
+            //隐
             Myin_xushu: '隐徐庶',
             miniyinyinxing: '隐姓',
             miniyinyinxing_info: `锁定技。①当你需要使用或打出牌时，你只能使用或打出虚拟牌或转化，且你可以将任意张手牌按以下规则使用或打出：1.${get.poptip({
@@ -41901,9 +41911,9 @@ const packs = function () {
                 id: 'miniyinyinxing_zhadan',
                 name: '炸弹',
                 info: '四张及以上点数相同的牌（欢杀定义）',
-            })}，对所有其他角色造成X点伤害（X为你弃置的牌数-3）。若你以此法弃置的牌花色相同，则相应效果额外执行一次。③你的手牌数始终不小于5。`,
+            })}，对所有其他角色造成X点伤害（X为你弃置的牌数-3）。若你以此法弃置的牌花色相同，则相应效果额外执行一次。③你的手牌数始终不小于5。④当你受到伤害后，你摸一张牌。`,
             miniyinjujian: '举荐',
-            miniyinjujian_info: '准备阶段或结束阶段，你可以弃置一张手牌并令一名角色选择一项：1.获得两张点数大于其的牌；2.获得两张点数小于其的牌。',
+            miniyinjujian_info: '准备阶段或结束阶段，你可以弃置一张手牌，令一名角色选择获得两张点数小于/等于/大于此牌的牌。',
 
             // ----------------------- 台词部分 ----------------------- //
             '#ext:活动武将/audio/skill/minispluoshen2': '动无常则，若危若安。',
