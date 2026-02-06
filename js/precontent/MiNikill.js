@@ -32869,12 +32869,13 @@ const packs = function () {
                         },
                         content() {
                             'step 0'
-                            const target = trigger.player
+                            const target = trigger.player;
                             if (event.cost_data == '选项二') player.gainPlayerCard(target, 'h', true);
                             else {
                                 player.chooseToDiscard('h', true).logSkill = ['minichongwei_use', target];
                                 target.damage();
                             }
+                            'step 1'
                             player.addTempSkill('tspowei_inRange');
                         },
                         ai: { expose: 0.2 },
@@ -33823,6 +33824,7 @@ const packs = function () {
                             break;
                     }
                     if (player.hasSkill('minidoumao')) { event.finish(); return; }
+                    'step 1'
                     player.chooseButton([
                         '悲歌：是否额外选择一个效果执行',
                         [[
@@ -33830,7 +33832,7 @@ const packs = function () {
                             ['diamond', '令' + get.translation(trigger.player) + '摸两张牌'],
                             ['club', '令' + get.translation(trigger.source) + '弃置两张牌'],
                             ['spade', '令' + get.translation(trigger.source) + '将武将牌翻面']
-                        ].filter(list => list[0] != get.suit(result.cards[0], player)), 'textbutton']
+                        ].filter(list => list[0] != get.suit(cards[0], player)), 'textbutton']
                     ]).set('ai', function (button) {
                         var player = _status.event.player;
                         var target = _status.event.list[0];
@@ -33857,7 +33859,7 @@ const packs = function () {
                                 break;
                         }
                     }).set('list', [trigger.player, trigger.source]);
-                    'step 1'
+                    'step 2'
                     if (result?.bool && result.links?.length) {
                         if (result.links.includes('heart')) {
                             player.line(trigger.player);
