@@ -8065,15 +8065,15 @@ const packs = function () {
                 audio: 'lianhuan',
                 trigger: { player: 'phaseUseBegin' },
                 async cost(event, trigger, player) {
-                    event.result = await player.chooseTarget(get.prompt2('minilianhuan'), [1, 2]).set('ai', function (target) {
+                    event.result = await player.chooseTarget(get.prompt2(event.skill), [1, 2]).set('ai', function (target) {
                         var player = _status.event.player, eff = get.effect(target, { name: 'tiesuo' }, player, player);
                         if (target == player) return eff * 5;
                         return eff;
                     }).forResult();
                 },
                 async content(event, trigger, player) {
-                    for (var target of result.targets) await target.link();
-                    if (result.targets.includes(player)) await player.draw();
+                    for (const target of event.targets.sortBySeat()) await target.link();
+                    if (event.targets.includes(player)) await player.draw();
                 },
             },
             minirelianhuan: {
@@ -41925,7 +41925,7 @@ const packs = function () {
             '#ext:活动武将/audio/skill/minimiaobeige2': '我来为你点首歌吧。',
             '#ext:活动武将/audio/skill/minimiaoduanchang1': '请欣赏我最后的演奏。',
             '#ext:活动武将/audio/skill/minimiaoduanchang2': '这首曲子，真是闻者伤心，听者断肠',
-            '#ext:活动武将/audio/die/Mmiao_caiwenji:die': '我也要谢幕了吗？',  
+            '#ext:活动武将/audio/die/Mmiao_caiwenji:die': '我也要谢幕了吗？',
             '#ext:活动武将/audio/skill/minimiaozhenlie1': '我，绝不屈服！',
             '#ext:活动武将/audio/skill/minimiaoqieting1': '卑鄙的外乡人，竟敢背后说我坏话。',
             '#ext:活动武将/audio/skill/minimiaoqieting2': '让我来听听看，你说了点啥。',
