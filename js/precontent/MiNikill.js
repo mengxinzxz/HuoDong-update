@@ -32869,6 +32869,7 @@ const packs = function () {
                         },
                         content() {
                             'step 0'
+                            const target = trigger.player
                             if (event.cost_data == '选项二') player.gainPlayerCard(target, 'h', true);
                             else {
                                 player.chooseToDiscard('h', true).logSkill = ['minichongwei_use', target];
