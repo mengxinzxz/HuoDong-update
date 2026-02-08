@@ -18024,7 +18024,7 @@ const packs = function () {
                     const result = await player.chooseTarget(get.prompt2(event.name), lib.filter.notMe).set("ai", target => {
                         return get.attitude(_status.event.player, target) / Math.sqrt(Math.min(1, target.hp + target.hujia));
                     }).forResult();
-                    if (result?.bool&&result.targets?.length) {
+                    if (result?.bool && result.targets?.length) {
                         const target = result.targets[0];
                         player.logSkill(event.name, target);
                         await target.changeHujia(1, null, true);
