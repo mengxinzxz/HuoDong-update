@@ -6293,7 +6293,7 @@ const packs = function () {
                         if (!target.countCards('h')) returnl
                         const num = Math.min(9, Math.max(1, Math.abs(target.hp - target.countCards('h'))));
                         const result = target.countCards('h') <= num ? { bool: true, cards: target.getCards('h') } : await target.chooseCard('h', true, '将' + get.cnNumber(num) + '张手牌置于仁库中', num, 'allowChooseAll').forResult();
-                        if (result?.cards?.length) await target.target.lose(result.cards, ui.special, 'toRenku');
+                        if (result?.bool && result?.cards?.length) await target.lose(result.cards, ui.special, 'toRenku');
                     }
                 },
                 ai: { threaten: 6.4 },
