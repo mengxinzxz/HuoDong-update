@@ -35571,7 +35571,7 @@ const packs = function () {
                         //更新棋子位置
                         function updatePiecePositions(tube) {
                             const pieces = tube.querySelectorAll('.dingluan-piece');
-                            pieces.forEach((piece, index) => piece.style.bottom = `${index * 26}px`);
+                            pieces.forEach((piece, index) => piece.style.bottom = `${index * 55}px`);
                         }
                         let selectedTube = null, dingluanSuccess = null, tubes = [];
                         for (let i = 0; i < groups.length + 2; i++) {
@@ -35579,10 +35579,13 @@ const packs = function () {
                             tube.dataset.index = i;
                             tube.addEventListener(lib.config.touchscreen ? 'touchend' : 'click', () => {
                                 if (dingluanSuccess !== null) return;
+                                if (container.classList.contains('animating')) return; // 动画中禁止操作
+
                                 if (!selectedTube) {
                                     if (tube.childElementCount > 0) {
                                         selectedTube = tube;
                                         tube.classList.add('selected');
+                                        game.playAudio('..', 'extension', '活动武将/audio/effect', 'ding');
                                     }
                                 }
                                 else if (tube === selectedTube) {
@@ -35592,27 +35595,121 @@ const packs = function () {
                                 else {
                                     if (tube.childElementCount < 4 && selectedTube.childElementCount > 0) {
                                         const piece = selectedTube.lastChild;
-                                        tube.appendChild(piece);
-                                        //更新两个试管的棋子位置
-                                        updatePiecePositions(selectedTube);
-                                        updatePiecePositions(tube);
-                                        selectedTube.classList.remove('selected');
+                                        const sourceTube = selectedTube;
+                                        const targetTube = tube;
+                                        
+                                        // 锁定UI
+                                        container.classList.add('animating');
+                                        sourceTube.classList.remove('selected');
                                         selectedTube = null;
-                                        if (checkWin(tube)) {
-                                            _status.mininianxinghan[player.playerid] = (() => {
-                                                return tubes.filter(t => t !== tube).map(t => {
-                                                    return [...t.children].map(piece => ({
-                                                        group: piece.dataset.group,
-                                                        text: piece.innerHTML,
-                                                    }));
-                                                });
-                                            })();
-                                            event.dialog.close();
-                                            game.resume();
-                                            _status.imchoosing = false;
-                                            event._result = { successGroup: tube.childNodes[0].dataset.group };
-                                            resolve(event._result);
-                                        }
+
+                                        // 播放移动音效
+                                        game.playAudio('..', 'extension', '活动武将/audio/effect', 'ding');
+
+                                        // --- 动画准备 ---
+                                        const sourceRect = sourceTube.getBoundingClientRect();
+                                        const targetRect = targetTube.getBoundingClientRect();
+                                        
+                                        // 克隆源竹筒（用于飞行动画）
+                                        const cloneTube = sourceTube.cloneNode(true);
+                                        cloneTube.style.position = 'fixed';
+                                        cloneTube.style.left = sourceRect.left + 'px';
+                                        cloneTube.style.top = sourceRect.top + 'px';
+                                        cloneTube.style.width = sourceRect.width + 'px';
+                                        cloneTube.style.height = sourceRect.height + 'px';
+                                        cloneTube.style.margin = '0';
+                                        cloneTube.style.zIndex = 1000;
+                                        cloneTube.style.transition = 'none';
+                                        cloneTube.classList.remove('selected'); // 移除选中光效
+                                        document.body.appendChild(cloneTube);
+
+                                        sourceTube.style.opacity = '0'; // 隐藏原本的竹筒
+
+                                        // 计算飞行的目标位置（目标竹筒的斜上方）
+                                        const isRight = targetRect.left > sourceRect.left;
+                                        // 偏移量：如果向右倒，竹筒要在目标的左上方；向左倒，要在目标的右上方
+                                        const offsetX = isRight ? -(sourceRect.width * 0.8) : (targetRect.width * 0.8);
+                                        const targetTubeX = targetRect.left + offsetX;
+                                        const targetTubeY = targetRect.top - 80; // 悬浮高度
+                                        const rotateAngle = isRight ? 60 : -60; // 倾斜角度
+
+                                        // --- 阶段1: 竹筒飞过去并倾斜 ---
+                                        const tubeMoveAnim = cloneTube.animate([
+                                            { top: sourceRect.top + 'px', left: sourceRect.left + 'px', transform: 'rotate(0deg)' },
+                                            { top: targetTubeY + 'px', left: targetTubeX + 'px', transform: `rotate(${rotateAngle}deg)` }
+                                        ], { duration: 450, easing: 'cubic-bezier(0.25, 1, 0.5, 1)', fill: 'forwards' });
+
+                                        tubeMoveAnim.onfinish = () => {
+                                            // --- 阶段2: 棋子掉落 ---
+                                            // 隐藏克隆竹筒里的最上面的棋子
+                                            if (cloneTube.lastChild) cloneTube.lastChild.style.opacity = '0';
+
+                                            // 创建一个下落的棋子
+                                            const fallingPiece = piece.cloneNode(true);
+                                            fallingPiece.style.position = 'fixed';
+                                            fallingPiece.style.zIndex = 999;
+                                            fallingPiece.style.transition = 'none';
+                                            // 初始位置：大致在倾斜后的竹筒口位置（简单模拟，设为目标竹筒上方）
+                                            const startDropX = targetRect.left + (targetRect.width - 56) / 2; // 56是棋子宽度
+                                            const startDropY = targetTubeY + 40;
+                                            fallingPiece.style.left = startDropX + 'px';
+                                            fallingPiece.style.top = startDropY + 'px';
+                                            
+                                            // 稍微加一点旋转初始态，模拟滑出
+                                            fallingPiece.style.transform = `rotate(${rotateAngle}deg)`; 
+                                            document.body.appendChild(fallingPiece);
+
+                                            // 目标位置底部坐标：容器底部 - 边框/padding - (已有棋子数 * 55) - 棋子高度(50)
+                                            const targetIndex = targetTube.childElementCount;
+                                            const targetDropY = targetRect.bottom - 6 - (targetIndex * 55) - 50;
+
+                                            const dropAnim = fallingPiece.animate([
+                                                { top: startDropY + 'px', transform: `rotate(${rotateAngle}deg)` },
+                                                { top: startDropY + 50 + 'px', transform: `rotate(${rotateAngle / 2}deg)`, offset: 0.3 }, // 刚滑出
+                                                { top: targetDropY + 'px', transform: 'rotate(0deg)' } // 落入底部
+                                            ], { duration: 350, easing: 'ease-in', fill: 'forwards' });
+
+                                            dropAnim.onfinish = () => {
+                                                // 模拟棋子掉落到底部的沉闷撞击声
+                                                game.playAudio('..', 'extension', '活动武将/audio/effect', 'ding2');
+                                                
+                                                fallingPiece.remove();
+                                                
+                                                // 逻辑移动：真正的棋子移动过去
+                                                targetTube.appendChild(piece);
+                                                updatePiecePositions(sourceTube);
+                                                updatePiecePositions(targetTube);
+
+                                                // --- 阶段3: 竹筒复位 ---
+                                                const tubeReturnAnim = cloneTube.animate([
+                                                    { top: targetTubeY + 'px', left: targetTubeX + 'px', transform: `rotate(${rotateAngle}deg)` },
+                                                    { top: sourceRect.top + 'px', left: sourceRect.left + 'px', transform: 'rotate(0deg)' }
+                                                ], { duration: 400, easing: 'ease-in-out', fill: 'forwards' });
+
+                                                tubeReturnAnim.onfinish = () => {
+                                                    cloneTube.remove();
+                                                    sourceTube.style.opacity = ''; // 显示真身
+                                                    container.classList.remove('animating'); // 解锁
+
+                                                    // 胜利检测
+                                                    if (checkWin(targetTube)) {
+                                                        _status.mininianxinghan[player.playerid] = (() => {
+                                                            return tubes.filter(t => t !== targetTube).map(t => {
+                                                                return [...t.children].map(piece => ({
+                                                                    group: piece.dataset.group,
+                                                                    text: piece.innerHTML,
+                                                                }));
+                                                            });
+                                                        })();
+                                                        event.dialog.close();
+                                                        game.resume();
+                                                        _status.imchoosing = false;
+                                                        event._result = { successGroup: targetTube.childNodes[0].dataset.group };
+                                                        resolve(event._result);
+                                                    }
+                                                };
+                                            };
+                                        };
                                     }
                                     else {
                                         selectedTube.classList.remove('selected');
@@ -36638,23 +36735,23 @@ const packs = function () {
                  * @param {unknown} [lastGameData=null] 上一次的游戏数据
                  */
                 startDengjieGame(player, lastGameData = null) {
-                    //在小游戏上面显示的武将图片来源于哪些武将ID喵
+                    // 在小游戏上面显示的武将图片来源于哪些武将ID喵
                     const NAMES = [
-                        'caopi', //曹丕
-                        'caoang', //曹昂
-                        'caochong', //曹冲
-                        'caozhang', //曹彰
-                        'caozhi', //曹植
-                        'liuxie', //刘协
+                        'caopi', // 曹丕
+                        'caoang', // 曹昂
+                        'caochong', // 曹冲
+                        'caozhang', // 曹彰
+                        'caozhi', // 曹植
+                        'liuxie', // 刘协
                     ];
-                    //游戏地图数据喵
+                    // 游戏地图数据喵
                     const MAPS = [
                         'brrrbb(2,3)rrbb;brrbrrbrbr(3,4);(1,5)rb(0,3)brr(5,-12)rrr;brrbrrbrbrr;bbbrrbbrb(4,6)r',
                         'rbbrb(0,2)bbrbr;rrbbrrrb(2,5)bb;br(3,4)rbrbrrbr;bbrr(4,8)r(1,7)rbrr;rbbbr(5,-16)rbrbb',
                         'brb(2,3)rrrrbr(5,-10);rrrr(1,5)bbrrbr;brbbbrbb(3,4)bb;r(4,6)brrbbrrbr;rrrrbr(0,3)rrrb',
                         'brbbrbbrbbb;(1,9)rbrbbbr(0,2)rb;rrbr(4,2)r(3,3)rbrr;br(5,-20)brbrbrr(2,4);rbbrbrbrbbr',
                     ];
-                    //游戏相邻格
+                    // 游戏相邻格
                     const NEIGHBORS = [
                         ['left', -1, 0],
                         ['up', 0, -1],
@@ -36662,7 +36759,7 @@ const packs = function () {
                         ['down', 0, 1],
                     ];
 
-                    //解析地图函数
+                    // 解析地图函数
                     function parseMap(map, names, mapString) {
                         let slot = 0;
                         for (let i = 0; i < mapString.length; i++) {
@@ -36690,7 +36787,7 @@ const packs = function () {
                         }
                     }
 
-                    //游戏数据保存对象
+                    // 游戏数据保存对象
                     class GameData {
                         map = [];
                         names = {};
@@ -36748,7 +36845,7 @@ const packs = function () {
                         }
                     }
 
-                    //构造UI喵
+                    // 构造UI喵
                     /** @type {GameData} */
                     const gameData = lastGameData || new GameData(MAPS.randomGet());
                     const videoId = lib.status.videoId++;
@@ -36850,8 +36947,8 @@ const packs = function () {
                         }
                     }, player, videoId);
 
-                    //游戏主逻辑
-                    const initialData = new GameData(gameData); //备份当前的数据以便失败时回滚喵
+                    // 游戏主逻辑
+                    const initialData = new GameData(gameData); // 备份当前的数据以便失败时回滚喵
 
                     function checkPosition(x, y) {
                         if (y < 0 || y >= gameData.height) {
@@ -36895,7 +36992,7 @@ const packs = function () {
                         }
                     }
 
-                    //啊本来是准备做箭头的喵，但是后面感觉直接放收益更好哦喵
+                    // 啊本来是准备做箭头的喵，但是后面感觉直接放收益更好哦喵
                     function buildArrow(x, y, score) {
                         const container = ui.create.div('.arrow-container');
                         const arrow = ui.create.div('.arrow');
@@ -37118,33 +37215,63 @@ const packs = function () {
                         gameData.y = y;
 
                         function movePlayerCore(x, y, px, py, getTableCell) {
-                            function asyncAnimate(element, keyframes, options) {
-                                return new Promise(function (resolve, reject) {
-                                    const animation = element.animate(keyframes, options);
-                                    animation.onfinish = resolve;
-                                });
-                            }
-
                             const targetChess = getTableCell(px, py).querySelector(".button");
                             const targetCell = getTableCell(x, y);
 
-                            (async () => {
-                                await asyncAnimate(targetChess, [
+                            if (!targetChess) return;
+
+                            // 1. 获取起点和终点坐标
+                            const startRect = targetChess.getBoundingClientRect();
+                            const targetRect = targetCell.getBoundingClientRect();
+
+                            // 2. 创建用于动画的克隆体 (或者直接操作原物体，这里为了安全用克隆体演示轨迹，原物体隐藏)
+                            const clone = targetChess.cloneNode(true);
+                            clone.style.position = 'fixed';
+                            clone.style.left = startRect.left + 'px';
+                            clone.style.top = startRect.top + 'px';
+                            clone.style.width = startRect.width + 'px';
+                            clone.style.height = startRect.height + 'px';
+                            clone.style.zIndex = 1000;
+                            clone.style.margin = 0;
+                            clone.style.transition = 'none';
+                            clone.style.boxShadow = '0 15px 30px rgba(0,0,0,0.4)'; // 悬浮时的阴影
+                            
+                            document.body.appendChild(clone);
+                            targetChess.style.opacity = '0'; // 隐藏真身
+
+                            // 3. 执行动画：悬起 -> 平移 -> 落下
+                            // 计算悬起高度
+                            const liftHeight = 20;
+                            const liftTopStart = startRect.top - liftHeight;
+                            const liftTopEnd = targetRect.top - liftHeight;
+
+                            const anim = clone.animate([
+                                // 初始状态
+                                { top: startRect.top + 'px', left: startRect.left + 'px', transform: 'scale(1)' }, 
+                                // 悬起 (20%)
+                                { top: liftTopStart + 'px', left: startRect.left + 'px', transform: 'scale(1.15)', offset: 0.2 }, 
+                                // 平移至目标上方 (80%)
+                                { top: liftTopEnd + 'px', left: targetRect.left + 'px', transform: 'scale(1.15)', offset: 0.8 }, 
+                                // 落下 (100%)
+                                { top: targetRect.top + 'px', left: targetRect.left + 'px', transform: 'scale(1)' } 
+                            ], {
+                                duration: 400,
+                                easing: 'ease-in-out'
+                            });
+
+                            anim.onfinish = () => {
+                                clone.remove();
+                                targetChess.style.opacity = '';
+                                // 真正移动DOM节点
+                                targetCell.appendChild(targetChess);
+                                
+                                // 播放轻微的落地动画或震动
+                                targetChess.animate([
                                     { transform: 'scale(1)' },
-                                    { transform: 'scale(1.25)' },
-                                ], {
-                                    duration: 100,
-                                    fill: 'forwards',
-                                });
-                                await game.$elementGoto(targetChess, targetCell, 'first', 300, 'ease-in-out');
-                                await asyncAnimate(targetChess, [
-                                    { transform: 'scale(1.25)' },
-                                    { transform: 'scale(1)' },
-                                ], {
-                                    duration: 100,
-                                    fill: 'forwards',
-                                });
-                            })();
+                                    { transform: 'scale(0.95)' },
+                                    { transform: 'scale(1)' }
+                                ], { duration: 150 });
+                            };
                         }
 
                         if (player.isMine()) {
@@ -37153,7 +37280,7 @@ const packs = function () {
                             player.send(movePlayerCore, x, y, px, py, getTableCell);
                         }
 
-                        //等待500ms后动画过去哦
+                        // 等待500ms后动画过去哦
                         await new Promise(resolve => setTimeout(resolve, 500));
                     }
 
@@ -37205,7 +37332,7 @@ const packs = function () {
                             player.send(rollbackPlayerCore, initialData.x, initialData.y, px, py, getTableCell);
                         }
 
-                        //等待300ms后动画过去哦
+                        // 等待300ms后动画过去哦
                         await new Promise(resolve => setTimeout(resolve, 300));
                     }
 
@@ -37217,13 +37344,13 @@ const packs = function () {
                     function onGameWin(name) {
                         setTips('本次登阶成功!');
 
-                        //清空走过的红色块
+                        // 清空走过的红色块
                         for (const slot of gameData.walkedReds) {
                             gameData.map[slot] = 0;
                         }
                         gameData.walkedReds.length = 0;
 
-                        //重新放置曹丕
+                        // 重新放置曹丕
                         const px = gameData.x;
                         const py = gameData.y;
                         const slot = gameData.getSlotFromPos(px, py);
@@ -37242,7 +37369,7 @@ const packs = function () {
                     function onGameFailed(reason) {
                         setTips('本次登阶失败...');
 
-                        //重新放置曹丕
+                        // 重新放置曹丕
                         const px = initialData.x;
                         const py = initialData.y;
                         const slot = initialData.getSlotFromPos(px, py);
@@ -37287,30 +37414,30 @@ const packs = function () {
                     event.set('noconfirm', true);
                     event.setContent(async function (event) {
                         event.switchToAuto = function () {
-                            //喜欢偷懒让AI帮你玩是吧喵，看AI怎么摆烂制裁你哦喵
-                            //孩子不行，AI也是有能力玩的
+                            // 喜欢偷懒让AI帮你玩是吧喵，看AI怎么摆烂制裁你哦喵
+                            // 孩子不行，AI也是有能力玩的
                             const startX = gameData.x;
                             const startY = gameData.y;
 
                             let pathFound = null;
                             let targetName = null;
 
-                            //深度优先搜索函数
+                            // 深度优先搜索函数
                             function dfs(x, y, curScore, walkedReds, mapState, path) {
-                                //检查当前位置是否越界
+                                // 检查当前位置是否越界
                                 if (x < 0 || x >= gameData.width || y < 0 || y >= gameData.height) return false;
 
                                 const slot = x + y * gameData.width;
                                 const cell = mapState[slot];
 
-                                //角色格子
+                                // 角色格子
                                 if (Array.isArray(cell) && cell[0] !== 0) {
                                     pathFound = path.concat([[x, y]]);
                                     targetName = NAMES[cell[0]];
                                     return true;
                                 }
 
-                                //计算当前格子分数
+                                // 计算当前格子分数
                                 let scoreDelta = 0;
                                 let newWalkedReds = walkedReds.slice();
                                 let newMapState = mapState.slice();
@@ -37324,22 +37451,22 @@ const packs = function () {
                                 }
 
                                 const newScore = curScore + scoreDelta;
-                                if (newScore < 0) return false; //分数不够走负格
+                                if (newScore < 0) return false; // 分数不够走负格
 
-                                //遍历方向，优先 +1，再 0，最后 -1
+                                // 遍历方向，优先 +1，再 0，最后 -1
                                 const dirs = [[1, 0], [0, 1], [-1, 0], [0, -1]];
                                 dirs.sort(([dx1, dy1], [dx2, dy2]) => {
                                     const s1 = mapState[(x + dx1) + (y + dy1) * gameData.width];
                                     const s2 = mapState[(x + dx2) + (y + dy2) * gameData.width];
                                     const v = val => (typeof val === 'number' ? val : val[1]);
-                                    return (v(s2) || 0) - (v(s1) || 0); //大分数先走
+                                    return (v(s2) || 0) - (v(s1) || 0); // 大分数先走
                                 });
 
                                 for (const [dx, dy] of dirs) {
                                     const nx = x + dx;
                                     const ny = y + dy;
 
-                                    //防止无限循环，允许回头
+                                    // 防止无限循环，允许回头
                                     const key = nx + ',' + ny + ',' + newScore + ',' + newWalkedReds.join(',');
                                     if (!dfs.visited) dfs.visited = new Set();
                                     if (dfs.visited.has(key)) continue;
@@ -37353,7 +37480,7 @@ const packs = function () {
                                 return false;
                             }
 
-                            //执行 DFS
+                            // 执行 DFS
                             dfs.visited = new Set();
                             const success = dfs(startX, startY, gameData.score, gameData.walkedReds.slice(), gameData.map.slice(), []);
                             if (!success) {
@@ -37361,7 +37488,7 @@ const packs = function () {
                                 return;
                             }
 
-                            //同步执行路径，更新 gameData
+                            // 同步执行路径，更新 gameData
                             for (const [x, y] of pathFound) {
                                 const slot = gameData.getSlotFromPos(x, y);
                                 const cell = gameData.map[slot];
@@ -37389,7 +37516,7 @@ const packs = function () {
                             };
                         };
 
-                        //游戏的主循环喵，主体逻辑都在这里喵
+                        // 游戏的主循环喵，主体逻辑都在这里喵
                         async function gameLoop() {
                             let win = '';
                             let failedReason;
@@ -37406,7 +37533,7 @@ const packs = function () {
                                         await movePlayer(x, y);
 
                                         if (reason) {
-                                            win = reason; //这里其实是武将名称喵
+                                            win = reason; // 这里其实是武将名称喵
                                             break;
                                         }
                                     } else {
@@ -37439,22 +37566,22 @@ const packs = function () {
                         await gamePromise;
                     });
 
-                    //创建事件并弹出对话框喵
-                    //使用范例:
-                    //const result = await startDengjieGame(player).forResult(); //首次玩游戏不需要传游戏数据或传null
-                    //if (result.bool) { //如果本次登阶成功
-                    //    if (result.name === "liuxie") { //如果本次登阶的目标是刘协
-                    //        //...
-                    //    } else {
-                    //        //...
-                    //    }
-                    //} else { //如果本次登阶失败
-                    //    //...
-                    //}
-                    //const nextData = result.nextData; //获取下一次登阶的游戏数据喵
-                    ////...
-                    //const result2 = await startDengjieGame(player, nextData).forResult(); //第二次玩必须传数据哦，不然就变成首次了喵
-                    ////...
+                    // 创建事件并弹出对话框喵
+                    // 使用范例:
+                    // const { result } = await startDengjieGame(player); // 首次玩游戏不需要传游戏数据或传null
+                    // if (result.bool) { // 如果本次登阶成功
+                    //     if (result.name === "liuxie") { // 如果本次登阶的目标是刘协
+                    //         // ...
+                    //     } else {
+                    //         // ...
+                    //     }
+                    // } else { // 如果本次登阶失败
+                    //     // ...
+                    // }
+                    // const nextData = result.nextData; // 获取下一次登阶的游戏数据喵
+                    // // ...
+                    // const { result2 } = await startDengjieGame(player, nextData); // 第二次玩必须传数据哦，不然就变成首次了喵
+                    // // ...
                     return event;
                 },
                 init(player, skill) {
