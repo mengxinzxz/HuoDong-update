@@ -61,7 +61,7 @@ const packs = function () {
                                     if (get.mode() == 'identity') return get.attitude(current, target) > 0;
                                     return target.isFriendOf(current);
                                 })) {
-                                    if (get.mode() == 'identity' ? get.attitude(player, target) < 0 : target.isEnemyOf(player) && !game.hasPlayer(function (current) {
+                                    if (((get.mode() == 'identity' && get.attitude(player, target) < 0) || (get.mode() != 'identity' && target.isEnemyOf(player))) && !game.hasPlayer(function (current) {
                                         return current != target && current.hp <= target.hp;
                                     })) return false;
                                 }
@@ -158,21 +158,10 @@ const packs = function () {
                     return event.player.isEnemyOf(player);
                 },
                 direct: true,
-                clearTime: true,
-                async content(event, trigger, player) {
-                    const target = trigger.player;
-                    const next = player.chooseToUse(function (card, player, event) {
-                        if (get.name(card) != 'sha') return false;
-                        return lib.filter.filterCard.apply(this, arguments);
-                    }, `反攻：是否对${get.translation(target)}使用一张无距离限制的杀？`);
-                    next.set('logSkill', event.name);
-                    next.set('complexSelect', true);
-                    next.set('filterTarget', function (card, player, target) {
-                        if (target != _status.event.sourcex && !ui.selected.targets.includes(_status.event.sourcex)) return false;
-                        return lib.filter.targetEnabled.apply(this, arguments);
-                    });
-                    next.set('sourcex', target);
-                    await next;
+                content() {
+                    player.chooseToUse(get.prompt2('cxy_FanGong', trigger.player), { name: 'sha' }).set('filterTarget', function (card, player, target) {
+                        return target == _status.event.source;
+                    }).set('selectTarget', -1).set('source', trigger.player).set('logSkill', 'cxy_FanGong');
                 },
             },
             cxy_JiaoXia: {
@@ -329,18 +318,18 @@ const packs = function () {
                 derivation: 'choosejiangling',
                 trigger: { player: 'phaseUseBegin' },
                 filter(event, player) {
-                    const jiangling = player.storage.myjiangling;
+                    var jiangling = player.storage.myjiangling;
                     return jiangling?.isIn() && jiangling.isDamaged();
                 },
-                forced: true,
-                logTarget(event, player) {
-                    return player.storage.myjiangling;
-                },
-                async content(event, trigger, player) {
-                    const [target] = event.targets;
-                    await player.loseHp();
-                    await target.recover();
-                    await target.draw();
+                direct: true,
+                content() {
+                    'step 0'
+                    player.logSkill('bilibili_longying', player.storage.myjiangling);
+                    player.loseHp();
+                    'step 1'
+                    var jiangling = player.storage.myjiangling;
+                    jiangling.recover();
+                    jiangling.draw();
                 },
             },
             choosejiangling: {
@@ -350,15 +339,19 @@ const packs = function () {
                     return event.name != 'phase' || game.phaseNumber == 0;
                 },
                 direct: true,
-                async content(event, trigger, player) {
-                    const result = await player.chooseTarget('请选择你要跟随的将领', true, lib.filter.notMe).set('ai', target => {
-                        let att = get.attitude(get.player(), target);
+                content() {
+                    'step 0'
+                    player.chooseTarget('请选择你要跟随的将领', true, function (card, player, target) {
+                        return target != player;
+                    }).set('ai', function (target) {
+                        var att = get.attitude(_status.event.player, target);
                         if (att > 0) return att + 1;
                         if (att == 0) return Math.random();
                         return att;
-                    }).forResult();
-                    if (result?.bool) {
-                        const target = result.targets[0];
+                    });
+                    'step 1'
+                    if (result.bool) {
+                        var target = result.targets[0];
                         player.line(target, 'fire');
                         player.storage.myjiangling = target;
                         game.log(player, '选择了', target, '作为自己的将领');
@@ -446,8 +439,8 @@ const packs = function () {
             bilibili_yangwu: '扬武',
             bilibili_yanglie: '扬烈',
             cxy_JiaoXia_info: '锁定技，友方角色的黑色手牌不计入手牌上限。',
-            bilibili_yangwu_info: '锁定技，准备阶段，你对所有其他角色造成1点伤害，然后你失去1点体力。',
-            bilibili_yanglie_info: '锁定技，准备阶段，你获得所有其他角色区域里的一张牌，然后你失去1点体力。',
+            bilibili_yangwu_info: '锁定技，准备阶段开始时，你对所有其他角色造成1点伤害，然后你失去1点体力。',
+            bilibili_yanglie_info: '锁定技，准备阶段开始时，你获得所有其他角色区域里的一张牌，然后你失去1点体力。',
             cxy_JieLve_info: '锁定技，当你对一名其他角色造成伤害后，你获得其区域内的各一张牌，然后失去1点体力。',
             cxy_FanGong_info: '当你成为一名敌方角色使用牌的目标且该牌结算完成后，你可以对其使用一张【杀】（无距离限制）。',
             bilibili_mojun_info: '锁定技，当友方角色使用【杀】对目标角色造成伤害后，其进行判定，若结果为黑色，友方角色各摸一张牌。',
@@ -492,10 +485,11 @@ const packs = function () {
     };
     for (let i in FaDongCharacter.character) {
         if (Array.isArray(FaDongCharacter.character[i])) FaDongCharacter.character[i] = get.convertedCharacter(FaDongCharacter.character[i]);
-        FaDongCharacter.character[i].trashBin ??= [];
+        FaDongCharacter.character[i].transBin ??= [];
         if (_status['extension_活动武将_files']?.image.character.files.includes(`${i}.jpg`)) FaDongCharacter.character[i].img = `extension/活动武将/image/character/${i}.jpg`;
     }
     lib.config.all.sgscharacters.push('FaDongCharacter');
+    if (!lib.config.characters.includes('FaDongCharacter')) lib.config.characters.remove('FaDongCharacter');
     lib.translate['FaDongCharacter_character_config'] = '<span style="font-family: xingkai">诸侯伐董</span>';
     return FaDongCharacter;
 };

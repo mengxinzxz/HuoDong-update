@@ -27,7 +27,7 @@ const packs = function () {
             QH_yuanshao: ['male', 'qun', 15, ['luanji', 'QH_xueyi', 'qiluan'], ['character:re_yuanshao']],
             QH_yuanshu: ['male', 'qun', 16, ['drlt_yongsi', 'QH_wangzun', 'QH_weidi'], ['character:yl_yuanshu']],
             QH_guotufengji: ['male', 'qun', 15, ['rejigong', 'shifei', 'QH_chanmou'], ['character:guotufengji']],
-            QH_yanwen: ['male', 'qun', 16, ['shuangxiong', 'jianchu', 'QH_yongdou'], ['character:yanwen', 'name:颜|良-文|丑']],
+            QH_yanwen: ['male', 'qun', 16, ['shuangxiong', 'jianchu', 'QH_yongdou'], ['character:yanwen']],
             QH_caoang: ['male', 'wei', 15, ['kaikang', 'wushuang', 'feiying'], ['character:caoang']],
             QH_caoren: ['male', 'wei', 18, ['xinjushou', 'xinjiewei', 'xinshensu'], ['character:caoren']],
             QH_jushou: ['male', 'qun', 16, ['jianying', 'shibei', 'zhaxiang'], ['character:yj_jushou']],
@@ -142,31 +142,32 @@ const packs = function () {
                 audio: 'ext:活动武将/audio/skill:true',
                 trigger: { source: 'damageSource' },
                 filter(event, player) {
-                    const target = event.player;
-                    return [target.getNext(), target.getPrevious()].some(current => current.isIn()) && player.countCards('he');
+                    return game.players.length > 2 && player.countCards('he');
                 },
-                async cost(event, trigger, player) {
-                    const target = trigger.player;
-                    const list = [target.getNext(), target.getPrevious()];
-                    event.result = await player.chooseCardTarget({
-                        prompt: get.prompt2(event.skill),
-                        filterCard: lib.filter.cardDiscardable,
+                direct: true,
+                content() {
+                    'step 0'
+                    player.chooseCardTarget({
+                        prompt: get.prompt2('QH_suxi'),
+                        filterCard: true,
                         position: 'he',
                         filterTarget(card, player, target) {
-                            return get.event().list.includes(target);
+                            return [_status.event.getTrigger().player.next, _status.event.getTrigger().player.previous].includes(target);
                         },
                         ai1(card) {
                             return 7 - get.value(card);
                         },
                         ai2(target) {
-                            const player = get.player();
-                            return get.effect(target, { name: 'losehp' }, player, player)
+                            return -get.attitude(_status.event.player, target)
                         }
-                    }).set('list', list).forResult();
-                },
-                async content(event, trigger, player) {
-                    await player.discard(event.cards);
-                    await event.targets[0].loseHp();
+                    });
+                    'step 1'
+                    if (result.bool) {
+                        var target = result.targets[0];
+                        player.logSkill('QH_suxi', target);
+                        player.discard(result.cards);
+                        target.loseHp();
+                    }
                 },
             },
             QH_chibi: {
@@ -191,21 +192,24 @@ const packs = function () {
                 audio: 'ext:活动武将/audio/skill:true',
                 trigger: { player: ['useCard', 'respond'] },
                 filter(event, player) {
-                    return ['sha', 'shan'].includes(event.card.name) && player != _status.currentPhase && game.hasPlayer(current => player != current);
+                    return ['sha', 'shan'].includes(event.card.name) && player != _status.currentPhase;
                 },
-                async cost(event, trigger, player) {
-                    event.result = await player.chooseTarget(get.prompt2(event.hasSkill), lib.filter.notMe).set('ai', target => {
-                        const player = get.player();
-                        const eff1 = get.damageEffect(target, player, player, 'thunder');
-                        const eff2 = get.effect(target, { name: 'guohe_copy2' }, player, player);
-                        return Math.max(eff1, eff2);
-                    }).forResult();
-                },
-                async content(event, trigger, player) {
-                    const target = event.targets[0];
-                    const result = await target.judge().forResult();
-                    if (result?.color == 'red') await player.discardPlayerCard(target, 'he', 2, true);
-                    else if (result?.color == 'black') await target.damage(2, 'thunder');
+                direct: true,
+                content() {
+                    'step 0'
+                    player.chooseTarget(get.prompt2('QH_leixi'), lib.filter.notMe).ai = function (target) {
+                        return get.damageEffect(target, _status.event.player, _status.event.player, 'thunder') && target.countCards('he');
+                    };
+                    'step 1'
+                    if (result.bool) {
+                        player.logSkill('QH_leixi', result.targets);
+                        event.target = result.targets[0];
+                        event.target.judge();
+                    }
+                    else event.finish();
+                    'step 2'
+                    if (result.color == 'red') player.discardPlayerCard(target, 'he', 2, true);
+                    else target.damage(2, 'thunder');
                 },
                 ai: { expose: 0.2 },
             },
@@ -228,22 +232,23 @@ const packs = function () {
                 audio: 'ext:活动武将/audio/skill:true',
                 trigger: { global: 'useCard' },
                 filter(event, player) {
-                    if (get.color(event.card, event.player) !== 'black') return false;
-                    return player.getEnemies().includes(event.player) || (event.player == player && player.getEnemies().some(current => current.countCards('he')));
+                    return (event.player == player || player.getEnemies().includes(event.player)) && get.color(event.card, event.player) == 'black';
                 },
-                forced: true,
-                logTarget(event, player) {
-                    if (event.player == player) {
-                        return player.getEnemies(current => current.countCards('he')).randomGet();;
-                    }
-                    return event.player;
-                },
-                async content(event, trigger, player) {
+                direct: true,
+                content() {
+                    'step 0'
                     if (trigger.player == player) {
-                        await event.targets[0].randomDiscard('he', 'random');
+                        var target = player.getEnemies(function (current) {
+                            return current.countCards('he');
+                        }).randomGet();
+                        if (target) {
+                            player.logSkill('QH_heimu', target);
+                            target.discard(target.getCards('he').randomGet());
+                        }
                     }
                     else {
-                        await player.draw();
+                        player.logSkill('QH_heimu', trigger.player);
+                        player.draw();
                     }
                 },
             },
@@ -294,22 +299,20 @@ const packs = function () {
                 audio: 'ext:活动武将/audio/skill:true',
                 trigger: { player: 'phaseJieshuBegin' },
                 forced: true,
-                async content(event, trigger, player) {
-                    await player.loseMaxHp();
+                content() {
+                    player.loseMaxHp();
                 },
                 subSkill: {
                     damage: {
-                        audio: 'QH_jibing',
                         trigger: { player: 'loseMaxHpEnd' },
                         filter(event, player) {
                             return player.getEnemies().length > 0;
                         },
-                        forced: true,
-                        logTarget(event, player) {
-                            return player.getEnemies().randomGet();
-                        },
-                        async content(event, trigger, player) {
-                            await event.targets[0].damage();
+                        direct: true,
+                        content() {
+                            var target = player.getEnemies().randomGet();
+                            player.logSkill('QH_jibing', target);
+                            target.damage();
                         },
                     },
                 },
@@ -500,15 +503,15 @@ const packs = function () {
                 audio: 'ext:活动武将/audio/skill:true',
                 trigger: { player: 'phaseBegin' },
                 filter(event, player) {
-                    return player.isMaxHandcard() && player.getEnemies().length;
+                    return player.isMaxHandcard();
                 },
-                forced: true,
-                logTarget(event, player) {
-                    if (player.countCards('h') < player.hp * 2) return player.getEnemies().sortBySeat();
-                    return player.getEnemies().randomGet();
-                },
-                async content(event, trigger, player) {
-                    for (const target of event.targets) await target.damage();
+                direct: true,
+                locked: true,
+                content() {
+                    var targets = game.filterPlayer(current => lib.skill.lztunjiang.filtery({ player: current }, player));
+                    if (player.countCards('h') < player.hp * 2) targets = targets.randomGets(1);
+                    player.logSkill('QH_lingba', targets);
+                    for (var i of targets) i.damage();
                 },
             },
             QH_pozhan: {
@@ -828,7 +831,7 @@ const packs = function () {
             QH_huanshi: '宦势',
             QH_huanshi_info: '锁定技，当你成为延时锦囊牌的目标后，进行一次判定，若结果为黑色，将此牌置入弃牌堆。',
             QH_leixi: '雷袭',
-            QH_leixi_info: '当你于回合外使用或打出【杀】或【闪】时，你可以选择一名其他角色，令其进行判定，若结果为红色，你弃置该角色两张牌；若结果为黑色，你对其造成2点伤害。',
+            QH_leixi_info: '当你于回合外使用或打出【杀】或【闪】时，你可以选择一名其他角色，令其进行判定，若结果为红色，弃置该角色两张牌；若结果为黑色，对其造成2点伤害。',
             QH_huangjie: '黄结',
             QH_huangjie_info: '锁定技，出牌阶段，你使用一张牌时，若此牌目标不是敌方角色，你摸一张牌。',
             QH_suxi: '速袭',
@@ -881,7 +884,7 @@ const packs = function () {
             QH_xueyi_info: '锁定技。①摸牌阶段，你改为摸X张牌。②你的手牌上限+X。（X为场上的群势力角色数）',
             QH_yuanshu: '袁术',
             QH_wangzun: '妄尊',
-            QH_wangzun_info: '锁定技，敌方角色的结束阶段，若其本回合对你造成的伤害总数为：0，其弃置两张牌；大于1，你对其造成1点伤害。',
+            QH_wangzun_info: '锁定技，敌方角色的结束阶段开始时，若其本回合对你造成的伤害总数为：0，其弃置两张牌；大于1，你对其造成1点伤害。',
             QH_weidi: '伪帝',
             QH_weidi_info: '锁定技，其他群势力角色的牌因弃置进入弃牌堆后，你随机获得其中的一张，然后随机获得其区域内的一张牌。',
             QH_guotufengji: '郭图逄纪',
@@ -921,7 +924,7 @@ const packs = function () {
     };
     for (let i in decadeQiHuan.character) {
         if (Array.isArray(decadeQiHuan.character[i])) decadeQiHuan.character[i] = get.convertedCharacter(decadeQiHuan.character[i]);
-        decadeQiHuan.character[i].trashBin ??= [];
+        decadeQiHuan.character[i].transBin ??= [];
         if (_status['extension_活动武将_files']?.audio.die.files.includes(`${i}.mp3`)) {
             decadeQiHuan.character[i].dieAudios ??= [];
             decadeQiHuan.character[i].dieAudios.push('ext:活动武将/audio/die:true');
@@ -930,6 +933,7 @@ const packs = function () {
         if (_status['extension_活动武将_files']?.image.character.files.includes(`${i}.jpg`)) decadeQiHuan.character[i].img = `extension/活动武将/image/character/${i}.jpg`;
     }
     lib.config.all.sgscharacters.push('decadeQiHuan');
+    if (!lib.config.characters.includes('decadeQiHuan')) lib.config.characters.remove('decadeQiHuan');
     lib.translate['decadeQiHuan_character_config'] = '<span style="font-family: xingkai">戚宦之争</span>';
     return decadeQiHuan;
 };

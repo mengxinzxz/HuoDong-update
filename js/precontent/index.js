@@ -11,9 +11,6 @@ import MX_feihongyinxue from './MX_feihongyinxue.js';
 import huodongcharacter from './huodongcharacter.js';
 
 export async function precontent(bilibilicharacter) {
-    //活动武将显示
-    lib.translate['extension_活动武将'] = `<img style="width:100px;" src="${lib.assetURL}extension/活动武将/image/default/活动武将.png">`;
-
     //存储活动武将扩展的文件和文件夹分布
     _status['extension_活动武将_files'] = await (async () => {
         const getFileList = async function (path = 'extension/活动武将') {
@@ -59,7 +56,7 @@ export async function precontent(bilibilicharacter) {
             if (event.parent.name != 'chooseCharacter' || get.mode() == 'boss') return false;
             return (lib.config.extension_活动武将_KQShiJian != 'off' && !game.hzkqshijianed) || (lib.config.extension_活动武将_GDShiJian != 'off' && !game.GDZZshijianed);
         },
-        silent: true,
+        direct: true,
         content() {
             'step 0'
             if (lib.config.extension_活动武将_KQShiJian != 'off' && !game.hzkqshijianed) {
@@ -152,7 +149,7 @@ export async function precontent(bilibilicharacter) {
         filter(event, player) {
             return game.hslh && (player.name && player.name == 'qin_yingzheng') || (player.name2 && player.name2 == 'qin_yingzheng');
         },
-        silent: true,
+        direct: true,
         priority: 1 + 1 + 4 + 5 + 1 + 4 + 1 + 9 + 1 + 9 + 8 + 1 + 0,
         content() {
             //传国玉玺
@@ -189,7 +186,7 @@ export async function precontent(bilibilicharacter) {
         filter(event, player) {
             return lib.config.extension_活动武将_HDdamageAudio && lib.config.background_audio;
         },
-        silent: true,
+        direct: true,
         priority: -Infinity,
         lastDo: true,
         content() {
@@ -207,7 +204,7 @@ export async function precontent(bilibilicharacter) {
             return (player.name == 'shen_zhangfei' || player.name2 == 'shen_zhangfei') && event.num1 == event.num2;
         },
         priority: -3,
-        silent: true,
+        direct: true,
         content() {
             player.chat('俺也一样');
             game.broadcastAll(function () {
@@ -224,7 +221,7 @@ export async function precontent(bilibilicharacter) {
             return (player.name == 'shen_zhangfei' || player.name2 == 'shen_zhangfei') && event.card.name == 'wugu';
         },
         priority: -3,
-        silent: true,
+        direct: true,
         content() {
             player.chat('俺颇有家资');
             game.broadcastAll(function () {
@@ -282,7 +279,7 @@ export async function precontent(bilibilicharacter) {
     lib.poptip.add({
         name: '韵律技',
         id: 'rule_yunlvSkill',
-        info: '同普通转换技类似，韵律技分为平和仄两种状态，韵律技初始默认状态为平，满足转韵条件时韵律技会转成另一种状态并重置技能的发动次数。',
+        info: '三国杀微服机制，和转换技类似，韵律技分为平和仄两种状态，韵律技初始默认状态为平，满足转韵条件时韵律技会转成另一种状态并重置技能的发动次数。',
     });
     lib.poptip.add({
         name: '仁望值',
@@ -324,11 +321,6 @@ export async function precontent(bilibilicharacter) {
         id: 'rule_mamba',
         info: 'Man! What can I say? Mamba out!',
     });
-    lib.poptip.add({
-        name: '成器',
-        id: 'rule_xizifuSkill',
-        info: '成器后的数字为本局游戏发动此技能的次数上限，发动带有此标签的技能后，需满足技能“进学”条件才可继续发动此技能。',
-    });
     //----------------游戏播报·始----------------
     lib.skill._OpenTheGame = {
         charlotte: true,
@@ -339,7 +331,7 @@ export async function precontent(bilibilicharacter) {
             const config = lib.config.extension_活动武将_HDfightAudio;
             return config && config !== 'off' && player == game.me && (!game.HasExtension('十周年UI') || !lib.config.extension_十周年UI_gameAnimationEffect);
         },
-        silent: true,
+        direct: true,
         firstDo: true,
         priority: Infinity,
         content() {
@@ -357,7 +349,7 @@ export async function precontent(bilibilicharacter) {
             const config = lib.config.extension_活动武将_HDfightAudio;
             return config && config !== 'off';
         },
-        silent: true,
+        direct: true,
         firstDo: true,
         forceDie: true,
         content() {
@@ -376,7 +368,7 @@ export async function precontent(bilibilicharacter) {
             const config = lib.config.extension_活动武将_HDfightAudio;
             return config && config !== 'off';
         },
-        silent: true,
+        direct: true,
         firstDo: true,
         forceDie: true,
         content() {
@@ -399,7 +391,7 @@ export async function precontent(bilibilicharacter) {
             if (_status.currentPhase === player) return true;
             return event.player != event.source && event.source == player;
         },
-        silent: true,
+        direct: true,
         firstDo: true,
         forceDie: true,
         content() {
@@ -423,11 +415,12 @@ export async function precontent(bilibilicharacter) {
             const config = lib.config.extension_活动武将_HDfightAudio;
             return config && config !== 'off' && event.player != player;
         },
-        silent: true,
+        direct: true,
         firstDo: true,
         content() {
             'step 0'
-            player.addMark('bilibili_kill', 1, false);
+            player.storage.bilibili_kill ??= 0;
+            player.storage.bilibili_kill++;
             'step 1'
             let config = lib.config.extension_活动武将_HDfightAudio;
             config = config === 'default' ? lib.config.extension_活动武将_HDkillAudio : config;
@@ -446,7 +439,7 @@ export async function precontent(bilibilicharacter) {
                     list = ['一血·卧龙出山', '双杀·一战成名', '三杀·举世皆惊', '四杀·天下无敌', '五杀·诛天灭地', '六杀·癫狂杀戮', '无双·万军取首'];
                     break;
             }
-            var num = Math.min(7, player.countMark('bilibili_kill'));
+            var num = Math.min(7, player.storage.bilibili_kill);
             player.$fullscreenpop(list[num - 1], ['water', 'wood', 'thunder', 'fire'][Math.min(3, num - 1)]);
             game.broadcastAll(function (num, config) {
                 if (lib.config.background_audio) {
@@ -463,7 +456,7 @@ export async function precontent(bilibilicharacter) {
             const config = lib.config.extension_活动武将_HDfightAudio;
             return ['decade', 'default'].includes(config) && event.player != player && event.num >= 3;
         },
-        silent: true,
+        direct: true,
         lastDo: true,
         priority: -Infinity,
         content() {
@@ -517,7 +510,7 @@ export async function precontent(bilibilicharacter) {
             if (!lib.config.extension_活动武将_HD_bgmPlay || !game.zhu || game.zhu.identity != 'zhu') return false;
             return !game.bol_playAudio1 && event.parent.name == 'chooseCharacter' && get.mode() == 'identity' && _status.mode == 'normal';
         },
-        silent: true,
+        direct: true,
         firstDo: true,
         priority: Infinity + 114 - 514,
         content() {
@@ -541,7 +534,7 @@ export async function precontent(bilibilicharacter) {
         filter(event, player) {
             return game.bol_playAudio1 && !game.bol_playAudio2;
         },
-        silent: true,
+        direct: true,
         firstDo: true,
         priority: Infinity + 114 - 514,
         content() {
@@ -559,7 +552,7 @@ export async function precontent(bilibilicharacter) {
         filter(event, player) {
             return game.bol_playAudio2 && !game.bol_playAudio3 && game.players.length <= 4;
         },
-        silent: true,
+        direct: true,
         firstDo: true,
         priority: Infinity + 114 - 514,
         content() {
@@ -567,35 +560,6 @@ export async function precontent(bilibilicharacter) {
         },
     };
     //----------------游戏播报·末----------------
-
-    //快捷添加/删除武将
-    game.HDdeleteCharacter = function (name) {
-        if (lib.character[name]) delete lib.character[name];
-        var packs = Object.keys(lib.characterPack).filter(pack => lib.characterPack[pack][name]);
-        if (packs.length) packs.forEach(pack => delete lib.characterPack[pack][name]);
-    };
-    game.HDaddCharacter = function (name, character, packs = '') {
-        game.HDdeleteCharacter(name);
-        if (_status['extension_活动武将_files']?.image.character.files.includes(`${name}.jpg`)) {
-            character[4] ??= [];
-            character[4].push(`ext:活动武将/image/character/${name}.jpg`);
-        }
-        const pack = packs.split(':').find(p => lib.characterPack[p]);
-        if (pack) {
-            lib.characterPack[pack][name] = character;
-            if (lib.config.characters.includes(pack)) lib.character[name] = character;
-            lib.config.forbidai[lib.config[`forbidai_user_${pack}`] ? 'add' : 'remove'](name);
-        }
-        else lib.character[name] = character;
-    };
-    //移动武将所在武将包
-    game.HDmoveCharacter = function (name, packss) {
-        var nameinfo = get.character(name);
-        if (nameinfo) {
-            nameinfo[4] ??= [];
-            game.HDaddCharacter(name, nameinfo, packss);
-        }
-    };
 
     //武将包和卡包
     if (bilibilicharacter.enable) {
@@ -637,7 +601,8 @@ export async function precontent(bilibilicharacter) {
             {
                 type: 'players',
                 data: [
-                    'wechat_shantao', 'wechat_sb_yujin',
+                    'Mbaby_caoying', 'Mbaby_xurong', 'Mbaby_caochong', 'Mbaby_caochun', 'Mfight_jiangwei',
+                    'bilibili_longjiuzhen', 'bilibili_liuguanzhang',
                 ],
             },
             {
@@ -645,7 +610,9 @@ export async function precontent(bilibilicharacter) {
                 textAlign: 'left',
                 data: [
                     'bugfix、素材补充、技能调整',
-                    '小程序：山涛、谋于禁',
+                    '标界分离所有原欢乐三国杀界武将（无本体已有版本）',
+                    '欢乐三国杀新增和修改武将：曹婴、徐荣、曹冲、曹纯、战姜维',
+                    '杂谈新武将：龙九帧、三人组',
                     'To be continued...',
                 ],
             },

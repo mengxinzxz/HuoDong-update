@@ -140,31 +140,66 @@
 .dialog.dengjie-game:not(.player) {
 	width: fit-content;
 	height: fit-content;
+	background: #fdfbf7 !important; /* 卷轴白 */
+	border: 1px solid #dcdcdc;
+	box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+	border-radius: 8px;
+	padding: 15px; /* 增加内边距模拟卷轴边缘 */
+}
+
+/* 模拟卷轴两侧装饰（可选） */
+.dialog.dengjie-game:not(.player):before {
+	content: "登极";
+	position: absolute;
+	left: -30px;
+	top: 10px;
+	width: 30px;
+	height: 120px;
+	background: #fff;
+	border: 1px solid #ccc;
+	border-right: none;
+	writing-mode: vertical-lr;
+	text-align: center;
+	line-height: 28px;
+	font-family: "KaiTi", serif;
+	font-weight: bold;
+	color: #555;
+	border-radius: 4px 0 0 4px;
+	box-shadow: -2px 2px 5px rgba(0,0,0,0.1);
 }
 
 .dialog.dengjie-game > .content-container {
 	position: relative;
+	background: #fff; /* 内容区纯白背景 */
+	border: 1px solid #eee;
 }
 
 .dialog.dengjie-game > .content-container > .content {
 	position: relative;
+	color: #333;
+	text-shadow: none;
 }
 
 .dialog.dengjie-game .dengjie-game-container {
 	position: relative;
+	padding: 10px;
 }
 
 table.dengjie-game {
-	--cell-spacing: 10px;
+	--cell-spacing: 4px; /* 紧凑布局 */
 	border-spacing: var(--cell-spacing);
+	background: #f0f0f0; /* 表格背景略灰 */
+	padding: 4px;
+	border-radius: 4px;
 }
 
 td.dengjie-game {
-	--block-size: 40px;
-	--border-radius: calc(var(--block-size) / 8);
+	--block-size: 50px;
+	--border-radius: 4px;
 	width: var(--block-size);
 	height: var(--block-size);
-	background: rgba(0, 0, 0, 0.4);
+	background: #cba279; /* 基础棕色 */
+	border: 2px solid #fff; /* 白色边框 */
 	border-radius: var(--border-radius);
 	display: block;
 	position: relative;
@@ -172,6 +207,22 @@ td.dengjie-game {
 	margin: 0px;
 	margin-left: var(--cell-spacing);
 	float: left;
+	box-shadow: inset 0 0 10px rgba(0,0,0,0.05);
+	transition: all 0.2s ease;
+}
+
+/* 爪印/花纹装饰 */
+td.dengjie-game:after {
+	content: "";
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	width: 60%;
+	height: 60%;
+	background: rgba(255,255,255,0.15);
+	border-radius: 50%; /* 简化的圆印 */
+	pointer-events: none;
 }
 
 td.dengjie-game > .arrow-container {
@@ -187,63 +238,43 @@ td.dengjie-game > .arrow-container {
 	border-radius: var(--border-radius);
 }
 
+/* 箭头本身 */
 td.dengjie-game > .arrow-container > .arrow {
-	border-radius: 100%;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	width: 50%;
-	height: 50%;
-	z-index: 3;
-	box-shadow:
-		rgba(0, 0, 0, 0.2) 0 0 0 1px,
-		rgba(0, 0, 0, 0.45) 0 3px 10px;
+	display: none; /* 隐藏默认箭头圆圈，让格子颜色本身表达状态 */
 }
 
-td.dengjie-game > .arrow-container.new-gain > .arrow {
-	background-color: #007dbd;
-}
-
-td.dengjie-game > .arrow-container.new-lose > .arrow {
-	background-color: #c50000;
-}
-
-td.dengjie-game > .arrow-container.old > .arrow {
-	background-color: #494949;
-}
-
+/* Gain Effect - Blue Grid */
 td.dengjie-game > .arrow-container.new-gain {
-	background-color: #007dbd;
-	box-shadow:
-		rgba(0, 0, 0, 0.3) 0 0 0 1px,
-		rgba(0, 125, 189, 1) 0 0 5px,
-		rgba(0, 125, 189, 1) 0 0 5px,
-		rgba(0, 125, 189, 1) 0 0 10px,
-		rgba(0, 125, 189, 1) 0 0 10px !important;
+	background-color: #2e7d32; /* 绿色代表安全/增益 */
+	border-color: #81c784;
+}
+/* 为了匹配图片中的深蓝色增益 */
+td.dengjie-game > .arrow-container.new-gain {
+	background-color: #1565c0 !important;
+	border: 2px solid #64b5f6;
 }
 
+
+/* Lose Effect - Red Grid */
 td.dengjie-game > .arrow-container.new-lose {
-	background-color: #c50000;
-	box-shadow:
-		rgba(0, 0, 0, 0.3) 0 0 0 1px,
-		rgba(197, 0, 0, 1) 0 0 5px,
-		rgba(197, 0, 0, 1) 0 0 5px,
-		rgba(197, 0, 0, 1) 0 0 10px,
-		rgba(197, 0, 0, 1) 0 0 10px !important;
+	background-color: #c62828 !important;
+	border: 2px solid #ef5350;
 }
 
+/* Old/Visited Effect - Grey Grid */
 td.dengjie-game > .arrow-container.old {
-	background-color: #494949;
-	box-shadow:
-		rgba(0, 0, 0, 0.3) 0 0 0 1px,
-		rgba(73, 73, 73, 1) 0 0 5px,
-		rgba(73, 73, 73, 1) 0 0 5px,
-		rgba(73, 73, 73, 1) 0 0 10px,
-		rgba(73, 73, 73, 1) 0 0 10px !important;
+	background-color: #78909c !important;
+	border: 2px solid #b0bec5;
+	opacity: 0.8;
 }
 
 td.dengjie-game.selectable {
 	cursor: pointer;
+}
+td.dengjie-game.selectable:hover {
+	transform: scale(1.05);
+	box-shadow: 0 0 8px rgba(0,0,0,0.2);
+	z-index: 10;
 }
 
 td.dengjie-game:first-child {
@@ -254,43 +285,130 @@ td.dengjie-game:first-child {
 	padding-bottom: 0px;
 }
 
+/* 角色样式 */
 td.dengjie-game > .button.character {
 	--expand-size: calc(var(--cell-spacing) - 4px);
 	width: var(--block-size);
 	height: var(--block-size);
-	border-radius: var(--border-radius);
+	border-radius: 4px;
 	margin: 0px;
 	pointer-events: none;
-	z-index: 2;
+	z-index: 5;
 	display: flex;
 	align-items: flex-end;
 	justify-content: flex-end;
+	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+	transition: none; /* 移除默认过渡，由JS控制动画 */
+	filter: none;
+	border: 2px solid #1976d2; /* 默认蓝框 */
+	background-color: #fff; /* 防止透明 */
+}
+
+/* 当前玩家高亮 */
+td.dengjie-game > .button.character.current-player {
+	border-color: #ffd700;
+	box-shadow: 0 0 10px #ffd700;
 }
 
 td.dengjie-game > .button.character > .score {
-	border-radius: var(--border-radius);
-	font-size: 12px;
-	width: 35%;
-	height: 35%;
+	border-radius: 2px;
+	font-size: 10px;
+	font-weight: bold;
+	width: 16px;
+	height: 16px;
+	line-height: 16px;
+	text-align: center;
+	position: absolute;
+	top: -2px;
+	right: -2px;
+	color: white;
+	box-shadow: 0 1px 2px rgba(0,0,0,0.3);
+	font-family: Arial, sans-serif;
 }
 
 td.dengjie-game > .button.character > .score.gain {
-	background-color: #007dbd;
+	background: #1565c0;
 }
 
 td.dengjie-game > .button.character > .score.lose {
-	background-color: #c50000;
+	background: #c62828;
 }
 
 /*吕布踏阵*/
-.button.character.tazhen {
-	width: 108px !important;
-	height: 150px !important;
+
+
+/* 底部 Control 按钮美化 */
+.control .ui-control-button {
+    width: 120px !important;
+    height: 40px !important;
+    line-height: 40px !important;
+    border-radius: 20px !important;
+    font-size: 18px !important;
+    font-weight: bold !important;
+    box-shadow: 0 4px 0 rgba(0,0,0,0.2), 0 5px 10px rgba(0,0,0,0.3) !important;
+    margin: 0 15px !important;
+    border: none !important;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
 }
 
-.button.card.tazhen {
-	width: 108px !important;
-	height: 150px !important;
+/* 确定 - 绿色 */
+.control .ui-control-button:first-child {
+    background: linear-gradient(to bottom, #81c784, #43a047) !important;
+    color: #fff !important;
+}
+/* 取消/其他 - 黄色 */
+.control .ui-control-button:last-child {
+    background: linear-gradient(to bottom, #ffeb3b, #fbc02d) !important;
+    color: #8d6e63 !important;
+}
+
+/* 隐藏左侧卷轴标题（之前可能存在的） */
+.dialog.fullheight .content .caption {
+    display: none;
+}
+
+/* 火焰特效类 */
+.fire-effect {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    background: radial-gradient(circle, rgba(255,165,0,0.8) 10%, rgba(255,69,0,0.6) 40%, transparent 70%);
+    mix-blend-mode: screen;
+    animation: firePulse 0.5s ease-out forwards;
+    z-index: 20;
+    border-radius: 6px;
+}
+
+@keyframes firePulse {
+    0% { transform: scale(0.5); opacity: 0; }
+    50% { transform: scale(1.2); opacity: 1; filter: blur(2px); }
+    100% { transform: scale(1.5); opacity: 0; }
+}
+
+/* 粒子爆炸效果 (可选，用伪元素模拟) */
+.fire-effect:after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 10px;
+    height: 10px;
+    box-shadow: 
+        -20px -20px 0 #ff4500, 
+        20px -20px 0 #ffd700, 
+        -20px 20px 0 #ff8c00, 
+        20px 20px 0 #ff6347;
+    animation: particles 0.5s ease-out forwards;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+}
+
+@keyframes particles {
+    0% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+    100% { transform: translate(-50%, -50%) scale(3); opacity: 0; box-shadow: -40px -40px 0 transparent, 40px -40px 0 transparent, -40px 40px 0 transparent, 40px 40px 0 transparent;}
 }
 
 /*诸葛亮定乱*/
@@ -298,54 +416,106 @@ td.dengjie-game > .button.character > .score.lose {
 	display: flex;
 	justify-content: center;
 	align-items: flex-end;
-	gap: 20px;
+	gap: 25px;
 	flex-wrap: wrap;
-	padding: 20px;
+	padding: 40px 30px;
 	box-sizing: border-box;
 	width: 100%;
+	background: #fdfbf7; /* 卷轴白 */
+	border: 1px solid #d4d4d4;
+	box-shadow: 0 0 15px rgba(0,0,0,0.1);
+	border-radius: 4px;
 }
 
 .dingluan-tube {
-	width: 60px;
-	height: 200px;
-	background: #221a0f;
-	border: 2px solid #8b6f45;
-	border-radius: 10px;
+	width: 70px; /* 加宽以容纳圆形棋子 */
+	height: 250px; /* 加高 */
+	background: #1a3c34; /* 深绿背景 */
+	border: 2px solid #2e5a4e;
+	border-top: 6px solid #5d8c7e; /* 顶部装饰条 */
+	border-bottom: 6px solid #142e28;
+	border-radius: 0 0 35px 35px; /* 圆底 */
 	position: relative;
 	display: block;
-	padding: 0 5px;
+	padding: 0;
 	margin: 0 10px;
 	box-sizing: border-box;
 	cursor: pointer;
-	transition: border-color 0.2s;
+	transition: all 0.3s ease;
 	flex-shrink: 0;
 	overflow: visible;
+	box-shadow: 0 5px 10px rgba(0,0,0,0.3);
+}
+
+/* 顶部挂钩装饰 */
+.dingluan-tube:before {
+	content: "";
+	position: absolute;
+	top: -12px;
+	left: 50%;
+	transform: translateX(-50%);
+	width: 20px;
+	height: 12px;
+	background: #8b6f45;
+	border-radius: 2px;
+	box-shadow: 0 2px 2px rgba(0,0,0,0.2);
 }
 
 .dingluan-tube.selected {
-	border-color: #ffdf66;
-	box-shadow: 0 0 10px #ffdf66;
+	border-color: #ffd700;
+	transform: translateY(-5px);
+	box-shadow: 0 0 15px rgba(255, 215, 0, 0.6);
 }
 
 .dingluan-piece {
 	display: block;
-	width: 48px;
-	height: 24px;
-	background: #ccb183;
+	width: 50px;
+	height: 50px;
+	/* 默认红色 */
+	background: radial-gradient(circle at 35% 35%, #ff8a80, #c62828);
 	position: absolute;
 	left: 50%;
 	transform: translateX(-50%);
 	margin: 0;
 	text-align: center;
-	line-height: 24px;
-	font-size: 14px;
-	font-family: "shousha";
-	color: #000;
-	border-radius: 6px;
-	box-shadow: inset 0 0 3px #000;
+	line-height: 50px;
+	font-size: 16px;
+	font-weight: bold;
+	font-family: "KaiTi", "STKaiti", serif;
+	color: rgba(255, 255, 255, 0.9);
+	border-radius: 50%; /* 圆形 */
+	box-shadow: 0 3px 5px rgba(0,0,0,0.3), inset 0 0 10px rgba(0,0,0,0.1);
 	pointer-events: none;
 	box-sizing: border-box;
-	/*transition: bottom 0.3s ease;移除动画，懒得加*/
+	border: 2px solid rgba(255,255,255,0.2);
+	text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+}
+
+/* 势力配色 */
+.dingluan-piece[data-group="wei"] { background: radial-gradient(circle at 35% 35%, #4fc3f7, #0277bd); }
+.dingluan-piece[data-group="shu"] { background: radial-gradient(circle at 35% 35%, #ff8a80, #c62828); }
+.dingluan-piece[data-group="wu"] { background: radial-gradient(circle at 35% 35%, #a5d6a7, #2e7d32); }
+.dingluan-piece[data-group="qun"] { background: radial-gradient(circle at 35% 35%, #e0e0e0, #757575); color: #333; text-shadow: none; }
+.dingluan-piece[data-group="shen"] { background: radial-gradient(circle at 35% 35%, #ffe082, #ff8f00); }
+.dingluan-piece[data-group="jin"] { background: radial-gradient(circle at 35% 35%, #b39ddb, #512da8); }
+
+/* 可爱表情 (仅装饰，文字保留显示) */
+.dingluan-piece:after {
+	content: "^‿^";
+	position: absolute;
+	top: -12px;
+	left: 0;
+	width: 100%;
+	text-align: center;
+	font-size: 10px;
+	color: rgba(0,0,0,0.5);
+	font-weight: bold;
+	display: none; /* 暂时隐藏，因为可能会遮挡文字，如果喜欢可以设为block */
+}
+
+/* 覆盖之前可能存在的内部样式 */
+.dingluan-piece > div {
+	display: none;
 }
 
 /*神左慈幻术卡牌颜色*/

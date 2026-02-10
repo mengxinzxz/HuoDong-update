@@ -100,7 +100,7 @@ const packs = function () {
             kuiba_linyao: {
                 mod: {
                     targetEnabled(card, player, target) {
-                        if (get.mode() == 'identity' ? get.attitude(player, target) < 0 : target.isEnemyOf(player) && get.color(card) == 'red' && get.type2(card) == 'trick') return false;
+                        if (((get.mode() == 'identity' && get.attitude(player, target) < 0) || (get.mode() != 'identity' && target.isEnemyOf(player))) && get.color(card) == 'red' && get.type2(card) == 'trick') return false;
                     },
                 },
                 audio: 'ext:活动武将/audio/skill:true',
@@ -178,9 +178,11 @@ const packs = function () {
                     }
                     return false;
                 },
-                async cost(event, trigger, player) {
+                direct: true,
+                content() {
+                    'step 0'
                     var prompt2 = '为' + get.translation(trigger.card) + '增加或减少一个目标';
-                    event.result = await player.chooseTarget(get.prompt(event.skill), function (card, player, target) {
+                    player.chooseTarget(get.prompt('kuiba_huanguang'), function (card, player, target) {
                         var player = _status.event.player;
                         if (_status.event.targets.includes(target)) return true;
                         return lib.filter.targetEnabled2(_status.event.card, player, target) && lib.filter.targetInRange(_status.event.card, player, target);
@@ -188,12 +190,19 @@ const packs = function () {
                         var trigger = _status.event.getTrigger();
                         var player = _status.event.player;
                         return get.effect(target, trigger.card, player, player) * (_status.event.targets.includes(target) ? -1 : 1);
-                    }).set('targets', trigger.targets).set('card', trigger.card).forResult();
-                },
-                async content(event, trigger, player) {
-                    if (!event.isMine() && !event.isOnline()) game.delayx();
-                    if (trigger.targets.includes(event.targets[0])) trigger.targets.removeArray(event.targets);
-                    else trigger.targets.addArray(event.targets);
+                    }).set('targets', trigger.targets).set('card', trigger.card);
+                    'step 1'
+                    if (result.bool) {
+                        if (!event.isMine() && !event.isOnline()) game.delayx();
+                        event.targets = result.targets;
+                    }
+                    else event.finish();
+                    'step 2'
+                    if (event.targets) {
+                        player.logSkill('kuiba_huanguang', event.targets);
+                        if (trigger.targets.includes(event.targets[0])) trigger.targets.removeArray(event.targets);
+                        else trigger.targets.addArray(event.targets);
+                    }
                 },
             },
             kuiba_wangjian: {
@@ -246,32 +255,40 @@ const packs = function () {
             kuiba_kuiqu: {
                 audio: 'ext:活动武将/audio/skill:true',
                 trigger: { player: 'damageEnd' },
-                getIndex: event => event.num,
+                filter(event, player) {
+                    return event.num > 0;
+                },
                 forced: true,
                 content() {
+                    'step 0'
+                    event.count = trigger.num;
+                    'step 1'
+                    event.count--;
                     player.draw();
-                    if (trigger.source?.isIn() && trigger.source.countCards('he')) {
+                    if (trigger.source && trigger.source.countCards('he')) {
                         player.line(trigger.source);
-                        const cards = trigger.source.getDiscardableCards(trigger.source, 'he');
-                        if (cards.length > 0) trigger.source.discard(cards.randomGet());
+                        trigger.source.discard(trigger.source.getCards('he').randomGet());
                     }
+                    'step 2'
+                    if (event.count > 0 && player.hasSkill('kuiba_kuiqu')) event.goto(1);
                 },
             },
             kuiba_juli: {
                 group: 'kuiba_juli_hit',
                 audio: 'ext:活动武将/audio/skill:true',
-                trigger: { player: 'useCard' },
+                trigger: { source: 'damageBegin1' },
                 filter(event, player) {
-                    return event.card?.name == 'sha' && game.hasPlayer(function (current) {
+                    return event.card && event.card.name == 'sha' && game.hasPlayer(function (current) {
                         return current != player && get.distance(player, current) == 1;
                     });
                 },
-                forced: true,
-                async content(event, trigger, player) {
-                    if (typeof trigger.baseDamage !== 'number') trigger.baseDamage = 1;
-                    trigger.baseDamage += game.countPlayer(current => {
+                firstDo: true,
+                direct: true,
+                locked: true,
+                content() {
+                    trigger.num += (game.countPlayer(function (current) {
                         return current != player && get.distance(player, current) == 1;
-                    }) - 1;
+                    }) - 1);
                 },
                 subSkill: {
                     hit: {
@@ -288,7 +305,7 @@ const packs = function () {
                         ai: {
                             directHit_ai: true,
                             skillTagFilter(player, tag, arg) {
-                                if (get.distance(arg?.target, player) <= 1) return false;
+                                if (get.distance(arg.target, player) <= 1) return false;
                             },
                         },
                     },
@@ -456,7 +473,7 @@ const packs = function () {
                 audio: 'ext:活动武将/audio/skill:true',
                 trigger: { global: 'damageBegin4' },
                 filter(event, player) {
-                    return event.player != player && get.mode() == 'identity' ? get.attitude(player, event.player) > 0 : event.player.isFriendOf(player);
+                    return event.player != player && ((get.mode() == 'identity' && get.attitude(player, event.player) > 0) || (get.mode() != 'identity' && event.player.isFriendOf(player)));
                 },
                 forced: true,
                 logTarget: 'player',
@@ -471,7 +488,7 @@ const packs = function () {
                 trigger: { global: 'damageBegin2' },
                 usable: 1,
                 filter(event, player) {
-                    return player.countCards('he') && event.source && get.mode() == 'identity' ? get.attitude(player, event.source) > 0 : event.source.isFriendOf(player);
+                    return player.countCards('he') && event.source && ((get.mode() == 'identity' && get.attitude(player, event.source) > 0) || (get.mode() != 'identity' && event.source.isFriendOf(player)));
                 },
                 forced: true,
                 logTarget: 'source',
@@ -484,7 +501,7 @@ const packs = function () {
                 audio: 'ext:活动武将/audio/skill:true',
                 trigger: { global: 'useCardToTargeted' },
                 filter(event, player) {
-                    return event.card && event.card.name == 'sha' && event.player.countCards('h') && get.mode() == 'identity' ? get.attitude(player, event.target) > 0 : event.target.isFriendOf(player) && get.mode() == 'identity' ? get.attitude(player, event.player) < 0 : event.player.isEnemyOf(player);
+                    return event.card && event.card.name == 'sha' && event.player.countCards('h') && ((get.mode() == 'identity' && get.attitude(player, event.target) > 0) || (get.mode() != 'identity' && event.target.isFriendOf(player))) && ((get.mode() == 'identity' && get.attitude(player, event.player) < 0) || (get.mode() != 'identity' && event.player.isEnemyOf(player)));
                 },
                 forced: true,
                 logTarget: 'player',
@@ -496,7 +513,7 @@ const packs = function () {
                 audio: 'ext:活动武将/audio/skill:true',
                 trigger: { global: 'phaseJieshuBegin' },
                 filter(event, player) {
-                    return event.player.countCards('he') && get.mode() == 'identity' ? get.attitude(player, event.player) > 0 : event.player.isFriendOf(player);
+                    return event.player.countCards('he') && ((get.mode() == 'identity' && get.attitude(player, event.player) < 0) || (get.mode() != 'identity' && event.player.isEnemyOf(player)));
                 },
                 forced: true,
                 logTarget: 'player',
@@ -506,28 +523,49 @@ const packs = function () {
             },
             kuiba_shengdou: {
                 audio: 'ext:活动武将/audio/skill:true',
-                trigger: { global: 'useCardToPlayer' },
+                trigger: { global: 'useCardToTargeted' },
                 filter(event, player) {
-                    if (!event.isFirstTarget) return false;
-                    return event.card.name == 'sha' && player.countCards('he') && game.hasPlayer(function (current) {
-                        return !event.targets.includes(current) && !current.isFriendsOf(player);
-                    }) && get.mode() == 'identity' ? get.attitude(player, event.player) > 0 : event.player.isFriendOf(player);
+                    return (
+                        !event.card.kuiba_shengdou &&
+                        event.card &&
+                        event.card.name == 'sha' &&
+                        player.countCards('he') &&
+                        (
+                            (get.mode() == 'identity' && get.attitude(player, event.player) > 0) ||
+                            (get.mode() != 'identity' && event.player.isFriendOf(player))
+                        ) && 
+                        game.hasPlayer(function (current) {
+                            return (
+                                !event.targets.includes(current) && 
+                                !current.isFriendsOf(player)
+                            );
+                        })
+                    );
                 },
-                logTarget: 'player',
-                async content(event, trigger, player) {
-                    await player.randomDiscard(player, 'he', 'random');
-                    const result = await trigger.player.chooseTarget('为' + get.translation(trigger.card) + '增加一个目标', true, (card, player, target) => {
-                        const evt = _status.event.getTrigger();
-                        return !evt.targets.includes(target) && lib.filter.filterTarget(evt.card, evt.player, target);
-                    }).set('ai', target => {
-                        const evt = _status.event.getTrigger(), eff = get.effect(target, evt.card, evt.player, evt.player);
-                        return eff;
-                    }).forResult();
-                    if (result?.bool) {
-                        const target = result.targets[0];
+                direct: true,
+                content() {
+                    'step 0'
+                    trigger.card.kuiba_shengdou = true;
+                    player.chooseBool(get.prompt2('kuiba_shengdou', trigger.player));
+                    'step 1'
+                    if (result.bool) {
+                        player.logSkill('kuiba_shengdou', trigger.player);
+                        player.discard(player.getCards('he').randomGet());
+                        trigger.player.chooseTarget('为' + get.translation(trigger.card) + '增加一个目标', true, function (card, player, target) {
+                            var evt = _status.event.getTrigger(), player = trigger.player;
+                            return !evt.targets.includes(target) && lib.filter.filterTarget(evt.card, player, target);
+                        }).set('ai', function (target) {
+                            var evt = _status.event.getTrigger(), eff = get.effect(target, evt.card, evt.player, evt.player);
+                            return eff;
+                        });
+                    }
+                    else event.finish();
+                    'step 2'
+                    if (result.bool) {
+                        var target = result.targets[0];
                         trigger.player.line(target);
                         game.log(target, '成为了', trigger.card, '的额外目标');
-                        trigger.getParent().targets.add(target);
+                        trigger.targets.push(target);
                     }
                 },
             },
@@ -535,7 +573,7 @@ const packs = function () {
                 audio: 'ext:活动武将/audio/skill:true',
                 trigger: { global: 'damageBegin4' },
                 filter(event, player) {
-                    return event.player != player && get.mode() == 'identity' ? get.attitude(player, event.player) > 0 : event.player.isFriendOf(player);
+                    return event.player != player && ((get.mode() == 'identity' && get.attitude(player, event.player) > 0) || (get.mode() != 'identity' && event.player.isFriendOf(player)));
                 },
                 forced: true,
                 logTarget: 'player',
@@ -551,7 +589,7 @@ const packs = function () {
                 trigger: { global: 'useCardToTargeted' },
                 filter(event, player) {
                     if (event.getParent('useCard').kuiba_shengjie) return false;
-                    return event.card && get.type(event.card) == 'trick' && player.countCards('he') && get.mode() == 'identity' ? get.attitude(player, event.target) > 0 : event.target.isFriendOf(player) && get.mode() == 'identity' ? get.attitude(player, event.player) < 0 : event.player.isEnemyOf(player);
+                    return event.card && get.type(event.card) == 'trick' && player.countCards('he') && ((get.mode() == 'identity' && get.attitude(player, event.target) > 0) || (get.mode() != 'identity' && event.target.isFriendOf(player))) && ((get.mode() == 'identity' && get.attitude(player, event.player) < 0) || (get.mode() != 'identity' && event.player.isEnemyOf(player)));
                 },
                 forced: true,
                 logTarget: 'targets',
@@ -565,7 +603,7 @@ const packs = function () {
                 audio: 'ext:活动武将/audio/skill:true',
                 trigger: { global: 'phaseJieshuBegin' },
                 filter(event, player) {
-                    return get.mode() == 'identity' ? get.attitude(player, event.player) > 0 : event.player.isFriendOf(player);
+                    return (get.mode() == 'identity' && get.attitude(player, event.player) > 0) || (get.mode() != 'identity' && event.player.isFriendOf(player));
                 },
                 forced: true,
                 logTarget: 'player',
@@ -632,7 +670,7 @@ const packs = function () {
             kuiba_lingxun_info: '锁定技，己方角色成为敌方角色使用【杀】的目标后，你获得该敌方角色的随机一张手牌。',
             kuiba_lingluanjun: '灵乱军',
             kuiba_lingluan: '灵乱',
-            kuiba_lingluan_info: '锁定技，敌方角色的结束阶段，其须弃置两张牌。',
+            kuiba_lingluan_info: '锁定技，敌方角色的结束阶段开始时，其须弃置两张牌。',
             kuiba_shengdoujun: '圣斗军',
             kuiba_shengdou: '圣斗',
             kuiba_shengdou_info: '己方角色使用【杀】指定目标时，你可以随机弃置一张牌令此【杀】的目标上限+1。',
@@ -644,12 +682,12 @@ const packs = function () {
             kuiba_shengjie_info: '锁定技，己方角色成为敌方角色普通锦囊牌的目标后，你随机弃置一张牌并令此牌的所有目标各摸两张牌。',
             kuiba_shengzhujun: '圣助军',
             kuiba_shengzhu: '圣助',
-            kuiba_shengzhu_info: '锁定技，己方角色结束阶段，其摸两张牌。',
+            kuiba_shengzhu_info: '锁定技，己方角色结束阶段开始时，其摸两张牌。',
         },
     };
     for (let i in decadeKuiBa.character) {
         if (Array.isArray(decadeKuiBa.character[i])) decadeKuiBa.character[i] = get.convertedCharacter(decadeKuiBa.character[i]);
-        decadeKuiBa.character[i].trashBin ??= [];
+        decadeKuiBa.character[i].transBin ??= [];
         if (_status['extension_活动武将_files']?.audio.die.files.includes(`${i}.mp3`)) {
             decadeKuiBa.character[i].dieAudios ??= [];
             decadeKuiBa.character[i].dieAudios.push('ext:活动武将/audio/die:true');
@@ -658,6 +696,7 @@ const packs = function () {
         if (_status['extension_活动武将_files']?.image.character.files.includes(`${i}.jpg`)) decadeKuiBa.character[i].img = `extension/活动武将/image/character/${i}.jpg`;
     }
     lib.config.all.sgscharacters.push('decadeKuiBa');
+    if (!lib.config.characters.includes('decadeKuiBa')) lib.config.characters.remove('decadeKuiBa');
     lib.translate['decadeKuiBa_character_config'] = '<span style="font-family: xingkai">十周年魁拔</span>';
     return decadeKuiBa;
 };

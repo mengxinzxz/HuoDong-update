@@ -1,6 +1,52 @@
 import { lib, game, ui, get, ai, _status } from '../../../noname.js';
 
 export async function content(config, pack) {
+	//活动武将显示
+	if (ui?.create?.menu) {
+		const originLoading = ui.create.menu;
+		ui.create.menu = function () {
+			const result = originLoading.apply(this, arguments);
+			const extensionPack = Array.from(document.getElementsByTagName('div')).find(div => div.innerHTML === '扩展');
+			if (extensionPack) {
+				const originClick = extensionPack.onclick || function () { };
+				extensionPack.onclick = () => {
+					originClick.apply(this, arguments);
+					const plagueExtension = Array.from(document.querySelectorAll('.menubutton.large')).find(div => div.innerHTML === '活动武将');
+					if (plagueExtension) plagueExtension.innerHTML = "<img style=width:100px src=" + lib.assetURL + "extension/活动武将/image/default/活动武将.png>";
+				};
+			}
+			return result;
+		};
+	}
+
+	//快捷添加/删除武将
+	game.HDdeleteCharacter = function (name) {
+		if (lib.character[name]) delete lib.character[name];
+		var packs = Object.keys(lib.characterPack).filter(pack => lib.characterPack[pack][name]);
+		if (packs.length) packs.forEach(pack => delete lib.characterPack[pack][name]);
+	};
+	game.HDaddCharacter = function (name, character, packs = '') {
+		game.HDdeleteCharacter(name);
+		if (_status['extension_活动武将_files']?.image.character.files.includes(`${name}.jpg`)) {
+			character[4] ??= [];
+			character[4].push(`ext:活动武将/image/character/${name}.jpg`);
+		}
+		const pack = packs.split(':').filter(p => lib.config.all.characters.includes(p))[0];
+		if (pack) {
+			lib.characterPack[pack][name] = character;
+			if (lib.config.characters.includes(pack)) lib.character[name] = character;
+			lib.config.forbidai[lib.config[`forbidai_user_${pack}`] ? 'add' : 'remove'](name);
+		}
+		else lib.character[name] = character;
+	};
+	//移动武将所在武将包
+	game.HDmoveCharacter = function (name, packss) {
+		var nameinfo = get.character(name);
+		if (nameinfo) {
+			nameinfo[4] ??= [];
+			game.HDaddCharacter(name, nameinfo, packss);
+		}
+	};
 
 	//官方武将包保护机制
 	//添加
@@ -26,7 +72,7 @@ export async function content(config, pack) {
 			trigger: { global: 'gameStart' },
 			firstDo: true,
 			priority: Infinity,
-			silent: true,
+			direct: true,
 			content() {
 				var num1 = lib.config.extension_活动武将_Boss_TZ_level;
 				var num2 = lib.config.extension_活动武将_Boss_YZ_level;
@@ -465,40 +511,110 @@ export async function content(config, pack) {
 			}
 		};
 	}
+	//换肤逻辑补充
+	if (get.nodeintro) {
+		const nodeintro = get.nodeintro;
+		get.nodeintro = function (node, simple) {
+			const uiintro = nodeintro.apply(this, arguments);
+			if ((lib.config.change_skin || lib.skin) && (!simple || get.is.phoneLayout())) {
+				let created = false;
+				const createButtons = function (nameskin, avatarSetter) {
+					const srcBase = get.skinPath(nameskin);
+					if (!srcBase) return;
+					game.getFileList(srcBase, (folders, files) => {
+						if (!files.length) return;
+						if (!created) {
+							created = true;
+							uiintro.add('<div class="text center">更改皮肤</div>');
+						}
+						const avatars = ui.create.div('.buttons.smallzoom.scrollbuttons');
+						lib.setMousewheel(avatars);
+						uiintro.add(avatars);
+						const originButton = ui.create.div('.button.character.pointerdiv', avatars, function () {
+							delete lib.config.skin[nameskin];
+							if (lib.characterSubstitute[nameskin]) {
+								for (const list of lib.characterSubstitute[nameskin]) delete lib.config.skin[list[0]];
+							}
+							avatarSetter('origin');
+							game.saveConfig('skin', lib.config.skin);
+						});
+						originButton.setBackground(nameskin, 'character', 'noskin');
+						files.forEach(file => {
+							const src = `${srcBase}${file}`, skinname = file;
+							const button = ui.create.div('.button.character.pointerdiv', avatars, function () {
+								lib.config.skin[nameskin] = [skinname, src];
+								if (lib.characterSubstitute[nameskin]) {
+									for (const list of lib.characterSubstitute[nameskin]) {
+										const sub = list[0], [fold, prefix] = skinname.split('.');
+										lib.config.skin[sub] = [skinname, `${srcBase}${fold}/${sub}.${prefix}`];
+									}
+								}
+								avatarSetter(src);
+								game.saveConfig('skin', lib.config.skin);
+							});
+							button.setBackgroundImage(src);
+						});
+					}, () => { });
+				};
+				if (node.classList.contains('player')) {
+					[node.name1, node.name2].forEach((nameskin, index) => {
+						if (nameskin) {
+							createButtons(nameskin, src => {
+								const avatar = node.node[index ? 'avatar2' : 'avatar'];
+								if (src === 'origin') avatar.setBackground(nameskin, 'character');
+								else avatar.style.backgroundImage = `url('${src}')`;
+							});
+						}
+					});
+				}
+				else if (node.classList.contains('character')) {
+					const nameskin = node.link;
+					if (nameskin) {
+						createButtons(nameskin, src => {
+							if (src === 'origin') node.setBackground(nameskin, 'character');
+							else node.style.backgroundImage = `url('${src}')`;
+						});
+					}
+				}
+			}
+			return uiintro;
+		};
+	}
 
 	//precGuoZhan(分界线，便于我搜过来)
 	if (get.mode() == 'guozhan') {
 		//国战武将技能修复
 		if (get.config('onlyguozhan')) {
 			//------------------------------增改武将------------------------------//
+			//技能
+			lib.skill.gzwanwei = {
+				audio: 'wanwei',
+				inherit: 'fuwei',
+			};
 			Object.assign(lib.character, {
 				gz_re_xushu: ['male', 'shu', 4, ['gzqiance', 'gzjujian'], ['gzskin']],
 				gz_wujing: ['male', 'wu', 4, ['donggui', 'fengyang_old'], ['gzskin']],
 			});
 		}
 		//------------------------------选项------------------------------//
-		//卞夫人
-		lib.skill.gzwanwei = {
-			audio: 'wanwei',
-			inherit: 'fuwei',
+		//precGuozhan2
+		//左慈---后续
+		lib.skill.gzhuashen.drawCharacter = function (player, list) {
+			game.broadcastAll(function (player, list) {
+				var cards = [];
+				for (var i = 0; i < list.length; i++) {
+					var cardname = 'huashen_card_' + list[i];
+					lib.card[cardname] = {
+						fullimage: true,
+						image: player.isUnderControl(true) ? 'character:' + list[i] : 'ext:活动武将/image/card/huashen_unknown.jpg'
+					}
+					lib.translate[cardname] = player.isUnderControl(true) ? get.rawName2(list[i]) : ' ';
+					cards.push(game.createCard(cardname, '', ''));
+				}
+				player.$draw(cards, 'nobroadcast');
+			}, player, list);
 		};
-		//左慈
-		Object.assign(lib.skill.yigui, {
-			drawCharacter(player, list) {
-				game.broadcastAll((player, list) => {
-					player.$draw(list.map(name => {
-						const cardname = 'huashen_card_' + name;
-						lib.card[cardname] = {
-							fullimage: true,
-							image: player.isUnderControl(true) ? `character:${name}` : 'ext:活动武将/image/card/huashen_unknown.jpg',
-						}
-						lib.translate[cardname] = player.isUnderControl(true) ? get.rawName2(name) : ' ';
-						return game.createCard(cardname, '', '');
-					}), 'nobroadcast');
-				}, player, list);
-			},
-			group: ['yigui_init', 'yigui_refrain', 'yigui_gzshan', 'yigui_gzwuxie'],
-		});
+		lib.skill.yigui.group = ['yigui_init', 'yigui_refrain', 'yigui_gzshan', 'yigui_gzwuxie'];
 		const yiguiInfo = lib.translate.yigui_info;
 		lib.translate.yigui_info = yiguiInfo.slice(0, yiguiInfo.indexOf('（')) + '（此牌指定或响应的角色须为未确定势力的角色或野心家或与此“魂”势力相同的角色）';
 		//唐咨
@@ -515,10 +631,10 @@ export async function content(config, pack) {
 			},
 			forced: true,
 			content() {
-				event.targets[0].draw();
+				lib.skill.gzxingzhao.subSkill.use.logTarget(trigger, player).draw();
 			},
 		};
-		lib.translate.gzxingzhao_info = lib.translate.gzxingzhao_old_info;
+		lib.translate.gzxingzhao_info = '锁定技，你根据场上存在受伤角色的势力数获得以下效果：1个或以上，你视为拥有〖恂恂〗；2个或以上，当你受到伤害后，你与伤害来源两者中手牌数唯一最少的角色摸一张牌；3个或以上，你的手牌上限+4；4个或以上，当你失去装备区的牌后，你摸一张牌。';
 	}
 
 	//设置稀有度
@@ -532,6 +648,18 @@ export async function content(config, pack) {
 			rarity: {
 				//传说
 				legend: [
+					//活动武将包武将
+					'bilibili_zhengxuan',
+					'bilibili_nanhualaoxian',
+					'old_zuoci',
+					'bilibili_guanning',
+					'bilibili_litiansuo',
+					'diy_lvmeng',
+					'lz_sufei',
+					'FD_huaxiong',
+					'bilibili_shen_guojia',
+					'bilibili_re_xusheng',
+					//原活动配件武将
 					//SSS传说武将评级
 					//DDDD
 					'sunce',
@@ -554,6 +682,16 @@ export async function content(config, pack) {
 				],
 				//史诗
 				epic: [
+					//活动武将包武将
+					'FD_sunjian',
+					'FD_feixiongjunyou',
+					'FD_fengyaojun',
+					'lz_tangzi',
+					'lz_liuqi',
+					'bol_zhangxiu',
+					'bol_sunjian',
+					'FD_dongyue',
+					//原活动配件武将
 					'old_sp_jianggan',
 					'ol_maliang',
 					'old_clan_xunshu',
@@ -570,6 +708,18 @@ export async function content(config, pack) {
 				],
 				//稀有
 				rare: [
+					//活动武将包武将
+					'bilibili_sp_xuyou',
+					'bol_liuyu',
+					'bol_liuxie',
+					'bol_zhanglu',
+					'GD_gaolan',
+					'FD_niufudongxie',
+					'FD_guosi',
+					'FD_lijue',
+					'lz_huangquan',
+					'FD_feixiongjunzuo',
+					//原活动配件武将
 					'old_yuanji',
 					'old_ol_yuanji',
 					'junk_duanwei',
@@ -582,6 +732,7 @@ export async function content(config, pack) {
 					'old_wangling',
 					'junk_zhangrang',
 					'old_zhaoxiang',
+					'ol_manchong',
 					'ol_yujin',
 				],
 				//普通
@@ -589,10 +740,12 @@ export async function content(config, pack) {
 				],
 				//平凡
 				junk: [
+					//活动武将包武将
+					'FD_baolvejun',
+					//原活动配件武将
 					'old_ol_xiaoqiao',
 					'old_zhanghe',
 					'old_zhugejin',
-					'old_pot_dengai',
 				],
 			},
 			//出场率
@@ -751,7 +904,6 @@ export async function content(config, pack) {
 	game.HDsetAudioname(get.character('bilibili_zhouxiaomei').skills, 'bilibili_zhouxiaomei');
 	game.HDsetAudioname('yijin', 'bilibili_litiansuo');
 	game.HDsetAudioname(['reqimou', 'zhaxiang', 'zhaxiang2', 'tairan', 'tairan2'], 'bilibili_kuangshen04');
-	game.HDsetAudioname('wushuang', 'wechat_zhi_lvbu');
 
 	//武将配音audioname2添加
 	game.HDsetAudioname2 = function (skills, map) {
@@ -835,6 +987,7 @@ export async function content(config, pack) {
 		sunluyu: ['old_sunluyu'],
 		zhaoxiang: ['old_zhaoxiang'],
 		zhangyì: ['old_zhangyì'],
+		manchong: ['ol_manchong'],
 		yj_ganning: ['old_yj_ganning'],
 		ol_lusu: ['lusu'],
 		re_yuanshao: ['yuanshao'],
@@ -854,7 +1007,6 @@ export async function content(config, pack) {
 		jsp_guanyu: ['bolx_jsp_guanyu'],
 		shen_dianwei: ['ol_shen_dianwei'],
 		jianggan: ['old_sp_jianggan'],
-		dengai: ['old_pot_dengai'],
 	};
 	for (const i in hdpj_characterReplace) {
 		let list = lib.characterReplace[i] || [];
@@ -876,8 +1028,10 @@ export async function content(config, pack) {
 	game.HDaddCharacter('dc_xushu', ['male', 'shu', 4, ['bolzhuhai', 'xsqianxin'], []], 'refresh');
 
 	//璀璨星河
+	lib.characterSort.sp.sp_tianzhu.addArray(['panfeng']);
 	game.HDaddCharacter('maliang', ['male', 'shu', 3, ['zishu', 'xinyingyuan'], []], 'sp');
 	game.HDaddCharacter('zhanghua', ['male', 'jin', 3, ['olbihun', 'oljianhe', 'bolchuanwu'], []], 'sp');
+	game.HDmoveCharacter('panfeng', 'sp');
 
 	//系列专属包
 	lib.characterSort.sp2.sp2_waitforsort.addArray(['junk_zhangrang']);
@@ -898,6 +1052,7 @@ export async function content(config, pack) {
 	//线下
 	lib.characterSort.offline.offline_star.add('bolx_jsp_guanyu');
 	lib.characterSort.offline.offline_yongjian.add('bol_sunluban');
+	lib.characterSort.offline.offline_yijiang.add('ol_manchong');
 	if (lib.config.extension_活动武将_XvXiang) {
 		for (const name of lib.characterSort.offline.offline_vtuber) {
 			lib.characterPack.offline[name].skills.add('bilibili_xuxiang');
@@ -906,12 +1061,14 @@ export async function content(config, pack) {
 	}
 	game.HDaddCharacter('bolx_jsp_guanyu', ['male', 'wei', 4, ['wusheng', 'wzdanji'], ['tempname:jsp_guanyu', 'die:jsg_guanyu']], 'offline');
 	game.HDaddCharacter('bol_sunluban', ['female', 'wu', 3, ['boljiaozong', 'bolchouyou']], 'offline');
+	game.HDaddCharacter('ol_manchong', ['male', 'wei', 3, ['xinjunxing', 'yuce'], ['die:manchong']], 'offline');
 
 	//怀旧包
 	lib.characterSort.old.bilibili_buchong_online = ['junk_guanyu', 'old_ol_xiaoqiao', 'old_zhangbao', 'old_sunluyu', 'old_ol_yuanji'];
 	lib.characterSort.old.bilibili_buchong_szn2 = ['old_yuanji', 'junk_duanwei', 'old_zhoufei'];
-	lib.characterSort.old.bilibili_buchong_mobile2 = ['old_pot_dengai', 'old_shen_sunce', 'old_shen_taishici', 'old_shen_xunyu', 'old_zhaoxiang', 'old_sb_ganning', 'old_zhouchu', 'old_xunchen', 'old_sp_kongrong', 'old_zhangzhongjing', 'oldx_zhangzhongjing', 'old_zhangyì', 'old_yanghuiyu', 'old_liuzhang', 'old_sp_sunshao', 'old_wangling', 'old_sp_huaxin', 'old_sp_mifuren', 'old_sp_jianggan'];
+	lib.characterSort.old.bilibili_buchong_mobile2 = ['old_zhaoxiang', 'old_sb_ganning', 'old_zhouchu', 'old_xunchen', 'old_sp_kongrong', 'old_zhangzhongjing', 'oldx_zhangzhongjing', 'old_zhangyì', 'old_yanghuiyu', 'old_liuzhang', 'old_sp_sunshao', 'old_wangling', 'old_sp_huaxin', 'old_sp_mifuren', 'old_sp_jianggan'];
 	lib.characterSort.old.bilibili_buchong_menfashizu = ['old_clan_xunshu', 'old_clan_xunchen', 'old_clan_xuncai', 'old_clan_xuncan', 'oldx_clan_xuncai'];
+	lib.characterSort.old.bilibili_buchong_extra = ['old_shen_sunce', 'old_shen_taishici', 'old_shen_xunyu'];
 	game.HDaddCharacter('old_clan_xunshu', ['male', 'qun', 3, ['old_shenjun', 'old_balong', 'clandaojie'], ['clan:颍川荀氏', 'tempname:clan_xunshu', 'die:clan_xunshu']], 'old');
 	game.HDaddCharacter('old_clan_xunchen', ['male', 'qun', 3, ['old_sankuang', 'old_beishi', 'clandaojie'], ['clan:颍川荀氏', 'tempname:clan_xunchen', 'die:clan_xunchen']], 'old');
 	game.HDaddCharacter('old_clan_xuncai', ['female', 'qun', 3, ['old_lieshi', 'old_dianzhan', 'old_huanyin', 'clandaojie'], ['clan:颍川荀氏', 'tempname:clan_xuncai', 'die:clan_xuncai']], 'old');
@@ -945,7 +1102,6 @@ export async function content(config, pack) {
 	game.HDaddCharacter('old_ol_xiaoqiao', ['female', 'wu', 3, ['oltianxiang', 'rehongyan'], [...['tempname', 'die'].map(i => `${i}:ol_xiaoqiao`)]], 'old');
 	game.HDaddCharacter('old_zhaoxiang', ['female', 'shu', 4, ['xinfanghun', 'xinfuhan'], ['die:zhaoxiang']], 'old');
 	game.HDaddCharacter('old_zhoufei', ['female', 'wu', 3, ['liangyin', 'kongsheng'], ['die:zhoufei']], 'old');
-	game.HDaddCharacter('old_pot_dengai', ['male', 'wei', 3, ['old_pottuntian', 'old_potjixi', 'old_potzaoxian'], ['die:pot_dengai']], 'old');
 
 	//DIY
 	lib.characterSort.diy.diy_trashbin.addArray(['old_yj_ganning', 'lusu', 'yuanshao', 'bol_zhangzhongjing', 'bol_sp_huaxin', 'bfake_zuoci', 'bfake_yangfu', 'bfake_chengpu', 'bfake_sundeng', 'old_shen_sunquan', 'old_shen_ganning', 'bfake_chengui', 'old_ol_xiaoqiao', 'old_zhanghe', 'old_zhugejin', 'oldx_zhangfei', 'oldx_guanyu', 'oldx_zhaoyun', 'oldx_yujin']);
@@ -1079,6 +1235,7 @@ export async function content(config, pack) {
 	//删除翻译
 	delete lib.translate.sp_shenpei_prefix;
 	delete lib.translate.jin_xiahouhui_prefix;
+	delete lib.translate.panfeng_prefix;
 	Object.assign(lib.translate, {
 		//修改武将翻译
 		//手杀前缀
@@ -1089,6 +1246,8 @@ export async function content(config, pack) {
 		//新杀前缀
 		dc_zhuling: '新杀朱灵',
 		dc_zhuling_prefix: '新杀',
+		re_panfeng: '新杀潘凤',
+		re_panfeng_prefix: '新杀',
 		//其他前缀
 		jsrg_sunlubansunluyu: '合孙鲁班孙鲁育',
 		jsrg_sunlubansunluyu_ab: '合大小虎',
@@ -1099,6 +1258,7 @@ export async function content(config, pack) {
 		jin_xiahouhui: '夏侯徽',
 		gz_huangzu: '黄祖',
 		gz_liuba: '刘巴',
+		panfeng: '潘凤',
 
 		//添加武将翻译
 		old_clan_xunshu: '旧荀淑',
@@ -1161,6 +1321,8 @@ export async function content(config, pack) {
 		old_zhangbao_prefix: '旧',
 		old_sunluyu: '旧孙鲁育',
 		old_sunluyu_prefix: '旧',
+		ol_manchong: '将满宠',
+		ol_manchong_prefix: '将',
 		old_ol_xiaoqiao: '旧界小乔',
 		old_ol_xiaoqiao_prefix: '旧|界',
 		old_zhanghe: '张郃',
@@ -1210,14 +1372,13 @@ export async function content(config, pack) {
 		ol_huaxiong: '手杀界华雄',
 		ol_huaxiong_prefix: '手杀|界',
 		'#junk_guanyu:die': '点击播放阵亡配音',
-		old_pot_dengai: '旧势邓艾',
-		old_pot_dengai_prefix: '旧|势',
 
 		//武将分包翻译
 		bilibili_buchong_shenhua: '武将补充·神话再临',
 		bilibili_buchong_yijiang: '武将补充·一将成名',
 		bilibili_buchong_menfashizu: '武将补充·门阀士族',
-		bilibili_buchong_online: '武将补充·Online',
+		bilibili_buchong_extra: '武将补充·神武将',
+		bilibili_buchong_online: '武将补充·OL',
 		bilibili_buchong_szn2: '武将补充·十周年服',
 		bilibili_buchong_mobile: '武将补充·移动服',
 		bilibili_buchong_mobile2: '武将补充·移动服',
