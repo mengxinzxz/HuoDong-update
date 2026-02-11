@@ -16503,7 +16503,7 @@ const packs = function () {
                     event.result = await player.chooseToDiscard(get.prompt2('minimeibu', trigger.player), 'he').set('ai', function (card) {
                         if (_status.event.check) return 6 - get.value(card);
                         return 0;
-                    }).set('check', lib.skill.new_meibu.checkx(trigger, player)).set('logSkill', ['minimeibu', trigger.player]);
+                    }).set('check', lib.skill.new_meibu.checkx(trigger, player)).set('logSkill', ['minimeibu', trigger.player]).forResult();
                 },
                 popup: false,
                 content() {
