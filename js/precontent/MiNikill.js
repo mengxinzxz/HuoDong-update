@@ -8885,8 +8885,7 @@ const packs = function () {
                             }
                         }
                     }
-                    var next = player.chooseToDiscard(get.prompt('minilongyin'), '弃置一张牌' + (get.color(trigger.card) == 'red' ? '并摸一张牌' : '') + '，令' + get.translation(trigger.player) + '本次使用的【杀】不计入使用次数', 'he');
-                    next.logSkill = ['minilongyin', trigger.player];
+                    const next = player.chooseToDiscard(get.prompt(event.skill, trigger.player), '弃置一张牌' + (get.color(trigger.card) == 'red' ? '并摸一张牌' : '') + '，令' + get.translation(trigger.player) + '本次使用的【杀】不计入使用次数', 'he', 'chooseonly');
                     next.set('ai', function (card) {
                         if (_status.event.go) {
                             return 6 - get.value(card);
@@ -8896,16 +8895,20 @@ const packs = function () {
                     next.set('go', go);
                     event.result = await next.forResult();
                 },
-                popup: false,
-                content() {
+                logTarget: 'player',
+                async content(event, trigger, player) {
+                    await player.discard(event.cards);
                     if (trigger.addCount !== false) {
                         trigger.addCount = false;
-                        trigger.player.getStat().card.sha--;
+                        const stat = trigger.player.getStat().card, name = trigger.card.name;
+                        if (typeof stat[name] === "number") {
+                            stat[name]--;
+                        }
                     }
                     if (get.color(trigger.card) == 'red') {
-                        player.draw();
+                        await player.draw();
                     }
-                    if (get.suit(result.cards[0], player) == get.suit(trigger.card)) player.restoreSkill('jiezhong');
+                    if (get.suit(event.cards[0], player) == get.suit(trigger.card)) player.restoreSkill('jiezhong');
                 },
                 ai: { expose: 0.2 },
             },
