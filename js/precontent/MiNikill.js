@@ -14639,20 +14639,19 @@ const packs = function () {
                     return event.targets.length >= 2;
                 },
                 async cost(event, trigger, player) {
-                    event.result = await player.chooseTarget(get.prompt('minifenwei'), '令' + get.translation(trigger.card) + '对任意名角色无效', [1, trigger.targets.length], function (card, player, target) {
+                    event.result = await player.chooseTarget(get.prompt(event.skill), '令' + get.translation(trigger.card) + '对任意名角色无效', [1, trigger.targets.length], function (card, player, target) {
                         return _status.event.targets.includes(target);
                     }).set('ai', function (target) {
                         var trigger = _status.event.getTrigger();
                         return -get.effect(target, trigger.card, trigger.player, _status.event.player);
                     }).set('targets', trigger.targets).forResult();
                 },
-                content() {
-                    'step 0'
-                    player.awakenSkill('minifenwei');
+                async content(event, trigger, player) {
+                    player.addSkill(event.name + '_huifu');
+                    player.awakenSkill(event.name);
                     trigger.getParent().excluded.addArray(targets);
                     game.log(trigger.card, '对', targets, '无效');
-                    'step 1'
-                    player.draw();
+                    await player.draw();
                 },
                 ai: { expose: 0.2 },
                 subSkill: {
@@ -14670,8 +14669,8 @@ const packs = function () {
                         },
                         silent: true,
                         firstDo: true,
-                        content() {
-                            player.removeSkill('minifenwei_huifu');
+                        async content(event, trigger, player) {
+                            player.removeSkill(event.name);
                             player.restoreSkill('minifenwei');
                             game.log(player, '复原了技能', '#g【奋威】');
                         },
