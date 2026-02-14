@@ -39041,6 +39041,7 @@ const packs = function () {
                 discard: false,
                 lose: false,
                 delay: false,
+                prompt: '请选择任意张手牌组合使用或打出',
                 check(card) {
                     const player = get.player(), event = get.event(), cards = player.getCards('hs');
                     const map = { '炸弹': [], '三条': [], '对子': [], '三顺': [] };
