@@ -9635,7 +9635,7 @@ const packs = function () {
                             const { source } = trigger, num = 2 * player.getExpansions('wechatmumu').length;
                             const result = await source.chooseToDiscard('he', '穆穆：你害死了' + get.translation(player) + '！', '弃置' + get.cnNumber(num) + '张牌，或失去1点体力').set('ai', card => {
                                 const { player, selectCard: num } = get.event();
-                                return get.effect(player, { name: 'guohe_copy2' }, player, player) * num - get.effect(player, { name: 'loseHp' }, player, player);
+                                return get.effect(player, { name: 'guohe_copy2' }, player, player) * num - get.effect(player, { name: 'losehp' }, player, player);
                             }).set('selectCard', num).forResult();
                             if (!result.bool) await player.loseHp();
                         },
@@ -10702,7 +10702,7 @@ const packs = function () {
                 async cost(event, trigger, player) {
                     event.result = await player.chooseTarget(get.prompt2(event.skill), true).set('ai', target => {
                         const player = get.player();
-                        return get.effect(target, { name: 'loseHp' }, player, player);
+                        return get.effect(target, { name: 'losehp' }, player, player);
                     }).forResult();
                 },
                 async content(event, trigger, player) {
@@ -11051,7 +11051,7 @@ const packs = function () {
                             `佐卿：请选择要执行的选项`,
                             [
                                 [
-                                    ['loseHp', '失去1点体力'],
+                                    ['losehp', '失去1点体力'],
                                     ['discard', '弃置一张装备牌'],
                                 ],
                                 'textbutton',
@@ -11072,7 +11072,7 @@ const packs = function () {
                     check(button) {
                         const player = get.player(), target = get.event().getParent().result.targets[0];
                         const { link } = button;
-                        if (link === 'loseHp' && (player.getHp() > 2 || get.effect(player, { name: 'loseHp' }, player, player) > 0)) return 2;
+                        if (link === 'losehp' && (player.getHp() > 2 || get.effect(player, { name: 'losehp' }, player, player) > 0)) return 2;
                         return 1;
                     },
                     backup(links) {
@@ -11090,7 +11090,7 @@ const packs = function () {
                                 const stat = player.getStat('skill');
                                 if (!stat.wechatzuoqing_targets) stat.wechatzuoqing_targets = [];
                                 stat.wechatzuoqing_targets.push(target);
-                                if (link === 'loseHp') await player.loseHp();
+                                if (link === 'losehp') await player.loseHp();
                                 else await player.discard(event.cards);
                                 const card = get.cardPile2(card => card.name == 'sha');
                                 if (card) await target.gain(card, 'gain2');
@@ -11119,12 +11119,12 @@ const packs = function () {
                         return next;
                     },
                     prompt(links) {
-                        return `${links[0] == 'loseHp' ? '失去1点体力' : '弃置一张装备牌'}，然后令${get.translation(get.event().result.targets[0])}从牌堆中获得一张【杀】并选择一个效果获得`;
+                        return `${links[0] == 'losehp' ? '失去1点体力' : '弃置一张装备牌'}，然后令${get.translation(get.event().result.targets[0])}从牌堆中获得一张【杀】并选择一个效果获得`;
                     },
                 },
                 ai: {
                     order(item, player) {
-                        if ((player.hp < 3 && get.effect(player, { name: 'loseHp' }, player, player) < 0) && player.countCards('he', { type: 'equip' }) > 2) return 0.1;
+                        if ((player.hp < 3 && get.effect(player, { name: 'losehp' }, player, player) < 0) && player.countCards('he', { type: 'equip' }) > 2) return 0.1;
                         if (game.hasPlayer(current => get.attitude(player, current) > 0 && lib.skill.wechatzuoqing.filterTarget(null, player, current))) return 10;
                         return 1;
                     },
@@ -12880,7 +12880,7 @@ const packs = function () {
                             if (bool1 && ['all', 'equip'].includes(button.link)) num++;
                             const bool2 = !player.countCards('hs', { name: 'sha' }) || player.hasSkill('sbtuxi');
                             if (bool2 && ['all', 'sha'].includes(button.link)) num++;
-                            if (player.getHp() <= 2 && get.effect(player, { name: 'loseHp' }, player, player) <= 0) {
+                            if (player.getHp() <= 2 && get.effect(player, { name: 'losehp' }, player, player) <= 0) {
                                 if (button.link == 'all') num = 0;
                             }
                             return num;
@@ -15129,8 +15129,8 @@ const packs = function () {
                         ai2(target) {
                             const player = get.player(), att = get.attitude(player, target);
                             if (!game.hasPlayer(current => player != current && get.attitude(player, current) > 0)) {
-                                // return get.effect(target, { name: 'loseHp' }, player, player);
-                                return get.effect(player, { name: 'loseHp' }, player, player) > 0 || player.getHp() > 1;
+                                // return get.effect(target, { name: 'losehp' }, player, player);
+                                return get.effect(player, { name: 'losehp' }, player, player) > 0 || player.getHp() > 1;
                             }
                             return att;
                         },

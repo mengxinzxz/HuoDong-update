@@ -160,7 +160,7 @@ const packs = function () {
                         },
                         ai2(target) {
                             const player = get.player();
-                            return get.effect(target, { name: 'loseHp' }, player, player)
+                            return get.effect(target, { name: 'losehp' }, player, player)
                         }
                     }).set('list', list).forResult();
                 },

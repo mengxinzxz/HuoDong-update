@@ -5862,7 +5862,7 @@ const packs = function () {
                         silent: true,
                         async content(event, trigger, player) {
                             player.removeSkill(event.name);
-                            const result = player.countCards('he') < 2 ? { bool: false } : await player.chooseToDiscard(2, 'he', '选择弃置两张牌，否则失去1点体力').set('goon', get.effect(player, { name: 'loseHp' }, player, player) > 0).set('ai', card => {
+                            const result = player.countCards('he') < 2 ? { bool: false } : await player.chooseToDiscard(2, 'he', '选择弃置两张牌，否则失去1点体力').set('goon', get.effect(player, { name: 'losehp' }, player, player) > 0).set('ai', card => {
                                 if (get.event().goon) return 0;
                                 return 6 - get.value(card);
                             }).forResult();
@@ -10489,7 +10489,7 @@ const packs = function () {
                 },
                 logTarget: (event, player, triggername, target) => target,
                 check(event, player, triggername, target) {
-                    return player.storage.old_jinghua ? get.effect(target, { name: 'loseHp' }, player, player) > 0 : get.recoverEffect(target, player, player) > 0;
+                    return player.storage.old_jinghua ? get.effect(target, { name: 'losehp' }, player, player) > 0 : get.recoverEffect(target, player, player) > 0;
                 },
                 locked: false,
                 forced: true,
