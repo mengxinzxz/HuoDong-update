@@ -3016,31 +3016,26 @@ const packs = function () {
                         }
                     }).set('judging', trigger.player.judging[0]).forResult();
                 },
-                content() {
-                    'step 0'
-                    player.respond(cards, 'miniguicai', 'highlight', 'noOrdering');
-                    'step 1'
-                    if (result.bool) {
+                popup: false,
+                async content(event, trigger, player) {
+                    const next = player.respond(event.cards, 'miniguicai', 'highlight', 'noOrdering');
+                    await next;
+                    if (next?.cards?.length) {
+                        const card = next.cards[0];
                         if (trigger.player.judging[0].clone) {
-                            trigger.player.judging[0].clone.classList.remove('thrownhighlight');
-                            game.broadcast(function (card) {
-                                if (card.clone) {
-                                    card.clone.classList.remove('thrownhighlight');
-                                }
+                            game.broadcastAll(card => {
+                                card.clone?.classList.remove('thrownhighlight');
                             }, trigger.player.judging[0]);
                             game.addVideo('deletenode', player, get.cardsInfo([trigger.player.judging[0].clone]));
                         }
-                        game.cardsDiscard(trigger.player.judging[0]);
-                        trigger.player.judging[0] = result.cards[0];
-                        trigger.orderingCards.addArray(result.cards);
-                        game.log(trigger.player, '的判定牌改为', result.cards[0]);
-                        game.delay(2);
-                        event.card = result.cards[0];
+                        await game.cardsDiscard(trigger.player.judging[0]);
+                        trigger.player.judging[0] = card;
+                        trigger.orderingCards.add(card);
+                        game.log(trigger.player, '的判定牌改为', card);
+                        await game.delay(2);
+                        if (get.suit(card, player) === 'heart') await player.recover();
+                        if (get.suit(card, player) === 'club') await player.draw(2);
                     }
-                    else event.finish();
-                    'step 2'
-                    if (get.suit(card, player) == 'heart') player.recover();
-                    if (get.suit(card, player) == 'club') player.draw(2);
                 },
                 ai: {
                     rejudge: true,
