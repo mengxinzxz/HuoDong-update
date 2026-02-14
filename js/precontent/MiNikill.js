@@ -3016,31 +3016,26 @@ const packs = function () {
                         }
                     }).set('judging', trigger.player.judging[0]).forResult();
                 },
-                content() {
-                    'step 0'
-                    player.respond(cards, 'miniguicai', 'highlight', 'noOrdering');
-                    'step 1'
-                    if (result.bool) {
+                popup: false,
+                async content(event, trigger, player) {
+                    const next = player.respond(event.cards, 'miniguicai', 'highlight', 'noOrdering');
+                    await next;
+                    if (next?.cards?.length) {
+                        const card = next.cards[0];
                         if (trigger.player.judging[0].clone) {
-                            trigger.player.judging[0].clone.classList.remove('thrownhighlight');
-                            game.broadcast(function (card) {
-                                if (card.clone) {
-                                    card.clone.classList.remove('thrownhighlight');
-                                }
+                            game.broadcastAll(card => {
+                                card.clone?.classList.remove('thrownhighlight');
                             }, trigger.player.judging[0]);
                             game.addVideo('deletenode', player, get.cardsInfo([trigger.player.judging[0].clone]));
                         }
-                        game.cardsDiscard(trigger.player.judging[0]);
-                        trigger.player.judging[0] = result.cards[0];
-                        trigger.orderingCards.addArray(result.cards);
-                        game.log(trigger.player, '的判定牌改为', result.cards[0]);
-                        game.delay(2);
-                        event.card = result.cards[0];
+                        await game.cardsDiscard(trigger.player.judging[0]);
+                        trigger.player.judging[0] = card;
+                        trigger.orderingCards.add(card);
+                        game.log(trigger.player, '的判定牌改为', card);
+                        await game.delay(2);
+                        if (get.suit(card, player) === 'heart') await player.recover();
+                        if (get.suit(card, player) === 'club') await player.draw(2);
                     }
-                    else event.finish();
-                    'step 2'
-                    if (get.suit(card, player) == 'heart') player.recover();
-                    if (get.suit(card, player) == 'club') player.draw(2);
                 },
                 ai: {
                     rejudge: true,
@@ -11167,7 +11162,7 @@ const packs = function () {
                 audio: 'shushen',
                 trigger: { global: 'damageBegin4' },
                 check(event, player) {
-                    return get.damageEffect(event.player, event.source, player, event.nature) * event.num < get.effect(player, { name: 'losehp' }, player, player) + get.effect(player, { name: 'draw' }, player, player) + get.effect(event.player, { name: 'draw' }, player, player) / 2;
+                    return get.damageEffect(event.player, event.source, player, event.nature) * event.num < get.effect(player, { name: 'loseHp' }, player, player) + get.effect(player, { name: 'draw' }, player, player) + get.effect(event.player, { name: 'draw' }, player, player) / 2;
                 },
                 logTarget: 'player',
                 prompt2: '失去1点体力并防止此伤害，然后你与其各摸一张牌',
@@ -18717,7 +18712,7 @@ const packs = function () {
                     order: 8,
                     result: {
                         player(player) {
-                            return get.effect(player, { name: 'losehp' }, player, player);
+                            return get.effect(player, { name: 'loseHp' }, player, player);
                         },
                     },
                 },
@@ -22464,7 +22459,7 @@ const packs = function () {
                                 return target != player && target.hp > 1;
                             }).set('ai', target => {
                                 const player = get.player();
-                                return get.effect(target, { name: 'losehp' }, player, player);
+                                return get.effect(target, { name: 'loseHp' }, player, player);
                             }).forResult();
                         },
                         async content(event, trigger, player) {
@@ -29174,7 +29169,7 @@ const packs = function () {
                         next.set('ai', card => {
                             const { player, target } = get.event();
                             const att = get.attitude(player, target);
-                            if (get.effect(player, { name: 'losehp' }, player, player) + get.recoverEffect(target, player, player) > 0) {
+                            if (get.effect(player, { name: 'loseHp' }, player, player) + get.recoverEffect(target, player, player) > 0) {
                                 if (att > 0 && (get.tag(card, 'damage') || get.tag(card, 'recover'))) return 7 - get.value(card);
                                 return 6 - get.value(card);
                             }
@@ -29397,7 +29392,7 @@ const packs = function () {
                                     if (!target.countCards('he', card => get.type2(card) != get.event().cardType)) return 0;
                                     return target.countCards('he') - 2;
                                 }
-                                return get.effect(target, { name: 'losehp' }, player, player);
+                                return get.effect(target, { name: 'loseHp' }, player, player);
                             }).forResult();
                         },
                         async content(event, trigger, player) {
@@ -30288,7 +30283,7 @@ const packs = function () {
                 forced: false,
                 check(event, player) {
                     const num = game.filterPlayer().reduce((sum, current) => (sum += current.countMark('dcjizhong')), 0)
-                    if (get.effect(player, { name: 'losehp' }, player, player) > 0) return true;
+                    if (get.effect(player, { name: 'loseHp' }, player, player) > 0) return true;
                     return num >= 2;
                 },
             },
@@ -30828,7 +30823,7 @@ const packs = function () {
                     const result = await player.chooseControl(list).set('ai', function () {
                         var player = _status.event.player;
                         var list = [
-                            game.filterPlayer().reduce((sum, target) => sum + get.effect(target, { name: 'losehp' }, player, player), 0),
+                            game.filterPlayer().reduce((sum, target) => sum + get.effect(target, { name: 'loseHp' }, player, player), 0),
                             player.getUseValue({ name: 'taoyuan' }),
                             player.getUseValue({ name: 'wugu' }),
                             0,
@@ -31783,7 +31778,7 @@ const packs = function () {
                                 case '扣血':
                                     result3 = player.chooseTarget('请选择失去体力的目标', [1, Math.min(num, game.countPlayer())], true).set('ai', function (target) {
                                         var player = _status.event.player;
-                                        return get.effect(target, { name: 'losehp' }, player, player);
+                                        return get.effect(target, { name: 'loseHp' }, player, player);
                                     }).forResult();
                                     break;
                             }
@@ -32625,7 +32620,7 @@ const packs = function () {
                     return player.canMoveCard();
                 },
                 check(event, player) {
-                    return player.canMoveCard(true) && get.effect(player, { name: 'losehp' }, player, player) > 0;
+                    return player.canMoveCard(true) && get.effect(player, { name: 'loseHp' }, player, player) > 0;
                 },
                 async content(event, trigger, player) {
                     await player.loseHp();
@@ -39045,6 +39040,7 @@ const packs = function () {
                 discard: false,
                 lose: false,
                 delay: false,
+                prompt: '请选择任意张手牌组合使用或打出',
                 check(card) {
                     const player = get.player(), event = get.event(), cards = player.getCards('hs');
                     const map = { '炸弹': [], '三条': [], '对子': [], '三顺': [] };
