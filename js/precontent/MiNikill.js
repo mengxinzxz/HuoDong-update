@@ -31734,69 +31734,62 @@ const packs = function () {
                     return player.hasMark('minijishi');
                 },
                 async cost(event, trigger, player) {
-                    var map = {}, list = [];
-                    for (var i = 1; i <= player.countMark('minijishi'); i++) {
-                        var cn = get.cnNumber(i, true);
-                        map[cn] = i;
-                        list.push(cn);
-                    }
-                    list.push('cancel2');
-                    const result = await player.chooseControl(list).set('prompt', get.prompt2('minishenzhen')).set('ai', function () {
-                        var player = _status.event.player;
-                        var num = Math.min(player.countMark('minijishi'), Math.max(game.countPlayer(function (current) {
-                            return get.attitude(player, current) > 0 && current.isDamaged() && get.recoverEffect(current, player, player) > 0;
-                        }), game.countPlayer(function (current) {
-                            return get.attitude(player, current) < 0;
-                        })));
-                        if (num > 0) return get.cnNumber(num, true);
-                        return 'cancel2';
-                    }).forResult();
-                    if (result?.control && result.control != 'cancel2') {
-                        const num = map[result.control] || 1;
-                        const result2 = await player.chooseControl('回血', '扣血').set('prompt', '请选择一种效果').set('ai', function (card) {
+                    const result = await player.chooseButtonTarget({
+                        createDialog: [
+                            `###${get.prompt(event.skill)}###<div class="text center">令至多${get.cnNumber(player.countMark('minijishi'))}名角色…</div>`,
+                            [
+                                [
+                                    ['recover', '回复1点体力'],
+                                    ['loseHp', '失去1点体力'],
+                                ],
+                                'tdnodes',
+                            ],
+                        ],
+                        filterButton(button) {
+                            if (button.link == 'recover') return game.hasPlayer(target => target.isDamaged());
+                            return true;
+                        },
+                        filterTarget(card, player, target) {
+                            if (ui.selected.buttons[0].link == 'recover') return target.isDamaged();
+                            return true;
+                        },
+                        selectTarget() {
                             const player = get.player();
-                            if (game.countPlayer(function (current) {
-                                return get.attitude(player, current) > 0 && current.isDamaged() && get.recoverEffect(current, player, player) > 0;
-                            }) >= game.countPlayer(function (current) {
-                                return get.attitude(player, current) < 0;
-                            })) return '回血';
-                            return '扣血';
-                        }).forResult();
-                        if (result2?.control) {
-                            let result3;
-                            switch (result2.control) {
-                                case '回血':
-                                    result3 = await player.chooseTarget('请选择回复体力的目标', [1, Math.min(num, game.countPlayer(function (current) {
-                                        return current.isDamaged();
-                                    }))], true, function (card, player, target) {
-                                        return target.isDamaged();
-                                    }).set('ai', function (target) {
-                                        var player = _status.event.player;
-                                        return get.recoverEffect(target, player, player);
-                                    }).forResult();
-                                    break;
-                                case '扣血':
-                                    result3 = player.chooseTarget('请选择失去体力的目标', [1, Math.min(num, game.countPlayer())], true).set('ai', function (target) {
-                                        var player = _status.event.player;
-                                        return get.effect(target, { name: 'losehp' }, player, player);
-                                    }).forResult();
-                                    break;
-                            }
-                            if (result3?.bool && result3.targets?.length) {
-                                event.result = {
-                                    bool: true,
-                                    targets: result3.targets.sortBySeat(),
-                                    cost_data: [num, result2.control],
-                                };
-                            }
-                        }
+                            return [1, player.countMark('minijishi')];
+                        },
+                        ai1(button) {
+                            const player = get.player();
+                            const num1 = game.countPlayer(target => target.isDamaged() && get.recoverEffect(target, player, player) > 0);
+                            const num2 = game.countPlayer(target => get.effect(target, { name: 'losehp' }, player, player) > 0);
+                            if (button.link == 'recover' && num1 >= num2 && num1 > 0) return 2;
+                            if (button.link == 'loseHp' && num2 > 0) return 1;
+                            return 0;
+                        },
+                        ai2(target) {
+                            const player = get.player();
+                            const num = Math.min(player.countMark('minijishi'), Math.max(game.countPlayer(current => {
+                                return current.isDamaged() && get.recoverEffect(current, player, player) > 0;
+                            }), game.countPlayer(current => {
+                                return get.effect(target, { name: 'losehp' }, player, player) > 0;
+                            })));
+                            if (ui.selected.targets.length > num) return 0;
+                            if (ui.selected.buttons[0].link == 'recover') return get.recoverEffect(target, player, player);
+                            return get.effect(target, { name: 'losehp' }, player, player);
+                        },
+                    }).forResult();
+                    if (result?.links?.length && result?.targets?.length) {
+                        event.result = {
+                            bool: true,
+                            targets: result.targets.sortBySeat(),
+                            cost_data: result.links,
+                        };
                     }
                 },
                 async content(event, trigger, player) {
-                    const [num, control] = event.cost_data;
-                    player.removeMark('minijishi', num);
+                    const [control] = event.cost_data;
+                    player.removeMark('minijishi', event.targets.length);
                     for (const target of event.targets) {
-                        await target[control === '回血' ? 'recover' : 'loseHp']();
+                        await target[control]();
                     }
                 },
                 ai: {
