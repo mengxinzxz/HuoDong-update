@@ -14644,8 +14644,8 @@ const packs = function () {
                 async content(event, trigger, player) {
                     player.addSkill(event.name + '_huifu');
                     player.awakenSkill(event.name);
-                    trigger.getParent().excluded.addArray(targets);
-                    game.log(trigger.card, '对', targets, '无效');
+                    trigger.getParent().excluded.addArray(event.targets);
+                    game.log(trigger.card, '对', event.targets, '无效');
                     await player.draw();
                 },
                 ai: { expose: 0.2 },
