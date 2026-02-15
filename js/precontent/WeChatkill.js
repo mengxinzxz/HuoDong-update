@@ -6757,7 +6757,7 @@ const packs = function () {
                         popup: false,
                         async content(event, trigger, player) {
                             if (trigger.turn == player) player.tempBanSkill('wechatpingjiang');
-                            else {
+                            else if (!player.hasMark('wechatpingjiang_wushuang')) {
                                 player.addTempSkill('wechatpingjiang_wushuang');
                                 player.addMark('wechatpingjiang_wushuang', 1, false);
                             }
@@ -13099,7 +13099,7 @@ const packs = function () {
                         forced: true,
                         locked: false,
                         async content(event, trigger, player) {
-                            await player.draw();
+                            await player.draw(2);
                         },
                     }
                 }
@@ -14742,9 +14742,9 @@ const packs = function () {
             // 极诸葛恪
             wechatxingbi: {
                 audio: 'ext:活动武将/audio/skill:2',
-                trigger: { player: ['useCard', 'respond'] },
+                trigger: { player: ['useCardAfter'] },
                 filter(event, player) {
-                    if (!get.tag(event.card, 'damage')) return false;
+                    if (event.card.name != 'sha' && get.type2(event.card) != 'trick') return false;
                     const num = player.countMark('wechatxingbi_record');
                     switch (num) {
                         case 0:
@@ -18621,7 +18621,7 @@ const packs = function () {
             wechattaoni: '讨逆',
             wechattaoni_info: '出牌阶段开始时，你可以失去任意点体力并摸等量张牌，然后令至多X名其他角色获得1枚“讨逆”标记（X为你以此法失去的体力值）。若如此做，本回合你的手牌上限等于你的体力上限。',
             wechatpingjiang: '平江',
-            wechatpingjiang_info: '出牌阶段，你可以移去一名角色的所有“讨逆”标记视为对其使用一张【决斗】。若你胜，本回合你使用的【决斗】获得〖无双〗效果且造成的伤害+1（可叠加）；否则此技能失效直到回合结束。',
+            wechatpingjiang_info: '出牌阶段，你可以移去一名角色的所有“讨逆”标记视为对其使用一张【决斗】。每回合限一次，若你胜，本回合你使用的【决斗】获得〖无双〗效果且造成的伤害+1；否则此技能失效直到回合结束。',
             wechatdingye: '鼎业',
             wechatdingye_info: '锁定技，结束阶段，你回复X点体力（X为本回合受到过伤害的角色数）。',
             wechat_zhiyin_xunyu: '极荀彧',
@@ -18947,7 +18947,7 @@ const packs = function () {
             wechatsblijian_info: '出牌阶段限一次。你可以选择至少两名其他角色并弃置X张牌（X为你选择的角色数-2）。然后每名你选择的角色依次视为对这些角色中与其逆时针座次最近的另一名角色使用一张【决斗】。',
             wechat_zhiyin_luxun: '极陆逊',
             wechatqianmou: '谦谋',
-            wechatqianmou_info: `①游戏开始时，你可以弃置至多两张手牌，然后你获得3倍弃牌数的${get.poptip('rule_moulvenum')}。②当你的${get.poptip('rule_moulvenum')}或手牌数变化后，若二者数量相同，你摸一张牌。`,
+            wechatqianmou_info: `①游戏开始时，你可以弃置至多两张手牌，然后你获得3倍弃牌数的${get.poptip('rule_moulvenum')}。②当你的${get.poptip('rule_moulvenum')}或手牌数变化后，若二者数量相同，你摸两张牌。`,
             wechatweiwo: '帷幄',
             wechatweiwo_info: `转换技。出牌阶段限一次，你可以：阳：对一名手牌数大于X的角色造成1点伤害；阴：与一名手牌数小于X的角色各弃置一张牌。（X为你的${get.poptip('rule_moulvenum')}且至少为1）。然后你获得1点${get.poptip('rule_moulvenum')}。`,
             wechatreweiwo: '帷幄',
@@ -19012,7 +19012,7 @@ const packs = function () {
             wechatsbtongye_info: '锁定技。结束阶段，你猜测场上装备牌数与你下一个准备阶段的场上装备牌数是否相等，并获得以下效果：你下一个准备阶段，若你猜对且“业”数小于2，你获得1枚“业”。',
             wechat_zhiyin_zhugeke: '极诸葛恪',
             wechatxingbi: '兴愎',
-            wechatxingbi_info: `锁定技。当你使用或打出伤害牌时，你依次执行本轮未被执行的一项：1.获得一张你手牌中缺少类型的牌；2.移动场上一张牌；3.重铸任意张同类型牌；4.获得${get.poptip('wechatchizu')}并横置。`,
+            wechatxingbi_info: `锁定技。当你使用【杀】或锦囊牌后，你依次执行本轮未被执行的一项：1.获得一张你手牌中缺少类型的牌；2.移动场上一张牌；3.重铸任意张同类型牌；4.获得${get.poptip('wechatchizu')}并横置。`,
             wechatxiangke: '飨恪',
             wechatxiangke_info: '当你装备区牌数发生变化后，你可以将手牌数调整至X，然后你可以对一名体力值为X的角色造成1点火焰伤害（X为你的装备区牌数）。',
             wechatchizu: '赤族',
