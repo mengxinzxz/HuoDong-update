@@ -21536,9 +21536,9 @@ const packs = function () {
                 },
                 forced: true,
                 async content(event, trigger, player) {
-                    const color = get.color(event.card);
+                    const color = get.color(trigger.card);
                     if (color === 'black') await player.draw();
-                    if (color === 'red' && trigger.source?.isIn()) trigger.source.draw();
+                    if (color === 'red' && trigger.source?.isIn()) await trigger.source.draw();
                 },
             },
             minireyaowu: {
@@ -21546,10 +21546,10 @@ const packs = function () {
                 audioname: ['sb_huaxiong'],
                 inherit: 'miniyaowu',
                 async content(event, trigger, player) {
-                    const color = get.color(event.card);
+                    const color = get.color(trigger.card);
                     if (color === 'black') await player.draw();
-                    if (color === 'red' && trigger.source?.isIn()) trigger.source.draw();
-                    if (get.itemtype(trigger.cards) === 'cards' && trigger.cards.someInD('od')) player.gain(trigger.cards.filterInD('od'), 'gain2');
+                    if (color === 'red' && trigger.source?.isIn()) await trigger.source.draw();
+                    if (get.itemtype(trigger.cards) === 'cards' && trigger.cards.someInD('od')) await player.gain(trigger.cards.filterInD('od'), 'gain2');
                 },
             },
             miniyangwei: {
@@ -41117,9 +41117,9 @@ const packs = function () {
             minirejianchu: '鞬出',
             minirejianchu_info: '当你使用【杀】指定一名角色为目标后，你可以弃置其一张牌，然后若此牌类型：不为基本牌，你摸一张牌且其不可响应此【杀】；为基本牌，你令此【杀】不计入次数限制。',
             miniyaowu: '耀武',
-            miniyaowu_info: '锁定技，当你受到【杀】造成的伤害时，若此【杀】为红色/黑色，其摸一张牌/你摸一张牌。',
+            miniyaowu_info: '锁定技，当你受到【杀】造成的伤害时，若此【杀】为红色/黑色，伤害来源摸一张牌/你摸一张牌。',
             minireyaowu: '耀武',
-            minireyaowu_info: '锁定技，当你受到【杀】造成的伤害时，若此【杀】为红色/黑色，其摸一张牌/你摸一张牌。然后你获得此【杀】对应的所有实体牌。',
+            minireyaowu_info: '锁定技，当你受到【杀】造成的伤害时，若此【杀】为红色/黑色，伤害来源摸一张牌/你摸一张牌。然后你获得此【杀】对应的所有实体牌。',
             miniyangwei: '扬威',
             miniyangwei_info: '当你于出牌阶段使用有颜色的【杀】结算完毕后，你可以于本阶段使用一张与此牌颜色不同的【杀】（无次数限制且不计入次数）。出牌阶段结束后，若你本回合使用【杀】的次数大于2，你回复1点体力。',
             miniqiaomeng: '趫猛',
