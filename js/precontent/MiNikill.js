@@ -3107,7 +3107,7 @@ const packs = function () {
                         await target.recover();
                     }
                     if (cost_data.includes('damage')) {
-                        target.addSkill('yse_damage');
+                        target.addSkill('yise_damage');
                         target.addMark('yise_damage', 1, false);
                         game.log(target, '下一次受到【杀】的伤害', '#g+1');
                     }
@@ -33304,13 +33304,13 @@ const packs = function () {
                     let tags = ['dctuoyu_fengtian', 'dctuoyu_qingqu', 'dctuoyu_junshan'];
                     tags.removeArray(player.getStorage('dctuoyu'));
                     if (tags.length > 0) {
-                        const { control } = tags.length > 1 ? await player.chooseControl(tags).set('choiceList', tags.map(tag => {
+                        const control = tags.length > 1 ? (await player.chooseControl(tags).set('choiceList', tags.map(tag => {
                             return `${get.translation(`${tag}_tag`)}：${{
                                 dctuoyu_fengtian: '伤害/回复值+1',
                                 dctuoyu_qingqu: '无次数和距离限制',
                                 dctuoyu_junshan: '不可被响应',
                             }[tag]}`;
-                        })).set('displayIndex', false).set('prompt', '险峻：选择激活一个副区域标签').forResult() : tags[0];
+                        })).set('displayIndex', false).set('prompt', '险峻：选择激活一个副区域标签').forResult()).control : tags[0];
                         game.log(player, '激活了副区域', '#y' + get.translation(control));
                         player.markAuto('dctuoyu', [control]);
                         player.popup(get.translation(control + '_tag'));
