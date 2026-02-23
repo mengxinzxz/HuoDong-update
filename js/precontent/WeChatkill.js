@@ -249,7 +249,7 @@ const packs = function () {
             wechat_sb_sunquan: ['male', 'wu', 4, ['wechatsbzhiheng', 'wechatsbtongye']],
             wechat_sb_huaxiong: ['male', 'qun', 4, ['wechatsbyaowu', 'sbyangwei']],
             wechat_sb_yujin: ['male', 'wei', 4, ['sbxiayuan', 'wechatsbjieyue']],
-            wechat_sb_lvmeng: ['male', 'wu', 4, ['wechatsbkeji', 'sbdujiang']],
+            wechat_sb_lvmeng: ['male', 'wu', 4, ['wechatsbkeji', 'wechatsbdujiang']],
             wechat_sb_lvbu: ['male', 'qun', 4, ['wechatsbwushuang', 'wechatsbliyu']],
             // 志系列
             wechat_zhi_yuanshu: ['male', 'qun', 4, ['wechatshehuai', 'wechatzaochen']],
@@ -19210,7 +19210,7 @@ const packs = function () {
             wechatsbjieyue: '节钺',
             wechatsbjieyue_info: '结束阶段，你可以令一名其他角色获得1点护甲，然后其摸一张牌。',
             wechat_sb_lvmeng: '小程序谋吕蒙',
-            wechatsbdujiang_info: `觉醒技，准备阶段，若你的护甲数不少于3，你获得${get.poptip("sbduojing")}。`,
+            wechatsbdujiang_info: `觉醒技，准备阶段，若你的护甲数不少于3，你获得${get.poptip('sbduojing')}。`,
             wechat_sb_lvbu: '小程序谋吕布',
             wechatsbwushuang_info: '锁定技。①你使用的【杀】需两张【闪】才能抵消；与你进行【决斗】的角色每次需要打出两张【杀】。②当你使用【杀】或【决斗】造成伤害时，若受伤角色没有使用或打出过【杀】或【闪】响应此牌，则此伤害+1。',
             wechatsbliyu_info: `当你使用【杀】对一名其他角色造成伤害后，你可获得其区域内至多等同于伤害值张牌，然后其摸一张牌。若你与其因此获得了三种类别的牌，其选择一项：①你视为对其指定的另一名其他角色使用一张【决斗】；②其获得${get.poptip("wushuang")}直至其回合结束。`,
