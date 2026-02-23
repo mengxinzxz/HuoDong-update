@@ -41,7 +41,7 @@ const packs = function () {
                         return list;
                     })(),
                     ...['zhenji', 'diaochan', 'wangcan', 'machao', 'pangde', 'jiangwei', 'taishici', 'caiwenji'].map(i => `wechat_sp_${i}`),
-                    ...['yujin', 'huaxiong', 'sunquan', 'xiaoqiao', 'xiahouyuan', 'gaoshun', 'handang', 'guojia', 'huanggai', 'diaochan', 'huangyueying', 'zhangliao', 'sunshangxiang', 'zhaoyun', 'machao', 'huangzhong', 'caocao', 'sunce'].map(i => `wechat_sb_${i}`),
+                    ...['lvbu', 'lvmeng', 'yujin', 'huaxiong', 'sunquan', 'xiaoqiao', 'xiahouyuan', 'gaoshun', 'handang', 'guojia', 'huanggai', 'diaochan', 'huangyueying', 'zhangliao', 'sunshangxiang', 'zhaoyun', 'machao', 'huangzhong', 'caocao', 'sunce'].map(i => `wechat_sb_${i}`),
                     ...['shantao', 'ruanji', 'jikang', 'caojie', 'xuezong', 'caiyong', 'xushi', 'sundeng', 'huanghao', 'guohuanghou', 'lizhaojiaobo', 'liucheng', 'sunluyu', 'sunhao', 'yj_zhoubuyi', 'jsp_huangyueying', 'wanglang', 'chendeng', 'zhuling', 'caizhenji', 'ol_bianfuren', 'xin_sunluban', 'zhangxingcai', 'huojun'].map(i => `wechat_${i}`),
                     ...[],
                 ],
@@ -249,6 +249,8 @@ const packs = function () {
             wechat_sb_sunquan: ['male', 'wu', 4, ['wechatsbzhiheng', 'wechatsbtongye']],
             wechat_sb_huaxiong: ['male', 'qun', 4, ['wechatsbyaowu', 'sbyangwei']],
             wechat_sb_yujin: ['male', 'wei', 4, ['sbxiayuan', 'wechatsbjieyue']],
+            wechat_sb_lvmeng: ['male', 'wu', 4, ['wechatsbkeji', 'sbdujiang']],
+            wechat_sb_lvbu: ['male', 'qun', 4, ['wechatsbwushuang', 'wechatsbliyu']],
             // 志系列
             wechat_zhi_yuanshu: ['male', 'qun', 4, ['wechatshehuai', 'wechatzaochen']],
             wechat_zhi_fuhuanghou: ['female', 'qun', 3, ['wechatweiluan', 'wechatrequjian', 'wechatshutui']],
@@ -18028,7 +18030,100 @@ const packs = function () {
                         player.logSkill(event.name, target);
                         await target.changeHujia(1, null, true);
                         await target.draw();
-                        await target.chooseToGive(player, true);
+                    }
+                },
+            },
+            //谋吕蒙
+            wechatsbkeji: {
+                audio: 'sbkeji',
+                inherit: 'sbkeji',
+                filter(event, player) {
+                    const list = player.getStorage('wechatsbkeji_used');
+                    return !list.includes('losehp') || player.countDiscardableCards(player, 'h') > 0;
+                },
+                prompt(event) {
+                    const player = get.player(), list = player.getStorage('wechatsbkeji_used');
+                    let str = '出牌阶段各限一次。你可以';
+                    let discard = list.includes('discard'), losehp = list.includes('losehp');
+                    if (!discard) str += '弃置一张手牌并获得1点护甲';
+                    if (!losehp) str += (!discard ? '，或' : '') + '点击“确定”失去1点体力并获得2点护甲';
+                    return str;
+                },
+                async content(event, trigger, player) {
+                    player.addTempSkill(`${event.name}_used`, 'phaseUseAfter');
+                    if ((event.cards ?? []).length > 0) {
+                        player.markAuto(`${event.name}_used`, 'discard');
+                        await player.changeHujia(1, null, true);
+                    }
+                    else {
+                        player.markAuto(`${event.name}_used`, 'losehpd');
+                        await player.loseHp();
+                        await player.changeHujia(2, null, true);
+                    }
+                },
+            },
+            wechatsbdujiang: {
+                audio: 'sbdujiang',
+                inherit: 'sbdujiang',
+                async content(event, trigger, player) {
+                    player.awakenSkill(event.name);
+                    await player.addSkills('sbduojing');
+                },
+                ai: { combo: 'wechatsbkeji' },
+            },
+            //谋吕布
+            wechatsbwushuang: {
+                audio: 'sbwushuang',
+                inherit: 'sbwushuang',
+                usable: Infinity,
+            },
+            wechatsbliyu: {
+                audio: 'sbliyu',
+                inherit: 'sbliyu',
+                async content(event, trigger, player) {
+                    const cards = event.cards, target = trigger.player;
+                    const draw = (await target.draw().forResult()).cards;
+                    if (Array.isArray(cards) && Array.isArray(draw)) {
+                        let types = [...cards, ...draw].map(card => get.type2(card)).unique();
+                        if (types.length >= 3) {
+                            let result, list = [`${get.translation(player)}视为对你指定的另一名其他角色使用一张【决斗】`, `获得${get.poptip('wushuang')}直至你下个回合结束`];
+                            const juedou = game.hasPlayer(current => current !== player && current != target && player.canUse(new lib.element.VCard({ name: 'juedou', isCard: true }), current, false));
+                            const wushuang = !target.hasSkill('wushuang', null, false, false);
+                            if (juedou || wushuang) {
+                                if (!juedou) result = { control: '选项二' };
+                                else if (!wushuang) result = { control: '选项一' };
+                                else {
+                                    result = await target.chooseControl().set('ai', () => {
+                                        const player = get.player(), source = get.event().getParent().player;
+                                        const juedou = new lib.element.VCard({ name: 'juedou', isCard: true });
+                                        return game.hasPlayer(target => {
+                                            return ![player, source].includes(target) && source.canUse(juedou, target, false) && get.effect(target, juedou, source, player) > 0;
+                                        }) ? '选项一' : '选项二';
+                                    }).set('choiceList', list).set('prompt', get.translation(event.name) + '：请选择一项').forResult();
+                                }
+                                if (!result?.control) return;
+                                player.logSkill(event.name, null, null, null, [result.control == '选项一' ? get.rand(3, 4) : 5]);
+                                if (result.control == '选项一') {
+                                    const result2 = await target.chooseTarget((card, player, target) => {
+                                        const evt = get.event().getParent();
+                                        return evt.player.canUse({ name: 'juedou' }, target) && target != get.player();
+                                    }, '利驭：请选择一名角色，视为' + get.translation(player) + '对其使用【决斗】', true).set('ai', target => {
+                                        const evt = get.event().getParent();
+                                        return get.effect(target, { name: 'juedou' }, evt.player, get.player());
+                                    }).set('animate', false).forResult();
+                                    if (result2?.bool && result2.targets?.length) {
+                                        target.line2([player, result2.targets[0]]);
+                                        await game.delayx();
+                                        await player.useCard(new lib.element.VCard({ name: 'juedou', isCard: true }), result2.targets[0], false, 'noai').set('animate', false);
+                                    }
+                                }
+                                else {
+                                    const skill = event.name + '_effect';
+                                    await target.addAdditionalSkills(skill, 'wushuang');
+                                    target.addTempSkill(skill, { player: 'phaseAfter' });
+                                }
+                            }
+                        }
                     }
                 },
             },
@@ -19113,7 +19208,12 @@ const packs = function () {
             wechatqishi_info: '每回合限一次。你的回合内，当你的手牌因弃置进入弃牌堆后，你回复1点体力。若这些牌的类别均相同且不为装备牌，你可以视为使用一张无距离和次数限制的同类型的牌。',
             wechat_sb_yujin: '小程序谋于禁',
             wechatsbjieyue: '节钺',
-            wechatsbjieyue_info: '结束阶段，你可以令一名其他角色获得1点护甲，然后其摸一张牌并交给你一张牌。',
+            wechatsbjieyue_info: '结束阶段，你可以令一名其他角色获得1点护甲，然后其摸一张牌。',
+            wechat_sb_lvmeng: '小程序谋吕蒙',
+            wechatsbdujiang_info: `觉醒技，准备阶段，若你的护甲数不少于3，你获得${get.poptip("sbduojing")}。`,
+            wechat_sb_lvbu: '小程序谋吕布',
+            wechatsbwushuang_info: '锁定技。①你使用的【杀】需两张【闪】才能抵消；与你进行【决斗】的角色每次需要打出两张【杀】。②当你使用【杀】或【决斗】造成伤害时，若受伤角色没有使用或打出过【杀】或【闪】响应此牌，则此伤害+1。',
+            wechatsbliyu_info: `当你使用【杀】对一名其他角色造成伤害后，你可获得其区域内至多等同于伤害值张牌，然后其摸一张牌。若你与其因此获得了三种类别的牌，其选择一项：①你视为对其指定的另一名其他角色使用一张【决斗】；②其获得${get.poptip("wushuang")}直至其回合结束。`,
 
             // ----------------------- 台词部分 ----------------------- //
             '#ext:活动武将/audio/skill/wechatzhongxin1': '苍生之愿，即贫道所愿也。',

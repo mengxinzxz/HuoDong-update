@@ -637,7 +637,7 @@ export async function precontent(bilibilicharacter) {
             {
                 type: 'players',
                 data: [
-                    'wechat_shantao', 'wechat_sb_yujin',
+                    'wechat_shantao', 'wechat_sb_yujin', 'wechat_sb_lvmeng', 'wechat_sb_lvbu',
                 ],
             },
             {
