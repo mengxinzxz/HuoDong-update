@@ -35671,30 +35671,40 @@ const packs = function () {
                         const container = ui.create.div('.dingluan-tube-container', dialog.contentContainer);
                         //检测赢
                         function checkWin(tube) {
-                            if (tube.childElementCount !== 4) return false;
-                            const group = tube.childNodes[0].dataset.group;
-                            return Array.from(tube.childNodes).every(p => p.dataset.group === group);
+                            const pieces = tube.querySelectorAll('.dingluan-piece');
+                            if (pieces.length !== 4) return false;
+                            const group = pieces[0].dataset.group;
+                            return Array.from(pieces).every(p => p.dataset.group === group);
                         }
                         //创建棋子
                         function createPiece(group, text) {
                             const piece = ui.create.div('.dingluan-piece', text);
                             piece.dataset.group = group;
+                            piece.classList.add(group);
                             return piece;
                         }
-                        //更新棋子位置
+                        //更新棋子位置和标签
                         function updatePiecePositions(tube) {
                             const pieces = tube.querySelectorAll('.dingluan-piece');
-                            pieces.forEach((piece, index) => piece.style.bottom = `${index * 26}px`);
+                            pieces.forEach((piece, index) => piece.style.bottom = `${index * 70 + 20}px`);
                         }
                         let selectedTube = null, dingluanSuccess = null, tubes = [];
                         let isAnimating = false;
                         for (let i = 0; i < groups.length + 2; i++) {
-                            const tube = ui.create.div('.dingluan-tube', container);
+                            const tubeWrapper = ui.create.div('.dingluan-tube-wrapper', container);
+                            tubeWrapper.style.position = 'relative';
+                            tubeWrapper.style.display = 'flex';
+                            tubeWrapper.style.flexDirection = 'column';
+                            tubeWrapper.style.alignItems = 'center';
+
+                            const tube = ui.create.div('.dingluan-tube', tubeWrapper);
                             tube.dataset.index = i;
+                            ui.create.div('.dingluan-tube-ornament', tube); // Dedicated div for side ornaments
+
                             tube.addEventListener(lib.config.touchscreen ? 'touchend' : 'click', () => {
                                 if (dingluanSuccess !== null || isAnimating) return;
                                 if (!selectedTube) {
-                                    if (tube.childElementCount > 0) {
+                                    if (tube.querySelectorAll('.dingluan-piece').length > 0) {
                                         selectedTube = tube;
                                         tube.classList.add('selected');
                                         game.playAudio('..', 'extension', '活动武将/audio/skill', 'MiniDingluan1');
@@ -35705,19 +35715,20 @@ const packs = function () {
                                     selectedTube = null;
                                 }
                                 else {
-                                    if (tube.childElementCount < 4 && selectedTube.childElementCount > 0) {
+                                    if (tube.querySelectorAll('.dingluan-piece').length < 4 && selectedTube.querySelectorAll('.dingluan-piece').length > 0) {
                                         isAnimating = true;
-                                        const piece = selectedTube.lastChild;
+                                        const srcPieces = selectedTube.querySelectorAll('.dingluan-piece');
+                                        const piece = srcPieces[srcPieces.length - 1];
                                         const srcRect = selectedTube.getBoundingClientRect();
                                         const dstRect = tube.getBoundingClientRect();
                                         const dx = dstRect.left - srcRect.left;
-                                        const dy = -50;
-                                        const angle = dx > 0 ? 30 : -30;
+                                        const dy = -320; // Recalibrated for 340px height
+                                        const angle = dx > 0 ? 160 : -160;
                                         
                                         const anim1 = selectedTube.animate([
-                                            { transform: 'translate(0, 0) rotate(0deg)' },
-                                            { transform: `translate(${dx/2}px, ${dy}px) rotate(${angle}deg)` }
-                                        ], { duration: 250, fill: 'forwards' });
+                                            { transform: 'translateY(-50px) rotate(0deg)' },
+                                            { transform: `translate(${dx}px, ${dy}px) rotate(${angle}deg)` }
+                                        ], { duration: 550, easing: 'ease-in-out', fill: 'forwards' });
                                         
                                         anim1.onfinish = () => {
                                             tube.appendChild(piece);
@@ -35726,15 +35737,15 @@ const packs = function () {
                                             updatePiecePositions(tube);
                                             
                                             const anim2 = piece.animate([
-                                                { transform: 'translateY(-150px)', opacity: 0 },
+                                                { transform: 'translateY(-380px)', opacity: 0 },
                                                 { transform: 'translateY(0)', opacity: 1 }
-                                            ], { duration: 200, easing: 'ease-in' });
+                                            ], { duration: 350, easing: 'ease-in' });
                                             
                                             anim2.onfinish = () => {
                                                 const anim3 = selectedTube.animate([
-                                                    { transform: `translate(${dx/2}px, ${dy}px) rotate(${angle}deg)` },
-                                                    { transform: 'translate(0, 0) rotate(0deg)' }
-                                                ], { duration: 200, fill: 'forwards' });
+                                                    { transform: `translate(${dx}px, ${dy}px) rotate(${angle}deg)` },
+                                                    { transform: 'translateY(0) rotate(0deg)' }
+                                                ], { duration: 450, easing: 'ease-out', fill: 'forwards' });
                                                 
                                                 anim3.onfinish = () => {
                                                     selectedTube.style.transform = '';
@@ -35744,7 +35755,7 @@ const packs = function () {
                                                     if (checkWin(tube)) {
                                                         _status.mininianxinghan[player.playerid] = (() => {
                                                             return tubes.filter(t => t !== tube).map(t => {
-                                                                return [...t.children].map(piece => ({
+                                                                return [...t.querySelectorAll('.dingluan-piece')].map(piece => ({
                                                                     group: piece.dataset.group,
                                                                     text: piece.innerHTML,
                                                                 }));
@@ -35753,7 +35764,7 @@ const packs = function () {
                                                         event.dialog.close();
                                                         game.resume();
                                                         _status.imchoosing = false;
-                                                        event._result = { successGroup: tube.childNodes[0].dataset.group };
+                                                        event._result = { successGroup: tube.querySelectorAll('.dingluan-piece')[0].dataset.group };
                                                         resolve(event._result);
                                                     }
                                                 };
@@ -35784,10 +35795,10 @@ const packs = function () {
                             allPieces = allPieces.flat().randomSort();
                             allPieces.forEach(piece => {
                                 let eligible = tubes.filter(tube => {
-                                    const num = tube.childElementCount;
+                                    const num = tube.querySelectorAll('.dingluan-piece').length;
                                     if (num >= 4) return false;
                                     if (num < 3) return true;
-                                    return [...Array.from(tube.children).map(p => p.dataset.group), piece.group].unique().length > 1;
+                                    return [...Array.from(tube.querySelectorAll('.dingluan-piece')).map(p => p.dataset.group), piece.group].unique().length > 1;
                                 });
                                 const targetTube = eligible.randomGet();
                                 targetTube.appendChild(createPiece(piece.group, piece.text));
