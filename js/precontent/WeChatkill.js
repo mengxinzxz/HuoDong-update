@@ -871,6 +871,7 @@ const packs = function () {
                     game.log(trigger.card, '不计入次数');
                 },
             },
+            wushuang_wechat_zhiyin_lvbu: { audio: 'ext:活动武将/audio/skill:2' },
             wechatxiaohu: {
                 mod: {
                     selectTarget(card, player, num) {
