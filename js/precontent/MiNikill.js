@@ -30503,16 +30503,15 @@ const packs = function () {
                             else addIndex++;
                             list.push(`令${get.translation(get.translation(trigger.player))}本回合不能使用或打出【杀】`);
                             const result = list.length > 1 ? await player.chooseControl().set('choiceList', list).set('ai', () => {
-                                var evt = _status.event.getParent(),
-                                    player = evt.player,
-                                    evt2 = evt._trigger;
-                                if (evt.addIndex == 0) {
-                                    const noob = get.attitude(player, evt2.player) < 0 ? 1 : 0;
-                                    if (player.countMark('fuzhong') == 3) return noob;
-                                    if (get.effect(evt2.targets[0], evt2.card, evt2.player, player) <= 0) return 0;
+                                const event = get.event(), { player, addIndex } = event;
+                                const evt = event.getParent()._trigger;
+                                if (addIndex === 0) {
+                                    const noob = get.attitude(player, evt.player) < 0 ? 1 : 0;
+                                    if (player.countMark('fuzhong') === 3) return noob;
+                                    if (get.effect(evt.targets[0], evt.card, evt.player, player) <= 0) return 0;
                                     return noob;
                                 }
-                                return get.attitude(player, evt2.player) < 0 ? 0 : 1;
+                                return get.attitude(player, evt.player) < 0 ? 0 : 1;
                             }).set('prompt', `${get.translation(event.skill)}：请选择一项执行`).set('addIndex', addIndex).forResult() : { index: 0 };
                             event.result = {
                                 bool: typeof result?.index === 'number',
