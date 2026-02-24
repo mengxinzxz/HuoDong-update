@@ -30489,6 +30489,7 @@ const packs = function () {
                 subSkill: {
                     daoji: {
                         charlotte: true,
+                        intro: { content: 'players' },
                         audio: 'redaoji',
                         inherit: 'redaoji',
                         filter(event, player) {
