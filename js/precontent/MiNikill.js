@@ -23186,10 +23186,10 @@ const packs = function () {
                     });
                 },
                 async cost(event, trigger, player) {
-                    var num = Math.min(player.getDamagedHp() + 1, game.countPlayer(function (current) {
+                    const num = Math.min(player.getDamagedHp() + 1, game.countPlayer(function (current) {
                         return !trigger.targets.includes(current) && lib.filter.filterTarget(trigger.card, player, current);
                     }));
-                    event.result = await player.chooseTarget(get.prompt('minishichou'), '令至多' + get.cnNumber(num) + '名其他角色也成为' + get.translation(trigger.card) + '的目标', [1, num], function (card, player, target) {
+                    const result = event.result = await player.chooseTarget(get.prompt('minishichou'), '令至多' + get.cnNumber(num) + '名其他角色也成为' + get.translation(trigger.card) + '的目标', [1, num], function (card, player, target) {
                         var evt = _status.event.getTrigger();
                         return target != player && !evt.targets.includes(target) && lib.filter.targetEnabled2(evt.card, player, target) && lib.filter.targetInRange(evt.card, player, target);
                     }).set('ai', function (target) {
@@ -24522,12 +24522,12 @@ const packs = function () {
                     return player.hasEmptySlot(1) || player.getEquip('miniruyi_jingubang');
                 },
                 async cost(event, trigger, player) {
-                    var cards = player.getEquips('miniruyi_jingubang');
+                    const cards = player.getEquips('miniruyi_jingubang');
                     const result = await player.chooseControl('1', '2', '3', '4', 'cancel2').set('prompt', '是否调整' + (cards.length ? get.translation(cards) : '如意金箍棒') + '的攻击范围？').set('choiceList', [
-                        '将' + (card ? get.translation(card) : '如意金箍棒') + '的攻击范围调整为1 → 你使用【杀】不计入次数限制',
-                        '将' + (card ? get.translation(card) : '如意金箍棒') + '的攻击范围调整为2 → 你于回合内使用的第一张【杀】造成的伤害+1',
-                        '将' + (card ? get.translation(card) : '如意金箍棒') + '的攻击范围调整为3 → 你使用【杀】无法被响应',
-                        '将' + (card ? get.translation(card) : '如意金箍棒') + '的攻击范围调整为4 → 你使用【杀】可以额外指定一个目标'
+                        '将' + (cards.length ? get.translation(cards) : '如意金箍棒') + '的攻击范围调整为1 → 你使用【杀】不计入次数限制',
+                        '将' + (cards.length ? get.translation(cards) : '如意金箍棒') + '的攻击范围调整为2 → 你于回合内使用的第一张【杀】造成的伤害+1',
+                        '将' + (cards.length ? get.translation(cards) : '如意金箍棒') + '的攻击范围调整为3 → 你使用【杀】无法被响应',
+                        '将' + (cards.length ? get.translation(cards) : '如意金箍棒') + '的攻击范围调整为4 → 你使用【杀】可以额外指定一个目标'
                     ]).set('ai', function () {
                         var player = _status.event.player;
                         if (!player.hasSha()) return '4';
