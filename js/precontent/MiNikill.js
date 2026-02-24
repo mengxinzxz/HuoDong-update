@@ -33050,13 +33050,13 @@ const packs = function () {
                             if (player.hp >= target.hp && target.countCards('h') > 0) list.push('选项二');
                             else choiceList[1] = '<span style="opacity:0.5">' + choiceList[1] + '</span>';
                             const result = await player.chooseControl(list, 'cancel2').set('prompt', get.prompt('minichongwei', target)).set('choiceList', choiceList).set('ai', function () {
-                                var evt = _status.event.getParent();
-                                if (evt.player.hasCard(function (card) {
-                                    return lib.filter.cardDiscardable(card, evt.player, 'minichongwei_use') && get.value(card, evt.player) < 7;
-                                }, 'h') && get.damageEffect(evt.target, evt.player, evt.player) > 0) return '选项一';
-                                if (evt.player.hp >= evt.target.hp && evt.target.countCards('h') > 0 && get.attitude(evt.player, evt.target) <= 0 && !evt.target.hasSkillTag('noh')) return '选项二';
+                                const { player, target } = get.event();
+                                if (player.hasCard(function (card) {
+                                    return lib.filter.cardDiscardable(card, player, 'minichongwei_use') && get.value(card, player) < 7;
+                                }, 'h') && get.damageEffect(target, player, player) > 0) return '选项一';
+                                if (player.hp >= target.hp && target.countCards('h') > 0 && get.attitude(player, target) <= 0 && !target.hasSkillTag('noh')) return '选项二';
                                 return 'cancel2';
-                            }).forResult();
+                            }).set('target', target).forResult();
                             event.result = {
                                 bool: result?.control && result.control !== 'cancel2',
                                 cost_data: result?.control,
