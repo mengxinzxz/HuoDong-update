@@ -894,39 +894,40 @@ const packs = function () {
                 },
             },
             qin_liangju: {
-                group: 'qin_liangju_judge',
                 audio: 'ext:活动武将/audio/skill:true',
-                trigger: { player: 'useCardToPlayered' },
+                trigger: {
+                    player: 'useCardToPlayered',
+                    target: 'useCardToTargeted',
+                },
                 filter(event, player) {
                     return event.card.name == 'sha';
                 },
                 forced: true,
-                content() {
-                    'step 0'
-                    trigger.target.judge(function (result) {
-                        if (get.suit(result) != 'spade') return 1;
-                        return -1;
-                    }).set('judge2', function (result) {
-                        return result.bool == false ? true : false;
-                    });
-                    'step 1'
-                    if (result.suit == 'spade') trigger.getParent().directHit.add(trigger.target);
+                async content(event, trigger, player) {
+                    if (trigger.name === 'useCardToTargeted') {
+                        const result = await player.judge(card => get.suit(card) === 'heart' ? 2 : -2).forResult();
+                        if (result?.bool) {
+                            trigger.getParent().excluded.add(player);
+                            game.log(trigger.card, '对', player, '无效');
+                        }
+                    }
+                    else {
+                        const result = await player.judge(card => get.suit(card) === 'spade' ? 2 : -2).forResult();
+                        if (result?.bool) {
+                            trigger.getParent().directHit.add(trigger.target);
+                            game.log(trigger.target, '不可响应', trigger.card);
+                        }
+                    }
                 },
-                subSkill: {
-                    judge: {
-                        audio: 'qin_liangju',
-                        trigger: { target: 'useCardToTargeted' },
-                        filter(event, player) {
-                            return event.card.name == 'sha';
-                        },
-                        forced: true,
-                        content() {
-                            'step 0'
-                            player.judge(function (card) {
-                                return get.suit(card) == 'heart' ? 2 : -2;
-                            });
-                            'step 1'
-                            if (result.suit == 'heart') trigger.getParent().excluded.add(player);
+                ai: {
+                    directHit_ai: true,
+                    skillTagFilter(player, tag, arg) {
+                        if (!arg?.card || !ui.cardPile.firstChild || arg.card.name !== 'sha') return false;
+                        return get.suit(ui.cardPile.firstChild, player) === 'spade';
+                    },
+                    effect: {
+                        target(card, player, target) {
+                            if (card.name === 'sha') return 0.75;
                         },
                     },
                 },
@@ -1261,37 +1262,39 @@ const packs = function () {
             },
             qin_shanwu: {
                 audio: 'ext:活动武将/audio/skill:true',
-                trigger: { player: 'useCardToPlayered' },
-                forced: true,
+                trigger: {
+                    player: 'useCardToPlayered',
+                    target: 'useCardToTargeted',
+                },
                 filter(event, player) {
                     return event.card.name == 'sha';
                 },
-                content() {
-                    'step 0'
-                    player.judge(function (card) {
-                        return (get.color(card) == 'black') ? 2 : -2;
-                    });
-                    'step 1'
-                    if (result.judge > 0) trigger.getParent().directHit.add(trigger.target);
+                forced: true,
+                async content(event, trigger, player) {
+                    if (trigger.name === 'useCardToTargeted') {
+                        const result = await player.judge(card => get.color(card) === 'red' ? 2 : -2).forResult();
+                        if (result?.bool) {
+                            trigger.getParent().excluded.add(player);
+                            game.log(trigger.card, '对', player, '无效');
+                        }
+                    }
+                    else {
+                        const result = await player.judge(card => get.color(card) === 'black' ? 2 : -2).forResult();
+                        if (result?.bool) {
+                            trigger.getParent().directHit.add(trigger.target);
+                            game.log(trigger.target, '不可响应', trigger.card);
+                        }
+                    }
                 },
-                group: 'qin_shanwu_judge',
-                subSkill: {
-                    judge: {
-                        audio: 'qin_shanwu',
-                        trigger: { target: 'useCardToTargeted' },
-                        filter(event, player) {
-                            if (event.player == player) return false;
-                            if (event.card.name == 'sha') return true;
-                            return false;
-                        },
-                        forced: true,
-                        content() {
-                            'step 0'
-                            player.judge(function (card) {
-                                return (get.color(card) == 'red') ? 2 : -2;
-                            });
-                            'step 1'
-                            if (result.judge > 0) trigger.getParent().excluded.add(player);
+                ai: {
+                    directHit_ai: true,
+                    skillTagFilter(player, tag, arg) {
+                        if (!arg?.card || !ui.cardPile.firstChild || arg.card.name !== 'sha') return false;
+                        return get.color(ui.cardPile.firstChild, player) === 'red';
+                    },
+                    effect: {
+                        target(card, player, target) {
+                            if (card.name === 'sha') return 0.5;
                         },
                     },
                 },
