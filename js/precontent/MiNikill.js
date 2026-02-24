@@ -30573,15 +30573,18 @@ const packs = function () {
                 audio: 'ol_shenfen',
                 enable: 'phaseUse',
                 filter(event, player) {
-                    return player.hp > 3;
+                    return player.hp > 3 && game.hasPlayer(target => target !== player);
                 },
+                filterTarget: lib.filter.notMe,
+                selectTarget: [-1, -2],
+                multiline: true,
+                multitarget: true,
                 skillAnimation: true,
                 animationColor: 'metal',
                 async content(event, trigger, player) {
                     player.awakenSkill(event.name);
                     await player.loseHp(3);
-                    const targets = game.filterPlayer(i => i !== player).sortBySeat();
-                    player.line(targets);
+                    const targets = event.targets.sortBySeat();
                     for (let i = 1; i <= 3; i++) {
                         for (const target of targets) {
                             switch (i) {
@@ -41763,7 +41766,7 @@ const packs = function () {
             miniwuqian: '无前',
             miniwuqian_info: '锁定技，当你于回合内第一次使用【杀】或【决斗】指定目标后，则你令此牌无视目标角色的防具且视为具有〖无双〗效果。',
             minishenfen: '神愤',
-            minishenfen_info: '限定技，出牌阶段，你可以失去3点体力，对所有其他角色各造成1点伤害。这些角色弃置装备区内的所有牌，然后弃置四张手牌。',
+            minishenfen_info: '限定技，出牌阶段，你可以失去3点体力，对所有其他角色各造成1点伤害。这些角色依次弃置装备区内的所有牌，然后依次弃置四张手牌。',
             minishelie: '涉猎',
             minishelie_info: '锁定技，摸牌阶段，你放弃摸牌，改为亮出牌堆顶的五张牌，并获得其中不同花色的牌各一张。',
             minigongxin: '攻心',
