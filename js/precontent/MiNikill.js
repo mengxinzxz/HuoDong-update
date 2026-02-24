@@ -35687,15 +35687,17 @@ const packs = function () {
                             pieces.forEach((piece, index) => piece.style.bottom = `${index * 26}px`);
                         }
                         let selectedTube = null, dingluanSuccess = null, tubes = [];
+                        let isAnimating = false;
                         for (let i = 0; i < groups.length + 2; i++) {
                             const tube = ui.create.div('.dingluan-tube', container);
                             tube.dataset.index = i;
                             tube.addEventListener(lib.config.touchscreen ? 'touchend' : 'click', () => {
-                                if (dingluanSuccess !== null) return;
+                                if (dingluanSuccess !== null || isAnimating) return;
                                 if (!selectedTube) {
                                     if (tube.childElementCount > 0) {
                                         selectedTube = tube;
                                         tube.classList.add('selected');
+                                        game.playAudio('..', 'extension', '活动武将/audio/skill', 'MiniDingluan1');
                                     }
                                 }
                                 else if (tube === selectedTube) {
@@ -35704,28 +35706,59 @@ const packs = function () {
                                 }
                                 else {
                                     if (tube.childElementCount < 4 && selectedTube.childElementCount > 0) {
+                                        isAnimating = true;
                                         const piece = selectedTube.lastChild;
-                                        tube.appendChild(piece);
-                                        //更新两个试管的棋子位置
-                                        updatePiecePositions(selectedTube);
-                                        updatePiecePositions(tube);
-                                        selectedTube.classList.remove('selected');
-                                        selectedTube = null;
-                                        if (checkWin(tube)) {
-                                            _status.mininianxinghan[player.playerid] = (() => {
-                                                return tubes.filter(t => t !== tube).map(t => {
-                                                    return [...t.children].map(piece => ({
-                                                        group: piece.dataset.group,
-                                                        text: piece.innerHTML,
-                                                    }));
-                                                });
-                                            })();
-                                            event.dialog.close();
-                                            game.resume();
-                                            _status.imchoosing = false;
-                                            event._result = { successGroup: tube.childNodes[0].dataset.group };
-                                            resolve(event._result);
-                                        }
+                                        const srcRect = selectedTube.getBoundingClientRect();
+                                        const dstRect = tube.getBoundingClientRect();
+                                        const dx = dstRect.left - srcRect.left;
+                                        const dy = -50;
+                                        const angle = dx > 0 ? 30 : -30;
+                                        
+                                        const anim1 = selectedTube.animate([
+                                            { transform: 'translate(0, 0) rotate(0deg)' },
+                                            { transform: `translate(${dx/2}px, ${dy}px) rotate(${angle}deg)` }
+                                        ], { duration: 250, fill: 'forwards' });
+                                        
+                                        anim1.onfinish = () => {
+                                            tube.appendChild(piece);
+                                            game.playAudio('..', 'extension', '活动武将/audio/skill', 'MiniDingluan2');
+                                            updatePiecePositions(selectedTube);
+                                            updatePiecePositions(tube);
+                                            
+                                            const anim2 = piece.animate([
+                                                { transform: 'translateY(-150px)', opacity: 0 },
+                                                { transform: 'translateY(0)', opacity: 1 }
+                                            ], { duration: 200, easing: 'ease-in' });
+                                            
+                                            anim2.onfinish = () => {
+                                                const anim3 = selectedTube.animate([
+                                                    { transform: `translate(${dx/2}px, ${dy}px) rotate(${angle}deg)` },
+                                                    { transform: 'translate(0, 0) rotate(0deg)' }
+                                                ], { duration: 200, fill: 'forwards' });
+                                                
+                                                anim3.onfinish = () => {
+                                                    selectedTube.style.transform = '';
+                                                    selectedTube.classList.remove('selected');
+                                                    selectedTube = null;
+                                                    isAnimating = false;
+                                                    if (checkWin(tube)) {
+                                                        _status.mininianxinghan[player.playerid] = (() => {
+                                                            return tubes.filter(t => t !== tube).map(t => {
+                                                                return [...t.children].map(piece => ({
+                                                                    group: piece.dataset.group,
+                                                                    text: piece.innerHTML,
+                                                                }));
+                                                            });
+                                                        })();
+                                                        event.dialog.close();
+                                                        game.resume();
+                                                        _status.imchoosing = false;
+                                                        event._result = { successGroup: tube.childNodes[0].dataset.group };
+                                                        resolve(event._result);
+                                                    }
+                                                };
+                                            };
+                                        };
                                     }
                                     else {
                                         selectedTube.classList.remove('selected');
@@ -36875,6 +36908,8 @@ const packs = function () {
                         const gameContainer = ui.create.div(dialog.content);
                         const table = document.createElement('table');
                         table.classList.add('dengjie-game');
+                        table.style.borderSpacing = '4px';
+                        table.style.borderCollapse = 'separate';
                         gameContainer.appendChild(table);
 
                         const tips = dialog.content.children[1].firstElementChild;
@@ -36917,13 +36952,38 @@ const packs = function () {
                                     const td = document.createElement('td');
                                     td.classList.add('dengjie-game');
                                     td.id = `dengjie-cell-${x}-${y}`;
+                                    
+                                    // 改造背景为类似参考图的带质感爪印方块块喵
+                                    // 使用内阴影和边框模拟3D凸起，用SVG做半透明的肉球底纹
+                                    td.style.backgroundColor = '#d2a77a'; // 默认棕色
+                                    td.style.border = '2px solid rgba(255,255,255,0.7)';
+                                    td.style.borderRadius = '5px';
+                                    td.style.boxSizing = 'border-box';
+                                    td.style.boxShadow = 'inset 2px 2px 5px rgba(255,255,255,0.5), inset -3px -3px 5px rgba(0,0,0,0.2)';
+                                    td.style.width = '64px';
+                                    td.style.height = '64px';
+                                    td.style.position = 'relative';
+                                    // 普通格子中心加一个半透明的黑色阴影圆形花纹
+                                    td.style.backgroundImage = 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Ccircle cx=\'50\' cy=\'50\' r=\'40\' fill=\'rgba(0,0,0,0.1)\'/%3E%3C/svg%3E")';
+                                    td.style.backgroundSize = '70%';
+                                    td.style.backgroundPosition = 'center';
+                                    td.style.backgroundRepeat = 'no-repeat';
                                     tr.appendChild(td);
 
                                     const slot = remoteGetSlotFromPos(x, y, gameWidth);
                                     const data = gameMap[slot];
+                                    
+                                    if (data === 0) {
+                                        td.style.backgroundColor = '#8c8c8c'; // 走过的灰色块
+                                    }
 
                                     if (Array.isArray(data)) {
                                         const button = createCharacter(NAMES[data[0]], data[1]);
+                                        button.style.width = '100%';
+                                        button.style.height = '100%';
+                                        button.style.margin = '0';
+                                        button.style.borderRadius = '5px';
+                                        button.style.boxShadow = '0 0 5px rgba(0,0,0,0.5)';
                                         td.appendChild(button);
                                     }
                                 }
@@ -36938,6 +36998,25 @@ const packs = function () {
                         dialog.style.left = `calc(50% - ${width / 2}px)`;
                         dialog.style.height = 'auto';
                         dialog.style.minHeight = 'max-content';
+                        
+                        // 改造背景为类似参考图由于没有对应素材所以用CSS绘制类似效果的白底弹窗
+                        dialog.style.backgroundColor = 'rgba(255, 255, 255, 0.95)';
+                        dialog.style.borderRadius = '8px';
+                        dialog.style.boxShadow = '0 4px 15px rgba(0,0,0,0.3)';
+                        dialog.style.color = '#333';
+                        dialog.style.textShadow = 'none';
+
+                        const cap = dialog.querySelector('.caption');
+                        if (cap) {
+                            cap.style.color = '#333';
+                            cap.style.textShadow = 'none';
+                            cap.style.fontWeight = 'bold';
+                        }
+                        
+                        if (tips) {
+                            tips.style.color = '#333';
+                            tips.style.textShadow = 'none';
+                        }
                     }
 
                     let isAI = false;
@@ -37008,15 +37087,39 @@ const packs = function () {
                         }
                     }
 
-                    //啊本来是准备做箭头的喵，但是后面感觉直接放收益更好哦喵
+                    //啊本来是准备做箭头的喵，现在改成只染色不显示数字啦
                     function buildArrow(x, y, score) {
-                        const container = ui.create.div('.arrow-container');
-                        const arrow = ui.create.div('.arrow');
-                        const extraClass = score == 0 ? 'old' : (score > 0 ? 'new-gain' : 'new-lose');
-                        arrow.innerHTML = (score != 0 ? (score > 0 ? '+' : '-') : '') + Math.abs(score);
-                        container.appendChild(arrow);
-                        container.classList.add(extraClass);
-                        return container;
+                        const cell = getTableCell(x, y);
+                        let container = null;
+                        
+                        // 由于不显示数字了，我们直接通过修改 td 的背景颜色来实现高亮提示
+                        if (cell && !cell.querySelector('.character')) {
+                            // 为了恢复颜色我们在元素上打个标记喵
+                            cell.dataset.oldColor = cell.style.backgroundColor;
+                            
+                            // 加上一个类名以便我们识别哪些是被激活的格子
+                            container = ui.create.div('.arrow-container');
+                            container.style.display = 'none'; // 隐藏不需要的容器
+                            cell.appendChild(container);
+                            
+                            if (score > 0) {
+                                cell.style.backgroundColor = '#2659b8'; // 蓝色
+                                cell.style.boxShadow = 'inset 2px 2px 5px rgba(255,255,255,0.4), inset -3px -3px 5px rgba(0,0,0,0.3), 0 0 8px #f5db5b'; // 蓝色发光框
+                                cell.style.border = '2px solid #f5db5b';
+                                // 蓝色叶子花纹图案
+                                cell.style.backgroundImage = 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Cpath fill=\'rgba(255,255,255,0.15)\' d=\'M40 85c-20 0-35-15-35-40 25-5 45 10 45 30 0 10-5 10-10 10zM60 85c20 0 35-15 35-40-25-5-45 10-45 30 0 10 5 10 10 10zM50 40c0-15-15-30-5-35 15-5 20 15 20 25-5 15-15 10-15 10z\'/%3E%3C/svg%3E")';
+                            }
+                            else if (score < 0) {
+                                cell.style.backgroundColor = '#cd4335'; // 红色
+                                // 红色叶子花纹图案
+                                cell.style.backgroundImage = 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Cpath fill=\'rgba(255,255,255,0.15)\' d=\'M40 85c-20 0-35-15-35-40 25-5 45 10 45 30 0 10-5 10-10 10zM60 85c20 0 35-15 35-40-25-5-45 10-45 30 0 10 5 10 10 10zM50 40c0-15-15-30-5-35 15-5 20 15 20 25-5 15-15 10-15 10z\'/%3E%3C/svg%3E")';
+                            }
+                            else {
+                                cell.style.backgroundColor = '#6e7a88'; // 灰色
+                            }
+                        }
+                        
+                        return container || ui.create.div('.arrow-container');
                     }
 
                     function buildArrowRemote(x, y) {
@@ -37024,14 +37127,12 @@ const packs = function () {
 
                         if (player.isMine()) {
                             const cell = getTableCell(x, y);
-                            const container = buildArrow(x, y, score);
-                            cell.appendChild(container);
+                            buildArrow(x, y, score);
                             cell.classList.add('selectable');
                         } else if (player.isOnline()) {
                             player.send(function (x, y, score, buildArrow, getTableCell) {
-                                const container = buildArrow(x, y, score);
+                                buildArrow(x, y, score);
                                 const cell = getTableCell(x, y);
-                                cell.appendChild(container);
                                 cell.classList.add('selectable');
                             }, x, y, score, buildArrow, getTableCell);
                         }
@@ -37039,6 +37140,13 @@ const packs = function () {
 
                     function clearArrow(cell) {
                         cell.querySelector('.arrow-container')?.remove();
+                        if (cell.dataset.oldColor) {
+                            cell.style.backgroundColor = cell.dataset.oldColor;
+                            cell.style.border = '2px solid rgba(255,255,255,0.7)';
+                            cell.style.boxShadow = 'inset 2px 2px 5px rgba(255,255,255,0.5), inset -3px -3px 5px rgba(0,0,0,0.2)';
+                            cell.style.backgroundImage = 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Ccircle cx=\'50\' cy=\'50\' r=\'40\' fill=\'rgba(0,0,0,0.1)\'/%3E%3C/svg%3E")';
+                            delete cell.dataset.oldColor;
+                        }
                     }
 
                     function clearArrowRemote([x, y]) {
@@ -37077,6 +37185,13 @@ const packs = function () {
                         }
 
                         gameData.map[slot] = 0;
+                        if (player.isMine()) {
+                            getTableCell(x, y).style.backgroundColor = '#8c8c8c';
+                        } else if (player.isOnline()) {
+                            player.send(function (x, y, getTableCell) {
+                                getTableCell(x, y).style.backgroundColor = '#8c8c8c';
+                            }, x, y, getTableCell);
+                        }
                     }
 
                     function waitCellClick(locations) {
@@ -37242,21 +37357,18 @@ const packs = function () {
                             const targetCell = getTableCell(x, y);
 
                             (async () => {
-                                await asyncAnimate(targetChess, [
-                                    { transform: 'scale(1)' },
-                                    { transform: 'scale(1.25)' },
+                                const anim = targetChess.animate([
+                                    { transform: 'scale(1) translateY(0)', offset: 0 },
+                                    { transform: 'scale(1.2) translateY(-25px)', offset: 0.5 },
+                                    { transform: 'scale(1) translateY(0)', offset: 1 },
                                 ], {
-                                    duration: 100,
-                                    fill: 'forwards',
+                                    duration: 300,
+                                    easing: 'linear',
                                 });
-                                await game.$elementGoto(targetChess, targetCell, 'first', 300, 'ease-in-out');
-                                await asyncAnimate(targetChess, [
-                                    { transform: 'scale(1.25)' },
-                                    { transform: 'scale(1)' },
-                                ], {
-                                    duration: 100,
-                                    fill: 'forwards',
-                                });
+                                await Promise.all([
+                                    new Promise(r => anim.onfinish = r),
+                                    game.$elementGoto(targetChess, targetCell, 'first', 300, 'linear')
+                                ]);
                             })();
                         }
 
@@ -37520,6 +37632,66 @@ const packs = function () {
 
                                         if (reason) {
                                             win = reason; //这里其实是武将名称喵
+                                            
+                                            // 登阶成功，在当前位置播放一个击败的动画（手动绘制斩击特效+受到伤害音效）
+                                            game.playAudio('..', 'extension', '活动武将/audio/skill', 'MiniDengjieSlash');
+                                            
+                                            function playSlash(cell) {
+                                                if (!cell) return;
+                                                const slash = document.createElement('div');
+                                                slash.style.position = 'absolute';
+                                                slash.style.left = '50%';
+                                                slash.style.top = '50%';
+                                                slash.style.width = '120px';
+                                                slash.style.height = '120px';
+                                                slash.style.marginLeft = '-60px';
+                                                slash.style.marginTop = '-60px';
+                                                slash.style.backgroundImage = 'linear-gradient(45deg, transparent 40%, rgba(255,30,30,0.9) 45%, rgba(255,255,255,1) 50%, rgba(255,30,30,0.9) 55%, transparent 60%)';
+                                                slash.style.zIndex = '100';
+                                                slash.style.pointerEvents = 'none';
+                                                slash.style.transformOrigin = 'center';
+                                                cell.appendChild(slash);
+                                                slash.animate([
+                                                    { opacity: 0, transform: 'scale(0.5)' },
+                                                    { opacity: 1, transform: 'scale(1.2)' },
+                                                    { opacity: 0, transform: 'scale(1.5)' }
+                                                ], { duration: 400, easing: 'ease-out' });
+                                                setTimeout(() => slash.remove(), 400);
+                                            }
+
+                                            if (player.isMine()) {
+                                                playSlash(getTableCell(x, y));
+                                            } else if (player.isOnline()) {
+                                                player.send(function(x, y, getTableCell) {
+                                                    function playSlashHelper(cell) {
+                                                        if (!cell) return;
+                                                        const slash = document.createElement('div');
+                                                        slash.style.position = 'absolute';
+                                                        slash.style.left = '50%';
+                                                        slash.style.top = '50%';
+                                                        slash.style.width = '120px';
+                                                        slash.style.height = '120px';
+                                                        slash.style.marginLeft = '-60px';
+                                                        slash.style.marginTop = '-60px';
+                                                        slash.style.backgroundImage = 'linear-gradient(45deg, transparent 40%, rgba(255,30,30,0.9) 45%, rgba(255,255,255,1) 50%, rgba(255,30,30,0.9) 55%, transparent 60%)';
+                                                        slash.style.zIndex = '100';
+                                                        slash.style.pointerEvents = 'none';
+                                                        slash.style.transformOrigin = 'center';
+                                                        cell.appendChild(slash);
+                                                        slash.animate([
+                                                            { opacity: 0, transform: 'scale(0.5)' },
+                                                            { opacity: 1, transform: 'scale(1.2)' },
+                                                            { opacity: 0, transform: 'scale(1.5)' }
+                                                        ], { duration: 400, easing: 'ease-out' });
+                                                        setTimeout(() => slash.remove(), 400);
+                                                    }
+                                                    playSlashHelper(getTableCell(x, y));
+                                                }, x, y, getTableCell);
+                                            }
+                                            
+                                            // 等待动画播放完毕，让玩家看得到特效
+                                            await new Promise(resolve => setTimeout(resolve, 800)); 
+                                            
                                             break;
                                         }
                                     } else {
