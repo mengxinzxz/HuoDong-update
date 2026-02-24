@@ -863,34 +863,35 @@ const packs = function () {
             qin_changjian: {
                 audio: 'ext:活动武将/audio/skill:true',
                 mod: {
-                    attackFrom(from, to, distance) {
-                        return distance - 1;
+                    attackRange(player, num) {
+                        return num + 1;
                     },
                 },
                 trigger: { player: 'useCard2' },
                 filter(event, player) {
-                    return event.card && event.card.name == 'sha';
+                    return event.card.name === 'sha';
                 },
                 forced: true,
-                content() {
-                    'step 0'
-                    player.chooseTarget(get.prompt('qin_changjian'), '为' + get.translation(trigger.card) + '增加一个目标，或取消并令' + get.translation(trigger.card) + '伤害＋1', function (card, player, target) {
-                        return !_status.event.sourcex.includes(target) && player.canUse('sha', target);
-                    }).set('sourcex', trigger.targets).set('ai', function (target) {
-                        var player = _status.event.player;
-                        return get.effect(target, { name: 'sha' }, player, player);
-                    });
-                    'step 1'
-                    if (result.bool) {
-                        if (!event.isMine() && !_status.connectMode) game.delayx();
-                        event.target = result.targets[0];
-                        player.line(event.target);
-                        trigger.targets.push(event.target);
+                async content(event, trigger, player) {
+                    const result = await player.chooseTarget(get.translation(event.name) + '为' + get.translation(trigger.card) + '增加一个目标，或取消并令' + get.translation(trigger.card) + '伤害+1', (card, player, target) => {
+                        const evt = get.event().getTrigger();
+                        return !evt.targets.includes(target) && lib.filter.targetEnabled2(evt.card, player, target);
+                    }).set('ai', target => {
+                        const player = get.player(), evt = get.event().getTrigger();
+                        return get.effect(target, evt.card, player, player);
+                    }).forResult();
+                    if (result?.bool && result.targets?.length) {
+                        const target = result.targets[0];
+                        player.line(target);
+                        trigger.targets.add(target);
+                        game.log(target, '成为了', trigger.card, '的额外目标');
                     }
                     else {
-                        if (!trigger.baseDamage) ttrigger.baseDamage = 1;
+                        trigger.baseDamage ??= 1;
                         trigger.baseDamage++;
+                        game.log(trigger.card, '造成的伤害', '#y+1');
                     }
+                    await game.delayx();
                 },
             },
             qin_liangju: {
@@ -942,13 +943,13 @@ const packs = function () {
                 check(event, player) {
                     return get.attitude(player, event.player) < 0;
                 },
-                content() {
-                    'step 0'
-                    player.judge(function (card) {
-                        return get.color(card) == 'black' ? 1 : -1;
-                    });
-                    'step 1'
-                    if (result.judge > 0) player.useCard({ name: 'sha' }, trigger.player, false);
+                logTarget: 'player',
+                async content(event, trigger, player) {
+                    const result = await player.judge(card => get.color(card) == 'black' ? 1 : -1).forResult();
+                    if (result?.bool) {
+                        const card = new lib.element.VCard({ name: 'sha' });
+                        if (player.canUse(card, trigger.player, false)) await player.useCard(card, trigger.player, false, 'noai');
+                    }
                 },
                 ai: {
                     threaten: 0.5,
@@ -979,14 +980,19 @@ const packs = function () {
                 },
             },
             qin_shashen: {
-                group: 'qin_shashen_draw',
                 audio: 'ext:活动武将/audio/skill:true',
+                trigger: { source: 'damageSource' },
                 enable: ['chooseToUse', 'chooseToRespond'],
+                filter(event, player) {
+                    if (event.name === 'damage') {
+                        if (!event.card || event.card.name !== 'sha') return false;
+                        const history = player.getHistory('useCard', evt => evt.card == event.card)[0];
+                        return player.getHistory('useCard', evt => evt.card.name === 'sha').indexOf(history) == 0;
+                    }
+                    return player.hasCard(card => event.filterCard(get.autoViewAs({ name: 'sha' }, [card]), player, event));
+                },
                 filterCard: true,
                 viewAs: { name: 'sha' },
-                viewAsfilter(player) {
-                    if (!player.countCards('h')) return false;
-                },
                 prompt: '将一张手牌当作【杀】使用或打出',
                 check(card) {
                     return 5 - get.value(card);
@@ -997,25 +1003,10 @@ const packs = function () {
                         if (!player.countCards('h')) return false;
                     },
                 },
-                subSkill: {
-                    draw: {
-                        audio: 'qin_shashen',
-                        trigger: { source: 'damageSource' },
-                        filter(event, player) {
-                            if (!event.card || event.card.name != 'sha') return false;
-                            var history = player.getHistory('useCard', function (evt) {
-                                return evt.card == event.card;
-                            })[0];
-                            return player.getHistory('useCard', function (evt) {
-                                return evt.card.name == 'sha';
-                            }).indexOf(history) == 0;
-                        },
-                        forced: true,
-                        locked: false,
-                        content() {
-                            player.draw();
-                        },
-                    },
+                forced: true,
+                locked: false,
+                content() {
+                    player.draw();
                 },
             },
             qin_changsheng: {
@@ -1086,18 +1077,25 @@ const packs = function () {
                 usable: 1,
                 prompt: '将一张牌交给一名角色，该角色于其回合外无法使用或打出牌直到你的下个回合开始',
                 content() {
-                    target.gain(cards, player, 'giveAuto');
+                    player.give(cards, target);
                     target.addSkill('qin_youmie_debuff');
-                    player.when('phaseBegin').vars({ target: target }).then(() => target.removeSkill('qin_youmie_debuff'));
+                    player.addSkill('qin_youmie_clear');
+                    player.markAuto('qin_youmie_clear', [target]);
                 },
                 ai: {
                     order: 7,
                     result: { target: -1 },
                 },
                 subSkill: {
+                    clear: {
+                        charlotte: true,
+                        onremove(player, skill) {
+                            player.getStorage(skill).forEach(target => target.removeSkill('qin_youmie_debuff'));
+                            delete player.storage[skill];
+                        },
+                    },
                     debuff: {
                         charlotte: true,
-                        onremove: true,
                         mark: true,
                         marktext: '灭',
                         mod: {
@@ -1164,7 +1162,7 @@ const packs = function () {
                 audio: 'ext:活动武将/audio/skill:true',
                 enable: 'phaseUse',
                 filter(event, player) {
-                    return player.countCards('he');
+                    return player.countDiscardableCards(player, 'he');
                 },
                 usable: 1,
                 chooseButton: {
@@ -1172,22 +1170,18 @@ const packs = function () {
                         return ui.create.dialog('###奇货###' + lib.translate.qin_qihuo_info);
                     },
                     chooseControl(event, player) {
-                        var list = [];
-                        for (var type2 of ['basic', 'trick', 'equip']) {
-                            if (player.countCards('he', { type: [type2].addArray(type2 == 'trick' ? ['delay'] : []) })) list.push(type2);
-                        }
-                        list.push('cancel2');
-                        return list;
+                        let list = player.getDiscardableCards(player, 'he').map(i => get.type2(i)).unique(), types = ['basic', 'trick', 'equip'];
+                        list.sort((a, b) => types.indexOf(b) - types.indexOf(a));
+                        return [...list.reverse(), 'cancel2'];
                     },
                     check(event, player) {
-                        var map = {};
-                        player.getCards('he').forEach(function (card) {
-                            var type = get.type2(card);
-                            if (!map[type]) map[type] = 0;
+                        const map = {};
+                        player.getDiscardableCards(player, 'he').forEach(card => {
+                            const type = get.type2(card);
+                            map[type] ??= 0;
                             map[type]++;
                         });
-                        var list = Object.keys(map).sort((a, b) => map[b] - map[a]);
-                        return list[0];
+                        return Object.keys(map).sort((a, b) => map[b] - map[a])[0];
                     },
                     backup(result, player) {
                         return {
@@ -1195,9 +1189,7 @@ const packs = function () {
                             type: result.control,
                             delay: 0,
                             content() {
-                                var cards = player.getCards('he', function (card) {
-                                    return get.type2(card) == lib.skill.qin_qihuo_backup.type;
-                                });
+                                const cards = player.getDiscardableCards(player, 'he', { type: lib.skill.qin_qihuo_backup.type });
                                 player.discard(cards);
                                 player.draw(cards.length);
                             },
@@ -1208,6 +1200,7 @@ const packs = function () {
                     order: 1,
                     result: { player: 1 },
                 },
+                subSkill: { backup: {} },
             },
             qin_chunqiu: {
                 audio: 'ext:活动武将/audio/skill:true',
@@ -1455,7 +1448,6 @@ const packs = function () {
             qin_yintui: '隐退',
             qin_yintui_info: '锁定技，当你失去最后一张手牌时，你翻面。你的武将牌背面朝上时，若受到伤害，令此伤害-1，然后摸一张牌。',
             qin_qihuo: '奇货',
-            qin_qihuo_backup: '奇货',
             qin_qihuo_info: '出牌阶段限一次，你可以弃置一种类型的牌，然后摸等量的牌。',
             qin_chunqiu: '春秋',
             qin_chunqiu_info: '锁定技，你于每个回合使用或打出第一张牌时，摸一张牌。',
