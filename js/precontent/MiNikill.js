@@ -40022,7 +40022,7 @@ const packs = function () {
             Mbaby_re_zhangchunhua: '欢杀界张春华',
             Mbaby_xiahoudun: '欢杀夏侯惇',
             Mbaby_re_xiahoudun: '欢杀界夏侯惇',
-            Mbaby_re_xuzhu: '欢杀界许诸',
+            Mbaby_re_xuzhu: '欢杀界许褚',
             Mbaby_re_zhangliao: '欢杀界张辽',
             Mbaby_zhanghe: '欢杀张郃',
             Mbaby_yujin: '欢杀于禁',
