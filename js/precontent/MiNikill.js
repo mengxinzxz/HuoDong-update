@@ -30535,34 +30535,27 @@ const packs = function () {
                 audio: 'ol_wuqian',
                 trigger: { player: 'useCardToPlayered' },
                 filter(event, player) {
-                    if (!_status.currentPhase || player != _status.currentPhase) return false;
-                    if (!['sha', 'juedou'].includes(event.card.name) || !event.isFirstTarget) return false;
+                    if (_status.currentPhase !== player || !['sha', 'juedou'].includes(event.card.name)) return false;
                     return player.getHistory('useCard', function (evt) {
                         return (evt.card.name == 'sha' || evt.card.name == 'juedou');
                     }).indexOf(event.getParent()) == 0;
                 },
                 forced: true,
-                logTarget: 'targets',
-                content() {
-                    for (var target of trigger.targets) {
-                        target.addTempSkill('qinggang2');
-                        target.storage.qinggang2.add(trigger.card);
-                        if (trigger.card.name == 'sha') {
-                            var id = target.playerid;
-                            var map = trigger.getParent().customArgs;
-                            if (!map[id]) map[id] = {};
-                            if (typeof map[id].shanRequired == 'number') map[id].shanRequired++;
-                            else map[id].shanRequired = 2;
-                        }
-                        else {
-                            var id = target.playerid;
-                            var idt = target.playerid;
-                            var map = trigger.getParent().customArgs;
-                            if (!map[idt]) map[idt] = {};
-                            if (!map[idt].shaReq) map[idt].shaReq = {};
-                            if (!map[idt].shaReq[id]) map[idt].shaReq[id] = 1;
-                            map[idt].shaReq[id]++;
-                        }
+                logTarget: 'target',
+                async content(event, trigger, player) {
+                    const target = trigger.target, id = target.playerid;
+                    const map = trigger.getParent().customArgs;
+                    map[id] ??= {};
+                    target.addTempSkill('qinggang2');
+                    target.storage.qinggang2.add(trigger.card);
+                    if (trigger.card.name == 'sha') {
+                        map[id].shanRequired ??= 1;
+                        map[id].shanRequired++;
+                    }
+                    else {
+                        map[id].shaReq ??= {};
+                        map[id].shaReq[id] ??= 1;
+                        map[id].shaReq[id]++;
                     }
                 },
                 ai: {
@@ -30576,7 +30569,6 @@ const packs = function () {
                 },
             },
             minishenfen: {
-                mark: true,
                 limited: true,
                 audio: 'ol_shenfen',
                 enable: 'phaseUse',
@@ -30585,52 +30577,47 @@ const packs = function () {
                 },
                 skillAnimation: true,
                 animationColor: 'metal',
-                content() {
-                    'step 0'
-                    player.awakenSkill('minishenfen');
-                    player.loseHp(3);
-                    event.delay = false;
-                    event.targets = game.filterPlayer();
-                    event.targets.remove(player);
-                    event.targets.sort(lib.sort.seat);
-                    player.line(event.targets, 'green');
-                    event.targets2 = event.targets.slice(0);
-                    event.targets3 = event.targets.slice(0);
-                    'step 1'
-                    if (event.targets2.length) {
-                        event.targets2.shift().damage('nocard');
-                        event.redo();
+                async content(event, trigger, player) {
+                    player.awakenSkill(event.name);
+                    await player.loseHp(3);
+                    const targets = game.filterPlayer(i => i !== player).sortBySeat();
+                    player.line(targets);
+                    for (let i = 1; i <= 3; i++) {
+                        for (const target of targets) {
+                            switch (i) {
+                                case 1:
+                                    await target.damage();
+                                    break;
+                                case 2:
+                                    const cards = target.getDiscardableCards(target, 'e');
+                                    if (cards.length) {
+                                        const next = target.discard(cards);
+                                        next.delay = false;
+                                        await next;
+                                        await game.delay(0.5);
+                                    }
+                                    break;
+                                case 3:
+                                    if (target.countDiscardableCards(target, 'h') > 0) {
+                                        const next = target.chooseToDiscard(4, 'h', true);
+                                        next.delay = false;
+                                        await next;
+                                        await game.delay(0.5);
+                                    }
+                                    break;
+                            }
+                        }
                     }
-                    'step 2'
-                    if (event.targets.length) {
-                        event.current = event.targets.shift()
-                        if (event.current.countCards('e')) event.delay = true;
-                        event.current.discard(event.current.getCards('e')).delay = false;
-                    }
-                    'step 3'
-                    if (event.delay) game.delay(0.5);
-                    event.delay = false;
-                    if (event.targets.length) event.goto(2);
-                    'step 4'
-                    if (event.targets3.length) {
-                        var target = event.targets3.shift();
-                        target.chooseToDiscard(4, 'h', true).delay = false;
-                        if (target.countCards('h')) event.delay = true;
-                    }
-                    'step 5'
-                    if (event.delay) game.delay(0.5);
-                    event.delay = false;
-                    if (event.targets3.length) event.goto(4);
+                    await game.delayx();
                 },
                 ai: {
                     order: 10,
                     result: {
                         player(player) {
-                            if (player.hp < 5 || player.hasUnknown()) return 0;
-                            return game.countPlayer(function (current) {
-                                if (current != player) {
-                                    return Math.sign(get.damageEffect(current, player, player));
-                                }
+                            if (player.hasUnknown()) return 0;
+                            return game.countPlayer(current => {
+                                if (current === player) return 0;
+                                return Math.sign(get.damageEffect(current, player, player));
                             });
                         },
                     },
