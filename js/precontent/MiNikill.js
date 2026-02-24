@@ -30493,7 +30493,7 @@ const packs = function () {
                         audio: 'redaoji',
                         inherit: 'redaoji',
                         filter(event, player) {
-                            if (player === event.player || get.subtype(event.card) !== 'equip1' || !event.cards?.someInD()) return false;
+                            if (player === event.player || get.subtype(event.card) !== 'equip1') return false;
                             return player.getStorage('minifuzhong_daoji').includes(event.player);
                         },
                         async cost(event, trigger, player) {
