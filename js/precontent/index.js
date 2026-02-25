@@ -150,21 +150,16 @@ export async function precontent(bilibilicharacter) {
         ruleSkill: true,
         trigger: { global: 'gameStart' },
         filter(event, player) {
-            return game.hslh && (player.name && player.name == 'qin_yingzheng') || (player.name2 && player.name2 == 'qin_yingzheng');
+            return game.hslh && get.nameList(player).includes('qin_yingzheng');
         },
         silent: true,
-        priority: 1 + 1 + 4 + 5 + 1 + 4 + 1 + 9 + 1 + 9 + 8 + 1 + 0,
         content() {
             //传国玉玺
-            var card1 = get.cardPile2(function (card1) {
-                return card1.name == 'qin_chuanguoyuxi';
-            });
-            if (card1) player.equip(card1);
-            //真龙长剑
-            var card2 = get.cardPile2(function (card2) {
-                return card2.name == 'qin_zhenlongchangjian';
-            });
-            if (card2) player.equip(card2);
+            const chuanguoyuxi = get.cardPile2(card => card.name === 'qin_chuanguoyuxi' && player.canEquip(card, true));
+            if (chuanguoyuxi) player.equip(chuanguoyuxi);
+            //真龙长剑=
+            const zhenlongchangjian = get.cardPile2(card => card.name === 'qin_zhenlongchangjian' && player.canEquip(card, true));
+            if (zhenlongchangjian) player.equip(zhenlongchangjian);
         },
     };
     //座位号显示
