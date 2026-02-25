@@ -197,10 +197,10 @@ const packs = function () {
             },
             bilibili_yangwu: {
                 trigger: { player: 'phaseZhunbeiBegin' },
-                forced: true,
                 logTarget(event, player) {
                     return game.filterPlayer(target => target !== player).sortBySeat();
                 },
+                forced: true,
                 async content(event, trigger, player) {
                     for (const target of event.targets) await target.damage();
                     await player.loseHp();
@@ -208,10 +208,10 @@ const packs = function () {
             },
             bilibili_yanglie: {
                 trigger: { player: 'phaseZhunbeiBegin' },
-                forced: true,
                 logTarget(event, player) {
                     return game.filterPlayer(target => target !== player).sortBySeat();
                 },
+                forced: true,
                 async content(event, trigger, player) {
                     await player.gainMultiple(event.targets, 'he');
                     await player.loseHp();
@@ -223,8 +223,8 @@ const packs = function () {
                     if (event.numFixed) return false;
                     return get.mode() === 'identity' ? event.player === player : player.getFriends(true).includes(event.player);
                 },
-                logTarget: 'player',
                 forced: true,
+                logTarget: 'player',
                 content() {
                     trigger.num++;
                 },
@@ -269,6 +269,7 @@ const packs = function () {
                 },
                 forced: true,
                 forceDie: true,
+                logTarget: 'source',
                 async content(event, trigger, player) {
                     player.addMark(event.name, 1, false);
                     const targets = (get.mode() === 'identity' ? [player] : player.getFriends(true)).filter(i => i.isIn());
