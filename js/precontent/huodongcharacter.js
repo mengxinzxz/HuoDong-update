@@ -1519,7 +1519,7 @@ const packs = function () {
                     var suitList = lib.suit.randomGet();
                     var typeList = list.randomGet();
                     var numberList = Array.from({ length: 13 }).map((_, i) => i + 1).randomGet();
-                    var skills = lib.character[trigger.player.name][3]
+                    var skills = lib.character[trigger.player.name]?.skills ?? [];
                     var card = {
                         type: 'equip',
                         subtype: typeList,
@@ -1726,16 +1726,13 @@ const packs = function () {
                 $createButton(item, type, position, noclick, node, player) {
                     node = ui.create.buttonPresets.character(item, 'character', position, noclick);
                     const info = lib.character[item];
-                    const skills = info[3].filter(function (skill) {
+                    const skills = (info.skills ?? []).filter(function (skill) {
                         var info = get.info(skill);
                         return !get.skillCategoriesOf(skill, player).length && info && (!info.unique || info.gainable);
                     });
                     if (skills.length) {
                         const skillstr = skills.map(i => `[${get.translation(i)}]`).join('<br>');
-                        const skillnode = ui.create.caption(
-                            `<div class="text" data-nature=${get.groupnature(info[1], 'raw')
-                            }m style="font-family: ${(lib.config.name_font || 'xinwei')
-                            },xinwei">${skillstr}</div>`, node);
+                        const skillnode = ui.create.caption(`<div class="text" data-nature=${get.groupnature(info[1], 'raw')}m style="font-family: ${(lib.config.name_font || 'xinwei')},xinwei">${skillstr}</div>`, node);
                         skillnode.style.left = '2px';
                         skillnode.style.bottom = '2px';
                     }
@@ -1766,11 +1763,11 @@ const packs = function () {
                 getCharacter(player) {
                     if (!_status.characterlist) lib.skill.pingjian.initList();
                     return _status.characterlist.filter(function (name) {
-                        if (name.indexOf('zuoci') != -1 || !lib.character[name] || !lib.character[name][3]) return false;
-                        return lib.character[name][3].filter(function (skill) {
-                            var info = get.info(skill);
+                        if (name.includes('zuoci') || name.includes('xushao')) return false;
+                        return lib.character[name]?.skills?.some(skill => {
+                            const info = get.info(skill);
                             return !get.skillCategoriesOf(skill, player).length && info && (!info.unique || info.gainable);
-                        }).length;
+                        });
                     });
                 },
                 getSkills(characters, player) {
@@ -1845,7 +1842,10 @@ const packs = function () {
                 },
                 skillBlocker(skill, player) {
                     if (!player.invisibleSkills.includes(skill) || skill == 'gz_huashen') return false;
-                    return !player.hasSkill('gz_huashen');
+                    player.removeSkillBlocker('gz_huashen');
+                    const bool = !player.hasSkill('gz_huashen');
+                    player.addSkillBlocker('gz_huashen');
+                    return bool;
                 },
                 intro: {
                     mark(dialog, storage, player) {
@@ -2687,12 +2687,12 @@ const packs = function () {
                         list = [];
                         for (var i in lib.character) {
                             if (lib.filter.characterDisabled2(i) || lib.filter.characterDisabled(i)) continue;
-                            list.push(i);
+                            if ((lib.character[i]?.skills ?? []).length > 0) list.push(i);
                         }
                     }
                     for (var i of list) {
                         if (i.indexOf('gz_jun') == 0) continue;
-                        for (var j of lib.character[i][3]) {
+                        for (var j of lib.character[i].skills) {
                             var skill = lib.skill[j];
                             if (target.hasSkill(j)) continue;
                             if (!skill || skill.zhuSkill) continue;
@@ -3137,8 +3137,8 @@ const packs = function () {
                     _status.characterlist.randomSort();
                     for (var i = 0; i < _status.characterlist.length; i++) {
                         var name = _status.characterlist[i];
-                        if (lib.character[name][1] == 'shen' || name.indexOf('zuoci') != -1 || name.indexOf('xushao') != -1 || name.indexOf('key') == 0 || lib.skill.rehuashen.banned.includes(name) || player.storage[skill].character.includes(name)) continue;
-                        var skills = lib.character[name][3];
+                        if (lib.character[name][1] == 'shen' || name.includes('zuoci') || name.includes('xushao') || lib.skill.rehuashen.banned.includes(name) || player.storage[skill].character.includes(name)) continue;
+                        var skills = lib.character[name]?.skills ?? [];
                         for (var j = 0; j < skills.length; j++) {
                             var info = lib.skill[skills[j]];
                             if (info.charlotte || (info.unique && !info.gainable) || info.juexingji || info.limited || info.zhuSkill || info.hiddenSkill || info.dutySkill) skills.splice(j--, 1);
@@ -3238,8 +3238,7 @@ const packs = function () {
                     },
                     backup(links, player) {
                         if (player.storage.BThuashen.character.includes(links[1])) links.reverse();
-                        var name = links[1][2];
-                        var nature = links[1][3] || null;
+                        var name = links[1][2], nature = links[1][3] || null;
                         return {
                             audio: 'yigui',
                             filterCard: true,
@@ -3260,9 +3259,7 @@ const packs = function () {
                     },
                     prompt(links, player) {
                         if (player.storage.BThuashen.character.includes(links[1])) links.reverse();
-                        var character = links[0];
-                        var name = links[1][2];
-                        var nature = links[1][3] || null;
+                        var character = links[0], name = links[1][2], nature = links[1][3] || null;
                         return '弃置“' + get.translation(character) + '”并将一张手牌当作' + (get.translation(nature) || '') + get.translation(name) + '使用';
                     },
                 },
@@ -5336,7 +5333,7 @@ const packs = function () {
                     for (const player of players) list.removeArray([player.name, player.name1, player.name2]);
                     let skills = [];
                     for (const i of list) {
-                        skills.addArray((lib.character[i][3] || []).filter(skill => {
+                        skills.addArray((lib.character[i]?.skills ?? []).filter(skill => {
                             var info = get.info(skill);
                             return info && !info.zhuSkill && !info.hiddenSkill && !info.charlotte && !info.groupSkill && !info.limited && !info.juexingji;
                         }));
@@ -12017,7 +12014,7 @@ const packs = function () {
                         list = list.randomGets(num);
                         const map = {};
                         for (const name of list) {
-                            let skills = (lib.character[name][3] || []).filter(skill => {
+                            let skills = (lib.character[name]?.skills ?? []).filter(skill => {
                                 const info = get.info(skill);
                                 return info && get.skillInfoTranslation(skill, player) /* && !info.zhuSkill && !info.limited && !info.juexingji && !info.hiddenSkill && !info.charlotte && !info.dutySkill */;
                             });
