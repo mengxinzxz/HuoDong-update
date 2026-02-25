@@ -193,40 +193,6 @@ export async function precontent(bilibilicharacter) {
             });
         },
     };
-    //神张飞拼点彩蛋
-    lib.skill._bol_shenzhangfei_chat = {
-        charlotte: true,
-        ruleSkill: true,
-        trigger: { player: ['chooseToCompareAfter', 'compareMultipleAfter'], target: ['chooseToCompareAfter', 'compareMultipleAfter'] },
-        filter(event, player) {
-            return (player.name == 'shen_zhangfei' || player.name2 == 'shen_zhangfei') && event.num1 == event.num2;
-        },
-        priority: -3,
-        silent: true,
-        content() {
-            player.chat('俺也一样');
-            game.broadcastAll(function () {
-                if (lib.config.background_speak) game.playAudio('..', 'extension', '活动武将/audio/effect', 'shen_zhangfei_anyeyiyang');
-            });
-        },
-    };
-    //神张飞俺颇有家资彩蛋
-    lib.skill._bol_shenzhangfei_use = {
-        charlotte: true,
-        ruleSkill: true,
-        trigger: { player: 'useCard' },
-        filter(event, player) {
-            return (player.name == 'shen_zhangfei' || player.name2 == 'shen_zhangfei') && event.card.name == 'wugu';
-        },
-        priority: -3,
-        silent: true,
-        content() {
-            player.chat('俺颇有家资');
-            game.broadcastAll(function () {
-                if (lib.config.background_speak) game.playAudio('..', 'extension', '活动武将/audio/effect', 'shen_zhangfei_anpoyoujiazi');
-            });
-        },
-    };
     /*
     //点击显示
     game.getBolPhone = function () {
