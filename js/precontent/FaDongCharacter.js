@@ -18,10 +18,10 @@ const packs = function () {
             FD_dongyue: ['male', 'qun', 4, ['bilibili_kuangxi', 'bilibili_mojun']],
             FD_niufudongxie: ['double', 'qun', 4, ['bilibili_tunjun', 'bilibili_jiaoxia', 'bilibili_mojun'], ['character:tw_niufudongxie']],
             FD_zhangji: ['male', 'qun', 4, ['bilibili_jielve', 'bilibili_mojun'], ['character:zhangji']],
-            //FD_hubenjun: ['male', 'qun', 5, [], ['forbidai']],
+            //FD_hubenjun: ['male', 'qun', 5, ['bilibili_longying'], ['forbidai']],
             FD_baolvejun: ['male', 'qun', 3, ['bilibili_baoying'], ['forbidai']],
             FD_fengyaojun: ['female', 'qun', 3, ['bilibili_fengying'], ['forbidai']],
-            //FD_longxiangjun: ['male', 'qun', 4, [], ['forbidai']],
+            //FD_longxiangjun: ['male', 'qun', 4, ['bilibili_huying'], ['forbidai']],
             FD_feixiongjunzuo: ['male', 'qun', 4, ['bilibili_jingqi'], ['forbidai']],
             FD_feixiongjunyou: ['male', 'qun', 4, ['bilibili_ruiqi'], ['forbidai']],
             FD_sunjian: ['male', 'qun', 6, ['gzyinghun', 'bilibili_polu']],
@@ -243,6 +243,8 @@ const packs = function () {
                     trigger.player.recoverTo(1);
                 },
             },
+            bilibili_longying: {},
+            bilibili_huying: {},
             bilibili_moqu: {
                 trigger: { global: ['phaseEnd', 'damageEnd'] },
                 filter(event, player) {
@@ -328,8 +330,12 @@ const packs = function () {
             bilibili_baoying: '豹营',
             bilibili_baoying_info: '限定技，友方角色进入濒死状态时，你可以令其回复体力至1点。',
             bilibili_baoying_info_identity: '限定技，当你进入濒死状态时，你可以回复体力至1点。',
-            //FD_hubenjun: '虎贲军',
-            //FD_longxiangjun: '龙骧军',
+            FD_longxiangjun: '龙骧军',
+            bilibili_longying: '龙营',
+            bilibili_longying_info: '',
+            FD_hubenjun: '虎贲军',
+            bilibili_huying: '虎营',
+            bilibili_huying_info: '',
             FD_huaxiong: '伐董华雄',
             FD_huaxiong_prefix: '伐董',
             bilibili_moqu: '魔躯',
@@ -340,20 +346,6 @@ const packs = function () {
             bilibili_polu: '破掳',
             bilibili_polu_info: '锁定技，友方角色杀死一名敌方角色或你死亡时，你令友方角色各摸X张牌（X为此技能发动的次数）。',
             bilibili_polu_info_identity: '锁定技，当你杀死一名其他角色后，你摸X张牌（X为此技能发动的次数）。',
-        },
-        dynamicTranslate: {
-            bilibili_longying(player) {
-                if (!game.hasPlayer(function (current) {
-                    return current = player.storage.myjiangling;
-                })) return '你的将领呢？';
-                return '锁定技，出牌阶段开始时，若' + get.translation(player.storage.myjiangling) + '已受伤，则你失去1点体力，然后令其回复1点体力并摸一张牌。';
-            },
-            bilibili_huying(player) {
-                if (!game.hasPlayer(function (current) {
-                    return current = player.storage.myjiangling;
-                })) return '你的将领呢？';
-                return '锁定技，出牌阶段开始时，除非你将一张【杀】交给' + get.translation(player.storage.myjiangling) + '，否则失去1点体力并令' + get.translation(player.storage.myjiangling) + '随机获得牌堆中的一张【杀】。';
-            },
         },
     };
     for (let i in FaDongCharacter.character) {
