@@ -1803,12 +1803,7 @@ const packs = function () {
                         return player.getUseValue(button.link);
                     }).set('target', player);
                     'step 4'
-                    if (result.bool) {
-                        var card = result.links[0];
-                        target.$gain2(card, false);
-                        game.delayx();
-                        target.chooseUseTarget(true, card, false);
-                    }
+                    if (result?.bool && result.links?.length) target.chooseUseTarget(true, result.links[0], false);
                 },
                 ai: {
                     order: 7,
@@ -1836,23 +1831,6 @@ const packs = function () {
                             trigger.player.line(player);
                             trigger.targets.push(player);
                             game.log(player, '成为了', trigger.card, '的额外目标');
-                        },
-                        group: 'fh_yinge_buff2',
-                    },
-                    buff2: {
-                        charlotte: true,
-                        trigger: { global: 'useCardBefore' },
-                        filter(event, player) {
-                            return event.cards && event.getParent(2).name == 'fh_yinge' && event.getParent(2).player == player && event.getParent(2).targets[0] == event.player;
-                        },
-                        forced: true,
-                        popup: false,
-                        firstDo: true,
-                        content() {
-                            trigger.fromRenku = true;
-                            _status.renku.removeArray(trigger.cards);
-                            game.updateRenku();
-                            trigger.player.when('useCard1').filter(evt => evt == trigger).then(() => player.$throw(trigger.cards, 1000));
                         },
                     },
                 },
