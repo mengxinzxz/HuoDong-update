@@ -272,11 +272,11 @@ const packs = function () {
                 logTarget: 'player',
                 content() {
                     'step 0'
-                    var num = Math.max(1, trigger.player.countMark('qin_haizhong'));
-                    event.num = num;
-                    trigger.player.chooseToDiscard('害忠：弃置一张红色牌，或受到' + num + '点伤害', 'he', { color: 'red' }).ai = lib.skill.qin_bianfa.check;
+                    var num = event.num = Math.max(1, trigger.player.countMark('qin_haizhong'));
+                    trigger.player.chooseToDiscard('害忠：弃置一张红色牌，或受到' + num + '点伤害', 'he', { color: 'red' }).set('ai', card => 1 / (get.value(card) || 0.5));
                     'step 1'
-                    if (!result.bool) trigger.player.damage(num);
+                    if (!result?.bool) trigger.player.damage(num);
+                    'step 2'
                     trigger.player.addMark('qin_haizhong', 1);
                 },
             },
@@ -296,7 +296,10 @@ const packs = function () {
                     for (const target of event.targets.sortBySeat()) {
                         if (!target.isIn()) continue;
                         const result = target.countDiscardableCards(target, 'h') ? await target.choosePlayerCard('h', '弃置一张手牌或失去1点体力', target).set('ai', card => {
-                            return lib.skill.qin_bianfa.check(card);
+                            const player = get.player();
+                            if (get.tag(card, 'recover') && player.hasValueTarget(card)) return 0;
+                            if (get.effect(player, { name: 'losehp' }, player, player) > 0) return 0;
+                            return 1 / (get.value(card) || 0.5);
                         }).forResult() : { bool: false };
                         if (!result?.bool) await target.loseHp();
                     }
@@ -698,7 +701,10 @@ const packs = function () {
                 trigger: { player: 'phaseUseBegin' },
                 async cost(event, trigger, player) {
                     const list = ['nanman', 'wanjian', 'taoyuan', 'wugu'];
-                    const result = await player.chooseButton([get.prompt2(event.skill), [list, 'vcard']]).set('ai', button => {
+                    const result = await player.chooseButton([get.prompt2(event.skill), [list, 'vcard']]).set('filterButton', button => {
+                        const player = get.player();
+                        return player.hasUseTarget({ name: button.link[2] });
+                    }).set('ai', button => {
                         const player = get.player();
                         return player.getUseValue({ name: button.link[2] });
                     }).forResult();
