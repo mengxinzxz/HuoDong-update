@@ -157,7 +157,7 @@ export async function precontent(bilibilicharacter) {
             //传国玉玺
             const chuanguoyuxi = get.cardPile2(card => card.name === 'qin_chuanguoyuxi' && player.canEquip(card, true));
             if (chuanguoyuxi) player.equip(chuanguoyuxi);
-            //真龙长剑=
+            //真龙长剑
             const zhenlongchangjian = get.cardPile2(card => card.name === 'qin_zhenlongchangjian' && player.canEquip(card, true));
             if (zhenlongchangjian) player.equip(zhenlongchangjian);
         },
