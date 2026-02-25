@@ -346,17 +346,14 @@ const packs = function () {
                 audio: 'ext:活动武将/audio/skill:true',
                 trigger: { global: 'useCard' },
                 filter(event, player) {
-                    return event.player == _status.currentPhase && event.player != player && get.type(event.card) == 'trick' && event.player.getHistory('useCard', evt => get.type(evt.card) == 'trick').indexOf(event) == 0;
+                    return event.player === _status.currentPhase && event.player !== player && event.player.getHistory('useCard', evt => get.type(evt.card) == 'trick').indexOf(event) == 0;
                 },
                 check(event, player) {
                     return get.attitude(player, event.player) < 0;
                 },
                 logTarget: 'player',
                 content() {
-                    'step 0'
                     trigger.cancel();
-                    game.broadcastAll(ui.clear);
-                    'step 1'
                     game.delayx();
                 },
             },
@@ -364,21 +361,21 @@ const packs = function () {
                 audio: 'ext:活动武将/audio/skill:true',
                 marktext: '功',
                 intro: { content: 'mark', name: '垦草', name2: '功' },
-                trigger: { global: 'damageAfter' },
+                trigger: { global: 'damageSource' },
                 filter(event, player) {
-                    return event.source && event.source.isIn();
+                    return event.source?.isIn();
                 },
                 check(event, player) {
-                    if (get.attitude(player, event.source) > 0) return true;
-                    return false;
+                    return get.attitude(player, event.source) > 0;
                 },
                 logTarget: 'source',
                 content() {
-                    trigger.source.addMark('qin_kencao', trigger.num);
-                    if (trigger.source.countMark('qin_kencao') >= 3) {
-                        trigger.source.removeMark('qin_kencao', trigger.source.countMark('qin_kencao'));
-                        trigger.source.gainMaxHp();
-                        trigger.source.recover();
+                    const source = trigger.source;
+                    source.addMark('qin_kencao', trigger.num);
+                    if (source.countMark('qin_kencao') >= 3) {
+                        source.clearMark('qin_kencao');
+                        source.gainMaxHp();
+                        source.recover();
                     }
                 },
             },
@@ -547,19 +544,20 @@ const packs = function () {
                     }).ai = function (card) { return 100 - get.value(card) };
                     'step 1'
                     if (!result.bool) {
-                        player.chooseTarget(true, '将此【杀】转移给' + get.translation(trigger.player) + '攻击范围内的一名角色', true, function (card, player, target) {
+                        player.chooseTarget(`将${get.translation(trigger.card)}转移给${get.translation(trigger.player)}攻击范围内的一名角色`, function (card, player, target) {
                             var trigger = _status.event.getTrigger();
                             return target != player && target != trigger.player && !trigger.targets.includes(target) && lib.filter.targetInRange(trigger.card, trigger.player, target)
-                        }).ai = function (target) {
-                            var trigger = _status.event.getTrigger();
-                            return get.effect(target, trigger.card, trigger.player, _status.event.player);
-                        };
+                        }, true).set('ai', function (target) {
+                            const event = get.event(), player = get.player(), trigger = event.getTrigger();
+                            return get.effect(target, trigger.card, trigger.player, player, player);
+                        });
                     }
                     else event.finish();
                     'step 2'
                     if (result.bool) {
                         player.line(result.targets[0]);
                         trigger.targets[trigger.targets.indexOf(player)] = result.targets[0];
+                        game.log(result.targets[0], '成为了', trigger.card, '的新目标')
                     }
                 },
                 ai: {
@@ -581,13 +579,13 @@ const packs = function () {
                 forced: true,
                 content() {
                     'step 0'
-                    player.judge(function (result) {
-                        if (result.number == 6) return 1;
-                        return -1;
-                    }).set('no6', get.attitude(player, trigger.player) > 0);
+                    player.judge(result => result.number == 6 ? 3 : -1).set('no6', get.effect(trigger.card, player, trigger.player, player) > 0);
                     'step 1'
-                    if (result.bool) trigger.getParent().cancel();
-                    game.broadcastAll(ui.clear);
+                    if (result?.bool) {
+                        trigger.getParent().targets.length = 0;
+                        trigger.getParent().all_excluded = true;
+                        game.log(trigger.card, '被无效了');
+                    }
                 },
             },
             qin_qiaoshe: {
