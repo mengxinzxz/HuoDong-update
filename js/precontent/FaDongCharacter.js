@@ -14,35 +14,37 @@ const packs = function () {
         character: {
             FD_guosi: ['male', 'qun', 4, ['bilibili_yanglie', 'bilibili_mojun'], ['character:guosi']],
             FD_lijue: ['male', 'qun', 6, ['bilibili_yangwu', 'bilibili_mojun'], ['character:lijue']],
-            FD_fanchou: ['male', 'qun', 4, ['cxy_FanGong', 'bilibili_mojun'], ['character:fanchou']],
+            FD_fanchou: ['male', 'qun', 4, ['bilibili_fangong', 'bilibili_mojun'], ['character:fanchou']],
             FD_dongyue: ['male', 'qun', 4, ['bilibili_kuangxi', 'bilibili_mojun']],
-            FD_niufudongxie: ['double', 'qun', 4, ['bilibili_tunjun', 'cxy_JiaoXia', 'bilibili_mojun'], ['character:tw_niufudongxie']],
-            FD_zhangji: ['male', 'qun', 4, ['cxy_JieLve', 'bilibili_mojun'], ['character:zhangji']],
-            FD_hubenjun: ['male', 'qun', 5, ['bilibili_huying'], ['forbidai']],
-            FD_baolvejun: ['male', 'qun', 3, ['cxy_BaoYing'], ['forbidai']],
+            FD_niufudongxie: ['double', 'qun', 4, ['bilibili_tunjun', 'bilibili_jiaoxia', 'bilibili_mojun'], ['character:tw_niufudongxie']],
+            FD_zhangji: ['male', 'qun', 4, ['bilibili_jielve', 'bilibili_mojun'], ['character:zhangji']],
+            //FD_hubenjun: ['male', 'qun', 5, [], ['forbidai']],
+            FD_baolvejun: ['male', 'qun', 3, ['bilibili_baoying'], ['forbidai']],
             FD_fengyaojun: ['female', 'qun', 3, ['bilibili_fengying'], ['forbidai']],
-            FD_longxiangjun: ['male', 'qun', 4, ['bilibili_longying'], ['forbidai']],
+            //FD_longxiangjun: ['male', 'qun', 4, [], ['forbidai']],
             FD_feixiongjunzuo: ['male', 'qun', 4, ['bilibili_jingqi'], ['forbidai']],
-            FD_feixiongjunyou: ['male', 'qun', 4, ['cxy_RuiQi'], ['forbidai']],
+            FD_feixiongjunyou: ['male', 'qun', 4, ['bilibili_ruiqi'], ['forbidai']],
             FD_sunjian: ['male', 'qun', 6, ['gzyinghun', 'bilibili_polu']],
             FD_huaxiong: ['male', 'qun', 8, ['bilibili_moqu', 'yaowu', 'bilibili_mojun'], ['character:old_huaxiong']],
         },
         characterIntro: {
             dongyue: '董越，武威郡姑臧人也，东汉末年人，董卓手下东中郎将，与贾诩是同乡。曾被董卓派往渑池驻扎，抵御关东反董联军的进攻，董卓死后董越被董卓女婿牛辅所杀。',
         },
-        perfectPair: {
-        },
         skill: {
             bilibili_jingqi: {
+                mod: {
+                    globalFrom(from, to, distance) {
+                        if (get.mode() === 'identity') return distance - 1;
+                    },
+                },
                 global: 'bilibili_jingqi_distance',
                 ai: { threaten: 1.5 },
                 subSkill: {
                     distance: {
                         mod: {
                             globalFrom(from, to, distance) {
-                                if (game.hasPlayer(function (current) {
-                                    if (get.mode() == 'identity') return current.hasSkill('bilibili_jingqi') && get.attitude(current, from) > 0 && get.attitude(current, to) < 0;
-                                    return current.hasSkill('bilibili_jingqi') && from.isFriendOf(current) && to.isEnemyOf(current);
+                                if (get.mode() !== 'identity' && game.hasPlayer(current => {
+                                    return current.hasSkill('bilibili_jingqi') && current.getFriends(true).includes(from) && current.getEnemies(true).includes(to);
                                 })) return distance - 1;
                             },
                         },
@@ -50,150 +52,121 @@ const packs = function () {
                 },
             },
             bilibili_fengying: {
+                mod: {
+                    targetEnabled(card, player, target) {
+                        if (get.mode() === 'identity' && target.isMinHp(true) && target !== player) return false;
+                    },
+                },
                 global: 'bilibili_fengying_use',
-                ai: { threaten: 2.7 },
+                ai: { threaten: 3.5 },
                 subSkill: {
                     use: {
                         mod: {
                             targetEnabled(card, player, target) {
-                                if (game.hasPlayer(function (current) {
-                                    if (!current.hasSkill('bilibili_fengying')) return false;
-                                    if (get.mode() == 'identity') return get.attitude(current, target) > 0;
-                                    return target.isFriendOf(current);
-                                })) {
-                                    if (get.mode() == 'identity' ? get.attitude(player, target) < 0 : target.isEnemyOf(player) && !game.hasPlayer(function (current) {
-                                        return current != target && current.hp <= target.hp;
-                                    })) return false;
-                                }
+                                if (get.mode() !== 'identity' && target.isMinHp(true) && game.hasPlayer(current => {
+                                    return current.hasSkill('bilibili_fengying') && current.getFriends(true).includes(from) && current.getEnemies(true).includes(to);
+                                })) return false;
                             },
                         },
                     },
                 },
             },
             bilibili_mojun: {
-                trigger: { global: 'damageEnd' },
+                trigger: { global: 'damageSource' },
                 filter(event, player) {
-                    if (!event.source || !event.source.isIn() || !event.card || event.card.name != 'sha' || !event.notLink()) return false;
-                    if (get.mode() == 'identity') return get.attitude(player, event.source) > 0;
-                    return event.source.isFriendOf(player);
+                    if (event.getParent().type !== 'card' || event.card.name !== 'sha') return false;
+                    return event.source?.isIn() && get.mode() === 'identity' ? event.source === player : player.getFriends(true).includes(event.source);
                 },
                 forced: true,
-                content() {
-                    'step 0'
-                    trigger.source.judge(function (card) {
+                logTarget: 'source',
+                async content(event, trigger, player) {
+                    const result = await trigger.source.judge(card => {
                         return get.color(card) == 'black' ? 2 : -2;
-                    });
-                    'step 1'
-                    if (result.bool) {
-                        event.targets = game.filterPlayer(function (current) {
-                            if (get.mode() == 'identity') return get.attitude(player, current) > 0;
-                            return current.isFriendOf(player);
-                        });
-                        event.targets.sort(lib.sort.seat);
-                        game.asyncDraw(event.targets);
+                    }).forResult();
+                    if (result?.bool) {
+                        const targets = game.filterPlayer(current => {
+                            return get.mode() === 'identity' ? current === player : player.getFriends(true).includes(current);
+                        }).sortBySeat();
+                        if (targets.length > 0) {
+                            await game.asyncDraw(targets);
+                            await game.delayx();
+                        }
                     }
                 },
-                ai: {
-                    expose: 0.3,
-                    threaten: 2,
-                },
             },
-            mojun_self: {
-                trigger: { source: 'damageEnd' },
-                filter(event, player) {
-                    return event.card && event.card.name == 'sha';
-                },
-                forced: true,
-                content() {
-                    'step 0'
-                    player.judge(function (card) {
-                        return get.color(card) == 'black' ? 2 : -2;
-                    });
-                    'step 1'
-                    if (result.bool) player.draw();
-                },
-            },
-            cxy_JieLve: {
-                trigger: { source: 'damageEnd' },
+            bilibili_jielve: {
+                trigger: { source: 'damageSource' },
                 filter(event, player) {
                     if (!event.player.isIn() || event.player == player) return false;
-                    return event.player.num('hej') > 0;
+                    return event.player.countGainableCards(player, 'hej') > 0;
                 },
-                logTarget: 'player',
                 forced: true,
-                content() {
-                    'step 0'
-                    var num = 0;
-                    if (trigger.player.num('h')) num++;
-                    if (trigger.player.num('e')) num++;
-                    if (trigger.player.num('j')) num++;
-                    if (num) {
-                        player.gainPlayerCard(trigger.player, 'hej', num, true).set('filterButton', function (button) {
-                            for (var i = 0; i < ui.selected.buttons.length; i++) {
-                                if (get.position(button.link) == get.position(ui.selected.buttons[i].link)) return false;
-                            }
-                            return true;
-                        });
-                    }
-                    else event.finish();
-                    'step 1'
-                    player.loseHp();
+                logTarget: 'player',
+                async content(event, trigger, player) {
+                    let num = 0;
+                    if (trigger.player.countGainableCards(player, "h")) num++;
+                    if (trigger.player.countGainableCards(player, "e")) num++;
+                    if (trigger.player.countGainableCards(player, "j")) num++;
+                    const result = await player.gainPlayerCard(trigger.player, 'hej', num, true).set("filterButton", button => {
+                        const { player, target } = get.event(), card = button.link;
+                        if (!lib.filter.canBeGained(card, player, target)) return false;
+                        return !ui.selected.buttons.some(but => get.position(card) == get.position(but.link));
+                    }).forResult();
+                    if (result?.bool && result.cards?.length) await player.loseHp();
                 },
             },
             bilibili_tunjun: {
                 trigger: { global: 'roundStart' },
-                forced: true,
                 filter(event, player) {
-                    return player.maxHp > 1;
+                    return player.maxHp !== 1;
                 },
-                content() {
-                    player.loseMaxHp();
-                    player.draw(player.maxHp);
+                forced: true,
+                async content(event, trigger, player) {
+                    await player.loseMaxHp();
+                    await player.draw(player.maxHp);
                 },
             },
-            cxy_FanGong: {
-                trigger: { target: 'useCardToAfter' },
+            bilibili_fangong: {
+                trigger: { global: 'useCardAfter' },
                 filter(event, player) {
-                    if (get.mode() == 'identity') return get.attitude(player, event.player) < 0;
-                    return event.player.isEnemyOf(player);
+                    const mode = get.mode(), target = event.player;
+                    return event.targets?.includes(player) && target.isIn() && mode === 'identity' ? target !== player : player.getEnemies().includes(target);
                 },
                 direct: true,
                 clearTime: true,
                 async content(event, trigger, player) {
-                    const target = trigger.player;
-                    const next = player.chooseToUse(function (card, player, event) {
-                        if (get.name(card) != 'sha') return false;
+                    const target = trigger.player, list = [event.name, target];
+                    await player.chooseToUse(get.prompt2(...list), function (card, player, event) {
+                        if (get.name(card) !== 'sha') return false;
                         return lib.filter.filterCard.apply(this, arguments);
-                    }, `反攻：是否对${get.translation(target)}使用一张无距离限制的杀？`);
-                    next.set('logSkill', event.name);
-                    next.set('complexSelect', true);
-                    next.set('filterTarget', function (card, player, target) {
-                        if (target != _status.event.sourcex && !ui.selected.targets.includes(_status.event.sourcex)) return false;
+                    }).set('filterTarget', function (card, player, target) {
+                        if (target !== _status.event.sourcex && !ui.selected.targets.includes(_status.event.sourcex)) return false;
                         return lib.filter.targetEnabled.apply(this, arguments);
-                    });
-                    next.set('sourcex', target);
-                    await next;
+                    }).set('selectTarget', -1).set('sourcex', target).set('logSkill', list);
                 },
             },
-            cxy_JiaoXia: {
-                trigger: { global: 'phaseDiscardBefore' },
-                filter(event, player) {
-                    if (get.mode() == 'identity') return get.attitude(player, event.player) > 0;
-                    return event.player.isFriendOf(player);
+            bilibili_jiaoxia: {
+                mod: {
+                    ignoredHandcard(card, player) {
+                        if (get.mode() !== 'identity') return;
+                        if (get.color(card) === 'black') return true;
+                    },
+                    cardDiscardable(card, player, name) {
+                        if (get.mode() !== 'identity') return;
+                        if (name === 'phaseDiscard' && get.color(card) === 'black') return false;
+                    },
                 },
-                forced: true,
-                logTarget: 'player',
-                content() {
-                    trigger.player.addTempSkill('cxy_JiaoXia_buff', 'phaseDiscardAfter');
-                },
+                global: 'bilibili_jiaoxia_global',
                 subSkill: {
-                    buff: {
+                    global: {
                         mod: {
                             ignoredHandcard(card, player) {
-                                if (get.color(card) == 'black') return true;
+                                if (get.mode() === 'identity' || !game.hasPlayer(target => target.hasSkill('bilibili_jiaoxia') && target.getFriends(true).includes(player))) return;
+                                if (get.color(card) === 'black') return true;
                             },
                             cardDiscardable(card, player, name) {
-                                if (name == 'phaseDiscard' && get.color(card) == 'black') return false;
+                                if (get.mode() === 'identity' || !game.hasPlayer(target => target.hasSkill('bilibili_jiaoxia') && target.getFriends(true).includes(player))) return;
+                                if (name === 'phaseDiscard' && get.color(card) === 'black') return false;
                             },
                         },
                     },
@@ -201,70 +174,54 @@ const packs = function () {
             },
             bilibili_kuangxi: {
                 enable: 'phaseUse',
-                filter(event, player) {
-                    return !player.hasSkill('bilibili_kuangxi_silent');
-                },
                 filterTarget: lib.filter.notMe,
-                content() {
-                    'step 0'
-                    player.loseHp();
-                    target.damage('nocard');
-                    'step 1'
-                    if (!target.isIn() || target.hasHistory('damage', function (evt) {
-                        return evt.getParent('bilibili_kuangxi') == event && evt._dyinged;
-                    })) player.addTempSkill('bilibili_kuangxi_silent');
+                async content(event, trigger, player) {
+                    await player.loseHp();
+                    await target.damage();
+                    if (!target.isIn() || target.hasHistory('damage', evt => {
+                        return evt.getParent(event.name) == event && evt._dyinged;
+                    })) player.tempBanSkill(event.name, false, false);
                 },
                 ai: {
                     threaten(player, target) {
-                        if (!game.hasPlayer(function (current) {
-                            return player.getFriends().includes(current) && current.hp <= target.hp;
-                        })) return 1;
-                        return 1 + target.hp / 2;
+                        return 1 + target.getHp();
                     },
                     order: 1,
                     result: {
                         target(player, target) {
-                            if (player.hp <= 1 && !player.countCards('hs', { name: ['tao', 'jiu'] })) return 0;
-                            var att = get.attitude(player, target), sgn = Math.sign(att);
-                            return get.damageEffect(target, player, player) * sgn * (2 - sgn);
+                            if (player.countCards('hs', card => player.canSaveCard(card, player)) + player.hp <= 1) return 0;
+                            return get.damageEffect(target, player);
                         },
                     },
                 },
-                subSkill: { silent: { charlotte: true } },
             },
             bilibili_yangwu: {
                 trigger: { player: 'phaseZhunbeiBegin' },
                 forced: true,
-                content() {
-                    'step 0'
-                    var targets = game.filterPlayer(current => current != player);
-                    if (targets.length) {
-                        player.line(targets);
-                        targets.forEach(target => target.damage());
-                    }
-                    'step 1'
-                    player.loseHp();
+                logTarget(event, player) {
+                    return game.filterPlayer(target => target !== player).sortBySeat();
+                },
+                async content(event, trigger, player) {
+                    for (const target of event.targets) await target.damage();
+                    await player.loseHp();
                 },
             },
             bilibili_yanglie: {
                 trigger: { player: 'phaseZhunbeiBegin' },
                 forced: true,
-                content() {
-                    'step 0'
-                    var targets = game.filterPlayer(current => current.countGainableCards(player, 'he'));
-                    if (targets.length) {
-                        player.line(targets);
-                        player.gainMultiple(targets, 'he');
-                    }
-                    'step 1'
-                    player.loseHp();
+                logTarget(event, player) {
+                    return game.filterPlayer(target => target !== player).sortBySeat();
+                },
+                async content(event, trigger, player) {
+                    await player.gainMultiple(event.targets, 'he');
+                    await player.loseHp();
                 },
             },
-            cxy_RuiQi: {
+            bilibili_ruiqi: {
                 trigger: { global: 'phaseDrawBegin2' },
                 filter(event, player) {
-                    if (get.mode() == 'identity') return get.attitude(player, event.player) > 0 && !event.numFixed;
-                    return event.player.isFriendOf(player) && !event.numFixed;
+                    if (event.numFixed) return false;
+                    return get.mode() === 'identity' ? event.player === player : player.getFriends(true).includes(event.player);
                 },
                 logTarget: 'player',
                 forced: true,
@@ -273,207 +230,115 @@ const packs = function () {
                 },
                 ai: { threaten: 2.5 },
             },
-            bilibili_huying: {
-                group: 'choosejiangling',
-                derivation: 'choosejiangling',
-                trigger: { player: 'phaseUseBegin' },
-                filter(event, player) {
-                    return game.hasPlayer(function (current) {
-                        return current = player.storage.myjiangling;
-                    });
-                },
-                forced: true,
-                content() {
-                    'step 0'
-                    player.chooseCard('交给主帅一张【杀】，或失去1点体力，令其从牌堆获得一张【杀】', { name: 'sha' }).ai = function (card) {
-                        if (player.countCards('h', { name: 'sha' }) < 2) {
-                            if (player.hp <= 2) return 1;
-                            if (!game.hasPlayer(function (current) {
-                                return player.canUse({ name: 'sha' }, current);
-                            })) return 1;
-                            return 0;
-                        }
-                        return 1;
-                    };
-                    'step 1'
-                    var jiangling = player.storage.myjiangling;
-                    if (result.bool) {
-                        jiangling.gain(result.cards[0], player);
-                        player.$give(result.cards[0], jiangling);
-                    }
-                    else {
-                        player.loseHp();
-                        var card = get.cardPile('sha');
-                        if (card) jiangling.gain(card, 'gain2');
-                    }
-                },
-            },
-            cxy_BaoYing: {
-                skillAnimation: true,
-                animationColor: 'fire',
-                mark: true,
-                intro: { content: 'limited' },
+            bilibili_baoying: {
+                limited: true,
                 trigger: { global: 'dying' },
                 filter(event, player) {
-                    if (get.mode() == 'identity') return get.attitude(player, event.player) > 0;
-                    return event.player.isFriendOf(player);
+                    return get.mode() === 'identity' ? event.player === player : player.getFriends(true).includes(event.player);
                 },
                 logTarget: 'player',
+                skillAnimation: false,
                 content() {
-                    player.awakenSkill('cxy_BaoYing');
-                    trigger.player.recover(1 - trigger.player.hp);
+                    player.awakenSkill(event.name);
+                    trigger.player.recoverTo(1);
                 },
-            },
-            bilibili_longying: {
-                group: 'choosejiangling',
-                derivation: 'choosejiangling',
-                trigger: { player: 'phaseUseBegin' },
-                filter(event, player) {
-                    const jiangling = player.storage.myjiangling;
-                    return jiangling?.isIn() && jiangling.isDamaged();
-                },
-                forced: true,
-                logTarget(event, player) {
-                    return player.storage.myjiangling;
-                },
-                async content(event, trigger, player) {
-                    const [target] = event.targets;
-                    await player.loseHp();
-                    await target.recover();
-                    await target.draw();
-                },
-            },
-            choosejiangling: {
-                trigger: { global: 'phaseBefore', player: 'enterGame' },
-                filter(event, player) {
-                    if (game.countPlayer() <= 1) return false;
-                    return event.name != 'phase' || game.phaseNumber == 0;
-                },
-                direct: true,
-                async content(event, trigger, player) {
-                    const result = await player.chooseTarget('请选择你要跟随的将领', true, lib.filter.notMe).set('ai', target => {
-                        let att = get.attitude(get.player(), target);
-                        if (att > 0) return att + 1;
-                        if (att == 0) return Math.random();
-                        return att;
-                    }).forResult();
-                    if (result?.bool) {
-                        const target = result.targets[0];
-                        player.line(target, 'fire');
-                        player.storage.myjiangling = target;
-                        game.log(player, '选择了', target, '作为自己的将领');
-                    }
-                }
             },
             bilibili_moqu: {
-                group: 'bilibili_moqu_discard',
-                trigger: { global: 'phaseJieshuBegin' },
+                trigger: { global: ['phaseEnd', 'damageEnd'] },
                 filter(event, player) {
-                    return player.countCards('h') <= player.hp;
+                    if (event.name === 'damage') {
+                        if (get.mode() === 'identity') return false;
+                        return player.getFriends().includes(event.player);
+                    }
+                    return player.countCards('h') <= player.getHp();
                 },
                 forced: true,
                 content() {
-                    player.draw(2);
-                },
-                subSkill: {
-                    discard: {
-                        audio: 'bilibili_moqu',
-                        trigger: { global: 'damageEnd' },
-                        filter(event, player) {
-                            if (event.player == player || !player.countCards('he')) return false;
-                            if (get.mode() == 'identity') return get.attitude(player, event.player) > 0;
-                            return event.player.isFriendOf(player);
-                        },
-                        forced: true,
-                        content() {
-                            player.chooseToDiscard('he', true);
-                        },
-                    },
+                    if (trigger.name === 'damage') player.chooseToDiscard('he', true);
+                    else player.draw(2);
                 },
             },
             bilibili_polu: {
                 trigger: { global: 'die' },
                 filter(event, player) {
-                    if (event.player == player) return true;
-                    if (!player.isIn()) return false;
-                    if (get.mode() == 'identity') return event.source && get.attitude(player, event.player) < 0 && get.attitude(player, event.source) > 0;
-                    return event.source && event.player.isEnemyOf(player) && event.source.isFriendOf(player);
+                    if (event.player !== player && !player.isAlive()) return false;
+                    const identity = get.mode() === 'identity', { source, player: target } = event;
+                    return source?.isIn() && identity ? source === player : player.getFriends(true).includes(source) && identity ? target !== player : player.getEnemies().includes(target);
                 },
                 forced: true,
                 forceDie: true,
-                content() {
-                    'step 0'
-                    var num = player.getAllHistory('useSkill', evt => evt.skill == 'bilibili_polu').length;
-                    event.num = num;
-                    var targets = game.filterPlayer(function (target) {
-                        if (get.mode() == 'identity') return get.attitude(player, target) > 0;
-                        return target.isFriendOf(player);
-                    }).sortBySeat();
-                    event.targets = targets;
-                    'step 1'
-                    player.line(targets);
-                    game.asyncDraw(targets, num);
+                async content(event, trigger, player) {
+                    player.addMark(event.name, 1, false);
+                    const targets = (get.mode() === 'identity' ? [player] : player.getFriends(true)).filter(i => i.isIn());
+                    if (targets.length > 0) {
+                        player.line(targets);
+                        await game.asyncDraw(targets, player.countMark(event.name));
+                        await game.delayx();
+                    }
                 },
             },
         },
         translate: {
             FaDongCharacter1: '诸侯伐董·将领',
-            FaDongCharacter2: '<span style="font-family: yuanli">随从分包默认AI禁选</span>' +
-                '<br>' +
-                '诸侯伐董·随从',
+            FaDongCharacter2: '<span style="font-family: yuanli">随从分包默认AI禁选</span><br>诸侯伐董·随从',
             FaDongCharacter3: '诸侯伐董·特殊',
-            FD_lijue: '李傕·伐董',
-            FD_guosi: '郭汜·伐董',
-            FD_zhangji: '张济·伐董',
-            FD_fanchou: '樊稠·伐董',
-            FD_dongyue: '董越',
-            FD_niufudongxie: '牛辅董翓·伐董',
-            FD_hubenjun: '虎贲军',
-            FD_baolvejun: '豹掠军',
-            FD_fengyaojun: '凤瑶军',
-            FD_longxiangjun: '龙骧军',
-            FD_feixiongjunzuo: '飞熊军左',
-            FD_feixiongjunyou: '飞熊军右',
-            FD_sunjian: '孙坚·伐董',
-            FD_huaxiong: '华雄·伐董',
             bilibili_mojun: '魔军',
-            mojun_self: '魔军',
-            cxy_JieLve: '劫掠',
+            bilibili_mojun_info: '锁定技，友方角色使用【杀】对目标角色造成伤害后，其进行判定，若结果为黑色，友方角色各摸一张牌。',
+            FD_niufudongxie: '伐董牛辅董翓',
+            FD_niufudongxie_prefix: '伐董',
             bilibili_tunjun: '屯军',
-            cxy_FanGong: '反攻',
-            cxy_JiaoXia: '狡黠',
-            bilibili_kuangxi: '狂袭',
+            bilibili_tunjun_info: '锁定技，每轮游戏开始时，若你的体力上限不为1，则你减1点体力上限，然后摸X张牌（X为你的体力上限）。',
+            bilibili_jiaoxia: '狡黠',
+            bilibili_jiaoxia_info: '锁定技，友方角色的黑色手牌不计入手牌上限。',
+            bilibili_jiaoxia_info_identity: '锁定技，你的黑色手牌不计入手牌上限。',
+            FD_lijue: '伐董李傕',
+            FD_lijue_prefix: '伐董',
             bilibili_yangwu: '扬武',
-            bilibili_yanglie: '扬烈',
-            cxy_JiaoXia_info: '锁定技，友方角色的黑色手牌不计入手牌上限。',
             bilibili_yangwu_info: '锁定技，准备阶段，你对所有其他角色造成1点伤害，然后你失去1点体力。',
+            FD_guosi: '伐董郭汜',
+            FD_guosi_prefix: '伐董',
+            bilibili_yanglie: '扬烈',
             bilibili_yanglie_info: '锁定技，准备阶段，你获得所有其他角色区域里的一张牌，然后你失去1点体力。',
-            cxy_JieLve_info: '锁定技，当你对一名其他角色造成伤害后，你获得其区域内的各一张牌，然后失去1点体力。',
-            cxy_FanGong_info: '当你成为一名敌方角色使用牌的目标且该牌结算完成后，你可以对其使用一张【杀】（无距离限制）。',
-            bilibili_mojun_info: '锁定技，当友方角色使用【杀】对目标角色造成伤害后，其进行判定，若结果为黑色，友方角色各摸一张牌。',
-            mojun_self_info: '锁定技，当你使用【杀】对目标角色造成伤害后，进行一次判定，若结果为黑色，你摸一张牌。',
-            bilibili_tunjun_info: '锁定技，每轮游戏开始，若你的体力上限不为1，则你须扣减1点体力上限，然后摸X张牌（X为你的体力上限）。',
-            bilibili_kuangxi_info: '出牌阶段，你可以失去1点体力，然后对一名其他角色造成1点伤害，若其因受到此伤害而进入濒死状态，当此濒死结算结束后，此技能于此回合内无效。',
-            cxy_RuiQi: '锐骑',
-            bilibili_huying: '虎营',
-            cxy_BaoYing: '豹营',
-            bilibili_longying: '龙营',
+            FD_zhangji: '伐董张济',
+            FD_zhangji_prefix: '伐董',
+            bilibili_jielve: '劫掠',
+            bilibili_jielve_info: '锁定技，当你对一名其他角色造成伤害后，你获得其区域内的各一张牌，然后失去1点体力。',
+            FD_fanchou: '伐董樊稠',
+            FD_fanchou_prefix: '伐董',
+            bilibili_fangong: '反攻',
+            bilibili_fangong_info: '敌方角色对你使用牌后，你可以对其使用一张【杀】（无距离限制）。',
+            bilibili_fangong_info_identity: '其他角色对你使用牌后，你可以对其使用一张【杀】（无距离限制）。',
+            FD_dongyue: '伐董董越',
+            FD_dongyue_prefix: '伐董',
+            bilibili_kuangxi: '狂袭',
+            bilibili_kuangxi_info: '出牌阶段，你可以失去1点体力，对一名其他角色造成1点伤害。若其因此进入濒死状态，则此技能于此回合内失效。',
+            FD_feixiongjunzuo: '飞熊军左',
             bilibili_jingqi: '精骑',
-            bilibili_fengying: '凤营',
             bilibili_jingqi_info: '锁定技，友方角色计算与敌方角色距离-1。',
-            bilibili_fengying_info: '锁定技，敌方角色不能使用牌指定体力值唯一最少的友方角色。',
-            cxy_RuiQi_info: '锁定技，友方角色摸牌阶段额外摸一张牌。',
-            cxy_BaoYing_info: '限定技，友方角色进入濒死状态时，你可以令其体力回复至1。',
-            bilibili_longying_info: '锁定技，出牌阶段开始时，若将领已受伤，则你失去1点体力，然后令其回复1点体力并摸一张牌。',
-            bilibili_huying_info: '锁定技，出牌阶段开始时，除非你将一张【杀】交给将领，否则失去1点体力并令将领随机获得牌堆中的一张【杀】。',
-            bilibili_longying_append: '<span style="font-family: yuanli"><li>游戏开始时，你选择一名其他角色作为你的将领</span>',
-            bilibili_huying_append: '<span style="font-family: yuanli"><li>游戏开始时，你选择一名其他角色作为你的将领</span>',
-            choosejiangling: '将领选择',
-            choosejiangling_info: '<br>游戏开始时，你选择一名其他角色作为你的将领。',
+            FD_fengyaojun: '凤瑶军',
+            bilibili_fengying: '凤营',
+            bilibili_fengying_info: '锁定技，敌方角色不能使用牌指定体力值唯一最低的友方角色。',
+            bilibili_fengying_info: '锁定技，若你的体力值为全场唯一最低，则其他角色使用牌不能指定你为目标。',
+            FD_feixiongjunyou: '飞熊军右',
+            bilibili_ruiqi: '锐骑',
+            bilibili_ruiqi_info: '锁定技，友方角色摸牌阶段额外摸一张牌。',
+            bilibili_ruiqi_info_identity: '锁定技，摸牌阶段，你额外摸一张牌。',
+            FD_baolvejun: '豹掠军',
+            bilibili_baoying: '豹营',
+            bilibili_baoying_info: '限定技，友方角色进入濒死状态时，你可以令其回复体力至1点。',
+            bilibili_baoying_info_identity: '限定技，当你进入濒死状态时，你可以回复体力至1点。',
+            //FD_hubenjun: '虎贲军',
+            //FD_longxiangjun: '龙骧军',
+            FD_huaxiong: '伐董华雄',
+            FD_huaxiong_prefix: '伐董',
             bilibili_moqu: '魔躯',
+            bilibili_moqu_info: '锁定技，每名角色的回合结束时，若你的手牌数不大于当前体力值，你摸两张牌；其他友方角色受到伤害后，你弃置一张牌。',
+            bilibili_moqu_info_identity: '锁定技，每名角色的回合结束时，若你的手牌数不大于当前体力值，你摸两张牌。',
+            FD_sunjian: '伐董孙坚',
+            FD_sunjian_prefix: '伐董',
             bilibili_polu: '破掳',
             bilibili_polu_info: '锁定技，友方角色杀死一名敌方角色或你死亡时，你令友方角色各摸X张牌（X为此技能发动的次数）。',
-            bilibili_moqu_info: '锁定技，每名角色的回合结束时，若你的手牌数不大于当前体力值，你摸两张牌；其他友方角色受到伤害后，你弃置一张牌。',
+            bilibili_polu_info_identity: '锁定技，当你杀死一名其他角色后，你摸X张牌（X为此技能发动的次数）。',
         },
         dynamicTranslate: {
             bilibili_longying(player) {
@@ -495,6 +360,11 @@ const packs = function () {
         FaDongCharacter.character[i].trashBin ??= [];
         if (_status['extension_活动武将_files']?.image.character.files.includes(`${i}.jpg`)) FaDongCharacter.character[i].img = `extension/活动武将/image/character/${i}.jpg`;
     }
+    lib.namePrefix.set('伐董', {
+        color: '#6c1fd1',
+        nature: 'MXpurple',
+        showName: '董',
+    });
     lib.config.all.sgscharacters.push('FaDongCharacter');
     lib.translate['FaDongCharacter_character_config'] = '<span style="font-family: xingkai">诸侯伐董</span>';
     return FaDongCharacter;
