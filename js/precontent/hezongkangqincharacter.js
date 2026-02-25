@@ -39,7 +39,7 @@ const packs = function () {
                 vanish: true,
                 type: 'equip',
                 subtype: 'equip1',
-                skills: ['qin_qinnu_skill'],
+                skills: ['qin_qinnu'],
                 destroy: 'qin_nushou',
                 distance: { attackFrom: -8 },
                 enable: true,
@@ -93,7 +93,7 @@ const packs = function () {
                         equipValue: 2,
                     },
                 },
-                skills: ['qin_zhenlongchangjian_skill'],
+                skills: ['qin_zhenlongchangjian'],
                 image: 'ext:活动武将/image/card/qin_zhenlongchangjian.jpg',
                 fullimage: true,
             },
@@ -106,7 +106,7 @@ const packs = function () {
                         equipValue: 7.5,
                     },
                 },
-                skills: ['qin_chuanguoyuxi_skill'],
+                skills: ['qin_chuanguoyuxi'],
                 fullimage: true,
             },
         },
@@ -686,7 +686,7 @@ const packs = function () {
                 },
                 derivation: ['qin_chuanguoyuxi', 'qin_zhenlongchangjian'],
             },
-            qin_zhenlongchangjian_skill: {
+            qin_zhenlongchangjian: {
                 trigger: { player: 'useCard' },
                 filter(event, player) {
                     return player.getHistory('useCard', evt => get.type(evt.card) === 'trick').indexOf(event) === 0;
@@ -696,7 +696,7 @@ const packs = function () {
                     trigger.nowuxie = true;
                 },
             },
-            qin_chuanguoyuxi_skill: {
+            qin_chuanguoyuxi: {
                 equipSkill: true,
                 trigger: { player: 'phaseUseBegin' },
                 async cost(event, trigger, player) {
@@ -711,10 +711,13 @@ const packs = function () {
                     event.result = {
                         bool: result?.bool,
                         cost_data: result?.links,
-                    }
+                    };
                 },
+                popup: false,
                 async content(event, trigger, player) {
-                    await player.chooseUseTarget(event.cost_data[0][2], true, false);
+                    const next = player.chooseUseTarget(event.cost_data[0][2], true, false);
+                    next.logSkill = event.name;
+                    await next;
                 },
             },
             qin_bianfa: {
@@ -722,9 +725,7 @@ const packs = function () {
                 audio: 'ext:活动武将/audio/skill:true',
                 enable: 'chooseToUse',
                 usable: 1,
-                filterCard(card) {
-                    return get.type(card) == 'trick';
-                },
+                filterCard: { type: 'trick' },
                 viewAs: { name: 'qin_shangyangbianfa' },
                 viewAsfilter(player) {
                     if (!player.countCards('h', { type: 'trick' })) return false;
@@ -794,11 +795,11 @@ const packs = function () {
                 },
                 forced: true,
                 content() {
-                    var card = game.createCard('qin_qinnu', Math.random() < 0.5 ? 'diamond' : 'club', 1);
-                    player.chooseUseTarget(card, true);
+                    const card = game.createCard('qin_qinnu', Math.random() < 0.5 ? 'diamond' : 'club', 1);
+                    if (player.hasUseTarget(card)) player.chooseUseTarget(card, true);
                 },
             },
-            qin_qinnu_skill: {
+            qin_qinnu: {
                 inherit: 'qinggang_skill',
                 mod: {
                     cardUsable(card, player, num) {
@@ -905,8 +906,8 @@ const packs = function () {
             qin_changbing: {
                 audio: 'ext:活动武将/audio/skill:true',
                 mod: {
-                    attackFrom(from, to, distance) {
-                        return distance - 2;
+                    attackRange(player, num) {
+                        return num + 2;
                     },
                 },
             },
@@ -935,7 +936,7 @@ const packs = function () {
                         const history = player.getHistory('useCard', evt => evt.card == event.card)[0];
                         return player.getHistory('useCard', evt => evt.card.name === 'sha').indexOf(history) == 0;
                     }
-                    return player.hasCard(card => event.filterCard(get.autoViewAs({ name: 'sha' }, [card]), player, event));
+                    return player.hasCard(card => event.filterCard(get.autoViewAs({ name: 'sha' }, [card]), player, event), 'hs');
                 },
                 filterCard: true,
                 viewAs: { name: 'sha' },
@@ -1348,20 +1349,12 @@ const packs = function () {
             qin_zulong_info: '锁定技，准备阶段，若本局游戏中有【传国玉玺】或【真龙长剑】且不在你的手牌区或装备区，你获得之；否则你摸两张牌。',
             qin_fenshu: '焚书',
             qin_fenshu_info: '其他角色于其回合内使用第一张普通锦囊牌时，你可令此牌无效。',
-            qin_zhenlongchangjian_skill: '真龙长剑',
-            qin_zhenlongchangjian_skill_info: '你于每回合使用的第一张非延时性锦囊无法被抵消。',
-            qin_chuanguoyuxi_skill: '传国玉玺',
-            qin_chuanguoyuxi_skill_info: '出牌阶段开始时，你可以从【南蛮入侵】、【万箭齐发】、【桃园结义】、【五谷丰登】中选择一张使用。',
-            qin_qinnu: '秦弩',
-            qin_qinnu_info: '锁定技。当你使用【杀】指定目标后，你令其防具无效；你的使用【杀】的次数上限+1；当你失去装备区里的【秦弩】，你令此牌销毁。',
-            qin_qinnu_skill: '秦弩',
-            qin_qinnu_skill_info: '当你使用【杀】指定一个目标后，你令其防具无效，你的出牌阶段内，可使用的【杀】数量+1；当你失去装备区里的【秦弩】，你令此牌销毁。',
             qin_bianfa: '变法',
-            qin_bianfa_info: '出牌阶段限一次，你可以将任意一张普通锦囊牌当【商鞅变法】使用。',
+            qin_bianfa_info: '出牌阶段限一次，你可以将一张普通锦囊牌当作【商鞅变法】使用。',
             qin_limu: '立木',
-            qin_limu_info: '锁定技，你使用的普通锦囊牌无法被【无懈可击】抵消。',
+            qin_limu_info: '锁定技，你使用的普通锦囊牌无法被【无懈可击】响应。',
             qin_kencao: '垦草',
-            qin_kencao_info: '场上有角色造成伤害后，你可以令其获得与伤害值数目相等的「功」标记，然后若其「功」标记数不小于三，则其弃置所有「功」标记，增加1点体力上限，并回复1点体力。',
+            qin_kencao_info: '场上有角色造成伤害后，你可以令其获得伤害值枚「功」标记，然后若其「功」标记数不小于三，则其移去所有「功」标记，增加1点体力上限，并回复1点体力。',
             qin_jinnu: '劲弩',
             qin_jinnu_info: '锁定技，准备阶段，若你的装备区里没有【秦弩】，你使用一张【秦弩】。',
             qin_changjian: '长剑',
@@ -1412,7 +1405,7 @@ const packs = function () {
             qin_gaizhao: '改诏',
             qin_gaizhao_info: '当你成为【杀】或除【借刀杀人】外的普通锦囊牌的目标后，你可以将此牌的目标改为其他不为此牌目标的一名友方角色。',
             qin_haizhong: '害忠',
-            qin_haizhong_info: '其他角色回复体力时，你可以令其选择一项：①弃置一张红色牌；②受到你造成的X点伤害（X为该角色拥有的「害」标记且X至少为1），然后该角色获得1枚「害」标记。',
+            qin_haizhong_info: '其他角色回复体力时，你可以令其选择一项：①弃置一张红色牌；②受到你对其造成的X点伤害（X为其拥有的「害」标记数且至少为1），然后其获得1枚「害」标记。',
             qin_yuanli: '爰历',
             qin_yuanli_info: '锁定技，出牌阶段开始时，你获得两张普通锦囊牌。',
             bftq: '变法图强',
@@ -1431,6 +1424,8 @@ const packs = function () {
             zjzl_info: '本局游戏中，男性角色每回合首次造成伤害时，受伤角色摸一张牌。若赵姬在场，此效果的适用范围改为所有非秦势力角色。',
             scth: '始称太后',
             scth_info: '本局游戏中，女性角色的体力值和体力上限+1。若芈月在场，男性角色的回合开始时需令芈月回复1点体力或摸一张牌。',
+            qin_qinnu: '秦弩',
+            qin_qinnu_info: '锁定技。当你使用【杀】指定目标后，你令其防具无效；你的使用【杀】的次数上限+1；当你失去装备区里的【秦弩】，你令此牌销毁。',
             qin_shangyangbianfa: '商鞅变法',
             qin_shangyangbianfa_info: '出牌阶段，对一名其他角色使用。对其造成随机1-2点伤害，若该角色进入濒死状态，则进行判定，若判定结果为黑色，则该角色本次濒死状态无法向其他角色求桃。',
             qin_zhenlongchangjian: '真龙长剑',
