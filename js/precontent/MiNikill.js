@@ -39450,8 +39450,8 @@ const packs = function () {
                                     ai1(button) {
                                         const player = get.player();
                                         const { link } = button;
-                                        if (link == 'judge') return game.hasPlayer(current => !current.isDisabledJudge() && get.attitude(player, target) < 0);
-                                        return game.hasPlayer(current => current.hasEnabledSlot(link) && get.attitude(player, target) > 0);
+                                        if (link == 'judge') return game.hasPlayer(current => !current.isDisabledJudge() && get.attitude(player, current) < 0);
+                                        return game.hasPlayer(current => current.hasEnabledSlot(link) && get.attitude(player, current) > 0);
                                     },
                                     ai2(target) {
                                         const player = get.player(), att = get.attitude(player, target);
