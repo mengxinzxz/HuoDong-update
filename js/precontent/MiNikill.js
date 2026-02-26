@@ -2251,23 +2251,20 @@ const packs = function () {
                         filter(event, player) {
                             const map = player.storage.minijiaozhao_viewAs;
                             return player.hasCard(card => {
-                                if (!map[card.cardid]) return false;
+                                if (!map?.[card.cardid]) return false;
                                 return event.filterCard(get.autoViewAs(map[card.cardid], [card]), player, event);
                             }, 'h');
                         },
                         filterCard(card, player, event) {
                             const map = player.storage.minijiaozhao_viewAs;
-                            if (!map[card.cardid]) return false;
+                            if (!map?.[card.cardid]) return false;
                             event = event || get.event();
                             return event._backup.filterCard(get.autoViewAs(map[card.cardid], [card]), player, event);
                         },
                         position: 'h',
                         prompt: '选择一张“矫诏”牌当作声明的牌使用',
                         viewAs(cards, player) {
-                            if (cards.length) {
-                                const map = player.storage.minijiaozhao_viewAs;
-                                if (map[cards[0].cardid]) return map[cards[0].cardid];
-                            }
+                            if (cards.length) return player.storage.minijiaozhao_viewAs[cards[0].cardid];
                             return null;
                         },
                         check(card) {
@@ -2282,7 +2279,7 @@ const packs = function () {
                                 const map = player.storage.minijiaozhao_viewAs;
                                 const cards = player.getCards('h', card => {
                                     const map = player.storage.minijiaozhao_viewAs;
-                                    if (!map[card.cardid]) return false;
+                                    if (!map?.[card.cardid]) return false;
                                     const viewAs = get.autoViewAs(map[card.cardid], [card]);
                                     return event.filterCard(viewAs, player, event) && player.hasValueTarget(viewAs, true, true);
                                 });
