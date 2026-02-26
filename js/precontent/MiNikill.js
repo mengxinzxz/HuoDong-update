@@ -454,7 +454,7 @@ const packs = function () {
             Mbaby_leibo: ['male', 'qun', 4, ['dcsilve', 'minishuaijie']],
             Mbaby_zhangchu: ['female', 'qun', 3, ['dcjizhong', 'minirihui', 'miniguangshi']],
             Mbaby_ol_lisu: ['male', 'qun', 3, ['qiaoyan', 'minilsxianzhu']],
-            Mbaby_sp_duyu: ['male', 'qun', 3, ['spwuku', 'minisanchen'], ['border:jin']],
+            Mbaby_sp_duyu: ['male', 'qun', 4, ['spwuku', 'minisanchen'], ['border:jin']],
             Mbaby_mangyachang: ['male', 'qun', 4, ['minijiedao']],
             Mbaby_re_hucheer: ['male', 'qun', 4, ['redaoji', 'minifuzhong']],
             //神
