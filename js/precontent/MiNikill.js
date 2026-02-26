@@ -2210,7 +2210,7 @@ const packs = function () {
                     if (!lib.skill[tag]) {
                         game.broadcastAll((tag, nature, chosen) => {
                             lib.skill[tag] = {};
-                            lib.translate[tag] = "矫诏<br>" + (get.translation(nature) || '') + get.translation(chosen);
+                            lib.translate[tag] = `矫诏<br>${get.translation(nature) || ''}${get.translation(chosen)}`;
                         }, tag, nature, chosen);
                     }
                     player.addGaintag(cards, tag);
@@ -2295,23 +2295,29 @@ const packs = function () {
                 audio: 'danxin',
                 trigger: { player: 'damageEnd' },
                 frequent: true,
-                content() {
-                    'step 0'
-                    player.draw();
-                    'step 1'
+                async content(event, trigger, player) {
+                    await player.draw();
                     if (player.countMark('minidanxin') < 2) {
                         player.addMark('minidanxin', 1, false);
                         player.popup('矫诏');
                         game.log(player, '升级了技能', '#g【矫诏】');
                     }
                 },
+                mark: true,
+                intro: {
+                    markcount: (num = 0) => `Lv${num + 1}`,
+                    content: (num = 0) => `当前【矫诏】等级：${num + 1}`,
+                },
             },
             miniqingjian: {
                 audio: 'qingjian',
-                trigger: { player: 'gainAfter' },
+                trigger: {
+                    player: 'gainAfter',
+                    global: 'loseAsyncAfter',
+                },
                 filter(event, player) {
-                    if (event.parent.parent.name == 'phaseDraw') return false;
-                    return event.cards?.length > 0
+                    if (event.getParent('phaseDraw', true)) return false;
+                    return (event.getg?.(player) ?? []).length > 0;
                 },
                 usable: 1,
                 async cost(event, trigger, player) {
