@@ -2385,6 +2385,7 @@ const packs = function () {
                 ai: { notemp: true },
                 subSkill: {
                     push: {
+                        audio: 'residi',
                         trigger: { global: 'phaseUseBegin' },
                         filter(event, player) {
                             return event.player != player && player.getExpansions('minisidi').length > 0;
