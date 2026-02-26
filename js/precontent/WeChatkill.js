@@ -4781,6 +4781,7 @@ const packs = function () {
                     result: { player: 1 },
                 },
                 subSkill: {
+                    backup: {},
                     draw: {
                         audio: 'wechatyanshi',
                         content() {
@@ -18600,7 +18601,6 @@ const packs = function () {
             wechatsangu: '三顾',
             wechatsangu_info: `锁定技，当你每三次成为牌的目标后，你获得3点${get.poptip('rule_moulvenum')}，然后你卜算3。`,
             wechatyanshi: '演势',
-            wechatyanshi_backup: '演势',
             wechatyanshi_info: '出牌阶段限一次，你可以从牌堆顶或牌堆底摸一张牌，且当你于本阶段使用此牌时，你可以弃置一张牌并发动从另一端摸牌的〖演势〗。',
             wechat_sp_pangde: 'SP小程序庞德',
             wechatjuesi: '决死',

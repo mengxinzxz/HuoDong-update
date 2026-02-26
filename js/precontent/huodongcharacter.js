@@ -3198,6 +3198,7 @@ const packs = function () {
                         var character = links[0], name = links[1][2], nature = links[1][3] || null;
                         return '弃置“' + get.translation(character) + '”并将一张手牌当作' + (get.translation(nature) || '') + get.translation(name) + '使用';
                     },
+                    subSkill: { backup: {} },
                 },
                 ai: {
                     combo: 'BTxinsheng',
@@ -13253,7 +13254,6 @@ const packs = function () {
             BTxinsheng_2: '新生·3级',
             BTxinsheng_2_info: '当你造成或受到1点伤害后，你可以获得一张化身牌，然后若你的化身牌数不小于场上人数，你获得〖幻化〗。',
             BThuanhua: '幻化',
-            BThuanhua_backup: '幻化',
             BThuanhua_info: '出牌阶段限一次，你可以弃置一张未展示的化身牌，然后将一张手牌视为一张基本牌或普通锦囊牌使用。',
             bilibili_huanggai: '谋黄盖',
             bilibili_huanggai_prefix: '谋',

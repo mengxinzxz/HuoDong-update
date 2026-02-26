@@ -2073,6 +2073,7 @@ const packs = function () {
                         },
                     },
                 },
+                subSkill: { backup: {} },
             },
             //王双
             fh_shanxie: {
@@ -4134,6 +4135,7 @@ const packs = function () {
                         },
                     },
                 },
+                subSkill: { backup: {} },
             },
             //凌统
             fh_xuanfeng: {
@@ -4487,7 +4489,6 @@ const packs = function () {
             fh_liaoyi: '疗疫',
             fh_liaoyi_info: '其他角色的回合开始时，若其手牌数小于体力值且仁库内牌数大于等于X，则你可令其从仁库中获得X张牌；若其手牌数大于体力值，则你可以令其将X张牌置于仁库。（X为其手牌数与体力值之差且至多为2）',
             fh_binglun: '病论',
-            fh_binglun_backup: '病论',
             fh_binglun_info: '出牌阶段限一次，你可以将仁库中的一张牌置于弃牌堆并令一名角色回复1点体力。',
             mx_fh_sp_wangshuang: '飞鸿王双',
             fh_shanxie: '擅械',
@@ -4616,7 +4617,6 @@ const packs = function () {
             fh_hongju: '鸿举',
             fh_hongju_info: '觉醒技，准备阶段，若你的“荣”数不小于3，你摸等同于“荣”数的牌，且可以用任意手牌交换等量的“荣”，然后获得〖清侧〗。',
             fh_qingce: '清侧',
-            fh_qingce_backup: '清侧',
             fh_qingce_info: '出牌阶段，你可以将一张“荣”置入弃牌堆，然后弃置场上的一张牌。',
             fh_xuanfeng: '旋风',
             fh_xuanfeng_info: '当你于弃牌阶段弃置过至少两张牌，或当你失去装备区里的牌后，你可以选择一项：①弃置至多两名其他角色的共计两张牌。②若此时处于你的回合内且场上没有处于濒死状态的角色，你可以对一名其他角色造成1点伤害。',

@@ -4647,6 +4647,7 @@ const packs = function () {
                     },
                     result: { player: 1 },
                 },
+                subSkill: { backup: {} },
             },
             //蛋神
             minigongao: {
@@ -40271,7 +40272,6 @@ const packs = function () {
             minisbjianxiong: '奸雄',
             minisbjianxiong_info: '游戏开始时，你可获得至多2枚“治世”标记。当你受到伤害后，你可获得伤害牌，摸2-X张牌（X为你的“治世”标记数），然后你可获得或失去1枚“治世”标记。',
             minisbqingzheng: '清正',
-            minisbqingzheng_backup: '清正',
             minisbqingzheng_info: '出牌阶段限一次，你可以弃置3-X种花色的所有手牌（X为你的“治世”标记数）并观看一名有手牌的其他角色的手牌，你弃置其中一种花色的所有牌。若其被弃置的牌数小于你以此法弃置的牌数，你对其造成1点伤害，然后你可获得或失去1枚“治世”标记。',
             minigongao: '功獒',
             minigongao_info: '锁定技，一名其他角色进入濒死状态时，你增加1点体力上限，然后回复1点体力。',
