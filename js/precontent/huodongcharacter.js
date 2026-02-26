@@ -2011,7 +2011,7 @@ const packs = function () {
             decadexiwu: {
                 trigger: { source: 'damageBegin1' },
                 filter(event, player) {
-                    return event.card && event.card.name == 'sha' && event.notLink();
+                    return event.card && event.card.name == 'sha';
                 },
                 forced: true,
                 content() {
@@ -2021,15 +2021,15 @@ const packs = function () {
                     cardUsable(card, player, num) {
                         if (card.name == 'sha') return Infinity;
                     },
-                    attackFrom() {
-                        return -Infinity;
+                    targetInRange(card, player, target) {
+                        if (card.name == 'sha') return true;
                     },
                 },
             },
             decadehongzhuang: {
                 trigger: { player: ['useCard', 'respond'] },
                 filter(event, player) {
-                    return event.cards.length == 1 && typeof get.number(event.card) == 'number' && get.number(event.card) > 0;
+                    return typeof get.number(event.card) == 'number' && get.number(event.card) > 0;
                 },
                 frequent: true,
                 content() {
