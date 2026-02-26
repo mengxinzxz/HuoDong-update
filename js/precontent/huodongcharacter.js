@@ -2115,8 +2115,7 @@ const packs = function () {
                         trigger: { source: 'damageBegin3' },
                         logTarget: 'player',
                         filter(event, player) {
-                            return event.card && event.card.name == 'sha' && event.player &&
-                                event.player.isIn() && event.player.hasMark('dulie');
+                            return event.card && event.card.name == 'sha' && event.player && event.player.isIn() && event.player.hasMark('dulie');
                         },
                         forced: true,
                         content() {
