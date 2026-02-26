@@ -2039,67 +2039,55 @@ const packs = function () {
             olddulie: {
                 audio: 'dulie',
                 trigger: { global: 'phaseBefore', player: 'enterGame' },
-                forced: true,
                 filter(event, player) {
-                    return (event.name != 'phase' || game.phaseNumber == 0) && game.players.length > 1 && game.hasPlayer(function (current) {
-                        return current != player && !current.hasMark('olddulie');
+                    return (event.name != 'phase' || game.phaseNumber == 0) && game.countPlayer() > 1 && game.hasPlayer(function (current) {
+                        return current != player && !current.hasMark('dulie');
                     });
                 },
-                locked: true,
-                direct: true,
-                content() {
-                    'step 0'
-                    var num = Math.min(game.countPlayer(function (current) {
-                        return current != player && !current.hasMark('olddulie');
+                forced: true,
+                async content(event, trigger, player) {
+                    const num = Math.min(game.countPlayer(function (current) {
+                        return current != player && !current.hasMark('dulie');
                     }), Math.floor(game.players.length / 2));
-                    player.chooseTarget(num, true, '请选择【笃烈】的目标', '令' + get.cnNumber(num) + '名角色获得“围”标记', lib.filter.notMe).set('ai', function (target) {
-                        var player = _status.event.player;
+                    const result = await player.chooseTarget('请选择【笃烈】的目标', '令' + get.cnNumber(num) + '名角色获得“围”标记', lib.filter.notMe, num, true).set('ai', function (target) {
+                        const player = get.player();
                         return Math.max(1, get.attitude(player, target)) / Math.max(1, get.distance(player, target));
-                    });
-                    'step 1'
-                    if (result.bool) {
-                        var targets = result.targets.sortBySeat();
-                        player.logSkill('olddulie', targets);
-                        for (var i of targets) i.addMark('olddulie', 1);
-                        game.delayx();
+                    }).forResult();
+                    if (result?.bool && result.targets?.length) {
+                        const targets = result.targets.sortBySeat();
+                        player.line(targets);
+                        for (const i of targets) i.addMark('dulie', 1);
+                        await game.delayx();
                     }
                 },
                 mod: {
                     targetInRange(card, player, target) {
-                        if (card.name == 'sha' && !target.hasMark('olddulie')) return true;
+                        if (card.name == 'sha' && !target.hasMark('dulie')) return true;
                     },
                 },
-                marktext: '围',
-                intro: { name: '笃烈/破阵 (围)', name2: '围', content: 'mark' },
                 group: 'olddulie_sha',
                 subSkill: {
                     sha: {
                         audio: 'dulie',
                         trigger: { target: 'useCardToTarget' },
                         filter(event, player) {
-                            return event.card.name == 'sha' && event.player.isIn() && !event.player.hasMark('olddulie');
+                            return event.card.name == 'sha' && event.player.isIn() && !event.player.hasMark('dulie');
                         },
                         forced: true,
                         logTarget: 'player',
-                        content() {
-                            'step 0'
-                            player.judge(function (result) {
-                                if (get.color(result) == 'red') return 2;
-                                return -1;
-                            }).judge2 = function (result) {
-                                return result.bool;
-                            };
-                            'step 1'
-                            if (result.bool) {
+                        async content(event, trigger, player) {
+                            const result = await player.judge(result => get.color(result) == 'red' ? 2 : -1).forResult();
+                            if (result?.bool) {
                                 trigger.targets.remove(player);
                                 trigger.getParent().triggeredTargets2.remove(player);
                                 trigger.untrigger();
+                                game.log(trigger.card, '对', player, '无效');
                             }
                         },
                         ai: {
                             effect: {
                                 target(card, player, target, current, isLink) {
-                                    if (card.name == 'sha' && !isLink && !player.hasMark('olddulie')) return 0.5;
+                                    if (card.name == 'sha' && !isLink && !player.hasMark('dulie')) return 0.5;
                                 },
                             },
                         },
@@ -2110,14 +2098,14 @@ const packs = function () {
                 audio: 'tspowei',
                 dutySkill: true,
                 locked: true,
-                derivation: 'old_shenzhu',
+                derivation: 'oldshenzhu',
                 group: ['oldpowei_achieve', 'oldpowei_fail', 'oldpowei_cancel'],
                 ai: {
-                    combo: 'olddulie',
+                    combo: ['dulie', 'olddulie'],
                     effect: {
                         player(card, player, target) {
-                            if (card.name == 'sha' && target.hasMark('olddulie') && get.attitude(player, target) >= 0) return [1, 1, 0, 0];
-                            if (get.tag(card, 'damage') && _status.event.type == 'respondShan' && _status.event.getParent().name == 'sha' && target.hasMark('olddulie') && get.attitude(target, player) >= 0) return [1, 1, 0, 0];
+                            if (card.name == 'sha' && target.hasMark('dulie') && get.attitude(player, target) >= 0) return [1, 1, 0, 0];
+                            if (get.tag(card, 'damage') && _status.event.type == 'respondShan' && _status.event.getParent().name == 'sha' && target.hasMark('dulie') && get.attitude(target, player) >= 0) return [1, 1, 0, 0];
                         },
                     },
                 },
@@ -2128,12 +2116,12 @@ const packs = function () {
                         logTarget: 'player',
                         filter(event, player) {
                             return event.card && event.card.name == 'sha' && event.player &&
-                                event.player.isIn() && event.player.hasMark('olddulie');
+                                event.player.isIn() && event.player.hasMark('dulie');
                         },
                         forced: true,
                         content() {
                             trigger.cancel();
-                            trigger.player.removeMark('olddulie', trigger.player.countMark('olddulie'));
+                            trigger.player.clearMark('dulie');
                         },
                     },
                     achieve: {
@@ -2144,13 +2132,13 @@ const packs = function () {
                         animationColor: 'metal',
                         filter(event, player) {
                             return event.card.name == 'sha' && !game.hasPlayer(function (current) {
-                                return current.hasMark('olddulie');
+                                return current.hasMark('dulie');
                             });
                         },
                         content() {
                             game.log(player, '成功完成使命');
                             player.awakenSkill('oldpowei');
-                            player.addSkills('old_shenzhu');
+                            player.addSkills('oldshenzhu');
                         },
                     },
                     fail: {
@@ -2169,7 +2157,7 @@ const packs = function () {
                     },
                 },
             },
-            old_shenzhu: {
+            oldshenzhu: {
                 mod: {
                     cardUsable(card, player, num) {
                         if (card.name == 'sha') return Infinity;
@@ -2193,12 +2181,12 @@ const packs = function () {
                         game.broadcastAll(function (player, i, list, num) {
                             /*
                             (async () => {
-                                await lib.skill.old_shenzhu.smoothAvatarAsync(i === 1, null, player);
+                                await lib.skill.oldshenzhu.smoothAvatarAsync(i === 1, null, player);
                                 const node = player.node[i === 0 ? 'avatar' : 'avatar2'], name = player[i === 0 ? 'name' : 'name2'];
                                 const node2 = player.node[i === 0 ? 'name' : 'name2'], innerHTML = node2.innerHTML;
                                 node.setBackgroundImage('extension/活动武将/image/default/' + list[num] + '.jpg');
                                 node2.innerHTML = list[num];
-                                await lib.skill.old_shenzhu.smoothAvatarAsync(i === 1, null, player);
+                                await lib.skill.oldshenzhu.smoothAvatarAsync(i === 1, null, player);
                                 const skinName = i === 0 ? player.skin?.name : player.skin?.name2;
                                 node.setBackground((!skinName || skinName === name) ? name : skinName, 'character');
                                 node2.innerHTML = innerHTML;
@@ -2225,7 +2213,7 @@ const packs = function () {
                         });
                         if (card) cards.push(card);
                     }
-                    if (cards.length) await player.gain(cards, 'gain2');
+                    if (cards.length) await player.gain(cards, 'draw');
                 },
                 /*
                 smoothAvatarAsync(vice, video, player) {
@@ -6556,7 +6544,7 @@ const packs = function () {
                         },
                         forced: true,
                         content() {
-                            lib.skill.old_shenzhu.content(event, trigger, player);
+                            lib.skill.oldshenzhu.content(event, trigger, player);
                         },
                     },
                 },
@@ -13275,8 +13263,8 @@ const packs = function () {
             olddulie_info: '锁定技。①游戏开始时，你令X名其他角色获得“围”（X为游戏人数的一半且向下取整）。②你对没有“围”的角色使用【杀】无距离限制。③当你成为【杀】的目标时，若使用者没有“围”，则你进行判定。若结果为红色，则取消此目标。',
             oldpowei: '破围',
             oldpowei_info: '使命技。①当你因使用【杀】而对有“围”的角色造成伤害时，你防止此伤害并移去该角色的“围”。②使命：当你使用【杀】结算完成后，若场上没有“围”，则你获得〖神著〗。③失败：当你进入濒死状态时，你弃置装备区的所有牌，然后将体力值回复至1点。',
-            old_shenzhu: '神著',
-            old_shenzhu_info: '锁定技，你使用【杀】无次数限制。当你使用有对应实体牌的非转化【杀】结算结束后，你摸一张牌。',
+            oldshenzhu: '神著',
+            oldshenzhu_info: '锁定技，你使用【杀】无次数限制。当你使用有对应实体牌的非转化【杀】结算结束后，你摸一张牌。',
             old_yingba: '英霸',
             old_yingba_info: '出牌阶段限一次，你可令一名体力上限大于1的其他角色减少1点体力上限并获得“平定”标记，然后你减少1点体力上限。你对拥有“平定”标记的角色使用牌没有次数限制。',
             old_fuhai: '覆海',
