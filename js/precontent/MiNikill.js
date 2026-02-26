@@ -2156,7 +2156,6 @@ const packs = function () {
                 },
             },
             minijiaozhao: {
-                derivation: ['minijiaozhao_1', 'minijiaozhao_2'],
                 audio: 'jiaozhao',
                 enable: 'phaseUse',
                 filter(event, player) {
@@ -2165,7 +2164,7 @@ const packs = function () {
                     return !num || num < player.countMark('minidanxin') + 1;
                 },
                 filterCard(card, player) {
-                    return !player.storage.minijiaozhao2?.[card.cardid];
+                    return !player.storage.minijiaozhao_viewAs?.[card.cardid];
                 },
                 discard: false,
                 lose: false,
@@ -2175,7 +2174,7 @@ const packs = function () {
                 },
                 content() {
                     'step 0'
-                    player.addTempSkill('minijiaozhao2', 'phaseUseAfter');
+                    player.addTempSkill('minijiaozhao_viewAs', 'phaseUseAfter');
                     player.showCards(cards, get.translation(player) + '发动了【矫诏】');
                     'step 1'
                     var list = get.inpileVCardList(info => {
@@ -2201,12 +2200,12 @@ const packs = function () {
                     });
                     'step 2'
                     var card = { name: result.links[0][2], nature: result.links[0][3], storage: { minijiaozhao: true } };
-                    player.storage.minijiaozhao2[cards[0].cardid] = card;
-                    var chosen = card.name, nature = card.nature, tag = 'minijiaozhao2_' + chosen + nature;
-                    player.storage.minijiaozhao2.cardid.add(tag);
+                    player.storage.minijiaozhao_viewAs[cards[0].cardid] = card;
+                    var chosen = card.name, nature = card.nature, tag = 'minijiaozhao_viewAs_' + chosen + nature;
+                    player.storage.minijiaozhao_viewAs.cardid.add(tag);
                     player.storage.minijiaozhao_used.type.add(get.type(card));
                     player.storage.minijiaozhao_used.name.add(chosen);
-                    player.updateMarks('minijiaozhao2');
+                    player.updateMarks('minijiaozhao_viewAs');
                     player.updateMarks('minijiaozhao_used');
                     if (!lib.skill[tag]) {
                         game.broadcastAll((tag, nature, chosen) => {
@@ -2226,77 +2225,71 @@ const packs = function () {
                     order: 8,
                     result: { player: 1 },
                 },
-            },
-            minijiaozhao2: {
-                mod: {
-                    playerEnabled(card, player, target) {
-                        if (target != player || player.countMark('minidanxin') >= 2) return;
-                        if (card.storage?.minijiaozhao2) return false;
-                    },
-                },
-                charlotte: true,
-                init(player, skill) {
-                    if (!player.storage[skill]) player.storage[skill] = { cardid: [] };
-                    if (!player.storage.minijiaozhao_used) player.storage.minijiaozhao_used = { type: [], name: [] };
-                },
-                onremove(player, skill) {
-                    let tags = player.storage[skill].cardid;
-                    delete player.storage[skill];
-                    delete player.storage.minijiaozhao_used;
-                    if (tags?.length) tags.forEach(tag => player.removeGaintag(tag));
-                },
-                enable: 'phaseUse',
-                filter(event, player) {
-                    return player.hasCard(card => lib.skill.minijiaozhao2.filterCard(card, player), 'h');
-                },
-                filterCard(card, player) {
-                    const map = player.storage.minijiaozhao2;
-                    if (!map[card.cardid]) return false;
-                    return player.hasUseTarget(get.autoViewAs(map[card.cardid], [card]), true, true);
-                },
-                filterTarget(cardx, player, target) {
-                    const cards = ui.selected.cards, map = player.storage.minijiaozhao2;
-                    if (!cards.length) return false;
-                    const card = get.autoViewAs(map[cards[0].cardid], cards);
-                    const filterTarget = lib.card[card.name].filterTarget;
-                    return filterTarget && (typeof filterTarget === 'boolean' ? filterTarget : filterTarget.apply(this, arguments));
-                },
-                selectTarget() {
-                    const player = get.player(), cards = ui.selected.cards, map = player.storage.minijiaozhao2;
-                    if (!cards.length) return -1;
-                    const card = get.autoViewAs(map[cards[0].cardid], cards);
-                    let range, select = get.copy(get.info(card).selectTarget);
-                    if (select == undefined) range = [1, 1];
-                    else if (typeof select == 'number') range = [select, select];
-                    else if (get.itemtype(select) == 'select') range = select;
-                    else if (typeof select == 'function') range = select(card, player);
-                    game.checkMod(card, player, range, 'selectTarget', player);
-                    return range;
-                },
-                lose: false,
-                discard: false,
-                delay: false,
-                check(card) {
-                    const player = get.player(), map = player.storage.minijiaozhao2;
-                    return player.getUseValue(get.autoViewAs(map[card.cardid], [card]), true, true);
-                },
-                multiline: true,
-                multitarget: true,
-                prompt: '选择一张“矫诏”牌当作声明的牌使用',
-                content() {
-                    const map = player.storage.minijiaozhao2;
-                    player.useCard(get.autoViewAs(map[cards[0].cardid], cards), targets).set('cards', cards);
-                },
-                ai: {
-                    order: 7.9,
-                    result: {
-                        player(player, target) {
-                            const cards = ui.selected.cards, map = player.storage.minijiaozhao2;
+                derivation: ['minijiaozhao_1', 'minijiaozhao_2'],
+                subSkill: {
+                    1: {},
+                    2: {},
+                    viewAs: {
+                        mod: {
+                            playerEnabled(card, player, target) {
+                                if (target !== player || player.countMark('minidanxin') >= 2) return;
+                                if (card.storage?.minijiaozhao) return false;
+                            },
+                        },
+                        charlotte: true,
+                        init(player, skill) {
+                            player.storage[skill] ??= { cardid: [] };
+                            player.storage.minijiaozhao_used ??= { type: [], name: [] };
+                        },
+                        onremove(player, skill) {
+                            let tags = player.storage[skill].cardid;
+                            delete player.storage[skill];
+                            delete player.storage.minijiaozhao_used;
+                            if (tags?.length) tags.forEach(tag => player.removeGaintag(tag));
+                        },
+                        enable: 'phaseUse',
+                        filter(event, player) {
+                            const map = player.storage.minijiaozhao_viewAs;
+                            return player.hasCard(card => {
+                                if (!map[card.cardid]) return false;
+                                return event.filterCard(get.autoViewAs(map[card.cardid], [card]), player, event);
+                            }, 'h');
+                        },
+                        filterCard(card, player, event) {
+                            const map = player.storage.minijiaozhao_viewAs;
+                            if (!map[card.cardid]) return false;
+                            event = event || get.event();
+                            return event._backup.filterCard(get.autoViewAs(map[card.cardid], [card]), player, event);
+                        },
+                        position: 'h',
+                        prompt: '选择一张“矫诏”牌当作声明的牌使用',
+                        viewAs(cards, player) {
                             if (cards.length) {
-                                const card = get.autoViewAs(map[cards[0].cardid], cards);
-                                return get.effect(target, card, player, player);
+                                const map = player.storage.minijiaozhao_viewAs;
+                                if (map[cards[0].cardid]) return map[cards[0].cardid];
                             }
-                            return 1;
+                            return null;
+                        },
+                        check(card) {
+                            const player = get.player(), map = player.storage.minijiaozhao_viewAs;
+                            return player.getUseValue(get.autoViewAs(map[card.cardid], [card]), true, true);
+                        },
+                        manualConfirm: true,
+                        ai: {
+                            order(item, player) {
+                                const event = get.event();
+                                player = player || event.player;
+                                const map = player.storage.minijiaozhao_viewAs;
+                                const cards = player.getCards('h', card => {
+                                    const map = player.storage.minijiaozhao_viewAs;
+                                    if (!map[card.cardid]) return false;
+                                    const viewAs = get.autoViewAs(map[card.cardid], [card]);
+                                    return event.filterCard(viewAs, player, event) && player.hasValueTarget(viewAs, true, true);
+                                });
+                                if (!cards.length) return 0;
+                                return Math.max(...cards.map(card => get.order(get.autoViewAs(map[card.cardid], [card]), player))) + 0.1;
+                            },
+                            result: { player: 1 },
                         },
                     },
                 },
@@ -6045,7 +6038,7 @@ const packs = function () {
                     effect: {
                         charlotte: true,
                         init(player, skill) {
-                            if (!player.storage[skill]) player.storage[skill] = [];
+                            player.storage[skill] ??= [];
                         },
                         onremove: true,
                         audio: 'miniqianxin',
@@ -40178,7 +40171,6 @@ const packs = function () {
             minicaishi: '才识',
             minicaishi_info: '摸牌阶段结束时，若你此阶段摸的牌：花色相同，本回合你将〖忠鉴〗中『出牌阶段限一次』修改为『出牌阶段限两次』；花色不同，你可以弃置一张牌，然后回复1点体力。',
             minijiaozhao: '矫诏',
-            minijiaozhao2: '矫诏',
             minijiaozhao_info: '出牌阶段限一次，你可以展示一张手牌并声明一个基本牌或普通锦囊牌，本阶段你可以将此牌当作你声明的牌使用（你不是此牌的合法目标）。',
             minijiaozhao_1: '矫诏·2级',
             minijiaozhao_1_info: '出牌阶段限两次，你可以展示一张手牌并声明一个基本牌或普通锦囊牌，本阶段你可以将此牌当作你声明的牌使用（每种类型限一次，且你不是此牌的合法目标）。',

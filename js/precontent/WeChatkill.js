@@ -1081,7 +1081,7 @@ const packs = function () {
                     },
                 },
                 init(player, skill) {
-                    if (!player.storage[skill]) player.storage[skill] = [];
+                    player.storage[skill] ??= [];
                 },
                 mod: {
                     cardDiscardable(card, player) {
@@ -10540,7 +10540,7 @@ const packs = function () {
                     buff: {
                         charlotte: true,
                         init(player, skill) {
-                            if (!player.storage[skill]) player.storage[skill] = {};
+                            player.storage[skill] ??= {};
                         },
                         onremove: true,
                         intro: {

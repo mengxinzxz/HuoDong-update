@@ -2382,67 +2382,37 @@ const packs = function () {
                     return player.needsToDiscard();
                 },
                 filter(event, player) {
-                    var history = player.getHistory('useCard').concat(player.getHistory('respond'));
-                    for (var i = 0; i < history.length; i++) {
-                        if (history[i].card.name == 'sha' && history[i].isPhaseUsing()) return false;
-                    }
-                    return true;
+                    const history = player.getHistory('useCard').concat(player.getHistory('respond'));
+                    return !history.some(evt => evt.card.name === 'sha' && evt.isPhaseUsing());
                 },
                 content() {
                     player.skip('phaseDiscard');
-                    var targets = game.filterPlayer(function (current) {
-                        return current != player;
-                    }).sortBySeat();
+                    var targets = game.filterPlayer(current => current !== player).sortBySeat();
                     player.line(targets);
                     for (var i of targets) i.addMark('BTkongju', 1);
                     game.delayx();
                 },
                 marktext: '惧',
-                intro: { name: '恐惧', name2: '惧', content: 'mark' },
+                intro: { name: '恐惧', content: 'mark' },
             },
             BThouqi: {
-                trigger: { player: 'phaseBeginStart' },
+                trigger: { player: 'phaseZhunbeiBegin' },
+                filter(event, player) {
+                    return game.countPlayer(target => target.countMark('BTkongju')) >= 100;
+                },
                 forced: true,
                 skillAnimation: true,
                 animationColor: 'wood',
-                filter(event, player) {
-                    var num = 0;
-                    for (var i = 0; i < game.players.length; i++) num += game.players[i].countMark('BTkongju');
-                    return num >= 100;
-                },
                 content() {
-                    var bool = false;
-                    if (player == game.me) bool = true;
-                    else switch (get.mode()) {
-                        case 'identity': {
-                            game.showIdentity();
-                            var id1 = player.identity;
-                            var id2 = game.me.identity;
-                            if (['zhu', 'zhong', 'mingzhong'].includes(id1)) {
-                                if (['zhu', 'zhong', 'mingzhong'].includes(id2)) bool = true;
-                                break;
-                            }
-                            else if (id1 == 'fan') {
-                                if (id2 == 'fan') bool = true;
-                                break;
-                            }
-                            break;
-                        }
-                        case 'guozhan': {
-                            if (game.me.isFriendOf(player)) bool = true;
-                            break;
-                        }
-                        case 'versus': {
-                            if (player.side == game.me.side) bool = true;
-                            break;
-                        }
-                        case 'boss': {
-                            if (player.side == game.me.side) bool = true;
-                            break;
-                        }
-                        default: { }
-                    }
-                    game.over(bool);
+                    const me = game.me._trueMe || game.me;
+                    const winners = game.filterPlayer2(i => i.isFriendOf(player), [], true);
+                    game.over(player === me || winners.includes(me));
+                },
+                ai: {
+                    threaten() {
+                        const num = game.countPlayer(target => target.countMark('BTkongju'));
+                        return Math.max(10, num) / 10;
+                    },
                 },
             },
             bilibili_taoluan: {
@@ -2508,12 +2478,10 @@ const packs = function () {
                     respondSha: true,
                     respondShan: true,
                     skillTagFilter(player, tag, arg) {
-                        if (!player.countCards('hes')) return false;
-                        if (tag == 'respondSha' || tag == 'respondShan') {
-                            if (arg == 'respond') return false;
-                            return !player.getStorage('bilibili_taoluan').includes(tag == 'respondSha' ? 'sha' : 'shan');
-                        }
-                        return !player.getStorage('bilibili_taoluan').includes('tao') || (!player.getStorage('bilibili_taoluan').includes('jiu') && arg == player);
+                        if (arg == 'respond' || !player.countCards('hes')) return false;
+                        const storage = player.getStorage('bilibili_taoluan');
+                        if (tag == 'respondSha' || tag == 'respondShan') return !storage.includes(tag == 'respondSha' ? 'sha' : 'shan');
+                        return !storage.includes('tao') || (!storage.includes('jiu') && arg == player);
                     },
                 },
                 subSkill: {
@@ -2532,21 +2500,20 @@ const packs = function () {
                                 return current != player && current.countGainableCards(player, 'he') > 0;
                             })) player.chooseTarget(true, function (card, player, target) {
                                 return target != player && target.countGainableCards(player, 'he') > 0;
-                            }, '滔乱<br><br><div class="text center">获得一名其他角色的一张牌，如果你获得的牌与你以此法使用的牌类别相同的牌，你失去1点体力且本回合〖滔乱〗失效').set('ai', function (target) {
+                            }, '###滔乱###<div class="text center">获得一名其他角色的一张牌，如果你获得的牌与你以此法使用的牌类别相同的牌，你失去1点体力且本回合〖滔乱〗失效').set('ai', function (target) {
                                 var player = _status.event.player;
-                                return get.effect(target, { name: 'guohe_copy2' }, player, player);
+                                return get.effect(target, { name: 'shunshou_copy2' }, player, player);
                             });
                             else event._result = { bool: false };
                             'step 1'
-                            if (result.bool) {
-                                var target = result.targets[0];
-                                event.target = target;
+                            if (result?.bool && result.targets?.length) {
+                                var target = event.target = result.targets[0];
                                 player.line(target, 'green');
                                 player.gainPlayerCard(target, true, 'he');
                             }
                             else event._result = { bool: false };
                             'step 2'
-                            if (!result.bool || get.type2(trigger.card) == get.type2(result.cards[0])) {
+                            if (!result?.bool || !result.cards?.some(card => get.type2(trigger.card) == get.type2(card))) {
                                 player.popup('杯具');
                                 player.loseHp();
                                 player.tempBanSkill('bilibili_taoluan');
@@ -2575,10 +2542,7 @@ const packs = function () {
                     name2: '营',
                     content: '已获得【营】标记',
                 },
-                onremove(player, skill) {
-                    game.countPlayer2(target => target.clearMark(skill));
-                },
-                group: ['old_jieying_phase', 'old_jieying_die'],
+                group: 'old_jieying_phase',
                 subSkill: {
                     phase: {
                         trigger: { global: ['phaseAfter', 'dieAfter'] },
@@ -2592,21 +2556,6 @@ const packs = function () {
                             trigger.player.clearMark('old_jieying');
                             trigger.player.getNext().addMark('old_jieying', num);
                             player.insertPhase();
-                        },
-                    },
-                    die: {
-                        charlotte: true,
-                        trigger: { player: 'die' },
-                        filter(event, player) {
-                            return !game.hasPlayer(current => {
-                                return current !== player && current.hasSkill('old_jieying', null, null, false);
-                            }, [], true);
-                        },
-                        silent: true,
-                        firstDo: true,
-                        forceDie: true,
-                        async content(event, trigger, player) {
-                            lib.skill['old_jieying'].onremove(player, 'old_jieying');
                         },
                     },
                 },
@@ -2646,7 +2595,7 @@ const packs = function () {
                 enable: ['chooseToUse', 'chooseToRespond'],
                 usable: 1,
                 init(player, skill) {
-                    if (!player.storage[skill]) player.storage[skill] = [['sha', 'shan', 'tao', 'jiu'], 0];
+                    player.storage[skill] ??= [['sha', 'shan', 'tao', 'jiu'], 0];
                 },
                 hiddenCard(player, name) {
                     if (player.storage.BTdunshi && player.storage.BTdunshi[0].includes(name) && !player.getStat('skill').BTdunshi) return true;
@@ -2885,7 +2834,7 @@ const packs = function () {
             },
             BThuashen: {
                 init(player, skill) {
-                    if (!player.storage[skill]) player.storage[skill] = {
+                    player.storage[skill] ??= {
                         character: [],
                         shown: [],
                         map: {},
