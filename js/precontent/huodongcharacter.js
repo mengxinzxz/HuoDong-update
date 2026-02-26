@@ -1463,31 +1463,16 @@ const packs = function () {
                 multitarget: true,
                 multiline: true,
                 usable: 1,
-                content() {
-                    'step 0'
-                    event.num = 0;
-                    targets.sortBySeat();
-                    'step 1'
-                    for (var target of targets) {
-                        if (target.countCards('he')) player.gainPlayerCard('he', target, true);
-                        else player.draw();
-                    }
-                    'step 2'
-                    var target = targets[num];
-                    event.target = target;
-                    'step 3'
-                    if (player.countCards('he')) {
-                        player.chooseCard('择主：交给' + get.translation(target) + '一张牌', 'he', true).set('ai', function (card) {
-                            return -get.value(card);
-                        });
-                    }
-                    else event.finish();
-                    'step 4'
-                    if (result.bool) target.gain(result.cards, player, 'give');
-                    'step 5'
-                    if (num < targets.length - 1) {
-                        event.num++;
-                        event.goto(2);
+                async content(event, trigger, player) {
+                    const targets = [...event.targets].sortBySeat();
+                    for (let num = 1; num <= 2; num++) {
+                        for (const target of targets) {
+                            if (num === 1) {
+                                const result = await player.gainPlayerCard('he', target, true).forResult();
+                                if (!result?.bool || !result.cards?.length) await player.draw();
+                            }
+                            else await player.chooseToGive(target, 'he', true);
+                        }
                     }
                 },
                 ai: {
@@ -6020,7 +6005,7 @@ const packs = function () {
                         locked: false,
                         logTarget: 'player',
                         content() {
-                            player.gain(trigger.player.getExpansions('old_zhoufu'), trigger.player, 'give');
+                            player.gain(trigger.player.getExpansions('old_zhoufu'), trigger.player, 'give', 'bySelf');
                         },
                     },
                 },

@@ -1163,7 +1163,7 @@ const packs = function () {
                         if (typeof result.links[0] != 'string') result.links.reverse();
                         var card = result.links[1], choice = result.links[0];
                         player.showCards(card, get.translation(player) + '对' + get.translation(target) + '发动了【攻心】');
-                        if (choice == '获得此牌') player.gain([card], target, 'giveAuto');
+                        if (choice == '获得此牌') player.gain([card], target, 'giveAuto', 'bySelf');
                         else target.lose(card, ui.cardPile, 'visible', 'insert');
                     }
                 },
@@ -2123,14 +2123,12 @@ const packs = function () {
                 content() {
                     'step 0'
                     if (cards.length) {
-                        target.gain(cards, player, 'giveAuto');
+                        player.give(cards, target);
                         event.goto(3);
                     }
                     'step 1'
-                    target.chooseCard('h', '同心：将一张手牌交给' + get.translation(player), true);
+                    target.chooseToGiveCard(player, '同心：将一张手牌交给' + get.translation(player), true);
                     'step 2'
-                    if (result.bool) player.gain(result.cards, target, 'giveAuto');
-                    'step 3'
                     if (player.storage.wechattongxin) {
                         if (target.countCards('h') >= player.countCards('h')) {
                             player.line(target);
@@ -3448,7 +3446,7 @@ const packs = function () {
                             event.finish();
                             break;
                         case 1:
-                            player.gain(target.getGainableCards(player, 'h').randomGets(1), target, 'giveAuto');
+                            player.gain(target.getGainableCards(player, 'h').randomGets(1), target, 'giveAuto', 'bySelf');
                             event.finish();
                             break;
                         default:
@@ -4618,7 +4616,7 @@ const packs = function () {
                         targetx.remove(result.winner);
                         for (var target of targetx) {
                             const cards = target.getGainableCards(result.winner, 'hej');
-                            if (cards.length) result.winner.gain(cards.randomGet(), target, 'giveAuto');
+                            if (cards.length) result.winner.gain(cards.randomGet(), target, 'giveAuto', 'bySelf');
                         }
                     }
                 },
@@ -10923,7 +10921,7 @@ const packs = function () {
                         await player.gain(target.getCards('he', card => {
                             if (!lib.filter.canBeGained(card, target, player)) return false;
                             return !player.hasCard(cardx => get.name(cardx) == get.name(card), 'he');
-                        }).randomGet(), target, 'giveAuto');
+                        }).randomGet(), target, 'giveAuto', 'bySelf');
                     }
                 },
                 ai: {
@@ -10990,7 +10988,7 @@ const packs = function () {
                         await player.gain(target.getCards('he', card => {
                             if (!lib.filter.canBeGained(card, target, player)) return false;
                             return !player.hasCard(cardx => get.name(cardx) == get.name(card), 'he');
-                        }).randomGet(), target, 'giveAuto');
+                        }).randomGet(), target, 'giveAuto', 'bySelf');
                     }
                 },
                 ai: {
@@ -11550,7 +11548,7 @@ const packs = function () {
                         if (!hs.length) return;
                         const num = Math.max(...hs.map(card => get.number(card)));
                         const cards = hs.filter(card => get.number(card) == num);
-                        if (player != target) await player.gain(cards, target, 'giveAuto');
+                        if (player != target) await player.gain(cards, target, 'giveAuto', 'bySelf');
                         target.addTempSkill(event.name + '_effect', { player: 'phaseBegin' });
                         target.markAuto(event.name + '_effect', cards.map(card => get.type2(card)));
                     }
@@ -15980,7 +15978,7 @@ const packs = function () {
                         async content(player, target) {
                             player.line(target);
                             const cards = target.getCards('h', card => lib.filter.canBeGained(card, target, player) && player.getStorage('wechatzhongxin', [[], []])[0].includes(card.name));
-                            if (cards.length) await player.gain(cards, target, 'giveAuto');
+                            if (cards.length) await player.gain(cards, target, 'giveAuto', 'bySelf');
                         },
                     },
                     damage: {
@@ -17518,7 +17516,7 @@ const packs = function () {
                             const [card, target] = list;
                             return target !== player && lib.filter.canBeGained(card, player, target);
                         }).map(i => i[0]);
-                        if (gains.length) await player.gain(gains, 'giveAuto');
+                        if (gains.length) await player.gain(gains, 'giveAuto', 'bySelf');
                         for (const list of cards) {
                             const [card, target] = list;
                             if (target.isIn()) {

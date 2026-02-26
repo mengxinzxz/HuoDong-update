@@ -770,9 +770,12 @@ const packs = function () {
                 audioname2: { Mbaby_caoying: 'lingren_xingshang' },
                 trigger: { global: 'die' },
                 preHidden: true,
-                content() {
-                    if (trigger.player.countCards('he')) player.gain(trigger.player.getCards('he'), trigger.player, 'giveAuto');
-                    player.draw();
+                async content(event, trigger, player) {
+                    const target = trigger.player;
+                    if (target.countCards('he')) {
+                        await player.gain(target.getCards('he'), target, 'giveAuto', 'bySelf');
+                    }
+                    await player.draw();
                 },
             },
             minilingren: {
@@ -1214,32 +1217,28 @@ const packs = function () {
                 },
                 usable: 2,
                 forced: true,
-                content() {
-                    'step 0'
-                    player.draw();
-                    if (trigger.target != player) {
-                        player.chooseCard('he', '慷忾：是否交给' + get.translation(trigger.target) + '一张牌？').set('ai', function (card) {
+                logTarget: 'target',
+                async content(event, trigger, player) {
+                    await player.draw();
+                    if (trigger.target !== player) {
+                        const target = trigger.target;
+                        const result = await player.chooseToGive(target, 'he', '慷忾：是否交给' + get.translation(trigger.target) + '一张牌？').set('ai', function (card) {
                             if (get.position(card) == 'e') return -1;
                             if (card.name == 'shan' && get.attitude(player, trigger.target) > 0) return 1;
                             if (get.type(card) == 'equip' && get.attitude(player, trigger.target) > 0) return 0.5;
                             if (card.name == 'du' && get.attitude(player, trigger.target) < 0) return 5;
                             return 0;
-                        });
+                        }).forResult();
+                        if (result?.bool && result.cards?.length) {
+                            await game.delayx();
+                            const card = result.cards[0];
+                            if (target.getCards('h').includes(card) && get.type(card) === 'equip' && target.hasUseTarget(card)) await target.chooseUseTarget(card);
+                        }
                     }
-                    else event.finish();
-                    'step 1'
-                    if (result.bool) {
-                        trigger.target.gain(result.cards, player, 'give');
-                        game.delayx();
-                        event.card = result.cards[0];
-                    }
-                    else event.finish();
-                    'step 2'
-                    if (trigger.target.getCards('h').includes(card) && get.type(card) == 'equip') trigger.target.chooseUseTarget(card);
                 },
                 subSkill: {
                     Mnian_caopi: { audio: 'ext:活动武将/audio/skill:true' },
-                }
+                },
             },
             minishangshi: {
                 audio: 'shangshi',
@@ -1764,7 +1763,7 @@ const packs = function () {
                 lose: false,
                 delay: false,
                 content() {
-                    target.gain(cards, player, 'giveAuto');
+                    player.give(cards, target);
                     target.addTempSkill('mingjian2', { player: 'phaseAfter' });
                     target.storage.mingjian2++;
                     target.updateMarks('mingjian2');
@@ -2348,7 +2347,7 @@ const packs = function () {
                     }).forResult();
                 },
                 content() {
-                    targets[0].gain(cards, player, 'giveAuto');
+                    player.give(cards, targets[0]);
                     player.draw();
                 },
                 ai: { expose: 0.3 },
@@ -2460,22 +2459,9 @@ const packs = function () {
                         return ui.create.dialog('活墨', [list, 'vcard'], 'hidden');
                     },
                     check(button) {
-                        var player = _status.event.player;
-                        var card = { name: button.link[2], nature: button.link[3] };
-                        if (game.hasPlayer(function (current) {
-                            return player.canUse(card, current) && get.effect(current, card, player, player) > 0;
-                        })) {
-                            switch (button.link[2]) {
-                                case 'tao': return 5;
-                                case 'jiu': return 3.01;
-                                case 'shan': return 3.01;
-                                case 'sha':
-                                    if (button.link[3] == 'fire') return 2.95;
-                                    else if (button.link[3] == 'fire') return 2.92;
-                                    else return 2.9;
-                            }
-                        }
-                        return 0;
+                        if (_status.event.getParent().type !== 'phase') return 1;
+                        const player = get.player();
+                        return get.player().getUseValue(new lib.element.VCard({ name: button.link[2], nature: button.link[3] }));
                     },
                     backup(links, player) {
                         return {
@@ -2499,19 +2485,18 @@ const packs = function () {
                                 'step 0'
                                 player.logSkill('minihomo');
                                 var card = event.result.cards[0];
-                                event.card = card;
                                 player.$throw(card, 1000);
                                 game.log(player, '将', card, '置于牌堆顶');
                                 event.result.card = { name: event.result.card.name, nature: event.result.card.nature };
                                 event.result.cards = [];
                                 player.lose(card, ui.cardPile, 'visible', 'insert');
                                 'step 1'
-                                game.delay();
+                                game.delayx();
                             },
                         }
                     },
                     prompt(links, player) {
-                        return '将一张黑色非基本牌置于牌堆顶并视为使用一张' + get.translation(links[0][3] || '') + get.translation(links[0][2]);
+                        return '将一张黑色非基本牌置于牌堆顶，视为使用' + get.translation(links[0][3] || '') + get.translation(links[0][2]);
                     }
                 },
                 ai: {
@@ -4034,14 +4019,14 @@ const packs = function () {
                 multitarget: true,
                 content() {
                     'step 0'
-                    player.give(cards, targets[0], 'give');
+                    player.give(cards, targets[0], true);
                     'step 1'
                     targets[0].chooseToCompare(targets[1]);
                     'step 2'
                     player.addTempSkill('dcjianshu_check', 'phaseUseAfter');
                     if (result.bool) {
                         var cards = targets[0].getCards('he');
-                        if (cards.length) player.gain(cards.randomGet(), targets[0], 'giveAuto');
+                        if (cards.length) targets[0].give(cards.randomGets(1), player);
                         targets[1].loseHp();
                     }
                     else if (result.tie) {
@@ -4050,7 +4035,7 @@ const packs = function () {
                     }
                     else {
                         var cards = targets[1].getCards('he');
-                        if (cards.length) player.gain(cards.randomGet(), targets[1], 'giveAuto');
+                        if (cards.length) targets[1].give(cards.randomGets(1), player);
                         targets[0].loseHp();
                     }
                 },
@@ -5211,7 +5196,7 @@ const packs = function () {
                                 }).forResult();
                                 if (result?.targets?.length && result.cards?.length) {
                                     player.line(result.targets[0]);
-                                    await result.targets[0].gain(result.cards, player, 'giveAuto');
+                                    await player.give(result.cards, result.targets[0]);
                                 }
                             }
                         }
@@ -8988,21 +8973,19 @@ const packs = function () {
                     if (target.countCards('h') == target.hp) {
                         player.draw();
                         if (target == player) { event.finish(); return; }
-                        var next = player.chooseCard('是否交给' + get.translation(target) + '一张牌？', 'he');
-                        next.set('ai', function (card) {
-                            if (_status.event.du && card.name == 'du') return 114514 + 1919810;
-                            if (get.position(card) != 'h') return 0;
-                            if (_status.event.shan && card.name == 'shan') return 11;
-                            if (_status.event.goon) return 10 - get.value(card);
-                            return -get.value(card);
-                        });
-                        if (get.attitude(player, target) > 1 && player.countCards('h', 'shan') > 1 && player.countCards('h') > target.countCards('h')) next.set('shan', true);
-                        if (get.attitude(player, target) > 0 && player.needsToDiscard()) next.set('goon', true);
-                        if (get.attitude(player, target) <= 0) next.set('du', true);
                     }
-                    else event.finish();
                     'step 3'
-                    if (result.bool) target.gain(result.cards, player, 'giveAuto');
+                    var next = player.chooseToGiveCard(target, 'he');
+                    next.set('ai', function (card) {
+                        if (_status.event.du && card.name == 'du') return 114514 + 1919810;
+                        if (get.position(card) != 'h') return 0;
+                        if (_status.event.shan && card.name == 'shan') return 11;
+                        if (_status.event.goon) return 10 - get.value(card);
+                        return -get.value(card);
+                    });
+                    if (get.attitude(player, target) > 1 && player.countCards('h', 'shan') > 1 && player.countCards('h') > target.countCards('h')) next.set('shan', true);
+                    if (get.attitude(player, target) > 0 && player.needsToDiscard()) next.set('goon', true);
+                    if (get.attitude(player, target) <= 0) next.set('du', true);
                 },
             },
             miniliangzhu: {
@@ -9036,7 +9019,7 @@ const packs = function () {
                             trigger.player.draw(2);
                             break;
                         case '拿武器':
-                            player.gain(trigger.player.getEquips(1), trigger.player, 'give');
+                            player.gain(trigger.player.getEquips(1), trigger.player, 'give', 'bySelf');
                             break;
                     }
                 },
@@ -9823,13 +9806,8 @@ const packs = function () {
                         filterCard: true,
                         position: 'he',
                         content() {
-                            'step 0'
                             player.markAuto('minifeijun', [target]);
-                            target.chooseCard('he', true, '飞军：请交给' + get.translation(player) + '一张牌').set('ai', function (card) {
-                                return -get.value(card);
-                            });
-                            'step 1'
-                            if (result.bool) player.gain(result.cards, target, 'giveAuto');
+                            target.chooseToGive(player, 'he', true);
                         },
                         ai: {
                             result: {
@@ -10627,15 +10605,9 @@ const packs = function () {
                 forced: true,
                 popup: false,
                 content() {
-                    'step 0'
                     var num = player.storage.miniduliang3[trigger.player.playerid];
                     delete player.storage.miniduliang3[trigger.player.playerid];
-                    var cards = trigger.player.getCards('he');
-                    if (!cards.length) event.finish();
-                    else if (cards.length <= num) event._result = { bool: true, cards: cards };
-                    else trigger.player.chooseCard('he', '督粮：将' + get.cnNumber(num) + '张牌交给' + get.translation(player), num, true);
-                    'step 1'
-                    if (result.bool) player.gain(result.cards, trigger.player, 'giveAuto');
+                    trigger.player.chooseToGive(player, 'he', num, true);
                 },
             },
             //刘谌
@@ -13037,7 +13009,7 @@ const packs = function () {
                 async content(event, trigger, player) {
                     const targets = event.targets.sortBySeat();
                     player.awakenSkill('minisbfanxiang');
-                    await player.gain(targets.map(target => target.getGainableCards(player, 'e')).flat(), 'give');
+                    await player.gain(targets.map(target => target.getGainableCards(player, 'e')).flat(), 'give', 'bySelf');
                     for (const i of game.filterPlayer().sortBySeat()) {
                         if (i.hasMark('minisbjieyin')) i.removeMark('minisbjieyin', i.countMark('minisbjieyin'));
                         if (i.hasSkill('minisbjieyin', null, false, false)) await i.removeSkills('minisbjieyin');
@@ -13200,7 +13172,7 @@ const packs = function () {
                 inherit: 'dcwuyuan',
                 async content(event, trigger, player) {
                     const cards = event.cards, target = event.targets[0];
-                    await player.give(cards, target, 'give');
+                    await player.give(cards, target, true);
                     await player.recover();
                     let num = 1;
                     if (get.natureList(cards[0]).length) num++;
@@ -14426,8 +14398,9 @@ const packs = function () {
                             if (trigger.hasNature('fire')) {
                                 await target.loseToDiscardpile(event.cost_data);
                                 trigger.num++;
-                            } else {
-                                await source.gain(event.cost_data, target, 'give');
+                            }
+                            else {
+                                await source.gain(event.cost_data, target, 'give', 'bySelf');
                                 source.addSkill('minixiaoyin_effect');
                             }
                         },
@@ -14994,7 +14967,7 @@ const packs = function () {
                     'step 1'
                     if (result.bool) {
                         player.line(result.targets[0]);
-                        result.targets[0].gain(result.cards, player, 'giveAuto');
+                        player.give(result.cards, result.targets[0]);
                     }
                 },
             },
@@ -15085,7 +15058,7 @@ const packs = function () {
                     'step 1'
                     if (result.bool) {
                         player.line(result.targets[0]);
-                        result.targets[0].gain(result.cards, player, 'giveAuto');
+                        player.give(result.cards, result.targets[0]);
                     }
                 },
                 ai: {
@@ -15372,7 +15345,7 @@ const packs = function () {
                         }
                     });
                     'step 1'
-                    if (result.targets && result.targets[0]) result.targets[0].gain(result.cards, player, 'giveAuto');
+                    if (result?.bool && result.cards?.length && result.targets?.length) player.give(result.cards, result.targets[0]);
                     else player.discard(result.cards);
                 },
             },
@@ -16357,7 +16330,7 @@ const packs = function () {
                         content() {
                             player.addTempSkill('minizhiba_used', 'phaseUseAfter');
                             player.markAuto('minizhiba_used', [target]);
-                            target.gain(cards, player, 'give');
+                            player.give(cards, target, true);
                         },
                         ai: {
                             expose: 0.3,
@@ -16402,7 +16375,7 @@ const packs = function () {
                         content() {
                             player.addTempSkill('miniolzhiba_used', 'phaseUseAfter');
                             player.markAuto('miniolzhiba_used', [target]);
-                            target.gain(cards, player, 'give');
+                            player.give(cards, target, true);
                         },
                         ai: {
                             expose: 0.3,
@@ -16742,7 +16715,7 @@ const packs = function () {
                         else {
                             var target = result.targets[0];
                             target.recover();
-                            target.gain(cards, player, 'give');
+                            player.give(cards, target, true);
                             target.draw(cards.length);
                         }
                     }
@@ -16776,14 +16749,14 @@ const packs = function () {
                     return get.attitude(player, event.target) < 0;
                 },
                 logTarget: 'target',
-                content() {
-                    'step 0'
-                    trigger.target.chooseCard('he', '谮毁：交给' + get.translation(player) + '一张牌，或失去1点体力').set('ai', function (card) {
+                async content(event, trigger, player) {
+                    const target = trigger.target;
+                    const result = await target.chooseToGive(player, 'he', '谮毁：交给' + get.translation(player) + '一张牌，或失去1点体力').set('ai', card => {
+                        const player = get.player();
+                        if (player.getHp() > 1 && get.effect(player, { name: 'losehp' }, player, player) > 0) return -1;
                         return 7 - get.value(card);
-                    });
-                    'step 1'
-                    if (result.bool) player.gain(result.cards, trigger.target, 'giveAuto');
-                    else trigger.target.loseHp();
+                    }).forResult();
+                    if (!result?.bool || !result.cards?.length) target.loseHp();
                 },
             },
             minijiaojin: {
@@ -19800,7 +19773,7 @@ const packs = function () {
                     'step 1'
                     if (result.bool) {
                         if (result.links.length == 1) {
-                            player.gain(result.links, target, 'give');
+                            player.gain(result.links, target, 'give', 'bySelf');
                             if (get.color(result.links[0], target) != 'black') event.finish();
                         }
                         else {
@@ -20422,20 +20395,28 @@ const packs = function () {
                 inherit: 'sbfenwei',
                 usable: 1,
                 prompt: '将至多三张牌称为“威”分别置于等量名角色的武将牌上，然后你摸等量牌',
-                content() {
-                    'step 0'
-                    for (var i = 0; i < cards.length; i++) {
-                        targets[i].addToExpansion(cards[i], player, 'give').gaintag.add(event.name);
+                async content(event, trigger, player) {
+                    const { cards, targets } = event;
+                    if (targets.length === 1) {
+                        const next = targets[0].addToExpansion(cards, player, 'give');
+                        next.gaintag.add(event.name);
+                        await next;
                     }
-                    'step 1'
-                    player.draw(cards.length);
+                    else {
+                        await game.loseAsync({
+                            lose_list: targets.map((target, index) => [target, [cards[index]]]),
+                            log: true,
+                            animate: 'give',
+                            gaintag: [event.name],
+                        }).setContent('addToExpansionMultiple');
+                    }
+                    await player.draw(cards.length);
                 },
                 limited: false,
                 skillAnimation: false,
                 animationColor: false,
                 marktext: '威',
                 intro: {
-                    name: '威',
                     markcount: 'expansion',
                     content: 'expansion',
                 },
@@ -20481,7 +20462,7 @@ const packs = function () {
                                 return Array.from({ length: 4 }).map((_, i) => i).sort((a, b) => map[b] - map[a])[0];
                             }).forResult();
                             if (result.index === 0) {
-                                await target.gain(cards, target, 'give');
+                                await target.gain(cards, 'gain2');
                             }
                             else {
                                 await target.loseToDiscardpile(cards);
@@ -21171,7 +21152,7 @@ const packs = function () {
                 content() {
                     'step 0'
                     player.awakenSkill('minixianzhou');
-                    target.gain(cards, player, 'give');
+                    player.give(cards, target);
                     'step 1'
                     var list = game.filterPlayer(function (current) {
                         return target.inRange(current);
@@ -22908,7 +22889,7 @@ const packs = function () {
                         content() {
                             player.addTempSkill('minihuangtian_used', 'phaseUseAfter');
                             player.markAuto('minihuangtian_used', [target]);
-                            target.gain(cards, player, 'give');
+                            player.give(cards, target, true);
                         },
                         ai: {
                             expose: 0.3,
@@ -22961,7 +22942,7 @@ const packs = function () {
                         content() {
                             player.addTempSkill('minixinhuangtian_used', 'phaseUseAfter');
                             player.markAuto('minixinhuangtian_used', [target]);
-                            target.gain(cards, player, 'give');
+                            player.give(cards, target, true);
                         },
                         ai: {
                             expose: 0.3,
@@ -25336,7 +25317,7 @@ const packs = function () {
                                 if (card) trigger.player.gain(card, 'gain2');
                             }
                             else {
-                                if (trigger.player.countCards('h', { name: 'jiu' })) player.gain(trigger.player.getCards('h', { name: 'jiu' }), trigger.player, 'give');
+                                if (trigger.player.countCards('h', { name: 'jiu' })) player.gain(trigger.player.getCards('h', { name: 'jiu' }), trigger.player, 'give', 'bySelf');
                                 else player.gainPlayerCard(trigger.player, 'he', true);
                             }
                         },
@@ -30404,7 +30385,7 @@ const packs = function () {
                 async content(event, trigger, player) {
                     const target = event.targets[0];
                     const cards = player.getExpansions('qiaoyan');
-                    if (cards.length) await player.give(cards, target, 'give');
+                    if (cards.length) await player.give(cards, target, true);
                     if (player != target && target.isIn() && player.isIn() && game.hasPlayer(current => {
                         return current != target && player.inRange(current) && target.canUse({ name: 'sha', isCard: true }, current, false);
                     })) {
@@ -30702,13 +30683,12 @@ const packs = function () {
                         player.send('closeDialog', event.videoId);
                     }
                     event.dialog.close();
-                    var card = event.card;
                     if (result.control == '置于牌堆顶') {
                         player.showCards(card, '置于牌堆顶');
                         target.lose(card, ui.cardPile, 'insert', 'visible');
                         game.log(player, '将', event.card, '置于牌堆顶');
                     }
-                    else player.gain(card, target, 'give');
+                    else player.gain(card, target, 'give', 'bySelf');
                 },
                 ai: { expose: 0.25 },
             },
@@ -32883,7 +32863,7 @@ const packs = function () {
                     var suit = result.control;
                     player.chat(get.translation(suit + 2));
                     game.log(player, '选择了', '#y' + get.translation(suit + 2));
-                    if (target.countCards('he', { suit: suit })) player.gain(target.getCards('he', { suit: suit }), target, 'giveAuto');
+                    if (target.countCards('he', { suit: suit })) target.give(target.getCards('he', { suit }), player);
                     else if (target.countCards('h')) player.gainPlayerCard(target, true, 'h', 'visible');
                 },
             },
@@ -32956,10 +32936,11 @@ const packs = function () {
                         '不能使用或打出' + get.translation(event.suit) + '牌直到你的下个回合结束'
                     ]).set('ai', () => 1);
                     'step 4'
-                    if (result.index == 0) player.gain(target.getCards('he', { suit: event.suit }), target, 'giveAuto');
+                    var suit = event.suit;
+                    if (result.index == 0) target.give(target.getCards('he', { suit }), player);
                     else {
                         target.addTempSkill('minihuoxin_use', { player: 'phaseEnd' });
-                        target.markAuto('minihuoxin_use', [event.suit]);
+                        target.markAuto('minihuoxin_use', [suit]);
                     }
                     'step 5'
                     if (event.list.length) event.goto(3);
@@ -33862,12 +33843,12 @@ const packs = function () {
                     if (cards?.length) {
                         await player.give(event.cards, target);
                         const cards = target.getGainableCards(player, 'ej');
-                        if (cards.length) await player.gain(cards, 'give', target);
+                        if (cards.length) await player.gain(cards, target, 'give', 'bySelf');
                     }
                     else {
                         const cards = target.getGainableCards(player, 'h');
                         if (!cards.length) return;
-                        await player.gain(cards, 'give', target);
+                        await player.gain(cards, target, 'give', 'bySelf');
                         if (player.countCards('he')) await player.chooseToGive(target, 'he', cards.length, true).set('ai', card => {
                             const { player, target } = get.event();
                             if (player.hasSkill('zhimeng') && get.position(card) == 'e') return 10;
@@ -35340,7 +35321,7 @@ const packs = function () {
                 logTarget: 'player',
                 async content(event, trigger, player) {
                     const current = trigger.player;
-                    if (current.countCards('he')) await player.gain(current.getCards('he'), current, 'giveAuto');
+                    if (current.countCards('he')) await player.gain(current.getCards('he'), current, 'giveAuto', 'bySelf');
                     await player.draw();
                     if (current.hasSkill('minidoumao', null, false, false)) {
                         const result = await player.chooseTarget('是否令一名角色获得【逗猫】？').set('ai', target => {
@@ -37882,7 +37863,7 @@ const packs = function () {
                         const cards = target.getCards('h', card => {
                             return lib.filter.canBeGained(card, target, player) && get.suit(card, target) == suit;
                         });
-                        if (cards.length) await player.gain(cards.randomGet(), target, 'giveAuto');
+                        if (cards.length) await player.gain(cards.randomGet(), target, 'giveAuto', 'bySelf');
                     }
                 },
             },
