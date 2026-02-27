@@ -21342,19 +21342,11 @@ const packs = function () {
                     player.draw();
                     player.chooseToDiscard('h', true);
                     'step 1'
-                    if (result.bool) {
+                    if (result?.bool && result.cards?.length) {
                         player.addTempSkill('minichenglve_use');
                         player.markAuto('minichenglve_use', [get.suit(result.cards[0], player)]);
-                        player.storage.minichenglve_use.sort(function (a, b) {
-                            return lib.suit.indexOf(b) - lib.suit.indexOf(a);
-                        });
-                        if (game.HasExtension('十周年UI')) {
-                            game.broadcastAll(function (player) {
-                                var str = '成略';
-                                for (var suit of player.getStorage('minichenglve_use')) str += get.translation(suit);
-                                if (player.marks.minichenglve_use) player.marks.minichenglve_use.firstChild.innerHTML = str;
-                            }, player);
-                        }
+                        player.storage.minichenglve_use.sort((a, b) => lib.suit.indexOf(b) - lib.suit.indexOf(a));
+                        player.markSkill('minichenglve_use');
                     }
                 },
                 ai: {
@@ -21366,7 +21358,7 @@ const packs = function () {
                         charlotte: true,
                         onremove: true,
                         intro: {
-                            markcount: () => undefined,
+                            markcount: (suits = []) => suits.map(i => get.translation(i)).join(''),
                             content: '使用$花色的牌无距离和次数限制',
                         },
                         mod: {
