@@ -12594,12 +12594,8 @@ const packs = function () {
                     },
                 },
                 intro: {
-                    content: '已记录花色：$',
-                    markcount(storage) {
-                        if (!_status.connectMode && game.HasExtension('十周年UI') && lib.config.extension_十周年UI_playerMarkStyle && lib.config.extension_十周年UI_playerMarkStyle == 'decade') return 0;
-                        return storage.length;
-                    },
                     onunmark: true,
+                    content: '已记录花色：$',
                 },
                 group: 'minisbliegong_count',
                 subSkill: {
@@ -12662,11 +12658,7 @@ const packs = function () {
                         content() {
                             player.markAuto('minisbliegong', [get.suit(trigger.card)]);
                             player.storage.minisbliegong.sort((a, b) => lib.suit.indexOf(b) - lib.suit.indexOf(a));
-                            if (!_status.connectMode && game.HasExtension('十周年UI') && lib.config.extension_十周年UI_playerMarkStyle && lib.config.extension_十周年UI_playerMarkStyle == 'decade') {
-                                game.broadcastAll(function (player, skill) {
-                                    if (player.marks[skill]) player.marks[skill].firstChild.innerHTML = player.getStorage(skill).reduce((str, suit) => str += get.translation(suit), '');
-                                }, player, 'minisbliegong');
-                            }
+                            player.addTip('minisbliegong', get.translation('minisbliegong') + player.getStorage('minisbliegong').reduce((str, suit) => str + get.translation(suit), ''));
                         },
                     },
                 },

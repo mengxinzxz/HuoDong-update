@@ -9387,7 +9387,7 @@ const packs = function () {
                         content() {
                             player.markAuto('wechatsbliegong', [get.suit(trigger.card)]);
                             player.storage.wechatsbliegong.sort((a, b) => lib.suit.indexOf(b) - lib.suit.indexOf(a));
-                            player.addTip('wechatsbliegong', get.translation('wechatsbliegong') + player.getStorage('wechatsbliegong').reduce((str, suit) => str + get.translation(suit), ""));
+                            player.addTip('wechatsbliegong', get.translation('wechatsbliegong') + player.getStorage('wechatsbliegong').reduce((str, suit) => str + get.translation(suit), ''));
                         },
                     },
                 },
@@ -18857,7 +18857,7 @@ const packs = function () {
             wechatgywuwei_info: `${get.poptip('rule_shiwuSkill')}，出牌阶段，你可以弃置X+1张牌并弃置一名角色的等量张牌（X为你本阶段发动〖武威〗的次数）。若你以此法弃置的牌的点数之和不大于其因此被弃置的牌的点数之和，你对其造成1点雷电伤害。`,
             wechat_sb_huangzhong: '小程序谋黄忠',
             wechatsbliegong: '烈弓',
-            wechatsbliegong_info: '当你使用牌时或成为其他角色使用牌的目标后，若你未记录此牌的花色，你记录此牌的花色。当你使用【杀】指定唯一目标后，若〖烈弓〗存在记录花色，则你可亮出牌堆顶的X张牌（X为〖烈弓〗记录过的花色数-1），令此【杀】的伤害值基数+Y（Y为亮出牌中被〖烈弓〗记录过花色的牌的数量），且目标角色不能使用〖烈弓〗记录过花色的牌响应此【杀】。此【杀】使用结算结束后，你清除〖烈弓〗记录的的花色。',
+            wechatsbliegong_info: '当你使用牌时或成为其他角色使用牌的目标后，若你未记录此牌的花色，你记录此牌的花色（可记录无色）。当你使用【杀】指定唯一目标后，若〖烈弓〗存在记录花色，则你可亮出牌堆顶的X张牌（X为〖烈弓〗记录过的花色数-1），令此【杀】的伤害值基数+Y（Y为亮出牌中被〖烈弓〗记录过花色的牌的数量），且目标角色不能使用〖烈弓〗记录过花色的牌响应此【杀】。此【杀】使用结算结束后，你清除〖烈弓〗记录的的花色。',
             wechat_yj_ganning: '小程序☆甘宁',
             wechatjinfan: '锦帆',
             wechatjinfan_info: '①弃牌阶段开始时，你可将任意张手牌置于武将牌上，称为“铃”（每种花色的“铃”限一张，且对其他角色不可见）。②你可以如手牌般使用或打出“铃”（无距离和任何次数限制）。③当你失去“铃”后，你从牌堆中获得一张与此“铃”花色相同的牌。',
