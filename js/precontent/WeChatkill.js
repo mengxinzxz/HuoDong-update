@@ -2124,7 +2124,7 @@ const packs = function () {
                         event.goto(3);
                     }
                     'step 1'
-                    target.chooseToGiveCard(player, '同心：将一张手牌交给' + get.translation(player), true);
+                    target.chooseToGive(player, '同心：将一张手牌交给' + get.translation(player), true);
                     'step 2'
                     if (player.storage.wechattongxin) {
                         if (target.countCards('h') >= player.countCards('h')) {

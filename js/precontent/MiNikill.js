@@ -8975,7 +8975,7 @@ const packs = function () {
                         if (target == player) { event.finish(); return; }
                     }
                     'step 3'
-                    var next = player.chooseToGiveCard(target, 'he');
+                    var next = player.chooseToGive(target, 'he');
                     next.set('ai', function (card) {
                         if (_status.event.du && card.name == 'du') return 114514 + 1919810;
                         if (get.position(card) != 'h') return 0;
