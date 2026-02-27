@@ -13276,7 +13276,7 @@ const packs = function () {
                         getIndex(event, player) {
                             if (event.name == 'useCard') {
                                 if (event.player.hasHistory('lose', evt => {
-                                    if (evt.getParent() != event) return false;
+                                    if ((evt.relatedEvent || evt.getParent()) !== event) return false;
                                     return Object.values(evt.gaintag_map).flat().includes('minifuman');
                                 }) && event.player.hasHistory('sourceDamage', evt => evt.card == event.card)) return [event.player];
                             }
@@ -29341,7 +29341,7 @@ const packs = function () {
                         filter(event, player) {
                             if (!event.cards?.length) return false;
                             return player.hasHistory('lose', evt => {
-                                if (evt.getParent() !== event) return false;
+                                if ((evt.relatedEvent || evt.getParent()) !== event) return false;
                                 return Object.values(evt.gaintag_map).flat().includes('minixuefeng_effect');
                             });
                         },
@@ -29350,7 +29350,7 @@ const packs = function () {
                         async content(event, trigger, player) {
                             const tag = event.name;
                             const evtx = player.getHistory('lose', evt => {
-                                if (evt.getParent() !== trigger) return false;
+                                if ((evt.relatedEvent || evt.getParent()) !== event) return false;
                                 return Object.values(evt.gaintag_map).flat().includes(tag);
                             })[0];
                             let num = 0;

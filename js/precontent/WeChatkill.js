@@ -728,8 +728,8 @@ const packs = function () {
                 filter(event, player) {
                     if (_status.currentPhase == player) return false;
                     return player.hasHistory('lose', evt => {
-                        if (evt.getParent() != event) return false;
-                        return event.cards.some(card => evt.hs.includes(card));
+                        if ((evt.relatedEvent || evt.getParent()) !== event) return false;
+                        return evt.hs.length > 0;
                     });
                 },
                 frequent: true,
@@ -1191,11 +1191,8 @@ const packs = function () {
                         trigger: { player: ['useCard', 'respond'] },
                         filter(event, player) {
                             return player.getHistory('lose', function (evt) {
-                                if (evt.getParent() != event) return false;
-                                for (var i in evt.gaintag_map) {
-                                    if (evt.gaintag_map[i].includes('wechatbuqux')) return true;
-                                }
-                                return false;
+                                if ((evt.relatedEvent || evt.getParent()) !== event) return false;
+                                return Object.values(evt.gaintag_map).flat().includes('wechatbuqux');
                             }).length;
                         },
                         forced: true,
@@ -4801,13 +4798,10 @@ const packs = function () {
                         trigger: { player: 'useCard' },
                         filter(event, player) {
                             if (!player.hasSkill('wechatyanshi') || get.is.blocked('wechatyanshi', player)) return false;
-                            return player.getHistory('lose', function (evt) {
-                                if (evt.getParent() != event) return false;
-                                for (var i in evt.gaintag_map) {
-                                    if (evt.gaintag_map[i].includes('wechatyanshi_effect')) return true;
-                                }
-                                return false;
-                            }).length;
+                            return player.hasHistory('lose', function (evt) {
+                                if ((evt.relatedEvent || evt.getParent()) !== event) return false;
+                                return Object.values(evt.gaintag_map).flat().includes('wechatyanshi_effect');
+                            });
                         },
                         async cost(event, trigger, player) {
                             var position = player.storage.wechatyanshi_effect == '牌堆顶' ? '牌堆底' : '牌堆顶';
@@ -9803,7 +9797,7 @@ const packs = function () {
                             const info = get.info(event.card);
                             if (info.allowMultiple === false) return false;
                             if (!player.hasHistory('lose', evt => {
-                                if (evt.getParent() !== event) return false;
+                                if ((evt.relatedEvent || evt.getParent()) !== event) return false;
                                 return Object.values(evt.gaintag_map).flat().includes('wechatqirang');
                             })) return false;
                             if (!info.multitarget) {
@@ -17537,7 +17531,7 @@ const packs = function () {
                         trigger: { player: ['useCard1', 'useCard'] },
                         filter(event, player, name) {
                             if (!player.hasHistory('lose', evt => {
-                                if (evt.getParent() !== event || evt.cards.length !== 1) return false;
+                                if ((evt.relatedEvent || evt.getParent()) !== event || evt.cards.length !== 1) return false;
                                 return evt.gaintag_map?.[evt.cards[0].cardid]?.includes('wechatmingdian_effect');
                             })) return false;
                             return name === 'useCard' ? _status._wechatmingdian : event.addCount !== false;
