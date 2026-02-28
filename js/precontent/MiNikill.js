@@ -2158,9 +2158,7 @@ const packs = function () {
                 audio: 'jiaozhao',
                 enable: 'phaseUse',
                 filter(event, player) {
-                    if (!player.hasCard(card => lib.skill.minijiaozhao.filterCard(card, player), 'h')) return false;
-                    var num = player.getStat('skill').minijiaozhao;
-                    return !num || num < player.countMark('minidanxin') + 1;
+                    return player.hasCard(card => lib.skill.minijiaozhao.filterCard(card, player), 'h');
                 },
                 filterCard(card, player) {
                     return !player.storage.minijiaozhao_viewAs?.[card.cardid];
@@ -2170,6 +2168,9 @@ const packs = function () {
                 delay: false,
                 check(card) {
                     return 7 - get.value(card);
+                },
+                usable(skill, player) {
+                    return player.countMark('minidanxin') + 1;
                 },
                 content() {
                     'step 0'
@@ -2236,6 +2237,7 @@ const packs = function () {
                             },
                         },
                         charlotte: true,
+                        sourceSkill: false,
                         init(player, skill) {
                             player.storage[skill] ??= { cardid: [] };
                             player.storage.minijiaozhao_used ??= { type: [], name: [] };
