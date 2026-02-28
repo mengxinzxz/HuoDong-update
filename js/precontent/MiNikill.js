@@ -536,10 +536,6 @@ const packs = function () {
             Mbaby_tunxingmenglix: '据《王子年拾遗记》记载：蜀先主甘后；生而体貌特异，年至十八，玉质柔肌，态媚容冶…河南献玉人高三尺…甘后与玉人洁白齐润，观者殆相乱惑。刘备非常喜爱这尊玉雕，“夕则用后而玩玉人”。白玉美人怀抱一只白玉狸猫，甘夫人常对玉人倾诉渴望为刘备诞下一子的心愿，然而久盼未果。偶有一日，在梦中化身成一只饥肠辘辘、失去理智的白玉狸猫，闯入到幻境当中，吞掉了幻境中的启明星。事后，梦醒的甘夫人发现已怀有身孕，甚是欣喜。而白玉美人怀抱的玉狸猫则留在了幻境中，化身为吞星梦狸守护着幻境里的星星。',
             Mbaby_jingwei: '精卫，中国古代神话中的一种鸟。上古神话传说里，女娃是炎帝最小的女儿，后溺水而亡，化作精卫鸟；另一说，女娃是上古的一个部落，由于气候变暖，海平面上升，女娃部落遭到灭顶之灾，后化作精卫。据《山海经》记载：精卫婀娜多姿、长发飘逸、背生双翼，花头颅、白嘴壳、红脚爪，样子有点儿像乌鸦。',
         },
-        characterFilter: {
-        },
-        characterTitle: {
-        },
         characterSubstitute: {
             Mbaby_tunxingmenglix: [
                 ['Mbaby_tunxingmengli', ['img:extension/活动武将/image/character/Mbaby_tunxingmengli.jpg', 'die:ext:活动武将/audio/die/Mbaby_tunxingmenglix.mp3']],
@@ -710,6 +706,26 @@ const packs = function () {
             zhouyu_羽: {
                 fullimage: true,
                 image: 'ext:活动武将/image/default/zhouyu_羽.jpg',
+            },
+            "BanG_Dream!_It's_MyGO!!!!!_Tomori": {
+                fullimage: true,
+                image: "ext:活动武将/image/default/BanG_Dream!_It's_MyGO!!!!!_Tomori.jpg",
+            },
+            "BanG_Dream!_It's_MyGO!!!!!_Anon": {
+                fullimage: true,
+                image: "ext:活动武将/image/default/BanG_Dream!_It's_MyGO!!!!!_Anon.jpg",
+            },
+            "BanG_Dream!_It's_MyGO!!!!!_Taki": {
+                fullimage: true,
+                image: "ext:活动武将/image/default/BanG_Dream!_It's_MyGO!!!!!_Taki.jpg",
+            },
+            "BanG_Dream!_It's_MyGO!!!!!_Soyo": {
+                fullimage: true,
+                image: "ext:活动武将/image/default/BanG_Dream!_It's_MyGO!!!!!_Soyo.jpg",
+            },
+            "BanG_Dream!_It's_MyGO!!!!!_Rana": {
+                fullimage: true,
+                image: "ext:活动武将/image/default/BanG_Dream!_It's_MyGO!!!!!_Rana.jpg",
             },
         },
         skill: {
@@ -36573,7 +36589,8 @@ const packs = function () {
                         //可以即兴/更换音符的最大次数
                         event.restNum = 5 + player.countMark('mininianchongzou_effect');
                         //定义初始五音和是否上锁的列表
-                        const musicList = ['宫', '商', '角', '徵', '羽'].map(i => 'zhouyu_' + i);
+                        //const musicList = ['宫', '商', '角', '徵', '羽'].map(i => 'zhouyu_' + i);
+                        const musicList = ['Tomori', 'Anon', 'Taki', 'Soyo', 'Rana'].map(i => "BanG_Dream!_It's_MyGO!!!!!_" + i);
                         event.musicList = [];
                         while (event.musicList.length < 5) {
                             event.musicList.push(musicList.randomGet());
@@ -42030,6 +42047,11 @@ const packs = function () {
             zhouyu_角: '角',
             zhouyu_徵: '徵',
             zhouyu_羽: '羽',
+            "BanG_Dream!_It's_MyGO!!!!!_Tomori": '高松灯',
+            "BanG_Dream!_It's_MyGO!!!!!_Anon": '千早爱音',
+            "BanG_Dream!_It's_MyGO!!!!!_Taki": '椎名立希',
+            "BanG_Dream!_It's_MyGO!!!!!_Soyo": '长崎素世',
+            "BanG_Dream!_It's_MyGO!!!!!_Rana": '要乐奈',
             mininiandengji: '登极',
             mininiandengji_info: '游戏开始时，或每回合限一次，当你受到伤害后，若你未击败所有“登阶”目标，你可以进行一次“登阶”。',
             mininiandengji_faq: '关于“登阶”',
