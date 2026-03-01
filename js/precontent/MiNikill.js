@@ -42634,7 +42634,7 @@ const packs = function () {
             event.choice = choice;
             player[choice] += num;
             if (isNaN(player[choice])) player[choice] = 0;
-            if (player[choice] > player[`maxHp${choice[2]}`]) player[choice] = player[`maxHp${choice[2]}`];
+            if (player[choice] > player[`maxHp${choice[2] ?? ''}`]) player[choice] = player[`maxHp${choice[2] ?? ''}`];
             player.update();
             if (event.popup !== false) player.$damagepop(num, 'water');
             if (_status.dying.includes(player) && player.hp > 0 && (typeof player.hp2 !== 'number' || player.hp2 > 0)) {
