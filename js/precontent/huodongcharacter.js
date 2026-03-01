@@ -8872,7 +8872,7 @@ const packs = function () {
             bolyifu: {
                 trigger: { target: 'useCardToTargeted' },
                 filter(event, player) {
-                    return event.card.storage && event.card.storage.bolyifu;
+                    return event.card.storage?.bolyifu;
                 },
                 forced: true,
                 locked: false,
@@ -8905,8 +8905,8 @@ const packs = function () {
                         forceaudio: true,
                         enable: 'chooseToUse',
                         filter(event, player) {
-                            const list = (event.bolyifu || []);
-                            if (!list.length) return false;
+                            const list = event.bolyifu;
+                            if (!list?.length) return false;
                             const nums = game.filterPlayer(target => target.hasSkill('bolyifu')).map(target => target.countMark('bolyifu') % 3);
                             return list.some(card => nums.includes(card[4]) && player.hasCard(cardx => get.type(cardx) == 'basic' && event.filterCard({ name: card[2], nature: card[3], storage: { bolyifu: true }, cards: [cardx] }, player, event), 'hes'));
                         },
@@ -8914,12 +8914,13 @@ const packs = function () {
                             dialog(event, player) {
                                 const nums = game.filterPlayer(target => target.hasSkill('bolyifu')).map(target => target.countMark('bolyifu') % 3);
                                 const list = event.bolyifu.filter(card => nums.includes(card[4]) && player.hasCard(cardx => get.type(cardx) == 'basic' && event.filterCard({ name: card[2], nature: card[3], storage: { bolyifu: true }, cards: [cardx] }, player, event), 'hes'));
-                                return ui.create.dialog('蚁附', [list, 'vcard']);
+                                const dialog = ui.create.dialog('蚁附', [list, 'vcard']);
+                                dialog.direct = true;
+                                return dialog;
                             },
                             check(button) {
-                                if (get.event().getParent().type != 'phase') return 1;
-                                const player = get.event().player;
-                                return player.getUseValue({ name: button.link[2], nature: button.link[3], storage: { bolyifu: true } });
+                                if (get.event().getParent().type !== 'phase') return 1;
+                                return get.player().getUseValue({ name: button.link[2], nature: button.link[3], storage: { bolyifu: true } });
                             },
                             backup(links, player) {
                                 return {
@@ -8948,8 +8949,9 @@ const packs = function () {
                                 }
                             },
                             prompt(links, player) {
-                                return '###蚁附###将一张基本牌当作' + (get.translation(links[0][3]) || '') + '【' + get.translation(links[0][2]) + '】使用';
-                            }
+                                const [link] = links, name = link[2], nature = link[3];
+                                return '###蚁附###<div class="text center">将一张基本牌当作' + (get.translation(nature) || '') + '【' + get.translation(name) + '】使用</div>';
+                            },
                         },
                         hiddenCard(player, name) {
                             if (!player.hasCard(card => get.type(card) == 'basic', 'hes')) return false;
@@ -8991,19 +8993,25 @@ const packs = function () {
                                     return 1;
                                 },
                             },
+                            effect: {
+                                target(card, player, target) {
+                                    if (!card?.storage?.bolyifu || !player || !target?.hasSkill('bolyifu')) return;
+                                    return [1, get.effect(target, { name: 'draw' }, player, player)];
+                                },
+                            },
                         },
                     },
                 },
             },
             boltianjie: {
-                trigger: { global: 'damageBegin' },
+                trigger: { global: 'shandianBefore' },
                 filter(event, player) {
-                    if (event._boltianjie) return false;
-                    return event.getParent().name == 'shandian';
+                    const name = event.getParent().name;
+                    if (name !== 'executeDelayCardEffect' && name !== 'phaseJudge') return false;
+                    return event._result && event._result.bool === false;
                 },
                 forced: true,
                 async content(event, trigger, player) {
-                    trigger.set('_boltianjie', true);
                     trigger.cancel();
                     const str = get.translation(trigger.player);
                     const result = await player.chooseTarget('请选择【天劫】的目标', '对' + str + '或' + str + '的上家或下家造成1点雷属性伤害', (card, player, target) => {
@@ -9030,11 +9038,13 @@ const packs = function () {
                         },
                     },
                     judge: {
-                        trigger: { global: 'shandianEnd' },
+                        trigger: { global: 'judgeEnd' },
                         filter(event, player) {
+                            if (event.result.card.name === 'shan') return false;
                             const name = event.getParent().name;
-                            if (name != 'executeDelayCardEffect' && name != 'phaseJudge') return false;
-                            return event._result.card.name != 'shan';
+                            if (name === 'executeDelayCardEffect' && (event.card.viewAs || event.card.name) === 'shandian') return true;
+                            if (name === 'phaseJudge' && event.card[event.card.cardSymbol].name === 'shandian') return true;
+                            return false;
                         },
                         forced: true,
                         logTarget: 'player',
