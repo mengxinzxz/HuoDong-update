@@ -32,7 +32,7 @@ export default function () {
         const changeDialog = function (item, dialogContainer) {
             if (!dialogContainer) return;
             dialogContainer.innerHTML = '';
-            const list = lib.characterSort.MiNikill[item.link];
+            const list = lib.characterSort.MiNikill[item.link].filter(character => lib.character[character] && !lib.character[character].isUnseen);
             if (list.length > 0) {
                 const container = document.createElement('div');
                 container.className = 'grid-layout';
