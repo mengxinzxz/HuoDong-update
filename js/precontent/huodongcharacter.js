@@ -8555,9 +8555,7 @@ const packs = function () {
                     if (locals.length > 0) {
                         for (let current of locals) {
                             const result = await lib.skill.bolfenfou.chooseButton(current).forResult();
-                            if (result?.bool) {
-                                choice[current.playerid] = result.links;
-                            }
+                            if (result?.bool) choice[current.playerid] = result.links;
                         }
                     }
                     delete event._global_waiting;
@@ -8616,9 +8614,7 @@ const packs = function () {
                     const list = [];
                     const skills = target.getOriginalSkills();
                     for (let skill of skills) {
-                        if (lib.skill[skill].limited && target.awakenedSkills.includes(skill)) {
-                            list.push(skill);
-                        }
+                        if (lib.skill[skill].limited && target.awakenedSkills.includes(skill)) list.push(skill);
                     }
                     if (!list.length) return;
                     const { control: skill } = list.length == 1 ? list[0] : await player.chooseControl(list).set('choiceList', list.map(i => {
@@ -8637,24 +8633,15 @@ const packs = function () {
                         target(player, target) {
                             if (target.hp > 1) {
                                 var skills = target.getOriginalSkills();
-                                for (var i = 0; i < skills.length; i++) {
-                                    if (lib.skill[skills[i]].limited && target.awakenedSkills.includes(skills[i])) {
-                                        return 8;
-                                    }
-                                }
+                                if (skills.some(skill => lib.skill[skill].limited && target.awakenedSkills.includes(skill))) return 8;
                             }
                             if (target != player) return 0;
                             if (get.damageEffect(target, player, player) >= 0) return 10;
                             if (target.hp >= 4) return 5;
                             if (target.hp == 3) {
-                                if (
-                                    player.countCards('h') <= 2 &&
-                                    game.hasPlayer(function (current) {
-                                        return current.hp <= 1 && get.attitude(player, current) < 0;
-                                    })
-                                ) {
-                                    return 3;
-                                }
+                                if (player.countCards('h') <= 2 && game.hasPlayer(function (current) {
+                                    return current.hp <= 1 && get.attitude(player, current) < 0;
+                                })) return 3;
                             }
                             return 0;
                         },
@@ -8676,7 +8663,7 @@ const packs = function () {
                 },
                 trigger: { source: 'damageBegin1' },
                 filter(event, player) {
-                    return event.getParent(2)?.name == 'useCard';
+                    return event.getParent().type == 'card';
                 },
                 forced: true,
                 logTarget: 'player',
@@ -9026,7 +9013,7 @@ const packs = function () {
                     }
                 },
                 global: 'boltianjie_ai',
-                group: ['boltianjie_judge'],
+                group: 'boltianjie_judge',
                 subSkill: {
                     ai: {
                         ai: {
