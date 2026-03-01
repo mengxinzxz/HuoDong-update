@@ -42450,6 +42450,7 @@ const packs = function () {
                 MiNikill.translate[i + '_ab'] = `牢${MiNikill.translate[i].slice(get.poptip('rule_mamba').length)}`;
                 MiNikill.translate[i + '_prefix'] ??= '牢';
             }
+            else if (lib.translate[i + '_prefix'] || MiNikill.translate[i + '_prefix']) continue;
             else if (MiNikill.translate[i].startsWith('欢杀神')) MiNikill.translate[i + '_prefix'] = '欢杀|神';
             else if (MiNikill.translate[i].startsWith('SP欢杀神')) MiNikill.translate[i + '_prefix'] = 'SP|欢杀|神';
             else if (MiNikill.translate[i].startsWith('欢杀谋')) MiNikill.translate[i + '_prefix'] = '欢杀|谋';
