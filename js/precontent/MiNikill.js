@@ -777,12 +777,7 @@ const packs = function () {
                             return game.nameList(player).includes('Mfire_zhurong') ? 10 : -10;
                         },
                     },
-                    result: {
-                        player(player, target) {
-                            return get.effect(target, player, player, 'fire');
-                        },
-                        target: -1,
-                    },
+                    result: { target: -1 },
                     tag: {
                         damage: 1,
                         fireDamage: 1,
@@ -816,12 +811,7 @@ const packs = function () {
                             return game.nameList(player).includes('Mfire_zhurong') ? 10 : -10;
                         },
                     },
-                    result: {
-                        player(player, target) {
-                            return get.effect(target, player, player, 'fire');
-                        },
-                        target: -1,
-                    },
+                    result: { target: -1 },
                     tag: {
                         damage: 1,
                         fireDamage: 1,
@@ -40028,7 +40018,8 @@ const packs = function () {
                     }
                 },
             },
-            //焰
+            //焰系列
+            //祝融
             minifirehuosi: {
                 mod: {
                     ignoredHandcard(card, player) {
