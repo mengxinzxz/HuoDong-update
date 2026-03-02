@@ -601,7 +601,7 @@ export async function precontent(bilibilicharacter) {
             {
                 type: 'players',
                 data: [
-                    'wechat_shantao', 'wechat_sb_yujin', 'wechat_sb_lvmeng', 'wechat_sb_lvbu',
+                    'wechat_shantao', 'wechat_sb_yujin', 'wechat_sb_lvmeng', 'wechat_sb_lvbu', 'wechat_old_sunluyu', 'wechat_old_guanyinping',
                     'Mbaby_ol_wangyi', 'Mbaby_sp_duyu', 'Mbaby_wenyuan', 'Mbaby_xizheng', 'Mbaby_mangyachang', 'Mbaby_re_hucheer', 'Mfire_zhurong', 'Mbaby_yue_daqiao',
                 ],
             },
@@ -610,7 +610,7 @@ export async function precontent(bilibilicharacter) {
                 textAlign: 'left',
                 data: [
                     'bugfix、素材补充、技能调整',
-                    '小程序：山涛、谋于禁',
+                    '小程序：山涛、谋于禁、牢大孙鲁育、牢大关银屏',
                     '欢杀：界王异、杜预、文鸳、郤正、忙牙长、胡车儿、焰祝融、乐大乔',
                     'To be continued...',
                 ],

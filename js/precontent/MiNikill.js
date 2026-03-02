@@ -751,14 +751,14 @@ const packs = function () {
                         if (target.isUnderControl(true) || player.hasSkillTag('viewHandcard', null, target, true) && get.is.shownCard(card)) return get.is.damageCard(card);
                         return true;
                     }, 'h') > 0 ? await player.chooseControl().set('choiceList', [
-                        `对${str}造成1点火属性伤害`,
+                        `对${str}造成${num}点火属性伤害`,
                         `令${str}的伤害类手牌造成的伤害均改为火属性`,
                     ]).set('prompt', `火球：请选择你要执行的效果`).set('ai', () => {
                         const { player, target } = get.event();
                         return get.damageEffect(target, player, player, 'fire') > 0 ? 0 : 1;
                     }).set('target', target).forResult() : { index: 0 };
                     if (typeof result?.index === 'number') {
-                        if (result.index === 0) await target.damage(1, 'fire');
+                        if (result.index === 0) await target.damage(num, 'fire');
                         if (result.index === 1) {
                             const cards = target.getCards('h', card => get.is.damageCard(card));
                             if (cards.length) target.addGaintag(cards, 'minifirehuoqiu');
