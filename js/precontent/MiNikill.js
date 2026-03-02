@@ -42835,7 +42835,6 @@ const packs = function () {
         }
         if (MiNikill.translate[i] && !lib.translate[i + '_prefix'] && !MiNikill.translate[i + '_prefix']) {
             if (MiNikill.translate[i].startsWith(get.poptip('rule_mamba'))) MiNikill.translate[i + '_prefix'] = get.poptip('rule_mamba');
-            else if (lib.translate[i + '_prefix'] || MiNikill.translate[i + '_prefix']) continue;
             else if (MiNikill.translate[i].startsWith('欢杀神')) MiNikill.translate[i + '_prefix'] = '欢杀|神';
             else if (MiNikill.translate[i].startsWith('SP欢杀神')) MiNikill.translate[i + '_prefix'] = 'SP|欢杀|神';
             else if (MiNikill.translate[i].startsWith('欢杀谋')) MiNikill.translate[i + '_prefix'] = '欢杀|谋';
