@@ -796,7 +796,7 @@ const packs = function () {
                 filter(event, player) {
                     return game.nameList(player).includes('Mfire_zhurong');
                 },
-                filterTarget: lib.filter.notMe,
+                filterTarget: true,
                 async content(event, trigger, player) {
                     const target = event.target;
                     await target.damage(get.nameList(target).includes('bilibili_ningjingzhiyuan') ? 1484 : 1, 'fire');
@@ -40039,7 +40039,9 @@ const packs = function () {
                 async content(event, trigger, player) {
                     player.removeMark('minifirehuosi', (game.players.length + game.dead.length) * 2 - player.countMark('minifirerongyan'));
                     player.addTempSkill('minifirehuosi_effect');
-                    const next = player.gain(game.createCard2('minifirehuoqiu', 'heart', 1), 'gain2');
+                    const card = game.createCard('minifirehuoqiu', lib.color.red.randomGet(), get.rand(1, 13));
+                    card.destroyed = 'discardPile';
+                    const next = player.gain(card, 'gain2');
                     next.gaintag.add('minifirehuosi_effect');
                     await next;
                 },
@@ -40118,7 +40120,9 @@ const packs = function () {
                 },
                 async content(event, trigger, player) {
                     await player.lose(event.cards, ui.special);
-                    await player.gain(game.createCard2('minifirehuojian', 'heart', 13), 'gain2');
+                    const card = game.createCard('minifirehuojian', lib.color.red.randomGet(), get.rand(1, 13));
+                    card.destroyed = 'discardPile';
+                    await player.gain(card, 'gain2');
                     await player.draw();
                     if ((game.players.length + game.dead.length) * 2 - player.countMark('minifirerongyan') > 3) {
                         player.addMark('minifirerongyan', 1, false);
@@ -42516,7 +42520,7 @@ const packs = function () {
             minifirehuoqiu: '火球',
             minifirehuoqiu_info: '此牌仅焰祝融可使用。出牌阶段，对一名其他角色使用。你选择一项：①对目标角色造成1点火属性伤害；②令目标角色的伤害类手牌造成的伤害均改为火属性。',
             minifirehuojian: '火箭',
-            minifirehuojian_info: '此牌仅焰祝融可使用，且不可被响应。出牌阶段，对一名其他角色使用。你对目标角色造成1点火属性伤害，令目标角色的伤害类手牌造成的伤害均改为火属性。',
+            minifirehuojian_info: '此牌仅焰祝融可使用，且不可被响应。出牌阶段，对一名角色使用。你对目标角色造成1点火属性伤害，令目标角色的伤害类手牌造成的伤害均改为火属性。',
 
             // ----------------------- 台词部分 ----------------------- //
             '#ext:活动武将/audio/skill/minidoumao1': '喵～呜～',
