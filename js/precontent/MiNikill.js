@@ -486,8 +486,8 @@ const packs = function () {
                 groupInGuozhan: 'wu',
                 names: '桥|null-桥|null',
             },
-            Mbaby_old_1_daxiaoqiao: ['female', 'shen', 4, ['minishuangshu', 'miniyizheng', 'minipingting'], ['wu', 'die:Mbaby_shen_daxiaoqiao']],
-            Mbaby_old_2_daxiaoqiao: ['female', 'shen', 4, ['minishuangshu2', 'miniyizheng2', 'minishutu2'], ['wu', ...['character', 'die'].map(i => `${i}:Mbaby_shen_daxiaoqiao`)]],
+            Mbaby_old_1_daxiaoqiao: ['female', 'shen', 4, ['minishuangshu', 'miniyizheng', 'minipingting'], ['wu', 'die:Mbaby_shen_daxiaoqiao', 'name:桥|null-桥|null']],
+            Mbaby_old_2_daxiaoqiao: ['female', 'shen', 4, ['minishuangshu2', 'miniyizheng2', 'minishutu2'], ['wu', ...['character', 'die'].map(i => `${i}:Mbaby_shen_daxiaoqiao`), 'name:桥|null-桥|null']],
             Mbaby_shen_diaochan: ['female', 'shen', 3, ['minimeihun', 'minihuoxin'], ['qun']],
             Mbaby_sunwukong: ['male', 'shen', 4, ['minisevenbian', 'miniruyi', 'miniqitian']],
             Mbaby_dalanmao: ['male', 'shen', 4, ['minizuzhou', 'minimoyu', 'minisanlian']],
@@ -42117,9 +42117,9 @@ const packs = function () {
             Mbaby_shen_zhenji: '欢杀神甄宓',
             Mbaby_shen_daxiaoqiao: '欢杀神大乔小乔',
             Mbaby_old_1_daxiaoqiao: `${get.poptip('rule_mamba')}神大乔小乔`,
-            Mbaby_old_1_daxiaoqiao_prefix: '牢|神',
+            Mbaby_old_1_daxiaoqiao_prefix: `${get.poptip('rule_mamba')}|神`,
             Mbaby_old_2_daxiaoqiao: `${get.poptip('rule_mamba')}神大乔小乔`,
-            Mbaby_old_2_daxiaoqiao_prefix: '牢|神',
+            Mbaby_old_2_daxiaoqiao_prefix: `${get.poptip('rule_mamba')}|神`,
             Mbaby_shen_diaochan: '欢杀神貂蝉',
             Mbaby_sunwukong: '欢杀孙悟空',
             Mbaby_dalanmao: '大懒猫',
@@ -42842,11 +42842,8 @@ const packs = function () {
             if (!MiNikill.character[i].dieAudios.length) MiNikill.character[i].dieAudios.push(i.slice(6));
             if (!MiNikill.character[i].tempname.length) MiNikill.character[i].tempname.push(i.slice(6));
         }
-        if (MiNikill.translate[i]) {
-            if (MiNikill.translate[i].startsWith(get.poptip('rule_mamba'))) {
-                MiNikill.translate[i + '_ab'] = `牢${MiNikill.translate[i].slice(get.poptip('rule_mamba').length)}`;
-                MiNikill.translate[i + '_prefix'] ??= '牢';
-            }
+        if (MiNikill.translate[i] && !lib.translate[i + '_prefix'] && !MiNikill.translate[i + '_prefix']) {
+            if (MiNikill.translate[i].startsWith(get.poptip('rule_mamba'))) MiNikill.translate[i + '_prefix'] = get.poptip('rule_mamba');
             else if (lib.translate[i + '_prefix'] || MiNikill.translate[i + '_prefix']) continue;
             else if (MiNikill.translate[i].startsWith('欢杀神')) MiNikill.translate[i + '_prefix'] = '欢杀|神';
             else if (MiNikill.translate[i].startsWith('SP欢杀神')) MiNikill.translate[i + '_prefix'] = 'SP|欢杀|神';

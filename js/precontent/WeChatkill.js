@@ -19459,12 +19459,8 @@ const packs = function () {
             if (!WeChatkill.character[i].dieAudios.length) WeChatkill.character[i].dieAudios.push(i.slice(7));
             if (!WeChatkill.character[i].tempname.length) WeChatkill.character[i].tempname.push(i.slice(7));
         }
-        if (WeChatkill.translate[i]) {
-            if (WeChatkill.translate[i].startsWith(get.poptip('rule_mamba'))) {
-                WeChatkill.translate[i + '_ab'] = `牢${WeChatkill.translate[i].slice(get.poptip('rule_mamba').length)}`;
-                WeChatkill.translate[i + '_prefix'] ??= '牢';
-            }
-            else if (lib.translate[i + '_prefix'] || WeChatkill.translate[i + '_prefix']) continue;
+        if (WeChatkill.translate[i] && !lib.translate[i + '_prefix'] && !WeChatkill.translate[i + '_prefix']) {
+            if (WeChatkill.translate[i].startsWith(get.poptip('rule_mamba'))) WeChatkill.translate[i + '_prefix'] = get.poptip('rule_mamba');
             else if (WeChatkill.translate[i].startsWith('SP小程序神')) WeChatkill.translate[i + '_prefix'] = 'SP|小程序|神';
             else if (WeChatkill.translate[i].startsWith('小程序神')) WeChatkill.translate[i + '_prefix'] = '小程序|神';
             else if (WeChatkill.translate[i].startsWith('小程序☆')) WeChatkill.translate[i + '_prefix'] = '小程序|☆';

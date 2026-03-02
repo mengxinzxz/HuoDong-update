@@ -285,6 +285,9 @@ export async function precontent(bilibilicharacter) {
         id: 'rule_mamba',
         info: 'Man! What can I say? Mamba out!',
     });
+    lib.namePrefix.set(get.poptip('rule_mamba'), {
+        getSpan: () => get.prefixSpan('牢'),
+    });
     lib.poptip.add({
         name: '成器',
         id: 'rule_xizifuSkill',
