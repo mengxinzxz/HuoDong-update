@@ -1119,7 +1119,7 @@ const packs = function () {
                             return get.type(card, source) == 'trick' && source.hasValueTarget(card);
                         }) > 1) return 'trick';
                         return list[0];
-                    }).set('prompt', get.prompt2('wechatrejilei', trigger.source)).set('source', trigger.source);
+                    }).set('prompt', get.prompt2(event.skill, trigger.source)).set('source', trigger.source).forResult();
                     event.result = {
                         bool: result?.control && result.control !== 'cancel2',
                         cost_data: result?.control,

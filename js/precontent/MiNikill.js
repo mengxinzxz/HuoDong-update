@@ -741,7 +741,7 @@ const packs = function () {
                 cardcolor: 'red',
                 enable: true,
                 filter(event, player) {
-                    return game.nameList(player).includes('Mfire_zhurong');
+                    return get.nameList(player).includes('Mfire_zhurong');
                 },
                 filterTarget: lib.filter.notMe,
                 async content(event, trigger, player) {
@@ -774,7 +774,7 @@ const packs = function () {
                         order: 7,
                         useful: 7,
                         value(card, player) {
-                            return game.nameList(player).includes('Mfire_zhurong') ? 10 : -10;
+                            return get.nameList(player).includes('Mfire_zhurong') ? 10 : -10;
                         },
                     },
                     result: { target: -1 },
@@ -794,7 +794,7 @@ const packs = function () {
                 cardcolor: 'red',
                 enable: true,
                 filter(event, player) {
-                    return game.nameList(player).includes('Mfire_zhurong');
+                    return get.nameList(player).includes('Mfire_zhurong');
                 },
                 filterTarget: true,
                 async content(event, trigger, player) {
@@ -808,7 +808,7 @@ const packs = function () {
                         order: 7,
                         useful: 7,
                         value(card, player) {
-                            return game.nameList(player).includes('Mfire_zhurong') ? 10 : -10;
+                            return get.nameList(player).includes('Mfire_zhurong') ? 10 : -10;
                         },
                     },
                     result: { target: -1 },
@@ -31486,7 +31486,7 @@ const packs = function () {
                 trigger: { player: 'phaseUseBegin' },
                 async cost(event, trigger, player) {
                     event.result = await player.chooseTarget(get.prompt2('miniquanxue'), [1, 2], lib.filter.notMe).set('ai', function (target) {
-                        return !target.hasMark('miniquanxue') && -get.attitude(player, target);
+                        return !target.hasMark('miniquanxue') && -get.attitude(get.player(), target);
                     }).forResult();
                 },
                 content() {
@@ -31501,7 +31501,7 @@ const packs = function () {
                 subSkill: {
                     remove: {
                         charlotte: true,
-                        trigger: { player: 'phaseBegin' },
+                        trigger: { global: 'phaseBegin' },
                         filter(event, player) {
                             return event.player.hasMark('miniquanxue');
                         },
