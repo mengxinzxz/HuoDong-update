@@ -551,6 +551,8 @@ export async function content(config, pack) {
 					'old_shen_taishici',
 					'old_shen_sunce',
 					'ol_shen_dianwei',
+					'ol_shen_guanyu',
+					'mb_shen_caocao',
 				],
 				//史诗
 				epic: [
@@ -617,7 +619,7 @@ export async function content(config, pack) {
 		};
 		//块级修改
 		const mx_rarity = {
-			legend: ['decadeQiHuan', 'decadeZhuoGui', 'MiNikill', 'MX_feihongyinxue', 'decadeKuiBa', 'HD_chaoshikong', 'extra'],
+			legend: ['decadeQiHuan', 'decadeZhuoGui', 'MiNikill', 'MX_feihongyinxue', 'decadeKuiBa', 'HD_chaoshikong'],
 			epic: ['WeChatkill', 'hezongkangqincharacter'],
 			rare: ['yingbian'],
 			junk: ['sb'],
@@ -825,6 +827,8 @@ export async function content(config, pack) {
 		shen_dianwei: ['ol_shen_dianwei'],
 		jianggan: ['old_sp_jianggan'],
 		dengai: ['old_pot_dengai'],
+		shen_guanyu: ['ol_shen_guanyu'],
+		shen_caocao: ['mb_shen_caocao'],
 	};
 	for (const i in hdpj_characterReplace) {
 		let list = lib.characterReplace[i] || [];
@@ -835,6 +839,9 @@ export async function content(config, pack) {
 	//武将补充/修改
 	//标包
 	game.HDaddCharacter('re_yuanshu', ['male', 'qun', 4, ['wangzun', 'tongji'], []], 'standard');
+
+	//经典神将
+	game.HDaddCharacter('shen_guanyu', ['male', 'shen', 5, ['old_wushen', 'new_wuhun'], ['shu']], 'extra');
 
 	//界限突破
 	game.HDaddCharacter('dc_xushu', ['male', 'shu', 4, ['bolzhuhai', 'xsqianxin'], []], 'refresh');
@@ -848,20 +855,23 @@ export async function content(config, pack) {
 	game.HDaddCharacter('junk_zhangrang', ['male', 'qun', 3, ['junktaoluan'], ['die:zhangrang']], 'sp2');
 
 	//OL专属
-	lib.characterSort.onlyOL.extra_ol.addArray(['ol_shen_dianwei']);
+	lib.characterSort.onlyOL.extra_ol.addArray(['ol_shen_dianwei', 'ol_shen_guanyu']);
 	lib.characterSort.onlyOL.bilibili_buchong_onlyOL = ['old_huatuo'];
 	game.HDaddCharacter('ol_shen_dianwei', ['male', 'shen', 4, ['juanjia', 'fh_qiexie', 'fh_cuijue'], ['unseen', 'wei', ...['character:', 'die:'].map(i => i + 'shen_dianwei')]], 'onlyOL');
 	game.HDaddCharacter('shen_sunquan', ['male', 'shen', 4, ['bolyuheng', 'boldili'], ['wu']], 'onlyOL');
 	game.HDaddCharacter('shen_dianwei', ['male', 'shen', 4, ['juanjia', 'qiexie', 'fh_cuijue'], ['wei']], 'onlyOL');
 	game.HDmoveCharacter('old_huatuo', 'onlyOL');
+	game.HDaddCharacter('ol_shen_guanyu', ['male', 'shen', 5, ['wushen', 'new_wuhun'], ['shu', 'die:shen_guanyu']], 'onlyOL');
 
 	//移动服
+	lib.characterSort.mobile.extra_mb.addArray(['mb_shen_caocao']);
 	lib.characterSort.mobile.bilibili_buchong_mobile = ['ol_huaxiong', 'old_zhangxingcai', 'ol_maliang', 'ol_yuanshu', 'old_bulianshi'];
 	game.HDaddCharacter('old_bulianshi', ['female', 'wu', 3, ['anxu', 'zhuiyi'], ['die:bulianshi']], 'mobile');
 	game.HDaddCharacter('ol_yuanshu', ['male', 'qun', 4, ['rewangzun', 'retongji'], ['die:re_yuanshu']], 'mobile');
 	game.HDaddCharacter('ol_maliang', ['male', 'shu', 3, ['zishu', 'yingyuan'], ['die:maliang']], 'mobile');
 	game.HDmoveCharacter('old_zhangxingcai', 'mobile');
 	game.HDmoveCharacter('ol_huaxiong', 'mobile');
+	game.HDaddCharacter('mb_shen_caocao', ['male', 'shen', 3, ['guixin', 'feiying'], ['wei', 'die:shen_caocao']], 'mobile');
 
 	//线下
 	lib.characterSort.offline.offline_star.add('bolx_jsp_guanyu');
@@ -1180,6 +1190,10 @@ export async function content(config, pack) {
 		'#junk_guanyu:die': '点击播放阵亡配音',
 		old_pot_dengai: '旧势邓艾',
 		old_pot_dengai_prefix: '旧|势',
+		ol_shen_guanyu: 'OL神关羽',
+		ol_shen_guanyu_prefix: 'OL|神',
+		mb_shen_caocao: '手杀神曹操',
+		mb_shen_caocao_prefix: '手杀|神',
 
 		//武将分包翻译
 		bilibili_buchong_shenhua: '武将补充·神话再临',

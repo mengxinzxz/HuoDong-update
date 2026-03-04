@@ -13035,6 +13035,19 @@ const packs = function () {
                     },
                 },
             },
+            //经典神关羽
+            old_wushen: {
+                audio: 'wushen',
+                inherit: 'wushen',
+                content() { },
+                ai: {
+                    effect: {
+                        target(card, player, target, current) {
+                            if (get.tag(card, 'respondSha') && current < 0) return 0.6;
+                        },
+                    },
+                },
+            },
         },
         dynamicTranslate: {
             bilibili_xueji(player) {
@@ -13729,6 +13742,7 @@ const packs = function () {
             bolfangzhen_info: '出牌阶段限一次。你可以横置一名角色，将手牌摸至X张并交给其任意张牌。若为第X次发动本技能，你翻面（X为其座次号且至多为5）。',
             bolliuju: '留驹',
             bolliuju_info: '出牌阶段限一次。你可以拼点并使用拼点牌中的非基本牌。若你输或拼点者相互距离因此变化，你复原武将牌或武将牌上的一个技能。',
+            old_wushen_info: '锁定技。①你的红桃手牌均视为【杀】。②你使用红桃【杀】无距离限制。',
         },
     };
     for (let i in huodongcharacter.character) {
