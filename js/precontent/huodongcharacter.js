@@ -2559,22 +2559,6 @@ const packs = function () {
                     player.draw(2);
                 },
             },
-            boljingjia: {
-                derivation: ['wushuangfangtianji', 'shufazijinguan', 'hongmianbaihuapao', 'linglongshimandai'],
-                trigger: { global: 'phaseBefore', player: 'enterGame' },
-                filter(event, player) {
-                    return event.name != 'phase' || game.phaseNumber == 0;
-                },
-                forced: true,
-                content() {
-                    var list = ['wushuangfangtianji', 'shufazijinguan'];
-                    list.add(['hongmianbaihuapao', 'linglongshimandai'].randomGet());
-                    list = list.map(name => game.createCard2(name, lib.suit.randomGet(), get.rand(1, 13)));
-                    player.$gain2(list, false);
-                    game.delayx();
-                    list.forEach(card => player.equip(card));
-                },
-            },
             BTdunshi: {
                 audio: 'dunshi',
                 enable: ['chooseToUse', 'chooseToRespond'],
@@ -13213,8 +13197,6 @@ const packs = function () {
             old_jieying_info: '锁定技。①游戏开始时，你令一号位角色获得“营”标记。②有“营”标记的角色的回合结束后或死亡后，将其“营”标记移动至其下家，然后你进行一个额外回合。',
             old_tongling: '铜铃',
             old_tongling_info: '锁定技，当你成为一名角色使用牌指定的唯一目标后，或其他角色对你发动技能时，你摸两张牌。',
-            boljingjia: '精甲',
-            boljingjia_info: '锁定技，游戏开始时，将本局游戏加入的装备牌置于你的装备栏中。',
             bilibili_wangwang: '王桃王悦',
             bilibili_wangtao: '萌设王桃',
             bilibili_wangyue: '萌设王悦',

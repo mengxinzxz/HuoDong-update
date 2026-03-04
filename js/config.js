@@ -128,6 +128,11 @@ export let config = {
 		intro: '打开此选项后，神张角【异兆】“黄”标记上限为184',
 		init: true,
 	},
+	XvXiang: {
+		name: '偶像の虚拟',
+		intro: '开启此选项后，线下包的五个虚拟偶像将获得【虚像】',
+		init: false,
+	},
 	ShenSunQuan: {
 		name: '神孙权全扩技能池',
 		intro: '打开此选项后，神孙权【驭衡】获得的技能池扩大为全扩（实时生效）',
@@ -330,38 +335,6 @@ export let config = {
 			'<br><li>初始主公势力bgm' +
 			'<br><li>游戏正常对局bgm' +
 			'<br><li>进入残局激昂bgm',
-		init: false,
-	},
-	FenJieXianE: {
-		clear: true,
-		name: '<li>扩展彩蛋（点击折叠）',
-		onclick() {
-			const innerHTML = get.plainText(this.innerHTML);
-			const goon = innerHTML.endsWith('（点击折叠）'), config = `hdwj_config_${innerHTML.slice(0, -6)}}`;
-			this.innerHTML = `<li>${this.textContent.slice(0, -6)}${goon ? '（点击展开）' : '（点击折叠）'}`;
-			if (goon) {
-				_status[config] ??= [];
-				let item = this.nextSibling;
-				while (item && ['（点击折叠）', '（点击展开）', '删除此扩展'].every(i => !item.innerHTML.includes(i))) {
-					item.hide();
-					_status[config].add(item);
-					item = item.nextSibling;
-				}
-			}
-			else {
-				for (const item of _status[config]) item.show();
-				delete _status[config];
-			}
-		},
-	},
-	ShenLvBu: {
-		name: '彩蛋·神吕布',
-		intro: '开启此选项后，在正常模式中可以使用：最强神话、暴怒战神、神鬼无前',
-		init: false,
-	},
-	XvXiang: {
-		name: '彩蛋·虚像',
-		intro: '开启此选项后，线下包的五个虚拟偶像将获得【虚像】',
 		init: false,
 	},
 }

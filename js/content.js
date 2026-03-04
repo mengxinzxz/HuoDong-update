@@ -686,38 +686,6 @@ export async function content(config, pack) {
 		}
 	}
 
-	//虎牢关
-	if (lib.config.extension_活动武将_ShenLvBu && get.mode() != 'boss' && !lib.config.plays?.boss) {
-		const mode = await game.loadModeAsync('boss');
-		if (mode) {
-			for (const i of ['translate', 'dynamicTranslate', 'skill']) {
-				if (!mode[i]) continue;
-				for (const j in mode[i]) {
-					if (!j.startsWith('_') && !lib[i][j]) {
-						lib[i][j] = mode[i][j];
-						if (i === "skill") {
-							if (lib.skill[j].inherit && !lib.skill[lib.skill[j].inherit] && mode.skill[lib.skill[j].inherit]) {
-								lib.skill[lib.skill[j].inherit] = mode.skill[lib.skill[j].inherit];
-								game.finishSkill(lib.skill[j].inherit);
-							}
-							game.finishSkill(j);
-						}
-					}
-				}
-			}
-			//虎牢关彩蛋
-			['boss_lvbu1', 'boss_lvbu2', 'boss_lvbu3'].forEach(name => {
-				lib.rank.rarity.legend.add(name);
-				if (!lib.characterIntro[name] && lib.characterIntro.lvbu) lib.characterIntro[name] = lib.characterIntro.lvbu;
-			});
-			lib.characterSort.extra.boss_hlg = ['boss_lvbu1', 'boss_lvbu2', 'boss_lvbu3'];
-			game.HDaddCharacter('boss_lvbu1', ['male', 'shen', 8, ['wushuang', 'mashu', 'boljingjia', 'boss_aozhan'], ['mode:boss']], 'extra');
-			game.HDaddCharacter('boss_lvbu2', ['male', 'shen', 6, ['wushuang', 'mashu', 'xiuluo', 'shenwei', 'shenji'], ['mode:boss']], 'extra');
-			game.HDaddCharacter('boss_lvbu3', ['male', 'shen', 6, ['wushuang', 'shenqu', 'jiwu'], ['mode:boss']], 'extra');
-			lib.translate.boss_hlg = 'OL·虎牢关';
-		}
-	}
-
 	//precA
 	//配音
 	//引用国战配音
@@ -868,12 +836,6 @@ export async function content(config, pack) {
 	//标包
 	game.HDaddCharacter('re_yuanshu', ['male', 'qun', 4, ['wangzun', 'tongji'], []], 'standard');
 
-	//神将
-	lib.characterSort.extra.extra_ol.addArray(['ol_shen_dianwei']);
-	game.HDaddCharacter('shen_sunquan', ['male', 'shen', 4, ['bolyuheng', 'boldili'], ['wu']], 'extra');
-	game.HDaddCharacter('shen_dianwei', ['male', 'shen', 4, ['juanjia', 'qiexie', 'fh_cuijue'], ['wei']], 'extra');
-	game.HDaddCharacter('ol_shen_dianwei', ['male', 'shen', 4, ['juanjia', 'fh_qiexie', 'fh_cuijue'], ['unseen', 'wei', ...['character:', 'die:'].map(i => i + 'shen_dianwei')]], 'extra');
-
 	//界限突破
 	game.HDaddCharacter('dc_xushu', ['male', 'shu', 4, ['bolzhuhai', 'xsqianxin'], []], 'refresh');
 
@@ -886,7 +848,11 @@ export async function content(config, pack) {
 	game.HDaddCharacter('junk_zhangrang', ['male', 'qun', 3, ['junktaoluan'], ['die:zhangrang']], 'sp2');
 
 	//OL专属
+	lib.characterSort.onlyOL.extra_ol.addArray(['ol_shen_dianwei']);
 	lib.characterSort.onlyOL.bilibili_buchong_onlyOL = ['old_huatuo'];
+	game.HDaddCharacter('ol_shen_dianwei', ['male', 'shen', 4, ['juanjia', 'fh_qiexie', 'fh_cuijue'], ['unseen', 'wei', ...['character:', 'die:'].map(i => i + 'shen_dianwei')]], 'onlyOL');
+	game.HDaddCharacter('shen_sunquan', ['male', 'shen', 4, ['bolyuheng', 'boldili'], ['wu']], 'onlyOL');
+	game.HDaddCharacter('shen_dianwei', ['male', 'shen', 4, ['juanjia', 'qiexie', 'fh_cuijue'], ['wei']], 'onlyOL');
 	game.HDmoveCharacter('old_huatuo', 'onlyOL');
 
 	//移动服
