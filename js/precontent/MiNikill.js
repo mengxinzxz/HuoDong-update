@@ -42814,6 +42814,11 @@ const packs = function () {
             '#ext:活动武将/audio/skill/minifightkuangji1': '双戟何在？',
             '#ext:活动武将/audio/skill/minifightkuangji2': '一下不够，那再吃我一戟！',
             '#ext:活动武将/audio/die/Mfight_dianwei:die': '到此为止了……',
+            '#ext:活动武将/audio/skill/minifirehuosi1': '赤乌衔炎，朱雀翔空。',
+            '#ext:活动武将/audio/skill/minifirehuosi2': '炎帝苗裔，火纪为尊。',
+            '#ext:活动武将/audio/skill/minifirerongyan1': '百族圣火，共映天河。',
+            '#ext:活动武将/audio/skill/minifirerongyan2': '集火为焱，焚灼万化。',
+            '#ext:活动武将/audio/die/Mfire_zhurong:die': '星火坠渊，流萤归冥。',
         },
     };
     MiNikill_sight();//加载欢杀界面逻辑
