@@ -740,9 +740,6 @@ const packs = function () {
                 type: 'trick',
                 cardcolor: 'red',
                 enable: true,
-                filter(event, player) {
-                    return get.nameList(player).includes('Mfire_zhurong');
-                },
                 filterTarget: lib.filter.notMe,
                 async content(event, trigger, player) {
                     const target = event.target, str = get.translation(target);
@@ -793,9 +790,6 @@ const packs = function () {
                 type: 'trick',
                 cardcolor: 'red',
                 enable: true,
-                filter(event, player) {
-                    return get.nameList(player).includes('Mfire_zhurong');
-                },
                 filterTarget: true,
                 async content(event, trigger, player) {
                     const target = event.target;
@@ -40061,7 +40055,11 @@ const packs = function () {
                     add: {
                         audio: 'minifirehuosi',
                         trigger: { global: ['loseAfter', 'loseAsyncAfter', 'cardsDiscardAfter', 'equipAfter', 'addJudgeAfter', 'addToExpansionAfter'] },
-                        getIndex: event => (event.getd?.() ?? []).length,
+                        getIndex: event => event.getd?.() ?? [],
+                        filter(event, player, name, card) {
+                            if (get.position(card) !== 'd') return false;
+                            return !card._selfDestroyed;
+                        },
                         forced: true,
                         async content(event, trigger, player) {
                             player.addMark('minifirehuosi', 1);
@@ -40118,6 +40116,9 @@ const packs = function () {
                 check(card) {
                     return ui.selected.cards.length > 2 ? -1 : 1 + Math.random();
                 },
+                lose: false,
+                discard: false,
+                delay: false,
                 async content(event, trigger, player) {
                     await player.lose(event.cards, ui.special);
                     const card = game.createCard('minifirehuojian', lib.color.red.randomGet(), get.rand(1, 13));
@@ -40137,6 +40138,11 @@ const packs = function () {
                 },
             },
             minifirehuoqiu: {
+                mod: {
+                    cardEnabled(card, player) {
+                        if (get.name(card) === 'minifirehuoqiu' && !get.nameList(player).includes('Mfire_zhurong')) return false;
+                    },
+                },
                 cardSkill: true,
                 trigger: { source: 'damageBegin1' },
                 filter(event, player) {
@@ -40155,6 +40161,11 @@ const packs = function () {
                 },
             },
             minifirehuojian: {
+                mod: {
+                    cardEnabled(card, player) {
+                        if (get.name(card) === 'minifirehuojian' && !get.nameList(player).includes('Mfire_zhurong')) return false;
+                    },
+                },
                 cardSkill: true,
                 trigger: { player: 'useCard0' },
                 filter(event, player) {
