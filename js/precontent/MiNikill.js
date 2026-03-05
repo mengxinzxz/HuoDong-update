@@ -40033,11 +40033,11 @@ const packs = function () {
                 trigger: { player: 'addMark' },
                 filter(event, player) {
                     if (!['minifirehuosi', 'minifirerongyan'].includes(event.markName)) return false;
-                    return player.countMark('minifirehuosi') >= (game.players.length + game.dead.length) * 2 - player.countMark('minifirerongyan');
+                    return player.countMark('minifirehuosi') >= game.players.length + game.dead.length + 2 - player.countMark('minifirerongyan');
                 },
                 forced: true,
                 async content(event, trigger, player) {
-                    player.removeMark('minifirehuosi', (game.players.length + game.dead.length) * 2 - player.countMark('minifirerongyan'));
+                    player.removeMark('minifirehuosi', game.players.length + game.dead.length + 2 - player.countMark('minifirerongyan'));
                     player.addTempSkill('minifirehuosi_effect');
                     const card = game.createCard('minifirehuoqiu', lib.color.red.randomGet(), get.rand(1, 13));
                     card.destroyed = 'discardPile';
@@ -40050,10 +40050,10 @@ const packs = function () {
                 intro: {
                     name: '吟唱值',
                     markcount(count = 0, player) {
-                        return `${count}/${(game.players.length + game.dead.length) * 2 - player.countMark('minifirerongyan')}`;
+                        return `${count}/${game.players.length + game.dead.length + 2 - player.countMark('minifirerongyan')}`;
                     },
                     content(count = 0, player) {
-                        return `当前吟唱值：${count}/${(game.players.length + game.dead.length) * 2 - player.countMark('minifirerongyan')}`;
+                        return `当前吟唱值：${count}/${game.players.length + game.dead.length + 2 - player.countMark('minifirerongyan')}`;
                     },
                 },
                 group: ['minifirehuosi_add', 'minifirehuosi_shixin'],
@@ -40123,8 +40123,8 @@ const packs = function () {
                     const card = game.createCard('minifirehuojian', lib.color.red.randomGet(), get.rand(1, 13));
                     card.destroyed = 'discardPile';
                     await player.gain(card, 'gain2');
-                    await player.draw();
-                    if ((game.players.length + game.dead.length) * 2 - player.countMark('minifirerongyan') > 3) {
+                    await player.draw(2);
+                    if (game.players.length + game.dead.length + 2 - player.countMark('minifirerongyan') > 3) {
                         player.addMark('minifirerongyan', 1, false);
                         if (player.marks['minifirehuosi']) player.markSkill('minifirehuosi');
                     }
@@ -42514,9 +42514,9 @@ const packs = function () {
             //焰
             Mfire_zhurong: '焰祝融',
             minifirehuosi: '火祀',
-            minifirehuosi_info: `锁定技。①防止你受到的火属性伤害。②一张牌进入弃牌堆后，你获得1点“吟唱值”。③你的“吟唱值”达到X后获得一张${get.poptip('minifirehuoqiu')}，且本回合结束时可以使用任意张本回合获得的${get.poptip('minifirehuoqiu')}（X为游戏人数×2）。④你的${get.poptip('minifirehuoqiu')}不计入手牌上限。`,
+            minifirehuosi_info: `锁定技。①防止你受到的火属性伤害。②一张牌进入弃牌堆后，你获得1点“吟唱值”。③你的“吟唱值”达到X后获得一张${get.poptip('minifirehuoqiu')}，且本回合结束时可以使用任意张本回合获得的${get.poptip('minifirehuoqiu')}（X为游戏人数+2）。④你的${get.poptip('minifirehuoqiu')}不计入手牌上限。`,
             minifirerongyan: '融焰',
-            minifirerongyan_info: `出牌阶段，你可以将至少两张${get.poptip('minifirehuoqiu')}合成为一张${get.poptip('minifirehuojian')}并摸一张牌，然后令${get.poptip('minifirehuosi')}描述中的X值-1（至多减至3）。`,
+            minifirerongyan_info: `出牌阶段，你可以将至少两张${get.poptip('minifirehuoqiu')}合成为一张${get.poptip('minifirehuojian')}并摸两张牌，然后令${get.poptip('minifirehuosi')}描述中的X值-1（至多减至3）。`,
             minifirehuoqiu: '火球',
             minifirehuoqiu_info: '此牌仅焰祝融可使用。出牌阶段，对一名其他角色使用。你选择一项：①对目标角色造成1点火属性伤害；②令目标角色的伤害类手牌造成的伤害均改为火属性。',
             minifirehuojian: '火箭',

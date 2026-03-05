@@ -856,7 +856,7 @@ export async function content(config, pack) {
 
 	//OL专属
 	lib.characterSort.onlyOL.extra_ol.addArray(['ol_shen_dianwei', 'ol_shen_guanyu']);
-	lib.characterSort.onlyOL.bilibili_buchong_onlyOL = ['old_huatuo'];
+	lib.characterSort.onlyOL.bilibili_buchong_online = ['old_huatuo'];
 	game.HDaddCharacter('ol_shen_dianwei', ['male', 'shen', 4, ['juanjia', 'fh_qiexie', 'fh_cuijue'], ['unseen', 'wei', ...['character:', 'die:'].map(i => i + 'shen_dianwei')]], 'onlyOL');
 	game.HDaddCharacter('shen_sunquan', ['male', 'shen', 4, ['bolyuheng', 'boldili'], ['wu']], 'onlyOL');
 	game.HDaddCharacter('shen_dianwei', ['male', 'shen', 4, ['juanjia', 'qiexie', 'fh_cuijue'], ['wei']], 'onlyOL');
@@ -886,8 +886,8 @@ export async function content(config, pack) {
 	game.HDaddCharacter('bol_sunluban', ['female', 'wu', 3, ['boljiaozong', 'bolchouyou']], 'offline');
 
 	//怀旧包
-	lib.characterSort.old.bilibili_buchong_online = ['junk_guanyu', 'old_ol_xiaoqiao', 'old_zhangbao', 'old_sunluyu', 'old_ol_yuanji'];
-	lib.characterSort.old.bilibili_buchong_szn2 = ['old_yuanji', 'junk_duanwei', 'old_zhoufei'];
+	lib.characterSort.old.bilibili_buchong_online2 = ['junk_guanyu', 'old_ol_xiaoqiao', 'old_zhangbao', 'old_sunluyu', 'old_ol_yuanji'];
+	lib.characterSort.old.bilibili_buchong_yijiang2 = ['old_yuanji', 'junk_duanwei', 'old_zhoufei'];
 	lib.characterSort.old.bilibili_buchong_mobile2 = ['old_pot_dengai', 'old_shen_sunce', 'old_shen_taishici', 'old_shen_xunyu', 'old_zhaoxiang', 'old_sb_ganning', 'old_zhouchu', 'old_xunchen', 'old_sp_kongrong', 'old_zhangzhongjing', 'oldx_zhangzhongjing', 'old_zhangyì', 'old_yanghuiyu', 'old_liuzhang', 'old_sp_sunshao', 'old_wangling', 'old_sp_huaxin', 'old_sp_mifuren', 'old_sp_jianggan'];
 	lib.characterSort.old.bilibili_buchong_menfashizu = ['old_clan_xunshu', 'old_clan_xunchen', 'old_clan_xuncai', 'old_clan_xuncan', 'oldx_clan_xuncai'];
 	game.HDaddCharacter('old_clan_xunshu', ['male', 'qun', 3, ['old_shenjun', 'old_balong', 'clandaojie'], ['clan:颍川荀氏', 'tempname:clan_xunshu', 'die:clan_xunshu']], 'old');
@@ -1196,14 +1196,14 @@ export async function content(config, pack) {
 		mb_shen_caocao_prefix: '手杀|神',
 
 		//武将分包翻译
-		bilibili_buchong_shenhua: '武将补充·神话再临',
-		bilibili_buchong_yijiang: '武将补充·一将成名',
-		bilibili_buchong_menfashizu: '武将补充·门阀士族',
 		bilibili_buchong_online: '武将补充·Online',
-		bilibili_buchong_szn2: '武将补充·十周年服',
+		bilibili_buchong_yijiang: '武将补充·一将成名',
 		bilibili_buchong_mobile: '武将补充·移动服',
+		bilibili_buchong_online2: '武将补充·Online',
+		bilibili_buchong_yijiang2: '武将补充·一将成名',
 		bilibili_buchong_mobile2: '武将补充·移动服',
-		bilibili_buchong_onlyOL: '武将补充·OL',
+		bilibili_buchong_shenhua: '武将补充·神话再临',
+		bilibili_buchong_menfashizu: '武将补充·门阀士族',
 
 		//技能翻译
 		weipo: '横虑',
