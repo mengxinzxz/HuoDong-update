@@ -12429,7 +12429,7 @@ const packs = function () {
                                     return lib.filter.targetEnabled2(trigger.card, player, target) && lib.filter.targetInRange(trigger.card, player, target);
                                 }, `为${get.translation(trigger.card)}增加或减少至多${num}个目标`).set('ai', target => {
                                     const player = get.player(), trigger = get.event().getTrigger();
-                                    return get.effect(target, trigger.card, player, player) * (_status.event.targets.includes(target) ? -1 : 1);
+                                    return get.effect(target, trigger.card, player, player) * (trigger.targets.includes(target) ? -1 : 1);
                                 }).forResult();
                             }
                         },
