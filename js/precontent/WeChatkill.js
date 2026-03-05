@@ -18248,9 +18248,9 @@ const packs = function () {
                             }).set('ai', button => {
                                 return get.player().getUseValue(button.link);
                             }).forResult();
+                            if (player.isOnline2()) player.send('closeDialog', videoId);
+                            dialog.close();
                             if (result2?.bool && result2.links?.length) {
-                                if (player.isOnline2()) player.send('closeDialog', videoId);
-                                dialog.close();
                                 await player.chooseUseTarget(result2.links[0], true, false);
                             }
                             return;
