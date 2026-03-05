@@ -10959,7 +10959,7 @@ const packs = function () {
             //黄月英
             minijizhi: {
                 audio: 'rejizhi',
-                audioname: ['lukang'],
+                audioname2: { lukang: 'rejizhi_lukang' },
                 trigger: { player: 'useCard' },
                 filter(event, player) {
                     return get.type2(event.card) == 'trick';
@@ -10969,9 +10969,8 @@ const packs = function () {
                     'step 0'
                     player.draw();
                     'step 1'
-                    var card = result[0];
-                    event.card = card;
-                    if (['basic', 'trick', 'equip'].includes(get.type2(card))) {
+                    var card = event.card = result.cards?.[0];
+                    if (card && ['basic', 'trick', 'equip'].includes(get.type2(card))) {
                         if (['basic', 'trick'].includes(get.type2(card))) {
                             player.addTempSkill('minijizhi_' + get.type2(card));
                             player.addMark('minijizhi_' + get.type2(card), 1, false);
@@ -19579,7 +19578,11 @@ const packs = function () {
                     event.target = targets[0];
                     event.target.draw('visible');
                     'step 1'
-                    var card = result[0];
+                    var card = result.cards?.[0];
+                    if (!card) {
+                        event.finish();
+                        return;
+                    }
                     if (get.type(card) == 'equip') {
                         if (target.getCards('h').includes(card) && target.hasUseTarget(card)) {
                             event.target.chooseUseTarget(card, true, 'nopopup');
@@ -31767,8 +31770,7 @@ const packs = function () {
                             player.removeMark('minirenjie', 1);
                             player.draw();
                             'step 1'
-                            var card = result[0];
-                            event.card = card;
+                            var card = event.card = result.cards?.[0];
                             if (['basic', 'trick', 'equip'].includes(get.type2(card))) {
                                 if (['basic', 'trick'].includes(get.type2(card))) {
                                     player.addTempSkill('minijizhi_' + get.type2(card));

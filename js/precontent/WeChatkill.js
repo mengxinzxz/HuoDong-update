@@ -947,7 +947,7 @@ const packs = function () {
                     for (var i of game.players) if (i != player) event.list.push(i);
                     player.draw(game.players.length);
                     'step 1'
-                    var cards = result;
+                    var cards = result.cards;
                     if (get.itemtype(cards) != 'cards') {
                         event.goto(5);
                         return;
@@ -5801,7 +5801,11 @@ const packs = function () {
                     event.target = targets[0];
                     event.target.draw('visible');
                     'step 1'
-                    var card = result[0];
+                    var card = result.cards?.[0];
+                    if (!card) {
+                        event.finish();
+                        return;
+                    }
                     if (get.type(card) != 'equip') {
                         player.draw();
                         event.finish();
