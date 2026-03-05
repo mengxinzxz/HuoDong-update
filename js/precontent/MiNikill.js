@@ -32435,7 +32435,7 @@ const packs = function () {
                 },
                 trigger: { player: 'phaseUseEnd' },
                 async cost(event, trigger, player) {
-                    const result = await player.chooseCard(get.prompt2('minireqixian'), 'he').set('ai', function (card) {
+                    event.result = await player.chooseCard(get.prompt2('minireqixian'), 'he').set('ai', function (card) {
                         var player = _status.event.player;
                         if (player.countCards('h') % 2 == 0 && get.position(card) == 'h' && game.hasPlayer(function (target) {
                             return get.damageEffect(target, player, player, 'thunder') > 0;
