@@ -42525,7 +42525,6 @@ const packs = function () {
             //焰
             Mfire_zhurong: '焰祝融',
             minifirehuosi: '火祀',
-            minifirehuosi_effect: 'invisible',
             minifirehuosi_info: `锁定技。①防止你受到的火属性伤害。②一张牌进入弃牌堆后，你获得1点“吟唱值”。③你的“吟唱值”达到X后获得一张${get.poptip('minifirehuoqiu')}，且本回合结束时可以使用任意张本回合获得的${get.poptip('minifirehuoqiu')}（X为游戏人数+2）。④你的${get.poptip('minifirehuoqiu')}不计入手牌上限。`,
             minifirerongyan: '融焰',
             minifirerongyan_info: `出牌阶段，你可以将至少两张${get.poptip('minifirehuoqiu')}合成为一张${get.poptip('minifirehuojian')}并摸两张牌，然后令${get.poptip('minifirehuosi')}描述中的X值-1（至多减至3）。`,
