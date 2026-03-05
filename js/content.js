@@ -840,21 +840,8 @@ export async function content(config, pack) {
 	//标包
 	game.HDaddCharacter('re_yuanshu', ['male', 'qun', 4, ['wangzun', 'tongji'], []], 'standard');
 
-<<<<<<< Updated upstream
 	//经典神将
 	game.HDaddCharacter('shen_guanyu', ['male', 'shen', 5, ['old_wushen', 'new_wuhun'], ['shu']], 'extra');
-=======
-	//神将
-	if (Array.isArray(lib.characterSort.extra.extra_ol)) {
-		lib.characterSort.extra.extra_ol.addArray(['ol_shen_dianwei']);
-	}
-	else if (Array.isArray(lib.characterSort.onlyOL.extra_ol)) {
-		lib.characterSort.onlyOL.extra_ol.addArray(['ol_shen_dianwei']);
-	}
-	game.HDaddCharacter('shen_sunquan', ['male', 'shen', 4, ['bolyuheng', 'boldili'], ['wu']], 'extra');
-	game.HDaddCharacter('shen_dianwei', ['male', 'shen', 4, ['juanjia', 'qiexie', 'fh_cuijue'], ['wei']], 'extra');
-	game.HDaddCharacter('ol_shen_dianwei', ['male', 'shen', 4, ['juanjia', 'fh_qiexie', 'fh_cuijue'], ['unseen', 'wei', ...['character:', 'die:'].map(i => i + 'shen_dianwei')]], 'extra');
->>>>>>> Stashed changes
 
 	//界限突破
 	game.HDaddCharacter('dc_xushu', ['male', 'shu', 4, ['bolzhuhai', 'xsqianxin'], []], 'refresh');
