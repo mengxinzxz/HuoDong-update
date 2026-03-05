@@ -277,7 +277,7 @@ const packs = function () {
             Mbaby_ol_xiaoqiao: ['female', 'wu', 3, ['miniretianxiang', 'olhongyan'], ['name:桥|null']],
             Mbaby_xusheng: ['male', 'wu', 4, ['minipojun']],
             Mbaby_re_xusheng: ['male', 'wu', 4, ['minirepojun']],
-            Mbaby_xin_xusheng: ['male', 'wu', 4, ['minidcpojun', 'miniyicheng'], ['character:bilibili_re_xusheng', 'unseen']],
+            Mbaby_xin_xusheng: ['male', 'wu', 4, ['minidcpojun', 'miniyicheng'], ['character:bilibili_re_xusheng']],
             Mbaby_old_zhoutai: ['male', 'wu', 4, ['minibuqu', 'fenji'], ['character:Mbaby_zhoutai']],
             Mbaby_zhoutai: ['male', 'wu', 4, ['minirebuqu', 'fenji', 'miniqingchuang']],
             Mbaby_zhouyu: ['male', 'wu', 3, ['reyingzi', 'minifanjian']],
@@ -9715,7 +9715,7 @@ const packs = function () {
                             return player.countCards('he');
                         },
                         async cost(event, trigger, player) {
-                            event.result = await player.chooseToDiscard('he', get.prompt('minijili'), '弃置一张牌并摸一张牌').set('ai', lib.skill.zhiheng.check).set('complexCard', true).set('logSkill', 'minijili');
+                            event.result = await player.chooseToDiscard('he', get.prompt('minijili'), '弃置一张牌并摸一张牌').set('ai', lib.skill.zhiheng.check).set('complexCard', true).set('logSkill', 'minijili').forResult();
                         },
                         popup: false,
                         content() {
