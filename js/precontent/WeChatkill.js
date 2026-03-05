@@ -18250,9 +18250,7 @@ const packs = function () {
                             }).forResult();
                             if (player.isOnline2()) player.send('closeDialog', videoId);
                             dialog.close();
-                            if (result2?.bool && result2.links?.length) {
-                                await player.chooseUseTarget(result2.links[0], true, false);
-                            }
+                            if (result2?.bool && result2.links?.length) await player.chooseUseTarget(result2.links[0], true, false);
                             return;
                         }
                         else {
