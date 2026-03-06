@@ -19336,7 +19336,7 @@ const packs = function () {
             wechatsbyaowu_info: '锁定技，当一名角色使用【杀】对你造成伤害时，你摸一张牌。然后若此【杀】为红色，该角色回复1点体力或摸一张牌。',
             wechat_zhi_yuanshu: '志袁术',
             wechat_zhi_old_yuanshu: `${get.poptip('rule_mamba')}志袁术`,
-            wechat_zhi_old_yuanshu_prefix: '牢|志',
+            wechat_zhi_old_yuanshu_prefix: `${get.poptip('rule_mamba')}|志`,
             wechatshehuai: '慑淮',
             wechatshehuai_info: '出牌阶段开始时，你可以令一名其他角色A本回合无法响应你使用的牌，然后所有不为A的其他角色可以秘密令你本阶段使用【杀】的次数上限+1。',
             wechatzaochen: '造谶',
