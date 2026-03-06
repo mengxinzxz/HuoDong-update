@@ -34303,33 +34303,28 @@ const packs = function () {
                         audio: 'miniezhi',
                         trigger: { global: 'phaseEnd' },
                         filter(event, player) {
-                            return game.filterPlayer2().reduce((list, target) => {
-                                target.getHistory('lose', evt => {
-                                    if (!evt.es) return false;
-                                    for (const card of evt.es) {
-                                        const VEquip = evt.vcard_map.get(card);
-                                        if (VEquip && VEquip.name === 'minizigu_gu') list.add(card);
-                                    }
-                                    return list;
-                                });
-                                return list;
-                            }, []).some(card => get.position(card) === 'd' && player.hasUseTarget(card));
+                            let list = [];
+                            game.getGlobalHistory('cardMove', evt => {
+                                if (evt.name !== 'lose' || !evt.es?.length) return false;
+                                for (const card of evt.es) {
+                                    const VEquip = evt.vcard_map.get(card);
+                                    if (VEquip && VEquip.name === 'minizigu_gu') list.add(card);
+                                }
+                            });
+                            return list.some(card => get.position(card) === 'd' && player.hasUseTarget(card));
                         },
                         locked: true,
                         direct: true,
                         async content(event, trigger, player) {
-                            const cards = game.filterPlayer2().reduce((list, target) => {
-                                target.getHistory('lose', evt => {
-                                    if (!evt.es) return false;
-                                    for (const card of evt.es) {
-                                        const VEquip = evt.vcard_map.get(card);
-                                        if (VEquip && VEquip.name === 'minizigu_gu') list.add(card);
-                                    }
-                                    return list;
-                                });
-                                return list;
-                            }, []);
-                            for (const card of cards) {
+                            let list = [];
+                            game.getGlobalHistory('cardMove', evt => {
+                                if (evt.name !== 'lose' || !evt.es?.length) return false;
+                                for (const card of evt.es) {
+                                    const VEquip = evt.vcard_map.get(card);
+                                    if (VEquip && VEquip.name === 'minizigu_gu') list.add(card);
+                                }
+                            });
+                            for (const card of list) {
                                 if (get.position(card) === 'd' && player.hasUseTarget(card)) {
                                     const next = player.chooseUseTarget(card, false, false);
                                     next.prompt = `${get.translation(event.name)}：是否使用${get.translation(card)}？`;
