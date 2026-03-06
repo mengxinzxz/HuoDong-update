@@ -829,7 +829,10 @@ const packs = function () {
                                     break;
                                 }
                             }
-                            if (cardx?.node?.name2) cardx.node.name2.innerHTML = `骨·${(card.cards?.[0] && source.isUnderControl(true)) ? `${get.translation(get.type2(card.cards[0]))}` : '未知'}`;
+                            const vcards = card.cards ?? [];
+                            if (cardx?.node?.name2 && (vcards.length !== 1 || vcards[0].name !== cardx.name)) {
+                                cardx.node.name2.innerHTML = `骨·${source.isUnderControl(true) ? `${vcards[0] ? get.translation(get.type2(vcards[0])) : '虚拟'}` : '未知'}`;
+                            }
                         }, player, card, card.storage.minizigu_gu);
                     }
                 },
@@ -34230,12 +34233,20 @@ const packs = function () {
                                 if (node.classList.contains('card')) {
                                     let vcard = node.cardSymbol && node[node.cardSymbol];
                                     if (node.link?.name && lib.card[node.link.name]) vcard = node.link.cardSymbol && node.link[node.link.cardSymbol];
-                                    if (vcard && vcard.name === 'minizigu_gu') {
+                                    const vcards = vcard?.cards ?? [];
+                                    if (vcard && vcard.name === 'minizigu_gu' && (vcards.length !== 1 || vcards[0].name !== node.name)) {
                                         const source = vcard.storage?.minizigu_gu;
-                                        if (get.itemtype(source) === 'player' && source.isUnderControl(true)) {
-                                            if (vcard?.cards?.length) {
-                                                uiintro.add('<div class="text center">—— 对应实体牌 ——</div>');
-                                                uiintro.addSmall(vcard.cards);
+                                        if (get.itemtype(source) === 'player') {
+                                            if (source.isUnderControl(true)) {
+                                                if (vcards.length) {
+                                                    uiintro.add('<div class="text center">—— 对应实体牌 ——</div>');
+                                                    uiintro.addSmall(vcard.cards);
+                                                }
+                                                else uiintro.add('<div class="text center">—— 此为虚拟牌 ——</div>');
+                                            }
+                                            else {
+                                                uiintro.add('<div class="text center">慢！吾当何辞？眼睛出去！</div>');
+                                                uiintro.addSmall([['bilibili_yanjing'], 'character']);
                                             }
                                         }
                                     }
