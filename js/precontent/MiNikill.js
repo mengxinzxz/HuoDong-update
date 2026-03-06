@@ -34237,7 +34237,6 @@ const packs = function () {
                                                 uiintro.add('<div class="text center">—— 对应实体牌 ——</div>');
                                                 uiintro.addSmall(vcard.cards);
                                             }
-                                            else uiintro.add('<div class="text center">（这是一张虚拟牌）</div>');
                                         }
                                     }
                                 }
