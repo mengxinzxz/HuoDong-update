@@ -34313,7 +34313,7 @@ const packs = function () {
                                     return list;
                                 });
                                 return list;
-                            }, []).some(card => player.hasUseTarget(card));
+                            }, []).some(card => get.position(card) === 'd' && player.hasUseTarget(card));
                         },
                         locked: true,
                         direct: true,
@@ -34330,7 +34330,7 @@ const packs = function () {
                                 return list;
                             }, []);
                             for (const card of cards) {
-                                if (player.hasUseTarget(card)) {
+                                if (get.position(card) === 'd' && player.hasUseTarget(card)) {
                                     const next = player.chooseUseTarget(card, false, false);
                                     next.prompt = `${get.translation(event.name)}：是否使用${get.translation(card)}？`;
                                     next.logSkill = event.name;
