@@ -501,7 +501,7 @@ const packs = function () {
             Mbaby_shen_pangtong: ['male', 'shen', 4, ['minilunce', 'minilanhai'], ['shu']],
             Mbaby_jingwei: ['female', 'shen', 4, ['minitianhai', 'minihaiku']],
             Mbaby_shen_lusu: ['male', 'shen', 3, ['minitamo', 'minidingzhou', 'zhimeng'], ['wu']],
-            Mbaby_shen_weiyan: ['male', 'shen', 6, [], ['shu', 'unseen']],
+            Mbaby_shen_weiyan: ['male', 'shen', 6, ['minizigu', 'miniezhi', 'minigujing'], ['shu']],
             //喵
             Mmiao_caiwenji: ['female', 'qun', 3, ['minimiaobeige', 'minimiaoduanchang', 'minidoumao'], ['name:蔡|琰']],
             Mmiao_diaochan: ['female', 'qun', 3, ['minimiaolijian', 'minimiaobiyue', 'minidoumao']],
@@ -813,6 +813,27 @@ const packs = function () {
                     },
                 },
                 global: 'minifirehuojian',
+            },
+            minizigu_gu: {
+                fullimage: true,
+                image: 'character:wutugu',
+                derivation: 'Mbaby_shen_weiyan',
+                blankCard: true,
+                onEquip(card) {
+                    if (get.itemtype(card.storage?.minizigu_gu) === 'player') {
+                        game.broadcastAll((player, card, source) => {
+                            let cardx;
+                            for (const node of player.node.equips.childNodes) {
+                                if (node.cardSymbol && node[node.cardSymbol] === card) {
+                                    cardx = node;
+                                    break;
+                                }
+                            }
+                            if (cardx?.node?.name2) cardx.node.name2.innerHTML = `骨·${(card.cards?.[0] && source.isUnderControl(true)) ? `${get.translation(get.type2(card.cards[0]))}` : '未知'}`;
+                        }, player, card, card.storage.minizigu_gu);
+                    }
+                },
+                ai: { basic: { equipValue: -5 } },
             },
         },
         skill: {
@@ -34098,6 +34119,409 @@ const packs = function () {
                     },
                 },
             },
+            //神魏延
+            minizigu: {
+                audio: 'ext:活动武将/audio/skill:2',
+                trigger: {
+                    source: 'damageSource',
+                    player: 'damageEnd',
+                },
+                filter(event, player, name) {
+                    if (!event.source?.isIn() || !event.player.isIn() || event.source === event.player) return false;
+                    const target = event[name === 'damageSource' ? 'player' : 'source'];
+                    return player.hasCard(card => {
+                        return Array.from({ length: 5 }).map((_, i) => `equip${i + 1}`).some(subtype => {
+                            const card2 = get.autoViewAs({ name: 'minizigu_gu' }, [card]);
+                            card2.subtypes = [subtype];
+                            return target.canEquip(card2, true);
+                        });
+                    }, 'h');
+                },
+                logTarget(event, player, name) {
+                    return event[name === 'damageSource' ? 'player' : 'source'];
+                },
+                async cost(event, trigger, player) {
+                    const name = event.triggername, target = trigger[name === 'damageSource' ? 'player' : 'source'];
+                    const result = await player.chooseCard(get.prompt(event.skill, target), (card, player) => {
+                        const target = get.event().target;
+                        return Array.from({ length: 5 }).map((_, i) => `equip${i + 1}`).some(subtype => {
+                            const card2 = get.autoViewAs({ name: 'minizigu_gu' }, [card]);
+                            card2.subtypes = [subtype];
+                            return target.canEquip(card2, true);
+                        });
+                    }, `将一张牌当作“骨”置入${get.translation(target)}的任意装备栏（替换原装备）`).set('ai', card => {
+                        const { player, target } = get.event(), att = get.attitude(player, target);
+                        const subtypes = Array.from({ length: 5 }).map((_, i) => `equip${i + 1}`).filter(subtype => {
+                            const card2 = get.autoViewAs({ name: 'minizigu_gu' }, [card]);
+                            card2.subtypes = [subtype];
+                            return target.canEquip(card2, true);
+                        });
+                        return Math.max(...subtypes.map(subtype => {
+                            const card2 = get.autoViewAs({ name: 'minizigu_gu' }, [card]);
+                            card2.subtypes = [subtype];
+                            return Math.sign(att) * get.equipValue(card2, target);
+                        }));
+                    }).set('target', target).forResult();
+                    if (result?.bool && result.cards?.length) {
+                        const card = result.cards[0];
+                        card.classList.add('selected');
+                        card.updateTransform(true, 0);
+                        const subtypes = Array.from({ length: 5 }).map((_, i) => `equip${i + 1}`).filter(subtype => {
+                            const card2 = get.autoViewAs({ name: 'minizigu_gu' }, [card]);
+                            card2.subtypes = [subtype];
+                            return target.canEquip(card2, true);
+                        });
+                        const result2 = await player.chooseControl(subtypes).set('ai', () => {
+                            const { player, target, controls } = get.event(), att = get.attitude(player, target);
+                            const getNum = subtype => {
+                                const card2 = get.autoViewAs({ name: 'minizigu_gu' }, [card]);
+                                card2.subtypes = [subtype];
+                                return Math.sign(att) * get.equipValue(card2, target);
+                            };
+                            return [...controls].sort((a, b) => getNum(b) - getNum(a))[0];
+                        }).set('prompt', `请选择${get.translation(card)}置入的装备栏`).set('target', target).forResult();
+                        card.classList.remove('selected');
+                        card.updateTransform(false, 0);
+                        if (result2?.control) {
+                            const card2 = get.autoViewAs({ name: 'minizigu_gu' }, [card]);
+                            card2.subtypes = [result2.control];
+                            event.result = { bool: true, cards: [card], cost_data: result2.control };
+                        }
+                    }
+                },
+                async content(event, trigger, player) {
+                    const { targets: [target], cards: [card], cost_data: subtype } = event;
+                    const card2 = get.autoViewAs({ name: 'minizigu_gu' }, [card]);
+                    game.broadcastAll((card2, subtype, player) => {
+                        card2.subtypes = [subtype];
+                        card2.storage ??= {};
+                        card2.storage.minizigu_gu = player;
+                    }, card2, subtype, player);
+                    player.$give(1, target, false);
+                    const next = target.equip(card2);
+                    next.log = false;
+                    await next;
+                },
+                group: 'minizigu_equip',
+                subSkill: {
+                    equip: {
+                        audio: 'minizigu',
+                        trigger: { player: 'useCard' },
+                        filter(event, player) {
+                            return player.getHistory('useCard', evt => get.type(evt.card) === 'equip').indexOf(event) === 0;
+                        },
+                        async cost(event, trigger, player) {
+                            event.result = await player.chooseTarget(get.prompt(event.skill), '对一名角色造成1点伤害').set('ai', target => {
+                                const player = get.player();
+                                return get.damageEffect(target, player, player);
+                            }).forResult();
+                        },
+                        content() {
+                            targets[0].damage();
+                        },
+                    },
+                },
+                init(player, skill) {
+                    if (!_status[`_${skill}_nodeintro`]) {
+                        game.broadcastAll(skill => {
+                            const nodeintro = _status[`_${skill}_nodeintro`] = get.nodeintro;
+                            get.nodeintro = function (node, ...args) {
+                                const uiintro = nodeintro(node, ...args);
+                                if (node.classList.contains('card')) {
+                                    let vcard = node.cardSymbol && node[node.cardSymbol];
+                                    if (node.link?.name && lib.card[node.link.name]) vcard = node.link.cardSymbol && node.link[node.link.cardSymbol];
+                                    if (vcard && vcard.name === 'minizigu_gu') {
+                                        const source = vcard.storage?.minizigu_gu;
+                                        if (get.itemtype(source) === 'player' && source.isUnderControl(true)) {
+                                            if (vcard?.cards?.length) {
+                                                uiintro.add('<div class="text center">—— 对应实体牌 ——</div>');
+                                                uiintro.addSmall(vcard.cards);
+                                            }
+                                            else uiintro.add('<div class="text center">（这是一张虚拟牌）</div>');
+                                        }
+                                    }
+                                }
+                                return uiintro;
+                            };
+                        }, skill);
+                    }
+                },
+            },
+            miniezhi: {
+                audio: 'ext:活动武将/audio/skill:2',
+                trigger: { global: 'useCard' },
+                filter(event, player) {
+                    if (event.player === player) return false;
+                    return event.player.countDiscardableCards(event.player, 'e', { name: 'minizigu_gu' }) > 0;
+                },
+                forced: true,
+                logTarget: 'player',
+                async content(event, trigger, player) {
+                    await player.draw(2);
+                    const target = trigger.player;
+                    const result = await target.chooseToDiscard('e', true, { name: 'minizigu_gu' }).forResult();
+                    if (result?.bool && result.cards?.length) {
+                        const VEquip = result.cards[0].cardSymbol && result.cards[0][result.cards[0].cardSymbol];
+                        if (VEquip) {
+                            const card = result.cards[0].isViewAsCard ? (VEquip.cards ?? [])[0] : result.cards[0];
+                            if (card && get.type2(card, false) === get.type2(trigger.card)) {
+                                trigger.targets.length = 0;
+                                trigger.all_excluded = true;
+                                game.log(trigger.card, '被无效了');
+                            }
+                            else {
+                                player.addTempSkill(`${event.name}_effect`);
+                                player.markAuto(`${event.name}_effect`, [target]);
+                            }
+                        }
+                    }
+                },
+                ai: { combo: 'minizigu' },
+                group: 'miniezhi_reuse',
+                subSkill: {
+                    effect: {
+                        charlotte: true,
+                        onremove: true,
+                        intro: { content: 'players' },
+                        mod: {
+                            targetInRange(card, player, target) {
+                                if (player.getStorage('miniezhi_effect').includes(target)) return true;
+                            },
+                        },
+                    },
+                    reuse: {
+                        audio: 'miniezhi',
+                        trigger: { global: 'phaseEnd' },
+                        filter(event, player) {
+                            return game.filterPlayer2().reduce((list, target) => {
+                                target.getHistory('lose', evt => {
+                                    if (!evt.es) return false;
+                                    for (const card of evt.es) {
+                                        const VEquip = evt.vcard_map.get(card);
+                                        if (VEquip && VEquip.name === 'minizigu_gu') list.add(card);
+                                    }
+                                    return list;
+                                });
+                                return list;
+                            }, []).some(card => player.hasUseTarget(card));
+                        },
+                        locked: true,
+                        direct: true,
+                        async content(event, trigger, player) {
+                            const cards = game.filterPlayer2().reduce((list, target) => {
+                                target.getHistory('lose', evt => {
+                                    if (!evt.es) return false;
+                                    for (const card of evt.es) {
+                                        const VEquip = evt.vcard_map.get(card);
+                                        if (VEquip && VEquip.name === 'minizigu_gu') list.add(card);
+                                    }
+                                    return list;
+                                });
+                                return list;
+                            }, []);
+                            for (const card of cards) {
+                                if (player.hasUseTarget(card)) {
+                                    const next = player.chooseUseTarget(card, false, false);
+                                    next.prompt = `${get.translation(event.name)}：是否使用${get.translation(card)}？`;
+                                    next.logSkill = event.name;
+                                    await next;
+                                }
+                            }
+                        },
+                    },
+                },
+            },
+            minigujing: {
+                limited: true,
+                audio: 'ext:活动武将/audio/skill:1',
+                enable: 'phaseUse',
+                skillAnimation: true,
+                animationColor: 'fire',
+                async content(event, trigger, player) {
+                    player.awakenSkill(event.name);
+                    if (game.hasPlayer(target => {
+                        if (target === player) return false;
+                        return player.hasCard(card => {
+                            return Array.from({ length: 5 }).map((_, i) => `equip${i + 1}`).some(subtype => {
+                                const card2 = get.autoViewAs({ name: 'minizigu_gu' }, [card]);
+                                card2.subtypes = [subtype];
+                                return target.canEquip(card2, true);
+                            });
+                        }, 'h');
+                    })) {
+                        const result = await player.chooseCardTarget({
+                            prompt: get.translation(event.name),
+                            prompt2: '是否将一张牌当作“骨”置入一名其他角色的任意装备栏（替换原装备）？',
+                            filterCard(card, player) {
+                                return game.hasPlayer(target => {
+                                    if (target === player) return false;
+                                    return Array.from({ length: 5 }).map((_, i) => `equip${i + 1}`).some(subtype => {
+                                        const card2 = get.autoViewAs({ name: 'minizigu_gu' }, [card]);
+                                        card2.subtypes = [subtype];
+                                        return target.canEquip(card2, true);
+                                    });
+                                });
+                            },
+                            filterTarget(孩子们记得多催更牢戏, player, target) {
+                                if (target === player) return false;
+                                const card = ui.selected.cards[0];
+                                if (!card) return false;
+                                return Array.from({ length: 5 }).map((_, i) => `equip${i + 1}`).some(subtype => {
+                                    const card2 = get.autoViewAs({ name: 'minizigu_gu' }, [card]);
+                                    card2.subtypes = [subtype];
+                                    return target.canEquip(card2, true);
+                                });
+                            },
+                            ai1(card) {
+                                const player = get.player();
+                                return Math.max(...game.filterPlayer(target => {
+                                    if (target === player) return false;
+                                    return Array.from({ length: 5 }).map((_, i) => `equip${i + 1}`).some(subtype => {
+                                        const card2 = get.autoViewAs({ name: 'minizigu_gu' }, [card]);
+                                        card2.subtypes = [subtype];
+                                        return target.canEquip(card2, true);
+                                    });
+                                }).map(target => {
+                                    const subtypes = Array.from({ length: 5 }).map((_, i) => `equip${i + 1}`).filter(subtype => {
+                                        const card2 = get.autoViewAs({ name: 'minizigu_gu' }, [card]);
+                                        card2.subtypes = [subtype];
+                                        return target.canEquip(card2, true);
+                                    });
+                                    return Math.max(...subtypes.map(subtype => {
+                                        const card2 = get.autoViewAs({ name: 'minizigu_gu' }, [card]);
+                                        card2.subtypes = [subtype];
+                                        return Math.sign(get.attitude(player, target)) * get.equipValue(card2, target);
+                                    }));
+                                }));
+                            },
+                            ai2(target) {
+                                const player = get.player(), card = ui.selected.cards[0];
+                                if (!card) return 0;
+                                const subtypes = Array.from({ length: 5 }).map((_, i) => `equip${i + 1}`).filter(subtype => {
+                                    const card2 = get.autoViewAs({ name: 'minizigu_gu' }, [card]);
+                                    card2.subtypes = [subtype];
+                                    return target.canEquip(card2, true);
+                                });
+                                return Math.max(...subtypes.map(subtype => {
+                                    const card2 = get.autoViewAs({ name: 'minizigu_gu' }, [card]);
+                                    card2.subtypes = [subtype];
+                                    return Math.sign(get.attitude(player, target)) * get.equipValue(card2, target);
+                                }));
+                            },
+                        }).forResult();
+                        if (result?.bool && result.targets?.length && result.cards?.length) {
+                            const { targets: [target], cards: [card] } = result;
+                            card.classList.add('selected');
+                            card.updateTransform(true, 0);
+                            const subtypes = Array.from({ length: 5 }).map((_, i) => `equip${i + 1}`).filter(subtype => {
+                                const card2 = get.autoViewAs({ name: 'minizigu_gu' }, [card]);
+                                card2.subtypes = [subtype];
+                                return target.canEquip(card2, true);
+                            });
+                            const result2 = await player.chooseControl(subtypes).set('ai', () => {
+                                const { player, target, controls } = get.event(), att = get.attitude(player, target);
+                                const getNum = subtype => {
+                                    const card2 = get.autoViewAs({ name: 'minizigu_gu' }, [card]);
+                                    card2.subtypes = [subtype];
+                                    return Math.sign(att) * get.equipValue(card2, target);
+                                };
+                                return [...controls].sort((a, b) => getNum(b) - getNum(a))[0];
+                            }).set('prompt', `请选择${get.translation(card)}置入的装备栏`).set('target', target).forResult();
+                            card.classList.remove('selected');
+                            card.updateTransform(false, 0);
+                            if (result2?.control) {
+                                const card2 = get.autoViewAs({ name: 'minizigu_gu' }, [card]);
+                                game.broadcastAll((card2, subtype, player) => {
+                                    card2.subtypes = [subtype];
+                                    card2.storage ??= {};
+                                    card2.storage.minizigu_gu = player;
+                                }, card2, result2.control, player);
+                                player.$give(1, target, false);
+                                const next = target.equip(card2);
+                                next.log = false;
+                                await next;
+                            }
+                        }
+                    }
+                    if (game.hasPlayer(target => {
+                        if (target === player) return false;
+                        return target.countDiscardableCards(player, 'e', { name: 'minizigu_gu' }) > 0;
+                    })) {
+                        const result = await player.chooseTarget([1, Infinity], (孩子们记得催更牢戏写志袁术, player, target) => {
+                            if (target === player) return false;
+                            return target.countDiscardableCards(player, 'e', { name: 'minizigu_gu' }) > 0;
+                        }, `###${get.translation(event.name)}###<div class='text center'>是否弃置任意名装备区有“骨”的其他角色装备区中的各一张“骨”并废除其对应装备栏？</div>`).set('ai', target => {
+                            const player = get.player();
+                            return -get.attitude(player, target);
+                        }).forResult();
+                        if (result?.bool && result.targets?.length) {
+                            const targets = [...result.targets].sortBySeat();
+                            player.line(targets);
+                            for (const target of targets) {
+                                const result = await player.discardPlayerCard(target, 'e', true).set('filterButton', button => {
+                                    const { player, target } = get.event(), card = button.link;
+                                    return card.name === 'minizigu_gu' && lib.filter.canBeDiscarded(card, player, target);
+                                }).forResult();
+                                if (result?.bool && result.cards?.length) {
+                                    const card = result.cards[0];
+                                    const subtypes = card.subtypes || [get.info(card).subtype];
+                                    if (subtypes.length > 0) await target.disableEquip(subtypes);
+                                }
+                            }
+                        }
+                    }
+                    player.addSkill(`${event.name}_effect`);
+                },
+                ai: {
+                    order: 10,
+                    result: {
+                        player(player) {
+                            return player.hasUnknown() ? 0 : 1;
+                        },
+                    },
+                },
+                subSkill: {
+                    effect: {
+                        charlotte: true,
+                        mark: true,
+                        intro: { content: '拥有废除装备栏的角色获得对应废除栏的装备牌后，你获得之' },
+                        audio: 'minigujing',
+                        trigger: { global: ['gainAfter', 'loseAsyncAfter'] },
+                        filter(event, player) {
+                            return game.hasPlayer(target => {
+                                return event.getg?.(target)?.some(card => {
+                                    if (get.position(card) !== 'h' || get.owner(card) !== target || !lib.filter.canBeGained(card, player, target)) return false;
+                                    return Array.from({ length: 5 }).map((_, i) => `equip${i + 1}`).some(subtype => {
+                                        return target.hasDisabledSlot(subtype) && [card.subtypes || get.info(card).subtype].includes(subtype);
+                                    });
+                                });
+                            });
+                        },
+                        forced: true,
+                        logTarget(event, player) {
+                            return game.filterPlayer(target => {
+                                return event.getg?.(target)?.some(card => {
+                                    if (get.position(card) !== 'h' || get.owner(card) !== target || !lib.filter.canBeGained(card, player, target)) return false;
+                                    return Array.from({ length: 5 }).map((_, i) => `equip${i + 1}`).some(subtype => {
+                                        return target.hasDisabledSlot(subtype) && [card.subtypes || get.info(card).subtype].includes(subtype);
+                                    });
+                                });
+                            }).sortBySeat();
+                        },
+                        async content(event, trigger, player) {
+                            await player.gain(event.targets.reduce((list, target) => {
+                                list.addArray(trigger.getg(target).filter(card => {
+                                    if (get.position(card) !== 'h' || get.owner(card) !== target || !lib.filter.canBeGained(card, player, target)) return false;
+                                    return Array.from({ length: 5 }).map((_, i) => `equip${i + 1}`).some(subtype => {
+                                        return target.hasDisabledSlot(subtype) && [card.subtypes || get.info(card).subtype].includes(subtype);
+                                    });
+                                }));
+                                return list;
+                            }, []), 'give', 'bySelf');
+                        },
+                    },
+                },
+            },
             //喵
             //核心逗猫
             minidoumao: {
@@ -42316,6 +42740,13 @@ const packs = function () {
             minitamo_info_doudizhu: '游戏开始时，你可以重新分配除三号位角色外所有角色的座次。',
             minidingzhou: '定州',
             minidingzhou_info: '出牌阶段限一次。你可以选择一项：1.将X张牌交给一名场上有牌的其他角色，然后你获得其场上的所有牌（X为其场上的牌数）；2.获得一名其他角色的所有手牌，然后交给其等量张牌。',
+            minizigu: '恣骨',
+            minizigu_info: '①当你对其他角色造成伤害后或受到其他角色对你造成的伤害后，你可以将一张手牌当作“骨”置入其任意装备栏（顶替原装备）。②当你每回合首次使用装备牌时，你可以对一名角色造成1点伤害并获得一张伤害牌。',
+            minizigu_gu: '骨',
+            miniezhi: '恶峙',
+            miniezhi_info: '锁定技。①装备区有“骨”的其他角色使用牌时，你摸两张牌，其弃置一张“骨”，若弃置的“骨”的类别与此牌：相同，令此牌无效；不同：本回合你对其使用牌无距离限制。②每个回合结束时，你可以依次使用本回合进入弃牌堆的“骨”。',
+            minigujing: '骨径',
+            minigujing_info: '限定技，出牌阶段，你可以依次执行：①你可以将一张手牌当作“骨”置入一名其他角色的任意装备栏（顶替原装备）。②你可以弃置任意名装备区有“骨”的其他角色装备区中的各一张“骨”并废除其对应装备栏。然后本局游戏拥有废除装备栏的角色获得对应废除栏的装备牌后，你获得之。',
             //喵
             Mmiao_caiwenji: '喵蔡琰',
             Mmiao_diaochan: '喵貂蝉',
@@ -42819,6 +43250,12 @@ const packs = function () {
             '#ext:活动武将/audio/skill/minifirerongyan1': '百族圣火，共映天河。',
             '#ext:活动武将/audio/skill/minifirerongyan2': '集火为焱，焚灼万化。',
             '#ext:活动武将/audio/die/Mfire_zhurong:die': '星火坠渊，流萤归冥。',
+            '#ext:活动武将/audio/skill/minizigu1': '立骨为闸，宵小难逃！',
+            '#ext:活动武将/audio/skill/minizigu2': '千锋淬骨，八方俱灭！',
+            '#ext:活动武将/audio/skill/miniezhi1': '以牙还牙，以眼还眼！',
+            '#ext:活动武将/audio/skill/miniezhi2': '冤家路窄，仅容一人！',
+            '#ext:活动武将/audio/skill/minigujing1': '并敌一向，千里杀将！',
+            '#ext:活动武将/audio/die/Mbaby_shen_weiyan:die': '我……不服！',
         },
     };
     MiNikill_sight();//加载欢杀界面逻辑
