@@ -34145,51 +34145,61 @@ const packs = function () {
                 },
                 async cost(event, trigger, player) {
                     const name = event.triggername, target = trigger[name === 'damageSource' ? 'player' : 'source'];
-                    const result = await player.chooseCard(get.prompt(event.skill, target), (card, player) => {
-                        const target = get.event().target;
-                        return Array.from({ length: 5 }).map((_, i) => `equip${i + 1}`).some(subtype => {
-                            const card2 = get.autoViewAs({ name: 'minizigu_gu' }, [card]);
-                            card2.subtypes = [subtype];
-                            return target.canEquip(card2, true);
-                        });
-                    }, `将一张牌当作“骨”置入${get.translation(target)}的任意装备栏（替换原装备）`).set('ai', card => {
-                        const { player, target } = get.event(), att = get.attitude(player, target);
-                        const subtypes = Array.from({ length: 5 }).map((_, i) => `equip${i + 1}`).filter(subtype => {
-                            const card2 = get.autoViewAs({ name: 'minizigu_gu' }, [card]);
-                            card2.subtypes = [subtype];
-                            return target.canEquip(card2, true);
-                        });
-                        return Math.max(...subtypes.map(subtype => {
-                            const card2 = get.autoViewAs({ name: 'minizigu_gu' }, [card]);
-                            card2.subtypes = [subtype];
-                            return Math.sign(att) * get.equipValue(card2, target);
-                        }));
-                    }).set('target', target).forResult();
-                    if (result?.bool && result.cards?.length) {
-                        const card = result.cards[0];
-                        card.classList.add('selected');
-                        card.updateTransform(true, 0);
-                        const subtypes = Array.from({ length: 5 }).map((_, i) => `equip${i + 1}`).filter(subtype => {
-                            const card2 = get.autoViewAs({ name: 'minizigu_gu' }, [card]);
-                            card2.subtypes = [subtype];
-                            return target.canEquip(card2, true);
-                        });
-                        const result2 = await player.chooseControl(subtypes).set('ai', () => {
-                            const { player, target, controls } = get.event(), att = get.attitude(player, target);
-                            const getNum = subtype => {
+                    if (_status.connectMode) game.broadcastAll(() => _status.noclearcountdown = true);
+                    while (true) {
+                        const result = await player.chooseCard(get.prompt(event.skill, target), (card, player) => {
+                            const target = get.event().target;
+                            return Array.from({ length: 5 }).map((_, i) => `equip${i + 1}`).some(subtype => {
+                                const card2 = get.autoViewAs({ name: 'minizigu_gu' }, [card]);
+                                card2.subtypes = [subtype];
+                                return target.canEquip(card2, true);
+                            });
+                        }, `将一张牌当作“骨”置入${get.translation(target)}的任意装备栏（替换原装备）`).set('ai', card => {
+                            const { player, target } = get.event(), att = get.attitude(player, target);
+                            const subtypes = Array.from({ length: 5 }).map((_, i) => `equip${i + 1}`).filter(subtype => {
+                                const card2 = get.autoViewAs({ name: 'minizigu_gu' }, [card]);
+                                card2.subtypes = [subtype];
+                                return target.canEquip(card2, true);
+                            });
+                            return Math.max(...subtypes.map(subtype => {
                                 const card2 = get.autoViewAs({ name: 'minizigu_gu' }, [card]);
                                 card2.subtypes = [subtype];
                                 return Math.sign(att) * get.equipValue(card2, target);
-                            };
-                            return [...controls].sort((a, b) => getNum(b) - getNum(a))[0];
-                        }).set('prompt', `请选择${get.translation(card)}置入的装备栏`).set('target', target).forResult();
-                        card.classList.remove('selected');
-                        card.updateTransform(false, 0);
-                        if (result2?.control) {
-                            const card2 = get.autoViewAs({ name: 'minizigu_gu' }, [card]);
-                            card2.subtypes = [result2.control];
-                            event.result = { bool: true, cards: [card], cost_data: result2.control };
+                            }));
+                        }).set('target', target).forResult();
+                        if (result?.bool && result.cards?.length) {
+                            const card = result.cards[0];
+                            card.classList.add('selected');
+                            card.updateTransform(true, 0);
+                            const subtypes = Array.from({ length: 5 }).map((_, i) => `equip${i + 1}`).filter(subtype => {
+                                const card2 = get.autoViewAs({ name: 'minizigu_gu' }, [card]);
+                                card2.subtypes = [subtype];
+                                return target.canEquip(card2, true);
+                            });
+                            const result2 = await player.chooseControl(subtypes, 'cancel2').set('ai', () => {
+                                const { player, target, controls } = get.event(), att = get.attitude(player, target);
+                                const getNum = subtype => {
+                                    if (subtype === 'cancel2') return 0;
+                                    const card2 = get.autoViewAs({ name: 'minizigu_gu' }, [card]);
+                                    card2.subtypes = [subtype];
+                                    return Math.sign(att) * get.equipValue(card2, target);
+                                };
+                                return [...controls].sort((a, b) => getNum(b) - getNum(a))[0];
+                            }).set('prompt', `请选择${get.translation(card)}置入的装备栏`).set('target', target).forResult();
+                            card.classList.remove('selected');
+                            card.updateTransform(false, 0);
+                            if (result2?.control) {
+                                if (result2.control === 'cancel2') continue;
+                                event.result = { bool: true, cards: [card], cost_data: result2.control };
+                            }
                         }
+                        break;
+                    }
+                    if (_status.connectMode) {
+                        game.broadcastAll(() => {
+                            delete _status.noclearcountdown;
+                            game.stopCountChoose();
+                        });
                     }
                 },
                 async content(event, trigger, player) {
@@ -34315,6 +34325,7 @@ const packs = function () {
                         },
                         locked: true,
                         direct: true,
+                        clearTime: true,
                         async content(event, trigger, player) {
                             let list = [];
                             game.getGlobalHistory('cardMove', evt => {
@@ -34344,7 +34355,8 @@ const packs = function () {
                 animationColor: 'fire',
                 async content(event, trigger, player) {
                     player.awakenSkill(event.name);
-                    if (game.hasPlayer(target => {
+                    if (_status.connectMode) game.broadcastAll(() => _status.noclearcountdown = true);
+                    while (game.hasPlayer(target => {
                         if (target === player) return false;
                         return player.hasCard(card => {
                             return Array.from({ length: 5 }).map((_, i) => `equip${i + 1}`).some(subtype => {
@@ -34423,9 +34435,10 @@ const packs = function () {
                                 card2.subtypes = [subtype];
                                 return target.canEquip(card2, true);
                             });
-                            const result2 = await player.chooseControl(subtypes).set('ai', () => {
+                            const result2 = await player.chooseControl(subtypes, 'cancel2').set('ai', () => {
                                 const { player, target, controls } = get.event(), att = get.attitude(player, target);
                                 const getNum = subtype => {
+                                    if (subtype === 'cancel2') return 0;
                                     const card2 = get.autoViewAs({ name: 'minizigu_gu' }, [card]);
                                     card2.subtypes = [subtype];
                                     return Math.sign(att) * get.equipValue(card2, target);
@@ -34435,6 +34448,7 @@ const packs = function () {
                             card.classList.remove('selected');
                             card.updateTransform(false, 0);
                             if (result2?.control) {
+                                if (result2.control === 'cancel2') continue;
                                 const card2 = get.autoViewAs({ name: 'minizigu_gu' }, [card]);
                                 game.broadcastAll((card2, subtype, player) => {
                                     card2.subtypes = [subtype];
@@ -34447,6 +34461,13 @@ const packs = function () {
                                 await next;
                             }
                         }
+                        break;
+                    }
+                    if (_status.connectMode) {
+                        game.broadcastAll(() => {
+                            delete _status.noclearcountdown;
+                            game.stopCountChoose();
+                        });
                     }
                     if (game.hasPlayer(target => {
                         if (target === player) return false;
