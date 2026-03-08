@@ -210,7 +210,7 @@ const packs = function () {
             wechat_zhiyin_jiangwei: ['male', 'shu', 4, ['wechatgujin', 'wechatqumou']],
             wechat_zhiyin_zhurong: ['female', 'shu', 4, ['wechatxiangwei', 'wechatyanfeng'], ['name:null|null']],
             wechat_zhiyin_hetaihou: ['female', 'qun', 4, ['wechatfuyin', 'wechatqiangji'], ['name:何|null']],
-            wechat_zhiyin_zhangchunhua: ['female', 'wei', 4, ['wechatjuejue', 'wechatqingshi', 'wechatqingjue']],
+            wechat_zhiyin_zhangchunhua: ['female', 'wei', 3, ['wechatjuejue', 'wechatqingshi', 'wechatqingjue']],
             wechat_zhiyin_dongzhuo: ['male', 'qun', 5, ['wechatweicheng', 'wechatbianguan']],
             wechat_zhiyin_zhangfei: ['male', 'shu', 4, ['wechatrehupo', 'wechathanxing']],
             wechat_zhiyin_wangyi: ['female', 'wei', 4, ['wechatzuoqing', 'wechatjianchou']],
@@ -10752,6 +10752,7 @@ const packs = function () {
                     if (player == event.player) return get.effect(target, { name: 'guohe_copy2' }, player, player) >= get.effect(player, { name: 'guohe_copy2' }, player, player) || get.tag(card, 'damage') && get.attitude(player, target) < 0;
                     return get.effect(event.player, { name: 'guohe_copy2' }, player, player) >= get.effect(player, { name: 'guohe_copy2' }, player, player) || !get.tag(card, 'damage') && get.attitude(player, target) < 0;
                 },
+                usable: 2,
                 async content(event, trigger, player) {
                     const num = Math.max(1, player.getDamagedHp());
                     for (const target of [trigger.targets[0], trigger.player].sortBySeat()) {
@@ -19143,7 +19144,7 @@ const packs = function () {
             wechatjuejue: '绝决',
             wechatjuejue_info: '锁定技。一名角色的回合结束时，若你本回合失去过所有手牌，你令一名角色失去1点体力。',
             wechatqingshi: '情逝',
-            wechatqingshi_info: '当你对其他角色使用牌时，或当其他角色对你使用牌时，若此牌目标数为1，你可以弃置你与其各X张牌。若如此做，此牌结算结束后，若此牌造成过伤害，你摸X张牌（X为你已损失体力值且至少为1）。',
+            wechatqingshi_info: '每回合限两次，当你对其他角色使用牌时，或当其他角色对你使用牌时，若此牌目标数为1，你可以弃置你与其各X张牌。若如此做，此牌结算结束后，若此牌造成过伤害，你摸X张牌（X为你已损失体力值且至少为1）。',
             wechatqingjue: '清绝',
             wechatqingjue_info: '限定技。当你进入濒死状态时，你可以回复体力至1点并跳过下个摸牌阶段。',
             wechat_zhiyin_dongzhuo: '极董卓',
