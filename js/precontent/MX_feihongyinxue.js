@@ -3131,7 +3131,7 @@ const packs = function () {
                                 return Math.random();
                             },
                             ai2(target) {
-                                const player = player();
+                                const player = get.player();
                                 const card = ui.selected.cards[0];
                                 return get.value(card, target) * get.attitude(player, target);
                             },
