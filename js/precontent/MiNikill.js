@@ -10759,7 +10759,7 @@ const packs = function () {
                         var mod2 = game.checkMod(hs[i], player, 'unchanged', 'cardEnabled2', player);
                         if (mod2 === false) return false;
                     }
-                    return event.filterCard(get.autoViewAs({ name: 'juedou' }, hs));
+                    return event.filterCard(get.autoViewAs({ name: 'juedou' }, hs), player, event);
                 },
                 viewAs: { name: 'juedou' },
                 onuse(links, player) {
