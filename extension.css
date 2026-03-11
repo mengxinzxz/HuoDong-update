@@ -1,110 +1,110 @@
 .zhengsubeijing1 {
-	position: absolute;
-	background-color: none;
-	background-repeat: no-repeat;
-	background-image: url("image/default/zhengsu_bg.png") !important;
-	background-size: 100% 100%;
-	width: 205px;
-	height: 69px;
-	left: 0px;
-	bottom: 422px;
-	padding: 10px 2px 2px 2px;
-	/*内边距*/
-	/*字体*/
-	text-align: center;
-	color: #ac9a82;
-	text-shadow:
-		-1.3px 0px 2.2px #000,
-		0px -1.3px 2.2px #000,
-		1.3px 0px 2.2px #000,
-		0px 1.3px 2.2px #000;
-	font-family: "shousha";
-	font-size: 18px;
-	font-weight: 700;
-	z-index: 8 !important;
+  position: absolute;
+  background-color: none;
+  background-repeat: no-repeat;
+  background-image: url("image/default/zhengsu_bg.png") !important;
+  background-size: 100% 100%;
+  width: 205px;
+  height: 69px;
+  left: 0px;
+  bottom: 422px;
+  padding: 10px 2px 2px 2px;
+  /*内边距*/
+  /*字体*/
+  text-align: center;
+  color: #ac9a82;
+  text-shadow:
+    -1.3px 0px 2.2px #000,
+    0px -1.3px 2.2px #000,
+    1.3px 0px 2.2px #000,
+    0px 1.3px 2.2px #000;
+  font-family: "shousha";
+  font-size: 18px;
+  font-weight: 700;
+  z-index: 8 !important;
 }
 
 .zhengsubeijing2 {
-	position: absolute;
-	background-color: none;
-	background-repeat: no-repeat;
-	background-image: url("image/default/zhengsu_bg.png") !important;
-	background-size: 100% 100%;
-	width: 205px;
-	height: 69px;
-	left: 0px;
-	bottom: 344px !important;
-	padding: 10px 2px 2px 2px;
-	/*内边距*/
-	/*字体*/
-	text-align: center;
-	color: #ac9a82;
-	text-shadow:
-		-1.3px 0px 2.2px #000,
-		0px -1.3px 2.2px #000,
-		1.3px 0px 2.2px #000,
-		0px 1.3px 2.2px #000;
-	font-family: "shousha";
-	font-size: 17px;
-	font-weight: 500;
-	z-index: 8 !important;
+  position: absolute;
+  background-color: none;
+  background-repeat: no-repeat;
+  background-image: url("image/default/zhengsu_bg.png") !important;
+  background-size: 100% 100%;
+  width: 205px;
+  height: 69px;
+  left: 0px;
+  bottom: 344px !important;
+  padding: 10px 2px 2px 2px;
+  /*内边距*/
+  /*字体*/
+  text-align: center;
+  color: #ac9a82;
+  text-shadow:
+    -1.3px 0px 2.2px #000,
+    0px -1.3px 2.2px #000,
+    1.3px 0px 2.2px #000,
+    0px 1.3px 2.2px #000;
+  font-family: "shousha";
+  font-size: 17px;
+  font-weight: 500;
+  z-index: 8 !important;
 }
 
 .zhengsubeijing3 {
-	position: absolute;
-	background-color: none;
-	background-repeat: no-repeat;
-	background-image: url("image/default/zhengsu_bg.png") !important;
-	background-size: 100% 100%;
-	width: 205px;
-	height: 68px;
-	left: 0px;
-	bottom: 266px !important;
-	padding: 10px 2px 2px 2px;
-	/*内边距*/
-	/*字体*/
-	text-align: center;
-	color: #ac9a82;
-	text-shadow:
-		-1.3px 0px 2.2px #000,
-		0px -1.3px 2.2px #000,
-		1.3px 0px 2.2px #000,
-		0px 1.3px 2.2px #000;
-	font-family: "shousha";
-	font-size: 17px;
-	font-weight: 500;
-	z-index: 8 !important;
+  position: absolute;
+  background-color: none;
+  background-repeat: no-repeat;
+  background-image: url("image/default/zhengsu_bg.png") !important;
+  background-size: 100% 100%;
+  width: 205px;
+  height: 68px;
+  left: 0px;
+  bottom: 266px !important;
+  padding: 10px 2px 2px 2px;
+  /*内边距*/
+  /*字体*/
+  text-align: center;
+  color: #ac9a82;
+  text-shadow:
+    -1.3px 0px 2.2px #000,
+    0px -1.3px 2.2px #000,
+    1.3px 0px 2.2px #000,
+    0px 1.3px 2.2px #000;
+  font-family: "shousha";
+  font-size: 17px;
+  font-weight: 500;
+  z-index: 8 !important;
 }
 
 /*仁库*/
 .renkubeijinggua {
-	/*position:relative;*/
-	--l: 15px;
-	--t: 100px;
-	background-repeat: no-repeat;
-	background-image: url("image/default/renku_bg.png") !important;
-	background-size: 100% 100%;
-	width: 70.5px;
-	height: 42.5px;
-	left: calc(var(--l));
-	top: calc(var(--t));
-	letter-spacing: 3.2px;
-	position: absolute;
-	transition: none;
-	padding: 28.5px 2px 2px 2px;
-	/*内边距*/
-	/*字体*/
-	text-align: center;
-	color: #e2e0dc;
-	text-shadow:
-		-1.3px 0px 2.2px #000,
-		0px -1.3px 2.2px #000,
-		1.3px 0px 2.2px #000,
-		0px 1.3px 2.2px #000;
-	font-family: "shousha";
-	font-size: 17px;
-	font-weight: 900;
-	z-index: 8 !important;
+  /*position:relative;*/
+  --l: 15px;
+  --t: 100px;
+  background-repeat: no-repeat;
+  background-image: url("image/default/renku_bg.png") !important;
+  background-size: 100% 100%;
+  width: 70.5px;
+  height: 42.5px;
+  left: calc(var(--l));
+  top: calc(var(--t));
+  letter-spacing: 3.2px;
+  position: absolute;
+  transition: none;
+  padding: 28.5px 2px 2px 2px;
+  /*内边距*/
+  /*字体*/
+  text-align: center;
+  color: #e2e0dc;
+  text-shadow:
+    -1.3px 0px 2.2px #000,
+    0px -1.3px 2.2px #000,
+    1.3px 0px 2.2px #000,
+    0px 1.3px 2.2px #000;
+  font-family: "shousha";
+  font-size: 17px;
+  font-weight: 900;
+  z-index: 8 !important;
 }
 
 /*感谢 雷 的技术支持
@@ -138,417 +138,521 @@
 
 /*曹丕登阶*/
 .dialog.dengjie-game:not(.player) {
-	width: fit-content;
-	height: fit-content;
+  width: fit-content;
+  height: fit-content;
 }
 
 .dialog.dengjie-game > .content-container {
-	position: relative;
+  position: relative;
 }
 
 .dialog.dengjie-game > .content-container > .content {
-	position: relative;
+  position: relative;
 }
 
 .dialog.dengjie-game .dengjie-game-container {
-	position: relative;
+  position: relative;
 }
 
 table.dengjie-game {
-	--cell-spacing: 10px;
-	border-spacing: var(--cell-spacing);
+  --cell-spacing: 10px;
+  border-spacing: var(--cell-spacing);
 }
 
 td.dengjie-game {
-	--block-size: 40px;
-	--border-radius: calc(var(--block-size) / 8);
-	width: var(--block-size);
-	height: var(--block-size);
-	background: rgba(0, 0, 0, 0.4);
-	border-radius: var(--border-radius);
-	display: block;
-	position: relative;
-	padding: 0px;
-	margin: 0px;
-	margin-left: var(--cell-spacing);
-	float: left;
+  --block-size: 40px;
+  --border-radius: calc(var(--block-size) / 8);
+  width: var(--block-size);
+  height: var(--block-size);
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: var(--border-radius);
+  display: block;
+  position: relative;
+  padding: 0px;
+  margin: 0px;
+  margin-left: var(--cell-spacing);
+  float: left;
 }
 
 td.dengjie-game > .arrow-container {
-	position: absolute;
-	font-size: 100%;
-	left: 0px;
-	top: 0px;
-	width: 100%;
-	height: 100%;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	border-radius: var(--border-radius);
+  position: absolute;
+  font-size: 100%;
+  left: 0px;
+  top: 0px;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--border-radius);
 }
 
 td.dengjie-game > .arrow-container > .arrow {
-	border-radius: 100%;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	width: 50%;
-	height: 50%;
-	z-index: 3;
-	box-shadow:
-		rgba(0, 0, 0, 0.2) 0 0 0 1px,
-		rgba(0, 0, 0, 0.45) 0 3px 10px;
+  border-radius: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 50%;
+  height: 50%;
+  z-index: 3;
+  box-shadow:
+    rgba(0, 0, 0, 0.2) 0 0 0 1px,
+    rgba(0, 0, 0, 0.45) 0 3px 10px;
 }
 
 td.dengjie-game > .arrow-container.new-gain > .arrow {
-	background-color: #007dbd;
+  background-color: #007dbd;
 }
 
 td.dengjie-game > .arrow-container.new-lose > .arrow {
-	background-color: #c50000;
+  background-color: #c50000;
 }
 
 td.dengjie-game > .arrow-container.old > .arrow {
-	background-color: #494949;
+  background-color: #494949;
 }
 
 td.dengjie-game > .arrow-container.new-gain {
-	background-color: #007dbd;
-	box-shadow:
-		rgba(0, 0, 0, 0.3) 0 0 0 1px,
-		rgba(0, 125, 189, 1) 0 0 5px,
-		rgba(0, 125, 189, 1) 0 0 5px,
-		rgba(0, 125, 189, 1) 0 0 10px,
-		rgba(0, 125, 189, 1) 0 0 10px !important;
+  background-color: #007dbd;
+  box-shadow:
+    rgba(0, 0, 0, 0.3) 0 0 0 1px,
+    rgba(0, 125, 189, 1) 0 0 5px,
+    rgba(0, 125, 189, 1) 0 0 5px,
+    rgba(0, 125, 189, 1) 0 0 10px,
+    rgba(0, 125, 189, 1) 0 0 10px !important;
 }
 
 td.dengjie-game > .arrow-container.new-lose {
-	background-color: #c50000;
-	box-shadow:
-		rgba(0, 0, 0, 0.3) 0 0 0 1px,
-		rgba(197, 0, 0, 1) 0 0 5px,
-		rgba(197, 0, 0, 1) 0 0 5px,
-		rgba(197, 0, 0, 1) 0 0 10px,
-		rgba(197, 0, 0, 1) 0 0 10px !important;
+  background-color: #c50000;
+  box-shadow:
+    rgba(0, 0, 0, 0.3) 0 0 0 1px,
+    rgba(197, 0, 0, 1) 0 0 5px,
+    rgba(197, 0, 0, 1) 0 0 5px,
+    rgba(197, 0, 0, 1) 0 0 10px,
+    rgba(197, 0, 0, 1) 0 0 10px !important;
 }
 
 td.dengjie-game > .arrow-container.old {
-	background-color: #494949;
-	box-shadow:
-		rgba(0, 0, 0, 0.3) 0 0 0 1px,
-		rgba(73, 73, 73, 1) 0 0 5px,
-		rgba(73, 73, 73, 1) 0 0 5px,
-		rgba(73, 73, 73, 1) 0 0 10px,
-		rgba(73, 73, 73, 1) 0 0 10px !important;
+  background-color: #494949;
+  box-shadow:
+    rgba(0, 0, 0, 0.3) 0 0 0 1px,
+    rgba(73, 73, 73, 1) 0 0 5px,
+    rgba(73, 73, 73, 1) 0 0 5px,
+    rgba(73, 73, 73, 1) 0 0 10px,
+    rgba(73, 73, 73, 1) 0 0 10px !important;
 }
 
 td.dengjie-game.selectable {
-	cursor: pointer;
+  cursor: pointer;
 }
 
 td.dengjie-game:first-child {
-	margin: 0px;
+  margin: 0px;
 }
 
 .dialog.dengjie-game > .content-container > .content > div:last-child {
-	padding-bottom: 0px;
+  padding-bottom: 0px;
 }
 
 td.dengjie-game > .button.character {
-	--expand-size: calc(var(--cell-spacing) - 4px);
-	width: var(--block-size);
-	height: var(--block-size);
-	border-radius: var(--border-radius);
-	margin: 0px;
-	pointer-events: none;
-	z-index: 2;
-	display: flex;
-	align-items: flex-end;
-	justify-content: flex-end;
+  --expand-size: calc(var(--cell-spacing) - 4px);
+  width: var(--block-size);
+  height: var(--block-size);
+  border-radius: var(--border-radius);
+  margin: 0px;
+  pointer-events: none;
+  z-index: 2;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
 }
 
 td.dengjie-game > .button.character > .score {
-	border-radius: var(--border-radius);
-	font-size: 12px;
-	width: 35%;
-	height: 35%;
+  border-radius: var(--border-radius);
+  font-size: 12px;
+  width: 35%;
+  height: 35%;
 }
 
 td.dengjie-game > .button.character > .score.gain {
-	background-color: #007dbd;
+  background-color: #007dbd;
 }
 
 td.dengjie-game > .button.character > .score.lose {
-	background-color: #c50000;
+  background-color: #c50000;
 }
 
 /*吕布踏阵*/
 .button.character.tazhen {
-	width: 108px !important;
-	height: 150px !important;
+  width: 108px !important;
+  height: 150px !important;
 }
 
 .button.card.tazhen {
-	width: 108px !important;
-	height: 150px !important;
+  width: 108px !important;
+  height: 150px !important;
 }
 
 /*诸葛亮定乱*/
 .dingluan-tube-container {
-	display: flex;
-	justify-content: center;
-	align-items: flex-end;
-	gap: 20px;
-	flex-wrap: wrap;
-	padding: 20px;
-	box-sizing: border-box;
-	width: 100%;
+  display: flex;
+  width: 80%;
+  max-width: 1400px;
+  justify-content: space-around;
+  align-items: center;
+  flex-wrap: nowrap;
+  gap: 30px;
+  padding: 40px;
+  box-sizing: border-box;
+}
+
+.dingluan-tube-wrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 0 1 auto;
 }
 
 .dingluan-tube {
-	width: 60px;
-	height: 200px;
-	background: #221a0f;
-	border: 2px solid #8b6f45;
-	border-radius: 10px;
-	position: relative;
-	display: block;
-	padding: 0 5px;
-	margin: 0 10px;
-	box-sizing: border-box;
-	cursor: pointer;
-	transition: border-color 0.2s;
-	flex-shrink: 0;
-	overflow: visible;
+  width: 70px;
+  height: 340px;
+  background: linear-gradient(to right, #0d2b26, #1a4a44, #0d2b26);
+  border: 3px solid #4a5d4e;
+  border-radius: 4px;
+  position: relative;
+  display: block;
+  padding: 0;
+  margin: 30px 0;
+  box-sizing: border-box;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  flex-shrink: 0;
+  overflow: visible;
+  box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.8), 0 15px 30px rgba(0, 0, 0, 0.5);
+}
+
+/* Ornate Top Part (Handle/Ears) */
+.dingluan-tube::before {
+  content: "";
+  position: absolute;
+  top: -20px;
+  left: -20px;
+  right: -20px;
+  height: 40px;
+  background: #3e5245;
+  border: 2px solid #5a7061;
+  clip-path: polygon(
+    0% 20%, 30% 20%, 30% 0%, 70% 0%, 70% 20%, 100% 20%,
+    100% 100%, 0% 100%
+  );
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.4);
+  z-index: 2;
+}
+
+/* Flared Base */
+.dingluan-tube::after {
+  content: "";
+  position: absolute;
+  bottom: -20px;
+  left: -15px;
+  right: -15px;
+  height: 25px;
+  background: #3e5245;
+  border: 2px solid #5a7061;
+  clip-path: polygon(15% 0%, 85% 0%, 100% 100%, 0% 100%);
+  z-index: 1;
+}
+
+/* Side Decorative Bumps - Now attached to the tube's ornament layer for synchronized animation */
+.dingluan-tube-ornament {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.dingluan-tube-ornament::before {
+  content: "";
+  position: absolute;
+  left: -5px;
+  bottom: 60px;
+  width: 10px;
+  height: 120px;
+  background: repeating-linear-gradient(
+    to bottom,
+    #5a7061, #5a7061 10px,
+    transparent 10px, transparent 24px
+  );
+}
+
+.dingluan-tube-ornament::after {
+  content: "";
+  position: absolute;
+  right: -5px;
+  bottom: 60px;
+  width: 10px;
+  height: 120px;
+  background: repeating-linear-gradient(
+    to bottom,
+    #5a7061, #5a7061 10px,
+    transparent 10px, transparent 24px
+  );
 }
 
 .dingluan-tube.selected {
-	border-color: #ffdf66;
-	box-shadow: 0 0 10px #ffdf66;
+  border-color: #ffdf66;
+  box-shadow: 0 0 20px #ffdf66, inset 0 0 30px rgba(0, 0, 0, 0.8);
+  transform: translateY(-50px);
 }
 
 .dingluan-piece {
-	display: block;
-	width: 48px;
-	height: 24px;
-	background: #ccb183;
-	position: absolute;
-	left: 50%;
-	transform: translateX(-50%);
-	margin: 0;
-	text-align: center;
-	line-height: 24px;
-	font-size: 14px;
-	font-family: "shousha";
-	color: #000;
-	border-radius: 6px;
-	box-shadow: inset 0 0 3px #000;
-	pointer-events: none;
-	box-sizing: border-box;
-	/*transition: bottom 0.3s ease;移除动画，懒得加*/
+  display: flex;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  margin: 0;
+  pointer-events: none;
+  box-sizing: border-box;
+  width: 55px !important;
+  height: 55px !important;
+  border-radius: 50%;
+  justify-content: center;
+  align-items: center;
+  border: 2px solid #ffd700;
+  box-shadow: inset 0 0 15px rgba(255, 255, 255, 0.4), 0 6px 10px rgba(0, 0, 0, 0.6);
+  color: white;
+  font-family: "shousha";
+  font-size: 22px;
+  font-weight: bold;
+  text-shadow: 0 0 4px black, 0 0 8px black;
+  z-index: 1;
 }
+
+.dingluan-piece::before {
+  content: "";
+  position: absolute;
+  top: 10%;
+  left: 10%;
+  right: 10%;
+  bottom: 10%;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 215, 0, 0.3);
+  pointer-events: none;
+  background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.2), transparent);
+}
+
+.dingluan-piece.wei { background: linear-gradient(180deg, #4a90e2, #2b35c1); }
+.dingluan-piece.shu { background: linear-gradient(180deg, #e74c3c, #c50000); }
+.dingluan-piece.wu { background: linear-gradient(180deg, #2ecc71, #128000); }
+.dingluan-piece.qun { background: linear-gradient(180deg, #9b59b6, #620080); }
+.dingluan-piece.jin { background: linear-gradient(180deg, #d44bee, #9b30ff); }
+.dingluan-piece.shen { background: linear-gradient(180deg, #f1c40f, #dfa000); }
 
 /*神左慈幻术卡牌颜色*/
 .card.minihuanshu-glow:before {
-	opacity: 0.2;
-	box-shadow:
-		rgba(0, 0, 0, 0.2) 0 0 0 1px,
-		rgb(255, 109, 12) 0 0 5px,
-		rgb(255, 0, 0) 0 0 10px;
-	background-color: #0000ff;
-	-webkit-filter: blur(5px);
-	filter: blur(5px);
+  opacity: 0.2;
+  box-shadow:
+    rgba(0, 0, 0, 0.2) 0 0 0 1px,
+    rgb(255, 109, 12) 0 0 5px,
+    rgb(255, 0, 0) 0 0 10px;
+  background-color: #0000ff;
+  -webkit-filter: blur(5px);
+  filter: blur(5px);
 }
 
 /*神左慈幻化卡牌颜色*/
 .card.minihuanhua-glow:before {
-	opacity: 0.2;
-	box-shadow:
-		rgba(0, 0, 0, 0.2) 0 0 0 1px,
-		rgb(255, 109, 12) 0 0 5px,
-		rgb(255, 0, 0) 0 0 10px;
-	background-color: yellow;
-	-webkit-filter: blur(5px);
-	filter: blur(5px);
+  opacity: 0.2;
+  box-shadow:
+    rgba(0, 0, 0, 0.2) 0 0 0 1px,
+    rgb(255, 109, 12) 0 0 5px,
+    rgb(255, 0, 0) 0 0 10px;
+  background-color: yellow;
+  -webkit-filter: blur(5px);
+  filter: blur(5px);
 }
 
 .player .hp2 > div {
-	width: 10px;
-	height: 10px;
-	margin-left: 0;
+  width: 10px;
+  height: 10px;
+  margin-left: 0;
 }
 
 /*群聊势力：十周年样式＆手杀样式一*/
 .player > .camp-wrap[data-camp="bilibili_sushe"] > .camp-back {
-	background: linear-gradient(to bottom, rgb(98, 0, 128), rgb(255, 0, 221));
+  background: linear-gradient(to bottom, rgb(98, 0, 128), rgb(255, 0, 221));
 }
 .player > .camp-wrap[data-camp="bilibili_zhouji"] > .camp-back {
-	background: linear-gradient(to bottom, rgb(43, 53, 193), rgb(0, 200, 255));
+  background: linear-gradient(to bottom, rgb(43, 53, 193), rgb(0, 200, 255));
 }
 .player > .camp-wrap[data-camp="bilibili_huodong"] > .camp-back {
-	background: linear-gradient(to bottom, rgb(122, 128, 64), rgb(255, 255, 0));
+  background: linear-gradient(to bottom, rgb(122, 128, 64), rgb(255, 255, 0));
 }
 
 /*群聊势力：手杀样式二*/
 .player > .camp-wrap[data-camp="bilibili_sushe"] > .camp-name {
-	text-shadow:
-		0 0 5px rgb(42, 0, 64),
-		0 0 10px rgb(98, 0, 128),
-		0 0 15px rgb(255, 0, 221);
+  text-shadow:
+    0 0 5px rgb(42, 0, 64),
+    0 0 10px rgb(98, 0, 128),
+    0 0 15px rgb(255, 0, 221);
 }
 .player > .camp-wrap[data-camp="bilibili_zhouji"] > .camp-name {
-	text-shadow:
-		0 0 5px rgb(43, 53, 193) 0 0 10px rgb(128, 189, 255),
-		0 0 15px rgb(0, 200, 255);
+  text-shadow:
+    0 0 5px rgb(43, 53, 193) 0 0 10px rgb(128, 189, 255),
+    0 0 15px rgb(0, 200, 255);
 }
 .player > .camp-wrap[data-camp="bilibili_huodong"] > .camp-name {
-	text-shadow:
-		0 0 5px rgb(122, 128, 64),
-		0 0 10px rgb(200, 199, 104),
-		0 0 15px rgb(255, 255, 0);
+  text-shadow:
+    0 0 5px rgb(122, 128, 64),
+    0 0 10px rgb(200, 199, 104),
+    0 0 15px rgb(255, 255, 0);
 }
 
 /*宝宝杀页面*/
 #overlay-container {
-	position: fixed;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100%;
-	background: #1a1a1a;
-	z-index: 8;
-	display: flex;
-	overflow: hidden;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #1a1a1a;
+  z-index: 8;
+  display: flex;
+  overflow: hidden;
 }
 
 #overlay-back-btn {
-	position: fixed;
-	top: 20px;
-	right: 20px;
-	padding: 10px 20px;
-	background: #007bff;
-	color: white;
-	border: none;
-	border-radius: 6px;
-	cursor: pointer;
-	font-size: 14px;
-	font-weight: 500;
-	z-index: 10000;
-	transition: all 0.3s ease;
-	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  padding: 10px 20px;
+  background: #007bff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  z-index: 10000;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
 #overlay-back-btn:hover {
-	background: #0056b3;
-	transform: translateY(-1px);
-	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  background: #0056b3;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
 }
 
 #overlay-left-nav {
-	width: 170px;
-	min-width: 170px;
-	background: #2d2d2d;
-	box-sizing: border-box;
-	position: relative;
-	z-index: 9999;
-	border-radius: 0 10px 10px 0;
-	box-shadow: 2px 0 10px rgba(0, 0, 0, 0.3);
-	display: flex;
-	flex-direction: column;
+  width: 170px;
+  min-width: 170px;
+  background: #2d2d2d;
+  box-sizing: border-box;
+  position: relative;
+  z-index: 9999;
+  border-radius: 0 10px 10px 0;
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
 }
 
 #left-nav-scroll-container {
-	width: 100%;
-	flex: 1 1 auto;
-	height: 100%;
-	overflow-y: auto;
-	overflow-x: hidden;
-	padding: 10px 10px 10px 10px;
-	box-sizing: border-box;
+  width: 100%;
+  flex: 1 1 auto;
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 10px 10px 10px 10px;
+  box-sizing: border-box;
 }
 
 #overlay-dialog {
-	flex: 1;
-	min-width: 0;
-	display: flex;
-	flex-direction: column;
-	background: #1a1a1a;
-	color: white;
-	box-sizing: border-box;
-	position: relative;
-	z-index: 9999;
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  background: #1a1a1a;
+  color: white;
+  box-sizing: border-box;
+  position: relative;
+  z-index: 9999;
 }
 
 .dialog-content {
-	width: 100%;
-	height: 100%;
-	flex: 1 1 0;
-	overflow-y: auto;
-	padding: 0 20px 20px;
-	box-sizing: border-box;
-	word-wrap: break-word;
-	overflow-wrap: break-word;
+  width: 100%;
+  height: 100%;
+  flex: 1 1 0;
+  overflow-y: auto;
+  padding: 0 20px 20px;
+  box-sizing: border-box;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 .nav-item {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	text-align: center;
-	width: 100%;
-	margin: 4px 0;
-	padding: 8px 5px;
-	background: #404040;
-	border: none;
-	cursor: pointer;
-	font-size: 13px;
-	color: white;
-	transition: all 0.2s ease;
-	border-radius: 4px;
-	box-sizing: border-box;
-	font-weight: 500;
-	white-space: normal;
-	word-wrap: break-word;
-	word-break: break-word;
-	min-height: 36px;
-	line-height: 1.3;
-	flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  width: 100%;
+  margin: 4px 0;
+  padding: 8px 5px;
+  background: #404040;
+  border: none;
+  cursor: pointer;
+  font-size: 13px;
+  color: white;
+  transition: all 0.2s ease;
+  border-radius: 4px;
+  box-sizing: border-box;
+  font-weight: 500;
+  white-space: normal;
+  word-wrap: break-word;
+  word-break: break-word;
+  min-height: 36px;
+  line-height: 1.3;
+  flex-shrink: 0;
 }
 
 .nav-item:first-child {
-	margin-top: 0;
+  margin-top: 0;
 }
 
 .nav-item:last-child {
-	margin-bottom: 0;
+  margin-bottom: 0;
 }
 
 .nav-item:hover {
-	background: #505050;
-	transform: translateX(3px);
+  background: #505050;
+  transform: translateX(3px);
 }
 
 .nav-item.active {
-	background: #007bff !important;
-	color: white !important;
-	box-shadow: 0 2px 8px rgba(0, 123, 255, 0.3);
+  background: #007bff !important;
+  color: white !important;
+  box-shadow: 0 2px 8px rgba(0, 123, 255, 0.3);
 }
 
 .dialog-content .grid-layout {
-	display: flex;
-	flex-wrap: wrap;
-	width: 100%;
-	max-width: 100%;
-	min-width: 0;
-	gap: 15px;
-	padding: 10px 0 10px;
-	box-sizing: border-box;
-	overflow-x: hidden;
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  gap: 15px;
+  padding: 10px 0 10px;
+  box-sizing: border-box;
+  overflow-x: hidden;
 }
 
 .dialog-content .grid-layout > * {
-	flex-shrink: 0;
-	min-width: 0;
-	max-width: 100%;
-	box-sizing: border-box;
+  flex-shrink: 0;
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
 }
