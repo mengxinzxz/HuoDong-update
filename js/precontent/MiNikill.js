@@ -40894,6 +40894,7 @@ const packs = function () {
             Mbaby_bianfuren: '欢杀卞夫人',
             Mbaby_sb_yujin: '欢杀谋于禁',
             Mbaby_yuejin: '欢杀乐进',
+            Mbaby_yuejin_prefix: '欢杀',//欢杀乐系列害的
             Mbaby_jianggan: '欢杀蒋干',
             Mbaby_chengyu: '欢杀程昱',
             Mbaby_sb_xuhuang: '欢杀谋徐晃',
