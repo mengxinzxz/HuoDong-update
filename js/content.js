@@ -1055,15 +1055,12 @@ export async function content(config, pack) {
 	//precT
 	//翻译
 	//删除翻译
-	delete lib.translate.sp_shenpei_prefix;
-	delete lib.translate.jin_xiahouhui_prefix;
+	delete lib.translate.dc_xiahouhui_prefix;
 	Object.assign(lib.translate, {
 		//修改武将翻译
 		//手杀前缀
 		re_sunben: '手杀界孙策',
 		re_sunben_prefix: '手杀界',
-		shenpei: '手杀审配',
-		shenpei_prefix: '手杀',
 		//新杀前缀
 		dc_zhuling: '新杀朱灵',
 		dc_zhuling_prefix: '新杀',
@@ -1071,10 +1068,9 @@ export async function content(config, pack) {
 		jsrg_sunlubansunluyu: '合孙鲁班孙鲁育',
 		jsrg_sunlubansunluyu_ab: '合大小虎',
 		//取消前缀
-		sp_shenpei: '审配',
 		gz_dengzhi: '邓芝',
 		gz_miheng: '祢衡',
-		jin_xiahouhui: '夏侯徽',
+		dc_xiahouhui: '夏侯徽',
 		gz_huangzu: '黄祖',
 		gz_liuba: '刘巴',
 
