@@ -40001,21 +40001,18 @@ const packs = function () {
                                 if (result?.links?.length) {
                                     const { links } = result;
                                     if (evt.name == 'chooseToUse') {
-                                        game.broadcastAll(
-                                            (cards, links) => {
-                                                lib.skill.miniyinyinxing_backup.links = cards;
-                                                lib.skill.miniyinyinxing_backup.viewAs = { name: links[0][2], nature: links[0][3] };
-                                                lib.skill.miniyinyinxing_backup.filterCard = (card, player) => {
-                                                    return lib.skill.miniyinyinxing_backup.links.includes(card);
-                                                };
-                                            },
-                                            cards,
-                                            links
-                                        );
+                                        game.broadcastAll((cards, links) => {
+                                            lib.skill.miniyinyinxing_backup.links = cards;
+                                            lib.skill.miniyinyinxing_backup.viewAs = { name: links[0][2], nature: links[0][3] };
+                                            lib.skill.miniyinyinxing_backup.filterCard = (card, player) => {
+                                                return lib.skill.miniyinyinxing_backup.links.includes(card);
+                                            };
+                                        }, cards, links);
                                         evt.set('_backupevent', 'miniyinyinxing_backup');
                                         evt.set('openskilldialog', `请选择${get.translation(links[0][3])}【${get.translation(links[0][2])}】的目标`);
                                         evt.backup('miniyinyinxing_backup');
-                                    } else {
+                                    }
+                                    else {
                                         delete evt.result.used;
                                         delete evt.result.skill;
                                         evt.result.card = get.autoViewAs({ name: links[0][2], nature: links[0][3] });
@@ -40049,21 +40046,18 @@ const packs = function () {
                                 if (result?.links?.length) {
                                     const { links } = result;
                                     if (evt.name == 'chooseToUse') {
-                                        game.broadcastAll(
-                                            (cards, links) => {
-                                                lib.skill.miniyinyinxing_backup.links = cards;
-                                                lib.skill.miniyinyinxing_backup.viewAs = { name: links[0][2], nature: links[0][3] };
-                                                lib.skill.miniyinyinxing_backup.filterCard = (card, player) => {
-                                                    return lib.skill.miniyinyinxing_backup.links.includes(card);
-                                                };
-                                            },
-                                            cards,
-                                            links
-                                        );
+                                        game.broadcastAll((cards, links) => {
+                                            lib.skill.miniyinyinxing_backup.links = cards;
+                                            lib.skill.miniyinyinxing_backup.viewAs = { name: links[0][2], nature: links[0][3] };
+                                            lib.skill.miniyinyinxing_backup.filterCard = (card, player) => {
+                                                return lib.skill.miniyinyinxing_backup.links.includes(card);
+                                            };
+                                        }, cards, links);
                                         evt.set('_backupevent', 'miniyinyinxing_backup');
                                         evt.set('openskilldialog', `请选择${get.translation(links[0][3])}【${get.translation(links[0][2])}】的目标`);
                                         evt.backup('miniyinyinxing_backup');
-                                    } else {
+                                    }
+                                    else {
                                         player.addTempSkill('miniyinyinxing_used');
                                         player.markAuto('miniyinyinxing_used', [links[0][2]]);
                                         delete evt[key].used;
