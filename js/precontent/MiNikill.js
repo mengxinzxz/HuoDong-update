@@ -40165,7 +40165,7 @@ const packs = function () {
                     draw: {
                         audio: 'miniyinyinxing',
                         trigger: {
-                            player: ['loseAfter', 'damageEnd'],
+                            player: ['loseAfter', 'damageBegin3'],
                             global: ['equipAfter', 'addJudgeAfter', 'gainAfter', 'loseAsyncAfter', 'addToExpansionAfter'],
                         },
                         filter(event, player) {
@@ -42973,7 +42973,7 @@ const packs = function () {
                 id: 'miniyinyinxing_zhadan',
                 name: '炸弹',
                 info: '四张及以上点数相同的牌（欢杀定义）',
-            })}，对所有其他角色造成X点伤害（X为你弃置的牌数-3）。若你以此法弃置的牌花色相同，则相应效果额外执行一次。③你的手牌数始终不小于5。④当你受到伤害后，你摸一张牌。`,
+            })}，对所有其他角色造成X点伤害（X为你弃置的牌数-3）。若你以此法弃置的牌花色相同，则相应效果额外执行一次。③你的手牌数始终不小于5。④当你受到伤害时，你摸一张牌。`,
             miniyinjujian: '举荐',
             miniyinjujian_info: '准备阶段或结束阶段，你可以弃置一张手牌，令一名角色选择获得两张点数小于/等于/大于此牌的牌。',
             //焰
