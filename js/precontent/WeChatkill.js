@@ -19,7 +19,7 @@ const packs = function () {
                     ...[],
                 ].map(i => `wechat_${i}`),
                 wechat_refresh: [
-                    ...['weiyan', 'liubiao', 'zhaoyun', 'gongsunzan', 'xushu', 'luxun', 'zuoci'].map(i => `re_${i}`),
+                    ...['huangzhong', 'weiyan', 'liubiao', 'zhaoyun', 'gongsunzan', 'xushu', 'luxun', 'zuoci'].map(i => `re_${i}`),
                     ...['jushou'].map(i => `xin_${i}`),
                     ...[],
                 ].map(i => `wechat_${i}`),
@@ -177,6 +177,7 @@ const packs = function () {
             wechat_re_liubiao: ['male', 'qun', 3, ['wechatrezishou', 'wechatrezongshi']],
             wechat_ruanji: ['male', 'wei', 3, ['wechatyonghuai', 'wechatqiongtu']],
             wechat_shantao: ['male', 'qun', 3, ['wechatjieshen', 'wechatqishi']],
+            wechat_re_huangzhong: ['male', 'shu', 4, ['wechatreliegong']],
             //神武将
             wechat_shen_zhugeliang: ['male', 'shen', 3, ['wechatqixing', 'wechatjifeng', 'wechattianfa'], ['shu', 'name:诸葛|亮']],
             wechat_shen_lvmeng: ['male', 'shen', 3, ['shelie', 'wechatgongxin'], ['wu']],
@@ -18338,6 +18339,30 @@ const packs = function () {
                     combo: 'sbguanxing',
                 },
             },
+            // 界黄忠
+            wechatreliegong: {
+                inherit: 'xinliegong',
+                async content(event, trigger, player) {
+                    const { target } = trigger;
+                    const bool1 = target.countCards('h') <= player.countCards('h');
+                    const bool2 = target.hp >= player.hp;
+                    if (bool1) {
+                        trigger.getParent().directHit.push(trigger.target);
+                    }
+                    if (bool2) {
+                        const id = target.playerid;
+                        const map = trigger.getParent().customArgs;
+                        map[id] ??= {};
+                        if (typeof map[id].extraDamage != 'number') {
+                            map[id].extraDamage = 0;
+                        }
+                        map[id].extraDamage++;
+                    }
+                    if (bool1 && bool2) {
+                        target.addTempSkill('fengyin');
+                    }
+                },
+            },
         },
         dynamicTranslate: {
             wechatxiangzhi(player) {
@@ -19440,6 +19465,9 @@ const packs = function () {
             wechatsbguanxing_info: '每回合限两次，准备阶段/出牌阶段/结束阶段，你可以观看牌堆顶[7]张牌，然后选择使用其中一张牌或调整这些牌以任意顺序置于牌堆顶或牌堆底。',
             wechatsbkongcheng: '空城',
             wechatsbkongcheng_info: `锁定技，当你受到伤害时，你进行判定，若判定结果小于等于X，则此伤害-1且X-1，否则此伤害+1（X为你发动${get.poptip('wechatsbguanxing')}的可观看牌数）。`,
+            wechat_re_huangzhong: '小程序界黄忠',
+            wechatreliegong: '烈弓',
+            wechatreliegong_info: `①你使用【杀】可以选择你距离不大于此【杀】点数的角色为目标。②当你使用【杀】指定一个目标后，你可以根据下列条件执行相应的效果：1.其手牌数小于等于你的手牌数，此【杀】不可被响应；2.其体力值大于等于你的体力值，此【杀】伤害+1；${get.poptip("rule_chengshi")}：本回合其非锁定技失效。`,
 
             // ----------------------- 台词部分 ----------------------- //
             '#ext:活动武将/audio/skill/wechatzhongxin1': '苍生之愿，即贫道所愿也。',
