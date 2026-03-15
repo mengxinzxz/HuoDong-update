@@ -39659,7 +39659,8 @@ const packs = function () {
                         multitarget: true,
                         async content(event, trigger, player) {
                             const targets = event.targets.slice().sortBySeat();
-                            const { cards } = await game.cardsGotoOrdering(get.cards(5));
+                            const cards = get.cards(5);
+                            await game.cardsGotoOrdering(cards);
                             await player.showCards(cards).setContent(() => { });
                             const dialog = ui.create.dialog(`###毅略###<div class='text center'>获得其中一张牌，若你因此获得了【杀】，你可以使用之</div>`, cards, true);
                             _status.dieClose.push(dialog);
