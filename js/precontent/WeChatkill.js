@@ -178,6 +178,7 @@ const packs = function () {
             wechat_ruanji: ['male', 'wei', 3, ['wechatyonghuai', 'wechatqiongtu']],
             wechat_shantao: ['male', 'qun', 3, ['wechatjieshen', 'wechatqishi']],
             wechat_re_huangzhong: ['male', 'shu', 4, ['wechatreliegong']],
+            wechat_jushou: ['male', 'qun', 3, ['wechatxinjianying', 'wechatshibei']],
             //神武将
             wechat_shen_zhugeliang: ['male', 'shen', 3, ['wechatqixing', 'wechatjifeng', 'wechattianfa'], ['shu', 'name:诸葛|亮']],
             wechat_shen_lvmeng: ['male', 'shen', 3, ['shelie', 'wechatgongxin'], ['wu']],
@@ -18363,6 +18364,183 @@ const packs = function () {
                     }
                 },
             },
+            // 沮授
+            wechatxinjianying: {
+                audio: 'xinjianying',
+                enable: 'phaseUse',
+                usable: 1,
+                onChooseToUse(event) {
+                    if (event.type == 'phase' && !game.online) {
+                        var last = event.player.getLastUsed();
+                        if (last && last.getParent('phaseUse') == event.getParent()) {
+                            var suit = get.suit(last.card, false);
+                            if (suit != 'none') {
+                                event.set('wechatxinjianying_suit', suit);
+                            }
+                        }
+                    }
+                },
+                chooseButton: {
+                    dialog() {
+                        return ui.create.dialog('###渐营###' + get.translation('wechatxinjianying_info'));
+                    },
+                    chooseControl(event, player) {
+                        const suits = lib.suit.slice();
+                        suits.push('cancel2');
+                        return suits;
+                    },
+                    check(event, player) {
+                        const suits = lib.suit.slice();
+                        if (event.wechatxinjianying_suit) return event.wechatxinjianying_suit;
+                        return suits.randomGet();
+                    },
+                    backup(result, player) {
+                        return {
+                            audio: 'xinjianying',
+                            filterCard: () => false,
+                            selectCard: -1,
+                            suit: result.control,
+                            async content(event, trigger, player) {
+                                const { suit } = get.info('wechatxinjianying_backup');
+                                const skill = 'wechatxinjianying_suit';
+                                player.addTempSkill(skill, { player: 'phaseUseAfter' });
+                                player.storage[skill] = suit;
+                                player.markSkill(skill);
+                                player.addTip(skill, get.translation(skill) + get.translation(suit), ' ');
+                            },
+                        };
+                    },
+                    prompt(result, player) {
+                        return '令你本阶段使用的下一张基本牌或普通锦囊牌的花色视为' + get.translation(result.control);
+                    },
+                },
+                ai: {
+                    order(item, player) {
+                        if (_status.event.wechatxinjianying_suit) {
+                            return 16;
+                        }
+                        return 3;
+                    },
+                    result: { player: 7 },
+                },
+                group: ['jianying'],
+                subSkill: {
+                    backup: {},
+                    suit: {
+                        audio: 'xinjianying',
+                        charlotte: true,
+                        onremove(player, skill) {
+                            delete player.storage[skill];
+                            player.removeTip(skill);
+                        },
+                        intro: { content: '本阶段使用的下一张基本牌或普通锦囊牌的花色视为$' },
+                        trigger: { player: 'useCard1' },
+                        filter(event, player) {
+                            return ['basic', 'trick'].includes(get.type(event.card));
+                        },
+                        forced: true,
+                        async content(event, trigger, player) {
+                            const suit = player.storage[event.name];
+                            player.removeSkill(event.name);
+                            game.log(player, '将', trigger.card, '的花色改为', '#y' + get.translation(suit));
+                            trigger.card.suit = suit;
+                            trigger.card.color = lib.color.red.includes(suit) ? 'red' : 'black';
+                        },
+                    },
+                },
+            },
+            wechatshibei: {
+                trigger: { player: 'damageEnd' },
+                filter(event, player) {
+                    const index = player.getHistory('damage').indexOf(event);
+                    return index <= 2;
+                },
+                forced: true,
+                check(event, player) {
+                    return player.getHistory('damage').indexOf(event) == 0;
+                },
+                async content(event, trigger, player) {
+                    const index = player.getHistory('damage').indexOf(trigger);
+                    if (index == 0) {
+                        await player.recover();
+                    } else if (index == 1) {
+                        if (player.countCards('he')) await player.randomDiscard('he');
+                        if (trigger.source?.isIn() && trigger.source.countCards('he')) await trigger.source.randomDiscard('he');
+                    }
+                    else if (index == 2 && player.getHp() > 0) {
+                        await player.loseHp(player.getHp());
+                    }
+                },
+                subSkill: {
+                    damaged: {},
+                    ai: {},
+                },
+                ai: {
+                    maixie_defend: true,
+                    threaten: 0.9,
+                    effect: {
+                        target(card, player, target) {
+                            if (player.hasSkillTag('jueqing', false, target)) {
+                                return;
+                            }
+                            if (target.hujia) {
+                                return;
+                            }
+                            if (player._shibei_tmp) {
+                                return;
+                            }
+                            if (target.hasSkill('shibei_ai')) {
+                                return;
+                            }
+                            if (_status.event.getParent('useCard', true) || _status.event.getParent('_wuxie', true)) {
+                                return;
+                            }
+                            if (get.tag(card, 'damage')) {
+                                if (target.getHistory('damage').length > 0) {
+                                    return [1, -2];
+                                } else {
+                                    if (get.attitude(player, target) > 0 && target.hp > 1) {
+                                        return 0;
+                                    }
+                                    if (
+                                        get.attitude(player, target) < 0 && !player.hasSkillTag('damageBonus', 'e', {
+                                            target: target,
+                                            card: card,
+                                        })
+                                    ) {
+                                        if (card.name == "sha") {
+                                            return;
+                                        }
+                                        var sha = false;
+                                        player._shibei_tmp = true;
+                                        var num = player.countCards('h', function (card) {
+                                            if (card.name == "sha") {
+                                                if (sha) {
+                                                    return false;
+                                                } else {
+                                                    sha = true;
+                                                }
+                                            }
+                                            return get.tag(card, 'damage') && player.canUse(card, target) && get.effect(target, card, player, player) > 0;
+                                        });
+                                        delete player._shibei_tmp;
+                                        if (player.hasSkillTag('damage')) {
+                                            num++;
+                                        }
+                                        if (num < 2) {
+                                            var enemies = player.getEnemies();
+                                            if (enemies.length == 1 && enemies[0] == target && player.needsToDiscard()) {
+                                                return;
+                                            }
+                                            return 0;
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                    },
+                },
+            },
         },
         dynamicTranslate: {
             wechatxiangzhi(player) {
@@ -19468,6 +19646,11 @@ const packs = function () {
             wechat_re_huangzhong: '小程序界黄忠',
             wechatreliegong: '烈弓',
             wechatreliegong_info: `①你使用【杀】可以选择你距离不大于此【杀】点数的角色为目标。②当你使用【杀】指定一个目标后，你可以根据下列条件执行相应的效果：1.其手牌数小于等于你的手牌数，此【杀】不可被响应；2.其体力值大于等于你的体力值，此【杀】伤害+1；${get.poptip("rule_chengshi")}：本回合其非锁定技失效。`,
+            wechat_jushou: '小程序沮授',
+            wechatxinjianying: '渐营',
+            wechatxinjianying_info: `①当你于出牌阶段内使用与此阶段你使用的上一张牌点数或花色相同的牌时，你可以摸一张牌。②出牌阶段限一次，你可以选择一种花色，令你本阶段使用的下一张基本牌或普通锦囊牌视为此花色。`,
+            wechatshibei: '矢北',
+            wechatshibei_info: `锁定技。当你受到伤害后，根据你本回合受到伤害的次数执行对应项：1.你回复1点体力；2.你与伤害来源各随机弃置一张牌；3.失去所有体力。`,
 
             // ----------------------- 台词部分 ----------------------- //
             '#ext:活动武将/audio/skill/wechatzhongxin1': '苍生之愿，即贫道所愿也。',
