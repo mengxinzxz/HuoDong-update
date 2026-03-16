@@ -41,7 +41,7 @@ const packs = function () {
                         return list;
                     })(),
                     ...['zhenji', 'diaochan', 'wangcan', 'machao', 'pangde', 'jiangwei', 'taishici', 'caiwenji'].map(i => `wechat_sp_${i}`),
-                    ...['zhugeliang', 'sp_zhugeliang', 'lvbu', 'lvmeng', 'yujin', 'huaxiong', 'sunquan', 'xiaoqiao', 'xiahouyuan', 'gaoshun', 'handang', 'guojia', 'huanggai', 'diaochan', 'huangyueying', 'zhangliao', 'sunshangxiang', 'zhaoyun', 'machao', 'huangzhong', 'caocao', 'sunce'].map(i => `wechat_sb_${i}`),
+                    ...['zhouyu', 'zhugeliang', 'sp_zhugeliang', 'lvbu', 'lvmeng', 'yujin', 'huaxiong', 'sunquan', 'xiaoqiao', 'xiahouyuan', 'gaoshun', 'handang', 'guojia', 'huanggai', 'diaochan', 'huangyueying', 'zhangliao', 'sunshangxiang', 'zhaoyun', 'machao', 'huangzhong', 'caocao', 'sunce'].map(i => `wechat_sb_${i}`),
                     ...['old_sunluyu', 'shantao', 'ruanji', 'jikang', 'caojie', 'xuezong', 'caiyong', 'xushi', 'sundeng', 'huanghao', 'guohuanghou', 'lizhaojiaobo', 'liucheng', 'sunluyu', 'sunhao', 'yj_zhoubuyi', 'jsp_huangyueying', 'wanglang', 'chendeng', 'zhuling', 'caizhenji', 'ol_bianfuren', 'xin_sunluban', 'zhangxingcai', 'huojun'].map(i => `wechat_${i}`),
                     ...[],
                 ],
@@ -257,6 +257,7 @@ const packs = function () {
             wechat_sb_lvbu: ['male', 'qun', 4, ['wechatsbwushuang', 'wechatsbliyu']],
             wechat_sb_sp_zhugeliang: ['male', 'shu', 3, ['wechatsbhuoji', 'twkanpo'], ['name:诸葛|亮']],
             wechat_sb_zhugeliang: ['male', 'shu', 3, ['wechatsbguanxing', 'wechatsbkongcheng'], ['name:诸葛|亮', 'unseen']],
+            wechat_sb_zhouyu: ['male', 'wu', 3, ['wechatsbyingzi', 'wechatsbfanjian']],
             //志系列
             wechat_zhi_yuanshu: ['male', 'qun', 4, [], ['unseen']],
             wechat_zhi_old_yuanshu: ['male', 'qun', 4, ['wechatshehuai', 'wechatzaochen'], ['die', 'tempname'].map(i => `${i}:wechat_zhi_yuanshu`)],
@@ -18541,6 +18542,80 @@ const packs = function () {
                     },
                 },
             },
+            // 谋周瑜
+            wechatsbyingzi: {
+                inherit: 'sbyingzi',
+                audio: 'sbyingzi',
+                filter(event, player) {
+                    return !event.numFixed;
+                },
+                async content(event, trigger, player) {
+                    const num = lib.skill.sbyingzi.getNum(player);
+                    trigger.num += num + 1;
+                    player.addTempSkill(event.name + '_effect');
+                    player.addMark(event.name + '_effect', num, false);
+                },
+                subSkill: {
+                    effect: {
+                        charlotte: true,
+                        onremove: true,
+                        marktext: '英',
+                        intro: { content: `本回合手牌上限和${get.poptip('wechatsbfanjian')}的发动次数+#` },
+                        mod: {
+                            maxHandcard(player, num) {
+                                return num + player.countMark('wechatsbyingzi_effect');
+                            },
+                        },
+                    },
+                },
+            },
+            wechatsbfanjian: {
+                audio: 'sbfanjian',
+                enable: "phaseUse",
+                usable(skill, player) {
+                    return 1 + player.countMark('wechatsbyingzi_effect');
+                },
+                manualConfirm: true,
+                async content(event, trigger, player) {
+                    let result = await player.draw().forResult();
+                    if (get.itemtype(result?.cards) !== 'cards' || player.countCards('h') < 2) return;
+                    const { cards } = result;
+                    result = await player.chooseCard(2, 'h', '反间：选择两张手牌展示之', true, (card, player) => {
+                        if (!ui.selected.cards.length) return get.event().cardsx.includes(card);
+                        return true;
+                    }).set('complexCard', true).set('cardsx', cards).set('ai', card => {
+                        const player = get.player();
+                        if (!ui.selected.cards.length) return 1;
+                        return 6 - get.value(card);
+                    }).forResult();
+                    if (result?.bool) {
+                        const chosen = result.cards;
+                        await player.showCards(chosen, get.translation(player) + '发动了【反间】');
+                        if (!game.hasPlayer(current => current != player)) return;
+                        result = await player.chooseTarget('反间：令一名其他角色抉择', true, lib.filter.notMe).set('ai', target => {
+                            const player = get.player();
+                            return -get.attitude(player, target);
+                        }).forResult();
+                        if (result?.targets?.length) {
+                            const target = result.targets[0];
+                            player.line(target);
+                            result = await target.chooseButton(['反间：获得其中一张牌', chosen], true).forResult();
+                            if (result?.links?.length) {
+                                await target.gain(result.links, player, 'giveAuto');
+                                if (!cards.some(card => result.links.includes(card))) {
+                                    player.chat('喜！');
+                                    await target.loseHp();
+                                }
+                                else target.chat('喜！');
+                            }
+                        }
+                    }
+                },
+                ai: {
+                    order: 10,
+                    result: { player: 1 }
+                }
+            },
         },
         dynamicTranslate: {
             wechatxiangzhi(player) {
@@ -19651,6 +19726,11 @@ const packs = function () {
             wechatxinjianying_info: `①当你于出牌阶段内使用与此阶段你使用的上一张牌点数或花色相同的牌时，你可以摸一张牌。②出牌阶段限一次，你可以选择一种花色，令你本阶段使用的下一张基本牌或普通锦囊牌视为此花色。`,
             wechatshibei: '矢北',
             wechatshibei_info: `锁定技。当你受到伤害后，根据你本回合受到伤害的次数执行对应项：1.你回复1点体力；2.你与伤害来源各随机弃置一张牌；3.失去所有体力。`,
+            wechat_sb_zhouyu: '小程序谋周瑜',
+            wechatsbyingzi: '英姿',
+            wechatsbyingzi_info: `锁定技。摸牌阶段，你多摸X+1张牌，且令你本回合手牌上限和${get.poptip('wechatsbfanjian')}的发动次数+X（X为以下条件中你满足的项数：手牌数不小于2、体力值不小于2、装备区里的牌数不小于1）。`,
+            wechatsbfanjian: '反间',
+            wechatsbfanjian_info: '出牌阶段限一次，你可以摸一张牌并选择两张手牌展示之（展示牌须包括你本次莫的牌），然后你选择一名其他角色，其获得其中一张牌。若其以此法获得的牌不为你本次摸的牌，其失去1点体力。',
 
             // ----------------------- 台词部分 ----------------------- //
             '#ext:活动武将/audio/skill/wechatzhongxin1': '苍生之愿，即贫道所愿也。',
