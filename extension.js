@@ -25,6 +25,7 @@ export default async function () {
 	const { name, intro, ...otherInfo } = await lib.init.promises.json(`${lib.assetURL}extension/活动武将/info.json`);
 	extensionPackage.package = {
 		...otherInfo,
+		translation: `<img style="width:100px;" src="${lib.assetURL}extension/活动武将/image/default/活动武将.png">`,
 		intro: [
 			'新人制作扩展，希望大家支持。',
 			'新人技术不足，希望大家包涵。',
