@@ -598,7 +598,7 @@ export async function precontent(bilibilicharacter) {
             {
                 type: 'players',
                 data: [
-                    'wechat_shantao', 'wechat_sb_yujin', 'wechat_sb_lvmeng', 'wechat_sb_lvbu', 'wechat_old_sunluyu', 'wechat_old_guanyinping', 'wechat_sb_sp_zhugeliang', 'wechat_sb_zhugeliang', 'wechat_re_huangzhong', 'wechat_jushou', 'wechat_sb_zhouyu', 'wechat_caochun', 'wechat_pangdegong', 'wechat_wangyuanji',
+                    'wechat_shantao', 'wechat_sb_yujin', 'wechat_sb_lvmeng', 'wechat_sb_lvbu', 'wechat_old_sunluyu', 'wechat_old_guanyinping', 'wechat_sb_sp_zhugeliang', 'wechat_sb_zhugeliang', 'wechat_re_huangzhong', 'wechat_yj_jushou', 'wechat_sb_zhouyu', 'wechat_caochun', 'wechat_pangdegong', 'wechat_wangyuanji',
                     'Mbaby_ol_wangyi', 'Mbaby_sp_duyu', 'Mbaby_wenyuan', 'Mbaby_xizheng', 'Mbaby_mangyachang', 'Mbaby_re_hucheer', 'Mfire_zhurong', 'Mbaby_yue_daqiao', 'Mbaby_shen_weiyan',
                 ],
             },
