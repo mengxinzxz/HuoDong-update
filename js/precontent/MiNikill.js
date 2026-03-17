@@ -29595,7 +29595,7 @@ const packs = function () {
                         async content(event, trigger, player) {
                             const tag = event.name;
                             const evtx = player.getHistory('lose', evt => {
-                                if ((evt.relatedEvent || evt.getParent()) !== event) return false;
+                                if ((evt.relatedEvent || evt.getParent()) !== trigger) return false;
                                 return Object.values(evt.gaintag_map).flat().includes(tag);
                             })[0];
                             let num = 0;
