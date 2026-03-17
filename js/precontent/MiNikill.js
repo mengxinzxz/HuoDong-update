@@ -7146,7 +7146,7 @@ const packs = function () {
                         player.addMark('minishanjia_sha', 1, false);
                     }
                     if (bool2) player.addTempSkill('xinshanjia_nodis', 'phaseUseAfter');
-                    if (bool1 && bool2) await player.chooseUseTarget({ name: "sha" }, false);
+                    if (bool1 && bool2) await player.chooseUseTarget({ name: 'sha' }, false);
                 },
                 ai: {
                     threaten: 3,
