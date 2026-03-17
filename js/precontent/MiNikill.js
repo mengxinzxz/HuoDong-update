@@ -6399,7 +6399,7 @@ const packs = function () {
             },
             //谋郭嘉
             minisbxianmou: {
-                audio: 'ext:活动武将/audio/skill:2',
+                audio: 'xianmou',
                 inherit: 'xianmou',
                 getNum(player) {
                     let num = 0;
