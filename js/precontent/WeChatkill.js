@@ -42,7 +42,7 @@ const packs = function () {
                     })(),
                     ...['zhenji', 'diaochan', 'wangcan', 'machao', 'pangde', 'jiangwei', 'taishici', 'caiwenji'].map(i => `wechat_sp_${i}`),
                     ...['zhouyu', 'zhugeliang', 'sp_zhugeliang', 'lvbu', 'lvmeng', 'yujin', 'huaxiong', 'sunquan', 'xiaoqiao', 'xiahouyuan', 'gaoshun', 'handang', 'guojia', 'huanggai', 'diaochan', 'huangyueying', 'zhangliao', 'sunshangxiang', 'zhaoyun', 'machao', 'huangzhong', 'caocao', 'sunce'].map(i => `wechat_sb_${i}`),
-                    ...['wangyuanji', 'caochun', 'old_sunluyu', 'shantao', 'ruanji', 'jikang', 'caojie', 'xuezong', 'caiyong', 'xushi', 'sundeng', 'huanghao', 'guohuanghou', 'lizhaojiaobo', 'liucheng', 'sunluyu', 'sunhao', 'yj_zhoubuyi', 'jsp_huangyueying', 'wanglang', 'chendeng', 'zhuling', 'caizhenji', 'ol_bianfuren', 'xin_sunluban', 'zhangxingcai', 'huojun'].map(i => `wechat_${i}`),
+                    ...['shamoke', 'wangyuanji', 'caochun', 'old_sunluyu', 'shantao', 'ruanji', 'jikang', 'caojie', 'xuezong', 'caiyong', 'xushi', 'sundeng', 'huanghao', 'guohuanghou', 'lizhaojiaobo', 'liucheng', 'sunluyu', 'sunhao', 'yj_zhoubuyi', 'jsp_huangyueying', 'wanglang', 'chendeng', 'zhuling', 'caizhenji', 'ol_bianfuren', 'xin_sunluban', 'zhangxingcai', 'huojun'].map(i => `wechat_${i}`),
                     ...[],
                 ],
                 wechat_wanxiang: [
@@ -181,6 +181,7 @@ const packs = function () {
             wechat_yj_jushou: ['male', 'qun', 3, ['wechatxinjianying', 'wechatshibei']],
             wechat_caochun: ['male', 'wei', 4, ['wechatshanjia']],
             wechat_wangyuanji: ['female', 'wei', 3, ['wechatqianchong', 'wechatshangjian'], ['border:jin']],
+            wechat_shamoke: ['male', 'shu', 4, ['gzjili', 'wechatyingong']],
             //神武将
             wechat_shen_zhugeliang: ['male', 'shen', 3, ['wechatqixing', 'wechatjifeng', 'wechattianfa'], ['shu', 'name:诸葛|亮']],
             wechat_shen_lvmeng: ['male', 'shen', 3, ['shelie', 'wechatgongxin'], ['wu']],
@@ -18869,6 +18870,101 @@ const packs = function () {
                 },
 
             },
+            wechatyingong: {
+                audio: 'ext:活动武将/audio/skill:2',
+                enable: 'phaseUse',
+                usable: 1,
+                filter(event, player) {
+                    return player.getEquips(1).length > 0;
+                },
+                prompt(event, player) {
+                    const cards = player.getEquips(1);
+                    return `你可以获得你装备区里的${get.translation(cards)}。若如此做，本回合当你使用一张武器牌牌A后，你可以将其中一张攻击范围不小于牌A的武器牌当无次数限制的【杀】使用。`;
+                },
+                manualConfirm: true,
+                async content(event, trigger, player) {
+                    const cards = player.getEquips(1);
+                    if (!cards.length) return;
+                    player.addTempSkill(event.name + '_effect');
+                    const next = player.gain(cards, 'giveAuto', player);
+                    next.gaintag.add(event.name + '_effect');
+                    await next;
+                },
+                ai: {
+                    order(item, player) {
+                        if (player.getEquips(1).some(card => {
+                            let num = 1;
+                            if (info?.distance && typeof info.distance.attackFrom == 'number') num -= info.distance.attackFrom;
+                            return num >= 2;
+                        })) return 10;
+                        return 1;
+                    },
+                    result: { player: 1 },
+                },
+                subSkill: {
+                    backup: {
+                        viewAs: { name: 'sha', storage: { wechatyingong: true } },
+                        position: 'h',
+                        check(card) {
+                            return 5 - get.value(card);
+                        },
+                    },
+                    effect: {
+                        locked: false,
+                        mod: {
+                            cardUsable(card, player) {
+                                if (card.storage?.wechatyingong) return Infinity;
+                            },
+                        },
+                        charlotte: true,
+                        onremove(player, skill) {
+                            player.removeGaintag(skill);
+                        },
+                        trigger: { player: 'useCardAfter' },
+                        filter(event, player, name) {
+                            const { card } = event;
+                            if (get.subtype(card == 'equip1')) return false;
+                            const info = get.info(card, false);
+                            let num = 1;
+                            if (info?.distance && typeof info.distance.attackFrom == 'number') num -= info.distance.attackFrom;
+                            return player.hasCard(card => {
+                                if (!card.hasGaintag('wechatyingong_effect')) return false;
+                                const infox = get.info(card, false);
+                                let numx = 1;
+                                if (infox?.distance && typeof infox.distance.attackFrom == 'number') numx -= infox.distance.attackFrom;
+                                return numx <= num;
+                            }, 'h');
+                        },
+                        direct: true,
+                        clearTime: true,
+                        async content(event, trigger, player) {
+                            const info = get.info(trigger.card, false);
+                            let num = 1;
+                            if (info?.distance && typeof info.distance.attackFrom == 'number') num -= info.distance.attackFrom;
+                            game.broadcastAll(attackFrom => {
+                                lib.skill.wechatyingong_backup.attackFrom = num;
+                                lib.skill.wechatyingong_backup.filterCard = function (card) {
+                                    if (get.itemtype(card) != 'card' || !card.hasGaintag('wechatyingong_effect')) return false;
+                                    const infox = get.info(card, false);
+                                    let numx = 1;
+                                    if (infox?.distance && typeof infox.distance.attackFrom == 'number') numx -= infox.distance.attackFrom;
+                                    return numx <= lib.skill.wechatyingong_backup.attackFrom;
+                                };
+                            }, num);
+                            const next = player.chooseToUse();
+                            next.set('openskilldialog', `引弓：将一张攻击范围不大于${num}的牌当无次数限制的【杀】使用`);
+                            next.set('norestore', true);
+                            next.set('_backupevent', 'wechatyingong_backup');
+                            next.set('custom', {
+                                add: {},
+                                replace: { window() { } },
+                            });
+                            next.set('addCount', false);
+                            next.backup('wechatyingong_backup');
+                        }
+                    }
+                }
+            },
         },
         dynamicTranslate: {
             wechatxiangzhi(player) {
@@ -19992,6 +20088,10 @@ const packs = function () {
             wechatqianchong_info: `锁定技。①若你的装备区内有：红色牌，则你视为拥有技能${get.poptip('mingzhe')}；黑色牌，则你视为拥有技能${get.poptip('weimu')}。②出牌阶段开始时，若你的装备区内的牌的颜色数不为1，你此阶段使用牌无次数和距离限制。`,
             wechatshangjian: '尚俭',
             wechatshangjian_info: '锁定技。一名角色的结束阶段开始时，若你于此回合内失去的牌数不大于X，则你摸等量的牌（X为你的体力值）。',
+            wechat_shamoke: '小程序沙摩柯',
+            wechatyingong: '引弓',
+            wechatyingong_info: `出牌阶段限一次。你可以获得你装备区里的所有武器牌。若如此做，本回合当你使用一张武器牌A后，你可以将其中一张攻击范围不小于A的武器牌当无次数限制的【杀】使用。`,
+
 
             // ----------------------- 台词部分 ----------------------- //
             '#ext:活动武将/audio/skill/wechatzhongxin1': '苍生之愿，即贫道所愿也。',
