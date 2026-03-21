@@ -11227,6 +11227,7 @@ const packs = function () {
                                 if (!lib.filter.cardDiscardable(card, player, 'wechatzuoqing')) return false;
                                 return get.type(card) == 'equip';
                             };
+                            next.position = 'he';
                             next.selectCard = 1;
                             next.ai1 = function (card) {
                                 return 10 - get.value(card);

@@ -28831,7 +28831,7 @@ const packs = function () {
                             }
                             if (links.includes(2)) {
                                 await player.loseMaxHp();
-                                if (storage.length > 0) await player.draw(storage.length);
+                                if (4 - storage.length > 0) await player.draw(4 - storage.length);
                             }
                         },
                     },
@@ -36609,8 +36609,8 @@ const packs = function () {
                     for (const target of targets) {
                         const result = await target.chooseToGive(player, { type: ['trick', 'delay'] }, 'he', true).forResult();
                         if (!result.bool || !result.cards || !result.cards.length) {
-                            const cards = map[target.playerid].filter(i => get.owner(i) == target);
-                            if (cards.length) await target.give(cards, player);
+                            const cards = map[target.playerid]?.filter(i => get.owner(i) == target);
+                            if (cards?.length) await target.give(cards, player);
                         }
                     }
                 },
@@ -40722,7 +40722,7 @@ const packs = function () {
                     str += strx;
                     if (i != 'jiu') str += '/';
                 }
-                str += '，然后当前回合角色于本回合内下一次造成伤害时，你选择两项：⒈防止此伤害。系统从技能名中包含“仁/义/礼/智/信”字样的技能中随机选择三个其未拥有的技能，然后你令当前回合角色获得其中一个技能。⒉从〖遁世〗中删除你本次使用或打出的牌名。⒊减1点体力上限并摸X张牌（X为〖遁世〗的剩余牌名数）。';
+                str += '，然后当前回合角色于本回合内下一次造成伤害时，你选择两项：⒈防止此伤害。系统从技能名中包含“仁/义/礼/智/信”字样的技能中随机选择三个其未拥有的技能，然后你令当前回合角色获得其中一个技能。⒉从〖遁世〗中删除你本次使用或打出的牌名。⒊减1点体力上限并摸X张牌（X为〖遁世〗已删除的牌名数）。';
                 return str;
             },
             minizhenliang(player) {
@@ -42471,7 +42471,7 @@ const packs = function () {
             minihumei: '狐魅',
             minihumei_info: '出牌阶段限X次（X为你本阶段造成的伤害数），你可以令一名角色执行本回合未选择的一项：①摸一张牌。②交给你一张牌。③回复1点体力。',
             minidunshi: '遁世',
-            minidunshi_info: '每回合限一次，你可以视为使用或打出一张【杀】/【闪】/【桃】/【酒】，然后当前回合角色于本回合内下一次造成伤害时，你选择两项：⒈防止此伤害。系统从技能名中包含“仁/义/礼/智/信”字样的技能中随机选择三个其未拥有的技能，然后你令当前回合角色获得其中一个技能。⒉从〖遁世〗中删除你本次使用或打出的牌名。⒊减1点体力上限并摸X张牌（X为〖遁世〗的剩余牌名数）。',
+            minidunshi_info: '每回合限一次，你可以视为使用或打出一张【杀】/【闪】/【桃】/【酒】，然后当前回合角色于本回合内下一次造成伤害时，你选择两项：⒈防止此伤害。系统从技能名中包含“仁/义/礼/智/信”字样的技能中随机选择三个其未拥有的技能，然后你令当前回合角色获得其中一个技能。⒉从〖遁世〗中删除你本次使用或打出的牌名。⒊减1点体力上限并摸X张牌（X为〖遁世〗已删除的牌名数）。',
             mininiluan: '逆乱',
             mininiluan_info: '①你可以将一张黑色牌当作【杀】使用或打出。②当你使用【杀】结算完毕后，若此【杀】未造成过伤害，则此【杀】不计入次数限制。',
             miniluanzhan: '乱战',
