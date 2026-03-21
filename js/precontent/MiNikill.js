@@ -40166,12 +40166,12 @@ const packs = function () {
                     draw: {
                         audio: 'miniyinyinxing',
                         trigger: {
-                            player: ['loseAfter', 'damageBegin3'],
-                            global: ['equipAfter', 'addJudgeAfter', 'gainAfter', 'loseAsyncAfter', 'addToExpansionAfter'],
+                            player: ['loseAfter', 'damageBegin3', 'enterGame'],
+                            global: ['phaseBefore', 'equipAfter', 'addJudgeAfter', 'gainAfter', 'loseAsyncAfter', 'addToExpansionAfter'],
                         },
-                        filter(event, player) {
+                        filter(event, player, name) {
                             if (event.name === 'damage') return true;
-                            return event.getl(player)?.hs?.length && player.countCards('h') < 5;
+                            return (['enterGame', 'phaseBefore'].includes(name) || event.getl(player)?.hs?.length) && player.countCards('h') < 5;
                         },
                         forced: true,
                         async content(event, trigger, player) {
