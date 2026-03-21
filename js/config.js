@@ -293,11 +293,6 @@ export let config = {
 			}
 		},
 	},
-	HDdamageAudio: {
-		name: '失去上限音效',
-		intro: '打开此选项后，失去体力上限会播放特定音效（实时生效）',
-		init: true,
-	},
 	HDfightAudio: {
 		name: '各项游戏播报',
 		intro: '游戏播报包括以下内容（实时生效）' +

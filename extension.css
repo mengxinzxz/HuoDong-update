@@ -378,37 +378,7 @@ td.dengjie-game > .button.character > .score.lose {
 	margin-left: 0;
 }
 
-/*群聊势力：十周年样式＆手杀样式一*/
-.player > .camp-wrap[data-camp="bilibili_sushe"] > .camp-back {
-	background: linear-gradient(to bottom, rgb(98, 0, 128), rgb(255, 0, 221));
-}
-.player > .camp-wrap[data-camp="bilibili_zhouji"] > .camp-back {
-	background: linear-gradient(to bottom, rgb(43, 53, 193), rgb(0, 200, 255));
-}
-.player > .camp-wrap[data-camp="bilibili_huodong"] > .camp-back {
-	background: linear-gradient(to bottom, rgb(122, 128, 64), rgb(255, 255, 0));
-}
-
-/*群聊势力：手杀样式二*/
-.player > .camp-wrap[data-camp="bilibili_sushe"] > .camp-name {
-	text-shadow:
-		0 0 5px rgb(42, 0, 64),
-		0 0 10px rgb(98, 0, 128),
-		0 0 15px rgb(255, 0, 221);
-}
-.player > .camp-wrap[data-camp="bilibili_zhouji"] > .camp-name {
-	text-shadow:
-		0 0 5px rgb(43, 53, 193) 0 0 10px rgb(128, 189, 255),
-		0 0 15px rgb(0, 200, 255);
-}
-.player > .camp-wrap[data-camp="bilibili_huodong"] > .camp-name {
-	text-shadow:
-		0 0 5px rgb(122, 128, 64),
-		0 0 10px rgb(200, 199, 104),
-		0 0 15px rgb(255, 255, 0);
-}
-
-/*宝宝杀页面*/
+/*单独武将包页面*/
 #overlay-container {
 	position: fixed;
 	top: 0;

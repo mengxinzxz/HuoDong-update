@@ -173,23 +173,56 @@ export async function precontent(bilibilicharacter) {
             if (player2.getSeatNum() != 0) player2.setNickname(get.cnNumber(player2.getSeatNum(), true) + '号位');
         };
     }
-    //失去体力上限配音
-    lib.skill._bilibili_loseMaxHp = {
-        charlotte: true,
-        ruleSkill: true,
-        trigger: { player: 'loseMaxHpBegin' },
-        filter(event, player) {
-            return lib.config.extension_活动武将_HDdamageAudio && lib.config.background_audio;
-        },
-        silent: true,
-        priority: -Infinity,
-        lastDo: true,
-        content() {
-            game.broadcastAll(function () {
-                game.playAudio('..', 'extension', '活动武将/audio/effect', 'bilibili_loseMaxHp');
-            });
-        },
-    };
+    //十周年UI势力显示
+    lib.hooks.addGroup.push(function decadeUI_addGroupCSS(id, short, name, config) {
+        for (const sheet of document.styleSheets) {
+            try {
+                const rules = sheet.cssRules || sheet.rules;
+                for (const rule of rules) {
+                    if (rule.selectorText === `.player > .camp-wrap[data-camp="${id}"] > .camp-back`) return;
+                }
+            }
+            catch (e) {
+                continue;
+            }
+        }
+        if (typeof config.color != "undefined" && config.color != null) {
+            let color1, color2, color3, color4;
+            if (typeof config.color == "string" && /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/.test(config.color)) {
+                let c1 = parseInt(`0x${config.color.slice(1, 3)}`);
+                let c2 = parseInt(`0x${config.color.slice(3, 5)}`);
+                let c3 = parseInt(`0x${config.color.slice(5, 7)}`);
+                color1 = color2 = color3 = color4 = [c1, c2, c3, 1];
+            }
+            else if (Array.isArray(config.color) && config.color.length == 4) {
+                if (config.color.every(item => Array.isArray(item))) {
+                    color1 = config.color[0];
+                    color2 = config.color[1];
+                    color3 = config.color[2];
+                    color4 = config.color[3];
+                }
+                else color1 = color2 = color3 = color4 = config.color;
+            }
+            if (color1 && color2 && color3 && color4) {
+                lib.init.sheet(`.player > .camp-wrap[data-camp="${id}"] > .camp-back {
+                    background: linear-gradient(
+                        to bottom,
+                        rgba(${color1.join(", ")}),
+                        rgba(${color2.join(", ")}),
+                        rgba(${color3.join(", ")}),
+                        rgba(${color4.join(", ")})
+                    );
+                }`);
+                lib.init.sheet(`.player > .camp-wrap[data-camp="${id}"] > .camp-name {
+                    text-shadow:
+                        0 0 5px rgba(${color1.join(", ")}),
+                        0 0 10px rgba(${color2.join(", ")}),
+                        0 0 15px rgba(${color3.join(", ")}),
+                        0 0 20px rgba(${color4.join(", ")});
+                }`);
+            }
+        }
+    });
     /*
     //点击显示
     game.getBolPhone = function () {
