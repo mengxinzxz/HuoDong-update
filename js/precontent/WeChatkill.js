@@ -271,6 +271,7 @@ const packs = function () {
             wechat_zhi_liubei: ['male', 'shu', 4, ['wechatzhaoyi', 'wechatgongzhi', 'wechattonggan']],
             wechat_zhi_caopi: ['male', 'wei', 3, ['wechatmingdian', 'wechatmaizhi', 'wechatweizhu']],
             wechat_zhi_sunquan: ['male', 'wu', 4, ['wechatchengfan', 'wechatzhenxian', 'wechatlihai']],
+            wechat_zhi_xushi: ['female', 'wu', 3, ['wechatluchou', 'wechatshizhu'], ['name:徐|null']],
             //限时地主
             wechat_nailong: ['male', 'qun', 4, ['wechatdunshi', 'wechattanchi']],
         },
@@ -18965,6 +18966,316 @@ const packs = function () {
                     }
                 }
             },
+            // 志徐氏
+            wechatluchou: {
+                audio: 'ext:活动武将/audio/skill:2',
+                enable: 'phaseUse',
+                onChooseToUse(event) {
+                    if (game.online || event.type !== 'phase') return;
+                    const player = event.player;
+                    event.set('wechatluchou_num', player.getRoundHistory('useSkill', evt => evt.sourceSkill == 'wechatluchou').length + 1);
+                },
+                filter(event, player) {
+                    return player.hasSkill('wechatshizhu_luchou');
+                },
+                usable: 1,
+                chooseButton: {
+                    dialog(event, player) {
+                        const dialog = ui.create.dialog('戮仇：请选择一项', 'hidden');
+                        const num = event.wechatluchou_num;
+                        dialog.add([
+                            [
+                                ['link', `你与至多${get.cnNumber(num)}名其他角色横置`],
+                                ['draw', `你与已横置的角色各摸${get.cnNumber(num + 1)}张牌`],
+                                ['sha', `你使用的下一张【杀】额外结算${get.cnNumber(num)}次`],
+                            ],
+                            'textbutton',
+                        ]);
+                        return dialog;
+                    },
+                    filter(button, player) {
+                        if (player.getStorage('wechatluchou_used').includes(button.link)) return false;
+                        if (button.link == 'link') return game.hasPlayer(current => current != player && !current.isLinked());
+                        if (button.link == 'draw') return game.hasPlayer(current => current != player && current.isLinked());
+                        return !player.hasMark('wechatluchou_effect');
+                    },
+                    check(button) {
+                        const player = get.player(), link = button.link;
+                        if (link == 'sha') return 1;
+                        if (link == 'draw') return 0.7;
+                        return 0.6;
+                    },
+                    backup(links, player) {
+                        return get.copy(lib.skill['wechatluchou_' + links[0]]);
+                    },
+                    prompt(links, player) {
+                        const num = get.event().wechatluchou_num;
+                        const map = new Map([
+                            ['link', `你与至多${get.cnNumber(num)}名其他角色横置`],
+                            ['draw', `你与已横置的其他角色各摸${get.cnNumber(num + 1)}张牌`],
+                            ['sha', `你使用的下一张【杀】额外结算${get.cnNumber(num)}次`],
+                        ]);
+                        return '###戮仇###' + map.get(links[0]);
+                    },
+                },
+                ai: {
+                    order: 7,
+                    result: { player: 1 },
+                },
+                group: 'wechatluchou_extra',
+                subSkill: {
+                    backup: {},
+                    used: {
+                        onremove: true,
+                        intro: {
+                            content: (storage, player) => `本轮已执行选项：${storage.map(name => {
+                                if (name == 'link') return '横置';
+                                if (name == 'draw') return '摸牌';
+                                return '额外结算【杀】';
+                            }).join('、')}`
+                        },
+                    },
+                    extra: {
+                        audio: 'wechatluchou',
+                        trigger: { player: 'damageEnd' },
+                        filter(event, player) {
+                            return ['link', 'draw', 'sha'].some(name => {
+                                if (player.getStorage('wechatluchou_used').includes(name)) return false;
+                                if (name == 'link') return game.hasPlayer(current => current != player && !current.isLinked());
+                                if (name == 'draw') return game.hasPlayer(current => current != player && current.isLinked());
+                                return !player.hasMark('wechatluchou_effect');
+                            });
+                        },
+                        async cost(event, trigger, player) {
+                            const num = player.getRoundHistory('useSkill', evt => evt.sourceSkill == 'wechatluchou').length + 1;
+                            const result = await player.chooseButton([
+                                '戮仇：你可以选择一项',
+                                [
+                                    [
+                                        ['link', `你与至多${get.cnNumber(num)}名其他角色横置`],
+                                        ['draw', `你与已横置的其他角色各摸${get.cnNumber(num + 1)}张牌`],
+                                        ['sha', `你使用的下一张【杀】额外结算${get.cnNumber(num)}次`],
+                                    ],
+                                    'textbutton'
+                                ]
+                            ], true).set('filterButton', button => {
+                                const player = get.player();
+                                if (player.getStorage('wechatluchou_used').includes(button.link)) return false;
+                                if (button.link == 'link') return game.hasPlayer(current => current != player && !current.isLinked());
+                                if (button.link == 'draw') return game.hasPlayer(current => current != player && current.isLinked());
+                                return !player.hasMark('wechatluchou_effect');
+                            }).set('ai', button => {
+                                const player = get.player(), link = button.link;
+                                if (link == 'sha') return 1;
+                                if (link == 'draw') return 0.7;
+                                return 0.6;
+                            }).forResult();
+                            event.result = {
+                                bool: result?.bool,
+                                cost_data: result?.links,
+                            }
+                        },
+                        popup: false,
+                        async content(event, trigger, player) {
+                            const num = player.getRoundHistory('useSkill', evt => evt.sourceSkill == 'wechatluchou').length + 1;
+                            const map = new Map([
+                                ['link', `你与至多${get.cnNumber(num)}名其他角色横置`],
+                                ['draw', `你与已横置的其他角色各摸${get.cnNumber(num + 1)}张牌`],
+                                ['sha', `你使用的下一张【杀】额外结算${get.cnNumber(num)}次`],
+                            ]);
+                            const link = event.cost_data[0];
+                            const skill = 'wechatluchou_' + link;
+                            const next = player.chooseToUse();
+                            next.set('openskilldialog', '###戮仇###' + map.get(link));
+                            next.set('norestore', true);
+                            next.set('_backupevent', skill);
+                            next.set('custom', {
+                                add: {},
+                                replace: { window() { } },
+                            });
+                            next.set('ai1', () => 1);
+                            next.set('wechatluchou_num', num);
+                            next.backup(skill);
+                        },
+                    },
+                    link: {
+                        audio: 'wechatluchou',
+                        filterTarget(card, player, target) {
+                            return !target.isLinked() && player !== target;
+                        },
+                        filterCard: () => false,
+                        selectCard: -1,
+                        selectTarget() {
+                            return [1, get.event().wechatluchou_num];
+                        },
+                        multiline: true,
+                        multitarget: true,
+                        async content(event, trigger, player) {
+                            player.addTempSkill('wechatluchou_used', 'roundStart');
+                            player.markAuto('wechatluchou_used', ['link']);
+                            for (const target of [player].concat(event.targets).sortBySeat()) {
+                                await target.link(true);
+                            }
+                        },
+                        ai: {
+                            result: {
+                                player(player, target) {
+                                    return get.effect(target, { name: 'tiesuo' }, player, player);
+                                },
+                            },
+                        },
+                    },
+                    draw: {
+                        audio: 'wechatluchou',
+                        filterTarget(card, player, target) {
+                            return target.isLinked() && player !== target;
+                        },
+                        filterCard: () => false,
+                        selectCard: -1,
+                        selectTarget() {
+                            return [1, get.event().wechatluchou_num];
+                        },
+                        multiline: true,
+                        multitarget: true,
+                        async content(event, trigger, player) {
+                            player.addTempSkill('wechatluchou_used', 'roundStart');
+                            player.markAuto('wechatluchou_used', ['draw']);
+                            const num = event.getParent(2).wechatluchou_num + 1;
+                            await game.asyncDraw([player].concat(event.targets).sortBySeat(), num);
+                        },
+                        ai: {
+                            result: {
+                                player(player, target) {
+                                    return get.effect(target, { name: 'draw' }, player, player);
+                                },
+                            },
+                        },
+                    },
+                    sha: {
+                        audio: 'wechatluchou',
+                        filterCard: () => false,
+                        selectCard: -1,
+                        async content(event, trigger, player) {
+                            player.addTempSkill('wechatluchou_used', 'roundStart');
+                            player.markAuto('wechatluchou_used', ['sha']);
+                            const num = event.getParent(2).wechatluchou_num;
+                            player.addSkill('wechatluchou_effect');
+                            player.addMark('wechatluchou_effect', num, false);
+                        },
+                        ai: { result: { player: 1 } },
+                    },
+                    effect: {
+                        charlotte: true,
+                        onremove: true,
+                        trigger: { player: 'useCard' },
+                        filter(event, player) {
+                            return event.card.name == 'sha';
+                        },
+                        forced: true,
+                        popup: false,
+                        async content(event, trigger, player) {
+                            trigger.effectCount += player.countMark(event.name);
+                            player.removeSkill(event.name);
+                        },
+                        intro: { content: '下次使用的【杀】额外结算#次' },
+                    }
+                },
+            },
+            wechatshizhu: {
+                xizifuSkill: true,
+                categories: () => ['成器'],
+                trigger: { player: ['dying', 'phaseZhunbeiBegin'] },
+                filter(event, player) {
+                    if (player.hasSkill('wechatshizhu_xizifu') || player.countMark('wechatshizhu') >= 2) return false;
+                    return event.name == 'dying' || player.isDamaged();
+                },
+                forced: true,
+                locked: false,
+                async content(event, trigger, player) {
+                    player.addMark(event.name, 1, false);
+                    player.addSkill(`${event.name}_xizifu`);
+                    await player.recover();
+                    if (['luchou', 'effect'].every(name => player.hasSkill(event.name + '_' + name))) return;
+                    const result = await player.chooseButton([
+                        '戮仇：你可以选择一项',
+                        [
+                            [
+                                ['luchou', `令${get.poptip('wechatluchou')}增加“出牌阶段限一次”的时机`],
+                                ['effect', '本局游戏你使用的【杀】可以额外指定一个目标'],
+                            ],
+                            'textbutton'
+                        ]
+                    ], true).set('filterButton', button => {
+                        const player = get.player();
+                        return !player.hasSkill('wechatshizhu_' + button.link)
+                    }).set('ai', button => {
+                        const player = get.player(), link = button.link;
+                        if (link == 'luchou') return 2;
+                        return 1;
+                    }).forResult();
+                    if (result?.bool) player.addSkill('wechatshizhu_' + result.links[0]);
+                },
+                mark: true,
+                intro: {
+                    markcount: (num = 0) => `${num}/2`,
+                    content: (num = 0) => `剩余次数次数：${2 - num}`,
+                },
+                ai: { combo: 'wechatluchou' },
+                derivation: 'wechatluchou',
+                subSkill: {
+                    xizifu: {
+                        init(player, skill) {
+                            player.addMark(skill, 4, false);
+                        },
+                        charlotte: true,
+                        onremove: true,
+                        intro: { content: '还需造成#点伤害' },
+                        trigger: { source: 'damage' },
+                        filter(event, player) {
+                            return event.num > 0;
+                        },
+                        forced: true,
+                        popup: false,
+                        async content(event, trigger, player) {
+                            player.removeMark(event.name, trigger.num, false);
+                            if (!player.hasMark(event.name)) {
+                                player.removeSkill(event.name);
+                                player.popup('wechatshizhu');
+                                game.log(player, '完成了', `#g【${get.translation('wechatshizhu')}】`, '的', '#y进学', '条件');
+                            }
+                        },
+                    },
+                    luchou: {
+                        charlotte: true,
+                        mark: true,
+                        intro: { content: `${get.poptip('wechatluchou')}增加“出牌阶段限一次”的时机` },
+                    },
+                    effect: {
+                        charlotte: true,
+                        mark: true,
+                        intro: { content: '本局游戏使用的【杀】可以额外指定一个目标' },
+                        trigger: { player: 'useCard2' },
+                        filter(event, player) {
+                            if (event.card.name != 'sha') return false;
+                            return game.hasPlayer(target => {
+                                return target != player && !event.targets.includes(target) && lib.filter.targetEnabled2(event.card, player, target) && lib.filter.targetInRange(event.card, player, target);
+                            });
+                        },
+                        async cost(event, trigger, player) {
+                            event.result = await player.chooseTarget(get.prompt(event.skill), `为${get.translation(trigger.card)}额外指定一个目标`, (card, player, target) => {
+                                const evt = _status.event.getTrigger();
+                                return target != player && !evt.targets.includes(target) && lib.filter.targetEnabled2(evt.card, player, target) && lib.filter.targetInRange(evt.card, player, target);
+                            }).set('ai', target => {
+                                const player = get.player();
+                                return get.effect(target, get.event().getTrigger().card.card, player, player);
+                            }).forResult();
+                        },
+                        async content(event, trigger, player) {
+                            trigger.targets.addArray(event.targets);
+                        },
+                    }
+                },
+            },
         },
         dynamicTranslate: {
             wechatxiangzhi(player) {
@@ -19111,6 +19422,12 @@ const packs = function () {
             wechatsbguanxing(player, skill) {
                 if (typeof player.storage[skill] !== 'number') return lib.translate[`${skill}_info`];
                 return lib.translate[`${skill}_info`].replace('[7]', `[${player.storage[skill]}]`);
+            },
+            wechatluchou(player, skill) {
+                let str = lib.translate[`${skill}_info`];
+                const bool = player.hasSkill('wechatshizhu_luchou');
+                if (bool) str = str.replace(/次。/, `次。出牌阶段限一次，或`);
+                return str;
             },
         },
         translate: {
@@ -20091,6 +20408,11 @@ const packs = function () {
             wechat_shamoke: '小程序沙摩柯',
             wechatyingong: '引弓',
             wechatyingong_info: `出牌阶段限一次。你可以获得你装备区里的所有武器牌。若如此做，本回合当你使用一张武器牌A后，你可以将其中一张攻击范围不小于A的武器牌当无次数限制的【杀】使用。`,
+            wechat_zhi_xushi: '志徐氏',
+            wechatluchou: '戮仇',
+            wechatluchou_info: '每轮每项限一次。当你受到伤害后，你可以选择一项：1.你与至多X名其他角色横置；2.你与已横置的角色各摸X+1张牌；3.你使用的下一张【杀】额外结算X次（X为你本轮发动此技能的次数+1）。',
+            wechatshizhu: '誓诛',
+            wechatshizhu_info: `${get.poptip('rule_xizifuSkill')}(2)，你已受伤的准备阶段或当你进入濒死状态时，你回复1点体力，然后选择未选择过的一项：1.令${get.poptip('wechatluchou')}增加“出牌阶段限一次”的时机；2.本局游戏你使用的【杀】可以额外指定一个目标。进学：你累计造成4点伤害。`,
 
 
             // ----------------------- 台词部分 ----------------------- //
