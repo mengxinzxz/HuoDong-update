@@ -19307,7 +19307,8 @@ const packs = function () {
                 },
                 mod: {
                     aiOrder(player, card, num) {
-                        if (get.itemtype(card) == 'card' && card.hasGaintag('wechatgaoshi')) return num / 1145141919810;
+                        if (get.itemtype(card) !== 'card' || !card.hasGaintag('wechatgaoshi')) return;
+                        if (!player.getStorage('wechatshimin_effect').includes(get.type2(card))) return num / (1145141919810 * (1 + Math.max(0, get.cardNameLength(card))));
                     },
                 },
                 subSkill: {
@@ -19350,22 +19351,22 @@ const packs = function () {
                     }
                 },
                 async content(event, trigger, player) {
-                    const skill = event.name;
-                    const choice = event.cost_data === '强攻！' ? player.getStorage(skill) : [event.cost_data];
+                    const skill = event.name, list = ['basic', 'trick', 'equip'].removeArray(player.getStorage(skill));
+                    const choice = event.cost_data === '强攻！' ? list : [event.cost_data];
                     player.popup(event.cost_data);
                     if (event.cost_data === '强攻！') {
                         game.log(player, '选择了', '#y强攻', '选项');
-                        if (choice.length > 0) {
-                            const card = get.cardPile(card => choice.includes(get.type2(card)));
+                        if (player.getStorage(skill).length > 0) {
+                            const card = get.cardPile(card => player.getStorage(skill).includes(get.type2(card)));
                             if (card) await player.gain(card, 'gain2');
                         }
-                        const list = ['basic', 'trick', 'equip'].removeArray(player.getStorage(skill));
                         const result = await player.chooseControl(list).set('ai', () => {
-                            return get.event().controls.randomGet();
+                            const controls = get.event().controls;
+                            return controls[controls.length - 1];
                         }).set('prompt', '强攻：请选择你要移去的选项').forResult();
                         if (result?.control && result.control !== 'cancel2') {
                             player.markAuto(skill, [result.control]);
-                            player.addTip(skill, [get.translation(skill), ...['basic', 'trick', 'equip'].removeArray(player.getStorage(skill)).map(i => get.translation(i)[0])].join(' '));
+                            player.addTip(skill, [get.translation(skill), ...[...list].remove(result.control).map(i => get.translation(i)[0])].join(' '));
                         }
                     }
                     player.addTempSkill(`${skill}_effect`);
