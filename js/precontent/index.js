@@ -631,7 +631,7 @@ export async function precontent(bilibilicharacter) {
             {
                 type: 'players',
                 data: [
-                    'wechat_shantao', 'wechat_sb_yujin', 'wechat_sb_lvmeng', 'wechat_sb_lvbu', 'wechat_old_sunluyu', 'wechat_old_guanyinping', 'wechat_sb_sp_zhugeliang', 'wechat_sb_zhugeliang', 'wechat_re_huangzhong', 'wechat_yj_jushou', 'wechat_sb_zhouyu', 'wechat_caochun', 'wechat_pangdegong', 'wechat_wangyuanji', 'wechat_shamoke',
+                    'wechat_shantao', 'wechat_sb_yujin', 'wechat_sb_lvmeng', 'wechat_sb_lvbu', 'wechat_old_sunluyu', 'wechat_old_guanyinping', 'wechat_sb_sp_zhugeliang', 'wechat_sb_zhugeliang', 'wechat_re_huangzhong', 'wechat_yj_jushou', 'wechat_sb_zhouyu', 'wechat_caochun', 'wechat_pangdegong', 'wechat_wangyuanji', 'wechat_shamoke', 'wechat_zhi_xushi',
                     'Mbaby_ol_wangyi', 'Mbaby_sp_duyu', 'Mbaby_wenyuan', 'Mbaby_xizheng', 'Mbaby_mangyachang', 'Mbaby_re_hucheer', 'Mfire_zhurong', 'Mbaby_yue_daqiao', 'Mbaby_shen_weiyan',
                 ],
             },
@@ -640,7 +640,7 @@ export async function precontent(bilibilicharacter) {
                 textAlign: 'left',
                 data: [
                     'bugfix、素材补充、技能调整',
-                    '小程序：山涛、谋于禁、谋吕蒙、谋吕布、牢大孙鲁育、牢大关银屏、谋诸葛亮、界黄忠、沮授、谋周瑜、曹纯、庞德公、王元姬、沙摩柯',
+                    '小程序：山涛、谋于禁、谋吕蒙、谋吕布、牢大孙鲁育、牢大关银屏、谋诸葛亮、界黄忠、沮授、谋周瑜、曹纯、庞德公、王元姬、沙摩柯、志徐氏',
                     '欢杀：界王异、杜预、文鸳、郤正、忙牙长、胡车儿、焰祝融、乐大乔、神魏延',
                     'To be continued...',
                 ],
