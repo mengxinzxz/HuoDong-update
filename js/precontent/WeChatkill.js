@@ -51,7 +51,7 @@ const packs = function () {
                     ...[],
                 ].map(i => `wechat_${i}`),
                 wechat_zhiyin: ['caorui', 'pangtong', 'qinmi', 'zhugeke', 'mayunlu', 'bulianshi', 'diaochan', 'taishici', 'luxun', 'sunshangxiang', 'xunyou', 'dianwei', 'zhaoyun', 'xinxianying', 'guohuanghou', 'kongrong', 'caopi', 'jiaxu', 'zhangfei', 'dongzhuo', 'wangyi', 'zhangchunhua', 'hetaihou', 'zhurong', 'jiangwei', 'caozhi', 'liubei', 'sunce', 'xunyu', 'zhenji', 'xuzhu', 'yuanshao', 'lusu', 'guojia', 'lvbu', 'daqiao', 'xiaoqiao', 'caocao', 'zhugeliang', 'simayi', 'machao', 'huangyueying', 'caiwenji', 'zhouyu', 'sunquan', 'guanyu'].map(i => `wechat_zhiyin_${i}`),
-                wechat_zhi: ['xushi', 'old_yuanshu', 'caopi', 'sunquan', 'liubei', 'yuanshu', 'fuhuanghou', 'caojie', 'caocao', 'zhangjiao'].map(i => `wechat_zhi_${i}`),
+                wechat_zhi: ['caozhi', 'xushi', 'old_yuanshu', 'caopi', 'sunquan', 'liubei', 'yuanshu', 'fuhuanghou', 'caojie', 'caocao', 'zhangjiao'].map(i => `wechat_zhi_${i}`),
                 wechat_shengzhiyifa: ['nailong'].map(i => `wechat_${i}`),//任何答辩，终将绳之以法！！！！！
             },
         },
@@ -272,6 +272,7 @@ const packs = function () {
             wechat_zhi_caopi: ['male', 'wei', 3, ['wechatmingdian', 'wechatmaizhi', 'wechatweizhu']],
             wechat_zhi_sunquan: ['male', 'wu', 4, ['wechatchengfan', 'wechatzhenxian', 'wechatlihai']],
             wechat_zhi_xushi: ['female', 'wu', 3, ['wechatluchou', 'wechatshizhu'], ['name:徐|null']],
+            wechat_zhi_caozhi: ['male', 'wei', 3, ['wechatgaoshi', 'wechatshimin']],
             //限时地主
             wechat_nailong: ['male', 'qun', 4, ['wechatdunshi', 'wechattanchi']],
         },
@@ -18966,7 +18967,7 @@ const packs = function () {
                     }
                 }
             },
-            // 志徐氏
+            //志徐氏
             wechatluchou: {
                 audio: 'ext:活动武将/audio/skill:2',
                 enable: 'phaseUse',
@@ -19184,6 +19185,7 @@ const packs = function () {
             wechatshizhu: {
                 xizifuSkill: true,
                 categories: () => ['成器'],
+                audio: 'ext:活动武将/audio/skill:2',
                 trigger: { player: ['dying', 'phaseZhunbeiBegin'] },
                 filter(event, player) {
                     if (player.hasSkill('wechatshizhu_xizifu') || player.countMark('wechatshizhu') >= 2) return false;
@@ -19274,6 +19276,106 @@ const packs = function () {
                             trigger.targets.addArray(event.targets);
                         },
                     }
+                },
+            },
+            //志曹植
+            wechatgaoshi: {
+                audio: 'ext:活动武将/audio/skill:2',
+                trigger: { player: 'useCardAfter' },
+                forced: true,
+                async content(event, trigger, player) {
+                    const card = trigger.cards[0], num = get.cardNameLength(card);
+                    if (!card || trigger.cards.length !== 1 || !player.hasHistory('lose', evt => {
+                        if ((evt.relatedEvent || evt.getParent()) !== trigger) return false;
+                        return evt.gaintag_map?.[card.cardid]?.includes(event.name);
+                    })) {
+                        const gain = get.cardPile(gain => {
+                            return get.cardNameLength(gain) >= num && !get.is.damageCard(gain);
+                        });
+                        if (gain) {
+                            const next = player.gain(gain, 'gain2');
+                            next.gaintag.add(event.name);
+                            await next;
+                        }
+                    }
+                    else {
+                        player.addTempSkill(`${event.name}_ban`);
+                        player.storage[`${event.name}_ban`] = Math.max(num, player.storage[`${event.name}_ban`] || 0);
+                        player.markSkill(`${event.name}_ban`);
+                    }
+                },
+                mod: {
+                    aiOrder(player, card, num) {
+                        if (get.itemtype(card) == 'card' && card.hasGaintag('wechatgaoshi')) return num / 1145141919810;
+                    },
+                },
+                subSkill: {
+                    ban: {
+                        charlotte: true,
+                        onremove: true,
+                        intro: { content: '不能使用字数小于等于#的牌' },
+                        mod: {
+                            cardEnabled(card, player) {
+                                if (player.getStorage('wechatshimin_effect').includes(get.type2(card))) return;
+                                if (get.cardNameLength(card) <= player.storage.wechatgaoshi_ban) return false;
+                            },
+                            cardSavable() {
+                                return lib.skill.wechatgaoshi_ban.mod.cardEnabled.apply(this, arguments);
+                            },
+                        },
+                    },
+                },
+            },
+            wechatshimin: {
+                init(player, skill) {
+                    player.addTip(skill, [get.translation(skill), '基', '锦', '装'].join(' '));
+                },
+                onremove(player, skill) {
+                    player.removeTip(skill);
+                    delete player.storage[skill];
+                },
+                audio: 'ext:活动武将/audio/skill:2',
+                trigger: { player: 'phaseZhunbeiBegin' },
+                async cost(event, trigger, player) {
+                    let list = ['basic', 'trick', 'equip'].removeArray(player.getStorage(event.skill));
+                    if (list.length > 1) list.add('强攻！');
+                    const result = await player.chooseControl(list, 'cancel2').set('ai', () => {
+                        const { player, controls } = get.event();
+                        if (controls.includes('强攻！')) return '强攻！';
+                        return controls.filter(i => i !== 'cancel2').randomGet();
+                    }).set('prompt', get.prompt2(event.skill)).forResult();
+                    if (result?.control && result.control !== 'cancel2') {
+                        event.result = { bool: true, cost_data: result.control };
+                    }
+                },
+                async content(event, trigger, player) {
+                    const skill = event.name;
+                    const choice = event.cost_data === '强攻！' ? player.getStorage(skill) : [event.cost_data];
+                    player.popup(event.cost_data);
+                    if (event.cost_data === '强攻！') {
+                        game.log(player, '选择了', '#y强攻', '选项');
+                        if (choice.length > 0) {
+                            const card = get.cardPile(card => choice.includes(get.type2(card)));
+                            if (card) await player.gain(card, 'gain2');
+                        }
+                        const list = ['basic', 'trick', 'equip'].removeArray(player.getStorage(skill));
+                        const result = await player.chooseControl(list).set('ai', () => {
+                            return get.event().controls.randomGet();
+                        }).set('prompt', '强攻：请选择你要移去的选项').forResult();
+                        if (result?.control && result.control !== 'cancel2') {
+                            player.markAuto(skill, [result.control]);
+                            player.addTip(skill, [get.translation(skill), ...['basic', 'trick', 'equip'].removeArray(player.getStorage(skill)).map(i => get.translation(i)[0])].join(' '));
+                        }
+                    }
+                    player.addTempSkill(`${skill}_effect`);
+                    player.markAuto(`${skill}_effect`, choice);
+                },
+                subSkill: {
+                    effect: {
+                        charlotte: true,
+                        onremove: true,
+                        intro: { content: '本回合$类别的牌不受【高世】使用限制' },
+                    },
                 },
             },
         },
@@ -19427,6 +19529,13 @@ const packs = function () {
                 let str = lib.translate[`${skill}_info`];
                 const bool = player.hasSkill('wechatshizhu_luchou');
                 if (bool) str = str.replace(/次。/, `次。出牌阶段限一次，或`);
+                return str;
+            },
+            wechatshimin(player, skill) {
+                let str = lib.translate[`${skill}_info`];
+                for (const type of player.getStorage(skill)) {
+                    str = str.replace(`${get.translation(type)}牌`, `<span style="text-decoration:line-through;">${get.translation(type)}牌</span>`);
+                }
                 return str;
             },
         },
@@ -20413,7 +20522,11 @@ const packs = function () {
             wechatluchou_info: '每轮每项限一次。当你受到伤害后，你可以选择一项：1.你与至多X名其他角色横置；2.你与已横置的角色各摸X+1张牌；3.你使用的下一张【杀】额外结算X次（X为你本轮发动此技能的次数+1）。',
             wechatshizhu: '誓诛',
             wechatshizhu_info: `${get.poptip('rule_xizifuSkill')}(2)，你已受伤的准备阶段或当你进入濒死状态时，你回复1点体力，然后选择未选择过的一项：1.令${get.poptip('wechatluchou')}增加“出牌阶段限一次”的时机；2.本局游戏你使用的【杀】可以额外指定一个目标。进学：你累计造成4点伤害。`,
-
+            wechat_zhi_caozhi: '志曹植',
+            wechatgaoshi: '高世',
+            wechatgaoshi_info: '锁定技，你使用牌结算完毕后，若此牌不因此法获得，则你获得一张牌名字数大于等于此牌的牌；否则你本回合不能使用牌名字数小于等于此牌的牌。',
+            wechatshimin: '时悯',
+            wechatshimin_info: `准备阶段，你可以选择一项：①基本牌；②锦囊牌；③装备牌；④${get.poptip('rule_qianggong')}：获得一张已移除选项类别的牌。你本回合使用此类别的牌不受【高世】使用限制。`,
 
             // ----------------------- 台词部分 ----------------------- //
             '#ext:活动武将/audio/skill/wechatzhongxin1': '苍生之愿，即贫道所愿也。',
