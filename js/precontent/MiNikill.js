@@ -30812,6 +30812,10 @@ const packs = function () {
                 audio: 'starjiaowang',
                 inherit: 'starjiaowang',
                 derivation: 'ministarxiaoyan',
+                forced: false,
+                check(event, player) {
+                    return player.hp + player.countCards('hs', { name: ['tao', 'jiu'] }) > 1;
+                },
                 async content(event, trigger, player) {
                     await player.loseHp();
                     if (game.hasPlayer(current => current != player)) {
@@ -42683,7 +42687,7 @@ const packs = function () {
             ministarzongshi: '纵势',
             ministarzongshi_info: '出牌阶段，你可以展示一张可展示目标的基本牌或普通锦囊牌，然后你将手牌中所有与此牌花色相同的其他牌当作此牌使用（无距离限制），且此牌至多指定转化牌数的目标。然后你摸X张牌（X为你本次以此法使用牌时少指定的目标数）。',
             ministarjiaowang: '骄妄',
-            ministarjiaowang_info: `锁定技，每轮结束时，若本轮没有角色死亡，则你失去1点体力并发动${get.poptip('ministarxiaoyan')}。`,
+            ministarjiaowang_info: `每轮结束时，若本轮没有角色死亡，则你可以失去1点体力并发动${get.poptip('ministarxiaoyan')}。`,
             ministaraoshi: '傲势',
             ministaraoshi_info: `主公技，其他群势力角色的出牌阶段限一次，其可以交给你一张手牌，然后你可以发动一次${get.poptip('ministarzongshi')}。`,
             //神
