@@ -35,7 +35,7 @@ const packs = function () {
                     ...['chengyu'].map(i => `Mbaby_dc_sb_${i}`),
                     ...[],
                 ],
-                MiNi_starCharacter: ['sunshangxiang', 'xunyu', 'yuanshu'].map(i => `Mbaby_star_${i}`),
+                MiNi_starCharacter: ['yuanshao', 'sunshangxiang', 'xunyu', 'yuanshu'].map(i => `Mbaby_star_${i}`),
                 MiNi_yueCharacter: ['daqiao'].map(i => `Mbaby_yue_${i}`),
                 MiNi_miaoKill: ['mayunlu', 'guanyinping', 'caoying', 'caiwenji', 'diaochan', 'caifuren', 'zhangxingcai', 'zhurong', 'huangyueying', 'daqiao', 'wangyi', 'zhangchunhua', 'zhenji', 'sunshangxiang', 'xiaoqiao', 'lvlingqi'].map(i => `Mmiao_${i}`),
                 MiNi_nianKill: ['caopi', 'zhugeliang', 'lvbu', 'zhouyu'].map(i => `Mnian_${i}`),
@@ -460,6 +460,7 @@ const packs = function () {
             Mbaby_sp_duyu: ['male', 'qun', 4, ['spwuku', 'minisanchen'], ['border:jin']],
             Mbaby_mangyachang: ['male', 'qun', 4, ['minijiedao']],
             Mbaby_re_hucheer: ['male', 'qun', 4, ['redaoji', 'minifuzhong']],
+            Mbaby_star_yuanshao: ['male', 'qun', 4, ['ministarxiaoyan', 'ministarzongshi', 'ministarjiaowang', 'ministaraoshi'], ['zhu']],
             //神
             Mbaby_shen_zhugeliang: ['male', 'shen', 3, ['qixing', 'minikuangfeng', 'minidawu'], ['shu', 'name:诸葛|亮']],
             Mbaby_shen_lvbu: ['male', 'shen', 6, ['miniwuqian', 'minishenfen'], ['qun']],
@@ -30753,6 +30754,128 @@ const packs = function () {
                     },
                 },
             },
+            // 星袁绍
+            ministarxiaoyan: {
+                audio: 'starxiaoyan',
+                inherit: 'starxiaoyan',
+                logTarget(event, player) {
+                    return game.filterPlayer(current => current != player).sortBySeat();
+                },
+                async content(event, trigger, player) {
+                    let { targets } = event;
+                    for (const target of targets) await target.damage('fire');
+                    targets = targets.filter(current => current.isIn());
+                    if (targets.length) {
+                        for (const target of targets) {
+                            if (!target.isIn()) continue;
+                            const result = !target.countCards('he') ? { bool: false } : await target.chooseToGive('he', player).set('prompt', `是否交给${get.translation(player)}一张牌${(target.isDamaged() ? '并回复1点体力' : '')}？否则其摸一张牌`).set('ai', card => {
+                                const { player, target } = get.event();
+                                const att = get.attitude(player, target);
+                                if (get.recoverEffect(player, player, player) <= 0) {
+                                    if (att <= 0) return -get.value(card);
+                                    return 0;
+                                }
+                                return 7 - get.value(card);
+                            }).forResult();
+                            if (result?.bool) await target.recover();
+                            else await player.draw();
+                        }
+                    }
+                },
+            },
+            ministarzongshi: {
+                audio: 'starzongshi',
+                inherit: 'starzongshi',
+                async content(event, trigger, player) {
+                    const card = event.cards[0], cards = player.getCards('h', cardx => card != cardx && get.suit(card, player) == get.suit(cardx, player));
+                    await player.showCards([card], get.translation(player) + '发动了【纵势】');
+                    if (!cards.length) return;
+                    const cardx = new lib.element.VCard({
+                        name: get.name(card, player),
+                        nature: get.nature(card, player),
+                        cards: cards,
+                    });
+                    const result = await player.chooseTarget((card, player, target) => {
+                        return lib.filter.targetEnabled2(get.event().cardx, player, target);
+                    }, true).set('cardx', cardx).set('selectTarget', [1, cards.length]).set('prompt', '请选择' + (game.hasNature(cardx) ? get.translation(get.nature(cardx)) : '') + '【' + get.translation(cardx) + '】（' + get.translation(cards) + '）的目标').set('ai', target => {
+                        const player = get.event().player, card = get.event().cardx;
+                        return get.effect(target, card, player, player);
+                    }).forResult();
+                    if (result?.bool) {
+                        await player.useCard(cardx, cards, result.targets.sortBySeat());
+                        const num = cards.length - result.targets.length;
+                        if (num > 0) await player.draw(num);
+                    }
+                },
+            },
+            ministarjiaowang: {
+                audio: 'starjiaowang',
+                inherit: 'starjiaowang',
+                derivation: 'ministarxiaoyan',
+                async content(event, trigger, player) {
+                    await player.loseHp();
+                    if (game.hasPlayer(current => current != player)) {
+                        await player.useSkill('ministarxiaoyan', game.filterPlayer(current => current != player).sortBySeat());
+                    }
+                },
+            },
+            ministaraoshi: {
+                audio: 'starjiaowang',
+                zhuSkill: true,
+                global: 'ministaraoshi_global',
+                derivation: 'ministarzongshi',
+                subSkill: {
+                    used: { charlotte: true },
+                    global: {
+                        audio: 'ministaraoshi',
+                        forceaudio: true,
+                        enable: 'phaseUse',
+                        filter(event, player) {
+                            return player.group == 'qun' && game.hasPlayer(target => lib.skill.ministaraoshi.subSkill.global.filterTarget(null, player, target));
+                        },
+                        filterTarget(card, player, target) {
+                            return target != player && target.hasZhuSkill('ministaraoshi') && !target.hasSkill('ministaraoshi_used');
+                        },
+                        prompt() {
+                            const player = get.event().player;
+                            const targets = game.filterPlayer(target => lib.skill.ministaraoshi.subSkill.global.filterTarget(null, player, target));
+                            return '交给' + get.translation(targets) + (targets.length > 1 ? '中的一人' : '') + '一张手牌，然后其可以发动一次【纵势】';
+                        },
+                        filterCard: true,
+                        check(card) {
+                            const player = get.event().player;
+                            const target = game.filterPlayer(target => lib.skill.ministaraoshi.subSkill.global.filterTarget(null, player, target)).sort((a, b) => b.countCards('h') - a.countCards('h'))[0];
+                            return target.getUseValue(card);
+                        },
+                        discard: false,
+                        lose: false,
+                        delay: false,
+                        async content(event, trigger, player) {
+                            const { target } = event;
+                            target.addTempSkill('ministaraoshi_used', 'phaseUseEnd');
+                            await player.give(event.cards, target);
+                            const next = target.chooseToUse();
+                            next.set('openskilldialog', get.prompt2('ministarzongshi'));
+                            next.set('norestore', true);
+                            next.set('_backupevent', 'ministarzongshi');
+                            next.set('custom', {
+                                add: {},
+                                replace: { window() { } },
+                            });
+                            next.backup('ministarzongshi');
+                            await next;
+                        },
+                        ai: {
+                            order: 9,
+                            result: {
+                                target(player, target) {
+                                    return target.countCards('h') + 1;
+                                },
+                            },
+                        },
+                    }
+                }
+            },
             //神
             miniwuqian: {
                 derivation: 'wushuang',
@@ -42129,6 +42252,7 @@ const packs = function () {
             Mbaby_sp_duyu: '欢杀杜预',
             Mbaby_mangyachang: '欢杀忙牙长',
             Mbaby_re_hucheer: '欢杀胡车儿',
+            Mbaby_star_yuanshao: '欢杀星袁绍',
             miniweidi: '伪帝',
             miniweidi_info: '弃牌阶段结束时，你可以将其中一张弃置的牌交给一名其他角色。',
             minimingce: '明策',
@@ -42553,7 +42677,15 @@ const packs = function () {
             minisanchen_info: `觉醒技，当你拥有至少3枚“武库”标记后，你增加1点体力上限，回复1点体力，获得技能${get.poptip('spmiewu')}。`,
             minijiedao: '劫刀',
             minijiedao_info: '每回合限一次，当你造成伤害时，你可令此伤害至多+X（X为你损失的体力值且至少为1）。若受到此伤害的角色没有死亡，你弃等同于此伤害增加值的牌。',
-            minifuzhong_info: '锁定技。①当你于回合外获得牌后，你获得1枚“重”标记。②若你的“重”标记数：大于等于1，摸牌阶段，你多摸一张牌；大于等于2，你计算与其他角色的距离-2；大于等于3，你的手牌上限+3；大于等于4，结束阶段，你对一名其他角色造成1点伤害，然后移去4枚“重”标记，其下次使用武器牌时对其发动〖盗戟〗。',
+            minifuzhong_info: `锁定技。①当你于回合外获得牌后，你获得1枚“重”标记。②若你的“重”标记数：大于等于1，摸牌阶段，你多摸一张牌；大于等于2，你计算与其他角色的距离-2；大于等于3，你的手牌上限+3；大于等于4，结束阶段，你对一名其他角色造成1点伤害，然后移去4枚“重”标记，其下次使用武器牌时对其发动${get.poptip('redaoji')}。`,
+            ministarxiaoyan: '硝焰',
+            ministarxiaoyan_info: '锁定技，游戏开始时，你对所有其他角色各造成1点火属性伤害，然后这些角色可依次选择一项：1.可以交给你一张牌并回复1点体力；2.令你摸一张牌。',
+            ministarzongshi: '纵势',
+            ministarzongshi_info: '出牌阶段，你可以展示一张可展示目标的基本牌或普通锦囊牌，然后你将手牌中所有与此牌花色相同的其他牌当作此牌使用（无距离限制），且此牌至多指定转化牌数的目标。然后你摸X张牌（X为你本次以此法使用牌时少指定的目标数）。',
+            ministarjiaowang: '骄妄',
+            ministarjiaowang_info: `锁定技，每轮结束时，若本轮没有角色死亡，则你失去1点体力并发动${get.poptip('ministarxiaoyan')}。`,
+            ministaraoshi: '傲势',
+            ministaraoshi_info: `主公技，其他群势力角色的出牌阶段限一次，其可以交给你一张手牌，然后你可以发动一次${get.poptip('ministarzongshi')}。`,
             //神
             Mbaby_shen_lvbu: '欢杀神吕布',
             Mbaby_shen_guanyu: '欢杀神关羽',
