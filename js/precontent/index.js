@@ -8,6 +8,7 @@ import HD_chaoshikong from './HD_chaoshikong.js';
 import MiNikill from './MiNikill.js';
 import WeChatkill from './WeChatkill.js';
 import MX_feihongyinxue from './MX_feihongyinxue.js';
+import MX_catcatcup from './MX_catcatcup.js';
 import huodongcharacter from './huodongcharacter.js';
 
 export async function precontent(bilibilicharacter) {
@@ -612,6 +613,8 @@ export async function precontent(bilibilicharacter) {
         game.import('character', WeChatkill);
         //线下--飞鸿印雪
         game.import('character', MX_feihongyinxue);
+        //一将成名--喵喵杯
+        game.import('character', MX_catcatcup);
         //没想到吧，我换前缀了
         game.import('character', huodongcharacter);
         //--------------------卡牌包--------------------//
