@@ -30814,7 +30814,7 @@ const packs = function () {
                 derivation: 'ministarxiaoyan',
                 forced: false,
                 check(event, player) {
-                    return player.hp + player.countCards('hs', { name: ['tao', 'jiu'] }) > 1;
+                    return game.hasPlayer(current => current != player) && (player.hp + player.countCards('hs', { name: ['tao', 'jiu'] }) > 1);
                 },
                 async content(event, trigger, player) {
                     await player.loseHp();
