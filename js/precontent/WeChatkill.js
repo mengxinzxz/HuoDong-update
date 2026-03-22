@@ -50,7 +50,7 @@ const packs = function () {
                     ...['zhaoxiang'].map(i => `old_${i}`),
                     ...[],
                 ].map(i => `wechat_${i}`),
-                wechat_zhiyin: ['caorui', 'pangtong', 'qinmi', 'zhugeke', 'mayunlu', 'bulianshi', 'diaochan', 'taishici', 'luxun', 'sunshangxiang', 'xunyou', 'dianwei', 'zhaoyun', 'xinxianying', 'guohuanghou', 'kongrong', 'caopi', 'jiaxu', 'zhangfei', 'dongzhuo', 'wangyi', 'zhangchunhua', 'hetaihou', 'zhurong', 'jiangwei', 'caozhi', 'liubei', 'sunce', 'xunyu', 'zhenji', 'xuzhu', 'yuanshao', 'lusu', 'guojia', 'lvbu', 'daqiao', 'xiaoqiao', 'caocao', 'zhugeliang', 'simayi', 'machao', 'huangyueying', 'caiwenji', 'zhouyu', 'sunquan', 'guanyu'].map(i => `wechat_zhiyin_${i}`),
+                wechat_zhiyin: ['yuanshu', 'caorui', 'pangtong', 'qinmi', 'zhugeke', 'mayunlu', 'bulianshi', 'diaochan', 'taishici', 'luxun', 'sunshangxiang', 'xunyou', 'dianwei', 'zhaoyun', 'xinxianying', 'guohuanghou', 'kongrong', 'caopi', 'jiaxu', 'zhangfei', 'dongzhuo', 'wangyi', 'zhangchunhua', 'hetaihou', 'zhurong', 'jiangwei', 'caozhi', 'liubei', 'sunce', 'xunyu', 'zhenji', 'xuzhu', 'yuanshao', 'lusu', 'guojia', 'lvbu', 'daqiao', 'xiaoqiao', 'caocao', 'zhugeliang', 'simayi', 'machao', 'huangyueying', 'caiwenji', 'zhouyu', 'sunquan', 'guanyu'].map(i => `wechat_zhiyin_${i}`),
                 wechat_zhi: ['caozhi', 'xushi', 'old_yuanshu', 'caopi', 'sunquan', 'liubei', 'yuanshu', 'fuhuanghou', 'caojie', 'caocao', 'zhangjiao'].map(i => `wechat_zhi_${i}`),
                 wechat_shengzhiyifa: ['nailong'].map(i => `wechat_${i}`),//任何答辩，终将绳之以法！！！！！
             },
@@ -237,6 +237,7 @@ const packs = function () {
             wechat_zhiyin_qinmi: ['male', 'shu', 3, ['wechatgaogai', 'wechatluntian', 'wechatjuejian']],
             wechat_zhiyin_pangtong: ['male', 'shu', 3, ['wechattaohuan', 'wechatjiyu']],
             wechat_zhiyin_caorui: ['male', 'wei', 3, ['wechatzhaoshou', 'wechathongye']],
+            wechat_zhiyin_yuanshu: ['male', 'qun', 4, ['wechatfangming', 'wechatpizu']],
             //谋攻
             wechat_sb_sunshangxiang: ['female', 'shu', 3, ['wechatsbliangzhu', 'wechatsbjieyin'], ['border:wu']],
             wechat_sb_zhaoyun: ['male', 'shu', 4, ['wechatsblongdan', 'wechatsbjizhu']],
@@ -19378,6 +19379,108 @@ const packs = function () {
                     },
                 },
             },
+            // 极袁术
+            wechatfangming: {
+                audio: 'ext:活动武将/audio/skill:2',
+                enable: 'phaseUse',
+                filter(event, player) {
+                    return game.hasPlayer(current => get.info('wechatfangming'));
+                },
+                filterTarget(card, player, target) {
+                    return !player.storage.wechatfangming ? true : !player.getStorage('wechatfangming_mark').includes(target);
+                },
+                async content(event, trigger, player) {
+                    const { target } = event;
+                    const colors = game.getGlobalHistory('everything', evt => evt.name == 'chooseCard' && evt.getParent().name == event.name && evt.result.cards?.length).flatMap(evt => get.color(evt.result.cards[0])).toUniqued();
+                    const result = !target.hasCard(card => !colors.includes(get.color(card)), 'he') ? { bool: false } : await target.chooseCard('he', `${get.translation(player)}对你发动了【方命】`, `是否将一张本回合未因此技能放置过的颜色的牌置于牌堆顶，然后${get.translation(player)}从牌堆底摸一张牌？或者点击“取消”，其对你造成1点伤害，然后${player.storage[event.name] ? '本回合其不能对你发动此技能' : '此技能失效直到本回合结束'}`, card => {
+                        return !get.event().colors.includes(get.color(card));
+                    }).set('colors', colors).set('eff', get.damageEffect(target, player, target)).set('ai', card => {
+                        if (get.event().eff > 0) return 0;
+                        return 6 - get.value(card);
+                    }).forResult();
+                    if (result?.bool) {
+                        await target.lose(result.cards, ui.cardPile, 'insert');
+                        await player.draw('bottom');
+                    }
+                    else {
+                        await target.damage();
+                        if (!player.storage[event.name]) {
+                            player.tempBanSkill(event.name);
+                        }
+                        else {
+                            player.addTempSkill(event.name + '_mark');
+                            player.markAuto(event.name + '_mark', [target]);
+                        }
+                    }
+                },
+                ai: {
+                    order: 10,
+                    result: {
+                        player: 1,
+                        target(player, target) {
+                            const colors = game.getGlobalHistory('everything', evt => evt.name == 'chooseCard' && evt.getParent().name == 'wechatfangming' && evt.result.cards?.length).flatMap(evt => get.color(evt.result.cards[0])).toUniqued();
+                            if (!target.hasCard(card => !colors.includes(get.color(card)), 'he')) {
+                                return -1;
+                            }
+                            return get.sgnAttitude(player, target) * 1.1;
+                        },
+                    }
+                },
+                subSkill: {
+                    mark: {
+                        charlotte: true,
+                        onremove: true,
+                        intro: { content: '本回合已对$发动过【方命】' },
+                    },
+                },
+            },
+            wechatpizu: {
+                audio: 'ext:活动武将/audio/skill:2',
+                trigger: { source: 'damageSource' },
+                filter(event, player) {
+                    return !player.getStorage('wechatpizu_used').includes(event.player);
+                },
+                forced: true,
+                async content(event, trigger, player) {
+                    player.addSkill(event.name + '_used');
+                    player.markAuto(event.name + '_used', [trigger.player]);
+                    let num = Math.min(4, game.filterPlayer(current => current.hasAllHistory('damage', evt => evt.source == player)).length);
+                    const next = game.cardsGotoOrdering(get.cards(num));
+                    await next;
+                    const cards = (next.cards || []).slice();
+                    while (cards.length) {
+                        const result = await player.chooseButton(['圮族：是否使用其中的一张牌？', cards]).set('filterButton', button => {
+                            return get.player().hasUseTarget(button.link);
+                        }).set('ai', button => {
+                            const player = get.player(), card = button.link;
+                            return player.getUseValue(card) + 0.01
+                        }).forResult();
+                        if (result?.bool) {
+                            const card = result.links[0];
+                            cards.remove(card);
+                            player.$gain2(card, false);
+                            await game.delayx();
+                            await player.chooseUseTarget(true, card, false);
+                        } else break;
+                    }
+                    if (cards.length && player.countDiscardableCards(player, 'h')) {
+                        await player.chooseToDiscard(true, 'h', cards.length);
+                    }
+                    if (player.isDamaged() && game.filterPlayer2(current => current !== player).every(current => current.hasAllHistory('damage', evt => evt.source == player))) {
+                        await player.gainMaxHp();
+                        await player.recover();
+                        player.storage.wechatfangming = true;
+                        game.log(player, '修改了技能', '#g【方命】');
+                    }
+                },
+                subSkill: {
+                    used: {
+                        charlotte: true,
+                        onremove: true,
+                        intro: { content: '已对$发动过【圮族】' },
+                    }
+                }
+            },
         },
         dynamicTranslate: {
             wechatxiangzhi(player) {
@@ -19536,6 +19639,12 @@ const packs = function () {
                 for (const type of player.getStorage(skill)) {
                     str = str.replace(`${get.translation(type)}牌`, `<span style="text-decoration:line-through;">${get.translation(type)}牌</span>`);
                 }
+                return str;
+            },
+            wechatfangming(player, skill) {
+                let str = lib.translate[`${skill}_info`];
+                const bool = player.storage[skill];
+                if (bool) str = str.replace(/此技能失效直到本回合结束/, `本回合你不能对其发动此技能`);
                 return str;
             },
         },
@@ -20527,6 +20636,11 @@ const packs = function () {
             wechatgaoshi_info: '锁定技，你使用牌结算完毕后，若此牌不因此法获得，则你获得一张牌名字数大于等于此牌的牌；否则你本回合不能使用牌名字数小于等于此牌的牌。',
             wechatshimin: '时悯',
             wechatshimin_info: `准备阶段，你可以选择一项：①基本牌；②锦囊牌；③装备牌；④${get.poptip('rule_qianggong')}：获得一张已移除选项类别的牌。你本回合使用此类别的牌不受【高世】使用限制。`,
+            wechat_zhiyin_yuanshu: '极袁术',
+            wechatfangming: '方命',
+            wechatfangming_info: '出牌阶段，你可以令一名角色选择一项：1.将一张本回合未因此技能放置过的颜色的牌置于牌堆顶，然后你从牌堆底摸一张牌；2.你对其造成1点伤害，然后此技能失效直到本回合结束。',
+            wechatpizu: '圮族',
+            wechatpizu_info: `锁定技，每名角色限一次，当你对一名角色造成伤害后，你亮出牌堆顶X张牌并可使用其中任意张牌，然后你弃置本次未以此法使用牌数张手牌（X为场上受到过你造成伤害的角色且至多为4）。然后若你已受伤且你对场上所有其他角色均造成过伤害，你增加1点体力上限，回复1点体力并修改${get.poptip('wechatfangming')}。`,
 
             // ----------------------- 台词部分 ----------------------- //
             '#ext:活动武将/audio/skill/wechatzhongxin1': '苍生之愿，即贫道所愿也。',
