@@ -16778,16 +16778,14 @@ const packs = function () {
                         audio: 'wechatjiyu',
                         trigger: {
                             player: 'damageEnd',
-                            global: ['shaMiss', 'eventNeutralized'],
+                            source: 'damageSource',
                         },
                         filter(event, player, name) {
                             const list = [player];
                             const target = _status.currentPhase;
                             if (target?.isIn()) list.add(target);
                             if (list.every(current => !current.getCards('he').some(card => player.canRecast(card)))) return false;
-                            if (event.name == 'damage') return true;
-                            const responder = event.name == 'sha' ? event.target : event._neutralize_event.player;
-                            return player == responder;
+                            return true;
                         },
                         async cost(event, trigger, player) {
                             const list = [player];
@@ -17901,7 +17899,7 @@ const packs = function () {
                     }
                 },
                 usable(skill, player) {
-                    return 2 + player.countMark(`${skill}_add`);
+                    return 3 + player.countMark(`${skill}_add`);
                 },
                 filter(event, player) {
                     return player.hasCard(card => lib.skill.wechatzhenxian.filterCard(card, player), 'he');
@@ -18012,7 +18010,7 @@ const packs = function () {
                         },
                         mark: true,
                         intro: {
-                            markcount: (list = []) => `${list.length}/8`,
+                            markcount: (list = []) => `${list.length}/4`,
                             content(list = []) {
                                 if (!list.length) return '当前未使用过区间外的牌';
                                 return `已使用过${list.join('、')}点的牌`;
@@ -18030,7 +18028,7 @@ const packs = function () {
                             player.markAuto(event.name, [get.number(trigger.card)]);
                             player.storage[event.name].sort((a, b) => a - b);
                             player.addTip(event.name, ['进学', ...player.storage[event.name]].join(' '));
-                            if (player.getStorage(event.name).length >= 8) {
+                            if (player.getStorage(event.name).length >= 4) {
                                 player.removeSkill(event.name);
                                 player.popup('wechatlihai');
                                 game.log(player, '完成了', `#g【${get.translation('wechatlihai')}】`, '的', '#y进学', '条件');
@@ -20442,7 +20440,7 @@ const packs = function () {
             wechattaohuan: '韬环',
             wechattaohuan_info: `①你的回合内，未横置的角色受到的属性伤害+1。②准备阶段，你可以选择一名角色，然后从其开始的X名未横置的角色依次选择是否横置（X为其的体力值）。`,
             wechatjiyu: '戢羽',
-            wechatjiyu_info: '①本局游戏限零次。你可以将一张手牌当做一张能造成属性伤害的非装备牌使用。②当你受到伤害后或抵消牌后，你可以重铸你或当前回合角色的一张牌，若此牌花色与你本轮以此法重铸的牌均不同，你摸一张牌且〖戢羽①〗发动次数+1。',
+            wechatjiyu_info: '①本局游戏限零次。你可以将一张手牌当做一张能造成属性伤害的非装备牌使用。②当你造成或受到伤害后，你可以重铸你或当前回合角色的一张牌，若此牌花色与你本轮以此法重铸的牌均不同，你摸一张牌且〖戢羽①〗发动次数+1。',
             wechat_zhiyin_caorui: '极曹叡',
             wechatzhaoshou: '诏授',
             wechatzhaoshou_info: `出牌阶段限一次。你可以交给一名其他角色任意张牌。然后其可以使用每种类别的手牌各一张。若其因此使用的牌均造成了伤害或均未造成伤害，你摸X张牌（X为其本次因此使用的牌数）。`,
@@ -20471,9 +20469,9 @@ const packs = function () {
             wechatchengfan: '承帆',
             wechatchengfan_info: '摸牌阶段，你改为获得等量点数为10-J之间的牌，你使用点数在10-J外的牌无任何次数限制。',
             wechatzhenxian: '镇舷',
-            wechatzhenxian_info: '出牌阶段限两次，你可以重铸一张牌（不能重铸本阶段以此法重铸过的点数的牌）。若此牌点数与你本回合上次重铸的牌点数相邻，则你可以将其他角色场上的一张牌移动到你的对应区域或令此技能本阶段发动次数+1。',
+            wechatzhenxian_info: '出牌阶段限三次，你可以重铸一张牌（不能重铸本阶段以此法重铸过的点数的牌）。若此牌点数与你本回合上次重铸的牌点数相邻，则你可以将其他角色场上的一张牌移动到你的对应区域或令此技能本阶段发动次数+1。',
             wechatlihai: '犁海',
-            wechatlihai_info: `${get.poptip('rule_xizifuSkill')}(2)，出牌阶段结束时，若你场上的牌数为全场最多，你令${get.poptip('wechatchengfan')}点数区间上限+1，摸牌阶段摸牌数+1。进学：使用八张${get.poptip('wechatchengfan')}点数区间外的牌。`,
+            wechatlihai_info: `${get.poptip('rule_xizifuSkill')}(2)，出牌阶段结束时，若你场上的牌数为全场最多，你令${get.poptip('wechatchengfan')}点数区间上限+1，摸牌阶段摸牌数+1。进学：使用四张${get.poptip('wechatchengfan')}点数区间外的牌。`,
             wechat_shantao: '小程序山涛',
             wechatjieshen: '节身',
             wechatjieshen_info: '回合开始时，你可以执行一个额外的弃牌阶段。若如此做，你摸两张牌并令一名角色于其下个弃牌阶段开始时跳过此阶段。',
