@@ -8588,7 +8588,6 @@ const packs = function () {
                         },
                         async content(event, trigger, player) {
                             const target = event.targets[0];
-                            await player.logSkill('minirefangquan', target);
                             if (event.cards?.length) await player.discard(event.cards);
                             await player.turnOver();
                             if (player.countCards('he')) {
