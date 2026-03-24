@@ -2134,22 +2134,19 @@ const packs = function () {
                 lose: false,
                 delay: false,
                 usable: 1,
-                content() {
-                    'step 0'
-                    if (cards.length) {
-                        player.give(cards, target);
-                        event.goto(3);
-                    }
-                    'step 1'
-                    target.chooseToGive(player, '同心：将一张手牌交给' + get.translation(player), true);
-                    'step 2'
-                    if (player.storage.wechattongxin) {
+                async content(event, trigger, player) {
+                    const { cards, target } = event;
+                    if (cards?.length) {
+                        await player.give(cards, target);
                         if (target.countCards('h') >= player.countCards('h')) {
                             player.line(target);
-                            target.damage();
+                            await target.damage();
                         }
+                    } else {
+                        if (!target.countCards('h')) return;
+                        await target.chooseToGive(player, '同心：将一张手牌交给' + get.translation(player), true);
+                        if (target.countCards('h') <= player.countCards('h')) target.draw();
                     }
-                    else if (target.countCards('h') <= player.countCards('h')) target.draw();
                 },
                 ai: {
                     order: 7,
