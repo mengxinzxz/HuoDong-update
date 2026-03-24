@@ -29098,9 +29098,10 @@ const packs = function () {
                 trigger: { global: 'loseAfter' },
                 filter(event, player) {
                     if (event.getParent(3).name.indexOf('dcyinlu_') !== 0 || player == event.player) return false;
-                    return true;
+                    return event.cards.someInD('d');
                 },
                 forced: true,
+                logTarget: 'player',
                 content() {
                     player.gain(trigger.cards.filterInD('d'), 'gain2');
                 },
