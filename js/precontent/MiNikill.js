@@ -16270,55 +16270,25 @@ const packs = function () {
                 },
             },
             miniretianxiang: {
-                inherit: 'minitianxiang',
-                async cost(event, trigger, player) {
-                    event.result = await player.chooseCardTarget({
-                        prompt: get.prompt2(event.skill),
-                        filterCard(card, player) {
-                            return get.suit(card) == 'heart' && lib.filter.cardDiscardable(card, player);
-                        },
-                        filterTarget: lib.filter.notMe,
-                        ai1(card) {
-                            return 10 - get.value(card);
-                        },
-                        ai2(target) {
-                            const player = get.player(), trigger = get.event().getTrigger(), att = get.attitude(player, target);
-                            const da = player.hp === 1 ? 10 : 0, eff = get.damageEffect(target, trigger.source, target);
-                            if (att === 0) return 0.1 + da;
-                            if (eff >= 0 && att > 0) return att + da;
-                            if (att > 0 && target.hp > 1) {
-                                if (target.getDamagedHp() >= 3) return att * 1.1 + da;
-                                if (target.getDamagedHp() >= 2) return att * 0.9 + da;
-                            }
-                            return -att + da;
-                        },
-                    }).forResult();
-                },
-                subSkill: {
-                    effect: {
-                        charlotte: true,
-                        trigger: { global: ['damageAfter', 'damageCancelled', 'damageZero'] },
-                        filter(event, player) {
-                            return event.miniretianxiang_effect?.includes(player) && event.player.isIn();
-                        },
-                        forced: true,
-                        popup: false,
-                        async content(event, trigger, player) {
-                            const target = trigger.player;
-                            let result;
-                            if (target.isHealthy()) result = { index: 0 };
-                            else {
-                                result = await player.chooseControl().set('choiceList', [
-                                    '令' + get.translation(target) + '摸一张牌',
-                                    '令' + get.translation(target) + '摸' + get.cnNumber(Math.min(5, target.getDamagedHp())) + '张牌',
-                                ]).set('ai', () => {
-                                    const player = get.player(), target = get.event().getTrigger().player;
-                                    return get.attitude(player, target) > 0 ? 1 : 0;
-                                }).forResult();
-                            }
-                            await target.draw(result.index === 0 ? 1 : Math.min(5, target.getDamagedHp()));
-                        },
-                    },
+               inherit: 'retianxiang',
+                async content(event, trigger, player) {
+                    const [target] = event.targets;
+                    trigger.cancel();
+                    await player.discard(event.cards);
+                    await target.damage(trigger.source || 'nosource', 'nocard');
+                    let result;
+                    if (target.isHealthy() || target.getDamagedHp() == 1) result = { index: 0 };
+                    else {
+                        result = await player.chooseControl().set('choiceList', [
+                            '令' + get.translation(target) + '摸一张牌',
+                            '令' + get.translation(target) + '摸' + get.cnNumber(Math.min(5, target.getDamagedHp())) + '张牌',
+                        ]).set('ai', () => {
+                            const { player, target } = get.event();
+                            return get.attitude(player, target) > 0 ? 1 : 0;
+                        }).set('target', target).forResult();
+                    }
+                    if (typeof result?.index !== 'number') return;
+                    await target.draw(result.index === 0 ? 1 : Math.min(5, target.getDamagedHp()));
                 },
             },
             minijiang: {
