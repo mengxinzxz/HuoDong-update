@@ -8588,7 +8588,6 @@ const packs = function () {
                         },
                         async content(event, trigger, player) {
                             const target = event.targets[0];
-                            await player.logSkill('minirefangquan', target);
                             if (event.cards?.length) await player.discard(event.cards);
                             await player.turnOver();
                             if (player.countCards('he')) {
@@ -30784,7 +30783,7 @@ const packs = function () {
                 derivation: 'ministarxiaoyan',
                 forced: false,
                 check(event, player) {
-                    return player.hp + player.countCards('hs', { name: ['tao', 'jiu'] }) > 1;
+                    return game.hasPlayer(current => current != player) && (player.hp + player.countCards('hs', { name: ['tao', 'jiu'] }) > 1);
                 },
                 async content(event, trigger, player) {
                     await player.loseHp();
