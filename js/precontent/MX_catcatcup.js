@@ -16,6 +16,14 @@ const packs = function () {
             cat_re_zhaoyun: ['male', 'shu', 4, ['longdan', 'catyajiao']],
             cat_re_machao: ['male', 'shu', 4, ['mashu', 'cattieji']],
             cat_re_huangyueying: ['male', 'shu', 4, ['catjizhi', 'reqicai']],
+            cat_re_ganning: ['male', 'wu', 4, ['catqixi', 'fenwei']],
+            cat_re_lvmeng: ['male', 'wu', 4, ['catkeji', 'catqinxue']],
+            cat_re_zhouyu: ['male', 'wu', 3, ['catyingzi', 'catfanjian']],
+            cat_re_luxun: ['male', 'wu', 4, ['catqianxun', 'catlianying']],
+            cat_re_caocao: ['male', 'wei', 4, ['catjianxiong']],
+            cat_re_xiahoudun: ['male', 'wei', 4, ['catganglie', 'new_qingjian']],
+            cat_re_xuzhu: ['male', 'wei', 4, ['catluoyi']],
+            cat_re_zhenji: ['female', 'wei', 3, ['catluoshen', 'reqingguo']],
         },
         skill: {
             //刘备
@@ -129,7 +137,8 @@ const packs = function () {
             },
             //诸葛亮
             catguanxing: {
-                audio: ['guanxing_re_zhugeliang1.mp3', 'guanxing_re_zhugeliang2.mp3'],
+                audio: 'guanxing',
+                audioname: ['re_zhugeliang'],
                 trigger: { player: ['phaseZhunbeiBegin', 'phaseJieshuBegin'] },
                 filter(event, player) {
                     return event.name !== 'phaseJieshu' || player.hasSkill('catguanxing_on');
@@ -255,6 +264,274 @@ const packs = function () {
                     },
                 },
             },
+            //甘宁
+            catqixi: {
+                audio: 'qixi',
+                audioname: ['re_ganning'],
+                trigger: { global: 'loseAfter' },
+                filter(event, player) {
+                    if (!player.hasSkill('fenwei', null, null, false) || player.hasSkill('fenwei')) return false;
+                    const evt = event.getParent(3);
+                    if (evt.player !== player || evt.name !== 'guohe' || evt.type !== 'card') return false;
+                    return evt.getParent().skill === 'catqixi_qixi' && event.cards?.some(card => get.suit(card, event.target) === get.suit(evt.card, player));
+                },
+                forced: true,
+                locked: false,
+                async content(event, trigger, player) {
+                    player.restoreSkill('fenwei');
+                    player.popup('fenwei');
+                    game.log(player, '复原了技能', `#g【${lib.translate['fenwei']}】`);
+                },
+                group: 'catqixi_qixi',
+                subSkill: {
+                    qixi: {
+                        audio: 'qixi',
+                        inherit: 'qixi',
+                    },
+                },
+            },
+            //吕蒙
+            catkeji: {
+                audio: 'keji',
+                inherit: 'keji',
+                async content(event, trigger, player) {
+                    trigger.cancel();
+                    if (!player.hasHistory('useCard', evt => evt.isPhaseUsing())) await player.draw(2);
+                },
+            },
+            catqinxue: {
+                audio: 'qinxue',
+                inherit: 'qinxue',
+                trigger: { player: 'phaseZhunbeiBegin' },
+                async content(event, trigger, player) {
+                    player.awakenSkill(event.name);
+                    await player.loseMaxHp();
+                    await player.addSkills('gongxin');
+                    player.addTempSkill('catqinxue_paoxiao');
+                },
+                subSkill: {
+                    paoxiao: {
+                        charlotte: true,
+                        mark: true,
+                        intro: { content: '使用牌无次数限制' },
+                        mod: { cardUsable: () => Infinity },
+                    },
+                },
+            },
+            //周瑜
+            catyingzi: {
+                audio: 'reyingzi',
+                inherit: 'reyingzi',
+                async content(event, trigger, player) {
+                    trigger.num += (1 + (player.countCards('h') < 2));
+                },
+            },
+            catfanjian: {
+                audio: 'refanjian',
+                inherit: 'refanjian',
+                async content(event, trigger, player) {
+                    const { cards, target } = event;
+                    await player.showCards(cards, `${get.translation(player)}对${get.translation(target)}发动了【${get.translation(event.name)}】`);
+                    await player.give(cards, target);
+                    let result, card = cards[0];
+                    if (!target.countCards('h')) result = { control: '失去体力', index: 1 };
+                    else {
+                        result = await target.chooseControl('展示手牌', '失去体力').set('card', card).set('ai', () => {
+                            const { player, card } = get.event();
+                            const cards = player.getCards('he', { color: get.color(card) });
+                            if (cards.length === 1) return 0;
+                            if (cards.length >= 2 && cards.some(card => get.tag(card, 'save'))) return 1;
+                            if (player.hp === 1) return 0;
+                            if (cards.some(card => get.value(card) >= 8)) return 1;
+                            if (cards.length > 2 && player.hp > 2) return 1;
+                            if (cards.length > 3) return 1;
+                            return 0;
+                        }).set('prompt', `###${get.translation(event.name)}###<div class="text center">展示手牌并弃置所有${get.translation(get.color(card))}牌，或失去1点体力并随机弃置装备区里的一张牌</div>`).forResult();
+                    }
+                    if (typeof result?.index !== 'number') return;
+                    if (result.index === 0) {
+                        await target.showHandcards();
+                        const cards = target.getDiscardableCards(target, 'he', { color: get.color(card) });
+                        if (cards.length > 0) await target.discard(cards);
+                    }
+                    else {
+                        await target.loseHp();
+                        const cards = target.getDiscardableCards(target, 'e');
+                        if (cards.length > 0) await target.discard(cards.randomGets(1));
+                    }
+                },
+            },
+            //陆逊
+            catqianxun: {
+                audio: 'reqianxun',
+                inherit: 'reqianxun',
+                filter(event, player) {
+                    if (!player.countCards('h')) return false;
+                    if (event.getParent().name === 'phaseJudge') return true;
+                    if (event.name === 'judge') return false;
+                    if (event.targets && event.targets.length > 1) return false;
+                    return event.card && event.player !== player && (event.card.name === 'sha' || get.type(event.card) === 'trick');
+                },
+                check(event, player) {
+                    return get.effect(player, event.card, event.player, player) > 0 || !player.hasCard(card => player.canRespond(event, card), 'h');
+                },
+                ai: {
+                    effect: {
+                        target(card, player, target) {
+                            if (player === target || !target.hasSkill('catlianying') || !target.hasFriend()) return;
+                            const type = get.type(card), nh = Math.min(target.countCards(), game.countPlayer(i => get.attitude(target, i) > 0));
+                            if (card.name === 'sha' || type === 'trick') {
+                                if (!get.tag(card, 'multitarget') || get.info(card).singleCard) {
+                                    if (get.tag(card, 'damage')) return [1.5, nh - 1];
+                                    return [1, nh];
+                                }
+                            }
+                            else if (type === 'delay') return [0.5, 0.5];
+                        },
+                    },
+                },
+            },
+            catlianying: {
+                audio: 'relianying',
+                inherit: 'relianying',
+                async cost(event, trigger, player) {
+                    const num = trigger.getl(player).hs.length;
+                    event.result = await player.chooseTarget(get.prompt(event.skill), `令至多${get.cnNumber(num)}名角色各摸一张牌`, [1, num]).set('ai', target => {
+                        const player = get.player();
+                        return get.attitude(player, target) + (player === target ? 10 : 0);
+                    }).forResult();
+                },
+                direct: false,
+                async content(event, trigger, player) {
+                    const targets = [...event.targets].sortBySeat();
+                    await game.asyncDraw(targets);
+                    await game.delayx();
+                    if (player.hasHistory('gain', evt => {
+                        if (evt.getParent(2) !== event) return false;
+                        return evt.cards?.some(card => get.type(card, null, false) === 'equip');
+                    })) await player.draw();
+                },
+            },
+            //曹操
+            catjianxiong: {
+                inherit: 'new_rejianxiong',
+                async content(event, trigger, player) {
+                    const goon = get.itemtype(trigger.cards) === 'cards';
+                    await player.draw(1 + (!goon), 'nodelay');
+                    if (goon && trigger.cards.someInD()) await player.gain(trigger.cards.filterInD(), 'gain2');
+                },
+            },
+            //夏侯惇
+            catganglie: {
+                audio: 'reganglie',
+                inherit: 'reganglie',
+                getIndex: event => event.num || 1,
+                async content(event, trigger, player) {
+                    const source = trigger.source;
+                    const result = await player.judge(card => {
+                        return get.color(card) === 'red' ? 1 : 0;
+                    }).forResult();
+                    switch (result?.color) {
+                        case 'red':
+                            await source.damage();
+                            break;
+                        case 'black':
+                            await player.discardPlayerCard(source, 'he', true);
+                            await player.draw();
+                            break;
+                    }
+                },
+            },
+            //许褚
+            catluoyi: {
+                inherit: 'new_reluoyi',
+                async content(event, trigger, player) {
+                    const next = game.cardsGotoOrdering(get.cards(4));
+                    await next;
+                    const cards2 = next.cards;
+                    if (!cards2?.length) return;
+                    await player.showCards(cards2, `${get.translation(player)}发动了【${get.translation(event.name)}】`);
+                    const cards = cards2.filter(card => {
+                        const type = get.type(card);
+                        return type === 'basic' || card.name === 'juedou' || (type === 'equip' && get.subtypes(card).includes('equip1'));
+                    }), str = `###${get.translation(event.name)}###<div class="text center">是否放弃摸牌，改为获得${cards.length > 0 ? get.translation(cards) : '棍母'}？</div>`;
+                    const result = await player.chooseBool(str).set('choice', cards.length >= trigger.num).forResult();
+                    if (result?.bool) {
+                        trigger.changeToZero();
+                        if (cards.length) await player.gain(cards, 'gain2');
+                        player.addTempSkill('catluoyi_buff', { player: 'phaseBegin' });
+                        player.addMark('catluoyi_buff', 1, false);
+                    }
+                },
+                subSkill: {
+                    buff: {
+                        charlotte: true,
+                        intro: { content: '【杀】和【决斗】造成的伤害+1' },
+                        init(player, skill) {
+                            player.addTip(skill, get.translation(skill));
+                        },
+                        onremove(player, skill) {
+                            player.removeTip(skill);
+                            delete player.storage[skill];
+                        },
+                        audio: 'reluoyi',
+                        trigger: { source: 'damageBegin1' },
+                        filter(event, player) {
+                            return event.card && (event.card.name === 'sha' || event.card.name === 'juedou') && event.notLink();
+                        },
+                        forced: true,
+                        logTarget: 'player',
+                        async content(event, trigger, player) {
+                            trigger.num += player.countMark(event.name);
+                        },
+                        ai: {
+                            damageBonus: true,
+                            skillTagFilter(player, tag, arg) {
+                                return arg?.card && (arg.card.name === 'sha' || arg.card.name === 'juedou');
+                            },
+                        },
+                    },
+                },
+            },
+            //甄姬
+            catluoshen: {
+                audio: 'reluoshen',
+                trigger: { player: 'phaseZhunbeiBegin' },
+                frequent: true,
+                async content(event, trigger, player) {
+                    while (true) {
+                        const result = await player.judge(card => {
+                            return get.color(card) === 'black' ? 1 : -1;
+                        }).set('callback', function () {
+                            if (get.position(card, true) === 'o') {
+                                player.addTempSkill('catluoshen_effect');
+                                player.gain(card, 'gain2').gaintag.add('catluoshen_effect');
+                            }
+                        }).forResult();
+                        if (result?.bool) {
+                            const result2 = await player.chooseBool(`${get.translation(event.name)}：是否继续进行判定？`).set('frequentSkill', event.name).forResult();
+                            if (result2?.bool) continue;
+                        }
+                        break;
+                    }
+                },
+                subSkill: {
+                    effect: {
+                        charlotte: true,
+                        onremove(player, skill) {
+                            player.removeGaintag(skill);
+                        },
+                        mod: {
+                            ignoredHandcard(card, player) {
+                                if (card.hasGaintag('catluoshen_effect')) return true;
+                            },
+                            cardDiscardable(card, player, name) {
+                                if (name === 'phaseDiscard' && card.hasGaintag('catluoshen_effect')) return false;
+                            },
+                        },
+                    },
+                },
+            },
         },
         translate: {
             cat_re_liubei: '刘备',
@@ -272,6 +549,36 @@ const packs = function () {
             cat_re_huangyueying: '黄月英',
             catjizhi: '集智',
             catjizhi_info: '当你使用锦囊牌时，你可以摸一张牌。若此牌为基本牌且当前回合角色为你，则你本回合手牌上限+1（至多+3）。',
+            cat_re_ganning: '甘宁',
+            catqixi: '奇袭',
+            catqixi_info: `你可以将一张黑色牌当作【过河拆桥】使用。你因以此法转化的【过河拆桥】弃置了与此牌花色相同的牌后重置${get.poptip('fenwei')}。`,
+            cat_re_lvmeng: '吕蒙',
+            catkeji: '克己',
+            catkeji_info: '若你未于本回合出牌阶段使用或打出过【杀】，则你可以跳过弃牌阶段；若你未于本回合出牌阶段使用过牌，则你再摸两张牌。',
+            catqinxue: '勤学',
+            catqinxue_info: `觉醒技，准备阶段，若你的手牌数减体力值大于等于2，则你减1点体力上限，获得技能${get.poptip('gongxin')}，且本回合使用牌无次数限制。`,
+            cat_re_zhouyu: '周瑜',
+            catyingzi: '英姿',
+            catyingzi_info: '锁定技。你的手牌上限视为你的体力上限；摸牌阶段，你额外摸一张牌（若你的手牌数小于2则改为额外摸两张牌）。',
+            catfanjian: '反间',
+            catfanjian_info: '出牌阶段限一次，你可以展示一张手牌并交给一名其他角色，其选择一项：①展示所有手牌，弃置所有与此牌颜色相同的牌；②失去1点体力，随机弃置装备区里的一张牌。',
+            cat_re_luxun: '陆逊',
+            catqianxun: '谦逊',
+            catqianxun_info: '当其他角色使用的锦囊牌或【杀】对你生效时，若你是此牌的唯一目标，则你可以将所有手牌置于你的武将牌上直到回合结束。',
+            catlianying: '连营',
+            catlianying_info: '当你失去最后的手牌后，你可以令至多X名角色各摸一张牌（X为你此次失去的手牌数）；若你因此获得了装备牌，则你再摸一张牌。',
+            cat_re_caocao: '曹操',
+            catjianxiong: '奸雄',
+            catjianxiong_info: '当你受到伤害后，你可以摸一张牌并获得对你造成伤害的牌（若没有造成伤害的牌则改为摸两张牌）。',
+            cat_re_xiahoudun: '夏侯惇',
+            catganglie: '刚烈',
+            catganglie_info: '当你受到1点有来源造成的伤害后，你可进行判定，若结果为：红色，你对伤害来源造成1点伤害；黑色，你弃置伤害来源一张牌并摸一张牌。',
+            cat_re_xuzhu: '许褚',
+            catluoyi: '裸衣',
+            catluoyi_info: '摸牌阶段开始时，你亮出牌堆顶四张牌。然后你可以获得其中的基本牌、武器牌和【决斗】，若如此做，你放弃摸牌，且以你为伤害来源的【杀】或【决斗】造成的伤害+1直到你的下回合开始。',
+            cat_re_zhenji: '甄姬',
+            catluoshen: '洛神',
+            catluoshen_info: '准备阶段，你可以进行判定并获得判定牌（本回合不计入手牌上限），若判定结果为黑色，你可重复此流程。',
         },
     };
     for (let i in MX_catcatcup.character) {
