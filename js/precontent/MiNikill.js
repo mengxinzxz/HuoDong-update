@@ -34326,8 +34326,10 @@ const packs = function () {
                                 return get.damageEffect(target, player, player);
                             }).forResult();
                         },
-                        content() {
-                            targets[0].damage();
+                        async content(event, trigger, player) {
+                            await event.targets[0].damage();
+                            const card = get.cardPile(card => get.tag(card, 'damage') && get.type(card) !== 'delay');
+                            if (card) await player.gain(card, 'gain2');
                         },
                     },
                 },
