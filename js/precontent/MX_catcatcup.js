@@ -4,12 +4,16 @@ const packs = function () {
     var MX_catcatcup = {
         name: 'MX_catcatcup',
         connect: true,
-        /*
         characterSort: {
             MX_catcatcup: {
+                cat_shuhanhujiang: ['cat_re_zhaoyun', 'cat_re_machao'],
+                cat_xianmingjunzhu: ['cat_re_liubei', 'cat_re_caocao'],
+                cat_yongguansanjun: ['cat_re_ganning', 'cat_re_lvmeng', 'cat_re_xiahoudun', 'cat_re_xuzhu'],
+                cat_weiwoqianli: ['cat_re_zhugeliang', 'cat_re_zhouyu', 'cat_re_luxun', 'cat_re_huatuo'],
+                cat_jinguohongyan: ['cat_re_huangyueying', 'cat_re_zhenji', 'cat_re_diaochan'],
+                cat_shenhua_feng: ['cat_re_weiyan', 'cat_ol_xiahouyuan', 'cat_xiaoqiao', 'cat_re_yuji', 'cat_sp_zhangjiao'],
             },
         },
-        */
         character: {
             cat_re_liubei: ['male', 'shu', 4, ['catrende']],
             cat_re_zhugeliang: ['male', 'shu', 3, ['catguanxing', 'kongcheng']],
@@ -24,6 +28,13 @@ const packs = function () {
             cat_re_xiahoudun: ['male', 'wei', 4, ['catganglie', 'new_qingjian']],
             cat_re_xuzhu: ['male', 'wei', 4, ['catluoyi']],
             cat_re_zhenji: ['female', 'wei', 3, ['catluoshen', 'reqingguo']],
+            cat_re_huatuo: ['male', 'qun', 3, ['catqingnang', 'jijiu']],
+            cat_re_diaochan: ['female', 'qun', 3, ['lijian', 'catbiyue']],
+            cat_re_weiyan: ['male', 'shu', 4, ['xinkuanggu', 'catqimou']],
+            cat_ol_xiahouyuan: ['male', 'wei', 4, ['catshensu', 'shebian']],
+            cat_xiaoqiao: ['female', 'wu', 3, ['xintianxiang', 'cathongyan']],
+            cat_sp_zhangjiao: ['male', 'qun', 3, ['catleiji', 'guidao']],
+            cat_re_yuji: ['male', 'qun', 3, ['catguhuo']],
         },
         skill: {
             //刘备
@@ -532,8 +543,419 @@ const packs = function () {
                     },
                 },
             },
+            //华佗
+            catqingnang: {
+                audio: 'new_reqingnang',
+                inherit: 'new_reqingnang',
+                usable: 1,
+                filter(event, player) {
+                    const info = lib.skill.catqingnang;
+                    if (!player.hasCard(card => info.filterCard(card, player), info.position)) return false;
+                    return game.hasPlayer(target => info.filterTarget(null, player, target));
+                },
+                filterCard: lib.filter.cardDiscardable,
+                position: 'he',
+                filterTarget(card, player, target) {
+                    return target.isDamaged();
+                },
+                async content(event, trigger, player) {
+                    const { cards, target } = event;
+                    await target.recover();
+                    if (get.color(cards[0], player) === 'red') {
+                        if (typeof player.getStat('skill')?.[event.name] === 'number') delete player.getStat('skill')[event.name];
+                    }
+                },
+            },
+            //貂蝉
+            catbiyue: {
+                audio: 'rebiyue',
+                inherit: 'rebiyue',
+                async content(event, trigger, player) {
+                    await player.draw(1 + (player.countCards('h') < player.getHp()));
+                },
+            },
+            //魏延
+            catqimou: {
+                limited: true,
+                audio: 'qimou',
+                enable: 'phaseUse',
+                filter(event, player) {
+                    return player.hp > 0;
+                },
+                chooseButton: {
+                    dialog(event, player) {
+                        return ui.create.dialog(`###${get.translation('catqimou')}###<div class="text center">${get.translation('catqimou_info')}</div>`);
+                    },
+                    chooseControl(event, player) {
+                        return [...Array.from({ length: player.hp }).map((_, index) => `${index + 1}点`), 'cancel2'];
+                    },
+                    check(event, player) {
+                        let num = player.hp - 1;
+                        if (player.hasCard(card => player.canSaveCard(card, player), 'hs')) num = player.hp;
+                        return num > 0 ? `${num}点` : 'cancel2';
+                    },
+                    prompt(result) {
+                        const str = '失去X点体力，本回合你计算与其他角色的距离-X，且你可以多使用X张【杀】，且你因【杀】造成伤害发动【狂骨】时可多摸一张牌。';
+                        return `###${get.translation('catqimou')}###<div class="text center">${str.replaceAll('X', result.control.slice(0, -1))}</div>`;
+                    },
+                    backup(result) {
+                        return {
+                            audio: 'qimou',
+                            number: Number(result.control.slice(0, -1)),
+                            skillAnimation: true,
+                            animationColor: 'orange',
+                            async content(event, trigger, player) {
+                                player.awakenSkill('catqimou');
+                                const num = lib.skill[event.name].number;
+                                await player.loseHp(num);
+                                player.addTempSkill('catqimou_effect');
+                                player.addMark('catqimou_effect', num, false);
+                            },
+                        };
+                    },
+                },
+                ai: {
+                    order: 14,
+                    result: {
+                        player(player) {
+                            if (player.hp < 3) return false;
+                            let mindist = player.hp;
+                            if (player.hasCard(card => player.canSaveCard(card, player), 'hs')) mindist++;
+                            return game.countPlayer(current => {
+                                if (get.distance(player, current) > mindist) return false;
+                                return player.countCards('hs', card => {
+                                    if (get.name(card) !== 'sha') return false;
+                                    return player.canUse(card, current, false) && get.effect(current, card, player, player) > 0;
+                                }) >= mindist - 1;
+                            });
+                        },
+                    },
+                },
+                subSkill: {
+                    backup: {},
+                    effect: {
+                        charlotte: true,
+                        onremove: true,
+                        intro: { content: '计算与其他角色的距离-#，可以多使用#张【杀】，因【杀】造成伤害发动【狂骨】时可多摸一张牌' },
+                        mod: {
+                            cardUsable(card, player, num) {
+                                if (card.name === 'sha') return num + player.countMark('catqimou_effect');
+                            },
+                            globalFrom(from, to, distance) {
+                                return distance - from.countMark('catqimou_effect');
+                            },
+                        },
+                        audio: 'qimou',
+                        trigger: { player: 'gainAfter' },
+                        filter(event, player) {
+                            if (event.getParent().name !== 'draw' || event.getParent(2).name !== 'chooseDrawRecover') return false;
+                            return event.getParent(2).logSkill === 'xinkuanggu' && event.getParent(3)._trigger.card?.name === 'sha';
+                        },
+                        forced: true,
+                        async content(event, trigger, player) {
+                            await player.draw();
+                        },
+                    },
+                },
+            },
+            //夏侯渊
+            catshensu: {
+                audio: 'shensu1',
+                audioname: ['xiahouba', 're_xiahouyuan', 'ol_xiahouyuan'],
+                trigger: { player: ['phaseJudgeBefore', 'phaseUseBefore', 'phaseDiscardBefore'] },
+                filter(event, player) {
+                    const card = new lib.element.VCard({ name: 'sha' });
+                    if (!game.hasPlayer(target => {
+                        if (target === player) return false;
+                        return player.canUse(card, target, false);
+                    })) return false;//免得一些神必技能能让自己对自己出杀
+                    return event.name !== 'phaseUse' || player.hasCard(card => {
+                        if (get.position(card) === 'h' && _status.connectMode) return true;
+                        return get.type(card) !== 'basic' && lib.filter.cardDiscardable(card, player);
+                    }, 'he');
+                },
+                async cost(event, trigger, player) {
+                    const str = (() => {
+                        let str = `跳过${['判定阶段和摸牌', '出牌', '弃牌'][lib.skill[event.skill].trigger.player.indexOf(event.triggername)]}阶段`;
+                        switch (trigger.name) {
+                            case 'phaseUse': str += '并弃置一张非基本牌'; break;
+                            case 'phaseDiscard': str += '并翻面'; break;
+                        }
+                        return `${str}，视为对一名其他角色使用一张无距离限制的【杀】并摸一张牌。`;
+                    })();
+                    event.result = await player.chooseCardTarget({
+                        prompt: get.prompt(event.skill),
+                        prompt2: str,
+                        filterCard(card, player) {
+                            if (get.event().getTrigger().name !== 'phaseUse') return false;
+                            return get.type(card) !== 'basic' && lib.filter.cardDiscardable(card, player);
+                        },
+                        selectCard() {
+                            return get.event().getTrigger().name === 'phaseUse' ? 1 : -1;
+                        },
+                        filterTarget(牢骚哥经典沉睡, player, target) {
+                            const card = new lib.element.VCard({ name: 'sha' });
+                            return target !== player && player.canUse(card, target, false);
+                        },
+                        ai1(card) {
+                            if (!get.event().check) return -1;
+                            return 7 - get.value(card);
+                        },
+                        ai2(target) {
+                            const { player, check } = get.event();
+                            if (!check) return -1;
+                            return get.effect(target, new lib.element.VCard({ name: 'sha' }), player, player);
+                        },
+                        check: (() => {
+                            switch (trigger.name) {
+                                case 'phaseJudge': return player.countCards('h') > 2;
+                                case 'phaseUse': return player.needsToDiscard();
+                                case 'phaseDiscard': return player.needsToDiscard() || player.isTurnedOver() || (player.hasSkill('shebian') && player.canMoveCard(true, true));
+                            }
+                        })(),
+                    }).setHiddenSkill(event.skill).forResult();
+                },
+                async content(event, trigger, player) {
+                    trigger.cancel();
+                    switch (trigger.name) {
+                        case 'phaseJudge': player.skip('phaseDraw'); break;
+                        case 'phaseUse': event.cards?.length && await player.discard(event.cards); break;
+                        case 'phaseDiscard': await player.turnOver(); break;
+                    }
+                    const card = new lib.element.VCard({ name: 'sha' }), target = event.targets[0];
+                    if (player.canUse(card, target, false)) {
+                        const next = player.useCard(card, target, false);
+                        next.audio = false;
+                        player.when('useCard').filter(evt => evt === next).then(() => player.draw());
+                        await next;
+                    }
+                },
+            },
+            //小乔
+            cathongyan: {
+                audio: 'hongyan',
+                mod: {
+                    suit(card, suit) {
+                        if (suit === 'spade') return 'heart';
+                    },
+                    maxHandcard(player, num) {
+                        if (player.countCards('e') > 0) return num + 2;
+                    },
+                },
+            },
+            //张角
+            catleiji: {
+                audio: 'releiji',
+                inherit: 'releiji',
+                trigger: { player: ['useCard', 'respond', 'addJudgeEnd'] },
+                filter(event, player) {
+                    return event.card.name === (event.name === 'addJudge' ? 'shandian' : 'shan');
+                },
+                ai: {
+                    useShan: true,
+                    effect: {
+                        target_use(card, player, target, current) {
+                            return lib.skill.xinleiji.ai.effect.target_use(card, player, target, current);
+                        },
+                    },
+                },
+            },
+            //于吉
+            catguhuo: {
+                audio: 'xinfu_guhuo',
+                derivation: 'chanyuan',
+                enable: ['chooseToUse', 'chooseToRespond'],
+                hiddenCard(player, name) {
+                    if (player.isTempBanned('catguhuo')) return false;
+                    return get.inpileVCardList(info => {
+                        if (player.getStorage('catguhuo_used').includes(info[2])) return false;
+                        return info[0] === 'basic' || info[0] === 'trick';
+                    }).map(info => info[2]).includes(name);
+                },
+                filter(event, player) {
+                    return get.inpileVCardList(info => {
+                        if (player.getStorage('catguhuo_used').includes(info[2])) return false;
+                        return info[0] === 'basic' || info[0] === 'trick';
+                    }).filter(info => {
+                        const vcard = { name: info[2], nature: info[3] };
+                        return player.hasCard(card => event.filterCard(get.autoViewAs(vcard, [card]), player, event), 'hs');
+                    });
+                },
+                chooseButton: {
+                    dialog(event, player) {
+                        const dialog = ui.create.dialog('蛊惑', [get.inpileVCardList(info => {
+                            if (player.getStorage('catguhuo_used').includes(info[2])) return false;
+                            return info[0] === 'basic' || info[0] === 'trick';
+                        }).filter(info => {
+                            const vcard = { name: info[2], nature: info[3] };
+                            return player.hasCard(card => event.filterCard(get.autoViewAs(vcard, [card]), player, event), 'hs');
+                        }), 'vcard']);
+                        dialog.direct = true;
+                        return dialog;
+                    },
+                    check(button) {
+                        const event = get.event(), player = event.player, rand = event.getParent().getRand('catguhuo');
+                        const card = new lib.element.VCard({ name: button.link[2], nature: button.link[3] });
+                        const val = event.getParent().type === 'phase' ? player.getUseValue(card) : 1;
+                        if (val <= 0) return 0;
+                        if (game.hasPlayer(current => {
+                            return current !== player && !current.hasSkill('chanyuan') && (get.realAttitude || get.attitude)(current, player) < 0;
+                        }) && rand > 0.3) {
+                            if (!player.countCards('h', cardx => {
+                                if (card.name === cardx.name) {
+                                    if (card.name !== 'sha') return true;
+                                    return get.is.sameNature(card, cardx);
+                                }
+                                return false;
+                            })) return 0;
+                            return 3 * val;
+                        }
+                        return val;
+                    },
+                    prompt(links) {
+                        const link = links[0], name = link[2], nature = link[3];
+                        return `###${get.translation('catguhuo')}###<div class="text center">将一张手牌当作${lib.translate[nature] ?? ''}${lib.translate[name] ?? ''}使用</div>`;
+                    },
+                    backup(links) {
+                        return {
+                            audio: 'xinfu_guhuo',
+                            filterCard(card, player, target) {
+                                let result = true;
+                                let suit = card.suit, number = card.number;
+                                card.suit = 'none';
+                                card.number = null;
+                                let mod = game.checkMod(card, player, 'unchanged', 'cardEnabled2', player);
+                                if (mod != 'unchanged') result = mod;
+                                card.suit = suit;
+                                card.number = number;
+                                return result;
+                            },
+                            position: 'hs',
+                            viewAs: {
+                                name: links[0][2],
+                                nature: links[0][3],
+                                suit: 'none',
+                                number: null,
+                            },
+                            ignoreMod: true,
+                            ai1(card) {
+                                const event = get.event(), player = event.player, rand = event.getRand('catguhuo');
+                                if (game.hasPlayer(current => {
+                                    return current !== player && !current.hasSkill('chanyuan') && (get.realAttitude || get.attitude)(current, player) < 0;
+                                }) && rand > 0.3) {
+                                    const cardx = lib.skill.catguhuo_backup.viewAs;
+                                    if (card.name === cardx.name && (card.name !== 'sha' || get.is.sameNature(card, cardx))) return 10;
+                                    return 0;
+                                }
+                                return 6 - get.value(card);
+                            },
+                            log: false,
+                            popname: true,
+                            async precontent(event, trigger, player) {
+                                const { result } = event;
+                                player.logSkill('catguhuo');
+                                player.addTempSkill('catguhuo_guess');
+                                player.addTempSkill('catguhuo_used');
+                                player.markAuto('catguhuo_used', [event.result.card.name]);
+                                const card = result.cards[0];
+                                result.card.suit = get.suit(card);
+                                result.card.number = get.number(card);
+                            },
+                        };
+                    },
+                },
+                ai: {
+                    save: true,
+                    respondSha: true,
+                    respondShan: true,
+                    skillTagFilter(player, tag, arg) {
+                        if (player.isTempBanned('catguhuo')) return false;
+                        const hiddenCard = lib.skill.catguhuo.hiddenCard;
+                        if (tag === 'save') return hiddenCard(player, 'tao') || (arg && hiddenCard(player, 'jiu') && (arg === player || player.hasSkillTag('jiuOther', null, arg, true)));
+                        return hiddenCard(player, tag === 'respondSha' ? 'sha' : 'shan');
+                    },
+                    order: 10,
+                    result: {
+                        player(player, target) {
+                            if (_status.event.dying) return get.attitude(player, _status.event.dying);
+                            return 1;
+                        },
+                    },
+                },
+                subSkill: {
+                    backup: {},
+                    used: {
+                        charlotte: true,
+                        onremove: true,
+                    },
+                    guess: {
+                        charlotte: true,
+                        trigger: { player: ['useCardBefore', 'respondBefore'] },
+                        filter(event, player) {
+                            return event.skill === 'catguhuo_backup';
+                        },
+                        silent: true,
+                        firstDo: true,
+                        async content(event, trigger, player) {
+                            const card = trigger.cards[0], fake = card.name !== trigger.card.name || (card.name === 'sha' && !get.is.sameNature(trigger.card, card));
+                            trigger.card.number = get.number(card);
+                            trigger.card.suit = get.suit(card);
+                            const cardTranslate = `${get.translation(trigger.card.nature) || ''}${get.translation(trigger.card.name)}`;
+                            player.$throw(trigger.cards.length);
+                            player.popup(cardTranslate, trigger.name === 'useCard' ? 'metal' : 'wood');
+                            player.line(trigger.targets, get.nature(trigger.card));
+                            await player.lose(card, ui.ordering).set('relatedEvent', trigger);
+                            game.log(player, '声明了', '#y' + cardTranslate);
+                            const targets = game.filterPlayer(current => {
+                                return current !== player && !current.hasSkill('chanyuan');
+                            }).sortBySeat();
+                            let faker;
+                            if (targets.length > 0) {
+                                for (const target of targets) {
+                                    const result = await target.chooseBool(`${get.translation(event.name)}：是否质疑${get.translation(player)}声明的${cardTranslate}？`).set('choice', (() => {
+                                        if (target.hp <= 1 || (get.realAttitude || get.attitude)(target, player) >= 0) return false;
+                                        return Math.random() <= 0.5;
+                                    })()).forResult();
+                                    const bool = result?.bool;
+                                    target.chat(bool ? '质疑！' : '不质疑');
+                                    target.popup(bool ? '质疑' : '不质疑', bool ? 'fire' : 'wood');
+                                    game.log(target, bool ? '#y质疑' : '#g不质疑');
+                                    await game.delayx();
+                                    if (result?.bool) {
+                                        target.addExpose(0.2);
+                                        faker = target;
+                                        break;
+                                    }
+                                }
+                            }
+                            await player.showCards(trigger.cards, `${get.translation(player)}发动【${get.translation(event.name)}】扣置`);
+                            if (faker?.isIn()) {
+                                if (fake) {
+                                    faker.popup('质疑正确', 'wood');
+                                    game.log(player, '声明的', trigger.card, '作废了');
+                                    player.tempBan('catguhuo', null, false);
+                                    trigger.cancel();
+                                    trigger.getParent().goto(0);
+                                    trigger.line = false;
+                                }
+                                else {
+                                    faker.popup('质疑错误', 'fire');
+                                    await faker.addSkills('chanyuan');
+                                }
+                            }
+                            await game.delayx();
+                        },
+                    },
+                },
+            },
         },
         translate: {
+            cat_shuhanhujiang: '喵喵杯·蜀汉虎将',
+            cat_xianmingjunzhu: '喵喵杯·贤明君主',
+            cat_yongguansanjun: '喵喵杯·勇冠三军',
+            cat_weiwoqianli: '喵喵杯·帷幄千里',
+            cat_jinguohongyan: '喵喵杯·巾帼红颜',
+            cat_shenhua_feng: '喵喵杯·神话再临·风',
             cat_re_liubei: '刘备',
             catrende: '仁德',
             catrende_info: '出牌阶段，你可以将任意张手牌交给一名其他角色，然后本阶段你不能对其发动此技能。若你本阶段因此给出了至少两张牌，则你可以视为使用一张基本牌（有次数限制，若你本次给出了超出两张牌，则此牌的伤害值/回复值+1）。',
@@ -579,6 +1001,27 @@ const packs = function () {
             cat_re_zhenji: '甄姬',
             catluoshen: '洛神',
             catluoshen_info: '准备阶段，你可以进行判定并获得判定牌（本回合不计入手牌上限），若判定结果为黑色，你可重复此流程。',
+            cat_re_huatuo: '华佗',
+            catqingnang: '青囊',
+            catqingnang_info: '出牌阶段限一次，你可以弃置一张牌，令一名角色回复1点体力。若你弃置的是红色牌，则你重置本技能发动次数。',
+            cat_re_diaochan: '貂蝉',
+            catbiyue: '闭月',
+            catbiyue_info: '结束阶段，你可以摸一张牌（若你的手牌数小于体力值则改为摸两张牌）。',
+            cat_re_weiyan: '魏延',
+            catqimou: '奇谋',
+            catqimou_info: '限定技，出牌阶段，你可以失去任意点体力，本回合你计算与其他角色的距离-X，且你可以多使用X张【杀】，且你因【杀】造成伤害发动【狂骨】时可多摸一张牌（X为你失去的体力值）。',
+            cat_ol_xiahouyuan: '夏侯渊',
+            catshensu: '神速',
+            catshensu_info: '你可以选择至多三项：1.跳过判定阶段和摸牌阶段；2.跳过出牌阶段并弃置一张非基本牌；3.跳过弃牌阶段并将武将牌翻面。你每选择一项，视为你对一名其他角色使用一张无距离限制的【杀】并摸一张牌。',
+            cat_xiaoqiao: '小乔',
+            cathongyan: '红颜',
+            cathongyan_info: '锁定技，你区域内的黑桃牌和黑桃判定牌均视为红桃；若你的装备区有牌，则你的手牌上限+2。',
+            cat_sp_zhangjiao: '张角',
+            catleiji: '雷击',
+            catleiji_info: '当你使用或打出【闪】时或【闪电】进入你的判定区时，你可令一名其他角色进行判定。若判定结果为：梅花，你回复1点体力，然后对其造成1点雷属性伤害；黑桃，你对其造成2点雷属性伤害。',
+            cat_re_yuji: '于吉',
+            catguhuo: '蛊惑',
+            catguhuo_info: `每回合每种牌名限一次，你可以扣置一张手牌当作一张基本牌或普通锦囊牌使用或打出。其他角色依次选择是否质疑。有角色质疑时，你终止质疑流程并展示此牌：若为假，此牌作废且此技能本回合失效；若为真，质疑角色获得${get.poptip('chanyuan')}。`,
         },
     };
     for (let i in MX_catcatcup.character) {
