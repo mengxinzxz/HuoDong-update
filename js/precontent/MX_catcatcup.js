@@ -2037,6 +2037,7 @@ const packs = function () {
             cat_shenhua_huo: '喵喵杯·神话再临·火',
             cat_shenhua_lin: '喵喵杯·神话再临·林',
             cat_shenhua_yin: '喵喵杯·神话再临·阴',
+            cat_shenhua_lei: '喵喵杯·神话再临·雷',
             cat_re_liubei: '刘备',
             catrende: '仁德',
             catrende_info: '出牌阶段，你可以将任意张手牌交给一名其他角色，然后本阶段你不能对其发动此技能。若你本阶段因此给出了至少两张牌，则你可以视为使用一张基本牌（有次数限制，若你本次给出了超出两张牌，则此牌的伤害值/回复值+1）。',
