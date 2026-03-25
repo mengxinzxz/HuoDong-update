@@ -14,6 +14,7 @@ const packs = function () {
                 cat_shenhua_feng: ['cat_re_weiyan', 'cat_ol_xiahouyuan', 'cat_xiaoqiao', 'cat_re_yuji', 'cat_sp_zhangjiao'],
                 cat_shenhua_huo: ['cat_dianwei', 'cat_pangtong', 'cat_sp_zhugeliang', 'cat_taishici', 'cat_pangde', 'cat_re_yuanshao'],
                 cat_shenhua_lin: ['cat_ol_xuhuang', 'cat_sunjian', 'cat_zhurong', 'cat_jiaxu', 'cat_re_lusu'],
+                cat_shenhua_yin: ['cat_yanyan', 'cat_wangping', 'cat_sunliang', 'cat_kuailiangkuaiyue', 'cat_yl_luzhi'],
             },
         },
         character: {
@@ -48,6 +49,11 @@ const packs = function () {
             cat_zhurong: ['female', 'shu', 4, ['juxiang', 'catlieren']],
             cat_jiaxu: ['male', 'qun', 3, ['wansha', 'catluanwu', 'catweimu']],
             cat_re_lusu: ['male', 'wu', 3, ['cathaoshi', 'dimeng']],
+            cat_yanyan: ['male', 'shu', 4, ['catjuzhan']],
+            cat_wangping: ['male', 'shu', 4, ['catfeijun', 'catbinglve']],
+            cat_sunliang: ['male', 'wu', 3, ['catkuizhu', 'catchezheng']],
+            cat_kuailiangkuaiyue: ['male', 'wei', 3, ['nzry_jianxiang', 'catshenshi']],
+            cat_yl_luzhi: ['male', 'qun', 3, ['catmingren', 'catzhenliang']],
         },
         skill: {
             //刘备
@@ -1351,6 +1357,469 @@ const packs = function () {
                     },
                 },
             },
+            //严颜
+            catjuzhan: {
+                audio: 'nzry_juzhan',
+                trigger: {
+                    player: 'phaseZhunbeiBegin',
+                    target: 'useCardToTargeted',
+                },
+                filter(event, player) {
+                    if (player.storage.catjuzhan) return false;
+                    return event.name === 'phaseZhunbei' || (event.player !== player && event.card.name == 'sha');
+                },
+                prompt2() {
+                    const target = _status.currentPhase;
+                    return `摸一张牌${target?.isIn() ? `，然后${get.translation(target)}本回合内不能再对你使用牌` : ''}`;
+                },
+                async content(event, trigger, player) {
+                    player.changeZhuanhuanji('catjuzhan');
+                    await player.draw();
+                    const target = _status.currentPhase;
+                    if (target?.isIn()) {
+                        target.addTempSkill('catjuzhan_ban');
+                        target.markAuto('catjuzhan_ban', [player]);
+                    }
+                },
+                mark: true,
+                zhuanhuanji: true,
+                marktext: '☯',
+                intro: {
+                    content(storage) {
+                        if (!storage) return '准备阶段或当你成为其他角色使用【杀】的目标后，你可以摸一张牌，然后当前回合角色本回合不能对你使用牌';
+                        return '当你使用【杀】指定一名角色为目标后，你可以获得其一张牌，然后你本回合内不能再对其使用牌';
+                    },
+                },
+                group: 'catjuzhan_gain',
+                subSkill: {
+                    gain: {
+                        audio: 'nzry_juzhan',
+                        trigger: { player: 'useCardToPlayered' },
+                        filter(event, player) {
+                            return player.storage.catjuzhan && event.card.name === 'sha';
+                        },
+                        async cost(event, trigger, player) {
+                            const list = [event.skill, trigger.target];
+                            const next = player.gainPlayerCard(trigger.target, get.prompt(...list), 'he');
+                            next.prompt2 = `获得其一张牌，然后你本回合内不能再对其使用牌`;
+                            next.logSkill = list;
+                            event.result = await next.forResult();
+                        },
+                        popup: false,
+                        content() {
+                            player.changeZhuanhuanji('catjuzhan');
+                            player.addTempSkill('catjuzhan_ban');
+                            player.markAuto('catjuzhan_ban', [trigger.target]);
+                        },
+                    },
+                    ban: {
+                        charlotte: true,
+                        onremove: true,
+                        intro: { content: '不能对$使用牌' },
+                        mod: {
+                            playerEnabled(card, player, target) {
+                                if (player.getStorage('catjuzhan_ban').includes(target)) return false;
+                            },
+                        },
+                    },
+                },
+            },
+            //王平
+            catfeijun: {
+                audio: 'nzry_feijun',
+                enable: 'phaseUse',
+                filter(event, player) {
+                    if (!player.hasCard(card => lib.filter.cardDiscardable(card, player), 'he')) return false;
+                    return game.hasPlayer(current => {
+                        return current.countCards('h') >= player.countCards('h') || current.countCards('e') >= player.countCards('e');
+                    });
+                },
+                filterCard: lib.filter.cardDiscardable,
+                selectCard() {
+                    const event = get.event(), player = get.player();
+                    const func = function (player) {
+                        const target = player.storage.catfeijun;
+                        if (target?.isIn()) target.prompt('<span class="firetext">上次<br>发动</span>');
+                    };
+                    if (event.isMine()) func(player);
+                    else if (player.isOnline2()) player.send(func, player);
+                    return 1;
+                },
+                position: 'he',
+                check(card) {
+                    return 7 - get.value(card);
+                },
+                usable: 1,
+                async content(event, trigger, player) {
+                    let list = [];
+                    if (game.hasPlayer(current => {
+                        return current.countCards('h') >= player.countCards('h');
+                    })) list.push('令一名手牌数大于你的角色交给你一张牌');
+                    if (game.hasPlayer(current => {
+                        return current.countCards('e') >= player.countCards('e');
+                    })) list.push('令一名装备区内牌数大于你的角色弃置一张装备牌');
+                    if (!list.length) return;
+                    let index;
+                    if (list.length < 2) {
+                        index = game.hasPlayer(current => {
+                            return current.countCards('h') >= player.countCards('h');
+                        }) ? 0 : 1;
+                    }
+                    else {
+                        index = (await player.chooseControl().set('ai', () => {
+                            const player = get.player();
+                            return game.hasPlayer(current => {
+                                return current.countCards('h') >= player.countCards('h') && get.attitude(player, current) < 0;
+                            }) ? 0 : 1;
+                        }).set('choiceList', list).forResult()).index;
+                    }
+                    if (typeof index !== 'number') return;
+                    let result;
+                    if (index === 0) {
+                        result = await player.chooseTarget(true, (card, player, target) => {
+                            return target !== player && target.countCards('h') >= player.countCards('h');
+                        }, '选择一名手牌数大于等于你的角色').set('ai', target => {
+                            const player = get.player();
+                            return -get.attitude(player, target);
+                        }).forResult();
+                    }
+                    else {
+                        result = await player.chooseTarget(true, (card, player, target) => {
+                            return target !== player && target.countCards('e') >= player.countCards('e');
+                        }, '选择一名装备区里牌数大于等于你的角色').set('ai', target => {
+                            const player = get.player();
+                            return -get.attitude(player, target);
+                        }).forResult();
+                    }
+                    if (!result?.bool || !result.targets?.length) return;
+                    const target = result.targets[0];
+                    if (player.storage[event.name] !== target) {
+                        event[event.name] = true;
+                        player.setStorage(event.name, target, true);
+                    }
+                    player.line(target, 'green');
+                    if (index === 0) await target.chooseToGive(player, 'he', true);
+                    else await target.chooseToDiscard({ type: 'equip' }, 'he', true);
+                },
+                ai: {
+                    order: 11,
+                    result: {
+                        player(player) {
+                            const last = player.storage.catfeijun;
+                            if (game.hasPlayer(current => {
+                                return (current.countCards('h') >= player.countCards('h') || current.countCards('e') >= player.countCards('e')) && get.attitude(player, current) < 0 && current === last;
+                            }) || game.hasPlayer(current => {
+                                return current.countCards('h') >= player.countCards('h') && get.attitude(player, current) < 0;
+                            }) || (player.countCards('h') >= 2 && game.hasPlayer(current => {
+                                return current.countCards('e') >= player.countCards('e') && get.attitude(player, current) < 0;
+                            }))) return 1;
+                            return 0;
+                        },
+                    },
+                },
+                intro: { content: 'players' },
+            },
+            catbinglve: {
+                audio: 'nzry_binglve',
+                trigger: { player: 'catfeijunAfter' },
+                filter(event, player) {
+                    return event[event.name];
+                },
+                forced: true,
+                async content(event, trigger, player) {
+                    await player.draw(2);
+                },
+                ai: { combo: 'catfeijun' },
+            },
+            //孙亮
+            catkuizhu: {
+                audio: 'nzry_kuizhu',
+                trigger: { player: 'phaseDiscardAfter' },
+                filter(event, player) {
+                    let cards = [];
+                    player.getHistory('lose', evt => {
+                        if (evt.type === 'discard' && evt.getParent('phaseDiscard') == trigger) cards.addArray(evt.cards2);
+                    });
+                    const num = cards.length;
+                    return num > 0 || game.hasPlayer(target => target.getHp() >= num);
+                },
+                async cost(event, trigger, player) {
+                    let cards = [], result, forced = false;
+                    player.getHistory('lose', evt => {
+                        if (evt.type === 'discard' && evt.getParent('phaseDiscard') == trigger) cards.addArray(evt.cards2);
+                    });
+                    const num = cards.length;
+                    const str1 = '令至多' + get.cnNumber(num) + '名角色摸一张牌';
+                    const str2 = '对一名体力值之和大于等于' + num + '的角色造成1点伤害';
+                    if (!num) result = { control: '选项二', index: 1 };
+                    else if (!game.hasPlayer(target => target.getHp() >= num)) result = { control: '选项一', index: 0 };
+                    else {
+                        forced = true;
+                        result = await player.chooseControl('cancel2').set('num', num).set('ai', () => {
+                            const { player, num } = get.event();
+                            return game.hasPlayer(target => {
+                                return get.damageEffect(target, player, player) > 0 && target.getHp() >= num;
+                            }) ? 1 : 0;
+                        }).set('choiceList', [str1, str2]).set('prompt', get.prompt(event.skill)).forResult();
+                    }
+                    if (result?.control && result.control !== 'cancel2') {
+                        const prompt = forced ? `请选择【${get.translation(event.skill)}】的目标` : get.prompt(event.skill);
+                        const prompt2 = [str1, str2][result.index], selectTarget = [[1, num], 1][result.index];
+                        event.result = await player.chooseTarget(prompt, (card, player, target) => {
+                            const { num, index } = get.event();
+                            return index === 0 || target.getHp() >= num;
+                        }, forced, selectTarget, prompt2).set('num', num).set('ai', target => {
+                            const { player, index } = get.event();
+                            return [get.effect(target, { name: 'draw' }, player, player), get.damageEffect(target, player, player)][index];
+                        }).set('index', result.index).forResult();
+                        if (event.result) event.result.cost_data = result.index === 0;
+                    }
+                },
+                async content(event, trigger, player) {
+                    const targets = [...event.targets].sortBySeat();
+                    if (event.cost_data) {
+                        await game.asyncDraw(targets);
+                        await game.delayx();
+                    }
+                    else await targets[0].damage();
+                },
+            },
+            catchezheng: {
+                audio: 'nzry_zhizheng',
+                mod: {
+                    playerEnabled(card, player, target) {
+                        if (player.isPhaseUsing() && target !== player && !target.inRange(player)) return false;
+                    },
+                },
+                trigger: { player: 'phaseUseEnd' },
+                filter(event, player) {
+                    const targets = game.filterPlayer(target => target !== player && !target.inRange(player));
+                    return player.getHistory('useCard', evt => evt.getParent('phaseUse') === event).length <= targets.length && targets.some(target => target.countDiscardableCards(player, 'he') > 0);
+                },
+                forced: true,
+                async content(event, trigger, player) {
+                    const result = await player.chooseTarget('请选择〖掣政〗的目标', (card, player, target) => {
+                        return target !== player && !target.inRange(player) && target.countDiscardableCards(player, 'he') > 0;
+                    }, '弃置任意名攻击范围内不包含你的角色的一张牌', [1, Infinity], true).set('ai', target => {
+                        const player = get.player();
+                        return get.effect(target, { name: 'guohe_copy2' }, player, player);
+                    }).forResult();
+                    if (result?.bool && result.targets?.length) {
+                        const targets = [...result.targets].sortBySeat();
+                        player.line(targets);
+                        for (const target of targets) await player.discardPlayerCard(target, 'he', true);
+                    }
+                },
+            },
+            //筷子
+            catshenshi: {
+                audio: 'nzry_shenshi',
+                enable: 'phaseUse',
+                filter(event, player) {
+                    return !player.storage.catshenshi && player.countCards('he') > 0;
+                },
+                filterCard: true,
+                position: 'he',
+                filterTarget: lib.filter.notMe,
+                check(card) {
+                    return 5 - get.value(card);
+                },
+                usable: 1,
+                prompt: () => lib.skill.catshenshi.intro.content(false),
+                discard: false,
+                lose: false,
+                delay: false,
+                async content(event, trigger, player) {
+                    player.changeZhuanhuanji('catshenshi');
+                    const target = event.target;
+                    await player.give(event.cards, target);
+                    await target.damage('nocard');
+                    if ((!target.isIn() || target.isMinHp()) && game.hasPlayer(target => target.countCards('h') < 4)) {
+                        const result = await player.chooseTarget(`${get.translation(event.name)}：是否令一名角色将手牌摸至四张？`, (card, player, target) => {
+                            return target.countCards('h') < 4;
+                        }).set('ai', target => {
+                            const player = get.player();
+                            return get.effect(target, { name: 'draw' }, player, player) * (4 - target.countCards('h'));
+                        }).forResult();
+                        if (result?.bool && result.targets?.length) {
+                            player.line(result.targets);
+                            await result.targets[0].drawTo(4)
+                        }
+                    }
+                },
+                ai: {
+                    order: 1,
+                    result: { target: -1 },
+                },
+                mark: true,
+                zhuanhuanji: true,
+                marktext: '☯',
+                intro: {
+                    content(storage) {
+                        if (!storage) return '出牌阶段限一次，你可以将一张牌交给一名其他角色，然后对其造成1点伤害，若该角色的体力值为全场最低，则你可以令一名角色将手牌摸至四张';
+                        return '其他角色对你造成伤害后，你可以观看该角色的手牌，然后交给其任意张牌，此回合结束时，若其未全部失去这些牌，你将手牌摸至四张';
+                    },
+                },
+                group: 'catshenshi_damage',
+                subSkill: {
+                    damage: {
+                        audio: 'nzry_shenshi',
+                        trigger: { player: 'damageEnd' },
+                        filter(event, player) {
+                            if (!player.storage.catshenshi) return false;
+                            return player.countCards('he') > 0 && event.source?.isIn() && event.source != player;
+                        },
+                        logTarget: 'source',
+                        prompt2: '观看该角色的手牌，然后交给其任意张牌，其失去此牌后，你将手牌摸至四张',
+                        async content(event, trigger, player) {
+                            player.changeZhuanhuanji('catshenshi');
+                            const target = trigger.source;
+                            await player.viewHandcards(target);
+                            player.addTempSkill('catshenshi_effect');
+                            const skill = 'catshenshi_' + player.playerid;
+                            if (!lib.skill[skill]) {
+                                game.broadcastAll((initSkill, skill) => {
+                                    initSkill(skill);
+                                    _status.postReconnect['catshenshi'] ??= [initSkill, []];
+                                    _status.postReconnect['catshenshi'][1].add(skill);
+                                }, skill => {
+                                    lib.skill[skill] = {};
+                                    lib.translate[skill] = '审时';
+                                }, skill);
+                            }
+                            const next = player.chooseToGive(target, 'he', [1, Infinity], true);
+                            next.gaintag.add(skill);
+                            await next;
+                        },
+                    },
+                    effect: {
+                        charlotte: true,
+                        onremove(player) {
+                            game.countPlayer(target => target.removeGaintag('catshenshi_' + player.playerid));
+                        },
+                        audio: 'nzry_shenshi',
+                        trigger: { global: 'phaseEnd' },
+                        filter(event, player) {
+                            if (player.countCards('h') >= 4) return false;
+                            return game.hasPlayer2(current => current.hasCard(card => card.hasGaintag('catshenshi_' + player.playerid), 'h'));
+                        },
+                        forced: true,
+                        content() {
+                            player.drawTo(4);
+                        },
+                    },
+                },
+            },
+            //卢植
+            catmingren: {
+                drawNum: 1,
+                inherit: 'nzry_mingren',
+            },
+            catzhenliang: {
+                audio: ['nzry_zhenliang_11.mp3', 'nzry_zhenliang_12.mp3'],
+                enable: 'phaseUse',
+                trigger: {
+                    player: 'loseAfter',
+                    global: ['loseAsyncAfter', 'cardsDiscardAfter'],
+                },
+                filter(event, player) {
+                    const cards = player.getExpansions('nzry_mingren');
+                    if (!cards.length) return false;
+                    if (event.name === 'chooseToUse') {
+                        if (player.storage.catzhenliang || player.hasSkill('catzhenliang_used', null, null, false)) return false;
+                        if (!player.hasCard(card => lib.skill.catzhenliang.filterCard(card, player), 'he')) return false;
+                        return game.hasPlayer(current => player.inRange(current));
+                    }
+                    else {
+                        if (_status.currentPhase === player || !player.storage.catzhenliang) return false;
+                        const cards2 = event.getd?.() ?? [];
+                        if (event.name !== 'cardsDiscard') {
+                            return event.getl?.(player)?.cards2?.some(card => cards2.includes(card) && get.type2(card) === get.type2(cards[0]));
+                        }
+                        const evt = event.getParent();
+                        if (evt.name !== 'orderingDiscard') return false;
+                        const evtx = (evt.relatedEvent || evt.getParent());
+                        if (evtx.name === 'judge' || evtx.player !== player) return false;
+                        return player.hasHistory('lose', evtxx => {
+                            if (evtx !== (evtxx.relatedEvent || evtxx.getParent())) return false;
+                            return evtxx.getl?.(player)?.cards2?.some(card => cards2.includes(card) && get.type2(card) === get.type2(cards[0]));
+                        });
+                    }
+                },
+                position: 'he',
+                filterCard(card, player) {
+                    if (!lib.filter.cardDiscardable(card, player)) return false;
+                    return get.color(card) === get.color(player.getExpansions('nzry_mingren')[0]);
+                },
+                filterTarget(card, player, target) {
+                    return player.inRange(target);
+                },
+                check(card) {
+                    return 6.5 - get.value(card);
+                },
+                prompt: '弃置一张与“任”颜色相同的牌，对攻击范围内的一名角色造成1点伤害',
+                async cost(event, trigger, player) {
+                    event.result = await player.chooseTarget(get.prompt(event.skill), '令一名角色摸一张牌').set('ai', target => {
+                        const player = get.player();
+                        return get.effect(target, { name: 'draw' }, player, player);
+                    }).forResult();
+                },
+                async content(event, trigger, player) {
+                    player.changeZhuanhuanji('catzhenliang');
+                    if (!trigger) {
+                        const target = event.target;
+                        player.addTempSkill('catzhenliang_used', 'phaseUseAfter');
+                        await target.damage('nocard');
+                    }
+                    else {
+                        const targets = [...event.targets].sortBySeat();
+                        await game.asyncDraw(targets);
+                        await game.delayx();
+                    }
+                },
+                ai: {
+                    order: 10,
+                    result: {
+                        player(player, target) {
+                            return get.damageEffect(target, player, player);
+                        },
+                    },
+                    combo: 'catmingren',
+                },
+                mark: true,
+                zhuanhuanji: true,
+                marktext: '☯',
+                intro: {
+                    content(storage) {
+                        if (!storage) return '出牌阶段限一次，你可以弃置一张与“任”颜色相同的牌并对攻击范围内的一名角色造成1点伤害';
+                        return '当你于回合外失去的牌进入弃牌堆后，若此牌与“任”类别相同，则你可以令一名角色摸一张牌';
+                    },
+                },
+                subSkill: { used: { charlotte: true } },
+            },
+        },
+        dynamicTranslate: {
+            catjuzhan(player, skill) {
+                let yang = '阳：准备阶段或当你成为其他角色使用【杀】的目标后，你可以摸一张牌，然后当前回合角色本回合不能对你使用牌';
+                let yin = '阴：当你使用【杀】指定一名角色为目标后，你可以获得其一张牌，然后你本回合内不能再对其使用牌';
+                if (player.storage[skill]) yin = `<span class='bluetext'>${yin}</span>`;
+                else yang = `<span class='firetext'>${yang}</span>`;
+                return `转换技。${yang}；${yin}。`;
+            },
+            catshenshi(player, skill) {
+                let yang = '阳：出牌阶段限一次，你可以将一张牌交给一名其他角色，然后对其造成1点伤害，若该角色的体力值为全场最低，则你可以令一名角色将手牌摸至四张';
+                let yin = '阴：其他角色对你造成伤害后，你可以观看该角色的手牌，然后交给其任意张牌，此回合结束时，若其未全部失去这些牌，你将手牌摸至四张';
+                if (player.storage[skill]) yin = `<span class='bluetext'>${yin}</span>`;
+                else yang = `<span class='firetext'>${yang}</span>`;
+                return `转换技。${yang}；${yin}。`;
+            },
+            catzhenliang(player, skill) {
+                let yang = '阳：出牌阶段限一次，你可以弃置一张与“任”颜色相同的牌并对攻击范围内的一名角色造成1点伤害';
+                let yin = '阴：当你于回合外失去的牌进入弃牌堆后，若此牌与“任”类别相同，则你可以令一名角色摸一张牌';
+                if (player.storage[skill]) yin = `<span class='bluetext'>${yin}</span>`;
+                else yang = `<span class='firetext'>${yang}</span>`;
+                return `转换技。${yang}；${yin}。`;
+            },
         },
         translate: {
             cat_shuhanhujiang: '喵喵杯·蜀汉虎将',
@@ -1361,6 +1830,7 @@ const packs = function () {
             cat_shenhua_feng: '喵喵杯·神话再临·风',
             cat_shenhua_huo: '喵喵杯·神话再临·火',
             cat_shenhua_lin: '喵喵杯·神话再临·林',
+            cat_shenhua_yin: '喵喵杯·神话再临·阴',
             cat_re_liubei: '刘备',
             catrende: '仁德',
             catrende_info: '出牌阶段，你可以将任意张手牌交给一名其他角色，然后本阶段你不能对其发动此技能。若你本阶段因此给出了至少两张牌，则你可以视为使用一张基本牌（有次数限制，若你本次给出了超出两张牌，则此牌的伤害值/回复值+1）。',
@@ -1464,6 +1934,27 @@ const packs = function () {
             cat_re_lusu: '鲁肃',
             cathaoshi: '好施',
             cathaoshi_info: '摸牌阶段，你可以多摸两张牌，然后若你的手牌数大于5，你须将X张手牌交给一名其他角色（X为你手牌数的一半，向下取整）。',
+            cat_yanyan: '严颜',
+            catjuzhan: '拒战',
+            catjuzhan_info: '转换技。准备阶段或当你成为其他角色使用【杀】的目标后，你可以摸一张牌，然后当前回合角色本回合不能对你使用牌；当你使用【杀】指定一名角色为目标后，你可以获得其一张牌，然后你本回合内不能再对其使用牌。',
+            cat_wangping: '王平',
+            catfeijun: '飞军',
+            catfeijun_info: '出牌阶段限一次。你可以弃置一张牌，然后选择一项：⒈令一名手牌数大于等于你的角色交给你一张牌；⒉令一名装备区里牌数大于等于你的角色弃置一张装备牌。',
+            catbinglve: '兵略',
+            catbinglve_info: `锁定技，当你发动${get.poptip('catfeijun')}后，若目标与你上次发动${get.poptip('catfeijun')}指定的目标不同，则你摸两张牌。`,
+            cat_sunliang: '孙亮',
+            catkuizhu: '溃诛',
+            catkuizhu_info: '弃牌阶段结束后，你可以选择一项：①令至多X名角色各摸一张牌。②对一名体力值大于等于X的角色造成1点伤害（X为你此阶段弃置的牌数）。',
+            catchezheng: '掣政',
+            catchezheng_info: '锁定技，你的出牌阶段内，攻击范围内不包含你的其他角色不能成为你使用牌的目标。出牌阶段结束时，若你本阶段使用的牌数小于等于这些角色数，则你弃置其中任意名角色各一张牌。',
+            cat_kuailiangkuaiyue: '蒯良蒯越',
+            catshenshi: '审时',
+            catshenshi_info: '转换技。阳：出牌阶段限一次，你可以将一张牌交给一名其他角色，然后对其造成1点伤害，若该角色的体力值为全场最低，则你可以令一名角色将手牌摸至四张。阴：其他角色对你造成伤害后，你可以观看该角色的手牌，然后交给其任意张牌，此回合结束时，若其未全部失去这些牌，你将手牌摸至四张。',
+            cat_yl_luzhi: '卢植',
+            catmingren: '明任',
+            catmingren_info: '游戏开始时，你摸两张牌，然后将一张手牌称为“任”置于你的武将牌上。结束阶段，你可以用一张手牌替换“任”。',
+            catzhenliang: '贞良',
+            catzhenliang_info: '转换技。阳：出牌阶段限一次，你可以弃置一张与“任”颜色相同的牌并对攻击范围内的一名角色造成1点伤害；阴：当你于回合外失去的牌进入弃牌堆后，若此牌与“任”类别相同，则你可以令一名角色摸一张牌。',
         },
     };
     for (let i in MX_catcatcup.character) {
