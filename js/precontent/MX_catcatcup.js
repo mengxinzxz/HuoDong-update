@@ -1561,7 +1561,7 @@ const packs = function () {
                     });
                     const num = cards.length;
                     const str1 = '令至多' + get.cnNumber(num) + '名角色摸一张牌';
-                    const str2 = '对一名体力值之和大于等于' + num + '的角色造成1点伤害';
+                    const str2 = '对一名体力值大于等于' + num + '的角色造成1点伤害';
                     if (!num) result = { control: '选项二', index: 1 };
                     else if (!game.hasPlayer(target => target.getHp() >= num)) result = { control: '选项一', index: 0 };
                     else {
