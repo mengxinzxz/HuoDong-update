@@ -1,7 +1,7 @@
 import { lib, game, ui, get, ai, _status } from '../../../../noname.js';
 
 const packs = function () {
-    var FaDongCharacter = {
+    const FaDongCharacter = {
         name: 'FaDongCharacter',
         connect: true,
         characterSort: {
@@ -349,7 +349,7 @@ const packs = function () {
             bilibili_polu_info_identity: '锁定技，当你杀死一名其他角色后，你摸X张牌（X为此技能发动的次数）。',
         },
     };
-    for (let i in FaDongCharacter.character) {
+    for (const i in FaDongCharacter.character) {
         if (Array.isArray(FaDongCharacter.character[i])) FaDongCharacter.character[i] = get.convertedCharacter(FaDongCharacter.character[i]);
         FaDongCharacter.character[i].trashBin ??= [];
         if (_status['extension_活动武将_files']?.image.character.files.includes(`${i}.jpg`)) FaDongCharacter.character[i].img = `extension/活动武将/image/character/${i}.jpg`;

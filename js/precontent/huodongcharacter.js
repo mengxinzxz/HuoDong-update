@@ -1,7 +1,7 @@
 import { lib, game, ui, get, ai, _status } from '../../../../noname.js';
 
 const packs = function () {
-    var huodongcharacter = {
+    const huodongcharacter = {
         name: 'huodongcharacter',
         connect: true,
         connectBanned: [],
@@ -13731,7 +13731,7 @@ const packs = function () {
             bolliuju_info: '出牌阶段限一次。你可以拼点并使用拼点牌中的非基本牌。若你输或拼点者相互距离因此变化，你复原武将牌或武将牌上的一个技能。',
         },
     };
-    for (let i in huodongcharacter.character) {
+    for (const i in huodongcharacter.character) {
         if (Array.isArray(huodongcharacter.character[i])) huodongcharacter.character[i] = get.convertedCharacter(huodongcharacter.character[i]);
         huodongcharacter.character[i].trashBin ??= [];
         huodongcharacter.character[i].dieAudios ??= [];

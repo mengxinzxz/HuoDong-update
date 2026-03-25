@@ -1,7 +1,7 @@
 import { lib, game, ui, get, ai, _status } from '../../../../noname.js';
 
 const packs = function () {
-    var HD_chaoshikong = {
+    const HD_chaoshikong = {
         name: 'HD_chaoshikong',
         connect: true,
         characterSort: {
@@ -968,7 +968,7 @@ const packs = function () {
             cike_xugong: '密探·许贡',
         },
     };
-    for (let i in HD_chaoshikong.character) {
+    for (const i in HD_chaoshikong.character) {
         if (Array.isArray(HD_chaoshikong.character[i])) HD_chaoshikong.character[i] = get.convertedCharacter(HD_chaoshikong.character[i]);
         HD_chaoshikong.character[i].trashBin ??= [];
         if (_status['extension_活动武将_files']?.audio.die.files.includes(`${i}.mp3`)) {

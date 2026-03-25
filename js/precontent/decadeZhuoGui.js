@@ -1,7 +1,7 @@
 import { lib, game, ui, get, ai, _status } from '../../../../noname.js';
 
 const packs = function () {
-    var decadeZhuoGui = {
+    const decadeZhuoGui = {
         name: 'decadeZhuoGui',
         connect: true,
         character: {
@@ -741,7 +741,7 @@ const packs = function () {
             ZGchihu_info: '锁定技，若你的手牌数不是全场最多的，摸牌阶段你多摸两张牌；若你的体力值不是全场最多的，你造成的伤害+1。',
         },
     };
-    for (let i in decadeZhuoGui.character) {
+    for (const i in decadeZhuoGui.character) {
         if (Array.isArray(decadeZhuoGui.character[i])) decadeZhuoGui.character[i] = get.convertedCharacter(decadeZhuoGui.character[i]);
         decadeZhuoGui.character[i].trashBin ??= [];
         if (_status['extension_活动武将_files']?.audio.die.files.includes(`${i}.mp3`)) {

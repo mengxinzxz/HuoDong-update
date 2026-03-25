@@ -1,7 +1,7 @@
 import { lib, game, ui, get, ai, _status } from '../../../../noname.js';
 
 const packs = function () {
-    var MX_catcatcup = {
+    const MX_catcatcup = {
         name: 'MX_catcatcup',
         connect: true,
         characterSort: {
@@ -14,7 +14,8 @@ const packs = function () {
                 cat_shenhua_feng: ['cat_re_weiyan', 'cat_ol_xiahouyuan', 'cat_xiaoqiao', 'cat_re_yuji', 'cat_sp_zhangjiao'],
                 cat_shenhua_huo: ['cat_dianwei', 'cat_pangtong', 'cat_sp_zhugeliang', 'cat_taishici', 'cat_pangde', 'cat_re_yuanshao'],
                 cat_shenhua_lin: ['cat_ol_xuhuang', 'cat_sunjian', 'cat_zhurong', 'cat_jiaxu', 'cat_re_lusu'],
-                cat_shenhua_yin: ['cat_yanyan', 'cat_wangping', 'cat_sunliang', 'cat_kuailiangkuaiyue', 'cat_yl_luzhi'],
+                cat_shenhua_yin: ['cat_yanyan', 'cat_wangping', 'cat_sunliang', 'cat_wangji', 'cat_kuailiangkuaiyue', 'cat_yl_luzhi'],
+                cat_shenhua_lei: ['cat_chendao', 'cat_guanqiujian', 'cat_yl_yuanshu'],
             },
         },
         character: {
@@ -39,21 +40,30 @@ const packs = function () {
             cat_sp_zhangjiao: ['male', 'qun', 3, ['catleiji', 'guidao']],
             cat_re_yuji: ['male', 'qun', 3, ['catguhuo']],
             cat_dianwei: ['male', 'wei', 4, ['catqiangxi']],
+            //荀彧为OL界荀彧
             cat_pangtong: ['male', 'shu', 3, ['catlianhuan', 'catniepan']],
             cat_sp_zhugeliang: ['male', 'shu', 3, ['catbazhen', 'cathuoji', 'rekanpo']],
             cat_taishici: ['male', 'wu', 4, ['cattianyi']],
             cat_pangde: ['male', 'qun', 4, ['mashu', 'catjianchu']],
+            //颜良文丑为手杀界颜良文丑
             cat_re_yuanshao: ['male', 'qun', 4, ['luanji', 'catqingchao']],
             cat_ol_xuhuang: ['male', 'wei', 4, ['olduanliang', 'catjiezi']],
+            //曹丕为手杀界曹丕
             cat_sunjian: ['male', 'wu', 5, ['gzyinghun']],
+            //董卓为OL界董卓
             cat_zhurong: ['female', 'shu', 4, ['juxiang', 'catlieren']],
             cat_jiaxu: ['male', 'qun', 3, ['wansha', 'catluanwu', 'catweimu']],
             cat_re_lusu: ['male', 'wu', 3, ['cathaoshi', 'dimeng']],
             cat_yanyan: ['male', 'shu', 4, ['catjuzhan']],
             cat_wangping: ['male', 'shu', 4, ['catfeijun', 'catbinglve']],
             cat_sunliang: ['male', 'wu', 3, ['catkuizhu', 'catchezheng']],
+            cat_wangji: ['male', 'wei', 3, ['catqizhi', 'catjinqu']],
             cat_kuailiangkuaiyue: ['male', 'wei', 3, ['nzry_jianxiang', 'catshenshi']],
             cat_yl_luzhi: ['male', 'qun', 3, ['catmingren', 'catzhenliang']],
+            cat_chendao: ['male', 'shu', 4, ['catwanglie']],
+            //周妃为欢乐杀周妃
+            cat_guanqiujian: ['male', 'wei', 4, ['catzhengrong', 'cathongju']],
+            cat_yl_yuanshu: ['male', 'qun', 4, ['catyongsi']],
         },
         skill: {
             //刘备
@@ -734,6 +744,7 @@ const packs = function () {
                         })(),
                     }).setHiddenSkill(event.skill).forResult();
                 },
+                preHidden: true,
                 async content(event, trigger, player) {
                     trigger.cancel();
                     switch (trigger.name) {
@@ -1611,6 +1622,30 @@ const packs = function () {
                     }
                 },
             },
+            //王基
+            catqizhi: {
+                audio: 'qizhi',
+                inherit: 'qizhi',
+                filter(event, player) {
+                    if (!event.targets?.length || !event.isFirstTarget) return false;
+                    return game.hasPlayer(target => !event.targets.includes(target) && target.countCards('he') > 0);
+                },
+            },
+            catjinqu: {
+                audio: 'jinqu',
+                inherit: 'jinqu',
+                check(event, player) {
+                    return player.countCards('h') >= player.getRoundHistory('custom', evt => evt.catqizhi).length;
+                },
+                prompt2(event, player) {
+                    return `摸两张牌，然后将手牌弃置至${player.getRoundHistory('custom', evt => evt.catqizhi).length}张`;
+                },
+                async content(event, trigger, player) {
+                    await player.draw(2);
+                    const num = player.getRoundHistory('custom', evt => evt.catqizhi).length;
+                    if (player.countCards('h') > num) await player.chooseToDiscard(player.countCards('h') - num, true);
+                },
+            },
             //筷子
             catshenshi: {
                 audio: 'nzry_shenshi',
@@ -1797,6 +1832,177 @@ const packs = function () {
                 },
                 subSkill: { used: { charlotte: true } },
             },
+            //陈到
+            catwanglie: {
+                audio: 'drlt_wanglie',
+                trigger: { player: 'useCard' },
+                filter(event, player) {
+                    return player.isPhaseUsing();
+                },
+                async cost(event, trigger, player) {
+                    const result = await player.chooseControl('数值+1', '摸两张牌', 'cancel2').set('ai', () => {
+                        const player = get.player(), trigger = get.event().getTrigger();
+                        if (player.hasCard(card => player.hasValueTarget(card, null, true), 'hs')) return 'cancel2';
+                        return (get.tag(trigger.card, 'damage') || get.tag(trigger.card, 'recover')) ? 0 : 1;
+                    }).set('prompt', get.prompt(event.skill)).setHiddenSkill(event.skill).forResult();
+                    if (result?.control && result.control !== 'cancel2') {
+                        event.result = { bool: true, cost_data: result.index };
+                    }
+                },
+                preHidden: true,
+                async content(event, trigger, player) {
+                    if (event.cost_data === 0) {
+                        trigger.baseDamage++;
+                        game.log(trigger.card, '的数值', '#y+1');
+                    }
+                    else await player.draw(2);
+                    player.addTempSkill('catwanglie_ban');
+                },
+                init(player) {
+                    if (player.isPhaseUsing()) {
+                        const event = _status.event?.getParent('phaseUse', true);
+                        if (!player.hasHistory('useCard', evt => {
+                            return evt.getParent('phaseUse') === event;
+                        })) player.addTempSkill('catwanglie_first', 'phaseUseAfter');
+                    }
+                },
+                group: 'catwanglie_effect',
+                subSkill: {
+                    effect: {
+                        charlotte: true,
+                        trigger: { player: 'phaseUseBegin' },
+                        silent: true,
+                        async content(event, trigger, player) {
+                            player.addTempSkill('catwanglie_first', 'phaseUseAfter');
+                        },
+                    },
+                    first: {
+                        mod: {
+                            targetInRange(card, player, target) {
+                                if (card) return true;
+                            },
+                        },
+                        audio: 'drlt_wanglie',
+                        trigger: { player: 'useCard1' },
+                        forced: true,
+                        async content(event, trigger, player) {
+                            player.removeSkill(event.name);
+                            trigger.nowuxie = true;
+                            trigger.directHit.addArray(game.players);
+                            game.log(trigger.card, '不可被响应');
+                            await game.delayx();
+                        },
+                        ai: { directHit_ai: true },
+                    },
+                    ban: {
+                        charlotte: true,
+                        mark: true,
+                        intro: { content: '不能使用牌' },
+                        mod: {
+                            cardEnabled: () => false,
+                            cardSavable: () => false,
+                        },
+                    },
+                },
+            },
+            //毌丘俭
+            catzhengrong: {
+                audio: 'drlt_zhenrong',
+                inherit: 'drlt_zhenrong',
+                filter(event, player) {
+                    return event.player !== player && event.player.isIn() && event.player.countCards('he');
+                },
+                async cost(event, trigger, player) {
+                    const target = trigger.player, list = [event.skill, target];
+                    const next = player.choosePlayerCard(target, get.prompt2(...list), 'he');
+                    next.ai = function () {
+                        const { player, target } = get.event();
+                        return -get.attitude(player, target) + 1 + Math.random();
+                    };
+                    event.result = await next.forResult();
+                },
+                logTarget: 'player',
+                onremove(player) {
+                    const cards = player.getExpansions('drlt_zhenrong');
+                    if (cards.length) player.loseToDiscardpile(cards);
+                },
+            },
+            cathongju: {
+                audio: 'drlt_hongju',
+                inherit: 'drlt_hongju',
+                filter(event, player) {
+                    return player.getExpansions('drlt_zhenrong').length >= 3;
+                },
+                async content(event, trigger, player) {
+                    player.awakenSkill(event.name);
+                    await player.loseMaxHp();
+                    await player.addSkills(lib.skill[event.name].derivation);
+                },
+                derivation: 'catqingce',
+                ai: { combo: 'catzhengrong' },
+            },
+            catqingce: {
+                audio: 'drlt_qingce',
+                inherit: 'drlt_qingce',
+                async content(event, trigger, player) {
+                    const next = player.chooseCardButton(player.getExpansions('drlt_zhenrong'), `${get.translation(event.name)}：请选择你要获得的“荣”`, true);
+                    next.ai = button => get.value(button.link);
+                    const result = await next.forResult();
+                    if (result?.bool && result.links?.length) {
+                        await player.gain(result.links, 'gain2');
+                        await player.discardPlayerCard(event.target, 'ej', true);
+                    }
+                },
+                ai: {
+                    combo: 'catzhengrong',
+                    order(item, player) {
+                        const order = get.order({ name: 'guohe_copy', position: 'ej' }, player);
+                        return order + (order > 0 ? 0.3 : 0);
+                    },
+                    result: {
+                        player(player, target) {
+                            return get.effect(target, { name: 'guohe_copy', position: 'ej' }, player, player);
+                        },
+                    },
+                },
+            },
+            //袁术
+            catyongsi: {
+                audio: 'drlt_yongsi',
+                trigger: { player: 'phaseDiscardBegin' },
+                filter(event, player) {
+                    let num = 0;
+                    player.getHistory('sourceDamage', evt => num += evt.num);
+                    if (num === 1) return true;
+                    return num > 1 || player.countCards('h') < player.maxHp;
+                },
+                forced: true,
+                async content(event, trigger, player) {
+                    if (!player.hasHistory('sourceDamage')) await player.drawTo(player.maxHp);
+                    else player.addTempSkill('catyongsi_yingzi');
+                },
+                group: 'catyongsi_yongsi',
+                subSkill: {
+                    yongsi: {
+                        audio: 'drlt_yongsi',
+                        trigger: { player: 'phaseDrawBegin2' },
+                        filter(event, player) {
+                            return !event.numFixed;
+                        },
+                        forced: true,
+                        async content(event, trigger, player) {
+                            trigger.num = game.countGroup();
+                        },
+                    },
+                    yingzi: {
+                        charlotte: true,
+                        mark: true,
+                        markimage: 'image/card/handcard.png',
+                        intro: { content: '手牌上限为体力上限' },
+                        mod: { maxHandcardBase: player => player.maxHp },
+                    },
+                },
+            },
         },
         dynamicTranslate: {
             catjuzhan(player, skill) {
@@ -1947,6 +2153,11 @@ const packs = function () {
             catkuizhu_info: '弃牌阶段结束后，你可以选择一项：①令至多X名角色各摸一张牌。②对一名体力值大于等于X的角色造成1点伤害（X为你此阶段弃置的牌数）。',
             catchezheng: '掣政',
             catchezheng_info: '锁定技，你的出牌阶段内，攻击范围内不包含你的其他角色不能成为你使用牌的目标。出牌阶段结束时，若你本阶段使用的牌数小于等于这些角色数，则你弃置其中任意名角色各一张牌。',
+            cat_wangji: '王基',
+            catqizhi: '奇制',
+            catqizhi_info: '当你使用牌指定目标后，你可以弃置不是此牌目标的一名角色的一张牌。若如此做，其摸一张牌。',
+            catjinqu: '进趋',
+            catjinqu_info: `结束阶段，你可以摸两张牌，若如此做，你将手牌弃置至X张（X为你于本轮发动过${get.poptip('catqizhi')}的次数）。`,
             cat_kuailiangkuaiyue: '蒯良蒯越',
             catshenshi: '审时',
             catshenshi_info: '转换技。阳：出牌阶段限一次，你可以将一张牌交给一名其他角色，然后对其造成1点伤害，若该角色的体力值为全场最低，则你可以令一名角色将手牌摸至四张。阴：其他角色对你造成伤害后，你可以观看该角色的手牌，然后交给其任意张牌，此回合结束时，若其未全部失去这些牌，你将手牌摸至四张。',
@@ -1955,9 +2166,22 @@ const packs = function () {
             catmingren_info: '游戏开始时，你摸两张牌，然后将一张手牌称为“任”置于你的武将牌上。结束阶段，你可以用一张手牌替换“任”。',
             catzhenliang: '贞良',
             catzhenliang_info: '转换技。阳：出牌阶段限一次，你可以弃置一张与“任”颜色相同的牌并对攻击范围内的一名角色造成1点伤害；阴：当你于回合外失去的牌进入弃牌堆后，若此牌与“任”类别相同，则你可以令一名角色摸一张牌。',
+            cat_chendao: '陈到',
+            catwanglie: '往烈',
+            catwanglie_info: '出牌阶段，你使用的第一张牌无距离限制且不能被响应。当你于出牌阶段使用牌时，你可选择一项：1.令此牌伤害+1；2.摸两张牌；若如此做，本回合你不能再使用牌。',
+            cat_guanqiujian: '毌丘俭',
+            catzhengrong: '征荣',
+            catzhengrong_info: '当你对其他角色造成伤害后，你可以将其一张牌置于你的武将牌上，称为“荣”。',
+            cathongju: '鸿举',
+            cathongju_info: `觉醒技，准备阶段，若“荣”的数量大于或等于3，你减1点体力上限并获得${get.poptip('catqingce')}。`,
+            catqingce: '清侧',
+            catqingce_info: '出牌阶段，你可以获得一张“荣”，然后弃置一名角色场上的一张牌。',
+            cat_yl_yuanshu: '袁术',
+            catyongsi: '庸肆',
+            catyongsi_info: '锁定技，摸牌阶段，你改为摸X张牌（X为存活势力数）。弃牌阶段开始时，若你本回合：1.没有造成伤害，你将手牌摸至体力上限；2.造成伤害数超过1点，你本回合将手牌上限改为体力上限。',
         },
     };
-    for (let i in MX_catcatcup.character) {
+    for (const i in MX_catcatcup.character) {
         if (Array.isArray(MX_catcatcup.character[i])) MX_catcatcup.character[i] = get.convertedCharacter(MX_catcatcup.character[i]);
         MX_catcatcup.character[i].trashBin ??= [];
         MX_catcatcup.character[i].dieAudios ??= [];

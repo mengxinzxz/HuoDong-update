@@ -1,7 +1,7 @@
 import { lib, game, ui, get, ai, _status } from '../../../../noname.js';
 
 const packs = function () {
-    var MX_feihongyinxue = {
+    const MX_feihongyinxue = {
         name: 'MX_feihongyinxue',
         connect: true,
         characterSort: {
@@ -4630,7 +4630,7 @@ const packs = function () {
             fh_anguo_info: '出牌阶段限一次，你可以选择一名其他角色，若其手牌数为全场最少，其摸一张牌；体力值为全场最低，回复1点体力；装备区内牌数为全场最少，从额外牌堆种随机使用一张装备牌。然后若该角色有未执行的效果且你满足条件，你执行之。',
         },
     };
-    for (let i in MX_feihongyinxue.character) {
+    for (const i in MX_feihongyinxue.character) {
         if (Array.isArray(MX_feihongyinxue.character[i])) MX_feihongyinxue.character[i] = get.convertedCharacter(MX_feihongyinxue.character[i]);
         MX_feihongyinxue.character[i].trashBin ??= [];
         MX_feihongyinxue.character[i].dieAudios ??= [];
