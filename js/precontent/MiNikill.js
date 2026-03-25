@@ -16270,7 +16270,7 @@ const packs = function () {
                 },
             },
             miniretianxiang: {
-               inherit: 'retianxiang',
+                inherit: 'retianxiang',
                 async content(event, trigger, player) {
                     const [target] = event.targets;
                     trigger.cancel();
@@ -30727,6 +30727,8 @@ const packs = function () {
             ministarxiaoyan: {
                 audio: 'starxiaoyan',
                 inherit: 'starxiaoyan',
+                multiline: true,
+                multitarget: true,
                 logTarget(event, player) {
                     return game.filterPlayer(current => current != player).sortBySeat();
                 },
