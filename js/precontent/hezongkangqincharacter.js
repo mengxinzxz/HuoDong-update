@@ -1,7 +1,7 @@
 import { lib, game, ui, get, ai, _status } from '../../../../noname.js';
 
 const packs = function () {
-    var hezongkangqincharacter = {
+    const hezongkangqincharacter = {
         name: 'hezongkangqincharacter',
         connect: true,
         characterSort: {
@@ -1434,7 +1434,7 @@ const packs = function () {
             qin_chuanguoyuxi_info: '出牌阶段开始时，你可以从【南蛮入侵】、【万箭齐发】、【桃园结义】、【五谷丰登】中选择一张使用。',
         },
     };
-    for (let i in hezongkangqincharacter.character) {
+    for (const i in hezongkangqincharacter.character) {
         if (Array.isArray(hezongkangqincharacter.character[i])) hezongkangqincharacter.character[i] = get.convertedCharacter(hezongkangqincharacter.character[i]);
         hezongkangqincharacter.character[i].trashBin ??= [];
         if (_status['extension_活动武将_files']?.audio.die.files.includes(`${i}.mp3`)) {

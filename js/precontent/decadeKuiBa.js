@@ -1,7 +1,7 @@
 import { lib, game, ui, get, ai, _status } from '../../../../noname.js';
 
 const packs = function () {
-    var decadeKuiBa = {
+    const decadeKuiBa = {
         name: 'decadeKuiBa',
         connect: true,
         characterSort: {
@@ -647,7 +647,7 @@ const packs = function () {
             kuiba_shengzhu_info: '锁定技，己方角色结束阶段，其摸两张牌。',
         },
     };
-    for (let i in decadeKuiBa.character) {
+    for (const i in decadeKuiBa.character) {
         if (Array.isArray(decadeKuiBa.character[i])) decadeKuiBa.character[i] = get.convertedCharacter(decadeKuiBa.character[i]);
         decadeKuiBa.character[i].trashBin ??= [];
         if (_status['extension_活动武将_files']?.audio.die.files.includes(`${i}.mp3`)) {

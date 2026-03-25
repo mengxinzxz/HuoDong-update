@@ -2,7 +2,7 @@ import { lib, game, ui, get, ai, _status } from '../../../../noname.js';
 import MiNikill_sight from './MiNikill_sight.js';
 
 const packs = function () {
-    var MiNikill = {
+    const MiNikill = {
         name: 'MiNikill',
         connect: true,
         characterSort: {
@@ -29068,9 +29068,10 @@ const packs = function () {
                 trigger: { global: 'loseAfter' },
                 filter(event, player) {
                     if (event.getParent(3).name.indexOf('dcyinlu_') !== 0 || player == event.player) return false;
-                    return true;
+                    return event.cards.someInD('d');
                 },
                 forced: true,
+                logTarget: 'player',
                 content() {
                     player.gain(trigger.cards.filterInD('d'), 'gain2');
                 },
@@ -29125,7 +29126,7 @@ const packs = function () {
                         for (const color of controls.remove('cancel2')) {
                             if (typeof map[color] != 'number') map[color] = 0;
                             map[color] += cards.filter(card => get.color(card) == color).length;
-                        } for (let i in map) {
+                        } for (const i in map) {
                             if (map[i] > 0) list.push([i, map[i]]);
                         }
                         list.sort((a, b) => b[1] - a[1]);
@@ -34327,8 +34328,10 @@ const packs = function () {
                                 return get.damageEffect(target, player, player);
                             }).forResult();
                         },
-                        content() {
-                            targets[0].damage();
+                        async content(event, trigger, player) {
+                            await event.targets[0].damage();
+                            const card = get.cardPile(card => get.tag(card, 'damage') && get.type(card) !== 'delay');
+                            if (card) await player.gain(card, 'gain2');
                         },
                     },
                 },
@@ -43402,7 +43405,7 @@ const packs = function () {
             MiNikill.translate[skill + '_append'] = '<span style="font-family: yuanli"><li>念影——' + MiNikill.skill[skill].nianyingSkill[0] + '<br>' + MiNikill.skill[skill].nianyingSkill[1] + '</span>';
         }
     }
-    for (let i in MiNikill.character) {
+    for (const i in MiNikill.character) {
         if (Array.isArray(MiNikill.character[i])) MiNikill.character[i] = get.convertedCharacter(MiNikill.character[i]);
         MiNikill.character[i].trashBin ??= [];
         MiNikill.character[i].dieAudios ??= [];

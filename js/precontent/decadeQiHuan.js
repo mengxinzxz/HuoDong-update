@@ -1,7 +1,7 @@
 import { lib, game, ui, get, ai, _status } from '../../../../noname.js';
 
 const packs = function () {
-    var decadeQiHuan = {
+    const decadeQiHuan = {
         name: 'decadeQiHuan',
         connect: true,
         characterSort: {
@@ -919,7 +919,7 @@ const packs = function () {
             QH_huolu_info: '锁定技，出牌阶段开始时，若你的手牌数为全场最多，你须将手牌数弃置至全场最少，然后将总共5点随机伤害分配给任意敌方角色。',
         },
     };
-    for (let i in decadeQiHuan.character) {
+    for (const i in decadeQiHuan.character) {
         if (Array.isArray(decadeQiHuan.character[i])) decadeQiHuan.character[i] = get.convertedCharacter(decadeQiHuan.character[i]);
         decadeQiHuan.character[i].trashBin ??= [];
         if (_status['extension_活动武将_files']?.audio.die.files.includes(`${i}.mp3`)) {

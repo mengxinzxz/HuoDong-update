@@ -2,7 +2,7 @@ import { lib, game, ui, get, ai, _status } from '../../../../noname.js';
 import WeChatkill_sight from './WeChatkill_sight.js';
 
 const packs = function () {
-    var WeChatkill = {
+    const WeChatkill = {
         name: 'WeChatkill',
         connect: true,
         characterSort: {
@@ -10775,7 +10775,7 @@ const packs = function () {
                         map[suit]++;
                     }
                     const list = [];
-                    for (let i in map) {
+                    for (const i in map) {
                         if (map[i] > 0) list.push([i, map[i]]);
                     }
                     list.sort((a, b) => b[1] - a[1]);
@@ -11773,7 +11773,7 @@ const packs = function () {
                                 map[suit] += cards.filter(card => get.suit(card) == suit).length;
                             }
                             const list = [];
-                            for (let i in map) {
+                            for (const i in map) {
                                 if (map[i] > 0) list.push([i, map[i]]);
                             }
                             if (current == currentPhase) list.sort((a, b) => b[1] - a[1]);
@@ -20866,7 +20866,7 @@ const packs = function () {
         },
     };
     WeChatkill_sight();//加载欢杀界面逻辑
-    for (let i in WeChatkill.character) {
+    for (const i in WeChatkill.character) {
         if (Array.isArray(WeChatkill.character[i])) WeChatkill.character[i] = get.convertedCharacter(WeChatkill.character[i]);
         WeChatkill.character[i].trashBin ??= [];
         WeChatkill.character[i].dieAudios ??= [];
