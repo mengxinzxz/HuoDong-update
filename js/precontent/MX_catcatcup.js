@@ -1248,7 +1248,7 @@ const packs = function () {
                 audio: 'lieren',
                 trigger: { player: 'useCardAfter' },
                 filter(event, player) {
-                    return event.targets?.[0]?.isIn() && player.canCompare(event.player);
+                    return event.targets?.[0]?.isIn() && player.canCompare(event.targets[0]);
                 },
                 check(event, player) {
                     return get.attitude(player, event.targets[0]) < 0 && player.countCards('h') > 1;
