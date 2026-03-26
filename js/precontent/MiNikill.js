@@ -521,10 +521,10 @@ const packs = function () {
             Mmiao_guanyinping: ['female', 'shu', 4, ['minimiaowuji', 'minimiaohuxiao', 'minidoumao']],
             Mmiao_mayunlu: ['female', 'shu', 4, ['minimiaoyuma', 'minimiaofengpo', 'minidoumao']],
             //念
-            Mnian_zhugeliang: ['male', 'shu', 3, ['mininianxinghan', 'mininianliaoyuan', 'mininianying_zgl'], ['name:诸葛|亮']],
-            Mnian_lvbu: ['male', 'qun', 5, ['mininiantazhen', 'mininiandoupo', 'mininianying_lb']],
-            Mnian_zhouyu: ['male', 'wu', 4, ['mininiansuhui', 'mininianchongzou', 'mininianying_zy']],
-            Mnian_caopi: ['male', 'wei', 3, ['mininiandengji', 'mininianchengming', 'mininianying_cp', 'mininiansongwei'], ['zhu']],
+            Mnian_zhugeliang: ['male', 'shu', 3, ['mininianxinghan', 'mininianliaoyuan', 'mininianying_Mnian_zhugeliang'], ['name:诸葛|亮']],
+            Mnian_lvbu: ['male', 'qun', 5, ['mininiantazhen', 'mininiandoupo', 'mininianying_Mnian_lvbu']],
+            Mnian_zhouyu: ['male', 'wu', 4, ['mininiansuhui', 'mininianchongzou', 'mininianying_Mnian_zhouyu']],
+            Mnian_caopi: ['male', 'wei', 3, ['mininiandengji', 'mininianchengming', 'mininianying_Mnian_caopi', 'mininiansongwei'], ['zhu']],
             //战
             Mfight_huangzhong: ['male', 'shu', 4, ['minifightdingjun', 'minifightlizhan']],
             Mfight_zhangliao: ['male', 'wei', 4, ['minifightbiaoxi', 'minifightpozhen']],
@@ -36419,14 +36419,6 @@ const packs = function () {
                 }
             },
             //念
-            mininianying: {
-                subSkill: {
-                    Mnian_zhugeliang: { audio: 'ext:活动武将/audio/skill:2' },
-                    Mnian_lvbu: { audio: 'ext:活动武将/audio/skill:2' },
-                    Mnian_zhouyu: { audio: 'ext:活动武将/audio/skill:2' },
-                    Mnian_caopi: { audio: 'ext:活动武将/audio/skill:2' },
-                },
-            },
             mininianxinghan: {
                 audio: 'ext:活动武将/audio/skill:2',
                 trigger: { player: ['phaseBegin', 'damageBegin4'] },
@@ -36667,31 +36659,32 @@ const packs = function () {
                 },
                 locked: false,
             },
-            mininianying_zgl: {
-                audio: 'mininianying_Mnian_zhugeliang',
+            mininianying_Mnian_zhugeliang: {
+                audio: 'ext:活动武将/audio/skill:2',
                 trigger: { player: 'phaseBegin', global: 'phaseEnd' },
-                filter(event, player, name, indexedData) {
-                    if (!Object.keys(lib.skill).some(i => get.info(i)?.nianyingSkill && get.info(i).nianyingFilter(event, player, name, indexedData))) return false;
+                filter(event, player, name) {
+                    if (!Object.keys(lib.skill).some(i => !player.getStorage('mininianying_Mnian_zhugeliang').includes(i) && get.info(i)?.nianyingSkill && get.info(i).nianyingFilter(event, player, name))) return false;
                     if (name == 'phaseBegin') return !game.hasPlayer(target => target.group != 'shu');
                     return game.hasPlayer2(current => {
                         return current.getHistory('custom', evt => evt.name == 'changeGroup' && evt.originGroup != evt.group && [evt.originGroup, evt.group].includes('shu')).length;
                     }) || game.getGlobalHistory('everything', evt => evt.name == 'die' && evt.player.group == 'shu').length;
                 },
                 async cost(event, trigger, player) {
-                    const skills = Object.keys(lib.skill).filter(i => get.info(i)?.nianyingSkill && get.info(i).nianyingFilter(trigger, player, event.triggername, event.indexedData)).map(i => [i, get.info(i).nianyingSkill[0], get.info(i).nianyingSkill[1]]);
+                    const skills = Object.keys(lib.skill).filter(i => !player.getStorage(event.skill).includes(i) && get.info(i)?.nianyingSkill && get.info(i).nianyingFilter(trigger, player, event.triggername)).map(i => [i, get.info(i).nianyingSkill[0], get.info(i).nianyingSkill[1]]);
                     const result = await player.chooseControl(skills.map(i => i[1]), 'cancel2')
-                        .set('prompt', get.prompt('mininianying_zgl')).set('prompt2', '选择一项念影效果执行')
+                        .set('prompt', get.prompt('mininianying_Mnian_zhugeliang')).set('prompt2', '选择一项念影效果执行')
                         .set('displayIndex', false)
                         .set('choiceList', skills.map(i => {
-                            return '<div class="skill">' + i[1] + '</div><div>' + i[2] + '</div>';
+                            return '<div class="skill">' + i[1] + (i[0] !== event.skill ? '（限定）' : '') + '</div><div>' + i[2] + '</div>';
                         })).set('ai', () => get.event().controls.randomGet()).forResult();
-                    event.result = { bool: (result.control != 'cancel2'), cost_data: skills.find(i => i[1] == result.control) };
+                    if (result?.control && result.control !== 'cancel2' && typeof result.index === 'number') event.result = { bool: true, cost_data: skills[result.index] };
                 },
                 async content(event, trigger, player) {
                     await player.draw(2);
                     const choice = event.cost_data;
                     player.popup(choice[1]);
                     game.log(player, '选择了', '#g' + choice[1]);
+                    if (choice[0] !== event.name) player.markAuto(event.name, [choice[0]]);
                     await lib.skill[choice[0]].nianyingContent(player);
                 },
                 nianyingSkill: ['奖率三军', '令场上所有与你势力相同的其他角色各摸一张牌，然后依次交给你一张锦囊牌（若其没有锦囊牌则将其本次获得的牌交给你）'],
@@ -36703,7 +36696,7 @@ const packs = function () {
                     player.line(targets);
                     let map = {};
                     for (let i = 0; i < targets.length; i++) {
-                        const result = await targets[i].draw((i != targets.length - 1) ? 'nodelay' : '').forResult();
+                        const result = (await targets[i].draw((i != targets.length - 1) ? 'nodelay' : '').forResult()).cards;
                         if (Array.isArray(result)) map[targets[i].playerid] = result;
                     }
                     await game.delay();
@@ -36882,7 +36875,7 @@ const packs = function () {
                     }).set('custom', {
                         add: {
                             confirm(bool) {
-                                if (bool != true) return;
+                                if (typeof bool !== 'boolean') return;
                                 const event = get.event().parent;
                                 if (event.controls) event.controls.forEach(i => i.close());
                                 if (ui.confirm) ui.confirm.close();
@@ -37250,31 +37243,35 @@ const packs = function () {
                     event._result = {};
                 },
             },
-            mininianying_lb: {
-                audio: 'mininianying_Mnian_lvbu',
+            mininianying_Mnian_lvbu: {
+                audio: 'ext:活动武将/audio/skill:2',
                 trigger: {
                     player: 'damageEnd',
                     source: 'damageSource',
                 },
-                filter(event, player, name, indexedData) {
-                    if (!Object.keys(lib.skill).some(i => get.info(i)?.nianyingSkill && get.info(i).nianyingFilter(event, player, name, indexedData))) return false;
-                    return player.countMark('mininianying_lb') >= 2;
+                filter(event, player, name) {
+                    if (!Object.keys(lib.skill).some(i => !player.getStorage('mininianying_Mnian_lvbu').includes(i) && get.info(i)?.nianyingSkill && get.info(i).nianyingFilter(event, player, name))) return false;
+                    let num = 0;
+                    player.getHistory('sourceDamage', evt => num += evt.num);
+                    player.getHistory('damage', evt => num += evt.num);
+                    return num >= 2;
                 },
                 async cost(event, trigger, player) {
-                    const skills = Object.keys(lib.skill).filter(i => get.info(i)?.nianyingSkill && get.info(i).nianyingFilter(trigger, player, event.triggername, event.indexedData)).map(i => [i, get.info(i).nianyingSkill[0], get.info(i).nianyingSkill[1]]);
+                    const skills = Object.keys(lib.skill).filter(i => !player.getStorage(event.skill).includes(i) && get.info(i)?.nianyingSkill && get.info(i).nianyingFilter(trigger, player, event.triggername)).map(i => [i, get.info(i).nianyingSkill[0], get.info(i).nianyingSkill[1]]);
                     const result = await player.chooseControl(skills.map(i => i[1]), 'cancel2')
-                        .set('prompt', get.prompt('mininianying_lb')).set('prompt2', '选择一项念影效果执行')
+                        .set('prompt', get.prompt('mininianying_Mnian_lvbu')).set('prompt2', '选择一项念影效果执行')
                         .set('displayIndex', false)
                         .set('choiceList', skills.map(i => {
-                            return '<div class="skill">' + i[1] + '</div><div>' + i[2] + '</div>';
+                            return '<div class="skill">' + i[1] + (i[0] !== event.skill ? '（限定）' : '') + '</div><div>' + i[2] + '</div>';
                         })).set('ai', () => get.event().controls.randomGet()).forResult();
-                    event.result = { bool: (result.control != 'cancel2'), cost_data: skills.find(i => i[1] == result.control) };
+                    if (result?.control && result.control !== 'cancel2' && typeof result.index === 'number') event.result = { bool: true, cost_data: skills[result.index] };
                 },
                 usable: 1,
                 async content(event, trigger, player) {
                     const choice = event.cost_data;
                     player.popup(choice[1]);
                     game.log(player, '选择了', '#g' + choice[1]);
+                    if (choice[0] !== event.name) player.markAuto(event.name, [choice[0]]);
                     await lib.skill[choice[0]].nianyingContent(player);
                 },
                 nianyingSkill: ['斗破千军', '视为使用一张【决斗】，本次【决斗】结算中，你的所有手牌均视为【杀】'],
@@ -37287,33 +37284,6 @@ const packs = function () {
                         evt.player.addTempSkill('mininiandoupo_effect');
                         evt.player.markAuto('mininiandoupo_effect', [evt]);
                     });
-                },
-                init(player, skill) {
-                    const num = game.getGlobalHistory('changeHp', evt => {
-                        return evt.getParent().name == 'damage' && (evt.getParent().player == player || (evt.getParent().source && evt.getParent().source == player));
-                    }).concat(game.getGlobalHistory('changeHp', evt => {
-                        return evt.getParent().name == 'damage' && evt.getParent().player == player && evt.getParent().source && evt.getParent().source == player;
-                    })).length;
-                    if (num) player.addMark(skill, num, false);
-                },
-                onremove: true,
-                group: 'mininianying_lb_mark',
-                subSkill: {
-                    mark: {
-                        charlotte: true,
-                        trigger: {
-                            global: 'phaseBefore',
-                            player: 'damageEnd',
-                            source: 'damageSource',
-                        },
-                        forced: true,
-                        popup: false,
-                        firstDo: true,
-                        content() {
-                            if (trigger.name == 'phase') delete player.storage.mininianying_lb;
-                            else player.addMark('mininianying_lb', trigger.num, false);
-                        },
-                    },
                 },
             },
             //念周瑜
@@ -37533,11 +37503,11 @@ const packs = function () {
                     },
                 },
             },
-            mininianying_zy: {
-                audio: 'mininianying_Mnian_zhouyu',
+            mininianying_Mnian_zhouyu: {
+                audio: 'ext:活动武将/audio/skill:2',
                 trigger: { global: 'phaseEnd' },
-                filter(event, player, name, indexedData) {
-                    if (!Object.keys(lib.skill).some(i => get.info(i)?.nianyingSkill && get.info(i).nianyingFilter(event, player, name, indexedData))) return false;
+                filter(event, player, name) {
+                    if (!Object.keys(lib.skill).some(i => !player.getStorage('mininianying_Mnian_zhouyu').includes(i) && get.info(i)?.nianyingSkill && get.info(i).nianyingFilter(event, player, name))) return false;
                     const history = game.getGlobalHistory('everything', evt => evt.player === event.player && ['useCard', 'respond'].includes(evt.name));
                     const map = history.reduce((map, evt) => {
                         const { name } = evt.card;
@@ -37548,25 +37518,26 @@ const packs = function () {
                     return Object.keys(map).reduce((sum, item) => sum + Math.floor(map[item] / 2), 0) >= 2;
                 },
                 async cost(event, trigger, player) {
-                    const skills = Object.keys(lib.skill).filter(i => get.info(i)?.nianyingSkill && get.info(i).nianyingFilter(trigger, player, event.triggername, event.indexedData)).map(i => [i, get.info(i).nianyingSkill[0], get.info(i).nianyingSkill[1]]);
+                    const skills = Object.keys(lib.skill).filter(i => !player.getStorage(event.skill).includes(i) && get.info(i)?.nianyingSkill && get.info(i).nianyingFilter(trigger, player, event.triggername)).map(i => [i, get.info(i).nianyingSkill[0], get.info(i).nianyingSkill[1]]);
                     const result = await player.chooseControl(skills.map(i => i[1]), 'cancel2')
-                        .set('prompt', get.prompt('mininianying_zy')).set('prompt2', '选择一项念影效果执行')
+                        .set('prompt', get.prompt('mininianying_Mnian_zhouyu')).set('prompt2', '选择一项念影效果执行')
                         .set('displayIndex', false)
                         .set('choiceList', skills.map(i => {
-                            return '<div class="skill">' + i[1] + '</div><div>' + i[2] + '</div>';
+                            return '<div class="skill">' + i[1] + (i[0] !== event.skill ? '（限定）' : '') + '</div><div>' + i[2] + '</div>';
                         })).set('ai', () => get.event().controls.randomGet()).forResult();
-                    event.result = { bool: (result.control != 'cancel2'), cost_data: skills.find(i => i[1] == result.control) };
+                    if (result?.control && result.control !== 'cancel2' && typeof result.index === 'number') event.result = { bool: true, cost_data: skills[result.index] };
                 },
                 async content(event, trigger, player) {
                     const choice = event.cost_data;
                     player.popup(choice[1]);
                     game.log(player, '选择了', '#g' + choice[1]);
+                    if (choice[0] !== event.name) player.markAuto(event.name, [choice[0]]);
                     await lib.skill[choice[0]].nianyingContent(player);
                 },
                 nianyingSkill: ['江东双壁', '令至多两名角色各获得1点护甲（至多为5）'],
                 nianyingFilter: () => true,
                 async nianyingContent(player) {
-                    const result = await player.chooseTarget(...get.info('mininianying_zy').nianyingSkill, [1, 2]).set('ai', target => {
+                    const result = await player.chooseTarget(...get.info('mininianying_Mnian_zhouyu').nianyingSkill, [1, 2]).set('ai', target => {
                         const player = get.player();
                         return get.attitude(player, target) / Math.sqrt(Math.min(1, target.hp + target.hujia));
                     }).forResult();
@@ -38571,37 +38542,38 @@ const packs = function () {
                     },
                 },
             },
-            mininianying_cp: {
-                audio: 'mininianying_Mnian_caopi',
+            mininianying_Mnian_caopi: {
+                audio: 'ext:活动武将/audio/skill:2',
                 trigger: {
                     player: 'gainAfter',
                     global: 'loseAsyncAfter',
                 },
-                filter(event, player, name, indexedData) {
-                    if (!Object.keys(lib.skill).some(i => get.info(i)?.nianyingSkill && get.info(i).nianyingFilter(event, player, name, indexedData))) return false;
+                filter(event, player, name) {
+                    if (!Object.keys(lib.skill).some(i => !player.getStorage('mininianying_Mnian_caopi').includes(i) && get.info(i)?.nianyingSkill && get.info(i).nianyingFilter(event, player, name))) return false;
                     const evt = event.getParent('phaseDraw');
                     if (evt?.name == 'phaseDraw') return false;
                     return event.getg?.(player)?.length;
                 },
                 usable: 1,
                 nianyingSkill: ['恣意而为', '选择一名其他角色和一种花色，随机获得其一张此花色的手牌'],
-                nianyingFilter(event, player, name, indexedData) {
+                nianyingFilter(event, player, name) {
                     return game.hasPlayer(current => current != player && current.countCards('h'));
                 },
                 async cost(event, trigger, player) {
-                    const skills = Object.keys(lib.skill).filter(i => get.info(i)?.nianyingSkill && get.info(i).nianyingFilter(trigger, player, event.triggername, event.indexedData)).map(i => [i, get.info(i).nianyingSkill[0], get.info(i).nianyingSkill[1]]);
+                    const skills = Object.keys(lib.skill).filter(i => !player.getStorage(event.skill).includes(i) && get.info(i)?.nianyingSkill && get.info(i).nianyingFilter(trigger, player, event.triggername)).map(i => [i, get.info(i).nianyingSkill[0], get.info(i).nianyingSkill[1]]);
                     const result = await player.chooseControl(skills.map(i => i[1]), 'cancel2')
-                        .set('prompt', get.prompt('mininianying_zy')).set('prompt2', '选择一项念影效果执行')
+                        .set('prompt', get.prompt('mininianying_Mnian_zhouyu')).set('prompt2', '选择一项念影效果执行')
                         .set('displayIndex', false)
                         .set('choiceList', skills.map(i => {
-                            return '<div class="skill">' + i[1] + '</div><div>' + i[2] + '</div>';
+                            return '<div class="skill">' + i[1] + (i[0] !== event.skill ? '（限定）' : '') + '</div><div>' + i[2] + '</div>';
                         })).set('ai', () => get.event().controls.randomGet()).forResult();
-                    event.result = { bool: (result.control != 'cancel2'), cost_data: skills.find(i => i[1] == result.control) };
+                    if (result?.control && result.control !== 'cancel2' && typeof result.index === 'number') event.result = { bool: true, cost_data: skills[result.index] };
                 },
                 async content(event, trigger, player) {
                     const choice = event.cost_data;
                     player.popup(choice[1]);
                     game.log(player, '选择了', '#g' + choice[1]);
+                    if (choice[0] !== event.name) player.markAuto(event.name, [choice[0]]);
                     await lib.skill[choice[0]].nianyingContent(player);
                 },
                 async nianyingContent(player) {
@@ -42982,8 +42954,8 @@ const packs = function () {
             mininianxinghan_faq_info: '<br>系统为默认势力和场上的势力的并集存在非蜀势力和你此前未因“定乱”成功的势力各创造四枚对应势力棋子并随机置入这些势力数+2的试管中，每个试管最多存在四枚棋子，点击一个试管后再点击一个未满的试管，第一个试管最上方的元素将进入第二个试管最上方，玩家需要将其中一个试管的棋子均调整为同一势力的弃置，则“定乱”成功，“定乱”结果为你成功分配的这个势力。',
             mininianliaoyuan: '燎原',
             mininianliaoyuan_info: '①出牌阶段限一次，你可以视为使用【火攻】。②你使用【火攻】可以指定任意名角色。',
-            mininianying_zgl: '念影',
-            mininianying_zgl_info: '回合开始时，若场上角色均为蜀势力；一名角色的回合结束时，若本回合场上有蜀势力角色死亡/场上有原其他势力角色变更势力至过蜀势力/场上有原蜀势力角色变更至过其他势力。则你可以摸两张牌并选择一个存在“念影”效果的技能的“念影”效果执行。',
+            mininianying_Mnian_zhugeliang: '念影',
+            mininianying_Mnian_zhugeliang_info: '回合开始时，若场上角色均为蜀势力；一名角色的回合结束时，若本回合场上有蜀势力角色死亡/场上有原其他势力角色变更势力至过蜀势力/场上有原蜀势力角色变更至过其他势力。则你可以摸两张牌并选择一个存在“念影”效果的技能的“念影”效果执行。',
             mininiantazhen: '踏阵',
             mininiantazhen_sha: '杀',
             mininiantazhen_sha_info: '攻击力+1',
@@ -42996,16 +42968,16 @@ const packs = function () {
             mininiantazhen_faq_info: '<br>系统生成一个九宫格，其中有三格为随机三名其他角色，两格为【酒】（下次攻击攻击力+2），一格为【马】（步数+2），其余格为【杀】（攻击力+1），玩家初始步数为玩家体力值+1，初始攻击力为0，在满足经过的路径不交叉的条件下，任选一个不为角色的格子作为初始位置进行八向移动，最终路线上存在被击败角色（攻击力大于等于其当前体力值）即为踏阵成功。',
             mininiandoupo: '斗破',
             mininiandoupo_info: '锁定技。①你使用【决斗】的目标上限数+2。②你使用【决斗】的效果改为“所有目标角色与你依次打出一张【杀】，未打出【杀】的角色受到你对其造成的1点伤害。然后重复此流程直到此轮有角色受到伤害。”。③当你使用【决斗】结算完毕后，你获得所有本次【决斗】失败一方的其他角色的各一张牌。',
-            mininianying_lb: '念影',
-            mininianying_lb_info: '每回合限一次，当你造成或受到伤害后，若你本回合造成或受到的伤害数之和大于等于2，则你可以选择一个存在“念影”效果的技能的“念影”效果执行。',
+            mininianying_Mnian_lvbu: '念影',
+            mininianying_Mnian_lvbu_info: '每回合限一次，当你造成或受到伤害后，若你本回合造成或受到的伤害数之和大于等于2，则你可以选择一个存在“念影”效果的技能的“念影”效果执行。',
             mininiansuhui: '溯洄',
             mininiansuhui_info: '每轮限一次，一名角色的回合结束时，你可以进行一次“奏乐”，根据其中最多的同名音符数执行对应效果：3个，令其回溯至弃牌阶段；4个，令其回溯至出牌阶段；5个，令其回溯至准备阶段。然后令其获得本回合进入弃牌堆的所有牌且其本回合手牌上限+X（X为本次“奏乐”后的同名音符数）。',
             mininiansuhui_faq: '关于“奏乐”',
             mininiansuhui_faq_info: '<br>系统分配五个随机音符，且初始拥有五次即兴次数，可通过点击音符的方式对音符进行保留，点击即兴可将所有未选择保留的音符进行重置，玩家可随时点击“演奏”按钮结束“奏乐”，以当前的五个音符作为本次“奏乐”结果。',
             mininianchongzou: '重奏',
             mininianchongzou_info: '锁定技，每种类别每回合限一次，当你使用或打出牌时，若你本回合已使用或打出过此牌名的其他牌，则你获得一张与此牌类别不同的牌，并令下一轮〖溯洄〗的可即兴次数+1。',
-            mininianying_zy: '念影',
-            mininianying_zy_info: '一名角色的回合结束时，若其本回合至少使用了两组同名牌，则你可以选择一个存在“念影”效果的技能的“念影”效果执行。',
+            mininianying_Mnian_zhouyu: '念影',
+            mininianying_Mnian_zhouyu_info: '一名角色的回合结束时，若其本回合至少使用了两组同名牌，则你可以选择一个存在“念影”效果的技能的“念影”效果执行。',
             zhouyu_宫: '宫',
             zhouyu_商: '商',
             zhouyu_角: '角',
@@ -43022,8 +42994,8 @@ const packs = function () {
             mininiandengji_faq_info: '<br>系统随机分配四个11*5的地图中的一个，玩家需在地图中击败曹昂、曹植、曹冲、曹彰和刘协。击败前四名角色会失去此前因此获得的技能，然后获得对应技能并解锁〖承命〗对应的花色：曹昂：〖慷忾〗和♠；曹植：〖落英〗和♣；曹冲：〖称象〗和♥；曹彰：〖将驰〗和♦。击败刘协可增加1点体力上限并回复1点体力，并修改〖承命〗为“当你成为【杀】的目标时”也可发动。地图中有四种颜色的格子，其中黑色格子为未知格子，蓝色格子+1分，走过后变为灰色格子，红色格子-1分，本次“登阶”成功后所有走过的红色格子变为灰色格子，灰色格子不加不减。相邻格子颜色对你可见。在30秒内，你的分数大于需击败的角色分数为“登阶”成功。非首次进行“登阶”时，若你上次“登阶”成功，本次“登阶”从上次“登阶”的终点开始，否则从上次失败的起始点开始。',
             mininianchengming: '承命',
             mininianchengming_info: '出牌阶段，你可以重铸X张相同花色A的牌（X为本回合你发动过此技能的次数+1），然后你从牌堆或弃牌堆中获得一张指定花色B的牌（A、B均为〖登极〗已解锁的花色）。',
-            mininianying_cp: '念影',
-            mininianying_cp_info: '每回合限一次，当你于摸牌阶段外获得牌后，你可以选择一个存在“念影”效果的技能的“念影”效果执行。',
+            mininianying_Mnian_caopi: '念影',
+            mininianying_Mnian_caopi_info: '每回合限一次，当你于摸牌阶段外获得牌后，你可以选择一个存在“念影”效果的技能的“念影”效果执行。',
             mininiansongwei: '颂威',
             mininiansongwei_info: '主公技，其他魏势力的角色的判定生效后，其可以令你摸一张牌。',
             //战
