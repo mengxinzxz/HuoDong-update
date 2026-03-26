@@ -37099,33 +37099,42 @@ const packs = function () {
             },
             mininiandoupo: {
                 audio: 'ext:活动武将/audio/skill:2',
-                trigger: { player: ['juedouBefore', 'juedouBegin', 'useCardAfter'] },
+                trigger: { player: ['useCard1', 'juedouBegin', 'useCardAfter'] },
                 filter(event, player, name) {
-                    if (event.name == 'juedou') {
-                        const evt = event.getParent();
-                        if (!evt || evt.name != 'useCard' || !(evt.targets || []).includes(event.target)) return false;
-                        return (evt.targets.slice().reverse()[0] !== event.target) === (name === 'juedouBefore');
-                    }
-                    if (event.card.name != 'juedou' || !(event.targets || []).length) return false;
+                    if (event.name === 'juedou') return event.card?.storage?.mininiandoupo;
+                    if (name === 'useCard1') return event.card.name === 'juedou';
                     const juedouEvent = game.getGlobalHistory('everything', evt => evt.name === 'juedou' && evt.getParent() == event && evt.turn)[0];
                     if (!juedouEvent || juedouEvent.turn === player) return false;
-                    return event.targets.some(target => target.isIn() && target.countCards('h') > 0);
+                    return event.targets.some(target => target.isIn());
                 },
                 forced: true,
                 popup: false,
                 async content(event, trigger, player) {
-                    if (event.triggername == 'juedouBefore') {
-                        trigger.cancel();
-                        return;
-                    }
-                    const targets = trigger.name == 'juedou' ? trigger.getParent().targets : trigger.targets.filter(target => target.isIn() && target.countCards('h') > 0);
-                    await player.logSkill('mininiandoupo', targets);
-                    if (trigger.name == 'useCard') {
-                        for (const target of targets) {
-                            await player.gain(target.getGainableCards(player, 'h').randomGets(1), target, 'giveAuto', 'bySelf');
+                    if (trigger.name === 'useCard') {
+                        if (event.triggername === 'useCard1') {
+                            game.broadcastAll(card => {
+                                card.storage ??= {};
+                                card.storage.mininiandoupo = true;
+                                if (_status._mininiandoupo) return;
+                                _status._mininiandoupo = get.info;
+                                get.info = function (card, ...args) {
+                                    const result = _status._mininiandoupo.call(this, card, ...args);
+                                    if (get.itemtype(card) === 'vcard' && card.storage?.mininiandoupo) {
+                                        result.multiline = true;
+                                        result.multitarget = true;
+                                    }
+                                    return result;
+                                };
+                            }, trigger.card); 
+                        } 
+                        else {
+                            const targets = trigger.targets.filter(target => target.isIn()).sortBySeat();
+                            player.logSkill(event.name, targets);
+                            for (const target of targets) await player.gain(target.getGainableCards(player, 'h').randomGets(1), target, 'giveAuto', 'bySelf');
                         }
                     }
                     else {
+                        player.logSkill(event.name);
                         trigger.setContent(lib.skill.mininiandoupo.juedouContent);
                     }
                 },
@@ -37181,7 +37190,10 @@ const packs = function () {
                                     event._result = { bool: false };
                                 }
                                 else {
-                                    const next = event.turn.chooseToRespond({ name: 'sha' });
+                                    const next = event.turn.chooseToRespond(function (card, player) {
+                                        if (get.name(card) !== 'sha') return false;
+                                        return lib.filter.cardRespondable(card, player);
+                                    });
                                     if (event.shaRequired > 1) next.set('prompt2', '共需打出' + event.shaRequired + '张杀');
                                     next.set('ai', card => {
                                         let event = _status.event, player = event.splayer, target = event.starget;
