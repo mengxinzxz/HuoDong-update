@@ -37125,12 +37125,17 @@ const packs = function () {
                                     }
                                     return result;
                                 };
-                            }, trigger.card); 
-                        } 
+                            }, trigger.card);
+                        }
                         else {
                             const targets = trigger.targets.filter(target => target.isIn()).sortBySeat();
                             player.logSkill(event.name, targets);
-                            for (const target of targets) await player.gain(target.getGainableCards(player, 'h').randomGets(1), target, 'giveAuto', 'bySelf');
+                            const cards = targets.reduce((list, target) => {
+                                const card = target.getGainableCards(player, 'h').randomGet();
+                                if (card) list.add(card);
+                                return list;
+                            }, []);
+                            if (cards.length > 0) await player.gain(cards, 'giveAuto', 'bySelf');
                         }
                     }
                     else {
