@@ -952,7 +952,7 @@ const packs = function () {
                     }).set('score', result2.score).set('custom', {
                         add: {
                             confirm(bool) {
-                                if (bool !== true) return;
+                                if (typeof bool !== 'boolean') return;
                                 const event = get.event().parent;
                                 if (Array.isArray(event.controls)) event.controls.forEach(i => i.close());
                                 if (ui.confirm) ui.confirm.close();
