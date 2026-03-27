@@ -12327,6 +12327,7 @@ const packs = function () {
                         },
                         logTarget: 'player',
                         async content(event, trigger, player) {
+                            const target = trigger.player;
                             target.addGaintag(event.cards, 'bilibili_linglai_tag');
                             if (target === player) target.addGaintag(event.cards, 'bilibili_linglai');
                         },
