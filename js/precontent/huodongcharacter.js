@@ -367,7 +367,7 @@ const packs = function () {
             //嘉宾证
             bilibili_jiabinzheng: {
                 image: 'ext:活动武将/image/card/bilibili_jiabinzheng.png',
-                fullskin: true,
+                fullimage: true,
                 type: 'equip',
                 ai: {
                     order: 10,
