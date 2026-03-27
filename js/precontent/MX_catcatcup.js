@@ -796,7 +796,7 @@ const packs = function () {
                 derivation: 'chanyuan',
                 enable: ['chooseToUse', 'chooseToRespond'],
                 hiddenCard(player, name) {
-                    if (player.isTempBanned('catguhuo')) return false;
+                    if (player.isTempBanned('catguhuo') || !player.countCards('hs')) return false;
                     return get.inpileVCardList(info => {
                         if (player.getStorage('catguhuo_used').includes(info[2])) return false;
                         return info[0] === 'basic' || info[0] === 'trick';
