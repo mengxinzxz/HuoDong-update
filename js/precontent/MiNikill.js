@@ -37243,14 +37243,7 @@ const packs = function () {
                                     }
                                     else {
                                         stop = true;
-                                        if (event.turn !== player) {
-                                            await target.damage(player);
-                                        }
-                                        else {
-                                            for (const target of targets) {
-                                                await player.damage(target);
-                                            }
-                                        }
+                                        await target.damage(player);
                                         break;
                                     }
                                 }
