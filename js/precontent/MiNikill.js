@@ -30404,7 +30404,7 @@ const packs = function () {
                     return true;
                 },
                 async content(event, trigger, player) {
-                    let num = trigger.name == 'damage' ? 2 : 1;
+                    let num = trigger.name == 'damage' ? 1 : 2;
                     num = Math.min(8 - player.countMark(event.name), num);
                     if (num > 0) player.addMark(event.name, num);
                 },
