@@ -9753,24 +9753,44 @@ const packs = function () {
             //乐大小乔
             bilibili_qiqin: {
                 audio: Array.from({ length: 2 }).map((_, i) => ['', '_yue_daqiao'].map(j => j + (i + 1))).flat().map(i => `dcqiqin${i}.mp3`),
-                inherit: 'dcqiqin',
-                group: ['bilibili_qiqin_restore', 'bilibili_qiqin_draw'],
+                trigger: { global: ['gameDrawBegin', 'replaceHandcardsBegin'] },
+                forced: true,
+                popup: false,
+                async content(event, trigger, player) {
+                    const me = player;
+                    if (trigger.name === 'gameDraw') {
+                        player.logSkill(event.name);
+                        const numx = trigger.num;
+                        trigger.num = function (player) {
+                            return (typeof numx === 'function' ? numx(player) : numx) * (player === me ? 2 : 1);
+                        };
+                    }
+                    trigger.gaintag ??= {};
+                    trigger.gaintag[me.playerid] = function (num, cards) {
+                        return [[cards, 'eternal_dcqiqin_tag']];
+                    };
+                },
+                group: 'bilibili_qiqin_restore',
                 subSkill: {
-                    get restore() {
-                        const info = lib.skill.dcqiqin.subSkill.restore;
-                        info.audio = Array.from({ length: 2 }).map((_, i) => ['', '_yue_daqiao'].map(j => j + (i + 1))).flat().map(i => `dcqiqin${i}.mp3`);
-                        return info;
-                    },
-                    draw: {
+                    restore: {
                         audio: Array.from({ length: 2 }).map((_, i) => ['', '_yue_daqiao'].map(j => j + (i + 1))).flat().map(i => `dcqiqin${i}.mp3`),
-                        trigger: { global: "gameDrawBegin" },
+                        trigger: { player: 'phaseZhunbeiBegin' },
+                        filter(event, player) {
+                            return Array.from(ui.discardPile.childNodes).some(card => card.hasGaintag('eternal_dcqiqin_tag'));
+                        },
                         forced: true,
                         content() {
-                            const me = player, numx = trigger.num;
-                            trigger.num = player => {
-                                return (player === me ? 2 : 1) * (typeof numx === "function" ? numx(player) : numx);
-                            };
+                            const cards = Array.from(ui.discardPile.childNodes).filter(card => card.hasGaintag('eternal_dcqiqin_tag'));
+                            player.gain(cards, 'gain2');
                         },
+                    },
+                },
+                mod: {
+                    ignoredHandcard(card, player) {
+                        if (card.hasGaintag('eternal_dcqiqin_tag')) return true;
+                    },
+                    cardDiscardable(card, player, name) {
+                        if (name === 'phaseDiscard' && card.hasGaintag('eternal_dcqiqin_tag')) return false;
                     },
                 },
             },
@@ -13564,7 +13584,7 @@ const packs = function () {
             bilibili_x_xiaoqiao: '萌设小乔',
             bilibili_x_xiaoqiao_prefix: '萌设',
             bilibili_qiqin: '绮琴',
-            bilibili_qiqin_info: '锁定技。①你的起始手牌数×2；游戏开始时，你将所有手牌标记为“琴”。②你的“琴”牌不计入手牌上限。③准备阶段，你获得位于弃牌堆的所有“琴”。',
+            bilibili_qiqin_info: '锁定技。①你的初始手牌数×2，且将这些牌标记为“琴”。②你的“琴”不计入手牌上限。③准备阶段，你获得位于弃牌堆的所有“琴”。',
             bilibili_yanjing: '👁👃👁',
             bilibili_yanjing_ab: '眼睛👁',
             bilibili_dongxi: '洞悉',
