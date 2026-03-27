@@ -37222,9 +37222,9 @@ const packs = function () {
                                     next.set('splayer', player);
                                     next.set('starget', target);
                                     next.set('pdamage', targets.reduce((sum, i) => {
-                                        return sum + get.damageEffect(player, i, event.turn);
+                                        return sum + get.damageEffect(player, i, player);
                                     }, 0));
-                                    next.set('tdamage', get.damageEffect(target, player, event.turn));
+                                    next.set('tdamage', get.damageEffect(target, player, player));
                                     next.set('shaRequired', event.shaRequired);
                                     next.autochoose = lib.filter.autoRespondSha;
                                     const result = await next.forResult();
