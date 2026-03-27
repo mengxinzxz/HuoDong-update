@@ -12262,6 +12262,7 @@ const packs = function () {
                     });
                 },
                 forced: true,
+                locked: false,
                 async content(event, trigger, player) {
                     const cards = trigger.getd();
                     await player.draw(cards.reduce((sum, card) => {
@@ -12280,13 +12281,12 @@ const packs = function () {
                                 if (evtx !== (evtxx.relatedEvent || evtxx.getParent())) return false;
                                 const cards2 = evtxx.getl(evtx.player).cards2;
                                 if (!cards2.includes(card) || !evtxx.gaintag_map[id]?.includes('bilibili_linglai_tag')) return false;
-                                sum += ((evtxx.relatedEvent || evtxx.getParent()).name === 'useCard' ? 2 : 1);
+                                sum += ((evtxx.relatedEvent || evtxx.getParent()).name === 'useCard' ? 3 : 1);
                             });
                         }
                         return sum;
                     }, 0));
                 },
-                subfrequent: ['effect'],
                 group: 'bilibili_linglai_effect',
                 subSkill: {
                     effect: {
@@ -12294,26 +12294,25 @@ const packs = function () {
                         filter(event, player) {
                             return event.player.countCards('h') > 0;
                         },
-                        frequent: true,
-                        logTarget: 'player',
-                        prompt2: () => '观看其手牌并标记其至多两张手牌',
-                        async content(event, trigger, player) {
-                            let target = trigger.player, result;
+                        async cost(event, trigger, player) {
+                            const target = trigger.player, select = 1;
+                            const prompt = `${get.translation(event.skill)}：标记${target === player ? '' : get.translation(target)}${select > 1 ? '各' : ''}${get.cnNumber(select)}张手牌`;
                             if (target === player) {
-                                result = await player.chooseCard('h', true, [1, 2]).set('ai', card => {
+                                event.result = await player.chooseCard('h', true, [1, select]).set('ai', card => {
                                     return get.useful(card) * get.value(card);
-                                }).set('prompt', `${get.translation(event.name)}：标记至多两张手牌`).forResult();
+                                }).set('prompt', prompt).forResult();
                             }
                             else {
-                                result = await player.choosePlayerCard(target, 'visible', true, [1, 2]).set('ai', button => {
+                                event.result = await player.choosePlayerCard(target, 'visible', true, [1, select]).set('ai', button => {
                                     const card = button.link;
                                     return get.useful(card) * get.value(card);
-                                }).set('prompt', `${get.translation(event.name)}：标记${get.translation(target)}至多两张手牌`).forResult();
+                                }).set('prompt', prompt).forResult();
                             }
-                            if (result?.bool && result.cards?.length) {
-                                target.addGaintag(result.cards, 'bilibili_linglai_tag');
-                                if (target === player) target.addGaintag(result.cards, 'bilibili_linglai');
-                            }
+                        },
+                        logTarget: 'player',
+                        async content(event, trigger, player) {
+                            target.addGaintag(event.cards, 'bilibili_linglai_tag');
+                            if (target === player) target.addGaintag(event.cards, 'bilibili_linglai');
                         },
                     },
                 },
@@ -13714,7 +13713,7 @@ const packs = function () {
             bilibili_xingcan_info: '准备阶段和结束阶段，你可以选择一种花色并进行判定，若判定结果与你选择的花色相同，你可以令一名其他角色翻面。',
             bilibili_linglai: '灵籁',
             bilibili_linglai_tag: 'invisible',
-            bilibili_linglai_info: '一名角色的出牌阶段开始时，你可以观看其手牌并选择其中至多两张牌。这些牌因/不因使用进入弃牌堆后，你摸两/一张牌。',
+            bilibili_linglai_info: '一名角色的出牌阶段开始时，你可以观看其手牌并选择其中一张牌。此牌因/不因使用进入弃牌堆后，你摸三/一张牌。',
             bilibili_yongtan: '咏叹',
             bilibili_yongtan_info: '当你于出牌阶段使用牌结算完毕后，你可以选择一个点数并令一名其他角色进行判定，若判定结果与选择的点数相同，则其失去所有体力。',
             bilibili_yongtan_append: `<span style='font-family:yuanli'>${[
