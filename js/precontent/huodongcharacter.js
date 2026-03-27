@@ -9,7 +9,7 @@ const packs = function () {
             huodongcharacter: {
                 CLongZhou: ['lz_sufei', 'lz_tangzi', 'lz_liuqi', 'lz_huangquan'],
                 Chuodong: ['bilibili_shengxunyu', 'bilibili_Firewin', 'bilibili_jinglingqiu', 'bilibili_suixingsifeng', 'bilibili_Emptycity', 'bilibili_thunderlei', 'bilibili_lonelypatients', 'bilibili_ningjingzhiyuan', 'bilibili_xizhicaikobe'],
-                CDormitory: ['bilibili_longjiuzhen', 'bilibili_diandian', 'bilibili_murufengchen', 'bilibili_wuzhuwanshui', 'bilibili_kuangshen', 'bilibili_yanjing', ...Array.from({ length: 3 }).map((_, index) => `bilibili_yanjing_friend${index + 1}`), 'bilibili_xiaoyaoruyun', 'bilibili_shuijiaobuboli'],
+                CDormitory: ['bilibili_yirenyixiaojian', 'bilibili_longjiuzhen', 'bilibili_diandian', 'bilibili_murufengchen', 'bilibili_wuzhuwanshui', 'bilibili_kuangshen', 'bilibili_yanjing', ...Array.from({ length: 3 }).map((_, index) => `bilibili_yanjing_friend${index + 1}`), 'bilibili_xiaoyaoruyun', 'bilibili_shuijiaobuboli'],
                 Cothers: ['bilibili_xiahoudun', 'bilibili_liuguanzhang', 'bilibili_gaowang', 'bilibili_simayi', 'old_dongxie', 'bilibili_sunhanhua', 'bilibili_zhoutaigong', 'bilibili_zhouxiaomei', 'bilibili_caifuren', 'bilibili_zhengxuan', 'bilibili_sp_xuyou', 'old_zuoci', 'bilibili_kuailiangkuaiyue', 'bilibili_wuqiao', 'bilibili_daxiao', 'bilibili_xushao', 'bilibili_shen_guojia', 'bilibili_re_xusheng', 'bilibili_zhangrang', 'bilibili_litiansuo', 'decade_huangwudie', 'bilibili_huanggai', 'bilibili_ekeshaoge', 'bilibili_guanning', 'bilibili_wangwang', 'diy_lvmeng'],
                 Cothers_dualside: ['bilibili_wangtao', 'bilibili_wangyue', 'bilibili_x_wangtao', 'bilibili_x_wangyue', 'bilibili_daqiao', 'bilibili_xiaoqiao', 'bilibili_x_daqiao', 'bilibili_x_xiaoqiao', 'bilibili_ahuinan', 'bilibili_dongtuna', 'bilibili_x_ahuinan', 'bilibili_x_dongtuna'],
                 CXuanDie: ['bfake_zhanghua', 'bfake_hanshao', 'bfake_hanrong', 'bilibili_adong', 'bfake_jiananfeng', 'bfake_shen_zhangjiao', 'bfake_shen_zhangfei', 'bfake_shen_jiaxu', 'bfake_huanwen', 'bfake_miheng'],
@@ -67,6 +67,7 @@ const packs = function () {
             bilibili_gaowang: ['male', 'qun', 3, ['scsanruo', 'gaowangdead'], ['character:scs_gaowang']],
             bilibili_liuguanzhang: ['male', 'qun', 4, ['bilibili_waifa'], ['border:shen', 'name:戏|志才-陈|友谅-左|宗棠']],
             bilibili_xiahoudun: ['male', 'wei', 4, ['bilibili_ganglie', 'new_qingjian'], ['name:夏侯|惇', ...['character', 'tempname', 'die'].map(i => `${i}:re_xiahoudun`)]],
+            bilibili_yirenyixiaojian: ['male', 'key', '1/Infinity', ['bilibili_ranzhi', 'bilibili_wuying', 'bilibili_jiabin'], ['clan:宿舍群|肘击群|活动群', 'name:吴|新建']],
             //双面武将--正面
             bilibili_wangtao: ['female', 'shu', 3, ['huguan', 'yaopei', 'dualside'], ['dualside:bilibili_x_wangyue', 'character:wangtao', 'die:wangtao']],
             bilibili_wangyue: ['female', 'shu', 3, ['huguan', 'mingluan', 'dualside'], ['dualside:bilibili_x_wangtao', 'character:wangyue', 'tempname:wangyue', 'die:wangyue']],
@@ -129,6 +130,7 @@ const packs = function () {
             bilibili_diandian: '#地雷係#天使界限#天使界隈女子#水色#水色系統#水色ネイル#サプカル地雷#サプカル女子#サプカルチャ一病みかわいい病み垢#病み垢女子',
             bilibili_longjiuzhen: '美少爱蒂朵，赛尔号著名宇宙圣皇。拥有极其精彩的操作，在与肘击群群主牢宁的赛尔号大战中经常因为手法和操作而赢得对战，现为肘击群管理之一，虽然自诩正人君子，实则抽象万分。蒂朵唯一指定老公。',
             bilibili_liuguanzhang: '为对抗风系大法师丁真，三英齐聚餐厅共议对策并向丁真寄送挑战书之事。虽三英为讨伐丁真之事制定了各种不同的策略，但因丁真过于强大，最终以失败告终。',
+            bilibili_yirenyixiaojian: '一人一小建',
         },
         characterFilter: {
             bilibili_sp_xuyou(mode) {
@@ -329,8 +331,10 @@ const packs = function () {
                 skills: ['bilibili_laosaozhipao'],
                 destroy: true,
                 ai: {
-                    order: 10,
-                    basic: { equipValue: 15 },
+                    equipValue(card, player) {
+                        return player.hasSkill('bilibili_jiabin') ? -get.effect(player, { name: 'losehp' }, player, player) : 0;
+                    },
+                    basic: { equipValue: 0 },
                 },
                 derivation: 'bilibili_xizhicaikobe',
             },
@@ -359,6 +363,17 @@ const packs = function () {
                 destroy: 'discardPile',
                 global: 'bilibili_shi',
                 derivation: 'bilibili_wuzhuwanshui',
+            },
+            //嘉宾证
+            bilibili_jiabinzheng: {
+                image: 'ext:活动武将/image/card/bilibili_jiabinzheng.png',
+                fullskin: true,
+                type: 'equip',
+                ai: {
+                    order: 10,
+                    basic: { equipValue: 15 },
+                },
+                derivation: 'bilibili_yirenyixiaojian',
             },
         },
         skill: {
@@ -13054,6 +13069,158 @@ const packs = function () {
                     },
                 },
             },
+            //吴新建
+            bilibili_ranzhi: {
+                trigger: { player: 'phaseUseBegin' },
+                filter(event, player) {
+                    return player.hasUseTarget(new lib.element.VCard({ name: 'huogong' }));
+                },
+                locked: true,
+                async cost(event, trigger, player) {
+                    const prompt = `${get.translation(event.skill)}：请选择【火攻】的目标`;
+                    const next = player.chooseUseTarget(new lib.element.VCard({ name: 'huogong' }), true, false, prompt);
+                    next.logSkill = event.skill;
+                    player.addTempSkill(`${event.skill}_add`);
+                    player.markAuto(`${event.skill}_add`, [next]);
+                    event.result = await next.forResult();
+                    event.result.cost_data = next;
+                },
+                popup: false,
+                async content(event, trigger, player) {
+                    let num = 0;
+                    player.getHistory('sourceDamage', evt => {
+                        if (evt.card && player.hasHistory('useCard', evt2 => evt2.getParent() === event.cost_data && evt2.card === evt.card)) num += evt.num;
+                    });
+                    if (num > 0) {
+                        await player.recover(num);
+                        if (player.getHp() > 0) await player.draw(player.getHp());
+                    }
+                },
+                subSkill: {
+                    add: {
+                        charlotte: true,
+                        onremove: true,
+                        trigger: { global: ['useCard2', 'chooseToDiscardBegin'] },
+                        filter(event, player) {
+                            const evt = event.getParent({ 'useCard': 1, 'chooseToDiscard': 3 }[event.name]);
+                            if (!player.getStorage('bilibili_ranzhi_add').includes(evt)) return false;
+                            switch (event.name) {
+                                case 'useCard':
+                                    return !event.targets.includes(player) && lib.filter.targetEnabled2(event.card, event.player, player);
+                                case 'chooseToDiscard':
+                                    return event.player.hasCard(card => event.filterCard(card, event.player), event.discardPostion ?? 'h');
+                            }
+                        },
+                        silent: true,
+                        async content(event, trigger, player) {
+                            switch (trigger.name) {
+                                case 'useCard':
+                                    trigger.targets.add(player);
+                                    game.log(player, '成为了', trigger.card, '的额外目标');
+                                    break;
+                                case 'chooseToDiscard':
+                                    trigger.forced = true;
+                                    break;
+                            }
+                        },
+                    },
+                },
+            },
+            bilibili_wuying: {
+                trigger: { player: 'phaseBegin' },
+                filter(event, player) {
+                    return game.countPlayer(target => target !== player) > 1;
+                },
+                async cost(event, trigger, player) {
+                    event.result = await player.chooseTarget(get.prompt2(event.skill), lib.filter.notMe, 2).set('ai', target => {
+                        const player = get.player(), att = Math.sign(get.attitude(player, target));
+                        if (att === 0) return false;
+                        const dis = get.distance(player, target, 'absolute'), max = game.countPlayer() - 1;
+                        if (!ui.selected.targets.length) return att < 0 ? dis : (max - dis);
+                        const target1 = ui.selected.targets[0];
+                        if (Math.sign(get.attitude(player, target1)) === att) return 0;
+                        return att * (get.distance(player, target, 'absolute') - get.distance(player, target1, 'absolute'));
+                    }).forResult();
+                },
+                async content(event, trigger, player) {
+                    const targets = event.targets;
+                    if (Math.random() > Math.random()) {
+                        game.broadcastAll((target1, target2) => {
+                            game.swapSeat(target1, target2);
+                        }, ...targets);
+                    }
+                    else {
+                        for (const target of targets) {
+                            player.markAuto('zhibi', [target]);
+                            target.markAuto('zhibi', [player]);
+                            let count = 0;
+                            while (count < 10) {
+                                count++;
+                                target.throwEmotion(player, target.getEnemies().includes(player) ? 'flower' : 'egg');
+                            }
+                        }
+                    }
+                },
+            },
+            bilibili_jiabin: {
+                trigger: {
+                    player: 'loseAfter',
+                    global: ['loseAsyncAfter', 'equipAfter', 'addJudgeAfter', 'gainAfter', 'addToExpansionAfter'],
+                },
+                filter(event, player) {
+                    if (event.name === 'equip' && event.player === player && event.card.name === 'bilibili_jiabinzheng') return true;
+                    const evt = event.getl?.(player);
+                    return evt?.es?.some(card => {
+                        const VEquip = evt.vcard_map.get(card);
+                        return VEquip && VEquip.name === 'bilibili_jiabinzheng';
+                    });
+                },
+                forced: true,
+                async content(event, trigger, player) {
+                    if (trigger.name === 'equip' && trigger.player === player && trigger.card.name === 'bilibili_jiabinzheng') {
+                        await player.recover();
+                        await player.draw();
+                    }
+                    const evt = trigger.getl?.(player);
+                    const cards = evt?.es?.filter(card => {
+                        const VEquip = evt.vcard_map.get(card);
+                        return VEquip && VEquip.name === 'bilibili_jiabinzheng';
+                    }) ?? [];
+                    if (cards.length) await player.loseHp(cards.length);
+                },
+                group: 'bilibili_jiabin_init',
+                subSkill: {
+                    init: {
+                        trigger: {
+                            global: 'phaseBefore',
+                            player: 'enterGame',
+                        },
+                        filter(event, player) {
+                            if (!Array.from({ length: 5 }).map((_, i) => `equip${i + 1}`).some(subtype => {
+                                const card = get.autoViewAs(game.createCard2('bilibili_jiabinzheng', 'spade', 13));
+                                card.subtypes = [subtype];
+                                return player.canEquip(card);
+                            })) return false;
+                            return event.name !== 'phase' || game.phaseNumber === 0;
+                        },
+                        forced: true,
+                        async content(event, trigger, player) {
+                            while (true) {
+                                const subtype = Array.from({ length: 5 }).map((_, i) => `equip${i + 1}`).filter(subtype => {
+                                    const card = get.autoViewAs(game.createCard2('bilibili_jiabinzheng', 'spade', 13));
+                                    card.subtypes = [subtype];
+                                    return player.canEquip(card);
+                                })[0];
+                                if (!subtype) break;
+                                const card = get.autoViewAs(game.createCard2('bilibili_jiabinzheng', 'spade', 13));
+                                card.subtypes = [subtype];
+                                if (player.canEquip(card)) await player.equip(card);
+                                else break;
+                            }
+                        },
+                    },
+                },
+            },
         },
         dynamicTranslate: {
             bilibili_xueji(player) {
@@ -13748,6 +13915,16 @@ const packs = function () {
             bolfangzhen_info: '出牌阶段限一次。你可以横置一名角色，将手牌摸至X张并交给其任意张牌。若为第X次发动本技能，你翻面（X为其座次号且至多为5）。',
             bolliuju: '留驹',
             bolliuju_info: '出牌阶段限一次。你可以拼点并使用拼点牌中的非基本牌。若你输或拼点者相互距离因此变化，你复原武将牌或武将牌上的一个技能。',
+            bilibili_yirenyixiaojian: '一人一小建',
+            bilibili_ranzhi: '燃脂',
+            bilibili_ranzhi_info: '锁定技，出牌阶段开始时，你视为使用【火攻】，此【火攻】增加你为额外目标，且若你有可弃置的牌则必须弃置。若此牌造成过伤害，则你回复X点体力（X为伤害值），然后摸体力值张牌。',
+            bilibili_wuying: '无影',
+            bilibili_wuying_info: '回合开始时，你可以选择两名其他角色，你有概率交换这两名角色的座位。若交换失败，则与你阵营相同/不同的角色会向你砸蛋/送花。',
+            bilibili_jiabin: '嘉宾',
+            bilibili_jiabin_info: `锁定技，游戏开始时，你将${get.poptip('bilibili_jiabinzheng')}置入装备栏。你的装备区每置入/失去一张${get.poptip('bilibili_jiabinzheng')}，你回复1点体力并摸一张牌/你失去1点体力。`,
+            bilibili_jiabin_append: '<span style="font-family:yuanli">一人一小建</span>',
+            bilibili_jiabinzheng: '嘉宾证',
+            bilibili_jiabinzheng_info: '进入年终盛典嘉宾组的必备物品......<br>（至于效果嘛，没有）',
         },
     };
     for (const i in huodongcharacter.character) {
