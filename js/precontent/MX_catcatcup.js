@@ -963,7 +963,7 @@ const packs = function () {
                                 if (fake) {
                                     faker.popup('质疑正确', 'wood');
                                     game.log(player, '声明的', trigger.card, '作废了');
-                                    player.tempBan('catguhuo', null, false);
+                                    player.tempBanSkill('catguhuo', null, false);
                                     trigger.cancel();
                                     trigger.getParent().goto(0);
                                     trigger.line = false;
