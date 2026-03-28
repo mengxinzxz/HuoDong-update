@@ -130,7 +130,7 @@ const packs = function () {
             bilibili_diandian: '#地雷係#天使界限#天使界隈女子#水色#水色系統#水色ネイル#サプカル地雷#サプカル女子#サプカルチャ一病みかわいい病み垢#病み垢女子',
             bilibili_longjiuzhen: '美少爱蒂朵，赛尔号著名宇宙圣皇。拥有极其精彩的操作，在与肘击群群主牢宁的赛尔号大战中经常因为手法和操作而赢得对战，现为肘击群管理之一，虽然自诩正人君子，实则抽象万分。蒂朵唯一指定老公。',
             bilibili_liuguanzhang: '为对抗风系大法师丁真，三英齐聚餐厅共议对策并向丁真寄送挑战书之事。虽三英为讨伐丁真之事制定了各种不同的策略，但因丁真过于强大，最终以失败告终。',
-            bilibili_yirenyixiaojian: '待定',
+            bilibili_yirenyixiaojian: '一人一小建',
         },
         characterFilter: {
             bilibili_sp_xuyou(mode) {
@@ -258,7 +258,7 @@ const packs = function () {
                 info: '背景武将默认隐藏，正面武将翻面时或死亡后切换至背面',
             }),
             bilibili_longjiuzhen: '赛蛆',
-            bilibili_yirenyixiaojian: '待定',
+            bilibili_yirenyixiaojian: '肘击群大西王',
         },
         characterSubstitute: {
             bilibili_gaowang: [
@@ -13924,7 +13924,7 @@ const packs = function () {
             bilibili_wuying_info: '回合开始时，你可以选择两名其他角色，你有概率交换这两名角色的座位。若交换失败，则与你阵营相同/不同的角色会向你砸蛋/送花。',
             bilibili_jiabin: '嘉宾',
             bilibili_jiabin_info: `锁定技，游戏开始时，你将${get.poptip('bilibili_jiabinzheng')}置入装备栏。你的装备区每置入/失去一张${get.poptip('bilibili_jiabinzheng')}，你回复1点体力并摸一张牌/你失去1点体力。`,
-            bilibili_jiabin_append: '<span style="font-family:yuanli">待定</span>',
+            bilibili_jiabin_append: '<span style="font-family:yuanli">王昌龄吗？</span>',
             bilibili_jiabinzheng: '嘉宾证',
             bilibili_jiabinzheng_info: '进入年终盛典嘉宾组的必备物品......<br>（至于效果嘛，没有）',
         },
