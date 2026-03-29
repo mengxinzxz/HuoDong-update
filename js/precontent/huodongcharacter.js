@@ -130,7 +130,7 @@ const packs = function () {
             bilibili_diandian: '#地雷係#天使界限#天使界隈女子#水色#水色系統#水色ネイル#サプカル地雷#サプカル女子#サプカルチャ一病みかわいい病み垢#病み垢女子',
             bilibili_longjiuzhen: '美少爱蒂朵，赛尔号著名宇宙圣皇。拥有极其精彩的操作，在与肘击群群主牢宁的赛尔号大战中经常因为手法和操作而赢得对战，现为肘击群管理之一，虽然自诩正人君子，实则抽象万分。蒂朵唯一指定老公。',
             bilibili_liuguanzhang: '为对抗风系大法师丁真，三英齐聚餐厅共议对策并向丁真寄送挑战书之事。虽三英为讨伐丁真之事制定了各种不同的策略，但因丁真过于强大，最终以失败告终。',
-            bilibili_yirenyixiaojian: `<a href="https://space.bilibili.com/81796729"><img style=width:160px src=${lib.assetURL}extension/活动武将/image/character/bilibili_yirenyixiaojian_quancong.jpg></a>`,
+            bilibili_yirenyixiaojian: `<a href="https://space.bilibili.com/81796729"><img style=width:160px src=${lib.assetURL}extension/活动武将/image/skin/bilibili_yirenyixiaojian/全叠建哥.jpg></a>`,
         },
         characterFilter: {
             bilibili_sp_xuyou(mode) {
