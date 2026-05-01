@@ -30977,6 +30977,7 @@ const packs = function () {
                     order: 9,
                     result: {
                         player(player, target) {
+                            if (!ui.selected.cards.length)  return 0;
                             const card = ui.selected.cards[0], cards = player.getCards('h', cardx => card !== cardx && get.suit(card) === get.suit(cardx));
                             return get.effect(target, get.autoViewAs({ name: get.name(card), nature: get.nature(card), cards: cards }, cards), player, player);
                         },
