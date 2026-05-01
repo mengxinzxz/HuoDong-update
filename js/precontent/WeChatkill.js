@@ -134,7 +134,7 @@ const packs = function () {
             wechat_kanze: ['male', 'wu', 3, ['xiashu', 'wechatkuanshi']],
             wechat_xuezong: ['male', 'wu', 3, ['minifunan', 'wechatjiexun']],
             wechat_guyong: ['male', 'wu', 3, ['wechatshenxing', 'bingyi']],
-            wechat_yj_huangzhong: ['male', 'qun', 4, ['wechatshidi', 'spyishi', 'spqishe']],
+            wechat_yj_huangzhong: ['male', 'qun', 4, ['wechatshidi', 'wechatyishi', 'wechatqishe']],
             wechat_caiyong: ['male', 'qun', 3, ['wechatbizhuan', 'wechattongbo']],
             wechat_xusheng: ['male', 'wu', 4, ['wechatpojun']],
             wechat_yufan: ['male', 'wu', 3, ['wechatzongxuan', 'wechatzhiyan']],
@@ -5591,6 +5591,9 @@ const packs = function () {
                     return (event.name == 'useCard' && target == player && color == 'black') || (event.name != 'useCard' && (!target || target != player) && color == 'red');
                 },
                 forced: true,
+                logAudio(event, player) {
+                    return trigger.name == 'useCard' ? 'spshidi1.mp3' : 'spshidi2.mp3';
+                },
                 content() {
                     trigger.directHit.addArray(trigger.name == 'useCard' ? game.players : [player]);
                 },
@@ -5624,6 +5627,120 @@ const packs = function () {
                         },
                     },
                 },
+            },
+            wechatyishi: {
+                audio: 'spyishi',
+                inherit: 'spyishi',
+                filter(event, player) {
+                    return event.player !== player;
+                },
+                check(event, player) {
+                    if (get.damageEffect(event.player, player, player) <= 0) return true;
+                    if (get.attitude(player, event.player) > 0) return false;//对友方打正收益伤害就不防止了
+                    const pos = event.player.countCards('e') ? 'e' : 'h';
+                    return !event.player.hasSkillTag(`no${pos}`) && event.player.hasCard({ name: ['tao', 'jiu', event.player.hp > 2 ? 'wuxie' : ''] }, pos);
+                },
+                logTarget: "player",
+                async content(event, trigger, player) {
+                    trigger.num--;
+                    const target = trigger.player;
+                    if (target.countCards('e')) await player.gainPlayerCard(target, 'e', true);
+                    else {
+                        await player.discardPlayerCard(target, 'h', true);
+                        await player.draw();
+                    }
+                },
+            },
+            wechatqishe: {
+                audio: 'spqishe',
+                enable: ['chooseToUse', 'chooseToRespond'],
+                hiddenCard(player, name) {
+                    return (name === 'sha' || name === 'jiu') && player.hasCard(card => {
+                        if (get.position(card) === 'h' && _status.connectMode) return true;
+                        return get.type(card) === 'equip';
+                    }, 'hes');
+                },
+                filter(event, player) {
+                    return get.inpileVCardList(info => info[2] === 'sha' || info[2] === 'jiu').some(info => {
+                        return player.hasCard(card => {
+                            if (get.type(card) !== 'equip') return false;
+                            return event.filterCard(get.autoViewAs({ name: info[2], nature: info[3], cards: [card] }, [card]), player, event);
+                        }, 'hes');
+                    });
+                },
+                chooseButton: {
+                    dialog(event, player) {
+                        const dialog = ui.create.dialog('骑射', [get.inpileVCardList(info => info[2] === 'sha' || info[2] === 'jiu').filter(info => {
+                            return player.hasCard(card => {
+                                if (get.type(card) !== 'equip') return false;
+                                return event.filterCard(get.autoViewAs({ name: info[2], nature: info[3], cards: [card] }, [card]), player, event);
+                            }, 'hes');
+                        }), 'vcard'], 'hidden');
+                        dialog.direct = true;
+                        return dialog;
+                    },
+                    check(button) {
+                        const player = get.player();
+                        return get.event().getParent().type == 'phase' ? player.getUseValue({ name: button.link[2] }) : 1;
+                    },
+                    prompt(links) {
+                        return '将一张装备牌当作' + get.translation(links[0][3] || '') + '【' + get.translation(links[0][2]) + '】' + '使用';
+                    },
+                    backup(links, player) {
+                        return {
+                            audio: 'spqishe',
+                            filterCard: { type: 'equip' },
+                            check(card) {
+                                return 6 - get.value(card);
+                            },
+                            viewAs: { name: links[0][2], nature: links[0][3] },
+                            position: 'hes',
+                            popname: true,
+                        };
+                    },
+                },
+                ai: {
+                    save: true,
+                    respondSha: true,
+                    fireAttack: true,
+                    skillTagFilter(player, tag, arg) {
+                        if (arg === 'respond' || (tag === 'save' && arg !== player)) return false;
+                        if (!player.hasCard(card => {
+                            if (get.position(card) === 'h' && _status.connectMode) return true;
+                            return get.type(card) === 'equip';
+                        }, 'hes')) return false;
+                    },
+                    order(item, player) {
+                        const event = get.event();
+                        if (player && event.type == 'phase') {
+                            let max = 0;
+                            const vcard = get.inpileVCardList(info => info[2] === 'sha' || info[2] === 'jiu').filter(info => {
+                                return player.hasCard(card => {
+                                    if (get.type(card) !== 'equip') return false;
+                                    return event.filterCard(get.autoViewAs({ name: info[2], nature: info[3], cards: [card] }, [card]), player, event);
+                                }, 'hes');
+                            });
+                            if (!vcard.length) return 0;
+                            for (const info of vcard) {
+                                if (player.getUseValue({ name: info[2], nature: info[3] }) > 0) {
+                                    const order = get.order({ name: info[2], nature: info[3] }, player);
+                                    if (order > max) max = order;
+                                }
+                            }
+                            if (max > 0) max += 0.3;
+                            return max;
+                        }
+                        return 1;
+                    },
+                    result: { player: 1 },
+                },
+                locked: false,
+                mod: {
+                    maxHandcard(player, num) {
+                        return num + player.countCards('e');
+                    },
+                },
+                subSkill: { backup: {} },
             },
             //蔡邕
             wechatbizhuan: {
@@ -8776,6 +8893,9 @@ const packs = function () {
                     cardUsable(card) {
                         if (card.storage?.wechatguli) return true;
                     },
+                    targetInRange(card) {
+                        if (card.storage?.wechatguli) return true;
+                    },
                 },
                 ai: {
                     order: 0.01,
@@ -8793,12 +8913,21 @@ const packs = function () {
                         trigger: { global: 'useCardAfter' },
                         prompt2: '将手牌摸至体力上限',
                         filter(event, player) {
-                            return event.card.storage?.wechatguli && game.hasPlayer2(current => {
-                                return current.hasHistory('sourceDamage', evt => evt.card == event.card);
-                            }) && player.countCards('h') < player.maxHp;
+                            return event.card.storage?.wechatguli && player.countCards('h') < player.maxHp;
                         },
-                        content() {
-                            player.drawTo(player.maxHp);
+                        check(event, player) {
+                            if (game.hasPlayer2(current => {
+                                return current.hasHistory('sourceDamage', evt => evt.card == event.card);
+                            })) return true;
+                            if (player.countCards('h') >= player.maxHp) return false;
+                            const num = player.maxHp - player.countCards('h');
+                            return (num >= 3 && player.hp >= 2) || (num >= 2 && player.hp >= 3);
+                        },
+                        async content(event, trigger, player) {
+                            await player.drawTo(player.maxHp);
+                            if (!game.hasPlayer2(current => {
+                                return current.hasHistory('sourceDamage', evt => evt.card == trigger.card);
+                            })) await player.loseHp();
                         },
                         ai: {
                             unequip: true,
@@ -8818,6 +8947,7 @@ const packs = function () {
                 async content(event, trigger, player) {
                     player.addTempSkill(event.name + '_effect', 'phaseUseAfter');
                     player.markAuto(event.name + '_effect', [trigger.player]);
+                    if (player.getHistory('sourceDamage').indexOf(trigger) === 0) await player.recover();
                 },
                 subSkill: {
                     effect: {
@@ -9396,7 +9526,7 @@ const packs = function () {
                     player.removeTip(skill);
                     delete player.storage[skill];
                 },
-                group: 'wechatsbliegong_count',
+                group: ['wechatsbliegong_count', 'wechatsbliegong_wusheng'],
                 subSkill: {
                     block: {
                         mod: {
@@ -9432,9 +9562,7 @@ const packs = function () {
                         content() {
                             var storage = player.storage.wechatsbliegong_block;
                             for (var i = 0; i < storage.length; i++) {
-                                if (storage[i][0] == trigger.card) {
-                                    storage.splice(i--, 1);
-                                }
+                                if (storage[i][0] == trigger.card) storage.splice(i--, 1);
                             }
                             if (!storage.length) player.removeSkill('wechatsbliegong_block');
                             else lib.skill.wechatsbliegong.updateBlocker(target);
@@ -9442,20 +9570,43 @@ const packs = function () {
                     },
                     count: {
                         trigger: {
-                            player: 'useCard',
+                            player: ['useCard', 'respond'],
                             target: 'useCardToTargeted',
                         },
                         filter(event, player, name) {
-                            if (name != 'useCard' && player == event.player) return false;
-                            var suit = get.suit(event.card);
-                            if (player.storage.wechatsbliegong?.includes(suit)) return false;
-                            return true;
+                            if (name === 'useCardToTargeted' && player === event.player) return false;
+                            return !player.getStorage('wechatsbliegong').includes(get.suit(event.card));
                         },
                         silent: true,
                         content() {
                             player.markAuto('wechatsbliegong', [get.suit(trigger.card)]);
                             player.storage.wechatsbliegong.sort((a, b) => lib.suit.indexOf(b) - lib.suit.indexOf(a));
                             player.addTip('wechatsbliegong', get.translation('wechatsbliegong') + player.getStorage('wechatsbliegong').reduce((str, suit) => str + get.translation(suit), ''));
+                        },
+                    },
+                    wusheng: {
+                        audio: 'sbliegong',
+                        enable: 'phaseUse',
+                        filter(event, player) {
+                            const cards = player.getCards('hs', card => player.getStorage('wechatsbliegong').includes(get.suit(card)));
+                            if (!cards.length || cards.some(card => game.checkMod(card, player, 'unchanged', 'cardEnabled2', player)) === false) return false;
+                            return event.filterCard(get.autoViewAs({ name: 'sha', cards }, cards), player, event);
+                        },
+                        filterCard(card, player) {
+                            return player.getStorage('wechatsbliegong').includes(get.suit(card));
+                        },
+                        selectCard: -1,
+                        check: () => 1,
+                        position: 'hs',
+                        viewAs: { name: 'sha' },
+                        prompt() {
+                            return `烈弓：将所有${get.player().getStorage('wechatsbliegong').map(i => get.translation(i)).join('')}手牌当作【杀】使用`;
+                        },
+                        usable: 1,
+                        ai: {
+                            order(item, player) {
+                                return 0.001145141919810;
+                            },
                         },
                     },
                 },
@@ -20339,6 +20490,10 @@ const packs = function () {
             wechat_yj_huangzhong: '小程序☆黄忠',
             wechatshidi: '势敌',
             wechatshidi_info: '锁定技。①你的回合内，你至其他角色的距离-1，且你使用的黑色【杀】不可被响应。②你的回合外，其他角色至你的距离+1，且你不可响应红色【杀】。',
+            wechatyishi: '义释',
+            wechatyishi_info: '当你对其他角色造成伤害时，你可令此伤害-1，然后若其装备区有牌，则你获得其装备区内的一张牌，否则你弃置其一张手牌并摸一张牌。',
+            wechatqishe: '骑射',
+            wechatqishe_info: '你可以将一张装备牌当作【酒】或任意【杀】使用。你的手牌上限+X（X为你装备区内的牌数）。',
             wechat_caiyong: '小程序蔡邕',
             wechatbizhuan: '辟撰',
             wechatbizhuan_bg: '书',
@@ -20494,9 +20649,9 @@ const packs = function () {
             wechatkanpo_info: '每轮开始时，你可以记录一个锦囊牌的牌名（每种牌名限一次）。一名其他角色于本轮使用此牌名的牌时，你令此牌无效，然后摸一张牌。',
             wechat_yj_weiyan: '小程序☆魏延',
             wechatguli: '孤厉',
-            wechatguli_info: '出牌阶段限一次。你可以将所有手牌当做一张无任何次数限制且无视防具的【杀】使用。此牌结算结束后，若此牌造成过伤害，你可以将手牌数摸至你的体力上限。',
+            wechatguli_info: '出牌阶段限一次。你可以将所有手牌当做一张无距离和任何次数限制且无视防具的【杀】使用。此牌结算结束后，你可以将手牌数摸至你的体力上限，若此牌未造成过伤害，则你失去1点体力。',
             wechataosi: '骜肆',
-            wechataosi_info: '锁定技。当你于出牌阶段对一名角色造成伤害后，你于此阶段对其使用牌无任何次数限制。',
+            wechataosi_info: '锁定技。当你于出牌阶段对一名角色造成伤害后，你于此阶段对其使用牌无任何次数限制；若此为你本回合首次造成伤害，你回复1点体力。',
             wechat_sunhao: '小程序孙皓',
             wechatcanshi: '残蚀',
             wechatcanshi_info: '摸牌阶段，你可以多摸X张牌（X为已受伤的角色数且至少为2）.若如此做，当你于此回合内使用【杀】或普通锦囊牌时，你弃置一张牌。',
@@ -20540,7 +20695,11 @@ const packs = function () {
             wechatgywuwei_info: `${get.poptip('rule_shiwuSkill')}，出牌阶段，你可以弃置X+1张牌并弃置一名角色的等量张牌（X为你本阶段发动〖武威〗的次数）。若你以此法弃置的牌的点数之和不大于其因此被弃置的牌的点数之和，你对其造成1点雷电伤害。`,
             wechat_sb_huangzhong: '小程序谋黄忠',
             wechatsbliegong: '烈弓',
-            wechatsbliegong_info: '当你使用牌时或成为其他角色使用牌的目标后，若你未记录此牌的花色，你记录此牌的花色（可记录无色）。当你使用【杀】指定唯一目标后，若〖烈弓〗存在记录花色，则你可亮出牌堆顶的X张牌（X为〖烈弓〗记录过的花色数-1），令此【杀】的伤害值基数+Y（Y为亮出牌中被〖烈弓〗记录过花色的牌的数量），且目标角色不能使用〖烈弓〗记录过花色的牌响应此【杀】。此【杀】使用结算结束后，你清除〖烈弓〗记录的的花色。',
+            wechatsbliegong_info: [
+                '当你使用或打出牌时或成为其他角色使用牌的目标后，若你未记录此牌的花色，你记录此牌的花色（可记录无色）。',
+                '当你使用【杀】指定唯一目标后，若〖烈弓〗存在记录花色，则你可亮出牌堆顶的X张牌（X为〖烈弓〗记录过的花色数-1），令此【杀】的伤害值基数+Y（Y为亮出牌中被〖烈弓〗记录过花色的牌的数量），且目标角色不能使用〖烈弓〗记录过花色的牌响应此【杀】；此【杀】使用结算结束后，你清除〖烈弓〗记录的的花色。',
+                '出牌阶段限一次，若〖烈弓〗存在记录花色，则你可以将所有〖烈弓〗存在记录花色的手牌当作【杀】使用。',
+            ].map((str, i) => `(${i + 1})${str}`).join('<br>'),
             wechat_yj_ganning: '小程序☆甘宁',
             wechatjinfan: '锦帆',
             wechatjinfan_info: '①游戏开始时/弃牌阶段开始时，你可将任意张手牌置于武将牌上，称为“铃”（每种花色的“铃”限一张，且对其他角色不可见）。②你可以如手牌般使用或打出“铃”（无距离和任何次数限制）。③当你失去“铃”后，你从牌堆中获得一张与此“铃”花色相同的牌。',
