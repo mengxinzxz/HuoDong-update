@@ -144,7 +144,7 @@ const packs = function () {
                     threaten: 0.8,
                     fireAttack: true,
                     order(skill, player) {
-                        if (player.hp.isDamaged() && !player.storage.catrende3 && player.countMark('catrende') < 2 && player.countCards('h') > 1) return 10;
+                        if (player.isDamaged() && !player.storage.catrende3 && player.countMark('catrende') < 2 && player.countCards('h') > 1) return 10;
                         return 4;
                     },
                     result: {
