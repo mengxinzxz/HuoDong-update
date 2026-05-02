@@ -651,7 +651,7 @@ export async function precontent(bilibilicharacter) {
                                 return `${str}：${map[ext].map(name => lib.translate[name]).join('、')}`;
                             });
                         })(),
-                        '跟进三国杀小程序赵襄、星甘宁、甘夫人、高顺未跟进的技能；删除徐荣和李昭焦伯',
+                        '跟进三国杀小程序未跟进的技能；删除徐荣和李昭焦伯',
                         'To be continued...',
                     ];
                 },
