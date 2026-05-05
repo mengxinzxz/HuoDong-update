@@ -21331,6 +21331,13 @@ const packs = function () {
             '#ext:活动武将/audio/skill/wechatlance1': '当世智策众多，然称奇者少矣。',
             '#ext:活动武将/audio/skill/wechatlance2': '遍览世之奇策，多取之于吾，未有同者矣。',
             '#ext:活动武将/audio/die/wechat_zhiyin_xunyou:die': '望元常整书吾策，传于后世，余愿足矣。',
+            '#ext:活动武将/audio/skill/wechatjuejue1': '情缘难续，不如早做决断。',
+            '#ext:活动武将/audio/skill/wechatjuejue2': '这，是最后的诀别。',
+            '#ext:活动武将/audio/skill/wechatqingshi1': '此情既断，何必多言。',
+            '#ext:活动武将/audio/skill/wechatqingshi2': '孤独终老，是你必然的报应。',
+            '#ext:活动武将/audio/skill/wechatqingjue1': '你给过我的，现在一并奉还。',
+            '#ext:活动武将/audio/skill/wechatqingjue2': '我既辞去，永不回眸。',
+            '#ext:活动武将/audio/die/wechat_zhiyin_zhangchunhua:die': '消逝，或许是最好的解脱。',
         },
     };
     WeChatkill_sight();//加载欢杀界面逻辑
