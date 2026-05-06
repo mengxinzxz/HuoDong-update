@@ -18175,8 +18175,10 @@ const packs = function () {
                     global: 'loseAsyncAfter',
                 },
                 filter(event, player) {
-                    if (event.type != 'discard' || event.getlx === false) return false;
-                    return (event.getl?.(player)?.hs || []).someInD('d');
+                    return player.getHistory('lose', evt => {
+                        if (evt.type !== 'discard' || evt.getlx === false) return false;
+                        return (evt.getl?.(player)?.hs || []).someInD('d');
+                    }).indexOf(event) === 0;
                 },
                 forced: true,
                 locked: false,
