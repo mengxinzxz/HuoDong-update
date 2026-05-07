@@ -7287,46 +7287,16 @@ const packs = function () {
             minilanggu: {
                 audio: 'ext:活动武将/audio/skill:2',
                 trigger: { player: ['phaseUseBegin', 'damageBegin3'] },
-                async cost(event, trigger, player) {
-                    const result = await player.chooseControl(Array.from({ length: 5 }).map((_, i) => `${i + 1}张`), 'cancel2').set('ai', () => {
-                        const player = get.player(), num = Math.min(5, ui.cardPile.childElementCount);
-                        const target = _status.currentPhase, visible = target.isUnderControl(true) || player.hasSkillTag('viewHandcard', null, target, true);
-                        if (!target?.isIn() || !visible || !target.countCards('h')) return 4;
-                        let count = 0, cards = num > 0 ? get.bottomCards(num) : [];
-                        while (count < 5) {
-                            const card = cards[count];
-                            if (!card.isKnownBy(player)) {
-                                if (!count) return 4;
-                                break;
-                            }
-                            count++;
-                        }
-                        count++;
-                        cards = cards.slice(0, count);
-                        const map = [...cards, ...target.getCards('h', card => visible || get.is.shownCard(card))].reduce((map, card) => {
-                            const suit = get.suit(card, false);
-                            map[suit] ??= 0;
-                            map[suit]++;
-                            return map;
-                        }, {}), list = Object.values(map).sort((a, b) => b - a);
-                        if (list[0] <= 1) return 4;//孩子们我没意见，拿一张还不如移动场上一张牌
-                        while (count > 1) {
-                            if (list[0] >= count) return count - 1;
-                            count--;
-                        }
-                        return 4;
-                    }).set('prompt', get.prompt2(event.skill)).forResult();
-                    if (result?.control && result.control !== 'cancel2') event.result = { bool: true, cost_data: result.index + 1 };
-                },
+                frequent: true,
                 async content(event, trigger, player) {
                     const target = _status.currentPhase;
                     if (!target?.isIn() || !target.countCards('h')) {
-                        const cards = get.bottomCards(event.cost_data, true);
+                        const cards = get.bottomCards(5, true);
                         game.addCardKnower(cards, player);
                         await player.chooseControl('ok').set('content', ['牌堆底的牌', cards]);
                         return;
                     }
-                    const next = game.cardsGotoOrdering(get.bottomCards(event.cost_data));
+                    const next = game.cardsGotoOrdering(get.bottomCards(5));
                     await next;
                     game.addCardKnower(next.cards, player);
                     const next2 = player.chooseToMove();
@@ -41640,7 +41610,7 @@ const packs = function () {
             miniliangyan_info: '出牌阶段限一次，你可以选择一名其他角色，你摸/弃置至多两张牌，令其弃置/摸等量的牌。以此法摸牌的角色跳过其下一个弃牌阶段。',
             minilanggu: '狼顾',
             minilanggu_bottom: '牌堆',
-            minilanggu_info: '出牌阶段开始时或当你受到伤害时，你可以观看牌堆底至多五张牌，将其中任意张牌与当前回合角色的等量手牌进行交换。然后你重复获得牌堆底的花色相同且连续的牌（至多五张），若你本次获得的牌数不足五张，则你可以移动场上的一张牌。',
+            minilanggu_info: '出牌阶段开始时或当你受到伤害时，你可以观看牌堆底五张牌，将其中任意张牌与当前回合角色的等量手牌进行交换。然后你重复获得牌堆底的花色相同且连续的牌（至多五张），若你本次获得的牌数不足五张，则你可以移动场上的一张牌。',
             minijibian: '机变',
             minijibian_info: '每回合结束时，若你本回合发动过〖狼顾〗，你可以观看牌堆底五张牌并可任意调整这些牌的顺序；若你本回合未发动过〖狼顾〗，你可以对你或当前回合角色造成1点伤害。',
             miniduwang: '独往',
