@@ -7439,7 +7439,7 @@ const packs = function () {
                         });
                         const result = await next2.forResult();
                         if (result?.bool && result.moved?.[0]?.length) {
-                            const puts = [...bottom].reverse();
+                            const puts = [...result.moved[0]].reverse();
                             game.addCardKnower(puts, player);
                             await game.cardsGotoPile(puts);
                             await game.delayx();
