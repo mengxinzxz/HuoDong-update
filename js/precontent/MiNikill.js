@@ -31141,7 +31141,7 @@ const packs = function () {
             //荀谌
             minifenglve: {
                 audio: 'fenglve',
-                inherit: 'fenglve',
+                inherit: 'refenglve',
                 usable(skill, player) {
                     return 1 + player.countMark(`${skill}_add`);
                 },
