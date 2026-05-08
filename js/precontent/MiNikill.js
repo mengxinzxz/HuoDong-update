@@ -260,7 +260,7 @@ const packs = function () {
             Mbaby_lusu: ['male', 'wu', 3, ['minihaoshi', 'dimeng']],
             Mbaby_ol_lusu: ['male', 'wu', 3, ['miniolhaoshi', 'minidimeng']],
             Mbaby_luxun: ['male', 'wu', 3, ['miniqianxun', 'lianying'], ['clan:吴郡陆氏']],
-            Mbaby_re_luxun: ['male', 'wu', 4, ['minireqianxun', 'minilianying'], ['clan:吴郡陆氏']],
+            Mbaby_re_luxun: ['male', 'wu', 3, ['minireqianxun', 'minilianying'], ['clan:吴郡陆氏']],
             Mbaby_lvmeng: ['male', 'wu', 4, ['minikeji']],
             Mbaby_re_lvmeng: ['male', 'wu', 4, ['minikeji', 'miniqinxue', 'rebotu']],
             Mbaby_sunce: ['male', 'wu', 4, ['jiang', 'minihunzi', 'minizhiba'], ['zhu']],
