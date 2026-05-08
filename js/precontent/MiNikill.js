@@ -465,9 +465,9 @@ const packs = function () {
             Mbaby_re_hucheer: ['male', 'qun', 4, ['redaoji', 'minifuzhong']],
             Mbaby_star_yuanshao: ['male', 'qun', 4, ['ministarxiaoyan', 'ministarzongshi', 'ministarjiaowang', 'ministaraoshi'], ['zhu']],
             Mbaby_yue_diaochan: ['female', 'qun', 3, ['minitanban', 'dcdiou']],
-            Mbaby_ol_liru: ['male', 'qun', 4, ['minijuece', 'miniolmieji', 'dcfencheng']],
+            Mbaby_ol_liru: ['male', 'qun', 3, ['minijuece', 'miniolmieji', 'dcfencheng']],
             Mbaby_kebineng: ['male', 'qun', 4, ['kousheng', 'olpingduan'], ['name:牢大|罐头', 'die:kebineng', 'die:ol_kebineng']],
-            Mbaby_xunchen: ['male', 'qun', 4, ['minifenglve', 'minianyong'], ['clan:颍川荀氏']],
+            Mbaby_xunchen: ['male', 'qun', 3, ['minifenglve', 'minianyong'], ['clan:颍川荀氏']],
             //神
             Mbaby_shen_zhugeliang: ['male', 'shen', 3, ['qixing', 'minikuangfeng', 'minidawu'], ['shu', 'name:诸葛|亮']],
             Mbaby_shen_lvbu: ['male', 'shen', 6, ['miniwuqian', 'minishenfen'], ['qun']],
