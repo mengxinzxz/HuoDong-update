@@ -7392,7 +7392,7 @@ const packs = function () {
                         }).set('ai', target => {
                             const player = get.player();
                             return get.damageEffect(target, player, player);
-                        }).forResult();
+                        }).setHiddenSkill(event.skill).forResult();
                     }
                 },
                 frequent: true,
@@ -31124,14 +31124,15 @@ const packs = function () {
                         const result = await target.chooseToGive(player, 'he', { type: ['trick', 'delay'] }, `${get.translation(event.name)}：交给${get.translation(player)}一张锦囊牌，或依次弃置两张非锦囊牌`).forResult();
                         if (!result?.bool || !result.cards?.length) {
                             for (let i = 1; i <= 2; i++) {
-                                if (player.hasCard(card => {
+                                if (target.hasCard(card => {
                                     return get.type2(card) !== 'trick' && lib.filter.cardDiscardable(card, player, event.name);
                                 }, 'he')) {
-                                    await target.chooseToDiscard('he', (card, player) => {
+                                    const result2 = await target.chooseToDiscard('he', (card, player) => {
                                         return get.type2(card) !== 'trick';
-                                    }, true, `${get.translation(event.name)}：请弃置第${get.cnNumber(i)}张非锦囊牌`);
+                                    }, true, `${get.translation(event.name)}：请弃置第${get.cnNumber(i)}张非锦囊牌`).forResult();
+                                    if (result2?.bool && result.cards?.length) continue;
                                 }
-                                else break;
+                                break;
                             }
                         }
                     }
