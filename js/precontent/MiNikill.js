@@ -39156,7 +39156,7 @@ const packs = function () {
                     }
                     player.addTempSkill('minifightlizhan_effect');
                     const sha = new lib.element.VCard({ name: 'sha', storage: { minifightlizhan: num } });
-                    const next = player.chooseUseTarget(sha, true, false, '###力斩###<div class="text center">请选择【杀】的目标（需要' + num + '张【闪】响应，伤害基数为' + num + '）</div>');
+                    const next = player.chooseUseTarget(sha, true, '###力斩###<div class="text center">请选择【杀】的目标（需要' + num + '张【闪】响应，伤害基数为' + num + '）</div>');
                     await next;
                     if (player.hasHistory('sourceDamage', evt => evt.getParent('chooseUseTarget') === next)) {
                         const targets = game.filterPlayer(target => {
