@@ -31130,7 +31130,7 @@ const packs = function () {
                                     const result2 = await target.chooseToDiscard('he', (card, player) => {
                                         return get.type2(card) !== 'trick';
                                     }, true, `${get.translation(event.name)}：请弃置第${get.cnNumber(i)}张非锦囊牌`).forResult();
-                                    if (result2?.bool && result.cards?.length) continue;
+                                    if (result2?.bool && result2.cards?.length) continue;
                                 }
                                 break;
                             }
