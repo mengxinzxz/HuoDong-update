@@ -39134,67 +39134,40 @@ const packs = function () {
                 audio: 'ext:活动武将/audio/skill:2',
                 enable: 'phaseUse',
                 filter(event, player) {
-                    if (player.hasSkill('minifightlizhan_blocker')) return false;
-                    return player.hasSha('respond') && player.hasUseTarget(new lib.element.VCard({ name: 'sha' }));
+                    if (!event.filterCard(new lib.element.VCard({ name: 'sha' }), player, event)) return false;
+                    return player.hasCard(card => lib.skill.minifightlizhan.filterCard(card, player), 'hs');
                 },
-                delay: 0,
-                direct: true,
-                async content(event, trigger, player) {
-                    let num = 0;
-                    while (player.hasSha('respond')) {
-                        const next = player.chooseToRespond('###力斩：请打出任意张【杀】###当前已经打出' + num + '张【杀】', (card, player) => {
-                            return get.name(card) === 'sha';
-                        }).set('ai', () => 1);
-                        if (num === 0) next.set('logSkill', event.name);
-                        const result = await next.forResult();
-                        if (result?.bool) num++;
-                        else break;
-                    }
-                    if (!num) {
-                        player.addTempSkill('minifightlizhan_blocker', { player: ['useCard1', 'useSkillBegin', 'phaseUseEnd'] });
-                        return event.finish();
-                    }
-                    player.addTempSkill('minifightlizhan_effect');
-                    const sha = new lib.element.VCard({ name: 'sha', storage: { minifightlizhan: num } });
-                    const next = player.chooseUseTarget(sha, true, '###力斩###<div class="text center">请选择【杀】的目标（需要' + num + '张【闪】响应，伤害基数为' + num + '）</div>');
-                    await next;
-                    if (player.hasHistory('sourceDamage', evt => evt.getParent('chooseUseTarget') === next)) {
-                        const targets = game.filterPlayer(target => {
-                            if (player.hasHistory('useCard', evt => evt.getParent() === next && evt.targets?.includes(target))) return false;
-                            return get.inpileVCardList().some(info => {
-                                if (['delay', 'equip'].includes(info[0])) return false;
-                                const card = new lib.element.VCard({ name: info[2], nature: info[3] });
-                                return get.tag(card, 'damage') && player.canUse(card, target, false);
-                            });
-                        });
-                        if (targets.length) {
-                            const result = await player.chooseTarget('力斩：是否再选择另一名角色？', '视为对其使用一张无距离和次数限制的伤害类卡牌', (card, player, target) => {
-                                return get.event().targets.includes(target);
-                            }).set('targets', targets).set('ai', target => {
-                                const player = get.player();
-                                return Math.max(...get.inpileVCardList().filter(info => {
-                                    if (['delay', 'equip'].includes(info[0])) return false;
-                                    const card = new lib.element.VCard({ name: info[2], nature: info[3] });
-                                    return get.tag(card, 'damage') && player.canUse(card, target, false);
-                                }).map(name => get.effect(target, new lib.element.VCard({ name: name[2], nature: name[3] }), player, player)));
-                            }).set('animate', false).forResult();
-                            if (result?.bool && result.targets?.length) {
-                                const [target] = result.targets;
-                                const { links } = await player.chooseButton([
-                                    '###力斩###<div class="text center">视为' + get.translation(target) + '对使用一张无距离和次数限制的伤害类卡牌</div>',
-                                    [get.inpileVCardList().filter(info => {
-                                        if (['delay', 'equip'].includes(info[0])) return false;
-                                        const card = new lib.element.VCard({ name: info[2], nature: info[3] });
-                                        return get.tag(card, 'damage') && player.canUse(card, target, false);
-                                    }), 'vcard'],
-                                ], true).set('ai', button => {
-                                    const { player, target } = get.event(), name = button.link;
-                                    return get.effect(target, new lib.element.VCard({ name: name[2], nature: name[3] }), player, player);
-                                }).set('target', target).forResult();
-                                if (links?.length) await player.useCard(new lib.element.VCard({ name: links[0][2], nature: links[0][3] }), target, false);
+                viewAs: { name: 'sha' },
+                filterCard(card, player) {
+                    return card.name === 'sha' && lib.filter.cardRespondable(card, player);
+                },
+                selectCard: [1, Infinity],
+                check: () => Math.random() - 0.1,
+                ignoreMod: true,
+                log: false,
+                async precontent(event, trigger, player) {
+                    const evt = event.getParent();
+                    if (typeof evt.dialog === 'object') evt.dialog.close();
+                    player.logSkill(event.result.skill);
+                    player.addTempSkill(`${event.result.skill}_effect`);
+                    const cards = event.result.cards.slice();
+                    [event.result.cards, event.result.card.cards] = [[], []];
+                    event.result.card.storage ??= {};
+                    event.result.card.storage.minifightlizhan = cards.length;
+                    event.result._apply_args = {
+                        shanReq: cards.length,
+                        oncard: () => {
+                            const trigger = get.event();
+                            trigger.baseDamage += (trigger.card.storage.minifightlizhan - 1);
+                            for (const target of game.filterPlayer(null, null, true)) {
+                                const id = target.playerid, map = trigger.customArgs;
+                                map[id] ??= {};
+                                map[id].shanRequired = trigger.card.storage.minifightlizhan;
                             }
-                        }
-                    }
+                        },
+                    };
+                    await player.respond(get.autoViewAs({ name: 'sha', cards }, cards)).set('cards', cards);
+                    await game.delayx();
                 },
                 ai: {
                     order(item, player) {
@@ -39207,33 +39180,69 @@ const packs = function () {
                     },
                 },
                 subSkill: {
-                    blocker: { charlotte: true },
                     effect: {
                         charlotte: true,
                         trigger: {
-                            player: 'useCard1',
+                            player: 'useCardAfter',
                             global: 'useCard',
                         },
                         filter(event, player, name) {
-                            if (name === 'useCard1') {
-                                return event.card.storage?.minifightlizhan && typeof event.card.storage.minifightlizhan === 'number';
+                            if (name === 'useCardAfter') {
+                                if (typeof event.card.storage?.minifightlizhan !== 'number') return false;
+                                if (!game.hasPlayer2(target => target.hasHistory('damage', evt => evt.card === event.card))) return false;
+                                return game.hasPlayer(target => {
+                                    if (event.targets?.includes(target)) return false;
+                                    return get.inpileVCardList(info => {
+                                        return !['delay', 'equip'].includes(info[0]);
+                                    }).some(info => {
+                                        const card = new lib.element.VCard({ name: info[2], nature: info[3] });
+                                        return get.tag(card, 'damage') && player.canUse(card, target, false);
+                                    });
+                                });
                             }
-                            return Array.isArray(event.respondTo) && event.respondTo[0] === player && event.respondTo[1].storage?.minifightlizhan && typeof event.respondTo[1].storage.minifightlizhan === 'number';
+                            return Array.isArray(event.respondTo) && event.respondTo[0] === player && typeof event.respondTo[1].storage?.minifightlizhan === 'number';
                         },
                         forced: true,
                         popup: false,
-                        content() {
-                            if (event.triggername === 'useCard1') {
-                                trigger.baseDamage += (trigger.card.storage.minifightlizhan - 1);
-                                for (const target of game.filterPlayer(null, null, true)) {
-                                    const id = target.playerid, map = trigger.customArgs;
-                                    if (!map[id]) map[id] = {};
-                                    map[id].shanRequired = trigger.card.storage.minifightlizhan;
+                        async content(event, trigger, player) {
+                            if (event.triggername === 'useCardAfter') {
+                                const result = await player.chooseTarget('力斩：是否再选择另一名角色？', '视为对其使用一张无距离和次数限制的伤害类卡牌', (card, player, target) => {
+                                    return get.event().targets.includes(target);
+                                }).set('targets', game.filterPlayer(target => {
+                                    if (trigger.targets?.includes(target)) return false;
+                                    return get.inpileVCardList(info => {
+                                        return !['delay', 'equip'].includes(info[0]);
+                                    }).some(info => {
+                                        const card = new lib.element.VCard({ name: info[2], nature: info[3] });
+                                        return get.tag(card, 'damage') && player.canUse(card, target, false);
+                                    });
+                                })).set('ai', target => {
+                                    const player = get.player();
+                                    return Math.max(...get.inpileVCardList(info => {
+                                        return !['delay', 'equip'].includes(info[0]);
+                                    }).filter(info => {
+                                        const card = new lib.element.VCard({ name: info[2], nature: info[3] });
+                                        return get.tag(card, 'damage') && player.canUse(card, target, false);
+                                    }).map(name => get.effect(target, new lib.element.VCard({ name: name[2], nature: name[3] }), player, player)));
+                                }).set('animate', false).forResult();
+                                if (result?.bool && result.targets?.length) {
+                                    const [target] = result.targets;
+                                    const { links } = await player.chooseButton([
+                                        '###力斩###<div class="text center">视为' + get.translation(target) + '对使用一张无距离和次数限制的伤害类卡牌</div>',
+                                        [get.inpileVCardList(info => {
+                                            return !['delay', 'equip'].includes(info[0]);
+                                        }).filter(info => {
+                                            const card = new lib.element.VCard({ name: info[2], nature: info[3] });
+                                            return get.tag(card, 'damage') && player.canUse(card, target, false);
+                                        }), 'vcard'],
+                                    ], true).set('ai', button => {
+                                        const { player, target } = get.event(), name = button.link;
+                                        return get.effect(target, new lib.element.VCard({ name: name[2], nature: name[3] }), player, player);
+                                    }).set('target', target).forResult();
+                                    if (links?.length) await player.useCard(new lib.element.VCard({ name: links[0][2], nature: links[0][3] }), target, false);
                                 }
                             }
-                            else {
-                                trigger.getParent(2).baseDamage--;
-                            }
+                            else trigger.getParent(2).baseDamage--;
                         },
                     },
                 },
@@ -43375,7 +43384,7 @@ const packs = function () {
             minifightreliegong: '烈弓',
             minifightreliegong_info: '①你使用【杀】无距离限制。②当你使用【杀】指定一个目标后，你可以根据下列条件执行相应的效果：1.其手牌数不大于你的手牌数，此【杀】不可被响应，2.其体力值不小于你的体力值，此【杀】伤害+1。',
             minifightlizhan: '力斩',
-            minifightlizhan_info: '出牌阶段，你可以打出任意张【杀】，然后视为使用一张需要X张【闪】响应且伤害基数为X的【杀】（X为你打出的【杀】数），目标角色每使用【闪】响应一次此牌，此牌伤害基数-1。若此【杀】造成伤害，则你可以选择一名非此【杀】目标角色，视为对其使用一张无距离和次数限制的伤害牌。',
+            minifightlizhan_info: '出牌阶段，你可以打出任意张【杀】，视为使用一张需要X张【闪】响应且伤害基数为X的【杀】（X为你打出的【杀】数），目标角色每使用【闪】响应一次此牌，此牌伤害基数-1。若此【杀】造成伤害，则你可以选择一名非此【杀】目标角色，视为对其使用一张无距离和次数限制的伤害牌。',
             minifightbiaoxi: '飚袭',
             minifightbiaoxi_info: '战场技。①一名角色于其出牌阶段失去第二张基本牌时，你可以进入“合淝战场”。②一名角色使用【杀】结算结束后，若此时处于“合淝战场”，你可令你或此【杀】的目标角色发动一次〖突袭〗，若该角色的手牌数因此成为全场唯一最多，则退出“合淝战场”。',
             minifightpozhen: '破阵',
