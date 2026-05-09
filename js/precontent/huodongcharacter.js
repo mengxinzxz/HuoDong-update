@@ -13418,7 +13418,7 @@ const packs = function () {
                             const choosed = (player.storage.bilibili_quanyu.get(target) ?? [[], undefined])[0];
                             player.storage.bilibili_quanyu.set(target, [[...choosed, choice2], choice2]);
                             const func = (player, target) => {
-                                const [choices, choice] = player.storage.bilibili_quanyu.get(target), rumo = player.hasSkill('bilibili_qiangang_effect');
+                                const [choices, choice] = player.storage.bilibili_quanyu.get(target), rumo = player.hasSkill('bilibili_qiangang_effect') && target !== player;
                                 if (!rumo) for (const i of choices) target.removeTip(i);
                                 for (const i of (rumo ? choices : [choice])) target.addTip(i, lib.skill[i].description);
                                 for (const i of ['baihong', 'qingming', 'bixie', 'zidian', 'baili', 'liuxing'].map(i => `bilibili_quanyu_${i}`)) target.unmarkSkill(i);
