@@ -40325,7 +40325,7 @@ const packs = function () {
                             if (target != _status.event.sourcex && !ui.selected.targets.includes(_status.event.sourcex)) return false;
                             return lib.filter.targetEnabled.apply(this, arguments);
                         }).set('sourcex', target).set('addCount', false).forResult();
-                        if (!result?.bool) await target.removeSkills('minikeji');
+                        if (!result?.bool) await current.removeSkills('minikeji');
                     }
                 },
                 derivation: 'minikeji',
