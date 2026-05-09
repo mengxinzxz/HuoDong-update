@@ -199,7 +199,7 @@ const packs = function () {
                     if (_status.currentPhase === player) return false;
                     return player.hasHistory('lose', evt => {
                         if ((evt.relatedEvent || evt.getParent()) !== event) return false;
-                        return event.hs.length > 0;
+                        return evt.hs?.length > 0;
                     });
                 },
                 frequent: true,
