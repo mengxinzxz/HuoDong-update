@@ -13676,6 +13676,14 @@ const packs = function () {
                                 (player.isMine() || target.isMine()) ? func(player, target, choices) : ((player.isOnline2() || target.isOnline2()) && player.send(func, player, target, choices));
                             }
                         },
+                        onChooseToUse(event) {
+                            event.targetprompt2.add(target => {
+                                const player = get.player(), card = get.card();
+                                if (!card || card.name !== 'sha' || !target.classList.contains('selectable')) return false;
+                                const choices = (player.storage.bilibili_quanyu.get(target) ?? [[], undefined])[0];
+                                if (choices.length) return `<span class='bluetext'>${choices.map(i => lib.skill[i].intro.name[0]).join('')}</span>`;
+                            });
+                        },
                         audio: 'olqiangang',
                         trigger: { player: 'useCardToPlayer' },
                         filter(event, player) {
