@@ -39,7 +39,7 @@ const packs = function () {
                 MiNi_yueCharacter: ['diaochan', 'daqiao'].map(i => `Mbaby_yue_${i}`),
                 MiNi_miaoKill: ['mayunlu', 'guanyinping', 'caoying', 'caiwenji', 'diaochan', 'caifuren', 'zhangxingcai', 'zhurong', 'huangyueying', 'daqiao', 'wangyi', 'zhangchunhua', 'zhenji', 'sunshangxiang', 'xiaoqiao', 'lvlingqi'].map(i => `Mmiao_${i}`),
                 MiNi_nianKill: ['caopi', 'zhugeliang', 'lvbu', 'zhouyu'].map(i => `Mnian_${i}`),
-                MiNi_fightKill: ['huangzhong', 'zhangliao', 'luxun', 'dianwei', 'machao', 'jiangwei'].map(i => `Mfight_${i}`),
+                MiNi_fightKill: ['huangzhong', 'zhangliao', 'luxun', 'dianwei', 'machao', 'jiangwei', 'lvmeng'].map(i => `Mfight_${i}`),
                 MiNi_yinKill: ['xushu'].map(i => `Myin_${i}`),
                 MiNi_fireKill: ['zhurong'].map(i => `Mfire_${i}`),
                 MiNi_shengzhiyifa: ['jingwei', 'sunwukong', 'dalanmao', 'libai', 'change', 'nvwa', 'tunxingmenglix', 'xiaoshan'].map(i => `Mbaby_${i}`),
@@ -540,6 +540,7 @@ const packs = function () {
             Mfight_dianwei: ['male', 'wei', 5, ['minifightchuanglie', 'minifightkuangji']],
             Mfight_machao: ['male', 'qun', 4, ['minifightdangfeng', 'minifighthaiji']],
             Mfight_jiangwei: ['male', 'shu', 4, ['minifightyilve', 'minifightqizhi']],
+            Mfight_lvmeng: ['male', 'wu', 4, ['minifightandu', 'minifightmingtan']],
             //隐
             Myin_xushu: ['male', 'wei', 3, ['miniyinyinxing', 'miniyinjujian']],
             //焰
@@ -40195,6 +40196,140 @@ const packs = function () {
                     }
                 }
             },
+            // 战吕蒙
+            minifightandu: {
+                audio: 'ext:活动武将/audio/skill:2',
+                placeSkill: true,
+                categories: () => ['战场技'],
+                trigger: {
+                    player: 'phaseBegin',
+                    global: ['phaseDiscardSkipped', 'phaseDiscardCancelled', 'phaseDiscardEnd'],
+                },
+                filter(event, player) {
+                    if (ui._minifightandu_jiangling) return false;
+                    if (event.name !== 'phaseDiscard') return true;
+                    return !event.player.hasHistory('lose', evt => evt.getParent('phaseDiscard') == event);
+                },
+                prompt2: `进入“江陵战场”，令所有角色获得${get.poptip('minikeji')}直到其下回合结束`,
+                async content(event, trigger, player) {
+                    player.$fullscreenpop('江陵战场', 'fire');
+                    const background = 'ext:活动武将/image/background/battlefield_jiangling.jpg';
+                    game.broadcastAll(bg => {
+                        if (get.is.phoneLayout()) ui._minifightandu_jiangling = ui.create.div('.touchinfo.left', ui.window);
+                        else ui._minifightandu_jiangling = ui.create.div(ui.gameinfo);
+                        ui._minifightandu_jiangling.innerHTML = '<br>江陵战场';
+                        _status.tempBackground = bg;
+                        game.updateBackground();
+                    }, background);
+                    game.addVideo('skill', player, [event.name, [true, background]]);
+                    game.filterPlayer().forEach(current => current.addTempSkills('minikeji', { player: ['phaseAfter'] }))
+                },
+                video(player, info) {
+                    if (info[0]) _status.tempBackground = info[1];
+                    else delete _status.tempBackground;
+                    game.updateBackground();
+                },
+                derivation: 'minikeji',
+                group: ['minifightandu_effect', 'minifightandu_gain'],
+                subSkill: {
+                    effect: {
+                        audio: 'minifightandu',
+                        trigger: { global: 'changeSkillsEnd' },
+                        filter(event, player) {
+                            return event.removeSkill.includes('minikeji');
+                        },
+                        forced: true,
+                        locked: false,
+                        async content(event, trigger, player) {
+                            await player.draw();
+                            if (!game.hasPlayer(current => current.hasSkill('minikeji')) && ui._minifightandu_jiangling) {
+                                game.broadcastAll(() => {
+                                    ui._minifightandu_jiangling.remove();
+                                    delete ui._minifightandu_jiangling;
+                                    delete _status.tempBackground;
+                                    game.updateBackground();
+                                });
+                                game.addVideo('skill', player, ['minifightandu', [false]]);
+                            }
+                        },
+                    },
+                    gain: {
+                        audio: 'minifightandu',
+                        trigger: { global: 'phaseEnd' },
+                        filter(event, player) {
+                            if (!ui._minifightandu_jiangling || event.player == player) return false;
+                            if (event.player.hasHistory('useSkill', evt => evt.skill == 'minikeji')) {
+                                return event.player.countCards('h');
+                            }
+                            return event.player.countGainableCards(player, 'he');
+                        },
+                        prompt2(event, player) {
+                            if (event.player.hasHistory('useSkill', evt => evt.skill == 'minikeji')) {
+                                return `获得${get.translation(event.player)}手牌中所有的【杀】`;
+                            }
+                            return `获得${get.translation(event.player)}一张牌并视为对其使用一张【杀】`;
+                        },
+                        logTarget: 'player',
+                        async content(event, trigger, player) {
+                            const target = event.targets[0];
+                            if (target.hasHistory('useSkill', evt => evt.skill == 'minikeji')) {
+                                const cards = target.getCards('h', card => lib.filter.canBeGained(card, target, player) && get.name(card, target) == 'sha');
+                                if (cards.length) await player.gain(cards, target, 'giveAuto', 'bySelf');
+                            }
+                            else {
+                                await player.gainPlayerCard(target, 'he', true);
+                                const sha = get.autoViewAs({ name: 'sha', isCard: true });
+                                if (player.canUse(sha, target, false)) {
+                                    await player.useCard(sha, target, false);
+                                }
+                            }
+                        },
+                    },
+                }
+            },
+            minifightmingtan: {
+                audio: 'ext:活动武将/audio/skill:2',
+                trigger: { player: 'phaseZhunbeiBegin' },
+                filter(event, player) {
+                    return game.hasPlayer(current => current != player && player.canUse({ name: 'guohe', isCard: true }, current));
+                },
+                async cost(event, trigger, player) {
+                    const num = Math.min(5, Math.max(1, game.countPlayer(current => current.hasSkill('minikeji'))));
+                    event.result = await player.chooseTarget(get.prompt(event.skill), `视为对一名其他角色使用至多${get.cnNumber(num)}张【过河拆桥】并摸${get.cnNumber(num)}张牌`, (card, player, target) => {
+                        return target != player && player.canUse({ name: 'guohe', isCard: true }, target);
+                    }).set('ai', target => {
+                        const player = get.player();
+                        return get.effect(target, { name: 'guohe_copy' }, player, player) + get.effect(target, { name: 'sha' }, player, player);
+                    }).forResult();
+                },
+                async content(event, trigger, player) {
+                    const target = event.targets[0];
+                    const num = Math.min(5, Math.max(1, game.countPlayer(current => current.hasSkill('minikeji'))));
+                    const guohe = get.autoViewAs({ name: 'guohe', isCard: true });
+                    let count = 0;
+                    while (count < num && player.canUse(guohe, target)) {
+                        const result = await player.chooseBool(`明探：是否对${get.translation(target)}使用一张【过河拆桥】？`).forResult();
+                        if (result?.bool) {
+                            count++;
+                            await player.useCard(guohe, target);
+                        }
+                        else break;
+                    }
+                    await player.draw(num);
+                    for (const current of game.filterPlayer(current => current.hasSkill('minikeji')).sortBySeat()) {
+                        if (!current.isIn()) continue;
+                        const result = await current.chooseToUse(function (card, player, event) {
+                            if (get.name(card) != 'sha') return false;
+                            return lib.filter.filterCard.apply(this, arguments);
+                        }, `明探：是否对${get.translation(target)}使用一张杀？或点击“取消”失去【克己】`).set('targetRequired', true).set('complexSelect', true).set('complexTarget', true).set('filterTarget', function (card, player, target) {
+                            if (target != _status.event.sourcex && !ui.selected.targets.includes(_status.event.sourcex)) return false;
+                            return lib.filter.targetEnabled.apply(this, arguments);
+                        }).set('sourcex', target).set('addCount', false).forResult();
+                        if (!result?.bool) await target.removeSkills('minikeji');
+                    }
+                },
+                derivation: 'minikeji',
+            },
             //隐系列
             //徐庶
             miniyinyinxing: {
@@ -43377,6 +43512,7 @@ const packs = function () {
             Mfight_dianwei: '战典韦',
             Mfight_machao: '战马超',
             Mfight_jiangwei: '战姜维',
+            Mfight_lvmeng: '战吕蒙',
             minifightdingjun: '定军',
             minifightdingjun_info: '战场技，锁定技。①一名角色使用【杀】造成1点伤害后，获得1层士气。②士气增加1点后，你摸一张牌。③士气变化时，若士气层数大于等于本局游戏人数，则进入“定军山战场”；一名角色的回合结束时，若士气层数为0，则退出“定军山战场”。④一名角色使用【杀】时，若此时处于“定军山战场”，则你可以消耗2层士气，令其于此牌结算中视为拥有〖烈弓〗。',
             minifightliegong: '烈弓',
@@ -43411,6 +43547,10 @@ const packs = function () {
             minifightyilve_info: `出牌阶段限一次。你可以选择一项：1.令一名角色对你选择的一名其他角色发动${get.poptip('minitiaoxin')}；2.展示牌堆顶五张牌并选择至多等量名角色，这些角色依次获得其中一张牌，若其因此获得了【杀】，其可以使用之，然后你将剩余牌放回牌堆顶。若有角色因此使用或弃置了【杀】，你失去1点体力。`,
             minifightqizhi: '锲志',
             minifightqizhi_info: `锁定技。①当你体力值减少后，你摸X张牌（X为你已损失体力值）。②出牌阶段限五次，当你回复体力后，你可以弃置一张牌令${get.poptip('minifightyilve')}本回合发动次数+1。`,
+            minifightandu: '暗渡',
+            minifightandu_info: `战场技。①你的回合开始时或一名角色的弃牌阶段未弃牌时，进入“江陵战场”，令所有角色获得${get.poptip('minikeji')}直到其下回合结束。②一名角色失去${get.poptip('minikeji')}时，你摸一张牌，然后若场上没有角色拥有${get.poptip('minikeji')}，退出“江陵战场”。③处于“江陵战场”时，其他角色的回合结束时，若其本回合发动过${get.poptip('minikeji')}，你可以获得其手牌中所有的【杀】，否则你可以获得其一张牌并视为对其使用一张【杀】。`,
+            minifightmingtan: '明探',
+            minifightmingtan_info: `准备阶段，你可以视为对一名其他角色使用至多X张【过河拆桥】并摸X张牌，然后所有拥有${get.poptip('minikeji')}的角色须对其使用一张【杀】或失去${get.poptip('minikeji')}（X为拥有${get.poptip('minikeji')}的角色数，且至少为1，至多为5）。`,
             //隐
             Myin_xushu: '隐徐庶',
             miniyinyinxing: '隐姓',

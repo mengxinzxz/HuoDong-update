@@ -632,7 +632,7 @@ export async function precontent(bilibilicharacter) {
                     _status.HDWJ_ChangeLog_character = {
                         '牢武将': ['old_sb_zhanghe'],
                         '杂谈': ['bilibili_caocao'],
-                        'MiNikill': ['Mbaby_star_zhangchunhua', 'Mbaby_yue_diaochan', 'Mbaby_star_simayi', 'Mbaby_hanlong', 'Mbaby_ol_liru', 'Mbaby_kebineng', 'Mbaby_xunchen', 'Mbaby_shen_zhonghui'],
+                        'MiNikill': ['Mbaby_star_zhangchunhua', 'Mbaby_yue_diaochan', 'Mbaby_star_simayi', 'Mbaby_hanlong', 'Mbaby_ol_liru', 'Mbaby_kebineng', 'Mbaby_xunchen', 'Mbaby_shen_zhonghui', 'Mfight_lvmeng'],
                         'WeChatkill': ['wechat_zhi_liubiao', 'wechat_caifuren', 'wechat_lingtong', 'wechat_liubiao', 'wechat_caozhang'],
                     };
                     return Object.values(_status.HDWJ_ChangeLog_character).flat();
