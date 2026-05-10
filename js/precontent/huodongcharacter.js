@@ -13411,6 +13411,7 @@ const packs = function () {
                         }).set('ai', () => 1 + Math.random()).set('_global_waiting', true);
                     }, [player]).forResult();
                     if (result) {
+                        player.addTempSkill('bilibili_quanyu_clear', 'roundStart');
                         let num = 0, choice = result.get(player)?.links?.[0];
                         for (const [target, result2] of result.entries()) {
                             const choice2 = result2.links?.[0];
@@ -13420,7 +13421,7 @@ const packs = function () {
                             const func = (player, target) => {
                                 const [choices, choice] = player.storage.bilibili_quanyu.get(target), rumo = player.hasSkill('bilibili_qiangang_effect') && target !== player;
                                 if (!rumo) for (const i of choices) target.removeTip(i);
-                                for (const i of (rumo ? choices : [choice])) target.addTip(i, lib.skill[i].description);
+                                for (const i of (rumo ? choices : [choice])) target.addTip(i, lib.skill[i].description, false, { width: 'fit-content' });
                                 for (const i of ['baihong', 'qingming', 'bixie', 'zidian', 'baili', 'liuxing'].map(i => `bilibili_quanyu_${i}`)) target.unmarkSkill(i);
                                 target.markSkill(choice);
                                 if (target.marks[choice]?.firstChild.innerHTML) target.marks[choice].firstChild.innerHTML = lib.skill[choice].intro.name.slice(0, target.marks[choice].firstChild.innerHTML.length);
@@ -13446,6 +13447,18 @@ const packs = function () {
                     },
                 },
                 subSkill: {
+                    clear: {
+                        charlotte: true,
+                        onremove(player) {
+                            for (const target of game.filterPlayer()) {
+                                if (!player.storage.bilibili_quanyu?.has(target)) return;
+                                const [choices, choice] = player.storage.bilibili_quanyu.get(target);
+                                if (!player.hasSkill('bilibili_qiangang_effect') || target === player) target.removeTip(choice);
+                                target.unmarkSkill(choice);
+                                player.storage.bilibili_quanyu.set(target, [choices, undefined]);
+                            }
+                        },
+                    },
                     baihong: {
                         description: '伤害+1',
                         intro: {
@@ -13671,7 +13684,7 @@ const packs = function () {
                                 const choices = (player.storage.bilibili_quanyu.get(target) ?? [[], undefined])[0];
                                 if (!choices.length) continue;
                                 const func = (player, target, choices) => {
-                                    for (const i of choices) target.addTip(i, lib.skill[i].description);
+                                    for (const i of choices) target.addTip(i, lib.skill[i].description, false, { width: 'fit-content' });
                                 };
                                 (player.isMine() || target.isMine()) ? func(player, target, choices) : ((player.isOnline2() || target.isOnline2()) && player.send(func, player, target, choices));
                             }
