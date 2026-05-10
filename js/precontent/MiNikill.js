@@ -10,7 +10,7 @@ const packs = function () {
                 MiNi_wei: ['hanlong', 'xiahoumao', 'guohuai', 'caochong', 'caochun', 'caoying', 'dc_jiachong', 'zhugeruoxue', 'dukui', 'xinpi', 'caimaozhangyun', 'bianyue', 'caoanmin', 'zhaoang', 'zhanggong', 'simalang', 'hanhaoshihuan', 'chentai', 'zhenghun', 'guanlu', 'guanqiujian', 'dc_liuye', 'chenlin', 'wangshuang', 'yanrou', 'dc_yanghu', 'ruanyu', 'chengyu', 'jianggan', 'yuejin', 'bianfuren', 'zhugedan', 'caohong', 'yinfuren', 'kuailiangkuaiyue', 'chenqun', 'xiahoulingnv', 'wenyang', 'caocao', 'caozhang', 'dufuren', 'yangxiu', 'zhangchangpu', 'zhonghui', 'caoxiu', 'xunyou', 'lidian', 'zhongyao', 'caozhen', 'guohuanghou', 'xinxianying', 'xiahouyuan', 'xizhicai', 'caorui', 'xunyu', 'dengai', 'caozhi', 'caopi', 'caoang', 'zhenji', 'old_caoren', 'zhangchunhua', 'xiahoudun', 'dianwei', 'zhanghe', 'yujin', 'xuhuang'].map(i => `Mbaby_${i}`),
                 MiNi_shu: ['wenyuan', 'xizheng', 'old_liubei', 'malingli', 'dc_wuban', 'pangtong', 'mifangfushiren', 'guanyue', 'xianglang', 'huanghao', 'ganfurenmifuren', 'zhaotongzhaoguang', 'wulan', 'leitong', 'zongyu', 're_mazhong', 're_dengzhi', 'dc_hujinding', 'jiangfei', 'zhangyi', 'guanzhang', 'wolongfengchu', 'wangtao', 'wangyue', 'xf_yiji', 'mizhu', 'mifuren', 'liuyong', 'ganfuren', 'lvkai', 'zhoucang', 'yangwan', 'liuchen', 'liyan', 'chendao', 'yanyan', 'xiahouba', 'huaman', 'sp_zhugeliang', 'zhugeguo', 'jianyong', 'wangping', 'mayunlu', 'guansuo', 'xiahoushi', 'shamoke', 'wuxian', 'zhugezhan', 'qinmi', 'guanyinping', 'guanyu', 'zhugeliang', 'liubei', 'machao', 'zhurong', 'zhangfei', 'zhaoyun', 'huangzhong', 'weiyan', 'liaohua', 'menghuo', 'ol_jiangwei', 'liushan', 'xin_fazheng', 'madai', 'guanping', 'liufeng', 'zhangxingcai', 'dongyun', 'xushu', 'xin_masu'].map(i => `Mbaby_${i}`),
                 MiNi_wu: ['old_sunquan', 'sunhuan', 'gexuan', 'lvfan', 'xielingyu', 'zhupeilan', 'xugong', 'chendong', 'kanze', 're_panzhangmazhong', 'weiwenzhugezhi', 'zhangwen', 'dc_sunhanhua', 'heqi', 'lvdai', 'jiangqing', 're_guyong', 'quancong', 'yufan', 'dc_sunru', 'sunxiu', 'zhangfen', 'xuezong', 'panjun', 'luji', 'zhoufang', 'zhangxuan', 'yanjun', 'zhuhuan', 'luyusheng', 're_jsp_pangtong', 'sunhao', 'lukang', 'buzhi', 'xushi', 'zhugeke', 'zhoufei', 'zhangzhang', 'sunliang', 'sunjian', 'zhuzhi', 'bulianshi', 'chengpu', 'daqiao', 'ganning', 'huanggai', 'lusu', 'luxun', 'lvmeng', 'sunce', 'sunluban', 'sunluyu', 'sunquan', 'sunshangxiang', 'taishici', 'wuguotai', 'xiaoqiao', 'xusheng', 'old_zhoutai', 'zhouyu', 'zhugejin', 'zumao'].map(i => `Mbaby_${i}`),
-                MiNi_qun: ['xunchen', 'kebineng', 'mangyachang', 're_hucheer', 'sp_duyu', 'ol_lisu', 'zhangchu', 'leibo', 'wangcan', 'diaochan', 'xurong', 're_taoqian', 'hejin', 'jiling', 'zhangrang', 'duanwei', 're_chendeng', 'caiyong', 'mengjie', 'dc_gaolan', 'yl_luzhi', 'tadun', 're_hansui', 'dongxie', 'fuwan', 'wutugu', 'huangfusong', 'fanchou', 'guosi', 'yanbaihu', 'dc_huangzu', 'licaiwei', 'ol_dingyuan', 'liubian', 're_pangdegong', 'zhangning', 'zhanglu', 'wangyun', 'zoushi', 'dc_huangchengyan', 'simahui', 'tw_mateng', 'laiyinger', 'sp_kongrong', 'zhujun', 'gongsunyuan', 'guotufengji', 'yanfuren', 'tangji', 'caojie', 'liangxing', 'caoxing', 'wangrong', 'hetaihou', 'zhangji', 'dongbai', 'beimihu', 'chunyuqiong', 'zhangqiying', 'fuhuanghou', 'liuxie', 'quyi', 'lijue', 'panfeng', 'liuzhang', 'jiaxu', 'zhangbao', 'zhangliang', 'gaoshun', 'caifuren', 'xuyou', 'pangde', 'yj_jushou', 'liru', 'dongzhuo', 'sp_zhangjiao', 'huatuo', 'lvbu', 'huaxiong', 'yuji', 'liubiao', 'yuanshao', 'yuanshu', 'chengong', 'zuoci'].map(i => `Mbaby_${i}`),
+                MiNi_qun: ['zhangren', 'kebineng', 'mangyachang', 're_hucheer', 'sp_duyu', 'ol_lisu', 'zhangchu', 'leibo', 'wangcan', 'diaochan', 'xurong', 're_taoqian', 'hejin', 'jiling', 'zhangrang', 'duanwei', 're_chendeng', 'caiyong', 'mengjie', 'dc_gaolan', 'yl_luzhi', 'tadun', 're_hansui', 'dongxie', 'fuwan', 'wutugu', 'huangfusong', 'fanchou', 'guosi', 'yanbaihu', 'dc_huangzu', 'licaiwei', 'ol_dingyuan', 'liubian', 're_pangdegong', 'zhangning', 'zhanglu', 'wangyun', 'zoushi', 'dc_huangchengyan', 'simahui', 'tw_mateng', 'laiyinger', 'sp_kongrong', 'zhujun', 'gongsunyuan', 'guotufengji', 'yanfuren', 'tangji', 'caojie', 'liangxing', 'caoxing', 'wangrong', 'hetaihou', 'zhangji', 'dongbai', 'beimihu', 'chunyuqiong', 'zhangqiying', 'fuhuanghou', 'liuxie', 'quyi', 'lijue', 'panfeng', 'liuzhang', 'jiaxu', 'zhangbao', 'zhangliang', 'gaoshun', 'caifuren', 'xuyou', 'pangde', 'yj_jushou', 'liru', 'dongzhuo', 'sp_zhangjiao', 'huatuo', 'lvbu', 'huaxiong', 'yuji', 'liubiao', 'yuanshao', 'yuanshu', 'chengong', 'zuoci'].map(i => `Mbaby_${i}`),
                 MiNi_shen: [
                     ...['zhonghui', 'weiyan', 'lusu', 'luxun', 'dengai', 'zuoci', 'taishici', 'diaochan', 'daxiaoqiao', 'zhenji', 'guojia', 'huatuo', 'dianwei', 'lvbu', 'zhugeliang', 'lvmeng', 'zhouyu', 'guanyu', 'liubei', 'caocao', 'zhangliao', 'sunquan', 'simayi', 'zhaoyun', 'ganning', 'pangtong'].map(i => `shen_${i}`),
                     ...['1_daxiaoqiao', '2_daxiaoqiao'].map(i => `old_${i}`),
@@ -36,7 +36,7 @@ const packs = function () {
                     ...[],
                 ],
                 MiNi_starCharacter: ['simayi', 'zhangchunhua', 'yuanshao', 'sunshangxiang', 'xunyu', 'yuanshu'].map(i => `Mbaby_star_${i}`),
-                MiNi_yueCharacter: ['diaochan', 'daqiao'].map(i => `Mbaby_yue_${i}`),
+                MiNi_yueCharacter: ['zhoufei', 'diaochan', 'daqiao'].map(i => `Mbaby_yue_${i}`),
                 MiNi_miaoKill: ['mayunlu', 'guanyinping', 'caoying', 'caiwenji', 'diaochan', 'caifuren', 'zhangxingcai', 'zhurong', 'huangyueying', 'daqiao', 'wangyi', 'zhangchunhua', 'zhenji', 'sunshangxiang', 'xiaoqiao', 'lvlingqi'].map(i => `Mmiao_${i}`),
                 MiNi_nianKill: ['caopi', 'zhugeliang', 'lvbu', 'zhouyu'].map(i => `Mnian_${i}`),
                 MiNi_fightKill: ['huangzhong', 'zhangliao', 'luxun', 'dianwei', 'machao', 'jiangwei', 'lvmeng'].map(i => `Mfight_${i}`),
@@ -339,7 +339,8 @@ const packs = function () {
             Mbaby_gexuan: ['male', 'wu', 3, ['minilianhua', 'zhafu']],
             Mbaby_sunhuan: ['male', 'wu', 4, ['mininiji']],
             Mbaby_star_sunshangxiang: ['female', 'wu', 3, ['starsaying', 'ministarjiaohao']],
-            Mbaby_yue_daqiao: ['female', 'wu', 3, ['miniqiqin', 'minizixi']],
+            Mbaby_yue_daqiao: ['female', 'wu', 3, ['miniqiqin', 'minizixi'], ['name:桥|null']],
+            Mbaby_yue_zhoufei: ['female', 'wu', 3, ['minilingkong', 'minixianshu'], ['name:周|null']],
             //群
             Mbaby_gaoshun: ['male', 'qun', 4, ['minixianzhen', 'minijinjiu']],
             Mbaby_xin_gaoshun: ['male', 'qun', 4, ['minirexianzhen', 'minirejinjiu'], ['character:Mbaby_gaoshun']],
@@ -361,7 +362,7 @@ const packs = function () {
             Mbaby_re_huatuo: ['male', 'qun', 3, ['minijijiu', 'minireqingnang']],
             Mbaby_lvbu: ['male', 'qun', 5, ['wushuang']],
             Mbaby_re_lvbu: ['male', 'qun', 5, ['miniwushuang', 'miniwuchang']],
-            Mbaby_sp_diaochan: ['female', 'qun', 3, ['minilihun', 'minipianyi']],
+            Mbaby_sp_diaochan: ['female', 'qun', 3, ['minilihun', 'minipianyi'], ['name:null|null']],
             Mbaby_huaxiong: ['male', 'qun', 6, ['miniyaowu']],
             Mbaby_sb_huaxiong: ['male', 'qun', 6, ['minireyaowu', 'miniyangwei']],
             Mbaby_yuji: ['male', 'qun', 4, ['miniguhuo']],
@@ -381,8 +382,8 @@ const packs = function () {
             Mbaby_liuzhang: ['male', 'qun', 4, ['miniyinlang', 'minixiusheng', 'minihuaibi'], ['zhu']],
             Mbaby_panfeng: ['male', 'qun', 4, ['minikuangfu']],
             Mbaby_sp_machao: ['male', 'qun', 4, ['minizhuiji', 'minishichou']],
-            Mbaby_diaochan: ['female', 'qun', 4, ['minilijian', 'biyue']],
-            Mbaby_re_diaochan: ['female', 'qun', 3, ['minirelijian', 'minibiyue']],
+            Mbaby_diaochan: ['female', 'qun', 4, ['minilijian', 'biyue'], ['name:null|null']],
+            Mbaby_re_diaochan: ['female', 'qun', 3, ['minirelijian', 'minibiyue'], ['name:null|null']],
             Mbaby_jsp_huangyueying: ['female', 'qun', 3, ['minijiqiao', 'minilinglong']],
             Mbaby_quyi: ['male', 'qun', 4, ['minifuqi', 'minijiaozi']],
             Mbaby_liuxie: ['male', 'qun', 3, ['minitianming', 'minimizhao']],
@@ -464,10 +465,11 @@ const packs = function () {
             Mbaby_mangyachang: ['male', 'qun', 4, ['minijiedao']],
             Mbaby_re_hucheer: ['male', 'qun', 4, ['redaoji', 'minifuzhong']],
             Mbaby_star_yuanshao: ['male', 'qun', 4, ['ministarxiaoyan', 'ministarzongshi', 'ministarjiaowang', 'ministaraoshi'], ['zhu']],
-            Mbaby_yue_diaochan: ['female', 'qun', 3, ['minitanban', 'dcdiou']],
+            Mbaby_yue_diaochan: ['female', 'qun', 3, ['minitanban', 'dcdiou'], ['name:null|null']],
             Mbaby_ol_liru: ['male', 'qun', 3, ['minijuece', 'miniolmieji', 'dcfencheng']],
             Mbaby_kebineng: ['male', 'qun', 4, ['kousheng', 'olpingduan'], ['name:牢大|罐头', 'die:kebineng', 'die:ol_kebineng']],
             Mbaby_xunchen: ['male', 'qun', 3, ['minifenglve', 'minianyong'], ['clan:颍川荀氏']],
+            Mbaby_zhangren: ['male', 'qun', 4, ['minichuanxin', 'dcfengshi']],
             //神
             Mbaby_shen_zhugeliang: ['male', 'shen', 3, ['qixing', 'minikuangfeng', 'minidawu'], ['shu', 'name:诸葛|亮']],
             Mbaby_shen_lvbu: ['male', 'shen', 6, ['miniwuqian', 'minishenfen'], ['qun']],
@@ -496,7 +498,7 @@ const packs = function () {
             },
             Mbaby_old_1_daxiaoqiao: ['female', 'shen', 4, ['minishuangshu', 'miniyizheng', 'minipingting'], ['wu', 'die:Mbaby_shen_daxiaoqiao', 'name:桥|null-桥|null']],
             Mbaby_old_2_daxiaoqiao: ['female', 'shen', 4, ['minishuangshu2', 'miniyizheng2', 'minishutu2'], ['wu', ...['character', 'die'].map(i => `${i}:Mbaby_shen_daxiaoqiao`), 'name:桥|null-桥|null']],
-            Mbaby_shen_diaochan: ['female', 'shen', 3, ['minimeihun', 'minihuoxin'], ['qun']],
+            Mbaby_shen_diaochan: ['female', 'shen', 3, ['minimeihun', 'minihuoxin'], ['qun', 'name:null|null']],
             Mbaby_sunwukong: ['male', 'shen', 4, ['minisevenbian', 'miniruyi', 'miniqitian']],
             Mbaby_dalanmao: ['male', 'shen', 4, ['minizuzhou', 'minimoyu', 'minisanlian']],
             Mbaby_change: ['female', 'shen', '1/4', ['minidaoyao', 'minibenyue']],
@@ -513,7 +515,7 @@ const packs = function () {
             Mbaby_shen_zhonghui: ['male', 'shen', 4, ['dclinjie', 'miniduzhang', 'dcjianghuo'], ['wei', 'clan:颍川钟氏']],
             //喵
             Mmiao_caiwenji: ['female', 'qun', 3, ['minimiaobeige', 'minimiaoduanchang', 'minidoumao'], ['name:蔡|琰']],
-            Mmiao_diaochan: ['female', 'qun', 3, ['minimiaolijian', 'minimiaobiyue', 'minidoumao']],
+            Mmiao_diaochan: ['female', 'qun', 3, ['minimiaolijian', 'minimiaobiyue', 'minidoumao'], ['name:null|null']],
             Mmiao_caifuren: ['female', 'qun', 3, ['minimiaoqieting', 'minimiaoxianzhou', 'minidoumao'], ['name:蔡|null']],
             Mmiao_zhangxingcai: ['female', 'shu', 3, ['minimiaoshenxian', 'minimiaoqiangwu', 'minidoumao']],
             Mmiao_zhurong: ['female', 'shu', 4, ['minimiaojuxiang', 'minimiaolieren', 'minidoumao']],
@@ -21435,6 +21437,58 @@ const packs = function () {
                     },
                 },
             },
+            //乐肘飞
+            minilingkong: {
+                audio: 'dclingkong',
+                trigger: {
+                    player: ['gainAfter', 'phaseZhunbeiBegin'],
+                    global: 'loseAsyncAfter',
+                },
+                forced: true,
+                filter: (event, player) => {
+                    if (event.name === 'phaseZhunbei') return player.hasCard(card => !card.hasGaintag('minilingkong'), 'h');
+                    const phaseDraw = event.getParent('phaseDraw');
+                    if (phaseDraw?.player === player) return false;
+                    const history = player.getHistory('gain', evt => {
+                        const phaseDraw = evt.getParent('phaseDraw');
+                        return !phaseDraw || phaseDraw.player !== player;
+                    });
+                    const evt = event.name == 'loseAsync' ? event.childEvents?.find(evtx => evtx.name === 'gain' && evtx.player === player) : event;
+                    if (history.indexOf(evt) !== 0) return false;
+                    const cards = event.getg?.(player);
+                    return cards?.some(card => player.getCards('h').includes(card) && !card.hasGaintag('minilingkong'));
+                },
+                async content(event, trigger, player) {
+                    let hs = player.getCards('h'), cards;
+                    if (trigger.name === 'phaseZhunbei') cards = hs.filter(card => !card.hasGaintag('minilingkong'));
+                    else cards = trigger.getg(player).filter(card => hs.includes(card) && !card.hasGaintag('minilingkong'));
+                    if (cards.length) player.addGaintag(cards, 'dclingkong_tag');
+                    await game.delayx();
+                },
+                mod: {
+                    ignoredHandcard(card, player) {
+                        if (card.hasGaintag('dclingkong_tag')) return true;
+                    },
+                    cardDiscardable(card, player, name) {
+                        if (name == 'phaseDiscard' && card.hasGaintag('dclingkong_tag')) return false;
+                    },
+                },
+            },
+            minixianshu: {
+                audio: 'dcxianshu',
+                inherit: 'dcxianshu',
+                async content(event, trigger, player) {
+                    const { cards, target } = event;
+                    await player.give(cards, target, true);
+                    const color = get.color(cards[0], player);
+                    if (target.isIn()) {
+                        const num = Math.min(Math.abs(target.getHp() - player.getHp()), 5);
+                        await player.draw(Math.max(1, num));
+                    }
+                    if (color === 'red' && target.getHp() <= player.getHp() && target.isDamaged()) await target.recover();
+                    if (color == 'black' && target.getHp() >= player.getHp()) await target.loseHp();
+                },
+            },
             //群
             miniqieting: {
                 audio: 'qieting',
@@ -31183,6 +31237,52 @@ const packs = function () {
                     await trigger.player.damage();
                 },
             },
+            //张任
+            minichuanxin: {
+                inherit: 'dcchuanxin',
+                check(event, player) {
+                    const target = event.player;
+                    const bool = target.countDiscardableCards(target, 'e') > 0;
+                    const goon = target.countDiscardableCards(target, 'h') >= 2;
+                    const def = get.damageEffect(target, player, player);
+                    if (!bool && !goon) return def < 0;
+                    return Math.max(def, ...(() => {
+                        let list = [];
+                        if (bool) list.push(get.effect(target, { name: 'guohe_copy', position: 'e' }, target, player) * Math.sqrt(target.countDiscardableCards(target, 'e')) + get.effect(target, { name: 'losehp' }, target, player));
+                        if (goon) list.push(get.effect(target, { name: 'guohe_copy', position: 'h' }, target, player) * Math.sqrt(Math.min(2, target.countDiscardableCards(target, 'h'))));
+                        return list;
+                    })()) > 0;
+                },
+                async content(event, trigger, player) {
+                    trigger.cancel();
+                    const target = event.targets[0];
+                    const bool = target.countDiscardableCards(target, 'e') > 0;
+                    const goon = target.countDiscardableCards(target, 'h') >= 2;
+                    if (!bool && !goon) return;
+                    let result;
+                    if (bool && goon) {
+                        const str = get.translation(target);
+                        result = await player.chooseControl().set('choiceList', [
+                            `令${str}弃置装备区内的所有牌并失去1点体力`,
+                            `令${str}弃置两张手牌且本回合非锁定技失效`,
+                        ]).set('ai', () => {
+                            const { player, target } = get.event();
+                            const bool = get.effect(target, { name: 'guohe_copy', position: 'e' }, target, player) * Math.sqrt(target.countDiscardableCards(target, 'e')) + get.effect(target, { name: 'losehp' }, target, player);
+                            const goon = get.effect(target, { name: 'guohe_copy', position: 'h' }, target, player) * Math.sqrt(Math.min(2, target.countDiscardableCards(target, 'h')));
+                            return bool > goon ? 0 : 1;
+                        }).set('target', target).forResult();
+                    }
+                    else result = { index: bool ? 0 : 1 };
+                    if (result.index == 1) {
+                        await target.chooseToDiscard('h', 2, true);
+                        target.addTempSkill('fengyin');
+                    }
+                    else {
+                        await target.discard(trigger.player.getDiscardableCards(target, 'e'));
+                        await target.loseHp();
+                    }
+                },
+            },
             //神
             miniwuqian: {
                 derivation: 'wushuang',
@@ -40308,7 +40408,7 @@ const packs = function () {
                     const guohe = get.autoViewAs({ name: 'guohe', isCard: true });
                     let count = 0;
                     while (count < num && player.canUse(guohe, target)) {
-                        const result = await player.chooseBool(`明探：是否对${get.translation(target)}使用一张【过河拆桥】？`).forResult();
+                        const result = count > 0 ? await player.chooseBool(`明探：是否继续视为对${get.translation(target)}使用【过河拆桥】？`).forResult() : { bool: true };
                         if (result?.bool) {
                             count++;
                             await player.useCard(guohe, target);
@@ -42274,6 +42374,7 @@ const packs = function () {
             Mbaby_sunhuan: '欢杀孙桓',
             Mbaby_star_sunshangxiang: '欢杀星孙尚香',
             Mbaby_yue_daqiao: '欢杀乐大乔',
+            Mbaby_yue_zhoufei: '欢杀乐周妃',
             minizhiheng: '制衡',
             minizhiheng_info: '出牌阶段结束时，你可以弃置任意张手牌并将手牌数补至四张。',
             minirezhiheng: '制衡',
@@ -42569,7 +42670,11 @@ const packs = function () {
             miniqiqin: '绮琴',
             miniqiqin_info: '锁定技。①你的初始手牌数+1，且将这些牌标记为“琴”。②你的“琴”不计入手牌上限。③准备阶段，你获得位于弃牌堆的所有“琴”。',
             minizixi: '姊希',
-            minizixi_info: "①出牌阶段开始和结束时，你可以将一张“琴”当作一张无效果的【乐不思蜀】、【兵粮寸断】或【闪电】置于一名角色的判定区。②当你使用基本牌或普通锦囊牌指定唯一目标后，你可根据其判定区内的牌数执行对应项：1.令此牌对其额外结算一次；2.摸两张牌或执行效果1；3.弃置其判定区所有牌并对其造成3点伤害或执行效果2。",
+            minizixi_info: '①出牌阶段开始和结束时，你可以将一张“琴”当作一张无效果的【乐不思蜀】、【兵粮寸断】或【闪电】置于一名角色的判定区。②当你使用基本牌或普通锦囊牌指定唯一目标后，你可根据其判定区内的牌数执行对应项：1.令此牌对其额外结算一次；2.摸两张牌或执行效果1；3.弃置其判定区所有牌并对其造成3点伤害或执行效果2。',
+            minilingkong: '灵箜',
+            minilingkong_info: '锁定技。①准备阶段，你将手牌标记为“箜篌”。②你的“箜篌”牌不计入手牌上限。③当你于一回合内首次于摸牌阶段外得到牌后，你将这些牌标记为“箜篌”。',
+            minixianshu: '贤淑',
+            minixianshu_info: '出牌阶段，你可以将一张“箜篌”正面向上交给一名其他角色，然后你摸X张牌（X为你与其的体力值之差且至少为1，至多为5）。若此牌为红色，且该角色的体力值小于等于你，则其回复1点体力；若此牌为黑色，且该角色的体力值大于等于你，则其失去1点体力。',
             //群
             Mbaby_zuoci: '欢杀左慈',
             Mbaby_gaoshun: '欢杀高顺',
@@ -42698,6 +42803,7 @@ const packs = function () {
             Mbaby_ol_liru: '欢杀界李儒',
             Mbaby_kebineng: '欢杀轲比能',
             Mbaby_xunchen: '欢杀荀谌',
+            Mbaby_zhangren: '欢杀张任',
             miniweidi: '伪帝',
             miniweidi_info: '弃牌阶段结束时，你可以将其中一张弃置的牌交给一名其他角色。',
             minimingce: '明策',
@@ -43141,6 +43247,8 @@ const packs = function () {
             minifenglve_info: '出牌阶段限一次，你可以和一名其他角色进行拼点。若你赢，你获得其区域里的两张牌；若平局，则你获得你的拼点牌且令此技能于本阶段内的发动次数上限+1。',
             minianyong: '暗涌',
             minianyong_info: '当一名角色于其回合内首次造成伤害后，你可弃置一张牌并对受伤角色造成1点伤害。',
+            minichuanxin: '穿心',
+            minichuanxin_info: '当你于出牌阶段使用【杀】或【决斗】对一名角色造成伤害时，你可以防止此伤害并选择一项：1.令其弃置装备区里的所有牌并失去1点体力；2.令其弃置两张手牌且本回合非锁定技失效。',
             //神
             Mbaby_shen_lvbu: '欢杀神吕布',
             Mbaby_shen_guanyu: '欢杀神关羽',
@@ -43879,6 +43987,11 @@ const packs = function () {
             '#ext:活动武将/audio/skill/minijibian1': '机变之道，游刃虚实之间。',
             '#ext:活动武将/audio/skill/minijibian2': '一击得手，乘胜追击！',
             '#ext:活动武将/audio/die/Mbaby_star_simayi:die': '隐忍数十载，到头来只是一场空！',
+            '#ext:活动武将/audio/skill/minifightandu1': '江雾迷荆，白衣暗渡。',
+            '#ext:活动武将/audio/skill/minifightandu2': '韬光养晦，瞒天过海。',
+            '#ext:活动武将/audio/skill/minifightmingtan1': '孤军外悬，难逃我掌。',
+            '#ext:活动武将/audio/skill/minifightmingtan2': '十年隐忍，一朝功成！',
+            '#ext:活动武将/audio/die/Mfight_lvmeng:die': '此计不成，有负主公重托……',
         },
     };
     MiNikill_sight();//加载欢杀界面逻辑
