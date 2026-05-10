@@ -605,7 +605,7 @@ export async function precontent(bilibilicharacter) {
             if (next.filterTarget === undefined || next.filterTarget === true) next.filterTarget = lib.filter.all;
             next.ai1 ??= get.attitude2;
             //选项
-            next.filterControl ??= control => control === 'cancel2' || ui.selected.targets.length > 0;
+            next.filterControl ??= () => ui.selected.targets.length > 0;
             next.controls ??= Array.from({ length: (next.choiceList ?? []).length }).map(i => `选项${get.cnNumber(i + 1, true)}`);
             if (!next.forced) next.controls.add('cancel2');
             next.ai2 ??= () => 0;
@@ -649,7 +649,7 @@ export async function precontent(bilibilicharacter) {
                     for (const control of event.controls) {
                         const control2 = ui.create.control([control]);
                         control2._control = control;
-                        control2.classList[event.filterControl(control, event.player) ? 'remove' : 'add']('unselectable');
+                        control2.classList[control === 'cancel2' || event.filterControl(control, event.player) ? 'remove' : 'add']('unselectable');
                         control2.custom = () => {
                             const event = get.event();
                             if (control2.classList.contains('unselectable') || (event.filterOk && !event.filterOk())) return;
@@ -678,7 +678,7 @@ export async function precontent(bilibilicharacter) {
                         if (!event.isMine()) return;
                         for (const control2 of event.controlbars) {
                             const control = control2._control;
-                            control2.classList[event.filterControl(control, event.player) ? 'remove' : 'add']('unselectable');
+                            control2.classList[control === 'cancel2' || event.filterControl(control, event.player) ? 'remove' : 'add']('unselectable');
                         }
                     };
                     const replaceWindow = event.custom.replace.window;
@@ -688,7 +688,7 @@ export async function precontent(bilibilicharacter) {
                         const event = get.event();
                         for (const control2 of event.controlbars) {
                             const control = control2._control;
-                            control2.classList[event.filterControl(control, event.player) ? 'remove' : 'add']('unselectable');
+                            control2.classList[control === 'cancel2' || event.filterControl(control, event.player) ? 'remove' : 'add']('unselectable');
                         }
                         game.check();
                     };

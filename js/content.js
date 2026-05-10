@@ -1092,7 +1092,6 @@ export async function content(config, pack) {
 				},
 				controls: ['回复体力', '失去体力', '弃牌', '摸牌'],
 				filterControl(control, player) {
-					if (control === 'cancel2') return true;
 					if (!ui.selected.targets.length) return false;
 					const target = ui.selected.targets.at(-1);
 					const storage1 = player.getStorage('luochong_round', [[], []]), storage2 = player.getStorage('luochong');
