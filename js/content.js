@@ -1087,7 +1087,7 @@ export async function content(config, pack) {
 					const storage1 = player.getStorage('luochong_round', [[], []]), storage2 = player.getStorage('luochong');
 					return Array.from({ length: 4 }).map((_, i) => i).some(i => {
 						if (storage2.includes(i)) return false;
-						return !storage1[0].includes(i) && game.hasPlayer(current => !storage1[1].includes(current) && lib.skill.luochong.filterx[i](current));
+						return !storage1[0].includes(i) && !storage1[1].includes(target) && lib.skill.luochong.filterx[i](target);
 					});
 				},
 				controls: ['回复体力', '失去体力', '弃牌', '摸牌'],

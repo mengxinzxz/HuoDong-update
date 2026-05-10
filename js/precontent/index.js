@@ -655,7 +655,7 @@ export async function precontent(bilibilicharacter) {
                             if (control2.classList.contains('unselectable') || (event.filterOk && !event.filterOk())) return;
                             event.result = {
                                 bool: control !== 'cancel2',
-                                targets: ui.selected.targets,
+                                targets: ui.selected.targets.slice(),
                                 control: control,
                                 index: event.controls.indexOf(control),
                             };
@@ -663,7 +663,7 @@ export async function precontent(bilibilicharacter) {
                             event.controlbars.forEach(i => i.close());
                             game.resume();
                             _status.imchoosing = false;
-                            game.check();
+                            game.uncheck();
                         };
                         event.controlbars.push(control2);
                     }
