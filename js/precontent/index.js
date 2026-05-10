@@ -594,10 +594,10 @@ export async function precontent(bilibilicharacter) {
             return oldAutoConfirm(event, ...args);
         };
     }
-    //chooseControlTarget
+    //chooseTargetControl
     Object.assign(lib.element.player, {
-        bilibili_chooseControlTarget(params) {
-            const next = game.createEvent('bilibili_chooseControlTarget');
+        bilibili_chooseTargetControl(params) {
+            const next = game.createEvent('bilibili_chooseTargetControl');
             Object.assign(next, params);
             //选人的
             if (typeof next.filterTarget === 'object') next.filterTarget = get.filter(next.filterTarget, 2);
@@ -614,12 +614,12 @@ export async function precontent(bilibilicharacter) {
             next.noconfirm = true;
             next.noAutoConfirm = true;
             next._args = Array.from(arguments);
-            next.setContent('bilibili_chooseControlTarget');
+            next.setContent('bilibili_chooseTargetControl');
             return next;
         },
     });
     Object.assign(lib.element.content, {
-        bilibili_chooseControlTarget: [
+        bilibili_chooseTargetControl: [
             async (event, _trigger, player) => {
                 //牢生长谈
                 if (![...event.controls].remove('cancel2').length) {

@@ -1081,7 +1081,7 @@ export async function content(config, pack) {
 	//滕芳兰
 	Object.assign(lib.skill.luochong, {
 		async cost(event, trigger, player) {
-			const result = await player.bilibili_chooseControlTarget({
+			const result = await player.bilibili_chooseTargetControl({
 				prompt: get.prompt2(event.skill),
 				filterTarget(card, player, target) {
 					const storage1 = player.getStorage('luochong_round', [[], []]), storage2 = player.getStorage('luochong');

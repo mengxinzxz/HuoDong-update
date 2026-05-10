@@ -12239,25 +12239,21 @@ const packs = function () {
                     return player.isPhaseUsing() && game.hasPlayer(target => target !== player);
                 },
                 async cost(event, trigger, player) {
-                    const result = await player.chooseButtonTarget({
-                        createDialog: [
-                            get.prompt2(event.skill),
-                            [[1, 2, 3, 4].map(num => [num, get.strNumber(num)]), 'tdnodes'],
-                            [[5, 6, 7, 8, 9].map(num => [num, get.strNumber(num)]), 'tdnodes'],
-                            [[10, 11, 12, 13].map(num => [num, get.strNumber(num)]), 'tdnodes'],
-                        ],
+                    const result = await player.bilibili_chooseTargetControl({
+                        prompt: get.prompt2(event.skill),
                         filterTarget: lib.filter.noeMe,
-                        ai1: () => 1 + Math.random(),
-                        ai2(target) {
+                        controls: Array.from({ length: 13 }).map((_, i) => i + 1),
+                        ai1(target) {
                             const player = get.player();
                             return -get.attitude(player, target) * (1 + target.getHp());
-                        }
+                        },
+                        ai2: () => get.rand(1, 13) - 1,
                     }).forResult();
-                    if (result?.bool && result.links?.length && result.targets?.length) {
+                    if (result?.bool) {
                         event.result = {
                             bool: true,
                             targets: result.targets,
-                            cost_data: result.links[0],
+                            cost_data: result.index + 1,
                         };
                     }
                 },

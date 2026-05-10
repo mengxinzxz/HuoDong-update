@@ -30100,63 +30100,44 @@ const packs = function () {
                 },
                 usable: 1,
                 async cost(event, trigger, player) {
-                    const result = await player.chooseButtonTarget({
-                        createDialog: [
-                            get.prompt(event.skill),
-                            [
-                                [
-                                    ['damage', '对场上体力值最大的角色造成1点伤害'],
-                                    ['recover', '令场上体力值最小的角色回复1点体力'],
-                                ],
-                                'tdnodes',
-                            ],
-                        ],
-                        complexSelect: true,
-                        filterButton(button) {
-                            const { link } = button;
-                            return link == 'damage' || game.hasPlayer(current => current.isMinHp() && current.isDamaged());
-                        },
+                    const result = await player.bilibili_chooseTargetControl({
+                        prompt: get.prompt2(event.skill),
                         filterTarget(card, player, target) {
-                            const { link } = ui.selected.buttons[0];
-                            return (link == 'damage' && target.isMaxHp()) || (link == 'recover' && target.isMinHp() && target.isDamaged());
+                            return target.isMaxHp() || (target.isDamaged() && target.isMinHp());
                         },
-                        ai1(button) {
-                            const { link } = button;
-                            const player = get.player();
-                            const list1 = game.filterPlayer(current => current.isMaxHp()).sort((a, b) => {
-                                return get.damageEffect(b, player, player) - get.damageEffect(a, player, player);
-                            }).map(current => get.damageEffect(current, player, player));
-                            let list2 = [];
-                            if (game.hasPlayer(current => current.isMinHp() && current.isDamaged())) {
-                                list2 = game.filterPlayer(current => current.isMinHp() && current.isDamaged()).sort((a, b) => {
-                                    return get.recoverEffect(b, player, player) - get.recoverEffect(a, player, player);
-                                }).map(current => get.recoverEffect(current, player, player));
-                            }
-                            if (list2.length > 0) {
-                                if (list1[0] >= list2[0] && list1[0] > 0 && link == 'damage') return 10;
-                                if (list1[0] < list2[0] && list2[0] > 0 && link == 'recover') return 10;
-                                return 0;
-                            }
-                            if (list1[0] > 0 && link == 'damage') return 10;
-                            return 0;
+                        controls: ['造成伤害', '回复体力'],
+                        filterControl(control, player) {
+                            if (!ui.selected.targets.length) return false;
+                            const target = ui.selected.targets[0];
+                            if (target.isMaxHp() && control === '造成伤害') return true;
+                            if (target.isDamaged() && control === '回复体力') return true;
+                            return false;
                         },
-                        ai2(target) {
-                            if (!ui.selected?.buttons?.length) return 0;
-                            const { link } = ui.selected.buttons[0];
+                        ai1(target) {
                             const player = get.player();
-                            if (link == 'damage') return get.damageEffect(target, player, player);
-                            return get.recoverEffect(target, player, player);
+                            let list = [];
+                            if (target.isMaxHp()) list.push(get.damageEffect(target, player, player));
+                            if (target.isDamaged() && target.isMinHp()) list.push(get.recoverEffect(target, player, player));
+                            return Math.max(...list);
+                        },
+                        ai2() {
+                            const player = get.player(), target = ui.selected.targets[0];
+                            if (!target.isMaxHp()) return 1;
+                            if (!target.isDamaged() || !target.isMinHp()) return 0;
+                            return get.damageEffect(target, player, player) > get.recoverEffect(target, player, player) ? 0 : 1;
                         },
                     }).forResult();
-                    event.result = {
-                        bool: result?.bool,
-                        targets: result?.targets,
-                        cost_data: result?.links,
+                    if (result?.bool) {
+                        event.result = {
+                            bool: true,
+                            targets: result.targets,
+                            cost_data: ['damage', 'recover'][result.index],
+                        };
                     }
                 },
                 async content(event, trigger, player) {
-                    const { targets: [target], cost_data: [link] } = event;
-                    await target[link]();
+                    const { targets: [target], cost_data } = event;
+                    await target[cost_data]();
                 },
                 onremove: true,
                 intro: { content: '已添加牌名：$' },
@@ -32692,63 +32673,54 @@ const packs = function () {
                     return player.hasMark('minijishi');
                 },
                 async cost(event, trigger, player) {
-                    const result = await player.chooseButtonTarget({
-                        createDialog: [
-                            `###${get.prompt(event.skill)}###<div class="text center">令至多${get.cnNumber(player.countMark('minijishi'))}名角色…</div>`,
-                            [
-                                [
-                                    ['recover', '回复1点体力'],
-                                    ['loseHp', '失去1点体力'],
-                                ],
-                                'tdnodes',
-                            ],
-                        ],
-                        filterButton(button) {
-                            if (button.link == 'recover') return game.hasPlayer(target => target.isDamaged());
-                            return true;
-                        },
-                        filterTarget(card, player, target) {
-                            if (ui.selected.buttons[0].link == 'recover') return target.isDamaged();
-                            return true;
-                        },
+                    const result = await player.bilibili_chooseTargetControl({
+                        prompt: get.prompt(event.skill),
+                        prompt2: `<div class="text center">令至多${get.cnNumber(player.countMark('minijishi'))}名角色…</div>`,
+                        controls: ['回复体力', '失去体力'],
                         selectTarget() {
                             const player = get.player();
                             return [1, player.countMark('minijishi')];
                         },
-                        ai1(button) {
-                            const player = get.player();
-                            const num1 = game.countPlayer(target => target.isDamaged() && get.recoverEffect(target, player, player) > 0);
-                            const num2 = game.countPlayer(target => get.effect(target, { name: 'losehp' }, player, player) > 0);
-                            if (button.link == 'recover' && num1 >= num2 && num1 > 0) return 2;
-                            if (button.link == 'loseHp' && num2 > 0) return 1;
-                            return 0;
+                        filterControl(control) {
+                            if (!ui.selected.targets.length) return false;
+                            return control === '失去体力' || ui.selected.targets.every(target => target.isDamaged());
                         },
-                        ai2(target) {
-                            const player = get.player();
-                            const num = Math.min(player.countMark('minijishi'), Math.max(game.countPlayer(current => {
+                        ai1(target) {
+                            const player = get.player(), min = player.countMark('minijishi');
+                            const targets1 = game.filterPlayer(current => {
                                 return current.isDamaged() && get.recoverEffect(current, player, player) > 0;
-                            }), game.countPlayer(current => {
+                            }).sort((a, b) => get.recoverEffect(b, player, player) - get.recoverEffect(a, player, player)).slice(0, min);
+                            const targets2 = game.filterPlayer(current => {
                                 return get.effect(target, { name: 'losehp' }, player, player) > 0;
-                            })));
-                            if (ui.selected.targets.length > num) return 0;
-                            if (ui.selected.buttons[0].link == 'recover') return get.recoverEffect(target, player, player);
-                            return get.effect(target, { name: 'losehp' }, player, player);
+                            }).sort((a, b) => get.effect(b, { name: 'losehp' }, player, player) - get.effect(a, { name: 'losehp' }, player, player)).slice(0, min);
+                            const goon = targets1.reduce((sum, current) => {
+                                return sum + get.recoverEffect(current, player, player);
+                            }, 0) > targets2.reduce((sum, current) => {
+                                return sum + get.effect(current, { name: 'losehp' }, player, player);
+                            }, 0);
+                            return goon ? get.recoverEffect(target, player, player) : get.effect(target, { name: 'losehp' }, player, player);
+                        },
+                        ai2() {
+                            const player = get.player(), targets = ui.selected.targets;
+                            return targets.reduce((sum, current) => {
+                                return sum + get.recoverEffect(current, player, player);
+                            }, 0) > targets.reduce((sum, current) => {
+                                return sum + get.effect(current, { name: 'losehp' }, player, player);
+                            }, 0) ? 0 : 1;
                         },
                     }).forResult();
-                    if (result?.links?.length && result?.targets?.length) {
+                    if (result?.bool) {
                         event.result = {
                             bool: true,
                             targets: result.targets.sortBySeat(),
-                            cost_data: result.links,
+                            cost_data: ['recover', 'loseHp'][result.index],
                         };
                     }
                 },
                 async content(event, trigger, player) {
-                    const [control] = event.cost_data;
+                    const control = event.cost_data;
                     player.removeMark('minijishi', event.targets.length);
-                    for (const target of event.targets) {
-                        await target[control]();
-                    }
+                    for (const target of event.targets) await target[control]();
                 },
                 ai: {
                     threaten: 10,
@@ -39014,29 +38986,31 @@ const packs = function () {
                 },
                 async nianyingContent(player) {
                     if (!game.hasPlayer(current => current != player && current.countCards('h'))) return;
-                    const result = await player.chooseButtonTarget({
-                        createDialog: ['###恣意而为###<div class="text center">选择一名其他角色和一种花色，随机获得其一张此花色的手牌</div>', [lib.suit.map(i => ['', '', `lukai_${i}`]), 'vcard']],
+                    const result = await player.bilibili_chooseTargetControl({
+                        prompt: '恣意而为',
+                        prompt2: '<div class="text center">选择一名其他角色和一种花色，随机获得其一张此花色的手牌</div>',
+                        controls: [...lib.suit].reverse(),
                         forced: true,
-                        complexSelect: true,
                         filterTarget(card, player, target) {
                             return target != player && target.countCards('h');
                         },
-                        ai1(button) {
-                            const player = get.player();
-                            const link = button.link[2].slice(6);
-                            if (player.getStorage('mininiandengji_effect').includes(link)) return 10;
-                            if (link == 'diamond') return 0.9;
-                            return Math.random();
-                        },
-                        ai2(target) {
+                        ai1(target) {
                             const player = get.player(), att = get.attitude(player, target);
                             if (att > 0) return 0;
                             return -att * target.countCards('h');
                         },
+                        ai2() {
+                            const { player, controls } = get.event();
+                            const getNum = function (link) {
+                                if (player.getStorage('mininiandengji_effect').includes(link)) return 10;
+                                if (link === 'diamond') return 1.9;
+                                return 1 + Math.random();
+                            };
+                            return [...controls].sort((a, b) => getNum(b) - getNum(a))[0];
+                        },
                     }).forResult();
-                    if (result?.bool && result.links?.length && result.targets?.length) {
-                        const [target] = result.targets;
-                        const suit = result.links[0][2].slice(6);
+                    if (result?.bool) {
+                        const [target] = result.targets, suit = result.control;
                         player.popup(suit);
                         game.log(player, '声明了', '#g' + get.translation(suit));
                         player.line(target);
@@ -40736,38 +40710,35 @@ const packs = function () {
                                     return Array.from({ length: 5 }).map((_, index) => index + 1).some(i => current.hasEnabledSlot(i)) || !current.isDisabledJudge();
                                 });
                                 if (!targets.length) return;
-                                const list = Array.from({ length: 5 }).map((_, i) => [i + 1, get.translation(`equip${i + 1}`)]).concat([['judge', '判定区']]);
-                                const result = await player.chooseButtonTarget({
-                                    createDialog: [
-                                        '隐姓：请选择你要置入牌的角色和区域',
-                                        [list, 'tdnodes'],
-                                    ],
+                                const result = await player.bilibili_chooseTargetControl({
+                                    prompt: '隐姓：请选择你要置入牌的角色和区域',
+                                    controls: [...Array.from({ length: 5 }).map((_, i) => `equip${i + 1}`), '判定区'],
                                     forced: true,
                                     filterTarget(card, player, target) {
-                                        const { link } = ui.selected.buttons[0];
-                                        if (link == 'judge') return !target.isDisabledJudge();
-                                        return target.hasEnabledSlot(link);
+                                        return !target.isDisabledJudge() || Array.from({ length: 5 }).map((_, i) => `equip${i + 1}`).some(link => target.hasEnabledSlot(link));
                                     },
-                                    ai1(button) {
-                                        const player = get.player();
-                                        const { link } = button;
-                                        if (link == 'judge') return game.hasPlayer(current => !current.isDisabledJudge() && get.attitude(player, current) < 0);
-                                        return game.hasPlayer(current => current.hasEnabledSlot(link) && get.attitude(player, current) > 0);
+                                    filterControl(control, player) {
+                                        if (!ui.selected.targets.length) return false;
+                                        const target = ui.selected.targets[0];
+                                        if (control.startsWith('equip')) return target.hasEnabledSlot(control);
+                                        return !target.isDisabledJudge();
                                     },
-                                    ai2(target) {
+                                    ai1(target) {
                                         const player = get.player(), att = get.attitude(player, target);
-                                        const { link } = ui.selected.buttons[0];
-                                        if (link == 'judge') return -att;
-                                        return att;
+                                        return Math.abs(get.attitude(player, target));
+                                    },
+                                    ai2() {
+                                        const { player, controls } = get.event(), target = ui.selected.targets[0];
+                                        if (get.attitude(player, target) > 0) return `equip${[2, 3, 5, 1, 4].find(i => target.hasEnabledSlot(`equip${i}`))}`;
+                                        return '判定区';
                                     },
                                 }).forResult();
-                                if (result?.targets?.length && result.links?.length) {
+                                if (result?.bool) {
                                     const [target] = result.targets;
-                                    const [link] = result.links;
-                                    const bool = typeof link == 'number';
+                                    const bool = result.control !== '判定区';
                                     player.line(target);
                                     const card = get.cardPile(cardx => {
-                                        if (bool) return get.subtype(cardx, false) == `equip${link}` && target.canEquip(cardx, true);
+                                        if (bool) return get.subtype(cardx, false) == result.control && target.canEquip(cardx, true);
                                         return get.type(cardx, false) == 'delay' && target.canAddJudge(cardx);
                                     });
                                     if (card) {
