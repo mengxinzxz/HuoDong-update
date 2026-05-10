@@ -1078,6 +1078,72 @@ export async function content(config, pack) {
 	});
 	//星黄忠
 	lib.skill.spshidi.intro.markcount = storage => (storage || 0) % 2 == 0 ? '攻' : '守';
+	//滕芳兰
+	Object.assign(lib.skill.luochong, {
+		async cost(event, trigger, player) {
+			const result = await player.bilibili_chooseControlTarget({
+				prompt: get.prompt2(event.skill),
+				filterTarget(card, player, target) {
+					const storage1 = player.getStorage('luochong_round', [[], []]), storage2 = player.getStorage('luochong');
+					return Array.from({ length: 4 }).map((_, i) => i).some(i => {
+						if (storage2.includes(i)) return false;
+						return !storage1[0].includes(i) && game.hasPlayer(current => !storage1[1].includes(current) && lib.skill.luochong.filterx[i](current));
+					});
+				},
+				controls: ['回复体力', '失去体力', '弃牌', '摸牌'],
+				filterControl(control, player) {
+					if (control === 'cancel2') return true;
+					if (!ui.selected.targets.length) return false;
+					const target = ui.selected.targets.at(-1);
+					const storage1 = player.getStorage('luochong_round', [[], []]), storage2 = player.getStorage('luochong');
+					const i = get.event().controls.indexOf(control);
+					if (storage2.includes(i)) return false;
+					return !storage1[0].includes(i) && !storage1[1].includes(target) && lib.skill.luochong.filterx[i](target);
+				},
+				processAI() {
+					const player = get.player();
+					const func = [
+						target => get.recoverEffect(target, player, player),
+						target => get.effect(target, { name: 'losehp' }, player, player),
+						target => {
+							let num = target.countDiscardableCards(player, 'he');
+							return Math.sqrt(Math.min(2, num)) * get.effect(target, { name: 'guohe_copy2' }, player, player);
+						},
+						target => get.effect(target, { name: 'draw' }, player, player),
+					];
+					const storage1 = player.getStorage('luochong_round', [[], []]), storage2 = player.getStorage('luochong');
+					const list = game.filterPlayer(target => {
+						return Array.from({ length: 4 }).map((_, i) => i).some(i => {
+							if (storage2.includes(i)) return false;
+							return !storage1[0].includes(i) && !storage1[1].includes(target) && lib.skill.luochong.filterx[i](target);
+						});
+					}).map(target => {
+						let index = undefined, max = undefined;
+						for (const num of Array.from({ length: 4 }).map((_, i) => i).filter(i => {
+							if (storage2.includes(i)) return false;
+							return !storage1[0].includes(i) && !storage1[1].includes(target) && lib.skill.luochong.filterx[i](target);
+						})) {
+							const num2 = func[num](target);
+							if (max === undefined || max < num2) {
+								index = num;
+								max = num2;
+							}
+						}
+						return [target, index, max];
+					}).sort((a, b) => b[2] - a[2])[0];
+					const index = list[1], control = get.event().controls[list[1]];
+					return { bool: control !== 'cancel2', targets: [list[0]], control, index };
+				},
+			}).forResult();
+			if (result?.bool && result.targets?.length) {
+				event.result = {
+					bool: true,
+					targets: result.targets,
+					cost_data: [result.index],
+				};
+			}
+		},
+	});
 
 	//precT
 	//翻译

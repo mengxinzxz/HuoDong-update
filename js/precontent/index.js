@@ -586,6 +586,142 @@ export async function precontent(bilibilicharacter) {
             game.HDaddCharacter(name, nameinfo, packss);
         }
     };
+    //肘击自动确认
+    const oldAutoConfirm = lib.hooks.checkEnd.find(i => i.name === 'autoConfirm');
+    if (oldAutoConfirm) {
+        lib.hooks.checkEnd[lib.hooks.checkEnd.indexOf(oldAutoConfirm)] = function autoConfirm(event, ...args) {
+            if (event.noAutoConfirm) return;
+            return oldAutoConfirm(event, ...args);
+        };
+    }
+    //chooseControlTarget
+    Object.assign(lib.element.player, {
+        bilibili_chooseControlTarget(params) {
+            const next = game.createEvent('bilibili_chooseControlTarget');
+            Object.assign(next, params);
+            //选人的
+            if (typeof next.filterTarget === 'object') next.filterTarget = get.filter(next.filterTarget, 2);
+            next.selectTarget = get.select(next.selectTarget);
+            if (next.filterTarget === undefined || next.filterTarget === true) next.filterTarget = lib.filter.all;
+            next.ai1 ??= get.attitude2;
+            //选项
+            next.filterControl ??= control => control === 'cancel2' || ui.selected.targets.length > 0;
+            next.controls ??= Array.from({ length: (next.choiceList ?? []).length }).map(i => `选项${get.cnNumber(i + 1, true)}`);
+            if (!next.forced) next.controls.add('cancel2');
+            next.ai2 ??= () => 0;
+            //启动
+            next.player = this;
+            next.noconfirm = true;
+            next.noAutoConfirm = true;
+            next._args = Array.from(arguments);
+            next.setContent('bilibili_chooseControlTarget');
+            return next;
+        },
+    });
+    Object.assign(lib.element.content, {
+        bilibili_chooseControlTarget: [
+            async (event, _trigger, player) => {
+                //牢生长谈
+                if (![...event.controls].remove('cancel2').length) {
+                    event.result = { bool: false };
+                    event.finish();
+                    return;
+                }
+                const skills = player.getSkills('invisible').concat(lib.skill.global);
+                game.expandSkills(skills);
+                for (const skill of skills) lib.skill[skill]?.onChooseTarget?.(event, player);
+                //本人操作走这里
+                if (event.isMine()) {
+                    if (event.hsskill && !event.forced && _status.prehidden_skills?.includes(event.hsskill)) {
+                        ui.click.cancel();
+                        return;
+                    }
+                    event.dialog = ui.create.dialog(event.prompt || '请选择目标和选项');
+                    if (event.choiceList) {
+                        event.dialog.forcebutton = true;
+                        for (let i = 0; i < event.choiceList.length; i++) {
+                            event.dialog.add('<div class="popup text" style="width:calc(100% - 10px);display:inline-block">' + (event.displayIndex !== false ? `选项${get.cnNumber(i + 1, true)}：` : '') + event.choiceList[i] + '</div>');
+                        }
+                    }
+                    else if (event.prompt2) event.dialog.addText(event.prompt2, event.prompt2.length <= 20);
+                    event.dialog.open();
+                    event.controlbars = [];
+                    for (const control of event.controls) {
+                        const control2 = ui.create.control([control]);
+                        control2._control = control;
+                        control2.classList[event.filterControl(control, event.player) ? 'remove' : 'add']('unselectable');
+                        control2.custom = () => {
+                            const event = get.event();
+                            if (control2.classList.contains('unselectable') || (event.filterOk && !event.filterOk())) return;
+                            event.result = {
+                                bool: control !== 'cancel2',
+                                targets: ui.selected.targets,
+                                control: control,
+                                index: event.controls.indexOf(control),
+                            };
+                            event.dialog?.close();
+                            event.controlbars.forEach(i => i.close());
+                            game.resume();
+                            _status.imchoosing = false;
+                            game.check();
+                        };
+                        event.controlbars.push(control2);
+                    }
+                    event.custom ??= {
+                        add: {},
+                        replace: {},
+                    };
+                    const addTarget = event.custom.add.target;
+                    event.custom.add.target = function () {
+                        addTarget?.call(this);
+                        const event = get.event();
+                        if (!event.isMine()) return;
+                        for (const control2 of event.controlbars) {
+                            const control = control2._control;
+                            control2.classList[event.filterControl(control, event.player) ? 'remove' : 'add']('unselectable');
+                        }
+                    };
+                    const replaceWindow = event.custom.replace.window;
+                    event.custom.replace.window = function () {
+                        replaceWindow?.call(this);
+                        ui.selected.targets = [];
+                        const event = get.event();
+                        for (const control2 of event.controlbars) {
+                            const control = control2._control;
+                            control2.classList[event.filterControl(control, event.player) ? 'remove' : 'add']('unselectable');
+                        }
+                        game.check();
+                    };
+                    game.check();
+                    game.pause();
+                }
+                else if (event.isOnline()) event.result = await event.sendAsync();//联机走这里
+                else event.result = 'ai';//ai和托管走这里
+            },
+            async (event, _trigger, player) => {
+                //ai结算
+                if (event.result !== 'ai') return;
+                if (event.processAI) event.result = event.processAI();
+                else {
+                    game.check();
+                    if (ai.basic.chooseTarget(event.ai1) || event.forced) {
+                        if ((ai.basic.chooseControl(event.ai2) || event.forced) && (!event.filterOk || event.filterOk())) {
+                            ui.click.ok();
+                            event._aiexclude.length = 0;
+                            return;
+                        }
+                    }
+                    ui.click.cancel();
+                }
+            },
+            async (event, _trigger, player) => {
+                event.resume();
+                if (event.result?.bool && event.result.targets?.length && event.animate !== false) {
+                    for (const i of event.result.targets) i.addTempClass('target');
+                }
+            },
+        ],
+    });
 
     //武将包和卡包
     if (bilibilicharacter.enable) {
