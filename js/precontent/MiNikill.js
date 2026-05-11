@@ -30119,7 +30119,7 @@ const packs = function () {
                             return target.isMaxHp() || (target.isDamaged() && target.isMinHp());
                         },
                         controls: ['造成伤害', '回复体力'],
-                        filterControl(control, player) {
+                        filterControl(control, player, event) {
                             if (!ui.selected.targets.length) return false;
                             const target = ui.selected.targets[0];
                             if (target.isMaxHp() && control === '造成伤害') return true;
@@ -32789,7 +32789,7 @@ const packs = function () {
                             const player = get.player();
                             return [1, player.countMark('minijishi')];
                         },
-                        filterControl(control) {
+                        filterControl(control, player, event) {
                             if (!ui.selected.targets.length) return false;
                             return control === '失去体力' || ui.selected.targets.every(target => target.isDamaged());
                         },
@@ -40825,7 +40825,7 @@ const packs = function () {
                                     filterTarget(card, player, target) {
                                         return !target.isDisabledJudge() || Array.from({ length: 5 }).map((_, i) => `equip${i + 1}`).some(link => target.hasEnabledSlot(link));
                                     },
-                                    filterControl(control, player) {
+                                    filterControl(control, player, event) {
                                         if (!ui.selected.targets.length) return false;
                                         const target = ui.selected.targets[0];
                                         if (control.startsWith('equip')) return target.hasEnabledSlot(control);

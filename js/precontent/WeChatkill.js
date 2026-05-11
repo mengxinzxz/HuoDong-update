@@ -12993,7 +12993,7 @@ const packs = function () {
                         prompt: get.prompt2(event.skill),
                         filterTarget: lib.filter.noeMe,
                         controls: ['回收装备', '获得杀', '背水！'],
-                        filterControl(control, player) {
+                        filterControl(control, player, event) {
                             if (!ui.selected.targets[0]) return false;
                             const target = ui.selected.targets[0];
                             return control === '获得杀' || target.countCards('e') > 0;
