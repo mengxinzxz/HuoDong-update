@@ -30110,7 +30110,7 @@ const packs = function () {
                             if (!ui.selected.targets.length) return false;
                             const target = ui.selected.targets[0];
                             if (target.isMaxHp() && control === '造成伤害') return true;
-                            if (target.isDamaged() && control === '回复体力') return true;
+                            if (target.isDamaged() && target.isMinHp() && control === '回复体力') return true;
                             return false;
                         },
                         ai1(target) {
