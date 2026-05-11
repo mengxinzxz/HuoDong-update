@@ -12988,74 +12988,59 @@ const packs = function () {
                 audio: 'sbdengfeng',
                 inherit: 'sbdengfeng',
                 async cost(event, trigger, player) {
-                    const result = await player.chooseButtonTarget({
-                        createDialog: [
-                            `###${get.prompt(event.skill)}###选择一名其他角色并执行一项`,
-                            [
-                                [
-                                    ['equip', '令一名其他角色获得其装备区里的至多两张牌'],
-                                    ['sha', '获得牌堆里的一张【杀】'],
-                                    ['all', '背水！失去1点体力并执行所有选项'],
-                                ],
-                                'textbutton',
-                            ],
-                        ],
-                        complexSelect: true,
-                        filterButton(button) {
-                            if (button.link != 'sha' && !game.hasPlayer(current => {
-                                return current != get.player() && current.countCards('e');
-                            })) return false;
-                            return true;
+                    const result = await player.bilibili_chooseTargetControl({
+                        prompt: get.prompt2(event.skill),
+                        filterTarget: lib.filter.noeMe,
+                        controls: ['回收装备', '获得杀', '背水！'],
+                        filterControl(control, player) {
+                            if (!ui.selected.targets[0]) return false;
+                            const target = ui.selected.targets[0];
+                            return control === '获得杀' || target.countCards('e') > 0;
                         },
-                        filterTarget(card, player, target) {
-                            if (ui.selected.buttons[0]?.link != 'sha') {
-                                return target.countCards('e') && target != player;
-                            }
-                            return target != player;
-                        },
-                        ai1(button) {
-                            const { player } = get.event();
-                            const bool1 = game.hasPlayer(current => {
-                                const es = current.getCards('e'), att = get.attitude(player, current);
-                                return (current != player && es.some(card => {
-                                    if (att > 0) return get.equipValue(card, current) <= 4;
-                                    return get.equipValue(card, current) > 7;
-                                }));
-                            });
-                            let num = 0;
-                            if (bool1 && ['all', 'equip'].includes(button.link)) num++;
-                            const bool2 = !player.countCards('hs', { name: 'sha' }) || player.hasSkill('sbtuxi');
-                            if (bool2 && ['all', 'sha'].includes(button.link)) num++;
-                            if (player.getHp() <= 2 && get.effect(player, { name: 'losehp' }, player, player) <= 0) {
-                                if (button.link == 'all') num = 0;
-                            }
-                            return num;
-                        },
-                        ai2(target) {
+                        ai1(target) {
                             const player = get.player();
                             const att = get.attitude(player, target);
                             const es = target.getCards('e');
                             if ((es.some(card => get.equipValue(card, target) <= 4) && att > 0) || (es.some(card => get.equipValue(card, target) > 7) && att < 0)) return 10;
                             return 1;
                         },
+                        ai2() {
+                            const { player, controls } = get.event(), target = ui.selected.targets[0];
+                            const es = target.getCards('e'), att = get.attitude(player, target);
+                            const bool1 = target !== player && es.some(card => {
+                                if (att > 0) return get.equipValue(card, target) <= 4;
+                                return get.equipValue(card, target) > 7;
+                            });
+                            const getNum = function (control) {
+                                let num = 0;
+                                if (bool1 && ['背水！', '回收装备'].includes(control)) num++;
+                                const bool2 = !player.countCards('hs', { name: 'sha' }) || player.hasSkill('wechatsbtuxi');
+                                if (bool2 && ['背水！', '获得杀'].includes(control)) num++;
+                                if (player.getHp() <= 2 && get.effect(player, { name: 'losehp' }, player, player) <= 0 && control === '背水！') num = 0;
+                                return num;
+                            };
+                            return controls.slice().sort((a, b) => getNum(b) - getNum(a))[0];
+                        },
                     }).forResult();
-                    event.result = {
-                        bool: result?.bool,
-                        targets: result?.targets,
-                        cost_data: result?.links,
-                    };
+                    if (result?.bool) {
+                        event.result = {
+                            bool: true,
+                            targets: result.targets,
+                            cost_data: result.index,
+                        };
+                    }
                 },
                 async content(event, trigger, player) {
-                    const { cost_data: [control], targets: [target] } = event;
-                    if (['equip', 'all'].includes(control) && target.countCards('e')) {
-                        const result = await player.choosePlayerCard(target, true, 'e', `选择${get.translation(target)}的至多张装备牌令其获得之`, [1, 2]).forResult();
+                    const { cost_data, targets: [target] } = event;
+                    if (cost_data === 2) await player.loseHp();
+                    if ([0, 2].includes(cost_data) && target.countCards('e')) {
+                        const result = await player.choosePlayerCard(target, true, 'e', `选择${get.translation(target)}的至多两张装备牌令其获得之`, [1, 2]).forResult();
                         if (result?.cards?.length) await target.gain(result.cards, 'gain2');
                     }
-                    if (['sha', 'all'].includes(control)) {
+                    if ([1, 2].includes(cost_data)) {
                         const card = get.cardPile2(card => card.name == 'sha');
                         if (card) await player.gain(card, 'gain2');
                     }
-                    if (control == 'all') await player.loseHp();
                 },
             },
             // 谋黄月英

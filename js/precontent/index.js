@@ -667,7 +667,6 @@ export async function precontent(bilibilicharacter) {
                     event.custom.add.target = function () {
                         addTarget?.call(this);
                         const event = get.event();
-                        if (!event.isMine()) return;
                         for (const control2 of event.controlbars) {
                             const control = control2._control;
                             control2.classList[control === 'cancel2' || event.filterControl(control, event.player) ? 'remove' : 'add']('unselectable');
@@ -780,7 +779,7 @@ export async function precontent(bilibilicharacter) {
                     _status.HDWJ_ChangeLog_character = {
                         '牢武将': ['old_sb_zhanghe'],
                         '杂谈': ['bilibili_caocao'],
-                        'MiNikill': ['Mbaby_star_zhangchunhua', 'Mbaby_yue_diaochan', 'Mbaby_star_simayi', 'Mbaby_hanlong', 'Mbaby_ol_liru', 'Mbaby_kebineng', 'Mbaby_xunchen', 'Mbaby_shen_zhonghui', 'Mfight_lvmeng', 'Mbaby_yue_zhoufei', 'Mbaby_zhangren'],
+                        'MiNikill': ['Mbaby_star_zhangchunhua', 'Mbaby_yue_diaochan', 'Mbaby_star_simayi', 'Mbaby_hanlong', 'Mbaby_ol_liru', 'Mbaby_kebineng', 'Mbaby_xunchen', 'Mbaby_shen_zhonghui', 'Mfight_lvmeng', 'Mbaby_yue_zhoufei', 'Mbaby_zhangren', 'Mbaby_lvqian', 'Mbaby_dongguiren'],
                         'WeChatkill': ['wechat_zhi_liubiao', 'wechat_caifuren', 'wechat_lingtong', 'wechat_liubiao', 'wechat_caozhang'],
                     };
                     return Object.values(_status.HDWJ_ChangeLog_character).flat();
