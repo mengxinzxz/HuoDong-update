@@ -44278,6 +44278,10 @@ const packs = function () {
         };
         //濒死全家桶（恼）
         lib.element.content.changeHp = async function (event, trigger, player) {
+            let { num, originalHp } = event;
+            if (typeof player.hp2 === 'number') {
+                event.originalHp2 = player.hp2;
+            }
             game.getGlobalHistory().changeHp.push(event);
             if (event.num < 0 && player.hujia > 0 && event.getParent().name === 'damage' && !player.hasSkillTag('nohujia') && !event.getParent().nohujia) {
                 event.hujia = Math.min(-event.num, player.hujia);
@@ -44310,6 +44314,13 @@ const packs = function () {
             if (isNaN(player[choice])) player[choice] = 0;
             if (player[choice] > player[`maxHp${choice[2] ?? ''}`]) player[choice] = player[`maxHp${choice[2] ?? ''}`];
             player.update();
+            // 体力值的变化值
+            if (event.choice === 'hp2') {
+                event.changedHp = Math.max(0, player.hp2) - Math.max(0, event.originalHp2);
+            }
+            else {
+                event.changedHp = player.getHp() - Math.max(0, originalHp);
+            }
             if (event.popup !== false) player.$damagepop(num, 'water');
             if (_status.dying.includes(player) && player.hp > 0 && (typeof player.hp2 !== 'number' || player.hp2 > 0)) {
                 _status.dying.remove(player);
