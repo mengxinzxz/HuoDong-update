@@ -684,7 +684,7 @@ export async function precontent(bilibilicharacter) {
                     const replaceWindow = event.custom.replace.window;
                     event.custom.replace.window = function () {
                         replaceWindow?.call(this);
-                        ui.selected.targets = [];
+                        game.uncheck();
                         const event = get.event();
                         for (const control2 of event.controlbars) {
                             const control = control2._control;
