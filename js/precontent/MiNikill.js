@@ -44278,7 +44278,7 @@ const packs = function () {
         };
         //濒死全家桶（恼）
         lib.element.content.changeHp = async function (event, trigger, player) {
-            let { num, originalHp } = event;
+            let { originalHp } = event;
             if (typeof player.hp2 === 'number') {
                 event.originalHp2 = player.hp2;
             }
