@@ -652,7 +652,7 @@ export async function precontent(bilibilicharacter) {
                         control2.classList[control === 'cancel2' || event.filterControl(control, event.player) ? 'remove' : 'add']('unselectable');
                         control2.custom = () => {
                             const event = get.event();
-                            if (control2.classList.contains('unselectable') || (event.filterOk && !event.filterOk())) return;
+                            if (control2.classList.contains('unselectable')) return;
                             event.result = {
                                 bool: control !== 'cancel2',
                                 targets: ui.selected.targets.slice(),
@@ -705,16 +705,36 @@ export async function precontent(bilibilicharacter) {
                 else {
                     game.check();
                     if (ai.basic.chooseTarget(event.ai1) || event.forced) {
-                        if ((ai.basic.chooseControl(event.ai2) || event.forced) && (!event.filterOk || event.filterOk())) {
-                            ui.click.ok();
-                            event._aiexclude.length = 0;
-                            return;
+                        let result = event.ai2(), control, index;
+                        if (typeof result === 'number') {
+                            index = result;
+                            control = event.controls[result];
                         }
+                        else {
+                            control = result;
+                            index = event.controls.indexOf(result);
+                        }
+                        event.result = {
+                            bool: control !== 'cancel2',
+                            targets: ui.selected.targets.slice(),
+                            control,
+                            index,
+                        };
                     }
-                    ui.click.cancel();
+                    else {
+                        event.result = {
+                            bool: false,
+                            targets: ui.selected.targets.slice(),
+                            control: 'cancel2',
+                            index: event.controls.indexOf('cancel2'),
+                        };
+                    }
+                    game.uncheck();
                 }
             },
             async (event, _trigger, player) => {
+                event.dialog?.close();
+                event.controlbars.forEach(i => i.close());
                 event.resume();
                 if (event.result?.bool && event.result.targets?.length && event.animate !== false) {
                     for (const i of event.result.targets) i.addTempClass('target');
