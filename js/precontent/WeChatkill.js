@@ -41,7 +41,7 @@ const packs = function () {
                         return list;
                     })(),
                     ...['zhenji', 'diaochan', 'wangcan', 'machao', 'pangde', 'jiangwei', 'taishici', 'caiwenji'].map(i => `wechat_sp_${i}`),
-                    ...['zhouyu', 'zhugeliang', 'sp_zhugeliang', 'lvbu', 'lvmeng', 'yujin', 'huaxiong', 'sunquan', 'xiaoqiao', 'xiahouyuan', 'gaoshun', 'handang', 'guojia', 'huanggai', 'diaochan', 'huangyueying', 'zhangliao', 'sunshangxiang', 'zhaoyun', 'machao', 'huangzhong', 'caocao', 'sunce'].map(i => `wechat_sb_${i}`),
+                    ...['menghuo', 'zhouyu', 'zhugeliang', 'sp_zhugeliang', 'lvbu', 'lvmeng', 'yujin', 'huaxiong', 'sunquan', 'xiaoqiao', 'xiahouyuan', 'gaoshun', 'handang', 'guojia', 'huanggai', 'diaochan', 'huangyueying', 'zhangliao', 'sunshangxiang', 'zhaoyun', 'machao', 'huangzhong', 'caocao', 'sunce'].map(i => `wechat_sb_${i}`),
                     ...['shamoke', 'wangyuanji', 'caochun', 'old_sunluyu', 'shantao', 'ruanji', 'jikang', 'caojie', 'xuezong', 'caiyong', 'xushi', 'sundeng', 'huanghao', 'guohuanghou', 'liucheng', 'sunluyu', 'sunhao', 'jsp_huangyueying', 'wanglang', 'chendeng', 'zhuling', 'caizhenji', 'ol_bianfuren', 'xin_sunluban', 'zhangxingcai', 'huojun'].map(i => `wechat_${i}`),
                     ...[],
                 ],
@@ -264,6 +264,7 @@ const packs = function () {
             wechat_sb_sp_zhugeliang: ['male', 'shu', 3, ['wechatsbhuoji', 'wechatsbkanpo'], ['name:诸葛|亮']],
             wechat_sb_zhugeliang: ['male', 'shu', 3, ['wechatsbguanxing', 'wechatsbkongcheng'], ['name:诸葛|亮', 'unseen']],
             wechat_sb_zhouyu: ['male', 'wu', 3, ['wechatsbyingzi', 'wechatsbfanjian']],
+            wechat_sb_menghuo: ['male', 'shu', 4, ['wechatsbhuoshou', 'wechatsbzaiqi']],
             //志系列
             wechat_zhi_yuanshu: ['male', 'qun', 4, [], ['unseen']],
             wechat_zhi_old_yuanshu: ['male', 'qun', 4, ['wechatshehuai', 'wechatzaochen'], ['die', 'tempname'].map(i => `${i}:wechat_zhi_yuanshu`)],
@@ -19916,6 +19917,110 @@ const packs = function () {
                     },
                 },
             },
+            // 谋孟获
+            wechatsbhuoshou: {
+                audio: 'sbhuoshou',
+                trigger: { player: 'phaseUseBegin' },
+                forced: true,
+                async content(event, trigger, player) {
+                    const result = await player.chooseTarget('祸首：令一名角色本回合受到【南蛮入侵】的伤害+1，然后你视为使用一张【南蛮入侵】').set('ai', target => {
+                        const player = get.player();
+                        return -get.attitude(player, target)
+                    }).forResult();
+                    if (result?.bool) {
+                        const target = result.targets[0];
+                        player.line(target);
+                        target.addTempSkill(event.name + '_effect');
+                        const nanman = get.autoViewAs({ name: 'nanman', isCard: true });
+                        if (player.hasUseTarget(nanman)) await player.chooseUseTarget(true, nanman);
+                    }
+                },
+                group: ['wechatsbhuoshou_cancel', 'wechatsbhuoshou_source'],
+                subSkill: {
+                    cancel: {
+                        audio: 'sbhuoshou',
+                        trigger: { target: 'useCardToBefore' },
+                        forced: true,
+                        filter(event, player) {
+                            return event.card.name == 'nanman';
+                        },
+                        async content(event, trigger, player) {
+                            trigger.cancel();
+                        },
+                    },
+                    source: {
+                        audio: 'sbhuoshou',
+                        trigger: { global: 'useCardToPlayered' },
+                        forced: true,
+                        filter(event, player) {
+                            return event.isFirstTarget && event.card?.name == 'nanman' && event.player != player;
+                        },
+                        async content(event, trigger, player) {
+                            trigger.getParent().customArgs.default.customSource = player;
+                        },
+                        ai: { halfneg: true },
+                    },
+                    effect: {
+                        charlotte: true,
+                        trigger: { player: 'damageBegin3' },
+                        forced: true,
+                        popup: false,
+                        filter(event, player) {
+                            return event.card?.name == 'nanman';
+                        },
+                        async content(event, trigger, player) {
+                            trigger.num++;
+                        },
+                        mark: true,
+                        intro: { content: '本回合受到【南蛮入侵】的伤害+1' }
+                    },
+                }
+            },
+            wechatsbzaiqi: {
+                getNum(player) {
+                    return player.getHistory('sourceDamage').reduce((sum, evt) => sum + evt.num, 0);
+                },
+                audio: 'sbzaiqi',
+                trigger: { player: 'phaseDiscardEnd' },
+                filter(event, player) {
+                    return get.info('wechatsbzaiqi').getNum(player) > 0;
+                },
+                async cost(event, trigger, player) {
+                    const num = get.info(event.skill).getNum(player);
+                    event.result = await player.chooseTarget(get.prompt2(event.skill), [1, num]).set("ai", target => {
+                        const player = get.player();
+                        const att = get.attitude(player, target);
+                        return 3 - get.sgn(att) + Math.abs(att / 1000);
+                    }).forResult();
+                },
+                async content(event, trigger, player) {
+                    const map = new Map();
+                    for (const target of event.targets.sortBySeat()) {
+                        if (!target.isIn()) continue;
+                        const position = target == player ? 'e' : 'he';
+                        const result = !target.countCards(position) ? { bool: false } : await target.chooseToGive(player, position, `${get.translation(player)}对你发动了【再起】 `, `是否交给其一张牌？或者点击“取消”，令该角色摸一张牌。`).set('ai', card => {
+                            const { player, target } = get.event();
+                            const att = get.attitude(player, target);
+                            if (att > 0) {
+                                if (target.isDamaged() && get.suit(card) == 'heart') return 10;
+                                return 0;
+                            }
+                            if (target.isDamaged() && get.suit(card) == 'heart') return 0;
+                            return 6 - get.value(card);
+                        }).forResult();
+                        if (result?.bool) {
+                            map.set(target, result.cards);
+                        }
+                        else {
+                            const result = await player.draw(target).forResult();
+                            if (get.itemtype(result?.cards) === 'cards') {
+                                map.set(target, result.cards);
+                            }
+                        }
+                    }
+                    if (Array.from(map.values()).flat().some(card => get.suit(card) == 'heart')) await player.recover();
+                },
+            },
         },
         dynamicTranslate: {
             wechatxiangzhi(player) {
@@ -21093,6 +21198,11 @@ const packs = function () {
             wechatxiyang: '息养',
             wechatxiyang_info: '出牌阶段限一次，你可以摸至多两张牌。本阶段结束时，你将等量牌置入牌堆底。',
             wechat_lingtong: '小程序凌统',
+            wechat_sb_menghuo: '小程序谋孟获',
+            wechatsbhuoshou: '祸首',
+            wechatsbhuoshou_info: '锁定技。①【南蛮入侵】对你无效。②当其他角色使用【南蛮入侵】指定第一个目标后，你代替其成为此牌的伤害来源。③出牌阶段开始时，你令一名角色本回合受到【南蛮入侵】的伤害+1，然后你视为使用一张【南蛮入侵】。',
+            wechatsbzaiqi: '再起',
+            wechatsbzaiqi_info: '弃牌阶段开始时，你可以令至多X名角色选择一项：1.交给你一张牌；2.令你摸一张牌（X为你本回合造成的伤害值之和）。然后若你此次获得的牌中有红桃牌，你回复1点体力。',
 
             // ----------------------- 台词部分 ----------------------- //
             '#ext:活动武将/audio/skill/wechatzhongxin1': '苍生之愿，即贫道所愿也。',
