@@ -24,14 +24,6 @@ export async function precontent(bilibilicharacter) {
         };
         return await getFileList();
     })();
-    //判断是否有XX扩展
-    game.TrueHasExtension = function (ext) {
-        const extensionMenu = Object.keys(lib.extensionMenu);
-        return extensionMenu.includes(ext) || extensionMenu.includes(`extension_${ext}`);
-    };
-    game.HasExtension = function (ext) {
-        return game.TrueHasExtension(ext) && lib.config['extension_' + ext + '_enable'];
-    };
     //闪闪节
     lib.arenaReady.push(() => {
         if (lib.config.extension_活动武将_HD_shanshan) {
@@ -327,7 +319,7 @@ export async function precontent(bilibilicharacter) {
         trigger: { global: 'gameDrawAfter' },
         filter(event, player) {
             const config = lib.config.extension_活动武将_HDfightAudio;
-            return config && config !== 'off' && player == game.me && (!game.HasExtension('十周年UI') || !lib.config.extension_十周年UI_gameAnimationEffect);
+            return config && config !== 'off' && player == game.me && (!game.hasExtensionLoaded('十周年UI') || !lib.config.extension_十周年UI_gameAnimationEffect);
         },
         silent: true,
         firstDo: true,
