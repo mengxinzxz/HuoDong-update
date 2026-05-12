@@ -51,7 +51,7 @@ const packs = function () {
                     ...[],
                 ].map(i => `wechat_${i}`),
                 wechat_zhiyin: ['lvmeng', 'yuanshu', 'caorui', 'pangtong', 'qinmi', 'zhugeke', 'mayunlu', 'bulianshi', 'diaochan', 'taishici', 'luxun', 'sunshangxiang', 'xunyou', 'dianwei', 'zhaoyun', 'xinxianying', 'guohuanghou', 'kongrong', 'caopi', 'jiaxu', 'zhangfei', 'dongzhuo', 'wangyi', 'zhangchunhua', 'hetaihou', 'zhurong', 'jiangwei', 'caozhi', 'liubei', 'sunce', 'xunyu', 'zhenji', 'xuzhu', 'yuanshao', 'lusu', 'guojia', 'lvbu', 'daqiao', 'xiaoqiao', 'caocao', 'zhugeliang', 'simayi', 'machao', 'huangyueying', 'caiwenji', 'zhouyu', 'sunquan', 'guanyu'].map(i => `wechat_zhiyin_${i}`),
-                wechat_zhi: ['liubiao', 'caozhi', 'xushi', 'old_yuanshu', 'caopi', 'sunquan', 'liubei', 'yuanshu', 'fuhuanghou', 'caojie', 'caocao', 'zhangjiao'].map(i => `wechat_zhi_${i}`),
+                wechat_zhi: ['zhushixing', 'liubiao', 'caozhi', 'xushi', 'old_yuanshu', 'caopi', 'sunquan', 'liubei', 'yuanshu', 'fuhuanghou', 'caojie', 'caocao', 'zhangjiao'].map(i => `wechat_zhi_${i}`),
                 wechat_shengzhiyifa: ['nailong'].map(i => `wechat_${i}`),//任何答辩，终将绳之以法！！！！！
             },
         },
@@ -279,6 +279,7 @@ const packs = function () {
             wechat_zhi_xushi: ['female', 'wu', 3, ['wechatluchou', 'wechatshizhu'], ['name:徐|null']],
             wechat_zhi_caozhi: ['male', 'wei', 3, ['wechatgaoshi', 'wechatshimin']],
             wechat_zhi_liubiao: ['male', 'qun', 3, ['wechatguanji', 'wechatxiyang']],
+            wechat_zhiyin_zhushixing: ['male', 'qun', 4, ['wechatxunjing', 'wechatqiusuo']],
             //限时地主
             wechat_nailong: ['male', 'qun', 4, ['wechatdunshi', 'wechattanchi']],
         },
@@ -20119,13 +20120,13 @@ const packs = function () {
                 chooseButton: {
                     dialog(event, player) {
                         const name = get.translation(event.result.targets[0]);
-                        const list = get.addNewRowList(player.getCards("h"), "suit", player);
+                        const list = get.addNewRowList(player.getCards('h'), 'suit', player);
                         const dialog = ui.create.dialog();
                         dialog.add([
                             [[`###图荆###<div class="text center">弃置一种花色的所有手牌，视为对${name}使用一张你本回合使用过的锦囊牌</div>`], 'addNewRow'],
                             [
                                 dialog => {
-                                    dialog.classList.add("fullheight");
+                                    dialog.classList.add('fullheight');
                                     dialog.forcebutton = false;
                                     dialog._scrollset = false;
                                 },
@@ -20222,6 +20223,136 @@ const packs = function () {
                         charlotte: true,
                         onremove: true,
                         intro: { content: '本阶段已对$发动过【图荆】' },
+                    }
+                }
+            },
+            // 朱士行
+            wechatxunjing: {
+                audio: 'ext:活动武将/audio/skill:2',
+                enable: 'phaseUse',
+                usable: 1,
+                manualConfirm: true,
+                async content(event, trigger, player) {
+                    const card = get.cards()[0];
+                    event.card = card;
+                    await game.cardsGotoOrdering(card);
+                    const content = ['牌堆顶的一张牌', [event.card]];
+                    game.log(player, '观看了', '#y牌堆顶的一张牌');
+                    await player.chooseControl('ok').set('dialog', content);
+                    const suit = get.suit(card);
+                    const give_map = new Map();
+                    let target = player.getPrevious();
+                    while (target?.isIn() && target.countCards('he')) {
+                        player.line(target, 'green');
+                        const result = await target.chooseToGive(player, 'he', true, `请交给${get.translation(player)}一张牌`).set('ai', card => {
+                            const { player, target } = get.event();
+                            return 6 - get.value(card);
+                        }).forResult();
+                        if (result?.bool) {
+                            give_map.set(target, result.cards[0]);
+                            if (get.suit(result.cards[0]) === suit) break;
+                            target = target.getPrevious();
+                            if (target?.isIn() && target.countCards('he')) {
+                                const result = await player.chooseBool('是否继续求索？', `令${get.translation(target)}交给你一张牌`).set('choice', game.hasPlayer(current => current !== player && get.attitude(player, current) > 0)).forResult();
+                                if (!result?.bool) break;
+                            }
+                        }
+                        else break;
+                    }
+                    if (give_map.size > 0 && Array.from(give_map.values()).some(card => get.suit(card) === suit) && player.countCards('h') && game.hasPlayer(current => current !== player)) {
+                        const num = Math.min(give_map.size, player.countCards('h'));
+                        const result = await player.chooseCardTarget({
+                            prompt: `寻经：请选择一名其他角色交给其${get.cnNumber(num)}张牌`,
+                            forced: true,
+                            filterCard: true,
+                            position: 'he',
+                            selectCard: num,
+                            filterTarget: lib.filter.notMe,
+                            ai1(card) {
+                                return 6 - get.value(card);
+                            },
+                            ai2(target) {
+                                const player = get.player();
+                                return get.attitude(player, target) * get.value(ui.selected.cards[0]);
+                            }
+                        }).forResult();
+                        if (result?.targets?.length && result.cards?.length) {
+                            const target = result.targets[0];
+                            player.line(target, 'green');
+                            await player.give(result.cards, target);
+                        }
+                    }
+                },
+                ai: {
+                    order: 10,
+                    result: { player: 1 },
+                }
+            },
+            wechatqiusuo: {
+                mod: {
+                    aiOrder(player, card, num) {
+                        if (get.itemtype(card) === 'card' && card.hasGaintag('wechatqiusuo')) return num + 0.5;
+                    },
+                },
+                audio: 'ext:活动武将/audio/skill:2',
+                trigger: {
+                    player: 'enterGame',
+                    global: 'phaseBefore',
+                },
+                filter(event, player) {
+                    return event.name != 'phase' || game.phaseNumber == 0;
+                },
+                forced: true,
+                locked: true,
+                async content(event, trigger, player) {
+                    const card = get.cardPile(card => card.number == 2);
+                    if (card) {
+                        const next = player.gain(card, 'gain2');
+                        next.gaintag.add(event.name);
+                        await next;
+                    }
+                },
+                group: 'wechatqiusuo_gain',
+                subSkill: {
+                    backup: {},
+                    gain: {
+                        audio: 'wechatqiusuo',
+                        trigger: {
+                            player: 'loseAfter',
+                            global: ['equipAfter', 'addJudgeAfter', 'gainAfter', 'loseAsyncAfter', 'addToExpansionAfter'],
+                        },
+                        filter(event, player) {
+                            const evt = event.getl(player);
+                            if (!evt.cards2.length) return false;
+                            return Object.values(evt.gaintag_map).flat().includes('wechatqiusuo');
+                        },
+                        forced: true,
+                        locked: true,
+                        async content(event, trigger, player) {
+                            const evt = trigger.getl(player);
+                            const cards = evt.cards2.reduce((list, i) => {
+                                if (trigger.gaintag_map?.[i.cardid]?.includes('wechatqiusuo')) {
+                                    const card = get.cardPile(card => !list.includes(card) && get.number(card, false) === get.number(i, false) + 1);
+                                    if (card) list.push(card);
+                                }
+                                return list;
+                            }, []);
+                            if (cards.length) {
+                                const next = player.gain(cards, 'gain2');
+                                next.gaintag.add('wechatqiusuo');
+                                await next;
+                            }
+                            else {
+                                game.log(player,'取经成功')；
+                                player.addSkill('wechatqiusuo_effect');
+                            }
+                        },
+                    },
+                    effect: {
+                        charlotte: true,
+                        mark: true,
+                        intro: { content: '本局游戏手牌上限无限' },
+                        mod: { maxHandcardFinal: () => Infinity },
                     }
                 }
             },
@@ -21415,6 +21546,11 @@ const packs = function () {
             wechatfuyuan_info: `觉醒技。准备阶段，若你的${get.poptip('rule_moulvenum')}不小于3，你减少1点体力上限并回复体力至体力上限，然后获得${get.poptip('wechattujing')}。`,
             wechattujing: '图荆',
             wechattujing_info: '出牌阶段每名角色限一次，你可以选择一名角色并弃置一种花色A的所有手牌，视为对其使用一张你本回合使用过的普通锦囊牌。若其中没有此花色A的手牌，此锦囊牌对其额外结算一次。',
+            wechat_zhiyin_zhushixing: '志朱士行',
+            wechatxunjing: '寻经',
+            wechatxunjing_info: '出牌阶段限一次，你可以观看牌堆顶的一张牌A。若如此做，你令你的上家交给你一张牌，若此牌与牌A花色不同，你可以对其上家重复此流程。然后若你于此流程中获得过花色为牌A花色的牌，你将X张手牌交给一名其他角色（X为你此次以此法获得的牌数）。',
+            wechatqiusuo: '求索',
+            wechatqiusuo_info: '①游戏开始时，你获得一张点为2的牌。②当你失去以此法获得的牌A时，你从牌堆或弃牌堆中获得一张点数为此牌点数+1的牌，若你未以此法获得牌，你的手牌上限改为无限。',
 
             // ----------------------- 台词部分 ----------------------- //
             '#ext:活动武将/audio/skill/wechatzhongxin1': '苍生之愿，即贫道所愿也。',
