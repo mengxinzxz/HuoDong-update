@@ -1091,11 +1091,11 @@ export async function content(config, pack) {
 					});
 				},
 				controls: ['回复体力', '失去体力', '弃牌', '摸牌'],
-				filterControl(control, player) {
+				filterControl(control, player, event) {
 					if (!ui.selected.targets.length) return false;
 					const target = ui.selected.targets.at(-1);
 					const storage1 = player.getStorage('luochong_round', [[], []]), storage2 = player.getStorage('luochong');
-					const i = get.event().controls.indexOf(control);
+					const i = event.controls.indexOf(control);
 					if (storage2.includes(i)) return false;
 					return !storage1[0].includes(i) && !storage1[1].includes(target) && lib.skill.luochong.filterx[i](target);
 				},

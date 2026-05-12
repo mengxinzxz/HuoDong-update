@@ -641,7 +641,7 @@ export async function precontent(bilibilicharacter) {
                     for (const control of event.controls) {
                         const control2 = ui.create.control([control]);
                         control2._control = control;
-                        control2.classList[control === 'cancel2' || event.filterControl(control, event.player) ? 'remove' : 'add']('unselectable');
+                        control2.classList[control === 'cancel2' || event.filterControl(control, event.player, event) ? 'remove' : 'add']('unselectable');
                         control2.custom = () => {
                             const event = get.event();
                             if (control2.classList.contains('unselectable')) return;
@@ -669,7 +669,7 @@ export async function precontent(bilibilicharacter) {
                         const event = get.event();
                         for (const control2 of event.controlbars) {
                             const control = control2._control;
-                            control2.classList[control === 'cancel2' || event.filterControl(control, event.player) ? 'remove' : 'add']('unselectable');
+                            control2.classList[control === 'cancel2' || event.filterControl(control, event.player, event) ? 'remove' : 'add']('unselectable');
                         }
                     };
                     const replaceWindow = event.custom.replace.window;
@@ -679,7 +679,7 @@ export async function precontent(bilibilicharacter) {
                         const event = get.event();
                         for (const control2 of event.controlbars) {
                             const control = control2._control;
-                            control2.classList[control === 'cancel2' || event.filterControl(control, event.player) ? 'remove' : 'add']('unselectable');
+                            control2.classList[control === 'cancel2' || event.filterControl(control, event.player, event) ? 'remove' : 'add']('unselectable');
                         }
                         game.check();
                     };
