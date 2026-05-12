@@ -6,11 +6,6 @@ export default function () {
         const menuItems = Object.keys(lib.characterSort.WeChatkill);
         const overlay = document.createElement('div');
         overlay.id = 'overlay-container';
-        //创建返回按钮
-        const backButton = document.createElement('button');
-        backButton.id = 'overlay-back-btn';
-        backButton.textContent = '返回';
-        overlay.appendChild(backButton);
         //创建左侧导航列
         const leftNav = document.createElement('div');
         leftNav.id = 'overlay-left-nav';
@@ -22,9 +17,23 @@ export default function () {
         //创建右侧内容区域
         const dialog = document.createElement('div');
         dialog.id = 'overlay-dialog';
+        //顶部栏
+        const dialogHeader = document.createElement('div');
+        dialogHeader.id = 'overlay-dialog-header';
+        //分包标题
+        const dialogTitle = document.createElement('div');
+        dialogTitle.id = 'overlay-dialog-title';
+        dialogTitle.innerHTML = '武将包';
+        //返回按钮
+        const backButton = document.createElement('button');
+        backButton.id = 'overlay-back-btn';
+        backButton.textContent = '返回';
+        dialogHeader.appendChild(dialogTitle);
+        dialogHeader.appendChild(backButton);
+        //内容区域
         const dialogContent = document.createElement('div');
         dialogContent.className = 'dialog-content';
-        dialogContent.style.overflow = 'scroll';
+        dialog.appendChild(dialogHeader);
         dialog.appendChild(dialogContent);
         overlay.appendChild(dialog);
         //大的来了孩子们
@@ -51,21 +60,25 @@ export default function () {
             }
         };
         //创建导航项
-        let currentActiveItem = null;
+        let currentActiveItem = null, str = `${get.plainText(lib.translate['WeChatkill_character_config'])}·`;
         menuItems.forEach((link, index) => {
             const navItem = document.createElement('button');
             navItem.className = 'nav-item';
             navItem.link = link;
             navItem.innerHTML = lib.translate[link];
-            if (navItem.innerHTML.startsWith('小程序·')) navItem.innerHTML = navItem.innerHTML.slice(4);
+            if (navItem.innerHTML.startsWith('小程序·')) navItem.innerHTML = navItem.innerHTML.slice('小程序·'.length);
             navItem.onclick = function () {
                 currentActiveItem?.classList.remove('active');
                 this.classList.add('active');
                 currentActiveItem = this;
+                dialogTitle.innerHTML = get.plainText(`${str}${this.innerHTML}`);
                 changeDialog(this, dialogContent);
             };
             leftNavScrollContainer.appendChild(navItem);
-            if (index === 0) currentActiveItem = navItem;//默认选中第一个
+            if (index === 0) {
+                currentActiveItem = navItem;//默认选中第一个
+                dialogTitle.innerHTML = get.plainText(`${str}${navItem.innerHTML}`);
+            }
         });
         document.body.appendChild(overlay);
         setTimeout(() => {
