@@ -319,7 +319,7 @@ export async function precontent(bilibilicharacter) {
         trigger: { global: 'gameDrawAfter' },
         filter(event, player) {
             const config = lib.config.extension_活动武将_HDfightAudio;
-            return config && config !== 'off' && player == game.me && (!game.hasExtensionLoaded('十周年UI') || !lib.config.extension_十周年UI_gameAnimationEffect);
+            return config && config !== 'off' && player == game.me && !lib.skill?.mx_start;
         },
         silent: true,
         firstDo: true,

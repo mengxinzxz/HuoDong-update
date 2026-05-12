@@ -295,11 +295,12 @@ export let config = {
 	},
 	HDfightAudio: {
 		name: '各项游戏播报',
-		intro: '游戏播报包括以下内容（实时生效）' +
-			'<br><li>游戏开始播报（让步十周年UI）' +
-			'<br><li>癫狂屠戮，万军取首播报' +
-			'<br><li>击杀角色，回复体力播报',
-		init: true,
+		intro: [
+			'游戏播报包括以下内容：',
+			'游戏开始播报（让步十周年UI）',
+			'癫狂屠戮，万军取首播报',
+			'击杀角色，回复体力播报',
+		].join('<br><li>'),
 		init: 'default',
 		item: {
 			off: '关闭',
