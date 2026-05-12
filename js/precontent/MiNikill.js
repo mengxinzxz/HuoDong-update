@@ -2718,7 +2718,7 @@ const packs = function () {
                     },
                 },
                 group: 'minizhengbing_mark',
-                audio: 'ext:活动武将/audio/skill:1',
+                audio: 'ext:活动武将/audio/skill:2',
                 enable: 'phaseUse',
                 filter(event, player) {
                     return player.countCards('h', function (card) {
@@ -44033,6 +44033,8 @@ const packs = function () {
             '#ext:活动武将/audio/skill/minifightmingtan1': '孤军外悬，难逃我掌。',
             '#ext:活动武将/audio/skill/minifightmingtan2': '十年隐忍，一朝功成！',
             '#ext:活动武将/audio/die/Mfight_lvmeng:die': '此计不成，有负主公重托……',
+            '#ext:活动武将/audio/skill/minizhengbing1': '调转马头，击敌后翼！',
+            '#ext:活动武将/audio/skill/minizhengbing2': '厉兵秣马，严阵以待！',
         },
     };
     MiNikill_sight();//加载欢杀界面逻辑
