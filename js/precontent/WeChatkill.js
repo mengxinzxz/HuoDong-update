@@ -20181,16 +20181,17 @@ const packs = function () {
                 subSkill: {
                     effect: {
                         audio: 'qingguo',
+                        audioname: ['sb_zhenji'],
                         trigger: { global: 'phaseBegin' },
                         filter(event, player) {
-                            return player.inRange(event.player);
+                            return event.player.inRange(player);
                         },
                         prompt2(event, player) {
                             return `令${get.translation(event.player)}无法使用或打出本回合获得的牌，直到其使用【杀】指定你为目标或本回合结束`;
                         },
                         logTarget: 'player',
                         check(event, player) {
-                            return get.attitude(player, event.player) > 0;
+                            return get.attitude(player, event.player) < 0;
                         },
                         async content(event, trigger, player) {
                             const target = event.targets[0];
