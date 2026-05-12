@@ -780,7 +780,7 @@ export async function precontent(bilibilicharacter) {
                         '牢武将': ['old_sb_zhanghe'],
                         '杂谈': ['bilibili_caocao'],
                         'MiNikill': ['Mbaby_star_zhangchunhua', 'Mbaby_yue_diaochan', 'Mbaby_star_simayi', 'Mbaby_hanlong', 'Mbaby_ol_liru', 'Mbaby_kebineng', 'Mbaby_xunchen', 'Mbaby_shen_zhonghui', 'Mfight_lvmeng', 'Mbaby_yue_zhoufei', 'Mbaby_zhangren', 'Mbaby_lvqian', 'Mbaby_dongguiren'],
-                        'WeChatkill': ['wechat_zhi_liubiao', 'wechat_caifuren', 'wechat_lingtong', 'wechat_liubiao', 'wechat_caozhang', 'wechat_sb_menghuo', 'wechat_zhiyin_lvmeng', 'wechat_zhiyin_zhushixing','wechat_sb_zhenji'],
+                        'WeChatkill': ['wechat_zhi_liubiao', 'wechat_caifuren', 'wechat_lingtong', 'wechat_liubiao', 'wechat_caozhang', 'wechat_sb_menghuo', 'wechat_zhiyin_lvmeng', 'wechat_zhiyin_zhushixing', 'wechat_sb_zhenji'],
                     };
                     return Object.values(_status.HDWJ_ChangeLog_character).flat();
                 })(),
@@ -798,7 +798,9 @@ export async function precontent(bilibilicharacter) {
                                 return `${str}：${map[ext].map(name => lib.translate[name]).join('、')}`;
                             });
                         })(),
-                        '跟进三国杀小程序未跟进的技能；删除徐荣和李昭焦伯',
+                        '优化欢乐三国杀和三国杀小程序的专属预览界面显示',
+                        '跟进三国杀小程序未跟进的技能',
+                        '删除部分和三服重复的武将和除神二乔外已有武将的牢武将',
                         'To be continued...',
                     ];
                 },
