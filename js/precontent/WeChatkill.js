@@ -39,7 +39,7 @@ const packs = function () {
                         return list;
                     })(),
                     ...['zhenji', 'diaochan', 'wangcan', 'machao', 'pangde', 'jiangwei', 'taishici', 'caiwenji'].map(i => `wechat_sp_${i}`),
-                    ...['menghuo', 'zhouyu', 'zhugeliang', 'sp_zhugeliang', 'lvbu', 'lvmeng', 'yujin', 'huaxiong', 'sunquan', 'xiaoqiao', 'xiahouyuan', 'gaoshun', 'handang', 'guojia', 'huanggai', 'diaochan', 'huangyueying', 'zhangliao', 'sunshangxiang', 'zhaoyun', 'machao', 'huangzhong', 'caocao', 'sunce'].map(i => `wechat_sb_${i}`),
+                    ...['zhenji', 'menghuo', 'zhouyu', 'zhugeliang', 'sp_zhugeliang', 'lvbu', 'lvmeng', 'yujin', 'huaxiong', 'sunquan', 'xiaoqiao', 'xiahouyuan', 'gaoshun', 'handang', 'guojia', 'huanggai', 'diaochan', 'huangyueying', 'zhangliao', 'sunshangxiang', 'zhaoyun', 'machao', 'huangzhong', 'caocao', 'sunce'].map(i => `wechat_sb_${i}`),
                     ...['shamoke', 'wangyuanji', 'caochun', 'old_sunluyu', 'shantao', 'ruanji', 'jikang', 'caojie', 'xuezong', 'caiyong', 'xushi', 'sundeng', 'huanghao', 'guohuanghou', 'liucheng', 'sunluyu', 'sunhao', 'jsp_huangyueying', 'wanglang', 'chendeng', 'zhuling', 'caizhenji', 'ol_bianfuren', 'xin_sunluban', 'zhangxingcai', 'huojun'].map(i => `wechat_${i}`),
                     ...[],
                 ],
@@ -260,7 +260,7 @@ const packs = function () {
             wechat_sb_zhugeliang: ['male', 'shu', 3, ['wechatsbguanxing', 'wechatsbkongcheng'], ['name:诸葛|亮', 'unseen']],
             wechat_sb_zhouyu: ['male', 'wu', 3, ['wechatsbyingzi', 'wechatsbfanjian']],
             wechat_sb_menghuo: ['male', 'shu', 4, ['wechatsbhuoshou', 'wechatsbzaiqi']],
-            wechat_sb_zhenji: ['female', 'wei', 3, ['wechatsbhuoshen', 'wechatsbqingguo']],
+            wechat_sb_zhenji: ['female', 'wei', 3, ['wechatsbluoshen', 'wechatsbqingguo']],
             //志系列
             wechat_zhi_yuanshu: ['male', 'qun', 4, []],
             wechat_zhi_fuhuanghou: ['female', 'qun', 3, ['wechatweiluan', 'wechatrequjian', 'wechatshutui']],
@@ -273,7 +273,7 @@ const packs = function () {
             wechat_zhi_xushi: ['female', 'wu', 3, ['wechatluchou', 'wechatshizhu'], ['name:徐|null']],
             wechat_zhi_caozhi: ['male', 'wei', 3, ['wechatgaoshi', 'wechatshimin']],
             wechat_zhi_liubiao: ['male', 'qun', 3, ['wechatguanji', 'wechatxiyang']],
-            wechat_zhiyin_zhushixing: ['male', 'wei', 4, ['wechatxunjing', 'wechatqiusuo']],
+            wechat_zhi_zhushixing: ['male', 'wei', 4, ['wechatxunjing', 'wechatqiusuo']],
             //限时地主
             wechat_nailong: ['male', 'qun', 4, ['wechatdunshi', 'wechattanchi']],
         },
@@ -286,6 +286,7 @@ const packs = function () {
                 ].randomGet();
             },
             wechat_shantao: '山涛（205年－283年3月3日），字巨源。河内郡怀县（今河南武陟西）人。三国至西晋时期官员、玄学家、名士，“竹林七贤”之一。山涛早年孤贫，喜好老庄学说，与嵇康、阮籍等交游。四十岁时，才任郡主簿。大将军司马师执政时，山涛被举为秀才，累迁尚书吏部郎。后迁大将军从事中郎。景元五年（264年），以本职行军司马，镇守邺城，监视曹魏宗室。同年受封新沓子，转相国左长史。西晋建立后，升任大鸿胪。历任侍中、吏部尚书、太子少傅、左仆射等职，封新沓伯。他每次选用官吏，皆先秉承晋武帝意旨，且亲作评论，时人称之为“山公启事”。曾多次以老病辞官，皆不准。太康三年（282年），升为司徒，以老病归家。太康四年（283年），山涛去世，享年七十九岁，谥号“康”。山涛前后选举百官，都能选贤用能。在武帝诏罢天下兵役时，他反对废除州郡武备，此后局势混乱，州郡无力镇压，果如其所言。原有文集十卷，今已佚。《全晋文》《晋书》辑有其文。',
+            wechat_zhi_zhushixing: '朱士行（203年－282年），颍川（今河南禹州）人，三国曹魏时期高僧，中国历史上首位受戒的汉族僧人，法号八戒。曹魏嘉平二年（250年）于洛阳白马寺受戒，后因对《道行般若经》译本不满，于甘露五年（260年）从雍州出发西行求法，穿越流沙抵达于阗国（今新疆和田）。在于阗获《大品般若经》梵本九十章六十余万字，并学习当地语言。西晋太康三年（282年）遣弟子弗如檀将经本送回洛阳，自身留在于阗终老。该经本后被译为《放光般若经》，成为汉地佛教义学研究的重要典籍。朱士行是汉地僧人西行求法的先驱，其经历为后世法显、玄奘等取经者提供了先例。杭州西湖飞来峰存有北宋时期雕刻的取经图像，相关事迹见于《出三藏记集》《高僧传》等典籍。',
         },
         characterSubstitute: {
             wechat_zhi_caocao: [
@@ -20088,8 +20089,8 @@ const packs = function () {
                 }
             },
             // 谋甄姬
-            wechatsbhuoshen: {
-                audio: 'huoshen',
+            wechatsbluoshen: {
+                audio: 'sbluoshen',
                 trigger: { player: 'phaseZhunbeiBegin' },
                 async cost(event, trigger, player) {
                     event.result = await player.chooseTarget(get.prompt2(event.skill)).set('ai', target => {
@@ -20160,10 +20161,10 @@ const packs = function () {
                     add: {
                         mod: {
                             ignoredHandcard(card, player) {
-                                if (card.hasGaintag('wechatsbhuoshen_add')) return true;
+                                if (card.hasGaintag('wechatsbluoshen_add')) return true;
                             },
                             cardDiscardable(card, player, name) {
-                                if (name == 'phaseDiscard' && card.hasGaintag('wechatsbhuoshen_add')) return false;
+                                if (name == 'phaseDiscard' && card.hasGaintag('wechatsbluoshen_add')) return false;
                             },
                         },
                         charlotte: true,
@@ -21422,14 +21423,14 @@ const packs = function () {
             wechatfuyuan_info: `觉醒技。准备阶段，若你的${get.poptip('rule_moulvenum')}不小于3，你减少1点体力上限并回复体力至体力上限，然后获得${get.poptip('wechattujing')}。`,
             wechattujing: '图荆',
             wechattujing_info: '出牌阶段每名角色限一次，你可以选择一名角色并弃置一种花色A的所有手牌，视为对其使用一张你本回合使用过的普通锦囊牌。若其中没有此花色A的手牌，此锦囊牌对其额外结算一次。',
-            wechat_zhiyin_zhushixing: '志朱士行',
+            wechat_zhi_zhushixing: '志朱士行',
             wechatxunjing: '寻经',
             wechatxunjing_info: '出牌阶段限一次，你可以观看牌堆顶的一张牌A。若如此做，你令你的上家交给你一张牌，若此牌与牌A花色不同，你可以对其上家重复此流程。然后若你于此流程中获得过花色为牌A花色的牌，你将X张手牌交给一名其他角色（X为你此次以此法获得的牌数）。',
             wechatqiusuo: '求索',
             wechatqiusuo_info: '①游戏开始时，你获得一张点为2的牌。②当你失去以此法获得的牌A时，你从牌堆或弃牌堆中获得一张点数为此牌点数+1的牌，若你未以此法获得牌，你的手牌上限改为无限。',
             wechat_sb_zhenji: '小程序谋甄宓',
-            wechatsbhuoshen: '洛神',
-            wechatsbhuoshen_info: '准备阶段，你可以选择一名角色。从其开始按逆时针方向的X名其他角色同时展示一张手牌（X为场上存活角色数的一半，向上取整）。你获得其中的黑色牌且这些牌不计入本回合手牌上限并可以使用其中的红色牌（无距离和次数限制），然后你弃置剩余牌。',
+            wechatsbluoshen: '洛神',
+            wechatsbluoshen_info: '准备阶段，你可以选择一名角色。从其开始按逆时针方向的X名其他角色同时展示一张手牌（X为场上存活角色数的一半，向上取整）。你获得其中的黑色牌且这些牌不计入本回合手牌上限并可以使用其中的红色牌（无距离和次数限制），然后你弃置剩余牌。',
             wechatsbqingguo: '倾国',
             wechatsbqingguo_info: '①你可以将一张黑色手牌当做【闪】使用或打出。②攻击范围内包含你的角色回合开始时，你可以令其无法使用或打出本回合获得的牌，直到其使用【杀】指定你为目标或本回合结束。',
 
