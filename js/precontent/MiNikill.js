@@ -26651,8 +26651,11 @@ const packs = function () {
                     },
                 },
                 audio: 'wushuang',
-                audioname: ['Mnian_lvbu', 're_lvbu', 'lvlingqi'],
-                audioname2: { Mmiao_lvlingqi: 'miniwushuang_Mmiao_lvlingqi' },
+                audioname: ['re_lvbu', 'lvlingqi'],
+                audioname2: {
+                    Mnian_lvbu: 'miniwushuang_Mnian_lvbu',
+                    Mmiao_lvlingqi: 'miniwushuang_Mmiao_lvlingqi',
+                },
                 trigger: { player: 'useCardToPlayered', target: 'useCardToTargeted' },
                 filter(event, player) {
                     return (event.card.name == 'sha' && event.player == player) || event.card.name == 'juedou';
@@ -26689,10 +26692,13 @@ const packs = function () {
                         if (arg.card.name == 'juedou' && Math.floor(arg.target.countCards('hs', { name: 'sha' }) / 2) > player.countCards('hs', { name: 'sha' })) return false;
                     },
                 },
-                subSkill: { Mmiao_lvlingqi: { audio: 'ext:活动武将/audio/skill:2' } },
+                subSkill: {
+                    Mnian_lvbu: { audio: 'ext:活动武将/audio/skill:2' },
+                    Mmiao_lvlingqi: { audio: 'ext:活动武将/audio/skill:2' },
+                },
             },
             miniwuchang: {
-                audio: 'liyu',
+                audio: 'ext:活动武将/audio/skill:1',
                 trigger: { source: 'damageBegin1' },
                 filter(event, player) {
                     if (event.player.group != player.group) return false;
@@ -26742,18 +26748,16 @@ const packs = function () {
                         },
                     },
                     draw: {
-                        audio: 'liyu',
+                        audio: 'miniwuchang',
                         enable: 'phaseUse',
                         filterTarget: lib.filter.notMe,
                         prompt: '令一名其他角色摸一张牌，然后你将势力变更至与其相同并从牌堆中获得一张【杀】',
                         usable: 1,
-                        content() {
-                            'step 0'
-                            target.draw();
-                            if (target.group != player.group) player.changeGroup(target.group);
-                            'step 1'
-                            var card = get.cardPile2(card => card.name == 'sha');
-                            if (card) player.gain(card, 'gain2');
+                        async content(event,trigger,player) {
+                            await event.target.draw();
+                            if (event.target.group !== player.group) await player.changeGroup(target.group);
+                            const card = get.cardPile2('sha');
+                            if (card) await player.gain(card, 'gain2');
                         },
                         ai: {
                             order(item, player) {
@@ -44035,6 +44039,14 @@ const packs = function () {
             '#ext:活动武将/audio/die/Mfight_lvmeng:die': '此计不成，有负主公重托……',
             '#ext:活动武将/audio/skill/minizhengbing1': '调转马头，击敌后翼！',
             '#ext:活动武将/audio/skill/minizhengbing2': '厉兵秣马，严阵以待！',
+            '#ext:活动武将/audio/skill/minishenglun1': '今绍有十败，公有十胜。',
+            '#ext:活动武将/audio/skill/minituodao1': '喝！',
+            '#ext:活动武将/audio/skill/minituodao2': '一刀取你性命！',
+            '#ext:活动武将/audio/skill/miniguanjue1': '兼职文武，雄烈过人。',
+            '#ext:活动武将/audio/skill/miniguanjue2': '你挡得住我吗？',
+            '#ext:活动武将/audio/skill/miniwushuang_Mnian_lvbu1': '谁能挡我！',
+            '#ext:活动武将/audio/skill/miniwushuang_Mnian_lvbu2': '这天下舍我其谁？',
+            '#ext:活动武将/audio/skill/miniwuchang1': '以利定胜，必可灭敌。',
         },
     };
     MiNikill_sight();//加载欢杀界面逻辑
