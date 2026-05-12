@@ -409,7 +409,7 @@ export async function precontent(bilibilicharacter) {
         firstDo: true,
         content() {
             'step 0'
-            player.addMark('bilibili_kill', 1, false);
+            player.addMark('_jishaAudio', 1, false);
             'step 1'
             let config = lib.config.extension_活动武将_HDfightAudio;
             config = config === 'default' ? lib.config.extension_活动武将_HDkillAudio : config;
@@ -428,7 +428,7 @@ export async function precontent(bilibilicharacter) {
                     list = ['一血·卧龙出山', '双杀·一战成名', '三杀·举世皆惊', '四杀·天下无敌', '五杀·诛天灭地', '六杀·癫狂杀戮', '无双·万军取首'];
                     break;
             }
-            var num = Math.min(7, player.countMark('bilibili_kill'));
+            var num = Math.min(7, player.countMark('_jishaAudio'));
             player.$fullscreenpop(list[num - 1], ['water', 'wood', 'thunder', 'fire'][Math.min(3, num - 1)]);
             game.broadcastAll(function (num, config) {
                 if (lib.config.background_audio) {

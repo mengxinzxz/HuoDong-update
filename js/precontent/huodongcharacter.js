@@ -13492,11 +13492,11 @@ const packs = function () {
                                 return lib.filter.targetEnabled2(trigger.card, player, target) && lib.filter.targetInRange(trigger.card, player, target);
                             });
                             const result = targets.length > 1 ? await player.chooseTarget(`权御：为${get.translation(trigger.card)}额外选择一个目标`, (card, player, target) => {
-                                const event = get.event().trigger;
-                                if (event.targets.includes(target)) return false;
-                                return lib.filter.targetEnabled2(event.card, player, target) && lib.filter.targetInRange(event.card, player, target);
-                            }, true).set('trigger', trigger).set('ai', target => {
-                                const { player, trigger } = get.event();
+                                const trigger = get.event().triggerx;
+                                if (trigger.targets.includes(target)) return false;
+                                return lib.filter.targetEnabled2(trigger.card, player, target) && lib.filter.targetInRange(trigger.card, player, target);
+                            }, true).set('triggerx', trigger).set('ai', target => {
+                                const { player, triggerx: trigger } = get.event();
                                 return get.effect(target, trigger.card, player, player);
                             }).forResult() : { bool: true, targets };
                             if (result?.bool && result.targets?.length) {
