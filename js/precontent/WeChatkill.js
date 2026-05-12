@@ -14282,9 +14282,7 @@ const packs = function () {
                             }
                         } else break;
                     }
-                    if (cost_data.length !== skipList.length) {
-                        await player.turnOver();
-                    }
+                    if (cost_data.length !== skipList.length) await player.turnOver();
                 },
                 ai: {
                     directHit_ai: true,
@@ -14319,13 +14317,8 @@ const packs = function () {
                         const { targets } = result;
                         event.targets = targets;
                         player.line(targets);
-                        for (const target of targets.sortBySeat()) {
-                            target.addMark(event.name, 1);
-                        }
+                        for (const target of targets.sortBySeat()) target.addMark(event.name, 1);
                     }
-                },
-                filterTarget(card, player, target) {
-                    return target != player && !target.hasMark('wechatsbtianxiang');
                 },
                 marktext: '香',
                 intro: {
@@ -14339,16 +14332,17 @@ const packs = function () {
                         audio: 'sbtianxiang',
                         trigger: { player: 'damageBegin3' },
                         filter(event, player) {
-                            return game.hasPlayer(target => target.hasMark('wechatsbtianxiang')) && player.countCards("h", function (card) {
-                                return _status.connectMode || get.color(card, player) == 'red';
-                            }) > 0;
+                            if (!game.hasPlayer(target => target.hasMark('wechatsbtianxiang'))) return false;
+                            return player.hasCard(card => {
+                                return _status.connectMode || (get.color(card, player) === 'red' && lib.filter.cardDiscardable(card, player));
+                            }, 'h');
                         },
                         async cost(event, trigger, player) {
                             event.result = await player.chooseCardTarget({
                                 prompt: get.prompt(event.skill),
                                 prompt2: `弃置一张红色牌并移去一名角色的“天香”标记，若弃置牌的花色为：红桃：你防止此伤害，其受到伤害来源对其造成的1点伤害（若没有伤害来源则改为无来源伤害）；方片：其交给你两张牌。`,
                                 filterCard(card, player2) {
-                                    return get.color(card, player) == 'red' && lib.filter.cardDiscardable(card, player);
+                                    return get.color(card, player) === 'red' && lib.filter.cardDiscardable(card, player);
                                 },
                                 filterTarget(card, player, target) {
                                     return target.hasMark('wechatsbtianxiang');
@@ -20059,7 +20053,6 @@ const packs = function () {
                             return Object.values(evt.gaintag_map).flat().includes('wechatqiusuo');
                         },
                         forced: true,
-                        locked: true,
                         async content(event, trigger, player) {
                             const evt = trigger.getl(player);
                             const cards = evt.cards2.reduce((list, i) => {
@@ -20123,9 +20116,7 @@ const packs = function () {
                     const suits = cards.map(card => get.suit(card)).toUniqued();
                     const next = player.showCards(cards, `${get.translation(player)}发动了【${get.translation(event.name)}】`, false).set('multipleShow', true).set('customButton', button => {
                         const target = get.owner(button.link);
-                        if (target) {
-                            game.createButtonCardsetion(`<span style = 'font-weight:bold'>${get.translation(get.suit(button.link, target))}${target.getName(true)}</span>`, button);
-                        }
+                        if (target) game.createButtonCardsetion(`<span style = 'font-weight:bold'>${get.translation(get.suit(button.link, target))}${target.getName(true)}</span>`, button);
                     });
                     await next;
                     const black = cards.filter(card => get.color(card) == 'black');
@@ -20147,10 +20138,9 @@ const packs = function () {
                         if (result?.bool) {
                             const card = result.links[0];
                             cards.remove(card);
-                            player.$gain2(card, false);
-                            await game.delayx();
                             await player.chooseUseTarget(true, card, false);
-                        } else break;
+                        }
+                        else break;
                     }
                     if (cards.length) {
                         const lose_list = Array.from(showMap).filter(([current, cardsx]) => cards.includes(cardsx[0]));
@@ -20204,39 +20194,40 @@ const packs = function () {
                         init(player, skill) {
                             const hs = player.getCards('h');
                             const cards = player.getHistory('gain').flatMap(evt => evt.cards).filter(card => hs.includes(card));
-                            if (cards.length) {
-                                player.addGaintag(cards, skill);
-                            }
+                            if (cards.length) player.addGaintag(cards, skill);
                         },
                         onremove(player, skill) {
                             delete player.storage[skill];
                             player.removeGaintag(skill);
                         },
-                        intro: { content: '无法使用或打出本回合获得的牌，直到使用【杀】指定$为目标或本回合结束' },
+                        intro: {
+                            markcount(storage = []) {
+                                return storage.length > 1 ? storage.length : 0;
+                            },
+                            content: '无法使用或打出本回合获得的牌，直到使用【杀】指定$为目标或本回合结束',
+                        },
                         mod: {
                             cardEnabled(card, player) {
-                                if ([card].concat(card.cards || []).some(cardx => get.itemtype(cardx) === 'card' && cardx.hasGaintag('wechatsbqingguo_fengyin'))) {
-                                    return false;
-                                }
+                                const cards = [card].concat(card.cards || []);
+                                if (cards.some(cardx => get.itemtype(cardx) === 'card' && cardx.hasGaintag('wechatsbqingguo_fengyin'))) return false;
                             },
                             cardRespondable(card, player) {
-                                if ([card].concat(card.cards || []).some(cardx => get.itemtype(cardx) === 'card' && cardx.hasGaintag('wechatsbqingguo_fengyin'))) {
-                                    return false;
-                                }
+                                const cards = [card].concat(card.cards || []);
+                                if (cards.some(cardx => get.itemtype(cardx) === 'card' && cardx.hasGaintag('wechatsbqingguo_fengyin'))) return false;
                             },
                             cardSavable(card, player) {
-                                if ([card].concat(card.cards || []).some(cardx => get.itemtype(cardx) === 'card' && cardx.hasGaintag('wechatsbqingguo_fengyin'))) {
-                                    return false;
-                                }
+                                const cards = [card].concat(card.cards || []);
+                                if (cards.some(cardx => get.itemtype(cardx) === 'card' && cardx.hasGaintag('wechatsbqingguo_fengyin'))) return false;
                             },
                         },
-                        trigger: { player: 'useCardToPlayered' },
+                        trigger: { player: 'useCardToPlayer' },
                         filter(event, player) {
                             return player.getStorage('wechatsbqingguo_fengyin').includes(event.target);
                         },
                         silent: true,
                         async content(event, trigger, player) {
-                            player.removeSkill(event.name);
+                            player.unmarkAuto(event.name, [trigger.target]);
+                            if (!player.getStorage(event.name).length) player.removeSkill(event.name);
                         },
                         group: 'wechatsbqingguo_mark',
                     },

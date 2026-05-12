@@ -652,7 +652,7 @@ export async function precontent(bilibilicharacter) {
                                 index: event.controls.indexOf(control),
                             };
                             event.dialog?.close();
-                            event.controlbars.forEach(i => i.close());
+                            event.controlbars?.forEach(i => i.close());
                             game.resume();
                             _status.imchoosing = false;
                             game.uncheck();
@@ -725,7 +725,7 @@ export async function precontent(bilibilicharacter) {
             },
             async (event, _trigger, player) => {
                 event.dialog?.close();
-                event.controlbars.forEach(i => i.close());
+                event.controlbars?.forEach(i => i.close());
                 event.resume();
                 if (event.result?.bool && event.result.targets?.length && event.animate !== false) {
                     for (const i of event.result.targets) i.addTempClass('target');

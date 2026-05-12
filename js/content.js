@@ -1143,6 +1143,59 @@ export async function content(config, pack) {
 			}
 		},
 	});
+	//族杨彪
+	Object.assign(lib.skill.clanjiannan.subSkill.effect, {
+		async cost(event, trigger, player) {
+			const map = { '弃牌': 'discard', '摸牌': 'draw', '重铸装备牌': 'recast', '置于牌堆顶': 'put' };
+			const result = await player.bilibili_chooseTargetControl({
+				prompt: '###间难###<div class="text center">令一名角色执行本回合未执行过的一项</div>',
+				controls: ['弃牌', '摸牌', '重铸装备牌', '置于牌堆顶'],
+				filterControl(control, player, event) {
+					return ui.selected.targets.length > 0 && !player.getStorage('clanjiannan_used').includes(event.map[control]);
+				},
+				forced: true,
+				processAI() {
+					const { player, map, controls } = get.event();
+					const getNum = function (control) {
+						switch (map[control]) {
+							case 'discard':
+								if (game.hasPlayer(target => {
+									const att = get.attitude(player, target);
+									return att < 0 && target.countCards('he');
+								})) return 2;
+								break;
+							case 'draw': return 4;
+							case 'recast':
+								if (player.hasCard(card => get.type(card) === 'equip', 'he')) return 3;
+								break;
+							case 'put':
+								if (game.hasPlayer(target => {
+									const att = get.attitude(player, target);
+									return att < 0 && target.hp <= 1 && target.countCards('h') <= 3;
+								})) return 5;
+								break;
+						}
+						return 1;
+					};
+					const control = [...controls].sort((a, b) => getNum(b) - getNum(a))[0];
+					const getNum2 = function (target) {
+						const att = get.attitude(player, target);
+						return att * (target === player ? 3 : 1) * (['draw', 'recast'].includes(map[control]) ? 1 : -1);
+					};
+					const target = game.filterPlayer().sort((a, b) => getNum2(b) - getNum2(a))[0];
+					return { bool: true, targets: [target], control, index: controls.indexOf(control) };
+				},
+				map,
+			}).forResult();
+			if (result?.bool && result.targets?.length) {
+				event.result = {
+					bool: true,
+					targets: result.targets,
+					cost_data: { link: map[result.control] },
+				};
+			}
+		},
+	});
 
 	//precT
 	//翻译
