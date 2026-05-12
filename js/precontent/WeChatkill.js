@@ -14295,19 +14295,36 @@ const packs = function () {
             // 谋小乔
             wechatsbtianxiang: {
                 audio: 'sbtianxiang',
-                inherit: 'sbtianxiang',
-                enable: 'phaseUse',
-                filter(event, player) {
-                    return player.countCards('h', card => get.info('wechatsbtianxiang').filterCard(card, player)) && game.hasPlayer(target => get.info('wechatsbtianxiang').filterTarget(null, player, target));
+                trigger: { player: 'phaseZhunbeiBegin' },
+                forced: true,
+                locked: false,
+                async content(event, trigger, player) {
+                    let num = 1;
+                    game.countPlayer(target => {
+                        const numx = target.countMark('wechatsbtianxiang');
+                        target.clearMark('wechatsbtianxiang');
+                        num += numx;
+                    });
+                    await player.draw(num);
+                    const targets = game.filterPlayer(current => current != player && !current.hasMark('wechatsbtianxiang'));
+                    if (!targets.length) return;
+                    const result = await player.chooseTarget(get.prompt(event.name), '令至多三名其他角色获得“天香”标记', (card, player, target) => {
+                        return get.event().targets.includes(target);
+                    }, [1, 3]).set('targets', targets).set('ai', target => {
+                        const player = get.player();
+                        return -get.attitude(player, target) - 0.1;
+                    }).forResult();
+                    if (result?.targets?.length) {
+                        const { targets } = result;
+                        event.targets = targets;
+                        player.line(targets);
+                        for (const target of targets.sortBySeat()) {
+                            target.addMark(event.name, 1);
+                        }
+                    }
                 },
                 filterTarget(card, player, target) {
                     return target != player && !target.hasMark('wechatsbtianxiang');
-                },
-                prompt: '将一张红色手牌交给一名角色并令其获得“天香”标记',
-                async content(event, trigger, player) {
-                    const { cards, target } = event;
-                    await player.give(cards, target);
-                    target.addMark(event.name, 1);
                 },
                 marktext: '香',
                 intro: {
@@ -14315,87 +14332,55 @@ const packs = function () {
                     name2: '天香',
                     content: 'mark',
                 },
-                group: ['wechatsbtianxiang_draw', 'wechatsbtianxiang_effect'],
+                group: 'wechatsbtianxiang_effect',
                 subSkill: {
-                    draw: {
-                        audio: 'sbtianxiang',
-                        trigger: { player: 'phaseZhunbeiBegin' },
-                        filter(event, player) {
-                            return game.hasPlayer(target => target.hasMark('wechatsbtianxiang'));
-                        },
-                        forced: true,
-                        locked: false,
-                        async content(event, trigger, player) {
-                            let num = 0;
-                            game.countPlayer(target => {
-                                const numx = target.countMark('wechatsbtianxiang');
-                                target.clearMark('wechatsbtianxiang');
-                                num += numx;
-                            });
-                            await player.draw(num);
-                        },
-                    },
                     effect: {
                         audio: 'sbtianxiang',
-                        trigger: { player: "damageBegin3" },
+                        trigger: { player: 'damageBegin3' },
                         filter(event, player) {
-                            return game.hasPlayer(target => target.hasMark('wechatsbtianxiang'));
+                            return game.hasPlayer(target => target.hasMark('wechatsbtianxiang')) && player.countCards("h", function (card) {
+                                return _status.connectMode || get.color(card, player) == 'red';
+                            }) > 0;
                         },
                         async cost(event, trigger, player) {
-                            const result = await player.chooseButtonTarget({
-                                createDialog: [
-                                    `###天香###移去一名角色的“天香”标记并选择一项效果令其执行`,
-                                    [
-                                        [
-                                            ['damage', '你防止此伤害，其受到伤害来源对其造成的1点伤害（若没有伤害来源则改为无来源伤害）'],
-                                            ['give', '其交给你两张牌'],
-                                        ],
-                                        'textbutton',
-                                    ]
-                                ],
-                                filterButton(button) {
-                                    return button.link != 'give' || game.hasPlayer(current => current.hasMark('wechatsbtianxiang') && current.countCards('he'));
+                            event.result = await player.chooseCardTarget({
+                                prompt: get.prompt(event.skill),
+                                prompt2: `弃置一张红色牌并移去一名角色的“天香”标记，若弃置牌的花色为：红桃：你防止此伤害，其受到伤害来源对其造成的1点伤害（若没有伤害来源则改为无来源伤害）；方片：其交给你两张牌。`,
+                                filterCard(card, player2) {
+                                    return get.color(card, player) == 'red' && lib.filter.cardDiscardable(card, player);
                                 },
                                 filterTarget(card, player, target) {
-                                    if (!target.hasMark('wechatsbtianxiang')) return false;
-                                    const { link } = ui.selected.buttons[0];
-                                    return link != 'give' || target.countCards('he');
+                                    return target.hasMark('wechatsbtianxiang');
                                 },
-                                ai1(button) {
+                                ai1(card) {
                                     const player = get.player();
-                                    const { link } = button;
-                                    if (link == 'damage') {
+                                    if (get.suit(card, player) == 'heart') {
                                         const { source, num } = get.event().getTrigger();
                                         if (get.damageEffect(player, source, player, player) > 0) return 0;
                                         if (!game.hasPlayer(current => current.hasMark('wechatsbtianxiang') && get.damageEffect(current, source, player, player) > 0)) return 0;
-                                        return 2;
+                                        return 10 - get.value(card);
                                     }
-                                    if (link == 'give') return 2;
-                                    return 1;
+                                    return 7 - get.value(card);
                                 },
                                 ai2(target) {
                                     const player = get.player(), att = get.attitude(player, target);
-                                    const { link } = ui.selected.buttons[0];
+                                    const card = ui.selected.cards[0];
                                     if (att > 0) return 0;
                                     const { source, num } = get.event().getTrigger();
-                                    if (link == 'damage') return get.damageEffect(target, source, player, player);
+                                    if (get.suit(card, player) == 'heart') return get.damageEffect(target, source, player, player);
                                     return -att * (Math.min(1, 4 - target.countCards('he')));
                                 },
                             }).forResult();
-                            event.result = {
-                                bool: result?.bool,
-                                cost_data: result?.links,
-                                targets: result?.targets,
-                            };
                         },
                         async content(event, trigger, player) {
-                            const { targets: [target], cost_data: [link] } = event;
+                            const { targets: [target], cards } = event;
+                            await player.discard(cards);
                             target.clearMark('wechatsbtianxiang');
-                            if (link == 'damage') {
+                            if (get.suit(cards[0], player) == 'heart') {
                                 trigger.cancel();
                                 await target.damage(trigger.source ? trigger.source : 'nosource');
                             }
-                            else if (link == 'give') {
+                            else if (get.suit(cards[0], player) == 'diamond') {
                                 await target.chooseToGive(player, 'he', true, 2, `交给${get.translation(player)}两张牌`);
                             }
                         },
@@ -19872,7 +19857,7 @@ const packs = function () {
                             [[`###图荆###<div class="text center">弃置一种花色的所有手牌，视为对${name}使用一张你本回合使用过的锦囊牌</div>`], 'addNewRow'],
                             [
                                 dialog => {
-                                    dialog.classList.add("fullheight");
+                                    dialog.classList.add('fullheight');
                                     dialog.forcebutton = false;
                                     dialog._scrollset = false;
                                 },
@@ -21247,7 +21232,7 @@ const packs = function () {
             wechatsbshensu_info: '回合开始时，你可以选择并执行以下任意项：①跳过判定阶段和摸牌阶段；②跳过摸牌阶段和出牌阶段；③跳过出牌阶段和弃牌阶段。你每选择一项，视为使用一张无距离限制的【杀】（若对应选项包含出牌阶段，则此【杀】不可被响应）。若你选择的项中包含重复阶段，则你将武将牌翻面。',
             wechat_sb_xiaoqiao: '小程序谋小乔',
             wechatsbtianxiang: '天香',
-            wechatsbtianxiang_info: '①出牌阶段限三次，你可以交给一名没有“天香”标记的其他角色一张红色手牌，然后令其获得“天香”标记。②当你受到伤害时，你可以移去一名角色的“天香”标记并选择一项：1.你防止此伤害，其受到伤害来源对其造成的1点伤害（若没有伤害来源则改为无来源伤害）；2.其交给你两张牌。③准备阶段，你移去场上所有的“天香”标记，然后摸X张牌（X为移去的“天香”标记数）。',
+            wechatsbtianxiang_info: '①准备阶段，你移去场上所有的“天香”标记，然后摸X张牌（X为移去的“天香”标记数+1），然后你可以令至多三名其他角色“天香”标记。。②当你受到伤害时，你可以弃置一张红色牌并移去一名角色的“天香”标记，若弃置牌的花色为：红桃：你防止此伤害，其受到伤害来源对其造成的1点伤害（若没有伤害来源则改为无来源伤害）；方片：其交给你两张牌。',
             wechat_shen_caocao: '小程序神曹操',
             wechatguixin: '归心',
             wechatguixin_info: '当你受到1点伤害后，你可以获得所有其他角色区域各一张牌，若你本次以此法获得的牌不少于四张，你翻面。',
