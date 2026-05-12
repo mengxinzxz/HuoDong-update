@@ -279,7 +279,7 @@ const packs = function () {
             wechat_zhi_xushi: ['female', 'wu', 3, ['wechatluchou', 'wechatshizhu'], ['name:徐|null']],
             wechat_zhi_caozhi: ['male', 'wei', 3, ['wechatgaoshi', 'wechatshimin']],
             wechat_zhi_liubiao: ['male', 'qun', 3, ['wechatguanji', 'wechatxiyang']],
-            wechat_zhiyin_zhushixing: ['male', 'qun', 4, ['wechatxunjing', 'wechatqiusuo']],
+            wechat_zhiyin_zhushixing: ['male', 'wei', 4, ['wechatxunjing', 'wechatqiusuo']],
             //限时地主
             wechat_nailong: ['male', 'qun', 4, ['wechatdunshi', 'wechattanchi']],
         },
@@ -20343,7 +20343,7 @@ const packs = function () {
                                 await next;
                             }
                             else {
-                                game.log(player,'取经成功')；
+                                game.log(player, '取经成功');
                                 player.addSkill('wechatqiusuo_effect');
                             }
                         },
