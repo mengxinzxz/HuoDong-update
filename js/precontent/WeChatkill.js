@@ -14334,8 +14334,9 @@ const packs = function () {
                         filter(event, player) {
                             if (!game.hasPlayer(target => target.hasMark('wechatsbtianxiang'))) return false;
                             return player.hasCard(card => {
-                                return _status.connectMode || (get.color(card, player) === 'red' && lib.filter.cardDiscardable(card, player));
-                            }, 'h');
+                                if (get.position(card) === 'h' && _status.connectMode) return true;
+                                return get.color(card, player) === 'red' && lib.filter.cardDiscardable(card, player);
+                            }, 'he');
                         },
                         async cost(event, trigger, player) {
                             event.result = await player.chooseCardTarget({
@@ -14344,6 +14345,7 @@ const packs = function () {
                                 filterCard(card, player2) {
                                     return get.color(card, player) === 'red' && lib.filter.cardDiscardable(card, player);
                                 },
+                                position: 'he',
                                 filterTarget(card, player, target) {
                                     return target.hasMark('wechatsbtianxiang');
                                 },
