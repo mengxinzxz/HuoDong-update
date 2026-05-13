@@ -22505,6 +22505,7 @@ const packs = function () {
                     'step 3'
                     game.broadcastAll('closeDialog', event.videoId);
                     if (event.cards2?.length) player.gain(event.cards2, 'gain2');
+                    else event.finish();
                     'step 4'
                     lib.skill.oldshenzhu.content(event, trigger, player);
                 },
