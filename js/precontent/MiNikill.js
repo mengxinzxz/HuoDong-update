@@ -22424,8 +22424,8 @@ const packs = function () {
                 audio: 'ext:活动武将/audio/skill:2',
                 trigger: { player: 'judge' },
                 async cost(event, trigger, player) {
-                    var str = '你的' + (trigger.judgestr || '') + '判定牌为' + get.translation(trigger.player.judging[0]) + '，是否修改判定花色？';
-                    const result = await player.chooseControl('spade', 'heart', 'diamond', 'club', 'cancel2').set('prompt', str).set('ai', function () {
+                    var str = `你的${trigger.judgestr || ''}判定牌为${get.translation(trigger.player.judging[0])}，${get.prompt(event.skill)}'`;
+                    const result = await player.chooseControl([...lib.suit].reverse(), 'cancel2').set('prompt', str).set('ai', function () {
                         var judging = _status.event.judging;
                         var trigger = _status.event.getTrigger();
                         var res1 = trigger.judge(judging);
@@ -22499,14 +22499,12 @@ const packs = function () {
                         return get.value(button.link, _status.event.player);
                     });
                     'step 2'
-                    if (result.bool && result.links) event.cards2 = result.links;
-                    else event.finish();
+                    if (result?.bool && result.links?.length) event.cards2 = result.links;
                     var time = 1000 - (get.utc() - event.time);
                     if (time > 0) game.delay(0, time);
                     'step 3'
                     game.broadcastAll('closeDialog', event.videoId);
-                    var cards2 = event.cards2;
-                    player.gain(cards2, 'gain2');
+                    if (event.cards2?.length) player.gain(event.cards2, 'gain2');
                     'step 4'
                     lib.skill.oldshenzhu.content(event, trigger, player);
                 },
@@ -44069,6 +44067,11 @@ const packs = function () {
             '#ext:活动武将/audio/skill/miniwushuang_Mnian_lvbu1': '谁能挡我！',
             '#ext:活动武将/audio/skill/miniwushuang_Mnian_lvbu2': '这天下舍我其谁？',
             '#ext:活动武将/audio/skill/miniwuchang1': '以利定胜，必可灭敌。',
+            '#ext:活动武将/audio/skill/minishendao1': '瞒天过海。',
+            '#ext:活动武将/audio/skill/minishendao2': '道可道，非常道。',
+            '#ext:活动武将/audio/skill/minixinsheng1': '吐故纳新，师法天地。',
+            '#ext:活动武将/audio/skill/minixinsheng2': '幻幻无穷，生生不息。',
+            '#ext:活动武将/audio/die/Mbaby_zuoci:die': '腾云跨风，飞升，太虚。',
         },
     };
     MiNikill_sight();//加载欢杀界面逻辑
