@@ -5409,17 +5409,21 @@ const packs = function () {
                 trigger: { player: 'phaseJieshuBegin' },
                 async cost(event, trigger, player) {
                     event.result = await player.chooseTarget(get.prompt2('wechatkuanshi')).set('ai', target => {
-                        var player = _status.event.player;
-                        if (get.attitude(player, target) > 0) return 1 / Math.sqrt(target.getHp() + 1);
+                        const player = get.player();
+                        return get.attitude(player, target) / Math.sqrt(target.getHp() + 1);
                     }).set('animate', false).forResult();
                 },
-                content() {
-                    var target = targets[0];
-                    target.addSkill('wechatkuanshi_effect');
-                    target.markAuto('wechatkuanshi_effect', [player]);
-                    player.when('phaseBegin').then(() => target.unmarkAuto('wechatkuanshi_effect', [player])).then(() => {
-                        if (!target.getStorage('wechatkuanshi_effect').length) target.removeSkill('wechatkuanshi_effect');
-                    }).vars({ target: target });
+                popup: false,
+                async content(event, trigger, player) {
+                    player.logSkill(event.name);
+                    const target = event.targets[0], skill = event.name + '_effect';
+                    target.addSkill(skill);
+                    target.setStorage(skill, [...target.storage[skill] || [], player].unique());
+                    player.when('phaseBegin').step(async () => {
+                        target.storage[skill].remove(player);
+                        if (!target.storage[skill].length) target.removeSkill(skill);
+                    });
+                    await game.delayx();
                 },
                 subSkill: {
                     effect: {
@@ -5428,26 +5432,29 @@ const packs = function () {
                         audio: 'kuanshi',
                         trigger: { player: 'damageBegin4' },
                         filter(event, player) {
-                            return player.hasHistory('damage');
+                            return game.getGlobalHistory('everything', evt => {
+                                return evt.name === 'damage' && evt.player === player;
+                            }).indexOf(event) > 0;
                         },
                         forced: true,
                         content() {
+                            player.markSkill(event.name);
                             trigger.cancel();
                         },
-                        mark: true,
                         intro: {
                             markcount: () => 0,
-                            content: '受到本回合非本次受到伤害时防止此伤害',
+                            content: '每回合受到非首次受到的伤害时防止之',
                         },
                         ai: {
                             nodamage: true,
                             nothunder: true,
                             nofire: true,
                             skillTagFilter(player) {
-                                return !player.hasHistory('damage');
+                                return !player.hasHistory('damage') && player.marks.wechatkuanshi_effect;
                             },
                             effect: {
                                 target(card, player, target) {
+                                    if (!target.marks.wechatkuanshi_effect) return;
                                     if (target.hasHistory('damage') && get.tag(card, 'damage') && !player.hasSkillTag('jueqing', false, target)) return 0;
                                 },
                             },

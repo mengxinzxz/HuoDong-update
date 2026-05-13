@@ -20516,36 +20516,44 @@ const packs = function () {
             },
             //阚泽
             minikuanshi: {
-                audio: 'rekuanshi',
+                audio: 'kuanshi',
                 trigger: { player: 'phaseJieshuBegin' },
                 async cost(event, trigger, player) {
-                    event.result = await player.chooseTarget(get.prompt2(event.name.slice(0, -5))).set('animate', false).set('ai', target => {
+                    event.result = await player.chooseTarget(get.prompt2(event.name.slice(0, -5))).set('ai', target => {
                         let att = get.attitude(get.player(), target);
                         if (target.hp < 3) att /= 1.5;
                         return att;
-                    }).forResult();
+                    }).set('animate', false).forResult();
                 },
+                popup: false,
                 async content(event, trigger, player) {
-                    const target = event.targets[0];
+                    player.logSkill(event.name);
+                    const target = event.targets[0], skill = event.name + '_effect';
                     const history = target.getAllHistory('damage');
-                    if (history.length) history[history.length - 1][event.name + '_mark'] = true;
-                    player.addTempSkill(event.name + '_effect', { player: 'phaseBegin' });
-                    player.markAuto(event.name + '_effect', [target]);
+                    if (history.length) history.at(-1)[skill] = true;
+                    target.addSkill(skill);
+                    target.setStorage(skill, [...target.storage[skill] || [], player].unique());
+                    player.when('phaseBegin').step(async () => {
+                        target.storage[skill].remove(player);
+                        if (!target.storage[skill].length) target.removeSkill(skill);
+                    });
                     await game.delayx();
                 },
                 subSkill: {
                     effect: {
                         charlotte: true,
                         onremove: true,
-                        intro: { content: '当$于每两次受到伤害后，其回复1点体力' },
-                        trigger: { global: 'damageEnd' },
+                        intro: {
+                            markcount: () => 0,
+                            content: '每两次受到伤害后回复1点体力',
+                        },
+                        audio: 'kuanshi',
+                        trigger: { player: 'damageEnd' },
                         filter(event, player) {
-                            const { player: target } = event;
-                            if (!player.getStorage('minikuanshi_effect').includes(target) || target.isHealthy()) return false;
-                            let history = target.getAllHistory('damage', null, event), num = 0;
+                            if (player.isHealthy()) return false;
+                            let history = player.getAllHistory('damage', null, event), num = 0;
                             for (let i = history.length - 1; i >= 0; i--) {
-                                const evt = history[i];
-                                if (evt['minikuanshi_mark']) break;
+                                if (history[i].minikuanshi_effect) break;
                                 num++;
                             }
                             return num % 2 == 0;
@@ -20553,7 +20561,8 @@ const packs = function () {
                         forced: true,
                         logTarget: 'player',
                         content() {
-                            trigger.player.recover();
+                            player.markSkill(event.name);
+                            player.recover();
                         },
                     },
                 },
