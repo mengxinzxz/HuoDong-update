@@ -26753,7 +26753,7 @@ const packs = function () {
                         filterTarget: lib.filter.notMe,
                         prompt: '令一名其他角色摸一张牌，然后你将势力变更至与其相同并从牌堆中获得一张【杀】',
                         usable: 1,
-                        async content(event,trigger,player) {
+                        async content(event, trigger, player) {
                             await event.target.draw();
                             if (event.target.group !== player.group) await player.changeGroup(target.group);
                             const card = get.cardPile2('sha');
@@ -37386,7 +37386,7 @@ const packs = function () {
                                 }
                                 else {
                                     counterNode = ui.create.caption(`<span style="font-size:24px; font-family:xinwei; text-shadow:#FFF 0 0 4px, #FFF 0 0 4px, rgba(74,29,1,1) 0 0 3px;">第${count}步</span>`, button);
-                                    counterNode.style.right = '5px';
+                                    counterNode.style.left = '5px';
                                     counterNode.style.bottom = '2px';
                                 }
                                 const evt = event.parent;
@@ -37499,15 +37499,27 @@ const packs = function () {
                     return [attack + (hasSha ? jiuCount * 2 : 0), jiuCount, killed, rest];
                 },
                 tazhen(item, type, position, noclick, node) {
-                    if (item.slice().split('|').length > 2) {
+                    if (item.split('|').length > 2) {
                         const info = item.split('|'), _item = item, seat = parseInt(info[0]);
+                        const player = (_status.connectMode ? lib.playerOL : game.playerMap)[info[2]];
                         item = info[1];
                         if (node) {
                             node.classList.add('button');
                             node.classList.add('character');
                             node.style.display = '';
                         }
-                        else node = ui.create.buttonPresets.character(item, 'character', position, noclick);
+                        else {
+                            const itemcharacter = { ...lib.character[item] };
+                            const { hp, maxHp, hujia, ...otheritem } = itemcharacter;
+                            lib.character[item] = {
+                                ...otheritem,
+                                hp: player.getHp(),
+                                maxHp: player.maxHp,
+                                hujia: player.hujia,
+                            };
+                            node = ui.create.buttonPresets.character(item, 'character', position, noclick);
+                            lib.character[item] = itemcharacter;
+                        }
                         node._link = item;
                         node.link = item;
                         const func = function (node, item) {
@@ -37565,6 +37577,7 @@ const packs = function () {
                         node.classList.add('tazhen');
                         node.init(item);
                         node.link = _item;
+                        node.innerHTML = '';
                         return node;
                     }
                 },

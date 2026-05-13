@@ -71,13 +71,13 @@ export default function () {
                 currentActiveItem?.classList.remove('active');
                 this.classList.add('active');
                 currentActiveItem = this;
-                dialogTitle.innerHTML = get.plainText(`${str}${this.innerHTML}`);
+                dialogTitle.innerHTML = `${str}${this.innerHTML}`;
                 changeDialog(this, dialogContent);
             };
             leftNavScrollContainer.appendChild(navItem);
             if (index === 0) {
                 currentActiveItem = navItem;//默认选中第一个
-                dialogTitle.innerHTML = get.plainText(`${str}${navItem.innerHTML}`);
+                dialogTitle.innerHTML = `${str}${navItem.innerHTML}`;
             }
         });
         document.body.appendChild(overlay);
