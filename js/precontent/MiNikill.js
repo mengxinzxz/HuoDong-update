@@ -32,7 +32,7 @@ const packs = function () {
                 MiNi_sbCharacter: [
                     ...['zhangjiao', 'zhenji', 'ganning', 'huangyueying', 'sunshangxiang', 'xuhuang', 'zhaoyun', 'liubei', 'caocao', 'huanggai', 'yuanshao', 'yujin', 'machao', 'lvmeng', 'huangzhong'].map(i => `Mbaby_sb_${i}`),
                     ...['huaxiong', 'guanyu'].map(i => `Mbaby_ol_sb_${i}`),
-                    ...['chengyu'].map(i => `Mbaby_dc_sb_${i}`),
+                    ...['lusu', 'chengyu'].map(i => `Mbaby_dc_sb_${i}`),
                     ...[],
                 ],
                 MiNi_starCharacter: ['simayi', 'zhangchunhua', 'yuanshao', 'sunshangxiang', 'xunyu', 'yuanshu'].map(i => `Mbaby_star_${i}`),
@@ -339,6 +339,7 @@ const packs = function () {
             Mbaby_star_sunshangxiang: ['female', 'wu', 3, ['starsaying', 'ministarjiaohao']],
             Mbaby_yue_daqiao: ['female', 'wu', 3, ['miniqiqin', 'minizixi'], ['name:桥|null']],
             Mbaby_yue_zhoufei: ['female', 'wu', 3, ['minilingkong', 'minixianshu'], ['name:周|null']],
+            Mbaby_dc_sb_lusu: ['male', 'wu', 3, ['minimingshi', 'minimengmou']],
             //群
             Mbaby_gaoshun: ['male', 'qun', 4, ['minixianzhen', 'minijinjiu']],
             Mbaby_xin_gaoshun: ['male', 'qun', 4, ['minirexianzhen', 'minirejinjiu'], ['character:Mbaby_gaoshun']],
@@ -21472,6 +21473,197 @@ const packs = function () {
                     if (color == 'black' && target.getHp() >= player.getHp()) await target.loseHp();
                 },
             },
+            //鲁肃
+            minimingshi: {
+                audio: 'dcsbmingshi',
+                inherit: 'dcsbmingshi',
+                content() {
+                    trigger.num += 2;
+                    player.when('phaseDrawEnd').filter(evt => {
+                        return evt === trigger && player.countCards('h') && game.hasPlayer(target => target !== player);
+                    }).step(async (event, trigger, player) => {
+                        const result = await player.chooseCardTarget({
+                            prompt: `明势：展示${player.countCards('h') <= 3 ? '手牌' : '展示三张'}手牌并令一名其他角色选择获得其中的一张牌`,
+                            filterTarget: lib.filter.notMe,
+                            filterCard: true,
+                            selectCard() {
+                                const player = get.player();
+                                return player.countCards('h') <= 3 ? -1 : 3;
+                            },
+                            position: 'h',
+                            forced: true,
+                            ai1(card) {
+                                return -get.value(card);
+                            },
+                            ai2(target) {
+                                const player = get.player();
+                                if (['dcsbmengmou', 'minimengmou'].some(skill => {
+                                    return player.hasSkill(skill) && !get.is.blocked(skill, player) && player.storage[skill] && get.attitude(player, target) < 0;
+                                })) return get.effect(target, { name: 'losehp' }, player, player);
+                                return get.attitude(player, target);
+                            },
+                        }).forResult();
+                        if (!result?.bool || !result.targets?.length || !result.cards?.length) return;
+                        const target = result.targets[0], cards = result.cards;
+                        if (!cards.some(card => lib.filter.canBeGained(card, player, target))) {
+                            await player.showCards(cards, get.translation(player) + '发动了【明势】');
+                            return;
+                        }
+                        const videoId = lib.status.videoId++;
+                        game.broadcastAll((player, id, cards) => {
+                            const dialog = ui.create.dialog(get.translation(player) + '发动了【明势】', cards);
+                            dialog.videoId = id;
+                        }, player, videoId, cards);
+                        const time = get.utc();
+                        game.addVideo('showCards', player, [get.translation(player) + '发动了【明势】', get.cardsInfo(cards)]);
+                        await game.delay(2.5);
+                        game.broadcastAll((player, id) => {
+                            const dialog = get.idDialog(id);
+                            if (player === game.me && !_status.auto) dialog.content.childNodes[0].textContent = '明势：请获得其中一张牌';
+                        }, target, videoId);
+                        const result2 = await target.chooseButton(true).set('filterButton', button => {
+                            const { player, sourcex } = get.event();
+                            return lib.filter.canBeGained(button.link, sourcex, player);
+                        }).set('ai', button => get.value(button.link)).set('sourcex', player).forResult();
+                        const time2 = 1000 - (get.utc() - time);
+                        if (time2 > 0) await game.delay(0, time2);
+                        game.broadcastAll('closeDialog', videoId);
+                        if (result2.bool && result2.links?.length) {
+                            const card = result2.links[0];
+                            if (lib.filter.canBeGained(card, player, target)) await target.gain(card, player, 'giveAuto');
+                            else {
+                                target.chat('我焯！冰！');
+                                game.log('但', card, '不能被', player, '获得！');
+                            }
+                        }
+                    });
+                },
+            },
+            minimengmou: {
+                audio: 'dcsbmengmou',
+                trigger: { global: ['gainAfter', 'loseAsyncAfter'] },
+                getIndex(event, player) {
+                    if (event.name === 'loseAsync' && event.type !== 'gain') return false;
+                    const cards1 = event.getl(player).cards2, cards2 = event.getg(player);
+                    return game.filterPlayer(current => {
+                        if (current === player) return false;
+                        const cardsx1 = event.getg(current), cardsx2 = event.getl(current).cards2;
+                        return cardsx1.some(i => cards1.includes(i)) || cards2.some(i => cardsx2.includes(i))
+                    }).sortBySeat();
+                },
+                filter(event, player, name, target) {
+                    if (typeof player.maxHp !== 'number' || player.maxHp <= 0) return false;
+                    if (player.getStorage('minimengmou_used').includes(player.storage.minimengmou ? 'yin' : 'yang')) return false;
+                    return target?.isIn();
+                },
+                async cost(event, trigger, player) {
+                    event.result = await player.chooseTarget(get.prompt(event.skill), (card, player, target) => {
+                        return get.event().list.includes(target);
+                    }, lib.skill[event.skill].intro.content(null, player)).set('list', [player, event.indexedData]).set('ai', target => {
+                        const player = get.player(), att = get.attitude(player, target);
+                        if (player.storage.minimengmou) return att < 0 ? get.effect(target, { name: 'losehp' }, player, player) : 0;
+                        switch (Math.abs(att)) {
+                            case 1:
+                                return target.hasCard(card => {
+                                    if (get.name(card) !== 'sha') return false;
+                                    return target.hasValueTarget(card);
+                                }, 'hs') ? 4 : 0.5;
+                            case -1:
+                                if (!target.hasCard(card => {
+                                    if (get.name(card) !== 'sha') return false;
+                                    return target.hasValueTarget(card);
+                                }, 'hs')) {
+                                    return target.hasCard(card => {
+                                        if (get.name(card) !== 'sha') return false;
+                                        return target.hasUseTarget(card);
+                                    }, 'hs') ? 5 : 1.5;
+                                }
+                                return 0;
+                            case 0:
+                                return 0;
+                        }
+                    }).forResult();
+                },
+                async content(event, trigger, player) {
+                    const target = event.targets[0], storage = player.storage.minimengmou ? 'yin' : 'yang';
+                    player.addTempSkill(`${event.name}_used`);
+                    player.markAuto(`${event.name}_used`, [storage]);
+                    player.changeZhuanhuanji(event.name);
+                    let [num, maxHp] = [0, player.maxHp];
+                    while (num < maxHp) {
+                        num++;
+                        let result, next;
+                        if (storage === 'yin') {
+                            next = target.chooseToRespond(card => get.name(card) === 'sha');
+                            next.set('ai', () => 1 + Math.random());
+                            next.set('prompt', `盟谋：是否打出第${get.cnNumber(num, true)}张【杀】？`);
+                            result = await next.forResult();
+                        }
+                        else {
+                            player.addTempSkill(`${event.name}_effect`);
+                            next = target.chooseToUse(card => {
+                                const event = get.event();
+                                if (!lib.filter.cardEnabled(card, event.player, event)) return false;
+                                return get.name(card) === 'sha';
+                            });
+                            next.set('prompt', `盟谋：是否使用第${get.cnNumber(num, true)}张【杀】？`);
+                            result = await next.forResult();
+                        }
+                        if (!result?.bool) {
+                            if (storage === 'yin') {
+                                target.popup('杯具');
+                                await target.loseHp(maxHp + 1 - num);
+                            }
+                            break;
+                        }
+                    }
+                },
+                mark: true,
+                marktext: '☯',
+                zhuanhuanji: true,
+                intro: {
+                    content(storage, player) {
+                        return get.skillInfoTranslation('minimengmou', player, false).split('②')[1];
+                    },
+                },
+                group: 'minimengmou_change',
+                subSkill: {
+                    used: {
+                        charlotte: true,
+                        onremove: true,
+                    },
+                    effect: {
+                        charlotte: true,
+                        trigger: { global: 'damageSource' },
+                        filter(event, player) {
+                            if (!event.source?.isIn() || event.getParent().type !== 'card') return false;
+                            if (event.source.isHealthy() || event.card.name !== 'sha') return false;
+                            return event.getParent(4).name === 'minimengmou' && event.getParent(4).player === player;
+                        },
+                        silent: true,
+                        content() {
+                            trigger.source.recover(trigger.num);
+                        },
+                    },
+                    change: {
+                        audio: 'minimengmou',
+                        trigger: {
+                            global: 'phaseBefore',
+                            player: 'enterGame',
+                        },
+                        filter(event, player) {
+                            return event.name != 'phase' || game.phaseNumber == 0;
+                        },
+                        prompt2(event, player) {
+                            return '切换【盟谋】为状态' + (player.storage.minimengmou ? '阳' : '阴');
+                        },
+                        check: () => Math.random() > 0.5,
+                        content() {
+                            player.changeZhuanhuanji('minimengmou');
+                        },
+                    },
+                },
+            },
             //群
             miniqieting: {
                 audio: 'qieting',
@@ -41510,6 +41702,14 @@ const packs = function () {
                 const str = player.storage[skill] ? '每回合每项各限一次' : '每回合限一次';
                 return str + '，当你使用伤害牌时，你可以选择一项：1.摸体力上限张牌且本回合不计入手牌上限；2.令此牌伤害+1且获得造成伤害的牌。';
             },
+            minimengmou(player, skill) {
+                const bool = player.storage[skill];
+                let yang = '使用至多X张【杀】，且其每以此法造成1点伤害则回复1点体力';
+                let yin = '打出至多X张【杀】，然后其每少打出一张则失去1点体力';
+                if (bool) yin = `<span class='bluetext'>${yin}</span>`;
+                else yang = `<span class='firetext'>${yang}</span>`;
+                return `转换技。①游戏开始时，你可以转换此技能状态；②每回合每项各限一次，当你获得其他角色的牌后或其他角色获得你的牌后，你可以令你或其：阳，${yang}；阴，${yin}。（X为你的体力上限）`;
+            },
         },
         translate: {
             MiNi_wei: '欢乐三国杀·魏国',
@@ -42438,6 +42638,7 @@ const packs = function () {
             Mbaby_star_sunshangxiang: '欢杀星孙尚香',
             Mbaby_yue_daqiao: '欢杀乐大乔',
             Mbaby_yue_zhoufei: '欢杀乐周妃',
+            Mbaby_dc_sb_lusu: '欢杀谋鲁肃',
             minizhiheng: '制衡',
             minizhiheng_info: '出牌阶段限一次，你可以弃置任意张牌并摸等量张牌。若你以此法弃置了全部手牌，则你额外摸一张牌。若本阶段你第一次发动〖制衡〗获得的牌未包含延时锦囊牌，则本阶段你可以额外发动一次〖制衡〗。若本阶段你第二次发动〖制衡〗获得的牌均为基本牌，则本阶段你可以额外发动一次〖制衡〗。',
             minijiuyuan: '救援',
@@ -42736,6 +42937,10 @@ const packs = function () {
             minilingkong_info: '锁定技。①准备阶段，你将手牌标记为“箜篌”。②你的“箜篌”牌不计入手牌上限。③当你于一回合内首次于摸牌阶段外得到牌后，你将这些牌标记为“箜篌”。',
             minixianshu: '贤淑',
             minixianshu_info: '出牌阶段，你可以将一张“箜篌”正面向上交给一名其他角色，然后你摸X张牌（X为你与其的体力值之差且至少为1，至多为5）。若此牌为红色，且该角色的体力值小于等于你，则其回复1点体力；若此牌为黑色，且该角色的体力值大于等于你，则其失去1点体力。',
+            minimingshi: '明势',
+            minimingshi_info: '摸牌阶段，你可以多摸两张牌。若如此做，此阶段结束时，你展示三张牌并令一名其他角色选择获得其中的一张牌。',
+            minimengmou: '盟谋',
+            minimengmou_info: '转换技。①游戏开始时，你可以转换此技能状态；②每回合每项各限一次，当你获得其他角色的牌后或其他角色获得你的牌后，你可以令你或其：阳，使用至多X张【杀】，且其每以此法造成1点伤害则回复1点体力；阴，打出至多X张【杀】，然后其每少打出一张则失去1点体力。（X为你的体力上限）',
             //群
             Mbaby_zuoci: '欢杀左慈',
             Mbaby_gaoshun: '欢杀高顺',

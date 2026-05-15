@@ -777,7 +777,7 @@ export async function precontent(bilibilicharacter) {
                 type: 'players',
                 data: (() => {
                     _status.HDWJ_ChangeLog_character = {
-                        //'MiNikill': [],
+                        'MiNikill': ['Mbaby_dc_sb_lusu'],
                         //'WeChatkill': [],
                     };
                     return Object.values(_status.HDWJ_ChangeLog_character).flat();
