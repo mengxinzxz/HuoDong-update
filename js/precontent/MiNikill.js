@@ -9050,82 +9050,71 @@ const packs = function () {
                 },
             },
             minienyuan: {
-                group: 'minienyuan_draw',
-                subfrequent: ['draw'],
                 audio: 'xinenyuan',
-                trigger: { player: 'gainEnd' },
-                filter(event, player) {
-                    return event.source && event.source.isIn() && event.source != player;
+                trigger: { global: ['gainAfter', 'loseAsyncAfter'] },
+                getIndex(event, player) {
+                    if (event.name === 'loseAsync' && event.type !== 'gain') return false;
+                    const cards1 = event.getl(player).cards2, cards2 = event.getg(player);
+                    return game.filterPlayer(current => {
+                        if (current === player) return false;
+                        const cardsx1 = event.getg(current), cardsx2 = event.getl(current).cards2;
+                        return cardsx1.some(i => cards1.includes(i)) || cards2.some(i => cardsx2.includes(i))
+                    }).sortBySeat();
                 },
-                logTarget: 'source',
-                check(event, player) {
-                    return get.attitude(player, event.source) > 0;
+                filter(event, player, name, target) {
+                    const draw = event.getg(target).some(i => event.getl(player).cards2.includes(i));
+                    return draw || target?.isIn();
                 },
-                content() {
-                    trigger.source.draw();
+                prompt2(event, player, name, target) {
+                    const draw = event.getg(target).some(i => event.getl(player).cards2.includes(i));
+                    return `${draw ? '' : `令${get.translation(target)}`}摸一张牌`;
                 },
-                subSkill: {
-                    draw: {
-                        audio: 'xinenyuan',
-                        trigger: { global: 'gainAfter' },
-                        filter(event, player) {
-                            if (event.player != player) {
-                                var evt = event.getl(player);
-                                return evt?.hs?.length > 0;
-                            }
-                            return false;
-                        },
-                        preHidden: true,
-                        forced: true,
-                        locked: false,
-                        content() {
-                            player.draw();
-                        },
-                    },
+                logTarget: (event, player, name, target) => target,
+                frequent(event, player, name, target) {
+                    return event.getg(target).some(i => event.getl(player).cards2.includes(i));
+                },
+                check(event, player, name, target) {
+                    const draw = event.getg(target).some(i => event.getl(player).cards2.includes(i));
+                    return get.effect(draw ? player : target, { name: 'draw' }, player, player) > 0;
+                },
+                async content(event, trigger, player) {
+                    const target = event.indexedData;
+                    await (trigger.getg(target).some(i => trigger.getl(player).cards2.includes(i)) ? player : target).draw();
                 },
             },
             minireenyuan: {
                 audio: 'reenyuan',
-                inherit: 'minienyuan',
-                group: ['minienyuan_draw', 'minireenyuan_damage'],
-                subSkill: {
-                    damage: {
-                        audio: 'reenyuan',
-                        trigger: { player: 'damageEnd' },
-                        logTarget: 'source',
-                        filter(event, player) {
-                            return event.source && event.source != player && event.source.isIn() && event.num > 0;
-                        },
-                        getIndex(event, player, triggername) {
-                            return event.num;
-                        },
-                        check(event, player) {
-                            const att = get.attitude(player, event.source);
-                            const num = event.source.countCards("h");
-                            if (att <= 0) return true;
-                            if (num > 2) return true;
-                            if (num) return att < 4;
-                            return false;
-                        },
-                        prompt2: '令该角色选择一项：①失去1点体力。②交给你一张红色手牌。若此牌不为♥，则你摸一张牌。',
-                        async content(event, trigger, player) {
-                            const { source } = trigger;
-                            const result = !source.countCards('h', { color: 'red' }) ? { bool: false } : await source.chooseToGive('h', player, `恩怨：将一张红色手牌交给${get.translation(player)}，否则失去1点体力`, { color: 'red' }).set('ai', card => {
-                                const { player, target } = get.event();
-                                if (get.attitude(player, target) > 0) {
-                                    if (get.suit(card) != 'heart') return 15 - get.value(card);
-                                    return 11 - get.value(card);
-                                } else {
-                                    let num = 12 - player.hp * 2;
-                                    if (get.suit(card) != 'heart') num -= 2;
-                                    return num - get.value(card);
-                                }
-                            }).forResult();
-                            if (!result.bool) await source.loseHp();
-                            else if (get.suit(result.cards[0]) != 'heart') await player.draw();
-                        }
+                trigger: { player: 'damageEnd' },
+                filter(event, player) {
+                    return event.source?.isIn() && event.source !== player;
+                },
+                getIndex: event => event.num,
+                check(event, player) {
+                    return get.attitude(player, event.source) <= 0;
+                },
+                logTarget: 'source',
+                prompt2: () => lib.translate.minireenyuan_info.split('②')[1],
+                async content(event, trigger, player) {
+                    const source = trigger.source;
+                    const result = source.hasCard(card => {
+                        return _status.connectMode || get.color(card) === 'red';
+                    }, 'h') ? await source.chooseToGive('h', player, `恩怨：将一张红色手牌交给${get.translation(player)}，否则失去1点体力`, { color: 'red' }).set('ai', card => {
+                        const { player, target } = get.event(), att = get.attitude(player, target);
+                        if (get.suit(card) !== 'heart') return (att > 0 ? 15 : 10) - get.value(card);
+                        return (att > 0 ? 10 : 15) - get.value(card);
+                    }).forResult() : { bool: false };
+                    if (result?.bool && result.cards?.length) {
+                        if (get.suit(result.cards[0], source) !== 'heart') await player.draw();
                     }
-                }
+                    else await source.loseHp();
+                },
+                group: 'minireenyuan_draw',
+                subSkill: {
+                    draw: {
+                        audio: 'reenyuan',
+                        inherit: 'minienyuan',
+                    },
+                },
             },
             minirexuanhuo: {
                 audio: 'rexuanhuo',
