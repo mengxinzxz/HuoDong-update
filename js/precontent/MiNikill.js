@@ -1165,7 +1165,7 @@ const packs = function () {
                 trigger: { player: ['phaseJudgeBefore', 'phaseDrawBefore', 'phaseUseBefore', 'phaseDiscardBefore', 'phaseJieshuBegin'] },
                 filter(event, player) {
                     if (event.name == 'phaseJieshu') return player.getHistory('skipped').length >= 3;
-                    return player.countCards('h') > 0;
+                    return player.hasCard(card => _status.connectMode || lib.filter.cardDiscardable(card, player), 'h');
                 },
                 preHidden: true,
                 async cost(event, trigger, player) {
