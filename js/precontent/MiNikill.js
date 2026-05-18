@@ -34839,6 +34839,7 @@ const packs = function () {
                     if (!event.source?.isIn() || !event.player.isIn() || event.source === event.player) return false;
                     const target = event[name === 'damageSource' ? 'player' : 'source'];
                     return player.hasCard(card => {
+                        if (_status.connectMode) return true;
                         return Array.from({ length: 5 }).map((_, i) => `equip${i + 1}`).some(subtype => {
                             const card2 = get.autoViewAs({ name: 'minizigu_gu' }, [card]);
                             card2.subtypes = [subtype];
