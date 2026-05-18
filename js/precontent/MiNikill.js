@@ -9065,18 +9065,15 @@ const packs = function () {
                     const draw = event.getg(target).some(i => event.getl(player).cards2.includes(i));
                     return draw || target?.isIn();
                 },
-                prompt2(event, player, name, target) {
-                    const draw = event.getg(target).some(i => event.getl(player).cards2.includes(i));
-                    return `${draw ? '' : `令${get.translation(target)}`}摸一张牌`;
+                async cost(event, trigger, player) {
+                    const target = event.indexedData;
+                    const draw = trigger.getg(target).some(i => trigger.getl(player).cards2.includes(i));
+                    event.result = (!draw || player.hiddenSkills.includes(event.skill)) ? await player.chooseBool(get.prompt(event.skill), `${draw ? '' : `令${get.translation(target)}`}摸一张牌`).set('choice', (() => {
+                        return get.effect(draw ? player : target, { name: 'draw' }, player, player) > 0;
+                    })()).setHiddenSkill(event.skill).forResult() : { bool: true };
                 },
+                preHidden: true,
                 logTarget: (event, player, name, target) => target,
-                frequent(event, player, name, target) {
-                    return event.getg(target).some(i => event.getl(player).cards2.includes(i));
-                },
-                check(event, player, name, target) {
-                    const draw = event.getg(target).some(i => event.getl(player).cards2.includes(i));
-                    return get.effect(draw ? player : target, { name: 'draw' }, player, player) > 0;
-                },
                 async content(event, trigger, player) {
                     const target = event.indexedData;
                     await (trigger.getg(target).some(i => trigger.getl(player).cards2.includes(i)) ? player : target).draw();
@@ -42301,7 +42298,7 @@ const packs = function () {
             minixuanhuo: '眩惑',
             minixuanhuo_info: '摸牌阶段，你可以选择一名其他角色，除非该角色对你选择的另一名角色使用一张【杀】，否则你获得其一张牌。',
             minireenyuan: '恩怨',
-            minireenyuan_info: '①当你获得一名其他角色的牌后，你可以令其摸一张牌；其他角色获得你的牌后，你可以摸一张牌。②当你受到1点伤害后，你可以令伤害来源选择一项：1.交给你一张红色手牌，然后若此牌不为红桃牌，你摸一张牌；2.失去1点体力。',
+            minireenyuan_info: '①当你获得一名其他角色的牌后，你可以令其摸一张牌；其他角色获得你的牌后，你摸一张牌。②当你受到1点伤害后，你可以令伤害来源选择一项：1.交给你一张红色手牌，然后若此牌不为红桃牌，你摸一张牌；2.失去1点体力。',
             minirexuanhuo: '眩惑',
             minirexuanhuo_info: '摸牌阶段结束时，你可以交给一名其他角色至多两张手牌，然后其选择一项：1.视为对你选择的另一名其他角色使用任意一张【杀】或【决斗】；2.你观看并获得其任意张手牌。',
             miniqianxi: '潜袭',
