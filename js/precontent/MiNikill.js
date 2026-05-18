@@ -1173,11 +1173,20 @@ const packs = function () {
                         event.result = { bool: true };
                         return;
                     }
-                    var check, str = '弃置一张手牌并跳过';
-                    str += ['判定', '摸牌', '出牌', '弃牌'][lib.skill.miniqiaobian.trigger.player.indexOf(event.triggername)];
-                    str += '阶段';
+                    var check, str = `弃置一张手牌并跳过${get.translation(trigger.name)}`;
                     if (trigger.name == 'phaseDraw') str += '，然后可以获得至多两名角色各一张手牌';
                     if (trigger.name == 'phaseUse') str += '，然后可以移动场上的一张牌';
+                    const check1 = (() => {
+                        let num1 = 0, num2 = 0;
+                        game.countPlayer(target => {
+                            if (target !== player) {
+                                const att = get.attitude(player, target);
+                                if (att <= 0) num1++;
+                                if (att < 0) num2++;
+                            }
+                        });
+                        return num1 >= 2 && num2 > 0;
+                    })();
                     switch (trigger.name) {
                         case 'phaseJudge':
                             var list = player.getHistory('skipped'), num = list.length + 1;
@@ -1185,121 +1194,57 @@ const packs = function () {
                             if (num >= 3) check = false;
                             else {
                                 if (player.countCards('h') > 1) {
-                                    if (!list.includes('phaseDraw')) {
-                                        var check1 = function () {
-                                            var i, num = 0, num2 = 0, players = game.filterPlayer();
-                                            for (i = 0; i < players.length; i++) {
-                                                if (player != players[i] && players[i].countCards('h')) {
-                                                    var att = get.attitude(player, players[i]);
-                                                    if (att <= 0) num++;
-                                                    if (att < 0) num2++;
-                                                }
-                                            }
-                                            return num >= 2 && num2 > 0;
-                                        };
-                                        if (check1()) num++;
-                                    }
-                                    if (!list.includes('phaseUse')) {
-                                        var check;
-                                        if (!player.canMoveCard(true)) check = false;
-                                        else {
-                                            check = game.hasPlayer(function (current) {
-                                                return get.attitude(player, current) > 0 && current.countCards('j');
-                                            });
-                                            if (!check) {
-                                                if (player.countCards('h') > player.hp + 1) check = false;
-                                                else if (player.countCards('h', { name: ['wuzhong'] })) check = false;
-                                                else check = true;
-                                            }
-                                        }
-                                        if (check) num++;
-                                    }
+                                    if (!list.includes('phaseDraw') && check1) num++;
+                                    if (!list.includes('phaseUse') && player.canMoveCard(true)) num++;
                                     if (num == 2 && !list.includes('phaseDiscard')) num++;
                                     if (num == 3) check = true;
                                 }
                             }
                             break;
                         case 'phaseDraw':
-                            var i, num = 0, num2 = 0, players = game.filterPlayer();
-                            for (i = 0; i < players.length; i++) {
-                                if (player != players[i] && players[i].countCards('h')) {
-                                    var att = get.attitude(player, players[i]);
-                                    if (att <= 0) {
-                                        num++;
-                                    }
-                                    if (att < 0) {
-                                        num2++;
-                                    }
-                                }
-                            }
-                            check = (num >= 2 && num2 > 0);
+                            check = check1;
                             break;
                         case 'phaseUse':
-                            if (!player.canMoveCard(true)) {
-                                check = false;
-                            }
-                            else {
-                                check = game.hasPlayer(function (current) {
-                                    return get.attitude(player, current) > 0 && current.countCards('j');
-                                });
-                                if (!check) {
-                                    if (player.countCards('h') > player.hp + 1) {
-                                        check = false;
-                                    }
-                                    else if (player.countCards('h', { name: ['wuzhong'] })) {
-                                        check = false;
-                                    }
-                                    else {
-                                        check = true;
-                                    }
-                                }
-                            }
+                            check = player.canMoveCard(true);
                             break;
                         case 'phaseDiscard':
                             check = (player.needsToDiscard() || player.getHistory('skipped').length == 2);
                             break;
                     }
-                    event.result = await player.chooseToDiscard(get.prompt('miniqiaobian'), str, lib.filter.cardDiscardable).set('ai', card => {
+                    event.result = await player.chooseToDiscard(get.prompt(event.skill), str, lib.filter.cardDiscardable).set('ai', card => {
                         if (!_status.event.check) return -1;
                         return 7 - get.value(card);
-                    }).set('check', check).set('logSkill', 'miniqiaobian').setHiddenSkill('miniqiaobian').forResult();
+                    }).set('check', check).set('logSkill', event.skill).setHiddenSkill(event.skill).forResult();
                 },
                 popup: false,
-                content() {
-                    'step 0'
+                async content(event, trigger, player) {
                     if (trigger.name == 'phaseJieshu') {
-                        player.logSkill('miniqiaobian');
-                        player.draw(2);
-                        event.finish();
+                        player.logSkill(event.name);
+                        await player.draw(2);
                         return;
                     }
-                    'step 1'
                     trigger.cancel();
-                    game.log(player, '跳过了', '#y' + ['判定', '摸牌', '出牌', '弃牌'][lib.skill.miniqiaobian.trigger.player.indexOf(event.triggername)] + '阶段');
-                    if (trigger.name == 'phaseUse') {
-                        if (player.canMoveCard()) player.moveCard();
-                        event.finish();
+                    game.log(player, '跳过了', `#y${get.translation(trigger.name)}`);
+                    switch (trigger.name) {
+                        case 'phaseDraw':
+                            const result = await player.chooseTarget([1, 2], '获得至多两名其他角色各一张手牌', function (card, player, target) {
+                                return target != player && target.countCards('h');
+                            }).set('ai', function (target) {
+                                const player = get.player();
+                                return get.effect(target, { name: 'shunshou_copy', position: 'h' }, player, player);
+                            }).forResult();
+                            if (result?.bool && result.targets?.length) {
+                                const targets = result.targets.sortBySeat();
+                                player.line(targets, 'green');
+                                await player.gainMultiple(targets);
+                                await game.delay();
+                            }
+                            break;
+                        case 'phaseUse':
+                            if (player.canMoveCard()) await player.moveCard();
+                            else await game.delayx();
+                            break;
                     }
-                    else if (trigger.name == 'phaseDraw') {
-                        player.chooseTarget([1, 2], '获得至多两名角色各一张手牌', function (card, player, target) {
-                            return target != player && target.countCards('h');
-                        }).set('ai', function (target) {
-                            return 1 - get.attitude(_status.event.player, target);
-                        });
-                    }
-                    else event.finish();
-                    'step 2'
-                    if (result.bool) {
-                        result.targets.sortBySeat();
-                        player.line(result.targets, 'green');
-                        event.targets = result.targets;
-                        if (!event.targets.length) event.finish();
-                    }
-                    else event.finish();
-                    'step 3'
-                    player.gainMultiple(event.targets);
-                    'step 4'
-                    game.delay();
                 },
                 ai: { threaten: 3 },
             },
