@@ -262,7 +262,7 @@ const packs = function () {
             wechat_sb_menghuo: ['male', 'shu', 4, ['wechatsbhuoshou', 'wechatsbzaiqi']],
             wechat_sb_zhenji: ['female', 'wei', 3, ['wechatsbluoshen', 'wechatsbqingguo']],
             //志系列
-            wechat_zhi_yuanshu: ['male', 'qun', 4, []],
+            wechat_zhi_yuanshu: ['male', 'qun', 4, ['wechatshehuai', 'wechatzaochen']],
             wechat_zhi_fuhuanghou: ['female', 'qun', 3, ['wechatweiluan', 'wechatrequjian', 'wechatshutui']],
             wechat_zhi_caojie: ['female', 'qun', 4, ['wechatweiqi', 'wechatxiangyi']],
             wechat_zhi_caocao: ['male', 'wei', 4, ['wechatjishi', 'wechatercai', 'wechatquanshi']],
