@@ -99,7 +99,7 @@ export async function precontent(bilibilicharacter) {
                             break;
                     }
                 }
-                game.broadcastAll(function (evt) {
+                game.broadcastAll(evt => {
                     if (get.is.phoneLayout()) ui.bolhzkqInfo = ui.create.div('.touchinfo.left', ui.window);
                     else ui.bolhzkqInfo = ui.create.div(ui.gameinfo);
                     ui.bolhzkqInfo.innerHTML = '合纵抗秦事件：' + evt.map(i => `${lib.translate[i]}${i === 'qin_changpingzhizhan' ? '/鏖战模式' : ''}`).join('、');
@@ -779,6 +779,7 @@ export async function precontent(bilibilicharacter) {
                                 return `${str}：${map[ext].map(name => lib.translate[name]).join('、')}`;
                             });
                         })(),
+                        '允许多开合纵抗秦/官渡之战事件',
                         'To be continued...',
                     ];
                 },
