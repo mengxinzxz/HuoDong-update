@@ -104,7 +104,12 @@ export async function precontent(bilibilicharacter) {
                     else ui.bolhzkqInfo = ui.create.div(ui.gameinfo);
                     ui.bolhzkqInfo.innerHTML = '合纵抗秦事件：' + evt.map(i => `${lib.translate[i]}${i === 'qin_changpingzhizhan' ? '/鏖战模式' : ''}`).join('、');
                 }, KQShiJian);
-                await game.me.chooseControl('ok').set('prompt', `###本局抗秦特殊事件###${KQShiJian.map(evt => `<li>${lib.translate[evt]}：${lib.translate[`${evt}_info`]}`).join('<br>')}`);
+                const humans = game.players.filter(current => current === game.me || current.isOnline());
+                if (humans.length > 0) {
+                    await game.chooseAnyOL(humans, (player, KQShiJian) => {
+                        return player.chooseControl('ok').set('prompt', `###本局抗秦特殊事件###${KQShiJian.map(evt => `<li>${lib.translate[evt]}：${lib.translate[`${evt}_info`]}`).join('<br>')}`).set('_global_waiting', true);
+                    }, [KQShiJian]);
+                }
             }
             if (Array.isArray(GDShiJian) && GDShiJian.length > 0) {
                 for (const evt of GDShiJian) game.addGlobalSkill(evt);
@@ -113,7 +118,12 @@ export async function precontent(bilibilicharacter) {
                     else ui.bolGuanDuInfo = ui.create.div(ui.gameinfo);
                     ui.bolGuanDuInfo.innerHTML = '官渡之战事件：' + get.translation(evt);
                 }, GDShiJian);
-                await game.me.chooseControl('ok').set('prompt', `###本局官渡特殊事件###${GDShiJian.map(evt => `<li>${lib.translate[evt]}：${lib.translate[`${evt}_info`]}`).join('<br>')}`);
+                const humans = game.players.filter(current => current === game.me || current.isOnline());
+                if (humans.length > 0) {
+                    await game.chooseAnyOL(humans, (player, GDShiJian) => {
+                        return player.chooseControl('ok').set('prompt', `###本局官渡特殊事件###${GDShiJian.map(evt => `<li>${lib.translate[evt]}：${lib.translate[`${evt}_info`]}`).join('<br>')}`).set('_global_waiting', true);
+                    }, [GDShiJian]);
+                }
             }
         },
     };
