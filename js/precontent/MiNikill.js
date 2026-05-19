@@ -24634,7 +24634,6 @@ const packs = function () {
                 onremove(player) {
                     player.removeSkill('minipingjian_remove');
                 },
-                group: 'minipingjian_use',
                 audio: 'pingjian',
                 trigger: { player: ['damageEnd', 'phaseJieshuBegin'] },
                 frequent: true,
@@ -24692,119 +24691,124 @@ const packs = function () {
                     player.addTempSkill(result.control);
                     player.storage.minipingjian_remove[result.control] = (trigger.name == 'damage' ? trigger : 'phaseJieshu');
                 },
+                group: 'minipingjian_use',
                 derivation: 'Mbaby_characterlist_faq',
-            },
-            minipingjian_use: {
-                audio: 'pingjian',
-                enable: 'phaseUse',
-                usable: 1,
-                content() {
-                    'step 0'
-                    var allList = ((!_status.connectMode && lib.config.extension_活动武将_PingJianName) ? lib.config.extension_活动武将_PingJianName : lib.skill.minipingjian.getList()).filter(i => lib.character[i]);
-                    var list = [], skills = [], map = [];
-                    allList.randomSort();
-                    for (var i = 0; i < allList.length; i++) {
-                        var name = allList[i];
-                        var skills2 = lib.character[name][3];
-                        for (var j = 0; j < skills2.length; j++) {
-                            if (player.getStorage('minipingjian').includes(skills2[j])) continue;
-                            if (player.hasSkill(skills2[j], null, null, false) || get.is.locked(skills2[j], player)) continue;
-                            var info = get.plainText(lib.translate[skills2[j] + '_info'] || '');
-                            if (skills.includes(skills2[j]) || (info.includes('当你于出牌阶段') && !info.includes('当你于出牌阶段外'))) {
-                                list.add(name);
-                                if (!map[name]) map[name] = [];
-                                map[name].push(skills2[j]);
-                                skills.add(skills2[j]);
-                                continue;
-                            }
-                            var list2 = [skills2[j]];
-                            game.expandSkills(list2);
-                            for (var k = 0; k < list2.length; k++) {
-                                var info = lib.skill[list2[k]];
-                                if (!info || !info.enable || info.charlotte || info.limited || info.juexingji || info.hiddenSkill || info.dutySkill || (info.zhuSkill && !player.isZhu2()) || info.groupSkill) continue;
-                                if ((info.enable == 'phaseUse' || (Array.isArray(info.enable) && info.enable.includes('phaseUse'))) ||
-                                    (info.enable == 'chooseToUse' || (Array.isArray(info.enable) && info.enable.includes('chooseToUse')))) {
-                                    if (/*info.init||*/info.onChooseToUse || info.ai && (info.ai.combo || info.ai.notemp || info.ai.neg)) continue;
-                                    var evt = event.getParent(2);
-                                    if (info.init) info.init(player, list2[k]);
-                                    //if (info.onChooseToUse) info.onChooseToUse(evt);
-                                    if (info.filter) {
-                                        try {
-                                            var bool = info.filter(evt, player);
-                                            if (!bool) continue;
-                                        }
-                                        catch (e) {
-                                            continue;
+                subSkill: {
+                    use: {
+                        audio: 'pingjian',
+                        enable: 'phaseUse',
+                        usable: 1,
+                        content() {
+                            'step 0'
+                            var allList = ((!_status.connectMode && lib.config.extension_活动武将_PingJianName) ? lib.config.extension_活动武将_PingJianName : lib.skill.minipingjian.getList()).filter(i => lib.character[i]);
+                            var list = [], skills = [], map = [];
+                            allList.randomSort();
+                            for (var i = 0; i < allList.length; i++) {
+                                var name = allList[i];
+                                var skills2 = lib.character[name][3];
+                                for (var j = 0; j < skills2.length; j++) {
+                                    if (player.getStorage('minipingjian').includes(skills2[j])) continue;
+                                    if (player.hasSkill(skills2[j], null, null, false) || get.is.locked(skills2[j], player)) continue;
+                                    var info = get.plainText(lib.translate[skills2[j] + '_info'] || '');
+                                    if (skills.includes(skills2[j]) || (info.includes('当你于出牌阶段') && !info.includes('当你于出牌阶段外'))) {
+                                        list.add(name);
+                                        if (!map[name]) map[name] = [];
+                                        map[name].push(skills2[j]);
+                                        skills.add(skills2[j]);
+                                        continue;
+                                    }
+                                    var list2 = [skills2[j]];
+                                    game.expandSkills(list2);
+                                    for (var k = 0; k < list2.length; k++) {
+                                        var info = lib.skill[list2[k]];
+                                        if (!info || !info.enable || info.charlotte || info.limited || info.juexingji || info.hiddenSkill || info.dutySkill || (info.zhuSkill && !player.isZhu2()) || info.groupSkill) continue;
+                                        if ((info.enable == 'phaseUse' || (Array.isArray(info.enable) && info.enable.includes('phaseUse'))) ||
+                                            (info.enable == 'chooseToUse' || (Array.isArray(info.enable) && info.enable.includes('chooseToUse')))) {
+                                            if (/*info.init||*/info.onChooseToUse || info.ai && (info.ai.combo || info.ai.notemp || info.ai.neg)) continue;
+                                            var evt = event.getParent(2);
+                                            if (info.init) info.init(player, list2[k]);
+                                            //if (info.onChooseToUse) info.onChooseToUse(evt);
+                                            if (info.filter) {
+                                                try {
+                                                    var bool = info.filter(evt, player);
+                                                    if (!bool) continue;
+                                                }
+                                                catch (e) {
+                                                    continue;
+                                                }
+                                            }
+                                            else if (info.viewAs && typeof info.viewAs != 'function') {
+                                                try {
+                                                    if (evt.filterCard && !evt.filterCard(info.viewAs, player, evt)) continue;
+                                                    if (info.viewAsFilter && info.viewAsFilter(player) == false) continue;
+                                                }
+                                                catch (e) {
+                                                    continue;
+                                                }
+                                            }
+                                            list.push(name);
+                                            if (!map[name]) map[name] = [];
+                                            map[name].push(skills2[j]);
+                                            skills.add(skills2[j]);
+                                            break;
                                         }
                                     }
-                                    else if (info.viewAs && typeof info.viewAs != 'function') {
-                                        try {
-                                            if (evt.filterCard && !evt.filterCard(info.viewAs, player, evt)) continue;
-                                            if (info.viewAsFilter && info.viewAsFilter(player) == false) continue;
-                                        }
-                                        catch (e) {
-                                            continue;
-                                        }
-                                    }
-                                    list.push(name);
-                                    if (!map[name]) map[name] = [];
-                                    map[name].push(skills2[j]);
-                                    skills.add(skills2[j]);
-                                    break;
                                 }
+                                if (list.length > 2) break;
                             }
-                        }
-                        if (list.length > 2) break;
-                    }
-                    if (skills.length) player.chooseControl(skills).set('dialog', ['请选择要发动的技能', [list, 'character']]);
-                    else event.finish();
-                    'step 1'
-                    player.markAuto('minipingjian', [result.control]);
-                    player.addTempSkill(result.control);
-                    player.storage.minipingjian_remove[result.control] = 'phaseUse';
-                },
-                ai: {
-                    order: 12,
-                    result: { player: 1 },
-                },
-            },
-            minipingjian_remove: {
-                group: 'minipingjian_skill',
-                charlotte: true,
-                trigger: { player: ['phaseUseEnd', 'damageEnd', 'phaseJieshuBegin'] },
-                filter(event, player) {
-                    return Object.keys(player.storage.minipingjian_remove).find(function (skill) {
-                        if (event.name != 'damage') return player.storage.minipingjian_remove[skill] == event.name;
-                        return player.storage.minipingjian_remove[skill] == event;
-                    });
-                },
-                silent: true,
-                lastDo: true,
-                priority: -Infinity,
-                content() {
-                    var skills = Object.keys(player.storage.minipingjian_remove).filter(function (skill) {
-                        if (trigger.name != 'damage') return player.storage.minipingjian_remove[skill] == trigger.name;
-                        return player.storage.minipingjian_remove[skill] == trigger;
-                    });
-                    player.removeSkill(skills);
-                    for (var skill of skills) delete player.storage.minipingjian_remove[skill];
-                },
-            },
-            minipingjian_skill: {
-                charlotte: true,
-                trigger: { player: ['useSkill', 'logSkillBegin'] },
-                filter(event, player) {
-                    if (get.info(event.skill).charlotte) return false;
-                    var skill = event.sourceSkill || event.skill;
-                    return player.storage.minipingjian_remove[skill];
-                },
-                silent: true,
-                firstDo: true,
-                priority: Infinity,
-                content() {
-                    var skill = trigger.sourceSkill || trigger.skill;
-                    player.removeSkill(skill);
-                    delete player.storage.minipingjian_remove[skill];
+                            if (skills.length) player.chooseControl(skills).set('dialog', ['请选择要发动的技能', [list, 'character']]);
+                            else event.finish();
+                            'step 1'
+                            player.markAuto('minipingjian', [result.control]);
+                            player.addTempSkill(result.control);
+                            player.storage.minipingjian_remove[result.control] = 'phaseUse';
+                        },
+                        ai: {
+                            order: 12,
+                            result: { player: 1 },
+                        },
+                    },
+                    remove: {
+                        charlotte: true,
+                        trigger: { player: ['phaseUseEnd', 'damageEnd', 'phaseJieshuBegin'] },
+                        filter(event, player) {
+                            return Object.keys(player.storage.minipingjian_remove).some(function (skill) {
+                                if (event.name != 'damage') return player.storage.minipingjian_remove[skill] == event.name;
+                                return player.storage.minipingjian_remove[skill] == event;
+                            });
+                        },
+                        silent: true,
+                        lastDo: true,
+                        priority: -Infinity,
+                        content() {
+                            var skills = Object.keys(player.storage.minipingjian_remove).filter(function (skill) {
+                                if (trigger.name != 'damage') return player.storage.minipingjian_remove[skill] == trigger.name;
+                                return player.storage.minipingjian_remove[skill] == trigger;
+                            });
+                            for (var skill of skills) {
+                                player.removeSkill(skill);
+                                delete player.storage.minipingjian_remove[skill];
+                            }
+                        },
+                        group: 'minipingjian_skill',
+                    },
+                    skill: {
+                        charlotte: true,
+                        trigger: { player: ['useSkill', 'logSkillBegin'] },
+                        filter(event, player) {
+                            if (lib.skill[event.skill]?.charlotte) return false;
+                            var skill = event.sourceSkill || event.skill;
+                            return player.storage.minipingjian_remove[skill];
+                        },
+                        silent: true,
+                        firstDo: true,
+                        priority: Infinity,
+                        content() {
+                            var skill = trigger.sourceSkill || trigger.skill;
+                            player.removeSkill(skill);
+                            delete player.storage.minipingjian_remove[skill];
+                        },
+                    },
                 },
             },
             //貂蝉
@@ -43154,7 +43158,6 @@ const packs = function () {
             minijixu: '击虚',
             minijixu_info: '出牌阶段限一次，若你有手牌，你可以令至多四名其他角色猜测你的手牌中是否有【杀】。所有角色猜测结束后，你依次弃置所有猜错的角色的一张牌并视为对其使用一张【杀】，然后你摸X张牌且本回合的手牌上限+X（X为猜对的角色数+1）。',
             minipingjian: '评荐',
-            minipingjian_use: '评荐',
             minipingjian_info: '结束阶段/当你受到伤害后/出牌阶段限一次，你可以令系统从欢杀将池中随机检索出三张拥有发动时机为结束阶段/当你受到伤害后/出牌阶段的技能的武将牌。然后你可以选择尝试发动其中一个技能。每个技能每局只能选择一次。',
             Mbaby_characterlist_append: '<span style="font-family:yuanli">欢杀将池：<br>活动武将扩展页面自定义欢杀将池（未自定义将池/联机模式默认为欢乐三国杀全武将）。</span>',
             Mbaby_characterlist_faq: '欢杀将池',

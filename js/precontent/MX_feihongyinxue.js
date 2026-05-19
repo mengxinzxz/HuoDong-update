@@ -47,7 +47,7 @@ const packs = function () {
             mx_fh_shen_taishici: ['male', 'shen', 4, ['dulie', 'fh_powei'], ['wu', 'name:太史|慈']],
             mx_fh_dc_sunziliufang: ['male', 'wei', 3, ['dcqinshen', 'fh_weidang'], ['name:孙|资-刘|放']],
             mx_fh_liyan: ['male', 'shu', 3, ['fh_duliang', 'fh_fulin']],
-            mx_fh_dc_huanghao: ['male', 'shu', 3, ['fh_qinqing', 'huisheng', 'dccunwei'], ['tempname:dc_huanghao']],
+            mx_fh_dc_huanghao: ['male', 'shu', 3, ['fh_qinqing', 'huisheng', 'dccunwei']],
             mx_fh_re_sundeng: ['male', 'wu', 4, ['fh_kuangbi']],
             mx_fh_xinxianying: ['female', 'wei', 3, ['rezhongjian', 'fh_caishi']],
             mx_fh_wuxian: ['female', 'shu', 3, ['fumian', 'fh_daiyan']],
@@ -57,14 +57,14 @@ const packs = function () {
             mx_fh_lukai: ['male', 'wu', 4, ['fh_bushi', 'lkzhongzhuang']],
             mx_fh_kebineng: ['male', 'qun', 4, ['fh_kousheng']],
             mx_fh_re_huangyueying: ['female', 'shu', 3, ['fh_jizhi', 'reqicai']],
-            mx_fh_re_zhenji: ['female', 'wei', 3, ['qingguo', 'fh_luoshen'], ['tempname:re_zhenji']],
+            mx_fh_re_zhenji: ['female', 'wei', 3, ['qingguo', 'fh_luoshen']],
             mx_fh_gz_huangzhong: ['male', 'shu', 4, ['fh_liegong'], ['die:huangzhong']],
             mx_fh_zhoutai: ['male', 'wu', 4, ['fh_buqu', 'fh_fenji']],
-            mx_fh_ol_sp_zhugeliang: ['male', 'shu', 3, ['bazhen', 'olhuoji', 'olkanpo', 'fh_cangzhuo'], ['tempname:ol_sp_zhugeliang', 'name:诸葛|亮']],
-            mx_fh_re_taishici: ['male', 'wu', 4, ['tianyi', 'fh_hanzhan'], ['tempname:re_taishici', 'name:太史|慈']],
+            mx_fh_ol_sp_zhugeliang: ['male', 'shu', 3, ['bazhen', 'olhuoji', 'olkanpo', 'fh_cangzhuo'], ['name:诸葛|亮']],
+            mx_fh_re_taishici: ['male', 'wu', 4, ['tianyi', 'fh_hanzhan'], ['name:太史|慈']],
             mx_fh_yanwen: ['male', 'qun', 4, ['fh_shuangxiong', 'fh_xiayong'], ['name:颜|良-文|丑']],
             mx_fh_guanqiujian: ['male', 'wei', 4, ['fh_zhengrong', 'fh_hongju'], ['name:毌丘|俭']],
-            mx_fh_xin_lingtong: ['male', 'wu', 4, ['fh_xuanfeng', 'yongjin'], ['tempname:xin_lingtong']],
+            mx_fh_xin_lingtong: ['male', 'wu', 4, ['fh_xuanfeng', 'yongjin']],
             mx_fh_dc_xushu: ['male', 'shu', 4, ['bolzhuhai', 'fh_qianxin']],
             mx_fh_re_liaohua: ['male', 'shu', 4, ['fh_dangxian', 'xinfuli']],
             mx_fh_zhuzhi: ['male', 'wu', 4, ['fh_anguo']],
@@ -4634,7 +4634,9 @@ const packs = function () {
         if (Array.isArray(MX_feihongyinxue.character[i])) MX_feihongyinxue.character[i] = get.convertedCharacter(MX_feihongyinxue.character[i]);
         MX_feihongyinxue.character[i].trashBin ??= [];
         MX_feihongyinxue.character[i].dieAudios ??= [];
+        MX_feihongyinxue.character[i].tempname ??= [];
         if (!MX_feihongyinxue.character[i].dieAudios.length) MX_feihongyinxue.character[i].dieAudios.push(i.slice(6));
+        if (!MX_feihongyinxue.character[i].tempname.length) MX_feihongyinxue.character[i].tempname.push(i.slice(6));
         MX_feihongyinxue.character[i].img = `image/character/${i.slice(6)}.jpg`;
         let trans = MX_feihongyinxue.translate[i];
         if (trans.startsWith('飞鸿神')) MX_feihongyinxue.translate[i + '_prefix'] = '飞鸿|神';
