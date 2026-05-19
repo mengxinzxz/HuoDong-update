@@ -55,7 +55,7 @@ const packs = function () {
             mx_fh_jikang: ['male', 'wei', 3, ['fh_qingxian', 'fh_juexiang']],
             mx_fh_zhugeshang: ['male', 'shu', 3, ['fh_sangu', 'yizu'], ['name:诸葛|尚']],
             mx_fh_lukai: ['male', 'wu', 4, ['fh_bushi', 'lkzhongzhuang']],
-            mx_fh_kebineng: ['male', 'qun', 3, ['fh_kousheng']],
+            mx_fh_kebineng: ['male', 'qun', 4, ['fh_kousheng']],
             mx_fh_re_huangyueying: ['female', 'shu', 3, ['fh_jizhi', 'reqicai']],
             mx_fh_re_zhenji: ['female', 'wei', 3, ['qingguo', 'fh_luoshen'], ['tempname:re_zhenji']],
             mx_fh_gz_huangzhong: ['male', 'shu', 4, ['fh_liegong'], ['die:huangzhong']],
