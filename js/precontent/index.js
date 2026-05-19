@@ -74,14 +74,14 @@ export async function precontent(bilibilicharacter) {
                             game.qin_hengsaoliuhe = true;
                             var cards = [];
                             if (!lib.inpile.includes('qin_chuanguoyuxi')) {
-                                var card = game.createCard2('qin_chuanguoyuxi', 'heart', 7);
+                                var card1 = game.createCard2('qin_chuanguoyuxi', 'heart', 7);
                                 game.broadcastAll(() => lib.inpile.add('qin_chuanguoyuxi'));
-                                cards.push(card);
+                                cards.push(card1);
                             }
                             if (!lib.inpile.includes('qin_zhenlongchangjian')) {
-                                var card = game.createCard2('qin_zhenlongchangjian', 'heart', 2);
+                                var card2 = game.createCard2('qin_zhenlongchangjian', 'heart', 2);
                                 game.broadcastAll(() => lib.inpile.add('qin_zhenlongchangjian'));
-                                cards.push(card);
+                                cards.push(card2);
                             }
                             if (cards.length > 0) {
                                 //for (const card of cards) ui.cardPile.insertBefore(card, ui.cardPile.childNodes[get.rand(0, ui.cardPile.childNodes.length)]);
