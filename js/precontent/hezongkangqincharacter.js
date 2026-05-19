@@ -1153,7 +1153,9 @@ const packs = function () {
                 audio: 'ext:活动武将/audio/skill:true',
                 trigger: { player: ['useCard', 'respond'] },
                 filter(event, player) {
-                    return player.getHistory('useCard').length + player.getHistory('respond').length == 1;
+                    return game.getGlobalHistory('everything', evt => {
+                        return evt.player === player && ['useCard', 'respond'].includes(evt.name);
+                    }).indexOf(event) === 0;
                 },
                 forced: true,
                 content() {
