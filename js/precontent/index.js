@@ -55,9 +55,9 @@ export async function precontent(bilibilicharacter) {
             if (lib.config.extension_活动武将_KQShiJian != 'off' && !game.hzkqshijianed) {
                 game.hzkqshijianed = true;
                 var evt = lib.config.extension_活动武将_KQShiJian;
-                if (['hzlh', 'cpzz', 'lscq', 'sqzb', 'zjzl', 'scth'].includes(evt)) game.addGlobalSkill(evt);
+                if (['qin_hezonglianheng', 'qin_changpingzhizhan', 'qin_lvshichunqiu', 'qin_shaqiuzhibian', 'qin_zhaojizhiluan', 'qin_shichengtaihou'].includes(evt)) game.addGlobalSkill(evt);
                 switch (evt) {
-                    case 'bftq':
+                    case 'qin_bianfatuqiang':
                         game.bianfaed = true;
                         var list = [5, 7, 9];
                         for (var i = 0; i < 2; i++) {
@@ -68,14 +68,14 @@ export async function precontent(bilibilicharacter) {
                         game.updateRoundNumber();
                         game.log('商鞅变法已加入牌堆');
                         break;
-                    case 'hzlh':
+                    case 'qin_hezonglianheng':
                         game.lianhenged = true;
                         break;
-                    case 'cpzz':
+                    case 'qin_changpingzhizhan':
                         _status._aozhan = true;
                         game.playBackgroundMusic();
                         break;
-                    case 'hslh':
+                    case 'qin_hengsaoliuhe':
                         var list = [];
                         if (!lib.inpile.includes('qin_chuanguoyuxi')) {
                             list.push('qin_chuanguoyuxi');
@@ -91,9 +91,9 @@ export async function precontent(bilibilicharacter) {
                         }
                         game.updateRoundNumber();
                         game.log(get.translation(list), '已加入牌堆');
-                        game.hslh = true;
+                        game.qin_hengsaoliuhe = true;
                         break;
-                    case 'scth':
+                    case 'qin_shichengtaihou':
                         for (var name in lib.character) {
                             if (lib.character[name][0] == 'female') {
                                 if (typeof lib.character[name][2] == 'number') lib.character[name][2] = lib.character[name][2] + 1;
@@ -114,7 +114,7 @@ export async function precontent(bilibilicharacter) {
                     if (get.is.phoneLayout()) ui.bolhzkqInfo = ui.create.div('.touchinfo.left', ui.window);
                     else ui.bolhzkqInfo = ui.create.div(ui.gameinfo);
                     ui.bolhzkqInfo.innerHTML = '当前事件：' + get.translation(evt);
-                    if (evt == 'cpzz') ui.bolhzkqInfo.innerHTML += '/鏖战模式';
+                    if (evt == 'qin_changpingzhizhan') ui.bolhzkqInfo.innerHTML += '/鏖战模式';
                     ui.bolhzkqInfo.innerHTML += '<br>事件内容：' + get.translation(evt + '_info');
                 }, evt);
                 game.me.chooseControl('ok').set('prompt', '###合纵抗秦特殊事件：' + get.translation(evt) + '###' + get.translation(evt + '_info'));
@@ -140,7 +140,7 @@ export async function precontent(bilibilicharacter) {
         ruleSkill: true,
         trigger: { global: 'gameStart' },
         filter(event, player) {
-            return game.hslh && get.nameList(player).includes('qin_yingzheng');
+            return game.qin_hengsaoliuhe && get.nameList(player).includes('qin_yingzheng');
         },
         silent: true,
         content() {

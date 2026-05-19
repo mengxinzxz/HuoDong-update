@@ -111,7 +111,7 @@ const packs = function () {
             },
         },
         skill: {
-            hzlh: {
+            qin_hezonglianheng: {
                 charlotte: true,
                 ruleSkill: true,
                 trigger: { global: 'roundStart' },
@@ -120,7 +120,7 @@ const packs = function () {
                     player.link(true);
                 },
             },
-            cpzz: {
+            qin_changpingzhizhan: {
                 charlotte: true,
                 ruleSkill: true,
                 trigger: { player: 'phaseBegin' },
@@ -132,7 +132,7 @@ const packs = function () {
                     const card = get.cardPile('tao');
                     if (card) player.gain(card, 'gain2');
                 },
-                group: ['cpzz_wushuang', 'cpzz_aozhan'],
+                group: ['qin_changpingzhizhan_wushuang', 'qin_changpingzhizhan_aozhan'],
                 subSkill: {
                     wushuang: {
                         charlotte: true,
@@ -145,7 +145,7 @@ const packs = function () {
                     },
                 },
             },
-            scth: {
+            qin_shichengtaihou: {
                 charlotte: true,
                 trigger: { player: 'phaseBegin' },
                 getIndex(event, player) {
@@ -166,7 +166,7 @@ const packs = function () {
                     await target[result.control === '摸牌' ? 'draw' : 'recover']();
                 },
             },
-            lscq: {
+            qin_lvshichunqiu: {
                 charlotte: true,
                 trigger: {
                     player: ['gainAfter', 'phaseDrawBegin'],
@@ -175,7 +175,7 @@ const packs = function () {
                 filter(event, player, name) {
                     if (name === 'phaseDrawBegin') return player.hasSex('male');
                     if (_status.currentPhase === player || !get.nameList(player).includes('qin_lvbuwei')) return false;
-                    return (event.getg?.(player) ?? []).length > 0 && event.getParent(2).name != 'lscq';
+                    return (event.getg?.(player) ?? []).length > 0 && event.getParent(2).name != 'qin_lvshichunqiu';
                 },
                 silent: true,
                 content() {
@@ -183,7 +183,7 @@ const packs = function () {
                     else player.draw('nodelay');
                 },
             },
-            zjzl: {
+            qin_zhaojizhiluan: {
                 charlotte: true,
                 trigger: { source: 'damageBegin3' },
                 usable: 1,
@@ -197,7 +197,7 @@ const packs = function () {
                     trigger.player.draw();
                 },
             },
-            sqzb: {
+            qin_shaqiuzhibian: {
                 charlotte: true,
                 trigger: { player: 'die' },
                 forceDie: true,
@@ -1335,7 +1335,7 @@ const packs = function () {
             qin_zhaogao: '赵高',
             qin_zhangyi: '张仪',
             qin_lianheng: '连横',
-            qin_lianheng_info: '锁定技，游戏开始时，你令随机一名敌方角色获得「横」标记。拥有「横」标记的角色使用牌无法指定友方角色为目标。准备阶段，场上所有角色弃置「横」标记，然后若场上存活的敌方角色数大于1，则你令随机一名敌方角色获得「横」标记。',
+            qin_lianheng_info: '锁定技，游戏开始时，你令随机一名敌方角色获得“横”标记。拥有“横”标记的角色使用牌无法指定友方角色为目标。准备阶段，场上所有角色弃置“横”标记，然后若场上存活的敌方角色数大于1，则你令随机一名敌方角色获得“横”标记。',
             qin_lianheng_info_identity: '锁定技，游戏开始时，你令随机一名其他角色获得“横”标记。拥有“横”标记的角色使用牌无法指定你为目标。准备阶段，场上所有角色弃置“横”标记，然后若场上存活的其角色数大于1，则你令随机一名其他角色获得“横”标记。',
             qin_xichu: '戏楚',
             qin_xichu_info: '锁定技，当你成为【杀】的目标时，若其攻击范围内有其他角色，则该角色需要弃置一张点数为6的牌，否则此【杀】的目标转移给其攻击范围内你指定的另一名角色。',
@@ -1356,7 +1356,7 @@ const packs = function () {
             qin_limu: '立木',
             qin_limu_info: '锁定技，你使用的普通锦囊牌无法被【无懈可击】响应。',
             qin_kencao: '垦草',
-            qin_kencao_info: '场上有角色造成伤害后，你可以令其获得伤害值枚「功」标记，然后若其「功」标记数不小于三，则其移去所有「功」标记，增加1点体力上限，并回复1点体力。',
+            qin_kencao_info: '场上有角色造成伤害后，你可以令其获得伤害值枚“功”标记，然后若其“功”标记数不小于三，则其移去所有“功”标记，增加1点体力上限，并回复1点体力。',
             qin_jinnu: '劲弩',
             qin_jinnu_info: '锁定技，准备阶段，若你的装备区里没有【秦弩】，你使用一张【秦弩】。',
             qin_changjian: '长剑',
@@ -1407,25 +1407,25 @@ const packs = function () {
             qin_gaizhao: '改诏',
             qin_gaizhao_info: '当你成为【杀】或除【借刀杀人】外的普通锦囊牌的目标后，你可以将此牌的目标改为其他不为此牌目标的一名友方角色。',
             qin_haizhong: '害忠',
-            qin_haizhong_info: '其他角色回复体力时，你可以令其选择一项：①弃置一张红色牌；②受到你对其造成的X点伤害（X为其拥有的「害」标记数且至少为1），然后其获得1枚「害」标记。',
+            qin_haizhong_info: '其他角色回复体力时，你可以令其选择一项：①弃置一张红色牌；②受到你对其造成的X点伤害（X为其拥有的“害”标记数且至少为1），然后其获得1枚“害”标记。',
             qin_yuanli: '爰历',
             qin_yuanli_info: '锁定技，出牌阶段开始时，你获得两张普通锦囊牌。',
-            bftq: '变法图强',
-            bftq_info: '牌堆中加入三张【商鞅变法】。若商鞅在场，则商鞅使用【商鞅变法】可以额外指定一个目标。',
-            hzlh: '合纵连横',
-            hzlh_info: '每轮开始时，场上所有的角色进入横置状态。若张仪在场，拥有「横」标记的角色使用牌不能指定横置的角色为目标。',
-            cpzz: '长平之战',
-            cpzz_info: '游戏进入鏖战模式，且【杀】需要两张【闪】响应。若白起在场，则白起与其友方角色于摸牌阶段获得一张【桃】。',
-            hslh: '横扫六合',
-            hslh_info: '牌堆中加入【传国玉玺】和【真龙长剑】。若嬴政在场，则其装备之。',
-            lscq: '吕氏春秋',
-            lscq_info: '本局游戏中，所有男性角色摸牌阶段的摸牌数+1。若吕不韦在场，则吕不韦于回合外获得牌时，其额外摸一张牌。',
-            sqzb: '沙丘之变',
-            sqzb_info: '本局游戏中，阵亡角色的手牌和装备牌改为随机分配给场上所有的男性角色。若赵高在场，则改为赵高获得之。',
-            zjzl: '赵姬之乱',
-            zjzl_info: '本局游戏中，男性角色每回合首次造成伤害时，受伤角色摸一张牌。若赵姬在场，此效果的适用范围改为所有非秦势力角色。',
-            scth: '始称太后',
-            scth_info: '本局游戏中，女性角色的体力值和体力上限+1。若芈月在场，男性角色的回合开始时需令芈月回复1点体力或摸一张牌。',
+            qin_bianfatuqiang: '变法图强',
+            qin_bianfatuqiang_info: '牌堆中加入三张【商鞅变法】。若商鞅在场，则商鞅使用【商鞅变法】可以额外指定一个目标。',
+            qin_hezonglianheng: '合纵连横',
+            qin_hezonglianheng_info: '每轮开始时，场上所有的角色进入横置状态。若张仪在场，拥有“横”标记的角色使用牌不能指定横置的角色为目标。',
+            qin_changpingzhizhan: '长平之战',
+            qin_changpingzhizhan_info: '游戏进入鏖战模式，且【杀】需要两张【闪】响应。若白起在场，则白起与其友方角色于摸牌阶段获得一张【桃】。',
+            qin_hengsaoliuhe: '横扫六合',
+            qin_hengsaoliuhe_info: '牌堆中加入【传国玉玺】和【真龙长剑】。若嬴政在场，则其装备之。',
+            qin_lvshichunqiu: '吕氏春秋',
+            qin_lvshichunqiu_info: '本局游戏中，所有男性角色摸牌阶段的摸牌数+1。若吕不韦在场，则吕不韦于回合外获得牌时，其额外摸一张牌。',
+            qin_shaqiuzhibian: '沙丘之变',
+            qin_shaqiuzhibian_info: '本局游戏中，阵亡角色的手牌和装备牌改为随机分配给场上所有的男性角色。若赵高在场，则改为赵高获得之。',
+            qin_zhaojizhiluan: '赵姬之乱',
+            qin_zhaojizhiluan_info: '本局游戏中，男性角色每回合首次造成伤害时，受伤角色摸一张牌。若赵姬在场，此效果的适用范围改为所有非秦势力角色。',
+            qin_shichengtaihou: '始称太后',
+            qin_shichengtaihou_info: '本局游戏中，女性角色的体力值和体力上限+1。若芈月在场，男性角色的回合开始时需令芈月回复1点体力或摸一张牌。',
             qin_qinnu: '秦弩',
             qin_qinnu_info: '锁定技。当你使用【杀】指定目标后，你令其防具无效；你的使用【杀】的次数上限+1；当你失去装备区里的【秦弩】，你令此牌销毁。',
             qin_shangyangbianfa: '商鞅变法',

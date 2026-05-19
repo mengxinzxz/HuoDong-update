@@ -2983,7 +2983,7 @@ const packs = function () {
                         if (skill) dialog.add('<div><div class="skill">【' + get.translation(lib.translate[skill + '_ab'] || get.translation(skill).slice(0, 2)) + '】</div>' + '<div>' + get.skillInfoTranslation(skill, player) + '</div></div>');
                     },
                     content(storage) {
-                        return '共有' + get.cnNumber(storage.character.length) + '张「化身」'
+                        return '共有' + get.cnNumber(storage.character.length) + '张“化身”'
                     },
                     markcount(storage) {
                         return storage?.character?.length || 0;
