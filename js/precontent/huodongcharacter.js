@@ -7239,9 +7239,7 @@ const packs = function () {
                     if (game.getGlobalHistory('changeHp', function (evt) {
                         return evt.getParent().name == 'recover' && evt.getParent('phaseUse') == event;
                     }).length) sum++;
-                    if (!player.getHistory('sourceDamage', function (evt) {
-                        return evt.player != player && evt.getParent('phaseUse') == event;
-                    }).length) sum++;
+                    if (!player.hasHistory('sourceDamage', evt => evt.player != player && evt.getParent('phaseUse') == event)) sum++;
                     return sum;
                 },
                 ruleSkill: true,

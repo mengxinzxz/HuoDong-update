@@ -1426,9 +1426,7 @@ const packs = function () {
                 audio: 'chenqing',
                 trigger: { global: 'dying' },
                 filter(event, player) {
-                    return event.player.hp <= 0 && !player.getHistory('useSkill', function (evt) {
-                        return evt.skill == 'minichenqing';
-                    }).length;
+                    return event.player.hp <= 0 && !player.hasHistory('useSkill', evt => evt.skill == 'minichenqing');
                 },
                 async cost(event, trigger, player) {
                     event.result = await player.chooseTarget(get.prompt2('minichenqing'), function (card, player, target) {
@@ -23751,9 +23749,7 @@ const packs = function () {
                 audio: 'ol_shichou',
                 trigger: { player: 'useCardAfter' },
                 filter(event, player) {
-                    return event.card.name == 'sha' && !player.getHistory('sourceDamage', function (evt) {
-                        return evt.card == event.card;
-                    }).length;
+                    return event.card.name == 'sha' && !player.hasHistory('sourceDamage', evt => evt.card == event.card);
                 },
                 forced: true,
                 locked: false,
@@ -31504,9 +31500,9 @@ const packs = function () {
                 ai: {
                     unequip_ai: true,
                     skillTagfilter(player, tag, arg) {
-                        if (arg?.card && !player.getHistory('useCard', function (evt) {
+                        if (arg?.card && !player.hasHistory('useCard', function (evt) {
                             return (evt.card.name == 'sha' || evt.card.name == 'juedou');
-                        }).length && ['sha', 'juedou'].includes(arg.card.name)) return true;
+                        }) && ['sha', 'juedou'].includes(arg.card.name)) return true;
                         return false;
                     },
                 },
@@ -33357,9 +33353,7 @@ const packs = function () {
                                 /*
                                 else{
                                 var evt=_status.event.getParent('phaseUse');
-                                if(evt?.name=='phaseUse'&&!player.getHistory('useCard',function(evt2){
-                                return evt2.getParent('phaseUse')==evt;
-                                }).length) return true;
+                                if(evt?.name=='phaseUse'&&!player.hasHistory('useCard',evt2=>evt2.getParent('phaseUse')==evt)) return true;
                                 }
                                 */
                             },
