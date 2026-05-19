@@ -3821,7 +3821,7 @@ const packs = function () {
                     if (cards.length) await player.gain(cards, 'gain2');
                 },
             },
-            ljxc: {
+            bilibili_liangjunxiangchi: {
                 mod: {
                     maxHandcard(player, num) {
                         if (game.roundNumber <= 4) return num + game.roundNumber;
@@ -3843,7 +3843,7 @@ const packs = function () {
                     trigger.num++;
                 },
             },
-            xthj: {
+            bilibili_xutuhuanjin: {
                 trigger: { player: 'phaseUseEnd' },
                 forced: true,
                 filter(event, player) {
@@ -3856,8 +3856,8 @@ const packs = function () {
                     return true;
                 },
                 content() {
-                    player.addTempSkill('xthj_yingzi', { player: 'phaseDrawAfter' });
-                    player.addMark('xthj_yingzi', 1, false);
+                    player.addTempSkill('bilibili_xutuhuanjin_yingzi', { player: 'phaseDrawAfter' });
+                    player.addMark('bilibili_xutuhuanjin_yingzi', 1, false);
                 },
                 subSkill: {
                     yingzi: {
@@ -3868,16 +3868,16 @@ const packs = function () {
                         intro: { content: '下个摸牌阶段多摸#张牌' },
                         trigger: { player: 'phaseDrawBegin2' },
                         filter(event, player) {
-                            return !event.numFixed && player.hasMark('xthj_yingzi');
+                            return !event.numFixed && player.hasMark('bilibili_xutuhuanjin_yingzi');
                         },
                         forced: true,
                         content() {
-                            trigger.num += player.countMark('xthj_yingzi');
+                            trigger.num += player.countMark('bilibili_xutuhuanjin_yingzi');
                         },
                     },
                 },
             },
-            jsdy: {
+            bilibili_jianshoudaiyuan: {
                 charlotte: true,
                 mod: {
                     aiValue(player, card, num) {
@@ -3894,7 +3894,7 @@ const packs = function () {
                         return Math.max(num, [7, 5, 5, 3][Math.min(geti(), 3)]);
                     },
                     aiUseful() {
-                        return lib.skill.jsdy.mod.aiValue.apply(this, arguments);
+                        return lib.skill.bilibili_jianshoudaiyuan.mod.aiValue.apply(this, arguments);
                     },
                 },
                 locked: false,
@@ -3913,14 +3913,14 @@ const packs = function () {
                     return null;
                 },
                 onuse(links, player) {
-                    player.addTempSkill('jsdy_less', { player: 'phaseDiscardAfter' });
-                    player.addMark('jsdy_less', 1, false);
-                    player.markSkill('jsdy_less');
+                    player.addTempSkill('bilibili_jianshoudaiyuan_less', { player: 'phaseDiscardAfter' });
+                    player.addMark('bilibili_jianshoudaiyuan_less', 1, false);
+                    player.markSkill('bilibili_jianshoudaiyuan_less');
                 },
                 onrespond(links, player) {
-                    player.addTempSkill('jsdy_less', { player: 'phaseDiscardAfter' });
-                    player.addMark('jsdy_less', 1, false);
-                    player.markSkill('jsdy_less');
+                    player.addTempSkill('bilibili_jianshoudaiyuan_less', { player: 'phaseDiscardAfter' });
+                    player.addMark('bilibili_jianshoudaiyuan_less', 1, false);
+                    player.markSkill('bilibili_jianshoudaiyuan_less');
                 },
                 check(card) {
                     var player = _status.event.player;
@@ -3979,13 +3979,13 @@ const packs = function () {
                         intro: { content: '手牌上限-#' },
                         mod: {
                             maxHandcard(player, num) {
-                                return num - player.countMark('jsdy_less');
+                                return num - player.countMark('bilibili_jianshoudaiyuan_less');
                             },
                         },
                     },
                 },
             },
-            hswc: {
+            bilibili_huoshaowuchao: {
                 trigger: { global: 'damageBefore' },
                 silent: true,
                 firstDo: true,
@@ -3996,7 +3996,7 @@ const packs = function () {
                     game.setNature(trigger, 'fire');
                 },
             },
-            lckf: {
+            bilibili_liangcaokuifa: {
                 trigger: { player: ['useCardAfter', 'phaseDrawBegin'] },
                 silent: true,
                 filter(event, player) {
@@ -4010,7 +4010,7 @@ const packs = function () {
                     else player.draw();
                 },
             },
-            zyzw: {
+            bilibili_zhanzhuyanwen: {
                 trigger: { player: 'phaseBegin' },
                 silent: true,
                 content() {
@@ -4025,10 +4025,10 @@ const packs = function () {
                     if (!result.bool) player.loseHp();
                 },
             },
-            sssb: {
+            bilibili_shishengshibai: {
                 mod: {
                     aiOrder(player, card, num) {
-                        if (_status.sssb && _status.sssb % 10 == 9) {
+                        if (_status.bilibili_shishengshibai && _status.bilibili_shishengshibai % 10 == 9) {
                             if (['sha', 'tao', 'guohe', 'shunshou', 'tunliang', 'wuzhong', 'juedou', 'yuanjun'].includes(card.name)) return num + 15;
                         }
                     },
@@ -4039,18 +4039,18 @@ const packs = function () {
                 silent: true,
                 filter(event, player, name) {
                     if (name == 'useCard1') return true;
-                    if (!event.parent.sssb || event.targets.length != event.parent.triggeredTargets4.length) return false;
+                    if (!event.parent.bilibili_shishengshibai || event.targets.length != event.parent.triggeredTargets4.length) return false;
                     if (!event.targets || !event.targets.length || ['delay', 'equip'].includes(get.type(event.card))) return false;
                     return true;
                 },
                 content() {
                     if (event.triggername == 'useCard1') {
-                        if (!_status.sssb) _status.sssb = 0;
-                        _status.sssb++;
+                        if (!_status.bilibili_shishengshibai) _status.bilibili_shishengshibai = 0;
+                        _status.bilibili_shishengshibai++;
                         game.broadcastAll(function (num) {
                             if (ui.bolGuanDuInfo) ui.bolGuanDuInfo.innerHTML = '当前事件：十胜十败（' + num + '）';
-                        }, _status.sssb);
-                        if (_status.sssb % 10 == 0) trigger.sssb = true;
+                        }, _status.bilibili_shishengshibai);
+                        if (_status.bilibili_shishengshibai % 10 == 0) trigger.bilibili_shishengshibai = true;
                     }
                     else {
                         trigger.getParent().targets = trigger.getParent().targets.concat(trigger.targets);
@@ -4060,12 +4060,12 @@ const packs = function () {
                 ai: {
                     result: {
                         player(card, player, target) {
-                            if (_status.sssb && _status.sssb % 10 == 9 && card.name == 'tiesuo') return 'zerotarget';
+                            if (_status.bilibili_shishengshibai && _status.bilibili_shishengshibai % 10 == 9 && card.name == 'tiesuo') return 'zerotarget';
                         },
                     },
                 },
             },
-            yssq: {
+            bilibili_yiruoshengqiang: {
                 charlotte: true,
                 trigger: { source: 'damageBegin2' },
                 filter(event, player) {
@@ -4077,11 +4077,11 @@ const packs = function () {
                     trigger.num++;
                 },
             },
-            scej: {
+            bilibili_shichongerjiao: {
                 charlotte: true,
                 trigger: { player: 'phaseJieshu' },
                 filter(event, player) {
-                    return lib.skill.scej.filterx(event, player) || lib.skill.scej.filtery(event, player);
+                    return lib.skill.bilibili_shichongerjiao.filterx(event, player) || lib.skill.bilibili_shichongerjiao.filtery(event, player);
                 },
                 filterx(event, player) {
                     return player.isMaxHp();
@@ -4092,8 +4092,8 @@ const packs = function () {
                 forced: true,
                 silent: true,
                 content() {
-                    var bool1 = lib.skill.scej.filterx(trigger, player);
-                    var bool2 = lib.skill.scej.filtery(trigger, player);
+                    var bool1 = lib.skill.bilibili_shichongerjiao.filterx(trigger, player);
+                    var bool2 = lib.skill.bilibili_shichongerjiao.filtery(trigger, player);
                     if (bool1) player.chooseToDiscard('he', true);
                     if (bool2) player.loseHp();
                 },
@@ -14237,25 +14237,25 @@ const packs = function () {
             bilibili_chenggong_info: '一名角色使用牌指定目标后，若目标数不小于2，你可以令其摸一张牌。',
             bilibili_sp_xuyou: 'SP许攸',
             bilibili_sp_xuyou_prefix: 'SP',
-            ljxc: '两军相持',
-            ljxc_info: '若当前游戏轮数：小于等于4，所有角色的手牌上限+X（X为当前游戏轮数）；大于4，所有角色于其回合内使用的第一张【杀】造成的伤害+1。',
-            xthj: '徐图缓进',
-            xthj_yingzi: '徐图缓进',
-            xthj_info: '所有角色的出牌阶段结束时，若其于此阶段未使用或打出过【杀】，则其下个摸牌阶段多摸一张牌。',
-            jsdy: '坚守待援',
-            jsdy_info: '所有角色均可以将【杀】当作【闪】，【闪】当作【杀】使用或打出，然后其手牌上限-1直到其下一个弃牌阶段结束。',
-            hswc: '火烧乌巢',
-            hswc_info: '本局游戏内造成的无属性伤害均视为火属性。',
-            lckf: '粮草匮乏',
-            lckf_info: '所有角色摸牌阶段的额定摸牌数-1。当一名角色使用的牌结算完成后，若其因此牌造成了伤害，则其摸一张牌。',
-            zyzw: '斩颜良诛文丑',
-            zyzw_info: '所有角色的回合开始时，须选择一项：视为使用一张不可被【无懈可击】响应的【决斗】，或失去1点体力。',
-            sssb: '十胜十败',
-            sssb_info: '所有角色使用牌时，若此牌是整局游戏使用的第整十张牌且此牌不为延时锦囊牌或装备牌，则此牌所有目标角色再次成为此牌的目标角色。',
-            yssq: '以弱胜强',
-            yssq_info: '造成伤害时，若受伤角色体力值大于伤害来源，此伤害+1。',
-            scej: '恃宠而骄',
-            scej_info: '结束阶段，若你的体力值为全场唯一最多，你弃一张牌；若你的手牌数为全场最多，你失去1点体力。',
+            bilibili_liangjunxiangchi: '两军相持',
+            bilibili_liangjunxiangchi_info: '若当前游戏轮数：小于等于4，所有角色的手牌上限+X（X为当前游戏轮数）；大于4，所有角色于其回合内使用的第一张【杀】造成的伤害+1。',
+            bilibili_xutuhuanjin: '徐图缓进',
+            bilibili_xutuhuanjin_yingzi: '徐图缓进',
+            bilibili_xutuhuanjin_info: '所有角色的出牌阶段结束时，若其于此阶段未使用或打出过【杀】，则其下个摸牌阶段多摸一张牌。',
+            bilibili_jianshoudaiyuan: '坚守待援',
+            bilibili_jianshoudaiyuan_info: '所有角色均可以将【杀】当作【闪】，【闪】当作【杀】使用或打出，然后其手牌上限-1直到其下一个弃牌阶段结束。',
+            bilibili_huoshaowuchao: '火烧乌巢',
+            bilibili_huoshaowuchao_info: '本局游戏内造成的无属性伤害均视为火属性。',
+            bilibili_liangcaokuifa: '粮草匮乏',
+            bilibili_liangcaokuifa_info: '所有角色摸牌阶段的额定摸牌数-1。当一名角色使用的牌结算完成后，若其因此牌造成了伤害，则其摸一张牌。',
+            bilibili_zhanzhuyanwen: '斩颜良诛文丑',
+            bilibili_zhanzhuyanwen_info: '所有角色的回合开始时，须选择一项：视为使用一张不可被【无懈可击】响应的【决斗】，或失去1点体力。',
+            bilibili_shishengshibai: '十胜十败',
+            bilibili_shishengshibai_info: '所有角色使用牌时，若此牌是整局游戏使用的第整十张牌且此牌不为延时锦囊牌或装备牌，则此牌所有目标角色再次成为此牌的目标角色。',
+            bilibili_yiruoshengqiang: '以弱胜强',
+            bilibili_yiruoshengqiang_info: '造成伤害时，若受伤角色体力值大于伤害来源，此伤害+1。',
+            bilibili_shichongerjiao: '恃宠而骄',
+            bilibili_shichongerjiao_info: '结束阶段，若你的体力值为全场唯一最多，你弃一张牌；若你的手牌数为全场最多，你失去1点体力。',
             lz_sufei: '苏飞·龙舟',
             lz_tangzi: '唐咨·龙舟',
             lz_liuqi: '刘琦·龙舟',
