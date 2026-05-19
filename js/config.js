@@ -93,7 +93,7 @@ export let config = {
 	},
 	FenJieXianA: {
 		clear: true,
-		name: '<li>功能杂项（点击折叠）',
+		name: '·功能杂项（点击折叠）',
 		onclick() {
 			const innerHTML = get.plainText(this.innerHTML);
 			const goon = innerHTML.endsWith('（点击折叠）'), config = `hdwj_config_${innerHTML.slice(0, -6)}}`;
@@ -239,41 +239,204 @@ export let config = {
 		},
 	},
 	KQShiJian: {
-		name: '抗秦事件',
-		intro: '选择不同事件，于游戏开始时令本局游戏进行本事件（挑战模式无效）（重启生效）',
-		init: 'off',
-		item: {
-			off: '关闭',
-			qin_bianfatuqiang: '变法图强',
-			qin_hezonglianheng: '合纵连横',
-			qin_changpingzhizhan: '长平之战',
-			qin_hengsaoliuhe: '横扫六合',
-			qin_lvshichunqiu: '吕氏春秋',
-			qin_shaqiuzhibian: '沙丘之变',
-			qin_zhaojizhiluan: '赵姬之乱',
-			qin_shichengtaihou: '始称太后',
+		name: '抗秦事件（点击选择）',
+		intro: '选择不同事件，于游戏开始时令本局游戏进行本事件（挑战模式无效）',
+		clear: true,
+		onclick() {
+			const mask = ui.create.div(ui.window);
+			mask.style.position = 'absolute';
+			mask.style.left = '0';
+			mask.style.top = '0';
+			mask.style.width = '100%';
+			mask.style.height = '100%';
+			mask.style.zIndex = 1145141919809;
+			const dialog = ui.create.div(mask);
+			dialog.style.position = 'absolute';
+			dialog.style.left = '50%';
+			dialog.style.top = '50%';
+			dialog.style.transform = 'translate(-50%, -50%)';
+			dialog.style.background = 'rgba(0,0,0,0.72)';
+			dialog.style.padding = '12px';
+			dialog.style.borderRadius = '12px';
+			dialog.style.width = 'fit-content';
+			dialog.style.height = 'fit-content';
+			const title = ui.create.div(dialog);
+			title.style.position = 'relative';
+			title.style.width = '100%';
+			title.style.textAlign = 'center';
+			title.style.fontSize = '24px';
+			title.style.marginBottom = '12px';
+			title.innerHTML = '抗秦事件';
+			const content = ui.create.div(dialog);
+			content.style.display = 'grid';
+			content.style.position = 'relative';
+			content.style.gridTemplateColumns = 'repeat(3, auto)';
+			content.style.gap = '12px';
+			if (!Array.isArray(lib.config.extension_活动武将_KQShiJian)) game.saveConfig('extension_活动武将_KQShiJian', []);
+			const list = ['qin_bianfatuqiang', 'qin_hezonglianheng', 'qin_changpingzhizhan', 'qin_hengsaoliuhe', 'qin_lvshichunqiu', 'qin_shaqiuzhibian', 'qin_zhaojizhiluan', 'qin_shichengtaihou'];
+			list.forEach(name => {
+				const item = ui.create.div(content);
+				item.style.display = 'flex';
+				item.style.position = 'relative';
+				item.style.alignItems = 'center';
+				item.style.justifyContent = 'space-between';
+				item.style.padding = '8px 12px';
+				item.style.border = '1px solid #999';
+				item.style.borderRadius = '8px';
+				item.style.background = 'rgba(0,0,0,0.35)';
+				item.style.color = 'white';
+				item.style.fontSize = '18px';
+				item.style.cursor = 'pointer';
+				item.style.minHeight = '48px';
+				item.style.boxSizing = 'border-box';
+				item.style.gap = '5px';
+				const text = ui.create.div(item);
+				text.style.position = 'relative';
+				text.style.whiteSpace = 'nowrap';
+				text.innerHTML = lib.translate[name];
+				const check = ui.create.div(item);
+				check.style.position = 'relative';
+				check.style.flexShrink = '0';
+				check.style.width = '22px';
+				check.style.height = '22px';
+				check.style.border = '2px solid white';
+				check.style.borderRadius = '6px';
+				check.style.display = 'flex';
+				check.style.alignItems = 'center';
+				check.style.justifyContent = 'center';
+				check.style.fontSize = '18px';
+				check.style.transition = 'all 0.2s';
+				if (lib.config.extension_活动武将_KQShiJian.includes(name)) {
+					check.innerHTML = '✓';
+					check.style.background = '#4caf50';
+				}
+				else {
+					check.innerHTML = '';
+					check.style.background = 'transparent';
+				}
+				item.onclick = () => {
+					if (lib.config.extension_活动武将_KQShiJian.includes(name)) {
+						check.innerHTML = '';
+						check.style.background = 'transparent';
+						lib.config.extension_活动武将_KQShiJian.remove(name);
+					}
+					else {
+						check.innerHTML = '✓';
+						check.style.background = '#4caf50';
+						lib.config.extension_活动武将_KQShiJian.push(name);
+					}
+					game.saveConfig('extension_活动武将_KQShiJian', lib.config.extension_活动武将_KQShiJian);
+				};
+			});
+			//关闭逻辑，点击dialog外的区域关闭dialog
+			mask.onclick = () => {
+				dialog?.remove();
+				mask?.remove();
+			};
+			dialog.onclick = e => e.stopPropagation();
 		},
 	},
 	GDShiJian: {
-		name: '官渡事件',
-		intro: '选择不同事件，于游戏开始时令本局游戏进行本事件（挑战模式无效）（重启生效）',
-		init: 'off',
-		item: {
-			off: '关闭',
-			bilibili_huoshaowuchao: '火烧乌巢',
-			bilibili_liangcaokuifa: '粮草匮乏',
-			bilibili_zhanzhuyanwen: '斩颜良诛文丑',
-			bilibili_shishengshibai: '十胜十败',
-			bilibili_xutuhuanjin: '徐图缓进',
-			bilibili_liangjunxiangchi: '两军相持',
-			bilibili_jianshoudaiyuan: '坚守待援',
-			bilibili_yiruoshengqiang: '以弱胜强',
-			bilibili_shichongerjiao: '恃宠而骄',
+		name: '官渡事件（点击选择）',
+		intro: '选择不同事件，于游戏开始时令本局游戏进行本事件（挑战模式无效）',
+		clear: true,
+		onclick() {
+			const mask = ui.create.div(ui.window);
+			mask.style.position = 'absolute';
+			mask.style.left = '0';
+			mask.style.top = '0';
+			mask.style.width = '100%';
+			mask.style.height = '100%';
+			mask.style.zIndex = 1145141919809;
+			const dialog = ui.create.div(mask);
+			dialog.style.position = 'absolute';
+			dialog.style.left = '50%';
+			dialog.style.top = '50%';
+			dialog.style.transform = 'translate(-50%, -50%)';
+			dialog.style.background = 'rgba(0,0,0,0.72)';
+			dialog.style.padding = '12px';
+			dialog.style.borderRadius = '12px';
+			dialog.style.width = 'fit-content';
+			dialog.style.height = 'fit-content';
+			const title = ui.create.div(dialog);
+			title.style.position = 'relative';
+			title.style.width = '100%';
+			title.style.textAlign = 'center';
+			title.style.fontSize = '24px';
+			title.style.marginBottom = '12px';
+			title.innerHTML = '官渡事件';
+			const content = ui.create.div(dialog);
+			content.style.display = 'grid';
+			content.style.position = 'relative';
+			content.style.gridTemplateColumns = 'repeat(3, auto)';
+			content.style.gap = '12px';
+			if (!Array.isArray(lib.config.extension_活动武将_GDShiJian)) game.saveConfig('extension_活动武将_GDShiJian', []);
+			const list = ['bilibili_liangjunxiangchi', 'bilibili_xutuhuanjin', 'bilibili_jianshoudaiyuan', 'bilibili_huoshaowuchao', 'bilibili_liangcaokuifa', 'bilibili_zhanzhuyanwen', 'bilibili_shishengshibai', 'bilibili_yiruoshengqiang', 'bilibili_shichongerjiao'];
+			list.forEach(name => {
+				const item = ui.create.div(content);
+				item.style.display = 'flex';
+				item.style.position = 'relative';
+				item.style.alignItems = 'center';
+				item.style.justifyContent = 'space-between';
+				item.style.padding = '8px 12px';
+				item.style.border = '1px solid #999';
+				item.style.borderRadius = '8px';
+				item.style.background = 'rgba(0,0,0,0.35)';
+				item.style.color = 'white';
+				item.style.fontSize = '18px';
+				item.style.cursor = 'pointer';
+				item.style.minHeight = '48px';
+				item.style.boxSizing = 'border-box';
+				item.style.gap = '5px';
+				const text = ui.create.div(item);
+				text.style.position = 'relative';
+				text.style.whiteSpace = 'nowrap';
+				text.innerHTML = lib.translate[name];
+				const check = ui.create.div(item);
+				check.style.position = 'relative';
+				check.style.flexShrink = '0';
+				check.style.width = '22px';
+				check.style.height = '22px';
+				check.style.border = '2px solid white';
+				check.style.borderRadius = '6px';
+				check.style.display = 'flex';
+				check.style.alignItems = 'center';
+				check.style.justifyContent = 'center';
+				check.style.fontSize = '18px';
+				check.style.transition = 'all 0.2s';
+				if (lib.config.extension_活动武将_GDShiJian.includes(name)) {
+					check.innerHTML = '✓';
+					check.style.background = '#4caf50';
+				}
+				else {
+					check.innerHTML = '';
+					check.style.background = 'transparent';
+				}
+				item.onclick = () => {
+					if (lib.config.extension_活动武将_GDShiJian.includes(name)) {
+						check.innerHTML = '';
+						check.style.background = 'transparent';
+						lib.config.extension_活动武将_GDShiJian.remove(name);
+					}
+					else {
+						check.innerHTML = '✓';
+						check.style.background = '#4caf50';
+						lib.config.extension_活动武将_GDShiJian.push(name);
+					}
+					game.saveConfig('extension_活动武将_GDShiJian', lib.config.extension_活动武将_GDShiJian);
+				};
+			});
+			//关闭逻辑，点击dialog外的区域关闭dialog
+			mask.onclick = () => {
+				dialog?.remove();
+				mask?.remove();
+			};
+			dialog.onclick = e => e.stopPropagation();
 		},
 	},
 	FenJieXianB: {
 		clear: true,
-		name: '<li>关于特效（点击折叠）',
+		name: '·关于特效（点击折叠）',
 		onclick() {
 			const innerHTML = get.plainText(this.innerHTML);
 			const goon = innerHTML.endsWith('（点击折叠）'), config = `hdwj_config_${innerHTML.slice(0, -6)}}`;

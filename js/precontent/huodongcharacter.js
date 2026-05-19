@@ -14240,7 +14240,6 @@ const packs = function () {
             bilibili_liangjunxiangchi: '两军相持',
             bilibili_liangjunxiangchi_info: '若当前游戏轮数：小于等于4，所有角色的手牌上限+X（X为当前游戏轮数）；大于4，所有角色于其回合内使用的第一张【杀】造成的伤害+1。',
             bilibili_xutuhuanjin: '徐图缓进',
-            bilibili_xutuhuanjin_yingzi: '徐图缓进',
             bilibili_xutuhuanjin_info: '所有角色的出牌阶段结束时，若其于此阶段未使用或打出过【杀】，则其下个摸牌阶段多摸一张牌。',
             bilibili_jianshoudaiyuan: '坚守待援',
             bilibili_jianshoudaiyuan_info: '所有角色均可以将【杀】当作【闪】，【闪】当作【杀】使用或打出，然后其手牌上限-1直到其下一个弃牌阶段结束。',

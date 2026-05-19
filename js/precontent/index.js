@@ -44,93 +44,76 @@ export async function precontent(bilibilicharacter) {
         ruleSkill: true,
         trigger: { global: 'chooseButtonBefore' },
         filter(event, player) {
-            if (!lib.config.extension_活动武将_KQShiJian) lib.config.extension_活动武将_KQShiJian = 'off';
-            if (!lib.config.extension_活动武将_GDShiJian) lib.config.extension_活动武将_GDShiJian = 'off';
-            if (event.parent.name != 'chooseCharacter' || get.mode() == 'boss') return false;
-            return (lib.config.extension_活动武将_KQShiJian != 'off' && !game.hzkqshijianed) || (lib.config.extension_活动武将_GDShiJian != 'off' && !game.GDZZshijianed);
+            if (_status._hzkq_shijian || event.getParent().name !== 'chooseCharacter' || get.mode() === 'boss') return false;
+            const KQShiJian = lib.config.extension_活动武将_KQShiJian ?? [], GDShiJian = lib.config.extension_活动武将_GDShiJian ?? [];
+            return (Array.isArray(KQShiJian) && KQShiJian.length > 0) || (Array.isArray(GDShiJian) && GDShiJian.length > 0);
         },
         silent: true,
-        content() {
-            'step 0'
-            if (lib.config.extension_活动武将_KQShiJian != 'off' && !game.hzkqshijianed) {
-                game.hzkqshijianed = true;
-                var evt = lib.config.extension_活动武将_KQShiJian;
-                if (['qin_hezonglianheng', 'qin_changpingzhizhan', 'qin_lvshichunqiu', 'qin_shaqiuzhibian', 'qin_zhaojizhiluan', 'qin_shichengtaihou'].includes(evt)) game.addGlobalSkill(evt);
-                switch (evt) {
-                    case 'qin_bianfatuqiang':
-                        game.bianfaed = true;
-                        var list = [5, 7, 9];
-                        for (var i = 0; i < 2; i++) {
-                            var card = game.createCard2('qin_shangyangbianfa', 'spade', list[i]);
-                            ui.cardPile.insertBefore(card, ui.cardPile.childNodes[get.rand(0, ui.cardPile.childNodes.length)]);
-                            game.broadcastAll(function () { lib.inpile.add('qin_zhenlongchangjian') });
-                        }
-                        game.updateRoundNumber();
-                        game.log('商鞅变法已加入牌堆');
-                        break;
-                    case 'qin_hezonglianheng':
-                        game.lianhenged = true;
-                        break;
-                    case 'qin_changpingzhizhan':
-                        _status._aozhan = true;
-                        game.playBackgroundMusic();
-                        break;
-                    case 'qin_hengsaoliuhe':
-                        var list = [];
-                        if (!lib.inpile.includes('qin_chuanguoyuxi')) {
-                            list.push('qin_chuanguoyuxi');
-                            var card = game.createCard2('qin_chuanguoyuxi', 'heart', 7);
-                            ui.cardPile.insertBefore(card, ui.cardPile.childNodes[get.rand(0, ui.cardPile.childNodes.length)]);
-                            game.broadcastAll(function () { lib.inpile.add('qin_chuanguoyuxi') });
-                        }
-                        if (!lib.inpile.includes('qin_zhenlongchangjian')) {
-                            list.push('qin_zhenlongchangjian');
-                            var card = game.createCard2('qin_zhenlongchangjian', 'heart', 2);
-                            ui.cardPile.insertBefore(card, ui.cardPile.childNodes[get.rand(0, ui.cardPile.childNodes.length)]);
-                            game.broadcastAll(function () { lib.inpile.add('qin_zhenlongchangjian') });
-                        }
-                        game.updateRoundNumber();
-                        game.log(get.translation(list), '已加入牌堆');
-                        game.qin_hengsaoliuhe = true;
-                        break;
-                    case 'qin_shichengtaihou':
-                        for (var name in lib.character) {
-                            if (lib.character[name][0] == 'female') {
-                                if (typeof lib.character[name][2] == 'number') lib.character[name][2] = lib.character[name][2] + 1;
-                                else {
-                                    var hp = get.infoHp(lib.character[name][2]);
-                                    var maxHp = get.infoMaxHp(lib.character[name][2]);
-                                    var hujia = get.infoHujia(lib.character[name][2]);
-                                    if (hujia) lib.character[name][2] = (hp + 1) + '/' + (maxHp + 1) + '/' + (hujia + 1);
-                                    else lib.character[name][2] = (hp + 1) + '/' + (maxHp + 1);
+        async content(event, trigger, player) {
+            _status._hzkq_shijian = true;
+            const KQShiJian = lib.config.extension_活动武将_KQShiJian ?? [], GDShiJian = lib.config.extension_活动武将_GDShiJian ?? [];
+            if (Array.isArray(KQShiJian) && KQShiJian.length > 0) {
+                for (const evt of KQShiJian) {
+                    if (['qin_hezonglianheng', 'qin_changpingzhizhan', 'qin_lvshichunqiu', 'qin_shaqiuzhibian', 'qin_zhaojizhiluan', 'qin_shichengtaihou'].includes(evt)) game.addGlobalSkill(evt);
+                    switch (evt) {
+                        case 'qin_bianfatuqiang':
+                            game.bianfaed = true;
+                            var cards = [5, 7, 9].map(i => game.createCard2('qin_shangyangbianfa', 'spade', i));
+                            game.broadcastAll(() => lib.inpile.add('qin_zhenlongchangjian'));
+                            await game.cardsGotoPile(cards, () => ui.cardPile.childNodes[get.rand(0, ui.cardPile.childNodes.length - 1)]);
+                            game.log(cards, '已加入牌堆');
+                            break;
+                        case 'qin_hezonglianheng':
+                            game.lianhenged = true;
+                            break;
+                        case 'qin_changpingzhizhan':
+                            _status._aozhan = true;
+                            game.playBackgroundMusic();
+                            break;
+                        case 'qin_hengsaoliuhe':
+                            game.qin_hengsaoliuhe = true;
+                            var cards = [];
+                            if (!lib.inpile.includes('qin_chuanguoyuxi')) {
+                                var card = game.createCard2('qin_chuanguoyuxi', 'heart', 7);
+                                game.broadcastAll(() => lib.inpile.add('qin_chuanguoyuxi'));
+                                cards.push(card);
+                            }
+                            if (!lib.inpile.includes('qin_zhenlongchangjian')) {
+                                var card = game.createCard2('qin_zhenlongchangjian', 'heart', 2);
+                                game.broadcastAll(() => lib.inpile.add('qin_zhenlongchangjian'));
+                                cards.push(card);
+                            }
+                            if (cards.length > 0) {
+                                //for (const card of cards) ui.cardPile.insertBefore(card, ui.cardPile.childNodes[get.rand(0, ui.cardPile.childNodes.length)]);
+                                await game.cardsGotoPile(cards, () => ui.cardPile.childNodes[get.rand(0, ui.cardPile.childNodes.length - 1)]);
+                                game.log(cards, '已加入牌堆');
+                            }
+                            break;
+                        case 'qin_shichengtaihou':
+                            for (const name in lib.character) {
+                                if (lib.character[name].sex === 'female' || lib.character[name].sex === 'double') {
+                                    if (typeof lib.character[name].hp === 'number') lib.character[name].hp++;
+                                    if (typeof lib.character[name].maxHp === 'number') lib.character[name].maxHp++;
                                 }
                             }
-                        }
-                        game.uncheck();
-                        game.check();
-                        break;
+                            break;
+                    }
                 }
                 game.broadcastAll(function (evt) {
                     if (get.is.phoneLayout()) ui.bolhzkqInfo = ui.create.div('.touchinfo.left', ui.window);
                     else ui.bolhzkqInfo = ui.create.div(ui.gameinfo);
-                    ui.bolhzkqInfo.innerHTML = '当前事件：' + get.translation(evt);
-                    if (evt == 'qin_changpingzhizhan') ui.bolhzkqInfo.innerHTML += '/鏖战模式';
-                    ui.bolhzkqInfo.innerHTML += '<br>事件内容：' + get.translation(evt + '_info');
-                }, evt);
-                game.me.chooseControl('ok').set('prompt', '###合纵抗秦特殊事件：' + get.translation(evt) + '###' + get.translation(evt + '_info'));
+                    ui.bolhzkqInfo.innerHTML = '合纵抗秦事件：' + evt.map(i => `${lib.translate[i]}${i === 'qin_changpingzhizhan' ? '/鏖战模式' : ''}`).join('、');
+                }, KQShiJian);
+                await game.me.chooseControl('ok').set('prompt', `###本局抗秦特殊事件###${KQShiJian.map(evt => `<li>${lib.translate[evt]}：${lib.translate[`${evt}_info`]}`).join('<br>')}`);
             }
-            'step 1'
-            if (lib.config.extension_活动武将_GDShiJian != 'off' && !game.GDZZshijianed) {
-                game.GDZZshijianed = true;
-                var evt = lib.config.extension_活动武将_GDShiJian;
-                game.addGlobalSkill(evt);
-                game.broadcastAll(function (evt) {
+            if (Array.isArray(GDShiJian) && GDShiJian.length > 0) {
+                for (const evt of GDShiJian) game.addGlobalSkill(evt);
+                game.broadcastAll(evt => {
                     if (get.is.phoneLayout()) ui.bolGuanDuInfo = ui.create.div('.touchinfo.left', ui.window);
                     else ui.bolGuanDuInfo = ui.create.div(ui.gameinfo);
-                    ui.bolGuanDuInfo.innerHTML = '当前事件：' + get.translation(evt);
-                    ui.bolGuanDuInfo.innerHTML += '<br>事件内容：' + get.translation(evt + '_info');
-                }, evt);
-                game.me.chooseControl('ok').set('prompt', '###官渡之战特殊事件：' + get.translation(evt) + '###' + get.translation(evt + '_info'));
+                    ui.bolGuanDuInfo.innerHTML = '官渡之战事件：' + get.translation(evt);
+                }, GDShiJian);
+                await game.me.chooseControl('ok').set('prompt', `###本局官渡特殊事件###${GDShiJian.map(evt => `<li>${lib.translate[evt]}：${lib.translate[`${evt}_info`]}`).join('<br>')}`);
             }
         },
     };
