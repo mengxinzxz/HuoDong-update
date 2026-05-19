@@ -4526,7 +4526,7 @@ const packs = function () {
                         audio: 'yuanhu',
                         trigger: { player: 'phaseEnd' },
                         filter(event, player) {
-                            return !player.getHistory('useSkill', evt => evt.skill == 'miniyuanhu').length;
+                            return !player.hasHistory('useSkill', evt => evt.skill == 'miniyuanhu');
                         },
                         forced: true,
                         locked: false,
@@ -13598,7 +13598,7 @@ const packs = function () {
                     check(button) {
                         if (_status.event.getParent().type != 'phase') return 1;
                         const player = get.event().player, value = player.getUseValue({ name: button.link[2], nature: button.link[3] });
-                        if (button.link[2] == 'sha' && !player.getHistory('useCard', evt => get.type(evt.card) == 'basic').length) {
+                        if (button.link[2] == 'sha' && !player.hasHistory('useCard', evt => get.type(evt.card) == 'basic')) {
                             if (value > 0) return value + 20;
                         }
                         return value;
@@ -14594,7 +14594,7 @@ const packs = function () {
                         charlotte: true,
                         trigger: { global: 'phaseJieshuBegin' },
                         filter(event, player) {
-                            return !player.getHistory('damage').length;
+                            return !player.hasHistory('damage');
                         },
                         forced: true,
                         content() {

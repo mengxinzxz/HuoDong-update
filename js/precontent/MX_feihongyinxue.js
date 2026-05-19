@@ -90,7 +90,7 @@ const packs = function () {
                 trigger: { global: 'phaseEnd' },
                 filter(event, player) {
                     if (_status.currentPhase == player) return false;
-                    if (!player.getHistory('lose', evt => evt.hs && evt.hs.length).length) return false;
+                    if (!player.hasHistory('lose', evt => evt.hs && evt.hs.length)) return false;
                     return player.hasSha() || (_status.connectMode && player.countCards('h') > 0);
                 },
                 direct: true,
@@ -1023,7 +1023,7 @@ const packs = function () {
                 audio: 'zifu',
                 trigger: { player: 'phaseUseEnd' },
                 filter(event, player) {
-                    return player.getExpansions('fh_xingqi').length > 0 && !player.getHistory('useCard', evt => evt.getParent('phaseUse') == event).length;
+                    return player.getExpansions('fh_xingqi').length > 0 && !player.hasHistory('useCard', evt => evt.getParent('phaseUse') == event);
                 },
                 forced: true,
                 content() {
@@ -3845,7 +3845,7 @@ const packs = function () {
                 audio: 'cangzhuo',
                 trigger: { player: 'phaseDiscardBegin' },
                 filter(event, player) {
-                    return !player.getHistory('useCard', evt => get.type2(evt.card) == 'trick').length;
+                    return !player.hasHistory('useCard', evt => get.type2(evt.card) == 'trick');
                 },
                 async cost(event, trigger, player) {
                     event.result = await player.chooseCard(get.prompt2(event.skill), (card) => get.type2(card) == 'trick').set('ai', card => {
@@ -3934,7 +3934,7 @@ const packs = function () {
                 filter(event, player) {
                     var history = player.getHistory('useCard', evt => evt.card.name == 'sha' || evt.card.name == 'juedou');
                     if (!history.length) return false;
-                    return !history.some(evtx => !player.getHistory('sourceDamage', evt => evt.card && evt.card == evtx.card).length);
+                    return !history.some(evtx => !player.hasHistory('sourceDamage', evt => evt.card && evt.card == evtx.card));
                 },
                 prompt2(event, player) {
                     var history = player.getHistory('useCard', evt => evt.card.name == 'sha' || evt.card.name == 'juedou');

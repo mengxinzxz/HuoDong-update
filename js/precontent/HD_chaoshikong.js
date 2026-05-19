@@ -708,7 +708,7 @@ const packs = function () {
                 trigger: { source: 'damageBegin1' },
                 frequent: true,
                 filter(event, player) {
-                    return event.card && (event.card.name == 'sha') && event.notLink() && !player.getHistory('sourceDamage').length;
+                    return event.card && (event.card.name == 'sha') && event.notLink() && !player.hasHistory('sourceDamage');
                 },
                 content() {
                     trigger.num++;

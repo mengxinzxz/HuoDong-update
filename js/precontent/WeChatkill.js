@@ -7682,7 +7682,7 @@ const packs = function () {
                         audio: 'ol_shichou',
                         trigger: { player: 'useCardAfter' },
                         filter(event, player) {
-                            return event.card.name == 'sha' && event.cards?.someInD() && !player.getHistory('sourceDamage', evt => evt.card && evt.card == event.card).length;
+                            return event.card.name == 'sha' && event.cards?.someInD() && !player.hasHistory('sourceDamage', evt => evt.card && evt.card == event.card);
                         },
                         usable: 1,
                         forced: true,
