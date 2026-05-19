@@ -1843,7 +1843,7 @@ const packs = function () {
                 trigger: { player: 'useCard2' },
                 filter(event, player) {
                     if (!player.countCards('he') || !player.isPhaseUsing() || get.type(event.card) != 'trick') return false;
-                    if (event.targets && event.targets.length > 0) return true;
+                    if (event.targets?.length > 0) return true;
                     var info = get.info(event.card);
                     if (info.allowMultiple == false) return false;
                     if (event.targets && !info.multitarget) {
@@ -1883,7 +1883,7 @@ const packs = function () {
                 audio: 'xinsheng',
                 trigger: { player: 'useCardAfter' },
                 filter(event, player) {
-                    return player.isPhaseUsing() && event.targets && event.targets.length && game.hasPlayer(function (current) {
+                    return player.isPhaseUsing() && event.targets?.length && game.hasPlayer(function (current) {
                         return event.targets.includes(current) && !player.getStorage('wechatshendao_mark').includes(current);
                     });
                 },
@@ -2959,7 +2959,7 @@ const packs = function () {
                         return -get.value(card);
                     }).set('hastao', hastao).set('att', att);
                     'step 2'
-                    if (result.cards && result.cards.length == 4) {
+                    if (result.cards?.length == 4) {
                         var suits = [];
                         for (var i = 0; i < result.cards.length; i++) suits.add(get.suit(result.cards[i]));
                         if (suits.length == 4 && game.checkMod({ name: 'tao', isCard: true }, player, trigger.player, 'unchanged', 'cardSavable', player)) target.useCard({ name: 'tao', isCard: true }, trigger.player);
@@ -4490,7 +4490,7 @@ const packs = function () {
                             'step 0'
                             player.discardPlayerCard(trigger.target, 'he', 2, true);
                             'step 1'
-                            if (result.bool && result.cards && result.cards.length) {
+                            if (result.bool && result.cards?.length) {
                                 if (result.cards.length == 1) event._result = { bool: true, links: result.cards.slice(0) };
                                 else player.chooseButton(['选择获得其中的一张牌', result.cards.slice(0)], true).set('ai', function (button) {
                                     return get.value(button.link);
@@ -18262,7 +18262,7 @@ const packs = function () {
                             if (event.card.name == 'wuxie' || event.card.name == 'shan') {
                                 if (get.attitude(player, event.player) < -1) effect = -1;
                             }
-                            else if (event.targets && event.targets.length) {
+                            else if (event.targets?.length) {
                                 for (var i = 0; i < event.targets.length; i++) {
                                     effect += get.effect(event.targets[i], event.card, event.player, player);
                                 }

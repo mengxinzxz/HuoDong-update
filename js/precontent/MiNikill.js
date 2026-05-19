@@ -1476,7 +1476,7 @@ const packs = function () {
                         return -get.value(card);
                     }).set('hastao', hastao).set('att', att);
                     'step 2'
-                    if (result.cards && result.cards.length == 4) {
+                    if (result.cards?.length == 4) {
                         var suits = [];
                         for (var i = 0; i < result.cards.length; i++) suits.add(get.suit(result.cards[i]));
                         if (suits.length == 4 && game.checkMod({ name: 'tao', isCard: true }, player, trigger.player, 'unchanged', 'cardSavable', player)) target.useCard({ name: 'tao', isCard: true }, trigger.player);
@@ -2047,7 +2047,7 @@ const packs = function () {
                     }
                     else {
                         var next = player.chooseTarget('令一名角色摸一张牌');
-                        if (player.storage.xianfu2 && player.storage.xianfu2.length) {
+                        if (player.storage.xianfu2?.length) {
                             next.set('prompt2', '（若目标为' + get.translation(player.storage.xianfu2) + '则改为摸两张牌）');
                         }
                         next.set('ai', function (target) {
@@ -2615,7 +2615,7 @@ const packs = function () {
                 trigger: { global: 'useCardToPlayered' },
                 filter(event, player) {
                     if (event.getParent().triggeredTargets3.length > 1) return false;
-                    return get.suit(event.card) == 'spade' && _status.currentPhase == event.player && event.targets && event.targets.length && game.countPlayer2(function (current) {
+                    return get.suit(event.card) == 'spade' && _status.currentPhase == event.player && event.targets?.length && game.countPlayer2(function (current) {
                         return current.getHistory('damage').length > 0;
                     }) == 0;
                 },
@@ -17544,7 +17544,7 @@ const packs = function () {
                     });
                     'step 1'
                     var evt = event.getParent(2);
-                    if (result.bool && result.links && result.links.length) {
+                    if (result.bool && result.links?.length) {
                         var name = result.links[0].name;
                         if (evt.name == 'chooseToUse') {
                             game.broadcastAll(function (result, name) {
@@ -22411,7 +22411,7 @@ const packs = function () {
                 trigger: { player: 'useCard1' },
                 filter(event, player) {
                     if (event.addCount === false) return false;
-                    return event.card.name == 'sha' && event.cards && event.cards.length == 1 && event.cards[0].name == 'jiu';
+                    return event.card.name == 'sha' && event.cards?.length == 1 && event.cards[0].name == 'jiu';
                 },
                 forced: true,
                 content() {
@@ -28663,7 +28663,7 @@ const packs = function () {
                 audio: 'xinfu_xingluan',
                 trigger: { player: 'useCardAfter' },
                 filter(event, player) {
-                    return player.isPhaseUsing() && event.targets && event.targets.length == 1;
+                    return player.isPhaseUsing() && event.targets?.length == 1;
                 },
                 usable: 1,
                 async content(event, trigger, player) {
@@ -34201,7 +34201,7 @@ const packs = function () {
                 },
                 forced: true,
                 async content(event, trigger, player) {
-                    if (player.additionalSkills.minitunxing && player.additionalSkills.minitunxing.length) await player.removeAdditionalSkills('minitunxing');
+                    if (player.additionalSkills.minitunxing?.length) await player.removeAdditionalSkills('minitunxing');
                     const list = ((!_status.connectMode && lib.config.extension_活动武将_PingJianName) ? lib.config.extension_活动武将_PingJianName : lib.skill.minipingjian.getList()).filter(name => {
                         if (!lib.character[name]) return false;
                         return lib.character[name][4] && lib.character[name][4].includes('zhu');
@@ -34219,7 +34219,7 @@ const packs = function () {
                 },
                 derivation: 'minitunxing_faq',
                 onremove(player) {
-                    if (player.additionalSkills.minitunxing && player.additionalSkills.minitunxing.length) player.removeAdditionalSkills('minitunxing');
+                    if (player.additionalSkills.minitunxing?.length) player.removeAdditionalSkills('minitunxing');
                 },
             },
             minimengli: {

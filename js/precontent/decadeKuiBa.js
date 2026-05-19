@@ -168,7 +168,7 @@ const packs = function () {
                     if (!player.isPhaseUsing() || get.type(event.card) != 'trick' || player.getHistory('useCard', function (evt) {
                         return get.type(evt.card) == 'trick';
                     }).length > 4) return false;
-                    if (event.targets && event.targets.length > 0) return true;
+                    if (event.targets?.length > 0) return true;
                     var info = get.info(event.card);
                     if (info.allowMultiple == false) return false;
                     if (event.targets && !info.multitarget) {

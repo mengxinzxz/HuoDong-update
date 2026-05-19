@@ -90,7 +90,7 @@ const packs = function () {
                 trigger: { global: 'phaseEnd' },
                 filter(event, player) {
                     if (_status.currentPhase == player) return false;
-                    if (!player.hasHistory('lose', evt => evt.hs && evt.hs.length)) return false;
+                    if (!player.hasHistory('lose', evt => evt.hs?.length)) return false;
                     return player.hasSha() || (_status.connectMode && player.countCards('h') > 0);
                 },
                 direct: true,

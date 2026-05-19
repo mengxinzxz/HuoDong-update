@@ -4923,7 +4923,7 @@ const packs = function () {
                     'step 1'
                     game.delayx();
                     'step 2'
-                    if (trigger.targets && trigger.targets.length == 1 && !trigger.targets[0].isLinked()) {
+                    if (trigger.targets?.length == 1 && !trigger.targets[0].isLinked()) {
                         player.line(trigger.targets[0]);
                         trigger.targets[0].link(true);
                     }
@@ -5236,7 +5236,7 @@ const packs = function () {
                         audio: 'yuheng',
                         trigger: { player: 'phaseEnd' },
                         filter(event, player) {
-                            return player.additionalSkills.bolyuheng && player.additionalSkills.bolyuheng.length;
+                            return player.additionalSkills.bolyuheng?.length;
                         },
                         forced: true,
                         content() {
@@ -5654,7 +5654,7 @@ const packs = function () {
                 forced: true,
                 content() {
                     'step 0'
-                    if (trigger.targets && trigger.targets.length == 1) {
+                    if (trigger.targets?.length == 1) {
                         player.line(trigger.targets[0]);
                         if (!trigger.targets[0].isLinked()) trigger.targets[0].link();
                     }
@@ -10291,7 +10291,7 @@ const packs = function () {
                                     if (target.hasSkillTag('nogain')) att /= 10;
                                     return att;
                                 }).forResult();
-                                if (targets && targets.length) {
+                                if (targets?.length) {
                                     const next = targets[0].gain(cards, 'gain2');
                                     next.giver = player;
                                     await next;

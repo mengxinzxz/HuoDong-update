@@ -409,7 +409,7 @@ const packs = function () {
                     if (!player.countCards('h')) return false;
                     if (event.getParent().name === 'phaseJudge') return true;
                     if (event.name === 'judge') return false;
-                    if (event.targets && event.targets.length > 1) return false;
+                    if (event.targets?.length > 1) return false;
                     return event.card && event.player !== player && (event.card.name === 'sha' || get.type(event.card) === 'trick');
                 },
                 check(event, player) {

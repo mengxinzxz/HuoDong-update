@@ -380,7 +380,7 @@ const packs = function () {
                 filter(event, player) {
                     if (player.countCards('h')) return false;
                     var evt = event.getl(player);
-                    return evt?.player == player && evt.hs && evt.hs.length > 0;
+                    return evt?.player == player && evt.hs?.length > 0;
                 },
                 usable: 1,
                 forced: true,
