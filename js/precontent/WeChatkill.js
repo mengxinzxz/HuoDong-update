@@ -254,7 +254,7 @@ const packs = function () {
             wechat_sb_diaochan: ['female', 'qun', 3, ['wechatsblijian', 'sbbiyue']],
             wechat_sb_huanggai: ['male', 'wu', 4, ['wechatsbkurou', 'sbzhaxiang']],
             wechat_sb_guojia: ['male', 'wei', 3, ['wechatsbtiandu', 'wechatsbyiji'], ['character:bilibili_xizhicaikobe', 'border:key', 'tempname:sb_guojia']],
-            wechat_sb_handang: ['male', 'wu', 4, ['sbgongqi', 'wechatsbjiefan']],
+            wechat_sb_handang: ['male', 'wu', 4, ['wechatsbgongqi', 'wechatsbjiefan']],
             wechat_sb_gaoshun: ['male', 'qun', 4, ['wechatsbxianzhen', 'sbjinjiu']],
             wechat_sb_xiahouyuan: ['male', 'wei', 4, ['wechatsbshensu', 'sbzhengzi'], ['name:夏侯|渊']],
             wechat_sb_xiaoqiao: ['female', 'wu', 3, ['wechatsbtianxiang', 'xinhongyan'], ['name:桥|null']],
@@ -13488,7 +13488,55 @@ const packs = function () {
                     }
                 },
             },
-            // 谋韩当
+            //谋韩当
+            wechatsbgongqi: {
+                audio: 'sbgongqi',
+                trigger: { player: 'phaseUseBegin' },
+                forced: true,
+                locked: false,
+                async content(event, trigger, player) {
+                    await player.draw();
+                    if (!player.hasCard(card => {
+                        if (get.position(card) === 'h' && _status.connectMode) return true;
+                        return lib.filter.cardDiscardable(card, player);
+                    }, 'he')) return;
+                    const result = await player.chooseToDiscard(`${get.translation(event.name)}：是否弃置一张牌？`, '本阶段使用牌时，其他角色不能使用或打出与你弃置的牌颜色不同的手牌进行响应。', 'he').set('ai', card => {
+                        const ind = get.event().colors.indexOf(get.color(card)) + 1;
+                        if (ind <= 0) return 0;
+                        return 1.5 + 2 * ind - get.value(card);
+                    }).set('colors', (() => {
+                        if (!player.hasCard(card => card => player.hasValueTarget(card), 'hs')) return [];
+                        const colors = Object.keys(lib.color);
+                        const infos = colors.map(color => {
+                            return [color, game.filterPlayer().map(current => {
+                                const att = get.attitude(player, current);
+                                return current.getCards('hes', card => {
+                                    if (get.color(card) !== color) return false;
+                                    if (current.hasUseTarget(card, false, false)) return false;
+                                    if (!lib.filter.cardEnabled(card, current, 'forceEnable')) return false;
+                                    return true;
+                                }).map(card => {
+                                    return get.value(card) * (att > 0 ? -0.2 : 1);
+                                }).reduce((p, c) => p + c, 0);
+                            })];
+                        });
+                        return infos.sort((a, b) => a[1] - b[1]).map(info => info[0]);
+                    })()).forResult();
+                    if (result?.bool && result.cards?.length) {
+                        const cards = result.cards;
+                        await game.delayx();
+                        player.addTempSkill('sbgongqi_effect', 'phaseUseEnd');
+                        player.markAuto('sbgongqi_effect', [get.color(cards[0], player)]);
+                        player.line(game.filterPlayer());
+                        await game.delayx();
+                    }
+                },
+                mod: {
+                    attackRange(player, num) {
+                        return num + 4;
+                    },
+                },
+            },
             wechatsbjiefan: {
                 audio: 'sbjiefan',
                 inherit: 'sbjiefan',
@@ -13503,7 +13551,11 @@ const packs = function () {
                         return;
                     }
                     const controls = ['选项一', '选项二', '背水！'];
-                    const result = await player.chooseControl(controls).set("choiceList", [`令所有攻击范围内含有${get.translation(target)}的角色依次弃置一张牌（${get.translation(targets)}）`, `${get.translation(target)}摸等同于攻击范围内含有其的角色数的牌（${get.cnNumber(count)}张牌）`, `背水！令你的〖解烦〗失效直到一名角色进入濒死状态，然后${get.translation(player)}依次执行上述所有选项`]).set('ai', () => {
+                    const result = await player.chooseControl(controls).set('choiceList', [
+                        `令所有攻击范围内含有${get.translation(target)}的角色依次弃置一张牌（${get.translation(targets)}）`,
+                        `${get.translation(target)}摸等同于攻击范围内含有其的角色数的牌（${get.cnNumber(count)}张牌）`,
+                        `背水！令你的〖解烦〗失效直到你造成伤害，然后${get.translation(player)}依次执行上述所有选项`,
+                    ]).set('ai', () => {
                         return get.event().choice;
                     }).set('choice', (() => {
                         const eff1 = targets.map(current => {
@@ -13516,27 +13568,21 @@ const packs = function () {
                             const att1 = get.attitude(player, current), att2 = get.attitude(target, current);
                             if (att1 < 0 && att2 < 0) return current.getHp() <= 1;
                             return false;
-                        }) && eff1 > 15 && eff2 > 0) {
-                            return '背水！';
-                        }
+                        }) && eff1 > 15 && eff2 > 0) return '背水！';
                         if (eff1 > 3 * eff2) return '选项一';
                         return '选项二';
                     })()).forResult();
-                    if (!result?.control) return;
-                    const { control } = result;
+                    const control = result?.control;
+                    if (!control) return;
                     game.log(target, '选择了', '#g' + control);
+                    if (control === '背水！') player.tempBanSkill(event.name, { source: 'damageSource' });
                     if (control !== '选项二') {
                         for (const current of targets) {
                             target.line(current, 'thunder');
                             await current.chooseToDiscard('解烦：请弃置一张牌', 'he', true);
                         }
                     }
-                    if (control !== '选项一') {
-                        await target.draw(count);
-                    }
-                    if (control === '背水！') {
-                        player.tempBanSkill(event.name, 'dying');
-                    }
+                    if (control !== '选项一') await target.draw(count);
                 },
             },
             // 谋高顺
@@ -21188,8 +21234,10 @@ const packs = function () {
             wechatsbyiji: '遗计',
             wechatsbyiji_info: '①当你受到1点伤害后，你可以摸两张牌，然后你可以将至多等量张手牌交给任意名其他角色。②当你每轮首次进入濒死状态时，你可以摸一张牌，然后你可以将这些牌交给一名其他角色。',
             wechat_sb_handang: '小程序谋韩当',
+            wechatsbgongqi: '弓骑',
+            wechatsbgongqi_info: '①你的攻击范围+4。②出牌阶段开始时，你摸一张牌，然后可以弃置一张牌，若如此做，当你于本阶段使用牌时，其他角色不能使用或打出与你弃置牌颜色不同的手牌响应此牌。',
             wechatsbjiefan: '解烦',
-            wechatsbjiefan_info: '出牌阶段限一次，你可以选择一名角色，然后你选择一项：⒈令所有攻击范围内含有其的角色依次弃置一张牌；⒉其摸等同于攻击范围内含有其的角色数的牌；⒊背水：此技能失效直到一名角色进入濒死状态。',
+            wechatsbjiefan_info: '出牌阶段限一次，你可以选择一名角色，然后你选择一项：⒈令所有攻击范围内含有其的角色依次弃置一张牌；⒉其摸等同于攻击范围内含有其的角色数的牌；⒊背水：此技能失效直到你造成伤害。',
             wechat_sb_gaoshun: '小程序谋高顺',
             wechatsbxianzhen: '陷阵',
             wechatsbxianzhen_info: '出牌阶段限一次。你可以选择一名其他角色，你于本阶段获得如下效果：⒈你对其使用牌无距离限制；⒉当你使用【杀】指定其为目标后，你可以与其拼点：若你赢，此【杀】无视防具且不计入次数，你对其造成1点伤害；若其拼点牌为【杀】，则你获得之；若其拼点牌为其最后的手牌，则此【杀】对其造成伤害时，此伤害+1。',
