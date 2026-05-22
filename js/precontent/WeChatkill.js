@@ -7898,9 +7898,12 @@ const packs = function () {
                 multitarget: true,
                 multiline: true,
                 line: 'fire',
+                targetprompt(target) {
+                    return ui.selected.targets.indexOf(target) === 0 ? '造成伤害' : '';
+                },
                 async content(event, trigger, player) {
                     const { targets } = event;
-                    for (const i of targets.sortBySeat()) await i.link(true);
+                    for (const i of [...targets].sortBySeat()) await i.link(true);
                     await targets[0].damage('fire', 'nocard');
                 },
                 ai: {
@@ -20933,17 +20936,13 @@ const packs = function () {
             wechat_pangdegong: '小程序庞德公',
             wechatpingcai: '评才',
             wechatpingcai_info: '①出牌阶段限一次，你可以选择一项：1.卧龙：对一名角色造成1点火属性伤害；2.凤雏：横置至多三名角色；3.水镜：移动场上的一张装备牌；4.玄剑：令一名角色摸一张牌并回复1点体力。②出牌阶段结束时，你可以执行本局游戏〖评才①〗你未执行过的一项。',
-            wechatxuehen: '雪恨',
-            wechatxuehen_info: '出牌阶段限一次，你可以弃置一张红色牌并对攻击范围内至多两名角色各造成1点伤害，然后这些角色各摸一张牌。',
-            wechathuxiao: '虎哮',
-            wechathuxiao_info: '当你使用的【杀】被【闪】响应后，你令此【杀】不计入次数限制并摸一张牌。',
-            wechatwuji: '武继',
-            wechatwuji_info: '觉醒技，结束阶段，若你本回合至少造成了3点伤害，则你加1点体力上限并回复1点体力，然后获得〖武圣〗。',
             wechat_guanyinping: '小程序关银屏',
             wechatxuehen: '雪恨',
             wechatxuehen_info: '出牌阶段限一次，你可以选择至多X名角色，横置这些角色并对其中一名角色造成1点火焰伤害（X为你已损失的体力值且至少为1）。',
             wechathuxiao: '虎哮',
             wechathuxiao_info: '锁定技，当你造成火焰伤害后，你与受伤角色摸一张牌，然后你于此回合内对其使用牌没有次数限制。',
+            wechatwuji: '武继',
+            wechatwuji_info: '觉醒技，结束阶段，若你本回合至少造成了3点伤害，则你加1点体力上限并回复1点体力，然后获得〖武圣〗。',
             wechat_jsp_huangyueying: 'SP小程序黄月英',
             wechatlinglong: '玲珑',
             wechatlinglong_info: '锁定技。若你的装备区没有：防具牌，你视为装备【八卦阵】；坐骑牌，你的手牌上限+2；牌，你使用【杀】或普通锦囊牌不可被响应。',
