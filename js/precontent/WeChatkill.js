@@ -33,6 +33,14 @@ const packs = function () {
                                         lib.translate[name] = `小程序${lib.translate[name]}`;
                                         lib.translate[`${name}_prefix`] = '小程序';
                                     }
+                                    if (lib.characterPack.WeChatkill[name].doubleGroup.length > 0) {
+                                        lib.characterPack.WeChatkill[name].group = 'wei';
+                                        lib.characterPack.WeChatkill[name].doubleGroup = [];
+                                        if (lib.character[name]) {
+                                            lib.character[name].group = 'wei';
+                                            lib.character[name].doubleGroup = [];
+                                        }
+                                    }
                                 }
                             });
                         });
@@ -40,7 +48,7 @@ const packs = function () {
                     })(),
                     ...['zhenji', 'diaochan', 'wangcan', 'machao', 'pangde', 'jiangwei', 'taishici', 'caiwenji'].map(i => `wechat_sp_${i}`),
                     ...['zhenji', 'menghuo', 'zhouyu', 'zhugeliang', 'sp_zhugeliang', 'lvbu', 'lvmeng', 'yujin', 'huaxiong', 'sunquan', 'xiaoqiao', 'xiahouyuan', 'gaoshun', 'handang', 'guojia', 'huanggai', 'diaochan', 'huangyueying', 'zhangliao', 'sunshangxiang', 'zhaoyun', 'machao', 'huangzhong', 'caocao', 'sunce'].map(i => `wechat_sb_${i}`),
-                    ...['shamoke', 'wangyuanji', 'caochun', 'old_sunluyu', 'shantao', 'ruanji', 'jikang', 'caojie', 'xuezong', 'caiyong', 'xushi', 'sundeng', 'huanghao', 'guohuanghou', 'liucheng', 'sunluyu', 'sunhao', 'jsp_huangyueying', 'wanglang', 'chendeng', 'zhuling', 'caizhenji', 'ol_bianfuren', 'xin_sunluban', 'zhangxingcai', 'huojun'].map(i => `wechat_${i}`),
+                    ...['shamoke', 'wangyuanji', 'caochun', 'old_sunluyu', 'shantao', 'ruanji', 'jikang', 'caojie', 'xuezong', 'caiyong', 'xushi', 'sundeng', 'huanghao', 'guohuanghou', 'liucheng', 'sunluyu', 'jsp_huangyueying', 'wanglang', 'chendeng', 'zhuling', 'caizhenji', 'ol_bianfuren', 'xin_sunluban', 'zhangxingcai', 'huojun'].map(i => `wechat_${i}`),
                     ...[],
                 ],
                 wechat_wanxiang: [
@@ -153,7 +161,6 @@ const packs = function () {
             wechat_zhenji: ['female', 'wei', 3, ['miniluoshen', 'qingguo']],
             wechat_re_sp_zhugeliang: ['male', 'shu', 3, ['wechathuoji', 'wechatkanpo'], ['name:诸葛|亮']],
             wechat_yj_weiyan: ['male', 'qun', 4, ['wechatguli', 'wechataosi']],
-            wechat_sunhao: ['male', 'wu', 5, ['wechatcanshi', 'chouhai']],
             wechat_ganfuren: ['female', 'shu', 3, ['dcshushen', 'wechatshenzhi'], ['name:甘|null']],
             wechat_huojun: ['male', 'shu', 4, ['twsidai', 'jieyu']],
             wechat_yj_xuhuang: ['male', 'qun', 4, ['wechatxhzhiyan', 'wechatjiewei']],
@@ -8866,23 +8873,6 @@ const packs = function () {
                             game.log(trigger.card, '不计入次数');
                         },
                     },
-                },
-            },
-            //孙皓
-            wechatcanshi: {
-                inherit: 'recanshi',
-                filter(event, player) {
-                    return !event.numFixed;
-                },
-                check: () => true,
-                prompt(event, player) {
-                    const num = game.countPlayer(current => current.isDamaged());
-                    return get.prompt('wechatcanshi') + '（可多摸' + get.cnNumber(Math.max(2, num)) + '张牌）';
-                },
-                content() {
-                    const num = game.countPlayer(current => current.isDamaged());
-                    trigger.num += Math.max(2, num);
-                    player.addTempSkill('recanshi2');
                 },
             },
             //甘夫人
@@ -20967,9 +20957,6 @@ const packs = function () {
             wechatguli_info: '出牌阶段限一次。你可以将所有手牌当做一张无距离和任何次数限制且无视防具的【杀】使用。此牌结算结束后，你可以将手牌数摸至你的体力上限，若此牌未造成过伤害，则你失去1点体力。',
             wechataosi: '骜肆',
             wechataosi_info: '锁定技。当你于出牌阶段对一名角色造成伤害后，你于此阶段对其使用牌无任何次数限制；若此为你本回合首次造成伤害，你回复1点体力。',
-            wechat_sunhao: '小程序孙皓',
-            wechatcanshi: '残蚀',
-            wechatcanshi_info: '摸牌阶段，你可以多摸X张牌（X为已受伤的角色数且至少为2）.若如此做，当你于此回合内使用【杀】或普通锦囊牌时，你弃置一张牌。',
             wechat_ganfuren: '小程序甘夫人',
             wechatshenzhi: '神智',
             wechatshenzhi_info: '准备阶段，若你的手牌数大于体力值，则你可以弃置一张手牌并回复1点体力。',
