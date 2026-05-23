@@ -17,9 +17,9 @@ const packs = function () {
                     ...[],
                 ].map(i => `wechat_${i}`),
                 wechat_refresh: [
-                    ...['pangde', 'xiahouyuan', 'huangyueying', 'caozhang', 'sp_zhugeliang', 'huangzhong', 'weiyan', 'liubiao', 'zhaoyun', 'gongsunzan', 'xushu', 'luxun', 'zuoci'].map(i => `re_${i}`),
+                    ...['pangde', 'xiahouyuan', 'huangyueying', 'caozhang', 'huangzhong', 'weiyan', 'liubiao', 'zhaoyun', 'gongsunzan', 'xushu', 'luxun', 'zuoci'].map(i => `re_${i}`),
                     ...['caifuren', 'yuanshao', 'jushou'].map(i => `xin_${i}`),
-                    ...[],
+                    ...['sp_zhugeliang'],
                 ].map(i => `wechat_${i}`),
                 wechat_yijiang: ['lingtong', 'liubiao', 'yj_jushou', 'quancong', 'guyong', 'liaohua', 'gongsunyuan', 'xusheng', 'yufan', 'handang', 'caochong', 'caoxiu', 'caozhang', 'xin_masu', 'caifuren', 'jianyong', 'caozhi', 'gaoshun', 'xiahoushi', 'xushu', 'wuguotai', 'liuchen'].map(i => `wechat_${i}`),
                 wechat_xianding: [
@@ -161,7 +161,7 @@ const packs = function () {
             wechat_xushi: ['female', 'wu', 3, ['wengua', 'wechatfuzhu'], ['name:徐|null']],
             wechat_sp_wangcan: ['male', 'wei', 3, ['wechatspqiai', 'wechatspshanxi']],
             wechat_liuyan: ['male', 'qun', 3, ['xinfu_tushe', 'wechatlimu']],
-            wechat_re_sp_zhugeliang: ['male', 'shu', 3, ['wechathuoji', 'wechatkanpo'], ['name:诸葛|亮']],
+            wechat_sp_zhugeliang: ['male', 'shu', 3, ['wechathuoji', 'wechatkanpo'], ['name:诸葛|亮']],
             wechat_yj_weiyan: ['male', 'qun', 4, ['wechatguli', 'wechataosi']],
             wechat_ganfuren: ['female', 'shu', 3, ['dcshushen', 'wechatshenzhi'], ['name:甘|null']],
             wechat_huojun: ['male', 'shu', 4, ['twsidai', 'jieyu']],
@@ -8706,7 +8706,7 @@ const packs = function () {
             },
             //卧龙诸葛
             wechathuoji: {
-                audio: 'rehuoji',
+                audio: 'huoji',
                 enable: 'phaseUse',
                 filterTarget: lib.filter.notMe,
                 usable: 1,
@@ -8725,7 +8725,7 @@ const packs = function () {
                 },
             },
             wechatkanpo: {
-                audio: 'rekanpo',
+                audio: 'kanpo',
                 trigger: { global: 'roundStart' },
                 filter(event, player) {
                     return lib.inpile.some(name => {
@@ -8776,7 +8776,7 @@ const packs = function () {
                     effect: {
                         charlotte: true,
                         onremove: true,
-                        audio: 'rekanpo',
+                        audio: 'kanpo',
                         trigger: { global: 'useCard' },
                         filter(event, player) {
                             return event.player != player && player.getStorage('wechatkanpo_effect').includes(event.card.name);
@@ -21119,7 +21119,7 @@ const packs = function () {
             wechatluoying_info: '其他角色弃置的梅花牌或梅花判定牌进入弃牌堆后，你可以获得之，且这些牌不计入你的手牌上限。',
             wechatjiushi: '酒诗',
             wechatjiushi_info: '当你需要使用【酒】时，你可以弃置一张梅花手牌，视为使用之。',
-            wechat_re_huangyueying: '小程序黄月英',
+            wechat_re_huangyueying: '小程序界黄月英',
             wechatjizhi: '集智',
             wechatjizhi_info: '当你使用锦囊牌时，你可以摸一张牌，且此牌不计入本回合的手牌上限。',
             wechatqicai: '奇才',
@@ -21426,7 +21426,7 @@ const packs = function () {
             wechat_liuyan: '小程序刘焉',
             wechatlimu: '立牧',
             wechatlimu_info: '①出牌阶段，你可以将一张♦牌当做【乐不思蜀】对自己使用，然后你回复1点体力。②若你的判定区内有牌，则你对其他角色使用牌无次数和距离限制。',
-            wechat_re_sp_zhugeliang: '小程序卧龙',
+            wechat_sp_zhugeliang: '小程序界卧龙',
             wechathuoji: '火计',
             wechathuoji_info: '出牌阶段限一次，你可以选择一名其他角色，对其造成1点火属性伤害。',
             wechatkanpo: '看破',
