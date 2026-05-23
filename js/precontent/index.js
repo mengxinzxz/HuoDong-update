@@ -771,7 +771,7 @@ export async function precontent(bilibilicharacter) {
                 data: (() => {
                     _status.HDWJ_ChangeLog_character = {
                         'MiNikill': ['Mbaby_dc_sb_lusu', 'Mbaby_yj_ganning'],
-                        //'WeChatkill': [],
+                        'WeChatkill': ['wechat_liubei', 'wechat_huanggai', 'wechat_shen_liubei', 'wechat_shen_luxun', 'wechat_kuailiangkuaiyue', 'wechat_weiyan', 'wechat_zhugezhan', 'wechat_yanwen', 'wechat_xiahouyuan', 'wechat_pangde'],
                     };
                     return Object.values(_status.HDWJ_ChangeLog_character).flat();
                 })(),
@@ -790,6 +790,7 @@ export async function precontent(bilibilicharacter) {
                             });
                         })(),
                         '允许多开合纵抗秦/官渡之战事件',
+                        '继续调整诸多未跟进版本的三国杀小程序武将技能',
                         'To be continued...',
                     ];
                 },

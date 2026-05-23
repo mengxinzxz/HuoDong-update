@@ -481,7 +481,7 @@ const packs = function () {
             Mbaby_shen_guanyu: ['male', 'shen', 5, ['miniwushen', 'miniwuhun'], ['shu']],
             Mbaby_shen_zhouyu: ['male', 'shen', 4, ['miniqinyin', 'miniyeyan'], ['wu']],
             Mbaby_shen_caocao: ['male', 'shen', 3, ['miniguixin', 'feiying'], ['wei']],
-            Mbaby_shen_liubei: ['male', 'shen', 6, ['minilongnu', 'minijieyig'], ['shu']],
+            Mbaby_shen_liubei: ['male', 'shen', 6, ['minilongnu', 'minijieying'], ['shu']],
             Mbaby_shen_zhangliao: ['male', 'shen', 4, ['miniduorui', 'minizhiti'], ['wei']],
             Mbaby_shen_sunquan: ['male', 'shen', 4, ['miniquanxue', 'minishehu', 'minidingli'], ['wu']],
             Mbaby_shen_simayi: ['male', 'shen', 3, ['minirenjie', 'minijilve', 'lianpo'], ['wei', 'name:司马|懿']],
@@ -32221,11 +32221,22 @@ const packs = function () {
                     halfneg: true,
                 },
             },
-            minijieyig: {
+            minijieying: {
                 audio: 'nzry_jieying',
-                locked: true,
-                global: 'minijieyig_all',
-                group: ['minijieyig_1', 'minijieyig_2', 'minijieyig_3'],
+                trigger: { player: 'damageBegin3' },
+                forced: true,
+                content() {
+                    player.draw();
+                },
+                ai: {
+                    effect: {
+                        target(card, player, target) {
+                            if (card.name == 'tiesuo' && target.isLinked()) return 'zeroplayertarget';
+                        },
+                    },
+                },
+                global: 'minijieying_all',
+                group: ['minijieying_1', 'minijieying_2'],
                 subSkill: {
                     '1': {
                         audio: 'nzry_jieying',
@@ -32248,7 +32259,7 @@ const packs = function () {
                             });
                         },
                         async cost(event, trigger, player) {
-                            event.result = await player.chooseTarget(get.prompt('minijieyig'), '横置一名其他角色', function (card, player, target) {
+                            event.result = await player.chooseTarget(get.prompt('minijieying'), '横置一名其他角色', function (card, player, target) {
                                 return target != player && !target.isLinked();
                             }).set('ai', function (target) {
                                 return 1 + Math.random();
@@ -32258,28 +32269,13 @@ const packs = function () {
                             targets[0].link(true);
                         },
                     },
-                    '3': {
-                        audio: 'nzry_jieying',
-                        trigger: { player: 'damageBegin3' },
-                        forced: true,
-                        content() {
-                            player.draw();
-                        },
-                    },
                     all: {
                         mod: {
                             maxHandcard(player, num) {
                                 if (player.isLinked()) return num + 2 * game.countPlayer(function (current) {
-                                    return current.hasSkill('minijieyig');
+                                    return current.hasSkill('minijieying');
                                 });
                             },
-                        },
-                    },
-                },
-                ai: {
-                    effect: {
-                        target(card) {
-                            if (card.name == 'tiesuo') return 'zeroplayertarget';
                         },
                     },
                 },
@@ -42319,7 +42315,7 @@ const packs = function () {
             minikongcheng: '空城',
             minikongcheng_info: '锁定技，若你没有手牌，你不能成为【杀】、【决斗】和【顺手牵羊】的目标。',
             minirende: '仁德',
-            minirende_info: '出牌阶段，你可以将至少一张手牌交给其他角色，然后你于此阶段内不能再以此法交给该角色牌，且该角色使用红色【杀】不能指定你为目标直到你的下个回合开始；若你于此阶段内给出的牌首次达到两张，你可以视为使用一张基本牌或普通锦囊牌。',
+            minirende_info: '出牌阶段，你可以将至少一张手牌交给其他角色，然后你于此阶段内不能再以此法交给该角色牌，且该角色使用红色【杀】不能指定你为目标直到你的下个回合开始；若你于此阶段内给出的牌首次达到两张，你可以视为使用一张基本牌或普通锦囊牌（有次数限制且计入使用次数）。',
             minijijiang: '激将',
             minijijiang_info: '主公技。当你需要使用或打出【杀】时，蜀势力角色可以代替你进行此操作，若如此做，你与响应【激将】的角色各摸一张牌。',
             minirejijiang: '激将',
@@ -43662,8 +43658,8 @@ const packs = function () {
             miniyeyan_info: '出牌阶段开始时，你可以对一名其他角色造成1点火焰伤害。',
             minilongnu: '龙怒',
             minilongnu_info: '锁定技，出牌阶段开始时，你须选择一项：①失去1点体力并摸两张牌，本回合你的红色手牌均视为无距离限制的火【杀】； ②减1点体力上限，本回合你的黑色手牌均视为无次数限制的雷【杀】。',
-            minijieyig: '结营',
-            minijieyig_info: '锁定技，游戏开始时或当你的武将牌重置时，你横置；所有已横置的角色手牌上限+2；结束阶段，你可以横置一名其他角色。当你受到伤害时，你摸一张牌。',
+            minijieying: '结营',
+            minijieying_info: '锁定技，游戏开始时或当你的武将牌重置时，你横置；所有已横置的角色手牌上限+2；结束阶段，你可以横置一名其他角色。当你受到伤害时，你摸一张牌。',
             miniduorui: '夺锐',
             miniduorui_info: '出牌阶段开始时，你可以观看一名其他角色的手牌并获得其中一张，本回合其不能响应你使用的此颜色的牌。',
             minizhiti: '止啼',
