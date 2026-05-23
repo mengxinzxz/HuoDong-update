@@ -35,7 +35,7 @@ const packs = function () {
                     ...['lusu', 'chengyu'].map(i => `Mbaby_dc_sb_${i}`),
                     ...[],
                 ],
-                MiNi_starCharacter: ['simayi', 'zhangchunhua', 'yuanshao', 'sunshangxiang', 'xunyu', 'yuanshu'].map(i => `Mbaby_star_${i}`),
+                MiNi_starCharacter: ['simayi', 'zhangchunhua', 'yuanshao', 'sunshangxiang', 'xunyu', 'yuanshu'].map(i => `Mbaby_star_${i}`).concat(['Mbaby_yj_ganning']),
                 MiNi_yueCharacter: ['zhoufei', 'diaochan', 'daqiao'].map(i => `Mbaby_yue_${i}`),
                 MiNi_miaoKill: ['mayunlu', 'guanyinping', 'caoying', 'caiwenji', 'diaochan', 'caifuren', 'zhangxingcai', 'zhurong', 'huangyueying', 'daqiao', 'wangyi', 'zhangchunhua', 'zhenji', 'sunshangxiang', 'xiaoqiao', 'lvlingqi'].map(i => `Mmiao_${i}`),
                 MiNi_nianKill: ['caopi', 'zhugeliang', 'lvbu', 'zhouyu'].map(i => `Mnian_${i}`),
@@ -464,6 +464,7 @@ const packs = function () {
             Mbaby_mangyachang: ['male', 'qun', 4, ['minijiedao']],
             Mbaby_re_hucheer: ['male', 'qun', 4, ['redaoji', 'minifuzhong']],
             Mbaby_star_yuanshao: ['male', 'qun', 4, ['ministarxiaoyan', 'ministarzongshi', 'ministarjiaowang', 'ministaraoshi'], ['zhu']],
+            Mbaby_yj_ganning: ['male', 'qun', 4, ['minignjinfan', 'minignsheque']],
             Mbaby_yue_diaochan: ['female', 'qun', 3, ['minitanban', 'dcdiou'], ['name:null|null']],
             Mbaby_ol_liru: ['male', 'qun', 3, ['minijuece', 'miniolmieji', 'dcfencheng']],
             Mbaby_kebineng: ['male', 'qun', 4, ['kousheng', 'olpingduan'], ['name:牢大|罐头', 'die:kebineng', 'die:ol_kebineng']],
@@ -31181,6 +31182,149 @@ const packs = function () {
                     }
                 }
             },
+            // ☆甘宁
+            minignjinfan: {
+                trigger: {
+                    global: 'phaseBefore',
+                    player: ['phaseDiscardBegin', 'enterGame'],
+                },
+                filter(event, player) {
+                    if (event.name === 'phase' && game.phaseNumber > 0) return false;
+                    return player.hasCard(card => {
+                        if (_status.connectMode) return true;
+                        return !player.hasCard(cardx => cardx.hasGaintag('minignjinfan') && get.suit(cardx, player) === get.suit(card, player), 's')
+                    }, 'h');
+                },
+                async cost(event, trigger, player) {
+                    event.result = await player.chooseCard('h', get.prompt(event.skill), '将任意张手牌当做“铃”置于武将牌上', [1, Infinity], (card, player) => {
+                        return !player.getCards('s', cardx => cardx.hasGaintag('minignjinfan')).slice().concat(ui.selected.cards || []).some(cardx => {
+                            return get.suit(cardx, player) == get.suit(card, player);
+                        });
+                    }).set('complexCard', true).set('ai', card => {
+                        const player = get.player();
+                        if (player.hasUseTarget(card) && !player.hasValueTarget(card)) return 0;
+                        if (['sha', 'shan', 'wuxie', 'caochuan'].includes(card.name)) return 2 + Math.random();
+                        return 1 + Math.random();
+                    }).forResult();
+                },
+                async content(event, trigger, player) {
+                    game.log(player, '将', event.cards, '放到了武将牌上');
+                    const next = player.loseToSpecial(event.cards, event.name);
+                    next.visible = true;
+                    await next;
+                    player.markSkill(event.name);
+                },
+                marktext: '铃',
+                intro: {
+                    mark(dialog, storage, player) {
+                        dialog.addAuto(player.getCards('s', card => card.hasGaintag('minignjinfan')));
+                    },
+                    markcount(storage, player) {
+                        return player.getCards('s', card => card.hasGaintag('minignjinfan')).length;
+                    },
+                    onunmark(storage, player) {
+                        const cards = player.getCards('s', card => card.hasGaintag('minignjinfan'));
+                        if (cards.length) {
+                            player.lose(cards, ui.discardPile);
+                            player.$throw(cards, 1000);
+                            game.log(cards, '进入了弃牌堆');
+                        }
+                    },
+                },
+                locked: false,
+                mod: {
+                    aiOrder(player, card, num) {
+                        if (get.itemtype(card) == 'card' && card.hasGaintag('minignjinfan')) {
+                            return num + 0.5;
+                        }
+                    },
+                },
+                init(player, skill) {
+                    player.addSkill(skill + '_nouse');
+                },
+                onremove(player, skill) {
+                    player.removeSkill(skill + '_nouse');
+                },
+                group: 'minignjinfan_gain',
+                subSkill: {
+                    gain: {
+                        audio: 'gnjinfan',
+                        trigger: { player: 'loseAfter' },
+                        filter(event, player) {
+                            if (!event.ss?.length) return false;
+                            return Object.values(event.gaintag_map).flat().includes('minignjinfan');
+                        },
+                        forced: true,
+                        locked: false,
+                        async content(event, trigger, player) {
+                            const num = Math.max(1, player.getCards('s', card => card.hasGaintag('minignjinfan')).length);
+                            const cards = [];
+                            while (cards.length < num) {
+                                const card = get.cardPile2(card => {
+                                    return !cards.includes(card) && (!cards.length || get.suit(card) == get.suit(cards[0]));
+                                });
+                                if (card) cards.push(card);
+                                else break;
+                            }
+                            if (cards.length) player.gain(cards, 'gain2');
+                        },
+                    },
+                    nouse: {
+                        charlotte: true,
+                        locked: true,
+                        mod: {
+                            cardEnabled2(card, player) {
+                                if (get.itemtype(card) == 'card' && card.hasGaintag('minignjinfan')) {
+                                    if (!player.hasSkill('minignjinfan')) {
+                                        return false;
+                                    }
+                                }
+                            },
+                        },
+                    },
+                }
+            },
+            minignsheque: {
+                audio: 'gnsheque',
+                trigger: { global: 'phaseZhunbeiBegin' },
+                filter(event, player) {
+                    return event.player.isIn() && event.player != player && event.player.countCards('he', { type: 'equip' }) > 0;
+                },
+                direct: true,
+                clearTime: true,
+                async content(event, trigger, player) {
+                    await player.chooseToUse(function (card, player, event) {
+                        if (get.name(card) != 'sha') {
+                            return false;
+                        }
+                        return lib.filter.filterCard.apply(this, arguments);
+                    }, `射却：是否对${get.translation(trigger.player)}使用一张距离限制且无视防具的【杀】？`)
+                        .set('logSkill', [event.name, trigger.player])
+                        .set('complexSelect', true)
+                        .set('filterTarget', function (card, player, target) {
+                            if (target != _status.event.sourcex && !ui.selected.targets.includes(_status.event.sourcex)) {
+                                return false;
+                            }
+                            return lib.filter.targetEnabled.apply(this, arguments);
+                        })
+                        .set('sourcex', trigger.player)
+                        .set('oncard', function (card, player) {
+                            card.storage ??= {};
+                            card.storage['minignsheque_effect'] = true;
+                            player.addTempSkill('minignsheque_effect');
+                        });
+                },
+                subSkill: {
+                    effect: {
+                        ai: {
+                            unequip: true,
+                            skillTagFilter(player, tag, arg) {
+                                if (tag == 'unequip' && (!arg?.card?.storage?.minignsheque_effect)) return false;
+                            },
+                        },
+                    }
+                }
+            },
             //乐貂蝉
             minitanban: {
                 audio: 'dctanban',
@@ -41775,6 +41919,7 @@ const packs = function () {
             Mbaby_star_simayi: '欢杀星司马懿',
             Mbaby_hanlong: '欢杀韩龙',
             Mbaby_lvqian: '欢杀吕虔',
+            Mbaby_yj_ganning: '欢杀星甘宁',
             miniluoshen: '洛神',
             miniluoshen_info: '准备阶段，你可以进行一次判定并获得判定牌，若判定结果为黑色，你可重复此流程。',
             minireluoshen: '洛神',
@@ -43435,6 +43580,10 @@ const packs = function () {
             ministaraoshi_info: `主公技，其他群势力角色的出牌阶段限一次，其可以交给你一张手牌，然后你可以发动一次${get.poptip('ministarzongshi')}。`,
             minitanban: '檀板',
             minitanban_info: '①游戏开始时/摸牌阶段结束时，你可为任意张手牌增加或移除“檀板”标记。②你的“檀板”牌不计入手牌上限。',
+            minignjinfan: '锦帆',
+            minignjinfan_info: '①游戏开始时或弃牌阶段开始时，你可将任意张手牌置于武将牌上，称为“铃”（每种花色的“铃”限一张）。②你可以如手牌般使用或打出“铃”。③当你失去“铃”后，你从牌堆中获得X张同花色的牌（X为你武将牌上的“铃”数且至少为1）。',
+            minignsheque: '射却',
+            minignsheque_info: '一名其他角色的准备阶段开始时，若其有装备牌，则你可以对其使用一张无距离限制且无视防具的【杀】。',
             minijuece: '绝策',
             minijuece_info: '结束阶段，你可以选择一名手牌数小于等于你的其他角色。你摸X张牌，对其造成1点伤害（X为其本回合失去的手牌数且至多为5）。',
             miniolmieji: '灭计',
