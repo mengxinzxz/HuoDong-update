@@ -37231,15 +37231,16 @@ const packs = function () {
                         dialog.style.display = 'flex';
                         dialog.style.flexDirection = 'column';
                         dialog.style.alignItems = 'center';
-                        dialog.style.justifyContent = 'center';
+                        dialog.style.justifyContent = 'flex-start';
                         //设置contentContainer样式
                         dialog.contentContainer = ui.create.div('.content-container', dialog);
                         dialog.contentContainer.style.display = 'flex';
                         dialog.contentContainer.style.flexDirection = 'column';
                         dialog.contentContainer.style.alignItems = 'center';
-                        dialog.contentContainer.style.justifyContent = 'center';
+                        dialog.contentContainer.style.justifyContent = 'flex-start';
                         dialog.contentContainer.style.width = '100%';
-                        dialog.contentContainer.style.height = '100%';
+                        dialog.contentContainer.style.minHeight = '100%';
+                        dialog.contentContainer.style.height = 'auto';
                         //创建tube容器
                         const container = ui.create.div('.dingluan-tube-container', dialog.contentContainer);
                         //检测赢

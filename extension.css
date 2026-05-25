@@ -295,11 +295,11 @@ td.dengjie-game > .button.character > .score.lose {
 
 /*诸葛亮定乱*/
 .dingluan-tube-container {
-	display: flex;
+	display: grid;
+	grid-template-columns: repeat(6, 80px);
 	justify-content: center;
-	align-items: flex-end;
+	align-items: end;
 	gap: 20px;
-	flex-wrap: wrap;
 	padding: 20px;
 	box-sizing: border-box;
 	width: 100%;
@@ -314,12 +314,11 @@ td.dengjie-game > .button.character > .score.lose {
 	position: relative;
 	display: block;
 	padding: 0 5px;
-	margin: 0 10px;
 	box-sizing: border-box;
 	cursor: pointer;
 	transition: border-color 0.2s;
-	flex-shrink: 0;
 	overflow: visible;
+	justify-self: center;
 }
 
 .dingluan-tube.selected {
@@ -402,7 +401,7 @@ td.dengjie-game > .button.character > .score.lose {
 	padding: 0 20px;
 	background: #1f1f1f;
 	z-index: 20;
-	border-bottom: 1px solid rgba(255,255,255,0.08);
+	border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 	box-sizing: border-box;
 }
 
