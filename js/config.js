@@ -82,7 +82,7 @@ export let config = {
 					const dir = file.split('/').slice(0, -1).join('/');
 					const targetDir = dir ? `extension/活动武将/update_temp'/${dir}` : 'extension/活动武将/update_temp';
 					await ensureDirByFile('extension/活动武将/update_temp', file);
-					alert(`正在下载：${file} (${i + 1}/${remoteFiles.length})`);
+					console.log(`正在下载：${file} (${i + 1}/${remoteFiles.length})`);
 					await game.promises.download(`${rawBase}/${file}`, targetDir, false);
 				}
 				//校验临时目录
