@@ -96,7 +96,7 @@ export async function precontent(bilibilicharacter) {
                 }
                 return result;
             };
-            const fileList = flattenFiles(files);
+            const fileList = flattenFiles(files).map(file => file.replace(/\\/g, '/')).sort((a, b) => a.localeCompare(b));
             await game.promises.writeFile(new TextEncoder().encode(JSON.stringify({ files: fileList }, null, 4)), 'extension/活动武将', 'file.json');
         }
         return files;

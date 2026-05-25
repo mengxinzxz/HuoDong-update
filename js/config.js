@@ -3,8 +3,7 @@ import { lib, game, ui, get, ai, _status } from '../../../noname.js';
 export let config = {
 	Huodong_Update: {
 		clear: true,
-		intro: '点击检查扩展更新',
-		name: '检查扩展更新',
+		name: '<button type="button">检查扩展更新</button>',
 		async onclick() {
 			const rawBase = `https://raw.githubusercontent.com/mengxinzxz/HuoDong-update/main`;
 			const treeApi = `https://api.github.com/repos/mengxinzxz/HuoDong-update/git/trees/main?recursive=1`;
