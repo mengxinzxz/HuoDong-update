@@ -46,7 +46,7 @@ export let config = {
 			};
 			try {
 				alert('正在检查扩展更新...');
-				const remoteInfo = await fetch(`${rawBase}/js/info.json?t=${Date.now()}`).then(res => {
+				const remoteInfo = await fetch(`${rawBase}/info.json?t=${Date.now()}`).then(res => {
 					if (!res.ok) throw new Error('获取远程info.json失败');
 					return res.json();
 				});
