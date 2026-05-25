@@ -12,6 +12,67 @@ import MX_catcatcup from './MX_catcatcup.js';
 import huodongcharacter from './huodongcharacter.js';
 
 export async function precontent(bilibilicharacter) {
+    //清空在线更新后的活动武将缓存
+    await (async () => {
+        if (!lib.config['extension_活动武将_update_state']) return;
+        const clearState = async () => {
+            delete lib.config['extension_活动武将_update_state'];
+            await game.promises.saveConfig('extension_活动武将_update_state');
+        };
+        const ensureDirByFile = async (base, file) => {
+            const parts = file.split('/');
+            parts.pop();
+            if (parts.length) await game.promises.ensureDirectory([...base.split('/'), ...parts]);
+        };
+        const listFiles = async dir => {
+            const result = [];
+            const walk = async current => {
+                const [folders, files] = await game.promises.getFileList(current);
+                for (const file of files) result.push(`${current}/${file}`.replace(`${dir}/`, ''));
+                for (const folder of folders) await walk(`${current}/${folder}`);
+            };
+            try {
+                await walk(dir);
+            }
+            catch (e) { }
+            return result;
+        };
+        const copyFiles = async (fromDir, toDir, files) => {
+            for (const file of files) {
+                const data = await game.promises.readFile(`${fromDir}/${file}`);
+                await ensureDirByFile(toDir, file);
+                await game.promises.writeFile(
+                    data,
+                    file.includes('/') ? `${toDir}/${file.split('/').slice(0, -1).join('/')}` : toDir,
+                    file.split('/').pop()
+                );
+            }
+        };
+        try {
+            alert('检测到上次扩展更新未完成，正在处理残留文件...');
+            if (state.stage === 'installing') {
+                const backupFiles = await listFiles('extension/活动武将/update_backup');
+                if (backupFiles.length) {
+                    await copyFiles('extension/活动武将/update_backup', 'extension/活动武将', backupFiles);
+                    alert('已从备份恢复旧版本扩展');
+                }
+            }
+            try {
+                await game.promises.removeDir('extension/活动武将/update_temp`');
+            }
+            catch (e) { }
+            try {
+                await game.promises.removeDir('extension/活动武将/update_backup');
+            }
+            catch (e) { }
+            await clearState();
+            alert('扩展更新残留清理完成');
+        }
+        catch (e) {
+            console.error(e);
+            alert('扩展更新残留清理失败，请手动检查update_temp和update_backup目录');
+        }
+    })();
     //存储活动武将扩展的文件和文件夹分布
     _status['extension_活动武将_files'] = await (async () => {
         const getFileList = async function (path = 'extension/活动武将') {
@@ -22,7 +83,23 @@ export async function precontent(bilibilicharacter) {
             }
             return map;
         };
-        return await getFileList();
+        const files = await getFileList();
+        if (files) {
+            //生成目录
+            //https://api.github.com/repos/mengxinzxz/HuoDong-update/git/trees/main?recursive=1对于不登陆用户存在限制访问，所以自己打目录
+            const flattenFiles = function (obj, prefix = '') {
+                let result = [];
+                if (Array.isArray(obj.files)) result.push(...obj.files.map(file => prefix ? `${prefix}/${file}` : file));
+                for (const key in obj) {
+                    if (key === 'files' || key.includes('_update_temp') || key.includes('_update_backup')) continue;
+                    result.push(...flattenFiles(obj[key], prefix ? `${prefix}/${key}` : key));
+                }
+                return result;
+            };
+            const fileList = flattenFiles(files);
+            await game.promises.writeFile(new TextEncoder().encode(JSON.stringify({ files: fileList }, null, 4)), 'extension/活动武将', 'file.json');
+        }
+        return files;
     })();
     //闪闪节
     lib.arenaReady.push(() => {

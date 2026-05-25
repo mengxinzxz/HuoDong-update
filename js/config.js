@@ -1,20 +1,164 @@
 import { lib, game, ui, get, ai, _status } from '../../../noname.js';
 
 export let config = {
-	/*
-	//总有一天会维护好的功能
-	FenJieXianE: {
-		clear: true,
-		name: '<li>在线更新',
-	},
 	Huodong_Update: {
 		clear: true,
 		intro: '点击检查扩展更新',
-		name: '<button type="button">检查扩展更新</button>',
-		onclick() {
+		name: '检查扩展更新',
+		async onclick() {
+			const rawBase = `https://raw.githubusercontent.com/mengxinzxz/HuoDong-update/main`;
+			const treeApi = `https://api.github.com/repos/mengxinzxz/HuoDong-update/git/trees/main?recursive=1`;
+			const saveState = async state => {
+				lib.config['extension_活动武将_update_state'] = state;
+				await game.promises.saveConfig('extension_活动武将_update_state', state);
+			};
+			const clearState = async () => {
+				delete lib.config['extension_活动武将_update_state'];
+				await game.promises.saveConfig('extension_活动武将_update_state');
+			};
+			const ensureDirByFile = async (base, file) => {
+				const parts = file.split('/');
+				parts.pop();
+				if (parts.length) await game.promises.ensureDirectory([...base.split('/'), ...parts]);
+			};
+			const listFiles = async dir => {
+				const result = [];
+				const walk = async current => {
+					const [folders, files] = await game.promises.getFileList(current);
+					for (const file of files) result.push(`${current}/${file}`.replace(`${dir}/`, ''));
+					for (const folder of folders) await walk(`${current}/${folder}`);
+				};
+				try {
+					await walk(dir);
+				}
+				catch (e) { }
+				return result;
+			};
+			const copyFiles = async (fromDir, toDir, files) => {
+				for (const file of files) {
+					const data = await game.promises.readFile(`${fromDir}/${file}`);
+					await ensureDirByFile(toDir, file);
+					await game.promises.writeFile(
+						data,
+						file.includes('/') ? `${toDir}/${file.split('/').slice(0, -1).join('/')}` : toDir,
+						file.split('/').pop()
+					);
+				}
+			};
+			try {
+				alert('正在检查扩展更新...');
+				const remoteInfo = await fetch(`${rawBase}/info.json?t=${Date.now()}`).then(res => {
+					if (!res.ok) throw new Error('获取远程info.json失败');
+					return res.json();
+				});
+				const remoteVersion = String(remoteInfo.version || '');
+				const localVersion = String(lib.extensionPack['活动武将'].version || '');
+				if (remoteVersion === localVersion) {
+					const reinstall = await game.promises.prompt(`当前版本与仓库版本一致：\n${remoteVersion}\n\n是否重新安装扩展？`);
+					if (!reinstall) return;
+				}
+				const fileData = await fetch(`${rawBase}/file.json?t=${Date.now()}`).then(res => {
+					if (!res.ok) throw new Error('获取file.json失败');
+					return res.json();
+				});
+				const remoteFiles = fileData.files;
+				if (!Array.isArray(remoteFiles)) throw new Error('file.json格式错误');
+				const remoteFiles = treeData.tree.filter(item => item.type === 'blob').map(item => item.path).filter(path => {
+					return !path.startsWith('.git/') && !path.startsWith('.github/') && path !== '.gitignore';
+				});
+				if (!remoteFiles.includes('info.json')) throw new Error('仓库缺少info.json');
+				await game.promises.alert(`准备更新扩展：活动武将\n\n本地版本：${localVersion}\n仓库版本：${remoteVersion}`);
+				await saveState({
+					stage: 'downloading',
+					time: Date.now(),
+					version: remoteVersion,
+				});
+				try {
+					await game.promises.removeDir('extension/活动武将/update_temp');
+				}
+				catch (e) { }
+				try {
+					await game.promises.removeDir('extension/活动武将/update_backup');
+				}
+				catch (e) { }
+				await game.promises.createDir('extension/活动武将/update_temp');
+				//先完整下载到临时目录
+				for (let i = 0; i < remoteFiles.length; i++) {
+					const file = remoteFiles[i];
+					const dir = file.split('/').slice(0, -1).join('/');
+					const targetDir = dir ? `extension/活动武将/update_temp'/${dir}` : 'extension/活动武将/update_temp';
+					await ensureDirByFile('extension/活动武将/update_temp', file);
+					alert(`正在下载：${file} (${i + 1}/${remoteFiles.length})`);
+					await game.promises.download(`${rawBase}/${file}`, targetDir, false);
+				}
+				//校验临时目录
+				const tempInfoText = await game.promises.readFileAsText(`extension/活动武将/update_temp/info.json`);
+				const tempInfo = JSON.parse(tempInfoText);
+				if (String(tempInfo.version || '') !== remoteVersion) throw new Error('临时目录info.json版本校验失败');
+				await saveState({
+					stage: 'installing',
+					time: Date.now(),
+					version: remoteVersion,
+				});
+				//备份旧扩展
+				await game.promises.createDir('extension/活动武将/update_backup');
+				const localFiles = await listFiles('extension/活动武将');
+				for (const file of localFiles) {
+					const data = await game.promises.readFile(`extension/活动武将/${file}`);
+					await ensureDirByFile('extension/活动武将/update_backup', file);
+					await game.promises.writeFile(
+						data,
+						file.includes('/') ? `extension/活动武将/update_backup/${file.split('/').slice(0, -1).join('/')}` : 'extension/活动武将/update_backup',
+						file.split('/').pop()
+					);
+				}
+				//安装新文件
+				await copyFiles('extension/活动武将/update_temp', 'extension/活动武将', remoteFiles);
+				//删除仓库已经不存在的多余文件
+				const remoteSet = new Set(remoteFiles);
+				for (const file of localFiles) {
+					if (!remoteSet.has(file)) {
+						try {
+							await game.promises.removeFile(`extension/活动武将/${file}`);
+							alert(`已删除多余文件：${file}`);
+						}
+						catch (e) { }
+					}
+				}
+				//清理缓存
+				try {
+					await game.promises.removeDir('extension/活动武将/update_temp');
+				}
+				catch (e) { }
+				try {
+					await game.promises.removeDir('extension/活动武将/update_backup');
+				}
+				catch (e) { }
+				await clearState();
+				await game.promises.alert(`扩展更新完成！\n\n当前版本：${remoteVersion}\n即将重启游戏`);
+				game.reload();
+			}
+			catch (e) {
+				console.error(e);
+				const state = lib.config['extension_活动武将_update_state'];
+				if (state && state.stage === 'installing') {
+					try {
+						const backupFiles = await listFiles('extension/活动武将/update_backup');
+						await copyFiles('extension/活动武将/update_backup', 'extension/活动武将', backupFiles);
+						alert('更新失败，已恢复旧版本');
+					}
+					catch (restoreError) {
+						console.error(restoreError);
+					}
+				}
+				try {
+					await game.promises.removeDir('extension/活动武将/update_temp');
+				}
+				catch (e) { }
+				await game.promises.alert(`更新失败：\n${e.message || e}`);
+			}
 		},
 	},
-	*/
 	HDcheckNew: {
 		name: (() => {
 			//孩子们，牢大在天上化为彩虹看着你们（bushi）
