@@ -61,7 +61,7 @@ export let config = {
 				});
 				const remoteFiles = fileData.files;
 				if (!Array.isArray(remoteFiles)) throw new Error('file.json格式错误');
-				await game.promises.alert(`准备更新扩展：活动武将\n\n本地版本：${localVersion}\n仓库版本：${remoteVersion}`);
+				alert(`准备更新扩展：活动武将\n\n本地版本：${localVersion}\n仓库版本：${remoteVersion}`);
 				await saveState({
 					stage: 'downloading',
 					time: Date.now(),
@@ -129,7 +129,7 @@ export let config = {
 				}
 				catch (e) { }
 				await clearState();
-				await game.promises.alert(`扩展更新完成！\n\n当前版本：${remoteVersion}\n即将重启游戏`);
+				alert(`扩展更新完成！\n\n当前版本：${remoteVersion}\n即将重启游戏`);
 				game.reload();
 			}
 			catch (e) {
@@ -149,7 +149,7 @@ export let config = {
 					await game.promises.removeDir('extension/活动武将/update_temp');
 				}
 				catch (e) { }
-				await game.promises.alert(`更新失败：\n${e.message || e}`);
+				alert(`更新失败：\n${e.message || e}`);
 			}
 		},
 	},
