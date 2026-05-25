@@ -46,7 +46,7 @@ export let config = {
 			};
 			try {
 				alert('正在检查扩展更新...');
-				const remoteInfo = await fetch(`${rawBase}/info.json?t=${Date.now()}`).then(res => {
+				const remoteInfo = await fetch(`${rawBase}/js/info.json?t=${Date.now()}`).then(res => {
 					if (!res.ok) throw new Error('获取远程info.json失败');
 					return res.json();
 				});
@@ -55,7 +55,7 @@ export let config = {
 				if (remoteVersion === localVersion) {
 					if (!confirm(`当前版本与仓库版本一致：\n${remoteVersion}\n\n是否重新安装扩展？`)) return;
 				}
-				const fileData = await fetch(`${rawBase}/file.json?t=${Date.now()}`).then(res => {
+				const fileData = await fetch(`${rawBase}/js/file.json?t=${Date.now()}`).then(res => {
 					if (!res.ok) throw new Error('获取file.json失败');
 					return res.json();
 				});
@@ -80,10 +80,13 @@ export let config = {
 				for (let i = 0; i < remoteFiles.length; i++) {
 					const file = remoteFiles[i];
 					const dir = file.split('/').slice(0, -1).join('/');
-					const targetDir = dir ? `extension/活动武将/update_temp'/${dir}` : 'extension/活动武将/update_temp';
+					const targetDir = dir ? `extension/活动武将/update_temp/${dir}` : 'extension/活动武将/update_temp';
 					await ensureDirByFile('extension/活动武将/update_temp', file);
 					console.log(`正在下载：${file} (${i + 1}/${remoteFiles.length})`);
-					await game.promises.download(`${rawBase}/${file}`, targetDir, false);
+					const res = await fetch(`${rawBase}/${file}?t=${Date.now()}`);
+					if (!res.ok) throw new Error(`下载失败：${rawBase}/${file}`);
+					const data = await res.arrayBuffer();
+					await game.promises.writeFile(`${rawBase}/${file}`, targetDir, file.split('/').pop());
 				}
 				//校验临时目录
 				const tempInfoText = await game.promises.readFileAsText(`extension/活动武将/update_temp/info.json`);
