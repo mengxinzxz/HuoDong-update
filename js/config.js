@@ -63,10 +63,6 @@ export let config = {
 				});
 				const remoteFiles = fileData.files;
 				if (!Array.isArray(remoteFiles)) throw new Error('file.json格式错误');
-				const remoteFiles = treeData.tree.filter(item => item.type === 'blob').map(item => item.path).filter(path => {
-					return !path.startsWith('.git/') && !path.startsWith('.github/') && path !== '.gitignore';
-				});
-				if (!remoteFiles.includes('info.json')) throw new Error('仓库缺少info.json');
 				await game.promises.alert(`准备更新扩展：活动武将\n\n本地版本：${localVersion}\n仓库版本：${remoteVersion}`);
 				await saveState({
 					stage: 'downloading',
