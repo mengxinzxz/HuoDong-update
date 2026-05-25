@@ -1272,11 +1272,10 @@ const packs = function () {
                 audio: 'wanwei',
                 inherit: 'jujian',
                 position: 'h',
-                content() {
-                    var list = [];
-                    target.draw(cards.length);
-                    for (var card of cards) if (!list.includes(get.type2(card))) list.push(get.type2(card));
-                    if (list.length == cards.length) player.recover();
+                async content(event, trigger, player) {
+                    const { target, cards } = event;
+                    await target.draw(cards.length);
+                    if (!cards.some(card => cards.some(card2 => card !== card2 && get.type2(card) === get.type2(card2)))) await player.recover();
                 },
             },
             wechatyuejian: {
