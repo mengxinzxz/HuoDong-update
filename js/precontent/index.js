@@ -89,12 +89,21 @@ export async function precontent(bilibilicharacter) {
                 let result = [];
                 if (Array.isArray(obj.files)) result.push(...obj.files.map(file => prefix ? `${prefix}/${file}` : file));
                 for (const key in obj) {
-                    if (key === 'files' || key.includes('_update_temp') || key.includes('_update_backup')) continue;
+                    if (key === 'files' || key.includes('update_temp') || key.includes('update_backup')) continue;
                     result.push(...flattenFiles(obj[key], prefix ? `${prefix}/${key}` : key));
                 }
                 return result;
             };
             const fileList = flattenFiles(files).map(file => file.replace(/\\/g, '/')).sort((a, b) => a.localeCompare(b));
+            /*加载速度慢，以后再解决它
+            const fileList = [], paths = flattenFiles(files).map(file => file.replace(/\\/g, '/')).sort((a, b) => a.localeCompare(b));
+            for (const path of paths) {
+                const data = await game.promises.readFile(`extension/活动武将/${path}`);
+                const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+                const hash = Array.from(new Uint8Array(hashBuffer)).map(i => i.toString(16).padStart(2, '0')).join('');
+                fileList.push({ path, size: data.byteLength, hash });
+            }
+            */
             await game.promises.writeFile(new TextEncoder().encode(JSON.stringify({ files: fileList }, null, 4)), 'extension/活动武将/js', 'file.json');
         }
         return files;
