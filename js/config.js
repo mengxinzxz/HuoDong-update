@@ -54,8 +54,7 @@ export let config = {
 				const remoteVersion = String(remoteInfo.version || '');
 				const localVersion = String(lib.extensionPack['活动武将'].version || '');
 				if (remoteVersion === localVersion) {
-					const reinstall = await game.promises.prompt(`当前版本与仓库版本一致：\n${remoteVersion}\n\n是否重新安装扩展？`);
-					if (!reinstall) return;
+					if (!confirm(`当前版本与仓库版本一致：\n${remoteVersion}\n\n是否重新安装扩展？`)) return;
 				}
 				const fileData = await fetch(`${rawBase}/file.json?t=${Date.now()}`).then(res => {
 					if (!res.ok) throw new Error('获取file.json失败');
