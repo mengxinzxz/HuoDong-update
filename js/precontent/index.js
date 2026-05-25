@@ -50,15 +50,13 @@ export async function precontent(bilibilicharacter) {
         };
         try {
             alert('检测到上次扩展更新未完成，正在处理残留文件...');
-            if (state.stage === 'installing') {
-                const backupFiles = await listFiles('extension/活动武将/update_backup');
-                if (backupFiles.length) {
-                    await copyFiles('extension/活动武将/update_backup', 'extension/活动武将', backupFiles);
-                    alert('已从备份恢复旧版本扩展');
-                }
+            const backupFiles = await listFiles('extension/活动武将/update_backup');
+            if (backupFiles.length) {
+                await copyFiles('extension/活动武将/update_backup', 'extension/活动武将', backupFiles);
+                alert('已从备份恢复旧版本扩展');
             }
             try {
-                await game.promises.removeDir('extension/活动武将/update_temp`');
+                await game.promises.removeDir('extension/活动武将/update_temp');
             }
             catch (e) { }
             try {
