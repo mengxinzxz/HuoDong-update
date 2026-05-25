@@ -1,7 +1,7 @@
 import { lib, game, ui, get, ai, _status } from '../../../../noname.js';
 
 const packs = function () {
-    var HD_chaoshikong = {
+    const HD_chaoshikong = {
         name: 'HD_chaoshikong',
         connect: true,
         characterSort: {
@@ -17,12 +17,12 @@ const packs = function () {
             //密探
             cike_wuliuqi: ['male', 'qun', 3, ['cike_feijian', 'cike_yirong', 'cike_qingsuo', 'cike_xuefa']],
             cike_meihuashisan: ['female', 'qun', 3, ['cike_meibiao', 'cike_biandao', 'cike_yingyue', 'cike_huti']],
-            cike_mitan: ['male', 'qun', 3, ['cike_zhibi'], ['unseen']],
+            cike_mitan: ['male', 'qun', 3, ['cike_zhibi']],
             //魏国
             cike_caocao: ['male', 'wei', 16, ['new_rejianxiong', 'cike_hujia', 'feiying']],
             cike_caopi: ['male', 'wei', 10, ['xingshang', 'fangzhu', 'cike_songwei', 'lxzhuixi', 'zhichi']],
             cike_caorui: ['male', 'wei', 18, ['huituo', 'mingjian', 'cike_xingshuai']],
-            cike_caomao: ['male', 'wei', 12, ['cike_wenhui', 'cike_qintao', 'cike_xianggong']],
+            cike_caomao: ['male', 'wei', 12, ['cike_wenhui', 'cike_qintao', 'cike_xianggong'], ['character:caomao', 'die:caomao']],
             cike_caosong: ['male', 'wei', 20, ['cslilu', 'csyizheng', 'cike_taiwang']],
             //蜀国
             cike_liubei: ['male', 'shu', 20, ['rerende', 'cike_jijiang']],
@@ -50,7 +50,6 @@ const packs = function () {
         skill: {
             _cike_chooseskill_wuliuqi: {
                 forbid: ['guozhan'],
-                unique: true,
                 trigger: { global: 'gameStart', player: 'enterGame' },
                 filter(event, player) {
                     return player.name == 'cike_meihuashisan' || player.name2 == 'cike_meihuashisan';
@@ -89,7 +88,6 @@ const packs = function () {
             },
             _cike_chooseskill_meihuashishan: {
                 forbid: ['guozhan'],
-                unique: true,
                 trigger: { global: 'gameStart', player: 'enterGame' },
                 filter(event, player) {
                     return player.name == 'cike_wuliuqi' || player.name2 == 'cike_wuliuqi';
@@ -124,7 +122,6 @@ const packs = function () {
             },
             _cike_gzchooseskill_wuliuqi: {
                 mode: ['guozhan'],
-                unique: true,
                 trigger: { player: 'showCharacterAfter' },
                 filter(event, player) {
                     return event.toShow && event.toShow.includes('cike_meihuashisan');
@@ -163,7 +160,6 @@ const packs = function () {
             },
             _cike_gzchooseskill_meihuashishan: {
                 mode: ['guozhan'],
-                unique: true,
                 trigger: { player: 'showCharacterAfter' },
                 filter(event, player) {
                     return event.toShow && event.toShow.includes('cike_wuliuqi');
@@ -199,11 +195,10 @@ const packs = function () {
             cike_shenghu: {
                 group: 'cike_chooseskill',
                 derivation: 'cike_chooseskill',
-                unique: true,
                 forced: true,
                 trigger: { global: 'damageBegin4' },
                 filter(event, player) {
-                    return event.player != player && ((get.mode() == 'identity' && get.attitude(player, event.player) > 0) || (get.mode() != 'identity' && event.player.isFriendOf(player)));
+                    return event.player != player && get.mode() == 'identity' ? get.attitude(player, event.player) > 0 : event.player.isFriendOf(player);
                 },
                 logTarget: 'player',
                 content() {
@@ -283,11 +278,10 @@ const packs = function () {
             cike_lingshou: {
                 group: 'cike_chooseskill',
                 derivation: 'cike_chooseskill',
-                unique: true,
                 forced: true,
                 trigger: { global: 'damageBegin4' },
                 filter(event, player) {
-                    return event.source && event.player != player && ((get.mode() == 'identity' && get.attitude(player, event.player) > 0) || (get.mode() != 'identity' && event.player.isFriendOf(player)));
+                    return event.source && event.player != player && get.mode() == 'identity' ? get.attitude(player, event.player) > 0 : event.player.isFriendOf(player);
                 },
                 logTarget: 'player',
                 content() {
@@ -340,31 +334,26 @@ const packs = function () {
                 audio: 'ext:活动武将/audio/skill:true',
                 trigger: { player: 'useCard2' },
                 filter(event, player) {
-                    if (player != _status.currentPhase || !event.targets || event.targets.length != 1) return false;
-                    return (event.card.name == 'sha' || get.type(event.card) == 'trick') && game.hasPlayer(function (current) {
-                        return current != player && !event.targets.includes(current);
+                    const evt = event.getParent('phaseUse');
+                    if (evt?.name !== 'phaseUse') return false;
+                    if (player.getHistory('useCard', evtx => evtx.getParent('phaseUse') == evt && (evtx.card.name == 'sha' || get.type(evtx.card) == 'trick') && evtx.stocktargets?.length == 1).indexOf(event) != 0) return false;
+                    return game.hasPlayer(current => {
+                        return current != player && !event.targets.includes(current) && lib.filter.targetEnabled2(event.card, player, current);
                     });
                 },
-                usable: 1,
-                direct: true,
-                content() {
-                    'step 0'
-                    player.chooseTarget(get.prompt('cike_yingyue'), '为' + get.translation(trigger.card) + '增加一个目标', function (card, player, target) {
-                        var evt = _status.event.getTrigger();
-                        return !evt.targets.includes(target) && lib.filter.filterTarget(evt.card, player, target);
-                    }).set('ai', function (target) {
-                        var evt = _status.event.getTrigger(), eff = get.effect(target, evt.card, evt.player, evt.player);
+                async cost(event, trigger, player) {
+                    event.result = await player.chooseTarget(get.prompt(event.skill), '为' + get.translation(trigger.card) + '增加一个目标', function (card, player, target) {
+                        const evt = get.event().getTrigger()
+                        return !evt.targets.includes(target) && lib.filter.targetEnabled2(evt.card, player, target);
+                    }).set('ai', target => {
+                        const evt = get.event().getTrigger(), eff = get.effect(target, evt.card, evt.player, evt.player);
                         return eff;
-                    }).animate = false;
-                    'step 1'
-                    if (result.bool) {
-                        if (player != game.me && !player.isOnline()) game.delayx();
-                        event.target = result.targets[0];
-                    }
-                    else event.finish();
-                    'step 2'
-                    player.logSkill('cike_yingyue', target);
-                    trigger.targets.push(target);
+                    }).set('animate', false).forResult();
+                },
+                async content(event, trigger, player) {
+                    const target = event.targets[0];
+                    if (player != game.me && !player.isOnline()) await game.delayx();
+                    trigger.targets.add(target);
                     game.log(target, '成为了', trigger.card, '的额外目标');
                 },
             },
@@ -392,25 +381,41 @@ const packs = function () {
                         }
                     },
                 },
-                trigger: { global: 'loseAfter' },
+                audio: 'qianlong',
+                trigger: { global: ['loseAfter', 'loseAsyncAfter'] },
+                getIndex(event, player) {
+                    if (_status.currentPhase !== player || event.type !== 'discard' || (event.discarder || event.getParent(2).player) !== player) return false;
+                    return game.filterPlayer2(target => {
+                        if (target === player) return false;
+                        return (event.getl(target)?.cards2 ?? []).length > 0;
+                    }).sortBySeat();
+                },
                 forced: true,
                 locked: false,
-                filter(event, player) {
-                    var target = _status.currentPhase;
-                    if (!target || player != target || event.type != 'discard' || player == event.player || event.getParent(2).player != player) return false;
-                    return event.cards2 && event.cards2.length > 0;
-                },
-                content() {
+                logTarget: (event, player, name, target) => target,
+                async content(event, trigger, player) {
+                    const target = event.targets[0];
                     player.addTempSkill('cike_wenhui_keep');
-                    var cards = [], cardx = trigger.cards2;
-                    for (var i = 0; i < cardx.length; i++) {
-                        var card = get.cardPile2(function (card) {
-                            return !cards.includes(card) && get.type2(card, false) == get.type2(cardx[i], false);
+                    const cards2 = trigger.getl(target).cards2;
+                    let gains = [], count = 0;
+                    for (const card of cards2) {
+                        const gain = get.cardPile2(gain => {
+                            if (gains.includes(gain)) return false;
+                            return get.type2(gain) === get.type2(card);
                         });
-                        if (card) cards.push(card);
+                        if (gain) gains.push(gain);
+                        else count++;
                     }
-                    player.gain(cards, 'gain2').gaintag.add('cike_wenhui');
-                    player.draw(trigger.cards2.length - cards.length).gaintag = ['cike_wenhui'];
+                    if (gains.length > 0) {
+                        const next = player.gain(gains, 'gain2');
+                        next.gaintag.add('cike_wenhui');
+                        await next;
+                    }
+                    if (count > 0) {
+                        const next = player.draw(count);
+                        next.gaintag.add('cike_wenhui');
+                        await next;
+                    }
                 },
                 subSkill: {
                     keep: {
@@ -419,54 +424,76 @@ const packs = function () {
                             player.removeGaintag('cike_wenhui');
                         },
                         mod: {
-                            ignoredHandcard(card, player) {
+                            cardUsable(card) {
+                                if (!card.cards || card.cards.length !== 1) return;
+                                if (card.cards[0].hasGaintag('cike_wenhui')) return Infinity;
+                            },
+                            ignoredHandcard(card) {
                                 if (card.hasGaintag('cike_wenhui')) return true;
                             },
                             cardDiscardable(card, player, name) {
                                 if (name == 'phaseDiscard' && card.hasGaintag('cike_wenhui')) return false;
                             },
                         },
+                        trigger: { player: 'useCard1' },
+                        filter(event, player) {
+                            if (event.addCount === false) return false;
+                            return player.hasHistory('lose', evt => {
+                                const evtx = evt.relatedEvent || evt.getParent();
+                                if (evtx !== event) return false;
+                                return Object.values(evt.gaintag_map).flat().includes('cike_wenhui');
+                            });
+                        },
+                        silent: true,
+                        firstDo: true,
+                        async content(event, trigger, player) {
+                            trigger.addCount = false;
+                            const stat = player.getStat().card;
+                            const name = trigger.card.name;
+                            if (typeof stat[name] === 'number') stat[name]--;
+                        },
                     },
                 },
             },
             cike_qintao: {
-                shaRelated: true,
+                audio: 'juetao',
                 trigger: { player: 'useCardAfter' },
                 filter(event, player) {
-                    return event.card.name == 'sha' && !player.getHistory('sourceDamage', function (evt) {
-                        return evt.card == event.card;
-                    }).length && event.targets.length == 1;
+                    return event.card.name === 'sha' && event.targets.length === 1 && !game.hasPlayer2(target => {
+                        return !target.hasHistory('damage', evt => evt.card === event.card);
+                    });
                 },
                 check(event, player) {
-                    return player.hp >= 2;
+                    if (get.attitude(player, event.targets[0]) >= 0) return false;
+                    return player.hp + player.countCards('hs', card => player.canSaveCard(card, player)) > 0;
                 },
                 logTarget: 'targets',
-                content() {
-                    'step 0'
-                    player.loseHp();
-                    if (!trigger.targets[0].countCards('he')) result.index = 0;
-                    else trigger.targets[0].chooseControl().set('choiceList', ['失去1点体力', '令' + get.translation(player) + '弃置你两张牌']).set('ai', function () {
-                        if (trigger.targets[0].hp > 2 && trigger.targets[0].countCards('he') < 2) return 0;
-                        return 1;
-                    });
-                    'step 1'
-                    if (result.index == 0) trigger.targets[0].loseHp();
-                    else player.discardPlayerCard(trigger.targets[0], 'he', 2, true);
+                async content(event, trigger, player) {
+                    await player.loseHp();
+                    let target = trigger.targets[0], result;
+                    if (target.countCards('he') < 2) result.index = 0;
+                    else {
+                        result = await target.chooseControl().set('choiceList', ['失去1点体力', '令' + get.translation(player) + '弃置你两张牌']).set('ai', () => {
+                            const player = get.player();
+                            return 1 - (player.hp > 2 && player.countCards('he') < 2);
+                        });
+                    }
+                    if (result.index === 0) await target.loseHp();
+                    else await player.discardPlayerCard(target, 'he', 2, true);
                 },
             },
             cike_xianggong: {
+                audio: ['fensi', 'zhushi'],
                 trigger: { player: 'damageEnd' },
                 filter(event, player) {
-                    return event.source && event.source.countCards('he');
+                    if (player.isHealthy()) return false;
+                    return event.source?.isIn() && event.source.countCards('he');
                 },
                 forced: true,
                 logTarget: 'source',
-                content() {
-                    'step 0'
-                    var num = Math.min(player.getDamagedHp(), trigger.source.countCards('he'));
-                    trigger.source.chooseToDiscard(num, 'he', true);
-                    'step 1'
-                    trigger.source.draw();
+                async content(event, trigger, player) {
+                    await trigger.source.chooseToDiscard(player.getDamagedHp(), 'he', true);
+                    await trigger.source.draw();
                 },
             },
             //By 活动群群主--lonely patients
@@ -593,53 +620,43 @@ const packs = function () {
             cike_jijiang: {
                 group: ['cike_jijiang_refresh', 'cike_jijiang_clear', 'cike_jijiang_plus'],
                 audio: 'jijiang1',
-                forced: true,
                 trigger: { player: ['useCard', 'respond'] },
                 filter(event, player) {
                     return event.card.name == 'sha';
                 },
-                init(player) {
-                    player.storage.nownum = 0;
-                    player.storage.nextnum = 0;
-                },
-                content() {
-                    'step 0'
-                    player.draw();
-                    'step 1'
-                    event.card = result[0];
-                    if (get.type(event.card) == 'basic') {
-                        player.storage.nextnum++;
-                    }
-                },
-                mark: true,
-                intro: {
-                    content(storage, player) {
-                        var str = '';
-                        if (player.storage.nownum != 0) str += '<span class=\"texiaotext\" style=\"color:#00FF00\">本次</span>出牌阶段可额外使用' + player.storage.nownum + '张【杀】。<br>';
-                        if (player.storage.nextnum != 0) str += '<span class=\"texiaotext\" style=\"color:#FF8247\">下个</span>出牌阶段可额外使用' + player.storage.nextnum + '张【杀】。';
-                        return str;
+                forced: true,
+                async content(event, trigger, player) {
+                    const result = await target.draw().forResult();
+                    if (get.itemtype(result?.cards) !== 'card') return;
+                    if (result.cards.some(card => get.type(card) == 'basic')) {
+                        player.addSkill(event.name + '_mark');
+                        player.addMark(event.name + '_mark', 1, false);
                     }
                 },
                 subSkill: {
-                    refresh: {
-                        trigger: { player: 'phaseUseBefore' },
-                        direct: true,
-                        content() {
-                            player.storage.nownum = player.storage.nextnum;
-                            player.storage.nextnum = 0;
+                    mark: {
+                        charlotte: true,
+                        onremove: true,
+                        intro: { content: '下个出牌阶段使用【杀】的次数上限+#' },
+                        trigger: { player: 'phaseUseBegin' },
+                        forced: true,
+                        popup: false,
+                        async content(event, trigger, player) {
+                            const num = player.countMark(event.name);
+                            player.removeSkill(event.name);
+                            if (num > 0) {
+                                player.addTempSkill('cike_jijiang_effect');
+                                player.addMark('cike_jijiang_effect', num, false);
+                            }
                         },
                     },
-                    clear: {
-                        trigger: { player: 'phaseUseAfter' },
-                        direct: true,
-                        content() {
-                            player.storage.nownum = 0;
-                        }
-                    },
-                    plus: {
+                    effect: {
+                        charlotte: true,
+                        onremove: true,
+                        intro: { content: '出牌阶段使用【杀】的次数上限+#' },
                         mod: {
                             cardUsable(card, player, num) {
-                                if (card.name == 'sha') return num + player.storage.nownum;
+                                if (card.name == 'sha') return num + player.countMark('cike_jijiang_effect');
                             }
                         },
                     }
@@ -691,7 +708,7 @@ const packs = function () {
                 trigger: { source: 'damageBegin1' },
                 frequent: true,
                 filter(event, player) {
-                    return event.card && (event.card.name == 'sha') && event.notLink() && !player.getHistory('sourceDamage').length;
+                    return event.card && (event.card.name == 'sha') && event.notLink() && !player.hasHistory('sourceDamage');
                 },
                 content() {
                     trigger.num++;
@@ -699,73 +716,46 @@ const packs = function () {
             },
             cike_fengxiang: {
                 audio: 'fengxiang',
-                trigger: { player: 'gainEnd' },
+                trigger: {
+                    player: 'gainAfter',
+                    global: 'loseAsyncAfter',
+                },
                 filter(event, player) {
-                    return event.source && event.source != player && event.cards?.length;
-                },
-                prompt(event, player) {
-                    return '封乡：是否将本次获得的' + get.translation(event.cards) + '当作【杀】使用？';
-                },
-                check(event, player) {
-                    var num = event.cards.length;
-                    if (num == 1) return true;
-                    else if (num == 2) return !player.hasHistory('useCard', function (evt) {
-                        return evt.card.name == 'sha';
+                    return game.hasPlayer(current => {
+                        if (current == player) return false;
+                        return event.getl?.(current)?.cards2?.some(card => event.getg?.(player)?.includes(card));
                     });
-                    else return false;
                 },
-                content() {
-                    'step 0'
-                    player.chooseTarget('请选择使用【杀】的目标', function (card, player, target) {
-                        return player.canUse('sha', target, false);
-                    }).set('ai', function (target) {
-                        return get.effect(target, { name: 'sha' }, player, player);
-                    });
-                    'step 1'
-                    if (result.bool) {
-                        var target = result.targets[0];
-                        var cards = trigger.cards;
-                        var next = player.useCard({ name: 'sha' }, cards, target, false);
-                    }
-                    else event.finish();
+                direct: true,
+                async content(event, trigger, player) {
+                    const cards = trigger.getg(player).filter(card => game.hasPlayer(current => {
+                        if (current == player) return false;
+                        return trigger.getl(current)?.cards2?.includes(card);
+                    }));
+                    await player.chooseUseTarget(get.prompt(event.name), '将' + get.translation(cards) + '当做【杀】使用', { name: 'sha' }, cards, false, 'nodistance').set('logSkill', event.name);
                 }
             },
             cike_jitong: {
                 audio: 'ext:活动武将/audio/skill:true',
-                group: ['cike_jitong_judge'],
-                direct: true,
-                trigger: { source: 'damageSource' },
+                trigger: { player: 'phaseJieshuBegin' },
                 filter(event, player) {
-                    return event.card && event.card.name == 'sha' && event.getParent().name == 'sha' && _status.currentPhase == player && !player.hasSkill('cike_jitong_ban');
+                    return !player.hasHistory('sourceDamage', evt => evt.card?.name == 'sha');
                 },
-                content() {
-                    player.addTempSkill('cike_jitong_ban');
+                forced: true,
+                async content(event, trigger, player) {
+                    player.addSkill(event.name + '_effect');
                 },
                 subSkill: {
-                    ban: {
-                        charlotte: true,
-                    },
-                    judge: {
-                        forced: true,
-                        trigger: { player: 'phaseEnd' },
-                        filter(event, player) {
-                            return !player.hasSkill('cike_jitong_ban') && !player.hasSkill('cike_jitong_pro');
-                        },
-                        content() {
-                            player.addTempSkill('cike_jitong_pro', { player: 'damageBegin4' });
-                        },
-                    },
-                    pro: {
-                        forced: true,
+                    effect: {
                         mark: true,
                         marktext: '护',
-                        intro: {
-                            content: '防止你受到的下次伤害',
-                        },
-                        trigger: { player: 'damageBegin2' },
-                        content() {
+                        intro: { content: '防止你受到的下次伤害' },
+                        trigger: { player: 'damageBegin4' },
+                        forced: true,
+                        popup: false,
+                        async content(event, trigger, player) {
+                            player.removeSkill(event.name);
                             trigger.cancel();
-                            player.removeSkill('cike_jitong_pro');
                         }
                     },
                 }
@@ -776,7 +766,7 @@ const packs = function () {
                 usable: 1,
                 trigger: { global: 'useCardAfter' },
                 filter(event, player) {
-                    return event.player.isPhaseUsing() && event.card.name == 'tao' && event.player != player && player.hp < player.maxHp;
+                    return event.player.isPhaseUsing() && event.card.name == 'tao' && event.player != player && player.isDamaged();
                 },
                 content() {
                     player.recover();
@@ -856,7 +846,6 @@ const packs = function () {
                 },
             },
             cike_guiming: {
-                unique: true,
                 audio: 'guiming',
                 trigger: { player: 'cike_canshiBegin' },
                 forced: true,
@@ -917,9 +906,9 @@ const packs = function () {
             _cike_gzchooseskill_meihuashishan: '技能选择',
             cike_caomao: '密探·曹髦',
             cike_wenhui: '文绘',
-            cike_wenhui_info: '当你于回合内弃置其他角色的牌后，你随机从牌堆中获得一张与此牌类别相同的牌（没有则改为摸一张牌）。你以此法获得的牌本回合不计入使用次数和手牌上限。',
+            cike_wenhui_info: '当你于回合内弃置其他角色的牌后，你随机从牌堆中获得一张与此牌类别相同的牌（没有则改为摸一张牌）。你以此法获得的牌本回合无使用次数限制且不计入和手牌上限。',
             cike_qintao: '亲讨',
-            cike_qintao_info: '若你使用的指定唯一目标的【杀】未造成伤害，结算完成后，你可以失去1点体力并令其选择一项：①失去1点体力；②令你弃置其两张牌。',
+            cike_qintao_info: '你使用指定唯一目标的【杀】结算完成后，若此牌未造成伤害，则你可以失去1点体力并令目标角色选择一项：①失去1点体力；②令你弃置其两张牌。',
             cike_xianggong: '乡公',
             cike_xianggong_info: '锁定技，当你受到伤害后，伤害来源须弃置X张牌，然后摸一张牌。（X为你已损失的体力值）',
             cike_mitan: '密探',
@@ -979,18 +968,18 @@ const packs = function () {
             cike_xugong: '密探·许贡',
         },
     };
-    for (let i in HD_chaoshikong.character) {
-        HD_chaoshikong.character[i][4] ??= [];
+    for (const i in HD_chaoshikong.character) {
+        if (Array.isArray(HD_chaoshikong.character[i])) HD_chaoshikong.character[i] = get.convertedCharacter(HD_chaoshikong.character[i]);
+        HD_chaoshikong.character[i].trashBin ??= [];
         if (_status['extension_活动武将_files']?.audio.die.files.includes(`${i}.mp3`)) {
-            HD_chaoshikong.character[i][4].push('die:ext:活动武将/audio/die:true');
-            HD_chaoshikong.translate[`#ext:活动武将/audio/die/${i}:die`] = '点击播放阵亡配音';
+            HD_chaoshikong.character[i].dieAudios ??= [];
+            HD_chaoshikong.character[i].dieAudios.push('ext:活动武将/audio/die:true');
+            HD_chaoshikong.translate[`#ext:活动武将/audio/die/${i}:die`] ??= '点击播放阵亡配音';
         }
-        if (HD_chaoshikong.translate[i] && HD_chaoshikong.translate[i].indexOf('密探·') == 0) HD_chaoshikong.translate[i + '_ab'] = HD_chaoshikong.translate[i].slice(HD_chaoshikong.translate[i].indexOf('密探·') + 3, HD_chaoshikong.translate[i].length);
-        HD_chaoshikong.character[i][4].push('ext:活动武将/image/character/' + i + '.jpg');
+        if (_status['extension_活动武将_files']?.image.character.files.includes(`${i}.jpg`)) HD_chaoshikong.character[i].img = `extension/活动武将/image/character/${i}.jpg`;
+        if (HD_chaoshikong.translate[i]?.startsWith('密探·')) HD_chaoshikong.translate[i + '_ab'] = HD_chaoshikong.translate[i].slice(3);
     }
-    lib.config.all.characters.push('HD_chaoshikong');
     lib.config.all.sgscharacters.push('HD_chaoshikong');
-    if (!lib.config.characters.includes('HD_chaoshikong')) lib.config.characters.remove('HD_chaoshikong');
     lib.translate['HD_chaoshikong_character_config'] = '<span style="font-family: xingkai">超时空密探</span>';
     return HD_chaoshikong;
 };

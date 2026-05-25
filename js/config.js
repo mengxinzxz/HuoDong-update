@@ -1,20 +1,160 @@
 import { lib, game, ui, get, ai, _status } from '../../../noname.js';
-import security from '../../../noname/util/security.js';
+
 export let config = {
-	/*
-	//总有一天会维护好的功能
-	FenJieXianE: {
-		clear: true,
-		name: '<li>在线更新',
-	},
 	Huodong_Update: {
 		clear: true,
-		intro: '点击检查扩展更新',
 		name: '<button type="button">检查扩展更新</button>',
-		onclick() {
+		async onclick() {
+			const rawBase = `https://raw.githubusercontent.com/mengxinzxz/HuoDong-update/main`;
+			const saveState = async state => {
+				lib.config['extension_活动武将_update_state'] = state;
+				await game.promises.saveConfig('extension_活动武将_update_state', state);
+			};
+			const clearState = async () => {
+				delete lib.config['extension_活动武将_update_state'];
+				await game.promises.saveConfig('extension_活动武将_update_state');
+			};
+			const ensureDirByFile = async (base, file) => {
+				const parts = file.split('/');
+				parts.pop();
+				if (parts.length) await game.promises.ensureDirectory([...base.split('/'), ...parts]);
+			};
+			const listFiles = async dir => {
+				const result = [];
+				const walk = async current => {
+					const [folders, files] = await game.promises.getFileList(current);
+					for (const file of files) result.push(`${current}/${file}`.replace(`${dir}/`, ''));
+					for (const folder of folders) await walk(`${current}/${folder}`);
+				};
+				try {
+					await walk(dir);
+				}
+				catch (e) { }
+				return result;
+			};
+			const copyFiles = async (fromDir, toDir, files) => {
+				for (const file of files) {
+					const data = await game.promises.readFile(`${fromDir}/${file}`);
+					await ensureDirByFile(toDir, file);
+					await game.promises.writeFile(
+						data,
+						file.includes('/') ? `${toDir}/${file.split('/').slice(0, -1).join('/')}` : toDir,
+						file.split('/').pop()
+					);
+				}
+			};
+			try {
+				alert('正在检查扩展更新...');
+				const remoteInfo = await fetch(`${rawBase}/info.json?t=${Date.now()}`).then(res => {
+					if (!res.ok) throw new Error('获取远程info.json失败');
+					return res.json();
+				});
+				const remoteVersion = String(remoteInfo.version || '');
+				const localVersion = String(lib.extensionPack['活动武将'].version || '');
+				if (remoteVersion === localVersion) {
+					if (!confirm(`当前版本与仓库版本一致：\n${remoteVersion}\n\n是否重新安装扩展？`)) return;
+				}
+				const fileData = await fetch(`${rawBase}/js/file.json?t=${Date.now()}`).then(res => {
+					if (!res.ok) throw new Error('获取file.json失败');
+					return res.json();
+				});
+				const remoteFiles = fileData.files;
+				if (!Array.isArray(remoteFiles)) throw new Error('file.json格式错误');
+				alert(`准备更新扩展：活动武将\n\n本地版本：${localVersion}\n仓库版本：${remoteVersion}`);
+				await saveState({
+					stage: 'downloading',
+					time: Date.now(),
+					version: remoteVersion,
+				});
+				try {
+					await game.promises.removeDir('extension/活动武将/update_temp');
+				}
+				catch (e) { }
+				try {
+					await game.promises.removeDir('extension/活动武将/update_backup');
+				}
+				catch (e) { }
+				await game.promises.createDir('extension/活动武将/update_temp');
+				//先完整下载到临时目录
+				for (let i = 0; i < remoteFiles.length; i++) {
+					const file = remoteFiles[i];
+					const dir = file.split('/').slice(0, -1).join('/');
+					const targetDir = dir ? `extension/活动武将/update_temp/${dir}` : 'extension/活动武将/update_temp';
+					await ensureDirByFile('extension/活动武将/update_temp', file);
+					console.log(`正在下载：${file} (${i + 1}/${remoteFiles.length})`);
+					const res = await fetch(`${rawBase}/${file}?t=${Date.now()}`);
+					if (!res.ok) throw new Error(`下载失败：${rawBase}/${file}`);
+					const data = await res.arrayBuffer();
+					await game.promises.writeFile(`${rawBase}/${file}`, targetDir, file.split('/').pop());
+				}
+				//校验临时目录
+				const tempInfoText = await game.promises.readFileAsText(`extension/活动武将/update_temp/info.json`);
+				const tempInfo = JSON.parse(tempInfoText);
+				if (String(tempInfo.version || '') !== remoteVersion) throw new Error('临时目录info.json版本校验失败');
+				await saveState({
+					stage: 'installing',
+					time: Date.now(),
+					version: remoteVersion,
+				});
+				//备份旧扩展
+				await game.promises.createDir('extension/活动武将/update_backup');
+				const localFiles = await listFiles('extension/活动武将');
+				for (const file of localFiles) {
+					const data = await game.promises.readFile(`extension/活动武将/${file}`);
+					await ensureDirByFile('extension/活动武将/update_backup', file);
+					await game.promises.writeFile(
+						data,
+						file.includes('/') ? `extension/活动武将/update_backup/${file.split('/').slice(0, -1).join('/')}` : 'extension/活动武将/update_backup',
+						file.split('/').pop()
+					);
+				}
+				//安装新文件
+				await copyFiles('extension/活动武将/update_temp', 'extension/活动武将', remoteFiles);
+				//删除仓库已经不存在的多余文件
+				const remoteSet = new Set(remoteFiles);
+				for (const file of localFiles) {
+					if (!remoteSet.has(file)) {
+						try {
+							await game.promises.removeFile(`extension/活动武将/${file}`);
+							alert(`已删除多余文件：${file}`);
+						}
+						catch (e) { }
+					}
+				}
+				//清理缓存
+				try {
+					await game.promises.removeDir('extension/活动武将/update_temp');
+				}
+				catch (e) { }
+				try {
+					await game.promises.removeDir('extension/活动武将/update_backup');
+				}
+				catch (e) { }
+				await clearState();
+				alert(`扩展更新完成！\n\n当前版本：${remoteVersion}\n即将重启游戏`);
+				game.reload();
+			}
+			catch (e) {
+				console.error(e);
+				const state = lib.config['extension_活动武将_update_state'];
+				if (state && state.stage === 'installing') {
+					try {
+						const backupFiles = await listFiles('extension/活动武将/update_backup');
+						await copyFiles('extension/活动武将/update_backup', 'extension/活动武将', backupFiles);
+						alert('更新失败，已恢复旧版本');
+					}
+					catch (restoreError) {
+						console.error(restoreError);
+					}
+				}
+				try {
+					await game.promises.removeDir('extension/活动武将/update_temp');
+				}
+				catch (e) { }
+				alert(`更新失败：\n${e.message || e}`);
+			}
 		},
 	},
-	*/
 	HDcheckNew: {
 		name: (() => {
 			//孩子们，牢大在天上化为彩虹看着你们（bushi）
@@ -93,7 +233,7 @@ export let config = {
 	},
 	FenJieXianA: {
 		clear: true,
-		name: '<li>功能杂项（点击折叠）',
+		name: '·功能杂项（点击折叠）',
 		onclick() {
 			const innerHTML = get.plainText(this.innerHTML);
 			const goon = innerHTML.endsWith('（点击折叠）'), config = `hdwj_config_${innerHTML.slice(0, -6)}}`;
@@ -128,6 +268,11 @@ export let config = {
 		intro: '打开此选项后，神张角【异兆】“黄”标记上限为184',
 		init: true,
 	},
+	XvXiang: {
+		name: '偶像の虚拟',
+		intro: '开启此选项后，线下包的五个虚拟偶像将获得【虚像】',
+		init: false,
+	},
 	ShenSunQuan: {
 		name: '神孙权全扩技能池',
 		intro: '打开此选项后，神孙权【驭衡】获得的技能池扩大为全扩（实时生效）',
@@ -151,52 +296,19 @@ export let config = {
 	edit_PingJianName: {
 		name: '编辑欢杀将池',
 		clear: true,
+		intro: "编辑欢杀将池，此将池仅影响欢乐三国杀武将包中的角色发动技能的武将筛选范围，不会涉及禁将层面",
 		onclick() {
-			var container = ui.create.div(".popup-container.editor2", ui.window);
-			var node = container;
 			var map = game.getExtensionConfig('活动武将', 'PingJianName') || lib.skill.minipingjian.getList();
-			var str = '//编辑欢杀将池，此将池仅影响欢乐三国杀武将包中的角色发动技能的武将筛选范围，不会涉及禁将层面';
-			str += '\nPingJianName=[\n';
-			for (var i = 0; i < map.length; i++) {
-				str += '"' + map[i] + '",';
-				if (i + 1 < map.length && (i + 1) % 5 == 0) str += '\n';
-			}
-			str += '\n];';
-			node.code = str;
-			ui.window.classList.add('shortcutpaused');
-			ui.window.classList.add('systempaused');
-			var saveInput = function (/**@type {import("@codemirror/view").EditorView}*/view) {
-				var resultCode = view.state.doc.toString();
-				var PingJianName = null;
-				try {
-					PingJianName = security.exec2(resultCode).PingJianName;
+			ui.create.editor({
+				language: 'json',
+				value: JSON.stringify(map),
+				saveInput: result => {
+					const PingJianName = JSON.parse(result);
 					if (!Array.isArray(PingJianName)) {
-						throw "err";
+						throw new Error("代码格式有错误，请对比示例代码仔细检查");
 					}
-				} catch (e) {
-					if (e == "err") {
-						alert("代码格式有错误，请对比示例代码仔细检查");
-					} else {
-						var tip = lib.getErrorTip(e) || "";
-						alert("代码语法有错误，请仔细检查（" + e + "）" + tip);
-					}
-					window.focus();
-					view.dom.focus();
-					return;
-				}
-				game.saveExtensionConfig('活动武将', 'PingJianName', PingJianName);
-				ui.window.classList.remove('shortcutpaused');
-				ui.window.classList.remove('systempaused');
-				container.delete();
-				container.code = resultCode;
-				delete window.saveNonameInput;
-			};
-			ui.create.editor2(container, {
-				language: 'javascript',
-				value: str,
-				saveInput,
-			}).then(editor => {
-				window.saveNonameInput = () => saveInput(editor);
+					game.saveExtensionConfig('活动武将', 'PingJianName', PingJianName);
+				},
 			});
 		},
 	},
@@ -229,7 +341,7 @@ export let config = {
 	},
 	HD_REname: {
 		name: '名称还原',
-		intro: '开启此选项后，游戏内部分武将的名称翻译将调整为和官服一致（重启生效）',
+		intro: '开启此选项后，游戏内部分武将的名称翻译将调整为和官服一致（实时生效）',
 		init: false,
 	},
 	Boss_TZ_level: {
@@ -267,41 +379,204 @@ export let config = {
 		},
 	},
 	KQShiJian: {
-		name: '抗秦事件',
-		intro: '选择不同事件，于游戏开始时令本局游戏进行本事件（挑战模式无效）（重启生效）',
-		init: 'off',
-		item: {
-			off: '关闭',
-			bftq: '变法图强',
-			hzlh: '合纵连横',
-			cpzz: '长平之战',
-			hslh: '横扫六合',
-			lscq: '吕氏春秋',
-			sqzb: '沙丘之变',
-			zjzl: '赵姬之乱',
-			scth: '始称太后',
+		name: '抗秦事件（点击选择）',
+		intro: '选择不同事件，于游戏开始时令本局游戏进行本事件（挑战模式无效）',
+		clear: true,
+		onclick() {
+			const mask = ui.create.div(ui.window);
+			mask.style.position = 'absolute';
+			mask.style.left = '0';
+			mask.style.top = '0';
+			mask.style.width = '100%';
+			mask.style.height = '100%';
+			mask.style.zIndex = 1145141919809;
+			const dialog = ui.create.div(mask);
+			dialog.style.position = 'absolute';
+			dialog.style.left = '50%';
+			dialog.style.top = '50%';
+			dialog.style.transform = 'translate(-50%, -50%)';
+			dialog.style.background = 'rgba(0,0,0,0.72)';
+			dialog.style.padding = '12px';
+			dialog.style.borderRadius = '12px';
+			dialog.style.width = 'fit-content';
+			dialog.style.height = 'fit-content';
+			const title = ui.create.div(dialog);
+			title.style.position = 'relative';
+			title.style.width = '100%';
+			title.style.textAlign = 'center';
+			title.style.fontSize = '24px';
+			title.style.marginBottom = '12px';
+			title.innerHTML = '抗秦事件';
+			const content = ui.create.div(dialog);
+			content.style.display = 'grid';
+			content.style.position = 'relative';
+			content.style.gridTemplateColumns = 'repeat(3, auto)';
+			content.style.gap = '12px';
+			if (!Array.isArray(lib.config.extension_活动武将_KQShiJian)) game.saveConfig('extension_活动武将_KQShiJian', []);
+			const list = ['qin_bianfatuqiang', 'qin_hezonglianheng', 'qin_changpingzhizhan', 'qin_hengsaoliuhe', 'qin_lvshichunqiu', 'qin_shaqiuzhibian', 'qin_zhaojizhiluan', 'qin_shichengtaihou'];
+			list.forEach(name => {
+				const item = ui.create.div(content);
+				item.style.display = 'flex';
+				item.style.position = 'relative';
+				item.style.alignItems = 'center';
+				item.style.justifyContent = 'space-between';
+				item.style.padding = '8px 12px';
+				item.style.border = '1px solid #999';
+				item.style.borderRadius = '8px';
+				item.style.background = 'rgba(0,0,0,0.35)';
+				item.style.color = 'white';
+				item.style.fontSize = '18px';
+				item.style.cursor = 'pointer';
+				item.style.minHeight = '48px';
+				item.style.boxSizing = 'border-box';
+				item.style.gap = '5px';
+				const text = ui.create.div(item);
+				text.style.position = 'relative';
+				text.style.whiteSpace = 'nowrap';
+				text.innerHTML = lib.translate[name];
+				const check = ui.create.div(item);
+				check.style.position = 'relative';
+				check.style.flexShrink = '0';
+				check.style.width = '22px';
+				check.style.height = '22px';
+				check.style.border = '2px solid white';
+				check.style.borderRadius = '6px';
+				check.style.display = 'flex';
+				check.style.alignItems = 'center';
+				check.style.justifyContent = 'center';
+				check.style.fontSize = '18px';
+				check.style.transition = 'all 0.2s';
+				if (lib.config.extension_活动武将_KQShiJian.includes(name)) {
+					check.innerHTML = '✓';
+					check.style.background = '#4caf50';
+				}
+				else {
+					check.innerHTML = '';
+					check.style.background = 'transparent';
+				}
+				item.onclick = () => {
+					if (lib.config.extension_活动武将_KQShiJian.includes(name)) {
+						check.innerHTML = '';
+						check.style.background = 'transparent';
+						lib.config.extension_活动武将_KQShiJian.remove(name);
+					}
+					else {
+						check.innerHTML = '✓';
+						check.style.background = '#4caf50';
+						lib.config.extension_活动武将_KQShiJian.push(name);
+					}
+					game.saveConfig('extension_活动武将_KQShiJian', lib.config.extension_活动武将_KQShiJian);
+				};
+			});
+			//关闭逻辑，点击dialog外的区域关闭dialog
+			mask.onclick = () => {
+				dialog?.remove();
+				mask?.remove();
+			};
+			dialog.onclick = e => e.stopPropagation();
 		},
 	},
 	GDShiJian: {
-		name: '官渡事件',
-		intro: '选择不同事件，于游戏开始时令本局游戏进行本事件（挑战模式无效）（重启生效）',
-		init: 'off',
-		item: {
-			off: '关闭',
-			hswc: '火烧乌巢',
-			lckf: '粮草匮乏',
-			zyzw: '斩颜良诛文丑',
-			sssb: '十胜十败',
-			xthj: '徐图缓进',
-			ljxc: '两军相持',
-			jsdy: '坚守待援',
-			yssq: '以弱胜强',
-			scej: '恃宠而骄',
+		name: '官渡事件（点击选择）',
+		intro: '选择不同事件，于游戏开始时令本局游戏进行本事件（挑战模式无效）',
+		clear: true,
+		onclick() {
+			const mask = ui.create.div(ui.window);
+			mask.style.position = 'absolute';
+			mask.style.left = '0';
+			mask.style.top = '0';
+			mask.style.width = '100%';
+			mask.style.height = '100%';
+			mask.style.zIndex = 1145141919809;
+			const dialog = ui.create.div(mask);
+			dialog.style.position = 'absolute';
+			dialog.style.left = '50%';
+			dialog.style.top = '50%';
+			dialog.style.transform = 'translate(-50%, -50%)';
+			dialog.style.background = 'rgba(0,0,0,0.72)';
+			dialog.style.padding = '12px';
+			dialog.style.borderRadius = '12px';
+			dialog.style.width = 'fit-content';
+			dialog.style.height = 'fit-content';
+			const title = ui.create.div(dialog);
+			title.style.position = 'relative';
+			title.style.width = '100%';
+			title.style.textAlign = 'center';
+			title.style.fontSize = '24px';
+			title.style.marginBottom = '12px';
+			title.innerHTML = '官渡事件';
+			const content = ui.create.div(dialog);
+			content.style.display = 'grid';
+			content.style.position = 'relative';
+			content.style.gridTemplateColumns = 'repeat(3, auto)';
+			content.style.gap = '12px';
+			if (!Array.isArray(lib.config.extension_活动武将_GDShiJian)) game.saveConfig('extension_活动武将_GDShiJian', []);
+			const list = ['bilibili_liangjunxiangchi', 'bilibili_xutuhuanjin', 'bilibili_jianshoudaiyuan', 'bilibili_huoshaowuchao', 'bilibili_liangcaokuifa', 'bilibili_zhanzhuyanwen', 'bilibili_shishengshibai', 'bilibili_yiruoshengqiang', 'bilibili_shichongerjiao'];
+			list.forEach(name => {
+				const item = ui.create.div(content);
+				item.style.display = 'flex';
+				item.style.position = 'relative';
+				item.style.alignItems = 'center';
+				item.style.justifyContent = 'space-between';
+				item.style.padding = '8px 12px';
+				item.style.border = '1px solid #999';
+				item.style.borderRadius = '8px';
+				item.style.background = 'rgba(0,0,0,0.35)';
+				item.style.color = 'white';
+				item.style.fontSize = '18px';
+				item.style.cursor = 'pointer';
+				item.style.minHeight = '48px';
+				item.style.boxSizing = 'border-box';
+				item.style.gap = '5px';
+				const text = ui.create.div(item);
+				text.style.position = 'relative';
+				text.style.whiteSpace = 'nowrap';
+				text.innerHTML = lib.translate[name];
+				const check = ui.create.div(item);
+				check.style.position = 'relative';
+				check.style.flexShrink = '0';
+				check.style.width = '22px';
+				check.style.height = '22px';
+				check.style.border = '2px solid white';
+				check.style.borderRadius = '6px';
+				check.style.display = 'flex';
+				check.style.alignItems = 'center';
+				check.style.justifyContent = 'center';
+				check.style.fontSize = '18px';
+				check.style.transition = 'all 0.2s';
+				if (lib.config.extension_活动武将_GDShiJian.includes(name)) {
+					check.innerHTML = '✓';
+					check.style.background = '#4caf50';
+				}
+				else {
+					check.innerHTML = '';
+					check.style.background = 'transparent';
+				}
+				item.onclick = () => {
+					if (lib.config.extension_活动武将_GDShiJian.includes(name)) {
+						check.innerHTML = '';
+						check.style.background = 'transparent';
+						lib.config.extension_活动武将_GDShiJian.remove(name);
+					}
+					else {
+						check.innerHTML = '✓';
+						check.style.background = '#4caf50';
+						lib.config.extension_活动武将_GDShiJian.push(name);
+					}
+					game.saveConfig('extension_活动武将_GDShiJian', lib.config.extension_活动武将_GDShiJian);
+				};
+			});
+			//关闭逻辑，点击dialog外的区域关闭dialog
+			mask.onclick = () => {
+				dialog?.remove();
+				mask?.remove();
+			};
+			dialog.onclick = e => e.stopPropagation();
 		},
 	},
 	FenJieXianB: {
 		clear: true,
-		name: '<li>关于特效（点击折叠）',
+		name: '·关于特效（点击折叠）',
 		onclick() {
 			const innerHTML = get.plainText(this.innerHTML);
 			const goon = innerHTML.endsWith('（点击折叠）'), config = `hdwj_config_${innerHTML.slice(0, -6)}}`;
@@ -321,18 +596,14 @@ export let config = {
 			}
 		},
 	},
-	HDdamageAudio: {
-		name: '失去上限音效',
-		intro: '打开此选项后，失去体力上限会播放特定音效（实时生效）',
-		init: true,
-	},
 	HDfightAudio: {
 		name: '各项游戏播报',
-		intro: '游戏播报包括以下内容（实时生效）' +
-			'<br><li>游戏开始播报（让步十周年UI）' +
-			'<br><li>癫狂屠戮，万军取首播报' +
-			'<br><li>击杀角色，回复体力播报',
-		init: true,
+		intro: [
+			'游戏播报包括以下内容：',
+			'游戏开始播报（让步十周年UI）',
+			'癫狂屠戮，万军取首播报',
+			'击杀角色，回复体力播报',
+		].join('<br><li>'),
 		init: 'default',
 		item: {
 			off: '关闭',
@@ -363,80 +634,6 @@ export let config = {
 			'<br><li>初始主公势力bgm' +
 			'<br><li>游戏正常对局bgm' +
 			'<br><li>进入残局激昂bgm',
-		init: false,
-	},
-	FenJieXianD: {
-		clear: true,
-		name: '<li>关于国战（点击折叠）',
-		onclick() {
-			const innerHTML = get.plainText(this.innerHTML);
-			const goon = innerHTML.endsWith('（点击折叠）'), config = `hdwj_config_${innerHTML.slice(0, -6)}}`;
-			this.innerHTML = `<li>${this.textContent.slice(0, -6)}${goon ? '（点击展开）' : '（点击折叠）'}`;
-			if (goon) {
-				_status[config] ??= [];
-				let item = this.nextSibling;
-				while (item && ['（点击折叠）', '（点击展开）', '删除此扩展'].every(i => !item.innerHTML.includes(i))) {
-					item.hide();
-					_status[config].add(item);
-					item = item.nextSibling;
-				}
-			}
-			else {
-				for (const item of _status[config]) item.show();
-				delete _status[config];
-			}
-		},
-	},
-	HD_gzfazheng: {
-		name: '法正修改',
-		intro: '开启此选项后，国战法正【眩惑】调整为OL/手杀版本（重启生效）',
-		init: false,
-	},
-	HD_gzbianfuren: {
-		name: '卞夫人修改',
-		intro: '开启此选项后，国战卞夫人【挽危】调整为OL/十周年版本（重启生效）',
-		init: false,
-	},
-	FenJieXianE: {
-		clear: true,
-		name: '<li>扩展彩蛋（点击折叠）',
-		onclick() {
-			const innerHTML = get.plainText(this.innerHTML);
-			const goon = innerHTML.endsWith('（点击折叠）'), config = `hdwj_config_${innerHTML.slice(0, -6)}}`;
-			this.innerHTML = `<li>${this.textContent.slice(0, -6)}${goon ? '（点击展开）' : '（点击折叠）'}`;
-			if (goon) {
-				_status[config] ??= [];
-				let item = this.nextSibling;
-				while (item && ['（点击折叠）', '（点击展开）', '删除此扩展'].every(i => !item.innerHTML.includes(i))) {
-					item.hide();
-					_status[config].add(item);
-					item = item.nextSibling;
-				}
-			}
-			else {
-				for (const item of _status[config]) item.show();
-				delete _status[config];
-			}
-		},
-	},
-	ShenLvBu: {
-		name: '彩蛋·神吕布',
-		intro: '开启此选项后，在正常模式中可以使用：最强神话、暴怒战神、神鬼无前',
-		init: false,
-	},
-	XvXiang: {
-		name: '彩蛋·虚像',
-		intro: '开启此选项后，线下包的五个虚拟偶像将获得【虚像】',
-		init: false,
-	},
-	DanJi: {
-		name: '彩蛋·千里走单骑',
-		intro: '开启此选项后，在正常模式中可以使用：蔡阳，普净，胡班（位于活动武将“其他武将”包）',
-		init: false,
-	},
-	SCS: {
-		name: '彩蛋·十常侍',
-		intro: '开启此选项后，在正常模式中可以使用十常侍单人版（位于活动武将“其他武将”包）',
 		init: false,
 	},
 }
