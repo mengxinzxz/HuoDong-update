@@ -15,10 +15,6 @@ export async function precontent(bilibilicharacter) {
     //清空在线更新后的活动武将缓存
     await (async () => {
         if (!lib.config['extension_活动武将_update_state']) return;
-        const clearState = async () => {
-            delete lib.config['extension_活动武将_update_state'];
-            await game.promises.saveConfig('extension_活动武将_update_state');
-        };
         const ensureDirByFile = async (base, file) => {
             const parts = file.split('/');
             parts.pop();
@@ -55,15 +51,10 @@ export async function precontent(bilibilicharacter) {
                 await copyFiles('extension/活动武将/update_backup', 'extension/活动武将', backupFiles);
                 alert('已从备份恢复旧版本扩展');
             }
-            try {
-                await game.promises.removeDir('extension/活动武将/update_temp');
-            }
-            catch (e) { }
-            try {
-                await game.promises.removeDir('extension/活动武将/update_backup');
-            }
-            catch (e) { }
-            await clearState();
+            await game.promises.removeDir('extension/活动武将/update_temp').catch(() => { });
+            await game.promises.removeDir('extension/活动武将/update_backup').catch(() => { });
+            delete lib.config['extension_活动武将_update_state'];
+            await game.promises.saveConfig('extension_活动武将_update_state');
             alert('扩展更新残留清理完成');
         }
         catch (e) {
