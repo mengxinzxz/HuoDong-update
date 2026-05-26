@@ -44559,6 +44559,8 @@ const packs = function () {
             if (typeof player.hp2 === 'number') {
                 event.originalHp2 = player.hp2;
             }
+            event.originalMaxHp = player.maxHp;
+            event.changedMaxHp = 0;
             game.getGlobalHistory().changeHp.push(event);
             if (event.num < 0 && player.hujia > 0 && event.getParent().name === 'damage' && !player.hasSkillTag('nohujia') && !event.getParent().nohujia) {
                 event.hujia = Math.min(-event.num, player.hujia);
