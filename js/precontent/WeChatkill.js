@@ -270,7 +270,7 @@ const packs = function () {
             wechat_sb_xiahouyuan: ['male', 'wei', 4, ['wechatsbshensu', 'sbzhengzi'], ['name:夏侯|渊']],
             wechat_sb_xiaoqiao: ['female', 'wu', 3, ['wechatsbtianxiang', 'xinhongyan'], ['name:桥|null']],
             wechat_sb_sunquan: ['male', 'wu', 4, ['wechatsbzhiheng', 'wechatsbtongye']],
-            wechat_sb_huaxiong: ['male', 'qun', 4, ['wechatsbyaowu', 'sbyangwei']],
+            wechat_sb_huaxiong: ['male', 'qun', '4/4/1', ['wechatsbyaowu', 'sbyangwei']],
             wechat_sb_yujin: ['male', 'wei', 4, ['sbxiayuan', 'wechatsbjieyue']],
             wechat_sb_lvmeng: ['male', 'wu', 4, ['wechatsbkeji', 'wechatsbdujiang']],
             wechat_sb_lvbu: ['male', 'qun', 5, ['sbwushuang', 'wechatsbliyu']],
@@ -20308,7 +20308,7 @@ const packs = function () {
                             return event.player.inRange(player);
                         },
                         prompt2(event, player) {
-                            return `令${get.translation(event.player)}无法使用或打出本回合获得的牌，直到其使用【杀】指定你为目标或本回合结束`;
+                            return `令${get.translation(event.player)}无法使用或打出本回合获得的非伤害牌，直到其使用伤害牌指定你为目标或本回合结束`;
                         },
                         logTarget: 'player',
                         check(event, player) {
@@ -20325,34 +20325,36 @@ const packs = function () {
                         init(player, skill) {
                             const hs = player.getCards('h');
                             const cards = player.getHistory('gain').flatMap(evt => evt.cards).filter(card => hs.includes(card));
-                            if (cards.length) player.addGaintag(cards, skill);
+                            if (cards.length) player.addGaintag(cards, 'wechatsbqingguo_mark');
                         },
                         onremove(player, skill) {
                             delete player.storage[skill];
-                            player.removeGaintag(skill);
+                            player.removeGaintag('wechatsbqingguo_mark');
                         },
                         intro: {
                             markcount(storage = []) {
                                 return storage.length > 1 ? storage.length : 0;
                             },
-                            content: '无法使用或打出本回合获得的牌，直到使用【杀】指定$为目标或本回合结束',
+                            content: '无法使用或打出本回合获得的非伤害牌，直到使用伤害牌指定$为目标或本回合结束',
                         },
                         mod: {
                             cardEnabled(card, player) {
                                 const cards = [card].concat(card.cards || []);
-                                if (cards.some(cardx => get.itemtype(cardx) === 'card' && cardx.hasGaintag('wechatsbqingguo_fengyin'))) return false;
+                                if (cards.some(cardx => {
+                                    if (get.type(cardx, null, false) !== 'delay' && get.tag(cardx, 'damage')) return false;
+                                    return get.itemtype(cardx) === 'card' && cardx.hasGaintag('wechatsbqingguo_mark');
+                                })) return false;
                             },
-                            cardRespondable(card, player) {
-                                const cards = [card].concat(card.cards || []);
-                                if (cards.some(cardx => get.itemtype(cardx) === 'card' && cardx.hasGaintag('wechatsbqingguo_fengyin'))) return false;
+                            cardRespondable() {
+                                return lib.skill.wechatsbqingguo_fengyin.mod.cardEnabled.apply(this, arguments);
                             },
                             cardSavable(card, player) {
-                                const cards = [card].concat(card.cards || []);
-                                if (cards.some(cardx => get.itemtype(cardx) === 'card' && cardx.hasGaintag('wechatsbqingguo_fengyin'))) return false;
+                                return lib.skill.wechatsbqingguo_fengyin.mod.cardEnabled.apply(this, arguments);
                             },
                         },
                         trigger: { player: 'useCardToPlayer' },
                         filter(event, player) {
+                            if (get.type(event.card) === 'delay' || !get.tag(event.card, 'damage')) return false;
                             return player.getStorage('wechatsbqingguo_fengyin').includes(event.target);
                         },
                         silent: true,
@@ -20367,7 +20369,7 @@ const packs = function () {
                         trigger: { player: 'gainBegin' },
                         silent: true,
                         async content(event, trigger, player) {
-                            trigger.gaintag.add('wechatsbqingguo_fengyin');
+                            trigger.gaintag.add(event.name);
                         },
                     },
                 }
@@ -21771,7 +21773,7 @@ const packs = function () {
             wechatrezongshi_info: '锁定技，你的手牌上限+3。准备阶段，若你的手牌数大于体力值，则你本回合内使用【杀】无距离和次数限制。',
             wechat_sb_huaxiong: '小程序谋华雄',
             wechatsbyaowu: '耀武',
-            wechatsbyaowu_info: '锁定技，当一名角色使用【杀】对你造成伤害时，你摸一张牌。然后若此【杀】为红色，该角色回复1点体力或摸一张牌。',
+            wechatsbyaowu_info: '锁定技，当你受到【杀】你造成的伤害时，你摸一张牌。然后若此【杀】为红色，该角色回复1点体力或摸一张牌。',
             wechat_zhi_yuanshu: '志袁术',
             wechatshehuai: '慑淮',
             wechatshehuai_info: '出牌阶段开始时，你可以令一名其他角色本回合无法响应你使用的牌，然后所有除其以外的其他角色可以秘密令你本阶段使用【杀】的次数上限+1。',
@@ -21942,7 +21944,8 @@ const packs = function () {
             wechatsbluoshen: '洛神',
             wechatsbluoshen_info: '准备阶段，你可以选择一名角色。从其开始按逆时针方向的X名其他角色同时展示一张手牌（X为场上存活角色数的一半，向上取整）。你获得其中的黑色牌且这些牌不计入本回合手牌上限并可以使用其中的红色牌（无距离和次数限制），然后你弃置剩余牌。',
             wechatsbqingguo: '倾国',
-            wechatsbqingguo_info: '①你可以将一张黑色手牌当做【闪】使用或打出。②攻击范围内包含你的角色回合开始时，你可以令其无法使用或打出本回合获得的牌，直到其使用【杀】指定你为目标或本回合结束。',
+            wechatsbqingguo_mark: 'invisible',
+            wechatsbqingguo_info: '①你可以将一张黑色手牌当做【闪】使用或打出。②攻击范围内包含你的角色回合开始时，你可以令其无法使用或打出本回合获得的非伤害牌，直到其使用伤害牌指定你为目标或本回合结束。',
             wechat_shen_luxun: '小程序神陆逊',
             wechatcuike: '摧克',
             wechatcuike_info: '出牌阶段开始时，若你的“军略”标记数为：奇数，你可以对一名角色造成1点伤害；偶数，你可以横置一名角色并弃置其区域内的一张牌。若你的“军略”标记数量大于等于游戏人数，则你可以移去全部“军略”标记并对所有其他角色各造成1点伤害。',
