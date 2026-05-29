@@ -5521,34 +5521,13 @@ const packs = function () {
                     effect: {
                         audio: 'xingzuo',
                         inherit: 'xingzuo2',
-                        content() {
-                            'step 0'
-                            player.chooseTarget(function (card, player, target) {
-                                return target.countCards('h') > 0;
-                            }, '兴作：是否令一名角色将其手牌与牌堆底的三张牌替换？').set('ai', function (target) {
-                                var player = _status.event.player, att = get.attitude(player, target), hs = target.getCards('h'), num = hs.length;
-                                var getv = function (list, target) {
-                                    var num = 0;
-                                    for (var i of list) num += get.value(i, target);
-                                    return num;
-                                }, val = getv(hs, target) - getv(player.storage.minixingzuo_effect, target);
-                                if (num < 3) return att * Math.sqrt(Math.max(0, -val)) * 1.5;
-                                if (num == 3) return -att * Math.sqrt(Math.max(0, val));
-                                return -att * Math.sqrt(Math.max(0, val));
-                            });
-                            'step 1'
-                            if (result.bool) {
-                                var target = result.targets[0];
-                                player.logSkill('minixingzuo', target);
-                                var cards = get.bottomCards(3);
-                                game.cardsGotoOrdering(cards);
-                                var hs = target.getCards('h');
-                                target.lose(hs, ui.cardPile);
-                                target.gain(cards, 'draw');
-                            }
-                            else event.finish();
-                            'step 2'
-                            game.updateRoundNumber();
+                        async content(event, trigger, player) {
+                            const target = event.targets[0];
+                            const cards = get.bottomCards(3, true);
+                            await game.cardsGotoOrdering(cards);
+                            const hs = target.getCards('h');
+                            await target.lose(hs, ui.cardPile);
+                            await target.gain(cards, 'draw');
                         },
                     },
                 },
