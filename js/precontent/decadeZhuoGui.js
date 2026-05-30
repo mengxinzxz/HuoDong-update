@@ -5,22 +5,23 @@ const packs = function () {
         name: 'decadeZhuoGui',
         connect: true,
         character: {
-            ZG_mengpo: ['female', 'qun', 8, ['ZGguimei', 'ZGaotang', 'ZGyunju']],
+            ZG_mengpo: ['female', 'qun', 8, ['ZGguimei', 'ZGaotang', 'ZGyunju']],//更新点：熬汤可以多选一个目标遗忘技能，云飓弃置牌数改为弃置三张
             ZG_heiwuchang: ['male', 'qun', 4, ['ZGguimei', 'ZGxixing', 'ZGtaiping', 'ZGduanhun']],
             ZG_baiwuchang: ['male', 'qun', 7, ['ZGguimei', 'ZGbaolian', 'ZGqiangzheng', 'ZGmizui']],
-            ZG_heibaiwuchang: ['male', 'qun', 12, ['ZGxixing', 'ZGtaiping', 'ZGqiangzheng', 'ZGmizui']],
+            ZG_heibaiwuchang: ['male', 'qun', 12, ['ZGxixing', 'ZGtaiping', 'ZGqiangzheng', 'ZGmizui']],//给黑白无常加了个断魂的新技能，不是单黑无常的断魂，效果是濒死角色自己给自己吃的桃无效，只能让别人救或者喝酒
             ZG_niutou: ['male', 'qun', 6, ['ZGguimei', 'ZGxiaoshou', 'ZGmanji']],
             ZG_mamian: ['male', 'qun', 6, ['ZGguimei', 'ZGshiyu', 'ZGguizhao']],
-            ZG_niutoumamian: ['male', 'qun', 12, ['ZGxiaoshou', 'ZGmanji', 'ZGshiyu', 'ZGguizhao']],
-            ZG_baowei: ['male', 'qun', 6, ['ZGguimei', 'ZGyinsha', 'ZGeli']],
-            ZG_niaozui: ['male', 'qun', 7, ['ZGguimei', 'ZGbingyi', 'ZGsuoxue']],
-            ZG_yusai: ['male', 'qun', 12, ['ZGguimei', 'ZGguixi', 'ZGanchao']],
-            ZG_huangfeng: ['male', 'qun', 5, ['ZGguimei', 'ZGduzhen', 'ZGminchong']],
-            ZG_yanluowang: ['male', 'qun', 12, ['ZGtiemian', 'ZGdifu', 'ZGxingpan']],
-            ZG_guiwang: ['male', 'qun', 30, ['ZGtiemian', 'ZGjizhou', 'ZGdanshi', 'ZGchihu']],
+            ZG_niutoumamian: ['male', 'qun', 12, ['ZGxiaoshou', 'ZGmanji', 'ZGshiyu', 'ZGguizhao']],//同理，新版本给牛头马面加了个沙摩柯的蒺藜，孩子你看着办加不加
+            ZG_baowei: ['male', 'qun', 6, ['ZGguimei', 'ZGyinsha', 'ZGeli']],//新版本阴煞强化，从原来不能成为杀的目标扩充为不能成为牌的目标，且自身使用牌可以强中对面，对面不可响应
+            ZG_niaozui: ['male', 'qun', 7, ['ZGguimei', 'ZGbingyi', 'ZGsuoxue']],//新版本病疑改为了自身补牌至八张，不能群体补牌了；索穴加了每回合使用限三次的次数限制，但触发从杀扩充至任意伤害牌
+            ZG_yusai: ['male', 'qun', 12, ['ZGguimei', 'ZGguixi', 'ZGanchao']],//毒针弃置牌的数量由一张变成两张，冥虫更是直接削废了变成牢马谡的挥泪了
+            ZG_huangfeng: ['male', 'qun', 5, ['ZGguimei', 'ZGduzhen', 'ZGminchong']],//新版本鬼吸的判定从红桃扩展至红色，暗潮不变
+            ZG_yanluowang: ['male', 'qun', 12, ['ZGtiemian', 'ZGdifu', 'ZGxingpan', 'ZGzhennu', 'ZGdianwei', 'ZGxuanpan']],//孩子有个隐藏技ZGxuanpan，设定上是存在但不给玩家显示，这个不知道怎么调我直接加上去了，你知道无名杀如何隐藏技能描述的话你来改
+            ZG_guiwang: ['male', 'qun', 30, ['ZGtiemian', 'ZGjizhou', 'ZGdanshi', 'ZGchihu',]],//新版本给鬼王加了个新技能阴兵，就是十周年老仙天书里的那个技能阴兵，别的技能也或多或少改了，不过基本上只改了数值，效果没改，懒得动了，孩子你看着办要不要加'nhyinbing'，铁面从75%概率变成100%概率免疫了
+            ZG_riyeyoushen: ['male', 'qun', 12, ['ZGzhousha', 'ZGyezhong', 'ZGhuiyun', 'ZGduane']],//新版本给日夜游神加了个朱建平的天机，然后就是把昼刹的出杀次数变成+3,断恶的失去体力数值变成失去2点体力，铁面和鬼王同理
         },
         characterIntro: {
-            ZG_mengpo: '孟婆，神孟姜女，常驻在忘川河黄泉路奈何桥旁，醧忘台为了能忘记这些痛苦万分的记忆，熬制了能使人忘记记忆的孟婆汤。她在奈何桥畔熬制孟婆汤，让参与轮回的阴魂们忘记前世的一切。高大如方丈，四周的廊房有一百零八间。有一条通道，通向东方，仅一尺四寸宽。所有奉令押解到的男女鬼魂，在各廊房中，都有杯子，招各鬼饮下此汤，多饮少饮不论。',
+            ZG_mengpo: '孟婆神，孟姜女，常驻在忘川河黄泉路奈何桥旁，醧忘台为了能忘记这些痛苦万分的记忆，熬制了能使人忘记记忆的孟婆汤。她在奈何桥畔熬制孟婆汤，让参与轮回的阴魂们忘记前世的一切。高大如方丈，四周的廊房有一百零八间。有一条通道，通向东方，仅一尺四寸宽。所有奉令押解到的男女鬼魂，在各廊房中，都有杯子，招各鬼饮下此汤，多饮少饮不论。',
             ZG_heiwuchang: '黑无常名为范无救（或称范无赦、范无咎），属阴。面容凶悍，身宽体胖，个小面黑，官帽上写有“天下太平”四字，意为对违抗法令身负罪过者一概无赦，尊之曰“矮爷”或“黑爷”。对女性吸其阳魂，对男性散其阳魄。',
             ZG_baiwuchang: '白无常名为谢必安，属阳。时常满面笑容，身材高瘦，面色惨白，口吐长舌，其头上官帽写有“一见生财”四字，予感谢并对恭敬神明之人以好运，尊之曰“活无常”或“白爷”。对男性吸其阴魂，对女性散其阴魄。',
             ZG_heibaiwuchang: '黑白无常，亦称无常。是中国传统文化中的一对神祇，也是最有名的鬼差。此二神手执脚镣手铐，专职缉拿鬼魂、协助赏善罚恶，也常为阎罗王、城隍、东岳大帝等冥界神明的部将。 白无常名为谢必安，属阳。时常满面笑容，身材高瘦，面色惨白，口吐长舌，其头上官帽写有“一见生财”四字，予感谢并对恭敬神明之人以好运，尊之曰“活无常”，“白爷”等。对男性吸其阴魂，对女性散其阴魄。 黑无常名为范无救（或称范无赦、范无咎），属阴。面容凶悍，身宽体胖，个小面黑，官帽上写有“天下太平”四字，意为对违抗法令身负罪过者一概无赦，尊之曰“矮爷”或“黑爷”。对女性吸其阳魂，对男性散其阳魄。 因其在城隍麾下地位仅次于文武判官，牛头马面，枷爷，锁爷，故又得名“七爷”，“八爷”。',
@@ -33,6 +34,7 @@ const packs = function () {
             ZG_huangfeng: '黄蜂是管理地上昆虫动物亡灵的冥帅，和豹尾、鸟嘴、鱼鳃并称“四大阴帅”。',
             ZG_yanluowang: '第五殿阎罗王包拯，东北方度仙上圣天尊化冥府五殿最胜耀灵真君阎罗大王，神居纠纶宫，阎罗天子包，正月初八日诞辰，位列垦宫，尊居丑位，执掌镬汤地狱，威张煮溃之权，专司大海之底，东北沃焦石下叫唤大地狱，并十六诛心小狱。前本居第一殿，因怜屈死，屡放还阳伸雪，降调此殿。凡解到此殿者，押赴望乡台，令之闻见世上本家，因罪遭殃各事，随即推入此狱，细查曾犯何恶，再发入诛心十六小狱，钩出其心，掷与蛇食，铡其身首（包公即善于用铡刀），受苦满日，另发别殿。',
             ZG_guiwang: '鬼王中的“王”字并不代表至高无上的身份，鬼王的塑像上身裸露，红发獠牙，手拿镇妖铃，狰狞凶恶，整个一副夜叉鬼模样。他与黑白无常、牛头马面为伍，地位自然不会太高，但因其挂了个“王”字，地位应该高于一般鬼卒，大约是个像山大王那样的头领。',
+            ZG_riyeyoushen: '日夜游神，中国民间信仰的神仙之一。是日游神与夜游神的合称，又叫日夜游巡，原是四处游荡的凶神，后来则演变成东岳大帝、阎罗王、城隍爷等阴间神明的部下，分别于日间、夜间监督人间的善恶，故常被供奉于东岳庙、城隍庙等。或说甘柳将军即为日夜游神。',
         },
         skill: {
             //by染柒
@@ -667,6 +669,13 @@ const packs = function () {
                     trigger.num += trigger.name == 'damage' ? 1 : 2;
                 },
             },
+            ZGzhousha: {},
+            ZGyezhong: {},
+            ZGhuiyun: {},
+            ZGduane: {},
+            ZGzhennu: {},
+            ZGdianwei: {},
+            ZGxuanpan: {},
         },
         translate: {
             ZG_mengpo: '孟婆',
@@ -682,9 +691,12 @@ const packs = function () {
             ZG_huangfeng: '黄蜂',
             ZG_yanluowang: '阎罗王',
             ZG_guiwang: '鬼王',
+            ZG_riyeyoushen: '日夜游神',
             ZGguimei: '鬼魅',
             ZGguimei1: '鬼魅',
             ZGguimei2: '鬼魅',
+            //孩子黑白无常和牛头马面单鬼的技能配音你好像统统用的是合体的技能配音，你看看怎么拆分出单体的和合体的吧，我就只负责把配音加进来，怎么适配就是你的事情了（）
+            //孩子注意了，鬼魅的配音分两个版本，一个男的和一个女的版本，这边我不知道怎么回事我听到的版本全是女的，给你补了男的配音，另外说一点，铁面的配音也是分两个版本的，一个是鬼王的，一个是阎罗王的。
             ZGguimei_info: '锁定技，你不会被翻面；你跳过摸牌阶段时，摸一张牌；你跳过出牌阶段时，本回合手牌无上限。',
             ZGyunju: '云飓',
             ZGyunju_info: '锁定技，敌方角色的回合结束时，该角色随机弃置一张手牌和一张装备区里的牌。',
@@ -739,6 +751,20 @@ const packs = function () {
             ZGdanshi_info: '锁定技，当你受到伤害时，此伤害+X（X为你拥有的“噬”标记数量），然后你移去1枚“噬”。',
             ZGchihu: '赤虎',
             ZGchihu_info: '锁定技，若你的手牌数不是全场最多的，摸牌阶段你多摸两张牌；若你的体力值不是全场最多的，你造成的伤害+1。',
+            ZGzhousha: '昼煞',
+            ZGzhousha_info: '锁定技，准备阶段，你进行一次判定并获得判定牌，若结果为红色，你本回合使用【杀】的次数+2。',
+            ZGyezhong: '夜冢',
+            ZGyezhong_info: '锁定技，结束阶段，你进行一次判定并获得判定牌，若结果为黑色，你令所有敌方角色随机弃置一张手牌。',
+            ZGhuiyun: '晦运',
+            ZGhuiyun_info: '出牌阶段限一次，你可以展示一名敌方角色的所有手牌并弃置其中至多两张牌，然后你可以弃置一张与这两张牌中任意一张牌名相同的牌，对其造成两点伤害。',
+            ZGduane: '断恶',
+            ZGduane_info: '锁定技，敌方角色弃牌阶段结束时，若其于该阶段弃置了黑色牌，则其失去一点体力。',
+            ZGzhennu: '震怒',
+            ZGzhennu_info: '锁定技，当你的体力值第一次降低至8点或4点以下时，你于当前阶段结束后，立刻执行一个额外的回合并摸四张牌。',
+            ZGdianwei: '殿威',
+            ZGdianwei_info: '锁定技，准备阶段，你视为对装备区无牌的角色使用了一张【杀】；装备区有牌的角色随机弃置一张装备区的牌。',
+            ZGxuanpan: '宣判',//隐藏技，别的玩家查看技能面板时，他们是看不到该技能的，如果是我来实现这个功能的话，我会直接选择跳过翻译不写以达成这个效果（憋笑），宣判我找不到游戏原声了，我录一段包青天的台词作为语音吧
+            ZGxuanpan_info: '锁定技，敌方角色回合结束时，若其本回合有以下行为，则执行对应项效果：' + '<br>1.造成伤害大于3,其随机受到0~3点伤害；' + '<br>2.摸牌数大于7,你随机摸0~3张牌；' + '<br>3.回复体力大于2，你随机回复0~3点体力；' + '<br>4.因弃置而置入弃牌堆的牌数大于3,其随机弃置0~3张牌。',
         },
     };
     for (const i in decadeZhuoGui.character) {
