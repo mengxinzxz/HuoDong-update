@@ -62,6 +62,20 @@ export async function precontent(bilibilicharacter) {
             alert('扩展更新残留清理失败，请手动检查update_temp和update_backup目录');
         }
     })();
+    //自动更新version的时间，提交commit一定要带上这个文件，这样在线更新才能跟上最新的commit
+    const text = await game.promises.readFileAsText(`extension/活动武将/info.json`);
+    if (text) {
+        const info = JSON.parse(text), now = new Date();
+        const yyyy = now.getFullYear(), mm = String(now.getMonth() + 1).padStart(2, '0'), dd = String(now.getDate()).padStart(2, '0');//年月日
+        const hh = String(now.getHours()).padStart(2, '0'), mi = String(now.getMinutes()).padStart(2, '0'), ss = String(now.getSeconds()).padStart(2, '0');//时分秒
+        const dateText = `${yyyy}/${mm}/${dd} ${hh}:${mi}:${ss}`;
+        if (typeof info.version === 'string' && info.version.includes(' - ')) {
+            const prefix = info.version.split(' - ')[0];
+            info.version = `${prefix} - ${dateText}`;
+        }
+        else info.version = `${info.version} - ${dateText}`;
+        await game.promises.writeFile(new TextEncoder().encode(JSON.stringify(info, null, 4)), 'extension/活动武将', 'info.json');
+    }
     //存储活动武将扩展的文件和文件夹分布
     _status['extension_活动武将_files'] = await (async () => {
         const getFileList = async function (path = 'extension/活动武将') {
