@@ -1516,7 +1516,7 @@ const packs = function () {
                 async content(event, trigger, player) {
                     player.addTempSkill('wechatzenhui_used', 'phaseUseAfter');
                     const target = event.targets[0], str = [get.translation(player), get.translation(trigger.card)];
-                    const result = await target.chooseToGiveCard(`交给${str[0]}一张牌并成为${str[1]}的使用者，或成为此牌的额外目标`, player, 'he').set('ai', card => {
+                    const result = await target.chooseToGive(`交给${str[0]}一张牌并成为${str[1]}的使用者，或成为此牌的额外目标`, player, 'he').set('ai', card => {
                         const player = get.player(), trigger = get.event().getTrigger();
                         return -(get.effect(player, trigger.card, trigger.player, player) + get.value(card));
                     }).forResult();
