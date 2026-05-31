@@ -20926,6 +20926,23 @@ const packs = function () {
             //鹰酱
             wechatduying: {
                 audio: 'ext:活动武将/audio/skill:2',
+                trigger: { global: 'phaseJieshuBegin' },
+                filter(event, player) {
+                    if (player.hasRoundHistory('useCard', evt => evt.targets?.some(i => i !== player))) return false;
+                    return player.countMark('wechatduying_round') < 3;
+                },
+                forced: true,
+                async content(event, trigger, player) {
+                    player.addTempSkill('wechatduying_round', 'roundStart');
+                    player.addMark('wechatduying_round', 1, false);
+                    await player.draw(3);
+                },
+                subSkill: {
+                    round: {
+                        charlotte: true,
+                        onremove: true,
+                    },
+                },
             },
             wechatsheshi: {
                 audio: 'ext:活动武将/audio/skill:2',
@@ -22177,7 +22194,7 @@ const packs = function () {
             wechattanpai_info: '你拼点后，你可以获得赢的角色两张牌，然后其观看你的手牌并使用其中一张其可以使用的基本牌或普通锦囊牌。',
             wechat_yingjiang: '鹰酱',
             wechatduying: '独营',
-            wechatduying_info: '',
+            wechatduying_info: '锁定技，每轮限三次，一名角色的结束阶段，若你本轮未对其他角色使用过牌，则你摸两张牌。',
             wechatsheshi: '涉势',
             wechatsheshi_info: '',
             wechat_yuehanniu: '约翰牛',
