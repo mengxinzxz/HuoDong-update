@@ -20935,7 +20935,7 @@ const packs = function () {
                 async content(event, trigger, player) {
                     player.addTempSkill('wechatduying_round', 'roundStart');
                     player.addMark('wechatduying_round', 1, false);
-                    await player.draw(3);
+                    await player.draw(2);
                 },
                 subSkill: {
                     round: {
