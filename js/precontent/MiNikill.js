@@ -31280,15 +31280,15 @@ const packs = function () {
                     const num = player.countMark('spwuku');
                     if (name === 'loseMaxHp') return num > player.maxHp;
                     if (get.type(event.card) !== 'equip') return false;
-                    return num < player.maxHp;
+                    return true;
                 },
                 async content(event, trigger, player) {
                     if (trigger.name === 'loseMaxHp') {
                         player.removeMark('spwuku', player.countMark('spwuku') - player.maxHp);
                     }
                     else {
-                        player.addMark('spwuku', 1);
                         await player.draw();
+                        if (player.countMark('spwuku') < player.maxHp) player.addMark('spwuku', 1);
                     }
                 },
             },
@@ -43930,7 +43930,9 @@ const packs = function () {
             miniguangshi_info: '准备阶段，若所有其他角色均有“信众”，你可以摸X张牌并失去1点体力（X为全场“信众”数）。',
             minilsxianzhu: '献珠',
             minilsxianzhu_info: '锁定技，出牌阶段开始时，你令一名角色A获得“珠”。然后若A不为你，则你可以选择你攻击范围内的一名角色B，令A对视为B使用一张【杀】。',
-            miniwuku_info: '锁定技，一名角色使用装备牌时，若你的“武库”标记数小于X，你获得1枚“武库”标记并摸一张牌（X为你的体力上限）。',
+            miniwuku: '武库',
+            miniwuku_info: '锁定技，一名角色使用装备牌时，你摸一张牌，然后若你的“武库”标记数小于X，你获得1枚“武库”标记（X为你的体力上限）。',
+            minisanchen: '三陈',
             minisanchen_info: `觉醒技，当你拥有至少3枚“武库”标记后，你增加1点体力上限，回复1点体力，获得技能${get.poptip('spmiewu')}。`,
             minijiedao: '劫刀',
             minijiedao_info: '每回合限一次，当你造成伤害时，你可令此伤害至多+X（X为你损失的体力值且至少为1）。若受到此伤害的角色没有死亡，你弃等同于此伤害增加值的牌。',
