@@ -31272,24 +31272,13 @@ const packs = function () {
             miniwuku: {
                 audio: 'spwuku',
                 inherit: 'spwuku',
-                trigger: {
-                    global: 'useCard',
-                    player: 'loseMaxHpEnd',
-                },
+                trigger: { global: 'useCard' },
                 filter(event, player) {
-                    const num = player.countMark('spwuku');
-                    if (name === 'loseMaxHp') return num > player.maxHp;
-                    if (get.type(event.card) !== 'equip') return false;
-                    return true;
+                    return get.type(event.card) === 'equip';
                 },
                 async content(event, trigger, player) {
-                    if (trigger.name === 'loseMaxHp') {
-                        player.removeMark('spwuku', player.countMark('spwuku') - player.maxHp);
-                    }
-                    else {
-                        await player.draw();
-                        if (player.countMark('spwuku') < player.maxHp) player.addMark('spwuku', 1);
-                    }
+                    await player.draw();
+                    if (player.countMark('spwuku') < player.maxHp) player.addMark('spwuku', 1);
                 },
             },
             minisanchen: {
