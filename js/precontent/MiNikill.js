@@ -7581,16 +7581,18 @@ const packs = function () {
                     player.line(targets, fn === 'damage' ? 'fire' : 'green');
                     for (const target of targets) {
                         if (!target.isIn()) continue;
-                        await target[fn]();
-                        if (fn === 'recover') await player.draw();
+                        const next = target[fn]();
+                        await next;
+                        if (fn === 'recover' && next._triggered !== null) await player.draw();
                     }
                     player.when('phaseJieshuBegin').step(async () => {
                         const fn = func[1 - index];
                         player.logSkill(event.name, targets, fn === 'damage' ? 'fire' : 'green');
                         for (const target of targets) {
                             if (!target.isIn()) continue;
-                            await target[fn]();
-                            if (fn === 'recover') await player.draw();
+                            const next = target[fn]();
+                            await next;
+                            if (fn === 'recover' && next._triggered !== null) await player.draw();
                         }
                     });
                 },
