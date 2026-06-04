@@ -31598,15 +31598,19 @@ const packs = function () {
                         locked: false,
                         async content(event, trigger, player) {
                             const num = Math.max(1, player.getCards('s', card => card.hasGaintag('minignjinfan')).length);
-                            const cards = [];
-                            while (cards.length < num) {
-                                const card = get.cardPile2(card => {
-                                    return !cards.includes(card) && (!cards.length || get.suit(card) == get.suit(cards[0]));
-                                });
-                                if (card) cards.push(card);
-                                else break;
+                            const list = [];
+                            for (const card of trigger.ss.filter(card => trigger.gaintag_map?.[card.cardid]?.includes('minignjinfan'))) {
+                                const cards = [];
+                                while (cards.length < num) {
+                                    const cardx = get.cardPile2(cardxx => {
+                                        return !list.includes(cardxx) && !cards.includes(cardxx) && get.suit(cardxx) == get.suit(card);
+                                    });
+                                    if (cardx) cards.push(cardx);
+                                    else break;
+                                }
+                                list.addArray(cards)
                             }
-                            if (cards.length) player.gain(cards, 'gain2');
+                            if (list.length) player.gain(list, 'gain2');
                         },
                     },
                     nouse: {
@@ -43937,7 +43941,7 @@ const packs = function () {
             minitanban: '檀板',
             minitanban_info: '①游戏开始时/摸牌阶段结束时，你可为任意张手牌增加或移除“檀板”标记。②你的“檀板”牌不计入手牌上限。',
             minignjinfan: '锦帆',
-            minignjinfan_info: '①游戏开始时或弃牌阶段开始时，你可将任意张手牌置于武将牌上，称为“铃”（每种花色的“铃”限一张）。②你可以如手牌般使用或打出“铃”。③当你失去“铃”后，你从牌堆中获得X张同花色的牌（X为你武将牌上的“铃”数且至少为1）。',
+            minignjinfan_info: '①游戏开始时或弃牌阶段开始时，你可将任意张手牌置于武将牌上，称为“铃”（每种花色的“铃”限一张）。②你可以如手牌般使用或打出“铃”。③当你失去“铃”后，你从牌堆中获得X张与此牌同花色的牌（X为你武将牌上的“铃”数且至少为1）。',
             minignsheque: '射却',
             minignsheque_info: '一名其他角色的准备阶段开始时，若其有装备牌，则你可以对其使用一张无距离限制且无视防具的【杀】。',
             minijuece: '绝策',
