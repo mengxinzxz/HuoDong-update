@@ -41,6 +41,7 @@ const packs = function () {
             ZGguimei: {
                 group: ['ZGguimei1', 'ZGguimei2'],
                 audio: 'ext:活动武将/audio/skill:true',
+                audioname: ['ZG_yusai', 'ZG_mengpo'],
                 trigger: { player: 'turnOverBefore' },
                 filter(event, player) {
                     return !player.isTurnedOver();
@@ -90,6 +91,7 @@ const packs = function () {
             },
             ZGxixing: {
                 audio: 'ext:活动武将/audio/skill:true',
+                audioname: ['ZG_heiwuchang'],
                 trigger: { player: 'phaseZhunbeiBegin' },
                 filter(event, player) {
                     return game.hasPlayer(function (target) {
@@ -109,6 +111,7 @@ const packs = function () {
             },
             ZGtaiping: {
                 audio: 'ext:活动武将/audio/skill:true',
+                audioname: ['ZG_heiwuchang'],
                 trigger: { player: 'damageEnd' },
                 filter(event, player) {
                     return event.source && (player.getEnemies().includes(event.source));
@@ -209,6 +212,7 @@ const packs = function () {
             },
             ZGqiangzheng: {
                 audio: 'ext:活动武将/audio/skill:true',
+                audioname: ['ZG_baiwuchang'],
                 trigger: { player: 'phaseJieshuBegin' },
                 filter(event, player) {
                     return lib.skill.ZGqiangzheng.logTarget(event, player).length;
@@ -243,6 +247,7 @@ const packs = function () {
             },
             ZGmizui: {
                 audio: 'ext:活动武将/audio/skill:true',
+                audioname: ['ZG_baiwuchang'],
                 trigger: { source: 'damageSource' },
                 filter(event, player) {
                     return event.card && event.card.name == 'sha' && (get.color(event.card) == 'red' || lib.linked.includes(event.nature));
@@ -257,6 +262,7 @@ const packs = function () {
             },
             ZGxiaoshou: {
                 audio: 'ext:活动武将/audio/skill:true',
+                audioname: ['ZG_niutou'],
                 trigger: { player: 'phaseZhunbeiBegin' },
                 filter(event, player) {
                     return game.hasPlayer(function (current) {
@@ -282,6 +288,7 @@ const packs = function () {
             ZGshiyu: {
                 audio: 'ext:活动武将/audio/skill:true',
                 trigger: { player: 'phaseDrawBegin1' },
+                audioname: ['ZG_mamian'],
                 forced: true,
                 content() {
                     trigger.changeToZero();
@@ -297,6 +304,7 @@ const packs = function () {
             },
             ZGguizhao: {
                 audio: 'ext:活动武将/audio/skill:true',
+                audioname: ['ZG_mamian'],
                 trigger: { player: 'useCard' },
                 filter(event, player) {
                     return player == _status.currentPhase && !player.hasHistory('useCard', function (evt) {
@@ -332,6 +340,7 @@ const packs = function () {
             //by萌新（转型中）
             ZGmanji: {
                 audio: 'ext:活动武将/audio/skill:true',
+                audioname: ['ZG_niutou'],
                 trigger: { player: 'useCardToPlayer' },
                 filter(event, player) {
                     return event.card.name == 'sha' && event.targets.length == 1 && event.target.countCards('h');
@@ -529,6 +538,7 @@ const packs = function () {
             },
             ZGtiemian: {
                 audio: 'ext:活动武将/audio/skill:true',
+                audioname: ['ZG_guiwang'],
                 trigger: { target: 'shaBefore' },
                 filter(event, player) {
                     return event.card.name == 'sha' && get.color(event.card) == 'red' && Math.random() <= 0.75;
@@ -669,13 +679,219 @@ const packs = function () {
                     trigger.num += trigger.name == 'damage' ? 1 : 2;
                 },
             },
-            ZGzhousha: {},
-            ZGyezhong: {},
-            ZGhuiyun: {},
-            ZGduane: {},
-            ZGzhennu: {},
-            ZGdianwei: {},
-            ZGxuanpan: {},
+            ZGzhousha: {
+                audio: 'ext:活动武将/audio/skill:true',
+                trigger: { player: 'phaseZhunbeiBegin' },
+                forced: true,
+                async content(event, trigger, player) {
+                    const judgeEvent = player.judge(card => {
+                        if (get.color(card) == 'red') {
+                            return 2;
+                        }
+                        return -2;
+                    });
+                    judgeEvent.judge2 = result => result.bool;
+                    judgeEvent.set('callback', function () {
+                        if (get.position(card, true) == 'o') player.gain(card, 'gain2');
+                    });
+                    const result = await judgeEvent.forResult();
+                    if (result?.bool) {
+                        player.addMark('ZGzhousha_effect', 2, false);
+                        player.addTempSkill('ZGzhousha_effect');
+                    }
+                },
+                subSkill: {
+                    effect: {
+                        charlotte: true,
+                        onremove: true,
+                        mod: {
+                            cardUsable(card, player, num) {
+                                if (card.name == 'sha') return num + player.countMark('ZGzhousha_effect');
+                            },
+                        },
+                        intro: { content: '本回合使用【杀】的次数上限+#' },
+                    }
+                }
+            },
+            ZGyezhong: {
+                audio: 'ext:活动武将/audio/skill:true',
+                trigger: { player: 'phaseJieshuBegin' },
+                forced: true,
+                async content(event, trigger, player) {
+                    const judgeEvent = player.judge(card => {
+                        if (get.color(card) == 'black') {
+                            return 2;
+                        }
+                        return -2;
+                    });
+                    judgeEvent.judge2 = result => result.bool;
+                    judgeEvent.set('callback', function () {
+                        if (get.position(card, true) == 'o') player.gain(card, 'gain2');
+                    });
+                    const result = await judgeEvent.forResult();
+                    if (result?.bool) {
+                        for (const target of game.filterPlayer(current => player.getEnemies().includes(current) && current.hasCards('h'))) {
+                            await target.randomDiscard('h');
+                        }
+                    }
+                },
+            },
+            ZGhuiyun: {
+                audio: 'ext:活动武将/audio/skill:true',
+                enable: 'phaseUse',
+                usable: 1,
+                filter(event, player) {
+                    return game.hasPlayer(current => get.info('ZGhuiyun').filterTatget(null, player, current))
+                },
+                filterTatget(card, player, target) {
+                    return player.getEnemies().includes(target) && target.hasCards('h');
+                },
+                async content(event, trigger, player) {
+                    const { target } = event;
+                    if (!target.hasCards('h')) return;
+                    await player.showCards(target.getCards('h'), get.translation(player) + '对' + get.translation(target) + '发动了【晦运】');
+                    let result = await player.discardPlayerCard(target, 'h', [1, 2], true, 'visible').forResult();
+                    if (result?.bool) {
+                        const names = result.cards.map(card => get.name(card)).toUniqued();
+                        result = await player.chooseToDiscard(card => {
+                            return get.event().namesx.includes(get.name(card));
+                        }, `你弃置一张满足条件的牌对${get.translation(target)}造成1点伤害`).set('namesx', names).set('ai', card => {
+                            if (get.event().goon) return 1;
+                            return 0;
+                        }).set('goon'.get.damageEffect(target, player, player) > 0).forResult();
+                        if (result?.bool) {
+                            await target.damage();
+                        }
+                    }
+                },
+                ai: {
+                    order: 10,
+                    result: {
+                        player: 1,
+                        target: -1,
+                    },
+                },
+            },
+            ZGduane: {
+                audio: 'ext:活动武将/audio/skill:true',
+                trigger: { global: 'phaseDiscardEnd' },
+                filter(event, player) {
+                    const target = event.player;
+                    if (!player.getEnemies().includes(target)) return false;
+                    return target.hasHistory('lose', evt => {
+                        return evt.type == 'discard' && evt.getParent('phaseDiscard') == event && evt.cards2.some(card => get.color(card, evt.hs?.includes(card) ? target : false) == 'black');
+                    });
+                },
+                logTarget: 'player',
+                async content(event, trigger, player) {
+                    await event.targets[0].loseHp();
+                },
+            },
+            ZGzhennu: {
+                audio: 'ext:活动武将/audio/skill:true',
+                trigger: { player: 'changeHp' },
+                filter(event, player) {
+                    if (player.storage.ZGzhennu) return false;
+                    return player.hp <= 4 && event.changedHp != 0;
+                },
+                forced: true,
+                skillAnimation: true,
+                animationColor: 'fire',
+                async content(event, trigger, player) {
+                    player.storage.ZGzhennu = true;
+                    for (const phase of lib.phaseName) {
+                        const evt = event.getParent(phase);
+                        if (evt?.name === phase) {
+                            player.addTempSkill('ZGzhennu_effect', `${phase}After`);
+                        }
+                    }
+                },
+                subSkill: {
+                    effect: {
+                        audio: 'ZGzhennu',
+                        charlotte: true,
+                        trigger: {
+                            global: ['phaseZhunbeiEnd', 'phaseJudgeEnd', 'phaseDrawEnd', 'phaseUseEnd', 'phaseDiscardEnd', 'phaseJieshuEnd'],
+                        },
+                        forced: true,
+                        async content(event, trigger, player) {
+                            player.removeSkill('ZGzhennu_effect');
+                            const evt = trigger.getParent('phase', true);
+                            if (evt) {
+                                game.log(player, '结束了回合');
+                                evt.num = evt.phaseList.length;
+                                evt.goto(11);
+                            }
+                            await player.draw(4);
+                            player.insertPhase();
+                        },
+                    }
+                }
+            },
+            ZGdianwei: {
+                audio: 'ext:活动武将/audio/skill:true',
+                trigger: { player: 'phaseZhunbeiBegin' },
+                forced: true,
+                lolgTaget: () => game.filterPlayer().sortBySeat(),
+                async content(event, trigger, player) {
+                    const sha = get.autoViewAs({ name: 'sha', isCard: true });
+                    for (const target of event.targets) {
+                        if (!target.isIn()) continue;
+                        const bool = !target.hasCards('e');
+                        if (bool) await target.randomDiscard('e');
+                        else if (player.canUse(sha, target, false)) await player.useCard(sha, target, false);
+                    }
+                },
+            },
+            ZGxuanpan: {
+                audio: 'ext:活动武将/audio/skill:true',
+                filterx: [
+                    target => target.getHistory('sourceDamage').reduce((num, evt) => num + evt.num, 0) > 3,
+                    target => target.getHistory('gain', evt => evt.getParent().name == 'draw').reduce((num, evt) => num + evt.cards.length, 0) > 7,
+                    target => game.getGlobalHistory('changeHp', evt => evt.getParent().name == 'recover' && evt.player == target).reduce((num, evt) => num + evt.num, 0) > 2,
+                    target => target.getHistory('lose', evt => evt.type == 'discard').reduce((num, evt) => num + evt.cards2.length, 0) > 3,
+                ],
+                trigger: { global: 'phaseEnd' },
+                filter(event, player) {
+                    const target = event.player;
+                    if (!player.getEnemies().includes(target)) return false;
+                    return get.info('ZGxuanpan').filterx.some(filter => filter(target));
+                },
+                logTarget: 'player',
+                async content(event, trigger, player) {
+                    const target = event.targets[0];
+                    for (let i = 0; i < get.info('ZGxuanpan').filterx.length; i++) {
+                        if (get.info('ZGxuanpan').filterx[i](target)) {
+                            switch (i) {
+                                case 0: {
+                                    const num = get.rand(0, 3);
+                                    player.popup(`${num}点`);
+                                    await target.damage(num);
+                                    break;
+                                }
+                                case 1: {
+                                    const num = get.rand(0, 3);
+                                    player.popup(`${get.cnNumber(num)}张`);
+                                    await player.draw(num);
+                                    break;
+                                }
+                                case 2: {
+                                    const num = get.rand(0, 3);
+                                    player.popup(`${num}点`);
+                                    await player.recover(num);
+                                    break;
+                                }
+                                case 3: {
+                                    const num = get.rand(0, 3);
+                                    player.popup(`${get.cnNumber(num)}张`);
+                                    await target.randomDiscard('he', num);
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                },
+            },
         },
         translate: {
             ZG_mengpo: '孟婆',
@@ -756,15 +972,15 @@ const packs = function () {
             ZGyezhong: '夜冢',
             ZGyezhong_info: '锁定技，结束阶段，你进行一次判定并获得判定牌，若结果为黑色，你令所有敌方角色随机弃置一张手牌。',
             ZGhuiyun: '晦运',
-            ZGhuiyun_info: '出牌阶段限一次，你可以展示一名敌方角色的所有手牌并弃置其中至多两张牌，然后你可以弃置一张与这两张牌中任意一张牌名相同的牌，对其造成两点伤害。',
+            ZGhuiyun_info: '出牌阶段限一次，你可以展示一名敌方角色的所有手牌并弃置其中至多两张牌，然后你可以弃置一张与这两张牌中任意一张牌名相同的牌，对其造成2点伤害。',
             ZGduane: '断恶',
-            ZGduane_info: '锁定技，敌方角色弃牌阶段结束时，若其于该阶段弃置了黑色牌，则其失去一点体力。',
+            ZGduane_info: '锁定技，敌方角色弃牌阶段结束时，若其于该阶段弃置了黑色牌，则其失去1点体力。',
             ZGzhennu: '震怒',
             ZGzhennu_info: '锁定技，当你的体力值第一次降低至8点或4点以下时，你于当前阶段结束后，立刻执行一个额外的回合并摸四张牌。',
             ZGdianwei: '殿威',
-            ZGdianwei_info: '锁定技，准备阶段，你视为对装备区无牌的角色使用了一张【杀】；装备区有牌的角色随机弃置一张装备区的牌。',
+            ZGdianwei_info: '锁定技，准备阶段，你视为对装备区无牌的角色使用一张【杀】；装备区有牌的角色随机弃置一张装备区的牌。',
             ZGxuanpan: '宣判',//隐藏技，别的玩家查看技能面板时，他们是看不到该技能的，如果是我来实现这个功能的话，我会直接选择跳过翻译不写以达成这个效果（憋笑），宣判我找不到游戏原声了，我录一段包青天的台词作为语音吧
-            ZGxuanpan_info: '锁定技，敌方角色回合结束时，若其本回合有以下行为，则执行对应项效果：' + '<br>1.造成伤害大于3,其随机受到0~3点伤害；' + '<br>2.摸牌数大于7,你随机摸0~3张牌；' + '<br>3.回复体力大于2，你随机回复0~3点体力；' + '<br>4.因弃置而置入弃牌堆的牌数大于3,其随机弃置0~3张牌。',
+            ZGxuanpan_info: '锁定技，敌方角色回合结束时，若其本回合有以下行为，则执行对应项效果：' + '<br>1.造成伤害大于3，其随机受到0~3点伤害；' + '<br>2.摸牌数大于7，你随机摸0~3张牌；' + '<br>3.回复体力值大于2，你随机回复0~3点体力；' + '<br>4.因弃置而置入弃牌堆的牌数大于3，其随机弃置0~3张牌。',
         },
     };
     for (const i in decadeZhuoGui.character) {
