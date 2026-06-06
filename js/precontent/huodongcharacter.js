@@ -7087,8 +7087,8 @@ const packs = function () {
             bilibili_qianxiu: {
                 trigger: { global: ['useSkill', 'logSkillBegin'] },
                 filter(event, player) {
-                    if (event.player === player || !event.targets?.includes(player) || event.skill === 'bilibili_qianxiu') return false;
-                    if (!event.player.getSkills(null, false, false).includes(get.sourceSkillFor(event.skill))) return false;
+                    if (event.player === player || event.skill === 'bilibili_qianxiu' || player.hujia <= 0) return false;
+                    if (!event.targets?.includes(player) || !event.player.getSkills(null, false, false).includes(get.sourceSkillFor(event.skill))) return false;
                     const info = get.info(event.skill);
                     return info && !info.charlotte && !get.is.locked(event.skill, event.player);
                 },
@@ -7099,13 +7099,14 @@ const packs = function () {
                 check(event, player) {
                     return get.attitude(player, event.player) < 0;
                 },
-                usable: 1,
                 async content(event, trigger, player) {
-                    trigger.player.tempBanSkill(get.sourceSkillFor(trigger.skill), {
+                    await player.changeHujia(-1);
+                    const target = trigger.player, skill = get.sourceSkillFor(trigger.skill);
+                    target.tempBanSkill(skill, {
                         player: ['useCard1', 'useSkillBegin'],
                         global: ['phaseChange', 'phaseBefore', 'phaseAfter'],
                     });
-                    game.log(player, '#y拒绝', trigger.player, '发动', '#g【' + get.translation(trigger.skill) + '】');
+                    game.log(player, '#y拒绝', target, '发动', '#g【' + get.translation(skill) + '】');
                     if (trigger.name === 'useSkill') {
                         if (!trigger._finished) {
                             trigger.finish();
@@ -14103,7 +14104,7 @@ const packs = function () {
             bilibili_Thunder: '雷扩',
             bilibili_Thunder_info: '锁定技。其他角色发动无标签技能后，若本局游戏未因〖雷扩〗制作过此技能的卡牌，则你制作一张此技能的卡牌并获得之。使用此牌可获得此牌对应的技能（若已拥有此技能则改为获得2点护甲）。然后若此牌为首次被使用，则将此牌洗入牌堆，否则将此牌移出游戏。',
             bilibili_qianxiu: '潜修',
-            bilibili_qianxiu_info: '每回合限一次，其他角色对你发动非锁定技时，你可以取消本次技能结算。',
+            bilibili_qianxiu_info: '其他角色对你发动非锁定技时，你可以失去1点护甲，取消本次技能结算。',
             bilibili_qianxiu_append: '<span style="font-family:yuanli">千幻雷音的密码是thunder，不是什么“Thunder”、“thunder，憋问了。”不带符号，不带空格。小雷音寺已解散，Thunder小游戏扩展的密码是thunderXYX，求求你们不要私信问我密码为什么不对了，憋问了。</span>',
             bilibili_lonelypatients: 'lonely patients',
             bilibili_meihua: '美化',
