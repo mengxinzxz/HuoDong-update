@@ -44972,7 +44972,7 @@ const packs = function () {
                 ].join('<br>'),
             })}。若你赢，则隐于吉根据牌型等级确定体力和体力上限并亮出体力条；若隐于吉赢，则隐于吉获得一张挑战方的“斗牛牌”。`,
             miniyinhuozhong: '惑众',
-            miniyinhuozhong_info: `出牌阶段限一次，你可以与所有其他角色${get.poptip('miniyindouniu_ox')}并根据自己的牌型等级确定体力和体力上限并亮出体力条，然后你获得武将牌上的“斗牛牌”，然后你从本次所有${get.poptip('miniyindouniu_ox')}的“斗牛牌”中选择一张获得。`,
+            miniyinhuozhong_info: `出牌阶段限一次，你可以与所有其他角色${get.poptip('miniyindouniu_ox')}并根据自己的牌型等级确定体力和体力上限并亮出体力条，然后你获得武将牌上的“斗牛牌”，然后你从本次所有${get.poptip('miniyindouniu_ox')}成功的“斗牛牌”中选择一张获得。`,
             //焰
             Mfire_zhurong: '焰祝融',
             minifirehuosi: '火祀',
