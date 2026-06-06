@@ -41868,7 +41868,7 @@ const packs = function () {
                 subSkill: {
                     plugin: {
                         charlotte: true,
-                        trigger: { player: ['loseMaxHpBefore', 'gainMaxHpBefore', 'damageBegin4', 'loseMaxHpBegin', 'changeHpBefore'] },
+                        trigger: { player: ['loseMaxHpBefore', 'gainMaxHpBefore', 'damageBegin4', 'loseHpBegin', 'changeHpBefore'] },
                         filter(event, player) {
                             return !player.node.hp.innerHTML.length;
                         },
