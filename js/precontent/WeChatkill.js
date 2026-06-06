@@ -295,10 +295,10 @@ const packs = function () {
             //限时武将
             wechat_nailong: ['male', 'qun', 4, ['wechatdunshi', 'wechattanchi']],
             wechat_mashe: ['female', 'qun', 4, ['wechatgenggeng', 'wechattanpai']],
-            wechat_yingjiang: ['male', 'qun', 4, ['wechatduying', 'wechatsheshi'], ['name:战|鹰', 'unseen']],
-            wechat_yuehanniu: ['male', 'qun', 4, ['wechatjiaoshi', 'wechatyuli'], ['name:约翰|牛', 'unseen']],
-            wechat_luotuo: ['male', 'qun', 4, ['wechatgoude', 'wechatdahu'], ['name:丰川|祥子', 'unseen']],
-            wechat_hansimao: ['female', 'qun', 4, ['wechatkuangbiao', 'wechathuamao'], ['name:ice|cola', 'unseen']],
+            wechat_yingjiang: ['male', 'qun', 4, ['wechatduying', 'wechatsheshi'], ['name:战|鹰']],
+            wechat_yuehanniu: ['male', 'qun', 4, ['wechatjiaoshi', 'wechatyuli'], ['name:约翰|牛']],
+            wechat_luotuo: ['male', 'qun', 4, ['wechatgoude', 'wechatdahu'], ['name:丰川|祥子']],
+            wechat_hansimao: ['female', 'qun', 4, ['wechatkuangbiao', 'wechathuamao'], ['name:ice|cola']],
             wechat_dihuangxia: ['male', 'qun', 4, [], ['name:李|炘南-北|淼-东|杉-西|钊-坤|中', 'unseen']],
             wechat_yanlongxia: ['male', 'qun', 4, [], ['name:李|炘南-张|健-殿|南', 'unseen']],
         },
@@ -20946,27 +20946,266 @@ const packs = function () {
             },
             wechatsheshi: {
                 audio: 'ext:活动武将/audio/skill:2',
+                trigger: { global: 'phaseUseEnd' },
+                filter(event, player) {
+                    return event.player.hasHistory('sourceDamage', evt => evt.getParent(event.name) == event);
+                },
+                forced: true,
+                direct: true,
+                clearTime: true,
+                async content(event, trigger, player) {
+                    const target = trigger.player;
+                    const targets = game.filterPlayer(current => current == target || current.isMaxHp());
+                    const next = player.chooseToUse(function (card, player2, event2) {
+                        return lib.filter.filterCard.apply(this, arguments);
+                    }, `###涉势###对${get.translation(targets)}${targets.length > 1 ? '中的一名角色' : ''}使用一张无距离限制的牌，或点击“取消”随机获得一张仅可指定自己为目标的牌，然后将手牌弃至体力上限`);
+                    next.set('targetRequired', true);
+                    next.set('complexTarget', true);
+                    next.set('complexSelect', true);
+                    next.set('filterTarget', function (card, player, target) {
+                        if (target != _status.event.sourcex && !target.isMaxHp()) return false;
+                        return lib.filter.targetEnabled.apply(this, arguments);
+                    });
+                    next.set('sourcex', target);
+                    next.set('addCount', false);
+                    next.set('logSkill', event.name);
+                    const result = await next.forResult();
+                    if (!result?.bool) {
+                        player.logSkill(event.name);
+                        const card = get.cardPile(cardx => {
+                            const info = get.info(cardx, false);
+                            return info?.toself;
+                        });
+                        if (card) await player.gain(card, 'gain2');
+                        const num = player.countCards('h') - player.maxHp;
+                        if (num > 0) await player.chooseToDiscard(num, true, 'allowChooseAll');
+                    }
+                },
             },
             //约翰牛
             wechatjiaoshi: {
+                getNum(player) {
+                    return Math.min(3, player.getHistory('useCard', evt => get.type(evt.card) == 'basic' && evt.targets?.includes(player)).length)
+                },
                 audio: 'ext:活动武将/audio/skill:2',
+                trigger: { global: 'phaseEnd' },
+                filter(event, player) {
+                    return event.player.hasHistory('useSkill', evt => evt.skill == 'wechatjiaoshi_jiu') && get.info('wechatjiaoshi').getNum(event.player) > 0;
+                },
+                forced: true,
+                locked: false,
+                async content(event, trigger, player) {
+                    const num = get.info('wechatjiaoshi').getNum(trigger.player);
+                    await player.draw(num);
+                },
+                global: 'wechatjiaoshi_jiu',
+                subSkill: {
+                    jiu: {
+                        audio: 'wechatjiaoshi',
+                        enable: 'chooseToUse',
+                        filter(event, player) {
+                            return game.hasPlayer(current => current.hasSkill('wechatjiaoshi'));
+                        },
+                        viewAs: { name: 'jiu' },
+                        filterCard: true,
+                        position: 'she',
+                        log: false,
+                        check(card) {
+                            return 6 - get.value(card);
+                        },
+                        async precontent(event, trigger, player) {
+                            player.logSkill('wechatjiaoshi_jiu');
+                            const targets = game.filterPlayer(current => current.hasSkill('wechatjiaoshi'));
+                            if (targets.length) player.line(targets[0]);
+                        },
+                    }
+                }
             },
             wechatyuli: {
                 audio: 'ext:活动武将/audio/skill:2',
+                trigger: { global: 'phaseEnd' },
+                filter(event, player) {
+                    if (event.player.hasHistory('useCard', evt => evt.card?.name == 'jiu')) return false;
+                    return player.canUse({ name: 'sha', isCard: true }, event.player);
+                },
+                forced: true,
+                logTarget: 'player',
+                check(event, player) {
+                    return get.effect(event.player, { name: 'sha', isCard: true }, player, player) > 0;
+                },
+                async content(event, trigger, player) {
+                    const target = event.targets[0];
+                    const sha = get.autoViewAs({ name: 'sha', isCard: true });
+                    if (player.canUse(sha, target, false)) await player.useCard(sha, target, false);
+                },
+                ai: {
+                    jiuSustain: true,
+                    skillTagFilter(player, tag, name) {
+                        if (name != 'phase') return false;
+                    },
+                }
             },
             //骆驼
             wechatgoude: {
                 audio: 'ext:活动武将/audio/skill:2',
+                trigger: { player: 'phaseUseBegin' },
+                filter(event, player) {
+                    return player.hasCards('h') && game.hasPlayer(current => current != player && current.hasCards('ej'));
+                },
+                async cost(event, trigger, player) {
+                    event.result = await player.chooseTarget(get.prompt(event.skill), '展示所有手牌并获得选择名场上有牌的其他角色，这些角色从1至X中选择一个数字（X为其场上牌数）。若如此做，本阶段你可以交给其中一名角色Y张牌，然后获得其场上的一张牌（Y为其选择的数字）', (card, player, target) => {
+                        return target != player && target.hasCards('ej');
+                    }, [1, Infinity]).set('ai', target => {
+                        return 1;
+                    }).forResult();
+                },
+                async content(event, trigger, player) {
+                    await player.showHandcards();
+                    for (const target of event.targets.sortBySeat()) {
+                        const num = target.countCards('ej');
+                        if (!num || !target.isIn()) continue;
+                        const choices = Array.from({ length: num }).map((_, i) => i + 1);
+                        const result = await target.chooseControl(choices).set('prompt', '购得：请选择一个数字').set('prompt2', `本阶段${get.translation(player)}可以交给你Y张牌，然后获得其场上的一张牌（Y为你本次选择的数字）`).set('ai', () => {
+                            return _status.event.choice;
+                        }).set('choice', (() => {
+                            const att = get.attitude(player, target);
+                            if (att > 0) return 0;
+                            return choices.length - 1;
+                        })()).forResult();
+                        if (typeof result?.index == 'number') {
+                            const num = result.index + 1;
+                            target.addExpose(0.5);
+                            target.popup(num);
+                            game.log(target, '选择的数字为', '#g' + get.translation(num));
+                            player.addTempSkill('wechatgoude_effect', 'phaseUseEnd');
+                            player.storage.wechatgoude_effect ??= new Map();
+                            player.storage.wechatgoude_effect.set(target, num);
+                            player.markSkill('wechatgoude_effect');
+                        }
+                    }
+                },
+                subSkill: {
+                    effect: {
+                        charlotte: true,
+                        onremove: true,
+                        intro: {
+                            content(storage = new Map(), player) {
+                                if (!storage?.size) {
+                                    return '';
+                                }
+                                let str = '本阶段的购买对象及所需费用：<br>';
+                                for (const [target, num] of storage) {
+                                    str += `<li>${get.translation(target)}：${num}`;
+                                }
+                                return str;
+                            },
+                        },
+                        audio: 'wechatgoude',
+                        enable: 'phaseUse',
+                        filter(event, player) {
+                            const storage = player.getStorage('wechatgoude_effect', new Map());
+                            return game.hasPlayer(current => current != player && current.hasCards('ej') && storage.has(current) && player.countCards('he') >= storage.get(current));
+                        },
+                        prompt(event) {
+                            return '出牌阶段，你可以交给一名角色Y张牌，然后获得其场上的一张牌（Y为本阶段开始时你对其发动【购得】其选择的数字）';
+                        },
+                        filterTarget(card, player, target) {
+                            const storage = player.getStorage('wechatgoude_effect', new Map());
+                            if (!storage.has(target)) return false;
+                            return target != player && target.hasCards('ej') && ui.selected.cards.length == storage.get(target);
+                        },
+                        filterCard: true,
+                        position: 'he',
+                        selectCard: [1, Infinity],
+                        discard: false,
+                        lose: false,
+                        delay: 0,
+                        check(card) {
+                            return 6 - get.value(card);
+                        },
+                        async content(event, trigger, player) {
+                            const { cards, target } = event;
+                            await player.give(cards, target);
+                            await player.gainPlayerCard(target, 'ej', true);
+                        },
+                        ai: {
+                            order: 7,
+                            result: {
+                                player(player, target) {
+                                    if (player.getStorage('wechatgoude_effect', new Map()).get(target) <= 2) {
+                                        return 1;
+                                    }
+                                    return 0.1;
+                                },
+                            },
+                        },
+                    }
+                }
             },
             wechatdahu: {
                 audio: 'ext:活动武将/audio/skill:2',
+                trigger: {
+                    global: 'gameDrawBegin',
+                    player: 'phaseDrawBegin2'
+                },
+                filter(event, player) {
+                    return player.getHp() > 0;
+                },
+                forced: true,
+                async content(event, trigger, player) {
+                    if (trigger.name == 'gameDraw') {
+                        const me = player;
+                        const numx = trigger.num;
+                        trigger.num = function (player) {
+                            return (player == me ? player.getHp() : 0) + (typeof numx == 'function' ? numx(player) : numx)
+                        };
+                    } else {
+                        trigger.num += player.getHp();
+                    }
+                },
             },
             //汉斯猫
             wechatkuangbiao: {
                 audio: 'ext:活动武将/audio/skill:2',
+                trigger: { global: 'damageEnd' },
+                filter(event, player) {
+                    return game.getGlobalHistory('everything', evt => evt.name == 'damage').indexOf(event) == 0 && event.player.isIn();
+                },
+                logTarget: 'player',
+                async content(event, trigger, player) {
+                    const target = event.targets[0];
+                    await target.draw();
+                    await player.gainPlayerCard(target, 'hej', true);
+                },
             },
             wechathuamao: {
                 audio: 'ext:活动武将/audio/skill:2',
+                trigger: { global: 'phaseAnyEnd' },
+                filter(event, player) {
+                    return player.hasHistory('gain', evt => evt.getParent(event.name) == event);
+                },
+                async content(event, trigger, player) {
+                    let bool = false;
+                    while (true) {
+                        const next = player.draw();
+                        let result = await next.forResult();
+                        if (player.hasHistory('gain', evt => evt.getParent(trigger.name) == trigger && evt.getParent() != next && evt.cards?.some(card => result.cards?.some(cardx => get.suit(cardx) == get.suit(card))))) {
+                            bool = true;
+                            break;
+                        }
+                        else {
+                            result = await player.chooseBool('画猫：你可以继续摸一张牌').set('choice', false).forResult();
+                            if (!result.bool) break;
+                        }
+                    }
+                    if (bool) {
+                        const cards = player.getDiscardableCards(player, 'he').filter(card => player.hasHistory('gain', evt => evt.getParent(trigger.name) == trigger && evt.cards?.includes(card)));
+                        if (cards.length) {
+                            await player.discard(cards);
+                            if (player.isMaxHandcard()) player.tempBanSkill(event.name);
+                        }
+                    }
+                },
             },
         },
         dynamicTranslate: {
@@ -22196,22 +22435,22 @@ const packs = function () {
             wechatduying: '独营',
             wechatduying_info: '锁定技，每轮限三次，一名角色的结束阶段，若你本轮未对其他角色使用过牌，则你摸两张牌。',
             wechatsheshi: '涉势',
-            wechatsheshi_info: '',
+            wechatsheshi_info: '锁定技，一名角色的出牌阶段结束时，若其于此阶段造成过伤害，你选择一项：1.使用一张仅能指定其或体力值最大的角色的无距离限制的牌；2.随机获得一张仅可指定自己为目标的牌，然后将手牌弃至体力上限。',
             wechat_yuehanniu: '约翰牛',
             wechatjiaoshi: '搅史',
-            wechatjiaoshi_info: '',
+            wechatjiaoshi_info: '每名角色的出牌阶段限一次。其可以将一张牌当【酒】使用。若如此做，此回合结束时，你摸X张牌（X为其本回合使用基本牌指定自己为目标的次数，且至多为3）。',
             wechatyuli: '渔利',
-            wechatyuli_info: '',
+            wechatyuli_info: '锁定技。①以你为目标的【酒】（使用方法①）的作用效果改为“目标对应的角色使用的下一张【杀】的伤害基数+1”。②其他角色的回合结束时，若其本回合未使用过【酒】，视为对其使用一张【杀】。',
             wechat_luotuo: '骆驼',
             wechatgoude: '购得',
-            wechatgoude_info: '',
+            wechatgoude_info: '出牌阶段开始时，你可以展示所有手牌并获得选择名场上有牌的其他角色，这些角色从1至X中选择一个数字（X为其场上牌数）。若如此做，本阶段你可以交给其中一名角色Y张牌，然后获得其场上的一张牌（Y为其选择的数字）。',
             wechatdahu: '大户',
-            wechatdahu_info: '',
+            wechatdahu_info: '锁定技。①你的初始手牌+X。②摸牌阶段，你多摸X张牌（X为你的体力值）。',
             wechat_hansimao: '汉斯猫',
             wechatkuangbiao: '狂飙',
-            wechatkuangbiao_info: '',
+            wechatkuangbiao_info: '每回合首次有角色受到伤害后，你可以令其摸一张牌，然后你获得其区域内的一张牌。',
             wechathuamao: '画猫',
-            wechathuamao_info: '',
+            wechathuamao_info: '你获得过牌的阶段结束时，你可以摸一张牌。若你本阶段未获得过与此牌花色相同的牌，你可以重复此流程，否则你弃置所有于此阶段获得的牌，若你因此弃置牌后手牌数为全场最多，此技能本轮失效。',
             wechat_dihuangxia: '帝皇侠',
             wechat_yanlongxia: '炎龙侠',
 

@@ -837,7 +837,7 @@ export async function precontent(bilibilicharacter) {
                 data: (() => {
                     _status.HDWJ_ChangeLog_character = {
                         'MiNikill': ['Mbaby_dc_sb_xunyu', 'Mbaby_sb_xiahoudun', 'Mbaby_dc_sb_lusu', 'Mbaby_yj_ganning', 'Mbaby_caoyi'],
-                        'WeChatkill': ['wechat_mashe', 'wechat_liubei', 'wechat_huanggai', 'wechat_shen_liubei', 'wechat_shen_luxun', 'wechat_kuailiangkuaiyue', 'wechat_weiyan', 'wechat_zhugezhan', 'wechat_yanwen', 'wechat_xiahouyuan', 'wechat_pangde', 'wechat_sunluban', 'wechat_jianyong'],
+                        'WeChatkill': ['wechat_hansimao', 'wechat_luotuo', 'wechat_yuehanniu', 'wechat_yingjiang', 'wechat_mashe', 'wechat_liubei', 'wechat_huanggai', 'wechat_shen_liubei', 'wechat_shen_luxun', 'wechat_kuailiangkuaiyue', 'wechat_weiyan', 'wechat_zhugezhan', 'wechat_yanwen', 'wechat_xiahouyuan', 'wechat_pangde', 'wechat_sunluban', 'wechat_jianyong'],
                     };
                     return Object.values(_status.HDWJ_ChangeLog_character).flat();
                 })(),
