@@ -6583,20 +6583,16 @@ const packs = function () {
             },
             //随性似风
             bilibili_liaoxing: {
-                trigger: { global: ['gameDrawBegin', 'gameDrawAfter'] },
+                trigger: { global: 'gameDrawAfter' },
+                filter(event, player) {
+                    return game.hasPlayer(target => target.countCards('h') > 0);
+                },
                 forced: true,
+                logTarget(event, player) {
+                    return game.filterPlayer(target => target.countCards('h') > 0).sortBySeat();
+                },
                 content() {
-                    if (event.triggername == 'gameDrawBegin') {
-                        const numx = trigger.num, me = player;
-                        trigger.num = function (player) {
-                            const num = (typeof numx == "function" ? numx(player) : numx);
-                            return player != me ? num : Math.max(game.players.length + game.dead.length, num);
-                        };
-                        return;
-                    }
-                    const players = game.filterPlayer(current => current != player);
-                    player.line(players);
-                    players.forEach(target => target.addGaintag(target.getCards('h'), 'bilibili_liaoxing_tag'));
+                    targets.forEach(target => target.addGaintag(target.getCards('h'), 'eternal_liaoxing_tag'));
                 },
                 group: ['bilibili_liaoxing_lose', 'bilibili_liaoxing_draw'],
                 subSkill: {
@@ -6612,14 +6608,14 @@ const packs = function () {
                                 if (!evt || !evt.cards2 || !evt.cards2.length) return false;
                                 if (event.name == 'lose') {
                                     for (var i in event.gaintag_map) {
-                                        if (event.gaintag_map[i].includes('bilibili_liaoxing_tag')) return true;
+                                        if (event.gaintag_map[i].includes('eternal_liaoxing_tag')) return true;
                                     }
                                     return false;
                                 }
                                 return current.hasHistory('lose', function (evt) {
                                     if (event != evt.getParent()) return false;
                                     for (var i in evt.gaintag_map) {
-                                        if (evt.gaintag_map[i].includes('bilibili_liaoxing_tag')) return true;
+                                        if (evt.gaintag_map[i].includes('eternal_liaoxing_tag')) return true;
                                     }
                                     return false;
                                 });
@@ -6632,13 +6628,13 @@ const packs = function () {
                                 var target = targets.shift(), num = 0;
                                 if (trigger.name == 'lose') {
                                     for (var i in trigger.gaintag_map) {
-                                        if (trigger.gaintag_map[i].includes('bilibili_liaoxing_tag')) num++;
+                                        if (trigger.gaintag_map[i].includes('eternal_liaoxing_tag')) num++;
                                     }
                                 }
                                 else target.getHistory('lose', function (evt) {
                                     if (trigger != evt.getParent()) return false;
                                     for (var i in evt.gaintag_map) {
-                                        if (evt.gaintag_map[i].includes('bilibili_liaoxing_tag')) num++;
+                                        if (evt.gaintag_map[i].includes('eternal_liaoxing_tag')) num++;
                                     }
                                     return false;
                                 });
@@ -9955,13 +9951,13 @@ const packs = function () {
                 inherit: 'reyaowu',
                 filter: () => true,
                 async content(event, trigger, player) {
-                    await ((trigger.card && trigger.source?.isIn() && get.color(trigger.card) === 'red') ? trigger.source : player).draw();
+                    await ((trigger.source?.isIn() && trigger.source.hasSex('female')) ? trigger.source : player).draw();
                 },
                 ai: {
                     effect: {
                         target(card, player, target) {
                             if (typeof card !== 'object' || !get.tag(card, 'damage') || player.hasSkillTag('jueqing', false, target)) return;
-                            if (get.color(card) === 'red') return [1, 0, 1, 0.6];
+                            if (player.hasSex('female')) return [1, 0, 1, 0.6];
                             return [1, 0.6];
                         },
                     },
@@ -14090,8 +14086,8 @@ const packs = function () {
             bilibili_zili_append: '<span style="font-family:yuanli">大佬你这么厉害，不如建一个群接纳喜欢你的扩展的人</span>',
             bilibili_suixingsifeng: '随性似风',
             bilibili_liaoxing: '瞭星',
-            bilibili_liaoxing_tag: '星',
-            bilibili_liaoxing_info: '锁定技。①你的初始手牌数不会少于X张（X为游戏人数）；分发起始手牌后，所有其他角色的手牌被标记为“星”。②一名角色失去“星”后，其获得等量的【影】。③一名角色失去【影】后，你摸等量的牌。',
+            eternal_liaoxing_tag: '星',
+            bilibili_liaoxing_info: '锁定技。①分发起始手牌后，将所有角色的手牌被标记为“星”。②一名角色失去“星”后，其获得等量的【影】。③一名角色失去【影】后，你摸等量的牌。',
             bilibili_duoyang: '多样',
             bilibili_duoyang_info: '锁定技。①一张非装备牌不由你的区域进入弃牌堆后，你将此牌以随机副类别置入装备区。②你可以使用或打出装备区里的非装备牌，然后你摸一张牌并弃置一张牌。',
             bilibili_duoyang_append: '<span style="font-family:yuanli">萌新（转型中）御用第二人格</span>',
@@ -14255,7 +14251,7 @@ const packs = function () {
             bilibili_benghuai_info: '锁定技，结束阶段，你选择一项：①失去1点体力，摸一张牌；②减1点体力上限，摸两张牌。',
             bilibili_yanjing_friend3: '公鸭嗓',
             bilibili_yaowu: '耀武',
-            bilibili_yaowu_info: '锁定技，当你受到伤害时，若此伤害存在来源和牌且此牌为红色，则伤害来源摸一张牌，否则你摸一张牌。',
+            bilibili_yaowu_info: '锁定技，当你受到伤害时，若此伤害存在女性伤害来源，则伤害来源摸一张牌，否则你摸一张牌。',
             bilibili_kamiman: '神人',
             bilibili_kamiman_info: [
                 '锁定技。①四字神人对你造成的伤害+1；你对四字神人造成的伤害+1。',
