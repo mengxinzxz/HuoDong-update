@@ -552,7 +552,7 @@ const packs = function () {
             Mfight_lvmeng: ['male', 'wu', 4, ['minifightandu', 'minifightmingtan']],
             //隐
             Myin_xushu: ['male', 'wei', 3, ['miniyinyinxing', 'miniyinjujian']],
-            Myin_yuji: ['male', 'qun', '', ['miniyinyinming', 'miniyinhuozhong']],
+            Myin_yuji: ['male', 'qun', '', ['miniyinyinming', 'miniyinhuozhong'], ['InitFilter:noZhuHp']],
             //焰
             Mfire_zhurong: ['female', 'shu', 4, ['minifirehuosi', 'minifirerongyan']],
         },
@@ -41819,25 +41819,29 @@ const packs = function () {
                     await player.draw(5);
                     if (player.countCards('h') >= 5) {
                         const hs = [...player.getCards('h')];
-                        const result = hs.length > 5 ? await (() => {
-                            const next = player.chooseToMove(`${get.translation(event.name)}：请分配五张牌当作“斗牛”牌`);
+                        const result = hs.length > 5 ? await (async () => {
+                            const next = player.chooseToMove(`${get.translation(event.name)}：请分配五张牌当作“斗牛”牌`, true);
                             next.set('list', [
                                 ['暂未分配', [], list => {
                                     if (!list.length) return '暂未分配';
                                     return lib.skill.miniyinyinming.getOXType(list).name || '未知牌型';
                                 }],
-                                ['手牌', hs, `${event.name}_tag`],
+                                ['手牌', hs],
                             ]);
                             next.set('filterMove', (from, to, moved) => {
                                 return typeof to !== 'number' || to !== 0 || moved[0].length < 5;
                             });
                             next.set('filterOk', moved => moved[0].length === 5);
                             next.set('processAI', list => {
-                                const hs = list[1][1], cards = lib.skill.miniyinyinming.getBestOX(hs) ?? [];
+                                const hs = list[1][1], cards = lib.skill.miniyinyinming.getBestOX(hs)?.cards ?? [];
                                 return [cards, [...hs].remove(...cards)];
                             });
-                            return next;
-                        })().forResult() : { bool: true, moved: [hs, []] };
+                            const func = lib.skill.miniyinyinming.func;
+                            player.isMine() ? func(event, next) : (player.isOnline() && player.send(func, event, next));
+                            const result = await next.forResult();
+                            event.controls?.forEach(i => i.close());
+                            return result;
+                        })() : { bool: true, moved: [hs, []] };
                         if (result?.bool && (result.moved?.[0] ?? []).length === 5) {
                             const next = player.addToExpansion(result.moved[0], player, 'give');
                             next.gaintag.add(event.name);
@@ -42022,6 +42026,44 @@ const packs = function () {
                         info: bestInfo,
                     };
                 },
+                //最佳牌型按钮创建
+                func(event, next) {
+                    const controls = [
+                        link => {
+                            if (!next.dialog || !next.buttonss) return;
+                            const oxDiv = next.buttonss[0], hsDiv = next.buttonss[1];
+                            if (!oxDiv || !hsDiv) return;
+                            const cards = next.processAI(next.list)?.[0] ?? [];
+                            if (!cards.length) return;
+                            const allButtons = Array.from(oxDiv.children).concat(Array.from(hsDiv.children));
+                            const cardSet = new Set(cards), newOxButtons = [], newHsButtons = [];
+                            for (const card of cards) {
+                                const button = allButtons.find(button => button.link === card || button._link === card);
+                                if (button) newOxButtons.push(button);
+                            }
+                            for (const button of allButtons) {
+                                const card = button.link || button._link;
+                                if (!cardSet.has(card)) newHsButtons.push(button);
+                            }
+                            if (ui.selected.guanxing_buttons) {
+                                for (const button of ui.selected.guanxing_buttons) button.classList.remove('glow2');
+                                ui.selected.guanxing_buttons.length = 0;
+                                ui.selected.guanxing_button = null;
+                            }
+                            for (const button of newOxButtons) oxDiv.appendChild(button);
+                            for (const button of newHsButtons) hsDiv.appendChild(button);
+                            next.moved[0] = get.links(Array.from(oxDiv.childNodes));
+                            next.moved[1] = get.links(Array.from(hsDiv.childNodes));
+                            if (typeof oxDiv.textPrompt === 'function') oxDiv.previousSibling.innerHTML = `<div class="text center">${oxDiv.textPrompt(next.moved[0])}</div>`;
+                            if (typeof hsDiv.textPrompt === 'function') hsDiv.previousSibling.innerHTML = `<div class="text center">${hsDiv.textPrompt(next.moved[1])}</div>`;
+                            if (next.filterOk(next.moved)) ui.create.confirm('o');
+                            else if (!next.forced) ui.create.confirm('c');//这个默认强制但是还是写上去保证一下
+                            else if (ui.confirm) ui.confirm.close();
+                            game.check();
+                        }
+                    ];
+                    event.controls = [ui.create.control(controls.concat(['最佳牌型', 'stayleft']))];
+                },
             },
             miniyindouniu: {
                 forceaudio: true,
@@ -42108,7 +42150,10 @@ const packs = function () {
                             return [bestOx, bestPool];
                         });
                         next.set('ts', ts);
+                        const func = lib.skill.miniyinyinming.func;
+                        player.isMine() ? func(event, next) : (player.isOnline() && player.send(func, event, next));
                         const result = await next.forResult();
+                        event.controls?.forEach(i => i.close());
                         if (result?.bool && result.moved?.[0]?.some(card => player.getCards('h').includes(card))) {
                             await player.lose(result.moved[0].filter(card => player.getCards('h').includes(card)), ui.ordering);
                             await game.cardsDiscard(result.moved[1].filter(card => !player.getCards('h').includes(card)));
@@ -42289,7 +42334,10 @@ const packs = function () {
                                     return [bestOx, bestPool];
                                 });
                                 next.set('ts', ts);
+                                const func = lib.skill.miniyinyinming.func;
+                                target.isMine() ? func(event, next) : (target.isOnline() && target.send(func, event, next));
                                 const result = await next.forResult();
+                                event.controls?.forEach(i => i.close());
                                 if (result?.bool && result.moved?.[0]?.some(card => target.getCards('h').includes(card))) {
                                     await target.lose(result.moved[0].filter(card => target.getCards('h').includes(card)), ui.ordering);
                                     await game.cardsDiscard(result.moved[1].filter(card => !target.getCards('h').includes(card)));
