@@ -49,7 +49,7 @@ const packs = function () {
             bilibili_xushao: ['male', 'qun', 3, ['bol_pinjian', 'bol_yuedan'], ['die:xushao']],
             bilibili_ningjingzhiyuan: ['male', 'key', 4, ['bilibili_waifa_rewrite', 'bilibili_xiezhi', 'bilibili_fazhou'], ['clan:肘家军|宿舍群|肘击群|活动群', 'name:闹动|导近']],
             bilibili_xizhicaikobe: ['male', 'key', 4, ['bilibili_waifa_rewrite', 'bilibili_zhangcai', 'bilibili_laosao'], ['clan:肘家军|宿舍群|肘击群|活动群', 'name:戏|子宓']],
-            bilibili_yanjing: ['male', 'key', 3, ['bilibili_dongxi', 'bilibili_mingcha', 'bilibili_huiyan', 'bilibili_kamiman'], ['clan:肘家军|宿舍群|肘击群|活动群', 'tooenough|眼睛']],
+            bilibili_yanjing: ['male', 'key', 3, ['bilibili_mingcha', 'bilibili_huiyan', 'bilibili_kamiman'], ['clan:肘家军|宿舍群|肘击群|活动群', 'tooenough|眼睛']],
             bilibili_yanjing_friend1: ['female', 'qun', 3, ['bilibili_roulin', 'bilibili_shenren'], ['unseen']],
             bilibili_yanjing_friend2: ['male', 'qun', '4/5', ['bilibili_benghuai', 'bilibili_shenren'], ['unseen']],
             bilibili_yanjing_friend3: ['male', 'qun', '3/4', ['bilibili_yaowu', 'bilibili_shenren'], ['unseen']],
@@ -6529,16 +6529,18 @@ const packs = function () {
                 },
             },
             bilibili_zili: {
-                init(player) {
-                    if (!player.storage.bilibili_zili) player.storage.bilibili_zili = [0, 0];
+                init(player, skill) {
+                    player.storage[skill] ??= [0, 0];
+                    player.addTip(skill, [lib.translate[skill], ...player.storage[skill]].join(' '));
                 },
+                onremove: true,
                 mod: {
                     maxHandcardBase(player, num) {
-                        if (player.storage.bilibili_zili && player.storage.bilibili_zili[1]) return player.storage.bilibili_zili[1] + 1;
+                        if (typeof player.storage.bilibili_zili?.[1] === 'number') return player.storage.bilibili_zili[1] + 1;
                     },
                 },
                 intro: {
-                    markcount: () => undefined,
+                    markcount: (list = [0, 0]) => list.map(i => String(i)).join(''),
                     content(list) {
                         var bool1 = (list[0] && typeof list[0] == 'number');
                         var bool2 = (list[1] && typeof list[1] == 'number');
@@ -6552,7 +6554,8 @@ const packs = function () {
                 group: 'bilibili_zili_record',
                 trigger: { player: 'phaseDrawBegin' },
                 filter(event, player) {
-                    return player.storage.bilibili_zili && player.storage.bilibili_zili[0];
+                    const number = player.storage.bilibili_zili?.[0];
+                    return typeof number === 'number' && number > 0;
                 },
                 forced: true,
                 content() {
@@ -6562,19 +6565,18 @@ const packs = function () {
                     record: {
                         trigger: { global: ['phaseDrawAfter', 'phaseDiscardAfter'] },
                         filter(event, player) {
-                            if (event.player == player) return false;
                             var storage = player.storage.bilibili_zili;
                             var num = ['phaseDraw', 'phaseDiscard'].indexOf(event.name);
-                            if (!storage[num]) return true;
+                            if (!storage?.[num]) return true;
                             return (num == 0 ? event.num : event.player.getHandcardLimit()) > storage[num];
                         },
                         forced: true,
                         logTarget: 'player',
                         content() {
-                            var storage = player.storage.bilibili_zili;
-                            var num = ['phaseDraw', 'phaseDiscard'].indexOf(trigger.name);
-                            storage[num] = (num == 0 ? trigger.num : trigger.player.getHandcardLimit());
-                            player.markSkill('bilibili_zili');
+                            const skill = 'bilibili_zili', num = ['phaseDraw', 'phaseDiscard'].indexOf(trigger.name);
+                            player.storage[skill][num] = (num == 0 ? trigger.num : trigger.player.getHandcardLimit());
+                            player.markSkill(skill);
+                            player.addTip(skill, [lib.translate[skill], ...player.storage[skill]].join(' '));
                         },
                     },
                 },
@@ -9278,7 +9280,6 @@ const packs = function () {
                 },
                 async cost(event, trigger, player) {
                     const target = trigger.player, types = lib.skill[event.skill].choice;
-                    const sum = Math.max(4, target.countCards('h')) + 1;
                     const result = await player.chooseNumbers(
                         get.prompt2(event.skill, target),
                         (() => {
@@ -9286,19 +9287,19 @@ const packs = function () {
                             for (const type of types) {
                                 list.push({
                                     prompt: lib.translate[type] || '技能',
-                                    min: 1,
-                                    max: Math.floor(sum - (types.length - 1)),
+                                    min: 2,
+                                    max: Math.floor(10 - (types.length - 1)),
                                 });
                             }
                             return list;
                         })(),
                     ).set('filterOk', event => {
-                        return event.numbers.reduce((sum, num) => sum + num, 0) === event.sum;
+                        return event.numbers.reduce((sum, num) => sum + num, 0) === 10;
                     }).set('processAI', () => {
-                        const { player, sum } = get.event(), target = get.event().getTrigger().player;
+                        const { player, target } = get.event();
                         if (get.attitude(player, target) > 0) return { bool: false };
-                        return { bool: true, numbers: [1, 1, sum - 3, 1] };
-                    }).set('sum', sum).forResult();
+                        return { bool: true, numbers: [2, 2, 4, 2] };
+                    }).set('target', target).forResult();
                     if (result?.bool && result.numbers?.length) {
                         event.result = {
                             bool: true,
@@ -9419,7 +9420,7 @@ const packs = function () {
                 },
                 findTarget(player, double) {
                     let bool = player.getRoundHistory('useCard', () => true, 1).reduce((list, evt) => list.add(get.type2(evt.card)), []).length >= 3;
-                    let goon = player.getRoundHistory('sourceDamage', () => true, 1).length > 0
+                    let goon = player.getRoundHistory('sourceDamage', () => true, 1).reduce((sum, evt) => sum + evt.num, 0) >= 3;
                     return double === true ? (bool && goon) : (bool || goon);
                 },
                 async cost(event, trigger, player) {
@@ -9809,34 +9810,6 @@ const packs = function () {
                 },
             },
             //眼睛哥
-            bilibili_dongxi: {
-                trigger: { target: 'useCardToTargeted' },
-                filter(event, player) {
-                    return event.player != player;
-                },
-                usable: 1,
-                check(event, player) {
-                    if (event.getParent().excluded.includes(player)) return false;
-                    return get.effect(player, event.card, event.player, player) < 0;
-                },
-                logTarget: 'player',
-                async content(event, trigger, player) {
-                    const judgeEvent = player.judge(card => get.color(card) == 'black' ? 2 : -2);
-                    judgeEvent.judge2 = result => result.bool;
-                    const result = await judgeEvent.forResult();
-                    if (result?.judge > 0) {
-                        player.chat('喜！');
-                        trigger.player.chat('孩子们，眼睛是也够');
-                        await game.delayx();
-                        trigger.getParent().excluded.add(player);
-                    }
-                    else {
-                        player.chat('悲！（转圈圈.jpg）');
-                        trigger.player.chat('飞舞眼睛');
-                        await player.draw();
-                    }
-                },
-            },
             bilibili_mingcha: {
                 enable: 'phaseUse',
                 usable: 1,
@@ -14113,7 +14086,7 @@ const packs = function () {
             bilibili_tiyi: '提议',
             bilibili_tiyi_info: '出牌阶段，若你有牌，你可以记录一名有手牌的其他角色，然后与其议事。若议事有结果且为：红色，你与其各回复1点体力；黑色，你摸两张牌，其摸牌阶段多摸一张牌且手牌上限+1直到其下个回合结束。若议事无结果，你对其造成1点伤害。当你发动〖提议〗后，或场上有角色死亡后，若场上剩余存活的其他角色均已被〖提议〗记录，你清空〖提议〗角色记录且本回合不能发动〖提议〗。',
             bilibili_zili: '资历',
-            bilibili_zili_info: '锁定技。①其他角色的摸牌阶段结束后，若该角色本阶段摸牌数A大于0，且你未记录X或X小于A，则你记录X为A。②其他角色的弃牌阶段结束后，若该角色的手牌上限B大于0，且你未记录Y或Y小于B，则你记录Y为B。③若你已有记录X，你的摸牌阶段摸牌基数视为X+1；若你已有记录Y，你的手牌上限视为Y+1。',
+            bilibili_zili_info: '锁定技。①一名角色的摸牌阶段结束后，若其本阶段摸牌数A大于0，且你未记录X或X小于A，则你记录X为A。一名角色的弃牌阶段结束后，若其手牌上限B大于0，且你未记录Y或Y小于B，则你记录Y为B。③若你已有记录X，你的摸牌阶段摸牌基数视为X+1；若你已有记录Y，你的手牌上限视为Y+1。',
             bilibili_zili_append: '<span style="font-family:yuanli">大佬你这么厉害，不如建一个群接纳喜欢你的扩展的人</span>',
             bilibili_suixingsifeng: '随性似风',
             bilibili_liaoxing: '瞭星',
@@ -14236,9 +14209,9 @@ const packs = function () {
             boljianling_info: '锁定技，转换技。你仅使用明置牌造成伤害的回合结束后，阳：你执行一个额外回合；阴：你令所有角色将武将牌翻至背面。',
             bilibili_ningjingzhiyuan: '宁静致远',
             bilibili_xiezhi: '协治',
-            bilibili_xiezhi_info: '其他角色的回合开始时，你可以为其本回合基本牌、锦囊牌、装备、武将技能的最大使用次数任意分配数值，每个数值至少为1，数值之和须为X（X为max(其手牌数,4)+1）。',
+            bilibili_xiezhi_info: '其他角色的回合开始时，你可以为其本回合基本牌、锦囊牌、装备、武将技能的最大使用次数任意分配数值，每个数值至少为2，且数值之和须为10。',
             bilibili_fazhou: '罚肘',
-            bilibili_fazhou_info: '每轮开始时，你可以选择任意名上一轮使用过三种类别的牌或造成过伤害的其他角色，对这些角色依次肘成1点伤害，然后本轮将其肘出游戏（同时满足两项条件的角色有8%几率改为肘成24点伤害）。',
+            bilibili_fazhou_info: '每轮开始时，你可以选择任意名上一轮使用过三种类别的牌或造成过至少3点伤害的其他角色，对这些角色依次肘成1点伤害，然后本轮将这些角色肘出游戏（同时满足两项条件的角色有8%几率改为肘成24点伤害）。',
             bilibili_fazhou_append: '<span style="font-family:yuanli">不顺群意者，当填黑屋之壑<br>吾令不从者，当膏肘击之锷</span>',
             bilibili_xizhicaikobe: '戏志才',
             bilibili_zhangcai: '彰才',
@@ -14268,8 +14241,6 @@ const packs = function () {
             bilibili_qiqin_info: '锁定技。①你的初始手牌数×2，且将这些牌标记为“琴”。②你的“琴”不计入手牌上限。③准备阶段，你获得位于弃牌堆的所有“琴”。',
             bilibili_yanjing: '👁👃👁',
             bilibili_yanjing_ab: '眼睛👁',
-            bilibili_dongxi: '洞悉',
-            bilibili_dongxi_info: '每回合限一次。当你成为其他角色使用牌的目标后，你可以判定，若结果为黑色，你令此牌对你无效；否则你摸一张牌。',
             bilibili_mingcha: '明察',
             bilibili_mingcha_info: '出牌阶段限一次，你可以展示一名其他角色的手牌，然后选择一项：1.令其交给你一张牌；2.你交给其一张牌。若你以此法交出的牌与其以此法展示的牌类别不同，你摸一张牌。',
             bilibili_huiyan: '慧眼',
