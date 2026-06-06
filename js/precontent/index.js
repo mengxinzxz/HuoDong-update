@@ -848,6 +848,7 @@ export async function precontent(bilibilicharacter) {
                 get data() {
                     return [
                         'bugfix、素材补充、技能调整',
+                        '添加在线更新功能（目前只支持整包更新，且需要挂梯子，所以基本上不太好用）',
                         ...(() => {
                             const map = _status.HDWJ_ChangeLog_character ?? {};
                             return Object.keys(map).map(ext => {
@@ -856,7 +857,9 @@ export async function precontent(bilibilicharacter) {
                             });
                         })(),
                         '允许多开合纵抗秦/官渡之战事件',
-                        '继续调整诸多未跟进版本的三国杀小程序武将技能',
+                        '继续调整诸多未跟进版本的三国杀小程序武将技能，感谢@浮生半夏丷 的小程序内容整合',
+                        '更新捉鬼驱邪系列武将的技能为新版/角色配音/人物介绍，感谢@魔界通棍母 的内容整合和素材提供',
+                        '调整部分名人堂和杂谈系列武将的技能',
                         'To be continued...',
                     ];
                 },
