@@ -43,7 +43,7 @@ const packs = function () {
                 MiNi_miaoKill: ['mayunlu', 'guanyinping', 'caoying', 'caiwenji', 'diaochan', 'caifuren', 'zhangxingcai', 'zhurong', 'huangyueying', 'daqiao', 'wangyi', 'zhangchunhua', 'zhenji', 'sunshangxiang', 'xiaoqiao', 'lvlingqi'].map(i => `Mmiao_${i}`),
                 MiNi_nianKill: ['caopi', 'zhugeliang', 'lvbu', 'zhouyu'].map(i => `Mnian_${i}`),
                 MiNi_fightKill: ['huangzhong', 'zhangliao', 'luxun', 'dianwei', 'machao', 'jiangwei', 'lvmeng'].map(i => `Mfight_${i}`),
-                MiNi_yinKill: ['xushu'].map(i => `Myin_${i}`),
+                MiNi_yinKill: ['yuji', 'xushu'].map(i => `Myin_${i}`),
                 MiNi_fireKill: ['zhurong'].map(i => `Mfire_${i}`),
                 MiNi_shengzhiyifa: ['jingwei', 'sunwukong', 'dalanmao', 'libai', 'change', 'nvwa', 'tunxingmenglix', 'xiaoshan'].map(i => `Mbaby_${i}`),
             },
@@ -552,6 +552,7 @@ const packs = function () {
             Mfight_lvmeng: ['male', 'wu', 4, ['minifightandu', 'minifightmingtan']],
             //隐
             Myin_xushu: ['male', 'wei', 3, ['miniyinyinxing', 'miniyinjujian']],
+            Myin_yuji: ['male', 'qun', '', ['miniyinyinming', 'miniyinhuozhong']],
             //焰
             Mfire_zhurong: ['female', 'shu', 4, ['minifirehuosi', 'minifirerongyan']],
         },
@@ -41785,6 +41786,559 @@ const packs = function () {
                     }
                 },
             },
+            //于吉
+            miniyinyinming: {
+                init(player, skill) {
+                    player.addSkill(`${skill}_plugin`);
+                },
+                onremove(player, skill) {
+                    if (!player.node.hp.innerHTML.length) {
+                        game.broadcastAll(player => {
+                            player.hp = 1;
+                            player.maxHp = 5;
+                            player.update();
+                        }, player);
+                        game.log(player, '显示了体力值');
+                    }
+                    player.removeSkill(`${skill}_plugin`);
+                    const cards = player.getExpansions(skill);
+                    if (cards.length) player.loseToDiscardpile(cards);
+                },
+                audio: 'ext:活动武将/audio/skill:2',
+                trigger: { global: 'roundStart' },
+                forced: true,
+                locked: false,
+                async content(event, trigger, player) {
+                    if (!!player.node.hp.innerHTML.length) {
+                        game.broadcastAll(player => {
+                            player.hp = player.maxHp = 0;
+                            player.update();
+                        }, player);
+                        game.log(player, '隐藏了体力值');
+                    }
+                    await player.draw(5);
+                    if (player.countCards('h') >= 5) {
+                        const hs = [...player.getCards('h')];
+                        const result = hs.length > 5 ? await (() => {
+                            const next = player.chooseToMove(`${get.translation(event.name)}：请分配五张牌当作“斗牛”牌`);
+                            next.set('list', [
+                                ['暂未分配', [], list => {
+                                    if (!list.length) return '暂未分配';
+                                    return lib.skill.miniyinyinming.getOXType(list).name || '未知牌型';
+                                }],
+                                ['手牌', hs, `${event.name}_tag`],
+                            ]);
+                            next.set('filterMove', (from, to, moved) => {
+                                return typeof to !== 'number' || to !== 0 || moved[0].length < 5;
+                            });
+                            next.set('filterOk', moved => moved[0].length === 5);
+                            next.set('processAI', list => {
+                                const hs = list[1][1], cards = lib.skill.miniyinyinming.getBestOX(hs) ?? [];
+                                return [cards, [...hs].remove(...cards)];
+                            });
+                            return next;
+                        })().forResult() : { bool: true, moved: [hs, []] };
+                        if (result?.bool && (result.moved?.[0] ?? []).length === 5) {
+                            const next = player.addToExpansion(result.moved[0], player, 'give');
+                            next.gaintag.add(event.name);
+                            await next;
+                        }
+                    }
+                },
+                mod: {
+                    maxHandcardBase(player, num) {
+                        if (!player.node.hp.innerHTML.length) return 5;
+                    },
+                },
+                intro: {
+                    markcount: 'expansion',
+                    content: 'expansion',
+                    mark(dialog, storage, player) {
+                        const cards = player.getExpansions('miniyinyinming');
+                        dialog.addText(lib.skill.miniyinyinming.getOXType(cards).name || '未知牌型');
+                        dialog.addAuto(cards);
+                    },
+                },
+                global: 'miniyindouniu',
+                derivation: 'miniyindouniu',
+                subSkill: {
+                    plugin: {
+                        charlotte: true,
+                        trigger: { player: ['loseMaxHpBefore', 'gainMaxHpBefore', 'damageBegin4', 'loseMaxHpBegin', 'changeHpBefore'] },
+                        filter(event, player) {
+                            return !player.node.hp.innerHTML.length;
+                        },
+                        forced: true,
+                        popup: false,
+                        async content(event, trigger, player) {
+                            trigger.cancel();
+                            if (['damage', 'loseHp'].includes(trigger.name)) await player.chooseToDiscard('h', true);
+                        },
+                        ai: {
+                            nodamage: true,
+                            skillTagFilter(player) {
+                                return !player.node.hp.innerHTML.length;
+                            },
+                            effect: {
+                                target(card, player, target) {
+                                    if (get.tag(card, 'damage') && !target.node.hp.innerHTML.length) return 0;
+                                },
+                            },
+                        },
+                    },
+                },
+                //获取牌型的牛类
+                getOXType(list) {
+                    if (list.length !== 5) return '待定牌型';
+                    const nums = list.map(card => get.number(card));
+                    const niuNums = nums.map(num => Math.min(num, 10));
+                    const ranks = nums.slice().sort((a, b) => b - a);
+                    const countMap = new Map();
+                    for (const num of nums) countMap.set(num, (countMap.get(num) || 0) + 1);
+                    for (const [num, count] of countMap) {
+                        if (count === 4) {
+                            return {
+                                type: 5,
+                                value: num,
+                                ranks,
+                                name: "炸弹牛",
+                                cards: list,
+                            };
+                        }
+                    }
+                    if (nums.every(num => num > 10)) {
+                        return {
+                            type: 4,
+                            value: 0,
+                            ranks,
+                            name: "五花",
+                            cards: list,
+                        };
+                    }
+                    if (nums.filter(num => num > 10).length === 4) {
+                        return {
+                            type: 3,
+                            value: 0,
+                            ranks,
+                            name: "四花",
+                            cards: list,
+                        };
+                    }
+                    //找最大的牛
+                    let bestNiu = 0;
+                    for (let i = 0; i < 5; i++) {
+                        for (let j = i + 1; j < 5; j++) {
+                            for (let k = j + 1; k < 5; k++) {
+                                const sum3 = niuNums[i] + niuNums[j] + niuNums[k];
+                                if (sum3 % 10 !== 0) continue;
+                                const rest = [];
+                                for (let x = 0; x < 5; x++) {
+                                    if (x !== i && x !== j && x !== k) rest.push(niuNums[x]);
+                                }
+                                let niu = (rest[0] + rest[1]) % 10;
+                                if (niu === 0) niu = 10;
+                                bestNiu = Math.max(bestNiu, niu);
+                            }
+                        }
+                    }
+                    if (bestNiu === 10) {
+                        return {
+                            type: 2,
+                            value: 10,
+                            ranks,
+                            name: '牛牛',
+                            cards: list,
+                        };
+                    }
+                    if (bestNiu > 0) {
+                        return {
+                            type: 1,
+                            value: bestNiu,
+                            ranks,
+                            name: `牛${bestNiu}`,
+                            cards: list,
+                        };
+                    }
+                    return {
+                        type: 0,
+                        value: 0,
+                        ranks,
+                        name: '无牛',
+                        cards: list,
+                    };
+                },
+                //比较牛的大小
+                compareOX(a, b) {
+                    if (a.type !== b.type) return a.type - b.type;
+                    if (a.value !== b.value) return a.value - b.value;
+                    for (let i = 0; i < a.ranks.length; i++) {
+                        if (a.ranks[i] !== b.ranks[i]) return a.ranks[i] - b.ranks[i];
+                    }
+                    return 0;
+                },
+                //获取最优牛
+                getBestOX(hs) {
+                    //没有五张牌直接曼巴out
+                    if (!hs || hs.length < 5) return;
+                    //按点数分组，点数从大到小枚举，方便同分时优先拿大牌
+                    const groups = new Map();
+                    for (const card of hs) {
+                        const num = get.number(card);
+                        if (!groups.has(num)) groups.set(num, []);
+                        groups.get(num).push(card);
+                    }
+                    const nums = Array.from(groups.keys()).sort((a, b) => b - a);
+                    //后缀可用牌数，用于剪枝
+                    const suffix = new Array(nums.length + 1).fill(0);
+                    for (let i = nums.length - 1; i >= 0; i--) {
+                        suffix[i] = suffix[i + 1] + groups.get(nums[i]).length;
+                    }
+                    let bestCards = null, bestInfo = null, picked = [];
+                    const dfs = function (index, rest) {
+                        if (rest === 0) {
+                            const cards = picked.slice();
+                            const info = lib.skill.miniyinyinming.getOXType(cards);
+                            if (!bestInfo || lib.skill.miniyinyinming.compareOX(info, bestInfo) > 0) {
+                                bestCards = cards;
+                                bestInfo = info;
+                            }
+                            return;
+                        }
+                        if (index >= nums.length) return;
+                        if (suffix[index] < rest) return;
+                        const num = nums[index];
+                        const cards = groups.get(num);
+                        const max = Math.min(cards.length, rest);
+                        //优先多拿大点数牌
+                        for (let count = max; count >= 0; count--) {
+                            for (let i = 0; i < count; i++) picked.push(cards[i]);
+                            dfs(index + 1, rest - count);
+                            for (let i = 0; i < count; i++) picked.pop();
+                        }
+                    }
+                    dfs(0, 5);
+                    return {
+                        cards: bestCards,
+                        info: bestInfo,
+                    };
+                },
+            },
+            miniyindouniu: {
+                forceaudio: true,
+                audio: 'ext:活动武将/audio/skill:2',
+                enable: 'phaseUse',
+                filter(event, player) {
+                    if (!player.countCards('h')) return false;
+                    return game.hasPlayer(target => lib.skill.miniyindouniu.filterTarget(null, player, target));
+                },
+                filterTarget(牢骚哥经典开赌场, player, target) {
+                    return target !== player && !target.node.hp.innerHTML.length && target.getExpansions('miniyinyinming').length === 5;
+                },
+                usable: 1,
+                filterCard: true,
+                position: 'h',
+                check: () => 1 + Math.random(),
+                lose: false,
+                discard: false,
+                async content(event, trigger, player) {
+                    const { target, cards } = event, ts = target.getExpansions('miniyinyinming');
+                    let list = [...cards];
+                    const discardPile = Array.from(ui.discardPile.childNodes);
+                    list.addArray(discardPile.randomGets(5 - list.length));
+                    if (list.length < 5) {
+                        const cardPile = Array.from(ui.cardPile.childNodes);
+                        list.addArray(cardPile.randomGets(5 - list.length));
+                        if (list.length < 5) {
+                            await player.loseToDiscardpile(cards);
+                            return;
+                        }
+                    }
+                    await player.lose(cards, ui.ordering);
+                    await game.cardsGotoOrdering([...list].remove(...cards));
+                    if (player.countCards('h') > 0) {
+                        const next = player.chooseToMove(`${get.translation(event.name)}：是否替换其中的“斗牛”牌`);
+                        next.set('list', [
+                            [lib.skill.miniyinyinming.getOXType(list), list, list => {
+                                if (!list.length) return '暂未分配';
+                                return lib.skill.miniyinyinming.getOXType(list).name || '未知牌型';
+                            }],
+                            ['手牌', [...player.getCards('h')], 'miniyinyinming_tag'],
+                        ]);
+                        next.set('filterMove', (from, to, moved) => {
+                            return typeof to !== 'number';
+                        });
+                        next.set('processAI', list => {
+                            const ox = [...list[0][1]], hs = [...list[1][1]], ts = get.event().ts;
+                            let bestOx = ox, bestPool = hs, bestInfo = lib.skill.miniyinyinming.getOXType(ox);
+                            if (lib.skill.miniyinyinming.compareOX(bestInfo, ts) > 0) return [bestOx, bestPool];
+                            for (let maskOut = 1; maskOut < (1 << 5); maskOut++) {
+                                const outIndex = [];
+                                for (let i = 0; i < 5; i++) {
+                                    if (maskOut & (1 << i)) outIndex.push(i);
+                                }
+                                const need = outIndex.length;
+                                const dfs = function (start, chosen) {
+                                    if (chosen.length === need) {
+                                        const newOx = ox.slice();
+                                        const newPool = hs.slice();
+                                        for (let i = 0; i < need; i++) {
+                                            const oxPos = outIndex[i];
+                                            const card = chosen[i];
+                                            newPool.push(newOx[oxPos]);
+                                            newOx[oxPos] = card;
+                                        }
+                                        for (const card of chosen) newPool.remove(card);
+                                        const info = lib.skill.miniyinyinming.getOXType(newOx);
+                                        if (lib.skill.miniyinyinming.compareOX(info, ts) > 0 && lib.skill.miniyinyinming.compareOX(info, bestInfo) > 0) {
+                                            bestInfo = info;
+                                            bestOx = newOx;
+                                            bestPool = newPool;
+                                        }
+                                        return;
+                                    }
+                                    for (let i = start; i < hs.length; i++) {
+                                        chosen.push(hs[i]);
+                                        dfs(i + 1, chosen);
+                                        chosen.pop();
+                                    }
+                                }
+                                dfs(0, []);
+                            }
+                            if (lib.skill.miniyinyinming.compareOX(bestInfo, ts) <= 0) return [ox, hs];
+                            return [bestOx, bestPool];
+                        });
+                        next.set('ts', ts);
+                        const result = await next.forResult();
+                        if (result?.bool && result.moved?.[0]?.some(card => player.getCards('h').includes(card))) {
+                            await player.lose(result.moved[0].filter(card => player.getCards('h').includes(card)), ui.ordering);
+                            await game.cardsDiscard(result.moved[1].filter(card => !player.getCards('h').includes(card)));
+                            list = result.moved[0];
+                        }
+                    }
+                    const info = lib.skill.miniyinyinming;
+                    const types = [info.getOXType(list), info.getOXType(ts)];
+                    const goon = info.compareOX(...types) > 0;
+                    game.log(player, '的结果为', `#y${types[0].name}`);
+                    game.log(target, '的结果为', `#y${types[1].name}`);
+                    lib.skill[event.name].$compareOX(player, list, target, ts);
+                    await game.delay(5);
+                    player.popup(goon ? '胜' : '负');
+                    target.popup(goon ? '负' : '胜');
+                    game.broadcastAll(str => {
+                        const dialog = ui.create.dialog(str);
+                        dialog.classList.add("center");
+                        setTimeout(() => dialog.close(), 1000);
+                    }, `本次斗牛${get.translation(goon ? player : target)}获胜`);
+                    game.log('本次', '#g斗牛', goon ? player : target, '获胜');
+                    await game.delay(3);
+                    game.broadcastAll(ui.clear);
+                    if (goon) {
+                        game.broadcastAll((player, num) => {
+                            player.hp = player.maxHp = num;
+                            player.update();
+                        }, target, types[1].type + 1);
+                        game.log(target, '显示了体力值');
+                    }
+                    else if (list.someInD('o')) {
+                        const gains = list.filterInD('o');
+                        const result2 = gains.length > 1 ? await target.chooseButton([
+                            `${get.translation(event.name)}：请选择要获得的牌`,
+                            gains,
+                        ], true).set('ai', button => get.value(button.link)).forResult() : { bool: true, links: gains };
+                        if (result2?.bool && result2.links?.length) await target.gain(result2.links, 'gain2');
+                    }
+                    await game.cardsDiscard(list.filterInD('o'));
+                },
+                ai: {
+                    order: 9,
+                    result: { target: -1 },
+                },
+                $compareOX(player, cards1, target, cards2) {
+                    game.broadcast((player, cards1, target, cards2) => {
+                        lib.skill.miniyindouniu.$compareOX(player, cards1, target, cards2);
+                    }, player, cards1, target, cards2);
+                    const throwOne = function (owner, card, x, y, delay) {
+                        setTimeout(function () {
+                            const node = owner.$throwxy2(card, `calc(50% + ${x}px)`, `calc(50% + ${y}px)`, 'perspective(600px) rotateY(180deg)', true);
+                            if (lib.config.cardback_style !== 'default') {
+                                node.style.transitionProperty = 'none';
+                                ui.refresh(node);
+                                node.classList.add('infohidden');
+                                ui.refresh(node);
+                                node.style.transitionProperty = '';
+                            }
+                            else node.classList.add('infohidden');
+                            node.style.transform = 'perspective(600px) rotateY(180deg) translateX(0)';
+                            const onEnd02 = function () {
+                                node.removeEventListener('webkitTransitionEnd', onEnd02);
+                                setTimeout(function () {
+                                    node.style.transition = 'all ease-in 0.3s';
+                                    node.style.transform = 'perspective(600px) rotateY(270deg) translateX(52px)';
+                                    const onEnd = function () {
+                                        node.classList.remove('infohidden');
+                                        node.style.transition = 'all 0s';
+                                        ui.refresh(node);
+                                        node.style.transform = 'perspective(600px) rotateY(-90deg) translateX(52px)';
+                                        ui.refresh(node);
+                                        node.style.transition = '';
+                                        ui.refresh(node);
+                                        node.style.transform = '';
+                                        node.removeEventListener('webkitTransitionEnd', onEnd);
+                                    };
+                                    node.listenTransition(onEnd);
+                                }, 200);
+                            };
+                            node.listenTransition(onEnd02);
+                        }, delay || 0);
+                    };
+                    const getX = function (i, len) {
+                        return (i - (len - 1) / 2) * 90;
+                    };
+                    //别人向于吉发起挑战，所以是target的牌在上，player的牌在下
+                    for (let i = 0; i < cards2.length; i++) {
+                        throwOne(target, cards2[i], getX(i, cards2.length), -120, i * 80);
+                    }
+                    for (let i = 0; i < cards1.length; i++) {
+                        throwOne(player, cards1[i], getX(i, cards1.length), 80, 300 + i * 80);
+                    }
+                }
+            },
+            miniyinhuozhong: {
+                audio: 'ext:活动武将/audio/skill:2',
+                enable: 'phaseUse',
+                filter(event, player) {
+                    if (player.getExpansions('miniyinyinming').length !== 5) return false;
+                    return game.hasPlayer(target => lib.skill.miniyinhuozhong.filterTarget(null, player, target));
+                },
+                filterTarget(牢骚哥经典开赌场, player, target) {
+                    return target !== player && target.countCards('h');
+                },
+                selectTarget: [-1, -2],
+                usable: 1,
+                multiline: true,
+                multitarget: true,
+                async content(event, trigger, player) {
+                    let info = lib.skill.miniyinyinming, win = [[], 0];
+                    let ts = player.getExpansions('miniyinyinming'), tstype = info.getOXType(ts);
+                    for (const target of [...event.targets].sortBySeat()) {
+                        const result = await target.chooseCard(`${get.translation(event.name)}：请选择一张手牌与${get.translation(player)}斗牛`, 'h', true).forResult();
+                        if (result?.bool && result.cards?.length) {
+                            let cards = [...result.cards], list = [...cards];
+                            const discardPile = Array.from(ui.discardPile.childNodes);
+                            list.addArray(discardPile.randomGets(5 - list.length));
+                            if (list.length < 5) {
+                                const cardPile = Array.from(ui.cardPile.childNodes);
+                                list.addArray(cardPile.randomGets(5 - list.length));
+                                if (list.length < 5) {
+                                    await target.loseToDiscardpile(cards);
+                                    return;
+                                }
+                            }
+                            await target.lose(cards, ui.ordering);
+                            await game.cardsGotoOrdering([...list].remove(...cards));
+                            if (target.countCards('h') > 0) {
+                                const next = target.chooseToMove(`${get.translation(event.name)}：是否替换其中的“斗牛”牌`);
+                                next.set('list', [
+                                    [lib.skill.miniyinyinming.getOXType(list), list, list => {
+                                        if (!list.length) return '暂未分配';
+                                        return lib.skill.miniyinyinming.getOXType(list).name || '未知牌型';
+                                    }],
+                                    ['手牌', [...target.getCards('h')], 'miniyinyinming_tag'],
+                                ]);
+                                next.set('filterMove', (from, to, moved) => {
+                                    return typeof to !== 'number';
+                                });
+                                next.set('processAI', list => {
+                                    const ox = [...list[0][1]], hs = [...list[1][1]], ts = get.event().ts;
+                                    let bestOx = ox, bestPool = hs, bestInfo = lib.skill.miniyinyinming.getOXType(ox);
+                                    if (lib.skill.miniyinyinming.compareOX(bestInfo, ts) > 0) return [bestOx, bestPool];
+                                    for (let maskOut = 1; maskOut < (1 << 5); maskOut++) {
+                                        const outIndex = [];
+                                        for (let i = 0; i < 5; i++) {
+                                            if (maskOut & (1 << i)) outIndex.push(i);
+                                        }
+                                        const need = outIndex.length;
+                                        const dfs = function (start, chosen) {
+                                            if (chosen.length === need) {
+                                                const newOx = ox.slice();
+                                                const newPool = hs.slice();
+                                                for (let i = 0; i < need; i++) {
+                                                    const oxPos = outIndex[i];
+                                                    const card = chosen[i];
+                                                    newPool.push(newOx[oxPos]);
+                                                    newOx[oxPos] = card;
+                                                }
+                                                for (const card of chosen) newPool.remove(card);
+                                                const info = lib.skill.miniyinyinming.getOXType(newOx);
+                                                if (lib.skill.miniyinyinming.compareOX(info, ts) > 0 && lib.skill.miniyinyinming.compareOX(info, bestInfo) > 0) {
+                                                    bestInfo = info;
+                                                    bestOx = newOx;
+                                                    bestPool = newPool;
+                                                }
+                                                return;
+                                            }
+                                            for (let i = start; i < hs.length; i++) {
+                                                chosen.push(hs[i]);
+                                                dfs(i + 1, chosen);
+                                                chosen.pop();
+                                            }
+                                        }
+                                        dfs(0, []);
+                                    }
+                                    if (lib.skill.miniyinyinming.compareOX(bestInfo, ts) <= 0) return [ox, hs];
+                                    return [bestOx, bestPool];
+                                });
+                                next.set('ts', ts);
+                                const result = await next.forResult();
+                                if (result?.bool && result.moved?.[0]?.some(card => target.getCards('h').includes(card))) {
+                                    await target.lose(result.moved[0].filter(card => target.getCards('h').includes(card)), ui.ordering);
+                                    await game.cardsDiscard(result.moved[1].filter(card => !target.getCards('h').includes(card)));
+                                    list = result.moved[0];
+                                }
+                            }
+                            const hstype = info.getOXType(list);
+                            const goon = info.compareOX(hstype, tstype) > 0;
+                            game.log(target, '的结果为', `#y${hstype.name}`);
+                            game.log(player, '的结果为', `#y${tstype.name}`);
+                            lib.skill.miniyindouniu.$compareOX(target, list, player, ts);
+                            await game.delay(5);
+                            target.popup(goon ? '胜' : '负');
+                            player.popup(goon ? '负' : '胜');
+                            game.broadcastAll(str => {
+                                const dialog = ui.create.dialog(str);
+                                dialog.classList.add("center");
+                                setTimeout(() => dialog.close(), 1000);
+                            }, `本次斗牛${get.translation(goon ? target : player)}获胜`);
+                            game.log('本次', '#g斗牛', goon ? target : player, '获胜');
+                            await game.delay(3);
+                            game.broadcastAll(ui.clear);
+                            if (!goon) {
+                                win[0].addArray(list);
+                                win[1]++;
+                            }
+                        }
+                    }
+                    game.broadcastAll((player, num) => {
+                        player.hp = player.maxHp = num;
+                        player.update();
+                    }, player, tstype.type + 1);
+                    game.log(player, '显示了体力值');
+                    player.gain(ts, 'gain2');
+                    if (win[1] > 0 && win[0].someInD('o')) {
+                        const gains = win[0].filterInD('o');
+                        const result2 = gains.length > win[1] ? await player.chooseButton([
+                            `${get.translation(event.name)}：请选择要获得的牌`,
+                            gains,
+                        ], true, win[1]).set('ai', button => get.value(button.link)).forResult() : { bool: true, links: gains };
+                        if (result2?.bool && result2.links?.length) await player.gain(result2.links, 'gain2');
+                        await game.cardsDiscard(win[0].filterInD('o'));
+                    }
+                },
+                ai: {
+                    order: 1,
+                    result: { player: 1 },
+                },
+            },
             //焰系列
             //祝融
             minifirehuosi: {
@@ -44372,6 +44926,7 @@ const packs = function () {
             minifightmingtan_info: `准备阶段，你可以视为对一名其他角色使用至多X张【过河拆桥】并摸X张牌，然后所有拥有${get.poptip('minikeji')}的角色须对其使用一张【杀】或失去${get.poptip('minikeji')}（X为拥有${get.poptip('minikeji')}的角色数，且至少为1，至多为5）。`,
             //隐
             Myin_xushu: '隐徐庶',
+            Myin_yuji: '隐于吉',
             miniyinyinxing: '隐姓',
             miniyinyinxing_info: `锁定技。①当你需要使用或打出牌时，你只能使用或打出虚拟牌或转化，且你可以将任意张手牌按以下规则使用或打出：1.${get.poptip({
                 id: 'miniyinyinxing_duizi',
@@ -44392,6 +44947,32 @@ const packs = function () {
             })}，对所有其他角色造成X点伤害（X为你弃置的牌数-3）。若你以此法弃置的牌花色相同，则相应效果额外执行一次。③你的手牌数始终不小于5。④当你受到伤害时，你摸一张牌。`,
             miniyinjujian: '举荐',
             miniyinjujian_info: '准备阶段或结束阶段，你可以弃置一张手牌，令一名角色选择获得两张点数小于/等于/大于此牌的牌。',
+            miniyinyinming: '隐命',
+            miniyinyinming_tag: '手牌',
+            miniyinyinming_info: `每轮开始时，你${get.poptip({
+                id: 'miniyinyinming_hide',
+                name: '隐藏体力条',
+                info: '体力条在隐藏状态下手牌上限视为5，受到伤害或失去体力改为弃置一张手牌（没有则不弃），所有体力和体力上限变化的效果对你无效。',
+            })}并摸五张牌，然后将五张手牌组成“斗牛牌”置于武将牌上；你的体力条处于隐藏状态时，其他角色视为拥有${get.poptip('miniyindouniu')}。`,
+            miniyindouniu: '斗牛',
+            miniyindouniu_info: `出牌阶段限一次，你可以选择一张手牌，然后此牌与牌堆或弃牌堆（优先弃牌堆）的随机四张牌组成“斗牛牌”与隐于吉进行${get.poptip({
+                id: 'miniyindouniu_ox',
+                name: '“斗牛”',
+                info: [
+                    '玩法简介：',
+                    '双人斗牛是扑克牌游戏“斗牛”（牛牛）的一种两人对战变体。游戏设有一名庄家和一名闲家，双方通过比较各自五张牌的牌型大小决定胜负。',
+                    '核心规则：',
+                    ...[
+                        '牌型组成：玩家从5张牌中选出3张，使其点数之和为10的整倍数（10、20、30），即为“有牛”；剩余2张牌点数之和的个位数决定“牛几”（如和为18即为牛八）。若剩余2张点数之和为10的倍数，则为“牛牛”；若无法凑出10的倍数，则为“无牛”。',
+                        '点数计算：A=1点，2-10按牌面数字计算，J、Q、K均视为10点。',
+                        '特殊牌型：炸弹牛为5张牌中有4张点数相同；五花牛为5张牌均为J、Q、K；四花牛为5张牌中有4张为J、Q、K。',
+                        '牌型大小：炸弹牛 > 五花牛 > 四花牛 > 牛牛 > 牛九 > … > 牛一 > 无牛。同牌型时依次比较单张点数，K最大，A最小。',
+                        '胜负判定：挑战方与隐于吉比较牌型大小，牌型大者获胜（若双方牌型完全相同则视为隐于吉获胜）。',
+                    ].map(i => `<li>${i}`),
+                ].join('<br>'),
+            })}。若你赢，则隐于吉根据牌型等级确定体力和体力上限并亮出体力条；若隐于吉赢，则隐于吉获得一张挑战方的“斗牛牌”。`,
+            miniyinhuozhong: '惑众',
+            miniyinhuozhong_info: `出牌阶段限一次，你可以与所有其他角色${get.poptip('miniyindouniu_ox')}并根据自己的牌型等级确定体力和体力上限并亮出体力条，然后你获得武将牌上的“斗牛牌”，然后你从本次所有${get.poptip('miniyindouniu_ox')}成功的“斗牛牌”中选择一张获得。`,
             //焰
             Mfire_zhurong: '焰祝融',
             minifirehuosi: '火祀',
