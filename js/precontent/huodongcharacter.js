@@ -7452,7 +7452,7 @@ const packs = function () {
                 trigger: { global: 'dying' },
                 filter(event, player) {
                     return player.hasMark('bilibili_renwang');
-                },
+                },//111
                 async cost(event, trigger, player) {
                     const list = Array.from({ length: Math.min(player.countMark('bilibili_renwang'), 3) }).map((_, i) => get.cnNumber(i + 1, true));
                     const result = await player.chooseControl(list, 'cancel2').set('prompt', get.prompt(event.skill)).set('prompt2', '消耗任意仁望值并摸等量的牌，然后你可以交给' + get.translation(trigger.player) + '至多等量的牌').set('ai', () => {

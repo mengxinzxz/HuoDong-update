@@ -41864,7 +41864,7 @@ const packs = function () {
                         dialog.addText(lib.skill.miniyinyinming.getOXType(cards).name || '未知牌型');
                         dialog.addAuto(cards);
                     },
-                },
+                },//111
                 global: 'miniyindouniu',
                 derivation: 'miniyindouniu',
                 subSkill: {
