@@ -41816,6 +41816,8 @@ const packs = function () {
                         }, player);
                         game.log(player, '隐藏了体力值');
                     }
+                    const cards = player.getExpansions(event.name);
+                    if (cards.length) await player.loseToDiscardpile(cards);
                     await player.draw(5);
                     if (player.countCards('h') >= 5) {
                         const hs = [...player.getCards('h')];
@@ -45001,7 +45003,7 @@ const packs = function () {
                 id: 'miniyinyinming_hide',
                 name: '隐藏体力条',
                 info: '体力条在隐藏状态下手牌上限视为5，受到伤害或失去体力改为弃置一张手牌（没有则不弃），所有体力和体力上限变化的效果对你无效。',
-            })}并摸五张牌，然后将五张手牌组成“斗牛牌”置于武将牌上；你的体力条处于隐藏状态时，其他角色视为拥有${get.poptip('miniyindouniu')}。`,
+            })}，弃置武将牌上的“斗牛牌”并摸五张牌，然后将五张手牌组成“斗牛牌”置于武将牌上；你的体力条处于隐藏状态时，其他角色视为拥有${get.poptip('miniyindouniu')}。`,
             miniyindouniu: '斗牛',
             miniyindouniu_info: `出牌阶段限一次，你可以选择一张手牌，然后此牌与牌堆或弃牌堆（优先弃牌堆）的随机四张牌组成“斗牛牌”与隐于吉进行${get.poptip({
                 id: 'miniyindouniu_ox',
