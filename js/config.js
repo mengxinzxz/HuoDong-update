@@ -50,12 +50,28 @@ export let config = {
 					if (!res.ok) throw new Error('获取远程info.json失败');
 					return res.json();
 				});
-				const remoteVersion = String(remoteInfo.version || '');
-				const localVersion = String(lib.extensionPack['活动武将'].version || '');
+				const remoteTime = String(remoteInfo.lastEditTime || '');
+				const localTime = String(lib.extensionPack['活动武将'].lastEditTime || '');
+				const parseTime = str => {
+					if (!str) return 0;
+					const match = str.match(/(\d+)\/(\d+)\/(\d+)\s+(\d+):(\d+):(\d+)/);
+					if (!match) return 0;
+					return new Date(
+						Number(match[1]),
+						Number(match[2]) - 1,
+						Number(match[3]),
+						Number(match[4]),
+						Number(match[5]),
+						Number(match[6])
+					).getTime();
+				};
+				const remoteValue = parseTime(remoteTime);
+				const localValue = parseTime(localTime);
 				if (!confirm([
-					`当前版本与仓库版本一致：\n${remoteVersion}\n\n是否重新安装扩展？`,
-					`检测到不同仓库版本：\n本地版本：${localVersion}\n仓库版本：${remoteVersion}\n\n是否安装仓库版本？`,
-				][remoteVersion === localVersion ? 0 : 1])) return;
+					'当前扩展已是最新版本，是否重新安装扩展？',
+					'检测到仓库有更新，是否安装仓库版本？',
+					'本地扩展比仓库版本更新，是否仍然安装仓库版本？',
+				][remoteValue === localValue ? 0 : remoteValue > localValue ? 1 : 2])) return;
 				const fileData = await fetch(`${rawBase}/js/file.json?t=${Date.now()}`).then(res => {
 					if (!res.ok) throw new Error('获取file.json失败');
 					return res.json();

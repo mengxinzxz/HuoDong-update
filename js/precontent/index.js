@@ -72,23 +72,7 @@ export async function precontent(bilibilicharacter) {
             }
             return map;
         };
-        const files = await getFileList();
-        if (files) {
-            //生成目录
-            //https://api.github.com/repos/mengxinzxz/HuoDong-update/git/trees/main?recursive=1对于不登陆用户存在限制访问，所以自己打目录
-            const flattenFiles = function (obj, prefix = '') {
-                let result = [];
-                if (Array.isArray(obj.files)) result.push(...obj.files.map(file => prefix ? `${prefix}/${file}` : file));
-                for (const key in obj) {
-                    if (key === 'files' || key.includes('update_temp') || key.includes('update_backup')) continue;
-                    result.push(...flattenFiles(obj[key], prefix ? `${prefix}/${key}` : key));
-                }
-                return result;
-            };
-            const fileList = flattenFiles(files).map(file => file.replace(/\\/g, '/')).sort((a, b) => a.localeCompare(b));
-            await game.promises.writeFile(new TextEncoder().encode(JSON.stringify({ files: fileList }, null, 4)), 'extension/活动武将/js', 'file.json');
-        }
-        return files;
+        return await getFileList();
     })();
     //闪闪节
     lib.arenaReady.push(() => {
