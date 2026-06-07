@@ -294,7 +294,7 @@ const packs = function () {
             wechat_zhi_zhushixing: ['male', 'wei', 4, ['wechatxunjing', 'wechatqiusuo']],
             //限时武将
             wechat_nailong: ['male', 'qun', 4, ['wechatdunshi', 'wechattanchi']],
-            wechat_mashe: ['female', 'qun', 4, ['wechatgenggeng', 'wechattanpai']],
+            wechat_mashe: ['male', 'qun', 4, ['wechatgenggeng', 'wechattanpai']],
             wechat_yingjiang: ['male', 'qun', 4, ['wechatduying', 'wechatsheshi'], ['name:战|鹰']],
             wechat_yuehanniu: ['male', 'qun', 4, ['wechatjiaoshi', 'wechatyuli'], ['name:约翰|牛']],
             wechat_luotuo: ['male', 'qun', 4, ['wechatgoude', 'wechatdahu'], ['name:丰川|祥子']],
