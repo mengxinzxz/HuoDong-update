@@ -41792,16 +41792,17 @@ const packs = function () {
                     player.addSkill(`${skill}_plugin`);
                 },
                 onremove(player, skill) {
+                    const cards = player.getExpansions(skill);
                     if (!player.node.hp.innerHTML.length) {
-                        game.broadcastAll(player => {
-                            player.hp = 1;
-                            player.maxHp = 5;
+                        let hp = 3;
+                        if (cards.length === 5) hp = lib.skill[skill].getOXType(cards).type + 1;
+                        game.broadcastAll((player, hp) => {
+                            player.hp = player.maxHp = hp;
                             player.update();
-                        }, player);
+                        }, player, hp);
                         game.log(player, '显示了体力值');
                     }
                     player.removeSkill(`${skill}_plugin`);
-                    const cards = player.getExpansions(skill);
                     if (cards.length) player.loseToDiscardpile(cards);
                 },
                 audio: 'ext:活动武将/audio/skill:2',

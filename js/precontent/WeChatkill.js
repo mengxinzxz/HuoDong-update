@@ -298,7 +298,7 @@ const packs = function () {
             wechat_yingjiang: ['male', 'qun', 4, ['wechatduying', 'wechatsheshi'], ['name:战|鹰']],
             wechat_yuehanniu: ['male', 'qun', 4, ['wechatjiaoshi', 'wechatyuli'], ['name:约翰|牛']],
             wechat_luotuo: ['male', 'qun', 4, ['wechatgoude', 'wechatdahu'], ['name:丰川|祥子']],
-            wechat_hansimao: ['female', 'qun', 4, ['wechatkuangbiao', 'wechathuamao'], ['name:ice|cola']],
+            wechat_hansimao: ['male', 'qun', 4, ['wechatkuangbiao', 'wechathuamao'], ['name:ice|cola']],
             wechat_dihuangxia: ['male', 'qun', 4, [], ['name:李|炘南-北|淼-东|杉-西|钊-坤|中', 'unseen']],
             wechat_yanlongxia: ['male', 'qun', 4, [], ['name:李|炘南-张|健-殿|南', 'unseen']],
         },
