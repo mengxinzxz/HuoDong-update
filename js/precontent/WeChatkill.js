@@ -3306,7 +3306,7 @@ const packs = function () {
                 preHidden: true,
                 content() {
                     player.draw().gaintag.add('wechatjizhi');
-                    player.addTempSkill('wechat_jizhi_effect');
+                    player.addTempSkill('wechatjizhi_effect');
                 },
                 ai: { noautowuxie: true },
                 subSkill: {
@@ -13324,7 +13324,7 @@ const packs = function () {
                                 if (num > 2 && link == '摸牌') return 10;
                                 if (link == 'rezhiheng' && player.countCards('h') > 0) return 10;
                                 if (link == 'wechatjizhi' && (!skills.includes('rezhiheng') || player.countCards('hs', { type: 'trick' }))) return 8;
-                                if (player.countMark('wechatrenjie') <= 2) return 0;
+                                return player.countMark('wechatrenjie') <= 2 ? 0 : Math.max(2, player.countMark('wechatrenjie') - 1);
                             }
                             return ui.selected.buttons[0].link == '摸牌' ? num - 1 : Math.max(2, player.countMark('wechatrenjie') - 1);
                         });
