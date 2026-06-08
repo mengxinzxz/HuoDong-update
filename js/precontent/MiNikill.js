@@ -41803,13 +41803,15 @@ const packs = function () {
                     player: ['enterGame', 'showCharacterAfter'],
                 },
                 filter(event, player, name) {
-                    if (event.name === 'showCharacter') return event.toShow?.some(name => name && lib.character[name]?.skills?.includes('miniyinyinming'));
                     if (name === 'roundStart') return true;
                     if (!player.node.hp.innerHTML.length) return false;
-                    let names = [player.name];
-                    if (player.name1 && !player.isUnseen(0)) names.push(player.name1);
-                    if (player.name2 && !player.isUnseen(1)) names.push(player.name2);
-                    return names.some(name => name && lib.character[name]?.skills?.includes('miniyinyinming'));
+                    return (() => {
+                        if (event.name === 'showCharacter') return event.toShow;
+                        let names = [player.name];
+                        if (player.name1 && !player.isUnseen(0)) names.push(player.name1);
+                        if (player.name2 && !player.isUnseen(1)) names.push(player.name2);
+                        return names;
+                    })()?.some(name => name && lib.character[name]?.skills?.includes('miniyinyinming'));
                 },
                 direct: true,
                 async content(event, trigger, player) {
