@@ -296,10 +296,9 @@ td.dengjie-game > .button.character > .score.lose {
 /*诸葛亮定乱*/
 .dingluan-tube-container {
 	display: grid;
-	grid-template-columns: repeat(6, 80px);
 	justify-content: center;
 	align-items: end;
-	gap: 20px;
+	gap: 15px;
 	padding: 20px;
 	box-sizing: border-box;
 	width: 100%;
