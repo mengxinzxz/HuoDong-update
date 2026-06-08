@@ -394,7 +394,7 @@ const packs = function () {
                     if (player.isPhaseUsing()) player.addTempSkill(skill + '_effect', 'phaseUseAfter');
                 },
                 onremove(player, skill) {
-                    player.removeTempSkill(skill + '_effect');
+                    player.removeSkill(skill + '_effect');
                 },
                 group: 'bolshicai_mark',
                 subSkill: {
@@ -406,63 +406,87 @@ const packs = function () {
                     },
                     effect: {
                         charlotte: true,
-                        mod: {
-                            cardEnabled2(card) {
-                                if (card.hasGaintag('bolshicai_effect')) return false;
-                            },
-                            canBeDiscarded(card) {
-                                if (card.hasGaintag('bolshicai_effect')) return false;
-                            },
-                            canBeGained(card) {
-                                if (card.hasGaintag('bolshicai_effect')) return false;
-                            },
-                        },
-                        onremove(player, skill, goon) {
-                            if (goon !== true) player.removeGaintag('bolshicai');
-                            const cards2 = player.getCards('s', card => card.hasGaintag(skill));
-                            if (player.isOnline2()) {
-                                player.send((cards, player) => {
-                                    cards.forEach(i => i.delete());
-                                    if (player == game.me) ui.updatehl();
-                                }, cards2, player);
-                            }
-                            cards2.forEach(i => i.delete());
-                            if (player === game.me) ui.updatehl();
-                        },
-                        init(player, skill) {
-                            if (!_status._bolshicai_pileTop) {
-                                game.broadcastAll(() => {
-                                    _status._pileTop = _status.pileTop;
-                                    _status._bolshicai_pileTop = true;
-                                    Object.defineProperties(_status, {
-                                        pileTop: {
-                                            configurable: true,
-                                            get() {
-                                                return this._pileTop;
-                                            },
-                                            set(pileTop) {
-                                                if (!pileTop) return;
-                                                this._pileTop = pileTop;
-                                                const skill = 'bolshicai_effect';
-                                                for (const player of game.filterPlayer()) {
-                                                    if (player.hasSkill(skill)) get.info(skill).getCards(player, skill);
-                                                }
-                                            },
-                                        },
+                        init(player) {
+                            if (game.online || ui[`bolCardPileUpdate_${player.playerid}`]) return;
+                            const fun = player => {
+                                let dialog = ui[`bolShiCaiShow_${player.playerid}`], init = false;
+                                if (!dialog) {
+                                    init = true;
+                                    dialog = ui[`bolShiCaiShow_${player.playerid}`] = ui.create.div(ui.window);
+                                    dialog.owner = player;
+                                    dialog.className = 'dialog nobutton scroll1 scroll2';
+                                    dialog.style.position = 'absolute';
+                                    dialog.style.left = '50%';
+                                    dialog.style.top = '50%';
+                                    dialog.style.transform = 'translate(-50%, -50%)';
+                                    dialog.style.width = 'fit-content';
+                                    dialog.style.height = 'fit-content';
+                                    dialog.style.display = 'flex';
+                                    dialog.style.flexDirection = 'column';
+                                    dialog.style.background = 'rgba(0,0,0,0.72)';
+                                    dialog.style.gap = '2.5px';
+                                    Object.setPrototypeOf(dialog, lib.element.dialog);
+                                    dialog.ontouchstart = ui.click.dragtouchdialog;
+                                    const title = ui.create.div(dialog);
+                                    title.style.position = 'relative';
+                                    title.style.textAlign = 'center';
+                                    title.innerHTML = '恃才';
+                                    const container = dialog.container = ui.create.div('.buttons', dialog);
+                                    container.style.position = 'relative';
+                                    container.classList.add('smallzoom');
+                                    dialog.updateDialog = function () {
+                                        const owner = this.owner;
+                                        if (!owner?.hasSkill('bolshicai') || !owner.hasSkill('bolshicai_effect')) return;
+                                        const cards = get.itemtype(_status.pileTop) === 'card' ? [_status.pileTop] : [];
+                                        const buttons = Array.from(dialog.container.childNodes);
+                                        for (const card of buttons) dialog.container.removeChild(card);
+                                        dialog.style.width = `${cards.length > 0 ? '125' : '0'}px`;
+                                        dialog.buttons = ui.create.buttons(cards, 'card', dialog.container, true);
+                                        if (dialog.buttons?.[0]?.node?.gaintag) {
+                                            if (dialog.buttons[0].node.gaintag.innerHTML.length > 0) dialog.buttons[0].node.gaintag.innerHTML += ' ';
+                                            dialog.buttons[0].node.gaintag.innerHTML += '牌堆顶';
+                                        }
+                                    };
+                                }
+                                requestAnimationFrame(() => {
+                                    dialog.updateDialog();
+                                    requestAnimationFrame(() => {
+                                        dialog.show();
+                                        if (init) {
+                                            const rect = dialog.getBoundingClientRect();
+                                            const zoom = game.documentZoom || 1;
+                                            dialog.style.transform = '';
+                                            dialog.style.left = rect.left / zoom + 'px';
+                                            dialog.style.top = rect.top / zoom + 'px';
+                                        }
                                     });
                                 });
-                            }
-                            get.info(skill).getCards(player, skill);
+                                ui[`bolCardPileUpdate_${player.playerid}`] = new MutationObserver(mutationsList => {
+                                    for (const mutation of mutationsList) {
+                                        if (mutation.type === 'childList') {
+                                            if (!player.hasSkill('bolshicai') || !player.hasSkill('bolshicai_effect')) return;
+                                            if (player === game.me) ui[`bolShiCaiShow_${player.playerid}`]?.updateDialog();
+                                            else if (player.isOnline2()) player.send(() => ui[`bolShiCaiShow_${player.playerid}`]?.updateDialog?.());
+                                        }
+                                    }
+                                });
+                                const config = { childList: true, subtree: false };
+                                ui[`bolCardPileUpdate_${player.playerid}`].observe(ui.cardPile, config);
+                            };
+                            if (player.isMine()) fun(player);
+                            else if (player.isOnline2()) player.send(fun, player);
                         },
-                        getCards(player, skill) {
-                            get.info(skill).onremove(player, skill, true);
-                            const card = _status.pileTop;
-                            if (card) {
-                                const cardx = ui.create.card();
-                                cardx.init(get.cardInfo(card));
-                                cardx._cardid = card.cardid;
-                                player.directgains([cardx], null, skill);
+                        onremove(player) {
+                            if (game.online) return;
+                            if (ui[`bolCardPileUpdate_${player.playerid}`]) {
+                                ui[`bolCardPileUpdate_${player.playerid}`].disconnect();
+                                delete ui[`bolCardPileUpdate_${player.playerid}`];
                             }
+                            const fun = player => {
+                                if (ui[`bolShiCaiShow_${player.playerid}`]) ui[`bolShiCaiShow_${player.playerid}`].hide();
+                            };
+                            if (player.isMine()) fun(player);
+                            else if (player.isOnline2()) player.send(fun, player);
                         },
                     },
                 },
