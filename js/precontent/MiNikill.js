@@ -552,7 +552,7 @@ const packs = function () {
             Mfight_lvmeng: ['male', 'wu', 4, ['minifightandu', 'minifightmingtan']],
             //隐
             Myin_xushu: ['male', 'wei', 3, ['miniyinyinxing', 'miniyinjujian']],
-            Myin_yuji: ['male', 'qun', '', ['miniyinyinming', 'miniyinhuozhong'], ['InitFilter:noZhuHp']],
+            Myin_yuji: ['male', 'qun', 0, ['miniyinyinming', 'miniyinhuozhong']],
             //焰
             Mfire_zhurong: ['female', 'shu', 4, ['minifirehuosi', 'minifirerongyan']],
         },
@@ -41798,17 +41798,31 @@ const packs = function () {
                     if (cards.length) player.loseToDiscardpile(cards);
                 },
                 audio: 'ext:活动武将/audio/skill:2',
-                trigger: { global: 'roundStart' },
-                forced: true,
-                locked: false,
+                trigger: {
+                    global: ['roundStart', 'gameStart'],
+                    player: ['enterGame', 'showCharacterAfter'],
+                },
+                filter(event, player, name) {
+                    if (event.name === 'showCharacter') return event.toShow?.some(name => name && lib.character[name]?.skills?.includes('miniyinyinming'));
+                    if (name === 'roundStart') return true;
+                    if (!player.node.hp.innerHTML.length) return false;
+                    let names = [player.name];
+                    if (player.name1 && !player.isUnseen(0)) names.push(player.name1);
+                    if (player.name2 && !player.isUnseen(1)) names.push(player.name2);
+                    return names.some(name => name && lib.character[name]?.skills?.includes('miniyinyinming'));
+                },
+                direct: true,
                 async content(event, trigger, player) {
+                    const roundStart = event.triggername === 'roundStart';
+                    if (roundStart) player.logSkill(event.name);
                     if (!!player.node.hp.innerHTML.length) {
                         game.broadcastAll(player => {
                             player.hp = player.maxHp = 0;
                             player.update();
                         }, player);
-                        game.log(player, '隐藏了体力值');
+                        if (roundStart) game.log(player, '隐藏了体力值');
                     }
+                    if (!roundStart) return;
                     const cards = player.getExpansions(event.name);
                     if (cards.length) await player.loseToDiscardpile(cards);
                     await player.draw(5);
