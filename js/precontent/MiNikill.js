@@ -42176,10 +42176,10 @@ const packs = function () {
                     const goon = info.compareOX(...types) > 0;
                     game.log(player, '的结果为', `#y${types[0].name}`);
                     game.log(target, '的结果为', `#y${types[1].name}`);
-                    lib.skill[event.name].$compareOX(player, list, target, ts);
+                    lib.skill[event.name].$compareOX(target, ts, player, list);
                     await game.delay(5);
-                    player.popup(goon ? '胜' : '负');
-                    target.popup(goon ? '负' : '胜');
+                    player.popup(goon ? '胜' : '负', goon ? 'wood' : 'fire');
+                    target.popup(goon ? '负' : '胜', goon ? 'fire' : 'wood');
                     game.broadcastAll(str => {
                         const dialog = ui.create.dialog(str);
                         dialog.classList.add("center");
@@ -42187,7 +42187,7 @@ const packs = function () {
                     }, `本次斗牛${get.translation(goon ? player : target)}获胜`);
                     game.log('本次', '#g斗牛', goon ? player : target, '获胜');
                     await game.delay(3);
-                    game.broadcastAll(ui.clear);
+                    game.broadcastAll(lib.skill[event.name].$compareOX_clear);
                     if (goon) {
                         game.broadcastAll((player, num) => {
                             player.hp = player.maxHp = num;
@@ -42213,9 +42213,58 @@ const packs = function () {
                     game.broadcast((player, cards1, target, cards2) => {
                         lib.skill.miniyindouniu.$compareOX(player, cards1, target, cards2);
                     }, player, cards1, target, cards2);
-                    const throwOne = function (owner, card, x, y, delay) {
+                    const throwOne = function (owner, card, [index, sum], y, delay) {
                         setTimeout(function () {
-                            const node = owner.$throwxy2(card, `calc(50% + ${x}px)`, `calc(50% + ${y}px)`, 'perspective(600px) rotateY(180deg)', true);
+                            const zoom = game.documentZoom || 1;
+                            const rect = card.getBoundingClientRect();
+                            const width = (rect.width || card.offsetWidth || 104) / zoom;
+                            const height = (rect.height || card.offsetHeight || 150) / zoom;
+                            let node, x = (index - (sum - 1) / 2) * (width * zoom + 5);
+                            if (window.decadeUI) {
+                                const bounds = decadeUI.boundsCaches.arena;
+                                if (!bounds.updated) bounds.update();
+                                const scale = bounds.cardScale;
+                                x = Math.round((bounds.width - bounds.cardWidth) / 2 + x);
+                                y = Math.round((bounds.height - bounds.cardHeight) / 2 + y);
+                                node = card.copy('thrown');
+                                node.classList.add('infohidden');
+                                node.classList.add('mini_ox');
+                                node.classList.remove('decade-card');
+                                node.style.background = '';
+                                node.style.transform = `translate(${x}px, ${y}px) scale(${scale}) perspective(600px) rotateY(180deg)`;
+                                ui.arena.appendChild(node);
+                                ui.thrown.push(node);
+                                const setion = ui.create.div('.cardsetion', get.cardsetion(owner), node);
+                                setion.style.setProperty('display', 'block', 'important');
+                                setTimeout(function () {
+                                    node.style.transition = 'all ease-in 0.3s';
+                                    node.style.transform = `translate(${x}px, ${y}px) scale(${scale}) perspective(600px) rotateY(270deg) translateX(52px)`;
+                                    node.listenTransition(function () {
+                                        node.classList.remove('infohidden');
+                                        if (card.classList.contains('decade-card')) {
+                                            node.classList.add('decade-card');
+                                            node.style.background = card.style.background;
+                                        }
+                                        else if (card.classList.contains('fullimage')) {
+                                            node.classList.add('fullimage');
+                                            if (card.style.backgroundImage) {
+                                                node.style.backgroundImage = card.style.backgroundImage;
+                                                node.style.backgroundSize = card.style.backgroundSize;
+                                            }
+                                            else node.style.background = card.style.background;
+                                        }
+                                        node.style.transition = 'all 0s';
+                                        ui.refresh(node);
+                                        node.style.transform = `translate(${x}px, ${y}px) scale(${scale}) perspective(600px) rotateY(-90deg) translateX(52px)`;
+                                        ui.refresh(node);
+                                        node.style.transition = '';
+                                        ui.refresh(node);
+                                        node.style.transform = `translate(${x}px, ${y}px) scale(${scale})`;
+                                    });
+                                }, 500);
+                                return;
+                            }
+                            node = owner.$throwxy2(card, `calc(50% + ${x - width / 2}px)`, `calc(50% + ${y - height / 2}px)`, 'perspective(600px) rotateY(180deg)', true);
                             if (lib.config.cardback_style !== 'default') {
                                 node.style.transitionProperty = 'none';
                                 ui.refresh(node);
@@ -42247,17 +42296,21 @@ const packs = function () {
                             node.listenTransition(onEnd02);
                         }, delay || 0);
                     };
-                    const getX = function (i, len) {
-                        return (i - (len - 1) / 2) * 90;
-                    };
-                    //别人向于吉发起挑战，所以是target的牌在上，player的牌在下
-                    for (let i = 0; i < cards2.length; i++) {
-                        throwOne(target, cards2[i], getX(i, cards2.length), -120, i * 80);
-                    }
                     for (let i = 0; i < cards1.length; i++) {
-                        throwOne(player, cards1[i], getX(i, cards1.length), 80, 300 + i * 80);
+                        throwOne(player, cards1[i], [i, cards1.length], 80, 300 + i * 80);
                     }
-                }
+                    for (let i = 0; i < cards2.length; i++) {
+                        throwOne(target, cards2[i], [i, cards2.length], -120, i * 80);
+                    }
+                },
+                //十周年UI我真服了
+                $compareOX_clear() {
+                    game.addVideo('uiClear');
+                    const nodes = [...document.getElementsByClassName('thrown')];
+                    for (const node of nodes) {
+                        if (!node.fixed) node.delete();
+                    }
+                },
             },
             miniyinhuozhong: {
                 audio: 'ext:活动武将/audio/skill:2',
@@ -42356,22 +42409,22 @@ const packs = function () {
                                 }
                             }
                             const hstype = info.getOXType(list);
-                            const goon = info.compareOX(hstype, tstype) > 0;
-                            game.log(target, '的结果为', `#y${hstype.name}`);
+                            const goon = info.compareOX(tstype, hstype) >= 0;
                             game.log(player, '的结果为', `#y${tstype.name}`);
-                            lib.skill.miniyindouniu.$compareOX(target, list, player, ts);
+                            game.log(target, '的结果为', `#y${hstype.name}`);
+                            lib.skill.miniyindouniu.$compareOX(player, ts, target, list);
                             await game.delay(5);
-                            target.popup(goon ? '胜' : '负');
-                            player.popup(goon ? '负' : '胜');
+                            player.popup(goon ? '胜' : '负', goon ? 'wood' : 'fire');
+                            target.popup(goon ? '负' : '胜', goon ? 'fire' : 'wood');
                             game.broadcastAll(str => {
                                 const dialog = ui.create.dialog(str);
                                 dialog.classList.add("center");
                                 setTimeout(() => dialog.close(), 1000);
-                            }, `本次斗牛${get.translation(goon ? target : player)}获胜`);
-                            game.log('本次', '#g斗牛', goon ? target : player, '获胜');
+                            }, `本次斗牛${get.translation(goon ? player : target)}获胜`);
+                            game.log('本次', '#g斗牛', goon ? player : target, '获胜');
                             await game.delay(3);
-                            game.broadcastAll(ui.clear);
-                            if (!goon) {
+                            game.broadcastAll(lib.skill.miniyindouniu.$compareOX_clear);
+                            if (goon) {
                                 win[0].addArray(list);
                                 win[1]++;
                             }
