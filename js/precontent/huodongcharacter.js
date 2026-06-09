@@ -409,9 +409,8 @@ const packs = function () {
                         init(player) {
                             if (game.online || ui[`bolCardPileUpdate_${player.playerid}`]) return;
                             const fun = player => {
-                                let dialog = ui[`bolShiCaiShow_${player.playerid}`], init = false;
+                                let dialog = ui[`bolShiCaiShow_${player.playerid}`];
                                 if (!dialog) {
-                                    init = true;
                                     dialog = ui[`bolShiCaiShow_${player.playerid}`] = ui.create.div(ui.window);
                                     dialog.owner = player;
                                     dialog.className = 'dialog nobutton scroll1 scroll2';
@@ -434,6 +433,15 @@ const packs = function () {
                                     const container = dialog.container = ui.create.div('.buttons', dialog);
                                     container.style.position = 'relative';
                                     container.classList.add('smallzoom');
+                                    const cards = get.itemtype(_status.pileTop) === 'card' ? [_status.pileTop] : [];
+                                    const buttons = Array.from(dialog.container.childNodes);
+                                    for (const card of buttons) dialog.container.removeChild(card);
+                                    dialog.style.width = `${cards.length > 0 ? '125' : '0'}px`;
+                                    dialog.buttons = ui.create.buttons(cards, 'card', dialog.container, true);
+                                    if (dialog.buttons[0]?.node?.gaintag) {
+                                        if (dialog.buttons[0].node.gaintag.innerHTML.length > 0) dialog.buttons[0].node.gaintag.innerHTML += ' ';
+                                        dialog.buttons[0].node.gaintag.innerHTML += '牌堆顶';
+                                    }
                                     dialog.updateDialog = function () {
                                         const owner = this.owner;
                                         if (!owner?.hasSkill('bolshicai') || !owner.hasSkill('bolshicai_effect')) return;
@@ -442,25 +450,20 @@ const packs = function () {
                                         for (const card of buttons) dialog.container.removeChild(card);
                                         dialog.style.width = `${cards.length > 0 ? '125' : '0'}px`;
                                         dialog.buttons = ui.create.buttons(cards, 'card', dialog.container, true);
-                                        if (dialog.buttons?.[0]?.node?.gaintag) {
+                                        if (dialog.buttons[0]?.node?.gaintag) {
                                             if (dialog.buttons[0].node.gaintag.innerHTML.length > 0) dialog.buttons[0].node.gaintag.innerHTML += ' ';
                                             dialog.buttons[0].node.gaintag.innerHTML += '牌堆顶';
                                         }
                                     };
-                                }
-                                requestAnimationFrame(() => {
-                                    dialog.updateDialog();
                                     requestAnimationFrame(() => {
-                                        dialog.show();
-                                        if (init) {
-                                            const rect = dialog.getBoundingClientRect();
-                                            const zoom = game.documentZoom || 1;
-                                            dialog.style.transform = '';
-                                            dialog.style.left = rect.left / zoom + 'px';
-                                            dialog.style.top = rect.top / zoom + 'px';
-                                        }
+                                        const rect = dialog.getBoundingClientRect();
+                                        const zoom = game.documentZoom || 1;
+                                        dialog.style.transform = '';
+                                        dialog.style.left = rect.left / zoom + 'px';
+                                        dialog.style.top = rect.top / zoom + 'px';
                                     });
-                                });
+                                }
+                                else dialog.style.display = '';
                                 ui[`bolCardPileUpdate_${player.playerid}`] = new MutationObserver(mutationsList => {
                                     for (const mutation of mutationsList) {
                                         if (mutation.type === 'childList') {
@@ -483,7 +486,7 @@ const packs = function () {
                                 delete ui[`bolCardPileUpdate_${player.playerid}`];
                             }
                             const fun = player => {
-                                if (ui[`bolShiCaiShow_${player.playerid}`]) ui[`bolShiCaiShow_${player.playerid}`].hide();
+                                if (ui[`bolShiCaiShow_${player.playerid}`]) ui[`bolShiCaiShow_${player.playerid}`].style.display = 'none';
                             };
                             if (player.isMine()) fun(player);
                             else if (player.isOnline2()) player.send(fun, player);
