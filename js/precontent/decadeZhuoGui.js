@@ -741,9 +741,9 @@ const packs = function () {
                 enable: 'phaseUse',
                 usable: 1,
                 filter(event, player) {
-                    return game.hasPlayer(current => get.info('ZGhuiyun').filterTatget(null, player, current))
+                    return game.hasPlayer(current => get.info('ZGhuiyun').filterTarget(null, player, current))
                 },
-                filterTatget(card, player, target) {
+                filterTarget(card, player, target) {
                     return player.getEnemies().includes(target) && target.hasCards('h');
                 },
                 async content(event, trigger, player) {
@@ -755,10 +755,10 @@ const packs = function () {
                         const names = result.cards.map(card => get.name(card)).toUniqued();
                         result = await player.chooseToDiscard(card => {
                             return get.event().namesx.includes(get.name(card));
-                        }, `你弃置一张满足条件的牌对${get.translation(target)}造成1点伤害`).set('namesx', names).set('ai', card => {
+                        }, `晦运：你可以弃置一张满足条件的牌对${get.translation(target)}造成1点伤害`).set('namesx', names).set('ai', card => {
                             if (get.event().goon) return 1;
                             return 0;
-                        }).set('goon'.get.damageEffect(target, player, player) > 0).forResult();
+                        }).set('goon', get.damageEffect(target, player, player) > 0).forResult();
                         if (result?.bool) {
                             await target.damage();
                         }
