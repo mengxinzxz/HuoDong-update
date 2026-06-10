@@ -832,7 +832,7 @@ export async function precontent(bilibilicharacter) {
                 get data() {
                     return [
                         'bugfix、素材补充、技能调整',
-                        '添加在线更新功能（目前只支持整包更新，且需要挂梯子，所以基本上不太好用）',
+                        '添加在线更新功能（默认根据日期功能执行不同长度文件的增量更新，如果版本为最新则改为全量更新，仓库挂在Github，需要挂梯子）',
                         ...(() => {
                             const map = _status.HDWJ_ChangeLog_character ?? {};
                             return Object.keys(map).map(ext => {

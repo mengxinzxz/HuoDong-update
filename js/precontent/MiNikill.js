@@ -42176,7 +42176,7 @@ const packs = function () {
                     const goon = info.compareOX(...types) > 0;
                     game.log(player, '的结果为', `#y${types[0].name}`);
                     game.log(target, '的结果为', `#y${types[1].name}`);
-                    lib.skill[event.name].$compareOX(target, ts, player, list);
+                    lib.skill[event.name].$compareOX(player, list, target, ts);
                     await game.delay(5);
                     player.popup(goon ? '胜' : '负', goon ? 'wood' : 'fire');
                     target.popup(goon ? '负' : '胜', goon ? 'fire' : 'wood');
@@ -42297,10 +42297,10 @@ const packs = function () {
                         }, delay || 0);
                     };
                     for (let i = 0; i < cards1.length; i++) {
-                        throwOne(player, cards1[i], [i, cards1.length], 80, 300 + i * 80);
+                        throwOne(player, cards1[i], [i, cards1.length], -120, i * 80);
                     }
                     for (let i = 0; i < cards2.length; i++) {
-                        throwOne(target, cards2[i], [i, cards2.length], -120, i * 80);
+                        throwOne(target, cards2[i], [i, cards2.length], 80, 300 + i * 80);
                     }
                 },
                 //十周年UI我真服了
