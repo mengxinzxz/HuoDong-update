@@ -3785,6 +3785,10 @@
             "size": 134240
         },
         {
+            "path": "image/character/bilibili_zhugeliang.jpg",
+            "size": 92467
+        },
+        {
             "path": "image/character/bol_sp_huaxin.jpg",
             "size": 122465
         },
@@ -7430,7 +7434,7 @@
         },
         {
             "path": "info.json",
-            "size": 324
+            "size": 333
         },
         {
             "path": "js/config.js",
@@ -7474,11 +7478,11 @@
         },
         {
             "path": "js/precontent/huodongcharacter.js",
-            "size": 886690
+            "size": 906214
         },
         {
             "path": "js/precontent/index.js",
-            "size": 44451
+            "size": 43286
         },
         {
             "path": "js/precontent/MiNikill_sight.js",

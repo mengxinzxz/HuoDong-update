@@ -10,7 +10,7 @@ const packs = function () {
                 CLongZhou: ['lz_sufei', 'lz_tangzi', 'lz_liuqi', 'lz_huangquan'],
                 Chuodong: ['bilibili_shengxunyu', 'bilibili_Firewin', 'bilibili_jinglingqiu', 'bilibili_suixingsifeng', 'bilibili_Emptycity', 'bilibili_thunderlei', 'bilibili_lonelypatients', 'bilibili_ningjingzhiyuan', 'bilibili_xizhicaikobe'],
                 CDormitory: ['bilibili_yirenyixiaojian', 'bilibili_longjiuzhen', 'bilibili_diandian', 'bilibili_murufengchen', 'bilibili_wuzhuwanshui', 'bilibili_kuangshen', 'bilibili_yanjing', ...Array.from({ length: 3 }).map((_, index) => `bilibili_yanjing_friend${index + 1}`), 'bilibili_xiaoyaoruyun', 'bilibili_shuijiaobuboli'],
-                Cothers: ['bilibili_peixiu', 'bilibili_caocao', 'bilibili_xiahoudun', 'bilibili_liuguanzhang', 'bilibili_gaowang', 'bilibili_simayi', 'old_dongxie', 'bilibili_sunhanhua', 'bilibili_zhoutaigong', 'bilibili_zhouxiaomei', 'bilibili_caifuren', 'bilibili_zhengxuan', 'bilibili_sp_xuyou', 'old_zuoci', 'bilibili_kuailiangkuaiyue', 'bilibili_wuqiao', 'bilibili_daxiao', 'bilibili_xushao', 'bilibili_shen_guojia', 'bilibili_re_xusheng', 'bilibili_zhangrang', 'bilibili_litiansuo', 'decade_huangwudie', 'bilibili_huanggai', 'bilibili_ekeshaoge', 'bilibili_guanning', 'bilibili_wangwang', 'diy_lvmeng'],
+                Cothers: ['bilibili_zhugeliang', 'bilibili_peixiu', 'bilibili_caocao', 'bilibili_xiahoudun', 'bilibili_liuguanzhang', 'bilibili_gaowang', 'bilibili_simayi', 'old_dongxie', 'bilibili_sunhanhua', 'bilibili_zhoutaigong', 'bilibili_zhouxiaomei', 'bilibili_caifuren', 'bilibili_zhengxuan', 'bilibili_sp_xuyou', 'old_zuoci', 'bilibili_kuailiangkuaiyue', 'bilibili_wuqiao', 'bilibili_daxiao', 'bilibili_xushao', 'bilibili_shen_guojia', 'bilibili_re_xusheng', 'bilibili_zhangrang', 'bilibili_litiansuo', 'decade_huangwudie', 'bilibili_huanggai', 'bilibili_ekeshaoge', 'bilibili_guanning', 'bilibili_wangwang', 'diy_lvmeng'],
                 Cothers_dualside: ['bilibili_wangtao', 'bilibili_wangyue', 'bilibili_x_wangtao', 'bilibili_x_wangyue', 'bilibili_daqiao', 'bilibili_xiaoqiao', 'bilibili_x_daqiao', 'bilibili_x_xiaoqiao', 'bilibili_ahuinan', 'bilibili_dongtuna', 'bilibili_x_ahuinan', 'bilibili_x_dongtuna'],
                 CXuanDie: ['bfake_zhanghua', 'bfake_hanshao', 'bfake_hanrong', 'bilibili_adong', 'bfake_jiananfeng', 'bfake_shen_zhangjiao', 'bfake_shen_zhangfei', 'bfake_shen_jiaxu', 'bfake_huanwen', 'bfake_miheng'],
             },
@@ -70,6 +70,8 @@ const packs = function () {
             bilibili_yirenyixiaojian: ['male', 'key', '1/Infinity', ['bilibili_ranzhi', 'bilibili_wuying', 'bilibili_jiabin'], ['clan:宿舍群|肘击群|活动群', 'name:吴|新建']],
             bilibili_caocao: ['male', 'qun', 4, ['bilibili_hanhuang'], ['border:wei']],
             bilibili_peixiu: ['male', 'wei', 4, ['bilibili_maozhu', 'bilibili_jinlan', 'bilibili_caifeng'], ['character:ol_peixiu', 'forbidai', 'border:jin', 'name:裴|秀']],
+            bilibili_zhugeliang: ['male', 'shu', 3, ['bilibili_lianbing'], ['name:诸葛|亮']],
+            bilibili_shibing: ['male', 'shu', Infinity, ['bilibili_tongshuai'], ['name:null|null', 'character:haopu', 'unseen']],
             //双面武将--正面
             bilibili_wangtao: ['female', 'shu', 3, ['huguan', 'yaopei', 'dualside'], ['dualside:bilibili_x_wangyue', 'character:wangtao', 'die:wangtao']],
             bilibili_wangyue: ['female', 'shu', 3, ['huguan', 'mingluan', 'dualside'], ['dualside:bilibili_x_wangtao', 'character:wangyue', 'tempname:wangyue', 'die:wangyue']],
@@ -133,6 +135,7 @@ const packs = function () {
             bilibili_longjiuzhen: '美少爱蒂朵，赛尔号著名宇宙圣皇。拥有极其精彩的操作，在与肘击群群主牢宁的赛尔号大战中经常因为手法和操作而赢得对战，现为肘击群管理之一，虽然自诩正人君子，实则抽象万分。蒂朵唯一指定老公。',
             bilibili_liuguanzhang: '为对抗风系大法师丁真，三英齐聚餐厅共议对策并向丁真寄送挑战书之事。虽三英为讨伐丁真之事制定了各种不同的策略，但因丁真过于强大，最终以失败告终。',
             bilibili_yirenyixiaojian: `<a href="https://space.bilibili.com/81796729"><img style=width:160px src=${lib.assetURL}extension/活动武将/image/skin/bilibili_yirenyixiaojian/全叠建哥.jpg></a>`,
+            bilibili_zhugeliang: '你拾它作甚！！！你今天拾起来，他明天还要来撒野的！！！！！！',
         },
         characterFilter: {
             bilibili_sp_xuyou(mode) {
@@ -261,6 +264,7 @@ const packs = function () {
             }),
             bilibili_longjiuzhen: '赛蛆',
             bilibili_yirenyixiaojian: '肘击群大西王',
+            bilibili_zhugeliang: '孔明何等人物？只要有钱粮在手，他马上会变出十万精兵来！',
         },
         characterSubstitute: {
             bilibili_gaowang: [
@@ -13736,6 +13740,290 @@ const packs = function () {
                     if (card) await player.gain(card, 'draw');
                 },
             },
+            //奶龙
+            bilibili_lianbing: {
+                nobracket: true,
+                trigger: {
+                    global: 'phaseBefore',
+                    player: ['enterGame', 'changeSkillsAfter'],
+                },
+                filter(event, player) {
+                    if (event.name === 'changeSkills' && !event.addSkill.includes('bilibili_lianbing')) return false;
+                    return event.name !== 'phase' || game.phaseNumber === 0;
+                },
+                forced: true,
+                locked: false,
+                async content(event, trigger, player) {
+                    if (!_status.characterlist) game.initCharacterList();
+                    let list = _status.characterlist.slice();
+                    for (const target of [...game.players, ...game.dead]) {
+                        if (target !== player) list.push(get.nameList(target));
+                    }
+                    list = list.filter(name => {
+                        if (!(lib.character[name]?.skills ?? []).length) return false;
+                        return name !== 'bilibili_zhugeliang' && (get.rawName(name) === '诸葛亮' || get.rawName2(name) === '诸葛亮');
+                    });
+                    if (list.length > 0) {
+                        const name = list.randomGet();
+                        player.flashAvatar(event.name, name);
+                        await player.addAdditionalSkills(event.name, lib.character[name].skills);
+                    }
+                    const target = await game.addPlayerOL(player, 'bilibili_shibing', null, true, { animate: false });
+                    if (get.itemtype(target) !== 'player') return;
+                    target.directgain(get.cards(4));
+                    for (let i = 1; i <= 5; i++) {
+                        while (target.hasEmptySlot(i)) {
+                            const card = get.cardPile2(card => get.subtypes(card).includes(`equip${i}`) && target.canEquip(card));
+                            if (card) await target.equip(card);
+                            else break;
+                        }
+                    }
+                    target.addSkill('bilibili_tongshuai_hp');
+                    game.addGlobalSkill('autoswap');
+                    game.broadcastAll((player, target) => {
+                        target.bilibili_lianbingOwner = player;
+                        target._trueMe = player;
+                        target.identity = ' ';
+                        const bgImage = player.node?.avatar?.style?.backgroundImage;
+                        if (bgImage) {
+                            const matches = bgImage.matchAll(/url\(['']?([^'')]+)['']?\)/g);
+                            let onload = false;
+                            for (const match of matches) {
+                                const src = match[1];
+                                if (match[1]) {
+                                    const testImg = new Image();
+                                    testImg.onload = function () {
+                                        if (onload) return;
+                                        onload = true;
+                                        const node = target.node.identity.firstChild;
+                                        node.innerHTML = '';
+                                        node.style.width = '30px';
+                                        node.style.height = '30px';
+                                        node.style.backgroundImage = `url(${src})`;
+                                        node.style.backgroundSize = '200% auto';
+                                        node.style.backgroundPosition = '50% 10%';
+                                        node.style.borderRadius = '50%';
+                                    };
+                                    testImg.src = src;
+                                    if (onload) break;
+                                }
+                            }
+                        }
+                        if (target.ai) {
+                            target.ai.identity_mark = 'finished';
+                            if (typeof player.ai?.shown === 'number') target.ai.shown = player.ai.shown;
+                        }
+                        if (typeof player.side == 'boolean') target.side = player.side;
+                        target.ai.modAttitudeFrom = function (from, to) {
+                            if (to == from.bilibili_lianbingOwner) return 114514;
+                            return get.attitude(from.bilibili_lianbingOwner || from, to.bilibili_lianbingOwner || to);
+                        };
+                        target.ai.modAttitudeTo = function (from, to, att) {
+                            if (from == to.bilibili_lianbingOwner) return 114514;
+                            return get.attitude(from.bilibili_lianbingOwner || from, to.bilibili_lianbingOwner || to);
+                        };
+                        target.updates ??= [];
+                        target.updates.push(function (player) {
+                            const hp = player.node.hp;
+                            if (hp) {
+                                const skill = 'bilibili_tongshuai', num = player.countMark(skill);
+                                hp.innerHTML = `${num}<br><img style=width:20px src=${lib.assetURL}image/card/danqi_hufu.png>`;
+                            }
+                        });
+                        target.storage.bilibili_tongshuai = 1;
+                        target.update();
+                        if (_status._bilibili_lianbingOwner) return;
+                        _status.bilibili_lianbingOwner = true;
+                        //检测游戏胜负
+                        if (typeof game.checkResult === 'function') {
+                            const origin_checkResult = game.checkResult;
+                            game.checkResult = function () {
+                                if (_status.event?.name === 'die' && _status.event.player?.bilibili_lianbingOwner) return;
+                                const player = game.me._trueMe || game.me;
+                                if (game.players.filter(i => i !== player).every(i => i.bilibili_lianbingOwner === (player.bilibili_lianbingOwner || player))) game.over(true);
+                                return origin_checkResult.apply(this, arguments);
+                            };
+                        }
+                        if (typeof game.checkOnlineResult === 'function') {
+                            const origin_checkOnlineResult = game.checkOnlineResult;
+                            game.checkOnlineResult = function (player) {
+                                if (_status.event?.name === 'die' && _status.event.player?.bilibili_lianbingOwner) return;
+                                if (game.players.filter(i => i !== player).every(i => i.bilibili_lianbingOwner === (player.bilibili_lianbingOwner || player))) return true;
+                                return origin_checkOnlineResult.apply(this, arguments);
+                            };
+                        }
+                        //敌友判定
+                        //实际上只是友方，敌方不用写
+                        if (typeof lib.element.player.getFriends === 'function') {
+                            const origin_getFriends = lib.element.player.getFriends;
+                            const getFriends = function (func, includeDie) {
+                                const player = this;
+                                return [
+                                    ...origin_getFriends.apply(this, arguments),
+                                    ...game[includeDie ? 'filterPlayer2' : 'filterPlayer'](target => {
+                                        return (target.bilibili_lianbingOwner || target) === (player.bilibili_lianbingOwner || player);
+                                    }),
+                                ].filter(i => i !== player || func === true).unique().sortBySeat(player);
+                            };
+                            lib.element.player.getFriends = getFriends;
+                            [...game.players, ...game.dead].forEach(i => (i.getFriends = getFriends));
+                        }
+                        if (typeof lib.element.player.isFriendOf === 'function') {
+                            const origin_isFriendOf = lib.element.player.isFriendOf;
+                            const isFriendOf = function (player) {
+                                if ((this.bilibili_lianbingOwner || this) === (player.bilibili_lianbingOwner || player)) return true;
+                                return origin_isFriendOf.apply(this, arguments);
+                            };
+                            lib.element.player.isFriendOf = isFriendOf;
+                            [...game.players, ...game.dead].forEach(i => (i.isFriendOf = isFriendOf));
+                        }
+                        if (typeof lib.element.player.getEnemies === 'function') {
+                            const origin_getEnemies = lib.element.player.getEnemies;
+                            const getEnemies = function (func, includeDie) {
+                                if (this.bilibili_lianbingOwner) return this.bilibili_lianbingOwner.getEnemies(func, includeDie);
+                                else {
+                                    const player = this;
+                                    return [
+                                        ...origin_getEnemies.apply(this, arguments),
+                                        ...game[includeDie ? 'filterPlayer2' : 'filterPlayer'](target => {
+                                            return origin_getEnemies.apply(this, arguments).includes(target.bilibili_lianbingOwner || target);
+                                        }),
+                                    ].filter(i => player != (i.bilibili_lianbingOwner || i)).unique().sortBySeat(player);
+                                }
+                            };
+                            lib.element.player.getEnemies = getEnemies;
+                            [...game.players, ...game.dead].forEach(i => (i.getEnemies = getEnemies));
+                        }
+                    }, player, target);
+                    player.addSkill(`${event.name}_clear`);
+                    player.markAuto(event.name, [target]);
+                },
+                group: 'bilibili_lianbing_bingfu',
+                subSkill: {
+                    bingfu: {
+                        trigger: {
+                            player: 'loseAfter',
+                            global: ['loseAsyncAfter', 'equipAfter', 'addJudgeAfter', 'gainAfter', 'addToExpansionAfter'],
+                        },
+                        filter(event, player) {
+                            if (!player.getStorage('bilibili_lianbing').some(target => target.isAlive())) return false;
+                            return event.getl?.(player)?.cards2?.some(card => get.suit(card, player) === 'diamond' || get.suit(card, player) === 'club');
+                        },
+                        forced: true,
+                        logTarget(event, player) {
+                            return player.getStorage('bilibili_lianbing').filter(target => target.isAlive()).sortBySeat();
+                        },
+                        async content(event, trigger, player) {
+                            const num = trigger.getl(player).cards2.filter(card => get.suit(card, player) === 'diamond' || get.suit(card, player) === 'club').length;
+                            for (const target of event.targets) {
+                                target.addMark('bilibili_tongshuai', num);
+                                target.update();
+                            }
+                        },
+                    },
+                    clear: {
+                        charlotte: true,
+                        trigger: { player: 'die' },
+                        filter(event, player) {
+                            return player.getStorage('bilibili_lianbing').some(target => target.isAlive());
+                        },
+                        forced: true,
+                        forceDie: true,
+                        popup: false,
+                        async content(event, trigger, player) {
+                            for (const target of player.getStorage('bilibili_lianbing')) {
+                                if (target.isAlive()) {
+                                    await target.die().set('includeOut', true);
+                                    await game.removePlayerOL(target, { animate: false });
+                                }
+                            }
+                        },
+                    },
+                },
+            },
+            //士兵
+            bilibili_tongshuai: {
+                trigger: { global: 'dieAfter' },
+                forced: true,
+                popup: false,
+                async content(event, trigger, player) {
+                    if (!_status._bilibili_tongshuai_list) {
+                        if (!_status.characterlist) game.initCharacterList();
+                        game.broadcastAll(() => {
+                            _status._bilibili_tongshuai_list = _status.characterlist.map(i => lib.character[i]?.skills ?? []).unique();
+                            _status._bilibili_tongshuai_list = _status._bilibili_tongshuai_list.filter(skill => {
+                                const info = lib.skill[skill];
+                                return info && !info.charlotte && !!(lib.translate[`${skill}_info`] ?? '').length;
+                            });
+                        });
+                    }
+                    let list = _status._bilibili_tongshuai_list.slice();
+                    list.removeArray(player.additionalSkills[event.name] ?? []);
+                    for (const target of [...game.players, ...game.dead]) list.removeArray(target.getSkills(null, null, false));
+                    if (list.length) {
+                        const skill = list.randomGet();
+                        await player.addAdditionalSkills(event.name, skill, true);
+                        if (player.additionalSkills[event.name].length > 2) {
+                            const result = await player.chooseButton([
+                                `${get.translation(event.name)}：技能槽已满，请选择你要失去的技能`,
+                                [player.additionalSkills[event.name].map(skill => {
+                                    return [
+                                        skill,
+                                        '<div class="popup text" style="width:calc(100% - 10px);display:inline-block"><div class="skill">【' + get.translation(skill) + '】</div><div>' + lib.translate[skill + '_info'] + '</div></div>',
+                                    ];
+                                }), 'textbutton'],
+                            ], true, player.additionalSkills[event.name].length - 2).set('ai', button => {
+                                return -get.skillRank(button.link);
+                            }).forResult();
+                            if (result?.bool && result.links?.length) await player.removeSkills(result.links);
+                        }
+                    }
+                },
+                subSkill: {
+                    hp: {
+                        charlotte: true,
+                        trigger: { player: ['changeHpBefore', 'addMark', 'removeMark'] },
+                        filter(event, player) {
+                            if (event.name === 'changeHp') return true;
+                            if (event.markName !== 'bilibili_tongshuai') return false;
+                            if (event.name === 'addMark') return player.hasMark('bilibili_tongshuai') && player.isOut();
+                            return !player.hasMark('bilibili_tongshuai') && player.isIn();
+                        },
+                        forced: true,
+                        popup: false,
+                        forceOut: true,
+                        includeOut: true,
+                        async content(event, trigger, player) {
+                            switch (trigger.name) {
+                                case 'changeHp':
+                                    trigger.setContent(lib.skill.bilibili_tongshuai.changeHp);
+                                    break;
+                                case 'addMark':
+                                    game.broadcastAll(player => player.classList.remove('out'), player);
+                                    break;
+                                case 'removeMark':
+                                    game.broadcastAll(player => player.classList.add('out'), player);
+                                    break;
+                            }
+                        },
+                    },
+                },
+                async changeHp(event, trigger, player) {
+                    event.originalMaxHp = player.maxHp;
+                    event.changedMaxHp = event.changedHp = 0;
+                    game.getGlobalHistory().changeHp.push(event);
+                    if (event.num < 0 && player.hujia > 0 && event.getParent().name === 'damage' && !player.hasSkillTag('nohujia') && !event.getParent().nohujia) {
+                        event.hujia = Math.min(-event.num, player.hujia);
+                        event.getParent().hujia = event.hujia;
+                        event.num += event.hujia;
+                        player.changeHujia(-event.hujia).type = 'damage';
+                    }
+                    if (event.num < 0) {
+                        player.removeMark('bilibili_tongshuai', -event.num);
+                        player.update();
+                    }
+                },
+            },
         },
         dynamicTranslate: {
             bilibili_xueji(player) {
@@ -14451,6 +14739,18 @@ const packs = function () {
             bilibili_jinlan_info: '当你于回合内使用♠/♥/♣/♦牌时，你可以绘制东/西/南/北方位的所有“地图”。',//你绘制一处城市后，执行对应城市的效果。
             bilibili_caifeng: '采风',
             bilibili_caifeng_info: '出牌阶段，你可以弃置两张牌，然后从牌堆或弃牌堆中随机获得一张其余花色的牌。',
+            bilibili_zhugeliang: '诸葛亮',
+            bilibili_zhugeliang_ab: '新三奶龙',
+            bilibili_lianbing: '炼兵术',
+            bilibili_lianbing_info: '登场，随机获得一个“诸葛亮”的技能，在下家召唤一个与你胜利条件相同且由你操纵的士兵。当你失去♦♣牌后，士兵获得等量兵符。',
+            bilibili_lianbing_append: `<span style='font-family:yuanli'>关于士兵：${[
+                '士兵初始拥有满装备，4手牌与1兵符',
+                '士兵扣减体力改为失去等量兵符，没有兵符的士兵视为移出游戏',
+                '士兵拥有两个技能槽，场上有角色死亡后，士兵随机获得一个场上角色未拥有的技能',
+                '士兵召唤者阵亡后士兵阵亡',
+            ].map(i => `<li>${i}`).join('<br>')}</span>`,
+            bilibili_shibing: '士兵',
+            bilibili_tongshuai: '兵符',
         },
     };
     for (const i in huodongcharacter.character) {
