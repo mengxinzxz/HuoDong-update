@@ -9607,7 +9607,7 @@ const packs = function () {
                                                 node.style.width = '30px';
                                                 node.style.height = '30px';
                                                 node.style.backgroundImage = `url(${src})`;
-                                                node.style.backgroundSize = '120% auto';
+                                                node.style.backgroundSize = '200% auto';
                                                 node.style.backgroundPosition = '50% 10%';
                                                 node.style.borderRadius = '50%';
                                             };
@@ -9691,7 +9691,8 @@ const packs = function () {
                                     [...game.players, ...game.dead].forEach(i => (i.getEnemies = getEnemies));
                                 }
                             }, player, fellow);
-                            fellow.directgain(get.cards(4));
+                            fellow.$draw(2 - i);
+                            fellow.directgain(get.cards(2 - i));
                         }
                     }
                     else await player.draw(2);
@@ -13840,6 +13841,7 @@ const packs = function () {
                             [...game.players, ...game.dead].forEach(i => (i.getEnemies = getEnemies));
                         }
                     }, player, target);
+                    target.$draw(4);
                     target.directgain(get.cards(4));
                     for (let i = 1; i <= 5; i++) {
                         while (target.hasEmptySlot(i)) {
