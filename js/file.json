@@ -4157,6 +4157,10 @@
             "size": 93137
         },
         {
+            "path": "image/character/Mbaby_dc_sb_liuxie.jpg",
+            "size": 149272
+        },
+        {
             "path": "image/character/Mbaby_dc_sb_lusu.jpg",
             "size": 130606
         },
@@ -7482,7 +7486,7 @@
         },
         {
             "path": "js/precontent/index.js",
-            "size": 43286
+            "size": 43368
         },
         {
             "path": "js/precontent/MiNikill_sight.js",
@@ -7490,7 +7494,7 @@
         },
         {
             "path": "js/precontent/MiNikill.js",
-            "size": 2698802
+            "size": 2705162
         },
         {
             "path": "js/precontent/MX_catcatcup.js",
