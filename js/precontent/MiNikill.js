@@ -32053,9 +32053,11 @@ const packs = function () {
             //刘协
             minitiancheng: {
                 audio: 'dcsbtiancheng',
+                inherit: 'dcsbtiancheng',
                 filter(event, player) {
                     return game.hasPlayer(target => target !== player && event.result.targets.includes(target));
                 },
+                zhuSkill: false,
                 async cost(event, trigger, player) {
                     event.result = await player.chooseTarget(get.prompt2(event.skill), (card, player, target) => {
                         return target !== player && get.event().getTrigger().result.targets.includes(target);
@@ -44287,6 +44289,7 @@ const packs = function () {
             Mbaby_zhangren: '欢杀张任',
             Mbaby_dongguiren: '欢杀董贵人',
             Mbaby_yj_ganning: '欢杀星甘宁',
+            Mbaby_dc_sb_liuxie: '欢杀谋刘协',
             miniweidi: '伪帝',
             miniweidi_info: '弃牌阶段结束时，你可以将其中一张弃置的牌交给一名其他角色。',
             minimingce: '明策',
