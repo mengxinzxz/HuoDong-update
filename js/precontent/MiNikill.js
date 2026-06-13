@@ -6819,7 +6819,6 @@ const packs = function () {
                                 }).set('goon', get.attitude(target, player) * (player.getUseValue(viewAs) || 1) >= 1).forResult();
                                 if (result.bool) {
                                     const card = result.cards[0];
-                                    await game.delayex();
                                     const next = target.loseToDiscardpile(card, ui.cardPile);
                                     next.log = false;
                                     if (get.position(card) === 'e') {
@@ -6832,6 +6831,7 @@ const packs = function () {
                                         game.log(target, '将一张牌置于了牌堆底');
                                     }
                                     await next;
+                                    await game.delay(0.5);
                                     game.broadcastAll(viewAs => {
                                         lib.skill.minishizong_backup2.viewAs = viewAs;
                                     }, lib.skill.minishizong_backup.viewAs);
@@ -27309,8 +27309,9 @@ const packs = function () {
                         prompt: '令一名其他角色摸一张牌，然后你将势力变更至与其相同并从牌堆中获得一张【杀】',
                         usable: 1,
                         async content(event, trigger, player) {
-                            await event.target.draw();
-                            if (event.target.group !== player.group) await player.changeGroup(target.group);
+                            const target = event.target;
+                            await target.draw();
+                            if (target.group !== player.group) await player.changeGroup(target.group);
                             const card = get.cardPile2('sha');
                             if (card) await player.gain(card, 'gain2');
                         },

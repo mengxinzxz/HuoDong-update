@@ -403,58 +403,47 @@ const packs = function () {
                 audio: 'ext:活动武将/audio/skill:true',
                 trigger: { global: 'phaseBefore', player: ['enterGame', 'phaseZhunbeiBegin'] },
                 filter(event, player) {
-                    var list = game.filterPlayer(function (current) {
-                        if (current == player) return false;
-                        return get.mode() == 'identity' || current.isEnemyOf(player);
-                    });
-                    return list.length && (event.name != 'phase' || game.phaseNumber == 0);
+                    if (event.name === 'phaseZhunbei') {
+                        return game.hasPlayer(target => target.hasMark('qin_lianheng'));
+                    }
+                    if (!game.hasPlayer(target => {
+                        if (target === player) return false;
+                        return get.mode() === 'identity' || current.isEnemyOf(player);
+                    })) return false;
+                    return event.name !== 'phase' || game.phaseNumber === 0;
                 },
                 forced: true,
-                content() {
-                    'step 0'
-                    var targets = game.filterPlayer(function (current) {
-                        if (current == player) return false;
-                        return get.mode() == 'identity' || current.isEnemyOf(player);
-                    });
-                    event.targets = targets;
-                    if (trigger.name == 'phaseZhunbei') {
-                        for (var target of game.players) {
-                            if (target.hasSkill('qin_lianheng_mark')) {
-                                player.line(target);
-                                target.removeSkill('qin_lianheng_mark');
-                            }
+                async content(event, trigger, player) {
+                    if (trigger.name === 'phaseZhunbei') {
+                        for (const target of game.filterPlayer()) {
+                            if (target.hasMark(event.name)) target.clearMark(event.name);
                         }
-                        if (targets.length < 2) event.finish();
                     }
-                    'step 1'
-                    var target = targets.randomGet();
-                    player.line(target);
-                    target.addSkill('qin_lianheng_mark');
+                    const targets = game.filterPlayer(target => {
+                        if (target === player) return false;
+                        return get.mode() === 'identity' || current.isEnemyOf(player);
+                    });
+                    if (targets.length >= (1 + (trigger.name === 'phaseZhunbei'))) {
+                        const target = targets.randomGet();
+                        player.line(target);
+                        target.addMark(event.name, 1);
+                    }
                 },
+                marktext: '横',
+                intro: {
+                    name2: '横',
+                    content: () => `不能对拥有【连横】的角色${get.mode() === 'identity' ? '' : '及其友方角色'}${game.lianhenged ? '和已横置角色' : ''}使用牌`,
+                },
+                global: 'qin_lianheng_global',
                 subSkill: {
-                    mark: {
-                        init: (player) => game.log(player, '获得了', '#g“横”', '标记'),
-                        onremove: (player) => game.log(player, '移去了', '#g“横”', '标记'),
-                        charlotte: true,
+                    global: {
                         mod: {
                             playerEnabled(card, player, target) {
-                                if (game.hasPlayer(function (current) {
-                                    return current.hasSkill('qin_lianheng') && ((get.mode() == 'identity' && current == target) || (get.mode() != 'identity' && target.isFriendOf(current)));
-                                }) || (target.isLinked() && game.lianhenged)) return false;
-                            },
-                        },
-                        marktext: '横',
-                        mark: true,
-                        intro: {
-                            content() {
-                                if (get.mode() == 'identity') {
-                                    if (game.lianhenged) return '不能对拥有【连横】的角色和已横置角色使用牌';
-                                    return '不能对拥有【连横】的角色使用牌';
-                                }
-                                else {
-                                    if (game.lianhenged) return '不能对拥有【连横】的角色的友方角色和已横置角色使用牌';
-                                    return '不能对拥有【连横】的角色的友方角色使用牌';
-                                }
+                                if (!player.hasMark('qin_lianheng')) return;
+                                if (game.hasPlayer(current => {
+                                    if (!current.hasSkill('qin_lianheng')) return false;
+                                    return current === target || (get.mode() !== 'identity' && target.isFriendOf(current)) || (target.isLinked() && game.lianhenged);
+                                })) return false;
                             },
                         },
                     },
@@ -534,40 +523,46 @@ const packs = function () {
                 audio: 'ext:活动武将/audio/skill:true',
                 trigger: { target: 'useCardToTarget' },
                 filter(event, player) {
-                    return event.card.name == 'sha' && game.hasPlayer(function (current) {
-                        return current != player && current != event.player && lib.filter.targetInRange(event.card, event.player, current);
+                    return event.card.name === 'sha' && game.hasPlayer(current => {
+                        return current !== player && current !== event.player && lib.filter.targetInRange(event.card, event.player, current);
                     });
                 },
                 forced: true,
                 logTarget: 'player',
-                content() {
-                    'step 0'
-                    trigger.player.chooseToDiscard('戏楚：弃置一张点数为6的牌，或令' + get.translation(player) + '将此【杀】转移', function (card) {
-                        return get.number(card) == 6;
-                    }).ai = function (card) { return 100 - get.value(card) };
-                    'step 1'
-                    if (!result.bool) {
-                        player.chooseTarget(`将${get.translation(trigger.card)}转移给${get.translation(trigger.player)}攻击范围内的一名角色`, function (card, player, target) {
-                            var trigger = _status.event.getTrigger();
-                            return target != player && target != trigger.player && !trigger.targets.includes(target) && lib.filter.targetInRange(trigger.card, trigger.player, target)
-                        }, true).set('ai', function (target) {
-                            const event = get.event(), player = get.player(), trigger = event.getTrigger();
-                            return get.effect(target, trigger.card, trigger.player, player, player);
+                async content(event, trigger, player) {
+                    const result2 = await trigger.player.chooseToDiscard(`${get.translation(event.name)}：弃置一张点数为6的牌，或令${get.translation(player)}将此【杀】转移`, card => {
+                        return get.number(card) === 6;
+                    }, 'he').set('ai', card => {
+                        const player = get.player(), trigger = get.event().getTrigger();
+                        const targets = game.filterPlayer(target => {
+                            return target !== player && target !== trigger.target && !trigger.targets.includes(target) && lib.filter.targetInRange(trigger.card, trigger.player, target);
                         });
-                    }
-                    else event.finish();
-                    'step 2'
-                    if (result.bool) {
-                        player.line(result.targets[0]);
-                        trigger.targets[trigger.targets.indexOf(player)] = result.targets[0];
-                        game.log(result.targets[0], '成为了', trigger.card, '的新目标')
+                        if (targets.every(target => get.effect(target, trigger.card, trigger.player, player) > 0)) return -1;
+                        return 100 - get.value(card);
+                    }).forResult();
+                    if (!result2?.bool || !result2.cards?.length) {
+                        const result = await player.chooseTarget(`${get.translation(event.name)}：将${get.translation(trigger.card)}转移给${get.translation(trigger.player)}攻击范围内的一名角色`, (card, player, target) => {
+                            const trigger = get.event().getTrigger();
+                            return target !== player && target !== trigger.player && !trigger.targets.includes(target) && lib.filter.targetInRange(trigger.card, trigger.player, target);
+                        }, true).set('ai', target => {
+                            const player = get.player(), trigger = get.event().getTrigger();
+                            return get.effect(target, trigger.card, trigger.player, player);
+                        }).forResult();
+                        if (result.bool) {
+                            player.line(result.targets[0]);
+                            trigger.targets[trigger.targets.indexOf(player)] = result.targets[0];
+                            game.log(result.targets[0], '成为了', trigger.card, '的新目标');
+                            await game.delayx();
+                        }
                     }
                 },
                 ai: {
                     effect: {
                         target(card, player, target) {
-                            if (card.name == 'sha' && !player.countCards('h', { number: 6 }) && game.hasPlayer(function (current) {
-                                return current != player && current != target && lib.filter.targetInRange(card, trigger.player, current) && get.effect(current, card, player, player) < 0;
+                            if (card.name === 'sha' && !player.countDiscardableCards(player, 'he', card2 => {
+                                return card2 !== card && get.number(card2) === 6;
+                            }) && game.hasPlayer(current => {
+                                return current !== player && current !== target && lib.filter.targetInRange(card, player, current) && get.effect(current, card, player, player) < 0;
                             })) return 0;
                         },
                     },
@@ -575,14 +570,14 @@ const packs = function () {
             },
             qin_xiongbian: {
                 audio: 'ext:活动武将/audio/skill:true',
-                trigger: { target: 'useCardToTargeted' },
+                trigger: { target: 'useCardToTarget' },
                 filter(event, player) {
                     return get.type(event.card) == 'trick';
                 },
                 forced: true,
                 content() {
                     'step 0'
-                    player.judge(result => result.number == 6 ? 3 : -1).set('no6', get.effect(trigger.card, player, trigger.player, player) > 0);
+                    player.judge(result => result.number == 6 ? 3 : -1).set('no6', get.effect(player, trigger.card, trigger.player, player) > 0);
                     'step 1'
                     if (result?.bool) {
                         trigger.getParent().targets.length = 0;
@@ -1340,7 +1335,7 @@ const packs = function () {
             qin_xichu: '戏楚',
             qin_xichu_info: '锁定技，当你成为【杀】的目标时，若其攻击范围内有其他角色，则该角色需要弃置一张点数为6的牌，否则此【杀】的目标转移给其攻击范围内你指定的另一名角色。',
             qin_xiongbian: '雄辩',
-            qin_xiongbian_info: '锁定技，当你成为普通锦囊牌的目标或之一时，你进行判定，若点数为6，你令此牌无效。',
+            qin_xiongbian_info: '锁定技，当你成为普通锦囊牌的目标时，你进行判定，若点数为6，你令此牌无效。',
             qin_qiaoshe: '巧舌',
             qin_qiaoshe_info: '当一名角色进行判定时，你可以令其判定牌的点数加减3以内的任意值。',
             qin_yitong: '一统',
