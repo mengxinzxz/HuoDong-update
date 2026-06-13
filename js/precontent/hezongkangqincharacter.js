@@ -559,10 +559,16 @@ const packs = function () {
                 ai: {
                     effect: {
                         target(card, player, target) {
-                            if (card.name === 'sha' && !player.countDiscardableCards(player, 'he', card2 => {
+                            if (_status._xichu_check || card.name !== 'sha') return;
+                            if (!player.countDiscardableCards(player, 'he', card2 => {
                                 return card2 !== card && get.number(card2) === 6;
                             }) && game.hasPlayer(current => {
-                                return current !== player && current !== target && lib.filter.targetInRange(card, player, current) && get.effect(current, card, player, player) < 0;
+                                return current !== player && current !== target && lib.filter.targetInRange(card, player, current) && (() => {
+                                    _status._xichu_check = true;
+                                    const goon = get.effect(current, card, player, player) < 0;
+                                    delete _status._xichu_check;
+                                    return goon;
+                                })();
                             })) return 0;
                         },
                     },
@@ -584,6 +590,19 @@ const packs = function () {
                         trigger.getParent().all_excluded = true;
                         game.log(trigger.card, '被无效了');
                     }
+                },
+                ai: {
+                    effect: {
+                        target(card, player, target) {
+                            if (_status._xiongbian_check || !target?.hasSkill('qin_qiaoshe')) return;
+                            if (get.type(card) === 'trick' && (() => {
+                                _status._xiongbian_check = true;
+                                const goon = get.effect(target, card, player, target) < 0;
+                                delete _status._xiongbian_check;
+                                return goon;
+                            })()) return 0.5;
+                        },
+                    },
                 },
             },
             qin_qiaoshe: {
