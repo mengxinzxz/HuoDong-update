@@ -6567,7 +6567,8 @@ const packs = function () {
                 onremove: true,
                 mod: {
                     maxHandcardBase(player, num) {
-                        if (typeof player.storage.bilibili_zili?.[1] === 'number') return player.storage.bilibili_zili[1] + 1;
+                        const number = player.storage.bilibili_zili?.[1];
+                        if (typeof number === 'number' && number > 0) return number + 1;
                     },
                 },
                 intro: {
@@ -7288,8 +7289,20 @@ const packs = function () {
                     return skills.length !== list.length || skills.some(skill => !list.includes(skill));
                 },
                 forced: true,
-                content() {
-                    player.addAdditionalSkill('bilibili_zhengyou', lib.skill.bilibili_zhengyou.getList(player));
+                async content(event, trigger, player) {
+                    const skill = event.name, list = lib.skill[skill].getList(player);
+                    const skills = player.additionalSkills?.[skill] ?? [];
+                    const addSkill = list.filter(skill => !skills.includes(skill));
+                    const removeSkill = skills.filter(skill => !list.includes(skill));
+                    if (addSkill.length) await player.addAdditionalSkills(skill, addSkill, true);
+                    if (removeSkill.length) {
+                        await player.changeSkills([], removeSkill).set('$handle', (player, 棍母, removeSkill) => {
+                            const skill = 'bilibili_zhengyou';
+                            game.log(player, '失去了技能', ...removeSkill.map(i => '#g【' + get.translation(i) + '】'));
+                            player.removeSkill(removeSkill);
+                            if (!player.additionalSkills[skill].length) delete player.additionalSkills[skill];
+                        });
+                    }
                 },
                 getList(player) {
                     let list = [], cards = player.getVCards('e');
