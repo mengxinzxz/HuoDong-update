@@ -3687,11 +3687,24 @@ const packs = function () {
                     });
                     'step 2'
                     if (result.bool) {
-                        player.addTempSkill('minirejizhi_basic');
-                        player.addMark('minirejizhi_basic', 1, false);
+                        player.addTempSkill('fh_jizhi_effect');
+                        player.addMark('fh_jizhi_effect', 1, false);
                     }
                 },
                 ai: { noautowuxie: true },
+                subSkill: {
+                    effect: {
+                        charlotte: true,
+                        onremove: true,
+                        markimage: 'image/card/handcard.png',
+                        intro: {  content: '本回合手牌上限+#'  },
+                        mod: {
+                            maxHandcard(player, num) {
+                                return num + player.countMark('fh_jizhi_effect');
+                            },
+                        },
+                    },
+                },
             },
             //甄姬
             fh_luoshen: {

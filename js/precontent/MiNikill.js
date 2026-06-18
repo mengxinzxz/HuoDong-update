@@ -15362,6 +15362,7 @@ const packs = function () {
                     return get.effect(player, 'kurou', player, player) > 0;
                 },
                 content() {
+                    player.loseHp();
                     player.draw(2);
                 },
             },
