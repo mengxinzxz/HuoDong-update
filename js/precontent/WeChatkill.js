@@ -17996,7 +17996,7 @@ const packs = function () {
                     return player.countCards('ej') === Math.max(...game.filterPlayer().map(target => target.countCards('ej')));
                 },
                 forced: true,
-                popup: false,
+                locked: false,
                 async content(event, trigger, player) {
                     player.addMark(event.name, 1, false);
                     player.addSkill(`${event.name}_xizifu`);
@@ -18005,6 +18005,8 @@ const packs = function () {
                     player.addSkill(`${event.name}_effect`);
                     player.addMark(`${event.name}_effect`, 1, false);
                     game.log(player, `#g【${get.translation('wechatchengfan')}】`, '区间上限+1，', '#y摸牌阶段', '摸牌数+1');
+                    player.addSkill(`${event.name}_draw`);
+                    player.addMark(`${event.name}_draw`, 1, false);
                 },
                 subSkill: {
                     xizifu: {
@@ -18048,6 +18050,24 @@ const packs = function () {
                         popup: false,
                         async content(event, trigger, player) {
                             trigger.num += player.countMark(event.name);
+                        },
+                    },
+                    draw: {
+                        charlotte: true,
+                        onremove: true,
+                        intro: { content: '下#个弃牌阶段改为摸牌阶段' },
+                        trigger: { player: 'phaseDiscardBefore' },
+                        filter(event, player) {
+                            return player.hasMark('wechatlihai_draw');
+                        },
+                        forced: true,
+                        popup: false,
+                        async content(event, trigger, player) {
+                            player.removeMark(event.name, 1, false);
+                            trigger.cancel();
+                            const next = player.phaseDraw();
+                            event.next.remove(next);
+                            trigger.next.push(next);
                         },
                     },
                 },
@@ -22818,7 +22838,7 @@ const packs = function () {
             wechatzhenxian: '镇舷',
             wechatzhenxian_info: '出牌阶段限三次，你可以重铸一张牌（不能重铸本阶段以此法重铸过的点数的牌）。若此牌点数与你本回合上次重铸的牌点数相邻，则你可以将其他角色场上的一张牌移动到你的对应区域或令此技能本阶段发动次数+1。',
             wechatlihai: '犁海',
-            wechatlihai_info: `${get.poptip('rule_xizifuSkill')}(2)，出牌阶段结束时，若你场上的牌数为全场最多，你令${get.poptip('wechatchengfan')}点数区间上限+1，摸牌阶段摸牌数+1。进学：使用四张${get.poptip('wechatchengfan')}点数区间外的牌。`,
+            wechatlihai_info: `${get.poptip('rule_xizifuSkill')}(2)，出牌阶段结束时，若你场上的牌数为全场最多，你令${get.poptip('wechatchengfan')}点数区间上限+1，摸牌阶段摸牌数+1，将你的下个弃牌阶段改为摸牌阶段。进学：使用四张${get.poptip('wechatchengfan')}点数区间外的牌。`,
             wechat_shantao: '小程序山涛',
             wechatjieshen: '节身',
             wechatjieshen_info: '回合开始时，你可以执行一个额外的弃牌阶段。若如此做，你摸两张牌并令一名角色于其下个弃牌阶段开始时跳过此阶段。',
