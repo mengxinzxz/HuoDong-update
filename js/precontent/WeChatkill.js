@@ -9749,7 +9749,7 @@ const packs = function () {
             },
             //孙鲁育
             wechatmeibu: {
-                audio: 'meibu',
+                audio: 'ext:活动武将/audio/skill:2',
                 trigger: { global: 'phaseUseBegin' },
                 filter(event, player) {
                     return event.player != player && event.player.isIn() && event.player.inRange(player) && player.countCards('he') > 0;
@@ -9795,10 +9795,10 @@ const packs = function () {
             },
             wechatzhixi: {
                 trigger: { player: 'useCard' },
-                forced: true,
                 filter(event, player) {
                     return (event.card.name == 'sha' || get.type(event.card) == 'trick');
                 },
+                forced: true,
                 async content(event, trigger, player) {
                     const result = !player.countCards('h') ? { bool: false } : await player.chooseToDiscard('h', '弃置一张牌，或令此牌无效').set('ai', card => {
                         return 6.5 - get.value(card);
@@ -9814,7 +9814,7 @@ const packs = function () {
                 },
             },
             wechatmumu: {
-                audio: 'mumu',
+                audio: 'ext:活动武将/audio/skill:2',
                 trigger: { player: 'phaseUseBegin' },
                 filter(event, player) {
                     return game.hasPlayer(current => {
@@ -22489,7 +22489,8 @@ const packs = function () {
             wechatjinfan_info: '①游戏开始时/弃牌阶段开始时，你可将任意张手牌置于武将牌上，称为“铃”（每种花色的“铃”限一张，且对其他角色不可见）。②你可以如手牌般使用或打出“铃”（无距离和任何次数限制）。③当你失去“铃”后，你从牌堆中获得一张与此“铃”花色相同的牌。',
             wechatsheque: '射却',
             wechatsheque_info: '其他角色的准备阶段，你可以对其使用一张【杀】（无距离限制且无视防具）。',
-            wechat_sunluyu: '小程序孙鲁育',
+            wechat_sunluyu_ab: '小程序孙鲁育',
+            wechat_sunluyu: '洛天依',
             wechatmeibu: '魅步',
             wechatmeibu_info: `其他角色的出牌阶段开始时，若你在其攻击范围内，你可以弃置一张牌，该角色于本回合内拥有${get.poptip('wechatzhixi')}，且当其因${get.poptip('wechatzhixi')}弃置牌时，你获得之。`,
             wechatzhixi: '止息',
@@ -23215,31 +23216,36 @@ const packs = function () {
             '#ext:活动武将/audio/skill/wechatqingjue1': '你给过我的，现在一并奉还。',
             '#ext:活动武将/audio/skill/wechatqingjue2': '我既辞去，永不回眸。',
             '#ext:活动武将/audio/die/wechat_zhiyin_zhangchunhua:die': '消逝，或许是最好的解脱。',
-            "#ext:活动武将/audio/skill/wechatgenggeng1": "他年羹尧不敢的，我敢！",
-            "#ext:活动武将/audio/skill/wechatgenggeng2": "嫌短？我看你们是不想更了！",
-            "#ext:活动武将/audio/skill/wechattanpai1": "呵呵，我摊牌了！",
-            "#ext:活动武将/audio/skill/wechattanpai2": "明牌了，你随意！",
-            "#ext:活动武将/audio/die/wechat_mashe:die": "燃尽了……",
-            "#ext:活动武将/audio/skill/wechatduying1": "以关心为旗号的操控，都是耍流氓！",
-            "#ext:活动武将/audio/skill/wechatduying2": "我门前的事谁敢管？",
-            "#ext:活动武将/audio/skill/wechatsheshi1": "你们的不正行为，我会动用一切手段阻止！",
-            "#ext:活动武将/audio/skill/wechatsheshi2": "如若再执迷不悟，那就小心我的火力打击。",
-            "#ext:活动武将/audio/die/wechat_yingjiang:die": "不好！惹到硬茬子了……",
-            "#ext:活动武将/audio/skill/wechatjiaoshi1": "一家人怎么能说两家话。",
-            "#ext:活动武将/audio/skill/wechatjiaoshi2": "我好心来劝，反成了罪过了。",
-            "#ext:活动武将/audio/skill/wechatyuli1": "搅的水儿浑，大家好摸鱼。",
-            "#ext:活动武将/audio/skill/wechatyuli2": "送到手里的东西岂能不要？",
-            "#ext:活动武将/audio/die/wechat_yuehanniu:die": "作为一个绅士，不能失去了体面。",
-            "#ext:活动武将/audio/skill/wechatgoude1": "若是少侠愿意卖给沙某，沙某必有重谢。",
-            "#ext:活动武将/audio/skill/wechatgoude2": "少侠做生意真是太良心了，我现金支付。",
-            "#ext:活动武将/audio/skill/wechatdahu1": "沙某是本地人，想买什么就买什么。",
-            "#ext:活动武将/audio/skill/wechatdahu2": "和我们大户做生意，谁都亏不了。",
-            "#ext:活动武将/audio/die/wechat_luotuo:die": "买不来的是梦想……",
-            "#ext:活动武将/audio/skill/wechatkuangbiao1": "事到如今，不得不行了。",
-            "#ext:活动武将/audio/skill/wechatkuangbiao2": "非常之时，当行以雷霆手段。",
-            "#ext:活动武将/audio/skill/wechathuamao1": "以我的强大，没有人是对手。",
-            "#ext:活动武将/audio/skill/wechathuamao2": "实力不足，简直是笑话。",
-            "#ext:活动武将/audio/die/wechat_hansimao:die": "我不可能输，我一定会赢……"
+            '#ext:活动武将/audio/skill/wechatgenggeng1': '他年羹尧不敢的，我敢！',
+            '#ext:活动武将/audio/skill/wechatgenggeng2': '嫌短？我看你们是不想更了！',
+            '#ext:活动武将/audio/skill/wechattanpai1': '呵呵，我摊牌了！',
+            '#ext:活动武将/audio/skill/wechattanpai2': '明牌了，你随意！',
+            '#ext:活动武将/audio/die/wechat_mashe:die': '燃尽了……',
+            '#ext:活动武将/audio/skill/wechatduying1': '以关心为旗号的操控，都是耍流氓！',
+            '#ext:活动武将/audio/skill/wechatduying2': '我门前的事谁敢管？',
+            '#ext:活动武将/audio/skill/wechatsheshi1': '你们的不正行为，我会动用一切手段阻止！',
+            '#ext:活动武将/audio/skill/wechatsheshi2': '如若再执迷不悟，那就小心我的火力打击。',
+            '#ext:活动武将/audio/die/wechat_yingjiang:die': '不好！惹到硬茬子了……',
+            '#ext:活动武将/audio/skill/wechatjiaoshi1': '一家人怎么能说两家话。',
+            '#ext:活动武将/audio/skill/wechatjiaoshi2': '我好心来劝，反成了罪过了。',
+            '#ext:活动武将/audio/skill/wechatyuli1': '搅的水儿浑，大家好摸鱼。',
+            '#ext:活动武将/audio/skill/wechatyuli2': '送到手里的东西岂能不要？',
+            '#ext:活动武将/audio/die/wechat_yuehanniu:die': '作为一个绅士，不能失去了体面。',
+            '#ext:活动武将/audio/skill/wechatgoude1': '若是少侠愿意卖给沙某，沙某必有重谢。',
+            '#ext:活动武将/audio/skill/wechatgoude2': '少侠做生意真是太良心了，我现金支付。',
+            '#ext:活动武将/audio/skill/wechatdahu1': '沙某是本地人，想买什么就买什么。',
+            '#ext:活动武将/audio/skill/wechatdahu2': '和我们大户做生意，谁都亏不了。',
+            '#ext:活动武将/audio/die/wechat_luotuo:die': '买不来的是梦想……',
+            '#ext:活动武将/audio/skill/wechatkuangbiao1': '事到如今，不得不行了。',
+            '#ext:活动武将/audio/skill/wechatkuangbiao2': '非常之时，当行以雷霆手段。',
+            '#ext:活动武将/audio/skill/wechathuamao1': '以我的强大，没有人是对手。',
+            '#ext:活动武将/audio/skill/wechathuamao2': '实力不足，简直是笑话。',
+            '#ext:活动武将/audio/die/wechat_hansimao:die': '我不可能输，我一定会赢……',
+            '#ext:活动武将/audio/skill/wechatmeibu1': '既是不惜之请，那就恕难从命了。',
+            '#ext:活动武将/audio/skill/wechatmeibu2': '臣服于我的魅力之下吧。',
+            '#ext:活动武将/audio/skill/wechatmumu1': '万众和睦才是王道。',
+            '#ext:活动武将/audio/skill/wechatmumu2': '银线难数思深，一曲全表心意。',
+            '#ext:活动武将/audio/die/wechat_sunluyu:die': '苔花虽小亦妍开，暗角何待春风来……',
         },
     };
     WeChatkill_sight();//加载欢杀界面逻辑
@@ -23271,7 +23277,7 @@ const packs = function () {
             else if (WeChatkill.translate[i].startsWith('小程序☆')) WeChatkill.translate[i + '_prefix'] = '小程序|☆';
             else if (WeChatkill.translate[i].startsWith('小程序谋')) WeChatkill.translate[i + '_prefix'] = '小程序|谋';
             else if (WeChatkill.translate[i].startsWith('小程序界')) WeChatkill.translate[i + '_prefix'] = '小程序|界';
-            else if (WeChatkill.translate[i].startsWith('小程序')) WeChatkill.translate[i + '_prefix'] = '小程序';
+            else if (WeChatkill.translate[i].startsWith('小程序') || WeChatkill.translate[i + '_ab']?.startsWith('小程序')) WeChatkill.translate[i + '_prefix'] = '小程序';
             else if (WeChatkill.translate[i].startsWith('SP小程序')) WeChatkill.translate[i + '_prefix'] = 'SP|小程序';
             else if (WeChatkill.translate[i].startsWith('极')) WeChatkill.translate[i + '_prefix'] = '极';
             else if (WeChatkill.translate[i].startsWith('志')) WeChatkill.translate[i + '_prefix'] = '志';

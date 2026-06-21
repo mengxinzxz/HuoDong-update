@@ -425,6 +425,10 @@
             "size": 22193
         },
         {
+            "path": "audio/die/wechat_sunluyu.mp3",
+            "size": 124930
+        },
+        {
             "path": "audio/die/wechat_yingjiang.mp3",
             "size": 11107
         },
@@ -2789,6 +2793,14 @@
             "size": 23238
         },
         {
+            "path": "audio/skill/wechatmeibu1.mp3",
+            "size": 82612
+        },
+        {
+            "path": "audio/skill/wechatmeibu2.mp3",
+            "size": 65893
+        },
+        {
             "path": "audio/skill/wechatmengshou1.mp3",
             "size": 15714
         },
@@ -2811,6 +2823,14 @@
         {
             "path": "audio/skill/wechatmiaoji_wechat_guojia2.mp3",
             "size": 26668
+        },
+        {
+            "path": "audio/skill/wechatmumu1.mp3",
+            "size": 65371
+        },
+        {
+            "path": "audio/skill/wechatmumu2.mp3",
+            "size": 95673
         },
         {
             "path": "audio/skill/wechatpingjiang1.mp3",
@@ -7530,7 +7550,7 @@
         },
         {
             "path": "js/precontent/WeChatkill.js",
-            "size": 1391699
+            "size": 1392371
         },
         {
             "path": "README.md",
