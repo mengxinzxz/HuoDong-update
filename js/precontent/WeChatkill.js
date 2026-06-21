@@ -169,7 +169,7 @@ const packs = function () {
             wechat_huojun: ['male', 'shu', 4, ['twsidai', 'jieyu']],
             wechat_yj_xuhuang: ['male', 'qun', 4, ['wechatxhzhiyan', 'wechatjiewei']],
             wechat_yj_ganning: ['male', 'qun', 4, ['wechatjinfan', 'wechatsheque']],
-            wechat_sunluyu: ['female', 'wu', 3, ['wechatmumu', 'wechatmumu']],
+            wechat_sunluyu: ['female', 'wu', 3, ['wechatmeibu', 'wechatmumu']],
             wechat_sp_diaochan: ['female', 'qun', 3, ['lihun', 'wechatbiyue']],
             wechat_zhugeguo: ['female', 'shu', 3, ['wechatqirang', 'wechatyuhua']],
             wechat_sunhanhua: ['female', 'wu', 3, ['wechatchongxu', 'miaojian', 'shhlianhua']],
@@ -9748,7 +9748,7 @@ const packs = function () {
                 },
             },
             //孙鲁育
-            wechatmumu: {
+            wechatmeibu: {
                 audio: 'meibu',
                 trigger: { global: 'phaseUseBegin' },
                 filter(event, player) {
@@ -9782,7 +9782,7 @@ const packs = function () {
                         onremove: true,
                         trigger: { global: 'loseAfter' },
                         filter(event, player) {
-                            return event.getParent(3).name == 'wechatzhixi' && player.getStorage('wechatmumu_gain').includes(event.player) && event.cards?.someInD('d');
+                            return event.getParent(3).name == 'wechatzhixi' && player.getStorage('wechatmeibu_gain').includes(event.player) && event.cards?.someInD('d');
                         },
                         forced: true,
                         popup: false,
@@ -22490,8 +22490,8 @@ const packs = function () {
             wechatsheque: '射却',
             wechatsheque_info: '其他角色的准备阶段，你可以对其使用一张【杀】（无距离限制且无视防具）。',
             wechat_sunluyu: '小程序孙鲁育',
-            wechatmumu: '魅步',
-            wechatmumu_info: `其他角色的出牌阶段开始时，若你在其攻击范围内，你可以弃置一张牌，该角色于本回合内拥有${get.poptip('wechatzhixi')}，且当其因${get.poptip('wechatzhixi')}弃置牌时，你获得之。`,
+            wechatmeibu: '魅步',
+            wechatmeibu_info: `其他角色的出牌阶段开始时，若你在其攻击范围内，你可以弃置一张牌，该角色于本回合内拥有${get.poptip('wechatzhixi')}，且当其因${get.poptip('wechatzhixi')}弃置牌时，你获得之。`,
             wechatzhixi: '止息',
             wechatzhixi_info: '锁定技。当你使用【杀】或普通锦囊牌时，你须弃置一张手牌，否则此牌无效。',
             wechatmumu: '穆穆',
