@@ -293,6 +293,10 @@
             "size": 56654
         },
         {
+            "path": "audio/die/Myin_yuji.mp3",
+            "size": 47726
+        },
+        {
             "path": "audio/die/old_sp_mifuren.mp3",
             "size": 8790
         },
@@ -2033,12 +2037,28 @@
             "size": 32914
         },
         {
+            "path": "audio/skill/miniyinhuozhong1.mp3",
+            "size": 61262
+        },
+        {
+            "path": "audio/skill/miniyinhuozhong2.mp3",
+            "size": 74798
+        },
+        {
             "path": "audio/skill/miniyinjujian1.mp3",
             "size": 54350
         },
         {
             "path": "audio/skill/miniyinjujian2.mp3",
             "size": 31310
+        },
+        {
+            "path": "audio/skill/miniyinyinming1.mp3",
+            "size": 44270
+        },
+        {
+            "path": "audio/skill/miniyinyinming2.mp3",
+            "size": 38222
         },
         {
             "path": "audio/skill/miniyinyinxing1.mp3",
@@ -4909,10 +4929,6 @@
             "size": 130779
         },
         {
-            "path": "image/character/Mbaby_sb_guojia.jpg",
-            "size": 66278
-        },
-        {
             "path": "image/character/Mbaby_sb_huanggai.jpg",
             "size": 134049
         },
@@ -5475,6 +5491,10 @@
         {
             "path": "image/character/Mbaby_yj_jushou.jpg",
             "size": 129279
+        },
+        {
+            "path": "image/character/Mbaby_yj_sb_guojia.jpg",
+            "size": 66278
         },
         {
             "path": "image/character/Mbaby_yl_luzhi.jpg",
@@ -7494,7 +7514,7 @@
         },
         {
             "path": "js/precontent/MiNikill.js",
-            "size": 2700512
+            "size": 2709835
         },
         {
             "path": "js/precontent/MX_catcatcup.js",
