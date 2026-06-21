@@ -3591,26 +3591,26 @@ const packs = function () {
                     });
                 },
                 async cost(event, trigger, player) {
-                    var list = ['摸一张牌'], target = trigger.player, str = get.translation(target);
-                    event.addIndex = 0;
+                    let list = ['摸一张牌'], addIndex = 0;
+                    const target = trigger.player, str = get.translation(target);
                     if (target.countGainableCards(player, 'h')) list.push('随机获得' + str + '的一张手牌');
-                    else event.addIndex++;
+                    else addIndex++;
                     if (target.countCards('e', function (card) {
                         return player.canEquip(card);
                     }) > 0) list.push('将' + str + '装备区内的一张牌移动至自己的装备区');
                     const result = await player.chooseControl('cancel2').set('ai', function () {
-                        var evt = _status.event.getParent();
-                        if (get.attitude(evt.player, evt.target) > 0) return 0;
-                        var val = evt.target.hasSkillTag('noe') ? 6 : 0;
-                        if (evt.target.countCards('e', function (card) {
-                            return evt.player.canEquip(card) && get.value(card, evt.target) > val && get.effect(evt.player, card, evt.player, evt.player) > 0;
-                        }) > 0) return 2 - evt.addIndex;
-                        if (evt.target.countGainableCards(evt.player, 'h') > 0) return 1;
+                        const { player, addIndex } = get.event(), target = get.event().getTrigger().player;
+                        if (get.attitude(player, target) > 0) return 0;
+                        const val = target.hasSkillTag('noe') ? 6 : 0;
+                        if (target.countCards('e', function (card) {
+                            return player.canEquip(card) && get.value(card, target) > val && get.effect(player, card, player, player) > 0;
+                        }) > 0) return 2 - addIndex;
+                        if (target.countGainableCards(player, 'h') > 0) return 1;
                         return 0;
-                    }).set('choiceList', list).set('prompt', get.prompt('wechatqieting', target)).forResult();
+                    }).set('choiceList', list).set('addIndex', addIndex).set('prompt', get.prompt('wechatqieting', target)).forResult();
                     event.result = {
                         bool: result?.control && result.control !== 'cancel2',
-                        cost_data: result?.index + event.addIndex,
+                        cost_data: result?.index + addIndex,
                     };
                 },
                 logTarget: 'player',
