@@ -262,7 +262,7 @@ const packs = function () {
             wechat_sb_sunce: ['male', 'wu', 4, ['wechatsbjiang', 'wechatsbhunzi']],
             wechat_sb_zhangliao: ['male', 'wei', 4, ['wechatsbtuxi', 'wechatsbdengfeng']],
             wechat_sb_huangyueying: ['female', 'shu', 3, ['wechatsbjizhi', 'sbqicai']],
-            wechat_sb_diaochan: ['female', 'qun', 3, ['wechatsblijian', 'sbbiyue']],
+            wechat_sb_diaochan: ['female', 'qun', 3, ['wechatsblijian', 'wechatsbbiyue']],
             wechat_sb_huanggai: ['male', 'wu', 4, ['wechatsbkurou', 'sbzhaxiang']],
             wechat_sb_guojia: ['male', 'wei', 3, ['wechatsbtiandu', 'wechatsbyiji'], ['character:bilibili_xizhicaikobe', 'border:key', 'tempname:sb_guojia']],
             wechat_sb_handang: ['male', 'wu', 4, ['wechatsbgongqi', 'wechatsbjiefan']],
@@ -10959,8 +10959,46 @@ const packs = function () {
                     }
                     else {
                         const cards = trigger.lose_list.map(list => list[1].filter(card => get.tag(card, 'damage') || get.type(card) == 'basic').filterInD()).flat();
-                        if (cards.length) await player.gain(cards, 'gain2');
+                        if (cards.length) {
+                            player.addTempSkill(`${event.name}_effect`, 'roundStart');
+                            const next = player.gain(cards, 'gain2');
+                            next.gaintag.add(`${event.name}_effect`);
+                            await next;
+                        }
                     }
+                },
+                subSkill: {
+                    effect: {
+                        charlotte: true,
+                        onremove(player, skill) {
+                            player.removeGaintag(skill);
+                        },
+                        trigger: { player: 'useCard1' },
+                        filter(event, player) {
+                            if (event.addCount === false || !event.cards || event.cards.length !== 1) return false;
+                            return player.hasHistory('lose', evt => {
+                                if ((evt.relatedEvent || evt.getParent()) !== event) return false;
+                                return Object.values(evt.gaintag_map).flat().includes('wechatbianguan_effect');
+                            });
+                        },
+                        silent: true,
+                        firstDo: true,
+                        content() {
+                            trigger.addCount = false;
+                            const stat = player.getStat().card, name = trigger.card.name;
+                            if (typeof stat[name] === 'number') stat[name]--;
+                        },
+                        mod: {
+                            cardUsable(card, player) {
+                                let card2 = card;
+                                if (card.cards) {
+                                    if (card.cards.length !== 1) return;
+                                    card2 = card.cards[0];
+                                }
+                                if (get.itemtype(card2) === 'card' && card2.hasGaintag('wechatbianguan_effect')) return Infinity;
+                            },
+                        },
+                    },
                 },
             },
             //极张飞
@@ -12551,9 +12589,8 @@ const packs = function () {
                     return event.name != 'phase' || game.phaseNumber == 0;
                 },
                 async content(event, trigger, player) {
-                    await player.drawTo(game.countPlayer2());
-                    const num = Math.floor(player.countCards('h') / 2);
-                    if (!num) return;
+                    const num = Math.min(game.countPlayer2(), 4);
+                    await player.draw(num);
                     const result = await player.chooseCard('he', true, num, `将${get.cnNumber(num)}张牌置于武将牌上`).forResult();
                     if (result?.bool && result?.cards?.length) {
                         const next = player.addToExpansion(result.cards, player, 'give');
@@ -12598,13 +12635,11 @@ const packs = function () {
                         async content(event, trigger, player) {
                             await player.draw();
                             const cards = player.getExpansions('wechatweimo');
-                            if (player.isPhaseUsing() && cards.length) {
-                                const result = cards.length == 1 ? { bool: true, links: cards } : await player.chooseButton(['获得其中一张牌', cards], true).set('ai', button => {
+                            if (player.isPhaseUsing() && cards.length > 0) {
+                                const result = await player.chooseButton([`${get.translation(event.name)}：是否获得其中一张牌？`, cards]).set('ai', button => {
                                     return get.value(button.link);
                                 }).forResult();
-                                if (result?.bool && result?.links?.length) {
-                                    await player.gain(result.links, 'gain2');
-                                }
+                                if (result?.bool && result.links?.length) await player.gain(result.links, 'gain2');
                             }
                         },
                     }
@@ -12618,6 +12653,7 @@ const packs = function () {
                     return player.countCards('he');
                 },
                 filterCard: true,
+                selectCard: [1, 2],
                 check(card) {
                     const player = get.player();
                     if (player.hasUseTarget(card)) return 8;
@@ -12630,7 +12666,9 @@ const packs = function () {
                     const next = player.addToExpansion(event.cards, player, 'give');
                     next.gaintag.add('wechatweimo');
                     await next;
-                    const num = game.countPlayer(current => player.canUse(event.cards[0], current));
+                    const num = event.cards.reduce((sum, card) => {
+                        return sum + game.countPlayer(current => player.canUse(card, current));
+                    }, 0);
                     if (!num) return;
                     const list = get.inpileVCardList(info => {
                         if (info[0] != 'trick' || !player.hasUseTarget(info[2])) return false;
@@ -12985,39 +13023,22 @@ const packs = function () {
             wechatsblijian: {
                 audio: 'sblijian',
                 inherit: 'sblijian',
-                selectCard: [0, Infinity],
-                selectTarget() {
-                    return ui.selected.cards.length + 2;
-                },
-                filterOk() {
-                    return ui.selected.targets.length == ui.selected.cards.length + 2;
-                },
-                check(card) {
-                    let player = get.owner(card), targets = lib.skill.wechatsblijian.selectTargetAi(_status.event, player);
-                    if (ui.selected.cards.length < targets - 2) {
-                        if (player.hasSkill('sbbiyue')) return 4 * targets - get.value(card);
-                        return 6 + targets - get.value(card);
-                    }
-                    return 0;
-                },
+                filterCard: () => false,
+                selectCard: -1,
+                selectTarget: [2, Infinity],
+                filterOk: false,
                 selectTargetAi(event, player) {
                     let cache = _status.event.getTempCache('wechatsblijian', 'targets');
-                    if (Array.isArray(cache)) {
-                        return cache.length;
-                    }
+                    if (Array.isArray(cache)) return cache.length;
                     let targets = [], cards = [0], sbbiyue = player.hasSkill('sbbiyue') ? Math.max(0, 3 - game.countPlayer2(current => current.hasHistory('damage'))) : 0, alter = [null, 1, 1], temp;
                     for (let i of game.players) {
                         if (player === i) continue;
                         temp = get.effect(i, new lib.element.VCard({ name: 'juedou', isCard: true }), i, i);
                         if (temp) {
                             let att = get.attitude(event.player, i);
-                            if ((!att && sbbiyue) || att * temp > 0) {
-                                targets.push([i, temp, att]);
-                            } else if (!alter[2]) {
-                                continue;
-                            } else if (!att || (att > 0 && temp > -15 && i.hp > 2) || (att < 0 && temp < 15)) {
-                                alter = [i, temp, att];
-                            }
+                            if ((!att && sbbiyue) || att * temp > 0) targets.push([i, temp, att]);
+                            else if (!alter[2]) continue;
+                            else if (!att || (att > 0 && temp > -15 && i.hp > 2) || (att < 0 && temp < 15)) alter = [i, temp, att];
                         }
                     }
                     targets.sort((a, b) => {
@@ -13047,6 +13068,30 @@ const packs = function () {
                     event.putTempCache('wechatsblijian', 'targets', targets);
                     return targets.length;
                 },
+                async contentBefore(event, trigger, player) {
+                    if (player.isDamaged() && event.targets?.some(target => target.hasSex('male'))) {
+                        const result = await player.chooseTarget((card, player, target) => {
+                            return get.event().targets.includes(target) && target.hasSex('male');
+                        }, `${get.translation(event.skill)}：是否令其中一名男性角色于结算中视为拥有【无双】？`).set('ai', target => {
+                            const player = get.player(), targets = [...get.event().targets].sortBySeat();
+                            const user = targets[targets.indexOf(target) - 1] || targets.at(-1);
+                            const aim = targets[targets.indexOf(target) + 1] || targets[0];
+                            const juedou = new lib.element.VCard({ name: 'juedou' });
+                            return (get.effect(target, juedou, user, player) > 0 || get.effect(aim, juedou, target, player) > 0) ? (1 + Math.random()) : -1;
+                        }).set('targets', event.targets).forResult();
+                        if (result?.bool && result.targets?.length) {
+                            const target = result.targets[0];
+                            player.line(target);
+                            event.getParent().set('wechatsblijian_wushuang', target);
+                            await target.addAdditionalSkills(event.skill, 'wushuang');
+                        }
+                    }
+                },
+                async contentAfter(event, trigger, player) {
+                    const target = event.getParent().wechatsblijian_wushuang;
+                    if (target?.isIn()) await target.removeAdditionalSkills(event.skill);
+                },
+                derivation: 'wushuang',
                 ai: {
                     threaten: 3,
                     order: 7,
@@ -13075,6 +13120,46 @@ const packs = function () {
                             return 0;
                         },
                     },
+                },
+            },
+            wechatsbbiyue: {
+                audio: 'sbbiyue',
+                trigger: { player: 'phaseJieshuBegin' },
+                async cost(event, trigger, player) {
+                    const num = Math.min(game.countPlayer2(target => target.hasHistory('damage')) + 1, 4);
+                    const targets = game.filterPlayer(target => target !== player && target.hasHistory('damage'));
+                    const func = function (player, num, targets) {
+                        game.countPlayer(target => {
+                            if (target === player) target.prompt(`摸${num}张`);
+                            else if (targets.includes(target)) {
+                                const num = target.getHistory('damage').reduce((sum, evt) => sum + evt.num, 0);
+                                target.prompt(`弃${num}张`);
+                            }
+                        });
+                    };
+                    event.player === game.me ? func(event.player, num, targets) : (event.isOnline() && event.player.send(func, event.player, num, targets));
+                    event.result = await player.chooseTarget(get.prompt(event.skill), (card, player, target) => {
+                        if (target === player) return true;
+                        return get.event().targets.includes(target) && target.countDiscardableCards(target, 'he');
+                    }, `选择令自己摸${get.cnNumber(num)}张牌，或令一名其他角色弃置其本回合受到的伤害数张牌`).set('ai', target => {
+                        const player = get.player();
+                        if (target === player) {
+                            const num = Math.min(game.countPlayer2(target => target.hasHistory('damage')) + 1, 4);
+                            return get.effect(player, { name: 'draw' }, player, player) * num;
+                        }
+                        const num = target.getHistory('damage').reduce((sum, evt) => sum + evt.num, 0);
+                        return get.effect(target, { name: 'guohe_copy2' }, target, player) * Math.sqrt(Math.min(num, target.countDiscardableCards(target, 'he')));
+                    }).set('targets', targets).forResult();
+                },
+                async content(event, trigger, player) {
+                    const target = event.targets[0];
+                    if (target === player) {
+                        const num = Math.min(game.countPlayer2(target => target.hasHistory('damage')) + 1, 4);
+                        await player.draw(num);
+                        return;
+                    }
+                    const num = target.getHistory('damage').reduce((sum, evt) => sum + evt.num, 0);
+                    await target.chooseToDiscard('he', num, true);
                 },
             },
             // 极陆逊
@@ -22569,7 +22654,7 @@ const packs = function () {
             wechatweicheng: '威乘',
             wechatweicheng_info: '出牌阶段限一次。你可以与至少X名角色进行共同拼点（X为全场角色数的一半且向上取整）。然后胜者可以视为对所有败者使用一张【杀】。此【杀】结算结束后，若有败者使用【闪】响应过此牌，则未使用【闪】响应此牌的败者各失去1点体力。',
             wechatbianguan: '变观',
-            wechatbianguan_info: '锁定技。①当你本轮首次参加共同拼点后，你获得所有拼点牌中的伤害牌和基本牌。②当你死亡时，你令所有其他角色进行共同拼点，然后所有败者各失去1点体力。',
+            wechatbianguan_info: '锁定技。①当你本轮首次参加共同拼点后，你获得所有拼点牌中的伤害牌和基本牌，本轮使用这些牌无次数限制。②当你死亡时，你令所有其他角色进行共同拼点，然后所有败者各失去1点体力。',
             wechat_zhiyin_zhangfei: '极张飞',
             wechathupo: '虎魄',
             wechathupo_info: `${get.poptip('rule_shiwuSkill')}，出牌阶段，你可以展示你与一名其他角色的所有手牌，然后你选择一项：1.弃置你与其一个牌名的所有牌；2.获得其一张你没有的牌名的牌。`,
@@ -22648,9 +22733,9 @@ const packs = function () {
             wechatqingqu_info: '每回合限一次。当你进入濒死状态时，你可以判定。若判定结果的花色与当前回合角色本回合使用过的牌花色均不同，你回复1点体力。',
             wechat_zhiyin_xunyou: '极荀攸',
             wechatweimo: '帷谟',
-            wechatweimo_info: '①游戏开始时，你将手牌摸至场上角色数，然后你将X张牌置于武将牌上，称为“帷谟”（X为你手牌数的一半，且向下取整）。②每回合限两次。当你的“帷谟”牌数或手牌数变化后，若二者数量相同，你摸一张牌。然后若此时在你的出牌阶段内，你获得武将牌上的一张“帷谟”。',
+            wechatweimo_info: '①游戏开始时，你摸X张牌，然后你将等量张牌置于武将牌上，称为“帷谟”（X为游戏人数且至多为4）。②每回合限两次，当你的“帷谟”牌数或手牌数变化后，若二者数量相同，你摸一张牌。然后若此时在你的出牌阶段内，你可以获得武将牌上的一张“帷谟”。',
             wechatlance: '览策',
-            wechatlance_info: '出牌阶段限一次，你可以将一张牌A置于武将牌上，称为“帷谟”。然后你可以视为使用一张普通锦囊牌（此牌合法目标数须不大于A的合法目标数）。',
+            wechatlance_info: '出牌阶段限一次，你可以将至多两张牌置于武将牌上，称为“帷谟”。然后你可以视为使用一张普通锦囊牌（此牌合法目标数须不大于这些牌的合法目标数之和）。',
             wechat_zhiyin_sunshangxiang: '极孙尚香',
             wechatxiaojie: '枭捷',
             wechatxiaojie_info: `${get.poptip('rule_shiwuSkill')}，出牌阶段，你可以弃置一张手牌或场上的一张牌并视为使用一张【杀】或【酒】，然后此牌目标角色本回合受到的伤害+1。若你以此法弃置了自己的牌，则此牌不计入次数。若你以此法弃置的牌不为装备牌，则此技能本回合失效。`,
@@ -22667,7 +22752,9 @@ const packs = function () {
             wechatsbjizhi_info: '锁定技，当你使用锦囊牌时，你摸一张牌。本回合你以此法获得的牌不计入你的手牌上限且你使用这些牌无任何次数限制。',
             wechat_sb_diaochan: '小程序谋貂蝉',
             wechatsblijian: '离间',
-            wechatsblijian_info: '出牌阶段限一次。你可以选择至少两名其他角色并弃置X张牌（X为你选择的角色数-2）。然后每名你选择的角色依次视为对这些角色中与其逆时针座次最近的另一名角色使用一张【决斗】。',
+            wechatsblijian_info: `出牌阶段限一次。你可以选择至少两名其他角色。然后每名你选择的角色依次视为对这些角色中与其逆时针座次最近的另一名角色使用一张【决斗】。若你已受伤，则你可以令其中一名男性目标角色于本次结算中获得${get.poptip('wushuang')}。`,
+            wechatsbbiyue: '闭月',
+            wechatsbbiyue_info: '结束阶段，你可以选择一项：①令自己摸X张牌（X为本回合受伤角色数+1，至多为4）；②令一名其他角色弃置Y张牌（Y为其本回合受到的伤害数）。',
             wechat_zhiyin_luxun: '极陆逊',
             wechatqianmou: '谦谋',
             wechatqianmou_info: `①游戏开始时，你可以弃置至多两张手牌，然后你获得3倍弃牌数的${get.poptip('rule_moulvenum')}。②当你的${get.poptip('rule_moulvenum')}或手牌数变化后，若二者数量相同，你摸两张牌。`,
