@@ -10858,8 +10858,7 @@ const packs = function () {
                     }
                     player.when({ global: 'useCardAfter' })
                         .filter(evt => evt == trigger && game.hasPlayer(current => current.hasHistory('damage', evtx => evtx.card == evt.card)))
-                        .then(() => player.draw(numx))
-                        .vars({ numx: num });
+                        .then(() => player.draw(Math.max(1, player.getDamagedHp())));
                 },
             },
             wechatqingjue: {
