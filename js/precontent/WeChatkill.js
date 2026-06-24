@@ -10054,7 +10054,7 @@ const packs = function () {
                         if (!event.filterCard(card, player, event)) return false;
                         if (button.link[2] === 'sha') {
                             if (level === 2) return true;
-                            if (level === 1) player.hasCard({ type: 'basic' }, 'hs');
+                            if (level === 1) return player.hasCard({ type: 'basic' }, 'hs');
                             return level === 0 && player.hasCard({ name: 'sha' }, 'hs');
                         }
                         if (level === 2) return true;
