@@ -10101,7 +10101,7 @@ const packs = function () {
                             next.viewAs.isCard = true;
                             next.viewAs.storage = { wechatmiaojian: true };
                             next.precontent = function () {
-                                player.addTempSkill('wechatmiaoji_effect');
+                                player.addTempSkill('wechatmiaojian_effect');
                             };
                         }
                         return next;
@@ -10120,7 +10120,7 @@ const packs = function () {
                     result: { player: 1 },
                     directHit_ai: true,
                     skillTagFilter(player, tag, arg) {
-                        return arg.card?.name === 'wuzhong' && arg.card.storage?.wechatmiaoji;
+                        return arg.card?.name === 'wuzhong' && arg.card.storage?.wechatmiaojian;
                     },
                 },
                 locked: false,
@@ -10134,7 +10134,7 @@ const packs = function () {
                         charlotte: true,
                         trigger: { player: 'useCard' },
                         filter(event, player) {
-                            return event.card.name === 'wuzhong' && event.skill === 'wechatmiaojian_backup' && event.card.storage?.wechatmiaoji;
+                            return event.card.name === 'wuzhong' && event.skill === 'wechatmiaojian_backup' && event.card.storage?.wechatmiaojian;
                         },
                         forced: true,
                         popup: false,
