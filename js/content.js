@@ -807,6 +807,27 @@ export async function content(config, pack) {
 	game.HDsetAudioname2('decadexuanfeng', {
 		wechat_lingtong: 'xuanfeng',
 	});
+	game.HDsetAudioname2('bifa', {
+		Mbaby_chenlin: 'bifa_Mbaby_chenlin',
+	});
+	game.HDsetAudioname2(['songwei', 'songwei2'], {
+		Mbaby_caopi: 'songwei_Mbaby_caopi',
+	});
+	game.HDsetAudioname2('nzry_jianxiang', {
+		Mbaby_kuailiangkuaiyue: 'nzry_jianxiang_Mbaby_kuailiangkuaiyue',
+	});
+	game.HDsetAudioname2('rejunbing', {
+		Mbaby_simalang: 'rejunbing_Mbaby_simalang',
+	});
+	game.HDsetAudioname2('decadezhenjun', {
+		Mbaby_yujin: 'decadezhenjun_Mbaby_yujin',
+	});
+	game.HDsetAudioname2(['paiyi', 'paiyi_backup'], {
+		Mbaby_zhonghui: 'paiyi_Mbaby_zhonghui',
+	});
+	game.HDsetAudioname2('reweizhong', {
+		Mbaby_zhugedan: 'weizhong',
+	});
 
 	//precCI
 	//武将信息

@@ -16054,6 +16054,7 @@ const packs = function () {
                         onremove: true,
                     },
                     yizhi: {
+                        audio: 'wechatercai',
                         trigger: { player: 'useCardAfter' },
                         filter(event, player) {
                             const list = lib.inpile.filter(name => name != 'tao' && get.type(name) == 'basic' && !player.getStorage('wechatjishi').includes(name));

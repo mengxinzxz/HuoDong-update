@@ -78,7 +78,7 @@ const packs = function () {
             Mbaby_ol_xiahouyuan: ['male', 'wei', 4, ['minishensu', 'minishebian'], ['name:夏侯|渊', 'character:Mbaby_xiahouyuan']],
             Mbaby_caoying: ['female', 'wei', 4, ['minilingren', 'minifujian']],
             Mbaby_xinxianying: ['female', 'wei', 3, ['minizhongjian', 'minicaishi']],
-            Mbaby_xiahoudun: ['male', 'wei', 4, ['reganglie'], ['name:夏侯|惇']],
+            Mbaby_xiahoudun: ['male', 'wei', 4, ['reganglie'], ['die:re_xiahoudun', 'name:夏侯|惇']],
             Mbaby_re_xiahoudun: ['male', 'wei', 4, ['reganglie', 'miniqingjian'], ['name:夏侯|惇', 'character:Mbaby_xiahoudun']],
             Mbaby_guohuanghou: ['female', 'wei', 3, ['minijiaozhao', 'minidanxin']],
             Mbaby_caozhen: ['male', 'wei', 4, ['minisidi']],
@@ -125,7 +125,7 @@ const packs = function () {
             Mbaby_guanlu: ['male', 'wei', 3, ['tuiyan', 'minibusuan', 'minimingjie']],
             Mbaby_zhenghun: ['male', 'wei', 3, ['miniqiangzhi', 'dcpitian']],
             Mbaby_chentai: ['male', 'wei', 4, ['minijiuxian', 'dcchenyong']],
-            Mbaby_hanhaoshihuan: ['male', 'wei', 4, ['shenduan', 'miniyonglve']],
+            Mbaby_hanhaoshihuan: ['male', 'wei', 4, ['reshenduan', 'miniyonglve'], ['die:re_hanhaoshihuan']],
             Mbaby_sb_zhenji: ['female', 'wei', 3, ['minisbluoshen', 'minisbqingguo']],
             Mbaby_simalang: ['male', 'wei', 3, ['rejunbing', 'miniquji'], ['name:司马|朗']],
             Mbaby_zhanggong: ['male', 'wei', 3, ['miniqianxin', 'xinfu_zhenxing']],
@@ -915,8 +915,8 @@ const packs = function () {
                 },
             },
             minixingshang: {
-                audio: 'xingshang',
-                audioname2: { Mbaby_caoying: 'lingren_xingshang' },
+                audio: 'ext:活动武将/audio/skill:1',
+                audioname2: { Mbaby_caoying: 'minixingshang_caoying' },
                 trigger: { global: 'die' },
                 preHidden: true,
                 async content(event, trigger, player) {
@@ -926,10 +926,13 @@ const packs = function () {
                     }
                     await player.draw();
                 },
+                subSkill: {
+                    caoying: { audio: 'ext:活动武将/audio/skill:2' },
+                },
             },
             minilingren: {
                 derivation: ['minijianxiong', 'minixingshang'],
-                audio: 'xinfu_lingren',
+                audio: 'ext:活动武将/audio/skill:2',
                 inherit: 'xinfu_lingren',
                 filter(event, player) {
                     if (event.getParent().triggeredTargets3.length > 1) return false;
@@ -989,7 +992,7 @@ const packs = function () {
                 },
             },
             minifujian: {
-                audio: 'xinfu_fujian',
+                audio: 'ext:活动武将/audio/skill:2',
                 trigger: { player: ['phaseZhunbeiBegin', 'phaseJieshuBegin'] },
                 filter(event, player) {
                     return game.hasPlayer(current => {
@@ -1009,7 +1012,7 @@ const packs = function () {
                 },
             },
             minijiezi: {
-                audio: 'jiezi',
+                audio: 'ext:活动武将/audio/skill:2',
                 trigger: { global: ['phaseDrawSkipped', 'phaseDrawCancelled'] },
                 filter(event, player) {
                     return event.player != player && player.countMark('minijiezi_silent') < 2;
@@ -1046,6 +1049,7 @@ const packs = function () {
                     },
                 },
             },
+            decadezhenjun_Mbaby_yujin: { audio: 'ext:活动武将/audio/skill:2' },
             miniqiangxi: {
                 audio: 'qiangxi',
                 trigger: { source: 'damageBegin1' },
@@ -1259,7 +1263,7 @@ const packs = function () {
                 ai: { threaten: 3 },
             },
             minifangzhu: {
-                audio: 'fangzhu',
+                audio: 'ext:活动武将/audio/skill:1',
                 trigger: { player: 'damageEnd' },
                 async cost(event, trigger, player) {
                     event.result = await player.chooseTarget(get.prompt('minifangzhu'), '令一名其他角色将武将牌翻面并摸一张牌', lib.filter.notMe).set('ai', function (target) {
@@ -1303,8 +1307,9 @@ const packs = function () {
                     }
                 },
             },
+            songwei_Mbaby_caopi: { audio: 'ext:活动武将/audio/skill:true' },
             minikangkai: {
-                audio: 'kaikang',
+                audio: 'ext:活动武将/audio/skill:2',
                 audioname2: { Mnian_caopi: 'minikangkai_Mnian_caopi' },
                 trigger: { global: 'useCardToTargeted' },
                 filter(event, player) {
@@ -1518,12 +1523,12 @@ const packs = function () {
                 },
             },
             minijiushi: {
-                audio: 'jiushi1',
+                audio: 'ext:活动武将/audio/skill:2',
                 group: ['minijiushi1', 'minijiushi2', 'minijiushi3', 'minijiushi_gain'],
                 subfrequent: ['gain'],
                 subSkill: {
                     gain: {
-                        audio: 'jiushi1',
+                        audio: 'minijiushi',
                         trigger: { player: 'turnOverAfter' },
                         frequent: true,
                         prompt: '是否发动【酒诗】，获得牌堆中的一张锦囊牌？',
@@ -1541,7 +1546,8 @@ const packs = function () {
                     if (name == 'jiu') return !player.isTurnedOver();
                     return false;
                 },
-                audio: 'jiushi1',
+                audio: 'minijiushi',
+                sourceSkill: 'minijiushi',
                 enable: 'chooseToUse',
                 filter(event, player) {
                     if (player.classList.contains('turnedover')) return false;
@@ -1619,6 +1625,7 @@ const packs = function () {
                 },
             },
             minijiushi2: {
+                sourceSkill: 'minijiushi',
                 trigger: { player: 'damageBegin3' },
                 silent: true,
                 firstDo: true,
@@ -1630,7 +1637,8 @@ const packs = function () {
                 },
             },
             minijiushi3: {
-                audio: 'jiushi1',
+                audio: 'minijiushi',
+                sourceSkill: 'minijiushi',
                 trigger: { player: 'damageEnd' },
                 check(event, player) {
                     return player.isTurnedOver();
@@ -1654,7 +1662,7 @@ const packs = function () {
                     },
                 },
                 locked: false,
-                audio: 'luoying',
+                audio: 'ext:活动武将/audio/skill:2',
                 audioname2: { Mnian_caopi: 'miniluoying_Mnian_caopi' },
                 trigger: { global: ['loseAfter', 'loseAsyncAfter', 'cardsDiscardAfter'] },
                 filter(event, player) {
@@ -1842,7 +1850,7 @@ const packs = function () {
                 },
             },
             minimingjian: {
-                audio: 'mingjian',
+                audio: 'ext:活动武将/audio/skill:2',
                 enable: 'phaseUse',
                 usable: 1,
                 filterTarget: lib.filter.notMe,
@@ -1882,7 +1890,7 @@ const packs = function () {
                 },
             },
             minixingshuai: {
-                audio: 'xingshuai',
+                audio: 'ext:活动武将/audio/skill:2',
                 trigger: { player: 'dying' },
                 zhuSkill: true,
                 filter(event, player) {
@@ -1941,7 +1949,7 @@ const packs = function () {
                 },
             },
             minihuituo: {
-                audio: 'huituo',
+                audio: 'ext:活动武将/audio/skill:2',
                 audioname: ['re_caorui'],
                 trigger: { player: ['damageEnd', 'miniremingjian'] },
                 async cost(event, trigger, player) {
@@ -1963,7 +1971,7 @@ const packs = function () {
                 },
             },
             miniremingjian: {
-                audio: 'remingjian',
+                audio: 'ext:活动武将/audio/skill:2',
                 trigger: { global: 'damageSource' },
                 filter(event, player) {
                     return event.source && (event.source === player || event.source.getStorage('miniremingjian_buff').includes(player));
@@ -1978,7 +1986,7 @@ const packs = function () {
                 group: 'miniremingjian_mingjian',
                 subSkill: {
                     mingjian: {
-                        audio: 'remingjian',
+                        audio: 'miniremingjian',
                         inherit: 'minimingjian',
                         prompt: () => lib.translate['minimingjian_info'],
                         async content(event, trigger, player) {
@@ -2013,12 +2021,12 @@ const packs = function () {
                 },
             },
             minirexingshuai: {
-                audio: 'rexingshuai',
+                audio: 'ext:活动武将/audio/skill:2',
                 inherit: 'minixingshuai',
                 subSkill: {
                     restore: {
                         charlotte: true,
-                        audio: 'xingshuai',
+                        audio: 'minirexingshuai',
                         trigger: { global: 'dieAfter' },
                         filter(event, player) {
                             return event.player.group === 'wei';
@@ -2448,7 +2456,7 @@ const packs = function () {
                 ai: { expose: 0.3 },
             },
             minisidi: {
-                audio: 'residi',
+                audio: 'xinsidi',
                 trigger: { player: 'phaseJieshuBegin' },
                 filter(event, player) {
                     return player.countCards('he', function (card) {
@@ -2479,7 +2487,7 @@ const packs = function () {
                 ai: { notemp: true },
                 subSkill: {
                     push: {
-                        audio: 'residi',
+                        audio: 'xinsidi',
                         trigger: { global: 'phaseUseBegin' },
                         filter(event, player) {
                             return event.player != player && player.getExpansions('minisidi').length > 0;
@@ -2713,7 +2721,7 @@ const packs = function () {
                 },
             },
             miniqice: {
-                audio: 'qice',
+                audio: 'ext:活动武将/audio/skill:2',
                 inherit: 'qice',
                 filter(event, player) {
                     const hs = player.getCards('h');
@@ -2736,7 +2744,7 @@ const packs = function () {
                         },
                         backup(links, player) {
                             return {
-                                audio: 'qice',
+                                audio: 'miniqice',
                                 filterCard: true,
                                 selectCard: [1, Infinity],
                                 check(card) {
@@ -2761,7 +2769,7 @@ const packs = function () {
                 },
             },
             minizhiyu: {
-                audio: 'zhiyu',
+                audio: 'ext:活动武将/audio/skill:2',
                 trigger: { player: 'damageEnd' },
                 preHidden: true,
                 frequent: true,
@@ -2878,7 +2886,7 @@ const packs = function () {
             //钟会
             miniquanji: {
                 group: 'miniquanji_phase',
-                audio: 'quanji',
+                audio: 'ext:活动武将/audio/skill:2',
                 trigger: { player: 'damageEnd' },
                 getIndex: event => event.num,
                 frequent: true,
@@ -2898,7 +2906,7 @@ const packs = function () {
                 locked: false,
                 subSkill: {
                     phase: {
-                        audio: 'quanji',
+                        audio: 'ext:活动武将/audio/skill:2',
                         enable: 'phaseUse',
                         filter(event, player) {
                             return player.countCards('h');
@@ -2925,6 +2933,7 @@ const packs = function () {
                     },
                 },
             },
+            paiyi_Mbaby_zhonghui: { audio: 'ext:活动武将/audio/skill:2' },
             //杨修
             minijilei: {
                 audio: 'jilei',
@@ -3363,7 +3372,7 @@ const packs = function () {
             minijianxiong: {
                 audio: 'rejianxiong',
                 audioname2: {
-                    Mbaby_caoying: 'lingren_jianxiong',
+                    Mbaby_caoying: 'minijianxiong_Mbaby_caoying',
                     Mmiao_caoying: 'minijianxiong_caoying',
                 },
                 trigger: { player: 'damageEnd' },
@@ -3402,6 +3411,7 @@ const packs = function () {
                 },
                 subSkill: {
                     caoying: { audio: 'ext:活动武将/audio/skill:true' },
+                    Mbaby_caoying: { audio: 'ext:活动武将/audio/skill:true' },
                 },
             },
             minihujia: {
@@ -3989,8 +3999,9 @@ const packs = function () {
                 },
             },
             //筷子
+            nzry_jianxiang_Mbaby_kuailiangkuaiyue: { audio: 'ext:活动武将/audio/skill:2' },
             minishenshi: {
-                audio: 'nzry_shenshi',
+                audio: 'ext:活动武将/audio/skill:2',
                 enable: 'phaseUse',
                 filter(event, player) {
                     return player.countCards('he') > 0;
@@ -4034,7 +4045,7 @@ const packs = function () {
                 group: 'minishenshi_2',
                 subSkill: {
                     '2': {
-                        audio: 'nzry_shenshi',
+                        audio: 'minishenshi',
                         trigger: { player: 'damageEnd' },
                         filter(event, player) {
                             return player.countCards('he') > 0 && event.source?.isIn() && event.source != player;
@@ -4067,7 +4078,7 @@ const packs = function () {
                     },
                     '3': {
                         charlotte: true,
-                        audio: 'nzry_shenshi',
+                        audio: 'minishenshi',
                         trigger: { global: ['equipAfter', 'addJudgeAfter', 'loseAfter', 'gainAfter', 'loseAsyncAfter', 'addToExpansionAfter'] },
                         filter(event, player) {
                             if (player.countCards('h') >= 4) return false;
@@ -4441,7 +4452,7 @@ const packs = function () {
             },
             //曹洪
             miniyuanhu: {
-                audio: 'yuanhu',
+                audio: 'ext:活动武将/audio/skill:2',
                 enable: 'phaseUse',
                 filter(event, player) {
                     return player.hasCard({ type: 'equip' }, 'he');
@@ -4531,7 +4542,7 @@ const packs = function () {
                 },
                 subSkill: {
                     biyue: {
-                        audio: 'yuanhu',
+                        audio: 'miniyuanhu',
                         trigger: { player: 'phaseEnd' },
                         filter(event, player) {
                             return !player.hasHistory('useSkill', evt => evt.skill == 'miniyuanhu');
@@ -4547,7 +4558,7 @@ const packs = function () {
             },
             minijuezhu: {
                 limited: true,
-                audio: 'twjuezhu',
+                audio: 'ext:活动武将/audio/skill:1',
                 enable: 'phaseUse',
                 filter(event, player) {
                     return player.hasEnabledSlot(3) || player.hasEnabledSlot(4);
@@ -4757,7 +4768,7 @@ const packs = function () {
             },
             //卞夫人
             miniwanwei: {
-                audio: 'wanwei',
+                audio: 'ext:活动武将/audio/skill:1',
                 trigger: { global: 'dying' },
                 filter(event, player) {
                     return event.player != player && player.countCards('he');
@@ -4788,7 +4799,7 @@ const packs = function () {
                 },
             },
             miniyuejian: {
-                audio: 'yuejian',
+                audio: 'ext:活动武将/audio/skill:2',
                 mod: { maxHandcard: (player, num) => num + player.maxHp },
                 locked: false,
                 enable: 'chooseToUse',
@@ -5604,8 +5615,9 @@ const packs = function () {
                 },
             },
             //陈琳
+            bifa_Mbaby_chenlin: { audio: 'ext:活动武将/audio/skill:2' },
             minisongci: {
-                audio: 'songci',
+                audio: 'ext:活动武将/audio/skill:2',
                 inherit: 'songci',
                 filter(event, player) {
                     return game.hasPlayer(current => {
@@ -5624,6 +5636,7 @@ const packs = function () {
                 group: 'minisongci_draw',
                 subSkill: {
                     draw: {
+                        audio: 'minisongci',
                         inherit: 'songci_draw',
                         locked: false,
                         filter: () => true,
@@ -5874,7 +5887,7 @@ const packs = function () {
             },
             //韩史
             miniyonglve: {
-                audio: 'yonglve',
+                audio: 'reyonglve',
                 trigger: { global: 'phaseJudgeBegin' },
                 filter(event, player) {
                     return event.player !== player && event.player.countCards('j') > 0;
@@ -6029,8 +6042,9 @@ const packs = function () {
                 }
             },
             //司马朗
+            rejunbing_Mbaby_simalang: { audio: 'ext:活动武将/audio/skill:2' },
             miniquji: {
-                audio: 'quji',
+                audio: 'ext:活动武将/audio/skill:2',
                 inherit: 'quji',
                 filter(event, player) {
                     return game.hasPlayer(current => current.isDamaged());
@@ -45586,6 +45600,71 @@ const packs = function () {
             '#ext:活动武将/audio/skill/miniyinhuozhong1': '非是贫道神通大，原是人心易招邪。',
             '#ext:活动武将/audio/skill/miniyinhuozhong2': '你笑贫道看走眼，贫道怜你眼蒙尘。',
             '#ext:活动武将/audio/die/Myin_yuji:die': '这场戏……演到头了',
+            '#ext:活动武将/audio/skill/miniwanwei1': '为避巨测之祸而弃忠信之名，诸君何其愚哉！',
+            '#ext:活动武将/audio/skill/miniyuejian1': '食饲粗淡，行倚弩马，膝下四子亦乃栋梁之才。',
+            '#ext:活动武将/audio/skill/miniyuejian2': '衣非锦绣，饰无珠玉，双颊红霞可当上佳之颜。',
+            '#ext:活动武将/audio/die/Mbaby_bianfuren:die': '子桓，子建，黄须儿……',
+            '#ext:活动武将/audio/skill/minikangkai1': '尔等叛贼，来一个，我杀一个！',
+            '#ext:活动武将/audio/skill/minikangkai2': '父亲上马，孩儿随后便来。',
+            '#ext:活动武将/audio/die/Mbaby_caoang:die': '父亲，安全就好……',
+            '#ext:活动武将/audio/skill/miniyuanhu1': '避一时之乱，求长世安稳',
+            '#ext:活动武将/audio/skill/miniyuanhu2': '天下可无洪，不可无君呐！',
+            '#ext:活动武将/audio/skill/minijuezhu1': '此乃良驹，愿助将军日行干里！',
+            '#ext:活动武将/audio/die/Mbaby_caohong:die': '不要管我，快走！',
+            '#ext:活动武将/audio/skill/minihuituo1': '弘法明理，不负众民之望。',
+            '#ext:活动武将/audio/skill/minihuituo2': '看我如何恢疆拓土，振兴大魏！',
+            '#ext:活动武将/audio/skill/minimingjian1': '讨伐大任，就交予你了。',
+            '#ext:活动武将/audio/skill/minimingjian2': '以将军之才，定可一招制敌。',
+            '#ext:活动武将/audio/skill/minixingshuai1': '吾国之兴衰，还望诸位一力护持。',
+            '#ext:活动武将/audio/skill/minixingshuai2': '兴衰皆由人定，岂能独赖天命。',
+            '#ext:活动武将/audio/die/Mbaby_caorui:die': '将相协力，魏室，可兴。',
+            '#ext:活动武将/audio/skill/minilingren1': '大军压境，问汝降是不降？',
+            '#ext:活动武将/audio/skill/minilingren2': '将军一副好骨，不如留于此山！',
+            '#ext:活动武将/audio/skill/minifujian1': '若非耳目齐备，何以手眼通天？',
+            '#ext:活动武将/audio/skill/minifujian2': '欲晓敌之态势，无所不用其极。',
+            '#ext:活动武将/audio/skill/minijianxiong_Mbaby_caoying': '一城一地之礼，何足败我？',
+            '#ext:活动武将/audio/skill/minixingshang_caoying1': '此刀枪军械，尽归我有。',
+            '#ext:活动武将/audio/skill/minixingshang_caoying2': '人弃我取，何乐而不为？',
+            '#ext:活动武将/audio/skill/miniluoying1': '梅花尽落人尽散。',
+            '#ext:活动武将/audio/skill/miniluoying2': '落英何处去，随我诉衷肠。',
+            '#ext:活动武将/audio/skill/minijiushi1': '借君一壶酒，七步已成诗。',
+            '#ext:活动武将/audio/skill/minijiushi2': '疑有暗香来，几度梅花开。',
+            '#ext:活动武将/audio/die/Mbaby_caozhi:die': '一醉不醒亦无恨……',
+            '#ext:活动武将/audio/skill/bifa_Mbaby_chenlin1': '功必不成，舐为乱阶。',
+            '#ext:活动武将/audio/skill/bifa_Mbaby_chenlin2': '国之大事，岂可以诈立乎？',
+            '#ext:活动武将/audio/skill/minisongci1': '苟好乐之嘉合，永绝世而独昌。',
+            '#ext:活动武将/audio/skill/minisongci2': '赞皇师以南假，济汉川之清流。',
+            '#ext:活动武将/audio/die/Mbaby_chenlin:die': '如椽巨笔，载不动吾之满腔遗恨矣……',
+            '#ext:活动武将/audio/skill/minixingshang1': '我的是我的！你的还是我的！',
+            '#ext:活动武将/audio/skill/minifangzhu1': '给我翻过来！',
+            '#ext:活动武将/audio/skill/songwei_Mbaby_caopi': '干秋万载，一统江山！',
+            '#ext:活动武将/audio/die/Mbaby_caopi:die': '大事未成，愧对先父……',
+            '#ext:活动武将/audio/skill/nzry_jianxiang_Mbaby_kuailiangkuaiyue1': '感曹公之遇，荐诚心之降。',
+            '#ext:活动武将/audio/skill/nzry_jianxiang_Mbaby_kuailiangkuaiyue2': '亲曹而降，良谋之举。',
+            '#ext:活动武将/audio/skill/minishenshi1': '审察时机，先发制人。',
+            '#ext:活动武将/audio/skill/minishenshi2': '审袁曹之争，立不破之举。',
+            '#ext:活动武将/audio/die/Mbaby_kuailiangkuaiyue:die': '犹犹豫豫，难有大成啊！',
+            '#ext:活动武将/audio/skill/rejunbing_Mbaby_simalang1': '郡国备兵，可内威不轨。',
+            '#ext:活动武将/audio/skill/rejunbing_Mbaby_simalang2': '州中置军，可外御四夷。',
+            '#ext:活动武将/audio/skill/miniquji1': '威恩兼著，可去黎庶疾苦。',
+            '#ext:活动武将/audio/skill/miniquji2': '治务宽惠，方见百姓欢颜。',
+            '#ext:活动武将/audio/die/Mbaby_simalang:die': '救民未成，救己亦未成……',
+            '#ext:活动武将/audio/skill/minijiezi1': '断粮道，毀辎行。',
+            '#ext:活动武将/audio/skill/minijiezi2': '辎行千里，必有一失。',
+            '#ext:活动武将/audio/skill/miniqice1': '天下大乱，智士劳心之时也！',
+            '#ext:活动武将/audio/skill/miniqice2': '智谋足备，能奋奇策。',
+            '#ext:活动武将/audio/skill/minizhiyu1': '外愚内智，外怯内勇。',
+            '#ext:活动武将/audio/skill/minizhiyu2': '智可及，愚不可及。',
+            '#ext:活动武将/audio/die/Mbaby_xunyou:die': '主推心以待，攸虽死亦幸！',
+            '#ext:活动武将/audio/skill/decadezhenjun_Mbaby_yujin1': '严守纪法，不得有误！',
+            '#ext:活动武将/audio/skill/decadezhenjun_Mbaby_yujin2': '治军，以武为纪！',
+            '#ext:活动武将/audio/die/Mbaby_yujin:die': '洪水滔天，大势已去……',
+            '#ext:活动武将/audio/die/Mbaby_zhanghe:die': '征战数载，竟被暗箭所伤……',
+            '#ext:活动武将/audio/skill/miniquanji1': '今日之举，不过权计。',
+            '#ext:活动武将/audio/skill/miniquanji2': '韬光养晦，再夺天时。',
+            '#ext:活动武将/audio/skill/paiyi_Mbaby_zhonghui1': '今天，你可别怪我。',
+            '#ext:活动武将/audio/skill/paiyi_Mbaby_zhonghui2': '昨日之仇，如芒在背。',
+            '#ext:活动武将/audio/die/Mbaby_zhonghui:die': '是谁？走漏了……风声……',
         },
     };
     MiNikill_sight();//加载欢杀界面逻辑
