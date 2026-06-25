@@ -45665,6 +45665,7 @@ const packs = function () {
             '#ext:活动武将/audio/skill/paiyi_Mbaby_zhonghui1': '今天，你可别怪我。',
             '#ext:活动武将/audio/skill/paiyi_Mbaby_zhonghui2': '昨日之仇，如芒在背。',
             '#ext:活动武将/audio/die/Mbaby_zhonghui:die': '是谁？走漏了……风声……',
+            
         },
     };
     MiNikill_sight();//加载欢杀界面逻辑
