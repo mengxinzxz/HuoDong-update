@@ -117,6 +117,14 @@
             "size": 37450
         },
         {
+            "path": "audio/die/Mbaby_dongyun.mp3",
+            "size": 16663
+        },
+        {
+            "path": "audio/die/Mbaby_guanzhang.mp3",
+            "size": 155939
+        },
+        {
             "path": "audio/die/Mbaby_kuailiangkuaiyue.mp3",
             "size": 269833
         },
@@ -1005,6 +1013,14 @@
             "size": 55122
         },
         {
+            "path": "audio/skill/jiezhong_Mbaby_guanping1.mp3",
+            "size": 13781
+        },
+        {
+            "path": "audio/skill/jiezhong_Mbaby_guanping2.mp3",
+            "size": 13259
+        },
+        {
             "path": "audio/skill/juntun.mp3",
             "size": 52130
         },
@@ -1127,6 +1143,14 @@
         {
             "path": "audio/skill/minibenyue2.mp3",
             "size": 192223
+        },
+        {
+            "path": "audio/skill/minibingzheng1.mp3",
+            "size": 22956
+        },
+        {
+            "path": "audio/skill/minibingzheng2.mp3",
+            "size": 24601
         },
         {
             "path": "audio/skill/minibutian1.mp3",
@@ -1311,6 +1335,14 @@
         {
             "path": "audio/skill/minifirerongyan2.mp3",
             "size": 39950
+        },
+        {
+            "path": "audio/skill/minifuhun1.mp3",
+            "size": 105817
+        },
+        {
+            "path": "audio/skill/minifuhun2.mp3",
+            "size": 77604
         },
         {
             "path": "audio/skill/minifujian1.mp3",
@@ -1937,6 +1969,14 @@
             "size": 65156
         },
         {
+            "path": "audio/skill/minipaoxiao_guanzhang1.mp3",
+            "size": 39988
+        },
+        {
+            "path": "audio/skill/minipaoxiao_guanzhang2.mp3",
+            "size": 66110
+        },
+        {
             "path": "audio/skill/minipaoxiao_Mbabysp_zhangfei1.mp3",
             "size": 62074
         },
@@ -1983,6 +2023,14 @@
         {
             "path": "audio/skill/miniquji2.mp3",
             "size": 78124
+        },
+        {
+            "path": "audio/skill/minirewusheng_guanzhang1.mp3",
+            "size": 127759
+        },
+        {
+            "path": "audio/skill/minirewusheng_guanzhang2.mp3",
+            "size": 119400
         },
         {
             "path": "audio/skill/miniruyi1.mp3",
@@ -2173,6 +2221,14 @@
             "size": 149722
         },
         {
+            "path": "audio/skill/miniwuji1.mp3",
+            "size": 13363
+        },
+        {
+            "path": "audio/skill/miniwuji2.mp3",
+            "size": 13854
+        },
+        {
             "path": "audio/skill/miniwushuang_Mmiao_lvlingqi1.mp3",
             "size": 20804
         },
@@ -2231,6 +2287,14 @@
         {
             "path": "audio/skill/minixinsheng2.mp3",
             "size": 19722
+        },
+        {
+            "path": "audio/skill/minixuanhuo1.mp3",
+            "size": 15955
+        },
+        {
+            "path": "audio/skill/minixuanhuo2.mp3",
+            "size": 18985
         },
         {
             "path": "audio/skill/minixuefeng1.mp3",
@@ -2691,6 +2755,14 @@
         {
             "path": "audio/skill/rejunbing_Mbaby_simalang2.mp3",
             "size": 63916
+        },
+        {
+            "path": "audio/skill/sheyan_Mbaby_dongyun1.mp3",
+            "size": 23687
+        },
+        {
+            "path": "audio/skill/sheyan_Mbaby_dongyun2.mp3",
+            "size": 22590
         },
         {
             "path": "audio/skill/songwei_Mbaby_caopi.mp3",
@@ -3551,6 +3623,14 @@
         {
             "path": "audio/skill/xinjuejing2.mp3",
             "size": 9091
+        },
+        {
+            "path": "audio/skill/xueji_Mbaby_guanyinping1.mp3",
+            "size": 15140
+        },
+        {
+            "path": "audio/skill/xueji_Mbaby_guanyinping2.mp3",
+            "size": 13572
         },
         {
             "path": "audio/skill/YJjinzhu.mp3",
@@ -7758,7 +7838,7 @@
         },
         {
             "path": "js/content.js",
-            "size": 62857
+            "size": 63118
         },
         {
             "path": "js/help.js",
@@ -7806,7 +7886,7 @@
         },
         {
             "path": "js/precontent/MiNikill.js",
-            "size": 2717971
+            "size": 2720653
         },
         {
             "path": "js/precontent/MX_catcatcup.js",
