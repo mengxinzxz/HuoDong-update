@@ -8180,18 +8180,21 @@ const packs = function () {
                 },
                 audio: 'kongcheng1',
                 audioname: ['re_zhugeliang'],
-                trigger: { player: 'loseEnd' },
+                trigger: {
+                    player: 'loseEnd',
+                    global: 'loseAsyncEnd',
+                },
                 forced: true,
                 firstDo: true,
                 filter(event, player) {
                     if (player.countCards('h')) return false;
-                    return event.cards.some(card => card.original == 'h');
+                    return (event.getl?.(player)?.hs ?? []).length > 0;
                 },
                 content() { },
                 ai: {
                     noh: true,
-                    skillTagFilter(player, tag) {
-                        return player.countCards('h') == 1;
+                    skillTagFilter(player) {
+                        return player.countCards('h') === 1;
                     },
                 },
             },
