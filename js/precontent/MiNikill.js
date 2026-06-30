@@ -3418,8 +3418,7 @@ const packs = function () {
                 audio: 'hujia',
                 trigger: { player: ['chooseToRespondBefore', 'chooseToUseBefore'] },
                 filter(event, player) {
-                    if (event.responded) return false;
-                    if (player.storage.minihujiaing) return false;
+                    if (event.responded || event.minihujia) return false;
                     if (!event.filterCard({ name: 'shan' }, player, event)) return false;
                     return game.hasPlayer(function (current) {
                         return current != player && current.group == 'wei';
@@ -3429,47 +3428,40 @@ const packs = function () {
                     return get.damageEffect(player, event.player, player) < 0;
                 },
                 zhuSkill: true,
-                content() {
-                    'step 0'
-                    if (!event.current) event.current = player.next;
-                    if (event.current == player) event.finish();
-                    else if (event.current.group == 'wei') {
-                        if ((event.current == game.me && !_status.auto) || (
-                            get.attitude(event.current, player) > 2) ||
-                            event.current.isOnline()) {
-                            player.storage.minihujiaing = true;
-                            var next = event.current.chooseToRespond('是否替' + get.translation(player) + '打出一张闪？', { name: 'shan' });
-                            next.set('ai', function () {
-                                var event = _status.event;
-                                return (get.attitude(event.player, event.source) - 2);
+                async content(event, trigger, player) {
+                    trigger.set('minihujia', true);
+                    let current = player.getNext();
+                    while (current !== player) {
+                        if (current.group === 'wei') {
+                            const next = current.chooseToRespond('是否替' + get.translation(player) + '打出一张【闪】？', { name: 'shan' });
+                            next.set('ai', () => {
+                                const { player, source } = get.event();
+                                const evt = get.event().getTrigger();
+                                let eff = 1;
+                                if (Array.isArray(evt.respondTo) && evt.respondTo.length === 2) eff = -get.effect(source, evt.respondTo[1], evt.respondTo[0], player);
+                                return get.attitude(player, source) * eff;
                             });
-                            next.set('skillwarn', '替' + get.translation(player) + '打出一张闪');
-                            next.autochoose = lib.filter.autoRespondShan;
                             next.set('source', player);
+                            next.set('minihujia', true);
+                            next.set('skillwarn', '替' + get.translation(player) + '打出一张【闪】');
+                            next.noOrdering = true;
+                            next.autochoose = lib.filter.autoRespondSha;
+                            const result = await next.forResult();
+                            if (result?.bool) {
+                                trigger.result = { bool: true, card: { name: 'shan', isCard: true } };
+                                trigger.responded = true;
+                                trigger.animate = false;
+                                if (typeof current.ai.shown == 'number' && current.ai.shown < 0.95) current.ai.shown = Math.min(current.ai.shown + 0.3, 0.95);
+                                await game.delayx();
+                                const result2 = await current.chooseBool('是否令' + get.translation(player) + '摸一张牌？').forResult();
+                                if (result2?.bool) {
+                                    current.line(player);
+                                    await player.draw();
+                                }
+                                return;
+                            }
                         }
-                    }
-                    'step 1'
-                    player.storage.minihujiaing = false;
-                    if (result.bool) {
-                        event.target = event.current;
-                        trigger.result = { bool: true, card: { name: 'shan', isCard: true } };
-                        trigger.responded = true;
-                        trigger.animate = false;
-                        if (typeof event.current.ai.shown == 'number' && event.current.ai.shown < 0.95) {
-                            event.current.ai.shown += 0.3;
-                            if (event.current.ai.shown > 0.95) event.current.ai.shown = 0.95;
-                        }
-                    }
-                    else {
-                        event.current = event.current.next;
-                        event.goto(0);
-                    }
-                    'step 2'
-                    target.chooseBool('是否令' + get.translation(player) + '摸一张牌？');
-                    'step 3'
-                    if (result.bool) {
-                        target.line(player);
-                        player.draw();
+                        current = current.getNext();
                     }
                 },
                 ai: {
@@ -8180,18 +8172,21 @@ const packs = function () {
                 },
                 audio: 'kongcheng1',
                 audioname: ['re_zhugeliang'],
-                trigger: { player: 'loseEnd' },
+                trigger: {
+                    player: 'loseEnd',
+                    global: 'loseAsyncEnd',
+                },
                 forced: true,
                 firstDo: true,
                 filter(event, player) {
                     if (player.countCards('h')) return false;
-                    return event.cards.some(card => card.original == 'h');
+                    return (event.getl?.(player)?.hs ?? []).length > 0;
                 },
                 content() { },
                 ai: {
                     noh: true,
-                    skillTagFilter(player, tag) {
-                        return player.countCards('h') == 1;
+                    skillTagFilter(player) {
+                        return player.countCards('h') === 1;
                     },
                 },
             },
@@ -8213,16 +8208,9 @@ const packs = function () {
                     var player = get.owner(card);
                     if (ui.selected.cards.length >= Math.max(2, player.countCards('h') - player.hp)) return 0;
                     if (player.hp == player.maxHp || player.storage.minirende < 0 || player.countCards('h') <= 1) {
-                        var players = game.filterPlayer();
-                        for (var i = 0; i < players.length; i++) {
-                            if (players[i].hasSkill('haoshi') &&
-                                !players[i].isTurnedOver() &&
-                                !players[i].hasJudge('lebu') &&
-                                get.attitude(player, players[i]) >= 3 &&
-                                get.attitude(players[i], player) >= 3) {
-                                return 11 - get.value(card);
-                            }
-                        }
+                        if (game.hasPlayer(target => {
+                            return target.hasSkill('haoshi') && !target.isTurnedOver() && !target.hasJudge('lebu') && get.attitude(player, target) >= 3 && get.attitude(target, player) >= 3;
+                        })) return 11 - get.value(card);
                         if (player.countCards('h') > player.hp) return 10 - get.value(card);
                         if (player.countCards('h') > 2) return 6 - get.value(card);
                         return -1;
@@ -8370,59 +8358,49 @@ const packs = function () {
                     return ['minijijiang', 'minirejijiang'].includes(event.skill);
                 },
                 forced: true,
-                content() {
-                    'step 0'
+                async content(event, trigger, player) {
                     delete trigger.skill;
                     trigger.getParent().set('jijiang', true);
-                    'step 1'
-                    if (event.current == undefined) event.current = player.next;
-                    if (event.current == player) {
-                        player.addTempSkill('jijiang3');
-                        event.finish();
-                        trigger.cancel();
-                        trigger.getParent().goto(0);
-                    }
-                    else if (event.current.group == 'shu') {
-                        var next = event.current.chooseToRespond('是否替' + get.translation(player) + '打出一张杀？', { name: 'sha' });
-                        next.set('ai', function () {
-                            var event = _status.event;
-                            return (get.attitude(event.player, event.source) - 2);
-                        });
-                        next.set('source', player);
-                        next.set('jijiang', true);
-                        next.set('skillwarn', '替' + get.translation(player) + '打出一张杀');
-                        next.noOrdering = true;
-                        next.autochoose = lib.filter.autoRespondSha;
-                    }
-                    else {
-                        event.current = event.current.next;
-                        event.redo();
-                    }
-                    'step 2'
-                    if (result.bool) {
-                        game.asyncDraw([player, event.current]);
-                        trigger.card = result.card;
-                        trigger.cards = result.cards;
-                        trigger.throw = false;
-                        if (typeof event.current.ai.shown == 'number' && event.current.ai.shown < 0.95) {
-                            event.current.ai.shown += 0.3;
-                            if (event.current.ai.shown > 0.95) event.current.ai.shown = 0.95;
+                    let current = player.getNext();
+                    while (current !== player) {
+                        if (current.group === 'shu') {
+                            const next = current.chooseToRespond('是否替' + get.translation(player) + '打出一张【杀】？', { name: 'sha' });
+                            next.set('ai', () => {
+                                const { player, source } = get.event();
+                                const evt = get.event().getTrigger();
+                                let eff = 1;
+                                if (Array.isArray(evt.respondTo) && evt.respondTo.length === 2) eff = -get.effect(source, evt.respondTo[1], evt.respondTo[0], player);
+                                return get.attitude(player, source) * eff;
+                            });
+                            next.set('source', player);
+                            next.set('jijiang', true);
+                            next.set('skillwarn', '替' + get.translation(player) + '打出一张【杀】');
+                            next.noOrdering = true;
+                            next.autochoose = lib.filter.autoRespondSha;
+                            const result = await next.forResult();
+                            if (result?.bool) {
+                                await game.asyncDraw([player, current]);
+                                trigger.card = result.card;
+                                trigger.cards = result.cards;
+                                trigger.throw = false;
+                                if (typeof current.ai.shown == 'number' && current.ai.shown < 0.95) current.ai.shown = Math.min(current.ai.shown + 0.3, 0.95);
+                                await game.delayx();
+                                return;
+                            }
                         }
-                        event.finish();
+                        current = current.getNext();
                     }
-                    else {
-                        event.current = event.current.next;
-                        event.goto(1);
-                    }
-                }
+                    player.addTempSkill('jijiang3');
+                    trigger.cancel();
+                    trigger.getParent().goto(0);
+                },
             },
             minirejijiang3: {
                 audio: 'jijiang1',
                 audioname: ['ol_liushan', 're_liubei'],
                 trigger: { global: ['useCard', 'respond'] },
                 filter(event, player) {
-                    return event.card.name == 'sha' && event.player != player && event.player.group == 'shu' && event.player.isIn() &&
-                        player != _status.currentPhase;
+                    return event.card.name == 'sha' && event.player != player && event.player.group == 'shu' && event.player.isIn() && player != _status.currentPhase;
                 },
                 usable: 1,
                 async cost(event, trigger, player) {
