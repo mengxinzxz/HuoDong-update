@@ -837,6 +837,24 @@ export async function content(config, pack) {
 	game.HDsetAudioname2('xueji', {
 		Mbaby_guanyinping: 'xueji_Mbaby_guanyinping',
 	});
+	game.HDsetAudioname2('jyzongshi', {
+		Mbaby_jianyong: 'jyzongshi_Mbaby_jianyong',
+	});
+	game.HDsetAudioname2('zhuning', {
+		Mbaby_liuyong: 'zhuning_Mbaby_liuyong',
+	});
+	game.HDsetAudioname2(['xinfu_bijing', 'xinfu_bijing_lose', 'xinfu_bijing_discard'], {
+		Mbaby_lvkai: 'xinfu_bijing_Mbaby_lvkai',
+	});
+	game.HDsetAudioname2('xinwuyan', {
+		Mbaby_xushu: 'wuyan',
+	});
+	game.HDsetAudioname2('zhuihuan', {
+		Mbaby_yangwan: 'zhuihuan_Mbaby_yangwan',
+	});
+	game.HDsetAudioname2('rewurong', {
+		Mbaby_zhangyi: 'rewurong_Mbaby_zhangyi',
+	});
 
 	//precCI
 	//武将信息
