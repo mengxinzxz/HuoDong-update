@@ -790,6 +790,7 @@ export async function content(config, pack) {
 	});
 	game.HDsetAudioname2('reyingzi', {
 		Mbaby_zhouyu: 'yingzi',
+		Mbaby_heqi: 'miniqizhou_yingzi',
 	});
 	game.HDsetAudioname2('jsrgguanjue', {
 		Mbaby_re_guanyu: 'miniguanjue',
@@ -806,6 +807,7 @@ export async function content(config, pack) {
 	});
 	game.HDsetAudioname2('decadexuanfeng', {
 		wechat_lingtong: 'xuanfeng',
+		Mbaby_heqi: 'miniqizhou_xuanfeng',
 	});
 	game.HDsetAudioname2('bifa', {
 		Mbaby_chenlin: 'bifa_Mbaby_chenlin',
@@ -854,6 +856,21 @@ export async function content(config, pack) {
 	});
 	game.HDsetAudioname2('rewurong', {
 		Mbaby_zhangyi: 'rewurong_Mbaby_zhangyi',
+	});
+	game.HDsetAudioname2('rebingyi', {
+		Mbaby_re_guyong: 'bingyi',
+	});
+	game.HDsetAudioname2('xinfu_zhanji', {
+		Mbaby_re_jsp_pangtong: 'xinfu_zhanji_Mbaby_re_jsp_pangtong',
+	});
+	game.HDsetAudioname2('remumu', {
+		Mbaby_sunluyu: 'remumu_Mbaby_sunluyu',
+	});
+	game.HDsetAudioname2(['rezhijian', 'rezhijian_use'], {
+		Mbaby_zhangzhang: 'zhijian',
+	});
+	game.HDsetAudioname2('xinfu_duanfa', {
+		Mbaby_zhoufang: 'xinfu_duanfa_Mbaby_zhoufang',
 	});
 
 	//precCI
