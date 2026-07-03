@@ -605,8 +605,24 @@
             "size": 32224
         },
         {
+            "path": "audio/die/wechat_zhi_sunquan_shadow.mp3",
+            "size": 18259
+        },
+        {
+            "path": "audio/die/wechat_zhi_sunquan.mp3",
+            "size": 20663
+        },
+        {
+            "path": "audio/die/wechat_zhi_xushi.mp3",
+            "size": 15960
+        },
+        {
             "path": "audio/die/wechat_zhi_zhangjiao.mp3",
             "size": 18013
+        },
+        {
+            "path": "audio/die/wechat_zhi_zhushixing.mp3",
+            "size": 22648
         },
         {
             "path": "audio/die/wechat_zhiyin_caiwenji.mp3",
@@ -3197,6 +3213,22 @@
             "size": 21984
         },
         {
+            "path": "audio/skill/wechatchengfan_wechat_zhi_sunquan_shadow1.mp3",
+            "size": 14393
+        },
+        {
+            "path": "audio/skill/wechatchengfan_wechat_zhi_sunquan_shadow2.mp3",
+            "size": 22408
+        },
+        {
+            "path": "audio/skill/wechatchengfan1.mp3",
+            "size": 15856
+        },
+        {
+            "path": "audio/skill/wechatchengfan2.mp3",
+            "size": 15020
+        },
+        {
             "path": "audio/skill/wechatdahu1.mp3",
             "size": 16750
         },
@@ -3501,12 +3533,28 @@
             "size": 25387
         },
         {
+            "path": "audio/skill/wechatlihai1.mp3",
+            "size": 15438
+        },
+        {
+            "path": "audio/skill/wechatlihai2.mp3",
+            "size": 15125
+        },
+        {
             "path": "audio/skill/wechatlongyi1.mp3",
             "size": 13834
         },
         {
             "path": "audio/skill/wechatlongyi2.mp3",
             "size": 21043
+        },
+        {
+            "path": "audio/skill/wechatluchou1.mp3",
+            "size": 13975
+        },
+        {
+            "path": "audio/skill/wechatluchou2.mp3",
+            "size": 18677
         },
         {
             "path": "audio/skill/wechatluheng1.mp3",
@@ -3621,6 +3669,14 @@
             "size": 16759
         },
         {
+            "path": "audio/skill/wechatqiusuo1.mp3",
+            "size": 20871
+        },
+        {
+            "path": "audio/skill/wechatqiusuo2.mp3",
+            "size": 22648
+        },
+        {
             "path": "audio/skill/wechatquanshi_wechat_zhi_caocao_shadow1.mp3",
             "size": 34000
         },
@@ -3683,6 +3739,14 @@
         {
             "path": "audio/skill/wechatsheshi2.mp3",
             "size": 17585
+        },
+        {
+            "path": "audio/skill/wechatshizhu1.mp3",
+            "size": 12826
+        },
+        {
+            "path": "audio/skill/wechatshizhu2.mp3",
+            "size": 12826
         },
         {
             "path": "audio/skill/wechatshutui1.mp3",
@@ -3869,6 +3933,14 @@
             "size": 12684
         },
         {
+            "path": "audio/skill/wechatxunjing1.mp3",
+            "size": 21289
+        },
+        {
+            "path": "audio/skill/wechatxunjing2.mp3",
+            "size": 24738
+        },
+        {
             "path": "audio/skill/wechatyanfeng1.mp3",
             "size": 12266
         },
@@ -3947,6 +4019,22 @@
         {
             "path": "audio/skill/wechatzhengren2.mp3",
             "size": 26163
+        },
+        {
+            "path": "audio/skill/wechatzhenxian_wechat_zhi_sunquan_shadow1.mp3",
+            "size": 15960
+        },
+        {
+            "path": "audio/skill/wechatzhenxian_wechat_zhi_sunquan_shadow2.mp3",
+            "size": 21603
+        },
+        {
+            "path": "audio/skill/wechatzhenxian1.mp3",
+            "size": 14916
+        },
+        {
+            "path": "audio/skill/wechatzhenxian2.mp3",
+            "size": 16901
         },
         {
             "path": "audio/skill/wechatzhongxin1.mp3",
@@ -7621,8 +7709,24 @@
             "size": 167365
         },
         {
+            "path": "image/character/wechat_zhi_sunquan_shadow.jpg",
+            "size": 117698
+        },
+        {
+            "path": "image/character/wechat_zhi_sunquan.jpg",
+            "size": 136148
+        },
+        {
+            "path": "image/character/wechat_zhi_xushi.jpg",
+            "size": 109658
+        },
+        {
             "path": "image/character/wechat_zhi_zhangjiao.jpg",
             "size": 112603
+        },
+        {
+            "path": "image/character/wechat_zhi_zhushixing.jpg",
+            "size": 110010
         },
         {
             "path": "image/character/wechat_zhiyin_caiwenji.jpg",
@@ -8330,7 +8434,7 @@
         },
         {
             "path": "js/precontent/WeChatkill.js",
-            "size": 1405200
+            "size": 1408232
         },
         {
             "path": "README.md",

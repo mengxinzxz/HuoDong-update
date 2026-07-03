@@ -320,6 +320,9 @@ const packs = function () {
             wechat_sb_sp_zhugeliang: [
                 ['wechat_sb_zhugeliang', ['die:sb_zhugeliang']],
             ],
+            wechat_zhi_sunquan: [
+                ['wechat_zhi_sunquan_shadow', ['img:extension/活动武将/image/character/wechat_zhi_sunquan_shadow.jpg', 'die:ext:活动武将/audio/die/wechat_zhi_sunquan_shadow.mp3']],
+            ],
         },
         card: {
             wechatjiguangjian: {
@@ -18010,6 +18013,7 @@ const packs = function () {
             //☞孙权
             wechatchengfan: {
                 audio: 'ext:活动武将/audio/skill:2',
+                audioname: ['wechat_zhi_sunquan_shadow'],
                 trigger: { player: ['phaseDrawBegin2', 'useCard1'] },
                 filter(event, player) {
                     if (event.name === 'phaseDraw') return !event.numFixed;
@@ -18070,6 +18074,7 @@ const packs = function () {
             },
             wechatzhenxian: {
                 audio: 'ext:活动武将/audio/skill:2',
+                audioname: ['wechat_zhi_sunquan_shadow'],
                 enable: 'phaseUse',
                 onChooseToUse(event) {
                     if (!game.online && event.type === 'phase' && !event.wechatzhenxian_recast) {
@@ -18187,6 +18192,7 @@ const packs = function () {
                     game.log(player, `#g【${get.translation('wechatchengfan')}】`, '区间上限+1，', '#y摸牌阶段', '摸牌数+1');
                     player.addSkill(`${event.name}_draw`);
                     player.addMark(`${event.name}_draw`, 1, false);
+                    if (player.countMark(event.name) >= 2) player.changeSkin({ characterName: 'wechat_zhi_sunquan' }, 'wechat_zhi_sunquan_shadow');
                 },
                 subSkill: {
                     xizifu: {
@@ -19672,6 +19678,7 @@ const packs = function () {
                         intro: { content: `${get.poptip('wechatluchou')}增加“出牌阶段限一次”的时机` },
                     },
                     effect: {
+                        audio: 'wechatshizhu',
                         charlotte: true,
                         mark: true,
                         intro: { content: '本局游戏使用的【杀】可以额外指定一个目标' },
@@ -23455,6 +23462,28 @@ const packs = function () {
             '#ext:活动武将/audio/skill/wechatmumu1': '万众和睦才是王道。',
             '#ext:活动武将/audio/skill/wechatmumu2': '银线难数思深，一曲全表心意。',
             '#ext:活动武将/audio/die/wechat_sunluyu:die': '苔花虽小亦妍开，暗角何待春风来……',
+            '#ext:活动武将/audio/skill/wechatxunjing1': '定我佛心不改，万里犹在一念间。',
+            '#ext:活动武将/audio/skill/wechatxunjing2': '孤身渡流沙，独至寻佛法。',
+            '#ext:活动武将/audio/skill/wechatqiusuo1': '若见真经一字，可解千万迷津。',
+            '#ext:活动武将/audio/skill/wechatqiusuo2': '生死本空，唯大法永世不灭。',
+            '#ext:活动武将/audio/die/wechat_zhi_zhushixing:die': '八般戒律，何阻世间千般业障。',
+            '#ext:活动武将/audio/skill/wechatchengfan1': '权谨承父兄之托，志保江东基业。',
+            '#ext:活动武将/audio/skill/wechatchengfan2': '权无父兄勇烈，然亦有壮志可酬。',
+            '#ext:活动武将/audio/skill/wechatzhenxian1': '但有继业之志，何患身侧无人？',
+            '#ext:活动武将/audio/skill/wechatzhenxian2': '欲成父兄壮志，还请卿等鼎力助之。',
+            '#ext:活动武将/audio/skill/wechatlihai1': '他年三江一统，必将放眼四海！',
+            '#ext:活动武将/audio/skill/wechatlihai2': '克定东南一统，志开江左千秋！',
+            '#ext:活动武将/audio/die/wechat_zhi_sunquan:die': '权难成父兄壮志，有愧众卿。',
+            '#ext:活动武将/audio/skill/wechatchengfan_wechat_zhi_sunquan_shadow1': '而今带甲百万，父兄壮志成矣！',
+            '#ext:活动武将/audio/skill/wechatchengfan_wechat_zhi_sunquan_shadow2': '浮江万艘，江汉为池，欲与诸公会猎！',
+            '#ext:活动武将/audio/skill/wechatzhenxian_wechat_zhi_sunquan_shadow1': '孤统度内外，卿等各尽其才。',
+            '#ext:活动武将/audio/skill/wechatzhenxian_wechat_zhi_sunquan_shadow2': '通士族举贤任能，安黎庶联夷抚越。',
+            '#ext:活动武将/audio/die/wechat_zhi_sunquan_shadow:die': '合肥一败，吾志终止于此。',
+            '#ext:活动武将/audio/skill/wechatluchou1': '今有二君相助，可共图大事矣。',
+            '#ext:活动武将/audio/skill/wechatluchou2': '妾本弱质，力不能敌，还需将军一助。',
+            '#ext:活动武将/audio/skill/wechatshizhu1': '夫仇未报，妾岂敢独生？',
+            '#ext:活动武将/audio/skill/wechatshizhu2': '夫君有灵，可鉴妾此心！',
+            '#ext:活动武将/audio/die/wechat_zhi_xushi:die': '夫仇既报，已全此心。',
         },
     };
     WeChatkill_sight();//加载欢杀界面逻辑
