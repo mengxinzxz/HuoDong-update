@@ -20548,6 +20548,13 @@ const packs = function () {
                     debuff: {
                         charlotte: true,
                         onremove: true,
+                        intro: {
+                            markcount: (storage = 0) => `${storage}/3`,
+                            content(storage = 0) {
+                                if (storage < 3) return `距离本回合不能使用、打出或弃置“求索”牌还剩${3 - storage}张`;
+                                return `本回合不能使用、打出或弃置“求索”牌`;
+                            },
+                        },
                         mod: {
                             cardEnabled(card, player) {
                                 if (player.countMark('wechatqiusuo_debuff') < 3) return;
@@ -20556,7 +20563,7 @@ const packs = function () {
                                     return card.cards;
                                 })();
                                 if (Array.isArray(card2) && card2.some(cardx => {
-                                    if(get.itemtype(carxdx) !== 'card') return false;
+                                    if (get.itemtype(cardx) !== 'card') return false;
                                     return cardx.hasGaintag('wechatqiusuo');
                                 })) return false;
                             },
