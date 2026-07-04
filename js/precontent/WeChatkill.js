@@ -18178,7 +18178,7 @@ const packs = function () {
                 trigger: { player: 'phaseUseEnd' },
                 filter(event, player) {
                     if (player.hasSkill('wechatlihai_xizifu') || player.countMark('wechatlihai') >= 2) return false;
-                    return player.countCards('ej') === Math.max(...game.filterPlayer().map(target => target.countCards('ej')));
+                    return player.countCards('e') === Math.max(...game.filterPlayer().map(target => target.countCards('e')));
                 },
                 forced: true,
                 locked: false,
@@ -19652,7 +19652,7 @@ const packs = function () {
                 subSkill: {
                     xizifu: {
                         init(player, skill) {
-                            player.addMark(skill, 4, false);
+                            player.addMark(skill, 3, false);
                         },
                         charlotte: true,
                         onremove: true,
@@ -20481,12 +20481,9 @@ const packs = function () {
                     },
                 },
                 audio: 'ext:活动武将/audio/skill:2',
-                trigger: {
-                    player: 'enterGame',
-                    global: 'phaseBefore',
-                },
+                trigger: { player: 'phaseBegin' },
                 filter(event, player) {
-                    return event.name != 'phase' || game.phaseNumber == 0;
+                    return player.phaseNumber === 1;
                 },
                 forced: true,
                 locked: true,
@@ -20496,6 +20493,10 @@ const packs = function () {
                         const next = player.gain(card, 'gain2');
                         next.gaintag.add(event.name);
                         await next;
+                    }
+                    else {
+                        game.log(player, '取经成功');
+                        player.addSkill('wechatqiusuo_effect');
                     }
                 },
                 group: 'wechatqiusuo_gain',
@@ -20516,8 +20517,11 @@ const packs = function () {
                         async content(event, trigger, player) {
                             const evt = trigger.getl(player);
                             const cards = evt.cards2.reduce((list, i) => {
-                                if (trigger.gaintag_map?.[i.cardid]?.includes('wechatqiusuo')) {
-                                    const card = get.cardPile(card => !list.includes(card) && get.number(card, false) === get.number(i, false) + 1);
+                                if (evt.gaintag_map?.[i.cardid]?.includes('wechatqiusuo')) {
+                                    const card = get.cardPile(card => {
+                                        if (list.includes(card) || get.type(card) === 'equip') return false;
+                                        return get.number(card, false) === get.number(i, false) + 1;
+                                    });
                                     if (card) list.push(card);
                                 }
                                 return list;
@@ -20526,6 +20530,8 @@ const packs = function () {
                                 const next = player.gain(cards, 'gain2');
                                 next.gaintag.add('wechatqiusuo');
                                 await next;
+                                player.addTempSkill('wechatqiusuo_debuff');
+                                player.addMark('wechatqiusuo_debuff', next.cards.length, false);
                             }
                             else {
                                 game.log(player, '取经成功');
@@ -20538,8 +20544,34 @@ const packs = function () {
                         mark: true,
                         intro: { content: '本局游戏手牌上限无限' },
                         mod: { maxHandcardFinal: () => Infinity },
-                    }
-                }
+                    },
+                    debuff: {
+                        charlotte: true,
+                        onremove: true,
+                        mod: {
+                            cardEnabled(card, player) {
+                                if (player.countMark('wechatqiusuo_debuff') < 3) return;
+                                let card2 = (() => {
+                                    if (get.itemtype(card) === 'card') return [card];
+                                    return card.cards;
+                                })();
+                                if (Array.isArray(card2) && card2.some(cardx => {
+                                    if(get.itemtype(carxdx) !== 'card') return false;
+                                    return cardx.hasGaintag('wechatqiusuo');
+                                })) return false;
+                            },
+                            cardRespondable() {
+                                return lib.skill.wechatqiusuo_debuff.mod.cardEnabled.apply(this, arguments);
+                            },
+                            cardSavable(card, player) {
+                                return lib.skill.wechatqiusuo_debuff.mod.cardEnabled.apply(this, arguments);
+                            },
+                            cardDiscardable(card, player) {
+                                if (player.countMark('wechatqiusuo_debuff') >= 3 && card.hasGaintag('wechatqiusuo')) return false;
+                            },
+                        },
+                    },
+                },
             },
             // 谋甄姬
             wechatsbluoshen: {
@@ -23034,7 +23066,7 @@ const packs = function () {
             wechatzhenxian: '镇舷',
             wechatzhenxian_info: '出牌阶段限三次，你可以重铸一张牌（不能重铸本阶段以此法重铸过的点数的牌）。若此牌点数与你本回合上次重铸的牌点数相邻，则你可以将其他角色场上的一张牌移动到你的对应区域或令此技能本阶段发动次数+1。',
             wechatlihai: '犁海',
-            wechatlihai_info: `${get.poptip('rule_xizifuSkill')}(2)，出牌阶段结束时，若你场上的牌数为全场最多，你令${get.poptip('wechatchengfan')}点数区间上限+1，摸牌阶段摸牌数+1，将你的下个弃牌阶段改为摸牌阶段。进学：使用四张${get.poptip('wechatchengfan')}点数区间外的牌。`,
+            wechatlihai_info: `${get.poptip('rule_xizifuSkill')}(2)，出牌阶段结束时，若你场上的装备牌数为全场最多，你令${get.poptip('wechatchengfan')}点数区间上限+1，摸牌阶段摸牌数+1，将你的下个弃牌阶段改为摸牌阶段。进学：使用四张${get.poptip('wechatchengfan')}点数区间外的牌。`,
             wechat_shantao: '小程序山涛',
             wechatjieshen: '节身',
             wechatjieshen_info: '回合开始时，你可以执行一个额外的弃牌阶段。若如此做，你摸两张牌并令一名角色于其下个弃牌阶段开始时跳过此阶段。',
@@ -23085,7 +23117,7 @@ const packs = function () {
             wechatluchou: '戮仇',
             wechatluchou_info: '每轮每项限一次。当你受到伤害后，你可以选择一项：1.你与至多X名其他角色横置；2.你与已横置的角色各摸X+1张牌；3.你使用的下一张【杀】额外结算X次（不可叠加）。（X为你本轮发动此技能的次数+1）',
             wechatshizhu: '誓诛',
-            wechatshizhu_info: `${get.poptip('rule_xizifuSkill')}(2)，你已受伤的准备阶段或当你进入濒死状态时，你回复1点体力，然后选择未选择过的一项：1.令${get.poptip('wechatluchou')}增加“出牌阶段限一次”的时机；2.本局游戏你使用的【杀】可以额外指定一个目标。进学：你累计造成4点伤害。`,
+            wechatshizhu_info: `${get.poptip('rule_xizifuSkill')}(2)，你已受伤的准备阶段或当你进入濒死状态时，你回复1点体力，然后选择未选择过的一项：1.令${get.poptip('wechatluchou')}增加“出牌阶段限一次”的时机；2.本局游戏你使用的【杀】可以额外指定一个目标。进学：你累计造成3点伤害。`,
             wechat_zhi_caozhi: '志曹植',
             wechatgaoshi: '高世',
             wechatgaoshi_info: '锁定技，你使用牌结算完毕后，若此牌不因此法获得，则你获得一张牌名字数大于等于此牌的非伤害牌（不计入手牌上限）；否则你本回合不能使用牌名字数小于等于此牌的牌。',
@@ -23118,7 +23150,7 @@ const packs = function () {
             wechatxunjing: '寻经',
             wechatxunjing_info: '出牌阶段限一次，你可以观看牌堆顶的一张牌A。若如此做，你令你的上家交给你一张牌，若此牌与牌A花色不同，你可以对其上家重复此流程。然后若你于此流程中获得过花色为牌A花色的牌，你将X张手牌交给一名其他角色（X为你此次以此法获得的牌数）。',
             wechatqiusuo: '求索',
-            wechatqiusuo_info: '①游戏开始时，你获得一张点为2的牌。②当你失去以此法获得的牌A时，你从牌堆或弃牌堆中获得一张点数为此牌点数+1的牌，若你未以此法获得牌，你的手牌上限改为无限。',
+            wechatqiusuo_info: '你的第一个回合开始时，你获得一张点数为2的牌。当你失去此牌时，你从牌堆或弃牌堆中获得一张点数为此牌点数+1的非装备牌，然后若你本回合因此获得至少三张牌，则你本回合不能使用、打出或弃置此牌。若你未以此法获得牌，你的手牌上限改为无限。',
             wechat_sb_zhenji: '小程序谋甄宓',
             wechatsbluoshen: '洛神',
             wechatsbluoshen_info: '准备阶段，你可以选择一名角色。从其开始按逆时针方向的X名其他角色同时展示一张手牌（X为场上存活角色数的一半，向上取整）。你获得其中的黑色牌且这些牌不计入本回合手牌上限并可以使用其中的红色牌（无距离和次数限制），然后你弃置剩余牌。',
