@@ -6065,6 +6065,10 @@
             "size": 128424
         },
         {
+            "path": "image/character/Mbaby_star_dingfeng.jpg",
+            "size": 132676
+        },
+        {
             "path": "image/character/Mbaby_star_simayi.jpg",
             "size": 155903
         },
@@ -6143,6 +6147,10 @@
         {
             "path": "image/character/Mbaby_tangji.jpg",
             "size": 545267
+        },
+        {
+            "path": "image/character/Mbaby_tianfeng.jpg",
+            "size": 134947
         },
         {
             "path": "image/character/Mbaby_tunxingmengli.jpg",
@@ -8410,7 +8418,7 @@
         },
         {
             "path": "js/precontent/index.js",
-            "size": 43345
+            "size": 43386
         },
         {
             "path": "js/precontent/MiNikill_sight.js",
@@ -8418,7 +8426,7 @@
         },
         {
             "path": "js/precontent/MiNikill.js",
-            "size": 2733513
+            "size": 2736539
         },
         {
             "path": "js/precontent/MX_catcatcup.js",
