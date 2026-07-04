@@ -7429,6 +7429,10 @@
             "size": 175634
         },
         {
+            "path": "image/character/wechat_sb_zhangfei.jpg",
+            "size": 222476
+        },
+        {
             "path": "image/character/wechat_sb_zhangliao.jpg",
             "size": 182554
         },
@@ -8422,7 +8426,7 @@
         },
         {
             "path": "js/precontent/index.js",
-            "size": 43442
+            "size": 43464
         },
         {
             "path": "js/precontent/MiNikill_sight.js",
@@ -8446,7 +8450,7 @@
         },
         {
             "path": "js/precontent/WeChatkill.js",
-            "size": 1416266
+            "size": 1423295
         },
         {
             "path": "README.md",

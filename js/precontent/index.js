@@ -822,7 +822,7 @@ export async function precontent(bilibilicharacter) {
                     _status.HDWJ_ChangeLog_character = {
                         自嗨: ['bilibili_zhugeliang'],
                         MiNikill: ['Mbaby_dc_sb_liuxie', 'Mbaby_star_dingfeng', 'Mbaby_tianfeng'],
-                        WeChatkill: ['wechat_xurong'],
+                        WeChatkill: ['wechat_xurong', 'wechat_sb_zhangfei'],
                     };
                     return Object.values(_status.HDWJ_ChangeLog_character).flat();
                 })(),
