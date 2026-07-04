@@ -7617,6 +7617,10 @@
             "size": 209142
         },
         {
+            "path": "image/character/wechat_xurong.jpg",
+            "size": 218289
+        },
+        {
             "path": "image/character/wechat_xusheng.jpg",
             "size": 124997
         },
@@ -8418,7 +8422,7 @@
         },
         {
             "path": "js/precontent/index.js",
-            "size": 43386
+            "size": 43442
         },
         {
             "path": "js/precontent/MiNikill_sight.js",
@@ -8442,7 +8446,7 @@
         },
         {
             "path": "js/precontent/WeChatkill.js",
-            "size": 1410754
+            "size": 1416252
         },
         {
             "path": "README.md",

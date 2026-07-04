@@ -46,13 +46,14 @@ const packs = function () {
                         });
                         return list;
                     })(),
-                    ...['zhenji', 'diaochan', 'wangcan', 'machao', 'pangde', 'jiangwei', 'taishici', 'caiwenji'].map(i => `wechat_sp_${i}`),
-                    ...['zhenji', 'menghuo', 'zhouyu', 'zhugeliang', 'sp_zhugeliang', 'lvbu', 'lvmeng', 'yujin', 'huaxiong', 'sunquan', 'xiaoqiao', 'xiahouyuan', 'gaoshun', 'handang', 'guojia', 'huanggai', 'diaochan', 'huangyueying', 'zhangliao', 'sunshangxiang', 'zhaoyun', 'machao', 'huangzhong', 'caocao', 'sunce'].map(i => `wechat_sb_${i}`),
-                    ...['shamoke', 'wangyuanji', 'caochun', 'old_sunluyu', 'shantao', 'ruanji', 'jikang', 'caojie', 'xuezong', 'caiyong', 'xushi', 'sundeng', 'huanghao', 'guohuanghou', 'liucheng', 'sunluyu', 'jsp_huangyueying', 'wanglang', 'chendeng', 'zhuling', 'caizhenji', 'ol_bianfuren', 'zhangxingcai', 'huojun'].map(i => `wechat_${i}`),
+                    ...['zhenji', 'diaochan', 'wangcan', 'machao', 'pangde', 'jiangwei', 'taishici', 'caiwenji'].map(i => `sp_${i}`),
+                    ...['zhenji', 'menghuo', 'zhouyu', 'zhugeliang', 'sp_zhugeliang', 'lvbu', 'lvmeng', 'yujin', 'huaxiong', 'sunquan', 'xiaoqiao', 'xiahouyuan', 'gaoshun', 'handang', 'guojia', 'huanggai', 'diaochan', 'huangyueying', 'zhangliao', 'sunshangxiang', 'zhaoyun', 'machao', 'huangzhong', 'caocao', 'sunce'].map(i => `sb_${i}`),
+                    ...['shamoke', 'wangyuanji', 'caochun', 'old_sunluyu', 'shantao', 'ruanji', 'jikang', 'caojie', 'xuezong', 'caiyong', 'xushi', 'sundeng', 'huanghao', 'guohuanghou', 'liucheng', 'sunluyu', 'jsp_huangyueying', 'wanglang', 'chendeng', 'zhuling', 'caizhenji', 'ol_bianfuren', 'zhangxingcai', 'huojun'],
                     ...[],
-                ],
+                ].map(i => `wechat_${i}`),
                 wechat_wanxiang: [
-                    ...['yj_zhoubuyi', 'old_guanyinping', 'ruanhui', 'kanze', 'zumao', 'xiahouba', 'buzhi', 'sp_liuqi', 'ganfuren', 'liuyao', 'zhugeguo', 'yj_weiyan', 'yj_huangzhong', 'yj_ganning', 'zhaoxiang', 'xin_guozhao', 'sunhanhua', 'pangdegong', 'guanyinping', 'baosanniang', 'taoqian', 'guansuo', 'liuyan', 'shenpei', 'yangxiu', 'yj_xuhuang', 'mayunlu', 'litong'],
+                    ...['xurong', 'old_guanyinping', 'ruanhui', 'kanze', 'zumao', 'xiahouba', 'buzhi', 'sp_liuqi', 'ganfuren', 'liuyao', 'zhugeguo', 'zhaoxiang', 'xin_guozhao', 'sunhanhua', 'pangdegong', 'guanyinping', 'baosanniang', 'taoqian', 'guansuo', 'liuyan', 'shenpei', 'yangxiu', 'mayunlu', 'litong'],
+                    ...['zhoubuyi', 'weiyan', 'huangzhong', 'ganning', 'xuhuang'].map(i => `yj_${i}`),
                     ...[],
                 ].map(i => `wechat_${i}`),
                 wechat_zhiyin: ['lvmeng', 'yuanshu', 'caorui', 'pangtong', 'qinmi', 'zhugeke', 'mayunlu', 'bulianshi', 'diaochan', 'taishici', 'luxun', 'sunshangxiang', 'xunyou', 'dianwei', 'zhaoyun', 'xinxianying', 'guohuanghou', 'kongrong', 'caopi', 'jiaxu', 'zhangfei', 'dongzhuo', 'wangyi', 'zhangchunhua', 'hetaihou', 'zhurong', 'jiangwei', 'caozhi', 'liubei', 'sunce', 'xunyu', 'zhenji', 'xuzhu', 'yuanshao', 'lusu', 'guojia', 'lvbu', 'daqiao', 'xiaoqiao', 'caocao', 'zhugeliang', 'simayi', 'machao', 'huangyueying', 'caiwenji', 'zhouyu', 'sunquan', 'guanyu'].map(i => `wechat_zhiyin_${i}`),
@@ -196,6 +197,7 @@ const packs = function () {
             wechat_zhugezhan: ['male', 'shu', 3, ['xinfu_zuilun', 'wechatzgfuyin'], ['name:诸葛|瞻']],
             wechat_liubei: ['male', 'shu', 4, ['wechatrende']],
             wechat_huanggai: ['male', 'wu', 4, ['wechatkurou', 'wechatzhaxiang']],
+            wechat_xurong: ['male', 'qun', 4, ['wechatxionghuo', 'wechatshajue']],
             //神武将
             wechat_shen_zhugeliang: ['male', 'shen', 3, ['wechatqixing', 'wechatjifeng', 'wechattianfa'], ['shu', 'name:诸葛|亮']],
             wechat_shen_lvmeng: ['male', 'shen', 3, ['shelie', 'wechatgongxin'], ['wu']],
@@ -20420,13 +20422,11 @@ const packs = function () {
                 manualConfirm: true,
                 async content(event, trigger, player) {
                     const card = get.cards()[0];
-                    event.card = card;
                     await game.cardsGotoOrdering(card);
-                    const content = ['牌堆顶的一张牌', [event.card]];
+                    const content = ['牌堆顶的一张牌', [card]];
                     game.log(player, '观看了', '#y牌堆顶的一张牌');
                     await player.chooseControl('ok').set('dialog', content);
-                    const suit = get.suit(card);
-                    const give_map = new Map();
+                    let suit = get.suit(card), num = 0, give = false;
                     let target = player.getPrevious();
                     while (target?.isIn() && target.countCards('he')) {
                         player.line(target, 'green');
@@ -20434,19 +20434,21 @@ const packs = function () {
                             const { player, target } = get.event();
                             return 6 - get.value(card);
                         }).forResult();
-                        if (result?.bool) {
-                            give_map.set(target, result.cards[0]);
-                            if (get.suit(result.cards[0]) === suit) break;
+                        if (result?.bool && result.cards?.length) {
+                            num += result.cards.length;
+                            if (result.cards.some(card2 => get.suit(card2) === suit)) {
+                                give = true;
+                                break;
+                            }
                             target = target.getPrevious();
                             if (target?.isIn() && target.countCards('he')) {
                                 const result = await player.chooseBool('是否继续求索？', `令${get.translation(target)}交给你一张牌`).set('choice', game.hasPlayer(current => current !== player && get.attitude(player, current) > 0)).forResult();
-                                if (!result?.bool) break;
+                                if (result?.bool) continue;
                             }
                         }
-                        else break;
+                        break;
                     }
-                    if (give_map.size > 0 && Array.from(give_map.values()).some(card => get.suit(card) === suit) && player.countCards('h') && game.hasPlayer(current => current !== player)) {
-                        const num = Math.min(give_map.size, player.countCards('h'));
+                    if (num > 0 && give && player.countCards('h') && game.hasPlayer(current => current !== player)) {
                         const result = await player.chooseCardTarget({
                             prompt: `寻经：请选择一名其他角色交给其${get.cnNumber(num)}张牌`,
                             forced: true,
@@ -20496,6 +20498,7 @@ const packs = function () {
                     }
                     else {
                         game.log(player, '取经成功');
+                        player.removeSkill('wechatqiusuo_debuff');
                         player.addSkill('wechatqiusuo_effect');
                     }
                 },
@@ -20535,6 +20538,7 @@ const packs = function () {
                             }
                             else {
                                 game.log(player, '取经成功');
+                                player.removeSkill('wechatqiusuo_debuff');
                                 player.addSkill('wechatqiusuo_effect');
                             }
                         },
@@ -20542,14 +20546,17 @@ const packs = function () {
                     effect: {
                         charlotte: true,
                         mark: true,
-                        intro: { content: '本局游戏手牌上限无限' },
+                        intro: {
+                            markcount: () => `∞`,
+                            content: '本局游戏手牌上限无限',
+                        },
                         mod: { maxHandcardFinal: () => Infinity },
                     },
                     debuff: {
                         charlotte: true,
                         onremove: true,
                         intro: {
-                            markcount: (storage = 0) => `${storage}/3`,
+                            markcount: (storage = 0) => storage < 3 ? `${storage}/3` : '🔒',
                             content(storage = 0) {
                                 if (storage < 3) return `距离本回合不能使用、打出或弃置“求索”牌还剩${3 - storage}张`;
                                 return `本回合不能使用、打出或弃置“求索”牌`;
@@ -21959,6 +21966,81 @@ const packs = function () {
                     if (card) await player.gain(card, 'gain2');
                 },
             },
+            //徐荣
+            wechatxionghuo: {
+                audio: 'xinfu_xionghuo',
+                inherit: 'xinfu_xionghuo',
+                filterTarget: lib.filter.notMe,
+                prompt: '交给一名其他角色至多2枚“暴戾”标记',
+                async content(event, trigger, player) {
+                    const target = event.target, str = `${get.translation(event.name)}：请选择交给${get.translation(target)}的“暴戾”标记数`;
+                    const result = player.countMark('xinfu_xionghuo') > 1 ? await player.chooseControl('1枚', '2枚').set('prompt', str).forResult() : { index: 0 };
+                    if (typeof result?.index === 'number') {
+                        const num = result.index + 1;
+                        player.removeMark('xinfu_xionghuo', num);
+                        target.addMark('xinfu_xionghuo', num);
+                    }
+                },
+                group: ['xinfu_xionghuo_init', 'xinfu_xionghuo_damage', 'wechatxionghuo_effect'],
+                subSkill: {
+                    effect: {
+                        audio: 'xinfu_xionghuo',
+                        trigger: { global: 'phaseUseBegin' },
+                        filter(event, player) {
+                            return event.player.countMark('xinfu_xionghuo') > 0 && event.player !== player;
+                        },
+                        line: false,
+                        forced: true,
+                        locked: false,
+                        logTarget: 'player',
+                        async content(event, trigger, player) {
+                            const target = trigger.player;
+                            const num = target.countMark('xinfu_xionghuo');
+                            target.removeMark('xinfu_xionghuo', num);
+                            let list = Array.from({ length: num }).map((_, i) => i).randomGets(num);
+                            if (list.includes(0)) {
+                                player.line(target, 'fire');
+                                await target.damage('fire');
+                                target.addTempSkill('xinfu_xionghuo_disable');
+                                target.markAuto('xinfu_xionghuo_disable', [player]);
+                            }
+                            if (list.includes(1)) {
+                                player.line(target, 'water');
+                                await target.loseHp();
+                                target.addMark('xinfu_xionghuo_low', 1, false);
+                                target.addTempSkill('xinfu_xionghuo_low');
+                            }
+                            if (list.includes(2)) {
+                                player.line(target, 'green');
+                                let cards = [];
+                                ['h', 'e'].forEach(position => {
+                                    const card = target.getGainableCards(player, position).randomGet();
+                                    if (card) cards.push(card);
+                                });
+                                if (cards.length) await player.gain(cards.randomGets(2), target, 'giveAuto', 'bySelf');
+                            }
+                            await game.delayx();
+                        },
+                    },
+                },
+            },
+            wechatshajue: {
+                audio: 'xinfu_shajue',
+                inherit: 'xinfu_shajue',
+                filter(event, player) {
+                    return event.player !== player && player.countMark('xinfu_xionghuo') < 3;
+                },
+                logTarget: 'player',
+                async content(event, trigger, player) {
+                    player.addMark('xinfu_xionghuo', 1);
+                    if (trigger.player.hp < 0) {
+                        const cards = trigger.getParent().cards;
+                        if (get.itemtype(cards) === 'cards' && cards.someInD('od')) await player.gain(cards.filterInD('od'), 'gain2');
+                        player.addMark('xinfu_xionghuo', 1);
+                    }
+                },
+                ai: { combo: ['xinfu_xionghuo', 'minixionghuo', 'wechatxionghuo'] },
+            },
         },
         dynamicTranslate: {
             wechatxiangzhi(player) {
@@ -23239,6 +23321,11 @@ const packs = function () {
             wechatyingyan_info: '锁定技。准备阶段，你获得一张火【杀】；当你对其他角色造成1点火焰伤害后，你摸一张牌。',
             wechatfengmo: '封魔',
             wechatfengmo_info: '限定技。出牌阶段，你可以令所有其他角色本回合不能使用红桃牌。若你本回合造成过火焰伤害，你本回合造成的伤害+1。',
+            wechat_xurong: '小程序徐荣',
+            wechatxionghuo: '凶镬',
+            wechatxionghuo_info: '游戏开始时，你获得3枚“暴戾”标记。出牌阶段，你可以交给一名其他角色至多2枚“暴戾”标记。当你对有“暴戾”标记的其他角色造成伤害时，此伤害+1。有“暴戾”标记的其他角色的出牌阶段开始时，其移去所有“暴戾”标记并随机执行等量项：1.受到1点火焰伤害且本回合不能使用【杀】；2.失去1点体力且本回合手牌上限-1；3.你随机获得其手牌区和装备区的各一张牌。',
+            wechatshajue: '杀绝',
+            wechatshajue_info: '锁定技，其他角色进入濒死状态时，若你的“暴戾”标记数小于3，则你获得1枚“暴戾”标记。然后若其体力值小于0，你获得使其进入濒死状态的牌并再获得1枚“暴戾”标记。',
 
             // ----------------------- 台词部分 ----------------------- //
             '#ext:活动武将/audio/skill/wechatzhongxin1': '苍生之愿，即贫道所愿也。',
