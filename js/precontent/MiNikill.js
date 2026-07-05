@@ -519,7 +519,7 @@ const packs = function () {
             Mbaby_shen_zuoci: ['male', 'shen', 3, ['minihuanshu', 'minihuanhua', 'minihuanjing'], ['qun']],
             Mbaby_shen_dengai: ['male', 'shen', 4, ['dctuoyu', 'minixianjin', 'dcqijing'], ['wei']],
             Mbaby_shen_luxun: ['male', 'shen', 4, ['nzry_junlve', 'minicuike', 'nzry_dinghuo'], ['wu', 'clan:吴郡陆氏']],
-            Mbaby_shen_pangtong: ['male', 'shen', 4, ['minilunce', 'minilanhai'], ['shu']],
+            Mbaby_shen_pangtong: ['male', 'shen', 3, ['minilunce', 'minilanhai'], ['shu']],
             Mbaby_jingwei: ['female', 'shen', 4, ['minitianhai', 'minihaiku']],
             Mbaby_shen_lusu: ['male', 'shen', 3, ['minitamo', 'minidingzhou', 'zhimeng'], ['wu']],
             Mbaby_shen_weiyan: ['male', 'shen', 6, ['minizigu', 'miniezhi', 'minigujing'], ['shu']],
@@ -5529,8 +5529,31 @@ const packs = function () {
                 },
                 subSkill: {
                     effect: {
+                        charlotte: true,
+                        onremove: true,
                         audio: 'xingzuo',
-                        inherit: 'xingzuo2',
+                        trigger: { player: 'phaseJieshuBegin' },
+                        filter(event, player) {
+                            return game.hasPlayer(target => target.hasCards('h'));
+                        },
+                        async cost(event, trigger, player) {
+                            event.result = await player.chooseTarget((card, player, target) => {
+                                return target.hasCards('h');
+                            }, '兴作：是否令一名角色将其手牌与牌堆底的三张牌替换？').set('ai', target => {
+                                const player = _status.event.player, att = get.attitude(player, target), hs = target.getCards('h'), num = hs.length;
+                                const getv = function (list, target) {
+                                    let num = 0;
+                                    for (const i of list) {
+                                        num += get.value(i, target);
+                                    }
+                                    return num;
+                                }, val = getv(hs, target) - getv(player.getStorage('minixingzuo_effect'), target);
+                                if (num < 3) return att * Math.sqrt(Math.max(0, -val)) * 1.5;
+                                if (num == 3) return -att * Math.sqrt(Math.max(0, val));
+                                if (player.hp < (num > 4 ? 3 : 2)) return 0;
+                                return -att * Math.sqrt(Math.max(0, val));
+                            }).forResult();
+                        },
                         async content(event, trigger, player) {
                             const target = event.targets[0];
                             const cards = get.bottomCards(3, true);
@@ -6373,7 +6396,7 @@ const packs = function () {
                             const skill = get.event().skillName;
                             game.log(player, '失去了技能', ...removeSkill.map(i => '#g【' + get.translation(i) + '】'));
                             player.removeSkill(removeSkill);
-                            if (!player.additionalSkills[skill].length) delete player.additionalSkills[skill];
+                            if (!player.additionalSkills[skill]?.length) delete player.additionalSkills[skill];
                         }).set('skillName', event.name);
                         let cards = game.cardsGotoOrdering(get.cards(5)).cards;
                         const result = await player.chooseButton([`是否获得至多${num}张牌？`, cards], [1, num]).set('ai', button => {
@@ -6394,7 +6417,7 @@ const packs = function () {
                             const skill = get.event().skillName;
                             game.log(player, '失去了技能', ...removeSkill.map(i => '#g【' + get.translation(i) + '】'));
                             player.removeSkill(removeSkill);
-                            if (!player.additionalSkills[skill].length) delete player.additionalSkills[skill];
+                            if (!player.additionalSkills?.[skill].length) delete player.additionalSkills[skill];
                         }).set('skillName', event.name);
                         const target = event.targets[0];
                         const result = await player.discardPlayerCard(target, 'h', `是否弃置${get.translation(target)}至多${num}张牌?`, [1, num], 'visible').set('ai', button => {
@@ -41189,7 +41212,17 @@ const packs = function () {
                         game.updateBackground();
                     }, background);
                     game.addVideo('skill', player, [event.name, [true, background]]);
-                    game.filterPlayer().forEach(current => current.addTempSkills('minikeji', { player: ['phaseAfter'] }))
+                    for (const target of game.filterPlayer()) {
+                        let skillName = `minifightandu_${player.playerid}`;
+                        await target.addAdditionalSkills(skillName, ['minikeji'], true);
+                        const evt = trigger.getParent('phase', true, true);
+                        target.when({ player: 'phaseEnd' }).filter(evtx => evtx != evt).assign({
+                            firstDo: true,
+                            priority: Infinity
+                        }).step(async () => {
+                            target.removeAdditionalSkills(skillName);
+                        });
+                    }
                 },
                 video(player, info) {
                     if (info[0]) _status.tempBackground = info[1];

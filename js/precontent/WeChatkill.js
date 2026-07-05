@@ -803,30 +803,11 @@ const packs = function () {
                         },
                     }).forResult();
                 },
-                content() {
-                    'step 0'
-                    var { targets: [target], cards } = event;
-                    player.logSkill('wechatjujian', target);
+                async content(event, trigger, player) {
+                    const { targets: [target], cards } = event;
                     if (target != player) player.addExpose(0.2);
-                    player.discard(cards);
-                    if (target.hp == target.maxHp && !target.isTurnedOver() && !target.isLinked()) {
-                        target.draw(2);
-                        event.finish();
-                    }
-                    else {
-                        var controls = ['draw_card'];
-                        if (target.hp < target.maxHp) controls.push('recover_hp');
-                        target.chooseControl(controls).ai = function () {
-                            if (target.hp == 1 && target.maxHp > 2) return 'recover_hp';
-                            else if (target.hp == 2 && target.maxHp > 2 && target.countCards('h') > 1) return 'recover_hp';
-                            else return 'draw_card';
-                        }
-                    }
-                    'step 1'
-                    switch (result.control) {
-                        case 'recover_hp': target.recover(); break;
-                        case 'draw_card': target.draw(2); break;
-                    }
+                    await player.discard(cards);
+                    await target.chooseDrawRecover(2, true);
                 },
             },
             wechatlongdan: {
