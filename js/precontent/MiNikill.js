@@ -42215,11 +42215,13 @@ const packs = function () {
                     };
                 },
                 //比较牛的大小
-                compareOX(a, b) {
+                compareOX(a, b, compareSingleCard = false) {
                     if (a.type !== b.type) return a.type - b.type;
                     if (a.value !== b.value) return a.value - b.value;
-                    for (let i = 0; i < a.ranks.length; i++) {
-                        if (a.ranks[i] !== b.ranks[i]) return a.ranks[i] - b.ranks[i];
+                    if (compareSingleCard) {
+                        for (let i = 0; i < a.ranks.length; i++) {
+                            if (a.ranks[i] !== b.ranks[i]) return a.ranks[i] - b.ranks[i];
+                        }
                     }
                     return 0;
                 },
@@ -42421,6 +42423,7 @@ const packs = function () {
                     await game.delay(3);
                     game.broadcastAll(lib.skill[event.name].$compareOX_clear);
                     if (goon) {
+                        if (target.countExpansions('miniyinyinming')) await target.gain(target.getExpansions('miniyinyinming'), 'give');
                         game.broadcastAll((player, num) => {
                             player.hp = player.maxHp = num;
                             player.update();
@@ -45362,11 +45365,11 @@ const packs = function () {
                         '牌型组成：玩家从5张牌中选出3张，使其点数之和为10的整倍数（10、20、30），即为“有牛”；剩余2张牌点数之和的个位数决定“牛几”（如和为18即为牛八）。若剩余2张点数之和为10的倍数，则为“牛牛”；若无法凑出10的倍数，则为“无牛”。',
                         '点数计算：A=1点，2-10按牌面数字计算，J、Q、K均视为10点。',
                         '特殊牌型：炸弹牛为5张牌中有4张点数相同；五花牛为5张牌均为J、Q、K；四花牛为5张牌中有4张为J、Q、K。',
-                        '牌型大小：炸弹牛 > 五花牛 > 四花牛 > 牛牛 > 牛九 > … > 牛一 > 无牛。同牌型时依次比较单张点数，K最大，A最小。',
+                        '牌型大小：炸弹牛 > 五花牛 > 四花牛 > 牛牛 > 牛九 > … > 牛一 > 无牛。同牌型时依次比较单张点数，K最大，A最小。欢杀规则下同牌型则不比较单张点数',
                         '胜负判定：挑战方与隐于吉比较牌型大小，牌型大者获胜（若双方牌型完全相同则视为发起方获胜）。',
                     ].map(i => `<li>${i}`),
                 ].join('<br>'),
-            })}。若你赢，则隐于吉根据牌型等级确定体力和体力上限并亮出体力条；若隐于吉赢，则隐于吉获得一张挑战方的“斗牛牌”。`,
+            })}。若你赢，则隐于吉获得其本次的“斗牛牌”且根据牌型等级确定体力和体力上限并亮出体力条；若隐于吉赢，则隐于吉获得一张挑战方的“斗牛牌”。`,
             miniyinhuozhong: '惑众',
             miniyinhuozhong_info: `出牌阶段限一次，你可以与所有其他角色${get.poptip('miniyindouniu_ox')}并根据自己的牌型等级确定体力和体力上限并亮出体力条，${get.poptip('miniyindouniu_ox')}完毕后，你获得武将牌上的“斗牛牌”，然后你从本次所有${get.poptip('miniyindouniu_ox')}成功的“斗牛牌”中选择X张获得（X为你本次赢的次数，因此选择获得的红色【杀】本回合无次数限制）。`,
             //焰
