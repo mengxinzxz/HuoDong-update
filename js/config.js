@@ -162,6 +162,7 @@ export let config = {
 			}
 			catch (e) {
 				console.error(e);
+				this.textContent = '扩展更新失败';
 				const state = lib.config['extension_活动武将_update_state'];
 				if (state && state.stage === 'installing') {
 					try {
