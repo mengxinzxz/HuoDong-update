@@ -72,7 +72,10 @@ export let config = {
 					'当前扩展已是最新版本，是否重新安装扩展？',
 					'检测到仓库有更新，是否安装仓库版本？',
 					'本地扩展比仓库版本更新，是否仍然安装仓库版本？',
-				][updateType])) return;
+				][updateType])) {
+					this.innerHTML = '<button type="button">检查扩展更新</button>';
+					return;
+				}
 				const fileData = await fetch(`${rawBase}/js/file.json?t=${Date.now()}`).then(res => {
 					if (!res.ok) throw new Error('获取file.json失败');
 					return res.json();
@@ -159,7 +162,6 @@ export let config = {
 			}
 			catch (e) {
 				console.error(e);
-				this.textContent = '扩展更新失败';
 				const state = lib.config['extension_活动武将_update_state'];
 				if (state && state.stage === 'installing') {
 					try {
@@ -172,6 +174,7 @@ export let config = {
 				}
 				await game.promises.removeDir('extension/活动武将/update_temp').catch(() => { });
 				alert(`更新失败：\n${e.message || e}`);
+				this.innerHTML = '<button type="button">检查扩展更新</button>';
 			}
 		},
 	},
