@@ -304,7 +304,7 @@ const packs = function () {
             wechat_hansimao: ['male', 'qun', 4, ['wechatkuangbiao', 'wechathuamao'], ['name:ice|cola']],
             wechat_gaoluji: ['male', 'qun', 4, ['wechatyuanwei', 'wechatyiyu']],
             wechat_hema: ['male', 'qun', 4, ['wechatgemen', 'wechatrongxun']],
-            wechat_baixiang: ['male', 'qun', 4, ['wechatzihuo']],
+            wechat_baixiang: ['male', 'qun', 4, ['wechatzigan']],
             wechat_dihuangxia: ['male', 'qun', 4, ['wechattianxing', 'wechatjiguang'], ['name:李|炘南-北|淼-东|杉-西|钊-坤|中']],
             wechat_yanlongxia: ['male', 'qun', 4, ['wechatyanlong', 'wechatyingyan', 'wechatfengmo'], ['name:李|炘南-张|健-殿|南']],
         },
@@ -21883,31 +21883,31 @@ const packs = function () {
                 },
             },
             // 白象
-            wechatzihuo: {
+            wechatzigan: {
                 init(player, skill) {
                     const list = get.info(skill).getInfo(player);
                     player.addTip(skill, get.translation(skill) + ' ' + list.slice().join(' '));
                 },
                 getInfo(player) {
-                    player.storage.wechatzihuo ??= [3, 3, 1];
-                    return player.storage.wechatzihuo;
+                    player.storage.wechatzigan ??= [3, 3, 1];
+                    return player.storage.wechatzigan;
                 },
                 mod: {
                     maxHandcard(player, num) {
-                        return num + player.getStorage('wechatzihuo', [3, 3, 1])[1] - player.getStorage('wechatzihuo_effect', [0, 0, 0])[1];
+                        return num + player.getStorage('wechatzigan', [3, 3, 1])[1] - player.getStorage('wechatzigan_effect', [0, 0, 0])[1];
                     },
                     cardUsable(card, player, num) {
-                        if (card.name == 'sha' && player.isPhaseUsing()) return num + player.getStorage('wechatzihuo', [3, 3, 1])[2] - player.getStorage('wechatzihuo_effect', [0, 0, 0])[2];
+                        if (card.name == 'sha' && player.isPhaseUsing()) return num + player.getStorage('wechatzigan', [3, 3, 1])[2] - player.getStorage('wechatzigan_effect', [0, 0, 0])[2];
                     },
                 },
                 audio: 'ext:活动武将/audio/skill:2',
                 trigger: { player: 'phaseDrawBegin2' },
                 filter(event, player) {
-                    return player.getStorage('wechatzihuo', [3, 3, 1])[0] - player.getStorage('wechatzihuo_effect', [0, 0, 0])[0] > 0 && !event.numFixed;
+                    return player.getStorage('wechatzigan', [3, 3, 1])[0] - player.getStorage('wechatzigan_effect', [0, 0, 0])[0] > 0 && !event.numFixed;
                 },
                 forced: true,
                 async content(event, trigger, player) {
-                    trigger.num += player.getStorage('wechatzihuo', [3, 3, 1])[0] - player.getStorage('wechatzihuo_effect', [0, 0, 0])[0];
+                    trigger.num += player.getStorage('wechatzigan', [3, 3, 1])[0] - player.getStorage('wechatzigan_effect', [0, 0, 0])[0];
                 },
                 mark: true,
                 onremove(player, skill) {
@@ -21916,27 +21916,27 @@ const packs = function () {
                 },
                 intro: {
                     content(storage, player) {
-                        const info = [0, 1, 2].map(num => player.getStorage('wechatzihuo', [3, 3, 1])[num] - player.getStorage('wechatzihuo_effect', [0, 0, 0])[num]);
+                        const info = [0, 1, 2].map(num => player.getStorage('wechatzigan', [3, 3, 1])[num] - player.getStorage('wechatzigan_effect', [0, 0, 0])[num]);
                         return `<li>摸牌阶段摸牌数+${info[0]}<br><li>手牌上限+${info[1]}<br><li>使用【杀】的次数上限+${info[2]}`;
                     },
                 },
-                group: 'wechatzihuo_damage',
+                group: 'wechatzigan_damage',
                 subSkill: {
                     damage: {
-                        audio: 'wechatzihuo',
+                        audio: 'wechatzigan',
                         trigger: { player: 'damageEnd' },
                         filter(event, player) {
-                            return [0, 1, 2].some(num => player.getStorage('wechatzihuo', [3, 3, 1])[num] - player.getStorage('wechatzihuo_effect', [0, 0, 0])[num] > 0);
+                            return [0, 1, 2].some(num => player.getStorage('wechatzigan', [3, 3, 1])[num] - player.getStorage('wechatzigan_effect', [0, 0, 0])[num] > 0);
                         },
                         forced: true,
                         async content(event, trigger, player) {
-                            player.addTempSkill('wechatzihuo_effect', { player: 'phaseAfter' });
-                            const index = [0, 1, 2].filter(num => player.getStorage('wechatzihuo', [3, 3, 1])[num] - player.getStorage('wechatzihuo_effect', [0, 0, 0])[num] > 0).randomGet();
+                            player.addTempSkill('wechatzigan_effect', { player: 'phaseAfter' });
+                            const index = [0, 1, 2].filter(num => player.getStorage('wechatzigan', [3, 3, 1])[num] - player.getStorage('wechatzigan_effect', [0, 0, 0])[num] > 0).randomGet();
                             if (typeof index == 'number') {
-                                player.storage.wechatzihuo_effect ??= [0, 0, 0];
-                                player.storage.wechatzihuo_effect[index]++;
-                                const list = [0, 1, 2].map(num => player.getStorage('wechatzihuo', [3, 3, 1])[num] - player.getStorage('wechatzihuo_effect', [0, 0, 0])[num])
-                                player.addTip('wechatzihuo', get.translation('wechatzihuo') + ' ' + list.slice().join(' '));
+                                player.storage.wechatzigan_effect ??= [0, 0, 0];
+                                player.storage.wechatzigan_effect[index]++;
+                                const list = [0, 1, 2].map(num => player.getStorage('wechatzigan', [3, 3, 1])[num] - player.getStorage('wechatzigan_effect', [0, 0, 0])[num])
+                                player.addTip('wechatzigan', get.translation('wechatzigan') + ' ' + list.slice().join(' '));
                             }
                         },
                     },
@@ -23776,8 +23776,8 @@ const packs = function () {
             wechatrongxun: '戎训',
             wechatrongxun_info: '①当一种普通锦囊牌：首次对你生效时，你摸一张牌；第二次对你生效时，你记录此牌名。②出牌阶段限一次，你可以将一张手牌当〖戎训①〗记录的牌名使用。',
             wechat_baixiang: '白象',
-            wechatzihuo: '自惑',
-            wechatzihuo_info: '锁定技。①你摸牌阶段的摸牌数+3、手牌上限+3、出牌阶段使用【杀】的次数上限+1。②当你受到伤害后，直到你的下回合结束，〖自惑①〗随机一项不为0的效果-1。',
+            wechatzigan: '自感',
+            wechatzigan_info: '锁定技。①你摸牌阶段的摸牌数+3、手牌上限+3、出牌阶段使用【杀】的次数上限+1。②当你受到伤害后，直到你的下回合结束，〖自惑①〗随机一项不为0的效果-1。',
             wechat_dihuangxia: '帝皇侠',
             wechattianxing: '天行',
             wechattianxing_info: '①准备阶段，你亮出牌堆顶两张牌，获得其中一种花色的牌。②当你造成或受到属性伤害后，〖天行①〗亮出的牌数+1（你以此法亮出的牌数至多为5）。',
