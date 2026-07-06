@@ -4549,6 +4549,10 @@
             "size": 53062
         },
         {
+            "path": "image/character/bilibili_baixiang.jpg",
+            "size": 110096
+        },
+        {
             "path": "image/character/bilibili_caifuren.jpg",
             "size": 162105
         },
@@ -4577,8 +4581,16 @@
             "size": 66659
         },
         {
+            "path": "image/character/bilibili_gaoluji.jpg",
+            "size": 101946
+        },
+        {
             "path": "image/character/bilibili_guanning.jpg",
             "size": 47092
+        },
+        {
+            "path": "image/character/bilibili_hema.jpg",
+            "size": 92923
         },
         {
             "path": "image/character/bilibili_huanggai.jpg",
@@ -4599,6 +4611,10 @@
         {
             "path": "image/character/bilibili_liuguanzhang.jpg",
             "size": 132165
+        },
+        {
+            "path": "image/character/bilibili_liwenya.jpg",
+            "size": 69527
         },
         {
             "path": "image/character/bilibili_lonelypatients.jpg",
@@ -8450,7 +8466,7 @@
         },
         {
             "path": "js/precontent/WeChatkill.js",
-            "size": 1445875
+            "size": 1445942
         },
         {
             "path": "README.md",
