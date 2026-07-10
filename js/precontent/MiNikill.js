@@ -41215,13 +41215,17 @@ const packs = function () {
                     for (const target of game.filterPlayer()) {
                         let skillName = `minifightandu_${player.playerid}`;
                         await target.addAdditionalSkills(skillName, ['minikeji'], true);
-                        const evt = trigger.getParent('phase', true, true);
-                        target.when({ player: 'phaseEnd' }).filter(evtx => evtx != evt).assign({
+                        delete target.storage.minifightandu_phased;
+                        target.when({ player: 'phaseBegin' }).step(async () => {
+                            target.storage.minifightandu_phased = true;
+                        });
+                        target.when({ player: 'phaseEnd' }).filter(evtx => target.storage.minifightandu_phased).assign({
                             firstDo: true,
                             priority: Infinity
                         }).step(async () => {
+                            delete target.storage.minifightandu_phased;
                             target.removeAdditionalSkills(skillName);
-                        });
+                        }).finish();
                     }
                 },
                 video(player, info) {
