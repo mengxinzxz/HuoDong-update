@@ -4389,6 +4389,14 @@
             "size": 118446
         },
         {
+            "path": "image/background/肘击荣耀10V10.png",
+            "size": 6126633
+        },
+        {
+            "path": "image/background/肘击荣耀5V5.png",
+            "size": 4201508
+        },
+        {
             "path": "image/background/battlefield_dingjun.jpg",
             "size": 114244
         },
@@ -4599,6 +4607,10 @@
         {
             "path": "image/character/bilibili_liuguanzhang.jpg",
             "size": 132165
+        },
+        {
+            "path": "image/character/bilibili_liwenya.jpg",
+            "size": 69527
         },
         {
             "path": "image/character/bilibili_lonelypatients.jpg",
@@ -7045,6 +7057,10 @@
             "size": 18012
         },
         {
+            "path": "image/character/wechat_baixiang.jpg",
+            "size": 110096
+        },
+        {
             "path": "image/character/wechat_baosanniang.jpg",
             "size": 154062
         },
@@ -7113,6 +7129,10 @@
             "size": 142173
         },
         {
+            "path": "image/character/wechat_gaoluji.jpg",
+            "size": 101946
+        },
+        {
             "path": "image/character/wechat_gaoshun.jpg",
             "size": 128594
         },
@@ -7147,6 +7167,10 @@
         {
             "path": "image/character/wechat_hansimao.jpg",
             "size": 129561
+        },
+        {
+            "path": "image/character/wechat_hema.jpg",
+            "size": 92923
         },
         {
             "path": "image/character/wechat_huanggai.jpg",
@@ -8450,7 +8474,7 @@
         },
         {
             "path": "js/precontent/WeChatkill.js",
-            "size": 1445875
+            "size": 1445942
         },
         {
             "path": "README.md",
