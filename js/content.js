@@ -872,6 +872,36 @@ export async function content(config, pack) {
 	game.HDsetAudioname2('xinfu_duanfa', {
 		Mbaby_zhoufang: 'xinfu_duanfa_Mbaby_zhoufang',
 	});
+	game.HDsetAudioname2('dcjiezhen', {
+		Mbaby_dc_huangchengyan: 'dcjiezhen_Mbaby_dc_huangchengyan',
+	});
+	game.HDsetAudioname2('dcyinshi', {
+		Mbaby_dc_huangchengyan: 'dcyinshi_Mbaby_dc_huangchengyan',
+	});
+	game.HDsetAudioname2('dcjinggong', {
+		Mbaby_dc_huangzu: 'dcjinggong_Mbaby_dc_huangzu',
+	});
+	game.HDsetAudioname2('olpingduan', {
+		Mbaby_kebineng: 'olpingduan_Mbaby_kebineng',
+	});
+	game.HDsetAudioname2('lxzhuixi', {
+		Mbaby_liangxing: 'lxzhuixi_Mbaby_liangxing',
+	});
+	game.HDsetAudioname2('xinjuece', {
+		Mbaby_liru: 'xinjuece_Mbaby_liru',
+	});
+	game.HDsetAudioname2('xinfencheng', {
+		Mbaby_liru: 'xinfencheng_Mbaby_liru',
+	});
+	game.HDsetAudioname2('xinfu_chenghao', {
+		Mbaby_simahui: 'xinfu_chenghao_Mbaby_simahui',
+	});
+	game.HDsetAudioname2('xinjingong', {
+		Mbaby_wangyun: 'xinjingong_Mbaby_wangyun',
+	});
+	game.HDsetAudioname2('dcsuishi', {
+		Mbaby_tianfeng: 'dcsuishi_Mbaby_tianfeng',
+	});
 
 	//precCI
 	//武将信息
