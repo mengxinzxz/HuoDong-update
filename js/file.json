@@ -269,6 +269,10 @@
             "size": 13844
         },
         {
+            "path": "audio/die/Mbaby_tianfeng.mp3",
+            "size": 50862
+        },
+        {
             "path": "audio/die/Mbaby_tunxingmenglix.mp3",
             "size": 95231
         },
@@ -1151,6 +1155,14 @@
         {
             "path": "audio/skill/dcjinggong_Mbaby_dc_huangzu2.mp3",
             "size": 33572
+        },
+        {
+            "path": "audio/skill/dcsuishi_Mbaby_tianfeng1.mp3",
+            "size": 37614
+        },
+        {
+            "path": "audio/skill/dcsuishi_Mbaby_tianfeng2.mp3",
+            "size": 41070
         },
         {
             "path": "audio/skill/dcyinshi_Mbaby_dc_huangchengyan1.mp3",
@@ -2663,6 +2675,14 @@
         {
             "path": "audio/skill/minisidi2.mp3",
             "size": 16028
+        },
+        {
+            "path": "audio/skill/minisijian1.mp3",
+            "size": 48270
+        },
+        {
+            "path": "audio/skill/minisijian2.mp3",
+            "size": 47118
         },
         {
             "path": "audio/skill/minisongci1.mp3",
