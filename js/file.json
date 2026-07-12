@@ -1401,6 +1401,14 @@
             "size": 18535
         },
         {
+            "path": "audio/skill/minichongwei1.mp3",
+            "size": 163738
+        },
+        {
+            "path": "audio/skill/minichongwei2.mp3",
+            "size": 167885
+        },
+        {
             "path": "audio/skill/minidaopu1.mp3",
             "size": 17732
         },
@@ -1474,11 +1482,11 @@
         },
         {
             "path": "audio/skill/minifeifu1.mp3",
-            "size": 19826
+            "size": 22016
         },
         {
             "path": "audio/skill/minifeifu2.mp3",
-            "size": 15438
+            "size": 17627
         },
         {
             "path": "audio/skill/minifeijun1.mp3",
@@ -1825,6 +1833,14 @@
             "size": 65661
         },
         {
+            "path": "audio/skill/minijilve1.mp3",
+            "size": 12925
+        },
+        {
+            "path": "audio/skill/minijilve2.mp3",
+            "size": 9163
+        },
+        {
             "path": "audio/skill/minijinghong1.mp3",
             "size": 162066
         },
@@ -1959,6 +1975,22 @@
         {
             "path": "audio/skill/minillqshenwei2.mp3",
             "size": 27812
+        },
+        {
+            "path": "audio/skill/minilonghun1.mp3",
+            "size": 13781
+        },
+        {
+            "path": "audio/skill/minilonghun2.mp3",
+            "size": 13886
+        },
+        {
+            "path": "audio/skill/minilongnu1.mp3",
+            "size": 14492
+        },
+        {
+            "path": "audio/skill/minilongnu2.mp3",
+            "size": 13656
         },
         {
             "path": "audio/skill/minilulve1.mp3",
@@ -2433,6 +2465,14 @@
             "size": 79141
         },
         {
+            "path": "audio/skill/minipowei1.mp3",
+            "size": 173010
+        },
+        {
+            "path": "audio/skill/minipowei2.mp3",
+            "size": 189044
+        },
+        {
             "path": "audio/skill/miniqiangwu1.mp3",
             "size": 12632
         },
@@ -2563,6 +2603,14 @@
         {
             "path": "audio/skill/minishanxi2.mp3",
             "size": 34764
+        },
+        {
+            "path": "audio/skill/minishelie1.mp3",
+            "size": 16373
+        },
+        {
+            "path": "audio/skill/minishelie2.mp3",
+            "size": 17209
         },
         {
             "path": "audio/skill/minishendao1.mp3",
@@ -8766,7 +8814,7 @@
         },
         {
             "path": "js/precontent/MiNikill.js",
-            "size": 2750441
+            "size": 2751912
         },
         {
             "path": "js/precontent/MX_catcatcup.js",

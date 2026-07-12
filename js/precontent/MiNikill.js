@@ -32314,7 +32314,7 @@ const packs = function () {
                 },
             },
             minishelie: {
-                audio: 'shelie',
+                audio: 'ext:活动武将/audio/skill:2',
                 inherit: 'shelie',
                 forced: true,
             },
@@ -32749,7 +32749,7 @@ const packs = function () {
                 ai: { expose: 0.2 },
             },
             minilongnu: {
-                audio: 'nzry_longnu',
+                audio: 'ext:活动武将/audio/skill:2',
                 trigger: { player: 'phaseUseBegin' },
                 forced: true,
                 content() {
@@ -33075,7 +33075,7 @@ const packs = function () {
                 },
             },
             minijilve: {
-                audio: 'jilue',
+                audio: 'ext:活动武将/audio/skill:2',
                 derivation: ['minijilve_guicai', 'minijilve_fangzhu', 'minijilve_wansha', 'minijilve_jizhi'],
                 group: ['minijilve_guicai', 'minijilve_fangzhu', 'minijilve_wansha', 'minijilve_jizhi'],
                 trigger: { player: ['useSkill', 'logSkillBegin'] },
@@ -33294,7 +33294,7 @@ const packs = function () {
                 inherit: 'xinjuejing',
             },
             minilonghun: {
-                audio: 'relonghun',
+                audio: 'ext:活动武将/audio/skill:2',
                 inherit: 'relonghun',
                 group: ['minilonghun_num', 'minilonghun_gain'],
                 subSkill: {
@@ -34687,12 +34687,12 @@ const packs = function () {
                 },
             },
             minichongwei: {
-                audio: 'tspowei3.mp3',
+                audio: 'ext:活动武将/audio/skill:2',
                 forced: true,
                 group: ['minichongwei_init', 'minichongwei_move', 'minichongwei_use', 'minichongwei_remove'],
                 subSkill: {
                     remove: {
-                        audio: 'tspowei3.mp3',
+                        audio: 'minichongwei',
                         trigger: { global: 'damageEnd' },
                         filter(event, player) {
                             return event.player && event.player.isIn() && event.player.hasMark('minidulie');
@@ -34704,7 +34704,7 @@ const packs = function () {
                         },
                     },
                     use: {
-                        audio: 'tspowei3.mp3',
+                        audio: 'minichongwei',
                         trigger: { global: 'phaseBegin' },
                         filter(event, player) {
                             return event.player != player && event.player.hasMark('minidulie') && (player.countCards('h') > 0 || player.hp >= event.player.hp && event.player.countCards('h') > 0);
@@ -34748,7 +34748,7 @@ const packs = function () {
                         ai: { expose: 0.2 },
                     },
                     init: {
-                        audio: 'tspowei3.mp3',
+                        audio: 'minichongwei',
                         trigger: { global: 'phaseBefore', player: 'enterGame' },
                         filter(event, player) {
                             if (!lib.skill.minichongwei.subSkill.init.logTarget(event, player).length) return false;
@@ -34764,7 +34764,7 @@ const packs = function () {
                         },
                     },
                     move: {
-                        audio: 'tspowei3.mp3',
+                        audio: 'minichongwei',
                         trigger: { player: 'phaseBegin' },
                         filter(event, player) {
                             return game.hasPlayer((current) => current != player && current.hasMark('minidulie'));
@@ -34789,7 +34789,7 @@ const packs = function () {
             },
             minipowei: {
                 derivation: 'minishenzhu',
-                audio: 'tspowei1.mp3',
+                audio: 'ext:活动武将/audio/skill:2',
                 trigger: { global: 'phaseEnd' },
                 filter(event, player) {
                     return !game.hasPlayer(current => current.hasMark('minidulie'));
@@ -45564,7 +45564,7 @@ const packs = function () {
             '#ext:活动武将/audio/skill/minijishi2': '鬼门关前能救死，奈何桥上可扶伤。',
             '#ext:活动武将/audio/skill/minitaoxian1': '喝下此药，必可药到病除。',
             '#ext:活动武将/audio/skill/minitaoxian2': '除人之病痛，医者之德修也。',
-            '#ext:活动武将/audio/skill/minishenzhen': '医疑难之症，必以非常之法。',
+            '#ext:活动武将/audio/skill/minishenzhen1': '医疑难之症，必以非常之法。',
             '#ext:活动武将/audio/die/Mbaby_shen_huatuo:die': '可叹，我毕生医术无人可继……',
             '#ext:活动武将/audio/skill/minitaoxian1': '喝下此药，必可药到病除。',
             '#ext:活动武将/audio/skill/minitaoxian2': '除人之病痛，医者之德修也。',
@@ -46015,6 +46015,20 @@ const packs = function () {
             '#ext:活动武将/audio/skill/minisuishi1': '胜，则无威不加。',
             '#ext:活动武将/audio/skill/minisuishi2': '败，则一身不保……',
             '#ext:活动武将/audio/die/Mbaby_tianfeng:die': '主庸臣佞，难逃一败……',
+            '#ext:活动武将/audio/skill/minilongnu1': '兄弟疾难，血债血偿。',
+            '#ext:活动武将/audio/skill/minilongnu2': '损神熬心，誓报此仇。',
+            '#ext:活动武将/audio/skill/minishelie1': '从主之劝，博览群书。',
+            '#ext:活动武将/audio/skill/minishelie2': '为将者，自当识天晓地。',
+            '#ext:活动武将/audio/skill/minijilve1': '你能逃出我的计谋吗？',
+            '#ext:活动武将/audio/skill/minijilve2': '你敢与天斗？',
+            '#ext:活动武将/audio/skill/minichongwei1': '惑敌以散其阵，适时上马出击。',
+            '#ext:活动武将/audio/skill/minichongwei2': '君且城中等候，待吾探敌虚实。',
+            '#ext:活动武将/audio/skill/minipowei1': '吾心所向，天亦难挡，更况尔等。',
+            '#ext:活动武将/audio/skill/minipowei2': '弓马骑射洒热血，突破重围显英豪！',
+            '#ext:活动武将/audio/skill/minilonghun1': '潜龙勿用，藏锋守拙！',
+            '#ext:活动武将/audio/skill/minilonghun2': '龙战于野，其血玄黄！',
+            '#ext:活动武将/audio/skill/minifeifu1': '绫罗翩翩，乘清月兮御阴阳。',
+            '#ext:活动武将/audio/skill/minifeifu2': '明眸善睐，靥辅承权。',
         },
     };
     MiNikill_sight();//加载欢杀界面逻辑
