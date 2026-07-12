@@ -899,9 +899,6 @@ export async function content(config, pack) {
 	game.HDsetAudioname2('xinjingong', {
 		Mbaby_wangyun: 'xinjingong_Mbaby_wangyun',
 	});
-	game.HDsetAudioname2('dcsuishi', {
-		Mbaby_tianfeng: 'dcsuishi_Mbaby_tianfeng',
-	});
 
 	//precCI
 	//武将信息

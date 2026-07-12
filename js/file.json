@@ -1157,14 +1157,6 @@
             "size": 33572
         },
         {
-            "path": "audio/skill/dcsuishi_Mbaby_tianfeng1.mp3",
-            "size": 37614
-        },
-        {
-            "path": "audio/skill/dcsuishi_Mbaby_tianfeng2.mp3",
-            "size": 41070
-        },
-        {
             "path": "audio/skill/dcyinshi_Mbaby_dc_huangchengyan1.mp3",
             "size": 64468
         },
@@ -2707,6 +2699,14 @@
         {
             "path": "audio/skill/minispluoshen2.mp3",
             "size": 156841
+        },
+        {
+            "path": "audio/skill/minisuishi1.mp3",
+            "size": 37614
+        },
+        {
+            "path": "audio/skill/minisuishi2.mp3",
+            "size": 41070
         },
         {
             "path": "audio/skill/minitaoxian1.mp3",
@@ -8718,7 +8718,7 @@
         },
         {
             "path": "js/content.js",
-            "size": 65147
+            "size": 65058
         },
         {
             "path": "js/help.js",
@@ -8766,7 +8766,7 @@
         },
         {
             "path": "js/precontent/MiNikill.js",
-            "size": 2749119
+            "size": 2750441
         },
         {
             "path": "js/precontent/MX_catcatcup.js",

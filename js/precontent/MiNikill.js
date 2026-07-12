@@ -480,7 +480,7 @@ const packs = function () {
             Mbaby_zhangren: ['male', 'qun', 4, ['minichuanxin', 'dcfengshi']],
             Mbaby_dongguiren: ['female', 'qun', 3, ['minilianzhi', 'dclingfang', 'dcfengying'], ['name:董|null']],
             Mbaby_dc_sb_liuxie: ['male', 'qun', 3, ['dcsbzhanban', 'dcsbchensheng', 'minitiancheng']],
-            Mbaby_tianfeng: ['male', 'qun', 3, ['minisijian', 'dcsuishi']],
+            Mbaby_tianfeng: ['male', 'qun', 3, ['minisijian', 'minisuishi']],
             //神
             Mbaby_shen_zhugeliang: ['male', 'shen', 3, ['qixing', 'minikuangfeng', 'minidawu'], ['shu', 'name:诸葛|亮']],
             Mbaby_shen_lvbu: ['male', 'shen', 6, ['miniwuqian', 'minishenfen'], ['qun']],
@@ -32194,7 +32194,28 @@ const packs = function () {
                     await player.discardPlayerCard(target, 'he', true);
                 },
             },
-            dcsuishi_Mbaby_tianfeng: { audio: 'ext:活动武将/audio/skill:2' },
+            minisuishi: {
+                audio: 'ext:活动武将/audio/skill:2',
+                inherit: 'dcsuishi',
+                trigger: { global: ['damageBegin3', 'dieAfter'] },
+                logAudio(event, player) {
+                    return `ext:活动武将/audio/skill/minisuishi${1 + (event.name === 'die')}.mp3`;
+                },
+                filter(event, player) {
+                    if (event.player === player) return false;
+                    return event[event.name === 'damage' ? 'source' : 'player'].group === player.group;
+                },
+                async content(event, trigger, player) {
+                    if (trigger.name === 'damage') await player.draw();
+                    else {
+                        await player.chooseToDiscard('h', [1, Infinity], true, 'allowChooseAll').set('ai', card => {
+                            const player = get.player();
+                            if (player.countCards('h') - ui.selected.cards.length > 1) return 2 - get.value(card);
+                            return 4 - get.value(card);
+                        });
+                    }
+                },
+            },
             //神
             miniwuqian: {
                 derivation: 'wushuang',
@@ -44933,6 +44954,8 @@ const packs = function () {
             minitiancheng_info: `你发动${get.poptip('dcsbzhanban')}时，可以令一名其他角色不成为此次技能的目标。`,
             minisijian: '死谏',
             minisijian_info: '当你失去最后的手牌后，你可以对一名其他角色造成1点伤害并弃置其一张牌。',
+            minisuishi: '随势',
+            minisuishi_info: '锁定技，其他角色受到伤害时，若伤害来源与你势力相同，你摸一张牌；其他角色死亡时，若其势力与你相同，你弃置至少一张手牌。',
             //神
             Mbaby_shen_lvbu: '欢杀神吕布',
             Mbaby_shen_guanyu: '欢杀神关羽',
@@ -45989,8 +46012,8 @@ const packs = function () {
             '#ext:活动武将/audio/die/Mbaby_zoushi:die': '世间的成败得失，都要怪红颜祸水么……',
             '#ext:活动武将/audio/skill/minisijian1': '秉忠而谏，何惧一死。',
             '#ext:活动武将/audio/skill/minisijian2': '我，已经一无所有了。',
-            '#ext:活动武将/audio/skill/dcsuishi_Mbaby_tianfeng1': '胜，则无威不加。',
-            '#ext:活动武将/audio/skill/dcsuishi_Mbaby_tianfeng2': '败，则一身不保……',
+            '#ext:活动武将/audio/skill/minisuishi1': '胜，则无威不加。',
+            '#ext:活动武将/audio/skill/minisuishi2': '败，则一身不保……',
             '#ext:活动武将/audio/die/Mbaby_tianfeng:die': '主庸臣佞，难逃一败……',
         },
     };
