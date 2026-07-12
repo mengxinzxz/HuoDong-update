@@ -3218,7 +3218,7 @@ const packs = function () {
                         content() {
                             'step 0'
                             if (_status.dying.length) {
-                                if (!player.storage.fh_qingxian) player.storage.fh_qingxian = 0;
+                                player.storage.fh_qingxian ??= 0;
                                 player.storage.fh_qingxian++;
                                 event.finish();
                                 return;
@@ -3354,7 +3354,7 @@ const packs = function () {
                             'step 0'
                             if (_status.dying.length) {
                                 if (event.triggername == 'recoverEnd') {
-                                    if (!player.storage.fh_juexiang_lie) player.storage.fh_juexiang_lie = 0;
+                                    player.storage.fh_juexiang_lie ??= 0;
                                     player.storage.fh_juexiang_lie++;
                                 }
                                 event.finish();
@@ -3896,7 +3896,7 @@ const packs = function () {
                 direct: true,
                 async content(event, trigger, player) {
                     var targets = player == trigger.player ? (trigger.targets ? trigger.targets.slice(0) : [trigger.target]) : [trigger.player];
-                    if (!trigger.fixedResult) trigger.fixedResult = {};
+                    trigger.fixedResult ??= {};
                     while (targets.length) {
                         var target = targets.shift();
                         var result = await player.choosePlayerCard(target, 'h').set('prompt', get.prompt('fh_hanzhan', target)).set('prompt2', '选择' + get.translation(target) + '的一张手牌作为其频点牌').set('ai', button => {
@@ -4773,11 +4773,11 @@ const packs = function () {
         //获取额外牌堆的牌
         get.fh_cardPile = function (filter) {
             game.initFh_cardPile();
-            if (!filter) filter = () => true;
-            else if (typeof filter == 'string') {
+            if (typeof filter == 'string') {
                 var name = filter;
                 filter = (card) => card.name == name;
             }
+            else filter ??= () => true;
             var cards = _status.fh_cardPile.filter(card => filter(card));
             if (cards.length) return cards.randomGet();
             return false;

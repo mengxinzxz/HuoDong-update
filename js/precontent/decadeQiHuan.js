@@ -800,8 +800,8 @@ const packs = function () {
                         while (num > 0) {
                             num--;
                             var target = targets.randomGet();
-                            if (!map[target.playerid]) map[target.playerid] = 1;
-                            else map[target.playerid]++;
+                            map[target.playerid] ??= 0;
+                            map[target.playerid]++;
                         }
                         targets = targets.filter(current => map[current.playerid]);
                         for (var i of targets) {

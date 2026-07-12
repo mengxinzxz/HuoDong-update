@@ -209,7 +209,7 @@ const packs = function () {
                     trigger.target.storage.qinggang2.add(trigger.card);
                     var id = trigger.target.playerid;
                     var map = trigger.getParent().customArgs;
-                    if (!map[id]) map[id] = {};
+                    map[id] ??= {};
                     if (typeof map[id].extraDamage != 'number') map[id].extraDamage = 0;
                     map[id].extraDamage++;
                 },

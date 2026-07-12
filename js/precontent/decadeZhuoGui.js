@@ -356,7 +356,7 @@ const packs = function () {
                     if (result.cards[0].name == 'sha') {
                         var id = trigger.target.playerid;
                         var map = trigger.getParent().customArgs;
-                        if (!map[id]) map[id] = {};
+                        map[id] ??= {};
                         if (typeof map[id].extraDamage != 'number') {
                             map[id].extraDamage = 0;
                         }

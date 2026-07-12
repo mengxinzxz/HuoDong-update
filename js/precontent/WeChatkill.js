@@ -1142,7 +1142,7 @@ const packs = function () {
                         var res = result.cards, target = result.targets[0].playerid;
                         player.addGaintag(res, 'olsujian_given');
                         cards.removeArray(res);
-                        if (!event.given_map[target]) event.given_map[target] = [];
+                        event.given_map[target] ??= [];
                         event.given_map[target].addArray(res);
                         if (cards.length) event.goto(2);
                     }
@@ -3685,7 +3685,7 @@ const packs = function () {
                     targets.sortBySeat();
                     event.num = 0;
                     'step 1'
-                    if (!event.caicuolist) event.caicuolist = [];
+                    event.caicuolist ??= [];
                     targets[event.num].chooseBool('是否押杀？').ai = function (event, player) {
                         var evt = _status.event.getParent();
                         if (get.attitude(targets[event.num], evt.player) > 0) return evt.player.countCards('h', 'sha') ? false : true;
@@ -4112,7 +4112,7 @@ const packs = function () {
                 subSkill: {
                     draw: {
                         init(player) {
-                            if (!player.storage.wechatkuangbi_draw) player.storage.wechatkuangbi_draw = [[], []];
+                            player.storage.wechatkuangbi_draw ??= [[], []];
                         },
                         charlotte: true,
                         onremove: true,
@@ -4267,7 +4267,7 @@ const packs = function () {
                         silent: true,
                         firstDo: true,
                         content() {
-                            if (!trigger.baseDamage) trigger.baseDamage = 1;
+                            trigger.baseDamage ??= 1;
                             trigger.baseDamage += player.countMark('wechatkannan_damage');
                         },
                     },
@@ -4475,7 +4475,7 @@ const packs = function () {
             },
             wechatjiaozhao2: {
                 init(player) {
-                    if (!player.storage.wechatjiaozhao2) player.storage.wechatjiaozhao2 = [[], []];
+                    player.storage.wechatjiaozhao2 ??= [[], []];
                 },
                 onremove(player) {
                     player.removeGaintag('wechatjiaozhao2');
@@ -4644,7 +4644,7 @@ const packs = function () {
                         silent: true,
                         popup: false,
                         content() {
-                            if (!trigger.baseDamage) trigger.baseDamage = 1;
+                            trigger.baseDamage ??= 1;
                             trigger.baseDamage++;
                             game.log(trigger.card, '的伤害值/回复值', '#y+1');
                         },
@@ -5070,8 +5070,8 @@ const packs = function () {
                     //player.popup(result.control);
                     //game.log(player,'选择了','#g'+get.translation(result.control)+'牌');
                     target.addSkill('wechatduoquan_effect', { player: 'phaseUseAfter' });
-                    if (!target.storage.wechatduoquan_effect) target.storage.wechatduoquan_effect = {};
-                    if (!target.storage.wechatduoquan_effect[player.playerid]) target.storage.wechatduoquan_effect[player.playerid] = [];
+                    target.storage.wechatduoquan_effect ??= {};
+                    target.storage.wechatduoquan_effect[player.playerid] ??= [];
                     target.storage.wechatduoquan_effect[player.playerid].add(result.control);
                     target.markSkill('wechatduoquan_effect');
                 },
@@ -7018,9 +7018,9 @@ const packs = function () {
                                 const id = trigger.target.playerid;
                                 const idt = trigger.target.playerid;
                                 const map = trigger.getParent().customArgs;
-                                if (!map[idt]) map[idt] = {};
-                                if (!map[idt].shaReq) map[idt].shaReq = {};
-                                if (!map[idt].shaReq[id]) map[idt].shaReq[id] = 1;
+                                map[idt] ??= {};
+                                map[idt].shaReq ??= {};
+                                map[idt].shaReq[id] ??= 1;
                                 map[idt].shaReq[id]++;
                             }
                             else trigger.num += player.countMark(event.name);
@@ -9550,7 +9550,7 @@ const packs = function () {
                         });
                     var target = trigger.target;
                     target.addTempSkill('wechatsbliegong_block');
-                    if (!target.storage.wechatsbliegong_block) target.storage.wechatsbliegong_block = [];
+                    target.storage.wechatsbliegong_block ??= [];
                     target.storage.wechatsbliegong_block.push([evt.card, storage]);
                     lib.skill.wechatsbliegong.updateBlocker(target);
                 },
@@ -10541,7 +10541,7 @@ const packs = function () {
                         async content(event, trigger, player) {
                             if (event.triggername === 'useCard1') {
                                 game.broadcastAll(event => {
-                                    if (!event.card.storage) event.card.storage = {};
+                                    event.card.storage ??= {};
                                     event.card.storage._wechatqumou_eff = true;
                                 }, trigger);
                                 player.removeMark(event.name + '_' + get.type2(trigger.card), 1, false);
@@ -11317,7 +11317,7 @@ const packs = function () {
                                 const { skill: { wechatzuoqing_backup: { link } } } = lib;
                                 const { target } = event;
                                 const stat = player.getStat('skill');
-                                if (!stat.wechatzuoqing_targets) stat.wechatzuoqing_targets = [];
+                                stat.wechatzuoqing_targets ??= [];
                                 stat.wechatzuoqing_targets.push(target);
                                 if (link === 'losehp') await player.loseHp();
                                 else await player.discard(event.cards);

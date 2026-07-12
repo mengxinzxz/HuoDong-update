@@ -17,9 +17,9 @@ export async function content(config, pack) {
 	//precBoss
 	//Boss模式编辑
 	if (get.mode() == 'boss') {
-		//等阶设置（所有boss对战的等阶加成均为神武再世等阶加成方式）
-		if (!lib.config.extension_活动武将_Boss_TZ_level) lib.config.extension_活动武将_Boss_TZ_level = '1';
-		if (!lib.config.extension_活动武将_Boss_YZ_level) lib.config.extension_活动武将_Boss_YZ_level = '1';
+		//等阶设置
+		lib.config.extension_活动武将_Boss_TZ_level ??= '1';
+		lib.config.extension_活动武将_Boss_YZ_level ??= '1';
 		lib.skill._boss_tz_level = {
 			charlotte: true,
 			ruleSkill: true,
@@ -68,46 +68,43 @@ export async function content(config, pack) {
 						player.node.framebg.dataset.auto = player.node.framebg.dataset.decoration;
 						break;
 					case 'zhu': case 'zhong':
-						if (game.boss_shenwuzaishi) {
-							player.node.framebg.dataset.decoration = 'none';
-							switch (num2) {
-								case '2':
-									player.directgain(get.cards(1));
-									player.addSkill('boss_yz_equip');
-									player.maxHp = player.maxHp + 1;
-									player.hp = player.hp + 1;
-									player.update();
-									break;
-								case '3':
-									player.directgain(get.cards(1));
-									player.addSkill('boss_yz_sha');
-									player.addSkill('boss_yz_shax');
-									player.maxHp = player.maxHp + 2;
-									player.hp = player.hp + 2;
-									player.update();
-									player.node.framebg.dataset.decoration = 'bronze';
-									break;
-								case '4':
-									player.directgain(get.cards(2));
-									player.addSkill('boss_yz_sha');
-									player.addSkill('boss_yz_draw');
-									player.maxHp = player.maxHp + 3;
-									player.hp = player.hp + 3;
-									player.update();
-									player.node.framebg.dataset.decoration = 'silver';
-									break;
-								case '5':
-									player.directgain(get.cards(2));
-									player.addSkill('boss_yz_sha');
-									player.addSkill('boss_yz_kunshou');
-									player.maxHp = player.maxHp + 5;
-									player.hp = player.hp + 5;
-									player.update();
-									player.node.framebg.dataset.decoration = 'gold';
-									break;
-							}
-							player.node.framebg.dataset.auto = player.node.framebg.dataset.decoration;
+						player.node.framebg.dataset.decoration = 'none';
+						switch (num2) {
+							case '2':
+								player.directgain(get.cards(1));
+								player.addSkill('boss_yz_equip');
+								player.maxHp = player.maxHp + 1;
+								player.hp = player.hp + 1;
+								player.update();
+								break;
+							case '3':
+								player.directgain(get.cards(1));
+								player.addSkill('boss_yz_sha');
+								player.maxHp = player.maxHp + 2;
+								player.hp = player.hp + 2;
+								player.update();
+								player.node.framebg.dataset.decoration = 'bronze';
+								break;
+							case '4':
+								player.directgain(get.cards(2));
+								player.addSkill('boss_yz_sha');
+								player.addSkill('boss_yz_draw');
+								player.maxHp = player.maxHp + 3;
+								player.hp = player.hp + 3;
+								player.update();
+								player.node.framebg.dataset.decoration = 'silver';
+								break;
+							case '5':
+								player.directgain(get.cards(2));
+								player.addSkill('boss_yz_sha');
+								if (game.boss_shenwuzaishi) player.addSkill('boss_yz_kunshou');
+								player.maxHp = player.maxHp + 5;
+								player.hp = player.hp + 5;
+								player.update();
+								player.node.framebg.dataset.decoration = 'gold';
+								break;
 						}
+						player.node.framebg.dataset.auto = player.node.framebg.dataset.decoration;
 						break;
 				}
 			},
@@ -390,7 +387,7 @@ export async function content(config, pack) {
 			let offsetX = 0, offsetY = 0;
 			let animationFrameId = null;
 			let saveRenkuPosition = function () {
-				if (!lib.config.hdwj_renkuIndex) lib.config.hdwj_renkuIndex = {};
+				lib.config.hdwj_renkuIndex ??= {};
 				lib.config.hdwj_renkuIndex.x = window.rkbg.offsetLeft / document.body.offsetWidth;
 				lib.config.hdwj_renkuIndex.y = window.rkbg.offsetTop / document.body.offsetHeight;
 				game.saveConfig('hdwj_renkuIndex', lib.config.hdwj_renkuIndex);
@@ -652,7 +649,7 @@ export async function content(config, pack) {
 			}
 			if (rank.rarity && lib.rank.rarity) {
 				for (var i in rank.rarity) {
-					if (!lib.rank.rarity[i]) lib.rank.rarity[i] = [];
+					lib.rank.rarity[i] ??= [];
 					lib.rank.rarity[i].addArray(rank.rarity[i]);
 				}
 			}
@@ -747,7 +744,7 @@ export async function content(config, pack) {
 		if (!Array.isArray(skills)) skills = [skills];
 		skills.forEach(skill => {
 			if (!lib.skill[skill]) return;
-			if (!lib.skill[skill].audioname2) lib.skill[skill].audioname2 = {};
+			lib.skill[skill].audioname2 ??= {};
 			for (var i in map) lib.skill[skill].audioname2[i] = map[i];
 		});
 	};

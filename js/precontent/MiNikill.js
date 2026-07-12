@@ -2765,7 +2765,7 @@ const packs = function () {
                     };
                     const info = get.info('qice').chooseButton;
                     for (const i in info) {
-                        if (!chooseButton[i]) chooseButton[i] = info[i];
+                        chooseButton[i] ??= info[i];
                     }
                     return chooseButton;
                 },
@@ -4404,7 +4404,7 @@ const packs = function () {
                         var res = result.cards, target = result.targets[0].playerid;
                         player.addGaintag(res, 'reyiji_tag');
                         event.num -= res.length
-                        if (!event.given_map[target]) event.given_map[target] = [];
+                        event.given_map[target] ??= [];
                         event.given_map[target].addArray(res);
                         if (event.num > 0) event.goto(1);
                     }
@@ -5223,7 +5223,7 @@ const packs = function () {
                         content() {
                             var id = trigger.target.playerid;
                             var map = trigger.getParent().customArgs;
-                            if (!map[id]) map[id] = {};
+                            map[id] ??= {};
                             if (typeof map[id].extraDamage != 'number') map[id].extraDamage = 0;
                             map[id].extraDamage++;
                         },
@@ -5623,7 +5623,7 @@ const packs = function () {
                     if (['equip1', 'equip4', 'equip3', 'equip6'].includes(get.subtype(card))) {
                         const map = trigger.customArgs;
                         const id = trigger.target.playerid;
-                        if (!map[id]) map[id] = {};
+                        map[id] ??= {};
                         if (typeof map[id].extraDamage != 'number') map[id].extraDamage = 0;
                         map[id].extraDamage += trigger.target.hp - 1;
                     }
@@ -8758,7 +8758,7 @@ const packs = function () {
                     if (trigger.target.hp >= player.hp) {
                         var id = trigger.target.playerid;
                         var map = trigger.getParent().customArgs;
-                        if (!map[id]) map[id] = {};
+                        map[id] ??= {};
                         if (typeof map[id].extraDamage != 'number') {
                             map[id].extraDamage = 0;
                         }
@@ -11393,7 +11393,7 @@ const packs = function () {
                         target.addTempSkill('miniduliang2', { player: 'phaseDrawAfter' });
                         target.addMark('miniduliang2', 1, false);
                         player.addSkill('miniduliang3');
-                        if (!player.storage.miniduliang3[target.playerid]) player.storage.miniduliang3[target.playerid] = 0;
+                        player.storage.miniduliang3[target.playerid] ??= 0;
                         player.storage.miniduliang3[target.playerid]++;
                         event.finish();
                     }
@@ -11536,7 +11536,7 @@ const packs = function () {
                         content() {
                             'step 0'
                             var stat = player.getStat().skill;
-                            if (!stat.minizhanjue_draw) stat.minizhanjue_draw = 0;
+                            stat.minizhanjue_draw ??= 0;
                             stat.minizhanjue_draw++;
                             player.draw('nodelay');
                             var list = game.filterPlayer(function (current) {
@@ -12626,7 +12626,7 @@ const packs = function () {
                 },
                 init(player) {
                     player.storage.miniyoulong = false;
-                    if (!player.storage.miniyoulong2) player.storage.miniyoulong2 = [];
+                    player.storage.miniyoulong2 ??= [];
                 },
                 hiddenCard(player, name) {
                     var list = get.inpileVCardList(info => info[0] == 'basic' || info[0] == 'trick');
@@ -13301,7 +13301,7 @@ const packs = function () {
                         .then(() => player.unmarkSkill('minisbliegong'));
                     var target = trigger.target;
                     target.addTempSkill('minisbliegong_block');
-                    if (!target.storage.minisbliegong_block) target.storage.minisbliegong_block = [];
+                    target.storage.minisbliegong_block ??= [];
                     target.storage.minisbliegong_block.push([evt.card, storage]);
                     lib.skill.minisbliegong.updateBlocker(target);
                 },
@@ -13986,7 +13986,7 @@ const packs = function () {
                         player.addSkill(event.name + '_draw');
                     }
                     const stat = player.getStat('skill');
-                    if (!stat.minifuman_targets) stat.minifuman_targets = [];
+                    stat.minifuman_targets ??= [];
                     stat.minifuman_targets.push(target);
                 },
                 subSkill: {
@@ -14184,7 +14184,7 @@ const packs = function () {
                         content() {
                             if (!_status.miniweilin_syqj || _status.miniweilin_syqj.length > 0) {
                                 if (!lib.inpile.includes('shuiyanqijuny')) lib.inpile.add('shuiyanqijuny');
-                                if (!_status.miniweilin_syqj) _status.miniweilin_syqj = lib.suit.slice(0);
+                                _status.miniweilin_syqj ??= lib.suit.slice(0);
                                 player.gain(game.createCard2('shuiyanqijuny', _status.miniweilin_syqj.randomRemove(), 7), 'gain2');
                             }
                             else {
@@ -14289,7 +14289,7 @@ const packs = function () {
             //谋黄月英
             miniliuma: {
                 init(player) {
-                    if (!_status.miniliuma) _status.miniliuma = [];
+                    _status.miniliuma ??= [];
                     player.markSkill('miniliuma');
                 },
                 updateLiuma() {
@@ -19197,8 +19197,8 @@ const packs = function () {
                     event.player.getHistory('useCard', function (evt) {
                         if (evt.getParent('phaseUse') == event) {
                             var suit = get.suit(evt.card, event.player);
-                            if (!map[suit]) map[suit] = 1;
-                            else map[suit]++;
+                            map[suit] ??= 0;
+                            map[suit]++;
                         }
                     });
                     for (var i in map) {
@@ -19295,7 +19295,7 @@ const packs = function () {
                         content() {
                             var id = trigger.target.playerid;
                             var map = trigger.getParent().customArgs;
-                            if (!map[id]) map[id] = {};
+                            map[id] ??= {};
                             if (typeof map[id].shanRequired == 'number') map[id].shanRequired++;
                             else map[id].shanRequired = 2;
                         },
@@ -19666,7 +19666,7 @@ const packs = function () {
                 },
                 content() {
                     var card = player.getEquip('minidagongche'), key = '大攻车' + event.cost_data;
-                    if (!card.storage[key]) card.storage[key] = 0;
+                    card.storage[key] ??= 0;
                     card.storage[key]++;
                     lib.skill.miniwanglu.broadcast(player);
                 },
@@ -20262,7 +20262,7 @@ const packs = function () {
                         charlotte: true,
                         onremove: true,
                         init(player) {
-                            if (!player.storage.miniyaoming_kanon) player.storage.miniyaoming_kanon = { '摸牌': 0, '弃牌': 0, '制衡': 0 };
+                            player.storage.miniyaoming_kanon ??= { '摸牌': 0, '弃牌': 0, '制衡': 0 };
                         },
                     },
                 },
@@ -20885,7 +20885,7 @@ const packs = function () {
                 inherit: 'xinanjian',
                 async content(event, trigger, player) {
                     const { card, target } = trigger, str1 = get.translation(card), str2 = get.translation(target);
-                    if (!card.storage) card.storage = {};
+                    card.storage ??= {};
                     card.storage[event.name] = true;
                     target.when({ player: 'dyingBegin' }).filter(evt => evt.getParent(3) == trigger.getParent()).then(() => {
                         player.addTempSkill('minianjian_ban', { global: ['dyingEnd', 'phaseEnd'] });
@@ -20906,8 +20906,8 @@ const packs = function () {
                         game.log(player, '令', card, '对', target, '的伤害+1');
                         const id = target.playerid;
                         const map = trigger.customArgs;
-                        if (!map[id]) map[id] = {};
-                        if (!map[id].extraDamage) map[id].extraDamage = 0;
+                        map[id] ??= {};
+                        map[id].extraDamage ??= 0;
                         map[id].extraDamage++;
                     }
                 },
@@ -22542,7 +22542,7 @@ const packs = function () {
                         target.loseToDiscardpile(cardx);
                     }
                     else {
-                        if (!target.storage.minizhoufu2_markcount) target.storage.minizhoufu2_markcount = 0;
+                        target.storage.minizhoufu2_markcount ??= 0;
                         target.addToExpansion(cards, player, 'give').gaintag.add('minizhoufu2');
                     }
                 },
@@ -25075,7 +25075,7 @@ const packs = function () {
                     targets.sortBySeat();
                     event.num = 0;
                     'step 1'
-                    if (!event.caicuolist) event.caicuolist = [];
+                    event.caicuolist ??= [];
                     targets[event.num].chooseBool('是否押杀？').ai = function (event, player) {
                         var evt = _status.event.getParent();
                         if (get.attitude(targets[event.num], evt.player) > 0) return evt.player.countCards('h', 'sha') ? false : true;
@@ -25141,7 +25141,7 @@ const packs = function () {
                 },
                 init(player) {
                     player.addSkill('minipingjian_remove');
-                    if (!player.storage.minipingjian_remove) player.storage.minipingjian_remove = {};
+                    player.storage.minipingjian_remove ??= {};
                 },
                 onremove(player) {
                     player.removeSkill('minipingjian_remove');
@@ -25163,7 +25163,7 @@ const packs = function () {
                             if (player.hasSkill(skills2[j], null, null, false)) continue;
                             if (skills.includes(skills2[j])) {
                                 list.add(name);
-                                if (!map[name]) map[name] = [];
+                                map[name] ??= [];
                                 map[name].push(skills2[j]);
                                 skills.add(skills2[j]);
                                 continue;
@@ -25187,7 +25187,7 @@ const packs = function () {
                                         }
                                     }
                                     list.add(name);
-                                    if (!map[name]) map[name] = [];
+                                    map[name] ??= [];
                                     map[name].push(skills2[j]);
                                     skills.add(skills2[j]);
                                     break;
@@ -25224,7 +25224,7 @@ const packs = function () {
                                     var info = get.plainText(lib.translate[skills2[j] + '_info'] || '');
                                     if (skills.includes(skills2[j]) || (info.includes('当你于出牌阶段') && !info.includes('当你于出牌阶段外'))) {
                                         list.add(name);
-                                        if (!map[name]) map[name] = [];
+                                        map[name] ??= [];
                                         map[name].push(skills2[j]);
                                         skills.add(skills2[j]);
                                         continue;
@@ -25259,7 +25259,7 @@ const packs = function () {
                                                 }
                                             }
                                             list.push(name);
-                                            if (!map[name]) map[name] = [];
+                                            map[name] ??= [];
                                             map[name].push(skills2[j]);
                                             skills.add(skills2[j]);
                                             break;
@@ -25548,7 +25548,7 @@ const packs = function () {
             },
             miniruyi_jingubang: {
                 init(player) {
-                    if (!player.storage.miniruyi_jingubang) player.storage.miniruyi_jingubang = 1;
+                    player.storage.miniruyi_jingubang ??= 1;
                 },
                 onremove: true,
                 mod: {
@@ -27318,7 +27318,7 @@ const packs = function () {
                     if (trigger.card.name == 'sha') {
                         const id = target.playerid;
                         const map = trigger.getParent().customArgs;
-                        if (!map[id]) map[id] = {};
+                        map[id] ??= {};
                         if (typeof map[id].shanRequired == 'number') map[id].shanRequired++;
                         else map[id].shanRequired = 2;
                     }
@@ -27326,9 +27326,9 @@ const packs = function () {
                         const id = target.playerid;
                         const idt = trigger.target.playerid;
                         const map = trigger.getParent().customArgs;
-                        if (!map[idt]) map[idt] = {};
-                        if (!map[idt].shaReq) map[idt].shaReq = {};
-                        if (!map[idt].shaReq[id]) map[idt].shaReq[id] = 1;
+                        map[idt] ??= {};
+                        map[idt].shaReq ??= {};
+                        map[idt].shaReq[id] ??= 1;
                         map[idt].shaReq[id]++;
                     }
                 },
@@ -27907,7 +27907,7 @@ const packs = function () {
                     if (targets.length == 1 || targets.some(target => get.attitude(player, target) < 0 && target.identity && target.identity.indexOf('zhu') != -1)) {
                         let suits = player.getDiscardableCards(player, 'h').reduce((map, card) => {
                             const suit = get.suit(card, player);
-                            if (!map[suit]) map[suit] = [];
+                            map[suit] ??= [];
                             return map;
                         }, {}), cards = [];
                         Object.keys(suits).forEach(i => {
@@ -28719,7 +28719,7 @@ const packs = function () {
                     });
                     'step 1'
                     if (result.bool) {
-                        if (!target) target = result.targets[0];
+                        target ??= result.targets[0];
                         player.line(target);
                         player.give(result.cards, target);
                     }
@@ -29069,7 +29069,7 @@ const packs = function () {
                 async content(event, trigger, player) {
                     const id = (player == trigger.player ? trigger.target : player).playerid;
                     const map = trigger.getParent().customArgs;
-                    if (!map[id]) map[id] = {};
+                    map[id] ??= {};
                     if (typeof map[id].shanRequired == 'number') {
                         map[id].shanRequired++;
                     } else {
@@ -30110,7 +30110,7 @@ const packs = function () {
                             expansions.removeArray(toGive);
                             if (result.targets.length) {
                                 const id = result.targets[0].playerid;
-                                if (!given_map[id]) given_map[id] = [];
+                                given_map[id] ??= [];
                                 given_map[id].addArray(toGive);
                             }
                             if (!expansions.length) break;
@@ -31229,7 +31229,7 @@ const packs = function () {
                         const evt = history[i];
                         num += evt.num;
                         if (num >= next) {
-                            if (!evt.minisbguidao) evt.minisbguidao = true;
+                            evt.minisbguidao ??= true;
                             next = Math.floor(num / 8) * 8 + 8;
                         }
                     }
@@ -37658,7 +37658,7 @@ const packs = function () {
                         const evt = history[i];
                         num += evt.num;
                         if (num >= next) {
-                            if (!evt.minimiaohuxiao) evt.minimiaohuxiao = true;
+                            evt.minimiaohuxiao ??= true;
                             next = Math.floor(num / 3) * 3 + 3;
                         }
                     }
@@ -38526,7 +38526,7 @@ const packs = function () {
                     if (event.turn == undefined) event.turn = targets[0];
                     if (typeof event.baseDamage != 'number') event.baseDamage = 1;
                     if (typeof event.extraDamage != 'number') event.extraDamage = 0;
-                    if (!event.shaReq) event.shaReq = {};
+                    event.shaReq ??= {};
                     if (typeof event.shaReq[player.playerid] != 'number') event.shaReq[player.playerid] = 1;
                     for (const target of targets) {
                         const map = event.getParent().customArgs, id = target.playerid;
@@ -38789,7 +38789,7 @@ const packs = function () {
                     }, originalTimeout, event.videoId);
                     const target = trigger.player, musicList = result.musicList;
                     const num = Math.max(...Object.values(musicList.reduce((map, name) => {
-                        if (!map[name]) map[name] = 0;
+                        map[name] ??= 0;
                         map[name]++;
                         return map;
                     }, {})));
@@ -38881,7 +38881,7 @@ const packs = function () {
                     const history = game.getGlobalHistory('everything', evt => evt.player === event.player && ['useCard', 'respond'].includes(evt.name));
                     const map = history.reduce((map, evt) => {
                         const { name } = evt.card;
-                        if (!map[name]) map[name] = 0;
+                        map[name] ??= 0;
                         map[name]++;
                         return map;
                     }, {});
@@ -39632,7 +39632,7 @@ const packs = function () {
 
                                     //防止无限循环，允许回头
                                     const key = nx + ',' + ny + ',' + newScore + ',' + newWalkedReds.join(',');
-                                    if (!dfs.visited) dfs.visited = new Set();
+                                    dfs.visited ??= new Set();
                                     if (dfs.visited.has(key)) continue;
                                     dfs.visited.add(key);
 
@@ -40006,7 +40006,7 @@ const packs = function () {
                 init(player) {
                     if (!ui._minifightdingjun) {
                         game.broadcastAll(() => {
-                            if (!_status._minifightdingjun) _status._minifightdingjun = 0;
+                            _status._minifightdingjun ??= 0;
                             _status._minifightdingjun = Math.max(0, _status._minifightdingjun);
                             if (get.is.phoneLayout()) ui._minifightdingjun = ui.create.div('.touchinfo.left', ui.window);
                             else ui._minifightdingjun = ui.create.div(ui.gameinfo);
@@ -40144,7 +40144,7 @@ const packs = function () {
                     if (goon1 && goon2) {
                         const id = trigger.target.playerid;
                         const map = trigger.getParent().customArgs;
-                        if (!map[id]) map[id] = {};
+                        map[id] ??= {};
                         if (typeof map[id].extraDamage !== 'number') map[id].extraDamage = 0;
                         map[id].extraDamage++;
                         game.log(trigger.card, '对', trigger.target, '造成的伤害', '#y+1');

@@ -10,7 +10,7 @@ const packs = function () {
                 CLongZhou: ['lz_sufei', 'lz_tangzi', 'lz_liuqi', 'lz_huangquan'],
                 Chuodong: ['bilibili_shengxunyu', 'bilibili_Firewin', 'bilibili_jinglingqiu', 'bilibili_suixingsifeng', 'bilibili_Emptycity', 'bilibili_thunderlei', 'bilibili_lonelypatients', 'bilibili_ningjingzhiyuan', 'bilibili_xizhicaikobe'],
                 CDormitory: ['bilibili_yirenyixiaojian', 'bilibili_longjiuzhen', 'bilibili_diandian', 'bilibili_murufengchen', 'bilibili_wuzhuwanshui', 'bilibili_kuangshen', 'bilibili_yanjing', ...Array.from({ length: 3 }).map((_, index) => `bilibili_yanjing_friend${index + 1}`), 'bilibili_xiaoyaoruyun', 'bilibili_shuijiaobuboli'],
-                Cothers: ['bilibili_zhugeliang', 'bilibili_peixiu', 'bilibili_caocao', 'bilibili_xiahoudun', 'bilibili_liuguanzhang', 'bilibili_gaowang', 'bilibili_simayi', 'old_dongxie', 'bilibili_sunhanhua', 'bilibili_zhoutaigong', 'bilibili_zhouxiaomei', 'bilibili_caifuren', 'bilibili_zhengxuan', 'bilibili_sp_xuyou', 'old_zuoci', 'bilibili_kuailiangkuaiyue', 'bilibili_wuqiao', 'bilibili_daxiao', 'bilibili_xushao', 'bilibili_shen_guojia', 'bilibili_re_xusheng', 'bilibili_zhangrang', 'bilibili_litiansuo', 'decade_huangwudie', 'bilibili_huanggai', 'bilibili_ekeshaoge', 'bilibili_guanning', 'bilibili_wangwang', 'diy_lvmeng'],
+                Cothers: ['bilibili_zhugeliang', 'bilibili_caocao', 'bilibili_xiahoudun', 'bilibili_liuguanzhang', 'bilibili_gaowang', 'bilibili_simayi', 'old_dongxie', 'bilibili_sunhanhua', 'bilibili_zhoutaigong', 'bilibili_zhouxiaomei', 'bilibili_caifuren', 'bilibili_zhengxuan', 'bilibili_sp_xuyou', 'old_zuoci', 'bilibili_kuailiangkuaiyue', 'bilibili_wuqiao', 'bilibili_daxiao', 'bilibili_xushao', 'bilibili_shen_guojia', 'bilibili_re_xusheng', 'bilibili_zhangrang', 'bilibili_litiansuo', 'decade_huangwudie', 'bilibili_huanggai', 'bilibili_ekeshaoge', 'bilibili_guanning', 'bilibili_wangwang', 'diy_lvmeng'],
                 Cothers_dualside: ['bilibili_wangtao', 'bilibili_wangyue', 'bilibili_x_wangtao', 'bilibili_x_wangyue', 'bilibili_daqiao', 'bilibili_xiaoqiao', 'bilibili_x_daqiao', 'bilibili_x_xiaoqiao', 'bilibili_ahuinan', 'bilibili_dongtuna', 'bilibili_x_ahuinan', 'bilibili_x_dongtuna'],
                 CXuanDie: ['bfake_zhanghua', 'bfake_hanshao', 'bfake_hanrong', 'bilibili_adong', 'bfake_jiananfeng', 'bfake_shen_zhangjiao', 'bfake_shen_zhangfei', 'bfake_shen_jiaxu', 'bfake_huanwen', 'bfake_miheng'],
             },
@@ -69,7 +69,6 @@ const packs = function () {
             bilibili_xiahoudun: ['male', 'wei', 4, ['bilibili_ganglie', 'new_qingjian'], ['name:夏侯|惇', ...['character', 'tempname', 'die'].map(i => `${i}:re_xiahoudun`)]],
             bilibili_yirenyixiaojian: ['male', 'key', '1/Infinity', ['bilibili_ranzhi', 'bilibili_wuying', 'bilibili_jiabin'], ['clan:宿舍群|肘击群|活动群', 'name:吴|新建']],
             bilibili_caocao: ['male', 'qun', 4, ['bilibili_hanhuang'], ['border:wei']],
-            bilibili_peixiu: ['male', 'wei', 4, ['bilibili_maozhu', 'bilibili_jinlan', 'bilibili_caifeng'], ['character:ol_peixiu', 'forbidai', 'border:jin', 'name:裴|秀']],
             bilibili_zhugeliang: ['male', 'shu', 3, ['bilibili_lianbing'], ['name:诸葛|亮']],
             bilibili_shibing: ['male', 'shu', Infinity, ['bilibili_tongshuai'], ['name:null|null', 'character:haopu', 'unseen']],
             //双面武将--正面
@@ -1314,7 +1313,7 @@ const packs = function () {
                                                     }
                                                     else {
                                                         if (lib.config.background_speak) game.playAudio('skill', 'zhengjing_click');
-                                                        if (!result[card.name]) result[card.name] = 0;
+                                                        result[card.name] ??= 0;
                                                         result[card.name]++;
                                                     };
                                                     card.hadCut = true;
@@ -3564,7 +3563,7 @@ const packs = function () {
                         for (var i of list) {
                             var info = lib.skill[i];
                             if (!info) continue;
-                            if (!info.audioname2) info.audioname2 = {};
+                            info.audioname2 ??= {};
                             info.audioname2.old_zhaoxiang = 'fanghun';
                         }
                     }, list);
@@ -3668,7 +3667,7 @@ const packs = function () {
                 group: ['old_kuzhan_end', 'old_kuzhan_fail', 'old_kuzhan_mark'],
                 dutySkill: true,
                 init(player) {
-                    if (!player.storage.old_kuzhan) player.storage.old_kuzhan = [0, 0];
+                    player.storage.old_kuzhan ??= [0, 0];
                 },
                 trigger: { player: 'phaseZhunbeiBegin' },
                 filter(event, player) {
@@ -4075,7 +4074,7 @@ const packs = function () {
                 },
                 content() {
                     if (event.triggername == 'useCard1') {
-                        if (!_status.bilibili_shishengshibai) _status.bilibili_shishengshibai = 0;
+                        _status.bilibili_shishengshibai ??= 0;
                         _status.bilibili_shishengshibai++;
                         game.broadcastAll(function (num) {
                             if (ui.bolGuanDuInfo) ui.bolGuanDuInfo.innerHTML = '当前事件：十胜十败（' + num + '）';
@@ -4399,6 +4398,7 @@ const packs = function () {
                 charlotte: true,
                 subSkill: {
                     sha: {
+                        nopop: true,
                         charlotte: true,
                         mod: {
                             cardUsable(card, player, num) {
@@ -4407,6 +4407,7 @@ const packs = function () {
                         },
                     },
                     draw: {
+                        nopop: true,
                         charlotte: true,
                         trigger: { player: 'phaseDrawBegin2' },
                         filter(event, player) {
@@ -4425,10 +4426,7 @@ const packs = function () {
                         skillAnimation: true,
                         animationColor: 'orange',
                         filter(event, player) {
-                            if (event.type == 'dying') {
-                                if (player != event.dying) return false;
-                                return true;
-                            }
+                            if (event.type == 'dying') return player === event.dying;
                             return false;
                         },
                         content() {
@@ -4439,14 +4437,14 @@ const packs = function () {
                             player.link(false);
                             player.turnOver(false);
                             'step 2'
-                            player.draw(5);
-                            if (player.hp < 5) player.recover(5 - player.hp);
+                            player.drawTo(5);
+                            player.recoverTo(5);
                         },
                         ai: {
                             order: 10,
                             save: true,
                             skillTagFilter(player, arg, target) {
-                                if (player != target) return false;
+                                if (player !== target) return false;
                             },
                             result: { player: 1 },
                         },
@@ -4468,14 +4466,7 @@ const packs = function () {
                         },
                     },
                     sha: {
-                        charlotte: true,
-                        mod: {
-                            cardUsable(card, player, num) {
-                                if (card.name == 'sha') return num + 1;
-                            },
-                        },
-                    },
-                    shax: {
+                        nopop: true,
                         charlotte: true,
                         mod: {
                             cardUsable(card, player, num) {
@@ -4484,6 +4475,7 @@ const packs = function () {
                         },
                     },
                     draw: {
+                        nopop: true,
                         charlotte: true,
                         trigger: { player: 'phaseDrawBegin2' },
                         filter(event, player) {
@@ -4976,8 +4968,7 @@ const packs = function () {
                 forced: true,
                 content() {
                     'step 0'
-                    if (!player.storage.old_huanyin) player.storage.old_huanyin = true;
-                    else player.storage.old_huanyin = false;
+                    player.storage.old_huanyin = !player.storage.old_huanyin;
                     game.log(player, '倒置了技能', '#g【烈誓】', '和', '#g【点盏】');
                     'step 1'
                     if (player.countCards('h') < 4) player.drawTo(4);
@@ -7024,8 +7015,8 @@ const packs = function () {
                     else {
                         trigger.num += 3;
                         player.addTempSkill('bilibili_guanli_gain', 'phaseDrawAfter');
-                        if (!player.storage.bilibili_guanli_gain) player.storage.bilibili_guanli_gain = {};
-                        if (!player.storage.bilibili_guanli_gain[trigger.player.playerid]) player.storage.bilibili_guanli_gain[trigger.player.playerid] = 0;
+                        player.storage.bilibili_guanli_gain ??= {};
+                        player.storage.bilibili_guanli_gain[trigger.player.playerid] ??= 0;
                         player.storage.bilibili_guanli_gain[trigger.player.playerid] += 2;
                     }
                 },
@@ -13423,287 +13414,6 @@ const packs = function () {
                     },
                 },
             },
-            //裴秀
-            bilibili_maozhu: {
-                trigger: { player: ['phaseBegin', 'maozhuSuccess'] },
-                forced: true,
-                async content(event, trigger, player) {
-                    let cards = [...player.getCards('h')], suits = cards.map(card => get.suit(card)).unique();
-                    while (suits.length < 4) {
-                        const card = get.cardPile(card => !suits.includes(get.suit(card)), 'random');
-                        if (card) {
-                            cards.push(card);
-                            suits.push(get.suit(card));
-                        }
-                        else break;
-                    }
-                    if (cards.length > 0) await player.gain(cards, 'draw');
-                    lib.skill[event.name].createMaoZhuMap(player, player.storage.bilibili_maozhu_effect?.[0]);
-                },
-                subSkill: {
-                    effect: {
-                        charlotte: true,
-                        init(player, skill) {
-                            player.storage[skill] ??= [void 0, void 0, void 0, void 0];
-                        },
-                        onremove(player, skill) {
-                            const [city, dialog, cell, control] = player.storage[skill];
-                            dialog?.remove();
-                            control?.remove();
-                            delete player.storage[skill];
-                        },
-                    },
-                },
-                createMaoZhuMap(player, last) {
-                    const maozhuMap = new Map([
-                        ['司州', 'x(down,1)x(draw,4)o;xopox;o(draw,2)oxx;oo(left,1)xx'],
-                        ['兖州', 'xxx(down,3);x(draw,4)oo;oopo;(right,1)o(recover,1)o'],
-                        ['青州', 'xxxox;(draw,2)ox(draw,3)o;o(draw,1)oox;xp(up,1)xx;xoxxx'],
-                        ['冀州', 'xoo(draw,2)x;(draw,2)opox;x(up,1)o(recover,1)o;xxoxx'],
-                        ['豫州', '(right,1)o(draw,3)ox;oop(draw,3)o;x(up,3)oxx;xoxxx'],
-                        ['徐州', 'xxoxx;xx(draw,2)xx;(draw,4)opxx;xoo(recover,1)x;xo(right,1)oo'],
-                        ['荆州', 'ooo(draw,2)x;(draw,2)opox;x(up,1)oo(draw,3)'],
-                        ['扬州', 'x(recover,1)ox;oopo;o(draw,5)o(left,1);(up,1)oxx'],
-                        ['秦州', 'oxxx;ooxx;(right,1)p(draw,1)o;xoo(recover,1);(draw,4)oxx'],
-                        ['益州', 'xoxx;x(down,2)xx;oopx;(recover,1)oo(draw,3);x(draw,3)oo'],
-                        ['梁州', 'xo(down,2)x;o(draw,2)ox;(recover,1)pox;xoo(draw,3);xxox'],
-                        ['雍州', 'oxxxx;o(draw,3)xxx;xoxo(recover,1);x(draw,2)pox;xoo(left,2)x'],
-                        ['幽州', 'xxx(draw,2)x;xxxox;x(draw,1)oox;ooxoo;p(draw,1)xx(draw,3)'],
-                        ['并州', 'xx(down,2)x;xooo;o(draw,2)ox;(draw,1)oo(draw,2);xxpx'],
-                        ['凉州', 'oo(left,2)xx;(draw,4)oxxx;x(up,2)o(draw,2)x;xoxoo;xoxxp'],
-                        ['宁州', 'pxxxx;oo(recover,2)xx;(draw,2)oo(left,2)o;x(draw,3)oox'],
-                    ]);
-                    player.addTempSkill('bilibili_maozhu_effect');
-                    let [city, map] = [...maozhuMap.entries()].filter(item => item[1] && item[0] !== last).randomGet();
-                    if (!map) return;
-                    player.storage.bilibili_maozhu_effect[0] = city;
-                    let dialog = player.storage.bilibili_maozhu_effect[1], init = false;
-                    if (dialog) {
-                        dialog.querySelector('.bilibili_maozhuTitle')?.remove();
-                        dialog.querySelectorAll('.bilibili_maozhuRow').forEach(node => node.remove());
-                    }
-                    else {
-                        init = true;
-                        dialog = player.storage.bilibili_maozhu_effect[1] = ui.create.div('.bilibili_maozhuMap.dialog', ui.window);
-                        dialog.style.position = 'absolute';
-                        dialog.style.left = '50%';
-                        dialog.style.top = '50%';
-                        dialog.style.transform = 'translate(-50%, -50%)';
-                        dialog.style.width = 'fit-content';
-                        dialog.style.height = 'fit-content';
-                        dialog.style.display = 'flex';
-                        dialog.style.flexDirection = 'column';
-                        dialog.style.background = 'rgba(0,0,0,0.72)';
-                        dialog.style.gap = '2.5px';
-                        Object.setPrototypeOf(dialog, lib.element.dialog);
-                        dialog.ontouchstart = ui.click.dragtouchdialog;
-                    }
-                    const title = ui.create.div('.bilibili_maozhuTitle', dialog);
-                    title.style.position = 'relative';
-                    title.style.textAlign = 'center';
-                    title.innerHTML = city;
-                    map.split(';').forEach((item, y) => {
-                        //每一行
-                        const row = ui.create.div('.bilibili_maozhuRow', dialog);
-                        row.style.position = 'relative';
-                        row.style.display = 'flex';
-                        row.style.gap = '2.5px';
-                        let x = 0;
-                        for (let i = 0; i < item.length; i++) {
-                            const cell = ui.create.div('.bilibili_maozhuCell', row);
-                            cell.style.position = 'relative';
-                            //设置大小
-                            cell.dataset.x = x;
-                            cell.dataset.y = y;
-                            cell.style.width = '40px';
-                            cell.style.height = '40px';
-                            //让内容居中
-                            cell.style.display = 'flex';
-                            cell.style.alignItems = 'center';
-                            cell.style.justifyContent = 'center';
-                            cell.style.gap = '2.5px';
-                            switch (item[i]) {
-                                //可走格
-                                case 'o':
-                                    cell.style.background = 'rgba(255,255,255,0.15)';
-                                    break;
-                                //不可走格
-                                case 'x':
-                                    cell.style.visibility = 'hidden';
-                                    break;
-                                //特殊事件格
-                                case '(':
-                                    const j = item.indexOf(')', i);
-                                    const [eventName, score] = item.slice(i + 1, j).split(',');
-                                    cell.style.background = 'rgba(255,200,0,0.25)';
-                                    cell.dataset.event = eventName;
-                                    cell.dataset.score = score;
-                                    switch (eventName) {
-                                        case 'draw':
-                                            cell.setBackgroundImage('image/card/handcard.png');
-                                            cell.style.backgroundRepeat = 'no-repeat';
-                                            cell.style.backgroundSize = 'contain';
-                                            cell.style.backgroundPosition = 'center';
-                                            cell.innerHTML = score;
-                                            break;
-                                        case 'recover':
-                                            cell.setBackgroundImage('theme/style/hp/image/glass1.png');
-                                            cell.style.backgroundRepeat = 'no-repeat';
-                                            cell.style.backgroundSize = 'contain';
-                                            cell.style.backgroundPosition = 'center';
-                                            cell.innerHTML = score;
-                                            break;
-                                        default:
-                                            cell.innerHTML = `${{ 'up': '上', 'down': '下', 'left': '左', 'right': '右' }[eventName] || eventName}${score}`;
-                                            break;
-                                    }
-                                    i = j;
-                                    break;
-                                //玩家出生点
-                                case 'p':
-                                    cell.setBackground('bilibili_peixiu', 'character');
-                                    lib.skill.bilibili_maozhu.createMaoZhuArrow(cell);
-                                    player.storage.bilibili_maozhu_effect[2] = cell;
-                                    break;
-                                default:
-                                    throw new Error(`请检查棍母地图数据: ${item[i]}`);
-                            }
-                            x++;
-                        }
-                    });
-                    if (init) {
-                        //重新定义位置，这样首次拖动就不会跳动了
-                        requestAnimationFrame(() => {
-                            const rect = dialog.getBoundingClientRect();
-                            const zoom = game.documentZoom || 1;
-                            dialog.style.transform = '';
-                            dialog.style.left = rect.left / zoom + 'px';
-                            dialog.style.top = rect.top / zoom + 'px';
-                        });
-                        const control = ui.create.control(['隐藏地图', 'stayleft']);
-                        control.custom = function () {
-                            dialog.classList.toggle('hidden');
-                            this.classList.toggle('glow');
-                        };
-                        player.storage.bilibili_maozhu_effect[3] = control;
-                    }
-                },
-                createMaoZhuArrow(cell) {
-                    const config = [
-                        ['东', '♠', 'calc(100% - 8px)', '50%', 'translateY(-50%)'],
-                        ['西', '♥', '-8px', '50%', 'translateY(-50%)'],
-                        ['南', '♣', '50%', 'calc(100% - 8px)', 'translateX(-50%)'],
-                        ['北', '♦', '50%', '-8px', 'translateX(-50%)'],
-                    ];
-                    for (const [dir, suit, x, y, transform] of config) {
-                        const arrow = ui.create.div('.bilibili_maozhuArrow', cell);
-                        arrow.dataset.dir = dir;
-                        arrow.innerHTML = suit;
-                        arrow.style.position = 'absolute';
-                        arrow.style.left = x;
-                        arrow.style.top = y;
-                        arrow.style.transform = transform;
-                        arrow.style.width = '16px';
-                        arrow.style.height = '16px';
-                        arrow.style.display = 'flex';
-                        arrow.style.alignItems = 'center';
-                        arrow.style.justifyContent = 'center';
-                        arrow.style.color = 'white';
-                        arrow.style.textShadow = '0 0 2px black';
-                        arrow.style.pointerEvents = 'none';
-                    }
-                },
-            },
-            bilibili_jinlan: {
-                trigger: { player: 'useCard' },
-                filter(event, player) {
-                    if (_status.currentPhase !== player) return false;
-                    const suit = get.suit(event.card), storage = player.storage.bilibili_maozhu_effect;
-                    if (!storage?.[1] || !storage[2] || !['heart', 'diamond', 'club', 'spade'].includes(suit)) return false;
-                    const list = { 'spade': [1, 0], 'heart': [-1, 0], 'club': [0, 1], 'diamond': [0, -1] }[suit];
-                    const cell = storage[1].querySelector(`[data-x='${Number(storage[2].dataset.x) + list[0]}'][data-y='${Number(storage[2].dataset.y) + list[1]}']`);
-                    return cell && cell.style.visibility !== 'hidden';
-                },
-                prompt2(event, player) {
-                    const suit = get.suit(event.card), storage = player.storage.bilibili_maozhu_effect;
-                    return `向${{ 'spade': '东', 'heart': '西', 'club': '南', 'diamond': '北' }[suit]}探索${storage[0]}的所有地图`;
-                },
-                async content(event, trigger, player) {
-                    const suit = get.suit(trigger.card);
-                    const list = { 'spade': [1, 0], 'heart': [-1, 0], 'club': [0, 1], 'diamond': [0, -1] }[suit];
-                    let effect = [];
-                    while (true) {
-                        const storage = player.storage.bilibili_maozhu_effect, oldCell = storage[2];
-                        const cell = storage[1].querySelector(`[data-x='${Number(storage[2].dataset.x) + list[0]}'][data-y='${Number(storage[2].dataset.y) + list[1]}']`);
-                        if (cell && cell.style.visibility !== 'hidden') {
-                            oldCell.innerHTML = '';
-                            oldCell.style.backgroundImage = '';
-                            oldCell.style.background = 'rgba(255,255,255,0.15)';
-                            oldCell.querySelectorAll('.maozhuArrow').forEach(node => node.remove());
-                            if (cell.dataset.event) {
-                                effect.push([cell.dataset.event, cell.dataset.score]);
-                                delete cell.dataset.event;
-                                delete cell.dataset.score;
-                            }
-                            cell.innerHTML = '';
-                            cell.style.backgroundImage = '';
-                            cell.setBackground('bilibili_peixiu', 'character');
-                            lib.skill.bilibili_maozhu.createMaoZhuArrow(cell);
-                            player.storage.bilibili_maozhu_effect[2] = cell;
-                            await game.delay(0.25);
-                        }
-                        else break;
-                    }
-                    let num = 0;
-                    while (effect[num]) {
-                        let [eventName, score] = effect[num];
-                        num++;
-                        score = Number(score);
-                        if (['draw', 'recover'].includes(eventName)) await player[eventName](score);
-                        else {
-                            for (let count = 0; count < score; count++) {
-                                const storage = player.storage.bilibili_maozhu_effect, oldCell = storage[2];
-                                const list2 = { 'up': [0, -1], 'down': [0, 1], 'left': [-1, 0], 'right': [1, 0] }[eventName];
-                                const cell = storage[1].querySelector(`[data-x='${Number(storage[2].dataset.x) + list2[0]}'][data-y='${Number(storage[2].dataset.y) + list2[1]}']`);
-                                if (cell && cell.style.visibility !== 'hidden') {
-                                    oldCell.innerHTML = '';
-                                    oldCell.style.backgroundImage = '';
-                                    oldCell.style.background = 'rgba(255,255,255,0.15)';
-                                    oldCell.querySelectorAll('.maozhuArrow').forEach(node => node.remove());
-                                    if (cell.dataset.event) {
-                                        effect.push([cell.dataset.event, cell.dataset.score]);
-                                        delete cell.dataset.event;
-                                        delete cell.dataset.score;
-                                    }
-                                    cell.innerHTML = '';
-                                    cell.style.backgroundImage = '';
-                                    cell.setBackground('bilibili_peixiu', 'character');
-                                    lib.skill.bilibili_maozhu.createMaoZhuArrow(cell);
-                                    player.storage.bilibili_maozhu_effect[2] = cell;
-                                    await game.delay(0.25);
-                                }
-                                else break;
-                            }
-                        }
-                    }
-                    if (!player.storage.bilibili_maozhu_effect[1].querySelector('[data-event]')) await event.trigger('maozhuSuccess');
-                },
-                ai: { combo: 'bilibili_maozhu' },
-            },
-            bilibili_caifeng: {
-                enable: 'phaseUse',
-                filter(event, player) {
-                    return player.countDiscardableCards(player, 'he') >= 2;
-                },
-                filterCard: lib.filter.cardDiscardable,
-                selectCard: 2,
-                position: 'he',
-                async content(event, trigger, player) {
-                    const suits = event.cards.map(card => get.suit(card, player));
-                    const card = get.cardPile(card => !suits.includes(get.suit(card)));
-                    if (card) await player.gain(card, 'draw');
-                },
-            },
             //奶龙
             bilibili_lianbing: {
                 trigger: {
@@ -14250,14 +13960,12 @@ const packs = function () {
             boss_tz_draw: '摸牌',
             boss_tz_draw_info: '摸牌阶段摸牌数+1。',
             boss_tz_chongsheng: '重生',
-            boss_tz_chongsheng_info: '限定技，当你处于濒死状态时，你可以弃置判定区内的所有牌，然后复原你的武将牌，摸五张牌，将体力回复至体力上限（至多为5）。',
+            boss_tz_chongsheng_info: '限定技，当你处于濒死状态时，你可以弃置判定区内的所有牌，然后复原你的武将牌，将手牌摸至五张，将体力回复至5点。',
             boss_yz: '等阶特权·神武方',
             boss_yz_equip: '装备',
             boss_yz_equip_info: '登场时随机从牌堆中使用一张装备牌。',
             boss_yz_sha: '出杀',
             boss_yz_sha_info: '出【杀】次数+1。',
-            boss_yz_shax: '出杀',
-            boss_yz_shax_info: '出【杀】次数+1。',
             boss_yz_draw: '摸牌',
             boss_yz_draw_info: '摸牌阶段摸牌数+1。',
             boss_yz_kunshou: '困兽',
@@ -14690,14 +14398,6 @@ const packs = function () {
             bilibili_hanhuang_info_guozhan: '锁定技，游戏开始时，你选择一名其他角色，你与其共享手牌区和武器栏，你或其造成伤害后对方摸一张牌，你与其使用对方的牌无距离次数限制。',
             bilibili_qiangang: '乾纲',
             bilibili_qiangang_info: `出牌阶段，你可${get.poptip('olrumo')}，失去${get.poptip('bilibili_tianen')}，然后本局你使用指定唯一目标的【杀】均执行目标所选择过的所有“权御”效果。`,
-            bilibili_peixiu: '裴秀',
-            bilibili_peixiu_ab: '仓库世家',
-            bilibili_maozhu: '茂著',
-            bilibili_maozhu_info: '锁定技，回合开始时，或你绘制了一幅“地图”的所有城市，你将手牌中的花色补至4，并展开一幅“地图”。',//回合结束时，你获得一个本回合已展开的“地图”技能，直到你下回合结束。
-            bilibili_jinlan: '尽览',
-            bilibili_jinlan_info: '当你于回合内使用♠/♥/♣/♦牌时，你可以绘制东/西/南/北方位的所有“地图”。',//你绘制一处城市后，执行对应城市的效果。
-            bilibili_caifeng: '采风',
-            bilibili_caifeng_info: '出牌阶段，你可以弃置两张牌，然后从牌堆或弃牌堆中随机获得一张其余花色的牌。',
             bilibili_zhugeliang: '诸葛亮',
             bilibili_zhugeliang_ab: '新三奶龙',
             bilibili_lianbing: '炼兵',

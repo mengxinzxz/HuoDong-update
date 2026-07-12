@@ -8810,11 +8810,11 @@
         },
         {
             "path": "js/config.js",
-            "size": 25646
+            "size": 25647
         },
         {
             "path": "js/content.js",
-            "size": 65341
+            "size": 64980
         },
         {
             "path": "js/help.js",
@@ -8826,15 +8826,15 @@
         },
         {
             "path": "js/precontent/decadeKuiBa.js",
-            "size": 35301
+            "size": 35289
         },
         {
             "path": "js/precontent/decadeQiHuan.js",
-            "size": 53843
+            "size": 53813
         },
         {
             "path": "js/precontent/decadeZhuoGui.js",
-            "size": 59323
+            "size": 59311
         },
         {
             "path": "js/precontent/FaDongCharacter.js",
@@ -8850,7 +8850,7 @@
         },
         {
             "path": "js/precontent/huodongcharacter.js",
-            "size": 902521
+            "size": 883121
         },
         {
             "path": "js/precontent/index.js",
@@ -8862,7 +8862,7 @@
         },
         {
             "path": "js/precontent/MiNikill.js",
-            "size": 2753758
+            "size": 2752842
         },
         {
             "path": "js/precontent/MX_catcatcup.js",
@@ -8870,7 +8870,7 @@
         },
         {
             "path": "js/precontent/MX_feihongyinxue.js",
-            "size": 279900
+            "size": 279799
         },
         {
             "path": "js/precontent/WeChatkill_sight.js",
@@ -8878,7 +8878,7 @@
         },
         {
             "path": "js/precontent/WeChatkill.js",
-            "size": 1445942
+            "size": 1445525
         },
         {
             "path": "README.md",
