@@ -17875,6 +17875,9 @@ const packs = function () {
             },
             miniguzheng: {
                 audio: 'guzheng',
+                audioname2: {
+                    Mbaby_sb_sunquan: 'minitongye_guzheng',
+                },
                 trigger: { global: 'phaseDiscardAfter' },
                 filter(event, player) {
                     if (event.player != player && event.player.isIn()) {
@@ -21397,6 +21400,7 @@ const packs = function () {
                     },
                 },
             },
+            jdsbzhiheng_Mbaby_sb_sunquan: { audio: 'ext:活动武将/audio/skill:2' },
             minitongye: {
                 audio: 'sbtongye',
                 trigger: {
@@ -21419,7 +21423,12 @@ const packs = function () {
                 onremove(player, skill) {
                     player.removeAdditionalSkills(skill);
                 },
+                subSkill: {
+                    yingzi: { audio: 'ext:活动武将/audio/skill:true' },
+                    guzheng: { audio: 'ext:活动武将/audio/skill:true' },
+                },
             },
+            jdsbjiuyuan_Mbaby_sb_sunquan: { audio: 'ext:活动武将/audio/skill:2' },
             //谢灵毓
             miniyuandi: {
                 init: () => { game.addGlobalSkill('miniyuandi_ai') },
@@ -26587,7 +26596,7 @@ const packs = function () {
             },
             //南华老仙
             minijinghe: {
-                audio: 'jinghe',
+                audio: 'ext:活动武将/audio/skill:2',
                 inherit: 'jinghe',
                 filter(event, player) {
                     return !player.hasSkill('minijinghe_clear');
@@ -26625,7 +26634,7 @@ const packs = function () {
                 derivation: ['minileiji', 'minipianyi', 'new_retuxi', 'minimingce', 'minizhiyan', 'nhyinbing', 'nhhuoqi', 'nhguizhu', 'nhxianshou', 'nhlundao', 'nhguanyue', 'nhyanzheng'],
             },
             minigongxiu: {
-                audio: 'gongxiu',
+                audio: 'ext:活动武将/audio/skill:2',
                 trigger: { player: 'phaseJieshuBegin' },
                 filter(event, player) {
                     return player.getHistory('useSkill', evt => evt.skill == 'minijinghe').length;
@@ -46029,6 +46038,18 @@ const packs = function () {
             '#ext:活动武将/audio/skill/minilonghun2': '龙战于野，其血玄黄！',
             '#ext:活动武将/audio/skill/minifeifu1': '绫罗翩翩，乘清月兮御阴阳。',
             '#ext:活动武将/audio/skill/minifeifu2': '明眸善睐，靥辅承权。',
+            '#ext:活动武将/audio/skill/jdsbzhiheng_Mbaby_sb_sunquan1': '恩威并施才是长久之道。',
+            '#ext:活动武将/audio/skill/jdsbzhiheng_Mbaby_sb_sunquan2': '举贤任能，各尽其心，以卫江东。',
+            '#ext:活动武将/audio/skill/jdsbjiuyuan_Mbaby_sb_sunquan1': '公奕且在此断后，事成许你荡寇将军！',
+            '#ext:活动武将/audio/skill/jdsbjiuyuan_Mbaby_sb_sunquan2': '卿身披数创，皆是为孤。',
+            '#ext:活动武将/audio/skill/minitongye_guzheng': '内事不决，当问张公。',
+            '#ext:活动武将/audio/skill/minitongye_yingzi': '外事不决，可询公瑾。',
+            '#ext:活动武将/audio/die/Mbaby_sb_sunquan:die': '君臣相忌，朕之过也！',
+            '#ext:活动武将/audio/skill/minigongxiu1': '道冲而用之或不盈，似万物之宗。',
+            '#ext:活动武将/audio/skill/minigongxiu2': '修行无有，而外其形骸。',
+            '#ext:活动武将/audio/skill/minijinghe1': '阳气施化，阴气结成，成化相合。',
+            '#ext:活动武将/audio/skill/minijinghe2': '以有穷之姿，通无穷之变。',
+            '#ext:活动武将/audio/die/Mbaby_re_nanhualaoxian:die': '吾以天地为棺椁，以日月为连璧。',
         },
     };
     MiNikill_sight();//加载欢杀界面逻辑

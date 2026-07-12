@@ -205,8 +205,16 @@
             "size": 42062
         },
         {
+            "path": "audio/die/Mbaby_re_nanhualaoxian.mp3",
+            "size": 57435
+        },
+        {
             "path": "audio/die/Mbaby_re_panzhangmazhong.mp3",
             "size": 48598
+        },
+        {
+            "path": "audio/die/Mbaby_sb_sunquan.mp3",
+            "size": 54146
         },
         {
             "path": "audio/die/Mbaby_sb_zhenji.mp3",
@@ -1193,6 +1201,22 @@
             "size": 18495
         },
         {
+            "path": "audio/skill/jdsbjiuyuan_Mbaby_sb_sunquan1.mp3",
+            "size": 65878
+        },
+        {
+            "path": "audio/skill/jdsbjiuyuan_Mbaby_sb_sunquan2.mp3",
+            "size": 48574
+        },
+        {
+            "path": "audio/skill/jdsbzhiheng_Mbaby_sb_sunquan1.mp3",
+            "size": 52774
+        },
+        {
+            "path": "audio/skill/jdsbzhiheng_Mbaby_sb_sunquan2.mp3",
+            "size": 69094
+        },
+        {
             "path": "audio/skill/jiaojie.mp3",
             "size": 55122
         },
@@ -1657,6 +1681,14 @@
             "size": 15976
         },
         {
+            "path": "audio/skill/minigongxiu1.mp3",
+            "size": 58996
+        },
+        {
+            "path": "audio/skill/minigongxiu2.mp3",
+            "size": 41645
+        },
+        {
             "path": "audio/skill/miniguanghan1.mp3",
             "size": 200305
         },
@@ -1839,6 +1871,14 @@
         {
             "path": "audio/skill/minijilve2.mp3",
             "size": 9163
+        },
+        {
+            "path": "audio/skill/minijinghe1.mp3",
+            "size": 70268
+        },
+        {
+            "path": "audio/skill/minijinghe2.mp3",
+            "size": 53043
         },
         {
             "path": "audio/skill/minijinghong1.mp3",
@@ -2775,6 +2815,14 @@
         {
             "path": "audio/skill/minitongdi2.mp3",
             "size": 36494
+        },
+        {
+            "path": "audio/skill/minitongye_guzheng.mp3",
+            "size": 45102
+        },
+        {
+            "path": "audio/skill/minitongye_yingzi.mp3",
+            "size": 47814
         },
         {
             "path": "audio/skill/minituantu1.mp3",
@@ -8766,7 +8814,7 @@
         },
         {
             "path": "js/content.js",
-            "size": 65058
+            "size": 65341
         },
         {
             "path": "js/help.js",
@@ -8814,7 +8862,7 @@
         },
         {
             "path": "js/precontent/MiNikill.js",
-            "size": 2751912
+            "size": 2753758
         },
         {
             "path": "js/precontent/MX_catcatcup.js",

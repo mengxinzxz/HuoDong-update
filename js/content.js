@@ -899,6 +899,15 @@ export async function content(config, pack) {
 	game.HDsetAudioname2('xinjingong', {
 		Mbaby_wangyun: 'xinjingong_Mbaby_wangyun',
 	});
+	game.HDsetAudioname2('jdsbzhiheng', {
+		Mbaby_sb_sunquan: 'jdsbzhiheng_Mbaby_sb_sunquan',
+	});
+	game.HDsetAudioname2('sbyingzi', {
+		Mbaby_sb_sunquan: 'minitongye_yingzi',
+	});
+	game.HDsetAudioname2('jdsbjiuyuan', {
+		Mbaby_sb_sunquan: 'jdsbjiuyuan_Mbaby_sb_sunquan',
+	});
 
 	//precCI
 	//武将信息
