@@ -19193,6 +19193,10 @@ const packs = function () {
                 audio: 'xinfu_guanwei',
                 trigger: { global: 'phaseUseEnd' },
                 filter(event, player) {
+                    if (!player.hasCard(card => {
+                        if (_status.connectMode && get.position(card) === 'h') return true;
+                        return lib.filter.cardDiscardable(card, player);
+                    }, 'he')) return false;
                     var map = {};
                     event.player.getHistory('useCard', function (evt) {
                         if (evt.getParent('phaseUse') == event) {
@@ -19201,10 +19205,7 @@ const packs = function () {
                             map[suit]++;
                         }
                     });
-                    for (var i in map) {
-                        if (map[i] > 1) return true;
-                    }
-                    return false;
+                    return Object.values(map).some(num => num > 1);
                 },
                 usable: 1,
                 async cost(event, trigger, player) {
@@ -19216,8 +19217,6 @@ const packs = function () {
                 popup: false,
                 content() {
                     'step 0'
-                    if (trigger.player != player) player.addExpose(0.5);
-                    player.line(trigger.player, 'green');
                     trigger.player.draw(2);
                     'step 1'
                     var next = trigger.player.phaseUse();
