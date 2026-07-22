@@ -40866,7 +40866,7 @@ const packs = function () {
                         },
                         silent: true,
                         async content(event, trigger, player) {
-                            player.refreshSkill(event.name);
+                            player.refreshSkill(trigger.skill);
                         },
                     },
                 },
