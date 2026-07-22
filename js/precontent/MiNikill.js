@@ -42,7 +42,7 @@ const packs = function () {
                 ].map(i => `Mbaby_${i}`),
                 MiNi_yueCharacter: ['zhoufei', 'diaochan', 'daqiao'].map(i => `Mbaby_yue_${i}`),
                 MiNi_miaoKill: ['mayunlu', 'guanyinping', 'caoying', 'caiwenji', 'diaochan', 'caifuren', 'zhangxingcai', 'zhurong', 'huangyueying', 'daqiao', 'wangyi', 'zhangchunhua', 'zhenji', 'sunshangxiang', 'xiaoqiao', 'lvlingqi'].map(i => `Mmiao_${i}`),
-                MiNi_nianKill: ['caopi', 'zhugeliang', 'lvbu', 'zhouyu'].map(i => `Mnian_${i}`),
+                MiNi_nianKill: ['sunquan', 'caopi', 'zhugeliang', 'lvbu', 'zhouyu'].map(i => `Mnian_${i}`),
                 MiNi_fightKill: ['huangzhong', 'zhangliao', 'luxun', 'dianwei', 'machao', 'jiangwei', 'lvmeng'].map(i => `Mfight_${i}`),
                 MiNi_yinKill: ['yuji', 'xushu'].map(i => `Myin_${i}`),
                 MiNi_fireKill: ['zhurong'].map(i => `Mfire_${i}`),
@@ -546,6 +546,7 @@ const packs = function () {
             Mnian_lvbu: ['male', 'qun', 5, ['mininiantazhen', 'mininiandoupo', 'mininianying_Mnian_lvbu']],
             Mnian_zhouyu: ['male', 'wu', 4, ['mininiansuhui', 'mininianchongzou', 'mininianying_Mnian_zhouyu']],
             Mnian_caopi: ['male', 'wei', 3, ['mininiandengji', 'mininianchengming', 'mininianying_Mnian_caopi', 'mininiansongwei'], ['zhu', 'forbidai']],
+            Mnian_sunquan: ['male', 'wu', 4, ['mininianquanheng', 'mininianrencai', 'mininianying_Mnian_sunquan'], ['forbidai']],
             //战
             Mfight_huangzhong: ['male', 'shu', 4, ['minifightdingjun', 'minifightlizhan']],
             Mfight_zhangliao: ['male', 'wei', 4, ['minifightbiaoxi', 'minifightpozhen']],
@@ -7355,7 +7356,7 @@ const packs = function () {
                     if (!target?.isIn() || !target.countCards('h')) {
                         const cards = get.bottomCards(5, true);
                         game.addCardKnower(cards, player);
-                        await player.chooseControl('ok').set('content', ['牌堆底的牌', cards]);
+                        await player.chooseControl('ok').set('dialog', ['牌堆底的牌', cards]);
                         return;
                     }
                     const next = game.cardsGotoOrdering(get.bottomCards(5));
@@ -10454,7 +10455,7 @@ const packs = function () {
                             return player.countCards('he');
                         },
                         async cost(event, trigger, player) {
-                            event.result = await player.chooseToDiscard('he', get.prompt('minijili'), '弃置一张牌并摸一张牌').set('ai', lib.skill.zhiheng.check).set('complexCard', true).set('logSkill', 'minijili').forResult();
+                            event.result = await player.chooseToDiscard('he', get.prompt(event.skill), '弃置一张牌并摸一张牌').set('ai', lib.skill.zhiheng.check).set('logSkill', event.skill).forResult();
                         },
                         popup: false,
                         content() {
@@ -37825,6 +37826,7 @@ const packs = function () {
                         };
                         //创建dialog
                         const dialog = event.dialog = ui.create.dialog('定乱：请将一个容器的棋子全部操作为同一势力', 'hidden');
+                        dialog.videoId = event.videoId;
                         dialog.add('<div class="text center">赤字青荒，唯记......</div>');
                         dialog.classList.add('fullheight');
                         dialog.style.borderRadius = '10px';
@@ -38019,7 +38021,7 @@ const packs = function () {
                 async cost(event, trigger, player) {
                     const skills = Object.keys(lib.skill).filter(i => !player.getStorage(event.skill).includes(i) && get.info(i)?.nianyingSkill && get.info(i).nianyingFilter(trigger, player, event.triggername)).map(i => [i, get.info(i).nianyingSkill[0], get.info(i).nianyingSkill[1]]);
                     const result = await player.chooseControl(skills.map(i => i[1]), 'cancel2')
-                        .set('prompt', get.prompt('mininianying_Mnian_zhugeliang')).set('prompt2', '选择一项念影效果执行')
+                        .set('prompt', get.prompt(event.skill)).set('prompt2', '选择一项念影效果执行')
                         .set('displayIndex', false)
                         .set('choiceList', skills.map(i => {
                             return '<div class="skill">' + i[1] + (i[0] !== event.skill ? '（限定）' : '') + '</div><div>' + i[2] + '</div>';
@@ -38629,7 +38631,7 @@ const packs = function () {
                 async cost(event, trigger, player) {
                     const skills = Object.keys(lib.skill).filter(i => !player.getStorage(event.skill).includes(i) && get.info(i)?.nianyingSkill && get.info(i).nianyingFilter(trigger, player, event.triggername)).map(i => [i, get.info(i).nianyingSkill[0], get.info(i).nianyingSkill[1]]);
                     const result = await player.chooseControl(skills.map(i => i[1]), 'cancel2')
-                        .set('prompt', get.prompt('mininianying_Mnian_lvbu')).set('prompt2', '选择一项念影效果执行')
+                        .set('prompt', get.prompt(event.skill)).set('prompt2', '选择一项念影效果执行')
                         .set('displayIndex', false)
                         .set('choiceList', skills.map(i => {
                             return '<div class="skill">' + i[1] + (i[0] !== event.skill ? '（限定）' : '') + '</div><div>' + i[2] + '</div>';
@@ -38889,7 +38891,7 @@ const packs = function () {
                 async cost(event, trigger, player) {
                     const skills = Object.keys(lib.skill).filter(i => !player.getStorage(event.skill).includes(i) && get.info(i)?.nianyingSkill && get.info(i).nianyingFilter(trigger, player, event.triggername)).map(i => [i, get.info(i).nianyingSkill[0], get.info(i).nianyingSkill[1]]);
                     const result = await player.chooseControl(skills.map(i => i[1]), 'cancel2')
-                        .set('prompt', get.prompt('mininianying_Mnian_zhouyu')).set('prompt2', '选择一项念影效果执行')
+                        .set('prompt', get.prompt(event.skill)).set('prompt2', '选择一项念影效果执行')
                         .set('displayIndex', false)
                         .set('choiceList', skills.map(i => {
                             return '<div class="skill">' + i[1] + (i[0] !== event.skill ? '（限定）' : '') + '</div><div>' + i[2] + '</div>';
@@ -39931,7 +39933,7 @@ const packs = function () {
                 async cost(event, trigger, player) {
                     const skills = Object.keys(lib.skill).filter(i => !player.getStorage(event.skill).includes(i) && get.info(i)?.nianyingSkill && get.info(i).nianyingFilter(trigger, player, event.triggername)).map(i => [i, get.info(i).nianyingSkill[0], get.info(i).nianyingSkill[1]]);
                     const result = await player.chooseControl(skills.map(i => i[1]), 'cancel2')
-                        .set('prompt', get.prompt('mininianying_Mnian_zhouyu')).set('prompt2', '选择一项念影效果执行')
+                        .set('prompt', get.prompt(event.skill)).set('prompt2', '选择一项念影效果执行')
                         .set('displayIndex', false)
                         .set('choiceList', skills.map(i => {
                             return '<div class="skill">' + i[1] + (i[0] !== event.skill ? '（限定）' : '') + '</div><div>' + i[2] + '</div>';
@@ -39999,6 +40001,929 @@ const packs = function () {
                 },
             },
             chengxiang_Mnian_caopi: { audio: 'ext:活动武将/audio/skill:true' },
+            //念孙权
+            mininianquanheng: {
+                audio: 'ext:活动武将/audio/skill:2',
+                enable: 'phaseUse',
+                trigger: { player: 'damageBegin4' },
+                filter(event, player) {
+                    if (player.hasSkill('mininianquanheng_used')) return false;
+                    return event.name !== 'damage' || event.num >= player.hp;
+                },
+                async content(event, trigger, player) {
+                    player.addTempSkill(`${event.name}_used`);
+                    await Promise.all(event.next);
+                    if (player.isUnderControl()) game.swapPlayerAuto(player);
+                    //AI直接走结果
+                    const switchToAuto = function () {
+                        return new Promise((resolve) => {
+                            game.resume();
+                            _status.imchoosing = false;
+                            event._result = { bool: false };
+                            resolve(event._result);
+                            const dialog = event.dialog;
+                            if (dialog) dialog[dialog.close ? 'close' : 'remove']();
+                            game.resume();
+                        });
+                    };
+                    //联机时间限制修改
+                    const originalTimeout = lib.configOL.choose_timeout;
+                    game.broadcastAll((player) => {
+                        if (_status.connectMode) lib.configOL.choose_timeout = '30';
+                        if (game.me !== player) {
+                            const dialog = _status.event.dialog = ui.create.dialog(`${get.translation(player)}正在进行“权衡”...`);
+                            dialog.open();
+                        }
+                    }, player);
+                    const 俄罗的俄罗斯方块 = function (player) {
+                        const event = _status.event, { promise, resolve } = Promise.withResolvers();
+                        //如果以自己视角进入流程后AI直接走结果
+                        event.switchToAuto = function () {
+                            game.resume();
+                            _status.imchoosing = false;
+                            const dialog = _status.event.dialog;
+                            if (dialog) dialog[dialog.close ? 'close' : 'remove']();
+                            event._result = { bool: false };
+                            resolve(event._result);
+                        };
+                        //创建dialog
+                        const dialog = event.dialog = ui.create.div(".bolBalance.dialog", ui.window);
+                        Object.setPrototypeOf(dialog, lib.element.dialog);
+                        dialog.ontouchstart = ui.click.dragtouchdialog;
+                        dialog.leftState = Array.from({ length: 5 }, () => Array(5).fill(0));
+                        dialog.rightState = Array.from({ length: 5 }, () => Array(5).fill(0));
+                        dialog.inventoryData = [];
+                        dialog.history = [];
+                        dialog.currentPlace = [];
+                        dialog.currentCount = 0;
+                        dialog.style.position = "absolute";
+                        dialog.style.left = "50%";
+                        dialog.style.top = "50%";
+                        dialog.style.transform = "translate(-50%,-50%)";
+                        dialog.style.display = "flex";
+                        dialog.style.flexDirection = "column";
+                        dialog.style.alignItems = "center";
+                        dialog.style.gap = "12px";
+                        dialog.style.padding = "12px";
+                        dialog.style.background = "rgba(0,0,0,.75)";
+                        dialog.style.borderRadius = "10px";
+                        dialog.style.userSelect = "none";
+                        dialog.style.width = "fit-content";
+                        dialog.style.height = "fit-content";
+                        //存档点
+                        _status.mininianquanheng ??= {};
+                        let save = _status.mininianquanheng[player.playerid];
+                        if (!save) {
+                            save = _status.mininianquanheng[player.playerid] = {
+                                leftState: Array.from({ length: 5 }, () => Array(5).fill(0)),
+                                rightState: Array.from({ length: 5 }, () => Array(5).fill(0)),
+                                inventory: [],
+                            };
+                        }
+                        const PiecePool = {
+                            1: [
+                                [[1]],
+                            ],
+                            2: [
+                                [[1, 1]],
+                            ],
+                            3: [
+                                [[1, 1, 1]],
+                                [
+                                    [1, 1],
+                                    [1, 0],
+                                ],
+                            ],
+                            4: [
+                                [[1, 1, 1, 1]],
+                                [
+                                    [1, 1],
+                                    [1, 1],
+                                ],
+                                [
+                                    [1, 1, 1],
+                                    [0, 1, 0],
+                                ],
+                                [
+                                    [1, 1, 1],
+                                    [1, 0, 0],
+                                ],
+                                [
+                                    [1, 1, 0],
+                                    [0, 1, 1],
+                                ],
+                            ],
+                        };
+                        const cloneShape = shape => shape.map(row => row.slice());
+                        function sameShape(a, b) {
+                            if (a.length != b.length) return false;
+                            for (let y = 0; y < a.length; y++) {
+                                if (a[y].length != b[y].length) return false;
+                                for (let x = 0; x < a[y].length; x++) {
+                                    if (a[y][x] != b[y][x]) return false;
+                                }
+                            }
+                            return true;
+                        };
+                        function randomShape(level) {
+                            const list = PiecePool[level];
+                            return cloneShape(list.randomGet());
+                        };
+                        game.filterPlayer().forEach(target => {
+                            const hp = Math.max(1, Math.min(4, target.hp));
+                            const shape = randomShape(hp);
+                            let item = save.inventory.find(i => i.level == hp && sameShape(i.shape, shape));
+                            if (item) {
+                                item.count++;
+                            }
+                            else {
+                                save.inventory.push({
+                                    id: get.id(),
+                                    level: hp,
+                                    rotate: 0,
+                                    shape,
+                                    count: 1,
+                                });
+                            }
+                        });
+                        //dialog引用
+                        dialog.save = save;
+                        dialog.leftState = save.leftState;
+                        dialog.rightState = save.rightState;
+                        dialog.inventoryData = save.inventory;
+                        dialog.currentPieceData = null;
+                        dialog.history = [];
+                        //dialog拖动
+                        dialog.dragNode = null;
+                        dialog.dragSide = null;
+                        dialog.dragX = 0;
+                        dialog.dragY = 0;
+                        dialog.dragBoard = null;
+                        dialog.dragState = null;
+                        //主体
+                        const main = ui.create.div(dialog);
+                        main.style.display = "flex";
+                        main.style.flexDirection = "row";
+                        main.style.alignItems = "center";
+                        main.style.justifyContent = "center";
+                        main.style.gap = "24px";
+                        main.style.position = "relative";
+                        dialog.main = main;
+                        const leftPanel = ui.create.div(main);
+                        leftPanel.style.gap = "10px";
+                        leftPanel.style.width = "280px";
+                        dialog.leftPanel = leftPanel;
+                        const controlPanel = ui.create.div(main);
+                        controlPanel.style.width = "180px";
+                        dialog.controlPanel = controlPanel;
+                        const rightPanel = ui.create.div(main);
+                        rightPanel.style.gap = "10px";
+                        rightPanel.style.width = "280px";
+                        dialog.rightPanel = rightPanel;
+                        [leftPanel, controlPanel, rightPanel].forEach(panel => {
+                            panel.style.display = "flex";
+                            panel.style.flexDirection = "column";
+                            panel.style.alignItems = "center";
+                            panel.style.position = "relative";
+                        });
+                        //棋盘区
+                        function createBoard(parent, side) {
+                            const boardNode = ui.create.div(parent);
+                            boardNode.style.display = "flex";
+                            boardNode.style.flexDirection = "column";
+                            boardNode.style.gap = "4px";
+                            boardNode.style.padding = "8px";
+                            boardNode.style.background = "#999";
+                            boardNode.style.borderRadius = "8px";
+                            boardNode.style.position = "relative";
+                            const board = [];
+                            for (let y = 0; y < 5; y++) {
+                                const row = ui.create.div(boardNode);
+                                row.style.display = "flex";
+                                row.style.gap = "4px";
+                                row.style.position = "relative";
+                                board[y] = [];
+                                for (let x = 0; x < 5; x++) {
+                                    const cell = ui.create.div(row);
+                                    cell.dataset.x = x;
+                                    cell.dataset.y = y;
+                                    cell.dataset.side = side;
+                                    cell.style.width = "48px";
+                                    cell.style.height = "48px";
+                                    cell.style.background = "white";
+                                    cell.style.borderRadius = "4px";
+                                    cell.style.boxSizing = "border-box";
+                                    cell.style.position = "relative";
+                                    board[y][x] = cell;
+                                }
+                            }
+                            board.node = boardNode;
+                            board.cellSize = 48;
+                            board.gap = 4;
+                            return board;
+                        };
+                        function renderBoard(board, state) {
+                            for (let y = 0; y < 5; y++) {
+                                for (let x = 0; x < 5; x++) {
+                                    const cell = board[y][x];
+                                    if (state[y][x]) {
+                                        cell.style.background = "#4dabff";
+                                    }
+                                    else {
+                                        cell.style.background = "white";
+                                    }
+                                }
+                            }
+                        };
+                        function renderPiece(piece, parent) {
+                            parent.innerHTML = "";
+                            if (!piece) return;
+                            const box = ui.create.div(parent);
+                            box.style.pointerEvents = "none";
+                            box.style.position = "relative";
+                            box.style.display = "flex";
+                            box.style.flexDirection = "column";
+                            const gap = Number(parent.dataset.gap || 2);
+                            box.style.gap = gap + "px";
+                            box.style.width = "fit-content";
+                            const shape = piece.shape;
+                            for (let y = 0; y < shape.length; y++) {
+                                const row = ui.create.div(box);
+                                row.style.position = "relative";
+                                row.style.display = "flex";
+                                row.style.gap = gap + "px";
+                                for (let x = 0; x < shape[y].length; x++) {
+                                    const cell = ui.create.div(row);
+                                    cell.style.position = "relative";
+                                    const size = Number(parent.dataset.size || 24);
+                                    cell.style.width = size + "px";
+                                    cell.style.height = size + "px";
+                                    cell.style.borderRadius = "4px";
+                                    cell.style.boxSizing = "border-box";
+                                    if (shape[y][x]) {
+                                        cell.style.background = "#4dabff";
+                                    }
+                                    else {
+                                        cell.style.visibility = "hidden";
+                                    }
+                                }
+                            }
+                        };
+                        function refreshInventorySelect() {
+                            dialog.inventoryData.forEach(piece => {
+                                if (!piece.node) return;
+                                if (piece === dialog.currentPieceData) {
+                                    piece.node.style.outline = "3px solid #ffd700";
+                                    piece.node.style.outlineOffset = "2px";
+                                }
+                                else {
+                                    piece.node.style.outline = "";
+                                    piece.node.style.outlineOffset = "";
+                                }
+                            });
+                            if (dialog.currentPieceData) {
+                                renderPiece(dialog.currentPieceData, dialog.currentPiece);
+                                if (dialog.downButton) {
+                                    const enable = dialog.currentPieceData && dialog.currentPieceData.level > 1;
+                                    dialog.downButton.classList.toggle("disabled", !enable);
+                                    dialog.downButton.style.opacity = enable ? "1" : "0.4";
+                                }
+                            }
+                            else {
+                                dialog.currentPiece.innerHTML = "";
+                            }
+                        };
+                        function renderInventory() {
+                            dialog.inventory.innerHTML = "";
+                            dialog.inventoryData.forEach(piece => {
+                                const item = ui.create.div(dialog.inventory);
+                                item.style.position = "relative";
+                                item.style.width = "72px";
+                                item.style.height = "72px";
+                                item.style.display = "flex";
+                                item.style.justifyContent = "center";
+                                item.style.alignItems = "center";
+                                item.style.borderRadius = "8px";
+                                item.style.background = "rgba(255,255,255,.12)";
+                                item.style.cursor = "pointer";
+                                piece.node = item;
+                                item.piece = piece;
+                                item.dataset.size = 16;
+                                renderPiece(piece, item);
+                                item.onmousedown = function (e) {
+                                    e.stopPropagation();
+                                    startDrag(e, piece);
+                                };
+                                const num = ui.create.div(item);
+                                num.innerHTML = "×" + piece.count;
+                                num.style.position = "absolute";
+                                num.style.right = "4px";
+                                num.style.bottom = "2px";
+                                num.style.color = "white";
+                                num.style.fontSize = "16px";
+                                num.style.fontWeight = "bold";
+                                num.style.pointerEvents = "none";
+                                num.style.textShadow = "0 0 2px black";
+                            });
+                            if (!dialog.currentPieceData && dialog.inventoryData.length) {
+                                dialog.currentPieceData = dialog.inventoryData[0];
+                            }
+                            refreshInventorySelect();
+                        };
+                        function createDragPiece(piece) {
+                            const node = document.createElement("div");
+                            node.style.position = "fixed";
+                            node.style.pointerEvents = "none";
+                            node.style.zIndex = "99999";
+                            node.style.opacity = "0.7";
+                            node.style.transition = "none";
+                            node.style.animation = "none";
+                            node.dataset.size = 48;
+                            node.dataset.gap = 4;
+                            renderPiece(piece, node);
+                            document.body.appendChild(node);
+                            const shape = piece.shape;
+                            const cellSize = Number(node.dataset.size);
+                            const gap = Number(node.dataset.gap) || 2;
+                            const cols = shape[0].length;
+                            const rows = shape.length;
+                            node.dragWidth = cols * cellSize + (cols - 1) * gap;
+                            node.dragHeight = rows * cellSize + (rows - 1) * gap;
+                            return node;
+                        };
+                        function startDrag(e, piece) {
+                            dialog.currentPieceData = piece;
+                            refreshInventorySelect();
+                            const drag = createDragPiece(piece);
+                            dialog.dragNode = drag;
+                            const zoom = game.documentZoom || 1;
+                            const rect = e.currentTarget.getBoundingClientRect();
+                            const offsetX = (e.clientX - rect.left) / zoom;
+                            const offsetY = (e.clientY - rect.top) / zoom;
+                            let animationFrameId = null;
+                            function move(ev) {
+                                if (animationFrameId) cancelAnimationFrame(animationFrameId);
+                                animationFrameId = requestAnimationFrame(() => {
+                                    drag.style.left = (ev.clientX / zoom - offsetX) + "px";
+                                    drag.style.top = (ev.clientY / zoom - offsetY) + "px";
+                                    updateDragPosition(piece);
+                                });
+                            };
+                            move(e);
+                            function end() {
+                                if (animationFrameId) {
+                                    cancelAnimationFrame(animationFrameId);
+                                    animationFrameId = null;
+                                }
+                                document.removeEventListener("mousemove", move);
+                                document.removeEventListener("mouseup", end);
+                                if (dialog.dragBoard && dialog.dragState && dialog.dragX != null && dialog.dragY != null) {
+                                    placePiece(dialog.dragState, piece.shape, dialog.dragX, dialog.dragY);
+                                    dialog.currentPlace.push({
+                                        side: dialog.dragSide,
+                                        piece: piece,
+                                        x: dialog.dragX,
+                                        y: dialog.dragY,
+                                    });
+                                    dialog.currentCount++;
+                                    removeInventory(piece);
+                                    renderBoard(dialog.dragBoard, dialog.dragState);
+                                    renderInventory();
+                                    refreshWeight();
+                                }
+                                if (dialog.dragNode) {
+                                    dialog.dragNode.remove();
+                                    dialog.dragNode = null;
+                                }
+                                dialog.dragSide = null;
+                                dialog.dragBoard = null;
+                                dialog.dragState = null;
+                                dialog.dragX = null;
+                                dialog.dragY = null;
+                            };
+                            document.addEventListener("mousemove", move);
+                            document.addEventListener("mouseup", end);
+                        };
+                        function canPlace(state, shape, ox, oy) {
+                            for (let y = 0; y < shape.length; y++) {
+                                for (let x = 0; x < shape[y].length; x++) {
+                                    if (!shape[y][x]) continue;
+                                    let xx = ox + x;
+                                    let yy = oy + y;
+                                    if (xx < 0 || yy < 0 || xx >= 5 || yy >= 5) return false;
+                                    if (state[yy][xx]) return false;
+                                }
+                            }
+                            return true;
+                        };
+                        function placePiece(state, shape, ox, oy) {
+                            for (let y = 0; y < shape.length; y++) {
+                                for (let x = 0; x < shape[y].length; x++) {
+                                    if (shape[y][x]) {
+                                        state[oy + y][ox + x] = 1;
+                                    }
+                                }
+                            }
+                        };
+                        function removePiece(state, shape, ox, oy) {
+                            for (let y = 0; y < shape.length; y++) {
+                                for (let x = 0; x < shape[y].length; x++) {
+                                    if (shape[y][x]) {
+                                        state[oy + y][ox + x] = 0;
+                                    }
+                                }
+                            }
+                        };
+                        function countWeight(state) {
+                            let weight = 0;
+                            for (let y = 0; y < 5; y++) {
+                                for (let x = 0; x < 5; x++) {
+                                    if (state[y][x]) weight++;
+                                }
+                            }
+                            return weight;
+                        };
+                        function refreshWeight() {
+                            const left = countWeight(dialog.leftState);
+                            const right = countWeight(dialog.rightState);
+                            dialog.leftWeight.innerHTML = "重量：" + left;
+                            dialog.rightWeight.innerHTML = "重量：" + right;
+                            if (left > 0 && left === right) {
+                                dialog.leftWeight.style.color = "#32CD32";
+                                dialog.rightWeight.style.color = "#32CD32";
+                            } else {
+                                dialog.leftWeight.style.color = "#ff6868";
+                                dialog.rightWeight.style.color = "#ff6868";
+                            }
+                            const enable = dialog.currentPlace.length && left == right && left > 0;
+                            dialog.finishButton.classList.toggle("disabled", !enable);
+                            dialog.finishButton.style.opacity = enable ? "1" : "0.4";
+                        };
+                        function updateDragPosition(piece) {
+                            dialog.dragSide = null;
+                            dialog.dragBoard = null;
+                            dialog.dragState = null;
+                            dialog.dragX = null;
+                            dialog.dragY = null;
+                            if (!dialog.dragNode) return;
+                            const zoom = game.documentZoom || 1;
+                            const rect = dialog.dragNode.getBoundingClientRect();
+                            const cellSize = Number(dialog.dragNode.dataset.size);
+                            const gap = Number(dialog.dragNode.dataset.gap || 2);
+                            const voteMap = {};
+                            for (let py = 0; py < piece.shape.length; py++) {
+                                for (let px = 0; px < piece.shape[py].length; px++) {
+                                    if (!piece.shape[py][px]) continue;
+                                    const cx = rect.left + px * (cellSize + gap) + cellSize / 2;
+                                    const cy = rect.top + py * (cellSize + gap) + cellSize / 2;
+                                    const dom = document.elementFromPoint(cx, cy);
+                                    if (!dom?.dataset.side) continue;
+                                    const bx = Number(dom.dataset.x);
+                                    const by = Number(dom.dataset.y);
+                                    const ox = bx - px;
+                                    const oy = by - py;
+                                    const key = dom.dataset.side + "_" + ox + "_" + oy;
+                                    if (!voteMap[key]) {
+                                        voteMap[key] = {
+                                            side: dom.dataset.side,
+                                            x: ox,
+                                            y: oy,
+                                            count: 0,
+                                        };
+                                    }
+                                    voteMap[key].count++;
+                                }
+                            }
+                            let best = null;
+                            Object.values(voteMap).forEach(info => {
+                                const state = info.side == "left" ? dialog.leftState : dialog.rightState;
+                                if (!canPlace(state, piece.shape, info.x, info.y)) return;
+                                if (!best || info.count > best.count) {
+                                    best = info;
+                                }
+                            });
+                            if (!best) return;
+                            dialog.dragSide = best.side;
+                            dialog.dragBoard = best.side == "left" ? dialog.leftBoard : dialog.rightBoard;
+                            dialog.dragState = best.side == "left" ? dialog.leftState : dialog.rightState;
+                            dialog.dragX = best.x;
+                            dialog.dragY = best.y;
+                        };
+                        function getBoardPos(board, clientX, clientY) {
+                            const rect = board.node.getBoundingClientRect();
+                            if (clientX < rect.left || clientX > rect.right || clientY < rect.top || clientY > rect.bottom) {
+                                return null;
+                            }
+                            const cellSize = board[0][0].offsetWidth;
+                            const gap = 4;
+                            const x = Math.floor((clientX - rect.left) / (cellSize + gap));
+                            const y = Math.floor((clientY - rect.top) / (cellSize + gap));
+                            if (x < 0 || x >= 5 || y < 0 || y >= 5) return null;
+                            return { x, y };
+                        };
+                        function getHoverBoard(clientX, clientY) {
+                            let pos = getBoardPos(dialog.leftBoard, clientX, clientY);
+                            if (pos) {
+                                return {
+                                    board: dialog.leftBoard,
+                                    state: dialog.leftState,
+                                    side: "left",
+                                    x: pos.x,
+                                    y: pos.y,
+                                };
+                            }
+                            pos = getBoardPos(dialog.rightBoard, clientX, clientY);
+                            if (pos) {
+                                return {
+                                    board: dialog.rightBoard,
+                                    state: dialog.rightState,
+                                    side: "right",
+                                    x: pos.x,
+                                    y: pos.y,
+                                };
+                            }
+                            return null;
+                        };
+                        dialog.leftBoard = createBoard(leftPanel, "left");
+                        dialog.rightBoard = createBoard(rightPanel, "right");
+                        renderBoard(dialog.leftBoard, dialog.leftState);
+                        renderBoard(dialog.rightBoard, dialog.rightState);
+                        const leftWeight = ui.create.div(leftPanel);
+                        leftWeight.innerHTML = "重量：0";
+                        leftWeight.style.position = "relative";
+                        leftWeight.style.marginTop = "10px";
+                        leftWeight.style.fontSize = "20px";
+                        leftWeight.style.fontWeight = "bold";
+                        leftWeight.style.color = "#ff6868";
+                        leftWeight.style.textAlign = "center";
+                        dialog.leftWeight = leftWeight;
+                        const rightWeight = ui.create.div(rightPanel);
+                        rightWeight.innerHTML = "重量：0";
+                        rightWeight.style.position = "relative";
+                        rightWeight.style.marginTop = "10px";
+                        rightWeight.style.fontSize = "20px";
+                        rightWeight.style.fontWeight = "bold";
+                        rightWeight.style.color = "#ff6868";
+                        rightWeight.style.textAlign = "center";
+                        dialog.rightWeight = rightWeight;
+                        //中心区
+                        controlPanel.style.position = "relative";
+                        controlPanel.style.display = "flex";
+                        controlPanel.style.flexDirection = "column";
+                        controlPanel.style.alignItems = "center";
+                        controlPanel.style.justifyContent = "flex-start";
+                        controlPanel.style.height = "320px";
+                        const currentTitle = ui.create.div(controlPanel);
+                        currentTitle.innerHTML = "权衡";
+                        currentTitle.style.position = "relative";
+                        currentTitle.style.color = "white";
+                        currentTitle.style.fontSize = "22px";
+                        currentTitle.style.fontWeight = "bold";
+                        currentTitle.style.lineHeight = "1";
+                        currentTitle.style.marginBottom = "12px";
+                        const currentPiece = ui.create.div(controlPanel);
+                        currentPiece.style.position = "relative";
+                        currentPiece.style.display = "flex";
+                        currentPiece.style.justifyContent = "center";
+                        currentPiece.style.alignItems = "center";
+                        currentPiece.style.width = "150px";
+                        currentPiece.style.height = "150px";
+                        currentPiece.style.background = "rgba(255,255,255,.12)";
+                        currentPiece.style.borderRadius = "10px";
+                        currentPiece.style.marginBottom = "16px";
+                        dialog.currentPiece = currentPiece;
+                        const buttonPanel = ui.create.div(controlPanel);
+                        buttonPanel.style.position = "relative";
+                        buttonPanel.style.display = "flex";
+                        buttonPanel.style.flexDirection = "column";
+                        buttonPanel.style.alignItems = "center";
+                        buttonPanel.style.gap = "8px";
+                        buttonPanel.style.width = "100%";
+                        const row1 = ui.create.div(buttonPanel);
+                        row1.style.position = "relative";
+                        row1.style.display = "flex";
+                        row1.style.justifyContent = "center";
+                        row1.style.gap = "8px";
+                        row1.style.width = "100%";
+                        const row2 = ui.create.div(buttonPanel);
+                        row2.style.position = "relative";
+                        row2.style.display = "flex";
+                        row2.style.justifyContent = "center";
+                        row2.style.gap = "8px";
+                        row2.style.width = "100%";
+                        function createButton(text, parent) {
+                            const btn = ui.create.div(parent);
+                            btn.style.position = "relative";
+                            btn.style.display = "flex";
+                            btn.style.justifyContent = "center";
+                            btn.style.alignItems = "center";
+                            btn.style.width = "72px";
+                            btn.style.height = "34px";
+                            btn.style.background = "rgba(255,255,255,.15)";
+                            btn.style.borderRadius = "6px";
+                            btn.style.color = "white";
+                            btn.style.cursor = "pointer";
+                            btn.innerHTML = text;
+                            return btn;
+                        };
+                        function rotateShape(shape) {
+                            const h = shape.length;
+                            const w = shape[0].length;
+                            const result = [];
+                            for (let x = 0; x < w; x++) {
+                                result[x] = [];
+                                for (let y = h - 1; y >= 0; y--) {
+                                    result[x].push(shape[y][x]);
+                                }
+                            }
+                            return result;
+                        };
+                        dialog.rotateButton = createButton("旋转", row1);
+                        dialog.rotateButton.listen(function () {
+                            const piece = dialog.currentPieceData;
+                            if (!piece) return;
+                            piece.shape = rotateShape(piece.shape);
+                            renderInventory();
+                        });
+                        function addInventory(level, count = 1) {
+                            const item = save.inventory.find(i => i.level === level);
+                            if (item) {
+                                item.count += count;
+                                return item;
+                            }
+                            const piece = {
+                                id: get.id(),
+                                level,
+                                rotate: 0,
+                                shape: randomShape(level),
+                                count,
+                            };
+                            save.inventory.push(piece);
+                            return piece;
+                        };
+                        function removeInventory(piece, count = 1) {
+                            piece.count -= count;
+                            if (piece.count <= 0) {
+                                save.inventory.remove(piece);
+                                if (dialog.currentPieceData === piece) {
+                                    dialog.currentPieceData = null;
+                                }
+                            }
+                        };
+                        dialog.downButton = createButton("降级", row1);
+                        dialog.downButton.listen(function () {
+                            const piece = dialog.currentPieceData;
+                            if (!piece || piece.level <= 1) return;
+                            removeInventory(piece);
+                            addInventory(piece.level - 1);
+                            renderInventory();
+                            renderPiece(dialog.currentPieceData, dialog.currentPiece);
+                        });
+                        refreshInventorySelect();
+                        dialog.finishButton = createButton("完成", row2);
+                        dialog.finishButton.listen(function () {
+                            const left = countWeight(dialog.leftState);
+                            const right = countWeight(dialog.rightState);
+                            if (!dialog.currentPlace.length || left != right || left == 0) return;
+                            dialog.style.display = "none";
+                            let count = 0;
+                            dialog.currentPlace.forEach(info => {
+                                const shape = info.piece.shape;
+                                for (let y = 0; y < shape.length; y++) {
+                                    for (let x = 0; x < shape[y].length; x++) {
+                                        if (shape[y][x]) count++;
+                                    }
+                                }
+                            });
+                            const full = left == 25 && right == 25;
+                            if (full) {
+                                for (let y = 0; y < 5; y++) {
+                                    for (let x = 0; x < 5; x++) {
+                                        dialog.leftState[y][x] = 0;
+                                        dialog.rightState[y][x] = 0;
+                                    }
+                                }
+                                renderBoard(dialog.leftBoard, dialog.leftState);
+                                renderBoard(dialog.rightBoard, dialog.rightState);
+                            }
+                            game.resume();
+                            _status.imchoosing = false;
+                            event._result = {
+                                bool: true,
+                                count: count / 2,
+                                all: full || undefined,
+                            };
+                            resolve(event._result);
+                        });
+                        refreshWeight();
+                        dialog.cancelButton = createButton("取消", row2);
+                        dialog.cancelButton.listen(function () {
+                            dialog.style.display = "none";
+                            dialog.currentPlace.forEach(info => {
+                                const state = info.side == "left" ? dialog.leftState : dialog.rightState;
+                                removePiece(state, info.piece.shape, info.x, info.y);
+                                let old = dialog.inventoryData.find(i => i.id == info.piece.id);
+                                if (old) {
+                                    old.count++;
+                                } else {
+                                    dialog.inventoryData.push({
+                                        ...info.piece,
+                                        count: 1,
+                                    });
+                                }
+                            });
+                            renderBoard(dialog.leftBoard, dialog.leftState);
+                            renderBoard(dialog.rightBoard, dialog.rightState);
+                            renderInventory();
+                            refreshWeight();
+                            dialog.currentPlace = [];
+                            dialog.currentCount = 0;
+                            game.resume();
+                            _status.imchoosing = false;
+                            event._result = { bool: false };
+                            resolve(event._result);
+                        });
+                        //积木库存
+                        const inventory = ui.create.div(dialog);
+                        inventory.style.display = "flex";
+                        inventory.style.flexWrap = "wrap";
+                        inventory.style.justifyContent = "center";
+                        inventory.style.alignItems = "center";
+                        inventory.style.gap = "10px";
+                        inventory.style.width = "760px";
+                        inventory.style.minHeight = "90px";
+                        inventory.style.background = "rgba(255,255,255,.08)";
+                        inventory.style.borderRadius = "8px";
+                        inventory.style.padding = "8px";
+                        inventory.style.position = "relative";
+                        dialog.inventory = inventory;
+                        renderInventory();
+                        //位置刷新防止点击dialog位置瞬移
+                        requestAnimationFrame(() => {
+                            const rect = dialog.getBoundingClientRect();
+                            const zoom = game.documentZoom || 1;
+                            dialog.style.transform = "";
+                            dialog.style.left = rect.left / zoom + "px";
+                            dialog.style.top = rect.top / zoom + "px";
+                        });
+                        game.pause();
+                        game.countChoose();
+                        return promise;
+                    };
+                    let next;
+                    if (event.isMine()) next = 俄罗的俄罗斯方块(player);
+                    else if (event.isOnline()) {
+                        const { promise, resolve } = Promise.withResolvers();
+                        event.player.send(俄罗的俄罗斯方块, player);
+                        event.player.wait(async result => {
+                            if (result == 'ai') result = await switchToAuto();
+                            resolve(result);
+                        });
+                        game.pause();
+                        next = promise;
+                    }
+                    else next = switchToAuto();
+                    const result = await next;
+                    game.resume();
+                    game.broadcastAll((originalTimeout) => {
+                        const dialog = _status.event.dialog;
+                        if (dialog) dialog[dialog.close ? 'close' : 'remove']();
+                        if (_status.connectMode) lib.configOL.choose_timeout = originalTimeout;
+                    }, originalTimeout);
+                    if (!result?.bool) {
+                        player.chat('杯具');
+                        game.log(player, '本次并未配平天平');
+                        return;
+                    }
+                    const num = Math.ceil(result.count / 2);
+                    const result2 = await player.chooseTarget(`${get.translation(event.name)}：是否令至多${get.cnNumber(num)}名角色回复或失去1点体力？`, [1, num]).set('ai', target => {
+                        const player = get.player();
+                        return Math.max(get.effect(target, { name: 'losehp' }, player, player), get.recoverEffect(target, player, player));
+                    }).forResult();
+                    if (result2?.bool && result2.targets?.length) {
+                        const targets = result2.targets.sortBySeat();
+                        player.line(targets);
+                        for (const target of targets) {
+                            if (target.isHealthy()) {
+                                await target.loseHp();
+                                continue;
+                            }
+                            const result3 = await player.chooseControl('回复体力', '失去体力').set('target', target).set('ai', () => {
+                                const { player, target } = get.event();
+                                return get.effect(target, { name: 'losehp' }, player, player) > get.recoverEffect(target, player, player) ? 1 : 0;
+                            }).set('prompt', `${get.translation(event.name)}：令${get.translation(target)}回复或失去1点体力`).forResult();
+                            if (result3) await target[result3.index === 0 ? 'recover' : 'loseHp']();
+                        }
+                    }
+                    if (result.all) {
+                        player.addTempSkill(`${event.name}_inf`);
+                        player.refreshSkill('mininianying_Mnian_sunquan');
+                        const result3 = await player.chooseTarget(`${get.translation(event.name)}：是否令一名角色摸四张牌并回复4点体力？`).set('ai', target => {
+                            const player = get.player();
+                            return get.effect(target, { name: 'draw' }, player, player) + get.recoverEffect(target, player, player);
+                        }).forResult();
+                        if (result3?.bool && result3.targets?.length) {
+                            const target = result3.targets[0];
+                            player.line(target);
+                            await target.draw(4);
+                            await target.recover(4);
+                        }
+                    }
+                },
+                ai: {
+                    order: 1,
+                    result: { player: 1 },
+                },
+                subSkill: {
+                    used: { charlotte: true },
+                    inf: {
+                        charlotte: true,
+                        mark: true,
+                        intro: { content: '本回合发动【念影】无次数限制' },
+                        trigger: { player: 'logSkill' },
+                        filter(event,player){
+                            return event.skill === 'mininianying_Mnian_sunquan';
+                        },
+                        silent: true,
+                        async content(event, trigger, player) {
+                            player.refreshSkill(event.name);
+                        },
+                    },
+                },
+            },
+            mininianrencai: {
+                audio: 'ext:活动武将/audio/skill:2',
+                trigger: { global: 'recastingLost' },
+                filter(event, player) {
+                    if (player.hasSkill('mininianrencai_used')) return false;
+                    return event.cards.filterInD('d').some(card => player.hasUseTarget(card));
+                },
+                async cost(event, trigger, player) {
+                    const result = await player.chooseButton([
+                        get.prompt2(event.skill),
+                        trigger.cards.filterInD('d'),
+                    ]).set('filterButton', button => {
+                        const player = get.player(), card = button.link;
+                        return player.hasUseTarget(card);
+                    }).set('ai', button => {
+                        const player = get.player(), card = button.link;
+                        return player.getUseValue(card);
+                    }).forResult();
+                    if (result?.bool && result.links?.length) event.result = { bool: true, cost_data: result.links[0] };
+                },
+                popup: false,
+                async content(event, trigger, player) {
+                    const card = event.cost_data;
+                    const result = await player.chooseUseTarget(card, true, false).set('oncard', () => {
+                        const player = get.player();
+                        player.logSkill('mininianrencai');
+                        player.addTempSkill('mininianrencai_used');
+                    }).forResult();
+                    const cards = trigger.cards.filterInD('d')
+                    if (result?.bool && cards.some(cardx => cardx !== card)) await player.gain(cards.filter(cardx => cardx !== card), 'gain2');
+                },
+                subSkill: { used: { charlotte: true } },
+            },
+            mininianying_Mnian_sunquan: {
+                audio: 'ext:活动武将/audio/skill:2',
+                trigger: { global: ['recoverEnd', 'loseHpEnd'] },
+                filter(event, player, name) {
+                    return Object.keys(lib.skill).some(i => !player.getStorage('mininianying_Mnian_sunquan').includes(i) && get.info(i)?.nianyingSkill && get.info(i).nianyingFilter(event, player, name));
+                },
+                usable: 1,
+                nianyingSkill: ['权御天下', '令当前回合角色重铸其体力值张牌（不足则全部重铸）'],
+                nianyingFilter(event, player, name) {
+                    const target = _status.currentPhase;
+                    return target?.isIn() && target.getHp() > 0 && target.hasCard(card => target.canRecast(card), 'he');
+                },
+                async cost(event, trigger, player) {
+                    const skills = Object.keys(lib.skill).filter(i => !player.getStorage(event.skill).includes(i) && get.info(i)?.nianyingSkill && get.info(i).nianyingFilter(trigger, player, event.triggername)).map(i => [i, get.info(i).nianyingSkill[0], get.info(i).nianyingSkill[1]]);
+                    const result = await player.chooseControl(skills.map(i => i[1]), 'cancel2')
+                        .set('prompt', get.prompt(event.skill)).set('prompt2', '选择一项念影效果执行')
+                        .set('displayIndex', false)
+                        .set('choiceList', skills.map(i => {
+                            return '<div class="skill">' + i[1] + (i[0] !== event.skill ? '（限定）' : '') + '</div><div>' + i[2] + '</div>';
+                        })).set('ai', () => get.event().controls.randomGet()).forResult();
+                    if (result?.control && result.control !== 'cancel2' && typeof result.index === 'number') event.result = { bool: true, cost_data: skills[result.index] };
+                },
+                async content(event, trigger, player) {
+                    const choice = event.cost_data;
+                    player.popup(choice[1]);
+                    game.log(player, '选择了', '#g' + choice[1]);
+                    if (choice[0] !== event.name) player.markAuto(event.name, [choice[0]]);
+                    await lib.skill[choice[0]].nianyingContent(player);
+                },
+                async nianyingContent(player) {
+                    const target = _status.currentPhase;
+                    player.line(target);
+                    const num = target.getHp(), cards = target.getCards('he', card => target.canRecast(card));
+                    const result = await (async () => {
+                        if (num >= cards.length) return { bool: true, cards };
+                        return await target.chooseCard('he', num, `权御天下：请选择重铸${get.cnNumber(num)}张牌`, true).set('ai', lib.skill.zhiheng.check).forResult();
+                    })();
+                    if (result?.bool && result.cards?.length) await target.recast(result.cards);
+                },
+            },
             //战
             //战黄忠
             minifightdingjun: {
@@ -43542,7 +44467,7 @@ const packs = function () {
             minijibian: '机变',
             minijibian_info: '每回合结束时，若你本回合发动过〖狼顾〗，你可以观看牌堆底五张牌并可任意调整这些牌的顺序；若你本回合未发动过〖狼顾〗，你可以对你或当前回合角色造成1点伤害。',
             miniduwang: '独往',
-            miniduwang_info: '锁定技，每轮开始时，你将牌堆顶X张不为【杀】的牌称为“刺”置于武将牌上（X为你的体力值）；若你有“刺”，其他角色计算与你的距离+1。',
+            miniduwang_info: '锁定技，每轮开始时，若你没有“刺”，你将牌堆顶X张不为【杀】的牌称为“刺”置于武将牌上（X为你的体力值）；若你有“刺”，其他角色计算与你的距离+1。',
             minicibei: '刺北',
             minicibei_info: '一名角色使用的造成过伤害的【杀】对应的实体牌进入弃牌堆后，你可以获得一张“刺”，将这些牌置入“刺”，然后弃置一名角色区域里的一张牌。一名角色的回合结束时，若“刺”的牌名均为【杀】，你获得所有“刺”（以此法获得的牌不能被弃置且不计入手牌上限，且你使用这些牌无次数和距离限制但无法触发〖刺北〗）。',
             minizengdao: '赠刀',
@@ -45278,6 +46203,7 @@ const packs = function () {
             Mnian_lvbu: '念吕布',
             Mnian_zhouyu: '念周瑜',
             Mnian_caopi: '念曹丕',
+            Mnian_sunquan: '念孙权',
             mininianxinghan: '兴汉',
             mininianxinghan_info: '每回合限一次，回合开始时或当你受到伤害时，若默认势力和场上的势力的并集存在非蜀势力和你此前未因“定乱”成功的势力，则你可以进行一次“定乱”。若“定乱”成功，则你增加1点体力上限并回复1点体力，然后将场上的“定乱”势力角色均改为蜀势力。',
             mininianxinghan_faq: '关于“定乱”',
@@ -45328,6 +46254,16 @@ const packs = function () {
             mininianying_Mnian_caopi_info: '每回合限一次，当你于摸牌阶段外获得牌后，你可以选择一个存在“念影”效果的技能的“念影”效果执行。',
             mininiansongwei: '颂威',
             mininiansongwei_info: '主公技，其他魏势力的角色的判定生效后，其可以令你摸一张牌。',
+            mininianquanheng: '权衡',
+            mininianquanheng_info: `每回合限一次，出牌阶段或当你受到致命伤害时，你可以进行${get.poptip({
+                id: 'mininianquanheng_俄罗的俄罗斯方块',
+                name: '“权衡”',
+                info: '根据场上存活角色数分配等量与这些角色体力值相同方块数组成的随机积木块（可保留至后续使用），玩家须使用拥有的积木块配平两边5×5天平，若本次有放置积木块且使得两边成功配平则“权衡”成功并保存本次天平状态，否则归还本次放置的积木块',
+            })}。若“权衡”成功，则你可以令场上至多X名角色回复或失去1点体力（X为本次单侧放置的方块数的一半，向上取整）。若本次“权衡”将天平填满，则清空天平，本回合你发动${get.poptip('mininianying_Mnian_sunquan')}无次数限制，且你可以令一名角色摸四张牌并回复4点体力。`,
+            mininianrencai: '任才',
+            mininianrencai_info: '每回合限一次，一名角色重铸牌时，你可以使用本次进入弃牌堆的一张牌，然后获得本次其余进入弃牌堆的牌。',
+            mininianying_Mnian_sunquan: '念影',
+            mininianying_Mnian_sunquan_info: '每回合限一次，一名角色回复或失去体力后，你可以选择一个存在“念影”效果的技能的“念影”效果执行。',
             //战
             Mfight_huangzhong: '战黄忠',
             Mfight_zhangliao: '战张辽',
@@ -46049,6 +46985,13 @@ const packs = function () {
             '#ext:活动武将/audio/skill/minijinghe1': '阳气施化，阴气结成，成化相合。',
             '#ext:活动武将/audio/skill/minijinghe2': '以有穷之姿，通无穷之变。',
             '#ext:活动武将/audio/die/Mbaby_re_nanhualaoxian:die': '吾以天地为棺椁，以日月为连璧。',
+            '#ext:活动武将/audio/skill/mininianquanheng1': '淮泗旧部，江左名士，均为孤之羽翼。',
+            '#ext:活动武将/audio/skill/mininianquanheng2': '诸公皆为肱骨，孤不忍偏废。',
+            '#ext:活动武将/audio/skill/mininianrencai1': '还望诸位，助孤一臂之力。',
+            '#ext:活动武将/audio/skill/mininianrencai2': '弃一才而不用，孤不忍也。',
+            '#ext:活动武将/audio/skill/mininianying_Mnian_sunquan1': '孤之剑印，均托付于汝。',
+            '#ext:活动武将/audio/skill/mininianying_Mnian_sunquan2': '内外诸政，孤可一言而决。',
+            '#ext:活动武将/audio/die/Mnian_sunquan:die': '权衡一生，终失轻重。',
         },
     };
     MiNikill_sight();//加载欢杀界面逻辑

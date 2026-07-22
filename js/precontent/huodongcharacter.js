@@ -706,7 +706,7 @@ const packs = function () {
                 filter(event, player) {
                     var card = event.card;
                     if (event.name == 'phaseJudge' && card.viewAs) card = { name: card.viewAs };
-                    if (event.name != 'phaseJudge' && event.getParent().directHit.includes(player)) return false;
+                    if (event.name != 'phaseJudge' && event.getParent().directHit?.includes(player)) return false;
                     return ['basic', 'trick'].includes(get.type2(card)) && player.hasUsableCard('bol_shanshan');
                 },
                 forced: true,

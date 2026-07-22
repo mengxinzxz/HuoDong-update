@@ -497,6 +497,10 @@
             "size": 60788
         },
         {
+            "path": "audio/die/Mnian_sunquan.mp3",
+            "size": 54144
+        },
+        {
             "path": "audio/die/Mnian_zhouyu.mp3",
             "size": 62012
         },
@@ -2417,6 +2421,22 @@
             "size": 48404
         },
         {
+            "path": "audio/skill/mininianquanheng1.mp3",
+            "size": 60768
+        },
+        {
+            "path": "audio/skill/mininianquanheng2.mp3",
+            "size": 56448
+        },
+        {
+            "path": "audio/skill/mininianrencai1.mp3",
+            "size": 38016
+        },
+        {
+            "path": "audio/skill/mininianrencai2.mp3",
+            "size": 50112
+        },
+        {
             "path": "audio/skill/mininiansongwei1.mp3",
             "size": 168960
         },
@@ -2463,6 +2483,14 @@
         {
             "path": "audio/skill/mininianying_Mnian_lvbu2.mp3",
             "size": 55076
+        },
+        {
+            "path": "audio/skill/mininianying_Mnian_sunquan1.mp3",
+            "size": 34848
+        },
+        {
+            "path": "audio/skill/mininianying_Mnian_sunquan2.mp3",
+            "size": 41472
         },
         {
             "path": "audio/skill/mininianying_Mnian_zhouyu1.mp3",
@@ -7189,6 +7217,10 @@
             "size": 148483
         },
         {
+            "path": "image/character/Mnian_sunquan.jpg",
+            "size": 134401
+        },
+        {
             "path": "image/character/Mnian_zhouyu.jpg",
             "size": 87568
         },
@@ -8850,11 +8882,11 @@
         },
         {
             "path": "js/precontent/huodongcharacter.js",
-            "size": 883121
+            "size": 883122
         },
         {
             "path": "js/precontent/index.js",
-            "size": 43516
+            "size": 43533
         },
         {
             "path": "js/precontent/MiNikill_sight.js",
@@ -8862,7 +8894,7 @@
         },
         {
             "path": "js/precontent/MiNikill.js",
-            "size": 2752887
+            "size": 2809574
         },
         {
             "path": "js/precontent/MX_catcatcup.js",
