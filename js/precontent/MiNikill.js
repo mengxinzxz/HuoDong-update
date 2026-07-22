@@ -40034,49 +40034,14 @@ const packs = function () {
                             const dialog = _status.event.dialog = ui.create.dialog(`${get.translation(player)}正在进行“权衡”...`);
                             dialog.open();
                         }
-                    }, player);
-                    const 俄罗的俄罗斯方块 = function (player) {
-                        const event = _status.event, { promise, resolve } = Promise.withResolvers();
-                        //如果以自己视角进入流程后AI直接走结果
-                        event.switchToAuto = function () {
-                            game.resume();
-                            _status.imchoosing = false;
-                            const dialog = _status.event.dialog;
-                            if (dialog) dialog[dialog.close ? 'close' : 'remove']();
-                            event._result = { bool: false };
-                            resolve(event._result);
-                        };
-                        //创建dialog
-                        const dialog = event.dialog = ui.create.div(".bolBalance.dialog", ui.window);
-                        Object.setPrototypeOf(dialog, lib.element.dialog);
-                        dialog.ontouchstart = ui.click.dragtouchdialog;
-                        dialog.leftState = Array.from({ length: 5 }, () => Array(5).fill(0));
-                        dialog.rightState = Array.from({ length: 5 }, () => Array(5).fill(0));
-                        dialog.inventoryData = [];
-                        dialog.history = [];
-                        dialog.currentPlace = [];
-                        dialog.currentCount = 0;
-                        dialog.style.position = "absolute";
-                        dialog.style.left = "50%";
-                        dialog.style.top = "50%";
-                        dialog.style.transform = "translate(-50%,-50%)";
-                        dialog.style.display = "flex";
-                        dialog.style.flexDirection = "column";
-                        dialog.style.alignItems = "center";
-                        dialog.style.gap = "12px";
-                        dialog.style.padding = "12px";
-                        dialog.style.background = "rgba(0,0,0,.75)";
-                        dialog.style.borderRadius = "10px";
-                        dialog.style.userSelect = "none";
-                        dialog.style.width = "fit-content";
-                        dialog.style.height = "fit-content";
                         //存档点
+                        //托管也得让角色拿到自己的积木块
                         _status.mininianquanheng ??= {};
                         let save = _status.mininianquanheng[player.playerid];
                         if (!save) {
                             save = _status.mininianquanheng[player.playerid] = {
-                                leftState: Array.from({ length: 5 }, () => Array(5).fill(0)),
-                                rightState: Array.from({ length: 5 }, () => Array(5).fill(0)),
+                                leftState: Array.from({ length: 4 }, () => Array(4).fill(0)),
+                                rightState: Array.from({ length: 4 }, () => Array(4).fill(0)),
                                 inventory: [],
                             };
                         }
@@ -40114,7 +40079,6 @@ const packs = function () {
                                 ],
                             ],
                         };
-                        const cloneShape = shape => shape.map(row => row.slice());
                         function sameShape(a, b) {
                             if (a.length != b.length) return false;
                             for (let y = 0; y < a.length; y++) {
@@ -40127,7 +40091,7 @@ const packs = function () {
                         };
                         function randomShape(level) {
                             const list = PiecePool[level];
-                            return cloneShape(list.randomGet());
+                            return list.randomGet().map(row => row.slice());
                         };
                         game.filterPlayer().forEach(target => {
                             const hp = Math.max(1, Math.min(4, target.hp));
@@ -40146,7 +40110,35 @@ const packs = function () {
                                 });
                             }
                         });
+                    }, player);
+                    const 俄罗的俄罗斯方块 = function (player) {
+                        const event = _status.event, { promise, resolve } = Promise.withResolvers();
+                        //创建dialog
+                        const dialog = event.dialog = ui.create.div(".bolBalance.dialog", ui.window);
+                        Object.setPrototypeOf(dialog, lib.element.dialog);
+                        dialog.ontouchstart = ui.click.dragtouchdialog;
+                        dialog.leftState = Array.from({ length: 4 }, () => Array(4).fill(0));
+                        dialog.rightState = Array.from({ length: 4 }, () => Array(4).fill(0));
+                        dialog.inventoryData = [];
+                        dialog.history = [];
+                        dialog.currentPlace = [];
+                        dialog.currentCount = 0;
+                        dialog.style.position = "absolute";
+                        dialog.style.left = "50%";
+                        dialog.style.top = "50%";
+                        dialog.style.transform = "translate(-50%,-50%)";
+                        dialog.style.display = "flex";
+                        dialog.style.flexDirection = "column";
+                        dialog.style.alignItems = "center";
+                        dialog.style.gap = "12px";
+                        dialog.style.padding = "12px";
+                        dialog.style.background = "rgba(0,0,0,.75)";
+                        dialog.style.borderRadius = "10px";
+                        dialog.style.userSelect = "none";
+                        dialog.style.width = "fit-content";
+                        dialog.style.height = "fit-content";
                         //dialog引用
+                        let save = _status.mininianquanheng[player.playerid];
                         dialog.save = save;
                         dialog.leftState = save.leftState;
                         dialog.rightState = save.rightState;
@@ -40197,13 +40189,13 @@ const packs = function () {
                             boardNode.style.borderRadius = "8px";
                             boardNode.style.position = "relative";
                             const board = [];
-                            for (let y = 0; y < 5; y++) {
+                            for (let y = 0; y < 4; y++) {
                                 const row = ui.create.div(boardNode);
                                 row.style.display = "flex";
                                 row.style.gap = "4px";
                                 row.style.position = "relative";
                                 board[y] = [];
-                                for (let x = 0; x < 5; x++) {
+                                for (let x = 0; x < 4; x++) {
                                     const cell = ui.create.div(row);
                                     cell.dataset.x = x;
                                     cell.dataset.y = y;
@@ -40223,8 +40215,8 @@ const packs = function () {
                             return board;
                         };
                         function renderBoard(board, state) {
-                            for (let y = 0; y < 5; y++) {
-                                for (let x = 0; x < 5; x++) {
+                            for (let y = 0; y < 4; y++) {
+                                for (let x = 0; x < 4; x++) {
                                     const cell = board[y][x];
                                     if (state[y][x]) {
                                         cell.style.background = "#4dabff";
@@ -40310,10 +40302,21 @@ const packs = function () {
                                 item.piece = piece;
                                 item.dataset.size = 16;
                                 renderPiece(piece, item);
-                                item.onmousedown = function (e) {
-                                    e.stopPropagation();
-                                    startDrag(e, piece);
-                                };
+                                if (lib.config.touchscreen) {
+                                    item.ontouchstart = function (e) {
+                                        e.stopPropagation();
+                                        e.preventDefault();
+                                        const evt = e.touches[0];
+                                        evt.currentTarget = item;
+                                        startDrag(evt, piece);
+                                    };
+                                }
+                                else {
+                                    item.onmousedown = function (e) {
+                                        e.stopPropagation();
+                                        startDrag(e, piece);
+                                    };
+                                }
                                 const num = ui.create.div(item);
                                 num.innerHTML = "×" + piece.count;
                                 num.style.position = "absolute";
@@ -40369,14 +40372,24 @@ const packs = function () {
                                     updateDragPosition(piece);
                                 });
                             };
+                            function touchMove(e) {
+                                move(e.touches[0]);
+                                e.preventDefault();
+                            };
                             move(e);
                             function end() {
                                 if (animationFrameId) {
                                     cancelAnimationFrame(animationFrameId);
                                     animationFrameId = null;
                                 }
-                                document.removeEventListener("mousemove", move);
-                                document.removeEventListener("mouseup", end);
+                                if (lib.config.touchscreen) {
+                                    document.removeEventListener("touchmove", touchMove);
+                                    document.removeEventListener("touchend", end);
+                                }
+                                else {
+                                    document.removeEventListener("mousemove", move);
+                                    document.removeEventListener("mouseup", end);
+                                }
                                 if (dialog.dragBoard && dialog.dragState && dialog.dragX != null && dialog.dragY != null) {
                                     placePiece(dialog.dragState, piece.shape, dialog.dragX, dialog.dragY);
                                     dialog.currentPlace.push({
@@ -40401,8 +40414,14 @@ const packs = function () {
                                 dialog.dragX = null;
                                 dialog.dragY = null;
                             };
-                            document.addEventListener("mousemove", move);
-                            document.addEventListener("mouseup", end);
+                            if (lib.config.touchscreen) {
+                                document.addEventListener("touchmove", touchMove, { passive: false });
+                                document.addEventListener("touchend", end);
+                            }
+                            else {
+                                document.addEventListener("mousemove", move);
+                                document.addEventListener("mouseup", end);
+                            }
                         };
                         function canPlace(state, shape, ox, oy) {
                             for (let y = 0; y < shape.length; y++) {
@@ -40410,7 +40429,7 @@ const packs = function () {
                                     if (!shape[y][x]) continue;
                                     let xx = ox + x;
                                     let yy = oy + y;
-                                    if (xx < 0 || yy < 0 || xx >= 5 || yy >= 5) return false;
+                                    if (xx < 0 || yy < 0 || xx >= 4 || yy >= 4) return false;
                                     if (state[yy][xx]) return false;
                                 }
                             }
@@ -40436,8 +40455,8 @@ const packs = function () {
                         };
                         function countWeight(state) {
                             let weight = 0;
-                            for (let y = 0; y < 5; y++) {
-                                for (let x = 0; x < 5; x++) {
+                            for (let y = 0; y < 4; y++) {
+                                for (let x = 0; x < 4; x++) {
                                     if (state[y][x]) weight++;
                                 }
                             }
@@ -40518,7 +40537,7 @@ const packs = function () {
                             const gap = 4;
                             const x = Math.floor((clientX - rect.left) / (cellSize + gap));
                             const y = Math.floor((clientY - rect.top) / (cellSize + gap));
-                            if (x < 0 || x >= 5 || y < 0 || y >= 5) return null;
+                            if (x < 0 || x >= 4 || y < 0 || y >= 4) return null;
                             return { x, y };
                         };
                         function getHoverBoard(clientX, clientY) {
@@ -40695,10 +40714,10 @@ const packs = function () {
                                     }
                                 }
                             });
-                            const full = left == 25 && right == 25;
+                            const full = left == 16 && right == 16;
                             if (full) {
-                                for (let y = 0; y < 5; y++) {
-                                    for (let x = 0; x < 5; x++) {
+                                for (let y = 0; y < 4; y++) {
+                                    for (let x = 0; x < 4; x++) {
                                         dialog.leftState[y][x] = 0;
                                         dialog.rightState[y][x] = 0;
                                     }
@@ -40717,7 +40736,7 @@ const packs = function () {
                         });
                         refreshWeight();
                         dialog.cancelButton = createButton("取消", row2);
-                        dialog.cancelButton.listen(function () {
+                        event.switchToAuto = function () {
                             dialog.style.display = "none";
                             dialog.currentPlace.forEach(info => {
                                 const state = info.side == "left" ? dialog.leftState : dialog.rightState;
@@ -40742,7 +40761,8 @@ const packs = function () {
                             _status.imchoosing = false;
                             event._result = { bool: false };
                             resolve(event._result);
-                        });
+                        };
+                        dialog.cancelButton.listen(event.switchToAuto);
                         //积木库存
                         const inventory = ui.create.div(dialog);
                         inventory.style.display = "flex";
@@ -40841,7 +40861,7 @@ const packs = function () {
                         mark: true,
                         intro: { content: '本回合发动【念影】无次数限制' },
                         trigger: { player: 'logSkill' },
-                        filter(event,player){
+                        filter(event, player) {
                             return event.skill === 'mininianying_Mnian_sunquan';
                         },
                         silent: true,
@@ -46258,7 +46278,7 @@ const packs = function () {
             mininianquanheng_info: `每回合限一次，出牌阶段或当你受到致命伤害时，你可以进行${get.poptip({
                 id: 'mininianquanheng_俄罗的俄罗斯方块',
                 name: '“权衡”',
-                info: '根据场上存活角色数分配等量与这些角色体力值相同方块数组成的随机积木块（可保留至后续使用），玩家须使用拥有的积木块配平两边5×5天平，若本次有放置积木块且使得两边成功配平则“权衡”成功并保存本次天平状态，否则归还本次放置的积木块',
+                info: '根据场上存活角色数分配等量与这些角色体力值相同方块数组成的随机积木块（可保留至后续使用），玩家须使用拥有的积木块配平两边4×4天平，若本次有放置积木块且使得两边成功配平则“权衡”成功并保存本次天平状态，否则归还本次放置的积木块',
             })}。若“权衡”成功，则你可以令场上至多X名角色回复或失去1点体力（X为本次单侧放置的方块数的一半，向上取整）。若本次“权衡”将天平填满，则清空天平，本回合你发动${get.poptip('mininianying_Mnian_sunquan')}无次数限制，且你可以令一名角色摸四张牌并回复4点体力。`,
             mininianrencai: '任才',
             mininianrencai_info: '每回合限一次，一名角色重铸牌时，你可以使用本次进入弃牌堆的一张牌，然后获得本次其余进入弃牌堆的牌。',
