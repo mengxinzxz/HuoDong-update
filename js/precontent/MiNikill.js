@@ -40036,7 +40036,42 @@ const packs = function () {
                         }
                         //存档点
                         //托管也得让角色拿到自己的积木块
-                        _status.mininianquanheng ??= {};
+                        _status.mininianquanheng ??= {
+                            PiecePool: {
+                                1: [
+                                    [[1]],
+                                ],
+                                2: [
+                                    [[1, 1]],
+                                ],
+                                3: [
+                                    [[1, 1, 1]],
+                                    [
+                                        [1, 1],
+                                        [1, 0],
+                                    ],
+                                ],
+                                4: [
+                                    [[1, 1, 1, 1]],
+                                    [
+                                        [1, 1],
+                                        [1, 1],
+                                    ],
+                                    [
+                                        [1, 1, 1],
+                                        [0, 1, 0],
+                                    ],
+                                    [
+                                        [1, 1, 1],
+                                        [1, 0, 0],
+                                    ],
+                                    [
+                                        [1, 1, 0],
+                                        [0, 1, 1],
+                                    ],
+                                ],
+                            },
+                        };
                         let save = _status.mininianquanheng[player.playerid];
                         if (!save) {
                             save = _status.mininianquanheng[player.playerid] = {
@@ -40045,40 +40080,6 @@ const packs = function () {
                                 inventory: [],
                             };
                         }
-                        const PiecePool = {
-                            1: [
-                                [[1]],
-                            ],
-                            2: [
-                                [[1, 1]],
-                            ],
-                            3: [
-                                [[1, 1, 1]],
-                                [
-                                    [1, 1],
-                                    [1, 0],
-                                ],
-                            ],
-                            4: [
-                                [[1, 1, 1, 1]],
-                                [
-                                    [1, 1],
-                                    [1, 1],
-                                ],
-                                [
-                                    [1, 1, 1],
-                                    [0, 1, 0],
-                                ],
-                                [
-                                    [1, 1, 1],
-                                    [1, 0, 0],
-                                ],
-                                [
-                                    [1, 1, 0],
-                                    [0, 1, 1],
-                                ],
-                            ],
-                        };
                         function sameShape(a, b) {
                             if (a.length != b.length) return false;
                             for (let y = 0; y < a.length; y++) {
@@ -40089,13 +40090,9 @@ const packs = function () {
                             }
                             return true;
                         };
-                        function randomShape(level) {
-                            const list = PiecePool[level];
-                            return list.randomGet().map(row => row.slice());
-                        };
                         game.filterPlayer().forEach(target => {
                             const hp = Math.max(1, Math.min(4, target.hp));
-                            const shape = randomShape(hp);
+                            const shape = _status.mininianquanheng.PiecePool[hp].randomGet().map(row => row.slice());
                             let item = save.inventory.find(i => i.level == hp && sameShape(i.shape, shape));
                             if (item) {
                                 item.count++;
@@ -40674,7 +40671,7 @@ const packs = function () {
                                 id: get.id(),
                                 level,
                                 rotate: 0,
-                                shape: randomShape(level),
+                                shape: _status.mininianquanheng.PiecePool[level].randomGet().map(row => row.slice()),
                                 count,
                             };
                             save.inventory.push(piece);
