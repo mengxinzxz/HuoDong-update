@@ -40079,6 +40079,16 @@ const packs = function () {
                                     ],
                                 ],
                             },
+                            sameShape(a, b) {
+                                if (a.length != b.length) return false;
+                                for (let y = 0; y < a.length; y++) {
+                                    if (a[y].length != b[y].length) return false;
+                                    for (let x = 0; x < a[y].length; x++) {
+                                        if (a[y][x] != b[y][x]) return false;
+                                    }
+                                }
+                                return true;
+                            },
                         };
                         let save = _status.mininianquanheng[player.playerid];
                         if (!save) {
@@ -40088,19 +40098,10 @@ const packs = function () {
                                 inventory: [],
                             };
                         }
-                        function sameShape(a, b) {
-                            if (a.length != b.length) return false;
-                            for (let y = 0; y < a.length; y++) {
-                                if (a[y].length != b[y].length) return false;
-                                for (let x = 0; x < a[y].length; x++) {
-                                    if (a[y][x] != b[y][x]) return false;
-                                }
-                            }
-                            return true;
-                        };
+                        const { PiecePool, sameShape } = _status.mininianquanheng;
                         game.filterPlayer().forEach(target => {
                             const hp = Math.max(1, Math.min(4, target.hp));
-                            const shape = _status.mininianquanheng.PiecePool[hp].randomGet().map(row => row.slice());
+                            const shape = PiecePool[hp].randomGet().map(row => row.slice());
                             let item = save.inventory.find(i => i.level == hp && sameShape(i.shape, shape));
                             if (item) {
                                 item.count++;
@@ -40670,7 +40671,9 @@ const packs = function () {
                             renderInventory();
                         });
                         function addInventory(level, count = 1) {
-                            const item = save.inventory.find(i => i.level === level);
+                            const { PiecePool, sameShape } = _status.mininianquanheng;
+                            const shape = PiecePool[level].randomGet().map(row => row.slice());
+                            const item = save.inventory.find(i => i.level === level && sameShape(i.shape, shape));
                             if (item) {
                                 item.count += count;
                                 return item;
@@ -40679,7 +40682,7 @@ const packs = function () {
                                 id: get.id(),
                                 level,
                                 rotate: 0,
-                                shape: _status.mininianquanheng.PiecePool[level].randomGet().map(row => row.slice()),
+                                shape,
                                 count,
                             };
                             save.inventory.push(piece);
