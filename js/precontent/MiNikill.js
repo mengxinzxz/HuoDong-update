@@ -1,4 +1,5 @@
 import { lib, game, ui, get, ai, _status } from '../../../../noname.js';
+import { precontent } from './index.js';
 import MiNikill_sight from './MiNikill_sight.js';
 
 const packs = function () {
@@ -33910,61 +33911,127 @@ const packs = function () {
             },
             minishenfu: {
                 audio: 'shenfu',
-                trigger: { player: ['phaseEnd', 'phaseAfter'] },
-                filter(event, player, name) {
-                    if (name == 'phaseEnd') return true;
-                    return player.getHistory('useSkill', function (evt) {
-                        return evt.skill == 'minishenfu';
-                    }).length;
+                enable: "phaseUse",
+                usable: 1,
+                filter(event, player) {
+                    return game.hasPlayer(current => get.info('minishenfu').filterTarget(null, player, current));
                 },
-                async cost(event, trigger, player) {
-                    event.result = {
-                        bool: true,
-                        cost_data: player.getHistory('useSkill', evt => evt.skill == 'minishenfu').length,
-                        skill_popup: event.triggername === 'phaseAfter',
-                    };
+                filterTarget(card, player, target) {
+                    return !player.getStorage('minishenfu_targeted').includes(target);
                 },
-                async content(event, trigger, player) {
-                    if (event.triggername == 'phaseAfter') {
-                        await player.draw(event.cost_data);
-                        return;
-                    }
-                    let targets = [], goon = player.countCards('h') % 2;
-                    while (game.hasPlayer(target => (target !== player || !goon) && !targets.includes(target))) {
-                        const next = player.chooseTarget(get.prompt(event.name));
-                        next.set('list', [goon, targets]);
-                        next.set('prompt2', goon ? '对一名其他角色造成1点雷属性伤害' : '令一名角色摸一张牌或弃置其一张手牌');
-                        next.set('filterTarget', (card, player, target) => {
-                            const [goon, targets] = get.event().list;
-                            return (target !== player || !goon) && !targets.includes(target);
-                        });
-                        next.set('ai', target => {
-                            const { player, list: [goon] } = get.event();
-                            if (goon) return get.damageEffect(target, player, player, 'thunder') * (target.hp === 1 ? 3 : 1);
-                            const att = get.attitude(player, target), delta = target.hp - target.countCards('h');
-                            if (Math.abs(delta) === 1 && Math.sign(delta) === Math.sign(att)) return 3 * Math.abs(att);
-                            if (att > 0 || target.countCards('h') > 0) return Math.abs(att);
-                            return 0;
-                        });
-                        const result = await next.forResult();
-                        if (result?.bool && result.targets?.length) {
-                            const target = result.targets[0];
-                            targets.add(target);
-                            player.logSkill(event.name, target, goon ? 'thunder' : 'wood');
-                            if (goon) {
-                                await target.damage(1, 'thunder');
-                                if (target.isIn()) break;
-                            }
-                            else {
-                                const result2 = await player.discardPlayerCard(target, 'he', `弃置${get.translation(target)}一张牌或令其摸一张牌`).forResult();
-                                if (!result2?.bool || !result2.cards?.length) await target.draw();
-                                if (target.getHp() !== target.countCards('h')) break;
-                            }
+                chooseButton: {
+                    dialog(event, player) {
+                        const name = get.translation(event.result.targets[0]);
+                        const dialog = ui.create.dialog(
+                            `神赋：请选择要执行的选项`,
+                            [
+                                [
+                                    ['damage', `你对${name}造成1点雷属性伤害`],
+                                    ['draw', `令${name}摸两张牌`],
+                                    ['discard', `弃置${name}一张牌`],
+                                ],
+                                'textbutton',
+                            ],
+                            'hidden'
+                        );
+                        return dialog;
+                    },
+                    filter(button, player) {
+                        const target = get.event().getParent().result.targets[0];
+                        if (button.link === 'discard' && !target.hasDiscardableCards(player, 'he')) return false;
+                        return true;
+                    },
+                    check(button) {
+                        const player = get.player(), target = get.event().getParent().result.targets[0];
+                        const link = button.link;
+                        const att = Math.sign(get.attitude(player, target));
+                        const delta = target.countCards('h') - target.getHp();
+                        const eff = get.damageEffect(target, player, player, 'thunder');
+                        if (eff > 0 && link === 'damage') {
+                            if (delta == -1) return 10;
+                            return 1.5;
                         }
-                        else break;
+                        if (link === 'draw' && att > 0) {
+                            if (delta == -1) return 10;
+                            return 1.5;
+                        }
+                        if (link === 'discard' && att < 0) {
+                            if (delta == 1) return 10;
+                            return 1.5;
+                        }
+                        return 0;
+                    },
+                    backup(links) {
+                        return {
+                            audio: 'shenfu',
+                            target: get.event().result.targets[0],
+                            link: links[0],
+                            filterTarget(card, player, target) {
+                                return target === lib.skill.minishenfu_backup.target;
+                            },
+                            selectTarget: -1,
+                            async content(event, trigger, player) {
+                                const { link } = get.info('minishenfu_backup');
+                                const { target } = event;
+                                player.addTempSkill('minishenfu_targeted');
+                                player.markAuto('minishenfu_targeted', [target]);
+                                if (link === 'damage') await target.damage('thunder');
+                                else if (link === 'draw') await target.draw();
+                                else await player.discardPlayerCard(target, 'he', true);
+                                if (target.countCards('h') == target.getHp()) {
+                                    player.refreshSkill('minishenfu');
+                                    const num = Math.min(5, player.countHistory('useSkill', evt => evt.skill == 'minishenfu_backup'));
+                                    await player.draw(num);
+                                }
+                            },
+                        };
+                    },
+                    prompt(links) {
+                        return "点击“确定”以执行效果";
+                    },
+                },
+                ai: {
+                    order(item, player) {
+                        if (game.hasPlayer(current => {
+                            if (player.getStorage('minishenfu_targeted').includes(current)) return false;
+                            const delta = current.countCards('h') - current.getHp();
+                            const eff = get.damageEffect(current, player, player, 'thunder');
+                            return (eff > 0 && delta == -1) || Math.abs(delta) == 1;
+
+                        })) {
+                            return 10;
+                        }
+                        return 4;
+                    },
+                    result: {
+                        target(player, target) {
+                            const att = Math.sign(get.attitude(player, target));
+                            const delta = target.countCards('h') - target.getHp();
+                            const eff = get.damageEffect(target, player, player, 'thunder');
+                            if (eff > 0) {
+                                if (delta == -1) return -10;
+                                return -1.5;
+                            }
+                            if (att > 0) {
+                                if (delta == -1) return 10;
+                                return 1.5;
+                            }
+                            if (att < 0) {
+                                if (delta == 1) return -10;
+                                return -1.5;
+                            }
+                            return 0;
+                        },
+                    },
+                },
+                subSkill: {
+                    backup: {},
+                    targeted: {
+                        charlotte: true,
+                        onremove: true,
+                        intro: { content: '本回合已对$使用过【神赋】' }
                     }
                 },
-                ai: { expose: 0.25 },
             },
             minireqixian: {
                 mod: {
@@ -33973,37 +34040,43 @@ const packs = function () {
                     },
                 },
                 trigger: { player: 'phaseUseEnd' },
+                filter(event, player) {
+                    return player.hasCards('h') && player.getHp() > 0;
+                },
                 async cost(event, trigger, player) {
-                    event.result = await player.chooseCard(get.prompt2('minireqixian'), 'he').set('ai', function (card) {
-                        var player = _status.event.player;
-                        if (player.countCards('h') % 2 == 0 && get.position(card) == 'h' && game.hasPlayer(function (target) {
-                            return get.damageEffect(target, player, player, 'thunder') > 0;
-                        })) return 15;
-                        if (get.position(card) == 'h' && player.needsToDiscard()) return 10;
-                        if (get.position(card) == 'e' && get.value(card) <= 0) return 5;
-                        return (get.position(card) == 'h' ? 2 : 1) * -get.value(card);
+                    event.result = await player.chooseCard(get.prompt2(event.skill), 'he', [1, player.getHp()], 'allowChooseAll').set('ai', function (card) {
+                        const player = get.player();
+                        return 6.5 - get.value(card);
                     }).forResult();
                 },
-                content() {
-                    player.addTempSkill('minireqixian2');
-                    player.addToExpansion(cards, player, 'give').gaintag.add('minireqixian2');
+                async content(event, trigger, player) {
+                    const next = player.addToExpansion(event.cards, player, 'give');
+                    next.gaintag.add('minireqixian');
+                    await next;
                 },
-            },
-            minireqixian2: {
-                charlotte: true,
-                trigger: { player: 'phaseAfter' },
-                forced: true,
-                content() {
-                    player.gain(player.getExpansions('minireqixian2'), 'gain2');
-                },
+                marktext: '弦',
                 intro: {
                     content: 'expansion',
                     markcount: 'expansion',
                 },
                 onremove(player, skill) {
-                    var cards = player.getExpansions(skill);
+                    const cards = player.getExpansions(skill);
                     if (cards.length) player.gain(cards, 'gain2');
                 },
+                group: 'minireqixian_gain',
+                subSkill: {
+                    gain: {
+                        audio: 'minireqixian',
+                        trigger: { global: 'phaseEnd' },
+                        filter(event, player) {
+                            return player.countExpansions('minireqixian') > 6;
+                        },
+                        forced: true,
+                        async content(event, trigger, player) {
+                            await player.gain(player.getExpansions('minireqixian'), 'give');
+                        },
+                    }
+                }
             },
             minifeifu: {
                 mod: {
@@ -34039,7 +34112,10 @@ const packs = function () {
                 viewAsFilter(player) {
                     if (!player.countCards('hes', { color: 'black' })) return false;
                 },
-                prompt: '将一张黑色牌当作【闪】使用或打出',
+                prompt: '将一张黑色牌当作【闪】使用或打出，然后将此牌置于武将牌上',
+                precontent() {
+                    player.addTempSkill('minifeifu_effect')
+                },
                 check: () => 1,
                 ai: {
                     order: 2,
@@ -34049,10 +34125,25 @@ const packs = function () {
                     },
                     effect: {
                         target(card, player, target, current) {
-                            if (get.tag(card, 'respondShan') && current < 0) return 0.6
+                            if (get.tag(card, 'respondShan') && current < 0) return 0.6;
                         },
                     },
                 },
+                subSkill: {
+                    effect: {
+                        audio: 'minifeifu',
+                        trigger: { player: ['useCardAfter', 'respindAfter'] },
+                        filter(event, player) {
+                            return event.skill == 'minifeifu' && event.cards.someInD();
+                        },
+                        forced: true,
+                        async content(event, trigger, player) {
+                            const next = player.addToExpansion(trigger.cards.filterInD(), 'gain2');
+                            next.gaintag.add('minireqixian');
+                            await next;
+                        }
+                    }
+                }
             },
             //神二乔
             minishuangshu: {
@@ -46165,12 +46256,11 @@ const packs = function () {
             minihuishi: '辉逝',
             minihuishi_info: '限定技，出牌阶段，你可选择一名角色。若其有未发动的觉醒技且你的体力上限不小于存活人数，则你选择其中一个技能，令其发动此技能无视条件；若其没有未发动的觉醒技且你的体力上限不小于3，其摸四张牌。然后你减2点体力上限。',
             minishenfu: '神赋',
-            minishenfu_info: '①回合结束时，若你的手牌数为：奇数，你可对一名其他角色造成1点雷属性伤害，若其死亡，你可重复此流程；偶数，你可选择一名角色，你令其摸一张牌或弃置其一张牌，若其手牌数等于体力值，你可重复此流程。（重复流程中不能选择本次技能结算中已经选择过的角色）②回合结束后，你摸X张牌（X为你本回合发动〖神赋〗的次数且至多为5）。',
+            minishenfu_info: '出牌阶段限一次，你可以选择一名本回合未以此法选择过的角色并选择一项：1.你对其造成1点雷属性伤害；2.令其摸一张牌；3.弃置其一张牌。若其手牌数等于体力值，则此技能视为未发动过且你摸X张牌（X为你本回合发动〖神赋〗的次数+1且至多为5）。',
             minireqixian: '七弦',
-            minireqixian2: '七弦',
-            minireqixian_info: '锁定技，你的手牌上限视为7。出牌阶段结束时，你可以将一张牌移出游戏，此牌于回合结束后归还。',
+            minireqixian_info: '锁定技。①你的手牌上限视为7。②出牌阶段结束时，你可以将至多X张手牌置于武将牌上。③一名角色的回合结束时，若你武将牌上的牌数大于6，则你获得这些牌。',
             minifeifu: '飞凫',
-            minifeifu_info: '你可以将一张黑色牌当作【闪】使用或打出。',
+            minifeifu_info: '你可以将一张黑色牌当作【闪】使用或打出，然后你将此牌置于武将牌上。',
             minishuangshu: '双姝',
             minishuangshu_pingting: '双姝·娉婷',
             minishuangshu_yizheng: '双姝·移筝',
