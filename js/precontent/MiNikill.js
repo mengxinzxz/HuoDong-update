@@ -41,7 +41,7 @@ const packs = function () {
                     ...['ganning'].map(i => `yj_${i}`),
                 ].map(i => `Mbaby_${i}`),
                 MiNi_yueCharacter: ['zhoufei', 'diaochan', 'daqiao'].map(i => `Mbaby_yue_${i}`),
-                MiNi_miaoKill: ['mayunlu', 'guanyinping', 'caoying', 'caiwenji', 'diaochan', 'caifuren', 'zhangxingcai', 'zhurong', 'huangyueying', 'daqiao', 'wangyi', 'zhangchunhua', 'zhenji', 'sunshangxiang', 'xiaoqiao', 'lvlingqi'].map(i => `Mmiao_${i}`),
+                MiNi_miaoKill: ['bulianshi', 'mayunlu', 'guanyinping', 'caoying', 'caiwenji', 'diaochan', 'caifuren', 'zhangxingcai', 'zhurong', 'huangyueying', 'daqiao', 'wangyi', 'zhangchunhua', 'zhenji', 'sunshangxiang', 'xiaoqiao', 'lvlingqi'].map(i => `Mmiao_${i}`),
                 MiNi_nianKill: ['sunquan', 'caopi', 'zhugeliang', 'lvbu', 'zhouyu'].map(i => `Mnian_${i}`),
                 MiNi_fightKill: ['huangzhong', 'zhangliao', 'luxun', 'dianwei', 'machao', 'jiangwei', 'lvmeng'].map(i => `Mfight_${i}`),
                 MiNi_yinKill: ['yuji', 'xushu'].map(i => `Myin_${i}`),
@@ -541,6 +541,7 @@ const packs = function () {
             Mmiao_caoying: ['female', 'wei', 4, ['minimiaolingren', 'minimiaofujian', 'minidoumao']],
             Mmiao_guanyinping: ['female', 'shu', 4, ['minimiaowuji', 'minimiaohuxiao', 'minidoumao']],
             Mmiao_mayunlu: ['female', 'shu', 4, ['minimiaoyuma', 'minimiaofengpo', 'minidoumao']],
+            Mmiao_bulianshi: ['female', 'wu', 3, ['minimiaoanxu', 'minimiaozhuiyi', 'minidoumao']],
             //念
             Mnian_zhugeliang: ['male', 'shu', 3, ['mininianxinghan', 'mininianliaoyuan', 'mininianying_Mnian_zhugeliang'], ['name:诸葛|亮']],
             Mnian_lvbu: ['male', 'qun', 5, ['mininiantazhen', 'mininiandoupo', 'mininianying_Mnian_lvbu']],
@@ -37773,6 +37774,86 @@ const packs = function () {
                     },
                 }
             },
+            // 喵步练师
+            minimiaoanxu: {
+                audio: 'ext:活动武将/audio/skill:2',
+                trigger: { player: ['phaseUseBegin', 'phaseUseEnd'] },
+                filter(event, player) {
+                    return game.hasPlayer(current => {
+                        return game.hasPlayer(currentx => currentx !== current && current.hasGainableCards(currentx, 'hej'));
+                    });
+                },
+                async cost(event, trigger, player) {
+                    event.result = await player.chooseTarget(get.prompt2(event.skill), 2).set('filterTarget', (card, player, target) => {
+                        if (!ui.selected.targets.length) return game.hasPlayer(current => current != target && current.hasGainableCards(target, 'hej'));
+                        return ui.selected.targets[0].hasGainableCards(target, 'hej');
+                    }).set('targetprompt', ['拿牌', '被拿牌']).set('ai', target => {
+                        const player = get.player();
+                        if (ui.selected.targets.length) {
+                            const target1 = ui.selected.targets[0];
+                            const eff = get.effect(target, { name: 'shunshou_copy2', position: 'hej' }, target1, player);
+                            const eff1 = target1.hasSkill('minidoumao') ? get.effect(player, { name: 'wuzhong' }, player, player) + get.recoverEffect(target1, player, player) : 0;
+                            const eff2 = target.hasSkill('minidoumao') ? get.effect(target, { name: 'shunshou_copy2', position: 'he' }, player, player) + get.effect(target, { name: 'losehp' }, target, player) : 0;
+                            return eff + eff1 + eff2 > 0;
+                        }
+                        const targets = game.filterPlayer(current => current != target && current.hasGainableCards(target, 'hej'));
+                        if (targets.some(currentx => {
+                            const eff = get.effect(currentx, { name: 'shunshou_copy2', position: 'hej' }, target, player);
+                            const eff1 = target.hasSkill('minidoumao') ? get.effect(player, { name: 'wuzhong' }, player, player) + get.recoverEffect(target, player, player) : 0;
+                            const eff2 = currentx.hasSkill('minidoumao') ? get.effect(currentx, { name: 'shunshou_copy2', position: 'he' }, player, player) + get.effect(currentx, { name: 'losehp' }, currentx, player) : 0;
+                            return eff + eff1 + eff2 > 0;
+                        })) return 1;
+                        return 0;
+                    }).set('multitarget', true).forResult();
+                },
+                async content(event, trigger, player) {
+                    const [target1, target2] = event.targets;
+                    await target1.gainPlayerCard(target2, 'hej', true);
+                    if (target1.hasSkill('minidoumao')) {
+                        await player.draw(2);
+                        await target1.recover();
+                    }
+                    if (target2.hasSkill('minidoumao')) {
+                        await player.gainPlayerCard(target2, 'he', true);
+                        await target2.loseHp();
+                    }
+                },
+                derivation: 'minidoumao',
+            },
+            minimiaozhuiyi: {
+                audio: 'ext:活动武将/audio/skill:2',
+                trigger: { player: 'dying' },
+                filter(event, player) {
+                    return game.hasPlayer(current => {
+                        if (player == current) return player.hasSkill('minidoumao');
+                        return current !== event.source;
+                    })
+                },
+                async cost(event, trigger, player) {
+                    const targets = game.filterPlayer(current => {
+                        if (player == current) return player.hasSkill('minidoumao');
+                        return current !== trigger.source;
+                    });
+                    event.result = await player.chooseTarget(get.prompt2(event.skill), (card, player, target) => {
+                        return get.event().targets.includes(target);
+                    }).set('targets', targets).set('ai', target => {
+                        const player = get.player();
+                        let eff = get.effect(player, { name: 'draw' }, player, player) * 3 + get.recoverEffect(target, player, player)
+                        if (player.hasSkill('minidoumao')) eff += 5;
+                        return eff;
+                    }).forResult();
+                },
+                async content(event, trigger, player) {
+                    const target = event.targets[0];
+                    await target.draw(3);
+                    await target.recover();
+                    if (player != target && !player.hasSkill('minidoumao')) {
+                        const result = await player.chooseBool(`追忆：你可以获得${get.poptip('minidoumao')}`).forResult();
+                        if (result?.bool) await player.addSkills('minidoumao');
+                    }
+                },
+                derivation: 'minidoumao',
+            },
             //念
             mininianxinghan: {
                 audio: 'ext:活动武将/audio/skill:2',
@@ -46154,6 +46235,7 @@ const packs = function () {
             Mmiao_caoying: '喵曹婴',
             Mmiao_guanyinping: '喵关银屏',
             Mmiao_mayunlu: '喵马云騄',
+            Mmiao_bulianshi: '喵步练师',
             minidoumao: '逗猫',
             minidoumao_info: '①回合开始时，你可以弃置一张牌并选择一名其他角色，你失去〖逗猫〗并令其获得〖逗猫〗，然后其摸一张牌。②回合结束时，你弃置一张牌。',
             minimiaobeige: '悲歌',
@@ -46226,6 +46308,10 @@ const packs = function () {
             minimiaoyuma_info: `锁定技。①你计算与其他角色的距离-1；有${get.poptip('minidoumao')}的角色计算与你的距离+1。②当你失去装备区中的坐骑牌时，你摸两张牌。`,
             minimiaofengpo: '凤魄',
             minimiaofengpo_info: `每回合每种颜色限一次，当你使用伤害牌指定其他角色为目标后，你可令所有目标依次展示一张手牌A，若A的颜色为：1.黑色：随机交给你X张手牌；2.红色：此牌对其额外生效X次（X为1，若其拥有${get.poptip('minidoumao')}，则X为所有角色展示牌的颜色数）。`,
+            minimiaoanxu: '安恤',
+            minimiaoanxu_info: `出牌阶段开始或结束时，你可以令一名角色获得另一名角色区域内的一张牌，若：1.获得牌的角色拥有${get.poptip('minidoumao')}，你摸两张牌并令其回复1点体力；2.失去牌的角色拥有${get.poptip('minidoumao')}，你获得其一张牌并令其失去1点体力。`,
+            minimiaozhuiyi: '追忆',
+            minimiaozhuiyi_info: `当你进入濒死状态时，你可以令一名不为令你进入濒死的角色的其他角色摸三张牌并回复1点体力。若你拥有${get.poptip('minidoumao')}，你可以选择自己为目标；否则你可以获得${get.poptip('minidoumao')}`,
             //念
             Mnian_zhugeliang: '念诸葛亮',
             Mnian_lvbu: '念吕布',

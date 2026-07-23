@@ -7145,6 +7145,10 @@
             "size": 110150
         },
         {
+            "path": "image/character/Mmiao_bulianshi.jpg",
+            "size": 162422
+        },
+        {
             "path": "image/character/Mmiao_caifuren.jpg",
             "size": 110987
         },
@@ -8886,7 +8890,7 @@
         },
         {
             "path": "js/precontent/index.js",
-            "size": 43533
+            "size": 43552
         },
         {
             "path": "js/precontent/MiNikill_sight.js",
@@ -8894,7 +8898,7 @@
         },
         {
             "path": "js/precontent/MiNikill.js",
-            "size": 2811346
+            "size": 2817495
         },
         {
             "path": "js/precontent/MX_catcatcup.js",

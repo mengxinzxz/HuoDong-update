@@ -821,7 +821,7 @@ export async function precontent(bilibilicharacter) {
                 data: (() => {
                     _status.HDWJ_ChangeLog_character = {
                         自嗨: ['bilibili_zhugeliang'],
-                        MiNikill: ['Mbaby_dc_sb_liuxie', 'Mbaby_star_dingfeng', 'Mbaby_tianfeng', 'Mnian_sunquan'],
+                        MiNikill: ['Mbaby_dc_sb_liuxie', 'Mbaby_star_dingfeng', 'Mbaby_tianfeng', 'Mnian_sunquan', 'Mmiao_bulianshi'],
                         WeChatkill: ['wechat_xurong', 'wechat_sb_zhangfei', 'wechat_gaoluji', 'wechat_hema', 'wechat_baixiang'],
                     };
                     return Object.values(_status.HDWJ_ChangeLog_character).flat();
