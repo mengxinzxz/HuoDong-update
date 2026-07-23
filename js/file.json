@@ -6849,6 +6849,10 @@
             "size": 112367
         },
         {
+            "path": "image/character/Mbaby_yue_caiwenji.jpg",
+            "size": 169002
+        },
+        {
             "path": "image/character/Mbaby_yue_daqiao.jpg",
             "size": 154068
         },
@@ -8890,7 +8894,7 @@
         },
         {
             "path": "js/precontent/index.js",
-            "size": 43552
+            "size": 43574
         },
         {
             "path": "js/precontent/MiNikill_sight.js",
@@ -8898,7 +8902,7 @@
         },
         {
             "path": "js/precontent/MiNikill.js",
-            "size": 2817495
+            "size": 2820655
         },
         {
             "path": "js/precontent/MX_catcatcup.js",

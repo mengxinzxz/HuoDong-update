@@ -40,7 +40,7 @@ const packs = function () {
                     ...['dingfeng', 'simayi', 'zhangchunhua', 'yuanshao', 'sunshangxiang', 'xunyu', 'yuanshu'].map(i => `star_${i}`),
                     ...['ganning'].map(i => `yj_${i}`),
                 ].map(i => `Mbaby_${i}`),
-                MiNi_yueCharacter: ['zhoufei', 'diaochan', 'daqiao'].map(i => `Mbaby_yue_${i}`),
+                MiNi_yueCharacter: ['caiwenji', 'zhoufei', 'diaochan', 'daqiao'].map(i => `Mbaby_yue_${i}`),
                 MiNi_miaoKill: ['bulianshi', 'mayunlu', 'guanyinping', 'caoying', 'caiwenji', 'diaochan', 'caifuren', 'zhangxingcai', 'zhurong', 'huangyueying', 'daqiao', 'wangyi', 'zhangchunhua', 'zhenji', 'sunshangxiang', 'xiaoqiao', 'lvlingqi'].map(i => `Mmiao_${i}`),
                 MiNi_nianKill: ['sunquan', 'caopi', 'zhugeliang', 'lvbu', 'zhouyu'].map(i => `Mnian_${i}`),
                 MiNi_fightKill: ['huangzhong', 'zhangliao', 'luxun', 'dianwei', 'machao', 'jiangwei', 'lvmeng'].map(i => `Mfight_${i}`),
@@ -481,6 +481,7 @@ const packs = function () {
             Mbaby_dongguiren: ['female', 'qun', 3, ['minilianzhi', 'dclingfang', 'dcfengying'], ['name:董|null']],
             Mbaby_dc_sb_liuxie: ['male', 'qun', 3, ['dcsbzhanban', 'dcsbchensheng', 'minitiancheng']],
             Mbaby_tianfeng: ['male', 'qun', 3, ['minisijian', 'minisuishi']],
+            Mbaby_yue_caiwenji: ['female', 'qun', 3, ['minishuangjia', 'dcbeifen'], ['name:蔡|琰']],
             //神
             Mbaby_shen_zhugeliang: ['male', 'shen', 3, ['qixing', 'minikuangfeng', 'minidawu'], ['shu', 'name:诸葛|亮']],
             Mbaby_shen_lvbu: ['male', 'shen', 6, ['miniwuqian', 'minishenfen'], ['qun']],
@@ -32226,6 +32227,58 @@ const packs = function () {
                     }
                 },
             },
+            // 乐蔡文姬
+            minishuangjia: {
+                audio: 'dcshuangjia',
+                trigger: {
+                    global: 'phaseBefore',
+                    player: ['enterGame', 'phaseBegin']
+                },
+                filter(event, player, name) {
+                    if (name == 'phaseBegin') return !player.hasCards('h', card => card.hasGaintag('dcshuangjia_tag'));
+                    return event.name != 'phase' || game.phaseNumber == 0;
+                },
+                forced: true,
+                async content(event, trigger, player) {
+                    if (event.triggername == 'phaseBegin') player.addTempSkill(event.name + '_effect');
+                    else {
+                        const cards = player.getCards('h');
+                        player.addGaintag(cards, 'dcshuangjia_tag');
+                    }
+                },
+                mod: {
+                    ignoredHandcard(card, player) {
+                        if (card.hasGaintag('dcshuangjia_tag')) return true;
+                    },
+                    cardDiscardable(card, player, name) {
+                        if (name == 'phaseDiscard' && card.hasGaintag('dcshuangjia_tag')) return false;
+                    },
+                    globalTo(from, to, distance) {
+                        return distance + Math.min(5, to.countCards('h', card => card.hasGaintag('dcshuangjia_tag')));
+                    },
+                },
+                subSkill: {
+                    effect: {
+                        charlotte: true,
+                        mark: true,
+                        intro: { content: '本回合摸牌阶段获得的牌标记为“胡笳”' },
+                        audio: 'dcshuangjia',
+                        trigger: {
+                            player: 'gainAfter',
+                            global: 'loseAsyncAfter',
+                        },
+                        filter(event, player) {
+                            const evt = event.getParent('phaseDraw');
+                            return evt?.name == 'phaseDraw' && player.hasCards('h', card => event.getg?.(player)?.includes(card));
+                        },
+                        forced: true,
+                        async content(event, trigger, player) {
+                            const cards = player.getCards('h', card => trigger.getg(player).includes(card));
+                            player.addGaintag(cards, 'dcshuangjia_tag');
+                        },
+                    }
+                }
+            },
             //神
             miniwuqian: {
                 derivation: 'wushuang',
@@ -45537,6 +45590,7 @@ const packs = function () {
             Mbaby_yj_ganning: '欢杀星甘宁',
             Mbaby_dc_sb_liuxie: '欢杀谋刘协',
             Mbaby_tianfeng: '欢杀田丰',
+            Mbaby_yue_caiwenji: '欢杀乐蔡琰',
             miniweidi: '伪帝',
             miniweidi_info: '弃牌阶段结束时，你可以将其中一张弃置的牌交给一名其他角色。',
             minimingce: '明策',
@@ -45998,6 +46052,8 @@ const packs = function () {
             minisijian_info: '当你失去最后的手牌后，你可以对一名其他角色造成1点伤害并弃置其一张牌。',
             minisuishi: '随势',
             minisuishi_info: '锁定技，其他角色受到伤害时，若伤害来源与你势力相同，你摸一张牌；其他角色死亡时，若其势力与你相同，你弃置至少一张手牌。',
+            minishuangjia: '霜笳',
+            minishuangjia_info: '锁定技。①游戏开始，你将初始手牌标记为“胡笳”。②你的“胡笳”牌不计入手牌上限。③其他角色至你的距离+X（X为你的“胡笳”数且至多为5）。④回合开始时，若你没有“胡笳”手牌，则本回合摸牌阶段你获得的牌标记为“胡笳”。',
             //神
             Mbaby_shen_lvbu: '欢杀神吕布',
             Mbaby_shen_guanyu: '欢杀神关羽',
