@@ -19,7 +19,7 @@ const packs = function () {
                 ].map(i => `Mbaby_${i}`),
                 MiNi_change: ['ol_sb_jiangwei', 'sb_sunquan', 'guanning', 're_nanhualaoxian', 're_sunyi', 'zhaoxiang', 'xushao', 'baosanniang', 'quanhuijie'].map(i => `Mbaby_${i}`),
                 MiNi_refresh: [
-                    ...['liaohua', 'sundeng', 'zhangchunhua', 'gongsunyuan', 'caorui', 'chengong', 'fazheng', 'xusheng', 'taishici', 'dianwei', 'huangyueying', 'gongsunzan', 'tadun', 'menghuo', 'jiaxu', 'luxun', 'masu', 'zhangjiao', 'zhouyu', 'sunce', 'caifuren', 'liubiao', 'weiyan', 'guohuai', 'lvbu', 'huatuo', 'pangde', 'zhugeliang', 'guojia', 'simayi', 'lvmeng', 'sunshangxiang', 'zhenji', 'diaochan', 'daqiao', 'ganning', 'huanggai', 'xiahoudun', 'xuzhu', 'zhangliao', 'sunquan', 'caocao', 'liubei', 'guanyu', 'zhangfei', 'zhaoyun', 'machao', 'huangzhong'].map(i => `re_${i}`),
+                    ...['caochong', 'liaohua', 'sundeng', 'zhangchunhua', 'gongsunyuan', 'caorui', 'chengong', 'fazheng', 'xusheng', 'taishici', 'dianwei', 'huangyueying', 'gongsunzan', 'tadun', 'menghuo', 'jiaxu', 'luxun', 'masu', 'zhangjiao', 'zhouyu', 'sunce', 'caifuren', 'liubiao', 'weiyan', 'guohuai', 'lvbu', 'huatuo', 'pangde', 'zhugeliang', 'guojia', 'simayi', 'lvmeng', 'sunshangxiang', 'zhenji', 'diaochan', 'daqiao', 'ganning', 'huanggai', 'xiahoudun', 'xuzhu', 'zhangliao', 'sunquan', 'caocao', 'liubei', 'guanyu', 'zhangfei', 'zhaoyun', 'machao', 'huangzhong'].map(i => `re_${i}`),
                     ...['liru', 'wangyi', 'xunyu', 'liushan', 'caiwenji', 'wuguotai', 'yanwen', 'dongzhuo', 'sunjian', 'zhurong', 'lusu', 'xiahouyuan', 'pangtong', 'xiaoqiao'].map(i => `ol_${i}`),
                     ...['xusheng', 'yuanshao', 'gaoshun'].map(i => `xin_${i}`),
                     ...['mb_guanyinping', 'yl_yuanshu', 'dingfeng', 'sunqian', 'wangji', 'zhoutai', 'caoren', 'sb_huaxiong'],
@@ -154,6 +154,7 @@ const packs = function () {
             Mbaby_dc_sb_xunyu: ['male', 'wei', 3, ['dcsbbizuo', 'minishimou'], ['clan:颍川荀氏']],
             Mbaby_sb_xiahoudun: ['male', 'wei', 4, ['miniganglie', 'minisbqingjian'], ['name:夏侯|惇']],
             Mbaby_majun: ['male', 'wei', 3, ['gongqiao', 'minijingyi']],
+            Mbaby_re_caochong: ['male', 'wei', 3, ['minirechengxiang', 'minirenxin'], ['character:Mbaby_caochong']],
             //蜀
             Mbaby_guanyu: ['male', 'shu', 4, ['miniwusheng']],
             Mbaby_re_guanyu: ['male', 'shu', 4, ['minirewusheng', 'minituodao', 'jsrgguanjue']],
@@ -8015,6 +8016,113 @@ const packs = function () {
                     if (player.countCards('he') > 0) await player.chooseToDiscard('he', true);
                 },
                 subSkill: { used: { charlotte: true, onremove: true } },
+            },
+            //界曹冲
+            minirechengxiang: {
+                audio: 'chengxiang',
+                inherit: 'chengxiang',
+                forced: true,
+                async content(event, trigger, player) {
+                    const num = 4 + player.countMark(event.name);
+                    event.showCards ??= [];
+                    const cards2 = [];
+                    event.cards = cards2;
+                    await event.trigger('chengxiangShowBegin');
+                    cards2.addArray(event.showCards);
+                    if (num > cards2.length) {
+                        cards2.addArray(get.cards(num - cards2.length));
+                    }
+                    await player.showCards(cards2, `${get.translation(player)}发动了【${get.translation(event.name)}】`, true).set('clearArena', false);
+                    const maxNum = 13;
+                    const result = await player.chooseCardButton(cards2, `称象：选择任意张点数不大于${maxNum}的牌`, [1, Infinity], true).set('filterButton', function (button) {
+                        let num2 = 0;
+                        for (const selectedButton of ui.selected.buttons) {
+                            num2 += get.number(selectedButton.link);
+                        }
+                        return num2 + get.number(button.link) <= _status.event.maxNum;
+                    }).set('maxNum', maxNum).set('ai', function (button) {
+                        const player = get.player(), name = get.name(button.link), val = get.value(button.link, player);
+                        if (name === 'tao') {
+                            return val + 2 * Math.min(3, 1 + player.getDamagedHp());
+                        }
+                        if (name === 'jiu' && player.hp < 3) {
+                            return val + 2 * (2.8 - player.hp);
+                        }
+                        if (name === 'wuxie' && player.countCards('j') && !player.hasWuxie()) {
+                            return val + 5;
+                        }
+                        if (player.hp > 1 && ['renxin', 'olrenxin', 'minirenxin'].some(skill => player.hasSkill(skill)) && player.hasFriend() && get.type(button.link) === 'equip') {
+                            return val + 4;
+                        }
+                        return val;
+                    }).forResult();
+                    game.broadcastAll(ui.clear);
+                    if (result?.links?.length) {
+                        const { links } = result;
+                        event.cards2 = links;
+                        await player.gain(links, 'gain2');
+                        if (links.reduce((sum, card) => sum += get.number(card), 0) == 13 && !player.hasMark(event.name + '_used')) {
+                            const result = await player.chooseBool(`称象：你可以对自己造成1点伤害${player.countMark(event.name) < 2 ? '并令发动此技能亮出的牌数+1' : ''}`).forResult();
+                            if (result?.bool) {
+                                player.addTempSkill(event.name + '_used');
+                                player.addMark(event.name + '_used', 1, false);
+                                if (player.countMark(event.name) < 2) player.addMark(event.name, 1, false);
+                                await player.damage();
+                            }
+                        }
+                    }
+                },
+                intro: { content: '下发动【称象】多亮出$张牌' },
+                subSkill: { used: { charlotte: true, onremove: true } }
+            },
+            minirenxin: {
+                audio: 'renxin',
+                trigger: { global: 'dying' },
+                filter(event, player) {
+                    return event.player != player && player.hasCards('he', { type: 'equip' });
+                },
+                async cost(event, trigger, player) {
+                    event.result = await player.chooseToDiscard(get.prompt(event.skill, trigger.player), `弃置一张装备牌并将武将牌翻面，然后${get.translation(trigger.player)}回复至1点体力`, { type: 'equip' }, 'he', 'chooseonly').set('ai', card => {
+                        const player = get.player();
+                        if (get.attitude(player, get.event().getTrigger().player) > 3) {
+                            return 11 - get.value(card);
+                        }
+                        return -1;
+                    }).forResult();
+                },
+                logTarget: "player",
+                async content(event, trigger, player) {
+                    await player.discard(event.cards);
+                    const { player: target } = trigger;
+                    await player.turnOver();
+                    await target.recoverTo(1);
+                    player.addSkill(event.name + '_effect');
+                    player.markAuto(event.name + '_effect', [target]);
+                },
+                ai: { expose: 0.5 },
+                subSkill: {
+                    effect: {
+                        charlotte: true,
+                        onremove: true,
+                        intro: { content: '当$下次受到伤害时，你可以将此伤害转移给你' },
+                        trigger: { global: "damageBegin3" },
+                        filter(event, player) {
+                            return player.getStorage('minirenxin_effect').includes(event.player);
+                        },
+                        forced: true,
+                        popup: false,
+                        async content(event, trigger, player) {
+                            const { player: target, source, card } = trigger;
+                            player.unmarkAuto(event.name, [target]);
+                            if (!player.getStorage(event.name).length) player.removeSkill(event.name);
+                            const result = await player.chooseBool(get.prompt(event.name, target), `${get.translation(target)}即将受到${source ? '来自' + get.translation(source) : '无来源'}的${trigger.num}点伤害，你可以将此伤害转移给你`).set('choice', get.damageEffect(player, source, player, trigger.nature) > get.damageEffect(target, source, player, trigger.nature)).forResult();
+                            if (result?.bool) {
+                                trigger.cancel();
+                                await player.damage(source || 'nosource', 'nocard', trigger.num, trigger.nature);
+                            }
+                        },
+                    }
+                }
             },
             //蜀
             //关羽
@@ -44466,6 +44574,7 @@ const packs = function () {
             Mbaby_dc_sb_xunyu: '欢杀谋荀彧',
             Mbaby_sb_xiahoudun: '欢杀谋夏侯惇',
             Mbaby_majun: '欢杀马钧',
+            Mbaby_re_caochong: '欢杀界曹冲',
             miniluoshen: '洛神',
             miniluoshen_info: '准备阶段，你可以进行一次判定并获得判定牌，若判定结果为黑色，你可重复此流程。',
             minireluoshen: '洛神',
@@ -44762,6 +44871,10 @@ const packs = function () {
             minisbqingjian_info: '①当有一张牌不因使用而进入弃牌堆后，若你的“清俭”数小于X，你将此牌置于你的武将牌上，称为“清俭”（X为你的体力值）。②结束阶段，你将所有“清俭”分配给任意角色。',
             minijingyi: '精益',
             minijingyi_info: '锁定技。每回合每个副类别限一次，当有实体牌进入你的装备区后，你摸X张牌，然后弃置一张牌（X为你装备区内实体牌的数量+1）。',
+            minirechengxiang: '称象',
+            minirechengxiang_info: '锁定技，当你受到伤害后，你亮出牌堆顶的四张牌，然后获得其中任意张点数和不大于13的牌，然后每回合限一次，若获得的牌点数之和为13，你可以对自己造成1点伤害并令发动此技能亮出的牌数+1（至多+2）。',
+            minirenxin: '仁心',
+            minirenxin_info: '当一名其他角色进入濒死状态时，你可以翻面并弃置一张装备牌，然后令该角色回复体力至1点。若如此做，当其下次受到伤害时，你可以将此伤害转移给你。',
             //蜀
             Mbaby_guanyu: '欢杀关羽',
             Mbaby_re_guanyu: '欢杀界关羽',
