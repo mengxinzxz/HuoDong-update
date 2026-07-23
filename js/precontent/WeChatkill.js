@@ -20367,7 +20367,7 @@ const packs = function () {
                         };
                     },
                     prompt(links) {
-                        return "点击“确定”以执行效果";
+                        return '点击“确定”以执行效果';
                     },
                 },
                 ai: {

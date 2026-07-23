@@ -115,7 +115,7 @@ const packs = function () {
             Mbaby_yuejin: ['male', 'wei', 4, ['minixiaoguo']],
             Mbaby_jianggan: ["male", "wei", 3, ['miniweicheng', 'minidaoshu']],
             Mbaby_chengyu: ['male', 'wei', 3, ['minishefu', 'minibenyu']],
-            Mbaby_sb_xuhuang: ['male', 'wei', 4, ['minisbduanliang', 'sbshipo']],
+            Mbaby_sb_xuhuang: ['male', 'wei', 4, ['minisbduanliang', 'minisbshipo']],
             Mbaby_ruanyu: ['male', 'wei', 3, ['minixingzuo', 'miaoxian']],
             Mbaby_dc_yanghu: ['male', 'wei', 3, ['minideshao', 'dcmingfa']],
             Mbaby_yanrou: ['male', 'wei', 4, ['choutao', 'minixiangshu']],
@@ -5456,27 +5456,153 @@ const packs = function () {
             //徐晃
             minisbduanliang: {
                 audio: 'sbduanliang',
-                inherit: 'sbduanliang',
-                usable: 2,
+                enable: "phaseUse",
+                filter(event, player) {
+                    return player.getStorage('minisbduanliang_used').length < 2;
+                },
+                chooseButton: {
+                    dialog(event, player) {
+                        const name = get.translation(event.result.targets[0]);
+                        const dialog = ui.create.dialog(
+                            '断粮：摸一张牌并…',
+                            [
+                                [
+                                    ['bingliang', '选择一名其他角色，若其判定区没有【兵粮寸断】，你将此牌当作【兵粮寸断】对其使用，否则你获得其一张牌'],
+                                    ['other', '将此牌当作任意伤害牌使用'],
+                                ],
+                                'textbutton',
+                            ],
+                            'hidden'
+                        );
+                        return dialog;
+                    },
+                    filter(button, player) {
+                        return !player.getStorage('minisbduanliang_used').includes(button.link);
+                    },
+                    check(button) {
+                        const player = get.player();
+                        const link = button.link;
+                        if (link === 'bingliang' && game.hasPlayer(current => player !== current && get.attitude(player, current) < 0 && (!current.hasJudge('bingliang') || !current.countCards('he')))) return 1;
+                        return Math.random();
+                    },
+                    backup(links) {
+                        return {
+                            audio: 'minisbduanliang',
+                            link: links[0],
+                            manualConfirm: true,
+                            async content(event, trigger, player) {
+                                const { link } = get.info('minisbduanliang_backup');
+                                player.addTempSkill('minisbduanliang_used');
+                                player.markAuto('minisbduanliang_used', [link]);
+                                let result = await player.draw().forResult();
+                                if (get.itemtype(result.cards) !== 'cards') return;
+                                const cards = result.cards;
+                                if (link === 'bingliang' && game.hasPlayer(current => player !== current)) {
+                                    result = await player.chooseTarget('断粮：请选择一名其他角色', '若其判定区没有【兵粮寸断】，你将此牌当作【兵粮寸断】对其使用，否则你获得其一张牌', lib.filter.notMe, true).set('ai', target => {
+                                        const player = get.player();
+                                        const att = get.attitude(player, target);
+                                        return -att;
+                                    }).forResult();
+                                    if (result?.bool) {
+                                        const target = result.targets[0];
+                                        if (target.hasJudge('bingliang')) await player.gainPlayerCard(target, 'he', true);
+                                        else if (player.canUse(get.autoViewAs({ name: 'bingliang' }, cards), target, false)) await player.useCard({ name: 'bingliang' }, target, cards, false);
+                                    }
+
+                                }
+                                else if (link === 'other') {
+                                    const vcards = get.inpileVCardList(info => {
+                                        const card = { name: info[2], nature: info[3] };
+                                        if (!get.is.damageCard(card)) return false;
+                                        const cardx = get.autoViewAs(card, cards);
+                                        return player.hasUseTarget(cardx, true, false);
+                                    });
+                                    if (!vcards.length) return;
+                                    result = await player.chooseButton(['断粮：请选择你要转化的牌', [vcards, 'vcard']], true).set('ai', button => {
+                                        const player = get.player();
+                                        return player.getUseValue({ name: button.link[2], nature: button.link[3] });
+                                    }).forResult();
+                                    if (result?.bool) {
+                                        const card = { name: result.links[0][2], nature: result.links[0][3] };
+                                        const cardx = get.autoViewAs(card, cards);
+                                        if (player.hasUseTarget(cardx, true, false)) await player.chooseUseTarget(cardx, cards, true, false).set('prompt', '选择' + get.translation(cardx) + '（' + get.translation(cards) + '）的目标');
+                                    }
+                                }
+                            },
+                        };
+                    },
+                    prompt(links) {
+                        return `###断粮###摸一张牌并${links[0] == 'bingliang' ? '选择一名其他角色，若其判定区没有【兵粮寸断】，你将此牌当作【兵粮寸断】对其使用，否则你获得其一张牌' : '将此牌当作任意伤害牌使用'}`;
+                    },
+                },
+                ai: {
+                    order: 10,
+                    result: { player: 1 }
+                },
+                subSkill: {
+                    backup: {},
+                    used: { charlotte: true, onremove: true }
+                },
+            },
+            minisbshipo: {
+                audio: 'sbshipo',
+                trigger: { player: 'phaseJieshuBegin' },
+                filter(event, player) {
+                    return game.hasPlayer(current => player !== current);
+                },
+                async cost(event, trigger, player) {
+                    event.result = await player.chooseTarget(get.prompt2(event.skill), lib.filter.notMe).set('ai', target => {
+                        const player = get.player();
+                        let att = get.attitude(player, target);
+                        if (att > 0) return 0;
+                        if (!current.hasJudge('bingliang')) att--;
+                        return -att / Math.sqrt(Math.max(0.1, 2 * target.hp + target.countCards('h')));
+                    }).forResult();
+                },
                 async content(event, trigger, player) {
-                    const target = event.target;
-                    player.removeGaintag('minisbduanliang_tag');
-                    const card = (await player.draw().set('gaintag', ['minisbduanliang_tag']).forResult()).cards[0];
-                    const result = await player.chooseToDuiben(target).set('namelist', [
-                        '固守城池', '突出重围', '围城断粮', '擂鼓进军'
-                    ]).set('ai', button => {
-                        const source = _status.event.getParent().player, target = _status.event.getParent().target;
-                        if (get.effect(target, { name: 'juedou' }, source, source) >= 10 && button.link[2] == 'db_def2' && Math.random() < 0.5) return 10;
-                        return 1 + Math.random();
-                    }).set('title', '谋弈').forResult();
-                    if (result?.bool) {
-                        if (result.player == 'db_def1') {
-                            if (target.hasJudge('bingliang')) await player.gainPlayerCard(target, 'he', true);
-                            else if (card && player.canUse(get.autoViewAs({ name: 'bingliang' }, [card]), target, false)) await player.useCard({ name: 'bingliang' }, target, [card], false);
-                        }
-                        else {
-                            const juedou = { name: 'juedou', isCard: true };
-                            if (player.canUse(juedou, target, false)) await player.useCard(juedou, target, false);
+                    const target = event.targets[0];
+                    const cards = [];
+                    for (const current of event.targets.addArray(game.filterPlayer(current => current.hasJudge('bingliang'))).sortBySeat()) {
+                        if (!current.isIn()) continue;
+                        const result = await target.chooseToGive(player, `${get.translation(player)}对你发动了【${get.translation(event.name)}】`, `交给其一张手牌，或受到1点伤害`).set('ai', card => {
+                            const { player, target } = get.event();
+                            if (get.damageEffect(player, target, player) > 0) return 0;
+                            if (get.attitude(player, target) > 0) return 1;
+                            if (get.tag(card, 'recover') > 0) return 0;
+                            return (player.hp < 2 ? 7 : 5.5) - get.value(card);
+                        }).forResult();
+                        if (result?.bool) cards.addArray(result.cards);
+                        else await target.damage();
+                    }
+                    if (cards.length && game.hasPlayer(current => player !== current)) {
+                        const result = await player.chooseCardTarget({
+                            filterCard(card, player, target) {
+                                return get.event().cards.includes(card);
+                            },
+                            filterTarget: lib.filter.notMe,
+                            selectCard: [1, cards.length],
+                            prompt: '是否将任意张得到的牌交给一名其他角色？',
+                            ai1(card) {
+                                const player = get.player();
+                                const val = player.getUseValue(card);
+                                if (val > 0) return 2;
+                                if (player.hp <= 2 && val == 0 && get.value(card) > 5) return 0;
+                                return Math.random() > 0.5 ? 1 : 0;
+                            },
+                            ai2(target) {
+                                const { player, cards } = get.event();
+                                let val = 0;
+                                for (var card of cards) {
+                                    val += target.getUseValue(card);
+                                }
+                                if (val > 0) return val * get.attitude(player, target) * 2;
+                                return get.value(card, target) * get.attitude(player, target);
+                            },
+                            allowChooseAll: true,
+                            cards,
+                        }).forResult();
+                        if (result?.bool) {
+                            await player.give(result.cards, result.targets[0]);
                         }
                     }
                 },
@@ -34121,7 +34247,13 @@ const packs = function () {
                         };
                     },
                     prompt(links) {
-                        return "点击“确定”以执行效果";
+                        const name = get.translation(get.event().result.targets[0]);
+                        const map = new Map([
+                            ['damage', `对${name}造成1点雷属性伤害`],
+                            ['draw', `令${name}摸一张牌`],
+                            ['discard', `弃置${name}一张牌`],
+                        ]);
+                        return `###神赋###${map.get(links[0])}`;
                     },
                 },
                 ai: {
@@ -44768,8 +44900,9 @@ const packs = function () {
             minibenyu: '贲育',
             minibenyu_info: '当你受到有来源造成的伤害后，你可以选择一项：①将手牌摸至与伤害来源相同（至多摸至五张）；②弃置一张手牌，然后对伤害来源造成1点伤害。',
             minisbduanliang: '断粮',
-            minisbduanliang_tag: 'invisible',
-            minisbduanliang_info: '出牌阶段限两次，你可以摸一张牌并与一名其他角色进行谋弈。若你赢，且你选择的选项为：“围城断粮”，若其判定区没有【兵粮寸断】，你将此牌当作【兵粮寸断】对其使用，否则你获得其一张牌；“擂鼓进军”，你视为对其使用一张【决斗】。',
+            minisbduanliang_info: '出牌阶段各限一次，你可以摸一张牌并选择一项：1.选择一名其他角色，若其判定区没有【兵粮寸断】，你将此牌当作【兵粮寸断】对其使用，否则你获得其一张牌；2.将此牌当作任意伤害牌使用。',
+            minisbshipo: '势迫',
+            minisbshipo_info: '结束阶段，你可以选择一名其他角色，其与所有判定区有【兵粮寸断】的其他角色选择一项：1.交给你一张手牌；2.受到1点伤害。所有目标角色选择完成后，你可以将任意张你以此法得到的牌交给一名其他角色。',
             minixingzuo: '兴作',
             minixingzuo_info: '出牌阶段开始时，你可观看牌堆底的三张牌并用任意张手牌替换其中等量的牌。若如此做，结束阶段，你可令一名有手牌的角色用所有手牌替换牌堆底的三张牌。',
             minideshao: '德劭',
