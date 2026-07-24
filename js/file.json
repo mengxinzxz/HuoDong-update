@@ -3237,6 +3237,14 @@
             "size": 159005
         },
         {
+            "path": "audio/skill/mpjiezi1.mp3",
+            "size": 86909
+        },
+        {
+            "path": "audio/skill/mpjiezi2.mp3",
+            "size": 113032
+        },
+        {
             "path": "audio/skill/mpqingjian1.mp3",
             "size": 151554
         },
@@ -8914,7 +8922,7 @@
         },
         {
             "path": "js/content.js",
-            "size": 65298
+            "size": 65372
         },
         {
             "path": "js/help.js",
@@ -8958,7 +8966,7 @@
         },
         {
             "path": "js/precontent/MiNiAppkill.js",
-            "size": 102661
+            "size": 122556
         },
         {
             "path": "js/precontent/MiNikill_sight.js",
@@ -8970,7 +8978,7 @@
         },
         {
             "path": "js/precontent/MX_catcatcup.js",
-            "size": 56853
+            "size": 49524
         },
         {
             "path": "js/precontent/MX_feihongyinxue.js",

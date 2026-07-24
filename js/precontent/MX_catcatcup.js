@@ -8,7 +8,7 @@ const packs = function () {
             MX_catcatcup: {
                 cat_yongguansanjun: ['cat_re_ganning'],
                 cat_weiwoqianli: ['cat_re_zhouyu'],
-                cat_shenhua_lin: ['cat_ol_xuhuang', 'cat_sunjian', 'cat_zhurong', 'cat_jiaxu', 'cat_re_lusu'],
+                cat_shenhua_lin: ['cat_zhurong'],
                 cat_shenhua_yin: ['cat_yanyan', 'cat_wangping', 'cat_sunliang', 'cat_wangji', 'cat_kuailiangkuaiyue', 'cat_yl_luzhi'],
                 cat_shenhua_lei: ['cat_chendao', 'cat_guanqiujian', 'cat_yl_yuanshu'],
             },
@@ -16,13 +16,7 @@ const packs = function () {
         character: {
             cat_re_ganning: ['male', 'wu', 4, ['catqixi', 'fenwei']],
             cat_re_zhouyu: ['male', 'wu', 3, ['catyingzi', 'catfanjian']],
-            cat_ol_xuhuang: ['male', 'wei', 4, ['olduanliang', 'catjiezi']],
-            //曹丕为手杀界曹丕
-            cat_sunjian: ['male', 'wu', 5, ['gzyinghun']],
-            //董卓为OL界董卓
             cat_zhurong: ['female', 'shu', 4, ['juxiang', 'catlieren']],
-            cat_jiaxu: ['male', 'qun', 3, ['wansha', 'catluanwu', 'catweimu']],
-            cat_re_lusu: ['male', 'wu', 3, ['cathaoshi', 'dimeng']],
             cat_yanyan: ['male', 'shu', 4, ['catjuzhan']],
             cat_wangping: ['male', 'shu', 4, ['catfeijun', 'catbinglve']],
             cat_sunliang: ['male', 'wu', 3, ['catkuizhu', 'catchezheng']],
@@ -104,15 +98,6 @@ const packs = function () {
                     }
                 },
             },
-            //徐晃
-            catjiezi: {
-                audio: 'oljiezi',
-                inherit: 'jiezi',
-                logTarget: 'player',
-                async content(event, trigger, player) {
-                    await player.draw(1 + (get.distance(player, trigger.player) <= 1));
-                },
-            },
             //祝融
             catlieren: {
                 audio: 'lieren',
@@ -128,114 +113,6 @@ const packs = function () {
                     const target = trigger.targets[0];
                     const result = await player.chooseToCompare(target).forResult();
                     if (result?.bool) await player.gainPlayerCard(target, true, 'he');
-                },
-            },
-            //贾诩
-            catluanwu: {
-                audio: 'luanwu',
-                inherit: 'luanwu',
-                multitarget: true,
-                async content(event, trigger, player) {
-                    for (const target of game.filterPlayer().sortBySeat()) {
-                        if (target === player) continue;
-                        const result = await target.chooseToUse('乱武：使用一张杀或失去1点体力', function (card) {
-                            if (get.name(card) !== 'sha') return false;
-                            return lib.filter.cardEnabled.apply(this, arguments);
-                        }, function (card, player, target) {
-                            if (target == player) return false;
-                            const dist = get.distance(player, target);
-                            if (dist > 1) {
-                                if (game.hasPlayer(current => {
-                                    return current !== player && get.distance(player, current) < dist;
-                                })) return false;
-                            }
-                            return lib.filter.filterTarget.apply(this, arguments);
-                        }).set('ai2', function () {
-                            return get.effect_use.apply(this, arguments) + 0.01;
-                        }).set('addCount', false).forResult();
-                        if (!result?.bool) {
-                            await target.loseHp();
-                            await player.discardPlayerCard(target, 'he');
-                        }
-                        await game.delayx();
-                    }
-                },
-            },
-            catweimu: {
-                audio: 'weimu',
-                inherit: 'weimu',
-                group: 'catweimu_damage',
-                subSkill: {
-                    damage: {
-                        audio: 'weimu',
-                        trigger: { player: 'damageEnd' },
-                        filter(event, player) {
-                            return event.source?.isIn() && event.source !== _status.currentPhase;
-                        },
-                        forced: true,
-                        async content(event, trigger, player) {
-                            await player.draw(2);
-                        },
-                        ai: {
-                            maixie: true,
-                            maixie_hp: true,
-                            threaten: 0.75,
-                            effect: {
-                                target(card, player, target) {
-                                    if (player !== _status.currentPhase && get.tag(card, 'damage')) {
-                                        if (player.hasSkillTag('jueqing', false, target)) return [1, -2];
-                                        let num = 1;
-                                        if (get.attitude(player, target) > 0) num = player.needsToDiscard() ? 0.7 : 0.5;
-                                        if (target.hp >= 4) return [1, num * 2];
-                                        if (target.hp == 3) return [1, num * 1.5];
-                                        if (target.hp == 2) return [1, num * 0.5];
-                                    }
-                                },
-                            },
-                        },
-                    },
-                },
-            },
-            //鲁肃
-            cathaoshi: {
-                audio: 'haoshi',
-                inherit: 'haoshi',
-                check(event, player) {
-                    if (player.countCards('h') + event.num <= 3) return true;
-                    return game.hasPlayer(current => current !== player && get.attitude(player, current) > 0);
-                },
-                content() {
-                    trigger.num += 2;
-                    player.addSkill('cathaoshi_effect');
-                },
-                subSkill: {
-                    effect: {
-                        charlotte: true,
-                        trigger: { player: 'phaseDrawEnd' },
-                        forced: true,
-                        popup: false,
-                        async content(event, trigger, player) {
-                            player.removeSkill(event.name);
-                            if (player.countCards('h') <= 5) return;
-                            const result = await player.chooseCardTarget({
-                                filterCard: true,
-                                selectCard: Math.floor(player.countCards('h') / 2),
-                                posption: 'h',
-                                filterTarget: lib.filter.notMe,
-                                prompt: '好施：将一半手牌交给一名其他角色',
-                                forced: true,
-                                ai1() {
-                                    return 1 + Math.random();
-                                },
-                                ai2(target) {
-                                    return get.attitude(_status.event.player, target);
-                                },
-                            }).forResult();
-                            if (result?.bool && result.cards?.length && result.targets?.length) {
-                                await player.give(result.cards, result.targets[0]);
-                            }
-                        },
-                    },
                 },
             },
             //严颜
@@ -910,22 +787,10 @@ const packs = function () {
             catyingzi: '英姿',
             catyingzi_info: '锁定技。你的手牌上限视为你的体力上限；摸牌阶段，你额外摸一张牌（若你的手牌数小于2则改为额外摸两张牌）。',
             catfanjian: '反间',
-            catfanjian_info: '出牌阶段限一次，你可以展示一张手牌并交给一名其他角色，其选择一项：①展示所有手牌，弃置所有与此牌颜色相同的牌；②失去1点体力，随机弃置装备区里的一张牌。',
-            cat_ol_xuhuang: '徐晃',
-            catjiezi: '截辎',
-            catjiezi_info: '锁定技，一名其他角色跳过摸牌阶段后，你摸一张牌。若你与其距离小于等于1，则额外摸一张牌。',
-            cat_sunjian: '孙坚',
+            catfanjian_info: '出牌阶段限一次，你可以展示一张手牌并交给一名其他角色，其选择一项：①展示所有手牌，弃置所有与此牌颜色相同的牌；②失去1点体力，随机弃置装备区里的一张牌。 ',
             cat_zhurong: '祝融',
             catlieren: '烈刃',
             catlieren_info: '当你使用仅指定单目标的牌结算完毕后，你可以与其拼点。若你赢，你获得其一张牌。',
-            cat_jiaxu: '贾诩',
-            catluanwu: '乱武',
-            catluanwu_info: '限定技，出牌阶段，你可令除你外的所有角色依次对与其距离最近的另一名角色使用一张【杀】，否则失去1点体力且你可以弃置其一张牌。',
-            catweimu: '帷幕',
-            catweimu_info: '锁定技，你不能成为黑色锦囊牌的目标；当你受到不为当前回合角色造成的伤害后，你摸两张牌。',
-            cat_re_lusu: '鲁肃',
-            cathaoshi: '好施',
-            cathaoshi_info: '摸牌阶段，你可以多摸两张牌，然后若你的手牌数大于5，你须将X张手牌交给一名其他角色（X为你手牌数的一半，向下取整）。',
             cat_yanyan: '严颜',
             catjuzhan: '拒战',
             catjuzhan_info: '转换技。准备阶段或当你成为其他角色使用【杀】的目标后，你可以摸一张牌，然后当前回合角色本回合不能对你使用牌；当你使用【杀】指定一名角色为目标后，你可以获得其一张牌，然后你本回合内不能再对其使用牌。',
