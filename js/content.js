@@ -617,7 +617,7 @@ export async function content(config, pack) {
 		//块级修改
 		const mx_rarity = {
 			legend: ['decadeQiHuan', 'decadeZhuoGui', 'MiNikill', 'MX_feihongyinxue', 'decadeKuiBa', 'HD_chaoshikong'],
-			epic: ['WeChatkill', 'hezongkangqincharacter'],
+			epic: ['WeChatkill', 'MX_catcatcup', 'MiNiAppkill', 'hezongkangqincharacter'],
 			rare: ['yingbian'],
 			junk: ['sb'],
 		};
