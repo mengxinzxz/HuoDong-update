@@ -6524,15 +6524,15 @@ const packs = function () {
                     if (player.storage[event.name]) {
                         const skills = player.getRemovableAdditionalSkills(event.name);
                         await player.changeSkills([], skills).set('$handle', (player, 棍母, removeSkill) => {
-                            const skill = get.event().skillName;
                             if (removeSkill.length) {
+                                const skill = get.event().skillName;
                                 player.removeSkillLog(removeSkill);
+                                player.additionalSkills[skill]?.removeArray(removeSkill);
+                                if (!player.additionalSkills[skill]?.length) delete player.additionalSkills[skill];
+                                game.broadcast((player, map) => {
+                                    player.additionalSkills = map;
+                                }, player, player.additionalSkills);
                             }
-                            player.additionalSkills[skill]?.removeArray(removeSkill);
-                            if (!player.additionalSkills[skill]?.length) delete player.additionalSkills[skill];
-                            game.broadcast((player, map) => {
-                                player.additionalSkills = map;
-                            }, player, player.additionalSkills);
                         }).set('skillName', event.name);
                         let cards = game.cardsGotoOrdering(get.cards(5)).cards;
                         const result = await player.chooseButton([`是否获得至多${get.cnNumber(num)}张牌？`, cards], [1, num], 'allowChooseAll').set('ai', button => {
@@ -6551,15 +6551,15 @@ const packs = function () {
                     else {
                         const skills = player.getRemovableAdditionalSkills(event.name);
                         await player.changeSkills([], skills).set('$handle', (player, 棍母, removeSkill) => {
-                            const skill = get.event().skillName;
                             if (removeSkill.length) {
+                                const skill = get.event().skillName;
                                 player.removeSkillLog(removeSkill);
+                                player.additionalSkills[skill]?.removeArray(removeSkill);
+                                if (!player.additionalSkills[skill]?.length) delete player.additionalSkills[skill];
+                                game.broadcast((player, map) => {
+                                    player.additionalSkills = map;
+                                }, player, player.additionalSkills);
                             }
-                            player.additionalSkills[skill]?.removeArray(removeSkill);
-                            if (!player.additionalSkills[skill]?.length) delete player.additionalSkills[skill];
-                            game.broadcast((player, map) => {
-                                player.additionalSkills = map;
-                            }, player, player.additionalSkills);
                         }).set('skillName', event.name);
                         const target = event.targets[0];
                         const result = await player.discardPlayerCard(target, 'h', `是否弃置${get.translation(target)}至多${get.cnNumber(num)}张牌?`, [1, num], 'visible', 'allowChooseAll').set('ai', button => {
