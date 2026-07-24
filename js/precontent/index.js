@@ -9,6 +9,7 @@ import MiNikill from './MiNikill.js';
 import WeChatkill from './WeChatkill.js';
 import MX_feihongyinxue from './MX_feihongyinxue.js';
 import MX_catcatcup from './MX_catcatcup.js';
+import MiNiAppkill from './MiNiAppkill.js';
 import huodongcharacter from './huodongcharacter.js';
 
 export async function precontent(bilibilicharacter) {
@@ -796,10 +797,12 @@ export async function precontent(bilibilicharacter) {
         game.import('character', MiNikill);
         //三国杀小程序
         game.import('character', WeChatkill);
-        //线下--飞鸿印雪
-        game.import('character', MX_feihongyinxue);
         //一将成名--喵喵杯
         game.import('character', MX_catcatcup);
+        //三国杀新小程序
+        game.import('character', MiNiAppkill);
+        //线下--飞鸿印雪
+        game.import('character', MX_feihongyinxue);
         //没想到吧，我换前缀了
         game.import('character', huodongcharacter);
         //--------------------卡牌包--------------------//
@@ -830,6 +833,7 @@ export async function precontent(bilibilicharacter) {
                 get data() {
                     return [
                         'bugfix、素材补充、技能调整',
+                        '新武将包：新一将成名（未完成）',
                         ...(() => {
                             const map = _status.HDWJ_ChangeLog_character ?? {};
                             return Object.keys(map).map(ext => {

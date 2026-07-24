@@ -8914,7 +8914,11 @@
         },
         {
             "path": "js/precontent/index.js",
-            "size": 43228
+            "size": 43428
+        },
+        {
+            "path": "js/precontent/MiNiAppkill.js",
+            "size": 5030
         },
         {
             "path": "js/precontent/MiNikill_sight.js",
