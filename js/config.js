@@ -30,18 +30,18 @@ export let config = {
 				try {
 					await walk(dir);
 				}
-				catch (e) { }
+				catch (e) {
+					//目录不存在时认为没有文件，其余错误继续抛出
+					if (e && (e.code === 'ENOENT' || /not\s*found/i.test(String(e.message)))) return [];
+					throw e;
+				}
 				return result;
 			};
 			const copyFiles = async (fromDir, toDir, files) => {
 				for (const file of files) {
 					const data = await game.promises.readFile(`${fromDir}/${file}`);
 					await ensureDirByFile(toDir, file);
-					await game.promises.writeFile(
-						data,
-						file.includes('/') ? `${toDir}/${file.split('/').slice(0, -1).join('/')}` : toDir,
-						file.split('/').pop()
-					);
+					await game.promises.writeFile(data, file.includes('/') ? `${toDir}/${file.split('/').slice(0, -1).join('/')}` : toDir, file.split('/').pop());
 				}
 			};
 			try {
@@ -50,21 +50,14 @@ export let config = {
 					if (!res.ok) throw new Error('获取远程info.json失败');
 					return res.json();
 				});
-			if (typeof remoteInfo !== 'object' || remoteInfo === null || Array.isArray(remoteInfo)) throw new Error('远程info.json数据无效');
+				if (typeof remoteInfo !== 'object' || remoteInfo === null || Array.isArray(remoteInfo)) throw new Error('远程info.json数据无效');
 				const remoteTime = String(remoteInfo.lastEditTime || '');
 				const localTime = String(lib.extensionPack['活动武将'].lastEditTime || '');
 				const parseTime = str => {
 					if (!str) return 0;
 					const match = str.match(/(\d+)\/(\d+)\/(\d+)\s+(\d+):(\d+):(\d+)/);
 					if (!match) return 0;
-					return new Date(
-						Number(match[1]),
-						Number(match[2]) - 1,
-						Number(match[3]),
-						Number(match[4]),
-						Number(match[5]),
-						Number(match[6])
-					).getTime();
+					return new Date(Number(match[1]), Number(match[2]) - 1, Number(match[3]), Number(match[4]), Number(match[5]), Number(match[6])).getTime();
 				};
 				const remoteValue = parseTime(remoteTime);
 				const localValue = parseTime(localTime);
@@ -97,7 +90,7 @@ export let config = {
 					for (const item of remoteFiles) {
 						if (!localMap.has(item.path) || localMap.get(item.path) !== item.size) needDownload.push(item.path);
 					}
-					//info.json和file.json 存更新时间，哪怕size一样也必须更新
+					//info.json和file.json保存更新时间，哪怕size一样也必须更新
 					if (!needDownload.includes('info.json')) needDownload.push('info.json');
 					if (!needDownload.includes('js/file.json')) needDownload.push('js/file.json');
 				}
@@ -140,11 +133,7 @@ export let config = {
 				for (const file of localFiles) {
 					const data = await game.promises.readFile(`extension/活动武将/${file}`);
 					await ensureDirByFile('extension/活动武将/update_backup', file);
-					await game.promises.writeFile(
-						data,
-						file.includes('/') ? `extension/活动武将/update_backup/${file.split('/').slice(0, -1).join('/')}` : 'extension/活动武将/update_backup',
-						file.split('/').pop()
-					);
+					await game.promises.writeFile(data, file.includes('/') ? `extension/活动武将/update_backup/${file.split('/').slice(0, -1).join('/')}` : 'extension/活动武将/update_backup', file.split('/').pop());
 				}
 				//安装新文件
 				await copyFiles('extension/活动武将/update_temp', 'extension/活动武将', needDownload);
