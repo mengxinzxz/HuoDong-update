@@ -5601,9 +5601,7 @@ const packs = function () {
                             allowChooseAll: true,
                             cards,
                         }).forResult();
-                        if (result?.bool) {
-                            await player.give(result.cards, result.targets[0]);
-                        }
+                        if (result?.bool) await player.give(result.cards, result.targets[0]);
                     }
                 },
             },
@@ -6495,6 +6493,7 @@ const packs = function () {
             },
             //谋郭嘉
             minixianmou: {
+                keepSkill: true,
                 audio: 'xianmou',
                 inherit: 'xianmou',
                 getNum(player) {
@@ -6524,14 +6523,20 @@ const packs = function () {
                     const num = event.cost_data;
                     player.changeZhuanhuanji(event.name);
                     if (player.storage[event.name]) {
-                        await player.changeSkills([], ['miniyiji']).set('$handle', (player, 棍母, removeSkill) => {
+                        const skills = player.getRemovableAdditionalSkills(event.name);
+                        await player.changeSkills([], skills).set('$handle', (player, 棍母, removeSkill) => {
                             const skill = get.event().skillName;
-                            game.log(player, '失去了技能', ...removeSkill.map(i => '#g【' + get.translation(i) + '】'));
-                            player.removeSkill(removeSkill);
+                            if (removeSkill.length) {
+                                player.removeSkillLog(removeSkill);
+                            }
+                            player.additionalSkills[skill]?.removeArray(removeSkill);
                             if (!player.additionalSkills[skill]?.length) delete player.additionalSkills[skill];
+                            game.broadcast((player, map) => {
+                                player.additionalSkills = map;
+                            }, player, player.additionalSkills);
                         }).set('skillName', event.name);
                         let cards = game.cardsGotoOrdering(get.cards(5)).cards;
-                        const result = await player.chooseButton([`是否获得至多${num}张牌？`, cards], [1, num]).set('ai', button => {
+                        const result = await player.chooseButton([`是否获得至多${get.cnNumber(num)}张牌？`, cards], [1, num], 'allowChooseAll').set('ai', button => {
                             if (ui.selected.buttons.length + 1 >= _status.event.maxNum) return 0;
                             return get.value(button.link);
                         }).set('maxNum', num).forResult();
@@ -6545,14 +6550,20 @@ const packs = function () {
                         }
                     }
                     else {
-                        await player.changeSkills([], ['tiandu']).set('$handle', (player, 棍母, removeSkill) => {
+                        const skills = player.getRemovableAdditionalSkills(event.name);
+                        await player.changeSkills([], skills).set('$handle', (player, 棍母, removeSkill) => {
                             const skill = get.event().skillName;
-                            game.log(player, '失去了技能', ...removeSkill.map(i => '#g【' + get.translation(i) + '】'));
-                            player.removeSkill(removeSkill);
-                            if (!player.additionalSkills?.[skill].length) delete player.additionalSkills[skill];
+                            if (removeSkill.length) {
+                                player.removeSkillLog(removeSkill);
+                            }
+                            player.additionalSkills[skill]?.removeArray(removeSkill);
+                            if (!player.additionalSkills[skill]?.length) delete player.additionalSkills[skill];
+                            game.broadcast((player, map) => {
+                                player.additionalSkills = map;
+                            }, player, player.additionalSkills);
                         }).set('skillName', event.name);
                         const target = event.targets[0];
-                        const result = await player.discardPlayerCard(target, 'h', `是否弃置${get.translation(target)}至多${num}张牌?`, [1, num], 'visible').set('ai', button => {
+                        const result = await player.discardPlayerCard(target, 'h', `是否弃置${get.translation(target)}至多${get.cnNumber(num)}张牌?`, [1, num], 'visible', 'allowChooseAll').set('ai', button => {
                             if (ui.selected.buttons.length + 1 >= _status.event.maxNum) return 5 - get.value(button.link);
                             return get.value(button.link);
                         }).set('maxNum', num).forResult();
@@ -44502,10 +44513,10 @@ const packs = function () {
                 const storage = player.storage.minixianmou;
                 let str = '转换技，①游戏开始时，你可以转换此技能状态；②你不因使用装备牌而失去过牌的回合结束时，你可以：';
                 if (!storage) str += '<span class="bluetext">';
-                str += '阳，观看牌堆顶五张牌并获得至多X张牌，若未获得X张牌则获得〖遗计〗直到再发动此项；';
+                str += `阳，观看牌堆顶五张牌并获得至多X张牌，若未获得X张牌则获得${get.poptip('miniyiji')}直到再发动此项；`;
                 if (!storage) str += '</span>';
                 if (storage) str += '<span class="bluetext">';
-                str += '阴，观看一名角色手牌并弃置其中至多X张牌，若弃置X张牌则获得〖天妒〗直到再发动此项，然后你进行一次【闪电】判定。';
+                str += `阴，观看一名角色手牌并弃置其中至多X张牌，若弃置X张牌则获得${get.poptip('tiandu')}直到再发动此项，然后你进行一次【闪电】判定。`;
                 if (storage) str += '</span>';
                 return str + '（X为你本回合不因使用装备牌而失去的牌数）';
             },
@@ -44946,7 +44957,7 @@ const packs = function () {
             miniwuxie: '无胁',
             miniwuxie_info: '出牌阶段结束时，你可以选择一名其他角色，与其将手牌中所有伤害牌置入牌堆底，然后你可令你与其中的一名角色回复1点体力。',
             minixianmou: '先谋',
-            minixianmou_info: '转换技。①游戏开始时，你可以转换此技能状态；②你不因使用装备牌而失去过牌的回合结束时，你可以：阳，观看牌堆顶五张牌并获得至多X张牌，若未获得X张牌则获得〖遗计〗直到再发动此项；阴，观看一名角色手牌并弃置其中至多X张牌，若弃置X张牌则获得〖天妒〗直到再发动此项，然后你进行一次【闪电】判定。（X为你本回合不因使用装备牌而失去的牌数）',
+            minixianmou_info: `转换技。①游戏开始时，你可以转换此技能状态；②你不因使用装备牌而失去过牌的回合结束时，你可以：阳，观看牌堆顶五张牌并获得至多X张牌，若未获得X张牌则获得${get.poptip('miniyiji')}直到再发动此项；阴，观看一名角色手牌并弃置其中至多X张牌，若弃置X张牌则获得${get.poptip('tiandu')}直到再发动此项，然后你进行一次【闪电】判定。（X为你本回合不因使用装备牌而失去的牌数）`,
             minilunshi: '论势',
             minilunshi_info: '其他角色对其以外的角色使用普通锦囊牌的结算中，若你手牌中两种颜色的牌数量：相同，你可将一张手牌当作不可被响应的【无懈可击】使用；不同，你可将两张手牌当作【无懈可击】使用。',
             miniyiji: '遗计',
