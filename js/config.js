@@ -50,6 +50,7 @@ export let config = {
 					if (!res.ok) throw new Error('获取远程info.json失败');
 					return res.json();
 				});
+			if (typeof remoteInfo !== 'object' || remoteInfo === null || Array.isArray(remoteInfo)) throw new Error('远程info.json数据无效');
 				const remoteTime = String(remoteInfo.lastEditTime || '');
 				const localTime = String(lib.extensionPack['活动武将'].lastEditTime || '');
 				const parseTime = str => {
