@@ -1,5 +1,4 @@
 import { lib, game, ui, get, ai, _status } from '../../../../noname.js';
-import { precontent } from './index.js';
 import MiNikill_sight from './MiNikill_sight.js';
 
 const packs = function () {
