@@ -8156,6 +8156,7 @@ const packs = function () {
             //界曹冲
             minirechengxiang: {
                 audio: 'chengxiang',
+                audioname2: { Mnian_caopi: 'chengxiang_Mnian_caopi' },
                 inherit: 'chengxiang',
                 forced: true,
                 async content(event, trigger, player) {
@@ -40313,9 +40314,9 @@ const packs = function () {
                     ['caoang', ['minikangkai', 'spade']],
                     ['caozhi', ['miniluoying', 'club']],
                     ['caozhang', ['minijiangchi', 'diamond']],
-                    ['caochong', ['minichengxiang', 'heart']],
+                    ['caochong', ['minirechengxiang', 'heart']],
                 ]),
-                derivation: ['mininiandengji_faq', 'minikangkai', 'miniluoying', 'minijiangchi', 'minichengxiang'],
+                derivation: ['mininiandengji_faq', 'minikangkai', 'miniluoying', 'minijiangchi', 'minirechengxiang'],
                 subSkill: {
                     used: {
                         charlotte: true,
