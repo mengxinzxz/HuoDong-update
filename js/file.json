@@ -425,6 +425,10 @@
             "size": 53774
         },
         {
+            "path": "audio/die/Mmiao_bulianshi.mp3",
+            "size": 33408
+        },
+        {
             "path": "audio/die/Mmiao_caifuren.mp3",
             "size": 40645
         },
@@ -2093,6 +2097,14 @@
             "size": 85280
         },
         {
+            "path": "audio/skill/minimiaoanxu1.mp3",
+            "size": 45792
+        },
+        {
+            "path": "audio/skill/minimiaoanxu2.mp3",
+            "size": 44928
+        },
+        {
             "path": "audio/skill/minimiaobeige1.mp3",
             "size": 40065
         },
@@ -2351,6 +2363,14 @@
         {
             "path": "audio/skill/minimiaozhuangrong2.mp3",
             "size": 82916
+        },
+        {
+            "path": "audio/skill/minimiaozhuiyi1.mp3",
+            "size": 70848
+        },
+        {
+            "path": "audio/skill/minimiaozhuiyi2.mp3",
+            "size": 61056
         },
         {
             "path": "audio/skill/minimieji1.mp3",
@@ -8902,7 +8922,7 @@
         },
         {
             "path": "js/precontent/MiNikill.js",
-            "size": 2842957
+            "size": 2843460
         },
         {
             "path": "js/precontent/MX_catcatcup.js",

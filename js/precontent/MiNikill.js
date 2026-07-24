@@ -34390,7 +34390,7 @@ const packs = function () {
                 },
                 prompt: '将一张黑色牌当作【闪】使用或打出，然后将此牌置于武将牌上',
                 precontent() {
-                    player.addTempSkill('minifeifu_effect')
+                    player.addTempSkill('minifeifu_effect');
                 },
                 check: () => 1,
                 ai: {
@@ -46742,7 +46742,7 @@ const packs = function () {
             minimiaoanxu: '安恤',
             minimiaoanxu_info: `出牌阶段开始或结束时，你可以令一名角色获得另一名角色区域内的一张牌，若：1.获得牌的角色拥有${get.poptip('minidoumao')}，你摸两张牌并令其回复1点体力；2.失去牌的角色拥有${get.poptip('minidoumao')}，你获得其一张牌并令其失去1点体力。`,
             minimiaozhuiyi: '追忆',
-            minimiaozhuiyi_info: `当你进入濒死状态时，你可以令一名不为令你进入濒死的角色的其他角色摸三张牌并回复1点体力。若你拥有${get.poptip('minidoumao')}，你可以选择自己为目标；否则你可以获得${get.poptip('minidoumao')}`,
+            minimiaozhuiyi_info: `当你进入濒死状态时，你可以令一名不为令你进入濒死的角色的其他角色摸三张牌并回复1点体力。若你拥有${get.poptip('minidoumao')}，你可以选择自己为目标；否则你可以获得${get.poptip('minidoumao')}。`,
             //念
             Mnian_zhugeliang: '念诸葛亮',
             Mnian_lvbu: '念吕布',
@@ -47537,6 +47537,11 @@ const packs = function () {
             '#ext:活动武将/audio/skill/mininianying_Mnian_sunquan1': '孤之剑印，均托付于汝。',
             '#ext:活动武将/audio/skill/mininianying_Mnian_sunquan2': '内外诸政，孤可一言而决。',
             '#ext:活动武将/audio/die/Mnian_sunquan:die': '权衡一生，终失轻重。',
+            '#ext:活动武将/audio/skill/minimiaoanxu1': '母仪天下，当恤万民疾苦。',
+            '#ext:活动武将/audio/skill/minimiaoanxu2': '仁心广布，四海升平。',
+            '#ext:活动武将/audio/skill/minimiaozhuiyi1': '旧殷尘封，犹闻昔日软语温言。',
+            '#ext:活动武将/audio/skill/minimiaozhuiyi2': '昔日种种，至今皆历历在目。',
+            '#ext:活动武将/audio/die/Mmiao_bulianshi:die': '还望陛下珍重……',
         },
     };
     MiNikill_sight();//加载欢杀界面逻辑
