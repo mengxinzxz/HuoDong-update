@@ -36448,7 +36448,7 @@ const packs = function () {
                     if (event.triggername == 'phaseEnd') event.result = { bool: true };
                     else event.result = await player.chooseCardTarget({
                         prompt: get.prompt(event.skill),
-                        prompt2: '弃置一张牌，失去【逗猫】并令一名其他角色获得【逗猫】，然后其摸一张牌。',
+                        prompt2: '弃置一张牌，失去【逗猫】并令一名其他角色获得【逗猫】，然后其摸一张牌',
                         filterTarget: lib.filter.notMe,
                         filterCard: lib.filter.cardDiscardable,
                         position: 'he',
@@ -36459,39 +36459,12 @@ const packs = function () {
                             return val;
                         },
                         ai2(target) {
-                            const player = get.player();
-                            const att = get.attitude(player, target);
-                            //集智
-                            if (target.hasSkill('minimiaojizhi')) return 10 * (-Math.sign(att));
-                            //枪舞
-                            if (player.hasSkill('minimiaoqiangwu')) {
-                                player._minimiaoqiangwu_check = true;
-                                const cards = player.getCards('hs', card => {
-                                    return card.name == 'sha' && player.canUse(card, target);
-                                });
-                                if (cards.length > 1) {
-                                    if (att >= 0) return 0;
-                                    let sum = 0;
-                                    for (const card of cards) sum += get.effect(target, card, player, player);
-                                    if (sum <= 0) return 0;
-                                    else {
-                                        while (sum < 1 || sum > 10) {
-                                            if (sum < 1) sum = sum * 10;
-                                            if (sum > 10) sum = sum / 10;
-                                        }
-                                        return sum;
-                                    }
-                                }
-                                return 0;
-                            }
-                            if (player._minimiaoqiangwu_check) delete player._minimiaoqiangwu_check;
-                            //顺位传递
+                            const player = get.player(), att = get.attitude(player, target);
                             const players = game.filterPlayer(current => {
                                 if (current.hasSkill('minimiaojizhi') || current.hasSkill('minimiaoqiangwu')) return false;
                                 return current != player && !current.isTurnedOver() && get.attitude(player, current) > 0 && get.attitude(current, player) > 0;
                             }).sortBySeat(player);
                             if (players.length) return target == players[0] ? (att * (target.getSkills().some(skill => skill.indexOf('minimiao') == 0) ? 0.5 : 1)) : -1;
-                            //普通传递
                             return Math.sign(att) + att / 114514;
                         },
                     }).forResult();
@@ -36933,7 +36906,6 @@ const packs = function () {
             minimiaoqiangwu: {
                 mod: {
                     targetInRange(card, player, target) {
-                        if (player._minimiaoqiangwu_check) return;
                         if (card.name == 'sha' && !target.hasSkill('minidoumao')) return true;
                     },
                     cardUsableTarget(card, player, target) {
@@ -37874,37 +37846,11 @@ const packs = function () {
                     if (current.hasSkill('minidoumao', null, false, false)) {
                         const result = await player.chooseTarget('是否令一名角色获得【逗猫】？').set('ai', target => {
                             const player = get.player(), att = get.attitude(player, target);
-                            //集智
-                            if (target.hasSkill('minimiaojizhi')) return 10 * (-Math.sign(att));
-                            //枪舞
-                            if (player.hasSkill('minimiaoqiangwu')) {
-                                player._minimiaoqiangwu_check = true;
-                                const cards = player.getCards('hs', card => {
-                                    return card.name == 'sha' && player.canUse(card, target);
-                                });
-                                if (cards.length > 1) {
-                                    if (att >= 0) return 0;
-                                    let sum = 0;
-                                    for (const card of cards) sum += get.effect(target, card, player, player);
-                                    if (sum <= 0) return 0;
-                                    else {
-                                        while (sum < 1 || sum > 10) {
-                                            if (sum < 1) sum = sum * 10;
-                                            if (sum > 10) sum = sum / 10;
-                                        }
-                                        return sum;
-                                    }
-                                }
-                                return 0;
-                            }
-                            if (player._minimiaoqiangwu_check) delete player._minimiaoqiangwu_check;
-                            //顺位传递
                             const players = game.filterPlayer(current => {
                                 if (current.hasSkill('minimiaojizhi') || current.hasSkill('minimiaoqiangwu')) return false;
                                 return current != player && !current.isTurnedOver() && get.attitude(player, current) > 0 && get.attitude(current, player) > 0;
                             }).sortBySeat(player);
                             if (players.length) return target == players[0] ? (att * (target.getSkills().some(skill => skill.indexOf('minimiao') == 0) ? 0.5 : 1)) : -1;
-                            //普通传递
                             return Math.sign(att) + att / 114514;
                         }).forResult();
                         if (result?.bool && result.targets?.length) {
@@ -38017,40 +37963,12 @@ const packs = function () {
                         if (history.length) history[history.length - 1][event.name] = true;
                         await player.recover();
                         const result = await player.chooseTarget('虎啸：请选择一名角色令其获得【逗猫】', true).set('ai', target => {
-                            const player = get.player();
-                            const att = get.attitude(player, target);
-                            //集智
-                            if (target.hasSkill('minimiaojizhi')) return 10 * (-Math.sign(att));
-                            //枪舞
-                            const targetx = game.findPlayer(current => current.hasSkill('minimiaoqiangwu') && current.isPhaseUsing() && get.attitude(player, current) > 0);
-                            if (targetx) {
-                                target._minimiaoqiangwu_check = true;
-                                const cards = targetx.getCards('hs', card => {
-                                    return card.name == 'sha' && targetx.canUse(card, target);
-                                });
-                                if (cards.length > 1) {
-                                    if (get.attitude(targetx, target) >= 0) return 0;
-                                    let sum = 0;
-                                    for (const card of cards) sum += get.effect(target, card, targetx, targetx);
-                                    if (sum <= 0) return 0;
-                                    else {
-                                        while (sum < 1 || sum > 10) {
-                                            if (sum < 1) sum = sum * 10;
-                                            if (sum > 10) sum = sum / 10;
-                                        }
-                                        return sum;
-                                    }
-                                }
-                                return 0;
-                            }
-                            if (target._minimiaoqiangwu_check) delete target._minimiaoqiangwu_check;
-                            //顺位传递
+                            const player = get.player(), att = get.attitude(player, target);
                             const players = game.filterPlayer(current => {
                                 if (current.hasSkill('minimiaojizhi') || current.hasSkill('minimiaoqiangwu')) return false;
                                 return current != player && !current.isTurnedOver() && get.attitude(player, current) > 0 && get.attitude(current, player) > 0;
                             }).sortBySeat(player);
                             if (players.length) return target == players[0] ? (att * (target.getSkills().some(skill => skill.indexOf('minimiao') == 0) ? 0.5 : 1)) : -1;
-                            //普通传递
                             if (player.hasSkill('minimiaohuxiao')) return !target.hasSkill('minidoumao') ? Math.max(1, -att) : 0;
                             return Math.sign(att) + att / 114514;
                         }).forResult();
@@ -38268,9 +38186,46 @@ const packs = function () {
                     const target = event.targets[0];
                     await target.draw(3);
                     await target.recover();
-                    if (player != target && !player.hasSkill('minidoumao')) {
-                        const result = await player.chooseBool(`追忆：你可以获得${get.poptip('minidoumao')}`).forResult();
-                        if (result?.bool) await player.addSkills('minidoumao');
+                    if (target === player) {
+                        if (player.hasSkill('minidoumao') && player.hasCard(card => lib.filter.cardDiscardable(card, player), 'he') && game.hasPlayer(target => target !== player)) {
+                            const result = await player.chooseCardTarget({
+                                prompt: `追忆：请选择【逗猫】的目标`,
+                                prompt2: '弃置一张牌，失去【逗猫】并令一名其他角色获得【逗猫】，然后其摸一张牌',
+                                filterTarget: lib.filter.notMe,
+                                filterCard: lib.filter.cardDiscardable,
+                                position: 'he',
+                                forced: true,
+                                ai1(card) {
+                                    const player = get.player();
+                                    let val = 7 - get.value(card);
+                                    if (player.hasSkill('minimiaoyuma') && get.position(card) == 'e' && ['equip3', 'equip4'].some(subtype => get.subtypes(card).includes(subtype))) val += 2;
+                                    return val;
+                                },
+                                ai2(target) {
+                                    const player = get.player(), att = get.attitude(player, target);
+                                    const players = game.filterPlayer(current => {
+                                        if (current.hasSkill('minimiaojizhi') || current.hasSkill('minimiaoqiangwu')) return false;
+                                        return current != player && !current.isTurnedOver() && get.attitude(player, current) > 0 && get.attitude(current, player) > 0;
+                                    }).sortBySeat(player);
+                                    if (players.length) return target == players[0] ? (att * (target.getSkills().some(skill => skill.indexOf('minimiao') == 0) ? 0.5 : 1)) : -1;
+                                    return Math.sign(att) + att / 114514;
+                                },
+                            }).forResult();
+                            if (result?.bool && result.cards?.length && result.targets?.length) {
+                                const { cards, targets: [target2] } = result;
+                                player.logSkill('minidoumao', target2);
+                                await player.discard(cards);
+                                await player.removeSkills('minidoumao');
+                                await target2.addSkills('minidoumao');
+                                await target2.draw();
+                            }
+                        }
+                    }
+                    else {
+                        if (!player.hasSkill('minidoumao')) {
+                            const result = await player.chooseBool(`追忆：你可以获得${get.poptip('minidoumao')}`).forResult();
+                            if (result?.bool) await player.addSkills('minidoumao');
+                        }
                     }
                 },
                 derivation: 'minidoumao',
@@ -40510,6 +40465,7 @@ const packs = function () {
                 trigger: { player: 'damageBegin4' },
                 filter(event, player) {
                     if (player.hasSkill('mininianquanheng_used')) return false;
+                    if (!(_status.mininianquanheng?.[player.playerid]?.inventory ?? []).length) return false;
                     return event.name !== 'damage' || event.num >= player.hp;
                 },
                 async content(event, trigger, player) {
@@ -40536,88 +40492,6 @@ const packs = function () {
                             const dialog = _status.event.dialog = ui.create.dialog(`${get.translation(player)}正在进行“权衡”...`);
                             dialog.open();
                         }
-                        //存档点
-                        //托管也得让角色拿到自己的积木块
-                        _status.mininianquanheng ??= {
-                            PiecePool: {
-                                1: [
-                                    [[1]],
-                                ],
-                                2: [
-                                    [[1, 1]],
-                                ],
-                                3: [
-                                    [[1, 1, 1]],
-                                    [
-                                        [1, 1],
-                                        [1, 0],
-                                    ],
-                                ],
-                                4: [
-                                    [[1, 1, 1, 1]],
-                                    [
-                                        [1, 1],
-                                        [1, 1],
-                                    ],
-                                    [
-                                        [1, 1, 1],
-                                        [0, 1, 0],
-                                    ],
-                                    [
-                                        [1, 1, 1],
-                                        [1, 0, 0],
-                                    ],
-                                    [
-                                        [1, 1, 1],
-                                        [0, 0, 1],
-                                    ],
-                                    [
-                                        [1, 1, 0],
-                                        [0, 1, 1],
-                                    ],
-                                    [
-                                        [0, 1, 1],
-                                        [1, 1, 0],
-                                    ],
-                                ],
-                            },
-                            sameShape(a, b) {
-                                if (a.length != b.length) return false;
-                                for (let y = 0; y < a.length; y++) {
-                                    if (a[y].length != b[y].length) return false;
-                                    for (let x = 0; x < a[y].length; x++) {
-                                        if (a[y][x] != b[y][x]) return false;
-                                    }
-                                }
-                                return true;
-                            },
-                        };
-                        let save = _status.mininianquanheng[player.playerid];
-                        if (!save) {
-                            save = _status.mininianquanheng[player.playerid] = {
-                                leftState: Array.from({ length: 4 }, () => Array(4).fill(0)),
-                                rightState: Array.from({ length: 4 }, () => Array(4).fill(0)),
-                                inventory: [],
-                            };
-                        }
-                        const { PiecePool, sameShape } = _status.mininianquanheng;
-                        game.filterPlayer().forEach(target => {
-                            const hp = Math.max(1, Math.min(4, target.hp));
-                            const shape = PiecePool[hp].randomGet().map(row => row.slice());
-                            let item = save.inventory.find(i => i.level == hp && sameShape(i.shape, shape));
-                            if (item) {
-                                item.count++;
-                            }
-                            else {
-                                save.inventory.push({
-                                    id: get.id(),
-                                    level: hp,
-                                    rotate: 0,
-                                    shape,
-                                    count: 1,
-                                });
-                            }
-                        });
                     }, player);
                     const 俄罗的俄罗斯方块 = function (player) {
                         const event = _status.event, { promise, resolve } = Promise.withResolvers();
@@ -41173,7 +41047,7 @@ const packs = function () {
                             renderInventory();
                         });
                         function addInventory(level, count = 1) {
-                            const { PiecePool, sameShape } = _status.mininianquanheng;
+                            const { PiecePool, sameShape } = lib.skill.mininianquanheng;
                             const shape = PiecePool[level].randomGet().map(row => row.slice());
                             const item = save.inventory.find(i => i.level === level && sameShape(i.shape, shape));
                             if (item) {
@@ -41364,6 +41238,59 @@ const packs = function () {
                     order: 1,
                     result: { player: 1 },
                 },
+                PiecePool: {
+                    1: [
+                        [[1]],
+                    ],
+                    2: [
+                        [[1, 1]],
+                    ],
+                    3: [
+                        [[1, 1, 1]],
+                        [
+                            [1, 1],
+                            [1, 0],
+                        ],
+                    ],
+                    4: [
+                        [[1, 1, 1, 1]],
+                        [
+                            [1, 1],
+                            [1, 1],
+                        ],
+                        [
+                            [1, 1, 1],
+                            [0, 1, 0],
+                        ],
+                        [
+                            [1, 1, 1],
+                            [1, 0, 0],
+                        ],
+                        [
+                            [1, 1, 1],
+                            [0, 0, 1],
+                        ],
+                        [
+                            [1, 1, 0],
+                            [0, 1, 1],
+                        ],
+                        [
+                            [0, 1, 1],
+                            [1, 1, 0],
+                        ],
+                    ],
+                },
+                sameShape(a, b) {
+                    if (a.length != b.length) return false;
+                    for (let y = 0; y < a.length; y++) {
+                        if (a[y].length != b[y].length) return false;
+                        for (let x = 0; x < a[y].length; x++) {
+                            if (a[y][x] != b[y][x]) return false;
+                        }
+                    }
+                    return true;
+                },
+                global: 'mininianquanheng_add',
                 subSkill: {
                     used: { charlotte: true },
                     inf: {
@@ -41377,6 +41304,46 @@ const packs = function () {
                         silent: true,
                         async content(event, trigger, player) {
                             player.refreshSkill(trigger.skill);
+                        },
+                    },
+                    add: {
+                        charlotte: true,
+                        trigger: {
+                            global: 'roundStart',
+                            player: 'phaseEnd',
+                        },
+                        silent: true,
+                        firstDo: true,
+                        async content(event, trigger, player) {
+                            game.broadcastAll(player => {
+                                _status.mininianquanheng ??= {};
+                                let save = _status.mininianquanheng[player.playerid];
+                                if (!save) {
+                                    save = _status.mininianquanheng[player.playerid] = {
+                                        leftState: Array.from({ length: 4 }, () => Array(4).fill(0)),
+                                        rightState: Array.from({ length: 4 }, () => Array(4).fill(0)),
+                                        inventory: [],
+                                    };
+                                }
+                                const { PiecePool, sameShape } = lib.skill.mininianquanheng;
+                                game.filterPlayer().forEach(target => {
+                                    const hp = Math.max(1, Math.min(4, target.hp));
+                                    const shape = PiecePool[hp].randomGet().map(row => row.slice());
+                                    let item = save.inventory.find(i => i.level == hp && sameShape(i.shape, shape));
+                                    if (item) {
+                                        item.count++;
+                                    }
+                                    else {
+                                        save.inventory.push({
+                                            id: get.id(),
+                                            level: hp,
+                                            rotate: 0,
+                                            shape,
+                                            count: 1,
+                                        });
+                                    }
+                                });
+                            }, player);
                         },
                     },
                 },
@@ -46743,7 +46710,7 @@ const packs = function () {
             minimiaoanxu: '安恤',
             minimiaoanxu_info: `出牌阶段开始或结束时，你可以令一名角色获得另一名角色区域内的一张牌，若：1.获得牌的角色拥有${get.poptip('minidoumao')}，你摸两张牌并令其回复1点体力；2.失去牌的角色拥有${get.poptip('minidoumao')}，你获得其一张牌并令其失去1点体力。`,
             minimiaozhuiyi: '追忆',
-            minimiaozhuiyi_info: `当你进入濒死状态时，你可以令一名不为令你进入濒死的角色的其他角色摸三张牌并回复1点体力。若你拥有${get.poptip('minidoumao')}，你可以选择自己为目标；否则你可以获得${get.poptip('minidoumao')}。`,
+            minimiaozhuiyi_info: `当你进入濒死状态时，你可以令一名不为令你进入濒死的角色的其他角色摸三张牌并回复1点体力。若你拥有${get.poptip('minidoumao')}，你可以选择自己为目标，然后发动${get.poptip('minidoumao')}；否则你可以获得${get.poptip('minidoumao')}。`,
             //念
             Mnian_zhugeliang: '念诸葛亮',
             Mnian_lvbu: '念吕布',
@@ -46804,7 +46771,7 @@ const packs = function () {
             mininianquanheng_info: `每回合限一次，出牌阶段或当你受到致命伤害时，你可以进行${get.poptip({
                 id: 'mininianquanheng_俄罗的俄罗斯方块',
                 name: '“权衡”',
-                info: '根据场上存活角色数分配等量与这些角色体力值相同方块数组成的随机积木块（可保留至后续使用），玩家须使用拥有的积木块配平两边4×4天平，若本次有放置积木块且使得两边成功配平则“权衡”成功并保存本次天平状态，否则归还本次放置的积木块',
+                info: '每轮开始时和你的回合结束时，根据场上存活角色数分配等量与这些角色体力值相同方块数组成的随机积木块，玩家每次“权衡”须使用拥有的积木块配平两边4×4天平，在此过程中可对自己拥有的积木块进行旋转或降级，若本次有放置积木块且使得两边成功配平则“权衡”成功并保存本次天平状态，否则“权衡”成功失败且归还本次放置的积木块',
             })}。若“权衡”成功，则你可以令场上至多X名角色回复或失去1点体力（X为本次单侧放置的方块数的一半，向上取整）。若本次“权衡”将天平填满，则清空天平，本回合你发动${get.poptip('mininianying_Mnian_sunquan')}无次数限制，且你可以令一名角色摸四张牌并回复4点体力。`,
             mininianrencai: '任才',
             mininianrencai_info: '每回合限一次，一名角色重铸牌时，你可以使用本次进入弃牌堆的一张牌，然后获得本次其余进入弃牌堆的牌。',
