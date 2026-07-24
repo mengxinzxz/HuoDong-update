@@ -833,6 +833,7 @@ export async function precontent(bilibilicharacter) {
                 get data() {
                     return [
                         'bugfix、素材补充、技能调整',
+                        '对欢乐三国杀的部分分包武将的配音进行替换（未完成）',
                         ...(() => {
                             const map = _status.HDWJ_ChangeLog_character ?? {};
                             return Object.keys(map).map(ext => {
