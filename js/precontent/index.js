@@ -820,9 +820,6 @@ export async function precontent(bilibilicharacter) {
                 type: 'players',
                 data: (() => {
                     _status.HDWJ_ChangeLog_character = {
-                        自嗨: ['bilibili_zhugeliang'],
-                        MiNikill: ['Mbaby_dc_sb_liuxie', 'Mbaby_star_dingfeng', 'Mbaby_tianfeng', 'Mnian_sunquan', 'Mmiao_bulianshi', 'Mbaby_yue_caiwenji', 'Mbaby_shen_zhenji', 'Mbaby_majun', 'Mbaby_re_caochong', 'Mbaby_sb_xuhuang'],
-                        WeChatkill: ['wechat_xurong', 'wechat_sb_zhangfei', 'wechat_gaoluji', 'wechat_hema', 'wechat_baixiang'],
                     };
                     return Object.values(_status.HDWJ_ChangeLog_character).flat();
                 })(),
@@ -833,7 +830,6 @@ export async function precontent(bilibilicharacter) {
                 get data() {
                     return [
                         'bugfix、素材补充、技能调整',
-                        '对欢乐三国杀的部分分包武将的配音进行替换（未完成）',
                         ...(() => {
                             const map = _status.HDWJ_ChangeLog_character ?? {};
                             return Object.keys(map).map(ext => {

@@ -8866,7 +8866,7 @@
         },
         {
             "path": "info.json",
-            "size": 324
+            "size": 366
         },
         {
             "path": "js/config.js",
@@ -8914,7 +8914,7 @@
         },
         {
             "path": "js/precontent/index.js",
-            "size": 43755
+            "size": 43228
         },
         {
             "path": "js/precontent/MiNikill_sight.js",
