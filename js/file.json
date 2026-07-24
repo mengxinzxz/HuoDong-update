@@ -1193,6 +1193,14 @@
             "size": 67595
         },
         {
+            "path": "audio/skill/gongxin_mp_lvmeng1.mp3",
+            "size": 201846
+        },
+        {
+            "path": "audio/skill/gongxin_mp_lvmeng2.mp3",
+            "size": 169454
+        },
+        {
             "path": "audio/skill/gz_huashen1.mp3",
             "size": 24973
         },
@@ -3219,6 +3227,38 @@
         {
             "path": "audio/skill/Mnian_caopi.mp3",
             "size": 64989
+        },
+        {
+            "path": "audio/skill/mpfenwei1.mp3",
+            "size": 123480
+        },
+        {
+            "path": "audio/skill/mpfenwei2.mp3",
+            "size": 159005
+        },
+        {
+            "path": "audio/skill/mpqingjian1.mp3",
+            "size": 151554
+        },
+        {
+            "path": "audio/skill/mpqingjian2.mp3",
+            "size": 150509
+        },
+        {
+            "path": "audio/skill/mpqinxue1.mp3",
+            "size": 58514
+        },
+        {
+            "path": "audio/skill/mpqinxue2.mp3",
+            "size": 53080
+        },
+        {
+            "path": "audio/skill/mpyajiao1.mp3",
+            "size": 116163
+        },
+        {
+            "path": "audio/skill/mpyajiao2.mp3",
+            "size": 119298
         },
         {
             "path": "audio/skill/new_wuhun1.mp3",
@@ -8874,7 +8914,7 @@
         },
         {
             "path": "js/content.js",
-            "size": 65011
+            "size": 65224
         },
         {
             "path": "js/help.js",
@@ -8918,7 +8958,7 @@
         },
         {
             "path": "js/precontent/MiNiAppkill.js",
-            "size": 5030
+            "size": 55884
         },
         {
             "path": "js/precontent/MiNikill_sight.js",
@@ -8926,11 +8966,11 @@
         },
         {
             "path": "js/precontent/MiNikill.js",
-            "size": 2843539
+            "size": 2843545
         },
         {
             "path": "js/precontent/MX_catcatcup.js",
-            "size": 127119
+            "size": 96387
         },
         {
             "path": "js/precontent/MX_feihongyinxue.js",

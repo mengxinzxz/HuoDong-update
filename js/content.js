@@ -905,6 +905,15 @@ export async function content(config, pack) {
 	game.HDsetAudioname2('jdsbjiuyuan', {
 		Mbaby_sb_sunquan: 'jdsbjiuyuan_Mbaby_sb_sunquan',
 	});
+	game.HDsetAudioname2('refankui', {
+		mp_simayi: 'fankui',
+	});
+	game.HDsetAudioname2('gongxin', {
+		mp_lvmeng: 'gongxin_mp_lvmeng',
+	});
+	game.HDsetAudioname2('reqingguo', {
+		mp_zhenji: 'qingguo',
+	});
 
 	//precCI
 	//武将信息
