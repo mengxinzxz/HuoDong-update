@@ -40308,7 +40308,7 @@ const packs = function () {
                     ['caoang', 'Mbaby_caoang'],
                     ['caozhi', 'Mbaby_caozhi'],
                     ['caozhang', 'Mbaby_caozhang'],
-                    ['caochong', 'Mbaby_caochong'],
+                    ['caochong', 'Mbaby_re_caochong'],
                 ]),
                 characterEffectMap: new Map([
                     ['caoang', ['minikangkai', 'spade']],
