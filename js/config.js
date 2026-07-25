@@ -153,10 +153,10 @@ export let config = {
 				await game.promises.removeDir('extension/活动武将/update_backup').catch(() => { });
 				//安装完成
 				this.textContent = '扩展更新完成';
-				await clearState();
 				alert(`扩展更新完成！\n\n即将重启游戏`);
 				delete lib.config['extension_活动武将_update_state'];
-				await game.promises.saveConfig('extension_活动武将_update_state').finally(() => game.reload());
+				await game.promises.saveConfig('extension_活动武将_update_state');
+				game.reload();
 			}
 			catch (e) {
 				console.error(e);
