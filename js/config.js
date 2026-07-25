@@ -11,10 +11,6 @@ export let config = {
 				lib.config['extension_活动武将_update_state'] = state;
 				await game.promises.saveConfig('extension_活动武将_update_state', state);
 			};
-			const clearState = async () => {
-				delete lib.config['extension_活动武将_update_state'];
-				await game.promises.saveConfig('extension_活动武将_update_state');
-			};
 			const ensureDirByFile = async (base, file) => {
 				const parts = file.split('/');
 				parts.pop();
@@ -159,7 +155,8 @@ export let config = {
 				this.textContent = '扩展更新完成';
 				await clearState();
 				alert(`扩展更新完成！\n\n即将重启游戏`);
-				game.reload();
+				delete lib.config['extension_活动武将_update_state'];
+				await game.promises.saveConfig('extension_活动武将_update_state').finally(() => game.reload());
 			}
 			catch (e) {
 				console.error(e);
