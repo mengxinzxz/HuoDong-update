@@ -128,6 +128,7 @@ export let config = {
 					lastEditTime: remoteTime,
 				});
 				//备份旧扩展
+				this.textContent = '下载完毕，备份旧扩展中...';
 				await game.promises.createDir('extension/活动武将/update_backup');
 				const localFiles = await listFiles('extension/活动武将');
 				for (const file of needDownload) {
@@ -142,16 +143,18 @@ export let config = {
 						throw e;
 					}
 				}
-				//安装新文件
+				//安装新文件，删除仓库已经不存在的多余文件
+				this.textContent = '备份完毕，载入新内容中...';
 				await copyFiles('extension/活动武将/update_temp', 'extension/活动武将', needDownload);
-				//删除仓库已经不存在的多余文件
 				const remoteSet = new Set(remotePaths);
 				for (const file of localFiles) {
 					if (!remoteSet.has(file)) await game.promises.removeFile(`extension/活动武将/${file}`).catch(() => { });
 				}
 				//清理缓存
+				this.textContent = '载入完毕，缓存清理中...';
 				await game.promises.removeDir('extension/活动武将/update_temp').catch(() => { });
 				await game.promises.removeDir('extension/活动武将/update_backup').catch(() => { });
+				//安装完成
 				this.textContent = '扩展更新完成';
 				await clearState();
 				alert(`扩展更新完成！\n\n即将重启游戏`);
