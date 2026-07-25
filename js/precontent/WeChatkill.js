@@ -6228,10 +6228,8 @@ const packs = function () {
                 audio: 'huisheng',
                 trigger: { player: 'damageBegin4' },
                 filter(event, player) {
-                    if (!player.countCards('he')) return false;
-                    if (!event.source || event.source == player || !event.source.isIn()) return false;
-                    if (player.getStorage('wechathuisheng_buff').includes(event.source)) return false;
-                    return true;
+                    if (!player.countCards('he') || !event.source?.isIn() || event.source === player) return false;
+                    return !player.getStorage('wechathuisheng_buff').includes(event.source);
                 },
                 async cost(event, trigger, player) {
                     var att = (get.attitude(player, trigger.source) > 0);
@@ -6257,26 +6255,23 @@ const packs = function () {
                         return 0;
                     }).set('goon', goon).set('att', att).forResult();
                 },
-                content() {
-                    'step 0'
-                    game.delay();
-                    event.num = event.cards.length;
-                    var goon = event.num > 2 || get.attitude(trigger.source, player) >= 0;
-                    var forced = false, str = '获得其中一张牌并防止伤害';
-                    if (trigger.source.countCards('he') < event.num) forced = true;
-                    else str += '，或取消并弃置' + get.cnNumber(result.cards.length) + '张牌';
-                    trigger.source.chooseButton([str, result.cards], forced).set('ai', function (button) {
+                async content(event, trigger, player) {
+                    await game.delay();
+                    const num = event.cards.length, goon = num > 2 || get.attitude(trigger.source, player) >= 0;
+                    let forced = false, str = '获得其中一张牌并防止伤害';
+                    if (trigger.source.countCards('he') < num) forced = true;
+                    else str += '，或取消并弃置' + get.cnNumber(event.cards.length) + '张牌';
+                    const result = await trigger.source.chooseButton([str, event.cards], forced).set('ai', function (button) {
                         if (_status.event.goon) return get.value(button.link);
                         return get.value(button.link) - 8;
-                    }).set('goon', goon);
-                    'step 1'
-                    if (result.bool) {
-                        trigger.source.gain(result.links, player, 'giveAuto', 'bySelf');
+                    }).set('goon', goon).forResult();
+                    if (result?.bool && result.links?.length) {
+                        await trigger.source.gain(result.links, player, 'giveAuto', 'bySelf');
                         trigger.cancel();
                         player.addTempSkill('wechathuisheng_buff', 'roundStart');
                         player.markAuto('wechathuisheng_buff', [trigger.source]);
                     }
-                    else trigger.source.chooseToDiscard(event.num, true, 'he');
+                    else await trigger.source.chooseToDiscard(num, true, 'he');
                 },
                 subSkill: { buff: { charlotte: true } },
             },

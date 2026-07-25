@@ -508,22 +508,28 @@ const packs = function () {
                 audio: 'ext:活动武将/audio/skill:true',
                 trigger: { global: 'useCardToPlayer' },
                 filter(event, player) {
-                    if (!event.isFirstTarget) return false;
-                    return event.card.name == 'sha' && player.countCards('he') && game.hasPlayer(function (current) {
-                        return !event.targets.includes(current) && !current.isFriendsOf(player);
+                    if (!event.isFirstTarget || event.card.name !== 'sha') return false;
+                    return player.countDiscardableCards(player, 'he') && game.hasPlayer(target => {
+                        return !event.targets.includes(target) && lib.filter.targetEnabled2(event.card, event.player, target) && lib.filter.targetInRange(event.card, event.player, target);
                     }) && get.mode() == 'identity' ? get.attitude(player, event.player) > 0 : event.player.isFriendOf(player);
+                },
+                check(event, player) {
+                    return game.hasPlayer(target => {
+                        if (!(!event.targets.includes(target) && lib.filter.targetEnabled2(event.card, event.player, target) && lib.filter.targetInRange(event.card, event.player, target))) return false;
+                        return get.effect(target, event.card, event.player, player) > 0;
+                    });
                 },
                 logTarget: 'player',
                 async content(event, trigger, player) {
                     await player.randomDiscard(player, 'he', 'random');
                     const result = await trigger.player.chooseTarget('为' + get.translation(trigger.card) + '增加一个目标', true, (card, player, target) => {
-                        const evt = _status.event.getTrigger();
-                        return !evt.targets.includes(target) && lib.filter.filterTarget(evt.card, evt.player, target);
+                        const evt = get.event().getTrigger();
+                        return !evt.targets.includes(target) && lib.filter.targetEnabled2(evt.card, evt.player, target) && lib.filter.targetInRange(evt.card, evt.player, target);
                     }).set('ai', target => {
-                        const evt = _status.event.getTrigger(), eff = get.effect(target, evt.card, evt.player, evt.player);
-                        return eff;
+                        const player = get.player(), evt = get.event().getTrigger();
+                        return get.effect(target, evt.card, evt.player, player);
                     }).forResult();
-                    if (result?.bool) {
+                    if (result?.bool && result.targets?.length) {
                         const target = result.targets[0];
                         trigger.player.line(target);
                         game.log(target, '成为了', trigger.card, '的额外目标');
