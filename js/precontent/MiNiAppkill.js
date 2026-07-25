@@ -841,8 +841,36 @@ const packs = function () {
                 audio: 'fanjian',
                 inherit: 'refanjian',
                 usable: 2,
-                get content() {
-                    return lib.skill.catfanjian.content;
+                async content(event, trigger, player) {
+                    const { cards, target } = event;
+                    await player.showCards(cards, `${get.translation(player)}对${get.translation(target)}发动了【${get.translation(event.name)}】`);
+                    await player.give(cards, target);
+                    let result, card = cards[0];
+                    if (!target.countCards('h')) result = { control: '失去体力', index: 1 };
+                    else {
+                        result = await target.chooseControl('展示手牌', '失去体力').set('card', card).set('ai', () => {
+                            const { player, card } = get.event();
+                            const cards = player.getCards('he', { color: get.color(card) });
+                            if (cards.length === 1) return 0;
+                            if (cards.length >= 2 && cards.some(card => get.tag(card, 'save'))) return 1;
+                            if (player.hp === 1) return 0;
+                            if (cards.some(card => get.value(card) >= 8)) return 1;
+                            if (cards.length > 2 && player.hp > 2) return 1;
+                            if (cards.length > 3) return 1;
+                            return 0;
+                        }).set('prompt', `###${get.translation(event.name)}###<div class="text center">展示手牌并弃置所有${get.translation(get.color(card))}牌，或失去1点体力并随机弃置装备区里的一张牌</div>`).forResult();
+                    }
+                    if (typeof result?.index !== 'number') return;
+                    if (result.index === 0) {
+                        await target.showHandcards();
+                        const cards = target.getDiscardableCards(target, 'he', { color: get.color(card) });
+                        if (cards.length > 0) await target.discard(cards);
+                    }
+                    else {
+                        await target.loseHp();
+                        const cards = target.getDiscardableCards(target, 'e');
+                        if (cards.length > 0) await target.discard(cards.randomGets(1));
+                    }
                 },
             },
             //陆逊
