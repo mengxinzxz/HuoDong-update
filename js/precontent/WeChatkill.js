@@ -24124,13 +24124,12 @@ const packs = function () {
         }
         if (WeChatkill.translate[i] && !lib.translate[i + '_prefix'] && !WeChatkill.translate[i + '_prefix']) {
             if (WeChatkill.translate[i].startsWith(get.poptip('rule_mamba'))) WeChatkill.translate[i + '_prefix'] = get.poptip('rule_mamba');
-            else if (WeChatkill.translate[i].startsWith('SP小程序神')) WeChatkill.translate[i + '_prefix'] = 'SP|小程序|神';
+            else if (WeChatkill.translate[i].startsWith('SP小程序')) WeChatkill.translate[i + '_prefix'] = 'SP|小程序';
             else if (WeChatkill.translate[i].startsWith('小程序神')) WeChatkill.translate[i + '_prefix'] = '小程序|神';
             else if (WeChatkill.translate[i].startsWith('小程序☆')) WeChatkill.translate[i + '_prefix'] = '小程序|☆';
             else if (WeChatkill.translate[i].startsWith('小程序谋')) WeChatkill.translate[i + '_prefix'] = '小程序|谋';
             else if (WeChatkill.translate[i].startsWith('小程序界')) WeChatkill.translate[i + '_prefix'] = '小程序|界';
             else if (WeChatkill.translate[i].startsWith('小程序') || WeChatkill.translate[i + '_ab']?.startsWith('小程序')) WeChatkill.translate[i + '_prefix'] = '小程序';
-            else if (WeChatkill.translate[i].startsWith('SP小程序')) WeChatkill.translate[i + '_prefix'] = 'SP|小程序';
             else if (WeChatkill.translate[i].startsWith('极')) WeChatkill.translate[i + '_prefix'] = '极';
             else if (WeChatkill.translate[i].startsWith('志')) WeChatkill.translate[i + '_prefix'] = '志';
         }

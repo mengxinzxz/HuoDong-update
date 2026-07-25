@@ -47548,14 +47548,13 @@ const packs = function () {
         }
         if (MiNikill.translate[i] && !lib.translate[i + '_prefix'] && !MiNikill.translate[i + '_prefix']) {
             if (MiNikill.translate[i].startsWith(get.poptip('rule_mamba'))) MiNikill.translate[i + '_prefix'] = get.poptip('rule_mamba');
+            else if (MiNikill.translate[i].startsWith('SP欢杀')) MiNikill.translate[i + '_prefix'] = 'SP|欢杀';
             else if (MiNikill.translate[i].startsWith('欢杀神')) MiNikill.translate[i + '_prefix'] = '欢杀|神';
-            else if (MiNikill.translate[i].startsWith('SP欢杀神')) MiNikill.translate[i + '_prefix'] = 'SP|欢杀|神';
             else if (MiNikill.translate[i].startsWith('欢杀谋')) MiNikill.translate[i + '_prefix'] = '欢杀|谋';
             else if (MiNikill.translate[i].startsWith('欢杀星')) MiNikill.translate[i + '_prefix'] = '欢杀|星';
             else if (MiNikill.translate[i].startsWith('欢杀乐')) MiNikill.translate[i + '_prefix'] = '欢杀|乐';
             else if (MiNikill.translate[i].startsWith('欢杀界')) MiNikill.translate[i + '_prefix'] = '欢杀|界';
             else if (MiNikill.translate[i].startsWith('欢杀') || MiNikill.translate[i + '_ab']?.startsWith('欢杀')) MiNikill.translate[i + '_prefix'] = '欢杀';
-            else if (MiNikill.translate[i].startsWith('SP欢杀')) MiNikill.translate[i + '_prefix'] = 'SP|欢杀';
             else if (MiNikill.translate[i].startsWith('喵')) MiNikill.translate[i + '_prefix'] = '喵';
             else if (MiNikill.translate[i].startsWith('念')) MiNikill.translate[i + '_prefix'] = '念';
             else if (MiNikill.translate[i].startsWith('战')) MiNikill.translate[i + '_prefix'] = '战';

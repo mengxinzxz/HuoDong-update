@@ -3748,7 +3748,6 @@ const packs = function () {
         MiNiAppkill.character[i].img = `image/character/${i.slice('mp_'.length)}.jpg`;
         if (MiNiAppkill.translate[i] && !lib.translate[i + '_prefix'] && !MiNiAppkill.translate[i + '_prefix']) {
             if (MiNiAppkill.translate[i].startsWith(get.poptip('rule_mamba'))) MiNiAppkill.translate[i + '_prefix'] = get.poptip('rule_mamba');
-            else if (MiNiAppkill.translate[i].startsWith('SP新一将神')) MiNiAppkill.translate[i + '_prefix'] = 'SP|新一将|神';
             else if (MiNiAppkill.translate[i].startsWith('SP新一将')) MiNiAppkill.translate[i + '_prefix'] = 'SP|新一将';
             else if (MiNiAppkill.translate[i].startsWith('新一将神')) MiNiAppkill.translate[i + '_prefix'] = '新一将|神';
             else if (MiNiAppkill.translate[i].startsWith('新一将☆')) MiNiAppkill.translate[i + '_prefix'] = '新一将|☆';
