@@ -41199,6 +41199,20 @@ const packs = function () {
                         game.log(player, '本次并未配平天平');
                         return;
                     }
+                    if (result.all) {
+                        player.addTempSkill(`${event.name}_inf`);
+                        player.refreshSkill('mininianying_Mnian_sunquan');
+                        const result3 = await player.chooseTarget(`${get.translation(event.name)}：是否令一名角色摸四张牌并回复4点体力？`).set('ai', target => {
+                            const player = get.player();
+                            return get.effect(target, { name: 'draw' }, player, player) + get.recoverEffect(target, player, player);
+                        }).forResult();
+                        if (result3?.bool && result3.targets?.length) {
+                            const target = result3.targets[0];
+                            player.line(target);
+                            await target.draw(4);
+                            await target.recover(4);
+                        }
+                    }
                     const num = Math.ceil(result.count / 2);
                     const result2 = await player.chooseTarget(`${get.translation(event.name)}：是否令至多${get.cnNumber(num)}名角色回复或失去1点体力？`, [1, num]).set('ai', target => {
                         const player = get.player();
@@ -41217,20 +41231,6 @@ const packs = function () {
                                 return get.effect(target, { name: 'losehp' }, player, player) > get.recoverEffect(target, player, player) ? 1 : 0;
                             }).set('prompt', `${get.translation(event.name)}：令${get.translation(target)}回复或失去1点体力`).forResult();
                             if (result3) await target[result3.index === 0 ? 'recover' : 'loseHp']();
-                        }
-                    }
-                    if (result.all) {
-                        player.addTempSkill(`${event.name}_inf`);
-                        player.refreshSkill('mininianying_Mnian_sunquan');
-                        const result3 = await player.chooseTarget(`${get.translation(event.name)}：是否令一名角色摸四张牌并回复4点体力？`).set('ai', target => {
-                            const player = get.player();
-                            return get.effect(target, { name: 'draw' }, player, player) + get.recoverEffect(target, player, player);
-                        }).forResult();
-                        if (result3?.bool && result3.targets?.length) {
-                            const target = result3.targets[0];
-                            player.line(target);
-                            await target.draw(4);
-                            await target.recover(4);
                         }
                     }
                 },
