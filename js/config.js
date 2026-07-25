@@ -14,7 +14,7 @@ export let config = {
 			const ensureDirByFile = async (base, file) => {
 				const parts = file.split('/');
 				parts.pop();
-				if (parts.length) await game.promises.ensureDirectory([...base.split('/'), ...parts]);
+				if (parts.length) await game.promises.ensureDirectory(`${base}/${parts.join('/')}`);
 			};
 			const listFiles = async dir => {
 				const result = [];
@@ -128,7 +128,8 @@ export let config = {
 				this.textContent = '校验完毕，备份旧扩展中...';
 				await game.promises.createDir('extension/活动武将/update_backup');
 				const localFiles = await listFiles('extension/活动武将');
-				for (const file of needDownload) {
+				const deletedFiles = localFiles.filter(file => !remoteSet.has(file));
+				for (const file of [...new Set([...needDownload, ...deletedFiles])]) {
 					try {
 						const data = await game.promises.readFile(`extension/活动武将/${file}`);
 						await ensureDirByFile('extension/活动武将/update_backup', file);
