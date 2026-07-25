@@ -4,14 +4,6 @@ const packs = function () {
     const MX_catcatcup = {
         name: 'MX_catcatcup',
         connect: true,
-        characterSort: {
-            MX_catcatcup: {
-                cat_yongguansanjun: ['cat_re_ganning'],
-                cat_weiwoqianli: ['cat_re_zhouyu'],
-                cat_shenhua_lin: ['cat_zhurong'],
-                cat_shenhua_lei: ['cat_guanqiujian', 'cat_yl_yuanshu'],
-            },
-        },
         character: {
             cat_re_ganning: ['male', 'wu', 4, ['catqixi', 'fenwei']],
             cat_re_zhouyu: ['male', 'wu', 3, ['catyingzi', 'catfanjian']],
@@ -105,13 +97,7 @@ const packs = function () {
                 },
             },
         },
-        dynamicTranslate: {
-        },
         translate: {
-            cat_yongguansanjun: '喵喵杯·勇冠三军',
-            cat_weiwoqianli: '喵喵杯·帷幄千里',
-            cat_shenhua_lin: '喵喵杯·神话再临·林',
-            cat_shenhua_lei: '喵喵杯·神话再临·雷',
             cat_re_ganning: '甘宁',
             catqixi: '奇袭',
             catqixi_info: `你可以将一张黑色牌当作【过河拆桥】使用。你因以此法转化的【过河拆桥】弃置了与此牌花色相同的牌后重置${get.poptip('fenwei')}。`,

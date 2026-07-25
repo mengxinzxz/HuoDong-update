@@ -3276,7 +3276,7 @@ const packs = function () {
             mpliangyin_info: '当有牌移至游戏外时，你可以令至多等量名角色摸一张牌；当有牌从游戏外加入任意角色的手牌时，你可以令至多等量角色弃置一张牌。',
             mp_guanqiujian: '新一将毌丘俭',
             mpzhengrong: '征荣',
-            mpzhengrong_info: '当你造成或受到伤害后，你可以将伤害来源或受伤角色的一张牌置于你的武将牌上，称为“荣”。',
+            mpzhengrong_info: '当你造成或受到伤害后，你可以将伤害来源或受伤角色的一张牌称为“荣”置于你的武将牌上。',
             mphongju: '鸿举',
             mphongju_info: `觉醒技，准备阶段，若“荣”的数量大于或等于3，你减1点体力上限，将牌堆顶两张牌称为“荣”置于你的武将牌上，获得${get.poptip('mpqingce')}。`,
             mpqingce: '清侧',
