@@ -128,6 +128,7 @@ export let config = {
 				this.textContent = '校验完毕，备份旧扩展中...';
 				await game.promises.createDir('extension/活动武将/update_backup');
 				const localFiles = await listFiles('extension/活动武将');
+				const remoteSet = new Set(remotePaths);
 				const deletedFiles = localFiles.filter(file => !remoteSet.has(file));
 				for (const file of [...new Set([...needDownload, ...deletedFiles])]) {
 					try {
@@ -144,7 +145,6 @@ export let config = {
 				//安装新文件，删除仓库已经不存在的多余文件
 				this.textContent = '备份完毕，载入新内容中...';
 				await copyFiles('extension/活动武将/update_temp', 'extension/活动武将', needDownload);
-				const remoteSet = new Set(remotePaths);
 				for (const file of localFiles) {
 					if (!remoteSet.has(file)) await game.promises.removeFile(`extension/活动武将/${file}`).catch(() => { });
 				}
