@@ -8922,7 +8922,7 @@
         },
         {
             "path": "js/content.js",
-            "size": 65372
+            "size": 65445
         },
         {
             "path": "js/help.js",
@@ -8962,11 +8962,11 @@
         },
         {
             "path": "js/precontent/index.js",
-            "size": 43428
+            "size": 43432
         },
         {
             "path": "js/precontent/MiNiAppkill.js",
-            "size": 194307
+            "size": 213878
         },
         {
             "path": "js/precontent/MiNikill_sight.js",
@@ -8974,7 +8974,7 @@
         },
         {
             "path": "js/precontent/MiNikill.js",
-            "size": 2841670
+            "size": 2841683
         },
         {
             "path": "js/precontent/MX_catcatcup.js",

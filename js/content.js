@@ -920,6 +920,9 @@ export async function content(config, pack) {
 	game.HDsetAudioname2('olduanliang', {
 		mp_xuhuang: 'duanliang',
 	});
+	game.HDsetAudioname2('reweizhong', {
+		mp_zhugedan: 'weizhong',
+	});
 
 	//precCI
 	//武将信息

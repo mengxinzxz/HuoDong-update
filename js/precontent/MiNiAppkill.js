@@ -8,9 +8,9 @@ const packs = function () {
             MiNiAppkill: {
                 MiNiApp_standard: ['mp_liubei', 'mp_caocao', 'mp_zhaoyun', 'mp_machao', 'mp_ganning', 'mp_xiahoudun', 'mp_xuzhu', 'mp_zhugeliang', 'mp_lvmeng', 'mp_zhouyu', 'mp_luxun', 'mp_simayi', 'mp_huatuo', 'mp_huangyueying', 'mp_zhenji', 'mp_diaochan'],
                 MiNiApp_shenhua: ['mp_re_weiyan', 'mp_xiahouyuan', 'mp_xiaoqiao', 'mp_re_yuji', 'mp_sp_zhangjiao', 'mp_shen_zhaoyun', 'mp_dianwei', 'mp_pangtong', 'mp_sp_zhugeliang', 'mp_taishici', 'mp_pangde', 'mp_yanwen', 'mp_re_yuanshao', 'mp_xuhuang', 'mp_caopi', 'mp_sunjian', 'mp_dongzhuo', 'mp_zhurong', 'mp_jiaxu', 'mp_re_lusu', 'mp_zhanghe', 'mp_dengai', 'mp_jiangwei', 'mp_liushan', 'mp_sunce', 'mp_zhangzhang', 'mp_yanyan', 'mp_wangping', 'mp_sunliang', 'mp_wangji', 'mp_kuailiangkuaiyue', 'mp_yl_luzhi', 'mp_chendao', 'mp_zhoufei', 'mp_guanqiujian', 'mp_yl_yuanshu'],
-                MiNiApp_yijiang: [],
-                MiNiApp_xinghuo: [],
-                MiNiApp_qunying: [],
+                MiNiApp_yijiang: ['mp_zhuzhi'],
+                MiNiApp_xinghuo: ['mp_sundeng', 'mp_zhugedan', 'mp_liuxie', 'mp_caojie', 'mp_zhanglu'],
+                MiNiApp_qunying: ['mp_zhaozhong'],
             },
         },
         character: {
@@ -29,6 +29,7 @@ const packs = function () {
             mp_wangji: ['male', 'wei', 3, ['mpqizhi', 'mpjinqu']],
             mp_kuailiangkuaiyue: ['male', 'wei', 3, ['nzry_jianxiang', 'mpshenshi'], ['name:蒯|良-蒯|越']],
             mp_guanqiujian: ['male', 'wei', 4, ['mpzhengrong', 'mphongju']],
+            mp_zhugedan: ['male', 'wei', 4, ['mpgongao', 'mpjuyi']],
             //蜀
             mp_liubei: ['male', 'shu', 4, ['mprende']],
             mp_zhaoyun: ['male', 'shu', 4, ['longdan', 'mpyajiao']],
@@ -57,6 +58,8 @@ const packs = function () {
             mp_zhangzhang: ['male', 'wu', 3, ['mpzhijian', 'mpguzheng'], ['name:张|昭-张|纮']],
             mp_sunliang: ['male', 'wu', 3, ['mpkuizhu', 'mpchezheng']],
             mp_zhoufei: ['female', 'wu', 3, ['mpliangyin', 'kongsheng'], ['name:周|null']],
+            mp_zhuzhi: ['male', 'wu', 4, ['mpanguo']],
+            mp_sundeng: ['male', 'wu', 4, ['mpkuangbi']],
             //群
             mp_huatuo: ['male', 'qun', 3, ['mpjijiu', 'mpqingnang']],
             mp_diaochan: ['female', 'qun', 3, ['mplijian', 'mpbiyue'], ['name:null|null']],
@@ -68,7 +71,11 @@ const packs = function () {
             mp_dongzhuo: ['male', 'qun', 8, ['mpjiuchi', 'mproulin', 'mpbenghuai']],
             mp_jiaxu: ['male', 'qun', 3, ['mpweimu', 'mpwansha', 'mpluanwu']],
             mp_yl_luzhi: ['male', 'qun', 3, ['mpmingren', 'mpzhenliang']],
-            mp_yl_yuanshu: ['male', 'qun', 4, ['mp_yongsi']],
+            mp_yl_yuanshu: ['male', 'qun', 4, ['mpyongsi']],
+            mp_liuxie: ['male', 'qun', 3, ['mptianming', 'mpmizhao']],
+            mp_caojie: ['female', 'qun', 3, ['shouxi', 'mphuimin']],
+            mp_zhanglu: ['male', 'qun', 3, ['mpyishe', 'minibushi', 'midao']],
+            mp_zhaozhong: ['male', 'qun', 6, ['yangzhong', 'mphuangkong']],
             //神
             mp_shen_zhaoyun: ['male', 'shen', 2, ['mpjuejing', 'relonghun'], ['shu']],
         },
@@ -3012,7 +3019,7 @@ const packs = function () {
                 },
             },
             //袁术
-            mp_yongsi: {
+            mpyongsi: {
                 audio: 'drlt_yongsi',
                 trigger: { player: 'phaseDiscardBegin' },
                 filter(event, player) {
@@ -3024,9 +3031,9 @@ const packs = function () {
                 forced: true,
                 async content(event, trigger, player) {
                     if (!player.hasHistory('sourceDamage')) await player.drawTo(player.maxHp);
-                    else player.addTempSkill('mp_yongsi_yingzi');
+                    else player.addTempSkill('mpyongsi_yingzi');
                 },
-                group: 'mp_yongsi_yongsi',
+                group: 'mpyongsi_yongsi',
                 subSkill: {
                     yongsi: {
                         audio: 'drlt_yongsi',
@@ -3046,6 +3053,299 @@ const packs = function () {
                         intro: { content: '手牌上限为体力上限' },
                         mod: { maxHandcardBase: player => player.maxHp },
                     },
+                },
+            },
+            //朱治
+            mpanguo: {
+                audio: 'anguo',
+                inherit: 'reanguo',
+                filterTarget: true,
+            },
+            //孙登
+            mpkuangbi: {
+                audio: 'kuangbi',
+                trigger: { player: 'phaseUseBegin' },
+                filter(event, player) {
+                    return game.hasPlayer(target => target.countCards('he') > 0 && target !== player);
+                },
+                async cost(event, trigger, player) {
+                    event.result = await player.chooseTarget(get.prompt2(event.skill), (card, player, target) => {
+                        return target.countCards('he') > 0 && target !== player;
+                    }).set('ai', target => {
+                        const { player, goon } = get.event(), att = get.attitude(player, target);
+                        if (goon) {
+                            if (att > 0) return att * Math.sqrt(target.countCards('he'));
+                            return (1 - att) / (target.countCards('he') + 1);
+                        }
+                        return (-10 * att) / (target.countCards('he') + 1);
+                    }).set('goon', player.countCards('hs', card => player.hasValueTarget(card)) >= 2).forResult();
+                },
+                async content(event, trigger, player) {
+                    const target = event.targets[0];
+                    const result = await target.chooseCard('匡弼：将至多三张牌置于' + get.translation(player) + '的武将牌上', 'he', [1, 3], true).set('ai', card => {
+                        const { player, source } = get.event();
+                        if (get.attitude(player, source) > 0) return 7 - get.value(card);
+                        return -get.value(card);
+                    }).set('source', player).forResult();
+                    if (result?.bool) {
+                        const skill = `${event.name}_effect`;
+                        player.addTempSkill(skill, 'phaseUseAfter');
+                        player.markAuto(skill, [target]);
+                        const next = player.addToExpansion(result.cards, target, 'give');
+                        next.gaintag.add(skill);
+                        await next;
+                    }
+                },
+                subSkill: {
+                    effect: {
+                        mod: {
+                            aiOrder(player, card, num) {
+                                if (num <= 0 || !player.getExpansions('mpkuangbi_effect').length) return;
+                                const color = get.color(card);
+                                if (player.getExpansions('mpkuangbi_effect').some(i => get.color(i) == color)) return num + 10;
+                                return num / 4;
+                            },
+                        },
+                        charlotte: true,
+                        audio: 'kuangbi',
+                        trigger: { player: 'useCard' },
+                        filter(event, player) {
+                            return player.getExpansions('mpkuangbi_effect').length > 0;
+                        },
+                        forced: true,
+                        async content(event, trigger, player) {
+                            const cards = player.getExpansions(event.name);
+                            const color = get.color(trigger.card), cardsx = cards.filter(card => get.color(card) === color);
+                            let result;
+                            if (cardsx.length > 1) {
+                                result = await player.chooseButton(['匡弼：移去一张同颜色的"匡弼"牌', cards], true).set('filterButton', button => {
+                                    return get.color(button.link) === get.event().color;
+                                }).set('suit', color).forResult();
+                            }
+                            else if (cardsx.length === 1) result = { bool: true, links: cardsx };
+                            else result = { bool: false, links: [cards.randomGet()] };
+                            if (result?.bool && result.links?.length) {
+                                await player.loseToDiscardpile(result.links);
+                                await game.delayx();
+                                let list = [player];
+                                const target = player.getStorage(event.name)[0];
+                                if (target?.isIn()) list.push(target);
+                                await game.asyncDraw(list);
+                                await game.delayx();
+                            }
+                            else await player.draw();
+                        },
+                        intro: {
+                            content: 'expansion',
+                            markcount: 'expansion',
+                        },
+                        onremove(player, skill) {
+                            delete player.storage[skill];
+                            const cards = player.getExpansions(skill);
+                            if (cards.length) player.loseToDiscardpile(cards);
+                        },
+                    },
+                },
+            },
+            //诸葛诞
+            mpgongao: {
+                audio: 'gongao',
+                inherit: 'regongao',
+                filter(event, player) {
+                    return game.getAllGlobalHistory('everything', evt => {
+                        return evt.name === event.name && evt.player === event.player;
+                    }).indexOf(event) === 0;
+                },
+                async content(event, trigger, player) {
+                    await player.gainMaxHp();
+                    await player.recover();
+                    await player.draw();
+                },
+            },
+            mpjuyi: {
+                audio: 'juyi',
+                inherit: 'rejuyi',
+                async content(event, trigger, player) {
+                    player.awakenSkill(event.name);
+                    await player.drawTo(player.maxHp);
+                    await player.addSkills(lib.skill[event.name].derivation);
+                },
+                derivation: ['mpbenghuai', 'reweizhong'],
+            },
+            //刘协
+            mptianming: {
+                audio: 'tianming',
+                inherit: 'tianming',
+                check(event, player) {
+                    const cards = player.getDiscardableCards(player, 'he');
+                    return cards.length !== 1 || !['shan', 'tao'].includes(get.name(card));
+                },
+                async content(event, trigger, player) {
+                    await player.chooseToDiscard('he', true);
+                    await player.draw(2);
+                },
+            },
+            mpmizhao: {
+                audio: 'mizhao',
+                inherit: 'mizhao',
+                async content(event, trigger, player) {
+                    const from = event.target;
+                    await player.give(event.cards, from);
+                    if (game.hasPlayer(target => {
+                        return target !== player && target !== from && from.canCompare(target);
+                    })) {
+                        const result2 = await player.chooseTarget(true, (card, player, target) => {
+                            const from = get.event().from;
+                            return target !== player && target !== from && from.canCompare(target);
+                        }, `${get.translation(event.name)}：请选择${get.translation(from)}拼点的目标`).set('ai', target => {
+                            const { player, from } = get.event();
+                            const eff = get.effect(target, new lib.element.VCard({ name: 'sha' }), from, player);
+                            const att = get.attitude(player, target);
+                            if (att > 0) return eff - 10;
+                            return eff;
+                        }).set('from', from).set('forceDie', true).forResult();
+                        if (result2?.bool && result2.targets?.length) {
+                            const to = result2.targets[0];
+                            from.line(to);
+                            const result = await from.chooseToCompare(to).forResult();
+                            if (result) {
+                                if (result.tie) await player.gainMultiple([from, to].sortBySeat(), 'he', true);
+                                else {
+                                    const winner = result.bool ? from : to;
+                                    const loser = result.bool ? to : from;
+                                    const sha = new lib.element.VCard({ name: 'sha' });
+                                    if (winner.canUse(sha, loser, false)) await winner.useCard(sha, loser, false, 'noai');
+                                }
+                            }
+                        }
+                    }
+                },
+            },
+            //曹节
+            mphuimin: {
+                audio: 'huimin',
+                inherit: 'huimin',
+                filter: () => true,
+                check(event, player) {
+                    return 3 + game.countPlayer(target => {
+                        if (target.countCards('h') + (player === target ? 3 : 0) >= target.getHp()) return 0;
+                        return Math.abs(get.attitude(player, target));
+                    }) > 0;
+                },
+                async content(event, trigger, player) {
+                    await player.draw(3);
+                    let list = game.filterPlayer(target => target.countCards('h') < target.getHp());
+                    if (!list.length) return;
+                    const result = await player.chooseCardTarget({
+                        prompt: get.translation(event.name),
+                        prompt2: '请选择要分配的手牌和分牌起点',
+                        filterCard: true,
+                        selectCard() {
+                            const { player, list } = get.event();
+                            return list.length >= player.countCards('h') ? -1 : list.length;
+                        },
+                        position: 'h',
+                        forced: true,
+                        filterTarget(card, player, target) {
+                            return get.event().list.includes(target);
+                        },
+                        ai1(card) {
+                            return 6 - get.value(card);
+                        },
+                        ai2(target) {
+                            const { player, list } = get.event();
+                            const att = get.attitude(player, target), index = list.indexOf(target);
+                            if (att <= 0) return att;
+                            let prev = list[(index ? index : list.length) - 1];
+                            if (get.attitude(player, prev) < 0) return att;
+                            return 0;
+                        },
+                        list,
+                    }).forResult();
+                    if (!result?.bool || !result.cards?.length || !result.targets?.length) return;
+                    const { cards, targets } = result;
+                    await player.showCards(cards, `${get.translation(player)}发动了【${get.translation(event.name)}】`);
+                    list.sortBySeat(targets[0]);
+                    player.line(list, 'green');
+                    await player.lose(cards, ui.ordering);
+                    const dialog = ui.create.dialog('惠民', cards, true);
+                    _status.dieClose.push(dialog);
+                    dialog.videoId = lib.status.videoId++;
+                    game.addVideo('cardDialog', null, ['惠民', get.cardsInfo(cards), dialog.videoId]);
+                    game.broadcast((cards, id) => {
+                        const dialog = ui.create.dialog('惠民', cards, true);
+                        _status.dieClose.push(dialog);
+                        dialog.videoId = id;
+                    }, cards, dialog.videoId);
+                    await game.delay();
+                    while (list.length > 0 && cards.length > 0) {
+                        const current = list.shift();
+                        const next = current.chooseButton(true);
+                        next.set('dialog', dialog.videoId);
+                        next.set('closeDialog', false);
+                        next.set('dialogdisplay', true);
+                        next.set('cardFilter', cards.slice());
+                        next.set('filterButton', button => {
+                            return get.event().cardFilter.includes(button.link);
+                        });
+                        next.set('ai', button => {
+                            return get.value(button.link);
+                        });
+                        const result2 = await next.forResult();
+                        if (!result2.bool || !result2.links?.length) continue;
+                        await current.gain(result2.links, 'gain2');
+                        cards.removeArray(result2.links);
+                        let capt = get.translation(current) + '选择了' + get.translation(result2.links);
+                        game.broadcastAll((card, id, name, capt) => {
+                            const dialog = get.idDialog(id);
+                            if (dialog) {
+                                dialog.content.firstChild.innerHTML = capt;
+                                for (const button of dialog.buttons) {
+                                    if (button.link == card) {
+                                        game.createButtonCardsetion(name, button);
+                                        break;
+                                    }
+                                }
+                                game.addVideo('dialogCapt', null, [dialog.videoId, dialog.content.firstChild.innerHTML]);
+                            }
+                        }, result2.links[0], dialog.videoId, current.getName(true), capt);
+                    }
+                    game.broadcastAll('closeDialog', dialog.videoId);
+                    game.broadcastAll(dialog => _status.dieClose.remove(dialog), dialog);
+                    if (cards.length) await game.cardsDiscard(cards);
+                },
+            },
+            //张鲁
+            mpyishe: {
+                audio: 'yishe',
+                inherit: 'yishe',
+                filter(event, player) {
+                    return player.getExpansions('yishe').length < 3;
+                },
+                async content(event, trigger, player) {
+                    await player.draw(2);
+                    let result, cards = player.getCards('he');
+                    if (!cards.length) return;
+                    else if (cards.length <= 1) result = { bool: true, cards };
+                    else result = await player.chooseCard([1, 2], 'he', true, `${get.translation(event.name)}：将至多两张牌称为“米”置于武将牌上`).forResult();
+                    if (result?.bool && result.cards?.length) {
+                        const next = player.addToExpansion(result.cards, player, 'give');
+                        next.gaintag.add('yishe');
+                        await next;
+                    }
+                },
+                onremove(player) {
+                    const cards = player.getExpansions('yishe');
+                    if (cards.length) player.loseToDiscardpile(cards);
+                },
+            },
+            //赵忠
+            mphuangkong: {
+                audio: 'huangkong',
+                inherit: 'huangkong',
+                filter(event, player) {
+                    if (player === _status.currentPhase || player.countCards('h') > player.getHp()) return false;
+                    return event.card.name === 'sha' || get.type(event.card) === 'trick';
                 },
             },
         },
@@ -3282,8 +3582,33 @@ const packs = function () {
             mpqingce: '清侧',
             mpqingce_info: '出牌阶段，你可以获得一张“荣”，然后弃置一名角色场上的一张牌。',
             mp_yl_yuanshu: '新一将袁术',
-            mp_yongsi: '庸肆',
-            mp_yongsi_info: '锁定技，摸牌阶段，你多摸X张牌（X为存活势力数）。弃牌阶段开始时，若你本回合：1.没有造成伤害，你将手牌摸至体力上限；2.造成伤害数超过1点，你本回合将手牌上限改为体力上限。',
+            mpyongsi: '庸肆',
+            mpyongsi_info: '锁定技，摸牌阶段，你多摸X张牌（X为存活势力数）。弃牌阶段开始时，若你本回合：1.没有造成伤害，你将手牌摸至体力上限；2.造成伤害数超过1点，你本回合将手牌上限改为体力上限。',
+            mp_zhuzhi: '新一将朱治',
+            mpanguo: '安国',
+            mpanguo_info: '出牌阶段限一次，你可以选择一名角色，若其：手牌数为全场最少，其摸一张牌；体力值为全场最低，其回复1点体力；装备区内牌数为全场最少，其随机使用一张装备牌。然后若该角色有未执行的效果且你满足条件，你执行之。若你与其执行了全部分支，你可以重铸任意张牌。',
+            mp_sundeng: '新一将孙登',
+            mpkuangbi: '匡弼',
+            mpkuangbi_info: '出牌阶段开始时，你可以令一名其他角色将至多三张牌置于你的武将牌上直到此阶段结束。然后当你使用牌时，若你有与此牌颜色相同的“匡弼”牌，你移去其中一张并与其各摸一张牌，否则你随机移去一张“匡弼”牌并摸一张牌。',
+            mp_zhugedan: '新一将诸葛诞',
+            mpgongao: '功獒',
+            mpgongao_info: '锁定技，一名角色首次进入濒死状态时，你增加1点体力上限，回复1点体力并摸一张牌。',
+            mpjuyi: '举义',
+            mpjuyi_info: '觉醒技，准备阶段，若你已受伤且体力上限大于场上存活角色数，你将手牌数摸至体力上限，获得技能〖崩坏〗和〖威重〗。',
+            mp_liuxie: '新一将刘协',
+            mptianming: '天命',
+            mptianming_info: '当你成为【杀】的目标后，你可以弃置一张牌（没有可弃置的牌则跳过），然后摸两张牌。',
+            mpmizhao: '密诏',
+            mpmizhao_info: '出牌阶段限一次，你可以将所有手牌交给一名其他角色，令其与你选择的另一名其他角色拼点，赢的角色视为对没赢的角色使用【杀】。若平局，你获得这两名角色各一张牌。',
+            mp_caojie: '新一将曹节',
+            mphuimin: '惠民',
+            mphuimin_info: '结束阶段，你可以摸三张牌并展示X张手牌（X为手牌数小于其体力值的角色数），然后从你指定的一名角色开始，这些角色依次选择并获得其中一张。',
+            mp_zhanglu: '新一将张鲁',
+            mpyishe: '义舍',
+            mpyishe_info: '结束阶段，若你武将牌上的“米”少于三张，你可以摸两张牌，然后将至多两张牌称为“米”置于武将牌上；“米”移至其他区域后，若你的武将牌上没有“米”，你回复1点体力。',
+            mp_zhaozhong: '新一将赵忠',
+            mphuangkong: '惶恐',
+            mphuangkong_info: '锁定技，当你于回合外成为【杀】或普通锦囊牌的目标后，若你的手牌数小于等于体力值，你摸两张牌。',
 
             // ----------------------- 台词部分 ----------------------- //
             '#ext:活动武将/audio/skill/mp1': '',

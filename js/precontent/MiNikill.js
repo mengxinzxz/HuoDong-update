@@ -28795,7 +28795,7 @@ const packs = function () {
                     };
                 },
                 logTarget: 'player',
-                ai: { combo: 'miniyishe' },
+                ai: { combo: ['miniyishe', 'mpyishe'] },
             },
             minimidao: {
                 audio: 'midao',
