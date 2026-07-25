@@ -130,10 +130,17 @@ export let config = {
 				//备份旧扩展
 				await game.promises.createDir('extension/活动武将/update_backup');
 				const localFiles = await listFiles('extension/活动武将');
-				for (const file of localFiles) {
-					const data = await game.promises.readFile(`extension/活动武将/${file}`);
-					await ensureDirByFile('extension/活动武将/update_backup', file);
-					await game.promises.writeFile(data, file.includes('/') ? `extension/活动武将/update_backup/${file.split('/').slice(0, -1).join('/')}` : 'extension/活动武将/update_backup', file.split('/').pop());
+				for (const file of needDownload) {
+					try {
+						const data = await game.promises.readFile(`extension/活动武将/${file}`);
+						await ensureDirByFile('extension/活动武将/update_backup', file);
+						await game.promises.writeFile(data, file.includes('/') ? `extension/活动武将/update_backup/${file.split('/').slice(0, -1).join('/')}` : 'extension/活动武将/update_backup', file.split('/').pop());
+					}
+					catch (e) {
+						//本地不存在这个文件则不需要备份，这个错误不用管
+						if (e && (e.code === 'ENOENT' || /not\s*found/i.test(String(e.message)))) continue;
+						throw e;
+					}
 				}
 				//安装新文件
 				await copyFiles('extension/活动武将/update_temp', 'extension/活动武将', needDownload);
