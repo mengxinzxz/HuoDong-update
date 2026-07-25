@@ -41353,33 +41353,33 @@ const packs = function () {
                 trigger: { global: 'recastingLost' },
                 filter(event, player) {
                     if (player.hasSkill('mininianrencai_used')) return false;
-                    return event.cards.filterInD('d').some(card => player.hasUseTarget(card));
+                    return event.cards.someInD('d');
                 },
                 async cost(event, trigger, player) {
+                    const cards = trigger.cards.filterInD('d');
                     const result = await player.chooseButton([
                         get.prompt2(event.skill),
-                        trigger.cards.filterInD('d'),
+                        cards,
+                        [['获得所有牌'], 'tdnodes'],
                     ]).set('filterButton', button => {
                         const player = get.player(), card = button.link;
-                        return player.hasUseTarget(card);
+                        return typeof card === 'string' || player.hasUseTarget(card);
                     }).set('ai', button => {
-                        const player = get.player(), card = button.link;
-                        return player.getUseValue(card);
-                    }).forResult();
+                        const { player, cards } = get.event(), card = button.link;
+                        const value = cards.reduce((sum, card) => sum + get.value(card), 0);
+                        return typeof card === 'string' ? value : (value + player.getUseValue(card) - get.value(card));
+                    }).set('cards', cards).forResult();
                     if (result?.bool && result.links?.length) event.result = { bool: true, cost_data: result.links[0] };
                 },
-                popup: false,
+                usable: 1,
                 async content(event, trigger, player) {
-                    const card = event.cost_data;
-                    const result = await player.chooseUseTarget(card, true, false).set('oncard', () => {
-                        const player = get.player();
-                        player.logSkill('mininianrencai');
-                        player.addTempSkill('mininianrencai_used');
-                    }).forResult();
-                    const cards = trigger.cards.filterInD('d')
-                    if (result?.bool && cards.some(cardx => cardx !== card)) await player.gain(cards.filter(cardx => cardx !== card), 'gain2');
+                    const card = event.cost_data, cards = trigger.cards.filterInD('d');
+                    if (typeof card !== 'string') {
+                        const result = await player.chooseUseTarget(card, true, false).forResult();
+                        if (result?.bool) cards.remove(card);
+                    }
+                    if (cards.length > 0) await player.gain(cards, 'gain2');
                 },
-                subSkill: { used: { charlotte: true } },
             },
             mininianying_Mnian_sunquan: {
                 audio: 'ext:活动武将/audio/skill:2',
@@ -46774,7 +46774,7 @@ const packs = function () {
                 info: '每轮开始时和你的回合结束时，根据场上存活角色数分配等量与这些角色体力值相同方块数组成的随机积木块，玩家每次“权衡”须使用拥有的积木块配平两边4×4天平，在此过程中可对自己拥有的积木块进行旋转或降级，若本次有放置积木块且使得两边成功配平则“权衡”成功并保存本次天平状态，否则“权衡”成功失败且归还本次放置的积木块',
             })}。若“权衡”成功，则你可以令场上至多X名角色回复或失去1点体力（X为本次单侧放置的方块数的一半，向上取整）。若本次“权衡”将天平填满，则清空天平，本回合你发动${get.poptip('mininianying_Mnian_sunquan')}无次数限制，且你可以令一名角色摸四张牌并回复4点体力。`,
             mininianrencai: '任才',
-            mininianrencai_info: '每回合限一次，一名角色重铸牌时，你可以使用本次进入弃牌堆的一张牌，然后获得本次其余进入弃牌堆的牌。',
+            mininianrencai_info: '每回合限一次，一名角色重铸牌时，你可以选择一项：①使用本次进入弃牌堆的一张牌，然后获得其余进入弃牌堆的牌；②获得本次进入弃牌堆的牌。',
             mininianying_Mnian_sunquan: '念影',
             mininianying_Mnian_sunquan_info: '每回合限一次，一名角色回复或失去体力后，你可以选择一个存在“念影”效果的技能的“念影”效果执行。',
             //战
