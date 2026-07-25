@@ -119,6 +119,7 @@ export let config = {
 					await game.promises.writeFile(data, targetDir, file.split('/').pop());
 				}
 				//校验临时目录
+				this.textContent = '下载完毕，校验临时目录中...';
 				const tempInfoText = await game.promises.readFileAsText('extension/活动武将/update_temp/info.json');
 				const tempInfo = JSON.parse(tempInfoText);
 				if (String(tempInfo.lastEditTime || '') !== remoteTime) throw new Error('临时目录info.json时间校验失败');
@@ -128,7 +129,7 @@ export let config = {
 					lastEditTime: remoteTime,
 				});
 				//备份旧扩展
-				this.textContent = '下载完毕，备份旧扩展中...';
+				this.textContent = '校验完毕，备份旧扩展中...';
 				await game.promises.createDir('extension/活动武将/update_backup');
 				const localFiles = await listFiles('extension/活动武将');
 				for (const file of needDownload) {
