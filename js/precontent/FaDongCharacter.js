@@ -176,6 +176,7 @@ const packs = function () {
                 enable: 'phaseUse',
                 filterTarget: lib.filter.notMe,
                 async content(event, trigger, player) {
+                    const target = event.target;
                     await player.loseHp();
                     await target.damage();
                     if (!target.isIn() || target.hasHistory('damage', evt => {

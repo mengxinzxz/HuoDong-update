@@ -5711,12 +5711,13 @@ const packs = function () {
                 },
                 filter(event, player) {
                     if (event.card.name != 'sha') return false;
-                    var color = get.color(event.card), target = _status.currentPhase;
-                    return (event.name == 'useCard' && target == player && color == 'black') || (event.name != 'useCard' && (!target || target != player) && color == 'red');
+                    const color = get.color(event.card), target = _status.currentPhase;
+                    if (event.name === 'useCard') return target === player && color === 'black';
+                    return target !== player && color === 'red';
                 },
                 forced: true,
                 logAudio(event, player) {
-                    return trigger.name == 'useCard' ? 'spshidi1.mp3' : 'spshidi2.mp3';
+                    return event.name == 'useCard' ? 'spshidi1.mp3' : 'spshidi2.mp3';
                 },
                 content() {
                     trigger.directHit.addArray(trigger.name == 'useCard' ? game.players : [player]);

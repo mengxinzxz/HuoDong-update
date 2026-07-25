@@ -618,7 +618,6 @@ const packs = function () {
                 },
             },
             cike_jijiang: {
-                group: ['cike_jijiang_refresh', 'cike_jijiang_clear', 'cike_jijiang_plus'],
                 audio: 'jijiang1',
                 trigger: { player: ['useCard', 'respond'] },
                 filter(event, player) {
@@ -626,13 +625,14 @@ const packs = function () {
                 },
                 forced: true,
                 async content(event, trigger, player) {
-                    const result = await target.draw().forResult();
+                    const result = await player.draw().forResult();
                     if (get.itemtype(result?.cards) !== 'card') return;
                     if (result.cards.some(card => get.type(card) == 'basic')) {
                         player.addSkill(event.name + '_mark');
                         player.addMark(event.name + '_mark', 1, false);
                     }
                 },
+                group: ['cike_jijiang_refresh', 'cike_jijiang_clear', 'cike_jijiang_plus'],
                 subSkill: {
                     mark: {
                         charlotte: true,
@@ -928,7 +928,7 @@ const packs = function () {
             cike_taiwang_info: '锁定技，每回合限一次，当一名角色受到大于1点的伤害后，你加一点体力上限。',
             cike_liubei: '密探·刘备',
             cike_jijiang: '激将',
-            cike_jijiang_info: '锁定技，每当你使用或打出一张【杀】时，你摸一张牌，若此牌为基本牌，你下个出牌阶段使用【杀】的次数上限+1。',
+            cike_jijiang_info: '锁定技，当你使用或打出一张【杀】时，你摸一张牌，若此牌为基本牌，你下个出牌阶段使用【杀】的次数上限+1。',
             cike_liushan: '密探·刘禅',
             cike_ruoyu: '若愚',
             cike_ruoyu_info: '锁定技，准备阶段，若你的体力值为全场最少，你回复1点体力。',
