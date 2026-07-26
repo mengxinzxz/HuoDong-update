@@ -136,11 +136,7 @@ export let config = {
 						await ensureDirByFile('extension/活动武将/update_backup', file);
 						await game.promises.writeFile(data, file.includes('/') ? `extension/活动武将/update_backup/${file.split('/').slice(0, -1).join('/')}` : 'extension/活动武将/update_backup', file.split('/').pop());
 					}
-					catch (e) {
-						//本地不存在这个文件则不需要备份，这个错误不用管
-						if (e && (e.code === 'ENOENT' || /not\s*found/i.test(String(e.message)))) continue;
-						throw e;
-					}
+					catch (e) { }
 				}
 				//安装新文件，删除仓库已经不存在的多余文件
 				this.textContent = '备份完毕，载入新内容中...';
