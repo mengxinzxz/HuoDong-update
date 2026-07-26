@@ -162,7 +162,7 @@ const packs = function () {
             Mbaby_liubei: ['male', 'shu', 4, ['rerende', 'minijijiang'], ['zhu']],
             Mbaby_re_liubei: ['male', 'shu', 4, ['minirende', 'minirejijiang'], ['zhu']],
             Mbaby_machao: ['male', 'shu', 4, ['mashu', 'minitieji']],
-            Mbaby_re_machao: ['male', 'shu', 4, ['miniyuma', 'miniretieji'], ['character:Mbaby_machao']],
+            Mbaby_re_machao: ['male', 'shu', 4, ['miniyuma', 'miniretieji']],
             Mbaby_zhurong: ['female', 'shu', 4, ['juxiang', 'minilieren'], ['name:null|null']],
             Mbaby_ol_zhurong: ['female', 'shu', 4, ['minijuxiang', 'minirelieren', 'changbiao'], ['name:null|null']],
             Mbaby_zhangfei: ['male', 'shu', 4, ['new_repaoxiao', 'minitishen']],

@@ -6229,6 +6229,10 @@
             "size": 91194
         },
         {
+            "path": "image/character/Mbaby_re_machao.jpg",
+            "size": 159520
+        },
+        {
             "path": "image/character/Mbaby_re_mazhong.jpg",
             "size": 98621
         },
@@ -8994,7 +8998,7 @@
         },
         {
             "path": "js/precontent/MiNikill.js",
-            "size": 2841509
+            "size": 2841481
         },
         {
             "path": "js/precontent/MX_feihongyinxue.js",
