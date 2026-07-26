@@ -6081,6 +6081,10 @@
             "size": 116292
         },
         {
+            "path": "image/character/Mbaby_old_zhoutai.jpg",
+            "size": 113120
+        },
+        {
             "path": "image/character/Mbaby_panfeng.jpg",
             "size": 126570
         },
@@ -6119,6 +6123,10 @@
         {
             "path": "image/character/Mbaby_re_caocao.jpg",
             "size": 108647
+        },
+        {
+            "path": "image/character/Mbaby_re_caochong.jpg",
+            "size": 154424
         },
         {
             "path": "image/character/Mbaby_re_chendeng.jpg",
@@ -6275,6 +6283,10 @@
         {
             "path": "image/character/Mbaby_re_weiyan.jpg",
             "size": 113144
+        },
+        {
+            "path": "image/character/Mbaby_re_xiahoudun.jpg",
+            "size": 165636
         },
         {
             "path": "image/character/Mbaby_re_xusheng.jpg",
@@ -6797,6 +6809,10 @@
             "size": 113023
         },
         {
+            "path": "image/character/Mbaby_xin_yuanshao.jpg",
+            "size": 143068
+        },
+        {
             "path": "image/character/Mbaby_xinpi.jpg",
             "size": 123317
         },
@@ -6899,6 +6915,10 @@
         {
             "path": "image/character/Mbaby_yj_jushou.jpg",
             "size": 129279
+        },
+        {
+            "path": "image/character/Mbaby_yj_majun.jpg",
+            "size": 118535
         },
         {
             "path": "image/character/Mbaby_yj_sb_guojia.jpg",
@@ -7074,7 +7094,7 @@
         },
         {
             "path": "image/character/Mbaby_zhoutai.jpg",
-            "size": 113120
+            "size": 150584
         },
         {
             "path": "image/character/Mbaby_zhouyu.jpg",
@@ -8974,7 +8994,7 @@
         },
         {
             "path": "js/precontent/MiNikill.js",
-            "size": 2841612
+            "size": 2841509
         },
         {
             "path": "js/precontent/MX_feihongyinxue.js",
