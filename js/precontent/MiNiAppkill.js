@@ -3219,9 +3219,11 @@ const packs = function () {
                             }
                             else if (cardsx.length === 1) result = { bool: true, links: cardsx };
                             else result = { bool: false, links: [cards.randomGet()] };
-                            if (result?.bool && result.links?.length) {
+                            if (result?.links?.length) {
                                 await player.loseToDiscardpile(result.links);
                                 await game.delayx();
+                            }
+                            if (result?.bool) {
                                 let list = [player];
                                 const target = player.getStorage(event.name)[0];
                                 if (target?.isIn()) list.push(target);
