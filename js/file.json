@@ -625,6 +625,10 @@
             "size": 98355
         },
         {
+            "path": "audio/die/wechat_dihuangxia.mp3",
+            "size": 13287
+        },
+        {
             "path": "audio/die/wechat_hansimao.mp3",
             "size": 17586
         },
@@ -649,8 +653,16 @@
             "size": 22193
         },
         {
+            "path": "audio/die/wechat_shantao.mp3",
+            "size": 29544
+        },
+        {
             "path": "audio/die/wechat_sunluyu.mp3",
             "size": 124930
+        },
+        {
+            "path": "audio/die/wechat_yanlongxia.mp3",
+            "size": 10675
         },
         {
             "path": "audio/die/wechat_yingjiang.mp3",
@@ -715,6 +727,10 @@
         {
             "path": "audio/die/wechat_zhiyin_daqiao.mp3",
             "size": 18386
+        },
+        {
+            "path": "audio/die/wechat_zhiyin_dianwei.mp3",
+            "size": 23969
         },
         {
             "path": "audio/die/wechat_zhiyin_dongzhuo.mp3",
@@ -3777,6 +3793,14 @@
             "size": 25746
         },
         {
+            "path": "audio/skill/wechatfengmo1.mp3",
+            "size": 7540
+        },
+        {
+            "path": "audio/skill/wechatfengmo2.mp3",
+            "size": 13287
+        },
+        {
             "path": "audio/skill/wechatfenli1.mp3",
             "size": 13311
         },
@@ -3929,6 +3953,22 @@
             "size": 17550
         },
         {
+            "path": "audio/skill/wechatjieshen1.mp3",
+            "size": 24111
+        },
+        {
+            "path": "audio/skill/wechatjieshen2.mp3",
+            "size": 15856
+        },
+        {
+            "path": "audio/skill/wechatjiguang1.mp3",
+            "size": 5555
+        },
+        {
+            "path": "audio/skill/wechatjiguang2.mp3",
+            "size": 19034
+        },
+        {
             "path": "audio/skill/wechatjijian1.mp3",
             "size": 23551
         },
@@ -3983,6 +4023,14 @@
         {
             "path": "audio/skill/wechatjuxian2.mp3",
             "size": 13662
+        },
+        {
+            "path": "audio/skill/wechatkangyong1.mp3",
+            "size": 21252
+        },
+        {
+            "path": "audio/skill/wechatkangyong2.mp3",
+            "size": 17177
         },
         {
             "path": "audio/skill/wechatkuangbiao1.mp3",
@@ -4113,6 +4161,14 @@
             "size": 16550
         },
         {
+            "path": "audio/skill/wechatqingqu1.mp3",
+            "size": 18222
+        },
+        {
+            "path": "audio/skill/wechatqingqu2.mp3",
+            "size": 18013
+        },
+        {
             "path": "audio/skill/wechatqingshi1.mp3",
             "size": 12162
         },
@@ -4135,6 +4191,14 @@
         {
             "path": "audio/skill/wechatqipao2.mp3",
             "size": 16759
+        },
+        {
+            "path": "audio/skill/wechatqishi1.mp3",
+            "size": 21394
+        },
+        {
+            "path": "audio/skill/wechatqishi2.mp3",
+            "size": 24424
         },
         {
             "path": "audio/skill/wechatqiusuo1.mp3",
@@ -4289,6 +4353,14 @@
             "size": 19476
         },
         {
+            "path": "audio/skill/wechattianxing1.mp3",
+            "size": 10048
+        },
+        {
+            "path": "audio/skill/wechattianxing2.mp3",
+            "size": 6286
+        },
+        {
             "path": "audio/skill/wechattongxin1.mp3",
             "size": 24656
         },
@@ -4361,6 +4433,14 @@
             "size": 15610
         },
         {
+            "path": "audio/skill/wechatxiangmo1.mp3",
+            "size": 10048
+        },
+        {
+            "path": "audio/skill/wechatxiangmo2.mp3",
+            "size": 8794
+        },
+        {
             "path": "audio/skill/wechatxiangwei1.mp3",
             "size": 20730
         },
@@ -4417,6 +4497,14 @@
             "size": 11744
         },
         {
+            "path": "audio/skill/wechatyanlong1.mp3",
+            "size": 7540
+        },
+        {
+            "path": "audio/skill/wechatyanlong2.mp3",
+            "size": 13287
+        },
+        {
             "path": "audio/skill/wechatyanshi1.mp3",
             "size": 19372
         },
@@ -4439,6 +4527,14 @@
         {
             "path": "audio/skill/wechatyingrui2.mp3",
             "size": 13102
+        },
+        {
+            "path": "audio/skill/wechatyingyan1.mp3",
+            "size": 10675
+        },
+        {
+            "path": "audio/skill/wechatyingyan2.mp3",
+            "size": 8167
         },
         {
             "path": "audio/skill/wechatyinren1.mp3",
@@ -8017,6 +8113,10 @@
             "size": 111049
         },
         {
+            "path": "image/character/wechat_shantao.jpg",
+            "size": 107392
+        },
+        {
             "path": "image/character/wechat_shen_caocao.jpg",
             "size": 154514
         },
@@ -8323,6 +8423,10 @@
         {
             "path": "image/character/wechat_zhiyin_daqiao.jpg",
             "size": 113485
+        },
+        {
+            "path": "image/character/wechat_zhiyin_dianwei.jpg",
+            "size": 135171
         },
         {
             "path": "image/character/wechat_zhiyin_dongzhuo.jpg",
