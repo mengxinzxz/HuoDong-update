@@ -3794,11 +3794,11 @@
         },
         {
             "path": "audio/skill/wechatfengmo1.mp3",
-            "size": 7540
+            "size": 12033
         },
         {
             "path": "audio/skill/wechatfengmo2.mp3",
-            "size": 13287
+            "size": 17153
         },
         {
             "path": "audio/skill/wechatfenli1.mp3",
@@ -7757,6 +7757,10 @@
             "size": 136923
         },
         {
+            "path": "image/character/wechat_dihuangxia.jpg",
+            "size": 132129
+        },
+        {
             "path": "image/character/wechat_ganfuren.jpg",
             "size": 142173
         },
@@ -8303,6 +8307,10 @@
         {
             "path": "image/character/wechat_yangxiu.jpg",
             "size": 220130
+        },
+        {
+            "path": "image/character/wechat_yanlongxia.jpg",
+            "size": 158579
         },
         {
             "path": "image/character/wechat_yanwen.jpg",
