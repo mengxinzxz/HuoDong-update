@@ -9648,9 +9648,11 @@ const packs = function () {
                         },
                         silent: true,
                         content() {
-                            player.markAuto('wechatsbliegong', [get.suit(trigger.card)]);
-                            player.storage.wechatsbliegong.sort((a, b) => lib.suit.indexOf(b) - lib.suit.indexOf(a));
-                            player.addTip('wechatsbliegong', get.translation('wechatsbliegong') + player.getStorage('wechatsbliegong').reduce((str, suit) => str + get.translation(suit), ''));
+                            const skill = 'wechatsbliegong';
+                            player.markAuto(skill, [get.suit(trigger.card)]);
+                            player.storage[skill].sort((a, b) => lib.suit.indexOf(b) - lib.suit.indexOf(a));
+                            game.broadcastAll((player, skill, list) => player.storage[skill] = list, player, skill, player.storage[skill]);
+                            player.addTip(skill, [skill, ...player.storage[skill]].map(get.translation).join(''));
                         },
                     },
                     wusheng: {
@@ -12617,11 +12619,12 @@ const packs = function () {
                 trigger: { player: 'damageEnd' },
                 filter(event, player) {
                     const num = Math.min(5, event.wechat_shiwuAble || get.info('wechatgywuwei').getNum(player));
-                    return player.isDamaged() && player.countMark('wechatkangyong_used') < num;
+                    return (event.name === 'chooseToUse' || player.isDamaged()) && player.countMark('wechatkangyong_used') < num;
                 },
                 async content(event, trigger, player) {
                     player.addTempSkill(event.name + '_used', 'roundStart');
                     player.addMark(event.name + '_used', 1, false);
+                    if (!trigger) await player.loseHp();
                     const num = player.getDamagedHp();
                     if (!num) return;
                     let cards = get.cards(num);
@@ -12675,7 +12678,16 @@ const packs = function () {
                 },
                 ai: {
                     order: 10,
-                    result: { player: 1 },
+                    result: {
+                        player(player) {
+                            let num = 1;
+                            if (player.hasSkill('wechatqingqu') && !player.storage.counttrigger?.wechatqingqu && ui.cardPile.firstChild) {
+                                const list = _status.currentPhase?.getHistory('useCard').reduce((list, evt) => list.add(get.suit(evt.card)), []) || [];
+                                if (!list.includes(get.suit(ui.cardPile.firstChild, player))) num--;
+                            }
+                            return player.getHp() + player.countCards('hs', card => player.canSaveCard(card, player)) - num;
+                        },
+                    },
                 },
                 subSkill: {
                     used: {
@@ -12748,6 +12760,48 @@ const packs = function () {
                     judgeEvent.list = list;
                     const result = await judgeEvent.forResult();
                     if (result?.judge > 0) await player.recover();
+                },
+                init(player, skill2) {
+                    const skill = `${skill2}_mark`;
+                    player.addSkill(skill);
+                    if (_status.currentPhase) {
+                        let list = lib.suit.slice();
+                        list.removeArray(_status.currentPhase.getHistory('useCard').reduce((list, evt) => list.add(get.suit(evt.card)), []));
+                        if (list.length) {
+                            player.storage[skill] = list;
+                            player.storage[skill].sort((a, b) => lib.suit.indexOf(b) - lib.suit.indexOf(a));
+                            player.addTip(skill, [skill, ...player.storage[skill]].map(get.translation).join(''));
+                        }
+                    }
+                },
+                onremove(player, skill) {
+                    player.removeSkill(`${skill}_mark`);
+                },
+                subSkill: {
+                    mark: {
+                        charlotte: true,
+                        onremove(player, skill) {
+                            player.removeTip(skill);
+                            delete player.storage[skill];
+                        },
+                        trigger: { global: ['phaseBeginStart', 'useCard'] },
+                        filter(event, player) {
+                            if (event.name === 'phase') return true;
+                            return event.player === _status.currentPhase && player.getStorage('wechatqingqu_mark').includes(get.suit(event.card));
+                        },
+                        silent: true,
+                        async content(event, trigger, player) {
+                            const skill = event.name;
+                            if (trigger.name === 'phase') player.storage[skill] = lib.suit.slice();
+                            else player.storage[skill].remove(get.suit(trigger.card));
+                            if (player.storage[skill].length > 0) {
+                                player.storage[skill].sort((a, b) => lib.suit.indexOf(b) - lib.suit.indexOf(a));
+                                game.broadcastAll((player, skill, list) => player.storage[skill] = list, player, skill, player.storage[skill]);
+                                player.addTip(skill, [skill, ...player.storage[skill]].map(get.translation).join(''));
+                            }
+                            else lib.skill[skill].onremove(player, skill);
+                        },
+                    },
                 },
             },
             // 极荀攸
@@ -23490,7 +23544,7 @@ const packs = function () {
             wechatjueya_info: '限定技。当你进入濒死状态时，你可以将你的所有手牌以任意顺序置于牌堆顶。若如此做，你将体力值回复至1点并获得令你进入濒死状态的角色一张牌，当前回合结束后，你执行一个额外回合。',
             wechat_zhiyin_dianwei: '极典韦',
             wechatkangyong: '亢勇',
-            wechatkangyong_info: `${get.poptip('rule_shiwuSkill')}，出牌阶段或当你受到伤害后，你可以亮出牌堆顶X张牌（X为你的已损失体力值），然后你选择其中一张牌A并令一名其他角色选择一项：1.你获得牌A，本回合其不能使用或打出与此牌花色相同的牌；2.你获得其余不为A的牌，本回合你对其使用这些牌无距离和次数限制。`,
+            wechatkangyong_info: `${get.poptip('rule_shiwuSkill')}，出牌阶段，你可以失去1点体力，然后亮出牌堆顶X张牌（X为你的已损失体力值）；当你受到伤害后，你可以亮出牌堆顶X张牌。你选择其中一张牌A并令一名其他角色选择一项：1.你获得牌A，本回合其不能使用或打出与此牌花色相同的牌；2.你获得其余不为A的牌，本回合你对其使用这些牌无距离和次数限制。`,
             wechatqingqu: '勍躯',
             wechatqingqu_info: '每回合限一次。当你进入濒死状态时，你可以判定。若判定结果的花色与当前回合角色本回合使用过的牌花色均不同，你回复1点体力。',
             wechat_zhiyin_xunyou: '极荀攸',

@@ -3309,10 +3309,12 @@ const packs = function () {
                     },
                 },
                 onuse(result, player) {
-                    player.addTempSkill('oldluanji_count');
-                    player.markAuto('oldluanji_count', result.cards.map(card => get.suit(card, player)));
-                    player.storage['oldluanji_count'].sort((a, b) => lib.suit.indexOf(b) - lib.suit.indexOf(a));
-                    player.addTip('oldluanji_count', ['oldluanji_count', ...player.storage['oldluanji_count']].map(i => get.translation(i)).join(''));
+                    const skill = 'oldluanji_count';
+                    player.addTempSkill(skill);
+                    player.markAuto(skill, result.cards.map(card => get.suit(card, player)));
+                    player.storage[skill].sort((a, b) => lib.suit.indexOf(b) - lib.suit.indexOf(a));
+                    game.broadcastAll((player, skill, list) => player.storage[skill] = list, player, skill, player.storage[skill]);
+                    player.addTip(skill, [skill, ...player.storage[skill]].map(get.translation).join(''));
                 },
                 group: ['oldluanji_respond'],
                 subSkill: {

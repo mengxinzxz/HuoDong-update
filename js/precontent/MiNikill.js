@@ -13665,9 +13665,11 @@ const packs = function () {
                         },
                         silent: true,
                         content() {
-                            player.markAuto('minisbliegong', [get.suit(trigger.card)]);
-                            player.storage.minisbliegong.sort((a, b) => lib.suit.indexOf(b) - lib.suit.indexOf(a));
-                            player.addTip('minisbliegong', get.translation('minisbliegong') + player.getStorage('minisbliegong').reduce((str, suit) => str + get.translation(suit), ''));
+                            const skill = 'minisbiliegong';
+                            player.markAuto(skill, [get.suit(trigger.card)]);
+                            player.storage[skill].sort((a, b) => lib.suit.indexOf(b) - lib.suit.indexOf(a));
+                            game.broadcastAll((player, skill, list) => player.storage[skill] = list, player, skill, player.storage[skill]);
+                            player.addTip(skill, [skill, ...player.storage[skill]].map(get.translation).join(''));
                         },
                     },
                 },
@@ -35298,28 +35300,22 @@ const packs = function () {
                     global: ['loseAsyncAfter'],
                 },
                 filter(event, player) {
-                    if (event.name.indexOf('lose') == 0) return event.type == 'discard' && event.getl(player).cards2.filter(card => get.position(card, true) == 'd' && !player.getStorage('minilianshi').includes(get.suit(card, player))).length > 0;
+                    if (event.name.startsWith('lose')) return event.type == 'discard' && event.getl(player).cards2.filter(card => get.position(card, true) == 'd' && !player.getStorage('minilianshi').includes(get.suit(card, player))).length > 0;
                     return event.cards?.some(card => !player.getStorage('minilianshi').includes(get.suit(card, player)) && lib.suit.includes(get.suit(card, player)));
                 },
                 forced: true,
-                content() {
-                    'step 0'
-                    var cards;
-                    if (trigger.name.indexOf('lose') == 0) cards = trigger.getl(player).cards2.filter(card => get.position(card, true) == 'd');
-                    else cards = trigger.cards;
-                    event.cards = cards;
-                    var suits = cards.reduce((list, card) => list.add(get.suit(card, player)), []);
-                    suits = suits.filter(suit => !player.getStorage('minilianshi').includes(suit));
-                    player.markAuto('minilianshi', suits);
-                    player.storage.minilianshi.sort((a, b) => lib.suit.indexOf(b) - lib.suit.indexOf(a));
-                    player.addTip('minilianshi', get.translation('minilianshi') + player.getStorage('minilianshi').reduce((str, suit) => str + get.translation(suit), ""));
-                    'step 1'
-                    if (player.getStorage('minilianshi').length >= 4) {
-                        player.draw();
-                        if (player.isDamaged()) player.recover(get.number(cards[cards.length - 1], player));
-                        player.unmarkSkill('minilianshi');
-                        delete player.storage.minilianshi;
-                        player.removeTip('minilianshi');
+                async content(event, trigger, player) {
+                    let cards = trigger.cards, skill = event.name;
+                    if (trigger.name.startsWith('lose')) cards = trigger.getl(player).cards2.filter(card => get.position(card, true) === 'd');
+                    player.markAuto(skill, cards.reduce((list, card) => list.add(get.suit(card, player)), []));
+                    player.storage[skill].sort((a, b) => lib.suit.indexOf(b) - lib.suit.indexOf(a));
+                    game.broadcastAll((player, skill, list) => player.storage[skill] = list, player, skill, player.storage[skill]);
+                    player.addTip(skill, [skill, ...player.storage[skill]].map(get.translation).join(''));
+                    if (player.storage[skill].length >= 4) {
+                        await player.draw();
+                        if (player.isDamaged()) await player.recover(get.number(cards[cards.length - 1], player));
+                        player.removeTip(skill);
+                        player.unmarkSkill(skill);
                     }
                 },
                 intro: {
