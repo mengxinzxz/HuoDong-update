@@ -267,7 +267,7 @@ const packs = function () {
             wechat_sb_zhangliao: ['male', 'wei', 4, ['wechatsbtuxi', 'wechatsbdengfeng']],
             wechat_sb_huangyueying: ['female', 'shu', 3, ['wechatsbjizhi', 'sbqicai']],
             wechat_sb_diaochan: ['female', 'qun', 3, ['wechatsblijian', 'wechatsbbiyue'], ['name:null|null']],
-            wechat_sb_guojia: ['male', 'wei', 3, ['wechatsbtiandu', 'wechatsbyiji'], ['character:bilibili_xizhicaikobe', 'border:key', 'tempname:sb_guojia']],
+            wechat_sb_guojia: ['male', 'wei', 3, ['wechatsbtiandu', 'wechatsbyiji'], ['character:bilibili_xizhicaikobe', 'border:key']],
             wechat_sb_handang: ['male', 'wu', 4, ['wechatsbgongqi', 'wechatsbjiefan']],
             wechat_sb_gaoshun: ['male', 'qun', 4, ['wechatsbxianzhen', 'sbjinjiu']],
             wechat_sb_xiahouyuan: ['male', 'wei', 4, ['wechatsbshensu', 'sbzhengzi'], ['name:夏侯|渊']],
