@@ -7929,10 +7929,6 @@
             "size": 173324
         },
         {
-            "path": "image/character/wechat_sb_huanggai.jpg",
-            "size": 172900
-        },
-        {
             "path": "image/character/wechat_sb_huangyueying.jpg",
             "size": 170738
         },
@@ -8011,6 +8007,10 @@
         {
             "path": "image/character/wechat_sb_zhugeliang.jpg",
             "size": 127107
+        },
+        {
+            "path": "image/character/wechat_sb_zhurong.jpg",
+            "size": 145662
         },
         {
             "path": "image/character/wechat_shamoke.jpg",
@@ -8986,7 +8986,7 @@
         },
         {
             "path": "js/precontent/index.js",
-            "size": 43297
+            "size": 43359
         },
         {
             "path": "js/precontent/MiNiAppkill.js",
@@ -9010,7 +9010,7 @@
         },
         {
             "path": "js/precontent/WeChatkill.js",
-            "size": 1445349
+            "size": 1448730
         },
         {
             "path": "README.md",

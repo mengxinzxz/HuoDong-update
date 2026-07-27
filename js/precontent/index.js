@@ -820,6 +820,8 @@ export async function precontent(bilibilicharacter) {
                 type: 'players',
                 data: (() => {
                     _status.HDWJ_ChangeLog_character = {
+                        MiNiAppkill: Object.keys(MiNiAppkill().character),
+                        WeChatkill: ['wechat_sb_zhurong'],
                     };
                     return Object.values(_status.HDWJ_ChangeLog_character).flat();
                 })(),
@@ -830,7 +832,6 @@ export async function precontent(bilibilicharacter) {
                 get data() {
                     return [
                         'bugfix、素材补充、技能调整',
-                        '新武将包：新一将成名（未完成）',
                         ...(() => {
                             const map = _status.HDWJ_ChangeLog_character ?? {};
                             return Object.keys(map).map(ext => {
