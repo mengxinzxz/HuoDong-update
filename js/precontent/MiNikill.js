@@ -22038,11 +22038,91 @@ const packs = function () {
                 },
             },
             minizixi: {
+                init(player, skill) {
+                    game.addGlobalSkill(`${skill}_judge`);
+                    game.broadcastAll(lib.skill.dczixi.video);
+                },
                 audio: 'dczixi',
                 inherit: 'dczixi',
+                async cost(event, trigger, player) {
+                    game.addVideo('skill', player, ['dczixi', []]);
+                    const names = lib.skill.dczixi.zixiList.filter(name => {
+                        return player.hasCard(card => {
+                            return card.hasGaintag('eternal_dcqiqin_tag') && game.hasPlayer(target => target.canAddJudge(get.autoViewAs({ name: `dczixi_${name}` }, [card])));
+                        }, 'h');
+                    });
+                    const cards = player.getCards('h', card => {
+                        if (!card.hasGaintag('eternal_dcqiqin_tag')) return false;
+                        return names.some(name => game.hasPlayer(target => target.canAddJudge(get.autoViewAs({ name: `dczixi_${name}` }, [card]))));
+                    });
+                    const max = lib.skill.dczixi.selectAi(player, names);
+                    const result = await player.chooseButtonTarget({
+                        createDialog: [
+                            `###${get.prompt(event.skill)}###<div class='text center'>将一张“琴”以你选择的牌名置于一名角色的判定区</div>`,
+                            cards,
+                            [names.map(i => [i, get.translation(i)]), 'tdnodes'],
+                        ],
+                        complexSelect: true,
+                        filterButton(button) {
+                            if (!ui.selected.buttons.length) return true;
+                            const last = ui.selected.buttons[0].link, type = typeof last, card = button.link;
+                            if (type === typeof button.link) return false;
+                            if (type === 'string') return game.hasPlayer(target => target.canAddJudge(get.autoViewAs({ name: `dczixi_${last}` }, [card])));
+                            return game.hasPlayer(target => target.canAddJudge(get.autoViewAs({ name: `dczixi_${card}` }, [last])));
+                        },
+                        selectButton: 2,
+                        ai1(button) {
+                            const max = get.event().max;
+                            if (typeof button.link === 'string') return button.link === max[0] ? 1 : 0;
+                            return button.link === max[2] ? 1 : 0;
+                        },
+                        filterTarget(cardx, player, target) {
+                            if (ui.selected.buttons.length < 2) return false;
+                            let choice = ui.selected.buttons.map(i => i.link);
+                            if (typeof choice[0] !== 'string') choice.reverse();
+                            const [cardname, card] = choice;
+                            return target.canAddJudge(get.autoViewAs({ name: `dczixi_${cardname}` }, [card]));
+                        },
+                        ai2(target) {
+                            return target === get.event().max[3] ? 1 : 0;
+                        },
+                        max,
+                    }).forResult();
+                    if (result?.bool && result.links?.length && result.targets?.length) {
+                        let choice = result.links;
+                        if (typeof choice[0] !== 'string') choice.reverse();
+                        event.result = { bool: true, targets: result.targets.slice(), cost_data: choice };
+                    }
+                },
+                async content(event, trigger, player) {
+                    const [cardname, card] = event.cost_data, target = event.targets[0];
+                    await game.delay();
+                    player.$give(card, target, false);
+                    await target.addJudge({ name: `dczixi_${cardname}` }, [card]);
+                    await game.delayx();
+                },
                 ai: { combo: ['dcqiqin', 'miniqiqin'] },
                 group: 'minizixi_effect',
                 subSkill: {
+                    judge: {
+                        mod: {
+                            targetEnabled(card, player, target) {
+                                const list = lib.skill.dczixi.zixiList;
+                                const name = typeof card == 'string' ? card : card.viewAs ? card.viewAs : card.name;
+                                if (name.startsWith('dczixi_')) {
+                                    const namex = name.slice('dczixi_'.length);
+                                    if (list.includes(namex) && target.hasJudge(namex)) return false;
+                                }
+                                else if (list.includes(name) && target.hasJudge(`dczixi_${name}`)) return false;
+                            },
+                        },
+                        ai: {
+                            threaten(player, target) {
+                                if (!player.hasSkill('minizixi') || ![1, 2, 3].includes(target.countCards('j'))) return;
+                                return 3 + target.countCards('j');
+                            },
+                        },
+                    },
                     effect: {
                         audio: 'dczixi',
                         trigger: { player: 'useCardToTargeted' },
