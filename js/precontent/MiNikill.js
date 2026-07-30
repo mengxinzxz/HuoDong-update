@@ -22108,7 +22108,7 @@ const packs = function () {
                         mod: {
                             targetEnabled(card, player, target) {
                                 const list = lib.skill.dczixi.zixiList;
-                                const name = typeof card == 'string' ? card : card.viewAs ? card.viewAs : card.name;
+                                const name = typeof card === 'string' ? card : card.viewAs ? card.viewAs : card.name;
                                 if (name.startsWith('dczixi_')) {
                                     const namex = name.slice('dczixi_'.length);
                                     if (list.includes(namex) && target.hasJudge(namex)) return false;
