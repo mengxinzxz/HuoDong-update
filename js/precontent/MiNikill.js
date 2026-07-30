@@ -22046,21 +22046,16 @@ const packs = function () {
                 inherit: 'dczixi',
                 async cost(event, trigger, player) {
                     game.addVideo('skill', player, ['dczixi', []]);
-                    const names = lib.skill.dczixi.zixiList.filter(name => {
+                    const max = lib.skill.dczixi.selectAi(player, lib.skill.dczixi.zixiList.filter(name => {
                         return player.hasCard(card => {
                             return card.hasGaintag('eternal_dcqiqin_tag') && game.hasPlayer(target => target.canAddJudge(get.autoViewAs({ name: `dczixi_${name}` }, [card])));
                         }, 'h');
-                    });
-                    const cards = player.getCards('h', card => {
-                        if (!card.hasGaintag('eternal_dcqiqin_tag')) return false;
-                        return names.some(name => game.hasPlayer(target => target.canAddJudge(get.autoViewAs({ name: `dczixi_${name}` }, [card]))));
-                    });
-                    const max = lib.skill.dczixi.selectAi(player, names);
+                    }));
                     const result = await player.chooseButtonTarget({
                         createDialog: [
                             `###${get.prompt(event.skill)}###<div class='text center'>将一张“琴”以你选择的牌名置于一名角色的判定区</div>`,
-                            cards,
-                            [names.map(i => [i, get.translation(i)]), 'tdnodes'],
+                            player.getCards('he', card => card.hasGaintag('eternal_dcqiqin_tag')),
+                            [lib.skill.dczixi.zixiList.map(i => [i, get.translation(i)]), 'tdnodes'],
                         ],
                         complexSelect: true,
                         filterButton(button) {
