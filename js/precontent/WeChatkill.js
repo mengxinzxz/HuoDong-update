@@ -8673,15 +8673,12 @@ const packs = function () {
                 filterTarget: true,
                 async content(event, trigger, player) {
                     const target = event.target;
-                    const result2 = (target !== player && player.countCards('h') >= 3) ? await player.chooseControl('牌堆顶', '手牌').set('prompt', `${get.translation(event.name)}：请选择令${get.translation(target)}观看的区域`).forResult() : { index: 0 };
+                    const result2 = (target !== player && player.countCards('h') >= 2) ? await player.chooseControl('牌堆顶', '手牌').set('prompt', `${get.translation(event.name)}：请选择令${get.translation(target)}观看的区域`).forResult() : { index: 0 };
                     if (typeof result2?.index === 'number') {
-                        let cards = result2.index === 0 ? get.cards(3, true) : [...player.getCards('h')];
-                        if (result2.index > 0 && cards.length > 3) {
-                            cards.randomSort();
-                            if (!cards.some(card => lib.filter.canBeGained(card, target, player))) {
-                                await target.chooseControl('ok').set('dialog', [`${get.translation(player)}的部分手牌`, cards]);
-                                return;
-                            }
+                        let cards = result2.index === 0 ? get.cards(2, true) : player.getCards('h').randomGets(2);
+                        if (result2.index > 0 && !cards.some(card => lib.filter.canBeGained(card, target, player))) {
+                            await target.chooseControl('ok').set('dialog', [`${get.translation(player)}的部分手牌`, cards]);
+                            return;
                         }
                         const result = await target.chooseButton([
                             `${get.translation(event.name)}：请选择获得其中一张牌（源自${result2.index === 0 ? '牌堆顶' : `${get.translation(player)}的部分手牌`}）`,
@@ -8704,7 +8701,7 @@ const packs = function () {
                             else await target.gain(card, player, 'give');
                             if (player.getStorage(`${event.name}_used`).includes(type)) {
                                 player.line(target);
-                                await target.draw(2);
+                                await target.draw();
                                 await target.recover();
                                 player.tempBanSkill(event.name);
                             }
@@ -12859,9 +12856,12 @@ const packs = function () {
                         },
                         forced: true,
                         locked: false,
-                        usable: 2,
                         async content(event, trigger, player) {
-                            await player.draw();
+                            if (player.countMark('wechatweimo_used') < 2) {
+                                player.addTempSkill('wechatweimo_used');
+                                player.addMark('wechatweimo_used', 2, false);
+                                await player.draw();
+                            }
                             const cards = player.getExpansions('wechatweimo');
                             if (player.isPhaseUsing() && cards.length > 0) {
                                 const result = await player.chooseButton([`${get.translation(event.name)}：是否获得其中一张牌？`, cards]).set('ai', button => {
@@ -12870,8 +12870,12 @@ const packs = function () {
                                 if (result?.bool && result.links?.length) await player.gain(result.links, 'gain2');
                             }
                         },
-                    }
-                }
+                    },
+                    used: {
+                        charlotte: true,
+                        onremove: true,
+                    },
+                },
             },
             wechatlance: {
                 audio: 'ext:活动武将/audio/skill:2',
@@ -13354,40 +13358,20 @@ const packs = function () {
                 audio: 'sbbiyue',
                 trigger: { player: 'phaseJieshuBegin' },
                 async cost(event, trigger, player) {
-                    const num = Math.min(game.countPlayer2(target => target.hasHistory('damage')) + 1, 4);
-                    const targets = game.filterPlayer(target => target !== player && target.hasHistory('damage'));
-                    const func = function (player, num, targets) {
-                        game.countPlayer(target => {
-                            if (target === player) target.prompt(`摸${num}张`);
-                            else if (targets.includes(target)) {
-                                const num = target.getHistory('damage').reduce((sum, evt) => sum + evt.num, 0);
-                                target.prompt(`弃${num}张`);
-                            }
-                        });
-                    };
-                    event.player === game.me ? func(event.player, num, targets) : (event.isOnline() && event.player.send(func, event.player, num, targets));
+                    const num = Math.min(Math.max(game.countPlayer2(target => target.hasHistory('damage')), 1), 4);
                     event.result = await player.chooseTarget(get.prompt(event.skill), (card, player, target) => {
-                        if (target === player) return true;
-                        return get.event().targets.includes(target) && target.countDiscardableCards(target, 'he');
-                    }, `选择令自己摸${get.cnNumber(num)}张牌，或令一名其他角色弃置其本回合受到的伤害数张牌`).set('ai', target => {
-                        const player = get.player();
-                        if (target === player) {
-                            const num = Math.min(game.countPlayer2(target => target.hasHistory('damage')) + 1, 4);
-                            return get.effect(player, { name: 'draw' }, player, player) * num;
-                        }
-                        const num = target.getHistory('damage').reduce((sum, evt) => sum + evt.num, 0);
+                        return target === player || target.countDiscardableCards(target, 'he');
+                    }, `选择令自己摸${get.cnNumber(num + 1)}张牌，或令一名其他角色弃置${get.cnNumber(num)}张牌`).set('ai', target => {
+                        const { player, num } = get.event(num);
+                        if (target === player) return get.effect(player, { name: 'draw' }, player, player) * (num + 1);
                         return get.effect(target, { name: 'guohe_copy2' }, target, player) * Math.sqrt(Math.min(num, target.countDiscardableCards(target, 'he')));
-                    }).set('targets', targets).forResult();
+                    }).set('num', num).forResult();
                 },
                 async content(event, trigger, player) {
                     const target = event.targets[0];
-                    if (target === player) {
-                        const num = Math.min(game.countPlayer2(target => target.hasHistory('damage')) + 1, 4);
-                        await player.draw(num);
-                        return;
-                    }
-                    const num = target.getHistory('damage').reduce((sum, evt) => sum + evt.num, 0);
-                    await target.chooseToDiscard('he', num, true);
+                    const num = Math.min(Math.max(game.countPlayer2(target => target.hasHistory('damage')), 1), 4);
+                    if (target === player) await player.draw(num + 1);
+                    else await target.chooseToDiscard('he', num, true);
                 },
             },
             // 极陆逊
@@ -23336,7 +23320,7 @@ const packs = function () {
             wechatsblongdan_rewrite_info: '你可以将一张基本牌当本回合未以此法使用的基本牌使用或打出并摸一张牌。',
             wechat_sp_wangcan: '小程序王粲',
             wechatspqiai: '七哀',
-            wechatspqiai_info: '出牌阶段，你可以令一名角色观看牌堆顶的三张牌或你的随机三张手牌并选择一张获得，若本回合此牌类别已被选择过，则你令其摸两张牌并回复1点体力，然后本回合此技能失效。',
+            wechatspqiai_info: '出牌阶段，你可以令一名角色观看牌堆顶的两张牌或你的随机两张手牌并选择一张获得，若本回合此牌类别已被选择过，则你令其摸一张牌并回复1点体力，然后本回合此技能失效。',
             wechatspshanxi: '善檄',
             wechatspshanxi_info: '①出牌阶段开始时，你可令一名其他角色获得或失去“檄”标记。②有“檄”标记的角色回复体力时，若其体力值大于0，则其须选择交给你两张牌或失去1点体力。',
             wechat_xin_caifuren: '小程序界蔡夫人',
@@ -23549,7 +23533,7 @@ const packs = function () {
             wechatqingqu_info: '每回合限一次。当你进入濒死状态时，你可以判定。若判定结果的花色与当前回合角色本回合使用过的牌花色均不同，你回复1点体力。',
             wechat_zhiyin_xunyou: '极荀攸',
             wechatweimo: '帷谟',
-            wechatweimo_info: '①游戏开始时，你摸X张牌，然后你将等量张牌置于武将牌上，称为“帷谟”（X为游戏人数且至多为4）。②每回合限两次，当你的“帷谟”牌数或手牌数变化后，若二者数量相同，你摸一张牌。然后若此时在你的出牌阶段内，你可以获得武将牌上的一张“帷谟”。',
+            wechatweimo_info: '①游戏开始时，你摸X张牌，然后你将等量张牌置于武将牌上，称为“帷谟”（X为游戏人数且至多为4）。②当你的“帷谟”牌数或手牌数变化后，若二者数量相同，你摸一张牌（每回合限两次）；若此时在你的出牌阶段内，你可以获得武将牌上的一张“帷谟”。',
             wechatlance: '览策',
             wechatlance_info: '出牌阶段限一次，你可以将至多两张牌置于武将牌上，称为“帷谟”。然后你可以视为使用一张普通锦囊牌（此牌合法目标数须不大于这些牌的合法目标数之和）。',
             wechat_zhiyin_sunshangxiang: '极孙尚香',
@@ -23570,7 +23554,7 @@ const packs = function () {
             wechatsblijian: '离间',
             wechatsblijian_info: `出牌阶段限一次。你可以选择至少两名其他角色。然后每名你选择的角色依次视为对这些角色中与其逆时针座次最近的另一名角色使用一张【决斗】。若你已受伤，则你可以令其中一名男性目标角色于本次结算中获得${get.poptip('wushuang')}。`,
             wechatsbbiyue: '闭月',
-            wechatsbbiyue_info: '结束阶段，你可以选择一项：①令自己摸X张牌（X为本回合受伤角色数+1，至多为4）；②令一名其他角色弃置Y张牌（Y为其本回合受到的伤害数）。',
+            wechatsbbiyue_info: '结束阶段，你可以选择一项：①摸X+1张牌；②令一名其他角色弃置X张牌（X为本回合受伤角色数，至少为1，至多为4）。',
             wechat_zhiyin_luxun: '极陆逊',
             wechatqianmou: '谦谋',
             wechatqianmou_info: `①游戏开始时，你可以弃置至多两张手牌，然后你获得3倍弃牌数的${get.poptip('rule_moulvenum')}。②当你的${get.poptip('rule_moulvenum')}或手牌数变化后，若二者数量相同，你摸两张牌。`,
