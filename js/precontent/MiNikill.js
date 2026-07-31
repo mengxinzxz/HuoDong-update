@@ -13665,9 +13665,11 @@ const packs = function () {
                         },
                         silent: true,
                         content() {
-                            player.markAuto('minisbliegong', [get.suit(trigger.card)]);
-                            player.storage.minisbliegong.sort((a, b) => lib.suit.indexOf(b) - lib.suit.indexOf(a));
-                            player.addTip('minisbliegong', get.translation('minisbliegong') + player.getStorage('minisbliegong').reduce((str, suit) => str + get.translation(suit), ''));
+                            const skill = 'minisbiliegong';
+                            player.markAuto(skill, [get.suit(trigger.card)]);
+                            player.storage[skill].sort((a, b) => lib.suit.indexOf(b) - lib.suit.indexOf(a));
+                            game.broadcastAll((player, skill, list) => player.storage[skill] = list, player, skill, player.storage[skill]);
+                            player.addTip(skill, [skill, ...player.storage[skill]].map(get.translation).join(''));
                         },
                     },
                 },
@@ -22036,11 +22038,75 @@ const packs = function () {
                 },
             },
             minizixi: {
+                init(player, skill) {
+                    game.addGlobalSkill(`${skill}_judge`);
+                    game.broadcastAll(lib.skill.dczixi.video);
+                },
                 audio: 'dczixi',
                 inherit: 'dczixi',
+                async cost(event, trigger, player) {
+                    game.addVideo('skill', player, ['dczixi', []]);
+                    const max = lib.skill.dczixi.selectAi(player, lib.skill.dczixi.zixiList.filter(name => {
+                        return player.hasCard(card => {
+                            return card.hasGaintag('eternal_dcqiqin_tag') && game.hasPlayer(target => target.canAddJudge(get.autoViewAs({ name: `dczixi_${name}` }, [card])));
+                        }, 'h');
+                    }));
+                    const result = await player.chooseButtonTarget({
+                        createDialog: [
+                            `###${get.prompt(event.skill)}###<div class='text center'>将一张“琴”以你选择的牌名置于一名角色的判定区</div>`,
+                            player.getCards('he', card => card.hasGaintag('eternal_dcqiqin_tag')),
+                            [lib.skill.dczixi.zixiList.map(i => [i, get.translation(i)]), 'tdnodes'],
+                        ],
+                        complexSelect: true,
+                        filterButton(button) {
+                            if (!ui.selected.buttons.length) return true;
+                            const last = ui.selected.buttons[0].link, type = typeof last, card = button.link;
+                            if (type === typeof button.link) return false;
+                            if (type === 'string') return game.hasPlayer(target => target.canAddJudge(get.autoViewAs({ name: `dczixi_${last}` }, [card])));
+                            return game.hasPlayer(target => target.canAddJudge(get.autoViewAs({ name: `dczixi_${card}` }, [last])));
+                        },
+                        selectButton: 2,
+                        ai1(button) {
+                            const max = get.event().max;
+                            if (typeof button.link === 'string') return button.link === max[0] ? 1 : 0;
+                            return button.link === max[2] ? 1 : 0;
+                        },
+                        filterTarget(cardx, player, target) {
+                            if (ui.selected.buttons.length < 2) return false;
+                            let choice = ui.selected.buttons.map(i => i.link);
+                            if (typeof choice[0] !== 'string') choice.reverse();
+                            const [cardname, card] = choice;
+                            return target.canAddJudge(get.autoViewAs({ name: `dczixi_${cardname}` }, [card]));
+                        },
+                        ai2(target) {
+                            return target === get.event().max[3] ? 1 : 0;
+                        },
+                        max,
+                    }).forResult();
+                    if (result?.bool && result.links?.length && result.targets?.length) {
+                        let choice = result.links;
+                        if (typeof choice[0] !== 'string') choice.reverse();
+                        event.result = { bool: true, targets: result.targets.slice(), cost_data: choice };
+                    }
+                },
+                async content(event, trigger, player) {
+                    const [cardname, card] = event.cost_data, target = event.targets[0];
+                    await game.delay();
+                    player.$give(card, target, false);
+                    await target.addJudge({ name: `dczixi_${cardname}` }, [card]);
+                    await game.delayx();
+                },
                 ai: { combo: ['dcqiqin', 'miniqiqin'] },
                 group: 'minizixi_effect',
                 subSkill: {
+                    judge: {
+                        ai: {
+                            threaten(player, target) {
+                                if (!player.hasSkill('minizixi') || ![1, 2, 3].includes(target.countCards('j'))) return;
+                                return 3 + target.countCards('j');
+                            },
+                        },
+                    },
                     effect: {
                         audio: 'dczixi',
                         trigger: { player: 'useCardToTargeted' },
@@ -22173,67 +22239,40 @@ const packs = function () {
             //鲁肃
             minimingshi: {
                 audio: 'dcsbmingshi',
-                inherit: 'dcsbmingshi',
-                content() {
-                    trigger.num += 2;
-                    player.when('phaseDrawEnd').filter(evt => {
-                        return evt === trigger && player.countCards('h') && game.hasPlayer(target => target !== player);
-                    }).step(async (event, trigger, player) => {
-                        const result = await player.chooseCardTarget({
-                            prompt: `明势：展示${player.countCards('h') <= 3 ? '手牌' : '展示三张'}手牌并令一名其他角色选择获得其中的一张牌`,
-                            filterTarget: lib.filter.notMe,
-                            filterCard: true,
-                            selectCard() {
-                                const player = get.player();
-                                return player.countCards('h') <= 3 ? -1 : 3;
-                            },
-                            position: 'h',
-                            forced: true,
-                            ai1(card) {
-                                return -get.value(card);
-                            },
-                            ai2(target) {
-                                const player = get.player();
-                                if (['dcsbmengmou', 'minimengmou'].some(skill => {
-                                    return player.hasSkill(skill) && !get.is.blocked(skill, player) && player.storage[skill] && get.attitude(player, target) < 0;
-                                })) return get.effect(target, { name: 'losehp' }, player, player);
-                                return get.attitude(player, target);
-                            },
-                        }).forResult();
-                        if (!result?.bool || !result.targets?.length || !result.cards?.length) return;
-                        const target = result.targets[0], cards = result.cards;
-                        if (!cards.some(card => lib.filter.canBeGained(card, player, target))) {
-                            await player.showCards(cards, get.translation(player) + '发动了【明势】');
-                            return;
-                        }
-                        const videoId = lib.status.videoId++;
-                        game.broadcastAll((player, id, cards) => {
-                            const dialog = ui.create.dialog(get.translation(player) + '发动了【明势】', cards);
-                            dialog.videoId = id;
-                        }, player, videoId, cards);
-                        const time = get.utc();
-                        game.addVideo('showCards', player, [get.translation(player) + '发动了【明势】', get.cardsInfo(cards)]);
-                        await game.delay(2.5);
-                        game.broadcastAll((player, id) => {
-                            const dialog = get.idDialog(id);
-                            if (player === game.me && !_status.auto) dialog.content.childNodes[0].textContent = '明势：请获得其中一张牌';
-                        }, target, videoId);
-                        const result2 = await target.chooseButton(true).set('filterButton', button => {
-                            const { player, sourcex } = get.event();
-                            return lib.filter.canBeGained(button.link, sourcex, player);
-                        }).set('ai', button => get.value(button.link)).set('sourcex', player).forResult();
-                        const time2 = 1000 - (get.utc() - time);
-                        if (time2 > 0) await game.delay(0, time2);
-                        game.broadcastAll('closeDialog', videoId);
-                        if (result2.bool && result2.links?.length) {
-                            const card = result2.links[0];
-                            if (lib.filter.canBeGained(card, player, target)) await target.gain(card, player, 'giveAuto');
-                            else {
-                                target.chat('我焯！冰！');
-                                game.log('但', card, '不能被', player, '获得！');
+                trigger: { player: 'phaseDrawEnd' },
+                frequent: true,
+                async content(event, trigger, player) {
+                    await player.draw({ num: 2 });
+                    if (player.countCards('he') < 3 || !game.hasPlayer(current => player != current)) return;
+                    let result = await player.chooseCardTarget({
+                        prompt: "明势：请展示三张牌并令一名其他角色选择获得其中的一张牌",
+                        filterTarget: lib.filter.notMe,
+                        filterCard: true,
+                        selectCard: 3,
+                        position: 'he',
+                        forced: true,
+                        allowChooseAll: true,
+                        ai1(card) {
+                            return -get.value(card);
+                        },
+                        ai2(target) {
+                            const player = _status.event.player;
+                            if (player.hasSkill('dcsbmengmou') && !get.is.blocked('dcsbmengmou', player) && player.storage.dcsbmengmou && get.attitude(player, target) < 0) {
+                                return get.effect(target, { name: 'losehp' }, player, player);
                             }
-                        }
-                    });
+                            return get.attitude(player, target);
+                        },
+                    }).forResult();
+                    if (!result?.bool || !result.targets?.length) return;
+                    const target = result.targets[0];
+                    const cards = result.cards;
+                    await player.showCards(cards, get.translation(player) + '发动了【明势】');
+                    result = await target.chooseButton(['明势：请获得其中一张牌', cards], true).set('ai', button => get.value(button.link)).set("source", player).forResult();
+                    if (result?.bool) {
+                        const card = result.links[0];
+                        if (lib.filter.canBeGained(card, player, target)) await target.gain({ cards: [card], giver: player, animate: 'giveAuto' });
+                        else game.log('但', card, '不能被', player, '获得！');
+                    }
                 },
             },
             minimengmou: {
@@ -35298,28 +35337,22 @@ const packs = function () {
                     global: ['loseAsyncAfter'],
                 },
                 filter(event, player) {
-                    if (event.name.indexOf('lose') == 0) return event.type == 'discard' && event.getl(player).cards2.filter(card => get.position(card, true) == 'd' && !player.getStorage('minilianshi').includes(get.suit(card, player))).length > 0;
+                    if (event.name.startsWith('lose')) return event.type == 'discard' && event.getl(player).cards2.filter(card => get.position(card, true) == 'd' && !player.getStorage('minilianshi').includes(get.suit(card, player))).length > 0;
                     return event.cards?.some(card => !player.getStorage('minilianshi').includes(get.suit(card, player)) && lib.suit.includes(get.suit(card, player)));
                 },
                 forced: true,
-                content() {
-                    'step 0'
-                    var cards;
-                    if (trigger.name.indexOf('lose') == 0) cards = trigger.getl(player).cards2.filter(card => get.position(card, true) == 'd');
-                    else cards = trigger.cards;
-                    event.cards = cards;
-                    var suits = cards.reduce((list, card) => list.add(get.suit(card, player)), []);
-                    suits = suits.filter(suit => !player.getStorage('minilianshi').includes(suit));
-                    player.markAuto('minilianshi', suits);
-                    player.storage.minilianshi.sort((a, b) => lib.suit.indexOf(b) - lib.suit.indexOf(a));
-                    player.addTip('minilianshi', get.translation('minilianshi') + player.getStorage('minilianshi').reduce((str, suit) => str + get.translation(suit), ""));
-                    'step 1'
-                    if (player.getStorage('minilianshi').length >= 4) {
-                        player.draw();
-                        if (player.isDamaged()) player.recover(get.number(cards[cards.length - 1], player));
-                        player.unmarkSkill('minilianshi');
-                        delete player.storage.minilianshi;
-                        player.removeTip('minilianshi');
+                async content(event, trigger, player) {
+                    let cards = trigger.cards, skill = event.name;
+                    if (trigger.name.startsWith('lose')) cards = trigger.getl(player).cards2.filter(card => get.position(card, true) === 'd');
+                    player.markAuto(skill, cards.reduce((list, card) => list.add(get.suit(card, player)), []));
+                    player.storage[skill].sort((a, b) => lib.suit.indexOf(b) - lib.suit.indexOf(a));
+                    game.broadcastAll((player, skill, list) => player.storage[skill] = list, player, skill, player.storage[skill]);
+                    player.addTip(skill, [skill, ...player.storage[skill]].map(get.translation).join(''));
+                    if (player.storage[skill].length >= 4) {
+                        await player.draw();
+                        if (player.isDamaged()) await player.recover(get.number(cards[cards.length - 1], player));
+                        player.removeTip(skill);
+                        player.unmarkSkill(skill);
                     }
                 },
                 intro: {
@@ -45794,7 +45827,7 @@ const packs = function () {
             minixianshu: '贤淑',
             minixianshu_info: '出牌阶段，你可以将一张“箜篌”正面向上交给一名其他角色，然后你摸X张牌（X为你与其的体力值之差且至少为1，至多为5）。若此牌为红色，且该角色的体力值小于等于你，则其回复1点体力；若此牌为黑色，且该角色的体力值大于等于你，则其失去1点体力。',
             minimingshi: '明势',
-            minimingshi_info: '摸牌阶段，你可以多摸两张牌。若如此做，此阶段结束时，你展示三张牌并令一名其他角色选择获得其中的一张牌。',
+            minimingshi_info: '摸牌阶段结束时，你可以摸两张牌。若如此做，你展示三张牌并令一名其他角色选择获得其中的一张牌。',
             minimengmou: '盟谋',
             minimengmou_info: '转换技。①游戏开始时，你可以转换此技能状态；②每回合每项各限一次，当你获得其他角色的牌后或其他角色获得你的牌后，你可以令你或其：阳，使用至多X张【杀】，且其每以此法造成1点伤害则回复1点体力；阴，打出至多X张【杀】，然后其每少打出一张则失去1点体力。（X为你的体力上限）',
             minijianyu: '翦羽',
