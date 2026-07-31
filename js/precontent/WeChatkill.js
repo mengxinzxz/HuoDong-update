@@ -57,7 +57,7 @@ const packs = function () {
                     ...[],
                 ].map(i => `wechat_${i}`),
                 wechat_zhiyin: ['lvmeng', 'yuanshu', 'caorui', 'pangtong', 'qinmi', 'zhugeke', 'mayunlu', 'bulianshi', 'diaochan', 'taishici', 'luxun', 'sunshangxiang', 'xunyou', 'dianwei', 'zhaoyun', 'xinxianying', 'guohuanghou', 'kongrong', 'caopi', 'jiaxu', 'zhangfei', 'dongzhuo', 'wangyi', 'zhangchunhua', 'hetaihou', 'zhurong', 'jiangwei', 'caozhi', 'liubei', 'sunce', 'xunyu', 'zhenji', 'xuzhu', 'yuanshao', 'lusu', 'guojia', 'lvbu', 'daqiao', 'xiaoqiao', 'caocao', 'zhugeliang', 'simayi', 'machao', 'huangyueying', 'caiwenji', 'zhouyu', 'sunquan', 'guanyu'].map(i => `wechat_zhiyin_${i}`),
-                wechat_zhi: ['zhushixing', 'liubiao', 'caozhi', 'xushi', 'old_yuanshu', 'caopi', 'sunquan', 'liubei', 'yuanshu', 'fuhuanghou', 'caojie', 'caocao', 'zhangjiao'].map(i => `wechat_zhi_${i}`),
+                wechat_zhi: ['zhushixing', 'liubiao', 'caozhi', 'xushi', 'old_yuanshu', 'caopi', 'sunquan', 'liubei', 'yuanshu', 'fuhuanghou', 'caojie', 'caocao', 'zhangjiao', 'yanghu'].map(i => `wechat_zhi_${i}`),
                 wechat_shengzhiyifa: ['baixiang', 'hema', 'gaoluji', 'mashe', 'yingjiang', 'yuehanniu', 'luotuo', 'hansimao', 'dihuangxia', 'yanlongxia', 'nailong'].map(i => `wechat_${i}`),//任何答辩，终将绳之以法！！！！！
             },
         },
@@ -295,6 +295,7 @@ const packs = function () {
             wechat_zhi_caozhi: ['male', 'wei', 3, ['wechatgaoshi', 'wechatshimin']],
             wechat_zhi_liubiao: ['male', 'qun', 3, ['wechatguanji', 'wechatxiyang']],
             wechat_zhi_zhushixing: ['male', 'wei', 4, ['wechatxunjing', 'wechatqiusuo']],
+            wechat_zhi_yanghu: ['male', 'wei', 4, ['wechatsuigong', 'wechatyuansi', 'wechatyilue']],
             //限时武将
             wechat_nailong: ['male', 'qun', 4, ['wechatdunshi', 'wechattanchi']],
             wechat_mashe: ['male', 'qun', 4, ['wechatgenggeng', 'wechattanpai']],
@@ -22573,6 +22574,262 @@ const packs = function () {
                     }
                 },
             },
+            //志羊祜
+            wechatsuigong: {
+                enable: "phaseUse",
+                usable: 1,
+                filterCard(card) {
+                    return get.position(card) === "e" && player.canRecast(card);
+                },
+                selectCard: [1, 1],
+                position: "e",
+                discard: false,
+                lose: false,
+                delay: false,
+                check(card) {
+                    return 6 - get.value(card);
+                },
+                async content(event, trigger, player) {
+                    await player.recast(event.cards);
+                    const hasOutRange = game.hasPlayer(target => target !== player && !player.inRange(target) && target.hasCards("ej"));
+                    const hasInRange = game.hasPlayer(target => target !== player && player.inRange(target) && target.hasCards("h"));
+                    if (!hasOutRange && !hasInRange) return;
+                    const choices = [];
+                    const choiceList = [];
+                    if (hasOutRange) {
+                        choices.push("选项一");
+                        choiceList.push("弃置攻击范围外的一名其他角色场上的一张牌");
+                    }
+                    if (hasInRange) {
+                        choices.push("选项二");
+                        choiceList.push("获得攻击范围内的一名其他角色的一张手牌");
+                    }
+                    const control = await player
+                        .chooseControl(choices)
+                        .set("choiceList", choiceList)
+                        .set("prompt", "请选择〖绥攻〗的一项效果")
+                        .forResult();
+                    if (control.control === "选项一") {
+                        const targetResult = await player
+                            .chooseTarget({
+                                filterTarget(card, player, target) {
+                                    return target !== player && !player.inRange(target) && target.hasCards("ej");
+                                },
+                                ai(target) {
+                                    if (get.attitude(player, target) < 0) return 10;
+                                    return 0;
+                                },
+                                prompt: "选择一名攻击范围外的角色，弃置其场上的一张牌",
+                            })
+                            .forResult();
+                        if (targetResult.bool) {
+                            const target = targetResult.targets[0];
+                            await player.discardPlayerCard({ target, position: "ej", forced: true });
+                        }
+                    } else if (control.control === "选项二") {
+                        const targetResult = await player
+                            .chooseTarget({
+                                filterTarget(card, player, target) {
+                                    return target !== player && player.inRange(target) && target.hasCards("h");
+                                },
+                                ai(target) {
+                                    if (get.attitude(player, target) < 0) return 10;
+                                    return 0;
+                                },
+                                prompt: "选择一名攻击范围内的角色，获得其一张手牌",
+                            })
+                            .forResult();
+                        if (targetResult.bool) {
+                            const target = targetResult.targets[0];
+                            await player.gainPlayerCard({ target, position: "h", forced: true });
+                        }
+                    }
+                },
+                ai: {
+                    order: 7,
+                    result: {
+                        player: 1,
+                    },
+                },
+            },
+            wechatyuansi: {
+                mark: true,
+                marktext: "思",
+                intro: {
+                    content(storage, player) {
+                        const sha = player.getStorage("wechatyuansi_sha", 0);
+                        const draw = player.getStorage("wechatyuansi_draw", 0);
+                        return "出【杀】次数+" + sha + "次<br>摸牌阶段摸牌数+" + (draw * 2) + "张";
+                    },
+                    nocount: true,
+                },
+                init(player) {
+                    player.setStorage("wechatyuansi_sha", 0);
+                    player.setStorage("wechatyuansi_draw", 0);
+                },
+                subSkill: {
+                    mod: {
+                        silent: true,
+                        popup: false,
+                        mod: {
+                            cardUsable(card, player, num) {
+                                if (card.name === "sha") return num + player.getStorage("wechatyuansi_sha", 0);
+                            },
+                        },
+                        trigger: { player: "phaseDrawBegin" },
+                        forced: true,
+                        filter(event, player) {
+                            return player.getStorage("wechatyuansi_draw", 0) > 0;
+                        },
+                        async content(event, trigger, player) {
+                            trigger.num += player.getStorage("wechatyuansi_draw", 0) * 2;
+                        },
+                    },
+                },
+                group: ["wechatyuansi_mod"],
+                trigger: { player: "phaseDrawAfter" },
+                filter(event, player) {
+                    if (!event.cards?.some(card => get.position(card) === "h")) return false;
+                    const sha = player.getStorage("wechatyuansi_sha", 0);
+                    const draw = player.getStorage("wechatyuansi_draw", 0);
+                    return sha < 3 || draw < 3;
+                },
+                check(event, player) {
+                    return 1;
+                },
+                async cost(event, trigger, player) {
+                    const cards = trigger.cards?.filter(card => get.position(card) === "h") ?? [];
+                    if (cards.length === 0) return;
+                    const cardResult = await player
+                        .chooseCard({
+                            filterCard(card) {
+                                return cards.includes(card);
+                            },
+                            select: [1, 1],
+                            prompt: "是否将一张摸牌阶段获得的牌置入牌堆底？",
+                        })
+                        .forResult();
+                    if (!cardResult.bool) return;
+                    const sha = player.getStorage("wechatyuansi_sha", 0);
+                    const draw = player.getStorage("wechatyuansi_draw", 0);
+                    const choices = [];
+                    const choiceList = [];
+                    if (sha < 3) {
+                        choices.push("选项一");
+                        choiceList.push("出牌阶段使用【杀】的次数上限+1");
+                    }
+                    if (draw < 3) {
+                        choices.push("选项二");
+                        choiceList.push("摸牌阶段的摸牌数+2");
+                    }
+                    if (sha < 3 || draw < 3) {
+                        choices.push("背水");
+                        choiceList.push("减1点体力上限");
+                    }
+                    const control = await player
+                        .chooseControl(choices)
+                        .set("choiceList", choiceList)
+                        .set("prompt", "请选择〖远思〗的一项效果")
+                        .forResult();
+                    player.setStorage("wechatyuansi_control", control.control);
+                    event.result = {
+                        bool: true,
+                        cards: cardResult.cards,
+                    };
+                },
+                async content(event, trigger, player) {
+                    for (const card of event.cards) {
+                        card.remove();
+                        ui.cardPile.appendChild(card);
+                    }
+                    const sha = player.getStorage("wechatyuansi_sha", 0);
+                    const draw = player.getStorage("wechatyuansi_draw", 0);
+                    const control = player.getStorage("wechatyuansi_control", "");
+                    player.setStorage("wechatyuansi_control", "");
+                    if (control === "选项一") {
+                        player.setStorage("wechatyuansi_sha", sha + 1);
+                        game.log(player, "出牌阶段使用【杀】的次数上限+1");
+                    } else if (control === "选项二") {
+                        player.setStorage("wechatyuansi_draw", draw + 1);
+                        game.log(player, "摸牌阶段的摸牌数+2");
+                    } else if (control === "背水") {
+                        await player.loseMaxHp(1);
+                        if (sha < 3) player.setStorage("wechatyuansi_sha", sha + 1);
+                        if (draw < 3) player.setStorage("wechatyuansi_draw", draw + 1);
+                        game.log(player, "减1点体力上限");
+                    }
+                    player.markSkill("wechatyuansi");
+                },
+                onremove(player) {
+                    player.setStorage("wechatyuansi_sha", 0);
+                    player.setStorage("wechatyuansi_draw", 0);
+                },
+            },
+            wechatyilue: {
+                trigger: { player: "dieBegin" },
+                limited: true,
+                limit: { game: 1 },
+                subSkill: {
+                    bottom: {
+                        mark: true,
+                        intro: {
+                            content: "剩余#个回合从牌堆底摸牌",
+                        },
+                        trigger: { player: ["phaseDrawBegin", "phaseAfter"] },
+                        forced: true,
+                        filter(event, player) {
+                            return player.countMark("wechatyilue_bottom") > 0;
+                        },
+                        async content(event, trigger, player) {
+                            if (event.triggername === "phaseDrawBegin") {
+                                const num = trigger.num;
+                                trigger.num = 0;
+                                if (num > 0) {
+                                    const bottomCards = get.bottomCards(num);
+                                    const actualNum = Math.min(bottomCards.length, num);
+                                    if (actualNum > 0) {
+                                        await player.gain(bottomCards.slice(0, actualNum), "draw");
+                                    }
+                                    game.log(player, "从牌堆底摸了" + get.cnNumber(actualNum) + "张牌");
+                                }
+                            } else if (event.triggername === "phaseAfter") {
+                                player.removeMark("wechatyilue_bottom", 1);
+                                if (player.countMark("wechatyilue_bottom") <= 0) {
+                                    player.removeSkill("wechatyilue_bottom");
+                                }
+                            }
+                        },
+                    },
+                },
+                check(event, player) {
+                    return game.hasPlayer(target => target !== player && get.attitude(player, target) > 0) ? 1 : 0;
+                },
+                async cost(event, trigger, player) {
+                    const result = await player
+                        .chooseTarget({
+                            filterTarget(card, player, target) {
+                                return target !== player && target.isAlive();
+                            },
+                            ai(target) {
+                                return get.attitude(player, target);
+                            },
+                            prompt: "是否发动〖遗略〗，令一名其他角色从牌堆底摸牌？",
+                        })
+                        .forResult();
+                    if (!result.bool) return;
+                    event.result = {
+                        bool: true,
+                        targets: result.targets,
+                    };
+                },
+                async content(event, trigger, player) {
+                    player.awakenSkill(event.name);
+                    const target = event.targets[0];
+                    target.addMark("wechatyilue_bottom", 2);
+                    target.addSkill("wechatyilue_bottom");
+                    game.log(player, "令", target, "接下来的两个回合内，摸牌阶段改为从牌堆底摸牌");
+                },
+            },
         },
         dynamicTranslate: {
             wechatxiangzhi(player) {
@@ -23769,6 +24026,13 @@ const packs = function () {
             wechatxunjing_info: '出牌阶段限一次，你可以观看牌堆顶的一张牌A。若如此做，你令你的上家交给你一张牌，若此牌与牌A花色不同，你可以对其上家重复此流程。然后若你于此流程中获得过花色为牌A花色的牌，你将X张手牌交给一名其他角色（X为你此次以此法获得的牌数）。',
             wechatqiusuo: '求索',
             wechatqiusuo_info: '你的第一个回合开始时，你获得一张点数为2的牌。当你失去此牌时，你从牌堆或弃牌堆中获得一张点数为此牌点数+1的非装备牌，然后若你本回合因此获得至少三张牌，则你本回合不能使用、打出或弃置此牌。若你未以此法获得牌，你的手牌上限改为无限。',
+            wechat_zhi_yanghu: '志羊祜',
+            wechatsuigong: '绥攻',
+            wechatsuigong_info: '出牌阶段限一次，你可重铸装备区内的一张牌，然后选择一项：1.弃置攻击范围外的一名其他角色场上的一张牌；2.获得攻击范围内的一名其他角色的一张手牌。',
+            wechatyuansi: '远思',
+            wechatyuansi_info: '摸牌阶段结束时，你可将一张以此法获得的牌至于牌堆底，然后选择一项：1.出牌阶段使用【杀】的次数上限+1；2.摸牌阶段的摸牌数+2；背水：减1点体力上限（每个选项至多选择三次）。',
+            wechatyilue: '遗略',
+            wechatyilue_info: '限定技，当你死亡时，你可令一名其他角色于其接下来的两个回合内，摸牌阶段改为从牌堆底摸牌。',
             wechat_sb_zhenji: '小程序谋甄宓',
             wechatsbluoshen: '洛神',
             wechatsbluoshen_info: '准备阶段，你可以选择一名角色。从其开始按逆时针方向的X名其他角色同时展示一张手牌（X为场上存活角色数的一半，向上取整）。你获得其中的黑色牌且这些牌不计入本回合手牌上限并可以使用其中的红色牌（无距离和次数限制），然后你弃置剩余牌。',
