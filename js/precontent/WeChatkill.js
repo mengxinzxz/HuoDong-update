@@ -22800,7 +22800,6 @@ const packs = function () {
                                 switch (control) {
                                     case '选项一':
                                         return 2;
-                                        break;
                                     case '选项二':
                                         return 3;
                                     case '背水！':
