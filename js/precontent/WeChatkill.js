@@ -15949,12 +15949,12 @@ const packs = function () {
                     if (!source) return false;
                     const storage = player.getStorage('wechatxiangyi_used');
                     const num = Math.min(5, player.countCards('h'));
-                    return (player.getStorage('wechatweiqi_target').includes(source) && !storage.includes('ohter')) || (player !== _status.currentPhase && player == source && !storage.includes('self') && game.hasPlayer(current => player.getStorage('wechatweiqi_target').includes(current) && current.countCards('h') < num));
+                    return (player.getStorage('wechatweiqi_target').includes(source) && !storage.includes('self')) || (player !== _status.currentPhase && player == source && !storage.includes('other') && game.hasPlayer(current => player.getStorage('wechatweiqi_target').includes(current) && current.countCards('h') < num));
                 },
                 async cost(event, trigger, player) {
                     const { source } = trigger;
                     if (player.getStorage('wechatweiqi_target').includes(source)) {
-                        event.result = await player.chooseBool(get.prompt(event.skill), '你可以摸一张牌').forResult();
+                        event.result = await player.chooseBool(get.prompt(event.skill), '你可以摸两张牌').forResult();
                     }
                     else {
                         const num = Math.min(5, player.countCards('h'));
@@ -15966,7 +15966,7 @@ const packs = function () {
                 async content(event, trigger, player) {
                     const { targets } = event;
                     const bool = get.itemtype(targets) == 'players';
-                    player.addTempSkill(event.name + '_used', 'phaseUseEnd');
+                    player.addTempSkill(event.name + '_used');
                     player.markAuto(event.name + '_used', [bool ? 'ohter' : 'self']);
                     if (bool) {
                         const num = Math.min(5, player.countCards('h'));
@@ -23932,7 +23932,7 @@ const packs = function () {
             wechatweiqi: '违器',
             wechatweiqi_info: `${get.poptip('rule_yizhiSkill')}。①游戏开始时，你选择一名其他角色，称为“违器”角色。②“违器”角色的出牌阶段开始时，你可以观看其手牌并选择其中至多X张牌（X为你的体力值），本回合其使用以此法选择的牌结算结束后，昔：其须交给你一张手牌；今：你可以使用一张同名牌。③“违器”角色的出牌阶段结束时，若其手牌中不包含此阶段你以此法选择的牌，或当“违器”角色死亡后，你重新执行一次选择“违器”角色并${get.poptip('rule_yizhi')}，然后你摸两张牌。`,
             wechatxiangyi: '向义',
-            wechatxiangyi_info: '每回合各限一次。①当“违器”角色造成伤害后，你可以摸两张牌。②当你于回合外造成伤害后，你可以令所有“违器”角色将手牌摸至Y张（Y为你的手牌数且至多为5）。',
+            wechatxiangyi_info: '每回合各限一次。①当“违器”角色造成伤害后，你可以摸两张牌。②当你于回合外造成伤害后，你可以令“违器”角色将手牌摸至Y张（Y为你的手牌数且至多为5）。',
             wechat_zhi_caocao: '志曹操',
             wechatjishi: '济时',
             wechatjishi_info: '每轮每种牌名限一次。你可以弃置一张牌并视为使用一张【桃】。若如此做，本轮你下一次以此法使用牌时失去1点体力。',
