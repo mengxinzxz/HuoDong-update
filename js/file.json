@@ -6693,8 +6693,16 @@
             "size": 132676
         },
         {
+            "path": "image/character/Mbaby_star_dongzhuo.jpg",
+            "size": 110606
+        },
+        {
             "path": "image/character/Mbaby_star_simayi.jpg",
             "size": 155903
+        },
+        {
+            "path": "image/character/Mbaby_star_sunjian.jpg",
+            "size": 144372
         },
         {
             "path": "image/character/Mbaby_star_sunshangxiang.jpg",
@@ -6715,6 +6723,10 @@
         {
             "path": "image/character/Mbaby_star_zhangchunhua.jpg",
             "size": 139328
+        },
+        {
+            "path": "image/character/Mbaby_star_zhangzhao.jpg",
+            "size": 134642
         },
         {
             "path": "image/character/Mbaby_sunce.jpg",
@@ -9094,7 +9106,7 @@
         },
         {
             "path": "js/precontent/index.js",
-            "size": 43419
+            "size": 43465
         },
         {
             "path": "js/precontent/MiNiAppkill.js",
@@ -9106,7 +9118,7 @@
         },
         {
             "path": "js/precontent/MiNikill.js",
-            "size": 2845900
+            "size": 2852182
         },
         {
             "path": "js/precontent/MX_feihongyinxue.js",

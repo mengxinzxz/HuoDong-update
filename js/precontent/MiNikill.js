@@ -37,7 +37,7 @@ const packs = function () {
                     ...[],
                 ].map(i => `Mbaby_${i}`),
                 MiNi_starCharacter: [
-                    ...['dongzhuo', 'dingfeng', 'simayi', 'zhangchunhua', 'yuanshao', 'sunshangxiang', 'xunyu', 'yuanshu'].map(i => `star_${i}`),
+                    ...['zhangzhao', 'sunjian', 'dongzhuo', 'dingfeng', 'simayi', 'zhangchunhua', 'yuanshao', 'sunshangxiang', 'xunyu', 'yuanshu'].map(i => `star_${i}`),
                     ...['ganning'].map(i => `yj_${i}`),
                 ].map(i => `Mbaby_${i}`),
                 MiNi_yueCharacter: ['caiwenji', 'zhoufei', 'diaochan', 'daqiao'].map(i => `Mbaby_yue_${i}`),
@@ -350,6 +350,8 @@ const packs = function () {
             Mbaby_yue_zhoufei: ['female', 'wu', 3, ['minilingkong', 'minixianshu'], ['name:周|null']],
             Mbaby_dc_sb_lusu: ['male', 'wu', 3, ['minimingshi', 'minimengmou']],
             Mbaby_star_dingfeng: ['male', 'wu', 4, ['stardangchen', 'minijianyu']],
+            Mbaby_star_sunjian: ['male', 'wu', '4/5', ['starruijun', 'minigangyi']],
+            Mbaby_star_zhangzhao: ['male', 'wu', 3, ['starzhongyan', 'minijinglun']],
             //群
             Mbaby_gaoshun: ['male', 'qun', 4, ['minixianzhen', 'minijinjiu']],
             Mbaby_xin_gaoshun: ['male', 'qun', 4, ['minirexianzhen', 'minirejinjiu'], ['character:Mbaby_gaoshun']],
@@ -22419,6 +22421,113 @@ const packs = function () {
                     player.draw(trigger.getl(target).cards2.filter(card => get.type(card, null, false) === 'equip').length);
                 },
             },
+            // 星孙坚
+            minigangyi: {
+                audio: 'stargangyi',
+                trigger: { player: 'phaseEnd' },
+                filter(event, player) {
+                    return !player.hasHistory('sourceDamage');
+                },
+                forced: true,
+                async content(event, trigger, player) {
+                    player.addSkill(event.name + '_effect');
+                    player.addMark(event.name + '_effect', 1, false);
+                },
+                group: 'minigangyi_recover',
+                subSkill: {
+                    recover: {
+                        audio: 'stargangyi',
+                        trigger: { player: 'recoverBegin' },
+                        filter(event, player) {
+                            const evt = event.getParent(3);
+                            if (!player.isDying() || evt.type !== 'dying') return false;
+                            return ['tao', 'jiu'].includes(event.getParent().name);
+                        },
+                        forced: true,
+                        async content(event, trigger, player) {
+                            trigger.num++;
+                        },
+                        ai: {
+                            effect: {
+                                target(card, player, target) {
+                                    if (target.hp <= 0 && get.tag(card, 'recover')) return 2;
+                                },
+                            },
+                        },
+                    },
+                    effect: {
+                        charlotte: true,
+                        onremove: true,
+                        intro: { content: '下回合使用【杀】的次数上限+#' },
+                        trigger: { player: 'phaseBegin' },
+                        forced: true,
+                        popup: false,
+                        async content(event, trigger, player) {
+                            const num = player.countMark(event.name);
+                            player.removeSkill(event.name);
+                            if (num > 0) {
+                                player.addTempSkill('minigangyi_sha');
+                                player.addMark('minigangyi_sha', num, false);
+                            }
+                        },
+                    },
+                    sha: {
+                        charlotte: true,
+                        onremove: true,
+                        intro: { content: '本回合使用【杀】的次数上限+#' },
+                        mod: {
+                            cardUsable(card, player, num) {
+                                if (card.name == 'sha') return num + player.countMark('minigangyi_sha');
+                            },
+                        },
+                    },
+                }
+            },
+            // 星张昭
+            minijinglun: {
+                audio: 'starjinglun',
+                trigger: { global: "damageSource" },
+                filter(event, player) {
+                    const target = event.source;
+                    return target && target.isIn() && get.distance(player, target) <= 1;
+                },
+                usable: 1,
+                async cost(event, trigger, player) {
+                    const target = trigger.source, num = target.countCards('e');
+                    if (num > 0) {
+                        const result = await player.chooseControlList([`令其摸${get.cnNumber(num)}张牌并对其发动${get.poptip('starzhongyan')}`, `对其发动${get.poptip('starzhongyan')}并令其弃置${get.cnNumber(num)}张牌`]).set('prompt', get.prompt(event.skill, target)).set('ai', () => {
+                            return get.event().choice;
+                        }).set('choice', (() => {
+                            const att = get.sgnAttitude(player, target);
+                            if (att > 0) return 0;
+                            if (att < 0) return 1;
+                            return 'cancel2';
+                        })()).forResult();
+                        event.result = {
+                            bool: result.control !== 'cancel2',
+                            cost_data: result.index
+                        }
+                    }
+                    else {
+                        event.result = await player.chooseBool(`${get.prompt(event.skill, target)}`, `对其发动${get.poptip('starzhongyan')}`).set('choice', get.attitude(player, target) > 0).forResult();
+                        if (event.result.bool) event.result.cost_data = 0;
+                    }
+                },
+                logTarget: 'source',
+                async content(event, trigger, player) {
+                    const target = event.targets[0];
+                    const index = event.cost_data;
+                    if (index == 0) {
+                        const num = target.countCards('e');
+                        await target.draw(num);
+                    }
+                    await player.useSkill('starzhongyan', [target]);
+                    if (index == 1) {
+                        const num = target.countCards('e');
+                        await target.chooseToDiscard(num, 'he', 'allowChooseAll');
+                    }
+                },
+            },
             //群
             miniqieting: {
                 audio: 'qieting',
@@ -32601,7 +32710,7 @@ const packs = function () {
                 async content(event, trigger, player) {
                     event.result = await player.chooseTarget(get.prompt2(event.skill), (card, player, target) => {
                         return target.getHp() >= player.getHp() || target.countCards('h') >= player.countCards('h');
-                    },[1, player.getHp()]).set('ai', target => {
+                    }, [1, player.getHp()]).set('ai', target => {
                         const player = get.player();
                         if (get.attitude(player, target) >= 0) {
                             return 0;
@@ -45560,6 +45669,8 @@ const packs = function () {
             Mbaby_yue_zhoufei: '欢杀乐周妃',
             Mbaby_dc_sb_lusu: '欢杀谋鲁肃',
             Mbaby_star_dingfeng: '欢杀星丁奉',
+            Mbaby_star_sunjian: '欢杀星孙坚',
+            Mbaby_star_zhangzhao: '欢杀星张昭',
             minizhiheng: '制衡',
             minizhiheng_info: '出牌阶段限一次，你可以弃置任意张牌并摸等量张牌。若你以此法弃置了全部手牌，则你额外摸一张牌。若本阶段你第一次发动〖制衡〗获得的牌未包含延时锦囊牌，则本阶段你可以额外发动一次〖制衡〗。若本阶段你第二次发动〖制衡〗获得的牌均为基本牌，则本阶段你可以额外发动一次〖制衡〗。',
             minijiuyuan: '救援',
@@ -45864,6 +45975,10 @@ const packs = function () {
             minimengmou_info: '转换技。①游戏开始时，你可以转换此技能状态；②每回合每项各限一次，当你获得其他角色的牌后或其他角色获得你的牌后，你可以令你或其：阳，使用至多X张【杀】，且其每以此法造成1点伤害则回复1点体力；阴，打出至多X张【杀】，然后其每少打出一张则失去1点体力。（X为你的体力上限）',
             minijianyu: '翦羽',
             minijianyu_info: '锁定技，其他角色在你回合内失去一张装备牌后，你摸一张牌。',
+            minigangyi: '刚毅',
+            minigangyi_info: '锁定技。①回合结束时，若你本回合没有造成伤害，你下回合使用【杀】的次数上限+1。②②当你处于濒死状态时，以你为目标的【桃】或【酒】的回复值+1。',
+            minijinglun: '经纶',
+            minijinglun_info: `每回合限一次，当你距离1以内的角色造成伤害后，你可以选择一项：1.令其摸X张牌并对其发动${get.poptip('starzhongyan')}；2.对其发动${get.poptip('starzhongyan')}并令其弃置X张牌（X为其装备区的牌数）。`,
             //群
             Mbaby_zuoci: '欢杀左慈',
             Mbaby_gaoshun: '欢杀高顺',
@@ -46463,7 +46578,7 @@ const packs = function () {
             minishuangjia: '霜笳',
             minishuangjia_info: '锁定技。①游戏开始，你将初始手牌标记为“胡笳”。②你的“胡笳”牌不计入手牌上限。③其他角色至你的距离+X（X为你的“胡笳”数且至多为5）。④回合开始时，若你没有“胡笳”手牌，则本回合摸牌阶段你获得的牌标记为“胡笳”。',
             minizhangrong: '掌戎',
-            minizhangrong_info: '准备阶段，你可以选择令至多X名体力值或手牌数不小于你的角色，这些角色中：1.体力值不小于你的角色各失去1点体力；2.手牌数不小于你的角色各弃置一张手牌（X为你的体力值）。然后，你摸等同于选择角色数的牌。',
+            minizhangrong_info: '准备阶段，你可以选择至多X名体力值或手牌数不小于你的角色，这些角色中：1.体力值不小于你的角色各失去1点体力；2.手牌数不小于你的角色各弃置一张手牌（X为你的体力值）。然后，你摸等同于选择角色数的牌。',
             //神
             Mbaby_shen_lvbu: '欢杀神吕布',
             Mbaby_shen_guanyu: '欢杀神关羽',

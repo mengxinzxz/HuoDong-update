@@ -821,7 +821,7 @@ export async function precontent(bilibilicharacter) {
                 data: (() => {
                     _status.HDWJ_ChangeLog_character = {
                         MiNiAppkill: Object.keys(MiNiAppkill().character),
-                        MiNikill: ['Mbaby_star_dongzhuo'],
+                        MiNikill: ['Mbaby_star_dongzhuo', 'Mbaby_star_sunjian', 'Mbaby_star_zhangzhao'],
                         WeChatkill: ['wechat_sb_zhurong'],
                     };
                     return Object.values(_status.HDWJ_ChangeLog_character).flat();
