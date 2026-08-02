@@ -32718,7 +32718,7 @@ const packs = function () {
                         let eff1 = target.getHp() >= player.getHp() ? get.effect(target, { name: 'losehp' }, player, player) : 0;
                         let eff2 = target.countCards('h') >= player.countCards('h') ? get.effect(target, { name: 'guohe_copy2' }, player, player) : 0;
                         return eff1 + eff2;
-                    })
+                    }).forResult();
                 },
                 async content(event, trigger, player) {
                     for (const target of event.targets.sortBySeat()) {
