@@ -27,7 +27,7 @@ const walkFiles = dir => {
     let result = [];
     //排除目录/文件
     const ignoreNames = new Set(['.git', '.github', 'node_modules', 'update_temp', 'update_backup']);
-    const ignoreFiles = new Set(['js/file.json', 'js/update.js']);
+    const ignoreFiles = new Set(['info.json', 'js/file.json']);
     for (const name of fs.readdirSync(dir)) {
         if (ignoreNames.has(name)) continue;
         const fullPath = path.join(dir, name);

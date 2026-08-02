@@ -9049,12 +9049,8 @@
             "size": 56654
         },
         {
-            "path": "info.json",
-            "size": 375
-        },
-        {
             "path": "js/config.js",
-            "size": 26221
+            "size": 26291
         },
         {
             "path": "js/content.js",
@@ -9123,6 +9119,10 @@
         {
             "path": "js/precontent/WeChatkill.js",
             "size": 1468192
+        },
+        {
+            "path": "js/update.js",
+            "size": 2183
         },
         {
             "path": "README.md",

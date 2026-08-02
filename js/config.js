@@ -142,6 +142,7 @@ export let config = {
 				this.textContent = '备份完毕，载入新内容中...';
 				await copyFiles('extension/活动武将/update_temp', 'extension/活动武将', needDownload);
 				for (const file of localFiles) {
+					if (new Set(['info.json', 'js/file.json']).has(file)) continue;
 					if (!remoteSet.has(file)) await game.promises.removeFile(`extension/活动武将/${file}`).catch(() => { });
 				}
 				//清理缓存
