@@ -350,7 +350,6 @@ const packs = function () {
             Mbaby_yue_zhoufei: ['female', 'wu', 3, ['minilingkong', 'minixianshu'], ['name:周|null']],
             Mbaby_dc_sb_lusu: ['male', 'wu', 3, ['minimingshi', 'minimengmou']],
             Mbaby_star_dingfeng: ['male', 'wu', 4, ['stardangchen', 'minijianyu']],
-            Mbaby_star_sunjian: ['male', 'wu', '4/5', ['starruijun', 'minigangyi']],
             Mbaby_star_zhangzhao: ['male', 'wu', 3, ['starzhongyan', 'minijinglun']],
             //群
             Mbaby_gaoshun: ['male', 'qun', 4, ['minixianzhen', 'minijinjiu']],
@@ -486,6 +485,7 @@ const packs = function () {
             Mbaby_dc_sb_liuxie: ['male', 'qun', 3, ['dcsbzhanban', 'dcsbchensheng', 'minitiancheng']],
             Mbaby_tianfeng: ['male', 'qun', 3, ['minisijian', 'minisuishi']],
             Mbaby_yue_caiwenji: ['female', 'qun', 3, ['minishuangjia', 'dcbeifen'], ['name:蔡|琰']],
+            Mbaby_star_sunjian: ['male', 'qun', '4/5', ['starruijun', 'minigangyi']],
             Mbaby_star_dongzhuo: ['male', 'qun', 4, ['starweilin', 'minizhangrong', 'starhaoshou'], ['zhu']],
             //神
             Mbaby_shen_zhugeliang: ['male', 'shen', 3, ['qixing', 'minikuangfeng', 'minidawu'], ['shu', 'name:诸葛|亮']],

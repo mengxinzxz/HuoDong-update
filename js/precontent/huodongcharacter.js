@@ -9332,8 +9332,7 @@ const packs = function () {
                         return event.numbers.reduce((sum, num) => sum + num, 0) === 10;
                     }).set('processAI', () => {
                         const { player, target } = get.event();
-                        if (get.attitude(player, target) > 0) return { bool: false };
-                        return { bool: true, numbers: [2, 2, 4, 2] };
+                        if (get.attitude(player, target) < 0) return [2, 2, 4, 2];
                     }).set('target', target).forResult();
                     if (result?.bool && result.numbers?.length) {
                         event.result = {
@@ -12069,11 +12068,11 @@ const packs = function () {
                     const bool1 = player.hp != num;
                     if (player.maxHp != num) {
                         const numx = player.maxHp - num;
-                        str += `${numx > 0 ? '减少' : '获得'}${Math.abs(numx)}点体力上限${bool1 || bool2 ? '' : '，然后'}`;
+                        str += `${numx > 0 ? '减少' : '增加'}${Math.abs(numx)}点体力上限${bool1 ? '' : '，然后'}`;
                     }
                     if (bool1) {
                         const numx = player.hp - num;
-                        str += `${bool2 ? '、' : '且'}${numx > 0 ? '失去' : '回复'}${Math.abs(numx)}点体力${bool2 ? '' : '，然后'}`;
+                        str += `且${numx > 0 ? '失去' : '回复'}${Math.abs(numx)}点体力，然后`;
                     }
                     str += '发动一次永久保留技能的〖北辰〗并获得〖无极〗。';
                     return str;
