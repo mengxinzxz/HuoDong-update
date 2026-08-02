@@ -32707,7 +32707,7 @@ const packs = function () {
                 filter(event, player, name) {
                     return player.getHp() > 0 && game.hasPlayer(current => current.getHp() >= player.getHp() || current.countCards('h') >= player.countCards('h'));
                 },
-                async content(event, trigger, player) {
+                async cost(event, trigger, player) {
                     event.result = await player.chooseTarget(get.prompt2(event.skill), (card, player, target) => {
                         return target.getHp() >= player.getHp() || target.countCards('h') >= player.countCards('h');
                     }, [1, player.getHp()]).set('ai', target => {
