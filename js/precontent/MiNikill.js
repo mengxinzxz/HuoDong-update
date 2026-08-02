@@ -37,7 +37,7 @@ const packs = function () {
                     ...[],
                 ].map(i => `Mbaby_${i}`),
                 MiNi_starCharacter: [
-                    ...['dingfeng', 'simayi', 'zhangchunhua', 'yuanshao', 'sunshangxiang', 'xunyu', 'yuanshu'].map(i => `star_${i}`),
+                    ...['dongzhuo', 'dingfeng', 'simayi', 'zhangchunhua', 'yuanshao', 'sunshangxiang', 'xunyu', 'yuanshu'].map(i => `star_${i}`),
                     ...['ganning'].map(i => `yj_${i}`),
                 ].map(i => `Mbaby_${i}`),
                 MiNi_yueCharacter: ['caiwenji', 'zhoufei', 'diaochan', 'daqiao'].map(i => `Mbaby_yue_${i}`),
@@ -484,6 +484,7 @@ const packs = function () {
             Mbaby_dc_sb_liuxie: ['male', 'qun', 3, ['dcsbzhanban', 'dcsbchensheng', 'minitiancheng']],
             Mbaby_tianfeng: ['male', 'qun', 3, ['minisijian', 'minisuishi']],
             Mbaby_yue_caiwenji: ['female', 'qun', 3, ['minishuangjia', 'dcbeifen'], ['name:蔡|琰']],
+            Mbaby_star_dongzhuo: ['male', 'qun', 4, ['starweilin', 'minizhangrong', 'starhaoshou'], ['zhu']],
             //神
             Mbaby_shen_zhugeliang: ['male', 'shen', 3, ['qixing', 'minikuangfeng', 'minidawu'], ['shu', 'name:诸葛|亮']],
             Mbaby_shen_lvbu: ['male', 'shen', 6, ['miniwuqian', 'minishenfen'], ['qun']],
@@ -32590,6 +32591,37 @@ const packs = function () {
                     }
                 }
             },
+            // 星董卓
+            minizhangrong: {
+                audio: 'dcshuangjia',
+                trigger: { player: 'phaseZhunbeiBegin' },
+                filter(event, player, name) {
+                    return player.getHp() > 0 && game.hasPlayer(current => current.getHp() >= player.getHp() || current.countCards('h') >= player.countCards('h'));
+                },
+                async content(event, trigger, player) {
+                    event.result = await player.chooseTarget(get.prompt2(event.skill), (card, player, target) => {
+                        return target.getHp() >= player.getHp() || target.countCards('h') >= player.countCards('h');
+                    },[1, player.getHp()]).set('ai', target => {
+                        const player = get.player();
+                        if (get.attitude(player, target) >= 0) {
+                            return 0;
+                        }
+                        let eff1 = target.getHp() >= player.getHp() ? get.effect(target, { name: 'losehp' }, player, player) : 0;
+                        let eff2 = target.countCards('h') >= player.countCards('h') ? get.effect(target, { name: 'guohe_copy2' }, player, player) : 0;
+                        return eff1 + eff2;
+                    })
+                },
+                async content(event, trigger, player) {
+                    for (const target of event.targets.sortBySeat()) {
+                        if (!target.isIn()) continue;
+                        const bool1 = target.getHp() >= player.getHp();
+                        const bool2 = target.countCards('h') >= player.countCards('h');
+                        if (bool1) await target.loseHp();
+                        if (bool2) await target.chooseToDiscard('h', true);
+                    }
+                    await player.draw(event.targets.length);
+                },
+            },
             //神
             miniwuqian: {
                 derivation: 'wushuang',
@@ -45966,6 +45998,7 @@ const packs = function () {
             Mbaby_dc_sb_liuxie: '欢杀谋刘协',
             Mbaby_tianfeng: '欢杀田丰',
             Mbaby_yue_caiwenji: '欢杀乐蔡琰',
+            Mbaby_star_dongzhuo: '欢杀星董卓',
             miniweidi: '伪帝',
             miniweidi_info: '弃牌阶段结束时，你可以将其中一张弃置的牌交给一名其他角色。',
             minimingce: '明策',
@@ -46429,6 +46462,8 @@ const packs = function () {
             minisuishi_info: '锁定技，其他角色受到伤害时，若伤害来源与你势力相同，你摸一张牌；其他角色死亡时，若其势力与你相同，你弃置至少一张手牌。',
             minishuangjia: '霜笳',
             minishuangjia_info: '锁定技。①游戏开始，你将初始手牌标记为“胡笳”。②你的“胡笳”牌不计入手牌上限。③其他角色至你的距离+X（X为你的“胡笳”数且至多为5）。④回合开始时，若你没有“胡笳”手牌，则本回合摸牌阶段你获得的牌标记为“胡笳”。',
+            minizhangrong: '掌戎',
+            minizhangrong_info: '准备阶段，你可以选择令至多X名体力值或手牌数不小于你的角色，这些角色中：1.体力值不小于你的角色各失去1点体力；2.手牌数不小于你的角色各弃置一张手牌（X为你的体力值）。然后，你摸等同于选择角色数的牌。',
             //神
             Mbaby_shen_lvbu: '欢杀神吕布',
             Mbaby_shen_guanyu: '欢杀神关羽',
