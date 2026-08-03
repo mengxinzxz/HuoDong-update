@@ -692,7 +692,7 @@ const packs = function () {
                                 if (get.position(card) === 'h' && _status.connectMode) return true;
                                 return lib.filter.cardDiscardable(card, player);
                             }, 'he')) return;
-                            if (card.name !== 'sha' && !(get.tag(event.card, 'damage') && get.type(event.card) === 'trick' && [...ui.selected.targets].add(target).length === 1)) return;
+                            if (card.name !== 'sha' && !(get.tag(card, 'damage') && get.type(card) === 'trick' && [...ui.selected.targets].add(target).length === 1)) return;
                             _status._liuli_check = true;
                             let min = 1, friend = get.attitude(player, target) > 0;
                             for (const current of game.filterPlayer()) {
