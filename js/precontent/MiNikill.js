@@ -32702,7 +32702,7 @@ const packs = function () {
             },
             // 星董卓
             minizhangrong: {
-                audio: 'dcshuangjia',
+                audio: 'starzhangrong',
                 trigger: { player: 'phaseZhunbeiBegin' },
                 filter(event, player, name) {
                     return player.getHp() > 0 && game.hasPlayer(current => current.getHp() >= player.getHp() || current.countCards('h') >= player.countCards('h'));
