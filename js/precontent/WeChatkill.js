@@ -23032,7 +23032,7 @@ const packs = function () {
                 filter(event, player) {
                     if (event.player === player || event.player.hasSkill('wechatxuechou_effect')) return false;
                     const reason = event.reason;
-                    if (!reason?.card || reason.card.name !== 'sha' || reason.player !== player) return false;
+                    if (!reason?.card || reason.card.name !== 'sha' || reason.source !== player) return false;
                     return player.getHistory('sourceDamage', evt => evt.player === event.player).reduce((sum, evt) => sum + evt.num, 0) >= event.player.maxHp;
                 },
                 forced: true,
@@ -23047,15 +23047,17 @@ const packs = function () {
                         mark: true,
                         marktext: '<span style="text-decoration: line-through;">桃</span>',
                         intro: { content: '其他角色不能对你使用【桃】' },
+                        mod: {
+                            targetEnabled(card, player, target) {
+                                if (card.name === 'tao' && player !== target) return false;
+                            },
+                        },
                         global: 'wechatxuechou_global',
                     },
                     global: {
                         mod: {
-                            cardEnabled(card, player, event) {
-                                if (card.name === 'tao' && target?.hasSkill('wechatxuechou_effect') && player !== target && target.isDying()) return false;
-                            },
-                            cardSavable() {
-                                return lib.skill.wechatxuechou_global.apply(this, arguments);
+                            cardSavable(card, player, target) {
+                                if (card.name === 'tao' && target?.hasSkill('wechatxuechou_effect') && player !== target) return false;
                             },
                         },
                     },
