@@ -22887,191 +22887,176 @@ const packs = function () {
             },
             //极赵娥
             wechatqianren: {
-                enable: "phaseUse",
+                enable: 'phaseUse',
                 usable: 1,
+                onChooseToUse(event) {
+                    if (!game.online && !event.wechatqianren) {
+                        const player = event.player;
+                        event.set('wechatqianren', player.getHistory('gain').map(evt => evt.cards ?? []).flat());
+                    }
+                },
+                filter(event, player) {
+                    const info = get.info('wechatqianren');
+                    return player.hasCard(card => {
+                        if (player._start_cards?.includes(card) || event.wechatqianren?.includes(card)) return false;
+                        return event.filterCard(get.autoViewAs(info.viewAs, [card]), player, event);
+                    }, info.position);
+                },
                 filterCard(card, player) {
-                    if (player._start_cards?.includes(card)) return false;
-                    if (player.getHistory("gain", evt => evt.cards?.includes(card)).length > 0) return false;
+                    const event = get.event();
+                    if (player._start_cards?.includes(card) || event.wechatqianren?.includes(card)) return false;
                     return true;
                 },
-                position: "he",
-                viewAs: { name: "sha", nature: "stab" },
+                position: 'he',
+                viewAs: {
+                    name: 'sha',
+                    nature: 'stab',
+                },
                 check(card) {
-                    if (get.name(card) === "sha") return 10;
+                    if (get.name(card) === 'sha') return 10;
                     return 8 - get.value(card);
                 },
-                prompt: "将一张牌当作刺【杀】使用",
-                intro: { content: "出牌阶段限一次，你可以将一张非初始手牌且非本回合获得的牌当作刺【杀】使用。若转换前的牌为【杀】，你可秘密选择一项：1.造成伤害后，此【杀】不计入使用次数；2.目标角色抵消此【杀】时，你获得其因此【杀】弃置的牌并摸一张牌。" },
-                ai: { order: 8, result: { player: 1 } },
-                group: ["wechatqianren_choose"],
+                precontent() {
+                    player.addTempSkill('wechatqianren_choose');
+                },
+                prompt: () => lib.translate.wechatqianren_info,
+                ai: {
+                    order(item, player) {
+                        const event = get.event(), info = get.info('wechatqianren');
+                        if (player.hasCard(card => {
+                            if (player._start_cards?.includes(card) || event.wechatqianren?.includes(card)) return false;
+                            const vcard = get.autoViewAs(info.viewAs, [card]);
+                            return event.filterCard(vcard, player, event) && player.hasValueTarget(vcard);
+                        }, info.position)) return get.order(info.viewAs, player) + 0.1;
+                        return 0.1;
+                    },
+                },
                 subSkill: {
                     choose: {
-                        trigger: { player: "useCard1" },
-                        direct: true,
+                        charlotte: true,
+                        trigger: { player: 'useCard' },
                         filter(event, player) {
-                            if (event.skill !== "wechatqianren") return false;
-                            if (event.card?.name !== "sha" || event.card?.nature !== "stab") return false;
-                            if (!event.targets?.length) return false;
-                            return get.name(event.cards?.[0]) === "sha";
+                            if (event.skill !== 'wechatqianren') return false;
+                            return event.cards?.[0] && get.name(event.cards[0]) === 'sha';
                         },
+                        direct: true,
                         async content(event, trigger, player) {
                             const result = await player.chooseControl({
-                                controls: ["选项一", "选项二", "cancel2"],
+                                prompt: '潜刃：是否秘密选择一项？',
+                                controls: ['选项一', '选项二', 'cancel2'],
                                 choiceList: [
-                                    "造成伤害后，此【杀】不计入使用次数",
-                                    "目标角色抵消此【杀】时，你获得其因此【杀】弃置的牌并摸一张牌",
+                                    '此【杀】造成伤害后不计入使用次数',
+                                    '目标角色抵消此【杀】时，你获得其因此【杀】弃置的牌并摸一张牌',
                                 ],
-                                prompt: "潜刃：请秘密选择一项",
                                 ai() {
-                                    const evt = get.event();
-                                    const player = evt.qianrenPlayer;
-                                    const target = evt.qianrenTarget;
-                                    if (player && target && target.isIn() && get.attitude(player, target) < 0 && target.mayHaveShan(target, "use") && get.damageEffect(target, player, target, "stab") < 0) {
-                                        return "选项二";
-                                    }
-                                    return "选项一";
+                                    const player = get.player(), trigger = get.event().getTrigger();
+                                    return trigger.targets?.some(target => target.mayHaveShan(target, 'use')) ? 1 : 0;
                                 },
-                            }).set("qianrenPlayer", player).set("qianrenTarget", trigger.targets[0]).forResult();
-                            if (result.control === "选项一") {
-                                trigger.set("qianren_noCount", true);
-                                player.addTempSkill("wechatqianren_noCount");
-                            } else if (result.control === "选项二") {
-                                trigger.set("qianren_gainCards", true);
-                                player.addTempSkill("wechatqianren_gainCards");
+                            }).forResult();
+                            if (result?.control && result.control !== 'cancel2') {
+                                player.addTempSkill('wechatqianren_effect');
+                                trigger.card.storage ??= {};
+                                trigger.card.storage.wechatqianren = result.index;
+                                game.broadcast((card, storage) => card.storage = storage, trigger.card, trigger.card.storage);
                             }
                         },
                     },
-                    noCount: {
+                    effect: {
                         charlotte: true,
-                        silent: true,
-                        forced: true,
-                        trigger: { source: "damageSource" },
+                        trigger: {
+                            source: 'damageSource',
+                            player: 'shaMiss',
+                        },
                         filter(event, player) {
-                            return event.card?.name === "sha" && event.card?.nature === "stab" && !!event.getParent("useCard")?.qianren_noCount;
+                            if (!event.card || typeof event.card.storage?.wechatqianren !== 'number') return false;
+                            if ((event.name === 'damage') !== (event.card.storage.wechatqianren === 0)) return false;
+                            return event.name === 'damage' ? (event.addCount !== false) : event.target;
                         },
-                        async content(event, trigger, player) {
-                            const stat = player.getStat("card");
-                            if (stat?.sha && stat.sha > 0) {
-                                stat.sha--;
-                            }
-                        },
-                    },
-                    gainCards: {
-                        charlotte: true,
-                        silent: true,
                         forced: true,
-                        trigger: { player: "shaMiss" },
-                        filter(event, player) {
-                            return event.card?.name === "sha" && event.card?.nature === "stab" && !!event.getParent("useCard")?.qianren_gainCards;
-                        },
+                        popup: false,
                         async content(event, trigger, player) {
-                            const fallback = trigger._result;
-                            if (!fallback || fallback.bool === false || fallback.result) return;
-                            if (fallback.cards?.length) {
-                                await player.gain(fallback.cards, trigger.target);
+                            if (trigger.name === 'damage') {
+                                trigger.addCount = false;
+                                const stat = player.getStat().card;
+                                if (typeof stat[trigger.card.name] === 'number') stat[trigger.card.name]--;
+                                game.log(trigger.card, '不计入次数');
                             }
-                            await player.draw();
+                            else {
+                                const target = trigger.target;
+                                const history = target.getHistory('lose', evt => evt.type === 'discard' && evt.getParent(3) === trigger)[0];
+                                if (history?.cards?.someInD('d')) await player.gain(history.cards.filterInD('d'), 'gain2');
+                                await player.draw();
+                            }
                         },
                     },
                 },
             },
             wechatjueshi: {
-                trigger: { global: "phaseBegin" },
-                group: ["wechatjueshi_extra"],
-                async cost(event, trigger, player) {
-                    const result = await player.chooseBool("是否发动【决时】？").forResult();
-                    event.result = result;
-                },
+                trigger: { global: 'phaseBegin' },
+                frequent: true,
                 async content(event, trigger, player) {
-                    const judgeResult = await player.judge(card => get.name(card) === "sha" ? 1 : 0).forResult();
-                    if (judgeResult.card && get.name(judgeResult.card) === "sha") {
-                        await player.gain(judgeResult.card);
-                        player.setStorage("wechatjueshi_wait", trigger.player.playerid);
+                    const result = await player.judge(card => get.name(card) === 'sha' ? 1 : -1).forResult();
+                    if (result?.card && get.name(result.card) === 'sha' && [result.card].someInD('od')) {
+                        await player.gain(result.card, 'gain2');
+                        player.addTempSkill('wechatjueshi_wait');
                     }
                 },
+                group: 'wechatjueshi_extra',
                 subSkill: {
+                    wait: { charlotte: true },
                     extra: {
-                        trigger: { global: "phaseEnd" },
-                        forced: true,
+                        trigger: { global: 'phaseEnd' },
+                        prompt2: () => '执行一个额外回合并失去此技能',
                         filter(event, player) {
-                            const waitId = player.getStorage("wechatjueshi_wait");
-                            if (!waitId) return false;
-                            return event.player.playerid === waitId;
+                            return player.hasSkill('wechatjueshi_wait');
                         },
+                        skillAnimation: true,
+                        animationColor: 'fire',
                         async content(event, trigger, player) {
-                            player.setStorage("wechatjueshi_wait", null);
-                            game.log(player, "执行一个额外的回合");
-                            const next = player.insertPhase();
-                            next._noTurnOver = true;
-                            next.phaseList = ["phaseZhunbei", "phaseJudge", "phaseDraw", "phaseUse", "phaseDiscard", "phaseJieshu"];
-                            player.removeSkill("wechatjueshi");
+                            player.insertPhase();
+                            await player.removeSkills('wechatjueshi');
                         },
                     },
                 },
             },
             wechatxuechou: {
-                trigger: { global: "dying" },
-                forced: true,
-                global: "wechatxuechou_noTao",
-                init(player, skill) {
-                    player.addSkill("wechatxuechou_record");
+                onChooseToUse(event) {
+                    event.targetprompt2.add(target => {
+                        const player = get.player(), card = get.card();
+                        if (card?.name !== 'sha' || target.hasSkill('wechatxuechou_effect') || !target.classList.contains('selectable')) return;
+                        const num = player.getHistory('sourceDamage', evt => evt.player === target).reduce((sum, evt) => sum + evt.num, 0);
+                        return `${get.translation('wechatxuechou')}${num}`;
+                    });
                 },
-                onremove(player, skill) {
-                    player.removeSkill("wechatxuechou_record");
-                },
+                trigger: { global: 'dying' },
                 filter(event, player) {
-                    if (event.player === player) return false;
-                    if (!event.source || event.source !== player) return false;
+                    if (event.player === player || event.player.hasSkill('wechatxuechou_effect')) return false;
                     const reason = event.reason;
-                    if (!reason || !reason.card || reason.card.name !== "sha") return false;
-                    const damageRecord = player.getStorage("wechatxuechou_damage", {});
-                    const totalDamage = damageRecord[event.player.playerid] || 0;
-                    return totalDamage >= event.player.maxHp;
+                    if (!reason?.card || reason.card.name !== 'sha' || reason.player !== player) return false;
+                    return player.getHistory('sourceDamage', evt => evt.player === event.player).reduce((sum, evt) => sum + evt.num, 0) >= event.player.maxHp;
                 },
+                forced: true,
+                logTarget: 'player',
                 async content(event, trigger, player) {
                     const target = trigger.player;
-                    game.log(player, "因【血仇】效果，其他角色不能对" + get.translation(target) + "使用【桃】");
-                    target.addTempSkill("wechatxuechou_noTao", "dyingAfter");
+                    target.addSkill('wechatxuechou_effect');
                 },
                 subSkill: {
-                    noTao: {
+                    effect: {
                         charlotte: true,
                         mark: true,
                         marktext: '<span style="text-decoration: line-through;">桃</span>',
-                        intro: {
-                            content: "不能使用桃",
-                        },
-                        mod: {
-                            cardSavable(card, player, target) {
-                                if (card.name === "tao" && target && target.hasSkill("wechatxuechou_noTao") && player !== target) {
-                                    return false;
-                                }
-                            },
-                            cardEnabled(card, player, event) {
-                                if (card.name === "tao") {
-                                    const dying = (event && event.dying) || (_status.dying || []).find(d => d.hasSkill("wechatxuechou_noTao"));
-                                    if (dying && player !== dying) {
-                                        return false;
-                                    }
-                                }
-                            },
-                        },
+                        intro: { content: '其他角色不能对你使用【桃】' },
+                        global: 'wechatxuechou_global',
                     },
-                    record: {
-                        trigger: { global: "damage" },
-                        forced: true,
-                        silent: true,
-                        popup: false,
-                        firstDo: true,
-                        charlotte: true,
-                        filter(event, player) {
-                            return event.source === player && event.player !== player;
-                        },
-                        async content(event, trigger, player) {
-                            const targetId = trigger.player.playerid;
-                            const damageRecord = player.getStorage("wechatxuechou_damage", {});
-                            damageRecord[targetId] = (damageRecord[targetId] || 0) + trigger.num;
-                            player.setStorage("wechatxuechou_damage", damageRecord, true);
+                    global: {
+                        mod: {
+                            cardEnabled(card, player, event) {
+                                if (card.name === 'tao' && target?.hasSkill('wechatxuechou_effect') && player !== target && target.isDying()) return false;
+                            },
+                            cardSavable() {
+                                return lib.skill.wechatxuechou_global.apply(this, arguments);
+                            },
                         },
                     },
                 },
@@ -24390,9 +24375,9 @@ const packs = function () {
             wechatqianren: '潜刃',
             wechatqianren_info: '出牌阶段限一次，你可以将一张非初始手牌且非本回合获得的牌当作刺【杀】使用。若转换前的牌为【杀】，你可秘密选择一项：1.造成伤害后，此【杀】不计入使用次数；2.目标角色抵消此【杀】时，你获得其因此【杀】弃置的牌并摸一张牌。',
             wechatjueshi: '决时',
-            wechatjueshi_info: '一名角色的回合开始时，你可进行一次判定，若判定结果为【杀】，你获得之并可于本回合结束时执行一个额外回合，然后你失去此技能。',
+            wechatjueshi_info: '一名角色的回合开始时，你可进行一次判定。若判定结果为【杀】，你获得之，且本回合结束时你可以执行一个额外回合并失去此技能。',
             wechatxuechou: '血仇',
-            wechatxuechou_info: '锁定技，其他角色因你使用的【杀】进入濒死状态时，若你本局游戏已对其造成过X点伤害，则其他角色均不能对其使用【桃】（X为其体力上限）。',
+            wechatxuechou_info: '锁定技，其他角色因你使用的【杀】进入濒死状态时，若你本局游戏至少已对其造成过X点伤害，则除其以外的角色不能对其使用【桃】（X为其体力上限）。',
 
             // ----------------------- 台词部分 ----------------------- //
             '#ext:活动武将/audio/skill/wechatzhongxin1': '苍生之愿，即贫道所愿也。',
