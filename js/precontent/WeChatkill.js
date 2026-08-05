@@ -22956,7 +22956,7 @@ const packs = function () {
                             if (result?.control && result.control !== 'cancel2') {
                                 player.addTempSkill('wechatqianren_effect');
                                 trigger.card.storage ??= {};
-                                trigger.card.storage.wechatqianren = result.index;
+                                trigger.card.storage.wechatqianren = [trigger, result.index];
                                 game.broadcast((card, storage) => card.storage = storage, trigger.card, trigger.card.storage);
                             }
                         },
@@ -22968,18 +22968,20 @@ const packs = function () {
                             player: 'shaMiss',
                         },
                         filter(event, player) {
-                            if (!event.card || typeof event.card.storage?.wechatqianren !== 'number') return false;
-                            if ((event.name === 'damage') !== (event.card.storage.wechatqianren === 0)) return false;
-                            return event.name === 'damage' ? (event.addCount !== false) : event.target;
+                            const [evt, index] = event.card.storage?.wechatqianren ?? [void 0, void 0];
+                            if (!event.card || typeof index !== 'number') return false;
+                            if ((event.name === 'damage') !== (index === 0)) return false;
+                            return event.name === 'damage' ? (evt.addCount !== false) : event.target;
                         },
                         forced: true,
                         popup: false,
                         async content(event, trigger, player) {
                             if (trigger.name === 'damage') {
-                                trigger.addCount = false;
+                                const evt = trigger.card.storage.wechatqianren[0];
+                                evt.addCount = false;
                                 const stat = player.getStat().card;
-                                if (typeof stat[trigger.card.name] === 'number') stat[trigger.card.name]--;
-                                game.log(trigger.card, '不计入次数');
+                                if (typeof stat[evt.card.name] === 'number') stat[evt.card.name]--;
+                                game.log(evt.card, '不计入次数');
                             }
                             else {
                                 const target = trigger.target;
