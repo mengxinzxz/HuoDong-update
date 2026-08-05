@@ -13668,7 +13668,7 @@ const packs = function () {
                         },
                         silent: true,
                         content() {
-                            const skill = 'minisbiliegong';
+                            const skill = 'minisbliegong';
                             player.markAuto(skill, [get.suit(trigger.card)]);
                             player.storage[skill].sort((a, b) => lib.suit.indexOf(b) - lib.suit.indexOf(a));
                             game.broadcastAll((player, skill, list) => player.storage[skill] = list, player, skill, player.storage[skill]);
