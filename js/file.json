@@ -7481,10 +7481,6 @@
             "size": 136178
         },
         {
-            "path": "image/character/old_pot_dengai.jpg",
-            "size": 265484
-        },
-        {
             "path": "image/character/old_sb_ganning.jpg",
             "size": 310432
         },
@@ -9066,7 +9062,7 @@
         },
         {
             "path": "js/content.js",
-            "size": 65542
+            "size": 65208
         },
         {
             "path": "js/help.js",
