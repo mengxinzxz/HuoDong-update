@@ -7454,7 +7454,7 @@
         },
         {
             "path": "image/character/old_clan_xuncai.jpg",
-            "size": 271461
+            "size": 154040
         },
         {
             "path": "image/character/old_clan_xuncan.jpg",
@@ -7471,6 +7471,10 @@
         {
             "path": "image/character/old_dongxie.jpg",
             "size": 132655
+        },
+        {
+            "path": "image/character/old_liuzhang.jpg",
+            "size": 121229
         },
         {
             "path": "image/character/old_ol_xiaoqiao.jpg",
@@ -7577,20 +7581,12 @@
             "size": 319994
         },
         {
-            "path": "image/character/old_zhoufei.jpg",
-            "size": 53568
-        },
-        {
             "path": "image/character/old_zhugejin.jpg",
             "size": 355697
         },
         {
             "path": "image/character/old_zuoci.jpg",
             "size": 64866
-        },
-        {
-            "path": "image/character/oldx_clan_xuncai.jpg",
-            "size": 154040
         },
         {
             "path": "image/character/oldx_zhangzhongjing.jpg",
@@ -9062,7 +9058,7 @@
         },
         {
             "path": "js/content.js",
-            "size": 65208
+            "size": 64481
         },
         {
             "path": "js/help.js",
@@ -9098,7 +9094,7 @@
         },
         {
             "path": "js/precontent/huodongcharacter.js",
-            "size": 883107
+            "size": 865460
         },
         {
             "path": "js/precontent/index.js",

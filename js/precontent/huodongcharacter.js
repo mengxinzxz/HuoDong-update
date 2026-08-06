@@ -3430,25 +3430,6 @@ const packs = function () {
                     count: { onremove: true, charlotte: true },
                 },
             },
-            //保留所有设定的旧美羊羊
-            oldhongyi: {
-                inherit: 'hongyi',
-                audio: 'hongyi',
-                filter(event, player) {
-                    return player.countCards('he') >= Math.min(2, game.dead.length);
-                },
-                filterCard: true,
-                selectCard() {
-                    return Math.min(2, game.dead.length);
-                },
-                position: 'he',
-                check(card) {
-                    var num = Math.min(2, game.dead.length);
-                    if (!num) return 1;
-                    if (num == 1) return 7 - get.value(card);
-                    return 5 - get.value(card);
-                },
-            },
             //赵襄
             xinfanghun: {
                 mod: {
@@ -4535,124 +4516,6 @@ const packs = function () {
             },
             reyingzi_sunce: { audio: 2 },
             yinghun_sunce: { audio: 2 },
-            //荀淑
-            old_shenjun: {
-                audio: 'clanshenjun',
-                trigger: { global: 'useCard' },
-                filter(event, player) {
-                    return (event.card.name == 'sha' || get.type(event.card) == 'trick') && player.countCards('h', event.card.name) > 0;
-                },
-                forced: true,
-                content() {
-                    var cards = player.getCards('h', trigger.card.name);
-                    player.showCards(cards, get.translation(player) + '发动了【神君】');
-                    player.addGaintag(cards, 'old_shenjun');
-                    for (var name of lib.phaseName) {
-                        var evt = _status.event.getParent(name);
-                        if (!evt || evt.name != name) continue;
-                        player.addTempSkill('old_shenjun_viewAs', name + 'After');
-                        break;
-                    }
-                },
-                mark: true,
-                marktext: '君',
-                intro: {
-                    markcount(storage, player) {
-                        return player.countCards('h', card => card.hasGaintag('old_shenjun'));
-                    },
-                    mark(dialog, content, player) {
-                        var cards = player.getCards('h', card => card.hasGaintag('old_shenjun'));
-                        if (cards.length) dialog.addAuto(cards);
-                        else return '无展示牌';
-                    },
-                },
-                subSkill: {
-                    viewAs: {
-                        charlotte: true,
-                        audio: 'clanshenjun',
-                        trigger: { global: ['phaseZhunbeiEnd', 'phaseJudgeEnd', 'phaseDrawEnd', 'phaseUseEnd', 'phaseDiscardEnd', 'phaseJieshuEnd'] },
-                        filter(event, player) {
-                            return player.countCards('h', card => card.hasGaintag('old_shenjun')) > 0;
-                        },
-                        forced: true,
-                        content() {
-                            'step 0'
-                            var cards = player.getCards('h', card => card.hasGaintag('old_shenjun'));
-                            var list = [], names = [];
-                            for (var card of cards) {
-                                var name = get.name(card), nature = get.nature(card);
-                                var namex = name + (nature ? nature : '');
-                                if (names.includes(namex)) continue;
-                                if (nature) list.push([get.type(card), '', name, nature]);
-                                else list.push([get.type(card), '', name]);
-                                names.push(namex);
-                            }
-                            list.sort((a, b) => {
-                                return 100 * (lib.inpile.indexOf(a[2]) - lib.inpile.indexOf(b[2])) + lib.inpile_nature.indexOf(a[3]) - lib.inpile_nature.indexOf(b[3]);
-                            })
-                            player.chooseButton(['###' + '神君：请选择一项' + '###' + '选项一：将' + get.cnNumber(cards.length) + '张牌当下列一张牌使用<br>选项二：失去1点体力', [list, 'vcard']]).set('ai', function (button) {
-                                var player = _status.event.player;
-                                if (player.hasSkill('old_balong')) {
-                                    var filter = function (player) {
-                                        if (!player.countCards('h')) return false;
-                                        if (player.countCards('h') >= 8) return false;
-                                        var typeList = ['basic', 'trick', 'equip'];
-                                        var list = [];
-                                        for (var i = 0; i < typeList.length; i++) {
-                                            list.push(player.countCards('h', function (card) {
-                                                return get.type2(card) == typeList[i];
-                                            }));
-                                        }
-                                        return list[1] > list[0] && list[1] > list[2];
-                                    };
-                                    if (filter(player) && player.countCards('h') <= 5 && player.hp + player.countCards('hs', { name: ['jiu', 'tao'] }) > 0) return -1;
-                                }
-                                return player.getUseValue({ name: button.link[2], nature: button.link[3] });
-                            });
-                            'step 1'
-                            if (result.bool) {
-                                var name = result.links[0][2], nature = result.links[0][3];
-                                var cards = player.getCards('h', card => card.hasGaintag('old_shenjun'));
-                                game.broadcastAll(function (num, card) {
-                                    lib.skill.old_shenjun_backup.selectCard = num;
-                                    lib.skill.old_shenjun_backup.viewAs = card;
-                                }, cards.length, { name: name, nature: nature });
-                                var next = player.chooseToUse();
-                                next.set('openskilldialog', '将' + get.cnNumber(cards.length) + '张牌当作' + (nature ? get.translation(nature) : '') + '【' + get.translation(name) + '】使用');
-                                next.set('norestore', true);
-                                next.set('addCount', false);
-                                next.set('_backupevent', 'old_shenjun_backup');
-                                next.set('custom', {
-                                    add: {},
-                                    replace: { window() { } }
-                                });
-                                next.backup('old_shenjun_backup');
-                            }
-                            else player.loseHp();
-                        },
-                    },
-                    backup: {
-                        filterCard(card) {
-                            return get.itemtype(card) == 'card';
-                        },
-                        position: 'hes',
-                        filterTarget: lib.filter.filterTarget,
-                        check: (card) => 6 - get.value(card),
-                        log: false,
-                        precontent() {
-                            delete event.result.skill;
-                        },
-                    },
-                },
-            },
-            old_balong: {
-                audio: 'clanbalong',
-                inherit: 'clanbalong',
-                content() {
-                    player.showCards(player.getCards('h'), get.translation(player) + '发动了【八龙】');
-                    player.drawTo(8);
-                },
-            },
             //荀谌
             old_sankuang: {
                 init(player) {
@@ -5543,147 +5406,6 @@ const packs = function () {
                             if (result?.bool && result.cards?.length) await player.recast(result.cards);
                         }
                     }
-                },
-            },
-            //荀采
-            oldx_lieshi: {
-                audio: 'clanlieshi',
-                enable: 'phaseUse',
-                content() {
-                    'step 0'
-                    var choice = [];
-                    var list = ['受到1点火属性伤害并废除判定区', '弃置所有【闪】', '弃置所有【杀】'];
-                    for (var i = 1; i <= 3; i++) {
-                        if (i == 2 && !player.countCards('h', { name: 'shan' })) list[i - 1] = '<span style="opacity:0.5">' + list[i - 1] + '</span>';
-                        else if (i == 3 && !player.countCards('h', { name: 'sha' })) list[i - 1] = '<span style="opacity:0.5">' + list[i - 1] + '</span>';
-                        else choice.push('选项' + get.cnNumber(i, true));
-                    }
-                    if (choice.length) player.chooseControl(choice).set('choiceList', list).set('ai', function () {
-                        if (choice.length == 1) return choice[0];
-                        var player = _status.event.player;
-                        if (get.damageEffect(player, player, player, 'fire') > 0) return '选项一';
-                        return choice[choice.length - 1];
-                    }).set('prompt', '烈誓：请选择一项执行，然后选择一名其他角色执行另一项');
-                    else event.finish();
-                    'step 1'
-                    var num = result.control;
-                    event.num = num;
-                    game.log(player, '选择执行', '#g【烈誓】', '的' + result.control);
-                    switch (num) {
-                        case '选项一':
-                            player.damage(1, 'fire');
-                            if (!player.storage._disableJudge) player.disableJudge();
-                            break;
-                        case '选项二':
-                            player.discard(player.getCards('h', { name: 'shan' }));
-                            break;
-                        case '选项三':
-                            player.discard(player.getCards('h', { name: 'sha' }));
-                            break;
-                    }
-                    'step 2'
-                    if (!player.isIn() || game.countPlayer() < 2) event.finish();
-                    else player.chooseTarget('请选择一名其他角色，执行【烈誓】的剩余选项', lib.filter.notMe, true).set('ai', function (target) {
-                        var player = _status.event.player;
-                        var choice = [], att = get.attitude(player, target);
-                        for (var i = 1; i <= 3; i++) {
-                            if ('选项' + get.cnNumber(i, true) == _status.event.control) continue;
-                            else if (i == 2 && !target.countCards('h', { name: 'shan' })) continue;
-                            else if (i == 3 && !target.countCards('h', { name: 'sha' })) continue;
-                            else choice.push('选项' + get.cnNumber(i, true));
-                        }
-                        if (!choice.length) return -1 / Infinity;
-                        if (choice.length == 1) {
-                            if (choice[0] == '选项一') return -att * 3;
-                            return -att * 2;
-                        }
-                        return -att;
-                    }).set('control', num);
-                    'step 3'
-                    if (!result.bool) {
-                        event.finish();
-                        return;
-                    }
-                    player.addExpose(0.3);
-                    var target = result.targets[0];
-                    event.target = target;
-                    player.line(target);
-                    var choice = [];
-                    var list = ['受到1点火属性伤害并废除判定区', '弃置所有【闪】', '弃置所有【杀】'];
-                    for (var i = 1; i <= 3; i++) {
-                        if ('选项' + get.cnNumber(i, true) == num) list[i - 1] = '<span style="opacity:0.5">' + list[i - 1] + '</span>';
-                        else if (i == 2 && !target.countCards('h', { name: 'shan' })) list[i - 1] = '<span style="opacity:0.5">' + list[i - 1] + '</span>';
-                        else if (i == 3 && !target.countCards('h', { name: 'sha' })) list[i - 1] = '<span style="opacity:0.5">' + list[i - 1] + '</span>';
-                        else choice.push('选项' + get.cnNumber(i, true));
-                    }
-                    if (choice.length) target.chooseControl(choice).set('choiceList', list).set('ai', function () {
-                        if (get.damageEffect(target, target, target, 'fire') > 0) return '选项一';
-                        return choice[choice.length - 1];
-                    }).set('prompt', '烈誓：请选择一项执行');
-                    else event.finish();
-                    'step 4'
-                    game.log(target, '选择执行', '#g【烈誓】', '的' + result.control);
-                    switch (result.control) {
-                        case '选项一':
-                            target.damage(1, 'fire');
-                            if (!target.storage._disableJudge) target.disableJudge();
-                            break;
-                        case '选项二':
-                            target.discard(target.getCards('h', { name: 'shan' }));
-                            break;
-                        case '选项三':
-                            target.discard(target.getCards('h', { name: 'sha' }));
-                            break;
-                    }
-                },
-                ai: {
-                    order: 1,
-                    nokeep: true,
-                    skillTagFilter(player) {
-                        if (!player.hasSkill('bolhuanyin')) return false;
-                    },
-                    result: {
-                        player(player) {
-                            var choice = [];
-                            for (var i = 1; i <= 3; i++) {
-                                if (i == 2 && !player.countCards('h', { name: 'shan' })) continue;
-                                else if (i == 3 && !player.countCards('h', { name: 'sha' })) continue;
-                                else choice.push('选项' + get.cnNumber(i, true));
-                            }
-                            var control = ((get.damageEffect(player, player, player, 'fire') > 0) ? '选项一' : choice[choice.length - 1]);
-                            if (choice[choice.length - 1] == '选项一' && player.hp + player.countCards('hs', { name: ['tao', 'jiu'] }) < 2 && (player.identity == 'zhu' || !player.hasFriend() || !player.hasSkill('bolhuanyin') || !player.countCards('h') >= 4)) return 0;
-                            if (game.hasPlayer(function (target) {
-                                if (get.attitude(player, target) >= 0) return false;
-                                var list = [];
-                                for (var i = 1; i <= 3; i++) {
-                                    if ('选项' + get.cnNumber(i, true) == control) continue;
-                                    else if (i == 2 && !target.countCards('h', { name: 'shan' })) continue;
-                                    else if (i == 3 && !target.countCards('h', { name: 'sha' })) continue;
-                                    else list.push('选项' + get.cnNumber(i, true));
-                                }
-                                if (list.length) return 1;
-                            })) return 1;
-                            return 0;
-                        },
-                    },
-                },
-            },
-            oldx_dianzhan: {
-                audio: 'clandianzhan',
-                trigger: { player: 'useCardAfter' },
-                filter(event, player) {
-                    return get.info('clandianzhan').filter(event, player);
-                },
-                forced: true,
-                content() {
-                    'step 0'
-                    if (trigger.targets?.length == 1) {
-                        player.line(trigger.targets[0]);
-                        if (!trigger.targets[0].isLinked()) trigger.targets[0].link();
-                    }
-                    'step 1'
-                    var cards = player.getCards('h', card => get.suit(card) == get.suit(trigger.card) && player.canRecast(card));
-                    if (cards.length) player.recast(cards);
                 },
             },
             //程普
@@ -13973,10 +13695,6 @@ const packs = function () {
             boss_yz_kunshou_info: '觉醒技，当你进入濒死状态时，你将体力回复至5，将手牌数补至5，然后获得〖崩坏〗。',
             wzdanji: '单骑',
             wzdanji_info: '觉醒技，准备阶段，若你的手牌数大于你的体力值且本局游戏的主公为曹操，你减1点体力上限，然后获得〖马术〗。',
-            old_shenjun: '神君',
-            old_shenjun_info: '锁定技，一名角色使用【杀】或普通锦囊牌时，你展示你手牌中所有的同名牌，此阶段结束时，你须选择一项：①将X张牌当作你本阶段发动〖神君〗响应的牌名使用（X为你手牌中已展示的〖神君〗牌数）；②失去1点体力。',
-            old_balong: '八龙',
-            old_balong_info: '锁定技，当你的体力值于每回合首次次发生变化后，若你手牌中锦囊牌的数量为手牌中所有类型中唯一最多的，你展示所有手牌并将手牌摸至八张。',
             old_sankuang: '三恇',
             old_sankuang_info: '锁定技，当你于每轮第一次使用一种类型的牌后，你令一名其他角色获得此牌或交给你至少X张牌（X为该角色『场上牌数，已损失体力值，手牌数与体力值之差』之间的最小值，且X至多为3）。',
             old_beishi: '卑势',
@@ -14007,10 +13725,6 @@ const packs = function () {
             bilibili_zhiyinxian_info: '其他角色的回合开始时，你可以令其跳过本回合的一个阶段（不能选择准备阶段和结束阶段和你已选择过的阶段）。当你杀死角色后，你可以选择一个你已选择过的时机，然后你视为未选择过此时机。',
             bolhuanshi: '缓释',
             bolhuanshi_info: '一名角色的判定牌生效前，你可令其观看你的手牌并选择其中一张牌替代此牌，然后你可以重铸任意张牌。',
-            oldx_lieshi: '烈誓',
-            oldx_lieshi_info: '出牌阶段，你可以执行其中一项：『受到1点火焰伤害并废除判定区；弃置手牌中的所有【闪】；弃置手牌中的所有【杀】』，然后你令一名其他角色选择执行另一项（不能选择无法执行的选项）。',
-            oldx_dianzhan: '点盏',
-            oldx_dianzhan_info: '锁定技，当你于每轮第一次使用一种花色的牌后，你横置此牌的唯一目标并重铸手牌中所有与此牌花色相同的牌。',
             bollihuo: '疠火',
             bollihuo_info: '当你使用普通【杀】时，可以将此牌改为火【杀】，且你本局游戏使用火【杀】可以额外指定一个目标。此牌第一次造成伤害时，你须弃置两张牌或失去1点体力。',
             bolchunlao: '醇醪',

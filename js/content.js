@@ -555,10 +555,8 @@ export async function content(config, pack) {
 				epic: [
 					'old_sp_jianggan',
 					'ol_maliang',
-					'old_clan_xunshu',
 					'old_clan_xunchen',
 					'old_clan_xuncai',
-					'oldx_clan_xuncai',
 					'old_clan_xuncan',
 					'old_sb_ganning',
 					'old_yj_ganning',
@@ -573,7 +571,6 @@ export async function content(config, pack) {
 					'old_ol_yuanji',
 					'junk_duanwei',
 					'old_sb_zhanghe',
-					'old_zhoufei',
 					'old_sunluyu',
 					'zhaoxiang',
 					'old_zhouchu',
@@ -941,7 +938,6 @@ export async function content(config, pack) {
 	const hdpj_characterReplace = {
 		xuyou: ['bilibili_sp_xuyou'],
 		zhangzhongjing: ['bol_zhangzhongjing', 'old_zhangzhongjing', 'oldx_zhangzhongjing'],
-		zhoufei: ['old_zhoufei'],
 		jin_yanghuiyu: ['old_yanghuiyu'],
 		shen_xunyu: ['old_shen_xunyu'],
 		shen_taishici: ['old_shen_taishici'],
@@ -1027,15 +1023,13 @@ export async function content(config, pack) {
 	game.HDaddCharacter('bol_sunluban', ['female', 'wu', 3, ['boljiaozong', 'bolchouyou']], 'offline');
 
 	//怀旧包
-	lib.characterSort.old.bilibili_buchong_online2 = ['junk_guanyu', 'old_ol_xiaoqiao', 'old_zhangbao', 'old_sunluyu', 'old_ol_yuanji'];
-	lib.characterSort.old.bilibili_buchong_yijiang2 = ['old_yuanji', 'junk_duanwei', 'old_zhoufei'];
+	lib.characterSort.old.bilibili_buchong_online2 = ['old_peixiu', 'junk_guanyu', 'old_ol_xiaoqiao', 'old_zhangbao', 'old_sunluyu', 'old_ol_yuanji'];
+	lib.characterSort.old.bilibili_buchong_yijiang2 = ['old_yuanji', 'junk_duanwei'];
 	lib.characterSort.old.bilibili_buchong_mobile2 = ['old_sb_zhanghe', 'old_shen_sunce', 'old_shen_taishici', 'old_shen_xunyu', 'old_zhaoxiang', 'old_sb_ganning', 'old_zhouchu', 'old_xunchen', 'old_sp_kongrong', 'old_zhangzhongjing', 'oldx_zhangzhongjing', 'old_zhangyì', 'old_yanghuiyu', 'old_liuzhang', 'old_sp_sunshao', 'old_wangling', 'old_sp_huaxin', 'old_sp_mifuren', 'old_sp_jianggan'];
-	lib.characterSort.old.bilibili_buchong_menfashizu = ['old_clan_xunshu', 'old_clan_xunchen', 'old_clan_xuncai', 'old_clan_xuncan', 'oldx_clan_xuncai'];
-	game.HDaddCharacter('old_clan_xunshu', ['male', 'qun', 3, ['old_shenjun', 'old_balong', 'clandaojie'], ['clan:颍川荀氏', 'tempname:clan_xunshu', 'die:clan_xunshu']], 'old');
+	lib.characterSort.old.bilibili_buchong_menfashizu = ['old_clan_xunchen', 'old_clan_xuncai', 'old_clan_xuncan'];
 	game.HDaddCharacter('old_clan_xunchen', ['male', 'qun', 3, ['old_sankuang', 'old_beishi', 'clandaojie'], ['clan:颍川荀氏', 'tempname:clan_xunchen', 'die:clan_xunchen']], 'old');
 	game.HDaddCharacter('old_clan_xuncai', ['female', 'qun', 3, ['old_lieshi', 'old_dianzhan', 'old_huanyin', 'clandaojie'], ['clan:颍川荀氏', 'tempname:clan_xuncai', 'die:clan_xuncai']], 'old');
 	game.HDaddCharacter('old_clan_xuncan', ['male', 'wei', 3, ['old_yunshen', 'old_shangshen', 'old_fenchai', 'clandaojie'], ['clan:颍川荀氏', 'tempname:clan_xuncan', 'die:clan_xuncan']], 'old');
-	game.HDaddCharacter('oldx_clan_xuncai', ['female', 'qun', 3, ['oldx_lieshi', 'oldx_dianzhan', 'clanhuanyin', 'clandaojie'], ['clan:颍川荀氏', 'tempname:clan_xuncai', 'die:clan_xuncai']], 'old');
 	game.HDaddCharacter('old_shen_xunyu', ['male', 'shen', 3, ['old_tianzuo', 'old_lingce', 'old_dinghan'], ['wei', 'die:shen_xunyu']], 'old');
 	game.HDaddCharacter('old_shen_taishici', ['male', 'shen', 4, ['olddulie', 'oldpowei', 'dangmo'], ['wu', 'die:shen_taishici']], 'old');
 	game.HDaddCharacter('old_shen_sunce', ['male', 'shen', '1/6', ['old_yingba', 'old_fuhai', 'old_pinghe'], ['wu', 'die:shen_sunce']], 'old');
@@ -1063,8 +1057,8 @@ export async function content(config, pack) {
 	game.HDmoveCharacter('junk_guanyu', 'old');
 	game.HDaddCharacter('old_ol_xiaoqiao', ['female', 'wu', 3, ['oltianxiang', 'rehongyan'], [...['tempname', 'die'].map(i => `${i}:ol_xiaoqiao`)]], 'old');
 	game.HDaddCharacter('old_zhaoxiang', ['female', 'shu', 4, ['xinfanghun', 'xinfuhan'], ['die:zhaoxiang']], 'old');
-	game.HDaddCharacter('old_zhoufei', ['female', 'wu', 3, ['liangyin', 'kongsheng'], ['die:zhoufei']], 'old');
 	game.HDaddCharacter('old_sb_zhanghe', ['male', 'wei', 4, ['old_sbqiaobian'], ['die:sb_zhanghe']], 'old');
+	game.HDaddCharacter('old_peixiu', ['male', 'wei', 4, ['olmaozhu', 'oljinlan'], ['character:ol_peixiu', 'border:jin']], 'old');
 
 	//DIY
 	lib.characterSort.diy.diy_trashbin.addArray(['old_yj_ganning', 'lusu', 'yuanshao', 'bol_zhangzhongjing', 'bol_sp_huaxin', 'bfake_zuoci', 'bfake_yangfu', 'bfake_chengpu', 'bfake_sundeng', 'old_shen_sunquan', 'old_shen_ganning', 'bfake_chengui', 'old_ol_xiaoqiao', 'old_zhanghe', 'old_zhugejin', 'oldx_zhangfei', 'oldx_guanyu', 'oldx_zhaoyun', 'oldx_yujin']);
@@ -1334,16 +1328,12 @@ export async function content(config, pack) {
 		gz_liuba: '刘巴',
 
 		//添加武将翻译
-		old_clan_xunshu: `${get.poptip('rule_mamba')}荀淑`,
-		old_clan_xunshu_prefix: get.poptip('rule_mamba'),
 		old_clan_xunchen: `${get.poptip('rule_mamba')}荀谌`,
 		old_clan_xunchen_prefix: get.poptip('rule_mamba'),
 		old_clan_xuncai: `${get.poptip('rule_mamba')}荀采`,
 		old_clan_xuncai_prefix: get.poptip('rule_mamba'),
 		old_clan_xuncan: `${get.poptip('rule_mamba')}荀粲`,
 		old_clan_xuncan_prefix: get.poptip('rule_mamba'),
-		oldx_clan_xuncai: `${get.poptip('rule_mamba')}荀采`,
-		oldx_clan_xuncai_prefix: get.poptip('rule_mamba'),
 		old_shen_xunyu: `${get.poptip('rule_mamba')}神荀彧`,
 		old_shen_xunyu_prefix: `${get.poptip('rule_mamba')}|神`,
 		old_shen_taishici: `${get.poptip('rule_mamba')}神太史慈`,
@@ -1360,8 +1350,6 @@ export async function content(config, pack) {
 		bolx_jsp_guanyu_prefix: '★SP',
 		bol_sunluban: '用间孙鲁班',
 		bol_sunluban_prefix: '用间',
-		old_zhoufei: `${get.poptip('rule_mamba')}周妃`,
-		old_zhoufei_prefix: get.poptip('rule_mamba'),
 		old_yj_ganning: '☆甘宁',
 		old_yj_ganning_prefix: '☆',
 		old_xunchen: `${get.poptip('rule_mamba')}荀谌`,
@@ -1452,6 +1440,8 @@ export async function content(config, pack) {
 		mb_shen_caocao_prefix: '手杀|神',
 		old_sb_zhanghe: `${get.poptip('rule_mamba')}谋张郃`,
 		old_sb_zhanghe_prefix: `${get.poptip('rule_mamba')}|谋`,
+		old_peixiu: `${get.poptip('rule_mamba')}裴秀`,
+		old_peixiu_prefix: get.poptip('rule_mamba'),
 
 		//武将分包翻译
 		bilibili_buchong_online: '武将补充·Online',
