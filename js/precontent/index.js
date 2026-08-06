@@ -822,7 +822,7 @@ export async function precontent(bilibilicharacter) {
                     _status.HDWJ_ChangeLog_character = {
                         MiNiAppkill: Object.keys(MiNiAppkill().character),
                         MiNikill: ['Mbaby_star_dongzhuo', 'Mbaby_star_sunjian', 'Mbaby_star_zhangzhao'],
-                        WeChatkill: ['wechat_sb_zhurong'],
+                        WeChatkill: ['wechat_sb_zhurong', 'wechat_zhi_yanghu', 'wechat_zhiyin_zhaoe'],
                     };
                     return Object.values(_status.HDWJ_ChangeLog_character).flat();
                 })(),

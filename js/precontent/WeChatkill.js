@@ -12459,7 +12459,7 @@ const packs = function () {
             _wechattalan_mark: {
                 trigger: { player: ['gainBefore', 'gainEnd'] },
                 filter(event, player, name) {
-                    if (!player.isPhaseUsing() && _status.currentPhase === player) return false;
+                    if (!player.isPhaseUsing()) return false;
                     if (name.endsWith('End')) return player.hasSkill('wechattalan', null, null, false) && player.getCards('h').some(card => card.hasGaintag('wechattalan_tag') && event._wechattalan_cards?.includes(card));
                     return event.cards.some(card => {
                         if (event.getParent().name == 'draw') return true;
@@ -12810,16 +12810,16 @@ const packs = function () {
                     global: 'phaseBefore',
                     player: 'enterGame',
                 },
-                forced: true,
-                locked: false,
                 filter(event, player) {
                     return event.name != 'phase' || game.phaseNumber == 0;
                 },
+                forced: true,
+                locked: false,
                 async content(event, trigger, player) {
-                    const num = Math.min(game.countPlayer2(), 4);
+                    const num = Math.min(game.countPlayer2(), 3);
                     await player.draw(num);
-                    const result = await player.chooseCard('he', true, num, `将${get.cnNumber(num)}张牌置于武将牌上`).forResult();
-                    if (result?.bool && result?.cards?.length) {
+                    const result = await player.chooseCard(true, num, `${get.translation(event.name)}：将${get.cnNumber(num)}张手牌置于武将牌上`).forResult();
+                    if (result?.bool && result.cards?.length) {
                         const next = player.addToExpansion(result.cards, player, 'give');
                         next.gaintag.add(event.name);
                         await next;
@@ -12859,9 +12859,11 @@ const packs = function () {
                         forced: true,
                         locked: false,
                         async content(event, trigger, player) {
-                            if (player.countMark('wechatweimo_used') < 2) {
+                            if (player.countMark('wechatweimo_used') < 2 && player.countMark('wechatweimo_round') < 4) {
                                 player.addTempSkill('wechatweimo_used');
-                                player.addMark('wechatweimo_used', 2, false);
+                                player.addMark('wechatweimo_used', 1, false);
+                                player.addTempSkill('wechatweimo_round', 'roundStart');
+                                player.addMark('wechatweimo_round', 1, false);
                                 await player.draw();
                             }
                             const cards = player.getExpansions('wechatweimo');
@@ -12874,6 +12876,10 @@ const packs = function () {
                         },
                     },
                     used: {
+                        charlotte: true,
+                        onremove: true,
+                    },
+                    round: {
                         charlotte: true,
                         onremove: true,
                     },
@@ -23977,7 +23983,7 @@ const packs = function () {
             wechatlongyi_info: `${get.poptip('rule_shiwuSkill')}，当你使用或打出一张牌A时，你可以展示牌堆顶至多X张牌，若这些牌与A花色均不同，你令一名角色获得这些牌（X为存活角色数的一半，且向上取整）。`,
             wechattalan: '踏澜',
             wechattalan_tag: 'invisible',
-            wechattalan_info: '锁定技。你使用实体牌中包含你于出牌阶段和回合外从牌堆获得的牌无任何次数限制。',
+            wechattalan_info: '锁定技。你使用实体牌中包含你于出牌阶段从牌堆获得的牌无任何次数限制。当你于出牌阶段首次使用武器牌后，本回合你使用的下一张【杀】不可被响应。',
             wechatjueya: '绝涯',
             wechatjueya_info: '限定技。当你进入濒死状态时，你可以将你的所有手牌以任意顺序置于牌堆顶。若如此做，你将体力值回复至1点并获得令你进入濒死状态的角色一张牌，当前回合结束后，你执行一个额外回合。',
             wechat_zhiyin_dianwei: '极典韦',
@@ -23987,7 +23993,7 @@ const packs = function () {
             wechatqingqu_info: '每回合限一次。当你进入濒死状态时，你可以判定。若判定结果的花色与当前回合角色本回合使用过的牌花色均不同，你回复1点体力。',
             wechat_zhiyin_xunyou: '极荀攸',
             wechatweimo: '帷谟',
-            wechatweimo_info: '①游戏开始时，你摸X张牌，然后你将等量张牌置于武将牌上，称为“帷谟”（X为游戏人数且至多为4）。②当你的“帷谟”牌数或手牌数变化后，若二者数量相同，你摸一张牌（每回合限两次）；若此时在你的出牌阶段内，你可以获得武将牌上的一张“帷谟”。',
+            wechatweimo_info: '①游戏开始时，你摸X张牌，然后你将等量张牌置于武将牌上，称为“帷谟”（X为游戏人数且至多为3）。②当你的“帷谟”牌数或手牌数变化后，若二者数量相同，你摸一张牌（每回合限两次，每轮限四次）；若此时在你的出牌阶段内，你可以获得武将牌上的一张“帷谟”。',
             wechatlance: '览策',
             wechatlance_info: '出牌阶段限一次，你可以将至多两张牌置于武将牌上，称为“帷谟”。然后你可以视为使用一张普通锦囊牌（此牌合法目标数须不大于这些牌的合法目标数之和）。',
             wechat_zhiyin_sunshangxiang: '极孙尚香',
