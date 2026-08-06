@@ -22049,10 +22049,10 @@ const packs = function () {
                 inherit: 'dczixi',
                 async cost(event, trigger, player) {
                     game.addVideo('skill', player, ['dczixi', []]);
-                    const max = lib.skill.dczixi.selectAi(player, lib.skill.dczixi.zixiList.filter(name => {
-                        return player.hasCard(card => {
+                    const maxMap = lib.skill.dczixi.selectAi(player, lib.skill.dczixi.zixiList.filter(name => {
+                        return player.hasCards('he', card => {
                             return card.hasGaintag('eternal_dcqiqin_tag') && game.hasPlayer(target => target.canAddJudge(get.autoViewAs({ name: `dczixi_${name}` }, [card])));
-                        }, 'h');
+                        });
                     }));
                     const result = await player.chooseButtonTarget({
                         createDialog: [
@@ -22069,11 +22069,6 @@ const packs = function () {
                             return game.hasPlayer(target => target.canAddJudge(get.autoViewAs({ name: `dczixi_${card}` }, [last])));
                         },
                         selectButton: 2,
-                        ai1(button) {
-                            const max = get.event().max;
-                            if (typeof button.link === 'string') return button.link === max[0] ? 1 : 0;
-                            return button.link === max[2] ? 1 : 0;
-                        },
                         filterTarget(cardx, player, target) {
                             if (ui.selected.buttons.length < 2) return false;
                             let choice = ui.selected.buttons.map(i => i.link);
@@ -22081,10 +22076,27 @@ const packs = function () {
                             const [cardname, card] = choice;
                             return target.canAddJudge(get.autoViewAs({ name: `dczixi_${cardname}` }, [card]));
                         },
-                        ai2(target) {
-                            return target === get.event().max[3] ? 1 : 0;
+                        ai1(button) {
+                            const { maxMap } = get.event();
+                            const size = maxMap.size;
+                            if (!size) return 0;
+                            if (!ui.selected.buttons.length) {
+                                if (typeof button.link !== 'string') return 0;
+                                const val = maxMap.get(get.translation(button.link));
+                                if (!val) return 0;
+                                return val[0];
+                            } else {
+                                if (typeof button.link == 'string') return 0;
+                                if (ui.selected.buttons.some(btn => typeof btn.link == 'string' && maxMap.get(get.translation(btn.link))?.[1] == button.link)) return 1;
+                                return 0;
+                            }
                         },
-                        max,
+                        ai2(target) {
+                            const { maxMap } = get.event();
+                            if (ui.selected.buttons.some(btn => typeof btn.link == 'string' && maxMap.get(get.translation(btn.link))?.[2] == target)) return 1;
+                            return 0;
+                        },
+                        maxMap,
                     }).forResult();
                     if (result?.bool && result.links?.length && result.targets?.length) {
                         let choice = result.links;
