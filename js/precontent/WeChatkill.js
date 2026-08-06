@@ -12849,12 +12849,12 @@ const packs = function () {
                                 return event.gaintag.includes('wechatweimo') && event.player == player;
                             }
                             if (event.name == 'lose' && event.getlx !== false) {
-                                return Object.values(evt.gaintag_map).flat().includes('wechatweimo');
+                                return Object.values(event.gaintag_map).flat().includes('wechatweimo');
                             }
-                            return game.getGlobalHistory('cardMove', evt => {
+                            return game.hasGlobalHistory('cardMove', evt => {
                                 if (evt.name != 'lose' || event != evt.getParent() || evt.player !== player) return false;
                                 return Object.values(evt.gaintag_map).flat().includes('wechatweimo');
-                            }).length > 0;
+                            });
                         },
                         forced: true,
                         locked: false,
