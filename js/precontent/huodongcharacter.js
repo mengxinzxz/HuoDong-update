@@ -3430,6 +3430,25 @@ const packs = function () {
                     count: { onremove: true, charlotte: true },
                 },
             },
+            //保留所有设定的旧美羊羊
+            oldhongyi: {
+                inherit: 'hongyi',
+                audio: 'hongyi',
+                filter(event, player) {
+                    return player.countDiscardableCards(player, 'he') >= Math.min(2, game.dead.length);
+                },
+                filterCard: true,
+                selectCard() {
+                    return Math.min(2, game.dead.length);
+                },
+                position: 'he',
+                check(card) {
+                    var num = Math.min(2, game.dead.length);
+                    if (!num) return 1;
+                    if (num == 1) return 7 - get.value(card);
+                    return 5 - get.value(card);
+                },
+            },
             //赵襄
             xinfanghun: {
                 mod: {
