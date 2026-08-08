@@ -57,7 +57,7 @@ const packs = function () {
                     ...[],
                 ].map(i => `wechat_${i}`),
                 wechat_zhiyin: ['lvmeng', 'yuanshu', 'caorui', 'pangtong', 'qinmi', 'zhugeke', 'mayunlu', 'bulianshi', 'diaochan', 'taishici', 'luxun', 'sunshangxiang', 'xunyou', 'dianwei', 'zhaoyun', 'xinxianying', 'guohuanghou', 'kongrong', 'caopi', 'jiaxu', 'zhangfei', 'dongzhuo', 'wangyi', 'zhangchunhua', 'hetaihou', 'zhurong', 'jiangwei', 'caozhi', 'liubei', 'sunce', 'xunyu', 'zhenji', 'xuzhu', 'yuanshao', 'lusu', 'guojia', 'lvbu', 'daqiao', 'xiaoqiao', 'caocao', 'zhugeliang', 'simayi', 'machao', 'huangyueying', 'caiwenji', 'zhouyu', 'sunquan', 'guanyu', 'zhaoe'].map(i => `wechat_zhiyin_${i}`),
-                wechat_zhi: ['zhushixing', 'liubiao', 'caozhi', 'xushi', 'old_yuanshu', 'caopi', 'sunquan', 'liubei', 'yuanshu', 'fuhuanghou', 'caojie', 'caocao', 'zhangjiao', 'yanghu'].map(i => `wechat_zhi_${i}`),
+                wechat_zhi: ['zhushixing', 'liubiao', 'caozhi', 'xushi', 'old_yuanshu', 'caopi', 'sunquan', 'liubei', 'yuanshu', 'fuhuanghou', 'caojie', 'caocao', 'zhangjiao', 'yanghu', 'jiaxu'].map(i => `wechat_zhi_${i}`),
                 wechat_shengzhiyifa: ['baixiang', 'hema', 'gaoluji', 'mashe', 'yingjiang', 'yuehanniu', 'luotuo', 'hansimao', 'dihuangxia', 'yanlongxia', 'nailong'].map(i => `wechat_${i}`),//任何答辩，终将绳之以法！！！！！
             },
         },
@@ -297,6 +297,7 @@ const packs = function () {
             wechat_zhi_liubiao: ['male', 'qun', 3, ['wechatguanji', 'wechatxiyang']],
             wechat_zhi_zhushixing: ['male', 'wei', 4, ['wechatxunjing', 'wechatqiusuo']],
             wechat_zhi_yanghu: ['male', 'wei', 4, ['wechatsuigong', 'wechatyuansi', 'wechatyilve']],
+            wechat_zhi_jiaxu: ['male', 'qun', 3, ['wechatruping', 'wechatjueyi']],
             //限时武将
             wechat_nailong: ['male', 'qun', 4, ['wechatdunshi', 'wechattanchi']],
             wechat_mashe: ['male', 'qun', 4, ['wechatgenggeng', 'wechattanpai']],
@@ -23071,6 +23072,187 @@ const packs = function () {
                     },
                 },
             },
+            //志贾诩
+            wechatruping: {
+                trigger: { global: "gameStart" },
+                forced: true,
+                filter(event, player) {
+                    return game.countPlayer() >= 3;
+                },
+                async content(event, trigger, player) {
+                    const result = await player
+                        .chooseTarget({
+                            prompt: "选择两名其他角色获得“入枰”标记",
+                            selectTarget: 2,
+                            filterTarget: (card, player, target) => {
+                                return target !== player;
+                            },
+                        })
+                        .forResult();
+                    if (result.bool) {
+                        player.addMark("wechatruping", 1, false);
+                        player.addAdditionalSkill("wechatruping_self", "wechatruping_mark");
+                        for (const target of result.targets) {
+                            target.addMark("wechatruping", 1, false);
+                            target.addAdditionalSkill("wechatruping_" + player.playerid, "wechatruping_mark");
+                        }
+                    }
+                },
+                group: ["wechatruping_die", "wechatruping_kill"],
+                global: "wechatruping_blocker",
+                subSkill: {
+                    mark: {
+                        onremove: true,
+                        mark: true,
+                        marktext: "枰",
+                        charlotte: true,
+                        intro: {
+                            content: "你只能杀有“入秤”标记的角色",
+                        },
+                    },
+                    kill: {
+                        trigger: { global: "die" },
+                        forced: true,
+                        filter(event, player) {
+                            return event.source === player && player.countMark("wechatruping") > 0;
+                        },
+                        async content(event, trigger, player) {
+                            player.removeMark("wechatruping", player.countMark("wechatruping"));
+                            player.removeAdditionalSkill("wechatruping_self");
+                        },
+                    },
+                    die: {
+                        trigger: { global: "die" },
+                        firstDo: true,
+                        forced: true,
+                        filter(event, player) {
+                            const source = event.source;
+                            if (!source) return false;
+                            return source.countMark("wechatruping") > 0 && event.player.countMark("wechatruping") > 0;
+                        },
+                        async content(event, trigger, player) {
+                            const result = await player
+                                .chooseTarget({
+                                    prompt: "选择一名角色，令其摸两张牌并回复1点体力",
+                                })
+                                .forResult();
+                            if (result.bool) {
+                                await result.targets[0].draw(2);
+                                await result.targets[0].recover(1);
+                            }
+                        },
+                    },
+                    blocker: {
+                        mod: {
+                            targetEnabled(card, player, target) {
+                                if (card.name !== "sha") return;
+                                if (player.countMark("wechatruping") > 0) {
+                                    if (target.countMark("wechatruping") > 0) return;
+                                    return false;
+                                }
+                            },
+                        },
+                    },
+                },
+            },
+            wechatjueyi: {
+                enable: "phaseUse",
+                usable(skill, player) {
+                    return player.hasStorage("wechatjueyi_usable2_active") ? 2 : 1;
+                },
+                check(event, player) {
+                    return player.hp >= 2;
+                },
+                async content(event, trigger, player) {
+                    await player.loseHp(1);
+                    const result = await player
+                        .chooseControl("选项一", "选项二")
+                        .set("prompt", "【绝弈】选择一项")
+                        .set("choiceList", ["摸三张牌", "令手中随机X张伤害牌或回复牌在结算时结算两次（X为拥有“入枰”的角色数）"])
+                        .set("ai", () => {
+                            return Math.random() < 0.5 ? 0 : 1;
+                        })
+                        .forResult();
+                    if (result.control === "选项一") {
+                        await player.draw(3);
+                    } else {
+                        const X = game.countPlayer(target => target.countMark("wechatruping") > 0);
+                        const cards = player.getCards("h", card => {
+                            return get.is.damageCard(card) || get.tag(card, "recover");
+                        });
+                        const selected = [];
+                        const shuffled = cards.slice().sort(() => Math.random() - 0.5);
+                        for (let i = 0; i < Math.min(X, shuffled.length); i++) {
+                            selected.push(shuffled[i]);
+                        }
+                        for (const card of selected) {
+                            card.addGaintag(["eternal_wechatjueyi"]);
+                        }
+                    }
+                    const cardTargetResult = await player
+                        .chooseCardTarget({
+                            prompt: "是否将一张手牌交给一名拥有“入枰”标记的其他角色？",
+                            filterCard: true,
+                            filterTarget: (card, player, target) => {
+                                return target !== player && target.countMark("wechatruping") > 0;
+                            },
+                            selectCard: 1,
+                            selectTarget: 1,
+                            ai1: card => 7 - get.value(card),
+                            ai2: target => {
+                                if (get.attitude(player, target) > 0) return 1;
+                                return 0;
+                            },
+                        })
+                        .forResult();
+                    if (cardTargetResult.bool) {
+                        await player.give(cardTargetResult.cards, cardTargetResult.targets[0]);
+                        player.setStorage("wechatjueyi_usable2_flag", true);
+                    }
+                },
+                ai: {
+                    order: 6,
+                    result: { player: 1 },
+                },
+                group: ["wechatjueyi_usable2", "wechatjueyi_double_effect"],
+                subSkill: {
+                    double_effect: {
+                        trigger: { player: "useCard" },
+                        forced: true,
+                        charlotte: true,
+                        filter(event, player) {
+                            const card = event.card;
+                            return [card].concat(card.cards || []).some(cardx => get.itemtype(cardx) === "card" && cardx.hasGaintag("eternal_wechatjueyi"));
+                        },
+                        async content(event, trigger, player) {
+                            const cards = [trigger.card].concat(trigger.card.cards || []);
+                            for (const cardx of cards) {
+                                if (get.itemtype(cardx) === "card") {
+                                    cardx.removeGaintag("eternal_wechatjueyi");
+                                }
+                            }
+                            trigger.effectCount = (trigger.effectCount || 0) + 1;
+                        },
+                    },
+                    usable2: {
+                        trigger: { player: "phaseUseBegin" },
+                        forced: true,
+                        charlotte: true,
+                        async content(event, trigger, player) {
+                            if (player.hasStorage("wechatjueyi_usable2_flag")) {
+                                player.setStorage("wechatjueyi_usable2_active", true);
+                                player.removeStorage("wechatjueyi_usable2_flag");
+                                player.addTempSkill("wechatjueyi_usable2_clean", "phaseUseEnd");
+                            }
+                        },
+                    },
+                    usable2_clean: {
+                        onremove(player, skill) {
+                            player.removeStorage("wechatjueyi_usable2_active");
+                        },
+                    },
+                },
+            },
         },
         dynamicTranslate: {
             wechatxiangzhi(player) {
@@ -24388,6 +24570,12 @@ const packs = function () {
             wechatjueshi_info: '一名角色的回合开始时，你可进行一次判定。若判定结果为【杀】，你获得之，且本回合结束时你可以执行一个额外回合并失去此技能。',
             wechatxuechou: '血仇',
             wechatxuechou_info: '锁定技，其他角色因你使用的【杀】进入濒死状态时，若你本局游戏至少已对其造成过X点伤害，则除其以外的角色不能对其使用【桃】（X为其体力上限）。',
+            wechat_zhi_jiaxu: '志贾诩',
+            wechatruping: "入枰",
+            wechatruping_info: "锁定技，游戏开始时，你令自己和两名其他角色获得”入枰“标记。拥有”入枰“标记的角色使用【杀】只能选择彼此为目标，直到其他拥有”入枰“标记的角色全部死亡或直到你杀死一名角色。当拥有”入枰“标记的角色杀死彼此后，你令一名角色摸两张牌并回复一点体力。",
+            wechatjueyi: "绝弈",
+            wechatjueyi_info: "出牌阶段限一次，你可以失去1点体力并选择一项：1.摸三张牌；2.令手中随机X张伤害牌或回复牌在结算时结算两次（X为拥有”入枰“的角色数）。然后你可以令一名拥有”入枰“标记的其他角色获得你的一张手牌，若如此做，你下回合此技能改为”出牌阶段限两次“。",
+            eternal_wechatjueyi: "弈",
 
             // ----------------------- 台词部分 ----------------------- //
             '#ext:活动武将/audio/skill/wechatzhongxin1': '苍生之愿，即贫道所愿也。',
