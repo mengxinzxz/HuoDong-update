@@ -2007,7 +2007,7 @@ const packs = function () {
                 },
             },
             wechatyigui: {
-                audio: 'huashen2',
+                audio: ['yigui1.mp3', 'yigui2.mp3'],
                 trigger: { player: 'useCardToPlayer' },
                 filter(event, player) {
                     if (!event.isFirstTarget || !player.hasCard(card => {
@@ -2051,7 +2051,7 @@ const packs = function () {
                 },
             },
             wechatshendao: {
-                audio: 'xinsheng',
+                audio: ['jihun1.mp3', 'jihun2.mp3'],
                 trigger: { player: 'useCardAfter' },
                 filter(event, player) {
                     return player.isPhaseUsing() && event.targets?.length && game.hasPlayer(function (current) {

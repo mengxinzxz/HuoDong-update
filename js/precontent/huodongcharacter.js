@@ -22,7 +22,6 @@ const packs = function () {
             bilibili_zhangrang: ['male', 'qun', 3, ['bilibili_taoluan'], ['die:zhangrang']],
             diy_lvmeng: ['male', 'wu', 4, ['BTkongju', 'BThouqi'], ['die:lvmeng']],
             bilibili_wangwang: ['female', 'shu', 3, ['huguan', 'yaopei', 'mingluan'], ['die:wangtao', 'die:wangyue', 'name:王|桃-王|悦']],
-            bilibili_guanning: ['male', 'qun', '3/7', ['BTdunshi'], ['forbidai', 'die:guanning']],
             bilibili_huanggai: ['male', 'wu', 4, ['bilibili_kurou', 'bilibili_zhaxiang'], ['die:re_huanggai']],
             bilibili_ekeshaoge: ['male', 'qun', 4, ['bilibili_xueji', 'bilibili_hanran'], ['name:null|null']],
             decade_huangwudie: ['female', 'shu', 3, ['decadexiwu', 'decadehongzhuang'], ['forbidai']],
@@ -2547,248 +2546,7 @@ const packs = function () {
                     player.draw(2);
                 },
             },
-            BTdunshi: {
-                audio: 'dunshi',
-                enable: ['chooseToUse', 'chooseToRespond'],
-                usable: 1,
-                init(player, skill) {
-                    player.storage[skill] ??= [['sha', 'shan', 'tao', 'jiu'], 0];
-                },
-                hiddenCard(player, name) {
-                    if (player.storage.BTdunshi && player.storage.BTdunshi[0].includes(name) && !player.getStat('skill').BTdunshi) return true;
-                    return false;
-                },
-                filter(event, player) {
-                    if (event.type == 'wuxie') return false;
-                    var storage = player.storage.BTdunshi;
-                    if (!storage || !storage[0].length) return false;
-                    for (var i of storage[0]) {
-                        var card = { name: i, isCard: true };
-                        if (event.filterCard(card, player, event)) return true;
-                    }
-                    return false;
-                },
-                contentx() {
-                    'step 0'
-                    var list, skills = [], bannedInfo = ['游戏开始时'];
-                    if (get.mode() == 'guozhan') {
-                        list = [];
-                        for (var i in lib.characterPack.mode_guozhan) list.push(i);
-                    }
-                    else if (_status.connectMode) list = get.charactersOL();
-                    else {
-                        list = [];
-                        for (var i in lib.character) {
-                            if (lib.filter.characterDisabled2(i) || lib.filter.characterDisabled(i)) continue;
-                            if ((lib.character[i]?.skills ?? []).length > 0) list.push(i);
-                        }
-                    }
-                    for (var i of list) {
-                        if (i.indexOf('gz_jun') == 0) continue;
-                        for (var j of lib.character[i].skills) {
-                            var skill = lib.skill[j];
-                            if (target.hasSkill(j)) continue;
-                            if (!skill || skill.zhuSkill) continue;
-                            if (skill.ai && (skill.ai.combo || skill.ai.notemp || skill.ai.neg)) continue;
-                            const infox = get.plainText(get.skillInfoTranslation(j));
-                            if (bannedInfo.some(item => infox.includes(item))) continue;
-                            const info = get.plainText(get.translation(j));
-                            if ('仁/义/礼/智/信'.split('/').some(item => info.includes(item))) skills.add(j);
-                        }
-                    }
-                    if (!skills.length) {
-                        event.finish();
-                        return;
-                    }
-                    var list = [];
-                    for (var skill of skills) {
-                        list.push([
-                            skill,
-                            '<div class="popup text" style="width:calc(100% - 10px);display:inline-block"><div class="skill">【' + get.translation(skill) + '】</div><div>' + lib.translate[skill + '_info'] + '</div></div>',
-                        ])
-                    }
-                    player.chooseButton([
-                        '遁世：选择令' + (target == player ? '自己' : get.translation(target)) + '获得一个技能',
-                        [list, 'textbutton'],
-                    ]).set('forced', true);
-                    'step 1'
-                    if (result.bool) {
-                        player.line(target);
-                        target.addSkills(result.links[0]);
-                    }
-                },
-                chooseButton: {
-                    dialog(event, player) {
-                        var list = [];
-                        var storage = player.storage.BTdunshi;
-                        for (var i of storage[0]) list.push(['基本', '', i]);
-                        return ui.create.dialog('遁世', [list, 'vcard'], 'hidden');
-                    },
-                    filter(button, player) {
-                        var evt = _status.event.getParent();
-                        return evt.filterCard({ name: button.link[2], isCard: true }, player, evt);
-                    },
-                    check(button) {
-                        var card = { name: button.link[2] }, player = _status.event.player;
-                        if (_status.event.getParent().type != 'phase') return 1;
-                        if (card.name == 'jiu') return 0;
-                        if (card.name == 'sha' && player.hasSkill('jiu')) return 0;
-                        return player.getUseValue(card, null, true);
-                    },
-                    backup(links, player) {
-                        return {
-                            audio: 'dunshi',
-                            filterCard() { return false },
-                            popname: true,
-                            viewAs: {
-                                name: links[0][2],
-                                isCard: true,
-                            },
-                            selectCard: -1,
-                            precontent() {
-                                player.addTempSkill('BTdunshi_damage');
-                                player.storage.BTdunshi_damage = event.result.card.name;
-                            },
-                        }
-                    },
-                    prompt(links, player) {
-                        return '请选择【' + get.translation(links[0][2]) + '】的目标';
-                    }
-                },
-                ai: {
-                    respondSha: true,
-                    respondShan: true,
-                    skillTagFilter(player, tag, arg) {
-                        var storage = player.storage.BTdunshi;
-                        if (!storage || !storage[0].length) return false;
-                        if (player.getStat('skill').BTdunshi) return false;
-                        switch (tag) {
-                            case 'respondSha': return (_status.event.type != 'phase' || (player == game.me || player.isUnderControl() || player.isOnline())) && storage[0].includes('sha');
-                            case 'respondShan': return storage[0].includes('shan');
-                            case 'save':
-                                if (arg == player && storage[0].includes('jiu')) return true;
-                                return storage[0].includes('tao');
-                        }
-                    },
-                    order: 2,
-                    result: {
-                        player(player) {
-                            if (_status.event.type == 'dying') {
-                                return get.attitude(player, _status.event.dying);
-                            }
-                            return 1;
-                        },
-                    },
-                },
-                subSkill: {
-                    backup: { audio: 'dunshi' },
-                    damage: {
-                        charlotte: true,
-                        onremove: true,
-                        audio: 'dunshi',
-                        trigger: { global: 'damageBegin2' },
-                        filter(event, player) {
-                            return event.source == _status.currentPhase;
-                        },
-                        forced: true,
-                        logTarget: 'source',
-                        content() {
-                            'step 0'
-                            event.cardname = player.storage.BTdunshi_damage;
-                            player.removeSkill('BTdunshi_damage');
-                            event.target = trigger.source;
-                            event.videoId = lib.status.videoId++;
-                            var func = function (card, id, card2, card3) {
-                                var list = [
-                                    '防止即将对' + card3 + '造成的伤害，并令' + card + '获得一个技能名中包含“仁/义/礼/智/信”的技能',
-                                    '从〖遁世〗中删除【' + card2 + '】',
-                                    '减1点体力上限，然后摸等同于〖遁世〗已删除牌名数的牌',
-                                ];
-                                var choiceList = ui.create.dialog('遁世：请选择两项');
-                                choiceList.videoId = id;
-                                for (var i = 0; i < list.length; i++) {
-                                    var str = '<div class="popup text" style="width:calc(100% - 10px);display:inline-block">';
-                                    str += list[i];
-                                    str += '</div>';
-                                    var next = choiceList.add(str);
-                                    next.firstChild.addEventListener(lib.config.touchscreen ? 'touchend' : 'click', ui.click.button);
-                                    next.firstChild.link = i;
-                                    for (var j in lib.element.button) {
-                                        next[j] = lib.element.button[j];
-                                    }
-                                    choiceList.buttons.add(next.firstChild);
-                                }
-                                return choiceList;
-                            };
-                            if (player.isOnline2()) {
-                                player.send(func, get.translation(trigger.source), event.videoId, get.translation(event.cardname), get.translation(trigger.player));
-                            }
-                            event.dialog = func(get.translation(trigger.source), event.videoId, get.translation(event.cardname), get.translation(trigger.player));
-                            if (player != game.me || _status.auto) {
-                                event.dialog.style.display = 'none';
-                            }
-                            var next = player.chooseButton();
-                            next.set('dialog', event.videoId);
-                            next.set('forced', true);
-                            next.set('selectButton', 2);
-                            next.set('ai', function (button) {
-                                var player = _status.event.player;
-                                switch (button.link) {
-                                    case 0:
-                                        if (get.attitude(player, _status.currentPhase) > 0) return 3;
-                                        return 0;
-                                    case 1:
-                                        return 1;
-                                    case 2:
-                                        var num = player.storage.BTdunshi[1];
-                                        for (var i of ui.selected.buttons) {
-                                            if (i.link == 1) num++;
-                                        }
-                                        if (num > 0 && player.isDamaged()) return 2;
-                                        return 0;
-                                }
-                            });
-                            'step 1'
-                            if (player.isOnline2()) {
-                                player.send('closeDialog', event.videoId);
-                            }
-                            event.dialog.close();
-                            event.links = result.links.sort();
-                            for (var i of event.links) {
-                                game.log(player, '选择了', '#g【遁世】', '的', '#y选项' + get.cnNumber(i + 1, true));
-                            }
-                            if (event.links.includes(0)) {
-                                trigger.cancel();
-                                var next = game.createEvent('BTdunshi_gain', false);
-                                next.player = player;
-                                next.target = _status.currentPhase;
-                                next.setContent(lib.skill.BTdunshi.contentx);
-                            }
-                            else event.goto(3);
-                            'step 2'
-                            game.broadcastAll('closeDialog', event.videoId);
-                            target.addSkills(result.control);
-                            'step 3'
-                            var storage = player.storage.BTdunshi;
-                            if (event.links.includes(1)) {
-                                storage[0].remove(event.cardname);
-                                storage[1]++;
-                            }
-                            if (event.links.includes(2)) {
-                                player.loseMaxHp();
-                                if (storage[1] > 0) player.draw(storage[1]);
-                            }
-                        },
-                        ai: {
-                            effect: {
-                                player(card, player, target) {
-                                    if (get.tag(card, 'damage') && get.attitude(player, target) >= 0) return [0, 0.1, 0, 0.1];
-                                },
-                            },
-                        },
-                    },
-                },
-            },
+            //左慈
             BThuashen: {
                 init(player, skill) {
                     player.storage[skill] ??= {
@@ -3083,7 +2841,7 @@ const packs = function () {
                 },
             },
             BThuanhua: {
-                audio: 'yigui',
+                audio: ['yigui1.mp3', 'yigui2.mp3'],
                 enable: 'phaseUse',
                 filter(event, player) {
                     if (!player.countCards('hs')) return false;
@@ -3117,7 +2875,7 @@ const packs = function () {
                     },
                     check(button) {
                         var player = _status.event.player;
-                        if (player.storage.BThuashen.character.includes(button.link)) return (1 / lib.skill.old_gengzhan.getNum(button.link)) || 0.5;
+                        if (player.storage.BThuashen.character.includes(button.link)) return (1 / (get.character(button.link)?.skills ?? []).reduce((sum, skill) => sum + get.skillRank(skill), 0)) || 0.5;
                         return player.getUseValue({ name: button.link[2], nature: button.link[3] });
                     },
                     filter(button, player) {
@@ -3133,7 +2891,7 @@ const packs = function () {
                         if (player.storage.BThuashen.character.includes(links[1])) links.reverse();
                         var name = links[1][2], nature = links[1][3] || null;
                         return {
-                            audio: 'yigui',
+                            audio: ['yigui1.mp3', 'yigui2.mp3'],
                             filterCard: true,
                             check(card) {
                                 return 8 - get.value(card);
@@ -3171,12 +2929,16 @@ const packs = function () {
                     player.draw();
                 },
                 ai: {
-                    order: 8,
+                    order: 0.05,
                     result: {
                         player(player) {
-                            if (player.countCards('hs', { name: ['jiu', 'tao'] }) + player.hp > 0) return 1;
-                            return 0;
-                        }
+                            if (!player.hasSkill('bilibili_zhaxiang') && get.effect(player, { name: 'losehp' }, player, player) <= 0) return 0;
+                            if (!player.hasCard(card => {
+                                if (player.hasValueTarget(card, true, true)) return false;
+                                return lib.skill.zhiheng.check(card) > 0;
+                            }, 'h')) return 0;
+                            return player.countCards('hs', card => player.canSaveCard(card, player)) + player.hp - 1;
+                        },
                     },
                 },
             },
@@ -3184,10 +2946,10 @@ const packs = function () {
                 audio: 'zhaxiang',
                 trigger: { player: ['loseHpEnd', 'damageEnd'] },
                 filter(event, player) {
-                    return player.countCards('h');
+                    return player.hasCard('h', card => _status.connectMode || lib.filter.cardDiscardable(card, player, 'bilibili_zhaxiang'), 'h');
                 },
                 async cost(event, trigger, player) {
-                    event.result = await player.chooseToDiscard('h', get.prompt2(event.skill), 'allowChooseAll', 'chooseonly', [1, Infinity]).set('ai', card => lib.skill.zhiheng.check(card)).forResult();
+                    event.result = await player.chooseToDiscard(get.prompt2(event.skill), 'allowChooseAll', 'chooseonly', [1, Infinity]).set('ai', lib.skill.zhiheng.check).forResult();
                 },
                 async content(event, trigger, player) {
                     await player.discard(event.cards);
@@ -3276,8 +3038,7 @@ const packs = function () {
                 enable: 'chooseToUse',
                 viewAs: { name: 'wanjian' },
                 filterCard(card, player) {
-                    if (!player.storage.oldluanji) return true;
-                    return !player.storage.oldluanji.includes(get.suit(card));
+                    return !player.storage.oldluanji?.includes(get.suit(card));
                 },
                 selectCard: 2,
                 check(card) {
@@ -3357,18 +3118,12 @@ const packs = function () {
                     },
                 },
             },
-            shen_sunquan_skill: {
-                init(player) {
-                    player.storage.shen_sunquan_skill = [];
-                },
-                derivation: 'bolyuheng_faq',
-                group: 'shen_sunquan_skill_mark',
-                onremove: true,
+            old_yuheng: {
                 audio: 'yuheng',
                 trigger: { player: ['phaseBegin', 'useCardAfter', 'phaseEnd'] },
                 filter(event, player) {
-                    if (!_status.currentPhase || _status.currentPhase != player) return false;
-                    if (!player.hasMark('shen_sunquan_skill_count')) return false;
+                    if (_status.currentPhase !== player) return false;
+                    if (!player.hasMark('old_yuheng_count')) return false;
                     if (event.name == 'useCard') {
                         var list = [], bool = false;
                         player.getHistory('useCard', function (evt) {
@@ -3377,25 +3132,25 @@ const packs = function () {
                                 if (evt.card == event.card) bool = true;
                             }
                         });
-                        return list.length == player.countMark('shen_sunquan_skill_count');
+                        return list.length == player.countMark('old_yuheng_count');
                     }
                     return true;
                 },
                 forced: true,
                 popup: false,
                 async content(event, trigger, player) {
-                    const num = player.countMark('shen_sunquan_skill_count');
+                    const num = player.countMark('old_yuheng_count');
                     const skills = (lib.config.extension_活动武将_ShenSunQuan ? lib.skill.bolyuheng.getList() : lib.skill.junkyuheng.derivation).filter(skill => !player.hasSkill(skill));
-                    if (!skills.length && !player.storage.shen_sunquan_skill.length && trigger.name != 'phaseEnd') return;
+                    if (!skills.length && !player.storage.old_yuheng.length && trigger.name != 'phaseEnd') return;
                     const gainSkills = async function (player, num, skills) {
                         const gains = skills.randomGets(num);
-                        player.storage.shen_sunquan_skill.addArray(gains);
-                        player.addSkills(gains);
+                        player.markAuto('old_yuheng', gains);
+                        await player.addSkills(gains);
                     };
                     const loseSkills = async function (player, num, skills) {
-                        const removes = player.storage.shen_sunquan_skill.randomGets(num);
-                        player.storage.shen_sunquan_skill.removeArray(removes);
-                        player.removeSkills(removes);
+                        const removes = player.getStorage('old_yuheng').randomGets(num);
+                        player.unmarkAuto('old_yuheng', removes);
+                        await player.removeSkills(removes);
                     };
                     switch (event.triggername) {
                         case 'phaseBegin':
@@ -3410,6 +3165,13 @@ const packs = function () {
                             break;
                     }
                 },
+                derivation: 'bolyuheng_faq',
+                init(player, skill) {
+                    player.addSkill(`${skill}_mark`);
+                },
+                onremove(player, skill) {
+                    player.removeSkill(`${skill}_mark`);
+                },
                 subSkill: {
                     mark: {
                         charlotte: true,
@@ -3417,17 +3179,18 @@ const packs = function () {
                         forced: true,
                         popup: false,
                         content() {
-                            var list = [player.hp, player.getDamagedHp(), game.roundNumber].sort(function (a, b) {
-                                return a - b;
-                            });
+                            var list = [player.getHp(), player.getDamagedHp(), game.roundNumber].sort((a, b) => a - b);
                             if (list[1] > 0) {
-                                player.addMark('shen_sunquan_skill_count', list[1], false);
-                                player.addTempSkill('shen_sunquan_skill_count');
-                                game.log('本回合中位数为', '#g' + list[1]);
+                                player.addTempSkill('old_yuheng_count');
+                                player.setStorage('old_yuheng_count', list[1], true);
                             }
                         },
                     },
-                    count: { onremove: true, charlotte: true },
+                    count: {
+                        charlotte: true,
+                        onremove: true,
+                        intro: { content: '本回合中位数：#' },
+                    },
                 },
             },
             //保留所有设定的旧美羊羊
@@ -3494,9 +3257,6 @@ const packs = function () {
                     if (event.filterCard(get.autoViewAs({ name: 'shan' }, 'unsure'), player, event) && player.countCards('hs', 'sha')) return true;
                     return false;
                 },
-                precontent() {
-                    player.addTempSkill('xinfanghun_add');
-                },
                 ai: {
                     respondSha: true,
                     respondShan: true,
@@ -3513,6 +3273,7 @@ const packs = function () {
                         return 10;
                     },
                 },
+                group: 'xinfanghun_add',
                 subSkill: {
                     add: {
                         charlotte: true,
@@ -3542,7 +3303,7 @@ const packs = function () {
                 content() {
                     'step 0'
                     player.awakenSkill('xinfuhan');
-                    player.removeMark('fanghun', player.countMark('fanghun'));
+                    player.clearMark('fanghun');
                     player.gainMaxHp();
                     player.recover();
                     'step 1'
@@ -3550,50 +3311,15 @@ const packs = function () {
                     'step 2'
                     var list = [];
                     for (var i of lib.skill.xinfuhan.derivation) {
-                        if (i != 'ollongdan' && !player.hasSkill(i)) list.push(i);
+                        if (i !== 'ollongdan' && !player.hasSkill(i, null, false, false)) list.push(i);
                     }
-                    if (list.length) player.chooseControl(list).set('prompt', '选择获得一项技能');
+                    if (list.length) {
+                        if (list.length === 1) event._result = { control: list[0] };
+                        else player.chooseControl(list).set('prompt', '选择获得一项技能');
+                    }
                     else event.finish();
                     'step 3'
-                    var list = ['ollongdan'];
-                    if (result.control) {
-                        player.addSkills(result.control);
-                        list.push(result.control);
-                    }
-                    game.broadcastAll(function (list) {
-                        game.expandSkills(list);
-                        for (var i of list) {
-                            var info = lib.skill[i];
-                            if (!info) continue;
-                            info.audioname2 ??= {};
-                            info.audioname2.old_zhaoxiang = 'fanghun';
-                        }
-                    }, list);
-                },
-            },
-            old_gengzhan: {
-                getNum(name) {
-                    var num = 0;
-                    if (name == 'litong') num = 1;
-                    else switch (game.getRarity(name)) {
-                        case 'junk': num = 1; break;
-                        case 'rare': num = 2; break;
-                        case 'epic': num = 3; break;
-                        case 'legend': num = 4; break;
-                    }
-                    return num;
-                },
-                getCharacter(list) {
-                    var listx = [], num = 0;
-                    for (var name of list) {
-                        var numx = lib.skill.old_gengzhan.getNum(name);
-                        if (numx > num) {
-                            num = numx;
-                            listx = [name];
-                        }
-                        else if (numx == num) listx.push(name);
-                    }
-                    return listx;
+                    if (result.control) player.addSkills(result.control);
                 },
             },
             old_jiebing: {
@@ -3767,51 +3493,35 @@ const packs = function () {
                 },
             },
             old_qixi: {
-                init() {
-                    lib.card.guohe.storage = lib.card.guohe.content;
-                },
                 audio: 'sbqixi',
+                inherit: 'qixi',
                 enable: 'chooseToUse',
-                filterCard(card) {
-                    return get.color(card) == 'black';
-                },
-                position: 'hes',
-                viewAs: { name: 'guohe' },
-                viewAsFilter(player) {
-                    if (!player.countCards('hes', { color: 'black' })) return false;
-                },
-                prompt: '将一张黑色牌当作【过河拆桥】使用',
-                check(card) {
-                    if (card.name == 'guohe') return 0;
-                    return 6 - get.value(card);
-                },
                 group: 'old_qixi_guohe',
                 contentx() {
-                    if (target.countCards('hej')) target.discard(target.getCards('hej'));
+                    const cards = target.getDiscardableCards(player, 'hej');
+                    if (cards.length > 0) target.discard(cards).discarder = player;
                 },
                 subSkill: {
                     guohe: {
                         audio: 'sbqixi',
-                        trigger: { player: 'useCard' },
+                        trigger: { player: 'guoheBegin' },
                         filter(event, player) {
-                            return event.card.name == 'guohe' && event.card.isCard && event.cards.length == 1;
+                            const evt = event.getParent();
+                            if (evt.type !== 'card') return false;
+                            return evt.card.name == 'guohe' && evt.card.isCard && evt.cards.length === 1;
                         },
                         prompt2: '强化【过河拆桥】的效果',
                         check(event, player) {
-                            var target = event.targets[0];
-                            return get.attitude(player, target) <= 0;
+                            let position = ['h', 'e', 'j'];
+                            for (let i = 0; i < position.length; i++) {
+                                if (!target.countDiscardableCards(player, position[i])) position.splice(i--, 1);
+                            }
+                            position = position.join('');
+                            return get.effect(target, { name: 'guohe_copy', position }, player, player) > 0;
                         },
+                        logTarget: 'target',
                         content() {
-                            player.addTempSkill('old_qixi_reguohe', 'useCardAfter');
-                        },
-                    },
-                    reguohe: {
-                        charlotte: true,
-                        init() {
-                            lib.card.guohe.content = lib.skill.old_qixi.contentx;
-                        },
-                        onremove() {
-                            lib.card.guohe.content = lib.card.guohe.storage;
+                            trigger.setContent(lib.skill.old_qixi.contentx);
                         },
                     },
                 },
@@ -13607,9 +13317,6 @@ const packs = function () {
             bilibili_wangyue_prefix: '萌设',
             bilibili_x_wangtao_prefix: '萌设',
             bilibili_x_wangyue_prefix: '萌设',
-            bilibili_guanning: '管宁',
-            BTdunshi: '遁世',
-            BTdunshi_info: '每回合限一次。你可以视为使用或打出一张【杀】/【闪】/【桃】/【酒】，然后当前回合角色于本回合内下一次造成伤害时，你选择两项：⒈防止此伤害，然后你从技能名中包含“仁/义/礼/智/信”字样的技能中选择一个当前回合角色未拥有的技能，令其获得你选择的技能；⒉从〖遁世〗中删除你本次使用或打出的牌名；⒊减1点体力上限并摸X张牌（X为你因〖遁世〗删除牌名数的牌）。',
             BThuashen: '化身',
             BThuashen_info: '游戏开始后，你随机获得两张未加入游戏的武将牌，然后选择一张置于你面前并声明该武将牌的一项技能，你视为拥有该技能且性别和势力视为与该武将相同直到该化身被替换。准备阶段和结束阶段，你可以选择一项：①弃置至多X张未展示的化身牌并重新获得等量化身牌（X为你的体力上限）；②更换所展示的化身牌或技能；③弃置一张化身牌并升级【新生】（至多升至3级）。（你不可声明限定技、觉醒技、隐匿技、使命技、主公技等特殊技能）。',
             BTxinsheng: '新生',
@@ -13636,8 +13343,8 @@ const packs = function () {
             oldluanji_info: '你可以将两张与你本回合以此法转化的花色均不相同的手牌当【万箭齐发】使用。当一名已受伤的角色因响应此牌而打出【闪】时，该角色摸一张牌。',
             old_jishi: '济世',
             old_jishi_info: '锁定技。①当你使用的牌结算完成后，若你未因此牌造成过伤害，则你将此牌对应的所有实体牌置于仁库中。②当有牌离开仁库时，你摸一张牌。',
-            shen_sunquan_skill: '驭衡',
-            shen_sunquan_skill_info: '锁定技。①回合开始时/当你每回合使用第X张牌结算完成后，你随机获得吴势力角色的X个技能。②回合结束时/当你每回合使用第X张牌结算完成后，你随机失去你因〖废案〗获得的X个技能。（X为当前回合开始时你的体力值、已损失体力值和游戏轮数的中位数）',
+            old_yuheng: '驭衡',
+            old_yuheng_info: '锁定技。①回合开始时/当你每回合使用第X张牌结算完成后，你随机获得吴势力角色的X个技能。②回合结束时/当你每回合使用第X张牌结算完成后，你随机失去你因此获得的X个技能。（X为当前回合开始时你的体力值、已损失体力值和游戏轮数的中位数）',
             bilibili_litiansuo: '李田所',
             bilibili_litiansuo_ab: '李荣',
             oldhongyi: '弘仪',

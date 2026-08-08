@@ -701,11 +701,6 @@ export async function content(config, pack) {
 
 	//precA
 	//配音
-	//引用国战配音
-	lib.skill.yigui ??= { audio: 2 };
-	lib.skill.gzshilu ??= { audio: 2 };
-	lib.skill.gzxiongnve ??= { audio: 2 };
-
 	//技能配音修正
 	lib.skill.juntun.audio = 'ext:活动武将/audio/skill:true';
 	lib.skill.jiaojie.audio = 'ext:活动武将/audio/skill:true';
@@ -1066,7 +1061,7 @@ export async function content(config, pack) {
 	game.HDaddCharacter('bfake_zuoci', ['male', 'qun', 3, ['BThuashen', 'BTxinsheng'], ['die:re_zuoci']], 'diy');
 	game.HDaddCharacter('bfake_chengpu', ['male', 'wu', 4, ['bollihuo', 'bolchunlao'], ['die:chengpu']], 'diy');
 	game.HDaddCharacter('bfake_sundeng', ['male', 'wu', 4, ['bolkuangbi'], ['die:sundeng']], 'diy');
-	game.HDaddCharacter('old_shen_sunquan', ['male', 'shen', 4, ['shen_sunquan_skill'], ['wu', 'die:shen_sunquan']], 'diy');
+	game.HDaddCharacter('old_shen_sunquan', ['male', 'shen', 4, ['old_yuheng'], ['wu', 'die:shen_sunquan']], 'diy');
 	game.HDaddCharacter('old_shen_ganning', ['male', 'shen', 1, ['old_jieying', 'old_tongling'], ['wu', 'die:shen_ganning']], 'diy');
 	game.HDaddCharacter('bfake_chengui', ['male', 'qun', 3, ['bolyingtu', 'bolcongshi'], ['die:chengui']], 'diy');
 	if (lib.config.connect_nickname == '萌新（转型中）') {

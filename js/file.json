@@ -5181,10 +5181,6 @@
             "size": 66659
         },
         {
-            "path": "image/character/bilibili_guanning.jpg",
-            "size": 47092
-        },
-        {
             "path": "image/character/bilibili_huanggai.jpg",
             "size": 63761
         },
@@ -5222,7 +5218,7 @@
         },
         {
             "path": "image/character/bilibili_ningjingzhiyuan.jpg",
-            "size": 38781
+            "size": 47092
         },
         {
             "path": "image/character/bilibili_re_xusheng.jpg",
@@ -8945,6 +8941,10 @@
             "size": 141769
         },
         {
+            "path": "image/skin/bilibili_ningjingzhiyuan/宁静致远.jpg",
+            "size": 38781
+        },
+        {
             "path": "image/skin/bilibili_suixingsifeng/超天酱.jpg",
             "size": 100792
         },
@@ -9058,7 +9058,7 @@
         },
         {
             "path": "js/content.js",
-            "size": 64481
+            "size": 64333
         },
         {
             "path": "js/help.js",
@@ -9094,7 +9094,7 @@
         },
         {
             "path": "js/precontent/huodongcharacter.js",
-            "size": 866232
+            "size": 850302
         },
         {
             "path": "js/precontent/index.js",
@@ -9122,7 +9122,7 @@
         },
         {
             "path": "js/precontent/WeChatkill.js",
-            "size": 1479672
+            "size": 1479708
         },
         {
             "path": "js/update.js",
