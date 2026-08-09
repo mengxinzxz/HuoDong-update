@@ -7,7 +7,7 @@ const packs = function () {
         connect: true,
         characterSort: {
             MiNikill: {
-                MiNi_wei: ['yj_majun', 'caoyi', 'lvqian', 'hanlong', 'xiahoumao', 'guohuai', 'caochong', 'caochun', 'caoying', 'dc_jiachong', 'zhugeruoxue', 'dukui', 'xinpi', 'caimaozhangyun', 'bianyue', 'caoanmin', 'zhaoang', 'zhanggong', 'simalang', 'hanhaoshihuan', 'chentai', 'zhenghun', 'guanlu', 'guanqiujian', 'dc_liuye', 'chenlin', 'wangshuang', 'yanrou', 'dc_yanghu', 'ruanyu', 'chengyu', 'jianggan', 'yuejin', 'bianfuren', 'zhugedan', 'caohong', 'yinfuren', 'kuailiangkuaiyue', 'chenqun', 'xiahoulingnv', 'wenyang', 'caozhang', 'dufuren', 'yangxiu', 'zhangchangpu', 'zhonghui', 'caoxiu', 'xunyou', 'lidian', 'zhongyao', 'caozhen', 'guohuanghou', 'xinxianying', 'xiahouyuan', 'xizhicai', 'caorui', 'xunyu', 'dengai', 'caozhi', 'caopi', 'caoang', 'zhenji', 'old_caoren', 'zhangchunhua', 'xiahoudun', 'dianwei', 'zhanghe', 'yujin', 'xuhuang'].map(i => `Mbaby_${i}`),
+                MiNi_wei: ['zhanghu', 'yj_majun', 'caoyi', 'lvqian', 'hanlong', 'xiahoumao', 'guohuai', 'caochong', 'caochun', 'caoying', 'dc_jiachong', 'zhugeruoxue', 'dukui', 'xinpi', 'caimaozhangyun', 'bianyue', 'caoanmin', 'zhaoang', 'zhanggong', 'simalang', 'hanhaoshihuan', 'chentai', 'zhenghun', 'guanlu', 'guanqiujian', 'dc_liuye', 'chenlin', 'wangshuang', 'yanrou', 'dc_yanghu', 'ruanyu', 'chengyu', 'jianggan', 'yuejin', 'bianfuren', 'zhugedan', 'caohong', 'yinfuren', 'kuailiangkuaiyue', 'chenqun', 'xiahoulingnv', 'wenyang', 'caozhang', 'dufuren', 'yangxiu', 'zhangchangpu', 'zhonghui', 'caoxiu', 'xunyou', 'lidian', 'zhongyao', 'caozhen', 'guohuanghou', 'xinxianying', 'xiahouyuan', 'xizhicai', 'caorui', 'xunyu', 'dengai', 'caozhi', 'caopi', 'caoang', 'zhenji', 'old_caoren', 'zhangchunhua', 'xiahoudun', 'dianwei', 'zhanghe', 'yujin', 'xuhuang'].map(i => `Mbaby_${i}`),
                 MiNi_shu: ['wenyuan', 'xizheng', 'malingli', 'dc_wuban', 'pangtong', 'mifangfushiren', 'guanyue', 'xianglang', 'huanghao', 'ganfurenmifuren', 'zhaotongzhaoguang', 'wulan', 'leitong', 'zongyu', 're_mazhong', 're_dengzhi', 'dc_hujinding', 'jiangfei', 'zhangyi', 'guanzhang', 'wolongfengchu', 'wangtao', 'wangyue', 'xf_yiji', 'mizhu', 'mifuren', 'liuyong', 'ganfuren', 'lvkai', 'zhoucang', 'yangwan', 'liuchen', 'liyan', 'chendao', 'yanyan', 'xiahouba', 'huaman', 'sp_zhugeliang', 'zhugeguo', 'jianyong', 'wangping', 'mayunlu', 'guansuo', 'xiahoushi', 'shamoke', 'wuxian', 'zhugezhan', 'qinmi', 'guanyinping', 'guanyu', 'zhugeliang', 'liubei', 'machao', 'zhurong', 'zhangfei', 'zhaoyun', 'huangzhong', 'weiyan', 'liaohua', 'menghuo', 'ol_jiangwei', 'liushan', 'xin_fazheng', 'madai', 'guanping', 'liufeng', 'zhangxingcai', 'dongyun', 'xushu', 'xin_masu'].map(i => `Mbaby_${i}`),
                 MiNi_wu: ['sunhuan', 'gexuan', 'lvfan', 'xielingyu', 'zhupeilan', 'xugong', 'chendong', 'kanze', 're_panzhangmazhong', 'weiwenzhugezhi', 'zhangwen', 'dc_sunhanhua', 'heqi', 'lvdai', 'jiangqing', 're_guyong', 'quancong', 'yufan', 'dc_sunru', 'sunxiu', 'zhangfen', 'xuezong', 'panjun', 'luji', 'zhoufang', 'zhangxuan', 'yanjun', 'zhuhuan', 'luyusheng', 're_jsp_pangtong', 'sunhao', 'lukang', 'buzhi', 'xushi', 'zhugeke', 'zhoufei', 'zhangzhang', 'sunliang', 'sunjian', 'zhuzhi', 'bulianshi', 'chengpu', 'daqiao', 'ganning', 'huanggai', 'lusu', 'luxun', 'lvmeng', 'sunce', 'sunluban', 'sunluyu', 'sunquan', 'sunshangxiang', 'taishici', 'wuguotai', 'xiaoqiao', 'xusheng', 'old_zhoutai', 'zhouyu', 'zhugejin', 'zumao'].map(i => `Mbaby_${i}`),
                 MiNi_qun: ['tianfeng', 'xunchen', 'dongguiren', 'zhangren', 'kebineng', 'mangyachang', 're_hucheer', 'sp_duyu', 'ol_lisu', 'zhangchu', 'leibo', 'wangcan', 'diaochan', 'xurong', 're_taoqian', 'hejin', 'jiling', 'zhangrang', 'duanwei', 're_chendeng', 'caiyong', 'mengjie', 'dc_gaolan', 'yl_luzhi', 'tadun', 're_hansui', 'dongxie', 'fuwan', 'wutugu', 'huangfusong', 'fanchou', 'guosi', 'yanbaihu', 'dc_huangzu', 'licaiwei', 'ol_dingyuan', 'liubian', 're_pangdegong', 'zhangning', 'zhanglu', 'wangyun', 'zoushi', 'dc_huangchengyan', 'simahui', 'tw_mateng', 'laiyinger', 'sp_kongrong', 'zhujun', 'gongsunyuan', 'guotufengji', 'yanfuren', 'tangji', 'caojie', 'liangxing', 'caoxing', 'wangrong', 'hetaihou', 'zhangji', 'dongbai', 'beimihu', 'chunyuqiong', 'zhangqiying', 'fuhuanghou', 'liuxie', 'quyi', 'lijue', 'panfeng', 'liuzhang', 'jiaxu', 'zhangbao', 'zhangliang', 'gaoshun', 'caifuren', 'xuyou', 'pangde', 'yj_jushou', 'liru', 'dongzhuo', 'sp_zhangjiao', 'huatuo', 'lvbu', 'huaxiong', 'yuji', 'liubiao', 'yuanshao', 'yuanshu', 'chengong', 'zuoci'].map(i => `Mbaby_${i}`),
@@ -154,6 +154,7 @@ const packs = function () {
             Mbaby_sb_xiahoudun: ['male', 'wei', 4, ['miniganglie', 'minisbqingjian'], ['name:夏侯|惇']],
             Mbaby_yj_majun: ['male', 'wei', 3, ['gongqiao', 'minijingyi']],
             Mbaby_re_caochong: ['male', 'wei', 3, ['minirechengxiang', 'minirenxin']],
+            Mbaby_zhanghu: ['male', 'wei', 4, ['cuijian', 'minitongyuan']],
             //蜀
             Mbaby_guanyu: ['male', 'shu', 4, ['miniwusheng']],
             Mbaby_re_guanyu: ['male', 'shu', 4, ['minirewusheng', 'minituodao', 'jsrgguanjue']],
@@ -8263,6 +8264,75 @@ const packs = function () {
                         },
                     }
                 }
+            },
+            //张虎
+            minitongyuan: {
+                inherit: 'zhtongyuan',
+                filter(event, player) {
+                    const type = get.type2(event.card, false);
+                    return (type === 'basic' || type === 'trick') && !player.hasMark('zhtongyuan_' + type);
+                },
+                ai: { combo: 'cuijian' },
+                group: ['minitongyuan_basic', 'minitongyuan_trick'],
+                subSkill: {
+                    basic: {
+                        audio: 'tongyuan',
+                        trigger: { player: 'useCard2' },
+                        filter(event, player) {
+                            if (!player.hasMark('zhtongyuan_basic') || !player.hasMark('zhtongyuan_trick')) return false;
+                            const card = event.card, info = get.info(card);
+                            if (get.type(card, null, false) !== 'basic') return false;
+                            if (info.allowMultiple === false) return false;
+                            if (event.targets && !info.multitarget) {
+                                if (game.hasPlayer(current => {
+                                    return !event.targets.includes(current) && lib.filter.targetEnabled2(card, event.player, current);
+                                })) return true;
+                            }
+                            return false;
+                        },
+                        async cost(event, trigger, player) {
+                            const result = event.result = await player.chooseTarget({
+                                prompt: get.prompt(event.skill),
+                                prompt2: `为${get.translation(trigger.card)}增加一个目标`,
+                                filterTarget(card, player, target) {
+                                    const trigger = get.event().getTrigger();
+                                    return !trigger.targets.includes(target) && lib.filter.targetEnabled2(trigger.card, trigger.player, target);
+                                },
+                                ai(target) {
+                                    const player = get.player(), trigger = get.event().getTrigger();
+                                    return get.effect(target, trigger.card, trigger.player, player);
+                                },
+                            }).forResult();
+                            if (result?.bool && result.targets?.length) {
+                                if (!event.isMine() && !event.isOnline()) await game.delayx();
+                            }
+                        },
+                        locked: true,
+                        async content(event, trigger, player) {
+                            trigger.targets.addArray(event.targets);
+                            game.log(event.targets, '成为了', trigger.card, '的额外目标');
+                        },
+                    },
+                    trick: {
+                        audio: 'tongyuan',
+                        trigger: { player: 'useCard' },
+                        forced: true,
+                        filter(event, player) {
+                            if (!player.hasMark('zhtongyuan_basic') || !player.hasMark('zhtongyuan_trick')) return false;
+                            return get.type(event.card, null, false) === 'trick';
+                        },
+                        async content(event, trigger, player) {
+                            trigger.directHit.addArray(game.players);
+                            game.log(trigger.card, '不可被响应');
+                        },
+                        ai: {
+                            directHit_ai: true,
+                            skillTagFilter(player, tag, arg) {
+                                return arg?.card && get.type(arg.card, null, false) === 'trick';
+                            },
+                        },
+                    },
+                },
             },
             //蜀
             //关羽
@@ -44869,6 +44939,7 @@ const packs = function () {
             Mbaby_sb_xiahoudun: '欢杀谋夏侯惇',
             Mbaby_yj_majun: '欢杀马钧',
             Mbaby_re_caochong: '欢杀界曹冲',
+            Mbaby_zhanghu: '欢杀张虎',
             miniluoshen: '洛神',
             miniluoshen_info: '准备阶段，你可以进行一次判定并获得判定牌，若判定结果为黑色，你可重复此流程。',
             minireluoshen: '洛神',
@@ -45170,6 +45241,8 @@ const packs = function () {
             minirechengxiang_info: '锁定技，当你受到伤害后，你亮出牌堆顶的四张牌，然后获得其中任意张点数和不大于13的牌，然后每回合限一次，若获得的牌点数之和为13，你可以对自己造成1点伤害并令发动此技能亮出的牌数+1（至多+2）。',
             minirenxin: '仁心',
             minirenxin_info: '当一名其他角色进入濒死状态时，你可以翻面并弃置一张装备牌，然后令该角色回复体力至1点。若如此做，当其下次受到伤害时，你可以将此伤害转移给你。',
+            minitongyuan: '同援',
+            minitongyuan_info: '锁定技。①当你使用锦囊牌后，你于〖摧坚〗后增加“若其手牌中没有【闪】，则你摸两张牌”；②当你使用或打出基本牌后，你删除〖摧坚〗中的还牌效果。③若你已发动过前两项，则你使用的普通锦囊牌不可被响应，使用基本牌时可额外增加一个目标。',
             //蜀
             Mbaby_guanyu: '欢杀关羽',
             Mbaby_re_guanyu: '欢杀界关羽',

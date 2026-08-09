@@ -7109,6 +7109,10 @@
             "size": 112827
         },
         {
+            "path": "image/character/Mbaby_zhanghu.jpg",
+            "size": 145989
+        },
+        {
             "path": "image/character/Mbaby_zhangji.jpg",
             "size": 133350
         },
@@ -9098,7 +9102,7 @@
         },
         {
             "path": "js/precontent/index.js",
-            "size": 43529
+            "size": 43546
         },
         {
             "path": "js/precontent/MiNiAppkill.js",
@@ -9110,7 +9114,7 @@
         },
         {
             "path": "js/precontent/MiNikill.js",
-            "size": 2853016
+            "size": 2857580
         },
         {
             "path": "js/precontent/MX_feihongyinxue.js",
