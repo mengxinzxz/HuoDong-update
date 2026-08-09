@@ -8438,19 +8438,21 @@ const packs = function () {
                     if (result.bool) {
                         const top = result.moved[0], bottom = result.moved[1], put = result.moved[2];
                         top.reverse();
-                        game.cardsGotoPile(
-                            top.concat(bottom),
-                            ['top_cards', top],
-                            (event, card) => {
-                                if (event.top_cards.includes(card)) return ui.cardPile.firstChild;
-                                return null;
-                            }
-                        );
-                        player.popup(get.cnNumber(top.length) + '上' + get.cnNumber(bottom.length) + '下');
-                        game.log(player, '将' + get.cnNumber(top.length) + '张牌置于牌堆顶');
-                        if (put?.length) player.addToExpansion(put, 'gain2').gaintag.add('minireguanxing');
+                        await game.cardsGotoPile(top.concat(bottom), ['top_cards', top], (event, card) => {
+                            if (event.top_cards.includes(card)) return ui.cardPile.firstChild;
+                            return null;
+                        });
+                        game.addCardKnower(top, player);
+                        game.addCardKnower(bottom, player);
+                        player.popup(`${get.cnNumber(top.length)}上${get.cnNumber(bottom.length)}下`);
+                        game.log(player, `将${get.cnNumber(top.length)}张牌置于牌堆顶，将${get.cnNumber(bottom.length)}张牌置于牌堆底`);
+                        if (put?.length) {
+                            const next = player.addToExpansion(put, 'gain2');
+                            next.gaintag.add('minireguanxing');
+                            await next;
+                        }
                         game.updateRoundNumber();
-                        game.delayx();
+                        await game.delayx();
                     }
                 },
                 marktext: '星',
@@ -8511,7 +8513,7 @@ const packs = function () {
                         mod: {
                             cardUsable(card, player, num) {
                                 if (card.name != 'sha'/*||player.getEquips('zhuge').length||player.hasSkill('zhuge_skill',null,false)*/) return;
-                                //if(get.is.versus()||get.is.changban()) return num+3;
+                                if (get.is.versus() || get.is.changban()) return num + 3;
                                 return Infinity;
                             },
                         },
@@ -45351,7 +45353,7 @@ const packs = function () {
             miniguanxing_info: '准备阶段，你可以观看牌堆顶的X张牌（场上人数不大于2时X为3，否则X为5）并可以调整这些牌于牌堆顶或牌堆底。若你将所有牌置于牌堆底，则你可以于结束阶段再次发动〖观星〗。',
             minireguanxing: '观星',
             minireguanxing_zhuge: '诸葛连弩',
-            minireguanxing_info: '①准备阶段和结束阶段，你可以观看牌堆顶的X张牌并可以调整这些牌于牌堆顶或牌堆底，若你的“星”小于X张，你可以将其中一张牌称为“星”置于你的武将牌上。②出牌阶段，你可以获得你武将牌上的所有“星”，若这些牌不小于X张，则你本回合视为装备【诸葛连弩】。（X为5，场上人数不大于2时X为3）',
+            minireguanxing_info: `①准备阶段和结束阶段，你可以观看牌堆顶的X张牌并可以调整这些牌于牌堆顶或牌堆底（X为5，场上人数不大于2时X为3），若你的“星”小于X张，你可以将其中一张牌称为“星”置于你的武将牌上。②出牌阶段，你可以获得你武将牌上的所有“星”，若这些牌不小于X张，则你本回合视为装备${get.poptip('zhuge')}。`,
             minikongcheng: '空城',
             minikongcheng_info: '锁定技，若你没有手牌，你不能成为【杀】、【决斗】和【顺手牵羊】的目标。',
             minirende: '仁德',
