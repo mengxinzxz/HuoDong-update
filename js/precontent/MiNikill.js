@@ -10981,7 +10981,7 @@ const packs = function () {
                         return get.copy(lib.skill['minifeijun_' + links[0]]);
                     },
                     prompt(links) {
-                        if (links[0] == 'damage') return '弃置一张牌，令一名有牌的其他角色交给你一张牌';
+                        if (links[0] === 'give') return '弃置一张牌，令一名有牌的其他角色交给你一张牌';
                         return '弃置一张牌，令一名装备区有牌的其他角色弃置一张装备区的牌';
                     },
                 },

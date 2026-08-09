@@ -2483,7 +2483,7 @@ const packs = function () {
                 group: ['tspowei_init', 'tspowei_move', 'tspowei_use', 'tspowei_remove', 'fh_powei_achieve', 'fh_powei_fail'],
                 subSkill: {
                     achieve: {
-                        audio: 'tspowei1',
+                        audio: 'tspowei1.mp3',
                         trigger: { player: 'phaseBegin' },
                         forced: true,
                         skillAnimation: true,
@@ -2498,7 +2498,7 @@ const packs = function () {
                         },
                     },
                     fail: {
-                        audio: 'tspowei2',
+                        audio: 'tspowei2.mp3',
                         trigger: { player: 'damageBegin4' },
                         filter(event, player) {
                             return event.num >= player.getHp();
