@@ -1654,43 +1654,38 @@ const packs = function () {
             },
             //国战左慈
             gz_huashen: {
-                group: ['gz_huashen_trigger', 'gz_huashen_flash', 'gz_huashen_remove'],
                 audio: 'ext:活动武将/audio/skill:2',
                 trigger: { player: 'phaseZhunbeiBegin' },
-                direct: true,
-                content() {
-                    'step 0'
-                    var num = player.getStorage('gz_huashen').length;
-                    if (num >= 2) event.goto(3);
-                    'step 1'
-                    var characters = lib.skill.gz_huashen.getCharacter(player).randomGets(5);
-                    player.chooseButton([
-                        get.prompt('gz_huashen'),
-                        '<div class="text center">选择至多两张武将牌作为“化身”牌</div>',
-                        [characters, lib.skill.gz_huashen.$createButton],
-                    ], [1, 2]).set('ai', button => get.rank(button.link, true));
-                    'step 2'
-                    if (result.bool) {
-                        player.logSkill('gz_huashen');
-                        lib.skill.gz_huashen.addVisitors(result.links, player);
-                        event.goto(5);
+                async cost(event, trigger, player) {
+                    const skill = event.skill, info = lib.skill[skill], storage = player.getStorage(skill);
+                    if (storage.length < 2) {
+                        const characters = info.getCharacter(player).randomGets(5);
+                        const result = await player.chooseButton([
+                            get.prompt(skill),
+                            '<div class="text center">选择至多两张武将牌作为“化身”牌</div>',
+                            [characters, info.$createButton],
+                        ], [1, 2]).set('ai', button => get.rank(button.link, true)).forResult();
+                        if (result?.bool && result.links?.length) event.result = { bool: true, cost_data: [result.links, 'gain'] };
                     }
-                    else event.finish();
-                    'step 3'
-                    player.chooseButton([
-                        get.prompt('gz_huashen'),
-                        '<div class="text center">替换一张“化身”牌</div>',
-                        [player.getStorage('gz_huashen'), lib.skill.gz_huashen.$createButton],
-                    ]).set('ai', button => -get.rank(button.link, true));
-                    'step 4'
-                    if (result.bool) {
-                        player.logSkill('gz_huashen');
-                        lib.skill.gz_huashen.removeVisitors(result.links, player);
-                        lib.skill.gz_huashen.addVisitors(lib.skill.gz_huashen.getCharacter(player).randomGets(1), player);
+                    else {
+                        const result = await player.chooseButton([
+                            get.prompt(skill),
+                            '<div class="text center">替换一张“化身”牌</div>',
+                            [storage, info.$createButton],
+                        ]).set('ai', button => 7 - get.rank(button.link, true)).forResult();
+                        if (result?.bool && result.links?.length) event.result = { bool: true, cost_data: [result.links, 'put'] };
                     }
-                    else event.finish();
-                    'step 5'
-                    game.delayx();
+                },
+                async content(event, trigger, player) {
+                    const [links, method] = event.cost_data;
+                    const skill = event.name, info = lib.skill[skill];
+                    if (method === 'gain') info.addVisitors(links, player);
+                    else {
+                        info.removeVisitors(links, player);
+                        const characters = info.getCharacter(player).randomGets(1);
+                        if (characters.length > 0) info.addVisitors(characters, player);
+                    }
+                    await game.delayx();
                 },
                 //ai:{threaten:5},
                 $createButton(item, type, position, noclick, node, player) {
@@ -1732,7 +1727,7 @@ const packs = function () {
                 },
                 getCharacter(player) {
                     if (!_status.characterlist) lib.skill.pingjian.initList();
-                    return _status.characterlist.filter(function (name) {
+                    return _status.characterlist.filter(name => {
                         if (name.includes('zuoci') || name.includes('xushao')) return false;
                         return lib.character[name]?.skills?.some(skill => {
                             const info = get.info(skill);
@@ -1741,18 +1736,16 @@ const packs = function () {
                     });
                 },
                 getSkills(characters, player) {
-                    var skills = [];
+                    let skills = [];
                     characters.forEach(name => {
-                        if (Array.isArray(get.character(name, 3))) {
-                            var skillx = get.character(name, 3).filter(skill => {
-                                var info = get.info(skill);
+                        if (Array.isArray(lib.character[name]?.skills)) {
+                            const skillx = lib.character[name].skills.filter(skill => {
+                                const info = get.info(skill);
                                 return info && !get.skillCategoriesOf(skill, player).length && (!info.unique || info.gainable);
                             });
                             if (skillx.length) {
                                 skills.addArray(skillx);
-                                game.broadcastAll(function (player, name) {
-                                    player.tempname.add(name);
-                                }, player, name);
+                                game.broadcastAll((player, name) => player.tempname.add(name), player, name);
                             }
                         }
                     });
@@ -1824,15 +1817,17 @@ const packs = function () {
                         else return '共有' + get.cnNumber(storage.length) + '张“化身”';
                     },
                 },
+                group: ['gz_huashen_trigger', 'gz_huashen_flash', 'gz_huashen_remove'],
                 subSkill: {
                     trigger: {
                         charlotte: true,
                         trigger: { player: 'triggerInvisible' },
                         filter(event, player) {
                             if (event.revealed) return false;
-                            var info = get.info(event.skill);
-                            if (info?.charlotte) return false;
-                            var skills = lib.skill.gz_huashen.getSkills(player.getStorage('gz_huashen'), player);
+                            const infox = get.info(event.skill);
+                            if (!infox || infox.charlotte) return false;
+                            const skill = 'gz_huashen', info = lib.skill[skill], storage = player.getStorage(skill);
+                            let skills = info.getSkills(storage, player);
                             game.expandSkills(skills);
                             return skills.includes(event.skill);
                         },
@@ -1848,38 +1843,36 @@ const packs = function () {
                         charlotte: true,
                         trigger: { player: ['useSkill', 'logSkillBegin'] },
                         filter(event, player) {
-                            var skill = event.sourceSkill || event.skill;
-                            return player.invisibleSkills.includes(skill) && lib.skill.gz_huashen.getSkills(player.getStorage('gz_huashen'), player).includes(skill);
+                            const name = event.sourceSkill || event.skill;
+                            const skill = 'gz_huashen', info = lib.skill[skill], storage = player.getStorage(skill);
+                            return player.invisibleSkills.includes(name) && info.getSkills(storage, player).includes(name);
                         },
                         forceDie: true,
                         priority: 12,
                         forced: true,
                         popup: false,
                         content() {
-                            var visitors = player.getStorage('gz_huashen').slice(0);
-                            var shows = visitors.filter(function (name) {
-                                return (get.character(name, 3) || []).includes(trigger.sourceSkill);
-                            });
-                            for (var show of shows) player.flashAvatar('gz_huashen', show);
+                            const skill = 'gz_huashen', info = lib.skill[skill], storage = player.getStorage(skill);
+                            const shows = storage.filter(name => get.character(name)?.skills?.includes(trigger.sourceSkill));
+                            if (shows.length) shows.forEach(show => player.flashAvatar(skill, show));
                         },
                     },
                     remove: {
                         charlotte: true,
                         trigger: { player: ['useSkillAfter', 'logSkill'] },
                         filter(event, player) {
-                            var skill = event.sourceSkill || event.skill;
-                            return player.invisibleSkills.includes(skill) && lib.skill.gz_huashen.getSkills(player.getStorage('gz_huashen'), player).includes(skill);
+                            const name = event.sourceSkill || event.skill;
+                            const skill = 'gz_huashen', info = lib.skill[skill], storage = player.getStorage(skill);
+                            return player.invisibleSkills.includes(name) && info.getSkills(storage, player).includes(name);
                         },
                         forceDie: true,
                         priority: 12,
                         forced: true,
                         popup: false,
                         content() {
-                            var visitors = player.getStorage('gz_huashen').slice(0);
-                            var remove = visitors.filter(function (name) {
-                                return (get.character(name, 3) || []).includes(trigger.sourceSkill);
-                            });
-                            lib.skill.gz_huashen.removeVisitors(remove, player);
+                            const skill = 'gz_huashen', info = lib.skill[skill], storage = player.getStorage(skill);
+                            const remove = storage.filter(name => get.character(name)?.skills?.includes(trigger.sourceSkill));
+                            if (remove.length > 0) info.removeVisitors(remove, player);
                         },
                     },
                 },
@@ -1889,9 +1882,11 @@ const packs = function () {
                 trigger: { player: 'damageEnd' },
                 frequent: true,
                 getIndex: event => event.num,
-                content() {
-                    lib.skill.gz_huashen.addVisitors(lib.skill.gz_huashen.getCharacter(player).randomGets(1), player);
-                    game.delayx();
+                async content(event, trigger, player) {
+                    const skill = 'gz_huashen', info = lib.skill[skill];
+                    const characters = info.getCharacter(player).randomGets(1);
+                    if (characters.length > 0) info.addVisitors(characters, player);
+                    await game.delayx();
                 },
                 ai: { combo: 'gz_huashen' },
             },
