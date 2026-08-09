@@ -36656,7 +36656,7 @@ const packs = function () {
                                 return event.getg?.(target)?.some(card => {
                                     if (get.position(card) !== 'h' || get.owner(card) !== target || !lib.filter.canBeGained(card, player, target)) return false;
                                     return Array.from({ length: 5 }).map((_, i) => `equip${i + 1}`).some(subtype => {
-                                        return target.hasDisabledSlot(subtype) && [card.subtypes || get.info(card).subtype].includes(subtype);
+                                        return target.hasDisabledSlot(subtype) && (card.subtypes || get.info(card).subtypes || [get.info(card).subtype]).includes(subtype);
                                     });
                                 });
                             });
@@ -36667,7 +36667,7 @@ const packs = function () {
                                 return event.getg?.(target)?.some(card => {
                                     if (get.position(card) !== 'h' || get.owner(card) !== target || !lib.filter.canBeGained(card, player, target)) return false;
                                     return Array.from({ length: 5 }).map((_, i) => `equip${i + 1}`).some(subtype => {
-                                        return target.hasDisabledSlot(subtype) && [card.subtypes || get.info(card).subtype].includes(subtype);
+                                        return target.hasDisabledSlot(subtype) && (card.subtypes || get.info(card).subtypes || [get.info(card).subtype]).includes(subtype);
                                     });
                                 });
                             }).sortBySeat();
@@ -36677,7 +36677,7 @@ const packs = function () {
                                 list.addArray(trigger.getg(target).filter(card => {
                                     if (get.position(card) !== 'h' || get.owner(card) !== target || !lib.filter.canBeGained(card, player, target)) return false;
                                     return Array.from({ length: 5 }).map((_, i) => `equip${i + 1}`).some(subtype => {
-                                        return target.hasDisabledSlot(subtype) && [card.subtypes || get.info(card).subtype].includes(subtype);
+                                        return target.hasDisabledSlot(subtype) && (card.subtypes || get.info(card).subtypes || [get.info(card).subtype]).includes(subtype);
                                     });
                                 }));
                                 return list;
