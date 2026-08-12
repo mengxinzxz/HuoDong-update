@@ -40550,7 +40550,6 @@ const packs = function () {
                     },
                 },
             },
-            mininiandengji_faq: { nopop: true },
             mininianchengming: {
                 audio: 'ext:活动武将/audio/skill:2',
                 trigger: { target: 'useCardToTargeted' },
