@@ -22668,23 +22668,23 @@ const packs = function () {
                 check(card) {
                     const player = get.player();
                     const eff1 = (() => {
-                        const targets = game.filterPlayer(target !== player && !player.inRange(target) && target.countDiscardableCards(player, 'ej'));
+                        const targets = game.filterPlayer(target => target !== player && !player.inRange(target) && target.countDiscardableCards(player, 'ej'));
                         if (!targets.length) return 0;
                         return Math.max(...targets.map(target => get.effect(target, { name: 'guohe_copy', position: 'ej' }, player, player)));
                     })();
                     const eff2 = (() => {
-                        const targets = game.filterPlayer(target !== player && player.inRange(target) && target.countGainableCards(player, 'h'));
+                        const targets = game.filterPlayer(target => target !== player && player.inRange(target) && target.countGainableCards(player, 'h'));
                         if (!targets.length) return 0;
                         return Math.max(...targets.map(target => get.effect(target, { name: 'shunshou_copy', position: 'h' }, player, player)));
                     })();
                     ui.selected.cards.add(card);
                     const eff3 = (() => {
-                        const targets = game.filterPlayer(target !== player && !player.inRange(target) && target.countDiscardableCards(player, 'ej'));
+                        const targets = game.filterPlayer(target => target !== player && !player.inRange(target) && target.countDiscardableCards(player, 'ej'));
                         if (!targets.length) return 0;
                         return Math.max(...targets.map(target => get.effect(target, { name: 'guohe_copy', position: 'ej' }, player, player)));
                     })();
                     const eff4 = (() => {
-                        const targets = game.filterPlayer(target !== player && player.inRange(target) && target.countGainableCards(player, 'h'));
+                        const targets = game.filterPlayer(target => target !== player && player.inRange(target) && target.countGainableCards(player, 'h'));
                         if (!targets.length) return 0;
                         return Math.max(...targets.map(target => get.effect(target, { name: 'shunshou_copy', position: 'h' }, player, player)));
                     })();
