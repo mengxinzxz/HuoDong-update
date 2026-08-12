@@ -5812,7 +5812,7 @@ const packs = function () {
                 frequent: true,
                 async cost(event, trigger, player) {
                     if (player.getEquip('minipiliche')) {
-                        event.result = await player.chooseTarget(get.prompt('minipoyuan'), '弃置一名其他角色的至多两张牌', (card, player, target) => {
+                        event.result = await player.chooseTarget(get.prompt(event.skill), '弃置一名其他角色的至多两张牌', (card, player, target) => {
                             return target != player && target.countDiscardableCards(player, 'he') > 0;
                         }).set('ai', target => {
                             var player = _status.event.player, cards = target.getDiscardableCards(player, 'he');
@@ -5837,7 +5837,7 @@ const packs = function () {
                         }).forResult();
                     }
                     else {
-                        event.result = await player.chooseBool(get.prompt('minipoyuan'), '装备一张【霹雳投石车】').set('frequentSkill', 'minipoyuan').forResult();
+                        event.result = await player.chooseBool(get.prompt(event.skill), '将一张【霹雳车】置入装备区').set('frequentSkill', event.skill).forResult();
                     }
                 },
                 content() {
@@ -19904,7 +19904,6 @@ const packs = function () {
             },
             //张奋
             miniwanglu: {
-                derivation: 'miniwanglu_faq',
                 audio: 'dcwanglu',
                 trigger: { player: 'phaseZhunbeiBegin' },
                 forced: true,
@@ -19936,7 +19935,6 @@ const packs = function () {
                 },
             },
             minixianzhu: {
-                derivation: 'minixianzhu_faq',
                 audio: 'dcxianzhu',
                 trigger: { source: 'damageSource' },
                 filter(event, player) {
@@ -20027,10 +20025,20 @@ const packs = function () {
                         audio: 'dcxianzhu',
                         enable: 'phaseUse',
                         filter(event, player) {
-                            return /*player.getCardUsable('sha')>0&&*/game.hasPlayer(target => player.canUse({ name: 'sha' }, target, false)) && player.countCards('h', card => lib.skill.minixianzhu.subSkill.sha.filterCard(card, player));
+                            const info = lib.skill.minixianzhu_sha;
+                            return player.hasCard(card => {
+                                if (!info.filterCard(card, player)) return false;
+                                return game.hasPlayer(target => {
+                                    ui.selected.cards.add(card);
+                                    const bool = info.filterTarget(null, player, target);
+                                    ui.selected.cards.remove(card);
+                                    return bool;
+                                });
+                            }, 'h');
                         },
                         filterCard(card, player) {
-                            return get.type(card) == 'equip' && get.subtype(card) == 'equip1';
+                            if (!lib.filter.cardDiscardable(card, player)) return false;
+                            return get.type(card) == 'equip' && get.subtypes(card).includes('equip1');
                         },
                         filterTarget(card, player, target) {
                             return player.canUse({ name: 'sha', isCard: true }, target, false);
@@ -20040,6 +20048,16 @@ const packs = function () {
                         prompt: '弃置一张手牌中的武器牌，视为对一名其他角色使用一张无视距离且不计入次数的【杀】',
                         content() {
                             player.useCard({ name: 'sha', isCard: true }, target, false);
+                        },
+                        ai: {
+                            order(item, player) {
+                                return get.order({ name: 'sha' }, player) + 0.1;
+                            },
+                            result: {
+                                player(player, target) {
+                                    return get.effect(target, { name: 'sha', isCard: true }, player, player);
+                                },
+                            },
                         },
                     },
                 },
@@ -35741,9 +35759,7 @@ const packs = function () {
                     if (info[0]) {
                         const [card, card2] = info[1];
                         player.getCards('h').forEach(cardx => {
-                            if (cardx.cardid == card[4]) {
-                                cardx.init([card2[0], card2[1], card2[2], card2[3]]);
-                            }
+                            if (cardx.cardid == card[4]) cardx.init([card2[0], card2[1], card2[2], card2[3]]);
                         });
                     }
                     else {
@@ -35766,7 +35782,6 @@ const packs = function () {
                         }
                     }
                 },
-                derivation: 'minihuanshu_faq',
                 subSkill: {
                     gain: {
                         charlotte: true,
@@ -35838,11 +35853,11 @@ const packs = function () {
                 audio: 'ext:活动武将/audio/skill:2',
                 enable: 'phaseUse',
                 async content(event, trigger, player) {
-                    const num = Math.max(1, player.getDamagedHp() * 2);
                     player.awakenSkill('minihuanjing');
-                    await lib.skill.minihuanshu.GainContent(num, player);
+                    const num = Math.max(1, player.getDamagedHp() * 2);
                     player.addTempSkill('minihuanjing_effect');
                     player.addMark('minihuanjing_effect', num, false);
+                    await lib.skill.minihuanshu.GainContent(num, player);
                 },
                 ai: {
                     order: 10,
@@ -45148,8 +45163,16 @@ const packs = function () {
             minisongci: '颂词',
             minisongci_info: '①每名角色限一次，出牌阶段，你可以选择一名角色。若其手牌数：大于其体力值，其弃置两张牌；不大于其体力值，其摸两张牌。②弃牌阶段结束时，你摸一张牌。',
             minipoyuan: '破垣',
-            minipoyuan_info: '游戏开始时或准备阶段，若你的装备区内：没有【霹雳车】，则你可以将一张【霹雳车】置入装备区；有【霹雳车】，则你可以弃置一名其他角色至多两张牌。',
-            minipiliche: '霹雳投石车',
+            minipoyuan_info: `游戏开始时或准备阶段，若你的装备区内：没有${get.poptip({
+                id: 'minipoyuan_faq',
+                name: '【霹雳车】',
+                dialog(dialog) {
+                    dialog.addText('霹雳车');
+                    dialog.addSmall([game.createCard('minipiliche', 'diamond', 9)]);
+                    return dialog;
+                },
+            })}，则你可以将一张${get.poptip('minipoyuan_faq')}置入装备区；有${get.poptip('minipoyuan_faq')}，则你可以弃置一名其他角色至多两张牌。`,
+            minipiliche: '霹雳车',
             minipiliche_info: '锁定技。①你计算与其他角色的距离-1，当此牌离开你的装备区时，销毁之。②你于回合内使用基本牌无距离限制，且当你于回合内使用基本牌时，你令此牌的牌面数值+1。③当你于回合外使用或打出基本牌时，你摸一张牌。',
             minizhenrong: '征荣',
             minizhenrong_info: '当你对其他角色造成伤害后，你可以将其一张牌置于你的武将牌上，称为“荣”。',
@@ -45963,15 +45986,27 @@ const packs = function () {
             minisbzhaxiang: '诈降',
             minisbzhaxiang_info: '锁定技。①当你失去1点体力后，你摸三张牌。②回合结束时，你摸X张牌。③你于每回合使用的前X张【杀】无距离限制、不计入次数限制且不可被响应。（X为你已损失体力值的一半，向上取整）',
             miniwanglu: '望橹',
-            miniwanglu_info: '锁定技。准备阶段，若你的装备区内：有【大攻车】，则你获得一个额外的出牌阶段；没有【大攻车】，则你将一张【大攻车】置入装备区。',
-            miniwanglu_faq: '关于大攻车',
-            miniwanglu_faq_info: '<br><li>花色：♠<br><li>点数：9<br><li>类别：武器<br><li>攻击范围：2<br><li>装备效果：出牌阶段开始时，你可以视为使用一张【杀】，且当此【杀】对目标角色造成伤害后，你弃置其一张牌。若此【大攻车】未被强化，则其他角色无法弃置你装备区内的【大攻车】。当此牌离开你的装备区后，销毁之。',
+            miniwanglu_info: `锁定技。准备阶段，若你的装备区内：有${get.poptip({
+                id: 'miniwanglu_faq',
+                name: '【大攻车】',
+                dialog(dialog) {
+                    dialog.addText('大攻车');
+                    dialog.addSmall([game.createCard('minidagongche', 'spade', 9)]);
+                    return dialog;
+                },
+            })}，你获得一个额外的出牌阶段；没有${get.poptip('miniwanglu_faq')}，你将${get.poptip('miniwanglu_faq')}置入装备区。`,
             minixianzhu: '陷筑',
-            minixianzhu_info: '①出牌阶段限一次，你可以弃置一张手牌中的武器牌，然后视为对一名角色使用一张无距离且不计入次数的【杀】。②当你使用【杀】造成伤害后，你可以强化你装备区内的【大攻车】（每张【大攻车】最多被强化五次）。',
-            minixianzhu_faq: '关于强化大攻车',
-            minixianzhu_faq_info: '<br>从以下选项中任选一项：<br><li>⒈通过【大攻车】使用【杀】无视距离和防具；<br><li>⒉通过【大攻车】使用的【杀】可以额外选择1个目标（可叠加）；<br><li>⒊通过【大攻车】使用的【杀】造成伤害后的弃置牌数+1（可叠加）。',
+            minixianzhu_info: `①出牌阶段限一次，你可以弃置一张手牌中的武器牌，然后视为对一名角色使用一张无距离且不计入次数的【杀】。②当你使用【杀】造成伤害后，你可以${get.poptip({
+                id: 'minixianzhu_faq',
+                name: '强化',
+                info: '从以下选项中任选一项：' + [
+                    '通过【大攻车】使用【杀】无视距离和防具；',
+                    '通过【大攻车】使用的【杀】可以额外选择1个目标（可叠加）；',
+                    '通过【大攻车】使用的【杀】造成伤害后的弃置牌数+1（可叠加）。',
+                ].map((str, index) => `<br>${index + 1}.${str}`).join(''),
+            })}你装备区内的${get.poptip('miniwanglu_faq')}（每张${get.poptip('miniwanglu_faq')}最多被强化五次）。`,
             minichaixie: '拆械',
-            minichaixie_info: '锁定技。当你的【大攻车】被销毁后，你摸X张牌（X为此【大攻车】被强化过的次数）。',
+            minichaixie_info: `锁定技。当你的${get.poptip('miniwanglu_faq')}被销毁后，你摸X张牌（X为此牌被强化过的次数）。`,
             minidagongche: '大攻车',
             minidagongche_skill: '大攻车',
             minidagongche_info: '出牌阶段开始时，你可以视为使用一张【杀】，且当此【杀】对目标角色造成伤害后，你弃置其一张牌。若此【大攻车】未被强化，则其他角色无法弃置你装备区内的【大攻车】。当此牌离开你的装备区后，销毁之。',
@@ -46827,31 +46862,21 @@ const packs = function () {
             minimengli: '梦狸',
             minimengli_info: '锁定技，当你的体力值发生变化后，若你变化前和变化后的体力值与3的大小关系不同，则你变换形态，然后你摸一张牌。',
             minihuanshu: '幻术',
-            minihuanshu_info: '锁定技。①每轮开始时，或当你受到1点伤害后，你获得两张“幻术”牌。②当一张“幻术”牌销毁后，你摸一张牌。③出牌阶段开始时，你令所有未被〖幻化〗定向转化过的“幻术”牌随机变成本局游戏存在的另一张牌的镜像。',
-            minihuanshu_faq: '关于“幻术”牌',
-            minihuanshu_faq_info: (() => {
-                const list = [
+            minihuanshu_info: `锁定技。①每轮开始时，或当你受到1点伤害后，你获得两张${get.poptip({
+                id: 'minihuanshu_faq',
+                name: '“幻术”牌',
+                info: [
                     '“幻术”牌为本局游戏牌组中随机一张牌的镜像，此牌可进行常规牌可进行的任何一般操作。',
-                    '“幻术”牌不计入手牌上限，一名角色最多持有其体力上限两倍的“幻术”牌，超出的部分改为摸等量的牌',
+                    '“幻术”牌不计入手牌上限，一名角色最多持有其体力上限两倍的“幻术”牌，超出的部分改为摸等量的牌。',
                     '已/未被〖幻化〗定向转化过的“幻术”牌呈现金/深蓝色与常规牌进行区分。',
                     '无〖幻术〗技能的角色获得“幻术”牌后，“幻术”牌会被销毁。',
-                ];
-                return '<br><li>' + list.join('<br><li>');
-            })(),
-            minihuanshu_append: (() => {
-                const list = [
-                    '“幻术”牌为本局游戏牌组中随机一张牌的镜像，此牌可进行常规牌可进行的任何一般操作。',
-                    '一名角色最多持有其体力上限两倍的“幻术”牌，超出的部分改为摸等量的牌',
-                    '已/未被〖幻化〗定向转化过的“幻术”牌呈现金/深蓝色与常规牌进行区分。',
-                    '无〖幻术〗技能的角色获得“幻术”牌后，“幻术”牌会被销毁。',
-                ];
-                return '<span style="font-family: yuanli">关于“幻术”牌<br><li>' + list.join('<br><li>') + '</span>';
-            })(),
+                ].map(i => `<li>${i}`).join('<br>'),
+            })}。②当一张${get.poptip('minihuanshu_faq')}销毁后，你摸一张牌。③出牌阶段开始时，你令所有未被〖幻化〗定向转化过的${get.poptip('minihuanshu_faq')}随机变成本局游戏存在的另一张牌的镜像。`,
             minihuanhua: '幻化',
             minihuanhua_tag: '已选择',
-            minihuanhua_info: '每回合限两次，出牌阶段，你可选择一张未被〖幻化〗定向转化过的“幻术”牌和一张未被〖幻化〗选择过的非“幻术”牌，你将前者的牌名、属性、花色和点数转化为和后者一致，若两张牌的花色相同，你获得一张“幻术”牌。',
+            minihuanhua_info: `每回合限两次，出牌阶段，你可选择一张未被〖幻化〗定向转化过的${get.poptip('minihuanshu_faq')}和一张未被〖幻化〗选择过的非${get.poptip('minihuanshu_faq')}，你将前者的牌名、属性、花色和点数转化为和后者一致，若两张牌的花色相同，你获得一张${get.poptip('minihuanshu_faq')}。`,
             minihuanjing: '幻境',
-            minihuanjing_info: '限定技，出牌阶段，你可令本回合发动〖幻化〗的次数+X且你发动〖幻化〗可以选择“幻术”牌为转化目标卡牌，然后你获得X张“幻术”牌。（X为你已损失的体力值的两倍且X至少为1）',
+            minihuanjing_info: `限定技，出牌阶段，你可令本回合发动〖幻化〗的次数+X且你发动〖幻化〗可以选择${get.poptip('minihuanshu_faq')}为转化目标卡牌，然后你获得X张${get.poptip('minihuanshu_faq')}。（X为你已损失的体力值的两倍且X至少为1）`,
             minixianjin: '险进',
             minixianjin_info: '锁定技，当你每造成或受到两次伤害后，你激活一个副区域标签并摸X张牌（X为你已激活的副区域数）。',
             minicuike: '摧克',
