@@ -40309,7 +40309,7 @@ const packs = function () {
                                 const cell = mapState[slot];
 
                                 //角色格子
-                                if (Array.isArray(cell) && cell[0] !== 0) {
+                                if (Array.isArray(cell) && cell[0] !== 0 && curScore > Math.abs(cell[1])) {
                                     pathFound = path.concat([[x, y]]);
                                     targetName = NAMES[cell[0]];
                                     return true;
