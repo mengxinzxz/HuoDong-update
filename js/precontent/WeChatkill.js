@@ -19729,7 +19729,7 @@ const packs = function () {
                 subSkill: {
                     xizifu: {
                         init(player, skill) {
-                            player.addMark(skill, 3, false);
+                            player.addMark(skill, 2, false);
                         },
                         charlotte: true,
                         onremove: true,
@@ -20188,16 +20188,45 @@ const packs = function () {
                 trigger: { player: 'phaseUseBegin' },
                 forced: true,
                 async content(event, trigger, player) {
-                    const result = await player.chooseTarget('祸首：令一名角色本回合受到【南蛮入侵】的伤害+1，然后你视为使用一张【南蛮入侵】').set('ai', target => {
+                    const result2 = await player.chooseTarget(`请选择【${get.translation(event.name)}】的目标`, lib.translate[`${event.name}_info`].split('③')[1], true).set('ai', target => {
                         const player = get.player();
-                        return -get.attitude(player, target)
+                        return -get.attitude(player, target);
                     }).forResult();
-                    if (result?.bool) {
-                        const target = result.targets[0];
+                    if (result2?.bool && result2.targets?.length) {
+                        const target = result2.targets[0];
                         player.line(target);
                         target.addTempSkill(event.name + '_effect');
-                        const nanman = get.autoViewAs({ name: 'nanman', isCard: true });
-                        if (player.hasUseTarget(nanman)) await player.chooseUseTarget(true, nanman);
+                        await game.delayx();
+                        let choice = [], choiceList = [];
+                        const cards = player.getCards('h', { name: ['sha', 'shan'] });
+                        if (cards.length > 0 && cards.every(card => game.checkMod(card, player, 'unchanged', 'cardEnabled2', player))) {
+                            const nanman = get.autoViewAs({ name: 'nanman', cards }, cards);
+                            if (player.hasUseTarget(nanman)) {
+                                choice.push('使用南蛮');
+                                choiceList.push('将手牌中所有【杀】和【闪】当作【南蛮入侵】使用');
+                            }
+                        }
+                        if (get.discardPile('nanman')) {
+                            choice.push('获得南蛮');
+                            choiceList.push('随机获得弃牌堆中的一张【南蛮入侵】');
+                        }
+                        if (!choice.length) return;
+                        const result = choice.length > 1 ? await player.chooseControl(choice).set('prompt', `${get.translation(event.name)}：请选择一项`).set('choiceList', choiceList).set('ai', () => 1).forResult() : { control: choice[0] };
+                        if (result?.control) {
+                            switch (result.control) {
+                                case '使用南蛮':
+                                    const cards = player.getCards('h', { name: ['sha', 'shan'] });
+                                    if (cards.length > 0 && cards.every(card => game.checkMod(card, player, 'unchanged', 'cardEnabled2', player))) {
+                                        const nanman = get.autoViewAs({ name: 'nanman', cards }, cards);
+                                        if (player.hasUseTarget(nanman)) await player.chooseUseTarget(nanman, true, false).set('cards', cards);
+                                    }
+                                    break;
+                                case '获得南蛮':
+                                    const nanman = get.discardPile('nanman', 'random');
+                                    if (nanman) await player.gain(nanman, 'gain2');
+                                    break;
+                            }
+                        }
                     }
                 },
                 group: ['wechatsbhuoshou_cancel', 'wechatsbhuoshou_source'],
@@ -20205,10 +20234,10 @@ const packs = function () {
                     cancel: {
                         audio: 'sbhuoshou',
                         trigger: { target: 'useCardToBefore' },
-                        forced: true,
                         filter(event, player) {
                             return event.card.name == 'nanman';
                         },
+                        forced: true,
                         async content(event, trigger, player) {
                             trigger.cancel();
                         },
@@ -20216,10 +20245,10 @@ const packs = function () {
                     source: {
                         audio: 'sbhuoshou',
                         trigger: { global: 'useCardToPlayered' },
-                        forced: true,
                         filter(event, player) {
                             return event.isFirstTarget && event.card?.name == 'nanman' && event.player != player;
                         },
+                        forced: true,
                         async content(event, trigger, player) {
                             trigger.getParent().customArgs.default.customSource = player;
                         },
@@ -20227,63 +20256,71 @@ const packs = function () {
                     },
                     effect: {
                         charlotte: true,
-                        trigger: { player: 'damageBegin3' },
+                        trigger: { global: 'useCard' },
+                        filter(event, player) {
+                            return event.card.name == 'nanman';
+                        },
                         forced: true,
                         popup: false,
-                        filter(event, player) {
-                            return event.card?.name == 'nanman';
-                        },
                         async content(event, trigger, player) {
-                            trigger.num++;
+                            trigger.directHit.add(player);
+                            game.log(player, '不可响应', trigger.card);
                         },
                         mark: true,
-                        intro: { content: '本回合受到【南蛮入侵】的伤害+1' }
+                        intro: { content: '不可响应【南蛮入侵】' },
+                        global: 'wechatsbhuoshou_global',
                     },
-                }
+                    global: {
+                        ai: {
+                            directHit_ai: true,
+                            skillTagFilter(player, tag, arg) {
+                                return arg?.card?.name === 'nanman' && arg.target?.hasSkill('wechatsbhuoshou_effect');
+                            },
+                        },
+                    },
+                },
             },
             wechatsbzaiqi: {
-                getNum(player) {
-                    return player.getHistory('sourceDamage').reduce((sum, evt) => sum + evt.num, 0);
-                },
                 audio: 'sbzaiqi',
                 trigger: { player: 'phaseDiscardEnd' },
                 filter(event, player) {
-                    return get.info('wechatsbzaiqi').getNum(player) > 0;
+                    return player.hasHistory('sourceDamage');
                 },
                 async cost(event, trigger, player) {
-                    const num = get.info(event.skill).getNum(player);
-                    event.result = await player.chooseTarget(get.prompt2(event.skill), [1, num]).set("ai", target => {
+                    const num = Math.min(3, player.getHistory('sourceDamage').reduce((sum, evt) => sum + evt.num, 0));
+                    event.result = await player.chooseTarget(get.prompt2(event.skill), [1, num]).set('ai', target => {
                         const player = get.player();
                         const att = get.attitude(player, target);
                         return 3 - get.sgn(att) + Math.abs(att / 1000);
                     }).forResult();
                 },
                 async content(event, trigger, player) {
-                    const map = new Map();
                     for (const target of event.targets.sortBySeat()) {
                         if (!target.isIn()) continue;
-                        const position = target == player ? 'e' : 'he';
-                        const result = !target.countCards(position) ? { bool: false } : await target.chooseToGive(player, position, `${get.translation(player)}对你发动了【再起】 `, `是否交给其一张牌？或者点击“取消”，令该角色摸一张牌。`).set('ai', card => {
-                            const { player, target } = get.event();
-                            const att = get.attitude(player, target);
-                            if (att > 0) {
-                                if (target.isDamaged() && get.suit(card) == 'heart') return 10;
-                                return 0;
-                            }
-                            if (target.isDamaged() && get.suit(card) == 'heart') return 0;
-                            return 6 - get.value(card);
+                        const result = await target.chooseToDiscard({
+                            prompt: `${get.translation(player)}对你发动了【${get.translation(event.name)}】 `,
+                            prompt2: `弃置一张红桃牌并令${get.translation(player)}回复1点体力，否则令其摸一张牌`,
+                            filterCard(card, player) {
+                                return get.suit(card, player) === 'heart';
+                            },
+                            position: 'he',
+                            target: player,
+                            ai(card) {
+                                const { player, target } = get.event();
+                                return get.recoverEffect(target, player, player) - (get.value(card) + get.effect(target, { name: 'draw' }, player, player));
+                            },
                         }).forResult();
-                        if (result?.bool) {
-                            map.set(target, result.cards);
+                        if (result?.bool && result.cards?.length) {
+                            if (player.isDamaged()) {
+                                target.line(player);
+                                await player.recover();
+                            }
                         }
                         else {
-                            const result = await player.draw(target).forResult();
-                            if (get.itemtype(result?.cards) === 'cards') {
-                                map.set(target, result.cards);
-                            }
+                            target.line(player);
+                            await player.draw();
                         }
                     }
-                    if (Array.from(map.values()).flat().some(card => get.suit(card) == 'heart')) await player.recover();
                 },
             },
             // 极吕蒙
@@ -24426,7 +24463,7 @@ const packs = function () {
             wechatluchou: '戮仇',
             wechatluchou_info: '每轮每项限一次。当你受到伤害后，你可以选择一项：1.你与至多X名其他角色横置；2.你与已横置的角色各摸X+1张牌；3.你使用的下一张【杀】额外结算X次（不可叠加）。（X为你本轮发动此技能的次数+1）',
             wechatshizhu: '誓诛',
-            wechatshizhu_info: `${get.poptip('rule_xizifuSkill')}(2)，你已受伤的准备阶段或当你进入濒死状态时，你回复1点体力，然后选择未选择过的一项：1.令${get.poptip('wechatluchou')}增加“出牌阶段限一次”的时机；2.本局游戏你使用的【杀】可以额外指定一个目标。进学：你累计造成3点伤害。`,
+            wechatshizhu_info: `${get.poptip('rule_xizifuSkill')}(2)，你已受伤的准备阶段或当你进入濒死状态时，你回复1点体力，然后选择未选择过的一项：1.令${get.poptip('wechatluchou')}增加“出牌阶段限一次”的时机；2.本局游戏你使用的【杀】可以额外指定一个目标。进学：你累计造成2点伤害。`,
             wechat_zhi_caozhi: '志曹植',
             wechatgaoshi: '高世',
             wechatgaoshi_info: '锁定技，你使用牌结算完毕后，若此牌不因此法获得，则你获得一张牌名字数大于等于此牌的非伤害牌（不计入手牌上限）；否则你本回合不能使用牌名字数小于等于此牌的牌。',
@@ -24445,9 +24482,9 @@ const packs = function () {
             wechat_lingtong: '小程序凌统',
             wechat_sb_menghuo: '小程序谋孟获',
             wechatsbhuoshou: '祸首',
-            wechatsbhuoshou_info: '锁定技。①【南蛮入侵】对你无效。②当其他角色使用【南蛮入侵】指定第一个目标后，你代替其成为此牌的伤害来源。③出牌阶段开始时，你令一名角色本回合受到【南蛮入侵】的伤害+1，然后你视为使用一张【南蛮入侵】。',
+            wechatsbhuoshou_info: '锁定技。①【南蛮入侵】对你无效。②当其他角色使用【南蛮入侵】指定第一个目标后，你代替其成为此牌的伤害来源。③出牌阶段开始时，你令一名角色本回合不可响应【南蛮入侵】，然后你选择一项：1.将手牌中的【杀】和【闪】当作【南蛮入侵】使用；2.随机获得弃牌堆中的一张【南蛮入侵】。',
             wechatsbzaiqi: '再起',
-            wechatsbzaiqi_info: '弃牌阶段开始时，你可以令至多X名角色选择一项：1.交给你一张牌；2.令你摸一张牌（X为你本回合造成的伤害值之和）。然后若你此次获得的牌中有红桃牌，你回复1点体力。',
+            wechatsbzaiqi_info: '弃牌阶段结束时，你可以令至多X名角色选择一项：1.令你摸一张牌；2.弃置一张红桃牌，令你回复1点体力（X为你本回合造成的伤害值之和且至多为3）。',
             wechat_zhiyin_lvmeng: '极吕蒙',
             wechatqiuxue: '遒学',
             wechatqiuxue_info: `①你每回合首次因弃置失去牌时，你获得2点${get.poptip('rule_moulvenum')}。②每回合限一次，当你使用锦囊牌后，你可以弃置一张【杀】获得1点${get.poptip('rule_moulvenum')}，或消耗2点${get.poptip('rule_moulvenum')}视为使用一张无次数限制的【杀】。`,
