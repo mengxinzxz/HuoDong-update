@@ -625,12 +625,24 @@
             "size": 98355
         },
         {
+            "path": "audio/die/wechat_baixiang.mp3",
+            "size": 13914
+        },
+        {
             "path": "audio/die/wechat_dihuangxia.mp3",
             "size": 13287
         },
         {
+            "path": "audio/die/wechat_gaoluji.mp3",
+            "size": 13914
+        },
+        {
             "path": "audio/die/wechat_hansimao.mp3",
             "size": 17586
+        },
+        {
+            "path": "audio/die/wechat_hema.mp3",
+            "size": 12660
         },
         {
             "path": "audio/die/wechat_jikang.mp3",
@@ -3809,6 +3821,14 @@
             "size": 15923
         },
         {
+            "path": "audio/skill/wechatgemen1.mp3",
+            "size": 10675
+        },
+        {
+            "path": "audio/skill/wechatgemen2.mp3",
+            "size": 12033
+        },
+        {
             "path": "audio/skill/wechatgenggeng1.mp3",
             "size": 8599
         },
@@ -4249,6 +4269,14 @@
             "size": 26999
         },
         {
+            "path": "audio/skill/wechatrongxun1.mp3",
+            "size": 15795
+        },
+        {
+            "path": "audio/skill/wechatrongxun2.mp3",
+            "size": 15795
+        },
+        {
             "path": "audio/skill/wechatsangu1.mp3",
             "size": 24074
         },
@@ -4498,11 +4526,11 @@
         },
         {
             "path": "audio/skill/wechatyanlong1.mp3",
-            "size": 7540
+            "size": 10675
         },
         {
             "path": "audio/skill/wechatyanlong2.mp3",
-            "size": 13287
+            "size": 8167
         },
         {
             "path": "audio/skill/wechatyanshi1.mp3",
@@ -4530,11 +4558,11 @@
         },
         {
             "path": "audio/skill/wechatyingyan1.mp3",
-            "size": 10675
+            "size": 7540
         },
         {
             "path": "audio/skill/wechatyingyan2.mp3",
-            "size": 8167
+            "size": 13287
         },
         {
             "path": "audio/skill/wechatyinren1.mp3",
@@ -4553,12 +4581,28 @@
             "size": 19372
         },
         {
+            "path": "audio/skill/wechatyiyu1.mp3",
+            "size": 13287
+        },
+        {
+            "path": "audio/skill/wechatyiyu2.mp3",
+            "size": 14541
+        },
+        {
             "path": "audio/skill/wechatyonghuai1.mp3",
             "size": 21043
         },
         {
             "path": "audio/skill/wechatyonghuai2.mp3",
             "size": 26745
+        },
+        {
+            "path": "audio/skill/wechatyuanwei1.mp3",
+            "size": 13287
+        },
+        {
+            "path": "audio/skill/wechatyuanwei2.mp3",
+            "size": 12660
         },
         {
             "path": "audio/skill/wechatyuli1.mp3",
@@ -4623,6 +4667,14 @@
         {
             "path": "audio/skill/wechatzhujiu2.mp3",
             "size": 21148
+        },
+        {
+            "path": "audio/skill/wechatzigan1.mp3",
+            "size": 24154
+        },
+        {
+            "path": "audio/skill/wechatzigan2.mp3",
+            "size": 28647
         },
         {
             "path": "audio/skill/wechatzongxi1.mp3",
@@ -7762,7 +7814,7 @@
         },
         {
             "path": "image/character/wechat_dihuangxia.jpg",
-            "size": 132129
+            "size": 149001
         },
         {
             "path": "image/character/wechat_ganfuren.jpg",
@@ -7926,7 +7978,7 @@
         },
         {
             "path": "image/character/wechat_nailong.jpg",
-            "size": 133941
+            "size": 115004
         },
         {
             "path": "image/character/wechat_new_simayi.jpg",
@@ -8314,7 +8366,7 @@
         },
         {
             "path": "image/character/wechat_yanlongxia.jpg",
-            "size": 158579
+            "size": 153767
         },
         {
             "path": "image/character/wechat_yanwen.jpg",
@@ -9126,7 +9178,7 @@
         },
         {
             "path": "js/precontent/WeChatkill.js",
-            "size": 1493643
+            "size": 1497529
         },
         {
             "path": "js/update.js",

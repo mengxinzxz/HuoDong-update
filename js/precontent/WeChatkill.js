@@ -22170,6 +22170,7 @@ const packs = function () {
                     await player.gain(card, 'gain2');
                 },
                 group: 'wechatjiguang_heti',
+                derivation: 'wechatxiangmo',
                 subSkill: {
                     heti: {
                         audio: 'wechatjiguang',
@@ -22325,7 +22326,7 @@ const packs = function () {
                 audio: 'ext:活动武将/audio/skill:2',
                 trigger: { player: 'phaseUseBegin' },
                 async cost(event, trigger, player) {
-                    const result = await player.chooseButton(['炎龙：请选择你要获得的武器', [['wechatlieyanbiao', 'wechatlieyandao', 'wechatlieyangong'], 'vcard']], true).set('ai', button => {
+                    const result = await player.chooseButton(['烈焰：请选择你要获得的武器', [['wechatlieyanbiao', 'wechatlieyandao', 'wechatlieyangong'], 'vcard']], true).set('ai', button => {
                         return button.link[2] == 'wechatlieyandao' ? 2 : 1;
                     }).forResult();
                     event.result = {
@@ -24586,7 +24587,7 @@ const packs = function () {
             wechatxiangmo: '降魔',
             wechatxiangmo_info: '限定技。出牌阶段，你可以选择一种花色，你获得牌堆中此花色每种牌名的伤害牌各一张。本回合你使用这些牌指定目标后，你可以令其本回合非锁定技失效。',
             wechat_yanlongxia: '炎龙侠',
-            wechatyanlong: '炎龙',
+            wechatyanlong: '烈焰',
             wechatyanlong_info: `出牌阶段开始时，你可以从${get.poptip('wechatlieyanbiao')}、${get.poptip('wechatlieyandao')}和${get.poptip('wechatlieyangong')}中选择一个装备获得之。`,
             wechatlieyanbiao: '烈焰镖',
             wechatlieyanbiao_info: '当你使用【杀】被抵消后，你可以对攻击范围内的一名角色造成1点火焰伤害。此牌离开你的装备区后，销毁之。',
@@ -24594,7 +24595,7 @@ const packs = function () {
             wechatlieyandao_info: '当你使用【杀】指定目标后，你可以对其造成1点火焰伤害。此牌离开你的装备区后，销毁之。',
             wechatlieyangong: '烈焰弓',
             wechatlieyangong_info: '当你使用牌对一名角色造成伤害后，你可以获得一张非伤害锦囊牌。此牌离开你的装备区后，销毁之。',
-            wechatyingyan: '影焰',
+            wechatyingyan: '升腾',
             wechatyingyan_info: '锁定技。准备阶段，你获得一张火【杀】；当你对其他角色造成1点火焰伤害后，你摸一张牌。',
             wechatfengmo: '封魔',
             wechatfengmo_info: '限定技。出牌阶段，你可以令所有其他角色本回合不能使用红桃牌。若你本回合造成过火焰伤害，你本回合造成的伤害+1。',
@@ -24907,6 +24908,43 @@ const packs = function () {
             '#ext:活动武将/audio/skill/wechatshizhu1': '夫仇未报，妾岂敢独生？',
             '#ext:活动武将/audio/skill/wechatshizhu2': '夫君有灵，可鉴妾此心！',
             '#ext:活动武将/audio/die/wechat_zhi_xushi:die': '夫仇既报，已全此心。',
+            '#ext:活动武将/audio/skill/wechatjieshen1': '时俗贿赂公行，涛岂可独异于世。',
+            '#ext:活动武将/audio/skill/wechatjieshen2': '受礼悬梁，以此为戒。',
+            '#ext:活动武将/audio/skill/wechatqishi1': '夫用人惟才，岂以亲疏而荐。',
+            '#ext:活动武将/audio/skill/wechatqishi2': '甄拔隐屈，搜访贤才，以足朝堂之用。',
+            '#ext:活动武将/audio/die/wechat_shantao:die': '绍儿业已成人，涛不负叔夜之托矣。',
+            '#ext:活动武将/audio/skill/wechatkangyong1': '任亢勇而随扈，吾当为曹公之樊哙！',
+            '#ext:活动武将/audio/skill/wechatkangyong2': '勇猛壮烈，何甘落于人后？',
+            '#ext:活动武将/audio/skill/wechatqingqu1': '双戟饮血，勍躯弥壮！',
+            '#ext:活动武将/audio/skill/wechatqingqu2': '挟敌而战，汝等谁敢近前！',
+            '#ext:活动武将/audio/die/wechat_zhiyin_dianwei:die': '若保曹公万全，何惜典韦此躯！',
+            '#ext:活动武将/audio/skill/wechatzigan1': '不要挣扎了，你是不可能赢我的，哈哈哈哈。',
+            '#ext:活动武将/audio/skill/wechatzigan2': '我乃世界第三、文明古国的英勇大白象是也！',
+            '#ext:活动武将/audio/die/wechat_baixiang:die': '不约，兔子我们不约，哈哈……',
+            '#ext:活动武将/audio/skill/wechatyuanwei1': '今日一战，当重铸荣光。',
+            '#ext:活动武将/audio/skill/wechatyuanwei2': '这一切，都是为了我们的荣耀。',
+            '#ext:活动武将/audio/skill/wechatyiyu1': '更换羽毛，是为了更好的生存。',
+            '#ext:活动武将/audio/skill/wechatyiyu2': '只有这样，才能得到完美的淬炼。',
+            '#ext:活动武将/audio/die/wechat_gaoluji:die': '我要加戏，我要加戏，喔喔喔喔。',
+            '#ext:活动武将/audio/skill/wechatgemen1': '坚持表决，反对延后。',
+            '#ext:活动武将/audio/skill/wechatgemen2': '支持兔子，投票有我一份。',
+            '#ext:活动武将/audio/skill/wechatrongxun1': '得到兔子的训练，我们一定会雄起。',
+            '#ext:活动武将/audio/skill/wechatrongxun2': '等我们回去，定会绽放应有的光辉。',
+            '#ext:活动武将/audio/die/wechat_hema:die': '好哥们，一辈子……',
+            '#ext:活动武将/audio/skill/wechattianxing1': '帝皇铠甲，合体！',
+            '#ext:活动武将/audio/skill/wechattianxing2': '五圣必杀！',
+            '#ext:活动武将/audio/skill/wechatjiguang1': '帝皇战戟！',
+            '#ext:活动武将/audio/skill/wechatjiguang2': '木之伸曲，水之掩藏，火土之烈岩，金之肃革！',
+            '#ext:活动武将/audio/skill/wechatxiangmo1': '帝皇降魔歼灭斩！',
+            '#ext:活动武将/audio/skill/wechatxiangmo2': '终结你的时间，到了！',
+            '#ext:活动武将/audio/die/wechat_dihuangxia:die': '正义的光，终会走出阴影。',
+            '#ext:活动武将/audio/skill/wechatyanlong1': '那就来试试这个吧，能量升级！',
+            '#ext:活动武将/audio/skill/wechatyanlong2': '炎龙铠甲，合体！',
+            '#ext:活动武将/audio/skill/wechatyingyan1': '你倒霉的时间到了！',
+            '#ext:活动武将/audio/skill/wechatyingyan2': '你做的事情违逆天意，受挫是必然的！',
+            '#ext:活动武将/audio/skill/wechatfengmo1': '小看铠甲的力量，只会自取灭亡。',
+            '#ext:活动武将/audio/skill/wechatfengmo2': '斩邪除怪，熔于烈焰，消于晨曦。',
+            '#ext:活动武将/audio/die/wechat_yanlongxia:die': '火焰，不会熄灭。',
         },
     };
     WeChatkill_sight();//加载欢杀界面逻辑
