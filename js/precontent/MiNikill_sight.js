@@ -151,6 +151,10 @@ export default function () {
                                         }).join('');
                                     })();
                                     cfgNodes[i].parentNode.insertBefore(addIntro, cfgNodes[i].nextSibling);
+                                    const intro = document.createElement('div');
+                                    intro.classList.add('config', 'pointerspan');
+                                    intro.innerHTML = '<span style="font-family: yuanli">此武将包的所有武将初始手牌+1</span>';
+                                    cfgNodes[i].parentNode.insertBefore(intro, cfgNodes[i].nextSibling);
                                     break;
                                 }
                             }

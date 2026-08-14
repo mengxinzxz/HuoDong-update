@@ -48228,7 +48228,7 @@ const packs = function () {
                                 const info = get.info(card);
                                 if (info?.ai?.order) {
                                     if (typeof info.ai.order === 'number') return info.ai.order;
-                                    else if (typeof info.ai.order === 'function') return info.ai.order();
+                                    else if (typeof info.ai.order === 'function') return info.ai.order(null, get.player());
                                 }
                             }
                             return 1;
@@ -48292,6 +48292,19 @@ const packs = function () {
                 const { hp, hp2, maxHp } = lib.character[name];
                 hpTextDiv.innerHTML = `×${hp}&${hp2}${hp === maxHp ? '' : `/${maxHp}`}`;
             }
+        };
+        const ori8 = game.gameDraw;
+        game.gameDraw = function (...args) {
+            const next = ori8.call(this, ...args);
+            if (next.num !== void 0) {
+                const numx = next.num;
+                next.num = function (player) {
+                    let num = typeof numx === 'function' ? numx(player) : numx;
+                    if (get.nameList(player).some(name => lib.characterPack.MiNikill?.[name])) num++;
+                    return num;
+                };
+            }
+            return next;
         };
     });
     lib.config.all.sgscharacters.push('MiNikill');
