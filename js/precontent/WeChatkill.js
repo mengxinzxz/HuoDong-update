@@ -25038,15 +25038,12 @@ const packs = function () {
     }
     lib.namePrefix.set('极', {
         color: '#fdd559',
-        nature: 'soilmm',
     });
     lib.namePrefix.set('志', {
         color: '#b9b4edff',
-        nature: 'soilmm',
     });
     lib.namePrefix.set('小程序', {
         color: '#00cd00',
-        nature: 'MXgreen',
         showName: '微',
     });
     lib.config.all.sgscharacters.push('WeChatkill');
