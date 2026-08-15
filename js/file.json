@@ -5733,6 +5733,10 @@
             "size": 112047
         },
         {
+            "path": "image/character/Mbaby_dc_sp_zhurong.jpg",
+            "size": 142724
+        },
+        {
             "path": "image/character/Mbaby_dc_sunhanhua.jpg",
             "size": 762512
         },
@@ -7109,6 +7113,10 @@
             "size": 151536
         },
         {
+            "path": "image/character/Mbaby_yue_xiaoqiao.jpg",
+            "size": 141793
+        },
+        {
             "path": "image/character/Mbaby_yue_zhoufei.jpg",
             "size": 158835
         },
@@ -7487,6 +7495,10 @@
         {
             "path": "image/character/Mnian_zhugeliang.jpg",
             "size": 150030
+        },
+        {
+            "path": "image/character/Mqing_diaolv.jpg",
+            "size": 141705
         },
         {
             "path": "image/character/Myin_xushu.jpg",
@@ -9154,7 +9166,7 @@
         },
         {
             "path": "js/precontent/index.js",
-            "size": 43546
+            "size": 43612
         },
         {
             "path": "js/precontent/MiNiAppkill.js",
@@ -9166,7 +9178,7 @@
         },
         {
             "path": "js/precontent/MiNikill.js",
-            "size": 2858930
+            "size": 2872099
         },
         {
             "path": "js/precontent/MX_feihongyinxue.js",
