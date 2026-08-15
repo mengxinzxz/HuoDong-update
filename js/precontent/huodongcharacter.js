@@ -13843,12 +13843,10 @@ const packs = function () {
     //“萌新自设”前缀
     lib.namePrefix.set('萌设', {
         color: '#ff6a6a',
-        nature: 'MXpink',
         showName: '萌',
     });
     lib.namePrefix.set('蝶设', {
         color: '#ff6a6a',
-        nature: 'MXpink',
         showName: '蝶',
     });
     //添加群聊势力
