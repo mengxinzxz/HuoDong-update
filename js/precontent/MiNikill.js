@@ -22626,7 +22626,7 @@ const packs = function () {
                     await player.useSkill('starzhongyan', [target]);
                     if (index == 1) {
                         const num = target.countCards('e');
-                        await target.chooseToDiscard(num, 'he', 'allowChooseAll');
+                        await target.chooseToDiscard(num, 'he', 'allowChooseAll', true);
                     }
                 },
             },
