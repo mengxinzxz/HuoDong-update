@@ -16815,7 +16815,7 @@ const packs = function () {
                 },
                 async cost(event, trigger, player) {
                     const num = Math.min(trigger.target.getHp(), trigger.target.countCards('he'));
-                    var next = player.choosePlayerCard(trigger.target, 'he', [1, num], get.prompt(event.name, trigger.target));
+                    var next = player.choosePlayerCard(trigger.target, 'he', [1, num], get.prompt(event.name, trigger.target), 'allowChooseAll');
                     next.set('ai', function (button) {
                         if (!_status.event.goon) return 0;
                         var val = get.value(button.link);
@@ -16909,7 +16909,7 @@ const packs = function () {
                 },
                 async cost(event, trigger, player) {
                     const target = get.info('minidcpojun').logTarget(trigger, player);
-                    const next = player.choosePlayerCard(target, 'he', [1, Math.min(player.maxHp, target.countCards('he'))], get.prompt(event.name.slice(0, -5), target));
+                    const next = player.choosePlayerCard(target, 'he', [1, Math.min(player.maxHp, target.countCards('he'))], get.prompt(event.name.slice(0, -5), target), 'allowChooseAll');
                     next.set('ai', button => {
                         if (!_status.event.goon) return 0;
                         const val = get.value(button.link);

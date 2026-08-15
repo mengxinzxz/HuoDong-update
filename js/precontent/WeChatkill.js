@@ -6019,7 +6019,7 @@ const packs = function () {
                 },
                 async content(event, trigger, player) {
                     const target = trigger.target;
-                    const result = await player.choosePlayerCard(target, 'he', [1, Math.min(target.countCards('he'), target.hp)], get.prompt('wechatpojun', target)).set('forceAuto', true).forResult();
+                    const result = await player.choosePlayerCard(target, 'he', [1, Math.min(target.countCards('he'), target.hp)], get.prompt('wechatpojun', target), 'allowChooseAll').set('forceAuto', true).forResult();
                     if (result?.bool && result.cards?.length) {
                         player.logSkill('wechatpojun', target);
                         target.addToExpansion(result.cards, 'giveAuto', target).gaintag.add('xinpojun2');
