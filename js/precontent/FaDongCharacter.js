@@ -357,7 +357,6 @@ const packs = function () {
     }
     lib.namePrefix.set('伐董', {
         color: '#6c1fd1',
-        nature: 'MXpurple',
         showName: '董',
     });
     lib.config.all.sgscharacters.push('FaDongCharacter');
