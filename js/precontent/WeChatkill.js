@@ -1785,7 +1785,7 @@ const packs = function () {
                 audio: 'reqianxun',
                 inherit: 'reqianxun',
                 async cost(event, trigger, player) {
-                    event.result = await player.chooseCard(get.prompt(event.name.slice(0, -5)), '将任意张手牌置于武将牌上', [1, Infinity]).set('ai', card => 1 / (get.value(card) || 0.5)).forResult();
+                    event.result = await player.chooseCard(get.prompt(event.name.slice(0, -5)), '将任意张手牌置于武将牌上', [1, Infinity], 'allowChooseAll').set('ai', card => 1 / (get.value(card) || 0.5)).forResult();
                 },
                 async content(event, trigger, player) {
                     player.addToExpansion(event.cards, 'giveAuto', player).gaintag.add(event.name + '2');
@@ -4084,7 +4084,7 @@ const packs = function () {
                 usable: 1,
                 content() {
                     'step 0'
-                    target.chooseCard('he', [1, 3], '匡弼：将至多三张牌置于' + get.translation(player) + '的武将牌上', true).set('ai', function (card) {
+                    target.chooseCard('he', [1, 3], '匡弼：将至多三张牌置于' + get.translation(player) + '的武将牌上', true).set('allowChooseAll', true).set('ai', function (card) {
                         var player = _status.event.player;
                         var target = _status.event.getParent().player;
                         if (get.attitude(player, target) > 0) return 7 - get.value(card);
@@ -6260,7 +6260,7 @@ const packs = function () {
                             }
                         }
                     }
-                    event.result = await player.chooseCard('he', [1, player.countCards('he')], get.prompt2('wechathuisheng', trigger.source)).set('ai', card => {
+                    event.result = await player.chooseCard('he', [1, player.countCards('he')], get.prompt2('wechathuisheng', trigger.source), 'allowChooseAll').set('ai', card => {
                         if (_status.event.att) return 10 - get.value(card);
                         if (_status.event.goon) return 8 - get.value(card);
                         if (!ui.selected.cards.length) return 7 - get.value(card);
@@ -6359,7 +6359,7 @@ const packs = function () {
                     return player.hasCard(card => _status.connectMode || lib.filter.cardDiscardable(card, player), 'he');
                 },
                 async cost(event, trigger, player) {
-                    event.result = await player.chooseToDiscard('he', [1, Infinity]).set('ai', card => {
+                    event.result = await player.chooseToDiscard('he', [1, Infinity], 'allowChooseAll').set('ai', card => {
                         const player = get.player();
                         if (!ui.selected.cards.length) return 5 - get.value(card);
                         const list = ui.selected.cards.map(i => get.color(i, player));
@@ -13202,7 +13202,7 @@ const packs = function () {
                     const { cost_data, targets: [target] } = event;
                     if (cost_data === 2) await player.loseHp();
                     if ([0, 2].includes(cost_data) && target.countCards('e')) {
-                        const result = await player.choosePlayerCard(target, true, 'e', `选择${get.translation(target)}的至多两张装备牌令其获得之`, [1, 2]).forResult();
+                        const result = await player.choosePlayerCard(target, true, 'e', `选择${get.translation(target)}的至多两张装备牌令其获得之`, [1, 2]).set('allowChooseAll', true).forResult();
                         if (result?.cards?.length) await target.gain(result.cards, 'gain2');
                     }
                     if ([1, 2].includes(cost_data)) {
@@ -13397,7 +13397,7 @@ const packs = function () {
                     }, 'h');
                 },
                 async cost(event, trigger, player) {
-                    event.result = await player.chooseToDiscard('h', [1, 2], get.prompt(event.skill), '弃置至多两张手牌并获得3倍弃牌数的谋略值').set('ai', card => {
+                    event.result = await player.chooseToDiscard('h', [1, 2], get.prompt(event.skill), '弃置至多两张手牌并获得3倍弃牌数的谋略值', 'allowChooseAll').set('ai', card => {
                         const player = get.player();
                         if (ui.selected.cards.length > 2) return false;
                         return 6.5 - get.value(card);
@@ -15920,7 +15920,7 @@ const packs = function () {
                         async cost(event, trigger, player) {
                             const target = trigger.player;
                             const num = player.hp;
-                            event.result = await player.choosePlayerCard(target, 'h', true, `违器：请选择${get.translation(target)}至多${get.cnNumber(num)}张手牌`, 'visible', [1, num]).forResult();
+                            event.result = await player.choosePlayerCard(target, 'h', true, `违器：请选择${get.translation(target)}至多${get.cnNumber(num)}张手牌`, 'visible', [1, num]).set('allowChooseAll', true).forResult();
                         },
                         logTarget: 'player',
                         async content(event, trigger, player) {
