@@ -4657,7 +4657,6 @@ const packs = function () {
     }
     lib.namePrefix.set('飞鸿', {
         color: '#ff6a6a',
-        nature: 'IndianRed1',
         showName: '鸿',
     });
     lib.config.all.sgscharacters.push('MX_feihongyinxue');

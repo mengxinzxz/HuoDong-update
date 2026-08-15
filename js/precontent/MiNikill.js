@@ -46,6 +46,7 @@ const packs = function () {
                 MiNi_fightKill: ['huangzhong', 'zhangliao', 'luxun', 'dianwei', 'machao', 'jiangwei', 'lvmeng'].map(i => `Mfight_${i}`),
                 MiNi_yinKill: ['yuji', 'xushu'].map(i => `Myin_${i}`),
                 MiNi_fireKill: ['zhurong'].map(i => `Mfire_${i}`),
+                MiNi_qingKill: ['diaolv'].map(i => `Mqing_${i}`),
                 MiNi_shengzhiyifa: ['jingwei', 'sunwukong', 'dalanmao', 'libai', 'change', 'nvwa', 'tunxingmenglix', 'xiaoshan'].map(i => `Mbaby_${i}`),
             },
         },
@@ -570,12 +571,15 @@ const packs = function () {
             Myin_yuji: ['male', 'qun', 0, ['miniyinyinming', 'miniyinhuozhong']],
             //焰
             Mfire_zhurong: ['female', 'shu', 4, ['minifirehuosi', 'minifirerongyan'], ['name:null|null']],
+            //情
+            Mqing_diaolv: ['double', 'qun', 4, [], ['name:null|null-吕|布']],
         },
         characterIntro: {
             Mbaby_change: '嫦娥，中国古代神话中的人物，又名恒我、恒娥、姮娥、常娥、素娥，羿之妻，因偷吃了不死药而飞升至月宫。嫦娥的故事最早出现在商朝卦书 《归藏》。而嫦娥奔月的完整故事最早记载于西汉《淮南子·览冥训》。东汉时期，嫦娥与羿的夫妻关系确立，而嫦娥在进入月宫后变成了捣药的蟾蜍。南北朝以后，嫦娥的形象回归为女儿身。汉画像中，嫦娥人头蛇身，头梳高髻，身着宽袖长襦，身后长尾上饰有倒钩状细短羽毛。南北朝以后，嫦娥的形象被描绘成绝世美女。南朝陈后主陈叔宝曾把宠妃张丽华比作嫦娥。唐朝诗人白居易曾用嫦娥夸赞邻家少女不可多得的容貌。',
             Mbaby_nvwa: '女娲，中国上古神话中的创世女神。又称娲皇、女阴，史记女娲氏，是华夏民族人文先始，是福佑社稷之正神。相传女娲造人，一日中七十化变，以黄泥仿照自己抟土造人，创造人类社会并建立婚姻制度；因世间天塌地陷，于是熔彩石以补苍天，斩鳌足以立四极，留下了女娲补天的神话传说。女娲不但是补天救世的英雄和抟土造人的女神，还是一个创造万物的自然之神，神通广大化生万物，每天至少能创造出七十样东西。她开世造物，因此被称为大地之母，是被民间广泛而又长久崇拜的创世神和始母神。',
             Mbaby_tunxingmenglix: '据《王子年拾遗记》记载：蜀先主甘后；生而体貌特异，年至十八，玉质柔肌，态媚容冶…河南献玉人高三尺…甘后与玉人洁白齐润，观者殆相乱惑。刘备非常喜爱这尊玉雕，“夕则用后而玩玉人”。白玉美人怀抱一只白玉狸猫，甘夫人常对玉人倾诉渴望为刘备诞下一子的心愿，然而久盼未果。偶有一日，在梦中化身成一只饥肠辘辘、失去理智的白玉狸猫，闯入到幻境当中，吞掉了幻境中的启明星。事后，梦醒的甘夫人发现已怀有身孕，甚是欣喜。而白玉美人怀抱的玉狸猫则留在了幻境中，化身为吞星梦狸守护着幻境里的星星。',
             Mbaby_jingwei: '精卫，中国古代神话中的一种鸟。上古神话传说里，女娃是炎帝最小的女儿，后溺水而亡，化作精卫鸟；另一说，女娃是上古的一个部落，由于气候变暖，海平面上升，女娃部落遭到灭顶之灾，后化作精卫。据《山海经》记载：精卫婀娜多姿、长发飘逸、背生双翼，花头颅、白嘴壳、红脚爪，样子有点儿像乌鸦。',
+            Mqing_diaolv: '吕布，飞将也，拔山盖世，威震天下；貂蝉，绝色也，闭月羞花，智倾倾城。昔汉室陵迟，董贼肆虐。蝉施连环之计，布发无双之威，遂诛逆贼，结为伉俪。布执方天画戟，血战八荒，唯欲庇一心人；蝉舞红袖飞雪，巧谋深算，甘共天下之敌。白门楼重围之下，英雄末路，红颜未迟。布笑拥佳人曰：“天下虽大，唯卿吾之归宿。”蝉含泪附焉：“生同衾，死同穴，夫复何求？”七夕星汉灿烂，战神倾国合璧。执手破乱世之阴霾，同心赴轮回之绝唱。',
         },
         characterSubstitute: {
             Mbaby_tunxingmenglix: [
@@ -45045,6 +45049,7 @@ const packs = function () {
             MiNi_fightKill: '欢乐三国杀·战系列',
             MiNi_yinKill: '欢乐三国杀·隐系列',
             MiNi_fireKill: '欢乐三国杀·焰系列',
+            MiNi_qingKill: '欢乐三国杀·七夕系列',
             MiNi_shengzhiyifa: '欢乐三国杀·限时地主',
             //牌
             miniyanxiao_card: '言笑',
@@ -47403,6 +47408,8 @@ const packs = function () {
             minifirehuoqiu_info: '此牌仅焰祝融可使用。出牌阶段，对一名其他角色使用。你选择一项：①对目标角色造成1点火属性伤害；②令目标角色的伤害类手牌造成的伤害均改为火属性。',
             minifirehuojian: '火箭',
             minifirehuojian_info: '此牌仅焰祝融可使用，且不可被响应。出牌阶段，对一名角色使用。你对目标角色造成1点火属性伤害，令目标角色的伤害类手牌造成的伤害均改为火属性。',
+            //情
+            Mqing_diaolv: '情貂蝉吕布',
 
             // ----------------------- 台词部分 ----------------------- //
             '#ext:活动武将/audio/skill/minidoumao1': '喵～呜～',
@@ -48081,28 +48088,28 @@ const packs = function () {
             else if (MiNikill.translate[i].startsWith('战')) MiNikill.translate[i + '_prefix'] = '战';
             else if (MiNikill.translate[i].startsWith('隐')) MiNikill.translate[i + '_prefix'] = '隐';
             else if (MiNikill.translate[i].startsWith('焰')) MiNikill.translate[i + '_prefix'] = '焰';
+            else if (MiNikill.translate[i].startsWith('情')) MiNikill.translate[i + '_prefix'] = '情';
         }
     }
     lib.namePrefix.set('喵', {
         color: '#fdd559',
-        nature: 'soilmm',
     });
     lib.namePrefix.set('念', {
         color: '#bf3eff',
-        nature: 'soilmm',
     });
     lib.namePrefix.set('战', {
         color: '#ff4500',
-        nature: 'firemm',
     });
     lib.namePrefix.set('隐', {
         color: '#c5e2ebff',
-        nature: 'soilmm',
     });
     lib.namePrefix.set('焰', {
         color: '#ff4500',
-        nature: 'firemm',
         showName: '🔥',
+    });
+    lib.namePrefix.set('情', {
+        color: '#ff00aa',
+        showName: '❤',
     });
     lib.namePrefix.set('欢杀', {
         color: '#ff6a6a',

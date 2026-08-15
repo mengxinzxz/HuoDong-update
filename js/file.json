@@ -9150,7 +9150,7 @@
         },
         {
             "path": "js/precontent/FaDongCharacter.js",
-            "size": 20861
+            "size": 20832
         },
         {
             "path": "js/precontent/HD_chaoshikong.js",
@@ -9162,7 +9162,7 @@
         },
         {
             "path": "js/precontent/huodongcharacter.js",
-            "size": 848696
+            "size": 848642
         },
         {
             "path": "js/precontent/index.js",
@@ -9178,11 +9178,11 @@
         },
         {
             "path": "js/precontent/MiNikill.js",
-            "size": 2872099
+            "size": 2873086
         },
         {
             "path": "js/precontent/MX_feihongyinxue.js",
-            "size": 279807
+            "size": 279776
         },
         {
             "path": "js/precontent/WeChatkill_sight.js",
@@ -9190,7 +9190,7 @@
         },
         {
             "path": "js/precontent/WeChatkill.js",
-            "size": 1501078
+            "size": 1500996
         },
         {
             "path": "js/update.js",
