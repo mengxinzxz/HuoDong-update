@@ -9162,7 +9162,7 @@
         },
         {
             "path": "js/precontent/huodongcharacter.js",
-            "size": 848642
+            "size": 848726
         },
         {
             "path": "js/precontent/index.js",
@@ -9170,7 +9170,7 @@
         },
         {
             "path": "js/precontent/MiNiAppkill.js",
-            "size": 220992
+            "size": 221101
         },
         {
             "path": "js/precontent/MiNikill_sight.js",
@@ -9178,11 +9178,11 @@
         },
         {
             "path": "js/precontent/MiNikill.js",
-            "size": 2873086
+            "size": 2873860
         },
         {
             "path": "js/precontent/MX_feihongyinxue.js",
-            "size": 279776
+            "size": 279888
         },
         {
             "path": "js/precontent/WeChatkill_sight.js",
@@ -9190,7 +9190,7 @@
         },
         {
             "path": "js/precontent/WeChatkill.js",
-            "size": 1501016
+            "size": 1501190
         },
         {
             "path": "js/update.js",
