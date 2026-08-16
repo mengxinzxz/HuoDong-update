@@ -4751,7 +4751,7 @@ const packs = function () {
                         async content(event, trigger, player) {
                             const { player: target } = trigger;
                             const num = Math.ceil(target.countCards('h'));
-                            const result = await target.chooseCard('he', [0, num], get.prompt('old_fenchai'), '交给' + get.translation(player) + '至多' + get.cnNumber(num) + '张牌').set('ai', card => {
+                            const result = await target.chooseCard('he', [0, num], get.prompt('old_fenchai'), '交给' + get.translation(player) + '至多' + get.cnNumber(num) + '张牌').set('allowChooseAll', true).set('ai', card => {
                                 if (get.event().goon) return get.value(card);
                                 return -1;
                             }).set('goon', get.attitude(target, player) > 0).set('forceDie', true).forResult();
@@ -7341,7 +7341,7 @@ const packs = function () {
                 content() {
                     'step 0'
                     if (trigger.source.hasSex('male')) {
-                        trigger.source.chooseCard(get.prompt('bolhuidu'), '重铸任意张牌，防止对' + get.translation(player) + '造成的伤害', lib.filter.cardRecastable, [1, Infinity], 'he').set('ai', function (card) {
+                        trigger.source.chooseCard(get.prompt('bolhuidu'), '重铸任意张牌，防止对' + get.translation(player) + '造成的伤害', lib.filter.cardRecastable, [1, Infinity], 'he').set('allowChooseAll', true).set('ai', function (card) {
                             if (_status.event.goon) return lib.skill.zhiheng.check(card) + 1;
                             return 0;
                         }).set('goon', get.damageEffect(player, trigger.source, trigger.source));
@@ -8664,7 +8664,7 @@ const packs = function () {
                             const cards = get.cards(num);
                             await game.cardsGotoOrdering(cards);
                             await player.showCards(cards, `${get.translation(player)}发动了【怀刺】`);
-                            const result = await player.chooseButton(['怀刺：你可以获得并明置其中任意张牌', cards], [1, Infinity]).forResult();
+                            const result = await player.chooseButton(['怀刺：你可以获得并明置其中任意张牌', cards], [1, Infinity]).set('allowChooseAll', true).forResult();
                             if (result?.bool && result?.links?.length) {
                                 const { links } = result;
                                 await player.gain(links, 'gain2');

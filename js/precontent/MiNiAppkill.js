@@ -2775,6 +2775,7 @@ const packs = function () {
                                 }, skill);
                             }
                             const next = player.chooseToGive(target, 'he', [1, Infinity], true);
+                            next.set('allowChooseAll', true);
                             next.gaintag.add(skill);
                             await next;
                         },
@@ -3176,7 +3177,7 @@ const packs = function () {
                 },
                 async content(event, trigger, player) {
                     const target = event.targets[0];
-                    const result = await target.chooseCard('匡弼：将至多三张牌置于' + get.translation(player) + '的武将牌上', 'he', [1, 3], true).set('ai', card => {
+                    const result = await target.chooseCard('匡弼：将至多三张牌置于' + get.translation(player) + '的武将牌上', 'he', [1, 3], true, 'allowChooseAll').set('ai', card => {
                         const { player, source } = get.event();
                         if (get.attitude(player, source) > 0) return 7 - get.value(card);
                         return -get.value(card);
@@ -3423,7 +3424,7 @@ const packs = function () {
                     let result, cards = player.getCards('he');
                     if (!cards.length) return;
                     else if (cards.length <= 1) result = { bool: true, cards };
-                    else result = await player.chooseCard([1, 2], 'he', true, `${get.translation(event.name)}：将至多两张牌称为“米”置于武将牌上`).forResult();
+                    else result = await player.chooseCard([1, 2], 'he', true, `${get.translation(event.name)}：将至多两张牌称为“米”置于武将牌上`).set('allowChooseAll', true).forResult();
                     if (result?.bool && result.cards?.length) {
                         const next = player.addToExpansion(result.cards, player, 'give');
                         next.gaintag.add('yishe');

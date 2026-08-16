@@ -370,7 +370,7 @@ const packs = function () {
                     var result = await target.chooseCard('歃盟：展示至多两张牌', [1, 2], true).set('ai', card => {
                         if (ui.selected.cards.some(cardx => get.type2(cardx) == get.type2(card))) return 4 - get.value(card);
                         return 8 - get.value(card);
-                    }).set('complexCard', true).forResult();
+                    }).set('complexCard', true).set('allowChooseAll', true).forResult();
                     if (result.bool) {
                         target.showCards(result.cards, get.translation(target) + '【歃盟】展示');
                         var cards = [];
@@ -875,7 +875,7 @@ const packs = function () {
                                         if (button.link.name != 'sha') return 1;
                                         return 0;
                                 }
-                            }).set('effect', get.effect(trigger.target, trigger.card, trigger.player, player)).forResult();
+                            }).set('effect', get.effect(trigger.target, trigger.card, trigger.player, player)).set('allowChooseAll', true).forResult();
                             if (result?.bool) {
                                 player.$throw(result.links, 1000);
                                 await game.cardsDiscard(result.links);
@@ -937,7 +937,7 @@ const packs = function () {
                                         if (button.link.name != 'sha') return 1;
                                         return 0;
                                 }
-                            }).set('effect', get.effect(trigger.target, trigger.card, trigger.player, player)).forResult();
+                            }).set('effect', get.effect(trigger.target, trigger.card, trigger.player, player)).set('allowChooseAll', true).forResult();
                             if (result?.bool) {
                                 player.$throw(result.links, 1000);
                                 await game.cardsDiscard(result.links);
@@ -2740,7 +2740,7 @@ const packs = function () {
                     'step 2'
                     if (result.index == 1) {
                         var cards = get.cards(2 * num, true);
-                        target.chooseButton(['督粮：选择获得其中任意张基本牌', cards], [1, cards.length]).set('filterButton', button => get.type2(button.link) == 'basic').set('ai', button => get.value(button.link));
+                        target.chooseButton(['督粮：选择获得其中任意张基本牌', cards], [1, cards.length]).set('allowChooseAll', true).set('filterButton', button => get.type2(button.link) == 'basic').set('ai', button => get.value(button.link));
                     }
                     else {
                         target.addSkill('duliang2');
