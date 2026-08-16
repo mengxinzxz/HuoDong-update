@@ -370,7 +370,7 @@ const packs = function () {
                     var result = await target.chooseCard('歃盟：展示至多两张牌', [1, 2], true).set('ai', card => {
                         if (ui.selected.cards.some(cardx => get.type2(cardx) == get.type2(card))) return 4 - get.value(card);
                         return 8 - get.value(card);
-                    }).set('complexCard', true).set('allowChooseAll', true).forResult();
+                    }).set('allowChooseAll', true).forResult();
                     if (result.bool) {
                         target.showCards(result.cards, get.translation(target) + '【歃盟】展示');
                         var cards = [];
@@ -3697,7 +3697,7 @@ const packs = function () {
                         charlotte: true,
                         onremove: true,
                         markimage: 'image/card/handcard.png',
-                        intro: {  content: '本回合手牌上限+#'  },
+                        intro: { content: '本回合手牌上限+#' },
                         mod: {
                             maxHandcard(player, num) {
                                 return num + player.countMark('fh_jizhi_effect');
