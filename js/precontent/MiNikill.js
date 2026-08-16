@@ -1,5 +1,13 @@
 import { lib, game, ui, get, ai, _status } from '../../../../noname.js';
 import MiNikill_sight from './MiNikill_sight.js';
+import {
+    QING_LVDIAO_FORMS,
+    getQingLvdiaoForm,
+    getQingLvdiaoTargetMaxHp,
+    isQingLvdiaoRival,
+    isQingLvdiaoSingleForm,
+    shouldContinueQingzhan,
+} from './qingLvdiao.js';
 
 const packs = function () {
     const MiNikill = {
@@ -46,7 +54,7 @@ const packs = function () {
                 MiNi_fightKill: ['huangzhong', 'zhangliao', 'luxun', 'dianwei', 'machao', 'jiangwei', 'lvmeng'].map(i => `Mfight_${i}`),
                 MiNi_yinKill: ['yuji', 'xushu'].map(i => `Myin_${i}`),
                 MiNi_fireKill: ['zhurong'].map(i => `Mfire_${i}`),
-                MiNi_qingKill: ['diaolv'].map(i => `Mqing_${i}`),
+                MiNi_qingKill: ['lvdiao'].map(i => `Mqing_${i}`),
                 MiNi_shengzhiyifa: ['jingwei', 'sunwukong', 'dalanmao', 'libai', 'change', 'nvwa', 'tunxingmenglix', 'xiaoshan'].map(i => `Mbaby_${i}`),
             },
         },
@@ -572,14 +580,16 @@ const packs = function () {
             //焰
             Mfire_zhurong: ['female', 'shu', 4, ['minifirehuosi', 'minifirerongyan'], ['name:null|null']],
             //情
-            Mqing_diaolv: ['double', 'qun', 4, [], ['name:null|null-吕|布']],
+            Mqing_lvbu: ['male', 'qun', 5, ['miniqingchan', 'miniqingzhan'], ['unseen', 'character:Mqing_lvdiao', 'name:吕|布']],
+            Mqing_diaochan: ['female', 'qun', 3, ['miniqingchan', 'miniqingyuan'], ['unseen', 'character:Mqing_lvdiao', 'name:貂|蝉']],
+            Mqing_lvdiao: ['double', 'qun', 4, ['miniqingchan', 'miniqingzhan', 'miniqingyuan'], ['name:null|null-吕|布']],
         },
         characterIntro: {
             Mbaby_change: '嫦娥，中国古代神话中的人物，又名恒我、恒娥、姮娥、常娥、素娥，羿之妻，因偷吃了不死药而飞升至月宫。嫦娥的故事最早出现在商朝卦书 《归藏》。而嫦娥奔月的完整故事最早记载于西汉《淮南子·览冥训》。东汉时期，嫦娥与羿的夫妻关系确立，而嫦娥在进入月宫后变成了捣药的蟾蜍。南北朝以后，嫦娥的形象回归为女儿身。汉画像中，嫦娥人头蛇身，头梳高髻，身着宽袖长襦，身后长尾上饰有倒钩状细短羽毛。南北朝以后，嫦娥的形象被描绘成绝世美女。南朝陈后主陈叔宝曾把宠妃张丽华比作嫦娥。唐朝诗人白居易曾用嫦娥夸赞邻家少女不可多得的容貌。',
             Mbaby_nvwa: '女娲，中国上古神话中的创世女神。又称娲皇、女阴，史记女娲氏，是华夏民族人文先始，是福佑社稷之正神。相传女娲造人，一日中七十化变，以黄泥仿照自己抟土造人，创造人类社会并建立婚姻制度；因世间天塌地陷，于是熔彩石以补苍天，斩鳌足以立四极，留下了女娲补天的神话传说。女娲不但是补天救世的英雄和抟土造人的女神，还是一个创造万物的自然之神，神通广大化生万物，每天至少能创造出七十样东西。她开世造物，因此被称为大地之母，是被民间广泛而又长久崇拜的创世神和始母神。',
             Mbaby_tunxingmenglix: '据《王子年拾遗记》记载：蜀先主甘后；生而体貌特异，年至十八，玉质柔肌，态媚容冶…河南献玉人高三尺…甘后与玉人洁白齐润，观者殆相乱惑。刘备非常喜爱这尊玉雕，“夕则用后而玩玉人”。白玉美人怀抱一只白玉狸猫，甘夫人常对玉人倾诉渴望为刘备诞下一子的心愿，然而久盼未果。偶有一日，在梦中化身成一只饥肠辘辘、失去理智的白玉狸猫，闯入到幻境当中，吞掉了幻境中的启明星。事后，梦醒的甘夫人发现已怀有身孕，甚是欣喜。而白玉美人怀抱的玉狸猫则留在了幻境中，化身为吞星梦狸守护着幻境里的星星。',
             Mbaby_jingwei: '精卫，中国古代神话中的一种鸟。上古神话传说里，女娃是炎帝最小的女儿，后溺水而亡，化作精卫鸟；另一说，女娃是上古的一个部落，由于气候变暖，海平面上升，女娃部落遭到灭顶之灾，后化作精卫。据《山海经》记载：精卫婀娜多姿、长发飘逸、背生双翼，花头颅、白嘴壳、红脚爪，样子有点儿像乌鸦。',
-            Mqing_diaolv: '吕布，飞将也，拔山盖世，威震天下；貂蝉，绝色也，闭月羞花，智倾倾城。昔汉室陵迟，董贼肆虐。蝉施连环之计，布发无双之威，遂诛逆贼，结为伉俪。布执方天画戟，血战八荒，唯欲庇一心人；蝉舞红袖飞雪，巧谋深算，甘共天下之敌。白门楼重围之下，英雄末路，红颜未迟。布笑拥佳人曰：“天下虽大，唯卿吾之归宿。”蝉含泪附焉：“生同衾，死同穴，夫复何求？”七夕星汉灿烂，战神倾国合璧。执手破乱世之阴霾，同心赴轮回之绝唱。',
+            Mqing_lvdiao: '吕布，飞将也，拔山盖世，威震天下；貂蝉，绝色也，闭月羞花，智倾倾城。昔汉室陵迟，董贼肆虐。蝉施连环之计，布发无双之威，遂诛逆贼，结为伉俪。布执方天画戟，血战八荒，唯欲庇一心人；蝉舞红袖飞雪，巧谋深算，甘共天下之敌。白门楼重围之下，英雄末路，红颜未迟。布笑拥佳人曰：“天下虽大，唯卿吾之归宿。”蝉含泪附焉：“生同衾，死同穴，夫复何求？”七夕星汉灿烂，战神倾国合璧。执手破乱世之阴霾，同心赴轮回之绝唱。',
         },
         characterSubstitute: {
             Mbaby_tunxingmenglix: [
@@ -44861,6 +44871,181 @@ const packs = function () {
                     },
                 },
             },
+            miniqingchan: {
+                forced: true,
+                locked: true,
+                trigger: {
+                    global: ['phaseBefore', 'die'],
+                    player: ['enterGame', 'dying'],
+                },
+                filter(event, player, name) {
+                    const form = getQingLvdiaoForm(player);
+                    if (name === 'phaseBefore') return game.phaseNumber === 0 && form === QING_LVDIAO_FORMS.double;
+                    if (name === 'enterGame') return form === QING_LVDIAO_FORMS.double;
+                    if (!isQingLvdiaoSingleForm(form)) return false;
+                    if (name === 'dying') {
+                        return game.getAllGlobalHistory(
+                            'everything',
+                            evt => evt.name === 'dying' && evt.player === player,
+                        ).indexOf(event) === 0;
+                    }
+                    return event.player !== player && isQingLvdiaoRival(player, event.player);
+                },
+                async content(event, trigger, player) {
+                    const from = getQingLvdiaoForm(player);
+                    let to = QING_LVDIAO_FORMS.double;
+                    if (event.triggername === 'phaseBefore' || event.triggername === 'enterGame') {
+                        const result = await player.chooseControl(QING_LVDIAO_FORMS.male, QING_LVDIAO_FORMS.female)
+                            .set('prompt', '情缠：请选择登场形态')
+                            .set('choiceList', ['以5点体力的情吕布登场', '以3点体力的情貂蝉登场'])
+                            .set('ai', () => QING_LVDIAO_FORMS.male)
+                            .forResult();
+                        to = result.control;
+                    }
+                    if (!from || !to || from === to) return;
+                    const maxHp = getQingLvdiaoTargetMaxHp(player.maxHp, from, to);
+                    await player.reinitCharacter(from, to);
+                    game.broadcastAll((current, value) => {
+                        current.hp = current.maxHp = value;
+                        current.update();
+                    }, player, maxHp);
+                },
+            },
+            miniqingzhan: {
+                enable: 'phaseUse',
+                usable: 1,
+                filterTarget: lib.filter.notMe,
+                async content(event, trigger, player) {
+                    const owner = player;
+                    const target = event.target;
+                    let actor = owner;
+                    let opponent = target;
+                    let turns = 0;
+                    let enteredDying = false;
+                    do {
+                        const dyingCount = game.getAllGlobalHistory('everything', evt => evt.name === 'dying').length;
+                        const next = actor.chooseToUse({
+                            prompt: `情战：请选择一张【杀】对${get.translation(opponent)}使用，点取消失去1点体力`,
+                            filterCard(card, current) {
+                                return get.name(card, current) === 'sha' && lib.filter.cardEnabled.apply(this, arguments);
+                            },
+                            filterTarget(card, current, selected) {
+                                return selected === get.event().opponent && lib.filter.targetEnabled.apply(this, arguments);
+                            },
+                            selectTarget: -1,
+                            addCount: false,
+                        });
+                        next.set('opponent', opponent);
+                        const result = await next.forResult();
+                        if (!result?.bool) await actor.loseHp();
+                        enteredDying = game.getAllGlobalHistory('everything', evt => evt.name === 'dying').length > dyingCount;
+                        turns++;
+                        [actor, opponent] = [opponent, actor];
+                    }
+                    while (shouldContinueQingzhan({ turns, enteredDying, owner, target }));
+                },
+                ai: {
+                    order: 8,
+                    result: {
+                        target(player, target) {
+                            if (isQingLvdiaoRival(player, target)) return -2;
+                            return get.effect(target, { name: 'sha' }, player, player);
+                        },
+                    },
+                },
+            },
+            miniqingyuan: {
+                forced: true,
+                trigger: {
+                    source: 'damageSource',
+                    target: 'useCardToTargeted',
+                },
+                filter(event, player, name) {
+                    if (player.hasSkill('miniqingyuan_block')) return false;
+                    return name === 'damageSource' || (event.player?.isIn() && get.tag(event.card, 'damage'));
+                },
+                async resolve(owner, beneficiary, counterpart) {
+                    await beneficiary.draw();
+                    if (counterpart?.isIn() && counterpart.countCards('h') && isQingLvdiaoRival(owner, counterpart)) {
+                        await counterpart.discard(counterpart.getCards('h').randomGet());
+                    }
+                },
+                async content(event, trigger, player) {
+                    await get.info('miniqingyuan').resolve(player, player, trigger.player);
+                },
+                group: 'miniqingyuan_transfer',
+                subSkill: {
+                    transfer: {
+                        trigger: { global: 'roundStart' },
+                        direct: true,
+                        filter(event, player) {
+                            return game.hasPlayer(target => (
+                                target !== player &&
+                                !target.hasSkill('miniqingyuan_effect') &&
+                                !isQingLvdiaoRival(player, target)
+                            ));
+                        },
+                        async content(event, trigger, player) {
+                            const result = await player.chooseTarget(
+                                get.prompt2(event.name),
+                                (card, owner, target) => (
+                                    target !== owner &&
+                                    !target.hasSkill('miniqingyuan_effect') &&
+                                    !isQingLvdiaoRival(owner, target)
+                                ),
+                            ).set('ai', target => get.attitude(get.player(), target)).forResult();
+                            if (!result.bool || !result.targets?.length) return;
+                            const target = result.targets[0];
+                            player.logSkill(event.name, target);
+                            player.addTempSkill('miniqingyuan_block', 'roundEnd');
+                            target.addTempSkill('miniqingyuan_effect', 'roundEnd');
+                            target.markAuto('miniqingyuan_effect', [player]);
+                        },
+                    },
+                },
+            },
+            miniqingyuan_effect: {
+                charlotte: true,
+                onremove: true,
+                forced: true,
+                trigger: {
+                    source: 'damageSource',
+                    target: 'useCardToTargeted',
+                },
+                getIndex(event, player, name) {
+                    if (name !== 'damageSource' && (!event.player?.isIn() || !get.tag(event.card, 'damage'))) return [];
+                    return player.getStorage('miniqingyuan_effect').filter(owner => owner?.isIn());
+                },
+                async content(event, trigger, player) {
+                    const owner = event.indexedData;
+                    await get.info('miniqingyuan').resolve(owner, player, trigger.player);
+                },
+                group: 'miniqingyuan_effect_clear',
+                subSkill: {
+                    clear: {
+                        trigger: { global: 'dieAfter' },
+                        forced: true,
+                        forceDie: true,
+                        popup: false,
+                        filter(event, player) {
+                            return event.player === player || player.getStorage('miniqingyuan_effect').includes(event.player);
+                        },
+                        content(event, trigger, player) {
+                            if (trigger.player === player) {
+                                player.removeSkill('miniqingyuan_effect');
+                                return;
+                            }
+                            player.unmarkAuto('miniqingyuan_effect', [trigger.player]);
+                            if (!player.getStorage('miniqingyuan_effect').length) {
+                                player.removeSkill('miniqingyuan_effect');
+                            }
+                        },
+                    },
+                },
+            },
+            miniqingyuan_block: {
+                charlotte: true,
+            },
         },
         dynamicTranslate: {
             minizhongjian(player) {
@@ -47415,7 +47600,15 @@ const packs = function () {
             minifirehuojian: '火箭',
             minifirehuojian_info: '此牌仅焰祝融可使用，且不可被响应。出牌阶段，对一名角色使用。你对目标角色造成1点火属性伤害，令目标角色的伤害类手牌造成的伤害均改为火属性。',
             //情
-            Mqing_diaolv: '情貂蝉吕布',
+            Mqing_lvbu: '情吕布',
+            Mqing_diaochan: '情貂蝉',
+            Mqing_lvdiao: '情吕布貂蝉',
+            miniqingchan: '情缠',
+            miniqingchan_info: '锁定技。游戏开始时，你须选择以“情吕布”或“情貂蝉”形态登场。场上所有与你性别相同的角色均视为“情敌”。当你本局游戏首次进入濒死状态时，或一名“情敌”死亡时，你切换为“情吕布貂蝉”形态并将体力值和体力上限重置为4。双人形态下，你同时视为男性和女性。',
+            miniqingzhan: '情战',
+            miniqingzhan_info: '出牌阶段限一次。你选择一名其他角色，你与其轮流选择一项：对对方使用一张无距离和次数限制的【杀】，或失去1点体力。若目标角色为你的“情敌”，则重复此流程，直到一名角色进入濒死状态。',
+            miniqingyuan: '情援',
+            miniqingyuan_info: '锁定技。当你造成伤害或成为伤害牌的目标时，你摸一张牌；若对方为你的“情敌”，则随机弃置其一张手牌。每轮开始时，你可以将此效果转移给一名非“情敌”的其他角色直到本轮结束。',
 
             // ----------------------- 台词部分 ----------------------- //
             '#ext:活动武将/audio/skill/minidoumao1': '喵～呜～',
