@@ -34914,7 +34914,7 @@ const packs = function () {
                 subSkill: {
                     effect: {
                         audio: 'minifeifu',
-                        trigger: { player: ['useCardAfter', 'respindAfter'] },
+                        trigger: { player: ['useCardAfter', 'respondAfter'] },
                         filter(event, player) {
                             return event.skill == 'minifeifu' && event.cards.someInD();
                         },
