@@ -16037,6 +16037,11 @@ const packs = function () {
             minireqianxun: {
                 audio: 'reqianxun',
                 inherit: 'reqianxun',
+                filter(event, player) {
+                    if (!player.countCards('h')) return false;
+                    if (event.name === 'judge') return event.getParent().name === 'phaseJudge';
+                    return get.type(event.card) === 'trick' && event.targets?.length === 1;
+                },
                 async cost(event, trigger, player) {
                     const num = Math.min(player.countCards('h'), player.getHp());
                     event.result = await player.chooseCard(get.prompt('minireqianxun'), '将至多' + get.cnNumber(num) + '张手牌置于武将牌上', [1, num]).set('ai', card => 1 / (get.value(card) || 0.5)).forResult();
