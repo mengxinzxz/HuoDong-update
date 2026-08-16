@@ -22770,11 +22770,11 @@ const packs = function () {
                         result = await player.chooseControl(choices).set('ai', () => {
                             const player = get.player();
                             const eff1 = (() => {
-                                const targets = game.filterPlayer(target !== player && !player.inRange(target) && target.countDiscardableCards(player, 'ej'));
+                                const targets = game.filterPlayer(target => target !== player && !player.inRange(target) && target.countDiscardableCards(player, 'ej'));
                                 return Math.max(...targets.map(target => get.effect(target, { name: 'guohe_copy', position: 'ej' }, player, player)));
                             })();
                             const eff2 = (() => {
-                                const targets = game.filterPlayer(target !== player && player.inRange(target) && target.countGainableCards(player, 'h'));
+                                const targets = game.filterPlayer(target => target !== player && player.inRange(target) && target.countGainableCards(player, 'h'));
                                 return Math.max(...targets.map(target => get.effect(target, { name: 'shunshou_copy', position: 'h' }, player, player)));
                             })();
                             return eff2 >= eff1 ? 1 : 0
