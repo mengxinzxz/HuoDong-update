@@ -572,14 +572,16 @@ const packs = function () {
             //焰
             Mfire_zhurong: ['female', 'shu', 4, ['minifirehuosi', 'minifirerongyan'], ['name:null|null']],
             //情
-            Mqing_diaolv: ['double', 'qun', 4, [], ['name:null|null-吕|布']],
+            Mqing_lvdiao: ['double', 'qun', 4, ['miniqingchan', 'miniqingzhan', 'miniqingyuan'], ['name:null|null-吕|布']],
+            Mqing_diaochan: ['female', 'qun', 3, ['miniqingchan', 'miniqingyuan'], ['name:null|null', 'unseen']],
+            Mqing_lvbu: ['male', 'qun', 5, ['miniqingchan', 'miniqingzhan'], ['unseen']],
         },
         characterIntro: {
             Mbaby_change: '嫦娥，中国古代神话中的人物，又名恒我、恒娥、姮娥、常娥、素娥，羿之妻，因偷吃了不死药而飞升至月宫。嫦娥的故事最早出现在商朝卦书 《归藏》。而嫦娥奔月的完整故事最早记载于西汉《淮南子·览冥训》。东汉时期，嫦娥与羿的夫妻关系确立，而嫦娥在进入月宫后变成了捣药的蟾蜍。南北朝以后，嫦娥的形象回归为女儿身。汉画像中，嫦娥人头蛇身，头梳高髻，身着宽袖长襦，身后长尾上饰有倒钩状细短羽毛。南北朝以后，嫦娥的形象被描绘成绝世美女。南朝陈后主陈叔宝曾把宠妃张丽华比作嫦娥。唐朝诗人白居易曾用嫦娥夸赞邻家少女不可多得的容貌。',
             Mbaby_nvwa: '女娲，中国上古神话中的创世女神。又称娲皇、女阴，史记女娲氏，是华夏民族人文先始，是福佑社稷之正神。相传女娲造人，一日中七十化变，以黄泥仿照自己抟土造人，创造人类社会并建立婚姻制度；因世间天塌地陷，于是熔彩石以补苍天，斩鳌足以立四极，留下了女娲补天的神话传说。女娲不但是补天救世的英雄和抟土造人的女神，还是一个创造万物的自然之神，神通广大化生万物，每天至少能创造出七十样东西。她开世造物，因此被称为大地之母，是被民间广泛而又长久崇拜的创世神和始母神。',
             Mbaby_tunxingmenglix: '据《王子年拾遗记》记载：蜀先主甘后；生而体貌特异，年至十八，玉质柔肌，态媚容冶…河南献玉人高三尺…甘后与玉人洁白齐润，观者殆相乱惑。刘备非常喜爱这尊玉雕，“夕则用后而玩玉人”。白玉美人怀抱一只白玉狸猫，甘夫人常对玉人倾诉渴望为刘备诞下一子的心愿，然而久盼未果。偶有一日，在梦中化身成一只饥肠辘辘、失去理智的白玉狸猫，闯入到幻境当中，吞掉了幻境中的启明星。事后，梦醒的甘夫人发现已怀有身孕，甚是欣喜。而白玉美人怀抱的玉狸猫则留在了幻境中，化身为吞星梦狸守护着幻境里的星星。',
             Mbaby_jingwei: '精卫，中国古代神话中的一种鸟。上古神话传说里，女娃是炎帝最小的女儿，后溺水而亡，化作精卫鸟；另一说，女娃是上古的一个部落，由于气候变暖，海平面上升，女娃部落遭到灭顶之灾，后化作精卫。据《山海经》记载：精卫婀娜多姿、长发飘逸、背生双翼，花头颅、白嘴壳、红脚爪，样子有点儿像乌鸦。',
-            Mqing_diaolv: '吕布，飞将也，拔山盖世，威震天下；貂蝉，绝色也，闭月羞花，智倾倾城。昔汉室陵迟，董贼肆虐。蝉施连环之计，布发无双之威，遂诛逆贼，结为伉俪。布执方天画戟，血战八荒，唯欲庇一心人；蝉舞红袖飞雪，巧谋深算，甘共天下之敌。白门楼重围之下，英雄末路，红颜未迟。布笑拥佳人曰：“天下虽大，唯卿吾之归宿。”蝉含泪附焉：“生同衾，死同穴，夫复何求？”七夕星汉灿烂，战神倾国合璧。执手破乱世之阴霾，同心赴轮回之绝唱。',
+            Mqing_lvdiao: '吕布，飞将也，拔山盖世，威震天下；貂蝉，绝色也，闭月羞花，智倾倾城。昔汉室陵迟，董贼肆虐。蝉施连环之计，布发无双之威，遂诛逆贼，结为伉俪。布执方天画戟，血战八荒，唯欲庇一心人；蝉舞红袖飞雪，巧谋深算，甘共天下之敌。白门楼重围之下，英雄末路，红颜未迟。布笑拥佳人曰：“天下虽大，唯卿吾之归宿。”蝉含泪附焉：“生同衾，死同穴，夫复何求？”七夕星汉灿烂，战神倾国合璧。执手破乱世之阴霾，同心赴轮回之绝唱。',
         },
         characterSubstitute: {
             Mbaby_tunxingmenglix: [
@@ -44861,6 +44863,171 @@ const packs = function () {
                     },
                 },
             },
+            // 情吕布貂蝉
+            miniqingchan: {
+                audio: 'ext:活动武将/audio/skill:2',
+                trigger: {
+                    global: 'phaseBefore',
+                    player: 'enterGame',
+                },
+                filter(event, player) {
+                    return event.name !== 'phase' || game.phaseNumber === 0;
+                },
+                forced: true,
+                direct: true,
+                async content(event, trigger, player) {
+                    const result = await player.chooseButton(true).set('createDialog', ['情缠：请选择你的登场形态', [['Mqing_diaochan', 'Mqing_lvbu'], 'character']]).set('ai', button => {
+                        return button.link == 'Mqing_lvbu' ? 2 : 1;
+                    }).forResult();
+                    if (result?.bool) {
+                        player.logSkill(event.name);
+                        const num = result.links[0] == 'Mqing_diaochan' ? 3 : 5;
+                        player.reinit('Mqing_lvdiao', result.links[0], [num, num]);
+                    }
+                },
+                group: 'miniqingchan_change',
+                subSkill: {
+                    change: {
+                        audio: 'miniqingchan',
+                        trigger: {
+                            player: 'dying',
+                            global: 'die'
+                        },
+                        filter(event, player) {
+                            if (get.nameList(player).includes('Mqing_lvdiao')) return false;
+                            if (event.name == 'die') return player.sameSexAs(event.player);
+                            return game.getAllGlobalHistory('everything', evt => evt.name == 'dying' && evt.player == player).indexOf(event) == 0;
+                        },
+                        forced: true,
+                        async content(event, trigger, player) {
+                            player.reinit(get.character(player.name2, 3).includes('miniqingchan') ? player.name2 : player.name1, 'Mqing_lvdiao', [4, 4]);
+                        },
+                    }
+                }
+            },
+            miniqingzhan: {
+                audio: 'ext:活动武将/audio/skill:2',
+                enable: 'phaseUse',
+                usable: 1,
+                filter(event, player) {
+                    return game.hasPlayer(target => target != player);
+                },
+                filterTarget: lib.filter.notMe,
+                async content(event, trigger, player) {
+                    const { target } = event;
+                    player.addTempSkill(event.name + '_break');
+                    player.markAuto(event.name + '_break', [target]);
+                    event.stop = false;
+                    while (!event.stop && [player, target].some(current => current.isIn())) {
+                        for (const current of [player, target]) {
+                            if (!current.isIn()) continue;
+                            const sourcex = player === current ? target : player;
+                            const result = current.chooseToUse(function (card, player, event) {
+                                if (get.name(card) !== 'sha') return false;
+                                return lib.filter.filterCard.apply(this, arguments);
+                            }, '情战：对' + get.translation(sourcex) + '使用一张杀，或失去1点体力').set('filterTarget', function (card, player, target) {
+                                const source = get.event().sourcex;
+                                if (target !== source && !ui.selected.targets.includes(source)) return false;
+                                return lib.filter.targetEnabled.apply(this, arguments);
+                            }).set('targetRequired', true).set('complexSelect', true).set('complexTarget', true).set('sourcex', sourcex).set('addCount', false).forResult();
+                            if (!result?.bool) await current.loseHp();
+                        }
+                        if (!player.sameSexAs(target)) {
+                            event.stop = true;
+                            break;
+                        }
+                    }
+                    player.removeSkill(event.name + '_break');
+                },
+                ai: {
+                    order: 10,
+                    result: {
+                        platyer(player, target) {
+                            if (!get.nameList(player).includes('Mqing_lvdiao')) return 1;
+                            if (game.hasPlayer(current => {
+                                if (get.attitude(player, current) > 0) return false;
+                                if (!current.sameSexAs(player)) return current.mayHaveSha(player, 'use', null, 'count') == 0 || (player.mayHaveSha(player, 'use', null, 'count') > 0 || player.getHp() > 1)
+                                return current.mayHaveSha(player, 'use', null, 'count') - player.mayHaveSha(player, 'use', null, 'count') + player.getHp() - current.getHp() > 0;
+                            })) return 0.5;
+                            return 0;
+                        },
+                        target(player, target) {
+                            if (!get.nameList(player).includes('Mqing_lvdiao')) return -1;
+                            if (!target.hasCards('h')) return -1;
+                            if (player.sameSexAs(target)) return target.mayHaveSha(player, 'use', null, 'count') - player.mayHaveSha(player, 'use', null, 'count') + player.getHp() - target.getHp();
+                            return -0.1;
+                        }
+                    },
+                },
+                subSkill: {
+                    break: {
+                        charlotte: true,
+                        onremove: true,
+                        trigger: { global: 'dying' },
+                        forced: true,
+                        filter(event, player) {
+                            if (!event.getParent('miniqingzhan', true)) return false;
+                            return player.getStorage('miniqingzhan_break').includes(event.player) || player === event.player;
+                        },
+                        silent: true,
+                        firstDo: true,
+                        async content(event, trigger, player) {
+                            trigger.getParent('miniqingzhan').stop = true;
+                            player.removeSkill(event.name);
+                        },
+                    },
+                },
+            },
+            miniqingyuan: {
+                audio: 'ext:活动武将/audio/skill:2',
+                trigger: {
+                    source: 'damageBegin2',
+                    target: 'useCardToTarget',
+                },
+                filter(event, player) {
+                    if (event.name === 'damage') return true;
+                    return get.is.damageCard(event.card);
+                },
+                forced: true,
+                async content(event, trigger, player) {
+                    await player.draw();
+                    const target = trigger.name === 'damage' ? trigger.source : trigger.player;
+                    if (!target.isIn()) return;
+                    const targets = player.getStorage('miniqingyuan_effect') || game.filterPlayer(current => current.sameSexAs(player));
+                    if (targets.includes(target)) {
+                        player.line(target, 'green');
+                        await target.randomDiscard('h', player);
+                    }
+                },
+                group: 'miniqingyuan_change',
+                subSkill: {
+                    change: {
+                        audio: 'miniqingyuan',
+                        trigger: { global: 'roundStart' },
+                        filter(event, player) {
+                            return game.hasPlayer(current => player.differentSexFrom(current));
+                        },
+                        async cost(event, trigger, player) {
+                            event.result = await player.chooseTarget(get.prompt(event.skill), '你可以选择一名角色，当你对一名角色造成伤害时或成为一名角色使用的伤害牌的目标时，你摸一张牌，若该角色为你以此法选择的角色，则你随机弃置其一张牌', (card, player, target) => {
+                                return player.differentSexFrom(target);
+                            }).set('ai', target => {
+                                const player = get.player();
+                                return -get.attitude(player, target);
+                            }).forResult();
+                        },
+                        async content(event, trigger, player) {
+                            const target = event.targets[0];
+                            player.addTempSkill('miniqingyuan_effect', 'roundStart');
+                            player.markAuto('miniqingyuan_effect', [target]);
+                        },
+                    },
+                    effect: {
+                        charlotte: true,
+                        onremove: true,
+                        intro: { content: '本轮“情援”角色：$' }
+                    }
+                }
+            },
         },
         dynamicTranslate: {
             minizhongjian(player) {
@@ -47415,7 +47582,30 @@ const packs = function () {
             minifirehuojian: '火箭',
             minifirehuojian_info: '此牌仅焰祝融可使用，且不可被响应。出牌阶段，对一名角色使用。你对目标角色造成1点火属性伤害，令目标角色的伤害类手牌造成的伤害均改为火属性。',
             //情
-            Mqing_diaolv: '情貂蝉吕布',
+            Mqing_lvdiao: '情吕布貂蝉',
+            Mqing_diaochan: '情貂蝉',
+            Mqing_lvbu: '情吕布',
+            miniqingchan: '情缠',
+            miniqingchan_info: `锁定技。①游戏开始时，你可以从${get.poptip({
+                id: 'Mqing_diaochan',
+                name: '情貂蝉',
+                type: 'character',
+                dialog: 'characterDialog',
+            })}或${get.poptip({
+                id: 'Mqing_lvbu',
+                name: '情吕布',
+                type: 'character',
+                dialog: 'characterDialog',
+            })}中选择你的登场形态。②场上所有与你性别相同的角色均为你的“情敌”。③当你首次进入濒死状态时或“情敌”死亡时，你切换为${get.poptip({
+                id: 'Mqing_lvdiao',
+                name: '情吕布貂蝉',
+                type: 'character',
+                dialog: 'characterDialog',
+            })}。`,
+            miniqingzhan: '情战',
+            miniqingzhan_info: '出牌阶段限一次，你可以选择一名其他角色A，你与其轮流选择一项：1.对对方使用一张无距离和次数限制的【杀】；2.失去1点体力。若A为你的“情敌”，则重复此流程直到你与其中的一名角色进入濒死。',
+            miniqingyuan: '情援',
+            miniqingyuan_info: '锁定技。①当你对一名角色造成伤害时或成为一名角色使用的伤害牌的目标时，你摸一张牌，若该角色为你的“情敌”，则你随机弃置其一张手牌。②每轮开始时，你可以选择一名非“情敌”角色，直到本轮结束，将〖情援①〗的“若该角色为你的“情敌””改为“若该角色为你本轮因〖情援②〗选择的角色”。',
 
             // ----------------------- 台词部分 ----------------------- //
             '#ext:活动武将/audio/skill/minidoumao1': '喵～呜～',
