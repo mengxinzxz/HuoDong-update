@@ -2625,6 +2625,22 @@
             "size": 31048
         },
         {
+            "path": "audio/skill/miniqingchan_Mqing_diaochan1.mp3",
+            "size": 22406
+        },
+        {
+            "path": "audio/skill/miniqingchan_Mqing_diaochan2.mp3",
+            "size": 63139
+        },
+        {
+            "path": "audio/skill/miniqingchan_Mqing_lvbu1.mp3",
+            "size": 40992
+        },
+        {
+            "path": "audio/skill/miniqingchan_Mqing_lvbu2.mp3",
+            "size": 42006
+        },
+        {
             "path": "audio/skill/miniqingchan1.mp3",
             "size": 45479
         },
@@ -2637,12 +2653,28 @@
             "size": 139253
         },
         {
+            "path": "audio/skill/miniqingyuan_Mqing_diaochan1.mp3",
+            "size": 47981
+        },
+        {
+            "path": "audio/skill/miniqingyuan_Mqing_diaochan2.mp3",
+            "size": 53466
+        },
+        {
             "path": "audio/skill/miniqingyuan1.mp3",
             "size": 56231
         },
         {
             "path": "audio/skill/miniqingyuan2.mp3",
             "size": 56401
+        },
+        {
+            "path": "audio/skill/miniqingzhan_Mqing_lvbu1.mp3",
+            "size": 44103
+        },
+        {
+            "path": "audio/skill/miniqingzhan_Mqing_lvbu2.mp3",
+            "size": 52860
         },
         {
             "path": "audio/skill/miniqingzhan1.mp3",
@@ -9210,7 +9242,7 @@
         },
         {
             "path": "js/precontent/MiNikill.js",
-            "size": 2886087
+            "size": 2887837
         },
         {
             "path": "js/precontent/MX_feihongyinxue.js",

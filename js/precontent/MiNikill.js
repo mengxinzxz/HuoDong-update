@@ -46,7 +46,7 @@ const packs = function () {
                 MiNi_fightKill: ['huangzhong', 'zhangliao', 'luxun', 'dianwei', 'machao', 'jiangwei', 'lvmeng'].map(i => `Mfight_${i}`),
                 MiNi_yinKill: ['yuji', 'xushu'].map(i => `Myin_${i}`),
                 MiNi_fireKill: ['zhurong'].map(i => `Mfire_${i}`),
-                MiNi_qingKill: ['diaolv'].map(i => `Mqing_${i}`),
+                MiNi_qingKill: ['lvdiao', 'lvbu', 'diaochan'].map(i => `Mqing_${i}`),
                 MiNi_shengzhiyifa: ['jingwei', 'sunwukong', 'dalanmao', 'libai', 'change', 'nvwa', 'tunxingmenglix', 'xiaoshan'].map(i => `Mbaby_${i}`),
             },
         },
@@ -573,8 +573,8 @@ const packs = function () {
             Mfire_zhurong: ['female', 'shu', 4, ['minifirehuosi', 'minifirerongyan'], ['name:null|null']],
             //情
             Mqing_lvdiao: ['double', 'qun', 4, ['miniqingchan', 'miniqingzhan', 'miniqingyuan'], ['name:null|null-吕|布']],
-            Mqing_diaochan: ['female', 'qun', 3, ['miniqingchan', 'miniqingyuan'], ['name:null|null', 'unseen'], ['die:Mqing_lvdiao']],
-            Mqing_lvbu: ['male', 'qun', 5, ['miniqingchan', 'miniqingzhan'], ['unseen'], ['die:Mqing_lvdiao']],
+            Mqing_diaochan: ['female', 'qun', 3, ['miniqingchan', 'miniqingyuan'], ['name:null|null', 'unseen', 'die:Mqing_lvdiao']],
+            Mqing_lvbu: ['male', 'qun', 5, ['miniqingchan', 'miniqingzhan'], ['unseen', 'die:Mqing_lvdiao']],
         },
         characterIntro: {
             Mbaby_change: '嫦娥，中国古代神话中的人物，又名恒我、恒娥、姮娥、常娥、素娥，羿之妻，因偷吃了不死药而飞升至月宫。嫦娥的故事最早出现在商朝卦书 《归藏》。而嫦娥奔月的完整故事最早记载于西汉《淮南子·览冥训》。东汉时期，嫦娥与羿的夫妻关系确立，而嫦娥在进入月宫后变成了捣药的蟾蜍。南北朝以后，嫦娥的形象回归为女儿身。汉画像中，嫦娥人头蛇身，头梳高髻，身着宽袖长襦，身后长尾上饰有倒钩状细短羽毛。南北朝以后，嫦娥的形象被描绘成绝世美女。南朝陈后主陈叔宝曾把宠妃张丽华比作嫦娥。唐朝诗人白居易曾用嫦娥夸赞邻家少女不可多得的容貌。',
@@ -44866,6 +44866,10 @@ const packs = function () {
             // 情吕布貂蝉
             miniqingchan: {
                 audio: 'ext:活动武将/audio/skill:1',
+                audioname2: {
+                    Mqing_lvbu: 'miniqingchan_Mqing_lvbu',
+                    Mqing_diaochan: 'miniqingchan_Mqing_diaochan',
+                },
                 trigger: {
                     global: 'phaseBefore',
                     player: 'enterGame',
@@ -44887,8 +44891,14 @@ const packs = function () {
                 },
                 group: 'miniqingchan_change',
                 subSkill: {
+                    Mqing_lvbu: { audio: 'ext:活动武将/audio/skill:2' },
+                    Mqing_diaochan: { audio: 'ext:活动武将/audio/skill:2' },
                     change: {
                         audio: 'miniqingchan',
+                        audioname2: {
+                            Mqing_lvbu: 'miniqingchan_Mqing_lvbu',
+                            Mqing_diaochan: 'miniqingchan_Mqing_diaochan',
+                        },
                         trigger: {
                             player: 'dying',
                             global: 'die'
@@ -44902,11 +44912,12 @@ const packs = function () {
                         async content(event, trigger, player) {
                             player.reinit(get.character(player.name2, 3).includes('miniqingchan') ? player.name2 : player.name1, 'Mqing_lvdiao', [4, 4]);
                         },
-                    }
-                }
+                    },
+                },
             },
             miniqingzhan: {
                 audio: 'ext:活动武将/audio/skill:2',
+                audioname2: { Mqing_lvbu: 'miniqingzhan_Mqing_lvbu' },
                 enable: 'phaseUse',
                 usable: 1,
                 filter(event, player) {
@@ -44960,6 +44971,7 @@ const packs = function () {
                     },
                 },
                 subSkill: {
+                    Mqing_lvbu: { audio: 'ext:活动武将/audio/skill:2' },
                     break: {
                         charlotte: true,
                         onremove: true,
@@ -44980,6 +44992,7 @@ const packs = function () {
             },
             miniqingyuan: {
                 audio: 'ext:活动武将/audio/skill:2',
+                audioname2: { Mqing_diaochan: 'miniqingyuan_Mqing_diaochan' },
                 trigger: {
                     source: 'damageBegin2',
                     target: 'useCardToTarget',
@@ -45001,6 +45014,7 @@ const packs = function () {
                 },
                 group: 'miniqingyuan_change',
                 subSkill: {
+                    Mqing_diaochan: { audio: 'ext:活动武将/audio/skill:2' },
                     change: {
                         audio: 'miniqingyuan',
                         trigger: { global: 'roundStart' },
@@ -45025,8 +45039,8 @@ const packs = function () {
                         charlotte: true,
                         onremove: true,
                         intro: { content: '本轮“情援”角色：$' }
-                    }
-                }
+                    },
+                },
             },
         },
         dynamicTranslate: {
@@ -48235,10 +48249,18 @@ const packs = function () {
             '#ext:活动武将/audio/skill/minimiaozhuiyi2': '昔日种种，至今皆历历在目。',
             '#ext:活动武将/audio/die/Mmiao_bulianshi:die': '还望陛下珍重……',
             '#ext:活动武将/audio/skill/miniqingchan1': '并肩而来，携手而去。/无论何地，你我同在。',
-            '#ext:活动武将/audio/skill/miniqingzhan1': '这一载，为你而挥。/这一舞，为你而动。',
+            '#ext:活动武将/audio/skill/miniqingchan_Mqing_diaochan1': '别怕！我来了！',
+            '#ext:活动武将/audio/skill/miniqingchan_Mqing_diaochan2': '有我在，这世间无人能伤你分毫！',
+            '#ext:活动武将/audio/skill/miniqingchan_Mqing_lvbu1': '奉先，让我们一起面对！',
+            '#ext:活动武将/audio/skill/miniqingchan_Mqing_lvbu2': '你的背后，交给我来守护。',
+            '#ext:活动武将/audio/skill/miniqingzhan1': '这一戟，为你而挥。/这一舞，为你而动。',
             '#ext:活动武将/audio/skill/miniqingzhan2': '战鼓为聘，烽火为媒！/罗袖寄情，霓裳为誓！',
+            '#ext:活动武将/audio/skill/miniqingzhan_Mqing_lvbu1': '这一戟，为你而挥。',
+            '#ext:活动武将/audio/skill/miniqingzhan_Mqing_lvbu2': '战鼓为聘，烽火为媒！',
             '#ext:活动武将/audio/skill/miniqingyuan1': '此心许卿，生死不渝。/为君温酒，待君凯旋。',
             '#ext:活动武将/audio/skill/miniqingyuan2': '浴血而归，护卿常宁。/盛世繁华，与君同享。',
+            '#ext:活动武将/audio/skill/miniqingyuan_Mqing_diaochan1': '为君温酒，待君凯旋。',
+            '#ext:活动武将/audio/skill/miniqingyuan_Mqing_diaochan2': '盛世繁华，与君同享。',
             '#ext:活动武将/audio/die/Mqing_lvdiao:die': '烽烟再起，举剑不知为谁……/罗裙今犹在，座前已无君……',
         },
     };
