@@ -8,7 +8,7 @@ const packs = function () {
         characterSort: {
             MiNikill: {
                 MiNi_wei: ['zhanghu', 'yj_majun', 'caoyi', 'lvqian', 'hanlong', 'xiahoumao', 'guohuai', 'caochong', 'caochun', 'caoying', 'dc_jiachong', 'zhugeruoxue', 'dukui', 'xinpi', 'caimaozhangyun', 'bianyue', 'caoanmin', 'zhaoang', 'zhanggong', 'simalang', 'hanhaoshihuan', 'chentai', 'zhenghun', 'guanlu', 'guanqiujian', 'dc_liuye', 'chenlin', 'wangshuang', 'yanrou', 'dc_yanghu', 'ruanyu', 'chengyu', 'jianggan', 'yuejin', 'bianfuren', 'zhugedan', 'caohong', 'yinfuren', 'kuailiangkuaiyue', 'chenqun', 'xiahoulingnv', 'wenyang', 'caozhang', 'dufuren', 'yangxiu', 'zhangchangpu', 'zhonghui', 'caoxiu', 'xunyou', 'lidian', 'zhongyao', 'caozhen', 'guohuanghou', 'xinxianying', 'xiahouyuan', 'xizhicai', 'caorui', 'xunyu', 'dengai', 'caozhi', 'caopi', 'caoang', 'zhenji', 'old_caoren', 'zhangchunhua', 'xiahoudun', 'dianwei', 'zhanghe', 'yujin', 'xuhuang'].map(i => `Mbaby_${i}`),
-                MiNi_shu: ['wenyuan', 'xizheng', 'malingli', 'dc_wuban', 'pangtong', 'mifangfushiren', 'guanyue', 'xianglang', 'huanghao', 'ganfurenmifuren', 'zhaotongzhaoguang', 'wulan', 'leitong', 'zongyu', 're_mazhong', 're_dengzhi', 'dc_hujinding', 'jiangfei', 'zhangyi', 'guanzhang', 'wolongfengchu', 'wangtao', 'wangyue', 'xf_yiji', 'mizhu', 'mifuren', 'liuyong', 'ganfuren', 'lvkai', 'zhoucang', 'yangwan', 'liuchen', 'liyan', 'chendao', 'yanyan', 'xiahouba', 'huaman', 'sp_zhugeliang', 'zhugeguo', 'jianyong', 'wangping', 'mayunlu', 'guansuo', 'xiahoushi', 'shamoke', 'wuxian', 'zhugezhan', 'qinmi', 'guanyinping', 'guanyu', 'zhugeliang', 'liubei', 'machao', 'zhurong', 'zhangfei', 'zhaoyun', 'huangzhong', 'weiyan', 'liaohua', 'menghuo', 'ol_jiangwei', 'liushan', 'xin_fazheng', 'madai', 'guanping', 'liufeng', 'zhangxingcai', 'dongyun', 'xushu', 'xin_masu'].map(i => `Mbaby_${i}`),
+                MiNi_shu: ['wenyuan', 'xizheng', 'malingli', 'dc_wuban', 'pangtong', 'mifangfushiren', 'guanyue', 'xianglang', 'huanghao', 'zhaotongzhaoguang', 'wulan', 'leitong', 'zongyu', 're_mazhong', 're_dengzhi', 'dc_hujinding', 'jiangfei', 'zhangyi', 'guanzhang', 'wolongfengchu', 'wangtao', 'wangyue', 'xf_yiji', 'mizhu', 'mifuren', 'liuyong', 'ganfuren', 'lvkai', 'zhoucang', 'yangwan', 'liuchen', 'liyan', 'chendao', 'yanyan', 'xiahouba', 'huaman', 'sp_zhugeliang', 'zhugeguo', 'jianyong', 'wangping', 'mayunlu', 'guansuo', 'xiahoushi', 'shamoke', 'wuxian', 'zhugezhan', 'qinmi', 'guanyinping', 'guanyu', 'zhugeliang', 'liubei', 'machao', 'zhurong', 'zhangfei', 'zhaoyun', 'huangzhong', 'weiyan', 'liaohua', 'menghuo', 'ol_jiangwei', 'liushan', 'xin_fazheng', 'madai', 'guanping', 'liufeng', 'zhangxingcai', 'dongyun', 'xushu', 'xin_masu'].map(i => `Mbaby_${i}`),
                 MiNi_wu: ['sunhuan', 'gexuan', 'lvfan', 'xielingyu', 'zhupeilan', 'xugong', 'chendong', 'kanze', 're_panzhangmazhong', 'weiwenzhugezhi', 'zhangwen', 'dc_sunhanhua', 'heqi', 'lvdai', 'jiangqing', 're_guyong', 'quancong', 'yufan', 'dc_sunru', 'sunxiu', 'zhangfen', 'xuezong', 'panjun', 'luji', 'zhoufang', 'zhangxuan', 'yanjun', 'zhuhuan', 'luyusheng', 're_jsp_pangtong', 'sunhao', 'lukang', 'buzhi', 'xushi', 'zhugeke', 'zhoufei', 'zhangzhang', 'sunliang', 'sunjian', 'zhuzhi', 'bulianshi', 'chengpu', 'daqiao', 'ganning', 'huanggai', 'lusu', 'luxun', 'lvmeng', 'sunce', 'sunluban', 'sunluyu', 'sunquan', 'sunshangxiang', 'taishici', 'wuguotai', 'xiaoqiao', 'xusheng', 'old_zhoutai', 'zhouyu', 'zhugejin', 'zumao'].map(i => `Mbaby_${i}`),
                 MiNi_qun: ['dc_sp_zhurong', 'tianfeng', 'xunchen', 'dongguiren', 'zhangren', 'kebineng', 'mangyachang', 're_hucheer', 'sp_duyu', 'ol_lisu', 'zhangchu', 'leibo', 'wangcan', 'diaochan', 'xurong', 're_taoqian', 'hejin', 'jiling', 'zhangrang', 'duanwei', 're_chendeng', 'caiyong', 'mengjie', 'dc_gaolan', 'yl_luzhi', 'tadun', 're_hansui', 'dongxie', 'fuwan', 'wutugu', 'huangfusong', 'fanchou', 'guosi', 'yanbaihu', 'dc_huangzu', 'licaiwei', 'ol_dingyuan', 'liubian', 're_pangdegong', 'zhangning', 'zhanglu', 'wangyun', 'zoushi', 'dc_huangchengyan', 'simahui', 'tw_mateng', 'laiyinger', 'sp_kongrong', 'zhujun', 'gongsunyuan', 'guotufengji', 'yanfuren', 'tangji', 'caojie', 'liangxing', 'caoxing', 'wangrong', 'hetaihou', 'zhangji', 'dongbai', 'beimihu', 'chunyuqiong', 'zhangqiying', 'fuhuanghou', 'liuxie', 'quyi', 'lijue', 'panfeng', 'liuzhang', 'jiaxu', 'zhangbao', 'zhangliang', 'gaoshun', 'caifuren', 'xuyou', 'pangde', 'yj_jushou', 'liru', 'dongzhuo', 'sp_zhangjiao', 'huatuo', 'lvbu', 'huaxiong', 'yuji', 'liubiao', 'yuanshao', 'yuanshu', 'chengong', 'zuoci'].map(i => `Mbaby_${i}`),
                 MiNi_shen: [
@@ -16,7 +16,7 @@ const packs = function () {
                     ...['1_daxiaoqiao', '2_daxiaoqiao'].map(i => `old_${i}`),
                     ...[],
                 ].map(i => `Mbaby_${i}`),
-                MiNi_change: ['ol_sb_jiangwei', 'sb_sunquan', 'guanning', 're_nanhualaoxian', 're_sunyi', 'zhaoxiang', 'xushao', 'baosanniang', 'quanhuijie'].map(i => `Mbaby_${i}`),
+                MiNi_change: ['ganfurenmifuren', 'ol_sb_jiangwei', 'sb_sunquan', 'guanning', 're_nanhualaoxian', 're_sunyi', 'zhaoxiang', 'xushao', 'baosanniang', 'quanhuijie'].map(i => `Mbaby_${i}`),
                 MiNi_refresh: [
                     ...['caochong', 'liaohua', 'sundeng', 'zhangchunhua', 'gongsunyuan', 'caorui', 'chengong', 'fazheng', 'xusheng', 'taishici', 'dianwei', 'huangyueying', 'gongsunzan', 'tadun', 'menghuo', 'jiaxu', 'luxun', 'masu', 'zhangjiao', 'zhouyu', 'sunce', 'caifuren', 'liubiao', 'weiyan', 'guohuai', 'lvbu', 'huatuo', 'pangde', 'zhugeliang', 'guojia', 'simayi', 'lvmeng', 'sunshangxiang', 'zhenji', 'diaochan', 'daqiao', 'ganning', 'huanggai', 'xiahoudun', 'xuzhu', 'zhangliao', 'sunquan', 'caocao', 'liubei', 'guanyu', 'zhangfei', 'zhaoyun', 'machao', 'huangzhong'].map(i => `re_${i}`),
                     ...['liru', 'wangyi', 'xunyu', 'liushan', 'caiwenji', 'wuguotai', 'yanwen', 'dongzhuo', 'sunjian', 'zhurong', 'lusu', 'xiahouyuan', 'pangtong', 'xiaoqiao'].map(i => `ol_${i}`),
@@ -208,7 +208,7 @@ const packs = function () {
             Mbaby_jianyong: ['male', 'shu', 3, ['miniqiaoshui', 'jyzongshi']],
             Mbaby_zhugeguo: ['female', 'shu', 3, ['miniqirang', 'miniyuhua'], ['name:诸葛|果', 'clan:琅琊诸葛氏']],
             Mbaby_sp_zhugeliang: ['male', 'shu', 3, ['minibazhen', 'minihuoji', 'olkanpo'], ['name:诸葛|亮', 'clan:琅琊诸葛氏']],
-            Mbaby_baosanniang: ['female', 'shu', 3, ['decadewuniang', 'minixushen']],
+            Mbaby_baosanniang: ['female', 'shu', 3, ['decadewuniang', 'minixushen'], ['extraCharacter:Mbaby_guansuo']],
             Mbaby_huaman: ['female', 'shu', 4, ['manyi', 'mansi', 'minisouying', 'minizhanyuan']],
             Mbaby_zhaoxiang: ['female', 'shu', 4, ['refanghun', 'minifuhan']],
             Mbaby_xiahouba: ['male', 'shu', 4, ['minibaobian'], ['name:夏侯|霸']],
@@ -249,7 +249,7 @@ const packs = function () {
             Mbaby_leitong: ['male', 'shu', 4, ['minikuiji']],
             Mbaby_wulan: ['male', 'shu', 4, ['minicuorui']],
             Mbaby_zhaotongzhaoguang: ['male', 'shu', 4, ['yizan_use', 'miniqingren', 'dclongyuan'], ['name:赵|统-赵|广']],
-            Mbaby_ganfurenmifuren: ['female', 'shu', 3, ['dcchanjuan', 'minixunbie'], ['name:甘|null-糜|null']],
+            Mbaby_ganfurenmifuren: ['female', 'shu', 3, ['dcchanjuan', 'minixunbie'], ['name:甘|null-糜|null', 'extraCharacter:Mbaby_ganfuren:Mbaby_mifuren']],
             Mbaby_huanghao: ['male', 'shu', 3, ['miniqinqing', 'huisheng', 'minicunwei']],
             Mbaby_xianglang: ['male', 'shu', 3, ['dckanji', 'miniqianzheng']],
             Mbaby_guanyue: ['male', 'shu', 4, ['dcshouzhi', 'minifenhui']],
@@ -313,7 +313,7 @@ const packs = function () {
             Mbaby_luyusheng: ['female', 'wu', 3, ['minizhente', 'minizhiwei'], ['clan:吴郡陆氏']],
             Mbaby_zhuhuan: ['male', 'wu', 4, ['minifenli', 'minipingkou']],
             Mbaby_yanjun: ['male', 'wu', 3, ['miniguanchao', 'minixunxian']],
-            Mbaby_re_sunyi: ['male', 'wu', 5, ['syjiqiao', 'minisyxiongyi']],
+            Mbaby_re_sunyi: ['male', 'wu', 5, ['syjiqiao', 'minisyxiongyi'], ['extraCharacter:Mbaby_xushi']],
             Mbaby_zhangxuan: ['female', 'wu', 4, ['tongli', 'minishezang']],
             Mbaby_zhoufang: ['male', 'wu', 3, ['xinfu_duanfa', 'miniyoudi']],
             Mbaby_luji: ['male', 'wu', 3, ['nzry_huaiju', 'nzry_yili', 'minizhenglun'], ['clan:吴郡陆氏']],
@@ -572,7 +572,7 @@ const packs = function () {
             //焰
             Mfire_zhurong: ['female', 'shu', 4, ['minifirehuosi', 'minifirerongyan'], ['name:null|null']],
             //情
-            Mqing_lvdiao: ['double', 'qun', 4, ['miniqingchan', 'miniqingzhan', 'miniqingyuan'], ['name:null|null-吕|布']],
+            Mqing_lvdiao: ['double', 'qun', 4, ['miniqingchan', 'miniqingzhan', 'miniqingyuan'], ['name:null|null-吕|布', 'extraCharacter:Mqing_lvbu:Mqing_diaochan']],
             Mqing_diaochan: ['female', 'qun', 3, ['miniqingchan', 'miniqingyuan'], ['name:null|null', 'unseen', 'die:Mqing_lvdiao']],
             Mqing_lvbu: ['male', 'qun', 5, ['miniqingchan', 'miniqingzhan'], ['unseen', 'die:Mqing_lvdiao']],
         },
@@ -46067,7 +46067,7 @@ const packs = function () {
             miniqingren: '青刃',
             miniqingren_info: '一名角色的结束阶段，你可以摸X张牌（X为你本回合使用或打出的非虚拟基本牌数）。',
             minixunbie: '殉别',
-            minixunbie_info: '限定技。当你进入濒死状态时，你可以将此武将牌替换为“甘夫人”或“糜夫人”（不能选择已在场上的武将）。然后回复至1点体力并防止所有伤害直到本回合结束。',
+            minixunbie_info: '限定技。当你进入濒死状态时，你可以将此武将牌替换为“欢杀甘夫人”或“欢杀糜夫人”（不能选择已在场上的武将）。然后回复至1点体力并防止所有伤害直到本回合结束。',
             miniqinqing: '寝情',
             miniqinqing_info: '结束阶段，你可以弃置任意名攻击范围内包含一号位的其他角色各一张牌，然后你摸等量张牌。',
             minicunwei: '存畏',
@@ -48736,15 +48736,113 @@ const packs = function () {
             }
             return node;
         };
-        // 捂嘴千幻弹窗
+        //捂嘴千幻弹窗
         game.saveConfig('qhly_mentionConflitCC', true);
+        let charactercardHistory = [];
+        let isCharactercardNavigating = false;
         const ori7 = ui.click.charactercard;
         ui.click.charactercard = function (name) {
+            if (!isCharactercardNavigating) charactercardHistory.length = 0;
             ori7.apply(this, arguments);
-            const hpTextDiv = document.querySelector('.menubg.charactercard')?.querySelector('.text');
-            if (hpTextDiv && typeof lib.character[name]?.hp2 === 'number') {
-                const { hp, hp2, maxHp } = lib.character[name];
+            const layer = document.querySelector('.popup-container:last-child');
+            const charactercard = layer?.querySelector('.menubg.charactercard');
+            if (get.character(name).isNull || !layer || !charactercard) return;
+            const hpTextDiv = charactercard.querySelector('.text');
+            if (hpTextDiv && typeof get.character(name).hp2 === 'number') {
+                const { hp, hp2, maxHp } = get.character(name);
                 hpTextDiv.innerHTML = `×${hp}&${hp2}${hp === maxHp ? '' : `/${maxHp}`}`;
+            }
+            let extraCharacters = [];
+            if (Array.isArray(get.character(name).extraCharacter)) extraCharacters.addArray(get.character(name).extraCharacter);
+            let extraCharacter = get.character(name).trashBin?.find(i => i.startsWith('extraCharacter'));
+            if (extraCharacter) extraCharacters.addArray(extraCharacter.split(':').slice(1));
+            if (!extraCharacters.length && !charactercardHistory.length) return;
+            const sidePanel = ui.create.div('.charactercard-side-panel', charactercard);
+            sidePanel.style.position = 'absolute';
+            sidePanel.style.left = '-88px';
+            sidePanel.style.top = '0';
+            sidePanel.style.width = '80px';
+            sidePanel.style.display = 'flex';
+            sidePanel.style.flexDirection = 'column';
+            sidePanel.style.alignItems = 'center';
+            sidePanel.style.gap = '8px';
+            sidePanel.style.boxSizing = 'border-box';
+            sidePanel.style.width = '80px';
+            sidePanel.style.display = 'flex';
+            sidePanel.style.flexDirection = 'column';
+            sidePanel.style.alignItems = 'center';
+            sidePanel.style.gap = '8px';
+            sidePanel.style.boxSizing = 'border-box';
+            if (charactercardHistory.length) {
+                const backButton = ui.create.div('.charactercard-side-back', sidePanel, '返回', function () {
+                    const previousName = charactercardHistory.pop();
+                    layer.delete();
+                    isCharactercardNavigating = true;
+                    try {
+                        ui.click.charactercard(previousName);
+                    } finally {
+                        isCharactercardNavigating = false;
+                    }
+                });
+                backButton.style.width = '80px';
+                backButton.style.height = '36px';
+                backButton.style.flexShrink = '0';
+                backButton.style.display = 'flex';
+                backButton.style.alignItems = 'center';
+                backButton.style.justifyContent = 'center';
+                backButton.style.boxSizing = 'border-box';
+                backButton.style.borderRadius = '4px';
+                backButton.style.backgroundColor = 'rgba(0,0,0,.65)';
+                backButton.style.color = '#fff';
+                backButton.style.fontSize = '15px';
+                backButton.style.cursor = 'pointer';
+            }
+            if (!extraCharacters.length) return;
+            for (const extraName of extraCharacters) {
+                if (!lib.character[extraName]) continue;
+                const button = ui.create.div('.charactercard-side-character', sidePanel, function () {
+                    charactercardHistory.push(name);
+                    layer.delete();
+                    isCharactercardNavigating = true;
+                    try {
+                        ui.click.charactercard(extraName);
+                    } finally {
+                        isCharactercardNavigating = false;
+                    }
+                });
+                button.style.width = '80px';
+                button.style.height = '80px';
+                button.style.flexShrink = '0';
+                button.style.position = 'relative';
+                button.style.boxSizing = 'border-box';
+                button.style.overflow = 'hidden';
+                button.style.borderRadius = '4px';
+                button.style.cursor = 'pointer';
+                button.style.backgroundColor = 'rgba(0,0,0,.45)';
+                const avatar = ui.create.div('.avatar', button);
+                avatar.style.position = 'absolute';
+                avatar.style.left = '0';
+                avatar.style.top = '0';
+                avatar.style.width = '100%';
+                avatar.style.height = '100%';
+                avatar.style.backgroundSize = 'cover';
+                avatar.style.backgroundPosition = 'center';
+                avatar.setBackground(extraName, 'character');
+                const nameDiv = ui.create.div('.charactercard-side-name', button, get.translation(extraName));
+                nameDiv.style.position = 'absolute';
+                nameDiv.style.left = '0';
+                nameDiv.style.right = '0';
+                nameDiv.style.bottom = '0';
+                nameDiv.style.padding = '3px 2px';
+                nameDiv.style.boxSizing = 'border-box';
+                nameDiv.style.textAlign = 'center';
+                nameDiv.style.backgroundColor = 'rgba(0,0,0,.65)';
+                nameDiv.style.color = '#fff';
+                nameDiv.style.fontSize = '14px';
+                nameDiv.style.lineHeight = '18px';
+                nameDiv.style.whiteSpace = 'nowrap';
+                nameDiv.style.overflow = 'hidden';
+                nameDiv.style.textOverflow = 'ellipsis';
             }
         };
         const ori8 = game.gameDraw;
