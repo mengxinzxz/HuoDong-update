@@ -28,7 +28,7 @@ const packs = function () {
             mp_dengai: ['male', 'wei', 4, ['mptuntian', 'mpzaoxian']],
             mp_wangji: ['male', 'wei', 3, ['mpqizhi', 'mpjinqu']],
             mp_kuailiangkuaiyue: ['male', 'wei', 3, ['nzry_jianxiang', 'mpshenshi'], ['name:蒯|良-蒯|越']],
-            mp_guanqiujian: ['male', 'wei', 4, ['mpzhengrong', 'mphongju']],
+            mp_guanqiujian: ['male', 'wei', 4, ['mpzhengrong', 'mphongju'], ['name:毌丘|俭']],
             mp_zhugedan: ['male', 'wei', 4, ['mpgongao', 'mpjuyi']],
             //蜀
             mp_liubei: ['male', 'shu', 4, ['mprende']],
@@ -3038,7 +3038,7 @@ const packs = function () {
                     }
                     else target = targets[0];
                     const next = player.choosePlayerCard(target, 'he');
-                    next.ai = function () {
+                    next.ai = function (button) {
                         const { player, target } = get.event();
                         return get.effect(target, { name: 'guohe_copy2' }, player, player) * get.buttonValue(button.link);
                     };

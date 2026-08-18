@@ -188,7 +188,7 @@ const packs = function () {
             wechat_yj_jushou: ['male', 'qun', 3, ['wechatxinjianying', 'wechatshibei']],
             wechat_caochun: ['male', 'wei', 4, ['wechatshanjia']],
             wechat_wangyuanji: ['female', 'wei', 3, ['wechatqianchong', 'wechatshangjian'], ['border:jin']],
-            wechat_shamoke: ['male', 'shu', 4, ['gzjili', 'wechatyingong']],
+            wechat_shamoke: ['male', 'shu', 4, ['gzjili', 'wechatyingong'], ['name:null|null']],
             wechat_lingtong: ['male', 'wu', 4, ['decadexuanfeng']],
             wechat_shen_luxun: ['male', 'shen', 4, ['nzry_junlve', 'wechatcuike', 'nzry_dinghuo'], ['wu', 'clan:吴郡陆氏']],
             wechat_shen_liubei: ['male', 'shen', 6, ['minilongnu', 'wechatjieying'], ['shu']],
@@ -19413,7 +19413,7 @@ const packs = function () {
                 },
                 prompt(event, player) {
                     const cards = player.getEquips(1);
-                    return `你可以获得你装备区里的${get.translation(cards)}。若如此做，本回合当你使用一张武器牌牌A后，你可以将其中一张攻击范围不小于牌A的武器牌当无次数限制的【杀】使用。`;
+                    return `你可以获得你装备区里的${get.translation(cards)}。若如此做，本回合当你使用一张武器牌牌A后，你可以将其中一张攻击范围小于牌A的武器牌当无次数限制的【杀】使用。`;
                 },
                 manualConfirm: true,
                 async content(event, trigger, player) {
@@ -19428,6 +19428,7 @@ const packs = function () {
                     order(item, player) {
                         if (player.getEquips(1).some(card => {
                             let num = 1;
+                            const info = get.info(card, false);
                             if (info?.distance && typeof info.distance.attackFrom == 'number') num -= info.distance.attackFrom;
                             return num >= 2;
                         })) return 10;
@@ -19466,7 +19467,7 @@ const packs = function () {
                                 const infox = get.info(card, false);
                                 let numx = 1;
                                 if (infox?.distance && typeof infox.distance.attackFrom == 'number') numx -= infox.distance.attackFrom;
-                                return numx <= num;
+                                return numx < num;
                             }, 'h');
                         },
                         direct: true,
@@ -19482,11 +19483,11 @@ const packs = function () {
                                     const infox = get.info(card, false);
                                     let numx = 1;
                                     if (infox?.distance && typeof infox.distance.attackFrom == 'number') numx -= infox.distance.attackFrom;
-                                    return numx <= lib.skill.wechatyingong_backup.attackFrom;
+                                    return numx < lib.skill.wechatyingong_backup.attackFrom;
                                 };
                             }, num);
                             const next = player.chooseToUse();
-                            next.set('openskilldialog', `引弓：将一张攻击范围不大于${num}的牌当无次数限制的【杀】使用`);
+                            next.set('openskilldialog', `引弓：将一张攻击范围小于${num}的牌当无次数限制的【杀】使用`);
                             next.set('norestore', true);
                             next.set('_backupevent', 'wechatyingong_backup');
                             next.set('custom', {
@@ -19767,7 +19768,7 @@ const packs = function () {
                         ]
                     ], true).set('filterButton', button => {
                         const player = get.player();
-                        return !player.hasSkill('wechatshizhu_' + button.link)
+                        return !player.hasSkill('wechatshizhu_' + button.link);
                     }).set('ai', button => {
                         const player = get.player(), link = button.link;
                         if (link == 'luchou') return 2;
@@ -19828,7 +19829,7 @@ const packs = function () {
                                 return target != player && !evt.targets.includes(target) && lib.filter.targetEnabled2(evt.card, player, target) && lib.filter.targetInRange(evt.card, player, target);
                             }).set('ai', target => {
                                 const player = get.player();
-                                return get.effect(target, get.event().getTrigger().card.card, player, player);
+                                return get.effect(target, get.event().getTrigger().card, player, player);
                             }).forResult();
                         },
                         async content(event, trigger, player) {
@@ -24514,7 +24515,7 @@ const packs = function () {
             wechatshangjian_info: '锁定技。一名角色的结束阶段开始时，若你于此回合内失去的牌数不大于X，则你摸等量的牌（X为你的体力值）。',
             wechat_shamoke: '小程序沙摩柯',
             wechatyingong: '引弓',
-            wechatyingong_info: `出牌阶段限一次。你可以获得你装备区里的所有武器牌。若如此做，本回合当你使用一张武器牌A后，你可以将其中一张攻击范围不小于A的武器牌当无次数限制的【杀】使用。`,
+            wechatyingong_info: `出牌阶段限一次。你可以获得你装备区里的所有武器牌。若如此做，本回合当你使用一张武器牌A后，你可以将其中一张攻击范围小于A的武器牌当无次数限制的【杀】使用。`,
             wechat_zhi_xushi: '志徐氏',
             wechatluchou: '戮仇',
             wechatluchou_info: '每轮每项限一次。当你受到伤害后，你可以选择一项：1.你与至多X名其他角色横置；2.你与已横置的角色各摸X+1张牌；3.你使用的下一张【杀】额外结算X次（不可叠加）。（X为你本轮发动此技能的次数+1）',

@@ -200,7 +200,7 @@ const packs = function () {
             Mbaby_zhugezhan: ['male', 'shu', 3, ['minizuilun', 'xinfu_fuyin'], ['name:诸葛|瞻']],
             Mbaby_zhangxingcai: ['female', 'shu', 3, ['shenxian', 'miniqiangwu']],
             Mbaby_wuxian: ['female', 'shu', 3, ['minifumian', 'minidaiyan'], ['clan:陈留吴氏']],
-            Mbaby_shamoke: ['male', 'shu', 4, ['minijili']],
+            Mbaby_shamoke: ['male', 'shu', 4, ['minijili'], ['name:null|null']],
             Mbaby_xiahoushi: ['female', 'shu', 3, ['miniqiaoshi', 'miniyanyu'], ['name:夏侯|null']],
             Mbaby_guansuo: ['male', 'shu', 4, ['minizhengnan', 'minixiefang']],
             Mbaby_mayunlu: ['female', 'shu', 4, ['minifengpo', 'mashu']],
@@ -5566,7 +5566,7 @@ const packs = function () {
                         const player = get.player();
                         let att = get.attitude(player, target);
                         if (att > 0) return 0;
-                        if (!current.hasJudge('bingliang')) att--;
+                        if (!target.hasJudge('bingliang')) att--;
                         return -att / Math.sqrt(Math.max(0.1, 2 * target.hp + target.countCards('h')));
                     }).forResult();
                 },
