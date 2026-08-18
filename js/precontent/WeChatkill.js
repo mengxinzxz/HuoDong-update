@@ -72,7 +72,7 @@ const packs = function () {
             wechat_zhaoyun: ['male', 'shu', 4, ['longdan', 'wechatqinggang']],
             wechat_zhangfei: ['male', 'shu', 4, ['paoxiao', 'wechatshemao']],
             wechat_machao: ['male', 'shu', 4, ['mashu', 'wechattieji']],
-            wechat_yangxiu: ['male', 'wei', 3, ['wechatdanlao', 'wechatrejilei']],
+            wechat_yangxiu: ['male', 'wei', 3, ['wechatdanlao', 'wechatrejilei'], ['clan:弘农杨氏']],
             wechat_zhoutai: ['male', 'wu', 4, ['wechatbuqu', 'wechatfenji']],
             wechat_ol_bianfuren: ['female', 'wei', 3, ['wechatwanwei', 'wechatyuejian'], ['name:卞|null']],
             wechat_sunluban: ['female', 'wu', 3, ['wechatzenhui', 'wechatjiaojin']],

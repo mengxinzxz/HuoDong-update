@@ -91,7 +91,7 @@ const packs = function () {
             Mbaby_sp_jiangwei: ['male', 'wei', 4, ['minikunfen', 'minifengliang']],
             Mbaby_zhonghui: ['male', 'wei', 3, ['miniquanji', 'paiyi'], ['clan:颍川钟氏']],
             Mbaby_zhangchangpu: ['female', 'wei', 3, ['miniyanjiao', 'xingshen']],
-            Mbaby_yangxiu: ['male', 'wei', 3, ['danlao', 'minijilei']],
+            Mbaby_yangxiu: ['male', 'wei', 3, ['danlao', 'minijilei'], ['clan:弘农杨氏']],
             Mbaby_re_simayi: ['male', 'wei', 3, ['minifankui', 'miniguicai'], ['name:司马|懿']],
             Mbaby_dufuren: ['female', 'wei', 3, ['miniyise', 'minishunshi'], ['name:杜|null']],
             Mbaby_caozhang: ['male', 'wei', 4, ['minijiangchi']],
