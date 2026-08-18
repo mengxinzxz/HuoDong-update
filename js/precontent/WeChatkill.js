@@ -21352,7 +21352,7 @@ const packs = function () {
                             if (eff >= 0 && player.hasSkill('wechattanpai')) {
                                 const hs = player.getCards('h'), ts = target.getCards('h');
                                 if (hs.length > 0 && ts.length > 0) {
-                                    if (Math.min(...hs.map(i => get.number(i))) < Math.min(...ts).map(i => get.number(i))) {
+                                    if (Math.min(...hs.map(i => get.number(i))) < Math.min(...ts.map(i => get.number(i)))) {
                                         const num = target.countGainableCards(player, 'he') - 1;
                                         eff += Math.max(0, get.effect(target, { name: 'shunshou_copy2' }, player, player) ** num);
                                     }
