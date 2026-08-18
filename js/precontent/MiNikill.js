@@ -44976,7 +44976,6 @@ const packs = function () {
                         charlotte: true,
                         onremove: true,
                         trigger: { global: 'dying' },
-                        forced: true,
                         filter(event, player) {
                             if (!event.getParent('miniqingzhan', true)) return false;
                             return player.getStorage('miniqingzhan_break').includes(event.player) || player === event.player;
@@ -45002,6 +45001,9 @@ const packs = function () {
                     return get.is.damageCard(event.card);
                 },
                 forced: true,
+                logTarget(event, player) {
+                    return event[event.name === 'damage' ? 'source' : 'player'];
+                },
                 async content(event, trigger, player) {
                     await player.draw();
                     const target = trigger.name === 'damage' ? trigger.source : trigger.player;
