@@ -48736,6 +48736,8 @@ const packs = function () {
             }
             return node;
         };
+        // 捂嘴千幻弹窗
+        game.saveConfig('qhly_mentionConflitCC', true);
         const ori7 = ui.click.charactercard;
         ui.click.charactercard = function (name) {
             ori7.apply(this, arguments);
