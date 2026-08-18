@@ -44933,10 +44933,10 @@ const packs = function () {
                         for (const current of [player, target]) {
                             if (!current.isIn()) continue;
                             const sourcex = player === current ? target : player;
-                            const result = current.chooseToUse(function (card, player, event) {
+                            const result = await current.chooseToUse(function (card, player, event) {
                                 if (get.name(card) !== 'sha') return false;
                                 return lib.filter.filterCard.apply(this, arguments);
-                            }, '情战：对' + get.translation(sourcex) + '使用一张杀，或失去1点体力').set('filterTarget', function (card, player, target) {
+                            }, '情战：对' + get.translation(sourcex) + '使用一张【杀】，或失去1点体力').set('filterTarget', function (card, player, target) {
                                 const source = get.event().sourcex;
                                 if (target !== source && !ui.selected.targets.includes(source)) return false;
                                 return lib.filter.targetEnabled.apply(this, arguments);
