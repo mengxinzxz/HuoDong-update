@@ -24,7 +24,7 @@ const packs = function () {
             mx_fh_sp_sunshao: ['male', 'wu', 3, ['fh_dingyi', 'fh_zuici']],
             mx_fh_sp_duyu: ['male', 'qun', 4, ['fh_wuku', 'fh_sanchen']],
             mx_fh_sp_xunchen: ['male', 'qun', 3, ['fh_weipo', 'fh_chenshi', 'fh_mouzhi']],
-            mx_fh_wangling: ['male', 'wei', 4, ['fh_xingqi', 'fh_zifu', 'fh_mibei']],
+            mx_fh_wangling: ['male', 'wei', 4, ['fh_xingqi', 'fh_zifu', 'fh_mibei'], ['clan:太原王氏']],
             mx_fh_sp_mifuren: ['female', 'shu', 3, ['fh_guixiu', 'qingyu'], ['name:糜|null']],
             mx_fh_zhouchu: ['male', 'wu', 4, ['xianghai', 'fh_chuhai']],
             mx_fh_wujing: ['male', 'wu', 4, ['fh_heji', 'liubing']],
