@@ -3040,7 +3040,7 @@ const packs = function () {
                     const next = player.choosePlayerCard(target, 'he');
                     next.ai = function (button) {
                         const { player, target } = get.event();
-                        return get.effect(target, { name: 'guohe_copy2' }, player, player) * get.buttonValue(button.link);
+                        return get.effect(target, { name: 'guohe_copy2' }, player, player) * get.buttonValue(button);
                     };
                     next.forced = forced;
                     next.prompt = forced ? `${get.translation(event.skill)}：请选择${get.translation(target)}的一张牌` : get.prompt2(event.skill, target);
