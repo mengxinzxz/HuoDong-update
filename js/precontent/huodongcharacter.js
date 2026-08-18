@@ -66,7 +66,7 @@ const packs = function () {
             bilibili_xiahoudun: ['male', 'wei', 4, ['bilibili_ganglie', 'new_qingjian'], ['name:夏侯|惇', ...['character', 'tempname', 'die'].map(i => `${i}:re_xiahoudun`)]],
             bilibili_yirenyixiaojian: ['male', 'key', '1/Infinity', ['bilibili_ranzhi', 'bilibili_wuying', 'bilibili_jiabin'], ['clan:宿舍群|肘击群|活动群', 'name:吴|新建']],
             bilibili_caocao: ['male', 'qun', 4, ['bilibili_hanhuang'], ['border:wei']],
-            bilibili_zhugeliang: ['male', 'shu', 3, ['bilibili_lianbing'], ['name:诸葛|亮']],
+            bilibili_zhugeliang: ['male', 'shu', 3, ['bilibili_lianbing'], ['name:诸葛|亮', 'clan:琅琊诸葛氏']],
             bilibili_shibing: ['male', 'shu', Infinity, ['bilibili_tongshuai'], ['name:null|null', 'character:haopu', 'unseen']],
             //双面武将--正面
             bilibili_wangtao: ['female', 'shu', 3, ['huguan', 'yaopei', 'dualside'], ['dualside:bilibili_x_wangyue', 'character:wangtao', 'die:wangtao']],
