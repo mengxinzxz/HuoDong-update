@@ -48801,7 +48801,7 @@ const packs = function () {
             }
             if (!extraCharacters.length) return;
             for (const extraName of extraCharacters) {
-                if (!lib.character[extraName]) continue;
+                if (get.character(extraName).isNull) continue;
                 const button = ui.create.div('.charactercard-side-character', sidePanel, function () {
                     charactercardHistory.push(name);
                     layer.delete();
