@@ -2397,10 +2397,9 @@ const packs = function () {
                 ai: {
                     order: 7,
                     result: {
-                        target(player, target) {
-                            var att = get.attitude(player, target);
-                            if (att > 0 && !target.countCards('he')) return 10;
-                            return Math.sign(att) * get.effect(target, { name: 'shunshou_copy2' }, player, player);
+                        player(player, target) {
+                            if (!target.countGainableCards(player, 'he')) return 10;
+                            return get.effect(target, { name: 'shunshou_copy2' }, player, player);
                         },
                     },
                 },
