@@ -1759,9 +1759,6 @@ const packs = function () {
                             let cards1 = [];
                             let result = {};
                             let items = [];
-                            let lineList = [];
-                            let pointList = [];
-                            let pointNum = 0;
                             let interval = null;
                             let aiTimer = null;
                             let frameId = null;
@@ -1771,7 +1768,7 @@ const packs = function () {
                             let finishTimer = null;
                             for (const name in cards) cards1 = cards1.concat(Array.from({ length: cards[name] }).map(() => name));
                             if (!cards1.length) {
-                                resolve({});
+                                resolve({ bool: false });
                                 return null;
                             }
                             const baseWidth = 700;
@@ -1794,6 +1791,7 @@ const packs = function () {
                             dialog.style.boxShadow = 'none';
                             dialog.style.overflow = 'hidden';
                             dialog.style.textAlign = 'left';
+                            dialog.style.zIndex = '10';
                             ui.window.appendChild(dialog);
                             dialog.innerHTML = '';
                             const container = document.createElement('div');
@@ -1932,7 +1930,6 @@ const packs = function () {
                                 };
                             };
                             const onMove = e => {
-                                if (!isMine()) return;
                                 const point = getPoint(e);
                                 if (mouse) {
                                     lastMouse = mouse;
@@ -2167,7 +2164,6 @@ const packs = function () {
                                     clearInterval(aiTimer);
                                     return;
                                 }
-                                if (isMine()) return;
                                 for (let i = items.length - 1; i >= 0; i--) {
                                     const item = items[i];
                                     if (item.isBomb || item.hadCut) {
@@ -2223,9 +2219,6 @@ const packs = function () {
                                 game.resume();
                                 resolve(event._result);
                             };
-                            function isMine() {
-                                return player === game.me && !_status.auto && !player.isMad();
-                            }
                             _status.imchoosing = true;
                             game.pause();
                             game.countChoose();
@@ -2255,7 +2248,7 @@ const packs = function () {
                         if (dialog) dialog.close();
                     }, event.videoId, event.time);
                     for (let i = 0; i < cards.length; i++) {
-                        if (!result[cards[i].name] || result[cards[i].name] < num) cards.splice(i--, 1);
+                        if (!result?.[cards[i].name] || result[cards[i].name] < num) cards.splice(i--, 1);
                     }
                     if (!cards.length) {
                         game.log(player, '并没有整理出经典');
