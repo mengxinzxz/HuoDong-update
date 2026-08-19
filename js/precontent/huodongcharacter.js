@@ -2362,9 +2362,10 @@ const packs = function () {
             },
             bilibili_chenggong: {
                 audio: 'chenggong',
-                trigger: { global: 'useCard' },
+                trigger: { global: 'useCardToPlayered' },
                 filter(event, player) {
-                    return event.targets?.length > 1;
+                    if (!event.isFirstTarget) return false;
+                    return event.targets.length > 1;
                 },
                 logTarget: 'player',
                 check(event, player) {
@@ -2398,7 +2399,7 @@ const packs = function () {
                     order: 7,
                     result: {
                         player(player, target) {
-                            if (!target.countGainableCards(player, 'he')) return 10;
+                            if (!target.countGainableCards(player, 'he')) return get.effect(target, { name: 'draw' }, player, player);
                             return get.effect(target, { name: 'shunshou_copy2' }, player, player);
                         },
                     },
@@ -2409,21 +2410,20 @@ const packs = function () {
                 audio: 'gnjinfan',
                 trigger: { player: 'phaseDiscardBegin' },
                 filter(event, player) {
-                    var cards = player.getExpansions('bilibili_jinfan');
-                    return player.hasCard(function (card) {
-                        return !cards.filter(function (cardx) {
-                            return get.suit(cardx) == get.suit(card);
-                        }).length;
+                    const cards = player.getExpansions('bilibili_jinfan');
+                    return player.hasCard(card => {
+                        if (_status.connectMode && get.position(card) === 'h') return true;
+                        const suit = get.suit(card);
+                        return !cards.some(cardx => get.suit(cardx) === suit);
                     }, 'he');
                 },
                 forced: true,
                 content() {
                     'step 0'
                     player.chooseCard('锦帆：请选择一张牌', '将一张牌牌作为“铃”置于武将牌上', function (card, player) {
-                        var cards = player.getExpansions('bilibili_jinfan');
-                        return !cards.filter(function (cardx) {
-                            return get.suit(cardx) == get.suit(card);
-                        }).length;
+                        const suit = get.suit(card);
+                        const cards = player.getExpansions('bilibili_jinfan');
+                        return !cards.some(cardx => get.suit(cardx) === suit);
                     }, 'he', true);
                     'step 1'
                     if (result.bool) player.addToExpansion(result.cards, player, 'give').gaintag.add('bilibili_jinfan');
@@ -2434,21 +2434,16 @@ const packs = function () {
                     markcount: 'expansion',
                 },
                 onremove(player, skill) {
-                    var cards = player.getExpansions(skill);
+                    const cards = player.getExpansions(skill);
                     if (cards.length) player.loseToDiscardpile(cards);
                 },
                 ai: {
                     effect: {
                         player(card, player) {
-                            var cards = player.getExpansions('bilibili_jinfan');
-                            var suit = get.suit(card);
-                            if (cards.filter(function (cardx) {
-                                return get.suit(cardx) == get.suit(card);
-                            }).length && player.getHistory('useCard', function (evt) {
-                                return get.suit(evt.card) == get.suit(card);
-                            }).length + player.getHistory('respond', function (evt) {
-                                return get.suit(evt.card) == get.suit(card);
-                            }).length == 0) return [1, 1];
+                            const suit = get.suit(card);
+                            if (player.getStorage('bilibili_jinfan_used').includes(suit)) return;
+                            const cards = player.getExpansions('bilibili_jinfan');
+                            if (cards.some(cardx => get.suit(cardx) === suit)) return [1, 1];
                         },
                     },
                 },
@@ -2457,20 +2452,21 @@ const packs = function () {
                         audio: 'gnjinfan',
                         trigger: { player: ['useCard', 'respond'] },
                         filter(event, player) {
-                            var cards = player.getExpansions('bilibili_jinfan');
-                            if (!cards.filter(function (cardx) {
-                                return get.suit(cardx) == get.suit(event.card);
-                            }).length) return false;
-                            return player.getHistory('useCard', function (evt) {
-                                return get.suit(evt.card) == get.suit(event.card);
-                            }).indexOf(event) + player.getHistory('respond', function (evt) {
-                                return get.suit(evt.card) == get.suit(event.card);
-                            }).indexOf(event) == -1;
+                            const suit = get.suit(event.card);
+                            if (player.getStorage('bilibili_jinfan_used').includes(suit)) return false;
+                            const cards = player.getExpansions('bilibili_jinfan');
+                            return cards.some(cardx => get.suit(cardx) === suit);
                         },
                         forced: true,
                         content() {
+                            player.addTempSkill('bilibili_jinfan_used');
+                            player.markAuto('bilibili_jinfan_used', [get.suit(trigger.card)]);
                             player.draw();
                         },
+                    },
+                    used: {
+                        charlotte: true,
+                        onremove: true,
                     },
                 },
             },
@@ -2506,9 +2502,7 @@ const packs = function () {
                     next.set('addCount', false);
                     next.set('logSkill', event.name);
                     await next;
-                    if (target.hasHistory('damage', evt => evt.getParent(3) == next)) {
-                        target.addTempSkill('drlt_wanglie2');
-                    }
+                    if (target.hasHistory('damage', evt => evt.getParent(3) == next)) target.addTempSkill('drlt_wanglie2');
                 },
                 subSkill: {
                     backup: {
