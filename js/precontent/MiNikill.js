@@ -48758,6 +48758,7 @@ const packs = function () {
             if (Array.isArray(get.character(name).extraCharacter)) extraCharacters.addArray(get.character(name).extraCharacter);
             let extraCharacter = get.character(name).trashBin?.find(i => i.startsWith('extraCharacter'));
             if (extraCharacter) extraCharacters.addArray(extraCharacter.split(':').slice(1));
+            extraCharacters.remove(name);
             if (!extraCharacters.length && !charactercardHistory.length) return;
             const sidePanel = ui.create.div('.charactercard-side-panel', charactercard);
             sidePanel.style.position = 'absolute';
@@ -48800,7 +48801,7 @@ const packs = function () {
             if (!extraCharacters.length) return;
             for (const extraName of extraCharacters) {
                 if (get.character(extraName).isNull) continue;
-                const isInHistory = extraName === name || charactercardHistory.includes(extraName);
+                const isInHistory = charactercardHistory.includes(extraName);
                 const button = ui.create.div('.charactercard-side-character', sidePanel, function () {
                     if (isInHistory) return;
                     charactercardHistory.push(name);
