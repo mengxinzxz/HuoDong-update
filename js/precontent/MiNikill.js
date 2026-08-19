@@ -48764,17 +48764,14 @@ const packs = function () {
             sidePanel.style.left = '-88px';
             sidePanel.style.top = '0';
             sidePanel.style.width = '80px';
+            sidePanel.style.height = `${charactercard.clientHeight}px`;
             sidePanel.style.display = 'flex';
             sidePanel.style.flexDirection = 'column';
             sidePanel.style.alignItems = 'center';
             sidePanel.style.gap = '8px';
             sidePanel.style.boxSizing = 'border-box';
-            sidePanel.style.width = '80px';
-            sidePanel.style.display = 'flex';
-            sidePanel.style.flexDirection = 'column';
-            sidePanel.style.alignItems = 'center';
-            sidePanel.style.gap = '8px';
-            sidePanel.style.boxSizing = 'border-box';
+            sidePanel.style.overflowX = 'hidden';
+            sidePanel.style.overflowY = 'auto';
             if (charactercardHistory.length) {
                 const backButton = ui.create.div('.charactercard-side-back', sidePanel, '返回', function () {
                     const previousName = charactercardHistory.pop();
@@ -48789,6 +48786,7 @@ const packs = function () {
                 backButton.style.width = '80px';
                 backButton.style.height = '36px';
                 backButton.style.flexShrink = '0';
+                backButton.style.position = 'relative';
                 backButton.style.display = 'flex';
                 backButton.style.alignItems = 'center';
                 backButton.style.justifyContent = 'center';
@@ -48802,7 +48800,9 @@ const packs = function () {
             if (!extraCharacters.length) return;
             for (const extraName of extraCharacters) {
                 if (get.character(extraName).isNull) continue;
+                const isInHistory = extraName === name || charactercardHistory.includes(extraName);
                 const button = ui.create.div('.charactercard-side-character', sidePanel, function () {
+                    if (isInHistory) return;
                     charactercardHistory.push(name);
                     layer.delete();
                     isCharactercardNavigating = true;
@@ -48819,8 +48819,12 @@ const packs = function () {
                 button.style.boxSizing = 'border-box';
                 button.style.overflow = 'hidden';
                 button.style.borderRadius = '4px';
-                button.style.cursor = 'pointer';
-                button.style.backgroundColor = 'rgba(0,0,0,.45)';
+                button.style.cursor = isInHistory ? 'default' : 'pointer';
+                button.style.backgroundColor = isInHistory ? 'rgba(0,0,0,.7)' : 'rgba(0,0,0,.45)';
+                if (isInHistory) {
+                    button.style.filter = 'grayscale(1)';
+                    button.style.opacity = '0.55';
+                }
                 const avatar = ui.create.div('.avatar', button);
                 avatar.style.position = 'absolute';
                 avatar.style.left = '0';
