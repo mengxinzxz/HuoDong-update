@@ -1045,12 +1045,24 @@
             "size": 26250
         },
         {
+            "path": "audio/effect/boom.mp3",
+            "size": 35987
+        },
+        {
             "path": "audio/effect/spell_limit.mp3",
             "size": 57612
         },
         {
             "path": "audio/effect/spell_wake.mp3",
             "size": 52387
+        },
+        {
+            "path": "audio/effect/splatter.mp3",
+            "size": 10075
+        },
+        {
+            "path": "audio/effect/throw.mp3",
+            "size": 6939
         },
         {
             "path": "audio/skill/bifa_Mbaby_chenlin1.mp3",
@@ -5217,6 +5229,10 @@
             "size": 48412
         },
         {
+            "path": "image/card/qsg_juice.png",
+            "size": 4479
+        },
+        {
             "path": "image/card/zhengsu_bianzhen.png",
             "size": 69445
         },
@@ -9226,7 +9242,7 @@
         },
         {
             "path": "js/precontent/huodongcharacter.js",
-            "size": 876089
+            "size": 936407
         },
         {
             "path": "js/precontent/index.js",

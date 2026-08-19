@@ -9,7 +9,7 @@ const packs = function () {
             huodongcharacter: {
                 Chuodong: ['bilibili_shengxunyu', 'bilibili_Firewin', 'bilibili_jinglingqiu', 'bilibili_suixingsifeng', 'bilibili_Emptycity', 'bilibili_thunderlei', 'bilibili_lonelypatients', 'bilibili_ningjingzhiyuan', 'bilibili_xizhicaikobe'],
                 CDormitory: ['bilibili_yirenyixiaojian', 'bilibili_longjiuzhen', 'bilibili_diandian', 'bilibili_murufengchen', 'bilibili_wuzhuwanshui', 'bilibili_kuangshen', 'bilibili_yanjing', ...Array.from({ length: 3 }).map((_, index) => `bilibili_yanjing_friend${index + 1}`), 'bilibili_xiaoyaoruyun', 'bilibili_shuijiaobuboli'],
-                Cothers: ['lz_sufei', 'lz_tangzi', 'lz_liuqi', 'lz_huangquan', 'bilibili_zhugeliang', 'bilibili_caocao', 'bilibili_xiahoudun', 'bilibili_liuguanzhang', 'bilibili_gaowang', 'bilibili_simayi', 'old_dongxie', 'bilibili_sunhanhua', 'bilibili_zhoutaigong', 'bilibili_zhouxiaomei', 'bilibili_caifuren', 'bilibili_zhengxuan', 'bilibili_sp_xuyou', 'old_zuoci', 'bilibili_kuailiangkuaiyue', 'bilibili_wuqiao', 'bilibili_daxiao', 'bilibili_xushao', 'bilibili_shen_guojia', 'bilibili_re_xusheng', 'bilibili_zhangrang', 'bilibili_litiansuo', 'decade_huangwudie', 'bilibili_huanggai', 'bilibili_ekeshaoge', 'bilibili_guanning', 'bilibili_wangwang', 'diy_lvmeng', 'bilibili_wangtao', 'bilibili_wangyue', 'bilibili_x_wangtao', 'bilibili_x_wangyue', 'bilibili_daqiao', 'bilibili_xiaoqiao', 'bilibili_x_daqiao', 'bilibili_x_xiaoqiao', 'bilibili_ahuinan', 'bilibili_dongtuna', 'bilibili_x_ahuinan', 'bilibili_x_dongtuna'],
+                Cothers: ['bilibili_majun', 'lz_sufei', 'lz_tangzi', 'lz_liuqi', 'lz_huangquan', 'bilibili_zhugeliang', 'bilibili_caocao', 'bilibili_xiahoudun', 'bilibili_liuguanzhang', 'bilibili_gaowang', 'bilibili_simayi', 'old_dongxie', 'bilibili_sunhanhua', 'bilibili_zhoutaigong', 'bilibili_zhouxiaomei', 'bilibili_caifuren', 'bilibili_zhengxuan', 'bilibili_sp_xuyou', 'old_zuoci', 'bilibili_kuailiangkuaiyue', 'bilibili_wuqiao', 'bilibili_daxiao', 'bilibili_xushao', 'bilibili_shen_guojia', 'bilibili_re_xusheng', 'bilibili_zhangrang', 'bilibili_litiansuo', 'decade_huangwudie', 'bilibili_huanggai', 'bilibili_ekeshaoge', 'bilibili_guanning', 'bilibili_wangwang', 'diy_lvmeng', 'bilibili_wangtao', 'bilibili_wangyue', 'bilibili_x_wangtao', 'bilibili_x_wangyue', 'bilibili_daqiao', 'bilibili_xiaoqiao', 'bilibili_x_daqiao', 'bilibili_x_xiaoqiao', 'bilibili_ahuinan', 'bilibili_dongtuna', 'bilibili_x_ahuinan', 'bilibili_x_dongtuna'],
                 CXuanDie: ['bfake_zhanghua', 'bfake_hanshao', 'bfake_hanrong', 'bilibili_adong', 'bfake_jiananfeng', 'bfake_shen_zhangjiao', 'bfake_shen_zhangfei', 'bfake_shen_jiaxu', 'bfake_huanwen', 'bfake_miheng'],
             },
         },
@@ -68,6 +68,7 @@ const packs = function () {
             bilibili_caocao: ['male', 'qun', 4, ['bilibili_hanhuang'], ['border:wei']],
             bilibili_zhugeliang: ['male', 'shu', 3, ['bilibili_lianbing'], ['name:诸葛|亮', 'clan:琅琊诸葛氏']],
             bilibili_shibing: ['male', 'shu', Infinity, ['bilibili_tongshuai'], ['name:null|null', 'character:haopu', 'unseen']],
+            bilibili_majun: ['male', 'wei', 3, ['xinfu_jingxie', 'bilibili_qiaosi'], ['character:majun', 'die:majun', 'name:马|钧']],
             //双面武将--正面
             bilibili_wangtao: ['female', 'shu', 3, ['huguan', 'yaopei', 'dualside'], ['dualside:bilibili_x_wangyue', 'character:wangtao', 'die:wangtao']],
             bilibili_wangyue: ['female', 'shu', 3, ['huguan', 'mingluan', 'dualside'], ['dualside:bilibili_x_wangtao', 'character:wangyue', 'tempname:wangyue', 'die:wangyue']],
@@ -1114,6 +1115,7 @@ const packs = function () {
                         dialog.videoId = id;
                     };
                     /*
+                    第一版，全屏切水果，无进度条显示，炸弹为毒
                     const chooseButton = cardx => {
                         const { promise, resolve } = Promise.withResolvers(), event = _status.event;
                         event.dialog = ((cards) => {
@@ -1356,6 +1358,8 @@ const packs = function () {
                         return promise;
                     };
                     */
+                    /*
+                    第二版，自己写的优化，限定显示范围且拥有进度显示
                     const chooseButton = cardx => {
                         const { promise, resolve } = Promise.withResolvers(), event = _status.event;
                         event.dialog = (cards => {
@@ -1744,6 +1748,490 @@ const packs = function () {
                         _status.imchoosing = true;
                         game.pause();
                         game.countChoose();
+                        return promise;
+                    };
+                    */
+                    //第三版，来自橙续缘《娱乐补丁》，进行适配
+                    const chooseButton = cardx => {
+                        const { promise, resolve } = Promise.withResolvers();
+                        const event = _status.event;
+                        event.dialog = (cards => {
+                            let cards1 = [];
+                            let result = {};
+                            let items = [];
+                            let lineList = [];
+                            let pointList = [];
+                            let pointNum = 0;
+                            let interval = null;
+                            let aiTimer = null;
+                            let frameId = null;
+                            let finished = false;
+                            let resizeObserver = null;
+                            let juices = [];
+                            let finishTimer = null;
+                            for (const name in cards) cards1 = cards1.concat(Array.from({ length: cards[name] }).map(() => name));
+                            if (!cards1.length) {
+                                resolve({});
+                                return null;
+                            }
+                            const baseWidth = 700;
+                            const baseHeight = 450;
+                            const canvasWidth = 650;
+                            const canvasHeight = 345;
+                            const dialog = (event.dialog = ui.create.dialog('hidden'));
+                            dialog.classList.add('popped');
+                            dialog.classList.add('static');
+                            dialog.style.position = 'fixed';
+                            dialog.style.width = '80%';
+                            dialog.style.height = '80%';
+                            dialog.style.left = '50%';
+                            dialog.style.top = '50%';
+                            dialog.style.transform = 'translate(-50%, -50%)';
+                            dialog.style.padding = '0';
+                            dialog.style.margin = '0';
+                            dialog.style.background = 'transparent';
+                            dialog.style.border = 'none';
+                            dialog.style.boxShadow = 'none';
+                            dialog.style.overflow = 'hidden';
+                            dialog.style.textAlign = 'left';
+                            ui.window.appendChild(dialog);
+                            dialog.innerHTML = '';
+                            const container = document.createElement('div');
+                            container.style.position = 'absolute';
+                            container.style.width = baseWidth + 'px';
+                            container.style.height = baseHeight + 'px';
+                            container.style.left = '50%';
+                            container.style.top = '50%';
+                            container.style.backgroundColor = '#bb936f';
+                            container.style.borderRadius = '4px';
+                            container.style.boxSizing = 'border-box';
+                            container.style.transformOrigin = 'center center';
+                            dialog.appendChild(container);
+                            const updateScale = () => {
+                                if (!dialog.parentNode) return;
+                                const scaleX = dialog.clientWidth / baseWidth;
+                                const scaleY = dialog.clientHeight / baseHeight;
+                                const scale = Math.min(scaleX, scaleY);
+                                container.style.transform = 'translate(-50%, -50%) scale(' + scale + ')';
+                                dialog.gameScale = scale;
+                            };
+                            updateScale();
+                            if (typeof ResizeObserver !== 'undefined') {
+                                resizeObserver = new ResizeObserver(updateScale);
+                                resizeObserver.observe(dialog);
+                            } else {
+                                window.addEventListener('resize', updateScale);
+                            }
+                            const frame = document.createElement('div');
+                            frame.style.position = 'absolute';
+                            frame.style.width = '670px';
+                            frame.style.height = '400px';
+                            frame.style.left = '15px';
+                            frame.style.top = '15px';
+                            frame.style.boxSizing = 'border-box';
+                            frame.style.border = '1px solid #c6aa8f';
+                            frame.style.borderRadius = '4px';
+                            container.appendChild(frame);
+                            const canvas = document.createElement('canvas');
+                            canvas.width = canvasWidth;
+                            canvas.height = canvasHeight;
+                            canvas.style.position = 'absolute';
+                            canvas.style.width = canvasWidth + 'px';
+                            canvas.style.height = canvasHeight + 'px';
+                            canvas.style.left = '25px';
+                            canvas.style.top = '20px';
+                            canvas.style.zIndex = '10';
+                            canvas.style.borderRadius = '4px';
+                            container.appendChild(canvas);
+                            const ctx = canvas.getContext('2d');
+                            ctx.fillStyle = '#c6aa8f';
+                            ctx.fillRect(0, 0, canvas.width, canvas.height);
+                            const processNode = document.createElement('div');
+                            processNode.style.position = 'absolute';
+                            processNode.style.width = '700px';
+                            processNode.style.height = '50px';
+                            processNode.style.left = '0';
+                            processNode.style.bottom = '15px';
+                            processNode.style.padding = '0 7.5px';
+                            processNode.style.boxSizing = 'border-box';
+                            processNode.style.zIndex = '20';
+                            container.appendChild(processNode);
+                            const process = {};
+                            const processNames = Object.keys(cards).filter(name => name !== 'du');
+                            for (const name of processNames) {
+                                const item = document.createElement('div');
+                                item.style.width = 100 / processNames.length + '%';
+                                item.style.height = '50px';
+                                item.style.float = 'left';
+                                item.style.boxSizing = 'border-box';
+                                item.style.padding = '0 7.5px';
+                                item.style.position = 'relative';
+                                const card = document.createElement('div');
+                                card.style.width = '100%';
+                                card.style.height = '50px';
+                                card.style.backgroundColor = '#d2aa6e';
+                                card.style.border = '2px solid #bb936f';
+                                card.style.borderRadius = '4px';
+                                card.style.position = 'relative';
+                                card.style.boxSizing = 'border-box';
+                                const cardName = document.createElement('div');
+                                cardName.innerHTML = get.translation(name);
+                                cardName.style.position = 'absolute';
+                                cardName.style.width = '100%';
+                                cardName.style.height = '40px';
+                                cardName.style.left = '0';
+                                cardName.style.top = '0';
+                                cardName.style.lineHeight = '40px';
+                                cardName.style.textAlign = 'center';
+                                cardName.style.color = '#000';
+                                cardName.style.fontFamily = 'xinwei';
+                                cardName.style.fontSize = '20px';
+                                cardName.style.whiteSpace = 'nowrap';
+                                cardName.style.overflow = 'hidden';
+                                cardName.style.textOverflow = 'ellipsis';
+                                const probar = document.createElement('div');
+                                probar.style.position = 'absolute';
+                                probar.style.width = 'calc(100% - 10px)';
+                                probar.style.height = '5px';
+                                probar.style.left = '5px';
+                                probar.style.bottom = '2.5px';
+                                probar.style.borderRadius = '5px';
+                                probar.style.overflow = 'hidden';
+                                probar.style.backgroundColor = '#1e281a';
+                                const probarSpan = document.createElement('div');
+                                probarSpan.style.position = 'absolute';
+                                probarSpan.style.width = '0%';
+                                probarSpan.style.height = '5px';
+                                probarSpan.style.left = '0';
+                                probarSpan.style.top = '0';
+                                probarSpan.style.borderRadius = '5px';
+                                probarSpan.style.backgroundColor = '#ff773f';
+                                probarSpan.style.transition = 'width .15s';
+                                probar.appendChild(probarSpan);
+                                card.appendChild(cardName);
+                                card.appendChild(probar);
+                                item.appendChild(card);
+                                processNode.appendChild(item);
+                                process[name] = {
+                                    node: item,
+                                    bar: probarSpan,
+                                    current: 0,
+                                    total: cards[name],
+                                };
+                            }
+                            let mouse = null;
+                            let lastMouse = null;
+                            const getPoint = e => {
+                                if (e.changedTouches) {
+                                    e = e.changedTouches[e.changedTouches.length - 1];
+                                }
+                                const rect = canvas.getBoundingClientRect();
+                                return {
+                                    x: (e.clientX - rect.left) * (canvas.width / rect.width),
+                                    y: (e.clientY - rect.top) * (canvas.height / rect.height),
+                                };
+                            };
+                            const onMove = e => {
+                                if (!isMine()) return;
+                                const point = getPoint(e);
+                                if (mouse) {
+                                    lastMouse = mouse;
+                                }
+                                mouse = point;
+                            };
+                            const onCancel = () => {
+                                mouse = null;
+                                lastMouse = null;
+                            };
+                            if (lib.device) {
+                                canvas.addEventListener('touchmove', onMove, {
+                                    passive: true,
+                                });
+                                canvas.addEventListener('touchend', onCancel);
+                                canvas.addEventListener('touchcancel', onCancel);
+                            } else {
+                                canvas.addEventListener('mousemove', onMove);
+                                canvas.addEventListener('mouseup', onCancel);
+                                canvas.addEventListener('mouseleave', onCancel);
+                            }
+                            const drawLine = () => {
+                                if (!mouse || !lastMouse) return;
+                                const gradient = ctx.createLinearGradient(lastMouse.x, lastMouse.y, mouse.x, mouse.y);
+                                gradient.addColorStop(0, '#c4ebf5');
+                                gradient.addColorStop(1, '#6bbcd1');
+                                ctx.beginPath();
+                                ctx.moveTo(lastMouse.x, lastMouse.y);
+                                ctx.lineTo(mouse.x, mouse.y);
+                                ctx.strokeStyle = gradient;
+                                ctx.lineCap = 'round';
+                                ctx.lineWidth = 4;
+                                ctx.stroke();
+                                setTimeout(onCancel, 0);
+                            };
+                            const distance = (x1, y1, x2, y2) => {
+                                return Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2));
+                            };
+                            const checkCollision = (x, y, radius) => {
+                                if (!mouse || !lastMouse) {
+                                    return false;
+                                }
+                                const a = distance(x, y, mouse.x, mouse.y);
+                                const b = distance(x, y, lastMouse.x, lastMouse.y);
+                                const c = distance(mouse.x, mouse.y, lastMouse.x, lastMouse.y);
+                                if (!c) return false;
+                                const p = (a + b + c) / 2;
+                                const s = Math.sqrt(Math.max(0, p * (p - a) * (p - b) * (p - c)));
+                                const h = (2 * s) / c;
+                                if (h >= radius) {
+                                    return false;
+                                }
+                                if (a < radius || b < radius) {
+                                    return true;
+                                }
+                                const d1 = mouse.x - x;
+                                const d2 = lastMouse.x - x;
+                                return (d1 > 0 && d2 < 0) || (d1 < 0 && d2 > 0);
+                            };
+                            const size = 76;
+                            const juiceImage = new Image();
+                            juiceImage.src = lib.assetURL + 'extension/活动武将/image/card/qsg_juice.png';
+                            const createItem = name => {
+                                const item = {
+                                    id: name,
+                                    left: get.rand(2 * size, canvas.width - 2 * size),
+                                    bottom: 0,
+                                    speed: get.rand(3, 5),
+                                    direct: get.rand(70, 110),
+                                    acceleration: get.rand(2, 3),
+                                    name: name === 'du' ? '炸弹' : get.translation(name),
+                                    isBomb: name === 'du',
+                                    hadCut: false,
+                                };
+                                items.push(item);
+                            };
+                            const handler = item => {
+                                if (item.isBomb) {
+                                    finish(true);
+                                    return;
+                                }
+                                if (finishTimer) {
+                                    clearTimeout(finishTimer);
+                                    finishTimer = null;
+                                }
+                                if (lib.config.background_speak) game.playAudio({ path: '../extension/活动武将/audio/effect/splatter' });
+                                result[item.id] ??= 0;
+                                result[item.id]++;
+                                const data = process[item.id];
+                                if (!data) return;
+                                data.current = result[item.id];
+                                data.bar.style.width = Math.min(100, (data.current / data.total) * 100) + '%';
+                                if (data.current >= data.total) {
+                                    data.bar.style.backgroundColor = '#6fbd63';
+                                }
+                                juices.push({
+                                    x: item.left,
+                                    y: canvas.height - item.bottom - size,
+                                    size: size,
+                                    time: Date.now(),
+                                });
+                                let complete = true;
+                                for (const name of processNames) {
+                                    if ((result[name] || 0) < cards[name]) {
+                                        complete = false;
+                                        break;
+                                    }
+                                }
+                                if (complete && !finishTimer) finishTimer = setTimeout(finish, 2000);
+                            };
+                            const finish = boom => {
+                                if (finished) return;
+                                finished = true;
+                                juices.length = 0;
+                                if (interval) {
+                                    clearInterval(interval);
+                                    interval = null;
+                                }
+                                if (aiTimer) {
+                                    clearInterval(aiTimer);
+                                    aiTimer = null;
+                                }
+                                if (frameId) {
+                                    cancelAnimationFrame(frameId);
+                                    frameId = null;
+                                }
+                                if (resizeObserver) {
+                                    resizeObserver.disconnect();
+                                    resizeObserver = null;
+                                } else {
+                                    window.removeEventListener('resize', updateScale);
+                                }
+                                canvas.removeEventListener('touchmove', onMove);
+                                canvas.removeEventListener('touchend', onCancel);
+                                canvas.removeEventListener('touchcancel', onCancel);
+                                canvas.removeEventListener('mousemove', onMove);
+                                canvas.removeEventListener('mouseup', onCancel);
+                                canvas.removeEventListener('mouseleave', onCancel);
+                                const close = () => {
+                                    _status.imchoosing = false;
+                                    event.dialog?.close();
+                                    event._result = result;
+                                    game.resume();
+                                    resolve(result);
+                                };
+                                if (boom && lib.config.background_speak) {
+                                    game.playAudio({
+                                        path: '../extension/活动武将/audio/effect/boom',
+                                        onEnded: close,
+                                    });
+                                }
+                                else close();
+                            };
+                            const render = () => {
+                                if (finished) return;
+                                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                                ctx.fillStyle = '#c6aa8f';
+                                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                                drawLine();
+                                const scale = dialog.gameScale || 1;
+                                const physicsScale = Math.max(0.55, Math.min(1, scale));
+                                for (let i = items.length - 1; i >= 0; i--) {
+                                    const item = items[i];
+                                    if (item.hadCut) {
+                                        items.splice(i, 1);
+                                        continue;
+                                    }
+                                    item.speed -= item.acceleration * physicsScale * 0.0167;
+                                    item.bottom += item.speed * Math.sin((item.direct * 2 * Math.PI) / 360) * physicsScale;
+                                    item.left += Math.abs(item.speed) * Math.cos((item.direct * 2 * Math.PI) / 360) * physicsScale;
+                                    const radius = size / 2;
+                                    const x = item.left + radius;
+                                    const y = canvas.height - item.bottom - size + radius;
+                                    if (item.bottom + size < 0) {
+                                        items.splice(i, 1);
+                                        continue;
+                                    }
+                                    if (checkCollision(x, y, radius)) {
+                                        item.hadCut = true;
+                                        handler(item);
+                                        items.splice(i, 1);
+                                        if (finished) {
+                                            return;
+                                        }
+                                        continue;
+                                    }
+                                    ctx.beginPath();
+                                    ctx.fillStyle = item.isBomb ? 'rgba(0,0,0,.6)' : 'rgba(255,255,255,.6)';
+                                    ctx.arc(x, y, radius, 0, Math.PI * 2, false);
+                                    ctx.fill();
+                                    ctx.beginPath();
+                                    ctx.textAlign = 'center';
+                                    ctx.textBaseline = 'middle';
+                                    ctx.fillStyle = item.isBomb ? '#fff' : '#000';
+                                    ctx.font = '20px lishu';
+                                    ctx.fillText(item.name, x, y, size - 10);
+                                }
+                                const now = Date.now();
+                                for (let i = juices.length - 1; i >= 0; i--) {
+                                    const juice = juices[i];
+                                    if (now - juice.time >= 1000) {
+                                        juices.splice(i, 1);
+                                        continue;
+                                    }
+                                    if (juiceImage.complete) {
+                                        ctx.drawImage(juiceImage, juice.x, juice.y, juice.size, juice.size);
+                                    }
+                                }
+                                if (!cards1.length && !items.length && !finished) {
+                                    setTimeout(finish, 1000);
+                                    return;
+                                }
+                                frameId = requestAnimationFrame(render);
+                            };
+                            const totalCount = cards1.length;
+                            const spawnDelay = Math.max(180, Math.min(650, Math.floor(9000 / Math.max(1, totalCount))));
+                            interval = setInterval(() => {
+                                if (finished) return;
+                                if (_status.paused2) {
+                                    return;
+                                }
+                                const num = [0, 1, 1, 1, 1, 2].randomGet();
+                                for (let i = 0; i < num; i++) {
+                                    if (!cards1.length) {
+                                        break;
+                                    }
+                                    createItem(cards1.randomRemove());
+                                }
+                            }, spawnDelay);
+                            aiTimer = setInterval(() => {
+                                if (finished) {
+                                    clearInterval(aiTimer);
+                                    return;
+                                }
+                                if (isMine()) return;
+                                for (let i = items.length - 1; i >= 0; i--) {
+                                    const item = items[i];
+                                    if (item.isBomb || item.hadCut) {
+                                        continue;
+                                    }
+                                    const djl = get.rand(10) > 4;
+                                    if (djl && typeof event.ai === 'function' && event.ai(item.id)) {
+                                        item.hadCut = true;
+                                        handler(item);
+                                        items.splice(i, 1);
+                                        if (finished) {
+                                            return;
+                                        }
+                                    }
+                                }
+                            }, 200);
+                            event.switchToAuto = () => {
+                                if (finished) return;
+                                finished = true;
+                                juices.length = 0;
+                                if (interval) {
+                                    clearInterval(interval);
+                                    interval = null;
+                                }
+                                if (aiTimer) {
+                                    clearInterval(aiTimer);
+                                    aiTimer = null;
+                                }
+                                if (frameId) {
+                                    cancelAnimationFrame(frameId);
+                                    frameId = null;
+                                }
+                                if (resizeObserver) {
+                                    resizeObserver.disconnect();
+                                    resizeObserver = null;
+                                } else {
+                                    window.removeEventListener('resize', updateScale);
+                                }
+                                canvas.removeEventListener('touchmove', onMove);
+                                canvas.removeEventListener('touchend', onCancel);
+                                canvas.removeEventListener('touchcancel', onCancel);
+                                canvas.removeEventListener('mousemove', onMove);
+                                canvas.removeEventListener('mouseup', onCancel);
+                                canvas.removeEventListener('mouseleave', onCancel);
+                                _status.imchoosing = false;
+                                event._result = {};
+                                for (const name in cards) {
+                                    event._result[name] = cards[name];
+                                }
+                                if (event.dialog) {
+                                    event.dialog.close();
+                                }
+                                game.resume();
+                                resolve(event._result);
+                            };
+                            function isMine() {
+                                return player === game.me && !_status.auto && !player.isMad();
+                            }
+                            _status.imchoosing = true;
+                            game.pause();
+                            game.countChoose();
+                            render();
+                            return dialog;
+                        })(cardx);
                         return promise;
                     };
                     game.broadcastAll(createDialog, player, event.videoId);
@@ -13502,6 +13990,502 @@ const packs = function () {
                     if (event.num < 0) player.removeMark('bilibili_tongshuai', -event.num);
                 },
             },
+            //马钧
+            bilibili_qiaosi: {
+                audio: 'qiaosi',
+                inherit: 'qiaosi',
+                async content(event, trigger, player) {
+                    await Promise.all(event.next);
+                    event.videoId = lib.status.videoId++;
+                    if (player.isUnderControl()) game.swapPlayerAuto(player);
+                    const switchToAuto = function () {
+                        game.pause();
+                        game.countChoose();
+                        setTimeout(function () {
+                            _status.imchoosing = false;
+                            event._result = {
+                                bool: true,
+                                links: ['qiaosi_c1', 'qiaosi_c6'].concat(['qiaosi_c2', 'qiaosi_c3', 'qiaosi_c4', 'qiaosi_c5'].randomGets(1)),
+                            };
+                            if (event.dialog) event.dialog.close();
+                            if (event.controls) {
+                                for (const i of event.controls) i.close();
+                            }
+                            game.resume();
+                        }, 5000);
+                    };
+                    const createDialog = function (player, id) {
+                        if (player == game.me) return;
+                        const str = get.translation(player) + '正在表演...<br>';
+                        for (let i = 1; i < 7; i++) {
+                            str += get.translation('qiaosi_c' + i);
+                            if (i % 3 != 0) str += '　　';
+                            if (i == 3) str += '<br>';
+                        }
+                        ui.create.dialog(str, 'forcebutton').videoId = id;
+                    };
+                    //来自橙续缘《娱乐补丁》，进行适配
+                    const chooseButton = function () {
+                        const event = _status.event;
+                        const { promise, resolve } = Promise.withResolvers();
+                        event.status = {
+                            qiaosi_c1: 0,
+                            qiaosi_c2: 0,
+                            qiaosi_c3: 0,
+                            qiaosi_c4: 0,
+                            qiaosi_c5: 0,
+                            qiaosi_c6: 0,
+                        };
+                        event.map = {
+                            qiaosi_c1: [40, 60],
+                            qiaosi_c2: [80, 120],
+                            qiaosi_c3: [90, 110],
+                            qiaosi_c4: [90, 110],
+                            qiaosi_c5: [80, 120],
+                            qiaosi_c6: [40, 60],
+                        };
+                        event.finishedx = [];
+                        const items = [
+                            { name: '王', rotate: 4, max: 36, id: 'qiaosi_c1' },
+                            { name: '商', rotate: 8, max: 24, id: 'qiaosi_c2' },
+                            { name: '工', rotate: 12, max: 12, id: 'qiaosi_c3' },
+                            { name: '农', rotate: 12, max: 12, id: 'qiaosi_c4' },
+                            { name: '士', rotate: 8, max: 24, id: 'qiaosi_c5' },
+                            { name: '将', rotate: 4, max: 36, id: 'qiaosi_c6' },
+                        ];
+                        let finished = false;
+                        let timeoutId = null;
+                        let aiTimer = null;
+                        let resizeObserver = null;
+                        const baseWidth = 700;
+                        const baseHeight = 400;
+                        event.dialog = ui.create.dialog('hidden');
+                        event.dialog.classList.add('popped');
+                        event.dialog.classList.add('static');
+                        const dialog = event.dialog;
+                        dialog.style.position = 'fixed';
+                        dialog.style.width = '80%';
+                        dialog.style.height = '80%';
+                        dialog.style.left = '50%';
+                        dialog.style.top = '50%';
+                        dialog.style.transform = 'translate(-50%, -50%)';
+                        dialog.style.padding = '0';
+                        dialog.style.margin = '0';
+                        dialog.style.background = 'transparent';
+                        dialog.style.border = 'none';
+                        dialog.style.boxShadow = 'none';
+                        dialog.style.overflow = 'hidden';
+                        dialog.style.textAlign = 'left';
+                        dialog.style.zIndex = '10';
+                        ui.window.appendChild(dialog);
+                        dialog.innerHTML = '';
+                        const container = document.createElement('div');
+                        container.style.position = 'absolute';
+                        container.style.width = baseWidth + 'px';
+                        container.style.height = baseHeight + 'px';
+                        container.style.left = '50%';
+                        container.style.top = '50%';
+                        container.style.transform = 'translate(-50%, -50%)';
+                        container.style.transformOrigin = 'center center';
+                        container.style.background = '#c6aa8f';
+                        container.style.border = '2px solid #b6996d';
+                        container.style.borderRadius = '8px';
+                        container.style.boxSizing = 'border-box';
+                        container.style.overflow = 'hidden';
+                        container.style.display = 'flex';
+                        container.style.justifyContent = 'center';
+                        dialog.appendChild(container);
+                        const gameBackground = document.createElement('div');
+                        gameBackground.style.position = 'absolute';
+                        gameBackground.style.left = '0';
+                        gameBackground.style.top = '0';
+                        gameBackground.style.width = '100%';
+                        gameBackground.style.height = '100%';
+                        gameBackground.style.background = 'radial-gradient(circle at center, #dfc59d 0%, #c6aa8f 55%, #a98b67 100%)';
+                        gameBackground.style.borderRadius = '6px';
+                        gameBackground.style.boxSizing = 'border-box';
+                        gameBackground.style.pointerEvents = 'none';
+                        gameBackground.style.zIndex = '10';
+                        container.appendChild(gameBackground);
+                        const title = document.createElement('div');
+                        title.textContent = '水转百戏图';
+                        title.style.position = 'absolute';
+                        title.style.left = '0';
+                        title.style.top = '8px';
+                        title.style.width = '100%';
+                        title.style.height = '35px';
+                        title.style.lineHeight = '35px';
+                        title.style.textAlign = 'center';
+                        title.style.color = '#5a4028';
+                        title.style.fontFamily = 'xinwei';
+                        title.style.fontSize = '26px';
+                        title.style.fontWeight = 'bold';
+                        title.style.zIndex = '10';
+                        title.style.pointerEvents = 'none';
+                        container.appendChild(title);
+                        const updateScale = () => {
+                            if (!dialog.parentNode) return;
+                            const scaleX = dialog.clientWidth / baseWidth;
+                            const scaleY = dialog.clientHeight / baseHeight;
+                            const scale = Math.min(scaleX, scaleY);
+                            container.style.transform = 'translate(-50%, -50%) scale(' + scale + ')';
+                            dialog.gameScale = scale;
+                        };
+                        updateScale();
+                        if (typeof ResizeObserver !== 'undefined') {
+                            resizeObserver = new ResizeObserver(updateScale);
+                            resizeObserver.observe(dialog);
+                        } else {
+                            window.addEventListener('resize', updateScale);
+                        }
+                        const colorPrimary = '#705a3c';
+                        const colorBorder = '#b6996d';
+                        const colorProcess = '#1e281a';
+                        container.style.width = baseWidth + 'px';
+                        container.style.height = baseHeight + 'px';
+                        const processHeight = baseHeight * 0.45;
+                        const time = 1.5;//水柱动画时间
+                        items.forEach(link => {
+                            const item = document.createElement('div');
+                            item.style.width = baseWidth / items.length + 'px';
+                            item.style.flex = '0 0 ' + baseWidth / items.length + 'px';
+                            item.style.height = baseHeight + 'px';
+                            item.style.position = 'relative';
+                            item.style.boxSizing = 'border-box';
+                            item.style.zIndex = '10';
+                            const actionSize = baseWidth / 6 / 5;
+                            const action = document.createElement('div');
+                            action.style.width = actionSize + 'px';
+                            action.style.height = actionSize + 'px';
+                            action.style.position = 'absolute';
+                            action.style.borderRadius = '100%';
+                            action.style.backgroundColor = colorPrimary;
+                            action.style.border = '3px solid ' + colorBorder;
+                            action.style.top = 'calc(50% + ' + processHeight / 2 + 'px)';
+                            action.style.left = '50%';
+                            action.style.transform = 'translate(-50%, -50%)';
+                            action.style.cursor = 'pointer';
+                            action.style.transition = 'transform 1.5s';
+                            action.style.zIndex = '10';
+                            action.style.boxSizing = 'border-box';
+                            const anchorHeight = actionSize / 5;
+                            const anchor = document.createElement('div');
+                            anchor.style.width = actionSize + 'px';
+                            anchor.style.height = anchorHeight + 'px';
+                            anchor.style.position = 'absolute';
+                            anchor.style.backgroundColor = colorPrimary;
+                            anchor.style.borderTop = '2px solid ' + colorBorder;
+                            anchor.style.borderBottom = '1px solid ' + colorBorder;
+                            anchor.style.top = 'calc(50% - ' + anchorHeight / 2 + 'px)';
+                            anchor.style.left = '50%';
+                            anchor.style.boxSizing = 'border-box';
+                            const anchorBefore = document.createElement('div');
+                            anchorBefore.style.width = anchorHeight + 'px';
+                            anchorBefore.style.height = anchorHeight + 'px';
+                            anchorBefore.style.position = 'absolute';
+                            anchorBefore.style.borderRadius = '100%';
+                            anchorBefore.style.backgroundColor = colorPrimary;
+                            anchorBefore.style.border = '2px solid ' + colorBorder;
+                            anchorBefore.style.left = -anchorHeight / 2 - 2 + 'px';
+                            anchorBefore.style.top = -anchorHeight / 2 - 2 + 'px';
+                            anchorBefore.style.boxSizing = 'border-box';
+                            const anchorAfter = document.createElement('div');
+                            anchorAfter.style.width = actionSize / 2 + 'px';
+                            anchorAfter.style.height = anchorHeight * 1.5 + 'px';
+                            anchorAfter.style.position = 'absolute';
+                            anchorAfter.style.backgroundColor = colorPrimary;
+                            anchorAfter.style.border = '2px solid ' + colorBorder;
+                            anchorAfter.style.top = 'calc(50% - ' + (anchorHeight * 1.5) / 2 + 2 + 'px)';
+                            anchorAfter.style.left = '50%';
+                            anchorAfter.style.boxSizing = 'border-box';
+                            anchor.appendChild(anchorBefore);
+                            anchor.appendChild(anchorAfter);
+                            action.appendChild(anchor);
+                            const process = document.createElement('div');
+                            const processSpan = document.createElement('div');
+                            process.style.position = 'absolute';
+                            process.style.width = actionSize * (link.rotate / 16) + 'px';
+                            process.style.height = processHeight + 'px';
+                            process.style.backgroundColor = colorProcess;
+                            process.style.borderLeft = '2px solid ' + colorBorder;
+                            process.style.borderRight = '2px solid ' + colorBorder;
+                            process.style.boxSizing = 'border-box';
+                            process.style.top = '50%';
+                            process.style.marginTop = -processHeight / 2 + 'px';
+                            process.style.left = '50%';
+                            process.style.transform = 'translateX(-50%)';
+                            process.style.overflow = 'hidden';
+                            processSpan.style.position = 'absolute';
+                            processSpan.style.left = '0';
+                            processSpan.style.bottom = '0';
+                            processSpan.style.width = '100%';
+                            processSpan.style.height = '0';
+                            processSpan.style.background = 'linear-gradient(107deg, #6bbcd1, #c4ebf5)';
+                            processSpan.style.transition = `all ${time}s`;
+                            processSpan.style.overflow = 'hidden';
+                            processSpan.style.backgroundSize = '200% 200%';
+                            processSpan.style.animation = 'qiaosiGradientBackground 5s ease infinite';
+                            const wave1 = document.createElement('div');
+                            wave1.style.position = 'absolute';
+                            wave1.style.bottom = '90%';
+                            wave1.style.left = '55%';
+                            wave1.style.width = '235px';
+                            wave1.style.height = '195px';
+                            wave1.style.borderRadius = '50%';
+                            wave1.style.background = 'rgba(255,255,255,0.5)';
+                            wave1.style.boxSizing = 'border-box';
+                            wave1.style.transform = 'translateX(-50%) rotate(0)';
+                            wave1.style.animation = 'qiaosiWave 6s linear infinite';
+                            wave1.style.pointerEvents = 'none';
+                            const wave2 = document.createElement('div');
+                            wave2.style.position = 'absolute';
+                            wave2.style.bottom = '90%';
+                            wave2.style.left = '55%';
+                            wave2.style.width = '75px';
+                            wave2.style.height = '45px';
+                            wave2.style.borderRadius = '30%';
+                            wave2.style.boxSizing = 'border-box';
+                            wave2.style.transform = 'translateX(-50%) rotate(0)';
+                            wave2.style.animation = 'qiaosiWave 10s linear infinite';
+                            wave2.style.pointerEvents = 'none';
+                            processSpan.appendChild(wave1);
+                            processSpan.appendChild(wave2);
+                            process.appendChild(processSpan);
+                            const contentSize = actionSize * 1.2;
+                            const content = document.createElement('div');
+                            content.style.position = 'absolute';
+                            content.style.width = contentSize + 'px';
+                            content.style.height = contentSize + 'px';
+                            content.style.left = 'calc(50% - ' + contentSize / 2 + 'px)';
+                            content.style.top = 60 + actionSize - 8 + 'px';
+                            content.style.boxSizing = 'border-box';
+                            const contentBefore = document.createElement('div');
+                            contentBefore.style.position = 'absolute';
+                            contentBefore.style.left = '0';
+                            contentBefore.style.top = '0';
+                            contentBefore.style.width = contentSize + 'px';
+                            contentBefore.style.height = contentSize + 'px';
+                            contentBefore.style.backgroundColor = colorPrimary;
+                            contentBefore.style.border = '2px solid ' + colorBorder;
+                            contentBefore.style.transform = 'rotate(45deg)';
+                            contentBefore.style.boxSizing = 'border-box';
+                            const contentText = document.createElement('span');
+                            contentText.innerHTML = link.name;
+                            contentText.style.position = 'absolute';
+                            contentText.style.width = '100%';
+                            contentText.style.height = '100%';
+                            contentText.style.textAlign = 'center';
+                            contentText.style.lineHeight = contentSize + 'px';
+                            contentText.style.fontWeight = 'bold';
+                            contentText.style.fontFamily = 'xinwei';
+                            contentText.style.fontSize = '20px';
+                            contentText.style.zIndex = '10';
+                            content.appendChild(contentBefore);
+                            content.appendChild(contentText);
+                            item.appendChild(action);
+                            item.appendChild(process);
+                            item.appendChild(content);
+                            container.appendChild(item);
+                            action.link = link;
+                            action.rotate = 0;
+                            action.disabled = false;
+                            action.processSpan = processSpan;
+                            action.style.transform = 'translateX(-50%) rotate(0deg)';
+                            const click = () => {
+                                if (finished) return;
+                                if (action.disabled) return;
+                                if (action.rotate === link.max) return;
+                                action.rotate += link.rotate;
+                                action.rotate = Math.min(action.rotate, link.max);
+                                event.status[link.id] = action.rotate;
+                                action.processSpan.style.height = (100 * action.rotate) / link.max + '%';
+                                action.style.transform = 'translateX(-50%) rotate(' + (360 * action.rotate) / 12 + 'deg)';
+                                action.disabled = true;
+                                if (action.rotate === link.max && event.finishedx.length < 3) {
+                                    event.finishedx.push(link.id);
+                                    if (event.finishedx.length >= 3) setTimeout(finish, (time + 1) * 1000);
+                                }
+                            };
+                            link.click = click;
+                            action.addEventListener(lib.device ? 'touchend' : 'click', e => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                click();
+                            });
+                            action.addEventListener('transitionend', () => {
+                                action.disabled = false;
+                            });
+                        });
+                        const style = document.createElement('style');
+                        style.textContent = [
+                            '@keyframes qiaosiWave {',
+                            '0% {',
+                            'transform: translateX(-50%) rotate(0deg);',
+                            '}',
+                            '50% {',
+                            'transform: translateX(-50%) rotate(180deg);',
+                            '}',
+                            '100% {',
+                            'transform: translateX(-50%) rotate(360deg);',
+                            '}',
+                            '}',
+                            '@keyframes qiaosiGradientBackground {',
+                            '0% {',
+                            'background-position: 0% 50%;',
+                            '}',
+                            '50% {',
+                            'background-position: 100% 50%;',
+                            '}',
+                            '100% {',
+                            'background-position: 0% 50%;',
+                            '}',
+                            '}',
+                        ].join('\n');
+                        document.head.appendChild(style);
+                        function finish(delay = 0) {
+                            if (finished) return;
+                            finished = true;
+                            if (timeoutId) {
+                                clearTimeout(timeoutId);
+                                timeoutId = null;
+                            }
+                            if (aiTimer) {
+                                clearInterval(aiTimer);
+                                aiTimer = null;
+                            }
+                            if (resizeObserver) {
+                                resizeObserver.disconnect();
+                                resizeObserver = null;
+                            } else {
+                                window.removeEventListener('resize', updateScale);
+                            }
+                            if (style.parentNode) {
+                                style.parentNode.removeChild(style);
+                            }
+                            setTimeout(() => {
+                                _status.imchoosing = false;
+                                event._result = {
+                                    bool: event.finishedx.length > 0,
+                                    links: event.finishedx.slice(0),
+                                };
+                                event.dialog?.close();
+                                resolve(event._result);
+                                game.resume();
+                            }, delay);
+                        }
+                        event.switchToAuto = () => {
+                            if (finished) return;
+                            finish();
+                        };
+                        if (_status.connectMode) timeoutId = setTimeout(finish, 25000);
+                        _status.imchoosing = true;
+                        game.pause();
+                        game.countChoose();
+                        return promise;
+                    };
+                    game.broadcastAll(createDialog, player, event.videoId);
+                    let next;
+                    if (event.isMine()) next = chooseButton();
+                    else if (event.isOnline()) {
+                        const { promise, resolve } = Promise.withResolvers();
+                        event.player.send(chooseButton);
+                        event.player.wait(async result => {
+                            if (result === 'ai') result = await switchToAuto();
+                            resolve(result);
+                        });
+                        game.pause();
+                        next = promise;
+                    }
+                    else next = switchToAuto();
+                    const result2 = await next;
+                    game.broadcastAll('closeDialog', event.videoId);
+                    if (!result2?.bool || !result2.links?.length) {
+                        player.chat('杯具', 'fire');
+                        game.log(player, '表演失败');
+                        return;
+                    }
+                    player.chat('洗具', 'wood');
+                    let list = result2.links, cards = [], list2 = [];
+                    if (list.includes('qiaosi_c1')) {
+                        list2.push('trick');
+                        list2.push('trick');
+                    }
+                    if (list.includes('qiaosi_c2')) {
+                        if (list.includes('qiaosi_c6')) list2.push(['sha', 'jiu']);
+                        else list2.push(Math.random() < 0.66 ? 'equip' : ['sha', 'jiu']);
+                    }
+                    if (list.includes('qiaosi_c3')) list2.push([Math.random() < 0.66 ? 'sha' : 'jiu']);
+                    if (list.includes('qiaosi_c4')) list2.push([Math.random() < 0.66 ? 'shan' : 'tao']);
+                    if (list.includes('qiaosi_c5')) {
+                        if (list.includes('qiaosi_c1')) list2.push(['shan', 'tao']);
+                        else list2.push(Math.random() < 0.66 ? 'trick' : ['shan', 'tao']);
+                    }
+                    if (list.includes('qiaosi_c6')) {
+                        list2.push('equip');
+                        list2.push('equip');
+                    }
+                    while (list2.length) {
+                        let card, filter = list2.shift();
+                        card = get.cardPile(x => {
+                            if (cards.includes(x)) return false;
+                            if (typeof filter == 'string' && get.type(x, 'trick') == filter) return true;
+                            if (typeof filter == 'object' && filter.includes(x.name)) return true;
+                        });
+                        if (card) cards.push(card);
+                        else {
+                            card = get.cardPile(x => !cards.includes(x));
+                            if (card) cards.push(card);
+                        }
+                    }
+                    if (cards.length > 0) {
+                        const num = cards.length;
+                        await player.showCards(cards, `${get.translation(player)}发动了【${get.translation(event.name)}】`);
+                        await player.gain(cards, 'gain2');
+                        const goon = player.countCards('he') > 0 && game.hasPlayer(current => current !== player);
+                        const bool = player.hasCard(card => lib.filter.cardDiscardable(card, player), 'he');
+                        if (!goon && !bool) return;
+                        let result3;
+                        if (!goon) result3 = { index: 1 };
+                        else if (!bool) result3 = { index: 0 };
+                        else {
+                            result3 = await player.chooseControl({
+                                prompt: `${get.translation(event.name)}：请选择一项`,
+                                controls: ['交出卡牌', '弃置卡牌'],
+                                choiceList: [`将${get.cnNumber(num)}张牌交给一名其他角色`, `弃置${get.cnNumber(num)}张牌`],
+                                ai() {
+                                    const player = get.player();
+                                    return game.hasPlayer(current => current !== player && get.attitude(player, current) > 2) ? 0 : 1;
+                                },
+                            }).forResult();
+                        }
+                        if (typeof result3.index !== 'number') return;
+                        if (result3.index == 0) {
+                            const result = await player.chooseCardTarget({
+                                prompt: `${get.translation(event.name)}：将${get.cnNumber(num)}张牌交给一名其他角色`,
+                                filterCard: true,
+                                selectCard: Math.min(num, player.countCards('he')),
+                                position: 'he',
+                                filterTarget: lib.filter.notMe,
+                                forced: true,
+                                ai1: () => 1 + Math.random(),
+                                ai2(target) {
+                                    const player = get.player();
+                                    let att = get.attitude(player, target);
+                                    if (target.hasSkillTag('nogain')) att /= 10;
+                                    if (target.hasJudge('lebu')) att /= 5;
+                                    return att;
+                                },
+                            }).forResult();
+                            if (result?.bool && result.targets?.length && result.cards?.length) {
+                                const target = result.targets[0];
+                                player.line(target);
+                                await player.give(result.cards, target);
+                            }
+                        }
+                        else await player.chooseToDiscard('he', num, true, 'allowChooseAll');
+                    }
+                },
+            },
         },
         dynamicTranslate: {
             bilibili_xueji(player) {
@@ -14207,6 +15191,10 @@ const packs = function () {
             ].map(i => `<li>${i}`).join('<br>')}</span>`,
             bilibili_shibing: '士兵',
             bilibili_shibing2: '召唤物',
+            bilibili_majun: '马钧',
+            bilibili_majun_ab: '水转百戏',
+            bilibili_qiaosi: '巧思',
+            bilibili_qiaosi_info: '出牌阶段限一次，你可以表演水转百戏图，若表演成功，你获得对应的卡牌，然后选择一项：①将等量张牌交给一名其他角色；②弃置等量张牌。',
         },
     };
     for (const i in huodongcharacter.character) {
