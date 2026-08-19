@@ -1113,6 +1113,7 @@ const packs = function () {
                         const dialog = ui.create.dialog(get.translation(player) + "正在整理经书...<br>");
                         dialog.videoId = id;
                     };
+                    /*
                     const chooseButton = cardx => {
                         const { promise, resolve } = Promise.withResolvers(), event = _status.event;
                         event.dialog = ((cards) => {
@@ -1343,10 +1344,402 @@ const packs = function () {
                             return dialog;
                         })(cardx);
                         event.switchToAuto = () => {
+                            game.resume();
                             event._result = {};
                             for (const i in cardx) event._result[i] = cardx[i];
-                            game.resume();
                             resolve(event._result);
+                            _status.imchoosing = false;
+                        };
+                        _status.imchoosing = true;
+                        game.pause();
+                        game.countChoose();
+                        return promise;
+                    };
+                    */
+                    const chooseButton = cardx => {
+                        const { promise, resolve } = Promise.withResolvers(), event = _status.event;
+                        event.dialog = (cards => {
+                            let cards1 = [], lineList = [], pointList = [], pointNum = 0, result = {}, interval;
+                            for (const i in cards) cards1 = cards1.concat(Array.from({ length: cards[i] }).map(() => i));
+                            if (!cards1.length) cards1.push('sha');
+                            const dialog = (event.dialog = ui.create.dialog('hidden'));
+                            dialog.classList.add('popped');
+                            dialog.classList.add('static');
+                            dialog.style.position = 'fixed';
+                            dialog.style.width = '75%';
+                            dialog.style.height = '80%';
+                            dialog.style.left = '50%';
+                            dialog.style.top = '50%';
+                            dialog.style.transform = 'translate(-50%, -50%)';
+                            dialog.style.boxSizing = 'border-box';
+                            dialog.style.overflow = 'hidden';
+                            dialog.style['text-align'] = 'left';
+                            dialog.style['background-color'] = 'rgba(0,0,0,0.45)';
+                            dialog.style['border-radius'] = '12px';
+                            dialog.style['box-shadow'] = '0 0 20px rgba(0,0,0,0.5)';
+                            dialog.style.zIndex = '10';
+                            ui.window.appendChild(dialog);
+                            dialog.innerHTML = '';
+                            const progressPanel = document.createElement('div');
+                            progressPanel.style.position = 'absolute';
+                            progressPanel.style.left = '0';
+                            progressPanel.style.bottom = '0';
+                            progressPanel.style.width = '100%';
+                            progressPanel.style.height = '18%';
+                            progressPanel.style.display = 'flex';
+                            progressPanel.style.boxSizing = 'border-box';
+                            progressPanel.style.background = 'rgba(0,0,0,0.65)';
+                            progressPanel.style.borderTop = '2px solid rgba(255,255,255,0.5)';
+                            progressPanel.style.zIndex = '10';
+                            dialog.appendChild(progressPanel);
+                            const progressData = {};
+                            for (const name in cards) {
+                                if (name == 'du') continue; const item = document.createElement('div');
+                                item.style.flex = '1';
+                                item.style.height = '100%';
+                                item.style.position = 'relative';
+                                item.style.boxSizing = 'border-box';
+                                item.style.padding = '0 6px';
+                                if (Object.keys(progressData).length > 0) item.style.borderLeft = '1px solid rgba(255,255,255,0.25)';
+                                const nameText = document.createElement('div');
+                                nameText.innerHTML = get.translation(name);
+                                nameText.style.position = 'absolute';
+                                nameText.style.top = '12%';
+                                nameText.style.left = '0';
+                                nameText.style.width = '100%';
+                                nameText.style.textAlign = 'center';
+                                nameText.style.color = '#ffffff';
+                                nameText.style.fontSize = '18px';
+                                nameText.style.fontWeight = 'bold';
+                                nameText.style.textShadow = '0 1px 3px #000';
+                                nameText.style.lineHeight = '1.2';
+                                const progressOuter = document.createElement('div');
+                                progressOuter.style.position = 'absolute';
+                                progressOuter.style.left = '7.5%';
+                                progressOuter.style.bottom = '28%';
+                                progressOuter.style.width = '85%';
+                                progressOuter.style.height = '10px';
+                                progressOuter.style.boxSizing = 'border-box';
+                                progressOuter.style.border = '1px solid rgba(255,255,255,0.7)';
+                                progressOuter.style.borderRadius = '6px';
+                                progressOuter.style.background = 'rgba(255,255,255,0.15)';
+                                progressOuter.style.overflow = 'hidden';
+                                const progressInner = document.createElement('div');
+                                progressInner.style.width = '0%';
+                                progressInner.style.height = '100%';
+                                progressInner.style.borderRadius = '6px';
+                                progressInner.style.background = 'linear-gradient(to right, #66ccff, #ffffff)';
+                                progressInner.style.transition = 'width 0.15s';
+                                progressOuter.appendChild(progressInner);
+                                const progressText = document.createElement('div');
+                                progressText.innerHTML = '0 / ' + cards[name];
+                                progressText.style.position = 'absolute';
+                                progressText.style.bottom = '8%';
+                                progressText.style.left = '0';
+                                progressText.style.width = '100%';
+                                progressText.style.textAlign = 'center';
+                                progressText.style.color = 'rgba(255,255,255,0.9)';
+                                progressText.style.fontSize = '12px';
+                                progressText.style.lineHeight = '16px';
+                                item.appendChild(nameText);
+                                item.appendChild(progressOuter);
+                                item.appendChild(progressText);
+                                progressPanel.appendChild(item);
+                                progressData[name] = { item: item, inner: progressInner, text: progressText };
+                            }
+                            const updateProgress = name => {
+                                const data = progressData[name];
+                                if (!data) return;
+                                const current = result[name] || 0;
+                                const total = cards[name];
+                                const percent = Math.min(100, (current / total) * 100);
+                                data.inner.style.width = percent + '%';
+                                data.text.innerHTML = current + ' / ' + total;
+                                if (current >= total) {
+                                    data.inner.style.width = '100%';
+                                    data.inner.style.background = 'linear-gradient(to right, #66ff99, #ffffff)';
+                                    data.text.style.color = '#66ff99';
+                                }
+                            };
+                            const getGameScale = () => {
+                                const widthScale = dialog.offsetWidth / (ui.window.offsetWidth || window.innerWidth);
+                                const heightScale = dialog.offsetHeight / (ui.window.offsetHeight || window.innerHeight);
+                                return Math.max(0.55, Math.min(1, widthScale, heightScale));
+                            };
+                            const getCardScale = () => {
+                                return Math.max(0.55, Math.min(1, getGameScale() * 1.05));
+                            };
+                            const getDialogPoint = e => {
+                                if (e.changedTouches) e = e.changedTouches[e.changedTouches.length - 1];
+                                const rect = dialog.getBoundingClientRect();
+                                const zoom = game.documentZoom || 1;
+                                return [(e.clientX - rect.left) / zoom, (e.clientY - rect.top) / zoom];
+                            };
+                            const getAngle = (x1, y1, x2, y2) => {
+                                var x = x1 - x2;
+                                var y = y1 - y2;
+                                var z = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
+                                if (!z) return 0;
+                                var cos = y / z;
+                                var radina = Math.acos(cos);
+                                var angle = 180 / (Math.PI / radina);
+                                if (x2 > x1 && y2 === y1) angle = 0;
+                                if (x2 > x1 && y2 < y1) angle = angle - 90;
+                                if (x2 === x1 && y1 > y2) angle = -90;
+                                if (x2 < x1 && y2 < y1) angle = 270 - angle;
+                                if (x2 < x1 && y2 === y1) angle = 180;
+                                if (x2 < x1 && y2 > y1) angle = 270 - angle;
+                                if (x2 === x1 && y2 > y1) angle = 90;
+                                if (x2 > x1 && y2 > y1) angle = angle - 90;
+                                return angle;
+                            };
+                            const createLine = e => {
+                                if (dialog.hadClicked == true) {
+                                    const point = getDialogPoint(e);
+                                    if (pointNum % 3 == 0) {
+                                        pointList.push(point);
+                                        if (pointList.length >= 2) {
+                                            var point0 = pointList[pointList.length - 2];
+                                            var point1 = pointList[pointList.length - 1];
+                                            var x0 = point0[0];
+                                            var y0 = point0[1];
+                                            var x1 = point1[0];
+                                            var y1 = point1[1];
+                                            var div = document.createElement('div');
+                                            div.style.zIndex = 20;
+                                            div.style.borderRadius = '4px';
+                                            div.style.position = 'absolute';
+                                            div.style.background = '#ffffff';
+                                            div.style.height = '4px';
+                                            div.style.width = Math.pow(Math.pow(x1 - x0, 2) + Math.pow(y1 - y0, 2), 0.5) + 2 + 'px';
+                                            div.style.left = x0 + 2 + 'px';
+                                            div.style.top = y0 + 2 + 'px';
+                                            div.style.transform = 'rotate(' + getAngle(x0, y0, x1, y1) + 'deg)';
+                                            div.style['transform-origin'] = '0 50%';
+                                            dialog.appendChild(div);
+                                            lineList.push(div);
+                                            if (lineList.length > 3) {
+                                                var div1 = lineList[0];
+                                                div1.style.transition = 'opacity 0.25s';
+                                                div1.style.opacity = 0;
+                                                setTimeout(() => {
+                                                    if (div1.parentNode != undefined) div1.parentNode.removeChild(div1);
+                                                }, 250);
+                                                lineList.remove(lineList[0]);
+                                                pointList[0] = 1;
+                                                pointList.remove(pointList[0]);
+                                            }
+                                        }
+                                    }
+                                    pointNum++;
+                                }
+                            };
+                            const clearLine = () => {
+                                const deleteLine = () => {
+                                    const div1 = lineList[0];
+                                    if (!div1) return;
+                                    div1.style.transition = 'opacity 0.25s';
+                                    div1.style.opacity = 0;
+                                    setTimeout(() => {
+                                        if (div1.parentNode != undefined) div1.parentNode.removeChild(div1);
+                                    }, 250);
+                                    lineList.remove(lineList[0]);
+                                    if (lineList.length > 0) deleteLine();
+                                };
+                                if (lineList.length > 0) deleteLine();
+                                pointList = [];
+                            };
+                            dialog.addEventListener(lib.device ? 'touchstart' : 'mousedown', e => {
+                                e.stopPropagation();
+                                dialog.hadClicked = true;
+                                pointNum = 0;
+                            });
+                            dialog.addEventListener(lib.device ? 'touchmove' : 'mousemove', createLine);
+                            dialog.addEventListener(lib.device ? 'touchend' : 'mouseup', e => {
+                                e.stopPropagation();
+                                delete dialog.hadClicked;
+                                clearLine();
+                            });
+                            const finish = () => {
+                                clearInterval(interval);
+                                _status.imchoosing = false;
+                                event.dialog?.close();
+                                event._result = result;
+                                resolve(event._result);
+                                game.resume();
+                            };
+                            const createCard = name => {
+                                const gameScale = getGameScale();
+                                const cardScale = getCardScale();
+                                const availableWidth = Math.max(20, dialog.offsetWidth - 80 * cardScale);
+                                const left = Math.random() * availableWidth + 20;
+                                const card = ui.create.card(null, 'noclick', true);
+                                card.init({ name: name });
+                                if (name == 'du') card.style['box-shadow'] = 'rgba(0, 0, 0, 0.2) 0 0 0 1px,' + 'rgba(255, 0, 0, 0.4) 0 0 5px,' + 'rgba(255, 0, 0, 0.4) 0 0 12px,' + 'rgba(255, 0, 0, 0.8) 0 0 15px';
+                                card.style['pointer-events'] = 'none';
+                                card.style.position = 'absolute';
+                                const playHeight = dialog.offsetHeight - progressPanel.offsetHeight;
+                                card.style.top = playHeight - 5 + 'px';
+                                card.style.left = left + 'px';
+                                card.style.transition = 'opacity 0.25s';
+                                card.style.opacity = 0;
+                                card.style['transform-origin'] = 'center center';
+                                card.style.transform = 'scale(' + cardScale + ')';
+                                dialog.appendChild(card);
+                                setTimeout(() => {
+                                    if (card.parentNode) card.style.opacity = 1;
+                                }, 10);
+                                var t_x = 0;
+                                var t_y = 0;
+                                var s_x = 0;
+                                var s_y = 0;
+                                var s_y0 = 0;
+                                var t_x_increase = 0;
+                                var t_y_increase = 0.3 * gameScale;
+                                var v_y = [90, 95, 100, 105, 110, 115, 105, 110, 115].randomGet() * gameScale;
+                                var a_y = [9, 9.2, 9.4, 9.6, 9.8, 10, 10.2, 10.4, 10.6, 10.8, 11].randomGet() * gameScale;
+                                var isMovingUp = true;
+                                var cardLeft = card.offsetLeft;
+                                var cardTop = card.offsetTop;
+                                var num_x = 63;
+                                if (v_y / gameScale == 90) num_x = 56;
+                                else if (v_y / gameScale == 95) num_x = 60;
+                                else if (v_y / gameScale == 100) num_x = 63;
+                                else if (v_y / gameScale == 105) num_x = 67;
+                                else if (v_y / gameScale == 110) num_x = 70;
+                                else num_x = 74;
+                                if ([true, false].randomGet()) {
+                                    let s1 = dialog.offsetWidth - card.offsetWidth - left;
+                                    t_x_increase = (s1 / num_x) * Math.random() * gameScale;
+                                }
+                                else {
+                                    let s1 = left;
+                                    t_x_increase = -(s1 / num_x) * Math.random() * gameScale;
+                                }
+                                const interval1 = setInterval(() => {
+                                    if (!_status.paused2) {
+                                        t_x += t_x_increase;
+                                        s_x = t_x;
+                                        card.style.left = cardLeft + s_x + 'px';
+                                        t_y += t_y_increase;
+                                        s_y = -(v_y * t_y - (a_y * Math.pow(t_y, 2)) / 2);
+                                        s_x = t_x;
+                                        card.style.top = cardTop + s_y + 'px';
+                                        if (isMovingUp == true) {
+                                            if (s_y - s_y0 > 0) isMovingUp = !isMovingUp;
+                                            s_y0 = s_y;
+                                        }
+                                        const cardRect = card.getBoundingClientRect();
+                                        const dialogRect = dialog.getBoundingClientRect();
+                                        const cardLeftNow = (cardRect.left - dialogRect.left) / (game.documentZoom || 1);
+                                        const cardTopNow = (cardRect.top - dialogRect.top) / (game.documentZoom || 1);
+                                        const cardRightNow = (cardRect.right - dialogRect.left) / (game.documentZoom || 1);
+                                        const cardBottomNow = (cardRect.bottom - dialogRect.top) / (game.documentZoom || 1);
+                                        if (cardTopNow > progressPanel.offsetTop + 5 && isMovingUp == false && card.hadHide != true) {
+                                            card.hadHide = true;
+                                            card.style.transition = 'opacity .3s';
+                                            card.style.opacity = 0;
+                                            setTimeout(() => {
+                                                card.delete();
+                                                clearInterval(interval1);
+                                            }, 350);
+                                        }
+                                        if (card.hadCut != true) {
+                                            for (var i = 0; i < pointList.length; i++) {
+                                                if (card.hadCut == true || pointList[i + 1] == undefined) continue;
+                                                var point0 = pointList[i];
+                                                var point1 = pointList[i + 1];
+                                                var x0 = point0[0];
+                                                var y0 = point0[1];
+                                                var x1 = point1[0];
+                                                var y1 = point1[1];
+                                                var bool = false;
+                                                var xiangjiao = function (line1, line2) {
+                                                    var x1 = line1[0][0];
+                                                    var x2 = line1[1][0];
+                                                    var x3 = line2[0][0];
+                                                    var x4 = line2[1][0];
+                                                    var y1 = line1[0][1];
+                                                    var y2 = line1[1][1];
+                                                    var y3 = line2[0][1];
+                                                    var y4 = line2[1][1];
+                                                    if (!(Math.min(x1, x2) <= Math.max(x3, x4) && Math.min(y3, y4) <= Math.max(y1, y2) && Math.min(x3, x4) <= Math.max(x1, x2) && Math.min(y1, y2) <= Math.max(y3, y4))) return false;
+                                                    return true;
+                                                };
+                                                var line = [[x0, y0], [x1, y1]];
+                                                if (xiangjiao(line, [
+                                                    [cardLeftNow, cardTopNow],
+                                                    [cardLeftNow, cardBottomNow],
+                                                ]) == true) bool = true;
+                                                if (xiangjiao(line, [
+                                                    [cardLeftNow, cardBottomNow],
+                                                    [cardRightNow, cardBottomNow],
+                                                ]) == true) bool = true;
+                                                if (xiangjiao(line, [
+                                                    [cardRightNow, cardBottomNow],
+                                                    [cardRightNow, cardTopNow],
+                                                ]) == true) bool = true;
+                                                if (xiangjiao(line, [
+                                                    [cardRightNow, cardTopNow],
+                                                    [cardLeftNow, cardTopNow],
+                                                ]) == true) bool = true;
+                                                if (bool) {
+                                                    if (card.name == 'du') {
+                                                        if (lib.config.background_speak) {
+                                                            game.playAudio('skill', 'zhengjing_boom');
+                                                        }
+                                                        finish();
+                                                    }
+                                                    else {
+                                                        if (lib.config.background_speak) {
+                                                            game.playAudio('skill', 'zhengjing_click');
+                                                        }
+                                                        result[card.name] ??= 0;
+                                                        result[card.name]++;
+                                                        updateProgress(card.name);
+                                                    }
+                                                    card.hadCut = true;
+                                                    card.style.transition = 'all .3s';
+                                                    card.style.transform = 'scale(' + cardScale * 1.5 + ')';
+                                                    card.style.opacity = 0;
+                                                    setTimeout(() => {
+                                                        card.delete();
+                                                    }, 350);
+                                                    clearInterval(interval1);
+                                                }
+                                            }
+                                        }
+                                    }
+                                    if (dialog.parentNode == undefined) {
+                                        clearInterval(interval1);
+                                    }
+                                }, 30);
+                            };
+                            interval = setInterval(() => {
+                                if (!_status.paused2) {
+                                    const num2 = [0, 1, 1, 1, 1, 2, 2, 3].randomGet();
+                                    if (num2 > 0 && cards1.length) {
+                                        for (let i = 0; i < num2; i++) {
+                                            createCard(cards1.randomRemove());
+
+                                            if (!cards1.length) {
+                                                setTimeout(() => finish(), 3000);
+                                                break;
+                                            }
+                                        }
+                                    }
+                                }
+                            }, 650);
+                            return dialog;
+                        })(cardx);
+                        event.switchToAuto = () => {
+                            _status.imchoosing = false;
+                            event._result = {};
+                            for (const i in cardx) {
+                                event._result[i] = cardx[i];
+                            }
+                            resolve(event._result);
+                            game.resume();
                         };
                         _status.imchoosing = true;
                         game.pause();
@@ -1393,7 +1786,7 @@ const packs = function () {
                         if (target.hasSkill('xinfu_pdgyingshi')) return 0;
                         return -get.attitude(player, target);
                     }).forResult();
-                    if (result2?.bool && result2.targets.length) {
+                    if (result2?.bool && result2.targets?.length) {
                         const target = result2.targets[0];
                         player.line(target, 'thunder');
                         let result3;
