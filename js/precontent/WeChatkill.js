@@ -9651,7 +9651,9 @@ const packs = function () {
                         },
                         filter(event, player, name) {
                             if (name === 'useCardToTargeted' && player === event.player) return false;
-                            return !player.getStorage('wechatsbliegong').includes(get.suit(event.card));
+                            const suit = get.suit(event.card);
+                            if (!lib.suit.includes(suit)) return false;
+                            return !player.getStorage('wechatsbliegong').includes(suit);
                         },
                         silent: true,
                         content() {
@@ -24142,7 +24144,7 @@ const packs = function () {
             wechat_sb_huangzhong: '小程序谋黄忠',
             wechatsbliegong: '烈弓',
             wechatsbliegong_info: [
-                '当你使用或打出牌时或成为其他角色使用牌的目标后，若你未记录此牌的花色，你记录此牌的花色（可记录无色）。',
+                '当你使用或打出牌时或成为其他角色使用牌的目标后，若你未记录此牌的花色，你记录此牌的花色。',
                 '当你使用【杀】指定唯一目标后，若〖烈弓〗存在记录花色，则你可亮出牌堆顶的X张牌（X为〖烈弓〗记录过的花色数-1），令此【杀】的伤害值基数+Y（Y为亮出牌中被〖烈弓〗记录过花色的牌的数量），且目标角色不能使用〖烈弓〗记录过花色的牌响应此【杀】；此【杀】使用结算结束后，你清除〖烈弓〗记录的的花色。',
                 '出牌阶段限一次，若〖烈弓〗存在记录花色，则你可以将所有〖烈弓〗存在记录花色的手牌当作无任何次数限制的【杀】使用，此牌结算完毕后，你摸Z张牌（Z为此牌造成过的伤害值，至多为4）。',
             ].map((str, i) => `(${i + 1})${str}`).join('<br>'),
