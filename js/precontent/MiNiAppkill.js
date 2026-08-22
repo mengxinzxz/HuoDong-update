@@ -769,11 +769,11 @@ const packs = function () {
                             let list = [], goon = trigger.getParent().name.includes('lianhuan');
                             for (const card of trigger.cards) {
                                 if (goon || card.name === 'tisuo' || get.name(card, player) === 'tiesuo') {
-                                    const card = get.discardPile(card2 => {
+                                    const card2 = get.discardPile(card2 => {
                                         if (list.includes(card2)) return false;
                                         return get.suit(card2) !== get.suit(card);
                                     }, 'random');
-                                    if (card) list.push(card);
+                                    if (card2) list.push(card2);
                                     else break;
                                 }
                             }

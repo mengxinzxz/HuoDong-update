@@ -4774,8 +4774,8 @@ const packs = function () {
                         var target = result.targets[0];
                         player.line(target, 'green');
                         game.log(target, '成为了', '#g【点虎】', '的目标');
-                        target.addSkill('lzdianhu_mark');
                         target.setStorage('lzdianhu_mark', player, true);
+                        target.addSkill('lzdianhu_mark');
                     }
                 },
                 group: 'lzdianhu_draw',

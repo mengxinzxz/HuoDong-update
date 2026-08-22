@@ -13378,7 +13378,7 @@ const packs = function () {
                     event.result = await player.chooseTarget(get.prompt(event.skill), (card, player, target) => {
                         return target === player || target.countDiscardableCards(target, 'he');
                     }, `选择令自己摸${get.cnNumber(num + 1)}张牌，或令一名其他角色弃置${get.cnNumber(num)}张牌`).set('ai', target => {
-                        const { player, num } = get.event(num);
+                        const { player, num } = get.event();
                         if (target === player) return get.effect(player, { name: 'draw' }, player, player) * (num + 1);
                         return get.effect(target, { name: 'guohe_copy2' }, target, player) * Math.sqrt(Math.min(num, target.countDiscardableCards(target, 'he')));
                     }).set('num', num).forResult();

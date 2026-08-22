@@ -32751,7 +32751,7 @@ const packs = function () {
                 },
                 filter(event, player) {
                     if (event.player === player) return false;
-                    return event[event.name === 'damage' ? 'source' : 'player'].group === player.group;
+                    return event[event.name === 'damage' ? 'source' : 'player']?.group === player.group;
                 },
                 async content(event, trigger, player) {
                     if (trigger.name === 'damage') await player.draw();
