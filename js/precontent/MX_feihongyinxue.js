@@ -1361,8 +1361,9 @@ const packs = function () {
                     let num = 1;
                     while (num < 6) {
                         if (target.hasEmptySlot(num)) {
-                            const card = get.fh_cardPile((card) => get.subtype(card) == 'equip' + num && target.canUse(card, target));
-                            if (card) await target.chooseUseTarget(card, true, 'nopopup');
+                            const card = get.fh_cardPile((card) => get.subtype(card) == 'equip' + num && target.canEquip(card));
+                            if (card) await target.equip(card);
+                            await game.delayx();
                         }
                         num++;
                     }
