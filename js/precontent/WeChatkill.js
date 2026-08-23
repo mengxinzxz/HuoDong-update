@@ -19422,7 +19422,7 @@ const packs = function () {
                 },
                 prompt(event, player) {
                     const cards = player.getEquips(1);
-                    return `你可以获得你装备区里的${get.translation(cards)}。若如此做，本回合当你使用一张武器牌牌A后，你可以将其中一张攻击范围小于牌A的武器牌当无次数限制的【杀】使用。`;
+                    return `你可以获得你装备区里的${get.translation(cards)}。若如此做，本回合当你使用一张武器牌A后，你可以将其中一张攻击范围小于牌A的武器牌当无次数限制的【杀】使用。`;
                 },
                 manualConfirm: true,
                 async content(event, trigger, player) {

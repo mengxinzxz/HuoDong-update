@@ -2420,7 +2420,7 @@ const packs = function () {
                 forced: true,
                 content() {
                     'step 0'
-                    player.chooseCard('锦帆：请选择一张牌', '将一张牌牌作为“铃”置于武将牌上', function (card, player) {
+                    player.chooseCard('锦帆：请选择一张牌', '将一张牌作为“铃”置于武将牌上', function (card, player) {
                         const suit = get.suit(card);
                         const cards = player.getExpansions('bilibili_jinfan');
                         return !cards.some(cardx => get.suit(cardx) === suit);
