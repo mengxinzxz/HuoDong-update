@@ -4756,10 +4756,15 @@ const packs = function () {
             },
             lzdianhu: {
                 audio: 'xinfu_dianhu',
-                inherit: 'xinfu_dianhu',
-                filter(event, player) {
-                    return game.countPlayer() > 1 && (event.name != 'phase' || game.phaseNumber == 0);
+                trigger: {
+                    global: 'phaseBefore',
+                    player: 'enterGame',
                 },
+                filter(event, player) {
+                    if (!game.hasPlayer(target => target !== player && !target.hasSkill('lzdianhu2'))) return false;
+                    return event.name !== 'phase' || game.phaseNumber === 0;
+                },
+                forced: true,
                 content() {
                     'step 0'
                     player.chooseTarget('请选择【点虎】的目标', lib.translate.lzdianhu_info, (card, player, target) => {
