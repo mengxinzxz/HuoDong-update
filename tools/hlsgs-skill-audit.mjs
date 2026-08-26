@@ -7,6 +7,7 @@ const OFFICIAL_VERSION = "2.3.6";
 const REPORT_STATUS_ORDER = [
   "different",
   "format-risk",
+  "shared-info-conflict",
   "core-reused",
   "missing-general",
   "ambiguous-general",
@@ -228,7 +229,15 @@ export function mapPackToOfficial(pack, official) {
   for (const general of official.generals) {
     const normalizedName = normalizeGeneralName(general.name);
     const candidates = generalCandidatesByName.get(normalizedName) ?? [];
-    candidates.push(general);
+    const existing = candidates.find(candidate => candidate.id === general.id);
+    if (existing) {
+      existing.skillIds = dedupeBy([...existing.skillIds, ...general.skillIds], skillId => skillId);
+    } else {
+      candidates.push({
+        ...general,
+        skillIds: dedupeBy(general.skillIds, skillId => skillId),
+      });
+    }
     generalCandidatesByName.set(normalizedName, candidates);
   }
 
@@ -292,10 +301,13 @@ export function mapPackToOfficial(pack, official) {
         continue;
       }
 
-      const skillCandidates = uniqueGeneral.skillIds
-        .map(officialSkillId => official.skillsById.get(officialSkillId))
-        .filter(Boolean)
-        .filter(skill => skill.name === entry.skillName);
+      const skillCandidates = dedupeBy(
+        uniqueGeneral.skillIds
+          .map(officialSkillId => official.skillsById.get(officialSkillId))
+          .filter(Boolean)
+          .filter(skill => skill.name === entry.skillName),
+        skill => skill.id,
+      );
 
       entry.officialSkillIds = skillCandidates.map(skill => skill.id);
 
@@ -351,8 +363,12 @@ export function normalizeOfficialDescription(describe) {
   }
 
   value = value.trim();
-  value = value.replace(/\s*<br\s*\/?>\s*/giu, "");
   value = value.replace(/&nbsp;/giu, " ");
+  const collapsedBreaks = collapseSupportedLineBreaks(value);
+  if (!collapsedBreaks.safe) {
+    return collapsedBreaks;
+  }
+  value = collapsedBreaks.value;
 
   const normalizedQuotes = normalizeChineseStraightQuotes(value);
   if (!normalizedQuotes.safe) {
@@ -380,7 +396,7 @@ export function normalizeOfficialDescription(describe) {
 }
 
 export function classifyDifferences(entries) {
-  return entries.map(entry => {
+  const classified = entries.map(entry => {
     if (entry.status !== "matched") {
       return { ...entry };
     }
@@ -412,11 +428,12 @@ export function classifyDifferences(entries) {
       ),
     };
   });
+  return finalizeSharedWritableEntries(classified);
 }
 
 export function applySafeFixes(source, entries) {
   const replacements = entries
-    .filter(entry => entry.status === "different")
+    .filter(entry => entry.status === "different" && entry.writableInfo)
     .map(entry => buildReplacement(entry));
 
   const ascending = [...replacements].sort((left, right) => left.start - right.start);
@@ -540,11 +557,11 @@ export async function runAudit(argv = process.argv.slice(2)) {
     entries,
   });
   const markdown = renderMarkdownReport(report);
-  const updatedSource = args.write ? applySafeFixes(source, entries) : null;
 
   await writeTextFile(args.jsonReportPath, `${JSON.stringify(report, null, 2)}\n`);
   await writeTextFile(args.markdownReportPath, markdown);
   if (args.write) {
+    const updatedSource = applySafeFixes(source, entries);
     await writeFile(args.sourcePath, updatedSource, "utf8");
   }
 
@@ -636,6 +653,196 @@ function countValues(values) {
     counts.set(value, (counts.get(value) ?? 0) + 1);
   }
   return counts;
+}
+
+function dedupeBy(values, keyForValue) {
+  const seen = new Set();
+  const deduped = [];
+  for (const value of values) {
+    const key = keyForValue(value);
+    if (seen.has(key)) {
+      continue;
+    }
+    seen.add(key);
+    deduped.push(value);
+  }
+  return deduped;
+}
+
+function collapseSupportedLineBreaks(value) {
+  const lineBreakPattern = /<br\s*\/?>/giu;
+  let collapsed = "";
+  let cursor = 0;
+
+  for (const match of value.matchAll(lineBreakPattern)) {
+    const previous = findPreviousNonSpace(value, match.index);
+    if (!isSafeLineBreakBoundary(previous)) {
+      const label = previous ? `"${previous}"` : "start of description";
+      return {
+        safe: false,
+        reason: `HTML line break cannot be safely collapsed after ${label}; preceding text lacks a punctuation boundary.`,
+      };
+    }
+
+    collapsed += value.slice(cursor, match.index).replace(/\s+$/gu, "");
+    cursor = match.index + match[0].length;
+    while (cursor < value.length && /\s/u.test(value[cursor])) {
+      cursor += 1;
+    }
+  }
+
+  collapsed += value.slice(cursor);
+  return { safe: true, value: collapsed };
+}
+
+function findPreviousNonSpace(value, beforeIndex) {
+  for (let index = beforeIndex - 1; index >= 0; index -= 1) {
+    if (!/\s/u.test(value[index])) {
+      return value[index];
+    }
+  }
+  return "";
+}
+
+function isSafeLineBreakBoundary(char) {
+  return Boolean(char) && "。；：！？）】》〉」』”.;:!?)".includes(char);
+}
+
+function finalizeSharedWritableEntries(entries) {
+  const result = entries.map(entry => ({ ...entry }));
+  const groups = new Map();
+
+  for (const [index, entry] of result.entries()) {
+    if (!entry.writableInfo) {
+      continue;
+    }
+
+    const key = sharedWritableInfoKey(entry);
+    const indexes = groups.get(key) ?? [];
+    indexes.push(index);
+    groups.set(key, indexes);
+  }
+
+  for (const indexes of groups.values()) {
+    if (indexes.length < 2) {
+      continue;
+    }
+
+    if (hasOneSafeSharedDescription(result, indexes)) {
+      retainSingleSharedInfoReplacement(result, indexes);
+    } else {
+      markSharedInfoConflict(result, indexes);
+    }
+  }
+
+  return result;
+}
+
+function hasOneSafeSharedDescription(entries, indexes) {
+  const safeDescriptions = indexes
+    .map(index => entries[index])
+    .filter(entry => ["different", "consistent"].includes(entry.status))
+    .map(entry => entry.normalizedOfficialDescription)
+    .filter(description => typeof description === "string");
+
+  return (
+    safeDescriptions.length === indexes.length &&
+    dedupeBy(safeDescriptions, description => description).length === 1
+  );
+}
+
+function sharedWritableInfoKey(entry) {
+  const writableInfo = entry.writableInfo;
+  return JSON.stringify([
+    writableInfo.start,
+    writableInfo.end,
+    writableInfo.quote,
+    writableInfo.value,
+  ]);
+}
+
+function retainSingleSharedInfoReplacement(entries, indexes) {
+  const ownerIndex =
+    indexes.find(index => entries[index].status === "different") ?? indexes[0];
+  const owner = entries[ownerIndex];
+  const range = formatSharedInfoRange(owner);
+
+  for (const index of indexes) {
+    const entry = entries[index];
+    if (index === ownerIndex) {
+      entries[index] = {
+        ...entry,
+        reason: appendReason(
+          entry.reason,
+          `Shared local _info range ${range} has identical normalized official text across ${indexes.length} rows; this row retains the single writeback replacement.`,
+        ),
+      };
+      continue;
+    }
+
+    entries[index] = {
+      ...entry,
+      writableInfo: null,
+      reason: appendReason(
+        entry.reason,
+        `Shared local _info range ${range} has identical normalized official text across ${indexes.length} rows; writeback is retained on ${owner.characterId}/${owner.skillId} to avoid duplicate replacement.`,
+      ),
+    };
+  }
+}
+
+function markSharedInfoConflict(entries, indexes) {
+  const candidates = indexes.map(index => createSharedInfoCandidate(entries[index]));
+  const candidateSummary = candidates.map(formatSharedInfoCandidate).join("; ");
+
+  for (const index of indexes) {
+    const entry = entries[index];
+    entries[index] = {
+      ...entry,
+      status: "shared-info-conflict",
+      writableInfo: null,
+      sharedInfoCandidates: candidates,
+      reason: appendReason(
+        entry.reason,
+        `Shared local _info range ${formatSharedInfoRange(entry)} maps to conflicting normalized official descriptions: ${candidateSummary}.`,
+      ),
+    };
+  }
+}
+
+function createSharedInfoCandidate(entry) {
+  return {
+    characterId: entry.characterId,
+    characterName: entry.characterName,
+    normalizedCharacterName: entry.normalizedCharacterName,
+    skillId: entry.skillId,
+    skillName: entry.skillName,
+    status: entry.status,
+    officialGeneralId: entry.officialGeneralId,
+    officialGeneralIds: entry.officialGeneralIds ?? [],
+    officialSkillId: entry.officialSkillId,
+    officialSkillIds: entry.officialSkillIds ?? [],
+    currentDescription: entry.currentDescription,
+    officialDescription: entry.officialDescription,
+    normalizedOfficialDescription: entry.normalizedOfficialDescription,
+    reason: entry.reason,
+  };
+}
+
+function formatSharedInfoCandidate(candidate) {
+  const general = candidate.officialGeneralId ?? formatCandidateIds(candidate.officialGeneralIds);
+  const skill = candidate.officialSkillId ?? formatCandidateIds(candidate.officialSkillIds);
+  const description = candidate.normalizedOfficialDescription ?? candidate.officialDescription ?? "";
+  return `${candidate.characterId}/${candidate.skillId} [${candidate.status}; general ${general} skill ${skill}] => ${description}`;
+}
+
+function formatCandidateIds(ids) {
+  return ids?.length ? ids.join("/") : "unknown";
+}
+
+function formatSharedInfoRange(entry) {
+  const writableInfo = entry.writableInfo;
+  return `${writableInfo.start}-${writableInfo.end}`;
 }
 
 function orderedStatuses(entries) {

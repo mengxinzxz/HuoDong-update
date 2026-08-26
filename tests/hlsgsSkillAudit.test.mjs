@@ -1,5 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
+import { mkdir, readFile, rm, writeFile } from "node:fs/promises";
+import { resolve } from "node:path";
 import {
   applySafeFixes,
   classifyDifferences,
@@ -11,6 +13,7 @@ import {
   parseOfficialConfig,
   parsePackSource,
   renderMarkdownReport,
+  runAudit,
   summarize,
 } from "../tools/hlsgs-skill-audit.mjs";
 
@@ -82,6 +85,50 @@ const officialEvidence = {
     },
   },
 };
+
+const sharedInfoSource = `
+const pack = {
+  characterSort: {
+    MiNikill: {
+      wei: ['Mbaby_first', 'Mbaby_second'],
+    },
+  },
+  character: {
+    Mbaby_first: ['male', 'wei', 4, ['minishared']],
+    Mbaby_second: ['male', 'wei', 4, ['minishared']],
+  },
+  skill: {
+    minishared: { trigger: { player: 'phaseBegin' } },
+  },
+  translate: {
+    Mbaby_first: '欢杀甲',
+    Mbaby_second: '欢杀乙',
+    minishared: '共技',
+    minishared_info: '旧共技',
+  },
+};
+`;
+
+function officialForSharedInfo(secondDescribe) {
+  return {
+    generalcards: {
+      Cards: {
+        Card: [
+          { CardID: "1", CardName: "甲", Skills: "101" },
+          { CardID: "2", CardName: "乙", Skills: "201" },
+        ],
+      },
+    },
+    skills: {
+      Skills: {
+        Skill: [
+          { ID: "101", Name: "共技", Describe: "新共技。" },
+          { ID: "201", Name: "共技", Describe: secondDescribe },
+        ],
+      },
+    },
+  };
+}
 
 test("parses direct character skills and extension-owned static info", () => {
   const parsed = parsePackSource(source);
@@ -318,6 +365,20 @@ test("normalizes official line breaks and spacing without changing rules", () =>
   );
 });
 
+test("rejects official line breaks that join unpunctuated text", () => {
+  const result = normalizeOfficialDescription("效果一<br/>效果二。");
+
+  assert.equal(result.safe, false);
+  assert.match(result.reason, /line break/i);
+});
+
+test("collapses supported line break variants after punctuation boundaries", () => {
+  assert.deepEqual(
+    normalizeOfficialDescription("效果一； <BR /> 效果二：<br>效果三）<br/>结束。"),
+    { safe: true, value: "效果一；效果二：效果三）结束。" },
+  );
+});
+
 test("rejects unsupported official markup", () => {
   const result = normalizeOfficialDescription('<font color="red">效果</font>');
 
@@ -386,6 +447,123 @@ test("classifies matched descriptions as consistent, different, or format-risk",
   assert.equal(entries[3].status, "core-reused");
 });
 
+test("deduplicates exact official general and skill id candidates before ambiguity checks", () => {
+  const duplicateOfficial = {
+    generalcards: {
+      Cards: {
+        Card: [
+          { CardID: "10", CardName: "甲", Skills: "100,100" },
+          { CardID: "10", CardName: "甲", Skills: "100,100" },
+        ],
+      },
+    },
+    skills: {
+      Skills: {
+        Skill: [
+          { ID: "100", Name: "甲技", Describe: "官方甲技。" },
+          { ID: "100", Name: "甲技", Describe: "官方甲技。" },
+        ],
+      },
+    },
+  };
+
+  const [entry] = mapPackToOfficial(parsePackSource(source), parseOfficialConfig(duplicateOfficial));
+
+  assert.equal(entry.status, "matched");
+  assert.equal(entry.officialGeneralId, "10");
+  assert.deepEqual(entry.officialGeneralIds, ["10"]);
+  assert.equal(entry.officialSkillId, "100");
+  assert.deepEqual(entry.officialSkillIds, ["100"]);
+});
+
+test("deduplicates repeated official general candidates by CardID before ambiguity checks", () => {
+  const duplicateOfficial = {
+    generalcards: {
+      Cards: {
+        Card: [
+          { CardID: "10", CardName: "甲", Skills: "100" },
+          { CardID: "10", CardName: "甲", Skills: "100,101" },
+        ],
+      },
+    },
+    skills: {
+      Skills: {
+        Skill: [
+          { ID: "100", Name: "甲技", Describe: "官方甲技。" },
+          { ID: "101", Name: "副技", Describe: "官方副技。" },
+        ],
+      },
+    },
+  };
+
+  const [entry] = mapPackToOfficial(parsePackSource(source), parseOfficialConfig(duplicateOfficial));
+
+  assert.equal(entry.status, "matched");
+  assert.deepEqual(entry.officialGeneralIds, ["10"]);
+  assert.equal(entry.officialSkillId, "100");
+});
+
+test("retains one safe replacement for shared info rows with identical official text", () => {
+  const entries = classifyDifferences(
+    mapPackToOfficial(
+      parsePackSource(sharedInfoSource),
+      parseOfficialConfig(officialForSharedInfo("新共技。")),
+    ),
+  );
+  const sharedRows = entries.filter(entry => entry.skillId === "minishared");
+
+  assert.deepEqual(sharedRows.map(entry => entry.status), ["different", "different"]);
+  assert.equal(sharedRows.filter(entry => entry.writableInfo).length, 1);
+
+  const changed = applySafeFixes(sharedInfoSource, entries);
+  assert.match(changed, /minishared_info: '新共技。'/u);
+});
+
+test("classifies shared info rows with conflicting official text as report-only", () => {
+  const entries = classifyDifferences(
+    mapPackToOfficial(
+      parsePackSource(sharedInfoSource),
+      parseOfficialConfig(officialForSharedInfo("另一版共技。")),
+    ),
+  );
+  const sharedRows = entries.filter(entry => entry.skillId === "minishared");
+
+  assert.deepEqual(
+    sharedRows.map(entry => entry.status),
+    ["shared-info-conflict", "shared-info-conflict"],
+  );
+  assert.equal(sharedRows.filter(entry => entry.writableInfo).length, 0);
+  assert.deepEqual(
+    sharedRows.map(entry => entry.normalizedOfficialDescription),
+    ["新共技。", "另一版共技。"],
+  );
+  assert.match(sharedRows[0].reason, /Mbaby_first\/minishared/u);
+  assert.match(sharedRows[0].reason, /Mbaby_second\/minishared/u);
+  assert.equal(sharedRows[0].sharedInfoCandidates.length, 2);
+
+  assert.equal(applySafeFixes(sharedInfoSource, entries), sharedInfoSource);
+});
+
+test("classifies every shared info row as report-only when one row has format risk", () => {
+  const entries = classifyDifferences(
+    mapPackToOfficial(
+      parsePackSource(sharedInfoSource),
+      parseOfficialConfig(officialForSharedInfo("效果一<br/>效果二。")),
+    ),
+  );
+  const sharedRows = entries.filter(entry => entry.skillId === "minishared");
+
+  assert.deepEqual(
+    sharedRows.map(entry => entry.status),
+    ["shared-info-conflict", "shared-info-conflict"],
+  );
+  assert.equal(sharedRows.filter(entry => entry.writableInfo).length, 0);
+  assert.match(sharedRows[1].reason, /cannot be normalized safely/i);
+  assert.equal(sharedRows[0].sharedInfoCandidates.length, 2);
+
+  assert.equal(applySafeFixes(sharedInfoSource, entries), sharedInfoSource);
+});
+
 test("replaces only the exact static info literal", () => {
   const pack = parsePackSource(source);
   const changed = applySafeFixes(source, [
@@ -451,6 +629,123 @@ test("rejects overlapping replacements", () => {
       ]),
     /overlap/i,
   );
+});
+
+test("writes finalized conflict reports before --write source updates", async () => {
+  const artifactDir = resolve(".superpowers", "sdd", "test-artifacts", "report-before-write");
+  await rm(artifactDir, { recursive: true, force: true });
+  await mkdir(artifactDir, { recursive: true });
+
+  const sourcePath = resolve(artifactDir, "Pack.js");
+  const officialPath = resolve(artifactDir, "official.json");
+  const jsonReportPath = resolve(artifactDir, "audit.json");
+  const markdownReportPath = resolve(artifactDir, "audit.md");
+
+  await writeFile(sourcePath, sharedInfoSource, "utf8");
+  await writeFile(
+    officialPath,
+    JSON.stringify(officialForSharedInfo("另一版共技。"), null, 2),
+    "utf8",
+  );
+
+  const report = await runAudit([
+    "--source",
+    sourcePath,
+    "--official",
+    officialPath,
+    "--json-report",
+    jsonReportPath,
+    "--markdown-report",
+    markdownReportPath,
+    "--write",
+  ]);
+
+  assert.equal(report.summary["shared-info-conflict"], 2);
+  assert.equal(await readFile(sourcePath, "utf8"), sharedInfoSource);
+
+  const jsonReport = JSON.parse(await readFile(jsonReportPath, "utf8"));
+  const markdownReport = await readFile(markdownReportPath, "utf8");
+  assert.equal(jsonReport.summary["shared-info-conflict"], 2);
+  assert.match(markdownReport, /### shared-info-conflict/u);
+  assert.match(markdownReport, /另一版共技。/u);
+
+  await rm(artifactDir, { recursive: true, force: true });
+});
+
+test("writes reports before propagating --write replacement validation failures", async () => {
+  const artifactDir = resolve(".superpowers", "sdd", "test-artifacts", "write-validation");
+  await rm(artifactDir, { recursive: true, force: true });
+  await mkdir(artifactDir, { recursive: true });
+
+  const validationSource = `
+const pack = {
+  characterSort: {
+    MiNikill: {
+      wei: ['Mbaby_a'],
+    },
+  },
+  character: {
+    Mbaby_a: ['male', 'wei', 4, ['minia']],
+  },
+  skill: {
+    minia: { trigger: { player: 'phaseBegin' } },
+  },
+  translate: {
+    Mbaby_a: '欢杀甲',
+    minia: '甲技',
+    minia_info: \`旧值\`,
+  },
+};
+`;
+  const sourcePath = resolve(artifactDir, "Pack.js");
+  const officialPath = resolve(artifactDir, "official.json");
+  const jsonReportPath = resolve(artifactDir, "audit.json");
+  const markdownReportPath = resolve(artifactDir, "audit.md");
+
+  await writeFile(sourcePath, validationSource, "utf8");
+  await writeFile(
+    officialPath,
+    JSON.stringify(
+      {
+        generalcards: {
+          Cards: {
+            Card: [{ CardID: "10", CardName: "甲", Skills: "100" }],
+          },
+        },
+        skills: {
+          Skills: {
+            Skill: [{ ID: "100", Name: "甲技", Describe: "官方${X}。" }],
+          },
+        },
+      },
+      null,
+      2,
+    ),
+    "utf8",
+  );
+
+  await assert.rejects(
+    runAudit([
+      "--source",
+      sourcePath,
+      "--official",
+      officialPath,
+      "--json-report",
+      jsonReportPath,
+      "--markdown-report",
+      markdownReportPath,
+      "--write",
+    ]),
+    /template interpolation/i,
+  );
+
+  const jsonReport = JSON.parse(await readFile(jsonReportPath, "utf8"));
+  const markdownReport = await readFile(markdownReportPath, "utf8");
+  assert.equal(jsonReport.summary.different, 1);
+  assert.match(markdownReport, /### different/u);
+  assert.equal(await readFile(sourcePath, "utf8"), validationSource);
+
+  await rm(artifactDir, { recursive: true, force: true });
 });
 
 test("requires source, official, and both report paths", () => {
