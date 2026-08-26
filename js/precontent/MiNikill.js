@@ -38818,6 +38818,18 @@ const packs = function () {
                             const pieces = tube.querySelectorAll('.dingluan-piece');
                             pieces.forEach((piece, index) => piece.style.bottom = `${index * 26}px`);
                         }
+                        function getDingluanMoveCount(sourcePieces, targetPieces, capacity = 4) {
+                            const piece = sourcePieces.at(-1);
+                            if (!piece || targetPieces.length >= capacity) return 0;
+                            const group = piece.dataset.group;
+                            if (targetPieces.length && targetPieces.at(-1).dataset.group !== group) return 0;
+                            let count = 0;
+                            for (let i = sourcePieces.length - 1; i >= 0; i--) {
+                                if (sourcePieces[i].dataset.group !== group || targetPieces.length + count >= capacity) break;
+                                count++;
+                            }
+                            return count;
+                        }
                         let selectedTube = null, dingluanSuccess = null, tubes = [];
                         for (let i = 0; i < groups.length + 2; i++) {
                             const tube = ui.create.div('.dingluan-tube', container);
@@ -38835,9 +38847,12 @@ const packs = function () {
                                     selectedTube = null;
                                 }
                                 else {
-                                    if (tube.childElementCount < 4 && selectedTube.childElementCount > 0) {
-                                        const piece = selectedTube.lastChild;
-                                        tube.appendChild(piece);
+                                    const moveCount = getDingluanMoveCount(
+                                        Array.from(selectedTube.children),
+                                        Array.from(tube.children),
+                                    );
+                                    if (moveCount) {
+                                        for (let i = 0; i < moveCount; i++) tube.appendChild(selectedTube.lastChild);
                                         //更新两个试管的棋子位置
                                         updatePiecePositions(selectedTube);
                                         updatePiecePositions(tube);
@@ -47428,7 +47443,7 @@ const packs = function () {
             mininianxinghan_info: `每回合限一次，回合开始时或当你受到伤害时，若默认势力和场上的势力的并集存在非蜀势力和你此前未因“定乱”成功的势力，则你可以进行一次${get.poptip({
                 id: 'mininianxinghan_定乱',
                 name: '“定乱”',
-                info: '系统为默认势力和场上的势力的并集存在非蜀势力和你此前未因“定乱”成功的势力各创造四枚对应势力棋子并随机置入这些势力数+2的试管中，每个试管最多存在四枚棋子，点击一个试管后再点击一个未满的试管，第一个试管最上方的元素将进入第二个试管最上方，玩家需要将其中一个试管的棋子均调整为同一势力的弃置，则“定乱”成功，“定乱”结果为你成功分配的这个势力',
+                info: '系统为默认势力和场上的势力的并集存在非蜀势力和你此前未因“定乱”成功的势力各创造四枚对应势力棋子并随机置入这些势力数+2的试管中，每个试管最多存在四枚棋子。点击一个非空试管后，再点击一个未满且为空或最上方棋子与前者最上方棋子势力相同的试管，将前者最上方连续同势力的棋子移至后者，直至后者装满或前者最上方棋子势力改变。玩家需要将其中一个试管的棋子均调整为同一势力并弃置，则“定乱”成功，“定乱”结果为你成功分配的这个势力',
             })}。若“定乱”成功，则你增加1点体力上限并回复1点体力，然后将场上的“定乱”势力角色均改为蜀势力。`,
             mininianliaoyuan: '燎原',
             mininianliaoyuan_info: '①出牌阶段限一次，你可以视为使用【火攻】。②你使用【火攻】可以指定任意名角色。',
