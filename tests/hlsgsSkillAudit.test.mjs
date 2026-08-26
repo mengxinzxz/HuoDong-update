@@ -1,7 +1,10 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import {
+  applySafeFixes,
+  classifyDifferences,
   mapPackToOfficial,
+  normalizeOfficialDescription,
   parseOfficialConfig,
   parsePackSource,
 } from "../tools/hlsgs-skill-audit.mjs";
@@ -301,4 +304,132 @@ const pack = {
   assert.equal(missing.officialGeneralId, "221");
   assert.equal(missing.currentDescription, "本地移筝");
   assert.ok(missing.writableInfo);
+});
+
+test("normalizes official line breaks and spacing without changing rules", () => {
+  assert.deepEqual(
+    normalizeOfficialDescription('效果一。<br>效果二（ X为"标记"的数量 ） 。'),
+    { safe: true, value: "效果一。效果二（X为“标记”的数量）。" },
+  );
+});
+
+test("rejects unsupported official markup", () => {
+  const result = normalizeOfficialDescription('<font color="red">效果</font>');
+
+  assert.equal(result.safe, false);
+  assert.match(result.reason, /unsupported markup/i);
+});
+
+test("rejects unmatched straight quotes in official descriptions", () => {
+  const result = normalizeOfficialDescription('效果"标记。');
+
+  assert.equal(result.safe, false);
+  assert.match(result.reason, /unmatched quote/i);
+});
+
+test("classifies matched descriptions as consistent, different, or format-risk", () => {
+  const entries = classifyDifferences([
+    {
+      skillId: "same",
+      status: "matched",
+      currentDescription: "官方甲技。",
+      officialDescription: "官方甲技。",
+      writableInfo: { start: 10, end: 15, quote: "'", value: "官方甲技。" },
+    },
+    {
+      skillId: "diff",
+      status: "matched",
+      currentDescription: "当前描述",
+      officialDescription: '效果一。<br>效果二（ X为"标记"的数量 ） 。',
+      writableInfo: { start: 20, end: 25, quote: "'", value: "当前描述" },
+    },
+    {
+      skillId: "risk",
+      status: "matched",
+      currentDescription: "当前描述",
+      officialDescription: "<font>效果</font>",
+      writableInfo: { start: 30, end: 35, quote: "'", value: "当前描述" },
+    },
+    {
+      skillId: "core",
+      status: "core-reused",
+      currentDescription: null,
+      officialDescription: null,
+      writableInfo: null,
+    },
+  ]);
+
+  assert.equal(entries[0].status, "consistent");
+  assert.equal(entries[1].status, "different");
+  assert.equal(entries[1].normalizedOfficialDescription, "效果一。效果二（X为“标记”的数量）。");
+  assert.equal(entries[2].status, "format-risk");
+  assert.match(entries[2].reason, /unsupported markup/i);
+  assert.equal(entries[3].status, "core-reused");
+});
+
+test("replaces only the exact static info literal", () => {
+  const pack = parsePackSource(source);
+  const changed = applySafeFixes(source, [
+    {
+      skillId: "minia",
+      status: "different",
+      normalizedOfficialDescription: "官方甲技。",
+      writableInfo: pack.infoLiterals.get("minia"),
+    },
+  ]);
+
+  assert.match(changed, /minia_info: '官方甲技。'/);
+  assert.match(changed, /Mbaby_a: '欢杀甲'/);
+});
+
+test("preserves quote style and escapes only the active quote plus backslashes", () => {
+  const doubleQuotedSource = `
+const pack = {
+  character: {
+    Mbaby_a: ['male', 'wei', 4, ['minia']],
+  },
+  skill: {
+    minia: { trigger: { player: 'phaseBegin' } },
+  },
+  translate: {
+    Mbaby_a: '欢杀甲',
+    minia: '甲技',
+    minia_info: "旧值",
+  },
+};
+`;
+  const pack = parsePackSource(doubleQuotedSource);
+  const changed = applySafeFixes(doubleQuotedSource, [
+    {
+      skillId: "minia",
+      status: "different",
+      normalizedOfficialDescription: '官"方\\\\甲技',
+      writableInfo: pack.infoLiterals.get("minia"),
+    },
+  ]);
+
+  assert.match(changed, /minia_info: "官\\"方\\\\\\\\甲技"/);
+});
+
+test("rejects overlapping replacements", () => {
+  const pack = parsePackSource(source);
+
+  assert.throws(
+    () =>
+      applySafeFixes(source, [
+        {
+          skillId: "minia",
+          status: "different",
+          normalizedOfficialDescription: "官方甲技。",
+          writableInfo: { ...pack.infoLiterals.get("minia"), start: 10, end: 30 },
+        },
+        {
+          skillId: "minib",
+          status: "different",
+          normalizedOfficialDescription: "官方乙技。",
+          writableInfo: { ...pack.infoLiterals.get("minia"), start: 20, end: 40 },
+        },
+      ]),
+    /overlap/i,
+  );
 });

@@ -240,6 +240,91 @@ export function mapPackToOfficial(pack, official) {
   return entries;
 }
 
+export function normalizeOfficialDescription(describe) {
+  let value = String(describe ?? "").trim();
+  value = value.replace(/\s*<br\s*\/?>\s*/giu, "");
+  value = value.replace(/&nbsp;/giu, " ");
+
+  const normalizedQuotes = normalizeChineseStraightQuotes(value);
+  if (!normalizedQuotes.safe) {
+    return normalizedQuotes;
+  }
+  value = normalizedQuotes.value;
+
+  value = removeChinesePunctuationSpacing(value).trim();
+
+  const unsupportedTag = value.match(/<[^>]+>/u);
+  if (unsupportedTag) {
+    return { safe: false, reason: `Unsupported markup remains: ${unsupportedTag[0]}` };
+  }
+
+  const unsupportedEntity = value.match(/&(?:#\d+|#x[\da-f]+|[A-Za-z][\w-]*);/iu);
+  if (unsupportedEntity) {
+    return { safe: false, reason: `Unsupported entity remains: ${unsupportedEntity[0]}` };
+  }
+
+  if ((value.match(/"/gu) ?? []).length % 2 !== 0) {
+    return { safe: false, reason: 'Unmatched quote remains in official description.' };
+  }
+
+  return { safe: true, value };
+}
+
+export function classifyDifferences(entries) {
+  return entries.map(entry => {
+    if (entry.status !== "matched") {
+      return { ...entry };
+    }
+
+    const normalized = normalizeOfficialDescription(entry.officialDescription ?? "");
+    if (!normalized.safe) {
+      return {
+        ...entry,
+        status: "format-risk",
+        reason: appendReason(
+          entry.reason,
+          `Official description cannot be normalized safely: ${normalized.reason}`,
+        ),
+      };
+    }
+
+    const status =
+      (entry.currentDescription ?? "") === normalized.value ? "consistent" : "different";
+
+    return {
+      ...entry,
+      status,
+      normalizedOfficialDescription: normalized.value,
+      reason: appendReason(
+        entry.reason,
+        status === "consistent"
+          ? "Repository description already matches the normalized official description."
+          : "Repository description differs from the normalized official description.",
+      ),
+    };
+  });
+}
+
+export function applySafeFixes(source, entries) {
+  const replacements = entries
+    .filter(entry => entry.status === "different")
+    .map(entry => buildReplacement(entry));
+
+  const ascending = [...replacements].sort((left, right) => left.start - right.start);
+  for (let index = 1; index < ascending.length; index += 1) {
+    if (ascending[index - 1].end > ascending[index].start) {
+      throw new Error("Overlapping replacements are not supported.");
+    }
+  }
+
+  let updated = source;
+  for (const replacement of replacements.sort((left, right) => right.start - left.start)) {
+    updated =
+      updated.slice(0, replacement.start) + replacement.text + updated.slice(replacement.end);
+  }
+  return updated;
+}
+
 function toArray(value) {
   if (value == null) {
     return [];
@@ -892,4 +977,97 @@ function skipRegexLiteral(source, start) {
   }
 
   throw new Error(`Unterminated regex literal at index ${start}`);
+}
+
+function normalizeChineseStraightQuotes(value) {
+  const quotes = [];
+  for (let index = 0; index < value.length; index += 1) {
+    if (value[index] === '"') {
+      quotes.push(index);
+    }
+  }
+
+  if (quotes.length % 2 !== 0) {
+    return { safe: false, reason: "Unmatched quote remains in official description." };
+  }
+
+  if (quotes.length === 0) {
+    return { safe: true, value };
+  }
+
+  let normalized = "";
+  let cursor = 0;
+  for (let index = 0; index < quotes.length; index += 2) {
+    const open = quotes[index];
+    const close = quotes[index + 1];
+    const inner = value.slice(open + 1, close);
+    normalized += value.slice(cursor, open);
+    if (containsChineseTerm(inner)) {
+      normalized += `“${inner}”`;
+    } else {
+      normalized += `"${inner}"`;
+    }
+    cursor = close + 1;
+  }
+  normalized += value.slice(cursor);
+  return { safe: true, value: normalized };
+}
+
+function containsChineseTerm(value) {
+  return /\p{Script=Han}/u.test(value);
+}
+
+function removeChinesePunctuationSpacing(value) {
+  return value
+    .replace(/([（【《〈「『“])\s+/gu, "$1")
+    .replace(/\s+([）】》〉」』”])/gu, "$1")
+    .replace(/\s+([，。！？；：、])/gu, "$1")
+    .replace(/([，。！？；：、])\s+/gu, "$1");
+}
+
+function appendReason(base, detail) {
+  return base ? `${base} ${detail}` : detail;
+}
+
+function buildReplacement(entry) {
+  const writableInfo = entry.writableInfo;
+  if (!writableInfo) {
+    throw new Error(`Skill ${entry.skillId ?? "<unknown>"} has no writable info literal.`);
+  }
+  if (typeof entry.normalizedOfficialDescription !== "string") {
+    throw new Error(
+      `Skill ${entry.skillId ?? "<unknown>"} is missing a normalized official description.`,
+    );
+  }
+  if (
+    typeof writableInfo.start !== "number" ||
+    typeof writableInfo.end !== "number" ||
+    writableInfo.start < 0 ||
+    writableInfo.end < writableInfo.start
+  ) {
+    throw new Error(`Skill ${entry.skillId ?? "<unknown>"} has an invalid writable range.`);
+  }
+
+  return {
+    start: writableInfo.start,
+    end: writableInfo.end,
+    text: serializeStaticLiteral(entry.normalizedOfficialDescription, writableInfo.quote),
+  };
+}
+
+function serializeStaticLiteral(value, quote) {
+  if (!["'", '"', "`"].includes(quote)) {
+    throw new Error(`Unsupported quote style for writeback: ${quote}`);
+  }
+  if (/[\r\n\u2028\u2029]/u.test(value)) {
+    throw new Error("Line breaks are not supported in safe static writeback.");
+  }
+  if (quote === "`" && value.includes("${")) {
+    throw new Error("Template interpolation cannot be introduced during safe writeback.");
+  }
+
+  const escaped = value
+    .replace(/\\/gu, "\\\\")
+    .replaceAll(quote, `\\${quote}`);
+  return `${quote}${escaped}${quote}`;
 }
