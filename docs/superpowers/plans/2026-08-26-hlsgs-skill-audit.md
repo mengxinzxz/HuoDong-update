@@ -2,7 +2,7 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** 使用《欢乐三国杀》2.3.6 官方客户端配置审计 504 名欢乐武将实际拥有的技能描述，并将所有可唯一映射、由扩展自身维护的静态文案校准为官方语义。
+**Goal:** 使用《欢乐三国杀》2.3.6 官方客户端配置审计 505 个欢乐角色定义实际拥有的技能描述，并将所有可唯一映射、由扩展自身维护的静态文案校准为官方语义。
 
 **Architecture:** 新增一个无第三方依赖的 Node 审计工具，静态解析 `MiNikill.js` 的武将、技能与翻译对象，并把仓库武将约束到官方武将的技能 ID 集合中完成确定性映射。工具先生成分类报告，再仅对唯一映射且可安全格式化的扩展自有静态 `_info` 文本生成写回结果；核心复用、动态描述和歧义项只报告。
 
@@ -12,7 +12,7 @@
 
 - 官方基准固定为包名 `com.yk.happysha`、版本 `2.3.6` 的已解密 `gameconfing.json`。
 - 本次只审计技能描述，不修改技能实现。
-- 范围仅包括 `MiNikill.character` 中 504 名武将直接拥有的主技能。
+- 范围包括 `MiNikill.character` 中 505 个角色定义直接拥有的主技能，其中含 2 个隐藏形态；报告另列 503 个不同的可选角色 ID和因重复归组形成的 504 个可见排序槽位。
 - 只有角色和技能均唯一映射、描述由扩展维护、且为静态字符串时才允许自动修改。
 - noname 核心复用技能、动态翻译、同名歧义、官方缺失和本地缺失项只进入报告。
 - 官方客户端数据和生成的完整审计报告不得提交到仓库。
@@ -438,7 +438,7 @@ node tools\hlsgs-skill-audit.mjs `
   --markdown-report C:\Users\Jiahui\.copilot\session-state\a6463ad7-4019-42a9-a16a-51fecfa4e5a0\files\hlsgs-skill-audit-before.md
 ```
 
-Expected: exit `0`; reports list exactly 504 repository characters and every direct skill slot.
+Expected: exit `0`; reports list exactly 505 repository character definitions and every direct skill slot，并分别报告 2 个隐藏形态、503 个不同的可选角色 ID 与 504 个可见排序槽位。
 
 - [ ] **Step 6: Review mapping quality**
 
@@ -575,7 +575,7 @@ assert.equal(
 );
 ```
 
-Also verify the report covers exactly 504 distinct repository character IDs.
+Also verify the report covers exactly 505 distinct repository character definition IDs，并分别验证 2 个隐藏形态、503 个不同的可选角色 ID 与 504 个可见排序槽位。
 
 - [ ] **Step 3: Summarize without overstating coverage**
 
