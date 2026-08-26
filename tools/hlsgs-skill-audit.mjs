@@ -15,6 +15,25 @@ const REGEX_PREFIX_KEYWORDS = new Set([
   "yield",
 ]);
 
+const GENERAL_NAME_WRAPPER_PATTERN = /^`?\$\{get\.poptip\('rule_mamba'\)\}/u;
+const GENERAL_NAME_PREFIX_REWRITES = [
+  [/^SP欢杀/u, "SP"],
+  [/^欢杀神/u, "神"],
+  [/^欢杀谋/u, "谋"],
+  [/^欢杀星/u, "星"],
+  [/^欢杀乐/u, "乐"],
+  [/^欢杀界/u, "界"],
+  [/^欢杀/u, ""],
+];
+const GENERAL_NAME_EXACT_ALIASES = new Map([
+  ["神大乔小乔", "神大小乔"],
+  ["甄宓", "甄姬"],
+  ["界甄宓", "界甄姬"],
+  ["谋甄宓", "谋甄姬"],
+  ["SP甄宓", "SP甄姬"],
+  ["神甄宓", "神甄姬"],
+]);
+
 export function extractObjectBody(source, marker) {
   return locateObjectSection(source, marker).body;
 }
@@ -60,10 +79,20 @@ export function parsePackSource(source) {
 }
 
 export function normalizeGeneralName(name) {
-  return String(name ?? "")
-    .replace(/^欢杀/u, "")
-    .replace(/\s+/gu, "")
-    .trim();
+  let normalized = String(name ?? "").replace(/\s+/gu, "").trim();
+  if (normalized.startsWith("`") && normalized.endsWith("`")) {
+    normalized = normalized.slice(1, -1);
+  }
+  while (GENERAL_NAME_WRAPPER_PATTERN.test(normalized)) {
+    normalized = normalized.replace(GENERAL_NAME_WRAPPER_PATTERN, "");
+  }
+  for (const [pattern, replacement] of GENERAL_NAME_PREFIX_REWRITES) {
+    if (pattern.test(normalized)) {
+      normalized = normalized.replace(pattern, replacement);
+      break;
+    }
+  }
+  return GENERAL_NAME_EXACT_ALIASES.get(normalized) ?? normalized;
 }
 
 export function parseOfficialConfig(json) {
@@ -108,6 +137,7 @@ export function mapPackToOfficial(pack, official) {
     const uniqueGeneral = generalCandidates.length === 1 ? generalCandidates[0] : null;
 
     for (const skillId of skillIds) {
+      const writableInfo = pack.infoLiterals.get(skillId) ?? null;
       const entry = {
         characterId,
         characterName,
@@ -124,6 +154,11 @@ export function mapPackToOfficial(pack, official) {
         officialDescription: null,
         reason: "",
       };
+
+      if (writableInfo) {
+        entry.writableInfo = writableInfo;
+        entry.currentDescription = writableInfo.value;
+      }
 
       if (!pack.localSkills.has(skillId)) {
         entry.status = "core-reused";
@@ -178,15 +213,12 @@ export function mapPackToOfficial(pack, official) {
 
       const [officialSkill] = skillCandidates;
       const infoKey = `${skillId}_info`;
-      const writableInfo = pack.infoLiterals.get(skillId) ?? null;
 
       entry.officialSkillId = officialSkill.id;
       entry.officialDescription = officialSkill.describe;
 
       if (writableInfo) {
         entry.status = "matched";
-        entry.writableInfo = writableInfo;
-        entry.currentDescription = writableInfo.value;
         entry.reason = `Mapped repository skill "${entry.skillName}" to official general ${uniqueGeneral.id} skill ${officialSkill.id}.`;
         entries.push(entry);
         continue;
