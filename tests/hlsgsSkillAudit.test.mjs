@@ -1,6 +1,10 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { parsePackSource } from "../tools/hlsgs-skill-audit.mjs";
+import {
+  mapPackToOfficial,
+  parseOfficialConfig,
+  parsePackSource,
+} from "../tools/hlsgs-skill-audit.mjs";
 
 const source = `
 const pack = {
@@ -17,6 +21,28 @@ const pack = {
   },
 };
 `;
+
+const official = {
+  generalcards: {
+    Cards: {
+      Card: [
+        { CardID: "10", CardName: "甲", Skills: "100" },
+        { CardID: "11", CardName: "乙", Skills: "101,102" },
+        { CardID: "12", CardName: "乙", Skills: "103" },
+      ],
+    },
+  },
+  skills: {
+    Skills: {
+      Skill: [
+        { ID: "100", Name: "甲技", Describe: "官方甲技。" },
+        { ID: "101", Name: "乙技", Describe: "官方乙技第一版。" },
+        { ID: "102", Name: "辅技", Describe: "官方辅技。" },
+        { ID: "103", Name: "乙技", Describe: "官方乙技第二版。" },
+      ],
+    },
+  },
+};
 
 test("parses direct character skills and extension-owned static info", () => {
   const parsed = parsePackSource(source);
@@ -93,4 +119,26 @@ const pack = {
 
   const parsed = parsePackSource(unicodeKeySource);
   assert.equal(parsed.translations.get("zhouyu_宫"), "宫");
+});
+
+test("maps a skill only inside a uniquely resolved general skill set", () => {
+  const entries = mapPackToOfficial(parsePackSource(source), parseOfficialConfig(official));
+  const entry = entries.find(item => item.skillId === "minia");
+
+  assert.equal(entry.status, "matched");
+  assert.equal(entry.officialGeneralId, "10");
+  assert.equal(entry.officialSkillId, "100");
+});
+
+test("reports duplicate official generals instead of guessing", () => {
+  const duplicateSource = source.replace("欢杀甲", "欢杀乙").replaceAll("甲技", "乙技");
+  const [entry] = mapPackToOfficial(parsePackSource(duplicateSource), parseOfficialConfig(official));
+
+  assert.equal(entry.status, "ambiguous-general");
+});
+
+test("reports reused core skills without making them writable", () => {
+  const entries = mapPackToOfficial(parsePackSource(source), parseOfficialConfig(official));
+
+  assert.equal(entries.find(item => item.skillId === "coreSkill").status, "core-reused");
 });

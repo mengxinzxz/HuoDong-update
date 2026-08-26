@@ -59,6 +59,162 @@ export function parsePackSource(source) {
   return { characters, localSkills, translations, infoLiterals };
 }
 
+export function normalizeGeneralName(name) {
+  return String(name ?? "")
+    .replace(/^欢杀/u, "")
+    .replace(/\s+/gu, "")
+    .trim();
+}
+
+export function parseOfficialConfig(json) {
+  const skillsById = new Map(
+    toArray(json?.skills?.Skills?.Skill).map(skill => [
+      String(skill.ID),
+      {
+        id: String(skill.ID),
+        name: String(skill.Name ?? ""),
+        describe: String(skill.Describe ?? ""),
+      },
+    ]),
+  );
+
+  const generals = toArray(json?.generalcards?.Cards?.Card).map(general => ({
+    id: String(general.CardID),
+    name: String(general.CardName ?? ""),
+    skillIds: String(general.Skills ?? "")
+      .split(",")
+      .map(value => value.trim())
+      .filter(Boolean),
+  }));
+
+  return { generals, skillsById };
+}
+
+export function mapPackToOfficial(pack, official) {
+  const entries = [];
+  const generalCandidatesByName = new Map();
+
+  for (const general of official.generals) {
+    const normalizedName = normalizeGeneralName(general.name);
+    const candidates = generalCandidatesByName.get(normalizedName) ?? [];
+    candidates.push(general);
+    generalCandidatesByName.set(normalizedName, candidates);
+  }
+
+  for (const [characterId, skillIds] of pack.characters) {
+    const characterName = pack.translations.get(characterId) ?? "";
+    const normalizedCharacterName = normalizeGeneralName(characterName);
+    const generalCandidates = generalCandidatesByName.get(normalizedCharacterName) ?? [];
+    const uniqueGeneral = generalCandidates.length === 1 ? generalCandidates[0] : null;
+
+    for (const skillId of skillIds) {
+      const entry = {
+        characterId,
+        characterName,
+        normalizedCharacterName,
+        skillId,
+        skillName: pack.translations.get(skillId) ?? "",
+        status: "missing-general",
+        officialGeneralId: uniqueGeneral?.id ?? null,
+        officialGeneralIds: generalCandidates.map(candidate => candidate.id),
+        officialSkillId: null,
+        officialSkillIds: [],
+        writableInfo: null,
+        currentDescription: null,
+        officialDescription: null,
+        reason: "",
+      };
+
+      if (!pack.localSkills.has(skillId)) {
+        entry.status = "core-reused";
+        entry.reason = "Skill is not defined in MiNikill.skill and is treated as a core-reused skill.";
+        entries.push(entry);
+        continue;
+      }
+
+      if (generalCandidates.length === 0) {
+        entry.status = "missing-general";
+        entry.reason = characterName
+          ? `No official general matched normalized repository name "${normalizedCharacterName}".`
+          : "Repository character translation is missing, so no official general can be resolved.";
+        entries.push(entry);
+        continue;
+      }
+
+      if (generalCandidates.length > 1) {
+        entry.status = "ambiguous-general";
+        entry.reason = `Multiple official generals matched normalized repository name "${normalizedCharacterName}".`;
+        entries.push(entry);
+        continue;
+      }
+
+      if (!entry.skillName) {
+        entry.status = "missing-skill";
+        entry.reason = "Repository skill translation is missing, so official skill matching cannot start.";
+        entries.push(entry);
+        continue;
+      }
+
+      const skillCandidates = uniqueGeneral.skillIds
+        .map(officialSkillId => official.skillsById.get(officialSkillId))
+        .filter(Boolean)
+        .filter(skill => skill.name === entry.skillName);
+
+      entry.officialSkillIds = skillCandidates.map(skill => skill.id);
+
+      if (skillCandidates.length === 0) {
+        entry.status = "missing-skill";
+        entry.reason = `No official skill named "${entry.skillName}" exists inside official general ${uniqueGeneral.id}.`;
+        entries.push(entry);
+        continue;
+      }
+
+      if (skillCandidates.length > 1) {
+        entry.status = "ambiguous-skill";
+        entry.reason = `Multiple official skills named "${entry.skillName}" exist inside official general ${uniqueGeneral.id}.`;
+        entries.push(entry);
+        continue;
+      }
+
+      const [officialSkill] = skillCandidates;
+      const infoKey = `${skillId}_info`;
+      const writableInfo = pack.infoLiterals.get(skillId) ?? null;
+
+      entry.officialSkillId = officialSkill.id;
+      entry.officialDescription = officialSkill.describe;
+
+      if (writableInfo) {
+        entry.status = "matched";
+        entry.writableInfo = writableInfo;
+        entry.currentDescription = writableInfo.value;
+        entry.reason = `Mapped repository skill "${entry.skillName}" to official general ${uniqueGeneral.id} skill ${officialSkill.id}.`;
+        entries.push(entry);
+        continue;
+      }
+
+      if (pack.translations.has(infoKey)) {
+        entry.status = "dynamic-info";
+        entry.reason = "Repository skill info exists but is dynamic, so it cannot be rewritten safely.";
+        entries.push(entry);
+        continue;
+      }
+
+      entry.status = "missing-local-info";
+      entry.reason = "Repository skill has no extension-owned static _info entry.";
+      entries.push(entry);
+    }
+  }
+
+  return entries;
+}
+
+function toArray(value) {
+  if (value == null) {
+    return [];
+  }
+  return Array.isArray(value) ? value : [value];
+}
+
 function locateObjectSection(source, marker) {
   const markerIndex = source.indexOf(marker);
   if (markerIndex < 0) {
