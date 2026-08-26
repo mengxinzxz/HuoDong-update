@@ -370,6 +370,13 @@ export function normalizeOfficialDescription(describe) {
   }
   value = collapsedBreaks.value;
 
+  if (value.includes("|")) {
+    return {
+      safe: false,
+      reason: "Raw pipe separator remains in official description; variant-aware routing is required before rewriting.",
+    };
+  }
+
   const normalizedQuotes = normalizeChineseStraightQuotes(value);
   if (!normalizedQuotes.safe) {
     return normalizedQuotes;
@@ -390,6 +397,11 @@ export function normalizeOfficialDescription(describe) {
 
   if ((value.match(/"/gu) ?? []).length % 2 !== 0) {
     return { safe: false, reason: 'Unmatched quote remains in official description.' };
+  }
+
+  const balancedParentheses = validateBalancedParentheses(value);
+  if (!balancedParentheses.safe) {
+    return balancedParentheses;
   }
 
   return { safe: true, value };
@@ -1558,6 +1570,48 @@ function normalizeChineseStraightQuotes(value) {
   }
   normalized += value.slice(cursor);
   return { safe: true, value: normalized };
+}
+
+function validateBalancedParentheses(value) {
+  const pairs = new Map([
+    ["(", ")"],
+    ["（", "）"],
+  ]);
+  const closingToOpening = new Map([...pairs].map(([open, close]) => [close, open]));
+  const stack = [];
+
+  for (const char of value) {
+    if (pairs.has(char)) {
+      stack.push(char);
+      continue;
+    }
+    if (!closingToOpening.has(char)) {
+      continue;
+    }
+
+    const open = stack.pop();
+    if (!open) {
+      return {
+        safe: false,
+        reason: `Unexpected closing parenthesis "${char}" remains in official description.`,
+      };
+    }
+    if (pairs.get(open) !== char) {
+      return {
+        safe: false,
+        reason: `Mismatched parentheses "${open}${char}" remain in official description.`,
+      };
+    }
+  }
+
+  if (stack.length > 0) {
+    return {
+      safe: false,
+      reason: `Unclosed parenthesis "${stack.at(-1)}" remains in official description.`,
+    };
+  }
+
+  return { safe: true, value };
 }
 
 function containsChineseTerm(value) {

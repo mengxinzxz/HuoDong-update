@@ -374,8 +374,8 @@ test("rejects official line breaks that join unpunctuated text", () => {
 
 test("collapses supported line break variants after punctuation boundaries", () => {
   assert.deepEqual(
-    normalizeOfficialDescription("效果一； <BR /> 效果二：<br>效果三）<br/>结束。"),
-    { safe: true, value: "效果一；效果二：效果三）结束。" },
+    normalizeOfficialDescription("效果一； <BR /> 效果二：<br>效果三（条件）<br/>结束。"),
+    { safe: true, value: "效果一；效果二：效果三（条件）结束。" },
   );
 });
 
@@ -405,6 +405,43 @@ test("rejects unmatched straight quotes in official descriptions", () => {
 
   assert.equal(result.safe, false);
   assert.match(result.reason, /unmatched quote/i);
+});
+
+test("rejects pipe-separated official descriptions without variant-aware routing", () => {
+  const [entry] = classifyDifferences([
+    {
+      skillId: "minijiaozhao",
+      status: "matched",
+      currentDescription: "出牌阶段限一次，你可以展示一张手牌。",
+      officialDescription: "出牌阶段限一次，你可以展示一张手牌。|修改1：出牌阶段，你可以展示一张手牌。|修改2：出牌阶段，你可以展示一张手牌。",
+      writableInfo: {
+        start: 10,
+        end: 25,
+        quote: "'",
+        value: "出牌阶段限一次，你可以展示一张手牌。",
+      },
+    },
+  ]);
+
+  assert.equal(entry.status, "format-risk");
+  assert.match(entry.reason, /pipe/i);
+});
+
+test("rejects official descriptions with mismatched Chinese and ASCII parentheses", () => {
+  const fullWidthOpenAsciiClose = normalizeOfficialDescription("效果一。（效果二)");
+  const asciiOpenFullWidthClose = normalizeOfficialDescription("效果一。(效果二）");
+
+  assert.equal(fullWidthOpenAsciiClose.safe, false);
+  assert.match(fullWidthOpenAsciiClose.reason, /parenthes/i);
+  assert.equal(asciiOpenFullWidthClose.safe, false);
+  assert.match(asciiOpenFullWidthClose.reason, /parenthes/i);
+});
+
+test("accepts balanced full-width and ASCII parentheses", () => {
+  assert.deepEqual(
+    normalizeOfficialDescription("效果一（含(内层)条件）。效果二(ASCII)。"),
+    { safe: true, value: "效果一（含(内层)条件）。效果二(ASCII)。" },
+  );
 });
 
 test("classifies matched descriptions as consistent, different, or format-risk", () => {
