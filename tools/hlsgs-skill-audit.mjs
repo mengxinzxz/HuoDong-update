@@ -241,7 +241,14 @@ export function mapPackToOfficial(pack, official) {
 }
 
 export function normalizeOfficialDescription(describe) {
-  let value = String(describe ?? "").trim();
+  let value = String(describe ?? "");
+
+  const unsupportedWhitespace = findUnsupportedOfficialWhitespace(value);
+  if (unsupportedWhitespace) {
+    return unsupportedWhitespace;
+  }
+
+  value = value.trim();
   value = value.replace(/\s*<br\s*\/?>\s*/giu, "");
   value = value.replace(/&nbsp;/giu, " ");
 
@@ -1017,12 +1024,27 @@ function containsChineseTerm(value) {
   return /\p{Script=Han}/u.test(value);
 }
 
+function findUnsupportedOfficialWhitespace(value) {
+  const match = value.match(/[\r\n\t]/u);
+  if (!match) {
+    return null;
+  }
+
+  if (match[0] === "\r") {
+    return { safe: false, reason: "Raw carriage returns are not allowed in official descriptions; use <br> for line breaks." };
+  }
+  if (match[0] === "\n") {
+    return { safe: false, reason: "Raw newlines are not allowed in official descriptions; use <br> for line breaks." };
+  }
+  return { safe: false, reason: "Raw tabs are not allowed in official descriptions." };
+}
+
 function removeChinesePunctuationSpacing(value) {
   return value
-    .replace(/([（【《〈「『“])\s+/gu, "$1")
-    .replace(/\s+([）】》〉」』”])/gu, "$1")
-    .replace(/\s+([，。！？；：、])/gu, "$1")
-    .replace(/([，。！？；：、])\s+/gu, "$1");
+    .replace(/([（【《〈「『“]) +/gu, "$1")
+    .replace(/ +([）】》〉」』”])/gu, "$1")
+    .replace(/ +([，。！？；：、])/gu, "$1")
+    .replace(/([，。！？；：、]) +/gu, "$1");
 }
 
 function appendReason(base, detail) {

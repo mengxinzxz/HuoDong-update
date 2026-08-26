@@ -320,6 +320,20 @@ test("rejects unsupported official markup", () => {
   assert.match(result.reason, /unsupported markup/i);
 });
 
+test("rejects raw newlines in official descriptions", () => {
+  const result = normalizeOfficialDescription("效果一。\n效果二。");
+
+  assert.equal(result.safe, false);
+  assert.match(result.reason, /raw newline/i);
+});
+
+test("rejects raw tabs in official descriptions", () => {
+  const result = normalizeOfficialDescription("效果一。\t效果二。");
+
+  assert.equal(result.safe, false);
+  assert.match(result.reason, /raw tab/i);
+});
+
 test("rejects unmatched straight quotes in official descriptions", () => {
   const result = normalizeOfficialDescription('效果"标记。');
 
