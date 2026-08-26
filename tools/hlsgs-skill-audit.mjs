@@ -1,3 +1,21 @@
+import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { dirname, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
+
+const OFFICIAL_PACKAGE = "com.yk.happysha";
+const OFFICIAL_VERSION = "2.3.6";
+const REPORT_STATUS_ORDER = [
+  "different",
+  "format-risk",
+  "core-reused",
+  "missing-general",
+  "ambiguous-general",
+  "missing-skill",
+  "ambiguous-skill",
+  "dynamic-info",
+  "missing-local-info",
+  "consistent",
+];
 const REGEX_PREFIX_KEYWORDS = new Set([
   "await",
   "case",
@@ -44,6 +62,7 @@ export function splitTopLevelEntries(body) {
 
 export function parsePackSource(source) {
   const characters = new Map();
+  const characterValues = new Map();
   const localSkills = new Set();
   const translations = new Map();
   const infoLiterals = new Map();
@@ -51,6 +70,7 @@ export function parsePackSource(source) {
   const characterSection = locateObjectSection(source, "character:");
   for (const segment of splitEntrySegments(characterSection.body)) {
     const entry = parseEntry(segment.text);
+    characterValues.set(entry.key, entry.value);
     characters.set(entry.key, parseCharacterSkillArray(entry.value));
   }
 
@@ -75,7 +95,89 @@ export function parsePackSource(source) {
     }
   }
 
-  return { characters, localSkills, translations, infoLiterals };
+  return { characters, characterValues, localSkills, translations, infoLiterals };
+}
+
+export function parseArgs(argv) {
+  const args = {
+    sourcePath: null,
+    officialPath: null,
+    jsonReportPath: null,
+    markdownReportPath: null,
+    write: false,
+  };
+
+  for (let index = 0; index < argv.length; index += 1) {
+    const arg = argv[index];
+    if (arg === "--write") {
+      args.write = true;
+      continue;
+    }
+
+    const pathOptions = {
+      "--source": "sourcePath",
+      "--official": "officialPath",
+      "--json-report": "jsonReportPath",
+      "--markdown-report": "markdownReportPath",
+    };
+    const key = pathOptions[arg];
+    if (!key) {
+      throw new Error(`Unknown argument: ${arg}`);
+    }
+    const value = argv[index + 1];
+    if (!value || value.startsWith("--")) {
+      throw new Error(`Missing value for ${arg}`);
+    }
+    args[key] = value;
+    index += 1;
+  }
+
+  if (!args.sourcePath) throw new Error("Missing required --source path.");
+  if (!args.officialPath) throw new Error("Missing required --official path.");
+  if (!args.jsonReportPath) throw new Error("Missing required --json-report path.");
+  if (!args.markdownReportPath) throw new Error("Missing required --markdown-report path.");
+
+  return args;
+}
+
+export function summarize(entries) {
+  const summary = {};
+  for (const entry of entries) {
+    summary[entry.status] = (summary[entry.status] ?? 0) + 1;
+  }
+  return summary;
+}
+
+export function deriveScopeMetadata(pack, source) {
+  const hiddenQingHelperIds = [];
+  for (const [characterId, value] of pack.characterValues ?? []) {
+    if (characterId.startsWith("Mqing_") && hasUnseenCharacterFlag(value)) {
+      hiddenQingHelperIds.push(characterId);
+    }
+  }
+
+  const hidden = new Set(hiddenQingHelperIds);
+  const sortSlots = source ? parseCharacterSortSlots(source) : [];
+  const visibleSortedIds = sortSlots.filter(characterId => !hidden.has(characterId));
+  const visibleCounts = countValues(visibleSortedIds);
+  const duplicatedVisibleSortIds = [...visibleCounts]
+    .filter(([, count]) => count > 1)
+    .map(([characterId]) => characterId);
+  const directSkillSlots = [...pack.characters.values()].reduce(
+    (total, skillIds) => total + skillIds.length,
+    0,
+  );
+
+  return {
+    rawCharacterDefinitions: pack.characters.size,
+    directSkillSlots,
+    sortSlots: sortSlots.length,
+    hiddenQingHelperForms: hiddenQingHelperIds.length,
+    hiddenQingHelperIds,
+    visibleSortSlots: visibleSortedIds.length,
+    distinctSelectableIds: new Set(visibleSortedIds).size,
+    duplicatedVisibleSortIds,
+  };
 }
 
 export function normalizeGeneralName(name) {
@@ -330,6 +432,237 @@ export function applySafeFixes(source, entries) {
       updated.slice(0, replacement.start) + replacement.text + updated.slice(replacement.end);
   }
   return updated;
+}
+
+export function createJsonReport({ sourcePath, officialPath, summary, scope, entries }) {
+  return {
+    schemaVersion: 1,
+    officialPackage: OFFICIAL_PACKAGE,
+    officialVersion: OFFICIAL_VERSION,
+    generatedAt: new Date().toISOString(),
+    sourcePath,
+    officialPath,
+    summary,
+    scope,
+    entries,
+  };
+}
+
+export function renderMarkdownReport(report) {
+  const lines = [
+    "# 欢乐三国杀技能描述审计报告",
+    "",
+    `- Schema version: ${report.schemaVersion}`,
+    `- Official package: ${report.officialPackage}`,
+    `- Official version: ${report.officialVersion}`,
+    `- Generated at: ${report.generatedAt}`,
+    `- Source: \`${report.sourcePath}\``,
+    `- Official config: \`${report.officialPath}\``,
+    "",
+    "## Scope",
+    "",
+    "| Metric | Count | Evidence |",
+    "| --- | ---: | --- |",
+    `| Raw character definitions | ${report.scope.rawCharacterDefinitions} | \`MiNikill.character\` entries |`,
+    `| Direct skill slots | ${report.scope.directSkillSlots} | Sum of direct skill arrays across character definitions |`,
+    `| Hidden qing helper forms | ${report.scope.hiddenQingHelperForms} | ${formatList(report.scope.hiddenQingHelperIds)} |`,
+    `| Character sort slots | ${report.scope.sortSlots} | \`MiNikill.characterSort\` slots before hidden filtering |`,
+    `| Visible sort slots | ${report.scope.visibleSortSlots} | Sort slots excluding hidden helper forms |`,
+    `| Distinct selectable IDs | ${report.scope.distinctSelectableIds} | Unique visible sort IDs |`,
+    `| Duplicated visible sort IDs | ${report.scope.duplicatedVisibleSortIds.length} | ${formatList(report.scope.duplicatedVisibleSortIds)} |`,
+    "",
+    "## Summary",
+    "",
+    "| Status | Count |",
+    "| --- | ---: |",
+  ];
+
+  const statuses = orderedStatuses(report.entries);
+  for (const status of statuses) {
+    lines.push(`| ${escapeMarkdown(status)} | ${report.summary[status] ?? 0} |`);
+  }
+
+  for (const status of statuses) {
+    lines.push("", `### ${status}`, "");
+    const rows = report.entries.filter(entry => entry.status === status);
+    if (rows.length === 0) {
+      lines.push("_No entries._");
+      continue;
+    }
+
+    lines.push(
+      "| Character | Skill | Official general | Official skill | Current | Official normalized | Reason |",
+      "| --- | --- | --- | --- | --- | --- | --- |",
+    );
+    for (const entry of rows) {
+      lines.push(
+        [
+          entry.characterId,
+          `${entry.skillId}${entry.skillName ? ` (${entry.skillName})` : ""}`,
+          entry.officialGeneralId ?? formatList(entry.officialGeneralIds ?? []),
+          entry.officialSkillId ?? formatList(entry.officialSkillIds ?? []),
+          entry.currentDescription ?? "",
+          entry.normalizedOfficialDescription ?? entry.officialDescription ?? "",
+          entry.reason ?? "",
+        ]
+          .map(value => escapeMarkdown(value))
+          .join(" | ")
+          .replace(/^/u, "| ")
+          .replace(/$/u, " |"),
+      );
+    }
+  }
+
+  return `${lines.join("\n")}\n`;
+}
+
+export async function runAudit(argv = process.argv.slice(2)) {
+  const args = parseArgs(argv);
+  const source = await readFile(args.sourcePath, "utf8");
+  const officialJson = JSON.parse(await readFile(args.officialPath, "utf8"));
+  const pack = parsePackSource(source);
+  const official = parseOfficialConfig(officialJson);
+  const entries = classifyDifferences(mapPackToOfficial(pack, official));
+  const summary = summarize(entries);
+  const scope = deriveScopeMetadata(pack, source);
+
+  if (entries.length !== scope.directSkillSlots) {
+    throw new Error(
+      `Report entry count ${entries.length} does not match direct skill slot count ${scope.directSkillSlots}.`,
+    );
+  }
+
+  const report = createJsonReport({
+    sourcePath: args.sourcePath,
+    officialPath: args.officialPath,
+    summary,
+    scope,
+    entries,
+  });
+  const markdown = renderMarkdownReport(report);
+  const updatedSource = args.write ? applySafeFixes(source, entries) : null;
+
+  await writeTextFile(args.jsonReportPath, `${JSON.stringify(report, null, 2)}\n`);
+  await writeTextFile(args.markdownReportPath, markdown);
+  if (args.write) {
+    await writeFile(args.sourcePath, updatedSource, "utf8");
+  }
+
+  return report;
+}
+
+function parseCharacterSortSlots(source) {
+  const section = locateObjectSection(source, "characterSort:");
+  const slots = [];
+  for (const packEntry of splitTopLevelEntries(section.body)) {
+    const groups = parseObjectLiteralEntries(packEntry.value);
+    for (const groupEntry of groups) {
+      slots.push(...parseSortArrayExpression(groupEntry.value));
+    }
+  }
+  return slots;
+}
+
+function parseObjectLiteralEntries(source) {
+  const trimmed = trimTopLevelTrivia(source);
+  if (!trimmed.startsWith("{")) {
+    throw new Error(`Expected object literal: ${trimmed.slice(0, 80)}`);
+  }
+  const close = findMatchingDelimiter(trimmed, 0, "{", "}");
+  if (close !== trimmed.length - 1) {
+    throw new Error(`Unsupported trailing content after object literal: ${trimmed.slice(0, 80)}`);
+  }
+  return splitTopLevelEntries(trimmed.slice(1, -1));
+}
+
+function parseSortArrayExpression(source) {
+  const trimmed = trimTopLevelTrivia(source);
+  if (!trimmed.startsWith("[")) {
+    throw new Error(`Expected characterSort array expression: ${trimmed.slice(0, 80)}`);
+  }
+
+  const close = findMatchingDelimiter(trimmed, 0, "[", "]");
+  const arraySource = trimmed.slice(0, close + 1);
+  const mapper = parseTrailingMap(trimmed.slice(close + 1).trim());
+  const values = [];
+
+  for (const element of parseArrayElements(arraySource)) {
+    const item = trimTopLevelTrivia(element);
+    if (item.startsWith("...")) {
+      values.push(...parseSortArrayExpression(item.slice(3)));
+    } else {
+      values.push(parseStringLiteral(item).value);
+    }
+  }
+
+  return mapper ? values.map(mapper) : values;
+}
+
+function parseTrailingMap(source) {
+  if (!source) {
+    return null;
+  }
+
+  const match = source.match(
+    /^\.map\(\s*([A-Za-z_$][\w$]*)\s*=>\s*`((?:\\.|[^`])*)`\s*\)$/su,
+  );
+  if (!match) {
+    throw new Error(`Unsupported characterSort mapping expression: ${source.slice(0, 80)}`);
+  }
+
+  const [, variable, rawTemplate] = match;
+  const interpolation = `\${${variable}}`;
+  if (!rawTemplate.includes(interpolation)) {
+    throw new Error(`characterSort mapping template does not use ${interpolation}.`);
+  }
+  return value => {
+    const mapped = rawTemplate.replaceAll(interpolation, value);
+    if (mapped.includes("${")) {
+      throw new Error(`Unsupported extra interpolation in characterSort mapping: ${rawTemplate}`);
+    }
+    return mapped;
+  };
+}
+
+function hasUnseenCharacterFlag(characterValue) {
+  return parseArrayElements(characterValue)
+    .slice(4)
+    .some(element => parseStringArray(element).includes("unseen"));
+}
+
+function countValues(values) {
+  const counts = new Map();
+  for (const value of values) {
+    counts.set(value, (counts.get(value) ?? 0) + 1);
+  }
+  return counts;
+}
+
+function orderedStatuses(entries) {
+  const found = new Set(entries.map(entry => entry.status));
+  return [
+    ...REPORT_STATUS_ORDER.filter(status => found.has(status) || status !== "consistent"),
+    ...[...found].filter(status => !REPORT_STATUS_ORDER.includes(status)).sort(),
+  ];
+}
+
+function formatList(values) {
+  if (!values || values.length === 0) {
+    return "";
+  }
+  return values.map(value => `\`${value}\``).join(", ");
+}
+
+function escapeMarkdown(value) {
+  return String(value ?? "")
+    .replace(/\\/gu, "\\\\")
+    .replace(/\|/gu, "\\|")
+    .replace(/\r?\n/gu, "<br>");
+}
+
+async function writeTextFile(path, content) {
+  await mkdir(dirname(resolve(path)), { recursive: true });
+  await writeFile(path, content, "utf8");
 }
 
 function toArray(value) {
@@ -1092,4 +1425,22 @@ function serializeStaticLiteral(value, quote) {
     .replace(/\\/gu, "\\\\")
     .replaceAll(quote, `\\${quote}`);
   return `${quote}${escaped}${quote}`;
+}
+
+if (process.argv[1] && fileURLToPath(import.meta.url) === resolve(process.argv[1])) {
+  runAudit()
+    .then(report => {
+      const summary = Object.entries(report.summary)
+        .map(([status, count]) => `${status}:${count}`)
+        .join(" ");
+      console.log(
+        `Audit complete: entries=${report.entries.length} rawCharacters=${report.scope.rawCharacterDefinitions} ` +
+          `hiddenQing=${report.scope.hiddenQingHelperForms} distinctSelectable=${report.scope.distinctSelectableIds} ` +
+          `visibleSortSlots=${report.scope.visibleSortSlots} ${summary}`,
+      );
+    })
+    .catch(error => {
+      console.error(error instanceof Error ? error.message : String(error));
+      process.exitCode = 1;
+    });
 }

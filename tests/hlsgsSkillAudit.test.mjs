@@ -3,10 +3,15 @@ import assert from "node:assert/strict";
 import {
   applySafeFixes,
   classifyDifferences,
+  createJsonReport,
+  deriveScopeMetadata,
   mapPackToOfficial,
   normalizeOfficialDescription,
+  parseArgs,
   parseOfficialConfig,
   parsePackSource,
+  renderMarkdownReport,
+  summarize,
 } from "../tools/hlsgs-skill-audit.mjs";
 
 const source = `
@@ -446,4 +451,140 @@ test("rejects overlapping replacements", () => {
       ]),
     /overlap/i,
   );
+});
+
+test("requires source, official, and both report paths", () => {
+  assert.throws(() => parseArgs([]), /--source/);
+  assert.throws(() => parseArgs(["--source", "MiNikill.js"]), /--official/);
+  assert.throws(
+    () => parseArgs(["--source", "MiNikill.js", "--official", "gameconfing.json"]),
+    /--json-report/,
+  );
+  assert.throws(
+    () =>
+      parseArgs([
+        "--source",
+        "MiNikill.js",
+        "--official",
+        "gameconfing.json",
+        "--json-report",
+        "audit.json",
+      ]),
+    /--markdown-report/,
+  );
+});
+
+test("parses required CLI paths and optional write flag", () => {
+  assert.deepEqual(
+    parseArgs([
+      "--source",
+      "js\\precontent\\MiNikill.js",
+      "--official",
+      "gameconfing.json",
+      "--json-report",
+      "before.json",
+      "--markdown-report",
+      "before.md",
+      "--write",
+    ]),
+    {
+      sourcePath: "js\\precontent\\MiNikill.js",
+      officialPath: "gameconfing.json",
+      jsonReportPath: "before.json",
+      markdownReportPath: "before.md",
+      write: true,
+    },
+  );
+});
+
+test("summarizes every audit status", () => {
+  assert.deepEqual(
+    summarize([{ status: "consistent" }, { status: "different" }, { status: "core-reused" }]),
+    { consistent: 1, different: 1, "core-reused": 1 },
+  );
+});
+
+test("derives scope metadata from character definitions and sort evidence", () => {
+  const scopeSource = `
+const pack = {
+  characterSort: {
+    MiNikill: {
+      visible: ['a', 'b', 'b'].map(i => \`Mbaby_\${i}\`),
+      qing: ['lvdiao', 'lvbu', 'diaochan'].map(i => \`Mqing_\${i}\`),
+    },
+  },
+  character: {
+    Mbaby_a: ['male', 'wei', 4, ['skill_a']],
+    Mbaby_b: ['male', 'wei', 4, ['skill_b']],
+    Mqing_lvdiao: ['double', 'qun', 4, ['skill_q'], ['extraCharacter:Mqing_lvbu:Mqing_diaochan']],
+    Mqing_lvbu: ['male', 'qun', 5, ['skill_l'], ['unseen', 'die:Mqing_lvdiao']],
+    Mqing_diaochan: ['female', 'qun', 3, ['skill_d'], ['name:null|null', 'unseen']],
+  },
+  skill: {},
+  translate: {},
+};
+`;
+  const metadata = deriveScopeMetadata(parsePackSource(scopeSource), scopeSource);
+
+  assert.equal(metadata.rawCharacterDefinitions, 5);
+  assert.equal(metadata.hiddenQingHelperForms, 2);
+  assert.deepEqual(metadata.hiddenQingHelperIds, ["Mqing_lvbu", "Mqing_diaochan"]);
+  assert.equal(metadata.visibleSortSlots, 4);
+  assert.equal(metadata.distinctSelectableIds, 3);
+  assert.deepEqual(metadata.duplicatedVisibleSortIds, ["Mbaby_b"]);
+});
+
+test("creates JSON metadata and markdown status sections", () => {
+  const entries = [
+    {
+      characterId: "Mbaby_a",
+      skillId: "minia",
+      skillName: "甲技",
+      status: "different",
+      officialGeneralId: "10",
+      officialSkillId: "100",
+      currentDescription: "旧",
+      normalizedOfficialDescription: "新",
+      reason: "Repository description differs.",
+    },
+    {
+      characterId: "Mbaby_b",
+      skillId: "coreSkill",
+      skillName: "核技",
+      status: "core-reused",
+      officialGeneralId: null,
+      officialSkillId: null,
+      currentDescription: null,
+      normalizedOfficialDescription: null,
+      reason: "core",
+    },
+  ];
+  const scope = {
+    rawCharacterDefinitions: 2,
+    hiddenQingHelperForms: 0,
+    hiddenQingHelperIds: [],
+    visibleSortSlots: 2,
+    distinctSelectableIds: 2,
+    duplicatedVisibleSortIds: [],
+    directSkillSlots: 2,
+  };
+
+  const report = createJsonReport({
+    sourcePath: "MiNikill.js",
+    officialPath: "gameconfing.json",
+    summary: summarize(entries),
+    scope,
+    entries,
+  });
+  const markdown = renderMarkdownReport(report);
+
+  assert.equal(report.schemaVersion, 1);
+  assert.equal(report.officialPackage, "com.yk.happysha");
+  assert.equal(report.officialVersion, "2.3.6");
+  assert.equal(report.scope.rawCharacterDefinitions, 2);
+  assert.match(report.generatedAt, /^\d{4}-\d{2}-\d{2}T/u);
+  assert.match(markdown, /## Summary/u);
+  assert.match(markdown, /### different/u);
+  assert.match(markdown, /### core-reused/u);
+  assert.match(markdown, /Mbaby_a/u);
 });
