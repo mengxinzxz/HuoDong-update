@@ -34590,10 +34590,10 @@ const packs = function () {
                 ai: {
                     order(item, player) {
                         const event = get.event();
-                        const list = get.inpileVCardList(info => info[0] === 'trick').some(info => {
+                        const list = get.inpileVCardList(info => info[0] === 'trick').filter(info => {
                             if (player.getStorage('minizuoxing_cards').includes(info[2])) return false;
-                            if (!event.filterCard(new lib.element.VCard({ name: info[2], isCard: true }), player, event)) return false;
-                            return player.getUseValue(new lib.element.VCard({ name: info[2], isCard: true })) > 0;
+                            const card = new lib.element.VCard({ name: info[2], isCard: true });
+                            return event.filterCard(card, player, event) && player.getUseValue(card) > 0;
                         });
                         if (!list.length) return 0;
                         const max = Math.max(...list.map(info => player.getUseValue(new lib.element.VCard({ name: info[2], isCard: true }))));
@@ -34617,7 +34617,12 @@ const packs = function () {
                 limited: true,
                 skillAnimation: true,
                 animationColor: 'water',
-                filterTarget: true,
+                filterTarget(card, player, target) {
+                    const list = target.getSkills(null, false, false).filter(skill => {
+                        return !target.awakenedSkills.includes(skill) && lib.skill[skill]?.juexingji;
+                    });
+                    return list.length ? player.maxHp >= game.players.length : player.maxHp >= 3;
+                },
                 selectTarget() {
                     var player = _status.event.player;
                     for (var target of game.filterPlayer()) {
@@ -34627,7 +34632,7 @@ const packs = function () {
                         });
                         var bool1 = (!list.length && player.maxHp >= 3);
                         var bool2 = (list.length && player.maxHp >= game.players.length);
-                        target.prompt((bool1 ? '可摸牌' : '') + ((bool1 && bool2) ? '<br>' : '') + (bool2 ? '可觉醒' : ''));
+                        target.prompt((bool1 ? '可摸牌' : '') + (bool2 ? '可觉醒' : ''));
                     }
                     return 1;
                 },
@@ -34661,7 +34666,7 @@ const packs = function () {
                             const info = lib.skill[skill];
                             info.minihuishi_filter = info.filter;
                             info.filter = function (event, player, ...args) {
-                                if (player.storage.minihuishi_mark) return true;
+                                if (player.storage.minihuishi_mark === skill) return true;
                                 return info.minihuishi_filter.call(this, event, player, ...args);
                             };
                         }, result.control);
