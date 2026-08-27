@@ -34632,7 +34632,7 @@ const packs = function () {
                         });
                         var bool1 = (!list.length && player.maxHp >= 3);
                         var bool2 = (list.length && player.maxHp >= game.players.length);
-                        target.prompt((bool1 ? '可摸牌' : '') + (bool2 ? '可觉醒' : ''));
+                        target.prompt(bool1 ? '可摸牌' : bool2 ? '可觉醒' : '不可选择');
                     }
                     return 1;
                 },
