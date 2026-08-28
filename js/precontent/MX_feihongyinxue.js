@@ -3714,47 +3714,32 @@ const packs = function () {
                 audio: 'reluoshen',
                 trigger: { player: 'phaseZhunbeiBegin' },
                 frequent: true,
-                content() {
-                    'step 0'
-                    event.cards = [];
-                    'step 1'
-                    player.judge(function (card) {
-                        return get.color(card) == 'black' ? 1.5 : -1.5;
-                    }).set('judge2', result => result.bool).set('callback', () => {
-                        if (event.judgeResult.color == 'black') event.getParent().orderingCards.remove(card);
-                    });
-                    'step 2'
-                    if (result.bool) {
-                        event.cards.push(result.card);
-                        player.chooseBool('是否再次发动【洛神】？').set('frequentSkill', 'fh_luoshen');
-                    }
-                    else {
-                        for (var i = 0; i < event.cards.length; i++) {
-                            if (get.position(event.cards[i], true) != 'o') {
-                                event.cards.splice(i, 1);
-                                i--;
-                            }
-                        }
-                        if (event.cards.length) {
-                            player.gain(event.cards, 'gain2');
-                            player.addTempSkill('fh_luoshen_add');
-                            player.addMark('fh_luoshen_add', 1, false);
-                        }
-                        event.finish();
-                    }
-                    'step 3'
-                    if (result.bool) event.goto(1);
-                    else {
-                        for (var i = 0; i < event.cards.length; i++) {
-                            if (get.position(event.cards[i], true) != 'o') {
-                                event.cards.splice(i, 1); i--;
-                            }
-                        }
-                        if (event.cards.length) {
-                            player.gain(event.cards, 'gain2');
-                            player.addTempSkill('fh_luoshen_add');
-                            player.addMark('fh_luoshen_add', event.cards.length, false);
-                        }
+                async content(event, trigger, player) {
+                    const cards = new Set();
+                    let continuing = false;
+                    do {
+                        const next = player.judge({
+                            judge(card) {
+                                return get.color(card) == 'black' ? 1.5 : -1.5;
+                            },
+                            judge2(result) {
+                                return result.bool;
+                            },
+                        });
+                        next.set('callback', event => {
+                            if (event.judgeResult.color == 'black') event.getParent().orderingCards.remove(event.card);
+                        });
+                        const result = await next.forResult();
+                        if (!result.bool) break;
+                        cards.add(result.card);
+                        const continueResult = await player.chooseBool('是否再次发动【洛神】？').set('frequentSkill', 'fh_luoshen').forResult();
+                        continuing = continueResult.bool;
+                    } while (continuing);
+                    const gained = [...cards].filter(card => get.position(card, true) == 'o');
+                    if (gained.length) {
+                        player.addTempSkill('fh_luoshen_add', 'roundStart');
+                        player.addMark('fh_luoshen_add', gained.length, false);
+                        await player.gain({ cards: gained, animate: 'gain2' });
                     }
                 },
                 subSkill: {

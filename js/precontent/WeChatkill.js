@@ -5015,11 +5015,9 @@ const packs = function () {
                 derivation: ['new_rejianxiong', 'xingshang', 'mingjian'],
                 audio: 'ext:活动武将/audio/skill:2',
                 trigger: { player: 'phaseBegin' },
-                filter(event, player) {
-                    return lib.skill.wechatyinren.derivation.some(skill => !player.hasSkill('wechatyinren_' + skill));
-                },
                 prompt2(event, player) {
-                    return '跳过出牌阶段和弃牌阶段并获得【' + get.translation(lib.skill.wechatyinren.derivation.filter(skill => !player.hasSkill('wechatyinren_' + skill))[0]) + '】';
+                    const skill = lib.skill.wechatyinren.derivation.find(skill => !player.hasSkill('wechatyinren_' + skill));
+                    return skill ? '跳过出牌阶段和弃牌阶段并获得【' + get.translation('wechatyinren_' + skill) + '】' : '跳过出牌阶段和弃牌阶段';
                 },
                 /*
                 check:function(event,player){
@@ -5029,10 +5027,11 @@ const packs = function () {
                 return player.countCards('h')<=player.getHandcardLimit()+1;
                 },
                 */
-                content() {
+                async content(event, trigger, player) {
                     player.skip('phaseUse');
                     player.skip('phaseDiscard');
-                    player.addSkills('wechatyinren_' + lib.skill.wechatyinren.derivation.filter(skill => !player.hasSkill('wechatyinren_' + skill))[0]);
+                    const skill = lib.skill.wechatyinren.derivation.find(skill => !player.hasSkill('wechatyinren_' + skill));
+                    if (skill) player.addSkills('wechatyinren_' + skill);
                 },
                 subSkill: {
                     new_rejianxiong: { inherit: 'new_rejianxiong' },
@@ -10355,7 +10354,7 @@ const packs = function () {
                 },
                 async content(event, trigger, player) {
                     const [target] = event.targets;
-                    if (target === player) await player.draw(2);
+                    if (target === player) await player.draw();
                     else await target.gain(event.cards, 'gain2');
                 },
             },
@@ -15734,7 +15733,7 @@ const packs = function () {
                     },
                     prompt(links, player) {
                         const map = get.info('wechatweiluan').translateMap;
-                        return `移除〖危鸾〗的“${map[links[0]]}+${player.getStorage('wechatweiluan')?.[links[0]]}”效果视为视为使用一张【杀】`;
+                        return `移除〖危鸾〗的“${map[links[0]]}+${player.getStorage('wechatweiluan')?.[links[0]]}”效果视为使用一张【杀】`;
                     },
                 },
                 ai: {
@@ -24816,7 +24815,7 @@ const packs = function () {
             wechatsbfanjian_info: '出牌阶段限一次，你可以摸一张牌并选择两张手牌展示之（展示牌须包括你本次摸的牌），然后你选择一名其他角色，其获得其中一张牌。若其以此法获得的牌不包括你本次摸的牌，其失去1点体力。',
             wechat_caochun: '小程序曹纯',
             wechatshanjia: '缮甲',
-            wechatshanjia_info: '出牌阶段开始时，你可以摸三张牌，然后弃置3-X张牌（X为你本局游戏内失去过的装备区牌数目且至多为3），且你可以视为视为一张无距离和次数限制的【杀】。若你本次没有以此法弃置非装备牌，此【杀】伤害+1。',
+            wechatshanjia_info: '出牌阶段开始时，你可以摸三张牌，然后弃置3-X张牌（X为你本局游戏内失去过的装备区牌数目且至多为3），且你可以视为一张无距离和次数限制的【杀】。若你本次没有以此法弃置非装备牌，此【杀】伤害+1。',
             wechat_wangyuanji: '小程序王元姬',
             wechatqianchong: '谦冲',
             wechatqianchong_info: `锁定技。①若你的装备区内有：红色牌，则你视为拥有技能${get.poptip('mingzhe')}；黑色牌，则你视为拥有技能${get.poptip('weimu')}。②出牌阶段开始时，若你的装备区内的牌的颜色数不为1，你此阶段使用牌无次数和距离限制。`,
