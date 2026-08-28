@@ -305,6 +305,7 @@ const packs = function () {
             wechat_zhi_zhushixing: ['male', 'wei', 4, ['wechatxunjing', 'wechatqiusuo']],
             wechat_zhi_yanghu: ['male', 'wei', 4, ['wechatsuigong', 'wechatyuansi', 'wechatyilve']],
             wechat_zhi_jiaxu: ['male', 'qun', 3, ['wechatruping', 'wechatjueyi']],
+			wechat_zhi_xiahouhui: ['female', 'wei', 3, ['wechatjieqing', 'wechatxiangzhi', 'wechatzheyuan'], ['name:夏侯|徽']],
             //限时武将
             wechat_nailong: ['male', 'qun', 4, ['wechatdunshi', 'wechattanchi']],
             wechat_mashe: ['male', 'qun', 4, ['wechatgenggeng', 'wechattanpai']],
@@ -23362,6 +23363,298 @@ const packs = function () {
                     usable: { charlotte: true },
                 },
             },
+            //志夏侯徽
+            wechatjieqing: {
+                trigger: { player: "phaseDrawBegin1" },
+                filter(event, player) {
+                    return !event.numFixed && game.hasPlayer(current => current !== player);
+                },
+                async cost(event, trigger, player) {
+                    event.result = await player.chooseTarget({
+                        prompt: get.prompt(event.skill),
+                        prompt2: "跳过摸牌阶段，令一名其他角色从牌堆或弃牌堆中获得你指定的两种类型的牌各一张",
+                        filterTarget(card, player2, target) {
+                            return player2 !== target;
+                        },
+                        ai(target) {
+                            const { player: player2 } = get.event();
+                            return get.attitude(player2, target);
+                        },
+                    }).forResult();
+                },
+                async content(event, trigger, player) {
+                    const target = event.targets[0];
+                    trigger.changeToZero();
+                    player.line(target, "green");
+                    const typeList = [["basic", "基本牌"], ["trick", "锦囊牌"], ["equip", "装备牌"]];
+                    const result = await player.chooseButton({
+                        createDialog: ["选择两种类型的牌", [typeList, "textbutton"]],
+                        selectButton: 2,
+                        forced: true,
+                        ai(button) {
+                            const { player: player2, target: target2 } = get.event();
+                            const map = { basic: "tao", trick: "wuzhong", equip: "bagua" };
+                            return get.effect(target2, { name: map[button.link] }, player2, player2);
+                        },
+                    }).set("target", target).forResult();
+                    const cards = [];
+                    for (const type of result.links) {
+                        const func = card => get.type2(card) === type;
+                        const card = get.cardPile(func);
+                        if (card) {
+                            cards.push(card);
+                        }
+                    }
+                    if (cards.length) {
+                        await target.gain(cards, "draw2");
+                    }
+                },
+            },
+            wechatxiangzhi: {
+                trigger: { global: "roundStart" },
+                filter(event, player) {
+                    return game.hasPlayer(current => current.countCards("h") > 0);
+                },
+                async cost(event, trigger, player) {
+                    event.result = await player.chooseTarget({
+                        prompt: get.prompt(event.skill),
+                        prompt2: "观看一名角色的手牌，其本轮使用普通锦囊牌指定目标时，你可以选择本轮未选择过的一项：1.令此牌不可被响应；2.为此牌增加一个目标；3.令此牌对其中一个目标额外结算一次",
+                        filterTarget(card, player2, target) {
+                            return target.countCards("h") > 0;
+                        },
+                        ai(target) {
+                            const { player: player2 } = get.event();
+                            return -get.attitude(player2, target);
+                        },
+                    }).forResult();
+                },
+                async content(event, trigger, player) {
+                    const target = event.targets[0];
+                    player.line(target, "green");
+                    await player.viewCards("襄智", target.getCards("h"));
+                    player.storage.wechatxiangzhi_target = target;
+                    player.storage.wechatxiangzhi_used = [];
+                    player.addTempSkill("wechatxiangzhi_effect", "roundStart");
+                    player.markSkill("wechatxiangzhi_effect");
+                },
+                subSkill: {
+                    effect: {
+                        mark: true,
+                        marktext: "襄",
+                        intro: {
+                            name: "襄智",
+                            nocount: true,
+                            content(storage, player) {
+                                const target = player.storage.wechatxiangzhi_target;
+                                const used = player.storage.wechatxiangzhi_used || [];
+                                if (!target || !target.isAlive()) {
+                                    return "尚未观看手牌";
+                                }
+                                const list = [["direct", "不可响应"], ["target", "额外目标"], ["extra", "额外结算"]];
+                                const usedText = list.filter(i => used.includes(i[0])).map(i => i[1]).join("、") || "无";
+                                return `已观看${get.translation(target)}的手牌<br>本轮已选择：${usedText}`;
+                            },
+                        },
+                        onremove: ["wechatxiangzhi_target", "wechatxiangzhi_used"],
+                        trigger: { global: "useCard2" },
+                        filter(event, player) {
+                            const target = player.storage.wechatxiangzhi_target;
+                            if (!target || target !== event.player || !event.targets?.length) {
+                                return false;
+                            }
+                            if (get.type2(event.card) !== "trick" || lib.card[event.card.name]?.type === "delay") {
+                                return false;
+                            }
+                            return (player.storage.wechatxiangzhi_used || []).length < 3;
+                        },
+                        async cost(event, trigger, player) {
+                            const hasExtraTarget = game.filterPlayer(current => {
+                                if (trigger.targets?.includes(current)) {
+                                    return false;
+                                }
+                                return lib.filter.targetEnabled2(trigger.card, trigger.player, current) && lib.filter.targetInRange(trigger.card, trigger.player, current);
+                            }).length > 0;
+                            const choices = [
+                                ["direct", "令此牌不可被响应"],
+                                ["target", "为此牌增加一个目标"],
+                                ["extra", "令此牌对其中一个目标额外结算一次"],
+                            ].filter(i => !(player.storage.wechatxiangzhi_used || []).includes(i[0]) && (i[0] !== "target" || hasExtraTarget));
+                            if (!choices.length) {
+                                event.result = { bool: false };
+                                return;
+                            }
+                            const result = await player.chooseButton({
+                                createDialog: ["襄智：请选择一项", [choices, "textbutton"]],
+                                ai(button) {
+                                    const card = trigger.card;
+                                    const source = trigger.player;
+                                    if (button.link === "target") {
+                                        const list = game.filterPlayer(current => {
+                                            if (trigger.targets?.includes(current)) {
+                                                return false;
+                                            }
+                                            return lib.filter.targetEnabled2(card, source, current) && lib.filter.targetInRange(card, source, current);
+                                        });
+                                        if (!list.length) {
+                                            return 0;
+                                        }
+                                        return Math.max(...list.map(target => get.effect(target, card, source, source))) + 1;
+                                    }
+                                    if (button.link === "extra") {
+                                        if (!trigger.targets?.length) {
+                                            return 0;
+                                        }
+                                        return Math.max(...trigger.targets.map(target => get.effect(target, card, source, source)));
+                                    }
+                                    if (!trigger.targets?.length) {
+                                        return 0;
+                                    }
+                                    return -trigger.targets.reduce((sum, target) => sum + Math.min(0, get.effect(target, card, source, source)), 0);
+                                },
+                            }).forResult();
+                            if (!result.bool) {
+                                event.result = { bool: false };
+                                return;
+                            }
+                            event.result = { bool: true, cost_data: result.links[0] };
+                        },
+                        async content(event, trigger, player) {
+                            const choice = event.cost_data;
+                            if (!choice) {
+                                return;
+                            }
+                            player.storage.wechatxiangzhi_used.push(choice);
+                            player.markSkill("wechatxiangzhi_effect");
+                            switch (choice) {
+                                case "direct":
+                                    trigger.directHit.addArray(game.players);
+                                    game.log(trigger.card, "不可被响应");
+                                    break;
+                                case "target": {
+                                    const result = await player.chooseTarget({
+                                        prompt: `襄智：为${get.translation(trigger.card)}额外指定一个目标`,
+                                        forced: true,
+                                        filterTarget(card, player2, target) {
+                                            if (trigger.targets?.includes(target)) {
+                                                return false;
+                                            }
+                                            return lib.filter.targetEnabled2(trigger.card, trigger.player, target) && lib.filter.targetInRange(trigger.card, trigger.player, target);
+                                        },
+                                        ai(target) {
+                                            return get.effect(target, trigger.card, trigger.player, trigger.player);
+                                        },
+                                }).forResult();
+                                if (result?.bool && result.targets?.length) {
+                                    const targets = result.targets.sortBySeat();
+                                    player.line(targets);
+                                    trigger.targets.addArray(targets);
+                                    game.log(targets, "成为了", trigger.card, "的额外目标");
+                                }
+                                    break;
+                                }
+                                case "extra": {
+                                    const result = await player.chooseTarget({
+                                        prompt: `襄智：令${get.translation(trigger.card)}对一名目标额外结算一次`,
+                                        forced: true,
+                                        filterTarget(card, player2, target) {
+                                            return !!trigger.targets?.includes(target);
+                                        },
+                                        ai(target) {
+                                            return get.effect(target, trigger.card, trigger.player, trigger.player);
+                                        },
+                                    }).forResult();
+                                    if (result?.bool && result.targets?.length) {
+                                        const target = result.targets[0];
+                                        player.line(target, "fire");
+                                        trigger.targets.push(target);
+                                        game.log(trigger.card, "对", target, "额外结算一次");
+                                    }
+                                    break;
+                                }
+                            }
+                        },
+                    },
+                },
+            },
+            wechatzheyuan: {
+                yizhiSkill: true,
+                init(player, skill) {
+                    player.addTip(skill, `${get.translation(skill)} ${(player.countMark(skill) % 2) ? '今' : '昔'}`);
+                },
+                zhuanhuanji(player, skill) {
+                    player.addMark(skill, 1, false);
+                    get.info(skill).init(player, skill);
+                },
+                zhuanhuanji2: false,
+                forced: true,
+                mark: true,
+                marktext: '志',
+                intro: {
+                    content(storage, player) {
+                        return `当前志向：${(storage || 0) % 2 ? '今' : '昔'}<br>当你死亡时，你令杀死你的角色：${(storage || 0) % 2 ? '获得每名其他角色区域里的一张牌' : '将所有手牌交给你选择的一名角色'}`;
+                    },
+                    markcount: (storage, player) => (storage || 0) % 2 ? '今' : '昔',
+                },
+                trigger: { player: "die" },
+                forceDie: true,
+                async content(event, trigger, player) {
+                    if (!trigger.source) {
+                        return;
+                    }
+                    if (player.countMark("wechatzheyuan") % 2) {
+                        const targets = game.filterPlayer(current => current !== trigger.source && current.hasCards("hej"));
+                        for (const target of targets) {
+                            await trigger.source.gainPlayerCard({
+                                target: target,
+                                position: "hej",
+                                forced: true,
+                                forceDie: true,
+                                prompt: `折愿：获得${get.translation(target)}区域里的一张牌`,
+                            }).forResult();
+                        }
+                    } else {
+                        const result = await player.chooseTarget({
+                            prompt: "折愿：选择一名角色",
+                            prompt2: "令杀死你的角色将所有手牌交给其",
+                            forced: true,
+                            forceDie: true,
+                            filterTarget(card, player2, target) {
+                                return target.isAlive();
+                            },
+                            ai(target) {
+                                const { player: player2 } = get.event();
+                                return get.attitude(player2, target);
+                            },
+                        }).forResult();
+                        if (result.bool && result.targets?.length) {
+                            const target = result.targets[0];
+                            const cards = trigger.source.getCards("h");
+                            if (cards.length) {
+                                await trigger.source.give(cards, target);
+                            }
+                        }
+                    }
+                },
+                onremove(player, skill) {
+                    player.removeTip(skill);
+                },
+                group: ["wechatzheyuan_toggle"],
+                subSkill: {
+                    toggle: {
+                        trigger: { player: "damageBegin4" },
+                        forced: true,
+                        locked: true,
+                        filter(event, player) {
+                            const turnPlayer = _status.currentPhase;
+                            const target = player.storage.wechatxiangzhi_target;
+                            return !!turnPlayer && !!target && turnPlayer === target && event.num > 0;
+                        },
+                        async content(event, trigger, player) {
+                            player.changeZhuanhuanji("wechatzheyuan");
+                        },
+                    },
+                },
+            },
         },
         dynamicTranslate: {
             wechatxiangzhi(player) {
@@ -24696,6 +24989,12 @@ const packs = function () {
             wechatruping_info: '锁定技，游戏开始时，你令自己和两名其他角色获得“入枰”标记。拥有“入枰”标记的角色使用【杀】只能选择彼此为目标，直到其他拥有“入枰”标记的角色全部死亡或直到你杀死一名角色。当拥有“入枰”标记的角色杀死彼此后，你令一名角色摸两张牌并回复1点体力。',
             wechatjueyi: '绝弈',
             wechatjueyi_info: '出牌阶段限一次，你可以失去1点体力并选择一项：1.摸三张牌；2.令手牌中随机X张伤害牌或回复牌额外结算一次（X为拥有“入枰”的角色数）。然后你可以令一名拥有“入枰”标记的其他角色获得你的一张手牌，若如此做，你下回合此技能改为“出牌阶段限两次”。',
+            wechatjieqing: "竭情",
+            wechatjieqing_info: "你可以跳过摸牌阶段，令一名其他角色从牌堆或弃牌堆中获得你指定的两种类型的牌各一张。",
+            wechatxiangzhi: "襄智",
+            wechatxiangzhi_info: "每轮开始时，你可以观看一名角色的手牌。若如此做，其本轮使用普通锦囊牌指定目标时，你可以选择本轮未选择过的一项：1.令此牌不可被响应；2.为此牌增加一个目标；3.令此牌对其中一个目标额外结算一次。",
+            wechatzheyuan: "折愿",
+            wechatzheyuan_info: "移志技，锁定技，当你死亡时，你令杀死你的角色：昔：将所有手牌交给你选择的一名角色；今：获得每名其他角色区域里的一张牌。你于“襄智”角色的回合内受到伤害时，其令你移志。",
 
             // ----------------------- 台词部分 ----------------------- //
             '#ext:活动武将/audio/skill/wechatzhongxin1': '苍生之愿，即贫道所愿也。',
