@@ -276,7 +276,7 @@ const packs = function () {
             Mbaby_sunce: ['male', 'wu', 4, ['jiang', 'minihunzi', 'minizhiba'], ['zhu']],
             Mbaby_re_sunce: ['male', 'wu', 4, ['minijiang', 'miniolhunzi', 'miniolzhiba'], ['zhu']],
             Mbaby_sunluban: ['female', 'wu', 3, ['minizenhui', 'minijiaojin']],
-            Mbaby_sunluyu: ['female', 'wu', 3, ['minimeibu', 'remumu']],
+            Mbaby_sunluyu: ['female', 'wu', 3, ['minimeibu', 'miniremumu']],
             Mbaby_sunquan: ['male', 'wu', 4, ['rezhiheng', 'minijiuyuan'], ['zhu']],
             Mbaby_re_sunquan: ['male', 'wu', 4, ['minizhiheng', 'minirejiuyuan'], ['zhu']],
             Mbaby_sunshangxiang: ['female', 'wu', 3, ['minijieyin', 'xiaoji']],
@@ -17585,17 +17585,18 @@ const packs = function () {
                     return event.player != player && event.player.isIn() && player.countCards('he');
                 },
                 async cost(event, trigger, player) {
+                    const check = get.attitude(player, trigger.player) < 0 && trigger.player.countCards('h') > 1;
                     event.result = await player.chooseToDiscard(get.prompt2('minimeibu', trigger.player), 'he').set('ai', function (card) {
-                        if (_status.event.check) return 6 - get.value(card);
+                        if (_status.event.check) return 1 / (Math.max(0, get.value(card)) + 1);
                         return 0;
-                    }).set('check', lib.skill.new_meibu.checkx(trigger, player)).set('logSkill', ['minimeibu', trigger.player]).forResult();
+                    }).set('check', check).set('logSkill', ['minimeibu', trigger.player]).forResult();
                 },
                 popup: false,
                 content() {
-                    player.addTempSkill('minimeibu_gain');
-                    trigger.player.addTempSkill('rezhixi', 'phaseUseAfter');
+                    player.addTempSkill('minimeibu_gain', 'phaseAfter');
+                    trigger.player.addTempSkill('minizhixi', 'phaseAfter');
                 },
-                derivation: 'rezhixi',
+                derivation: 'minizhixi',
                 ai: { expose: 0.2 },
                 subSkill: {
                     gain: {
@@ -17605,7 +17606,7 @@ const packs = function () {
                         popup: false,
                         onremove: true,
                         filter(event, player) {
-                            return event.getParent(3).name == 'rezhixi' && get.position(event.cards[0]) == 'd';
+                            return event.getParent(3).name == 'minizhixi' && get.position(event.cards[0]) == 'd';
                         },
                         content() {
                             player.gain(trigger.cards[0], 'gain2');
@@ -17613,7 +17614,87 @@ const packs = function () {
                     },
                 },
             },
-            remumu_Mbaby_sunluyu: { audio: 'ext:活动武将/audio/skill:2' },
+            minizhixi: {
+                trigger: { player: 'useCard' },
+                forced: true,
+                filter(event, player) {
+                    return (event.card.name == 'sha' || get.type2(event.card) == 'trick') && player.countCards('h') > 0;
+                },
+                async content(event, trigger, player) {
+                    await player.chooseToDiscard('h', true);
+                },
+                ai: {
+                    neg: true,
+                    nokeep: true,
+                },
+            },
+            miniremumu: {
+                audio: 'ext:活动武将/audio/skill:2',
+                trigger: { player: 'phaseUseBegin' },
+                filter(event, player) {
+                    return game.hasPlayer(current => current != player && current.countCards('e') > 0);
+                },
+                async cost(event, trigger, player) {
+                    event.result = await player.chooseTarget(get.prompt2(event.skill), function (card, player, target) {
+                        return target != player && target.countCards('e') > 0;
+                    }).set('ai', function (target) {
+                        const player = _status.event.player;
+                        const att = get.attitude(player, target);
+                        if (att >= 0) return 0;
+                        return Math.max(0, ...target.getCards('e').map(card => get.value(card, target))) * -att;
+                    }).forResult();
+                },
+                async content(event, trigger, player) {
+                    const { targets: [target] } = event;
+                    const str = get.translation(target);
+                    const result = await player.chooseControl().set('choiceList', [
+                        `弃置${str}装备区的一张牌且本回合使用【杀】的次数上限+1`,
+                        `获得${str}装备区的一张牌且本回合使用【杀】的次数上限-1`,
+                    ]).set('ai', function () {
+                        const player = _status.event.player;
+                        const usableSlashCount = player.countCards('hs', function (card) {
+                            return get.name(card, player) == 'sha' && player.hasValueTarget(card);
+                        });
+                        return usableSlashCount >= 2 ? 0 : 1;
+                    }).forResult();
+                    if (result?.index == 0) {
+                        player.addTempSkill(`${event.name}_effect`, 'phaseAfter');
+                        await player.discardPlayerCard({ target, position: 'e', forced: true });
+                    }
+                    else {
+                        player.addTempSkill(`${event.name}_debuff`, 'phaseAfter');
+                        await player.gainPlayerCard({ target, position: 'e', forced: true });
+                    }
+                },
+                subSkill: {
+                    debuff: {
+                        charlotte: true,
+                        mod: {
+                            cardUsable(card, player, num) {
+                                if (card.name == 'sha') return num - 1;
+                            },
+                        },
+                        mark: true,
+                        intro: {
+                            markcount: () => -1,
+                            content: '出杀次数-1',
+                        },
+                    },
+                    effect: {
+                        charlotte: true,
+                        mod: {
+                            cardUsable(card, player, num) {
+                                if (card.name == 'sha') return num + 1;
+                            },
+                        },
+                        mark: true,
+                        intro: {
+                            markcount: () => 1,
+                            content: '出杀次数+1',
+                        },
+                    },
+                },
+            },
             miniyinbing: {
                 group: 'miniyinbing_discard',
                 audio: 'ext:活动武将/audio/skill:2',
@@ -46278,7 +46359,11 @@ const packs = function () {
             minijuedi: '绝地',
             minijuedi_info: '锁定技，准备阶段，若你的武将牌上有“引兵”牌，你选择一项：1.移去“引兵”牌，将手牌补至体力上限+1；2.将“引兵”牌交给一名体力值不大于你的其他角色，其回复1点体力并摸等量的牌。',
             minimeibu: '魅步',
-            minimeibu_info: '其他角色的出牌阶段开始时，你可以弃置一张牌，令该角色于本阶段内拥有〖止息〗，且你获得其因〖止息〗弃置的牌。',
+            minimeibu_info: '其他角色的出牌阶段开始时，你可以弃置一张牌，令该角色于本回合内拥有〖止息〗，且你获得其因〖止息〗弃置的牌。',
+            minizhixi: '止息',
+            minizhixi_info: '锁定技，出牌阶段，你使用【杀】或锦囊牌时须弃置一张手牌。',
+            miniremumu: '穆穆',
+            miniremumu_info: '出牌阶段开始时，你可以选择一项：1.弃置一名其他角色装备区里的一张牌，然后你本回合可使用【杀】的次数+1；2.获得一名其他角色装备区里的一张牌，然后你本回合可使用【杀】的次数-1。',
             minijieyin: '结姻',
             minijieyin_info: '出牌阶段限一次，你可以选择一名其他角色，交给其一张手牌或将一张装备牌置于其装备区，然后你回复1点体力。',
             minijieyi: '结谊',
