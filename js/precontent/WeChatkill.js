@@ -305,7 +305,7 @@ const packs = function () {
             wechat_zhi_zhushixing: ['male', 'wei', 4, ['wechatxunjing', 'wechatqiusuo']],
             wechat_zhi_yanghu: ['male', 'wei', 4, ['wechatsuigong', 'wechatyuansi', 'wechatyilve']],
             wechat_zhi_jiaxu: ['male', 'qun', 3, ['wechatruping', 'wechatjueyi']],
-			wechat_zhi_xiahouhui: ['female', 'wei', 3, ['wechatjieqing', 'wechatxiangzhi', 'wechatzheyuan'], ['name:夏侯|徽']],
+			wechat_zhi_xiahouhui: ['female', 'wei', 3, ['wechatjieqing', 'wechatzhixiangzhi', 'wechatzheyuan'], ['name:夏侯|徽']],
             //限时武将
             wechat_nailong: ['male', 'qun', 4, ['wechatdunshi', 'wechattanchi']],
             wechat_mashe: ['male', 'qun', 4, ['wechatgenggeng', 'wechattanpai']],
@@ -23409,7 +23409,7 @@ const packs = function () {
                     }
                 },
             },
-            wechatxiangzhi: {
+            wechatzhixiangzhi: {
                 trigger: { global: "roundStart" },
                 filter(event, player) {
                     return game.hasPlayer(current => current.countCards("h") > 0);
@@ -23430,11 +23430,11 @@ const packs = function () {
                 async content(event, trigger, player) {
                     const target = event.targets[0];
                     player.line(target, "green");
-                    await player.viewCards("襄智", target.getCards("h"));
-                    player.storage.wechatxiangzhi_target = target;
-                    player.storage.wechatxiangzhi_used = [];
-                    player.addTempSkill("wechatxiangzhi_effect", "roundStart");
-                    player.markSkill("wechatxiangzhi_effect");
+                    await player.viewHandcards(target);
+                    player.storage.wechatzhixiangzhi_target = target;
+                    player.storage.wechatzhixiangzhi_used = [];
+                    player.addTempSkill("wechatzhixiangzhi_effect", "roundStart");
+                    player.markSkill("wechatzhixiangzhi_effect");
                 },
                 subSkill: {
                     effect: {
@@ -23444,8 +23444,8 @@ const packs = function () {
                             name: "襄智",
                             nocount: true,
                             content(storage, player) {
-                                const target = player.storage.wechatxiangzhi_target;
-                                const used = player.storage.wechatxiangzhi_used || [];
+                                const target = player.storage.wechatzhixiangzhi_target;
+                                const used = player.storage.wechatzhixiangzhi_used || [];
                                 if (!target || !target.isAlive()) {
                                     return "尚未观看手牌";
                                 }
@@ -23454,17 +23454,17 @@ const packs = function () {
                                 return `已观看${get.translation(target)}的手牌<br>本轮已选择：${usedText}`;
                             },
                         },
-                        onremove: ["wechatxiangzhi_target", "wechatxiangzhi_used"],
+                        onremove: ["wechatzhixiangzhi_target", "wechatzhixiangzhi_used"],
                         trigger: { global: "useCard2" },
                         filter(event, player) {
-                            const target = player.storage.wechatxiangzhi_target;
+                            const target = player.storage.wechatzhixiangzhi_target;
                             if (!target || target !== event.player || !event.targets?.length) {
                                 return false;
                             }
                             if (get.type2(event.card) !== "trick" || lib.card[event.card.name]?.type === "delay") {
                                 return false;
                             }
-                            return (player.storage.wechatxiangzhi_used || []).length < 3;
+                            return (player.storage.wechatzhixiangzhi_used || []).length < 3;
                         },
                         async cost(event, trigger, player) {
                             const hasExtraTarget = game.filterPlayer(current => {
@@ -23477,7 +23477,7 @@ const packs = function () {
                                 ["direct", "令此牌不可被响应"],
                                 ["target", "为此牌增加一个目标"],
                                 ["extra", "令此牌对其中一个目标额外结算一次"],
-                            ].filter(i => !(player.storage.wechatxiangzhi_used || []).includes(i[0]) && (i[0] !== "target" || hasExtraTarget));
+                            ].filter(i => !(player.storage.wechatzhixiangzhi_used || []).includes(i[0]) && (i[0] !== "target" || hasExtraTarget));
                             if (!choices.length) {
                                 event.result = { bool: false };
                                 return;
@@ -23522,8 +23522,8 @@ const packs = function () {
                             if (!choice) {
                                 return;
                             }
-                            player.storage.wechatxiangzhi_used.push(choice);
-                            player.markSkill("wechatxiangzhi_effect");
+                            player.storage.wechatzhixiangzhi_used.push(choice);
+                            player.markSkill("wechatzhixiangzhi_effect");
                             switch (choice) {
                                 case "direct":
                                     trigger.directHit.addArray(game.players);
@@ -24991,8 +24991,8 @@ const packs = function () {
             wechat_zhi_xiahouhui: '志夏侯徽',
             wechatjieqing: "竭情",
             wechatjieqing_info: "你可以跳过摸牌阶段，令一名其他角色从牌堆或弃牌堆中获得你指定的两种类型的牌各一张。",
-            wechatxiangzhi: "襄智",
-            wechatxiangzhi_info: "每轮开始时，你可以观看一名角色的手牌。若如此做，其本轮使用普通锦囊牌指定目标时，你可以选择本轮未选择过的一项：1.令此牌不可被响应；2.为此牌增加一个目标；3.令此牌对其中一个目标额外结算一次。",
+            wechatzhixiangzhi: "襄智",
+            wechatzhixiangzhi_info: "每轮开始时，你可以观看一名角色的手牌。若如此做，其本轮使用普通锦囊牌指定目标时，你可以选择本轮未选择过的一项：1.令此牌不可被响应；2.为此牌增加一个目标；3.令此牌对其中一个目标额外结算一次。",
             wechatzheyuan: "折愿",
             wechatzheyuan_info: `${get.poptip('rule_yizhiSkill')}，锁定技，当你死亡时，你令杀死你的角色：昔：将所有手牌交给你选择的一名角色；今：获得每名其他角色区域里的一张牌。你于“襄智”角色的回合内受到伤害时，其令你移志。`,
 
