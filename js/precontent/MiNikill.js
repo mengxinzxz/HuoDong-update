@@ -276,7 +276,7 @@ const packs = function () {
             Mbaby_sunce: ['male', 'wu', 4, ['jiang', 'minihunzi', 'minizhiba'], ['zhu']],
             Mbaby_re_sunce: ['male', 'wu', 4, ['minijiang', 'miniolhunzi', 'miniolzhiba'], ['zhu']],
             Mbaby_sunluban: ['female', 'wu', 3, ['minizenhui', 'minijiaojin']],
-            Mbaby_sunluyu: ['female', 'wu', 3, ['minimeibu', 'miniremumu']],
+            Mbaby_sunluyu: ['female', 'wu', 3, ['minimeibu', 'minimumu']],
             Mbaby_sunquan: ['male', 'wu', 4, ['rezhiheng', 'minijiuyuan'], ['zhu']],
             Mbaby_re_sunquan: ['male', 'wu', 4, ['minizhiheng', 'minirejiuyuan'], ['zhu']],
             Mbaby_sunshangxiang: ['female', 'wu', 3, ['minijieyin', 'xiaoji']],
@@ -17628,7 +17628,7 @@ const packs = function () {
                     nokeep: true,
                 },
             },
-            miniremumu: {
+            minimumu: {
                 audio: 'ext:活动武将/audio/skill:2',
                 trigger: { player: 'phaseUseBegin' },
                 filter(event, player) {
@@ -46362,8 +46362,8 @@ const packs = function () {
             minimeibu_info: '其他角色的出牌阶段开始时，你可以弃置一张牌，令该角色于本回合内拥有〖止息〗，且你获得其因〖止息〗弃置的牌。',
             minizhixi: '止息',
             minizhixi_info: '锁定技，出牌阶段，你使用【杀】或锦囊牌时须弃置一张手牌。',
-            miniremumu: '穆穆',
-            miniremumu_info: '出牌阶段开始时，你可以选择一项：1.弃置一名其他角色装备区里的一张牌，然后你本回合可使用【杀】的次数+1；2.获得一名其他角色装备区里的一张牌，然后你本回合可使用【杀】的次数-1。',
+            minimumu: '穆穆',
+            minimumu_info: '出牌阶段开始时，你可以选择一项：1.弃置一名其他角色装备区里的一张牌，然后你本回合可使用【杀】的次数+1；2.获得一名其他角色装备区里的一张牌，然后你本回合可使用【杀】的次数-1。',
             minijieyin: '结姻',
             minijieyin_info: '出牌阶段限一次，你可以选择一名其他角色，交给其一张手牌或将一张装备牌置于其装备区，然后你回复1点体力。',
             minijieyi: '结谊',
