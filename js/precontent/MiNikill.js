@@ -553,7 +553,7 @@ const packs = function () {
             Mmiao_mayunlu: ['female', 'shu', 4, ['minimiaoyuma', 'minimiaofengpo', 'minidoumao']],
             Mmiao_bulianshi: ['female', 'wu', 3, ['minimiaoanxu', 'minimiaozhuiyi', 'minidoumao']],
             //念
-            Mnian_zhugeliang: ['male', 'shu', 3, ['mininianxinghan', 'mininianliaoyuan', 'mininianying_Mnian_zhugeliang'], ['name:诸葛|亮', 'clan:琅琊诸葛氏']],
+            Mnian_zhugeliang: ['male', 'shu', 3, ['mininiandingluan', 'mininianliaoyuan', 'mininianying_Mnian_zhugeliang'], ['name:诸葛|亮', 'clan:琅琊诸葛氏']],
             Mnian_lvbu: ['male', 'qun', 5, ['mininiantazhen', 'mininiandoupo', 'mininianying_Mnian_lvbu']],
             Mnian_zhouyu: ['male', 'wu', 4, ['mininiansuhui', 'mininianchongzou', 'mininianying_Mnian_zhouyu']],
             Mnian_caopi: ['male', 'wei', 3, ['mininiandengji', 'mininianchengming', 'mininianying_Mnian_caopi', 'mininiansongwei'], ['zhu', 'forbidai']],
@@ -38852,15 +38852,15 @@ const packs = function () {
                 derivation: 'minidoumao',
             },
             //念
-            mininianxinghan: {
+            mininiandingluan: {
                 audio: 'ext:活动武将/audio/skill:2',
                 trigger: { player: ['phaseBegin', 'damageBegin4'] },
                 filter(event, player) {
-                    return lib.skill.mininianxinghan.filterGroup(player).length;
+                    return lib.skill.mininiandingluan.filterGroup(player).length;
                 },
                 usable: 1,
                 async content(event, trigger, player) {
-                    const groups = lib.skill.mininianxinghan.filterGroup(player);
+                    const groups = lib.skill.mininiandingluan.filterGroup(player);
                     if (!groups.length) {
                         player.popup('杯具');
                         game.log('没有势力可进行', '#g定乱', '操作');
@@ -38967,7 +38967,7 @@ const packs = function () {
                                         selectedTube.classList.remove('selected');
                                         selectedTube = null;
                                         if (checkWin(tube)) {
-                                            _status.mininianxinghan[player.playerid] = (() => {
+                                            _status.mininiandingluan[player.playerid] = (() => {
                                                 return tubes.filter(t => t !== tube).map(t => {
                                                     return [...t.children].map(piece => ({
                                                         group: piece.dataset.group,
@@ -38990,8 +38990,8 @@ const packs = function () {
                             });
                             tubes.push(tube);
                         }
-                        _status.mininianxinghan ??= {};
-                        const savedData = _status.mininianxinghan[player.playerid];
+                        _status.mininiandingluan ??= {};
+                        const savedData = _status.mininiandingluan[player.playerid];
                         if (savedData) {
                             for (let i = 0; i < savedData.length; i++) {
                                 const tubeData = savedData[i];
@@ -39044,7 +39044,7 @@ const packs = function () {
                     }, originalTimeout, event.videoId);
                     const { successGroup } = result ?? {};
                     if (successGroup) {
-                        player.markAuto('mininianxinghan', [successGroup]);
+                        player.markAuto('mininiandingluan', [successGroup]);
                         player.popup(lib.translate[`${successGroup}2`] || successGroup);
                         game.log(player, '#g定乱', '#y成功', `#g（${get.translation(successGroup)}势力）`);
                         await player.gainMaxHp();
@@ -39063,7 +39063,7 @@ const packs = function () {
                 intro: { content: '已“定乱”成功过$势力' },
                 filterGroup(player) {
                     let groups = [...lib.group, ...[...game.players, ...game.dead].map(i => i.group)].unique();
-                    groups.removeArray(['shu', ...player.getStorage('mininianxinghan')]);
+                    groups.removeArray(['shu', ...player.getStorage('mininiandingluan')]);
                     return groups;
                 },
                 subSkill: { faq: { nopop: true } },
@@ -47684,9 +47684,9 @@ const packs = function () {
             Mnian_zhouyu: '念周瑜',
             Mnian_caopi: '念曹丕',
             Mnian_sunquan: '念孙权',
-            mininianxinghan: '兴汉',
-            mininianxinghan_info: `每回合限一次，回合开始时或当你受到伤害时，若默认势力和场上的势力的并集存在非蜀势力和你此前未因“定乱”成功的势力，则你可以进行一次${get.poptip({
-                id: 'mininianxinghan_定乱',
+            mininiandingluan: '定乱',
+            mininiandingluan_info: `每回合限一次，回合开始时或当你受到伤害时，若默认势力和场上的势力的并集存在非蜀势力和你此前未因“定乱”成功的势力，则你可以进行一次${get.poptip({
+                id: 'mininiandingluan_定乱',
                 name: '“定乱”',
                 info: '系统为默认势力和场上的势力的并集存在非蜀势力和你此前未因“定乱”成功的势力各创造四枚对应势力棋子并随机置入这些势力数+2的试管中，每个试管最多存在四枚棋子，点击一个试管后再点击一个未满的试管，第一个试管最上方的元素将进入第二个试管最上方，玩家需要将其中一个试管的棋子均调整为同一势力的弃置，则“定乱”成功，“定乱”结果为你成功分配的这个势力',
             })}。若“定乱”成功，则你增加1点体力上限并回复1点体力，然后将场上的“定乱”势力角色均改为蜀势力。`,
@@ -47989,8 +47989,8 @@ const packs = function () {
             '#ext:活动武将/audio/skill/mininianying_Mnian_lvbu1': '哈哈哈，此间有功名，正可以汝首为阶。',
             '#ext:活动武将/audio/skill/mininianying_Mnian_lvbu2': '此身纵横天下，未逢敌手！',
             '#ext:活动武将/audio/die/Mnian_lvbu:die': '待我归来日，定斩一切敌。',
-            '#ext:活动武将/audio/skill/mininianxinghan1': '汉贼不两立，王业不偏安！',
-            '#ext:活动武将/audio/skill/mininianxinghan2': '著信义于四海，揽英杰于九州，诚如是，则汉室可兴。',
+            '#ext:活动武将/audio/skill/mininiandingluan1': '汉贼不两立，王业不偏安！',
+            '#ext:活动武将/audio/skill/mininiandingluan2': '著信义于四海，揽英杰于九州，诚如是，则汉室可兴。',
             '#ext:活动武将/audio/skill/mininianliaoyuan1': '星星之火，亦可燎原！',
             '#ext:活动武将/audio/skill/mininianliaoyuan2': '管乐用兵，未必过此。',
             '#ext:活动武将/audio/skill/mininianying_Mnian_zhugeliang1': '今兵甲已足，当奖率三军。',
