@@ -1,14 +1,6 @@
 {
     "files": [
         {
-            "path": "活动武将横版Logo.jpg",
-            "size": 563413
-        },
-        {
-            "path": "活动武将Logo.jpg",
-            "size": 441247
-        },
-        {
             "path": "audio/die/bilibili_diandian.mp3",
             "size": 86099
         },
@@ -5094,23 +5086,15 @@
         },
         {
             "path": "extension.css",
-            "size": 11068
+            "size": 10518
         },
         {
             "path": "extension.js",
-            "size": 1494
+            "size": 1455
         },
         {
             "path": "HuoDong_QQ.png",
             "size": 118446
-        },
-        {
-            "path": "image/background/肘击荣耀10V10.png",
-            "size": 6126633
-        },
-        {
-            "path": "image/background/肘击荣耀5V5.png",
-            "size": 4201508
         },
         {
             "path": "image/background/battlefield_dingjun.jpg",
@@ -5155,6 +5139,14 @@
         {
             "path": "image/background/PPmake5.png",
             "size": 1195712
+        },
+        {
+            "path": "image/background/肘击荣耀10V10.png",
+            "size": 6126633
+        },
+        {
+            "path": "image/background/肘击荣耀5V5.png",
+            "size": 4201508
         },
         {
             "path": "image/card/bilibili_jiabinzheng.png",
@@ -8785,106 +8777,6 @@
             "size": 315056
         },
         {
-            "path": "image/default/步兵.jpg",
-            "size": 29124
-        },
-        {
-            "path": "image/default/常山府军.jpg",
-            "size": 29776
-        },
-        {
-            "path": "image/default/黑绸巫女.jpg",
-            "size": 27600
-        },
-        {
-            "path": "image/default/活动武将.png",
-            "size": 21694
-        },
-        {
-            "path": "image/default/江夏弓骑兵.jpg",
-            "size": 26543
-        },
-        {
-            "path": "image/default/美人计.jpg",
-            "size": 29834
-        },
-        {
-            "path": "image/default/婆娑匠奴.jpg",
-            "size": 29392
-        },
-        {
-            "path": "image/default/太行山豪侠.jpg",
-            "size": 25647
-        },
-        {
-            "path": "image/default/武库清点.jpg",
-            "size": 26269
-        },
-        {
-            "path": "image/default/武林山隐伏.jpg",
-            "size": 27764
-        },
-        {
-            "path": "image/default/小拆.jpg",
-            "size": 411274
-        },
-        {
-            "path": "image/default/小击.jpg",
-            "size": 404113
-        },
-        {
-            "path": "image/default/小箭.jpg",
-            "size": 456068
-        },
-        {
-            "path": "image/default/小酒.jpg",
-            "size": 401600
-        },
-        {
-            "path": "image/default/小乐.jpg",
-            "size": 412422
-        },
-        {
-            "path": "image/default/小粮.jpg",
-            "size": 341244
-        },
-        {
-            "path": "image/default/小蛮.jpg",
-            "size": 415788
-        },
-        {
-            "path": "image/default/小牵.jpg",
-            "size": 350007
-        },
-        {
-            "path": "image/default/小杀.jpg",
-            "size": 385653
-        },
-        {
-            "path": "image/default/小闪.jpg",
-            "size": 413615
-        },
-        {
-            "path": "image/default/小桃.jpg",
-            "size": 411555
-        },
-        {
-            "path": "image/default/小有.jpg",
-            "size": 390680
-        },
-        {
-            "path": "image/default/血婆娑巧手.jpg",
-            "size": 25086
-        },
-        {
-            "path": "image/default/佣兵.jpg",
-            "size": 27897
-        },
-        {
-            "path": "image/default/羽林内军.jpg",
-            "size": 29501
-        },
-        {
             "path": "image/default/BanG_Dream!_It's_MyGO!!!!!_Anon.jpg",
             "size": 92473
         },
@@ -8961,64 +8853,124 @@
             "size": 4295
         },
         {
-            "path": "image/default/zhouyu_宫.jpg",
-            "size": 22169
-        },
-        {
-            "path": "image/default/zhouyu_角.jpg",
-            "size": 21976
-        },
-        {
             "path": "image/default/zhouyu_商.jpg",
             "size": 19975
         },
         {
-            "path": "image/default/zhouyu_羽.jpg",
-            "size": 22461
+            "path": "image/default/zhouyu_宫.jpg",
+            "size": 22169
         },
         {
             "path": "image/default/zhouyu_徵.jpg",
             "size": 20920
         },
         {
-            "path": "image/skin/bilibili_diandian/白大褂配死库水喵.jpg",
-            "size": 873610
+            "path": "image/default/zhouyu_羽.jpg",
+            "size": 22461
         },
         {
-            "path": "image/skin/bilibili_diandian/和服喵.jpg",
-            "size": 931028
+            "path": "image/default/zhouyu_角.jpg",
+            "size": 21976
         },
         {
-            "path": "image/skin/bilibili_diandian/婚纱喵.jpg",
-            "size": 925969
+            "path": "image/default/佣兵.jpg",
+            "size": 27897
         },
         {
-            "path": "image/skin/bilibili_diandian/教师喵.jpg",
-            "size": 889669
+            "path": "image/default/太行山豪侠.jpg",
+            "size": 25647
         },
         {
-            "path": "image/skin/bilibili_diandian/毛衣JK喵.jpg",
-            "size": 885833
+            "path": "image/default/婆娑匠奴.jpg",
+            "size": 29392
         },
         {
-            "path": "image/skin/bilibili_diandian/旗袍喵.jpg",
-            "size": 925549
+            "path": "image/default/小乐.jpg",
+            "size": 412422
         },
         {
-            "path": "image/skin/bilibili_diandian/圣诞服喵.jpg",
-            "size": 900760
+            "path": "image/default/小击.jpg",
+            "size": 404113
         },
         {
-            "path": "image/skin/bilibili_diandian/水手服喵.jpg",
-            "size": 1076786
+            "path": "image/default/小拆.jpg",
+            "size": 411274
         },
         {
-            "path": "image/skin/bilibili_diandian/睡衣喵.jpg",
-            "size": 902107
+            "path": "image/default/小有.jpg",
+            "size": 390680
         },
         {
-            "path": "image/skin/bilibili_diandian/特工喵（不是VAN喵！）.jpg",
-            "size": 868216
+            "path": "image/default/小杀.jpg",
+            "size": 385653
+        },
+        {
+            "path": "image/default/小桃.jpg",
+            "size": 411555
+        },
+        {
+            "path": "image/default/小牵.jpg",
+            "size": 350007
+        },
+        {
+            "path": "image/default/小箭.jpg",
+            "size": 456068
+        },
+        {
+            "path": "image/default/小粮.jpg",
+            "size": 341244
+        },
+        {
+            "path": "image/default/小蛮.jpg",
+            "size": 415788
+        },
+        {
+            "path": "image/default/小酒.jpg",
+            "size": 401600
+        },
+        {
+            "path": "image/default/小闪.jpg",
+            "size": 413615
+        },
+        {
+            "path": "image/default/常山府军.jpg",
+            "size": 29776
+        },
+        {
+            "path": "image/default/步兵.jpg",
+            "size": 29124
+        },
+        {
+            "path": "image/default/武库清点.jpg",
+            "size": 26269
+        },
+        {
+            "path": "image/default/武林山隐伏.jpg",
+            "size": 27764
+        },
+        {
+            "path": "image/default/江夏弓骑兵.jpg",
+            "size": 26543
+        },
+        {
+            "path": "image/default/活动武将.png",
+            "size": 21694
+        },
+        {
+            "path": "image/default/美人计.jpg",
+            "size": 29834
+        },
+        {
+            "path": "image/default/羽林内军.jpg",
+            "size": 29501
+        },
+        {
+            "path": "image/default/血婆娑巧手.jpg",
+            "size": 25086
+        },
+        {
+            "path": "image/default/黑绸巫女.jpg",
+            "size": 27600
         },
         {
             "path": "image/skin/bilibili_diandian/万圣节喵.jpg",
@@ -9029,20 +8981,60 @@
             "size": 892023
         },
         {
-            "path": "image/skin/bilibili_diandian/小恶魔喵.jpg",
-            "size": 923083
+            "path": "image/skin/bilibili_diandian/侦探服喵.jpg",
+            "size": 890960
         },
         {
             "path": "image/skin/bilibili_diandian/修女喵.jpg",
             "size": 773911
         },
         {
-            "path": "image/skin/bilibili_diandian/雪人喵.jpg",
-            "size": 888956
+            "path": "image/skin/bilibili_diandian/和服喵.jpg",
+            "size": 931028
         },
         {
-            "path": "image/skin/bilibili_diandian/侦探服喵.jpg",
-            "size": 890960
+            "path": "image/skin/bilibili_diandian/圣诞服喵.jpg",
+            "size": 900760
+        },
+        {
+            "path": "image/skin/bilibili_diandian/婚纱喵.jpg",
+            "size": 925969
+        },
+        {
+            "path": "image/skin/bilibili_diandian/小恶魔喵.jpg",
+            "size": 923083
+        },
+        {
+            "path": "image/skin/bilibili_diandian/教师喵.jpg",
+            "size": 889669
+        },
+        {
+            "path": "image/skin/bilibili_diandian/旗袍喵.jpg",
+            "size": 925549
+        },
+        {
+            "path": "image/skin/bilibili_diandian/毛衣JK喵.jpg",
+            "size": 885833
+        },
+        {
+            "path": "image/skin/bilibili_diandian/水手服喵.jpg",
+            "size": 1076786
+        },
+        {
+            "path": "image/skin/bilibili_diandian/特工喵（不是VAN喵！）.jpg",
+            "size": 868216
+        },
+        {
+            "path": "image/skin/bilibili_diandian/白大褂配死库水喵.jpg",
+            "size": 873610
+        },
+        {
+            "path": "image/skin/bilibili_diandian/睡衣喵.jpg",
+            "size": 902107
+        },
+        {
+            "path": "image/skin/bilibili_diandian/雪人喵.jpg",
+            "size": 888956
         },
         {
             "path": "image/skin/bilibili_murufengchen/洛天依1.jpg",
@@ -9077,44 +9069,56 @@
             "size": 201472
         },
         {
-            "path": "image/skin/bilibili_ningjingzhiyuan/淡泊明志.jpg",
-            "size": 100227
+            "path": "image/skin/bilibili_ningjingzhiyuan/俭以养德.jpg",
+            "size": 141769
         },
         {
             "path": "image/skin/bilibili_ningjingzhiyuan/嘿嘿嘿哈.gif",
             "size": 211179
         },
         {
-            "path": "image/skin/bilibili_ningjingzhiyuan/俭以养德.jpg",
-            "size": 141769
-        },
-        {
             "path": "image/skin/bilibili_ningjingzhiyuan/宁静致远.jpg",
             "size": 38781
         },
         {
-            "path": "image/skin/bilibili_suixingsifeng/超天酱.jpg",
-            "size": 100792
+            "path": "image/skin/bilibili_ningjingzhiyuan/淡泊明志.jpg",
+            "size": 100227
         },
         {
-            "path": "image/skin/bilibili_suixingsifeng/哖_秒才轻狂☆.jpg",
-            "size": 92414
-        },
-        {
-            "path": "image/skin/bilibili_suixingsifeng/冤种1551次春哥.jpg",
-            "size": 131900
+            "path": "image/skin/bilibili_suixingsifeng/JUST MY TEST - Avery.jpg",
+            "size": 117241
         },
         {
             "path": "image/skin/bilibili_suixingsifeng/云宝黛西.jpg",
             "size": 56541
         },
         {
+            "path": "image/skin/bilibili_suixingsifeng/冤种1551次春哥.jpg",
+            "size": 131900
+        },
+        {
+            "path": "image/skin/bilibili_suixingsifeng/哖_秒才轻狂☆.jpg",
+            "size": 92414
+        },
+        {
             "path": "image/skin/bilibili_suixingsifeng/紫悦公主.jpg",
             "size": 66522
         },
         {
-            "path": "image/skin/bilibili_suixingsifeng/JUST MY TEST - Avery.jpg",
-            "size": 117241
+            "path": "image/skin/bilibili_suixingsifeng/超天酱.jpg",
+            "size": 100792
+        },
+        {
+            "path": "image/skin/bilibili_wuzhuwanshui/佩奇1.jpg",
+            "size": 116144
+        },
+        {
+            "path": "image/skin/bilibili_wuzhuwanshui/佩奇2.jpg",
+            "size": 101429
+        },
+        {
+            "path": "image/skin/bilibili_wuzhuwanshui/佩奇3.jpg",
+            "size": 127957
         },
         {
             "path": "image/skin/bilibili_wuzhuwanshui/可莉丝1.jpg",
@@ -9131,18 +9135,6 @@
         {
             "path": "image/skin/bilibili_wuzhuwanshui/可莉丝4.jpg",
             "size": 197481
-        },
-        {
-            "path": "image/skin/bilibili_wuzhuwanshui/佩奇1.jpg",
-            "size": 116144
-        },
-        {
-            "path": "image/skin/bilibili_wuzhuwanshui/佩奇2.jpg",
-            "size": 101429
-        },
-        {
-            "path": "image/skin/bilibili_wuzhuwanshui/佩奇3.jpg",
-            "size": 127957
         },
         {
             "path": "image/skin/bilibili_xiaoyaoruyun/印记工坊1.jpg",
@@ -9173,6 +9165,10 @@
             "size": 46322
         },
         {
+            "path": "image/skin/bilibili_yirenyixiaojian/全叠建哥.jpg",
+            "size": 148865
+        },
+        {
             "path": "image/skin/bilibili_yirenyixiaojian/初阳帅建.jpg",
             "size": 51609
         },
@@ -9181,104 +9177,108 @@
             "size": 44526
         },
         {
-            "path": "image/skin/bilibili_yirenyixiaojian/钓鱼建哥.jpg",
-            "size": 44947
+            "path": "image/skin/bilibili_yirenyixiaojian/吴新建.jpg",
+            "size": 22550
         },
         {
             "path": "image/skin/bilibili_yirenyixiaojian/嘉宾建哥.jpg",
             "size": 214925
         },
         {
-            "path": "image/skin/bilibili_yirenyixiaojian/全叠建哥.jpg",
-            "size": 148865
-        },
-        {
-            "path": "image/skin/bilibili_yirenyixiaojian/吴新建.jpg",
-            "size": 22550
-        },
-        {
             "path": "image/skin/bilibili_yirenyixiaojian/忧伤建哥.jpg",
             "size": 56654
         },
         {
+            "path": "image/skin/bilibili_yirenyixiaojian/钓鱼建哥.jpg",
+            "size": 44947
+        },
+        {
             "path": "js/config.js",
-            "size": 26291
+            "size": 25633
         },
         {
             "path": "js/content.js",
-            "size": 64333
+            "size": 62824
         },
         {
             "path": "js/help.js",
-            "size": 765
-        },
-        {
-            "path": "js/precontent/模板.js",
-            "size": 1415
+            "size": 757
         },
         {
             "path": "js/precontent/decadeKuiBa.js",
-            "size": 35916
+            "size": 35246
         },
         {
             "path": "js/precontent/decadeQiHuan.js",
-            "size": 53813
+            "size": 52877
         },
         {
             "path": "js/precontent/decadeZhuoGui.js",
-            "size": 59311
+            "size": 58311
         },
         {
             "path": "js/precontent/FaDongCharacter.js",
-            "size": 20832
+            "size": 20466
         },
         {
             "path": "js/precontent/HD_chaoshikong.js",
-            "size": 53479
+            "size": 52493
         },
         {
             "path": "js/precontent/hezongkangqincharacter.js",
-            "size": 84206
+            "size": 82737
         },
         {
             "path": "js/precontent/huodongcharacter.js",
-            "size": 935891
+            "size": 920583
         },
         {
             "path": "js/precontent/index.js",
-            "size": 43652
+            "size": 42803
         },
         {
             "path": "js/precontent/MiNiAppkill.js",
-            "size": 221219
+            "size": 217451
         },
         {
             "path": "js/precontent/MiNikill_sight.js",
-            "size": 9456
+            "size": 9289
         },
         {
             "path": "js/precontent/MiNikill.js",
-            "size": 2894459
+            "size": 2845581
         },
         {
             "path": "js/precontent/MX_feihongyinxue.js",
-            "size": 279464
+            "size": 274653
         },
         {
             "path": "js/precontent/WeChatkill_sight.js",
-            "size": 8997
+            "size": 8834
         },
         {
             "path": "js/precontent/WeChatkill.js",
-            "size": 1521074
+            "size": 1495714
+        },
+        {
+            "path": "js/precontent/模板.js",
+            "size": 1343
         },
         {
             "path": "js/update.js",
-            "size": 2183
+            "size": 2132
         },
         {
             "path": "README.md",
-            "size": 218
+            "size": 214
+        },
+        {
+            "path": "活动武将Logo.jpg",
+            "size": 441247
+        },
+        {
+            "path": "活动武将横版Logo.jpg",
+            "size": 563413
         }
     ]
 }
