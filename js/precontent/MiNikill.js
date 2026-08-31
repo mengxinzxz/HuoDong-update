@@ -13926,7 +13926,7 @@ const packs = function () {
                     return game.hasPlayer(current => {
                         if (target && current == target) return false;
                         const evt = event.getl(current);
-                        return evt?.hs?.length && current.countCards('h') < current.maxHp;
+                        return evt?.hs?.length && current.countCards('h') < current.hp;
                     });
                 },
                 async cost(event, trigger, player) {
@@ -13934,7 +13934,7 @@ const packs = function () {
                     const targets = game.filterPlayer(current => {
                         if (targetx && current == targetx || !current.isIn()) return false;
                         const evt = trigger.getl(current);
-                        return evt?.hs?.length && current.countCards('h') < current.maxHp;
+                        return evt?.hs?.length && current.countCards('h') < current.hp;
                     }).sortBySeat(targetx || player);
                     event.result = await player.chooseTarget((card, player, target) => {
                         return get.event().targets.includes(target);
