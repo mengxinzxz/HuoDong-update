@@ -352,7 +352,7 @@ const packs = function () {
             Mbaby_yue_zhoufei: ['female', 'wu', 3, ['minilingkong', 'minixianshu'], ['name:周|null']],
             Mbaby_dc_sb_lusu: ['male', 'wu', 3, ['minimingshi', 'minimengmou']],
             Mbaby_star_dingfeng: ['male', 'wu', 4, ['stardangchen', 'minijianyu']],
-            Mbaby_star_zhangzhao: ['male', 'wu', 3, ['ministarzhongyan', 'minijinglun']],
+            Mbaby_star_zhangzhao: ['male', 'wu', 3, ['starzhongyan', 'minijinglun']],
             Mbaby_yue_xiaoqiao: ['female', 'wu', 3, ['miniqiqin', 'dcweiwan'], ['name:桥|null']],
             //群
             Mbaby_gaoshun: ['male', 'qun', 4, ['minixianzhen', 'minijinjiu']],
@@ -22600,114 +22600,6 @@ const packs = function () {
                 }
             },
             // 星张昭
-            ministarzhongyan: {
-                audio: 'starzhongyan',
-                enable: 'phaseUse',
-                usable: 1,
-                filter(event, player) {
-                    return game.hasPlayer(target => target.countCards('h'));
-                },
-                filterTarget(card, player, target) {
-                    return target.countCards('h');
-                },
-                async content(event, trigger, player) {
-                    const target = event.targets[0];
-                    const topCards = get.cards(3);
-                    await game.cardsGotoOrdering(topCards);
-                    await player.showCards(topCards, `${get.translation(player)}发动了【忠言】`);
-                    if (!target.countCards('h')) {
-                        await game.cardsGotoPile(topCards.slice().reverse(), 'insert');
-                        game.updateRoundNumber();
-                        return;
-                    }
-                    const result = await target.chooseToMove('忠言：用一张手牌交换一张展示牌', true).set('list', [
-                        ['展示牌', topCards],
-                        ['你的手牌', target.getCards('h')],
-                    ]).set('filterMove', (from, to, moved) => {
-                        if (typeof to == 'number') return false;
-                        const player = get.player();
-                        const handCards = player.getCards('h');
-                        const movedFromHand = handCards.filter(card => !moved[1].includes(card));
-                        const movedToHand = moved[1].filter(card => !handCards.includes(card));
-                        if (movedFromHand.length < 1) return true;
-                        const fromIndex = moved[0].includes(from.link) ? 0 : 1;
-                        const toIndex = moved[0].includes(to.link) ? 0 : 1;
-                        if (fromIndex == toIndex) return false;
-                        if (fromIndex == 0) {
-                            if (movedFromHand.includes(from.link)) return true;
-                            return movedToHand.includes(to.link);
-                        }
-                        if (movedToHand.includes(from.link)) return true;
-                        return movedFromHand.includes(to.link);
-                    }).set('filterOk', moved => {
-                        return moved[0].filter(card => get.owner(card)).length == 1;
-                    }).set('processAI', list => {
-                        const shownCards = list[0][1].slice();
-                        const handCards = list[1][1].slice();
-                        const gainCard = shownCards.sort((a, b) => get.value(b) - get.value(a))[0];
-                        const giveCard = handCards.sort((a, b) => get.value(a) - get.value(b))[0];
-                        if (gainCard && giveCard && get.value(gainCard) > get.value(giveCard)) {
-                            shownCards.remove(gainCard);
-                            handCards.remove(giveCard);
-                            shownCards.push(giveCard);
-                            handCards.push(gainCard);
-                        }
-                        return [shownCards, handCards];
-                    }).forResult();
-                    if (!result.bool) {
-                        await game.cardsGotoPile(topCards.slice().reverse(), 'insert');
-                        game.updateRoundNumber();
-                        return;
-                    }
-                    const remainingCards = result.moved[0].slice();
-                    const gainedCards = result.moved[1].filter(card => !get.owner(card));
-                    const givenCards = remainingCards.filter(card => get.owner(card));
-                    if (givenCards.length) await target.lose(givenCards, ui.special);
-                    await game.cardsGotoPile(remainingCards.slice().reverse(), 'insert');
-                    game.updateRoundNumber();
-                    if (gainedCards.length) await target.gain(gainedCards, 'draw');
-                    if (remainingCards.map(card => get.color(card)).toUniqued().length != 1) return;
-                    const chosen = [];
-                    const executors = target == player ? [target] : [target, player];
-                    for (const current of executors) {
-                        const canGain = game.hasPlayer(target => target.countGainableCards(current, 'ej'));
-                        const choices = [];
-                        const choiceList = ['回复1点体力', '获得场上一张牌'];
-                        if (current.isDamaged() && !chosen.includes('选项一')) choices.push('选项一');
-                        else choiceList[0] = '<span style="opacity:0.5">回复1点体力</span>';
-                        if (canGain && !chosen.includes('选项二')) choices.push('选项二');
-                        else choiceList[1] = '<span style="opacity:0.5">获得场上一张牌</span>';
-                        if (!choices.length) continue;
-                        let control = choices[0];
-                        if (choices.length > 1) {
-                            const choiceResult = await current.chooseControl(choices).set('choiceList', choiceList).set('prompt', '忠言：请选择一项').set('ai', () => {
-                                const player = get.player();
-                                return get.recoverEffect(player, player, player) > 0 ? 0 : 1;
-                            }).forResult();
-                            control = choiceResult.control;
-                        }
-                        chosen.push(control);
-                        if (control == '选项一') {
-                            await current.recover();
-                            continue;
-                        }
-                        const targetResult = await current.chooseTarget('忠言：获得一名角色场上的一张牌', true, (card, player, target) => {
-                            return target.countGainableCards(get.player(), 'ej') > 0;
-                        }).set('ai', target => {
-                            const player = get.player();
-                            return lib.card.shunshou.ai.result.target(player, target);
-                        }).forResult();
-                        if (targetResult.targets?.length) await current.gainPlayerCard(targetResult.targets[0], 'ej', true);
-                    }
-                },
-                ai: {
-                    order: 8,
-                    result: {
-                        player: 1,
-                        target: 1,
-                    },
-                },
-            },
             minijinglun: {
                 audio: 'starjinglun',
                 trigger: { global: "damageSource" },
@@ -22719,7 +22611,7 @@ const packs = function () {
                 async cost(event, trigger, player) {
                     const target = trigger.source, num = target.countCards('e');
                     if (num > 0) {
-                        const result = await player.chooseControlList([`令其摸${get.cnNumber(num)}张牌并对其发动${get.poptip('ministarzhongyan')}`, `对其发动${get.poptip('ministarzhongyan')}并令其弃置${get.cnNumber(num)}张牌`]).set('prompt', get.prompt(event.skill, target)).set('ai', () => {
+                        const result = await player.chooseControlList([`令其摸${get.cnNumber(num)}张牌并对其发动${get.poptip('starzhongyan')}`, `对其发动${get.poptip('starzhongyan')}并令其弃置${get.cnNumber(num)}张牌`]).set('prompt', get.prompt(event.skill, target)).set('ai', () => {
                             return get.event().choice;
                         }).set('choice', (() => {
                             const att = get.sgnAttitude(player, target);
@@ -22733,7 +22625,7 @@ const packs = function () {
                         }
                     }
                     else {
-                        event.result = await player.chooseBool(`${get.prompt(event.skill, target)}`, `对其发动${get.poptip('ministarzhongyan')}`).set('choice', get.attitude(player, target) > 0).forResult();
+                        event.result = await player.chooseBool(`${get.prompt(event.skill, target)}`, `对其发动${get.poptip('starzhongyan')}`).set('choice', get.attitude(player, target) > 0).forResult();
                         if (event.result.bool) event.result.cost_data = { index: 0, num: 0 };
                     }
                 },
@@ -22744,7 +22636,7 @@ const packs = function () {
                     if (index == 0) {
                         await target.draw(num);
                     }
-                    await player.useSkill('ministarzhongyan', [target]);
+                    await player.useSkill('starzhongyan', [target]);
                     if (index == 1) {
                         await target.chooseToDiscard(num, 'he', 'allowChooseAll', true);
                     }
@@ -46617,10 +46509,8 @@ const packs = function () {
             minijianyu_info: '锁定技，其他角色在你回合内失去一张装备牌后，你摸一张牌。',
             minigangyi: '刚毅',
             minigangyi_info: '锁定技。①回合结束时，若你本回合没有造成伤害，你下回合使用【杀】的次数上限+1。②②当你处于濒死状态时，以你为目标的【桃】或【酒】的回复值+1。',
-            ministarzhongyan: '忠言',
-            ministarzhongyan_info: '出牌阶段限一次，你可以展示牌堆顶三张牌，然后令一名有手牌的角色用一张手牌交换其中一张牌。若交换后的三张展示牌颜色相同，该角色选择一项：①回复1点体力；②获得场上一张牌。若该角色不是你，则你执行其未选择的另一项。',
             minijinglun: '经纶',
-            minijinglun_info: `每回合限一次，当你距离1以内的一名角色造成伤害后，你可以选择一项：①令其摸X张牌，然后对其发动${get.poptip('ministarzhongyan')}；②对其发动${get.poptip('ministarzhongyan')}，然后令其弃置X张牌（不足则全弃）。X为你发动此技能时其装备区里的牌数。`,
+            minijinglun_info: `每回合限一次，当你距离1以内的一名角色造成伤害后，你可以选择一项：①令其摸X张牌，然后对其发动${get.poptip('starzhongyan')}；②对其发动${get.poptip('starzhongyan')}，然后令其弃置X张牌（不足则全弃）。X为你发动此技能时其装备区里的牌数。`,
             //群
             Mbaby_zuoci: '欢杀左慈',
             Mbaby_gaoshun: '欢杀高顺',
