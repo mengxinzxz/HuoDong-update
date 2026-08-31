@@ -42693,7 +42693,18 @@ const packs = function () {
                     player.addTempSkill('minifightchuanglie_mark');
                     player.storage.minifightchuanglie_mark ??= {};
                     if (typeof player.storage.minifightchuanglie_mark[target.playerid] != 'number') player.storage.minifightchuanglie_mark[target.playerid] = 0;
-                    player.storage.minifightchuanglie_mark[target.playerid]++;
+                    const count = ++player.storage.minifightchuanglie_mark[target.playerid];
+                    if (
+                        count == 3 &&
+                        !Object.keys(player.storage.minifightchuanglie_mark).some(id => player.storage.minifightchuanglie_mark[id] > 2 && id != target.playerid) &&
+                        ui._minifightchuanglie_wancheng
+                    ) {
+                        const useEvent = trigger.getParent();
+                        for (const owner of game.filterPlayer(current => current.hasSkill('minifightchuanglie'))) {
+                            owner.storage.minifightchuanglie_reentry ??= [];
+                            owner.storage.minifightchuanglie_reentry.add(useEvent);
+                        }
+                    }
                 }
             },
             minifightchuanglie: {
@@ -42713,22 +42724,25 @@ const packs = function () {
                     }
                     return ui._minifightchuanglie_wancheng;
                 },
+                enter(player, event) {
+                    player.$fullscreenpop('宛城战场', 'fire');
+                    const background = 'ext:活动武将/image/background/battlefield_wancheng.jpg';
+                    game.broadcastAll(bg => {
+                        ui._minifightchuanglie_wancheng?.remove();
+                        delete ui._minifightchuanglie_wancheng;
+                        if (get.is.phoneLayout()) ui._minifightchuanglie_wancheng = ui.create.div('.touchinfo.left', ui.window);
+                        else ui._minifightchuanglie_wancheng = ui.create.div(ui.gameinfo);
+                        ui._minifightchuanglie_wancheng.innerHTML = '<br>宛城战场';
+                        _status.tempBackground = bg;
+                        game.updateBackground();
+                    }, background);
+                    game.addVideo('skill', player, ['minifightchuanglie', [true, background]]);
+                },
                 forced: true,
                 locked: false,
                 async content(event, trigger, player) {
                     if (trigger.name == 'useCardToPlayer') {
-                        player.$fullscreenpop('宛城战场', 'fire');
-                        const background = 'ext:活动武将/image/background/battlefield_wancheng.jpg';
-                        game.broadcastAll(bg => {
-                            ui._minifightchuanglie_wancheng?.remove();
-                            delete ui._minifightchuanglie_wancheng;
-                            if (get.is.phoneLayout()) ui._minifightchuanglie_wancheng = ui.create.div('.touchinfo.left', ui.window);
-                            else ui._minifightchuanglie_wancheng = ui.create.div(ui.gameinfo);
-                            ui._minifightchuanglie_wancheng.innerHTML = '<br>宛城战场';
-                            _status.tempBackground = bg;
-                            game.updateBackground();
-                        }, background);
-                        game.addVideo('skill', player, [event.name, [true, background]]);
+                        lib.skill.minifightchuanglie.enter(player, event);
                     }
                     else {
                         game.broadcastAll(() => {
@@ -42746,7 +42760,7 @@ const packs = function () {
                     else delete _status.tempBackground;
                     game.updateBackground();
                 },
-                group: 'minifightchuanglie_effect',
+                group: ['minifightchuanglie_effect', 'minifightchuanglie_reentry'],
                 subSkill: {
                     effect: {
                         audio: 'minifightchuanglie',
@@ -42762,7 +42776,7 @@ const packs = function () {
                         async cost(event, trigger, player) {
                             if (trigger.name == 'useCard') {
                                 event.result = await player.chooseTarget(get.prompt(event.skill), '选择一名角色对其发动〖强袭〗', (card, player, target) => {
-                                    return get.event().targetsx?.includes(target);
+                                    return target != player && get.event().targetsx?.includes(target);
                                 }).set('ai', target => {
                                     const player = get.player();
                                     return get.damageEffect(target, player, player);
@@ -42798,6 +42812,22 @@ const packs = function () {
                                 if (typeof player.storage.minifightchuanglie_mark[user.playerid] != 'number') player.storage.minifightchuanglie_mark[user.playerid] = 0;
                                 player.storage.minifightchuanglie_mark[user.playerid]++;
                                 await game.delayx();
+                            }
+                        },
+                    },
+                    reentry: {
+                        charlotte: true,
+                        forced: true,
+                        popup: false,
+                        trigger: { global: 'useCardAfter' },
+                        filter(event, player) {
+                            return player.getStorage('minifightchuanglie_reentry').includes(event);
+                        },
+                        content(event, trigger, player) {
+                            player.storage.minifightchuanglie_reentry.removeArray([trigger]);
+                            if (!player.storage.minifightchuanglie_reentry.length) delete player.storage.minifightchuanglie_reentry;
+                            if (!ui._minifightchuanglie_wancheng) {
+                                lib.skill.minifightchuanglie.enter(player, event);
                             }
                         },
                     },
@@ -42837,7 +42867,19 @@ const packs = function () {
                 },
                 enable: 'chooseToUse',
                 usable: 1,
+                isForbiddenResponse(event) {
+                    const names = ['juedou', 'nanman', 'wanjian'];
+                    let current = event;
+                    while (current) {
+                        if (names.includes(current.card?.name)) return true;
+                        const parent = current.getParent?.();
+                        if (!parent || parent === current) break;
+                        current = parent;
+                    }
+                    return false;
+                },
                 filter(event, player) {
+                    if (lib.skill.minifightkuangji.isForbiddenResponse(event)) return false;
                     if (['sha', 'shan'].every(name => !event.filterCard(get.autoViewAs({ name, storage: { minifightkuangji: true } }, 'unsure'), player, event))) return false;
                     return player.hasCard(card => get.subtypes(card).includes('equip1'), 'hes');
                 },
@@ -42888,7 +42930,12 @@ const packs = function () {
                                     num -= info.distance.attackFrom;
                                 }
                                 num = Math.ceil(num / 2);
-                                if (num > 0) event.result._apply_args = { effectCount: num };
+                                if (event.result.card.name == 'sha') {
+                                    event.result.card.storage.minifightkuangji_count = num;
+                                    player.when('useCard2').filter(evt => evt.skill == 'minifightkuangji_backup' && evt.card.name == 'sha' && evt.getParent() == event.getParent()).step(evt => {
+                                        evt.card.storage.minifightkuangji_targets = evt.targets.slice();
+                                    });
+                                }
                                 player.when('useCard').filter(evt => evt.skill == 'minifightkuangji_backup' && evt.card.name == 'shan' && evt.getParent() == event.getParent()).step(async () => {
                                     await player.draw(num);
                                 });
@@ -42910,8 +42957,36 @@ const packs = function () {
                     order: 6,
                     result: { player: 1 },
                 },
-                group: 'minifightkuangji_equip',
+                group: ['minifightkuangji_equip', 'minifightkuangji_repeat'],
                 subSkill: {
+                    repeat: {
+                        charlotte: true,
+                        forced: true,
+                        popup: false,
+                        trigger: { player: 'useCardAfter' },
+                        filter(event, player) {
+                            return event.card?.name == 'sha' && event.card.storage?.minifightkuangji_count > 1;
+                        },
+                        async content(event, trigger, player) {
+                            const count = trigger.card.storage.minifightkuangji_count;
+                            const targets = trigger.card.storage.minifightkuangji_targets;
+                            if (!Array.isArray(targets) || !targets.length) return;
+                            for (let index = 1; index < count; index++) {
+                                const card = {
+                                    name: 'sha',
+                                    isCard: true,
+                                    storage: {
+                                        minifightkuangji: true,
+                                        minifightkuangji_repeat: true,
+                                    },
+                                };
+                                if (!targets.every(target => target.isIn() && player.canUse(card, target))) break;
+                                const next = player.useCard(card, targets.slice(), false);
+                                next.addCount = false;
+                                await next;
+                            }
+                        },
+                    },
                     equip: {
                         audio: 'minifightkuangji',
                         trigger: {
@@ -48086,7 +48161,7 @@ const packs = function () {
             '#ext:活动武将/audio/skill/minipaoxiao_Mbabysp_zhangfei2': '据桥一喝，闻者无不肝胆碎裂。',
             '#ext:活动武将/audio/skill/minixuhe1': '大军至，何以不降而敢拒战？',
             '#ext:活动武将/audio/die/Mbabysp_zhangfei:die': '大爷，有些累了。',
-            '#ext:活动武将/audio/skill/minifightchuanglie1': '此战，不退！',
+            '#ext:活动武将/audio/skill/minifightchuanglie1': '死战！不退！',
             '#ext:活动武将/audio/skill/minifightchuanglie2': '此路，不通！',
             '#ext:活动武将/audio/skill/minifightkuangji1': '双戟何在？',
             '#ext:活动武将/audio/skill/minifightkuangji2': '一下不够，那再吃我一戟！',
