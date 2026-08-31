@@ -45493,7 +45493,7 @@ const packs = function () {
                             const sourcex = player === current ? target : player;
                             const result = await current.chooseToUse(function (card, player, event) {
                                 if (get.name(card) !== 'sha') return false;
-                                return lib.filter.cardEnabled.apply(this, arguments);
+                                return lib.filter.filterCard.apply(this, arguments);
                             }, '情战：对' + get.translation(sourcex) + '使用一张【杀】，或失去1点体力').set('filterTarget', function (card, player, target) {
                                 const source = get.event().sourcex;
                                 if (target !== source && !ui.selected.targets.includes(source)) return false;
@@ -48244,7 +48244,7 @@ const packs = function () {
             miniqingzhan: '情战',
             miniqingzhan_info: '出牌阶段限一次，你可以选择一名其他角色A，你与其轮流选择一项：1.对对方使用一张无距离和次数限制的【杀】；2.失去1点体力。若A为你的“情敌”，则重复此流程直到你与其中的一名角色进入濒死。',
             miniqingyuan: '情援',
-            miniqingyuan_info: '锁定技。①当你对一名角色造成伤害时或成为一名角色使用的伤害牌的目标时，你摸一张牌，若该角色为你的“情敌”，则你随机弃置其一张手牌。②每轮开始时，你可以选择一名没有〖情援〗的非“情敌”角色，直到本轮结束，你失去〖情援①〗，其获得〖情援①〗。',
+            miniqingyuan_info: '锁定技。①当你对一名角色造成伤害后或成为一名角色使用的伤害牌的目标后，你摸一张牌，若该角色为你的“情敌”，则你随机弃置其一张手牌。②每轮开始时，你可以选择一名没有〖情援〗的非“情敌”角色，直到本轮结束，你失去〖情援①〗，其获得〖情援①〗。',
 
             // ----------------------- 台词部分 ----------------------- //
             '#ext:活动武将/audio/skill/minidoumao1': '喵～呜～',
