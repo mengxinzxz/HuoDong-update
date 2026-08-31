@@ -42694,11 +42694,7 @@ const packs = function () {
                     player.storage.minifightchuanglie_mark ??= {};
                     if (typeof player.storage.minifightchuanglie_mark[target.playerid] != 'number') player.storage.minifightchuanglie_mark[target.playerid] = 0;
                     const count = ++player.storage.minifightchuanglie_mark[target.playerid];
-                    if (
-                        count == 3 &&
-                        !Object.keys(player.storage.minifightchuanglie_mark).some(id => player.storage.minifightchuanglie_mark[id] > 2 && id != target.playerid) &&
-                        ui._minifightchuanglie_wancheng
-                    ) {
+                    if (count == 3 && !Object.keys(player.storage.minifightchuanglie_mark).some(id => player.storage.minifightchuanglie_mark[id] > 2 && id != target.playerid) && ui._minifightchuanglie_wancheng) {
                         const useEvent = trigger.getParent();
                         for (const owner of game.filterPlayer(current => current.hasSkill('minifightchuanglie'))) {
                             owner.storage.minifightchuanglie_reentry ??= [];
