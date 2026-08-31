@@ -9770,7 +9770,7 @@ const packs = function () {
                 trigger: { player: 'phaseDrawBegin1' },
                 async cost(event, trigger, player) {
                     event.result = await player.chooseTarget(get.prompt2('minixuanhuo'), function (card, player, target) {
-                        return player != target;
+                        return player != target && target.countCards('he') > 0;
                     }).set('ai', function (target) {
                         var att = get.attitude(_status.event.player, target);
                         if (target.countCards('he') == 0) return 0;
@@ -9781,7 +9781,8 @@ const packs = function () {
                 async content(event, trigger, player) {
                     const target = event.targets[0];
                     const result = await player.chooseTarget('眩惑：请选择' + get.translation(target) + '出杀的目标', true, function (card, player, target) {
-                        return _status.event.target.canUse('sha', target);
+                        const source = _status.event.target;
+                        return source != target && source.inRange(target);
                     }).set('ai', function (target) {
                         var player = _status.event.player;
                         if (!_status.event.target.canUse('sha', target) && get.attitude(player, _status.event.target) < 0) return 8 + get.attitude(player, target);
