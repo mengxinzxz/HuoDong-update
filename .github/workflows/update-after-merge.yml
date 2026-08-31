@@ -1,7 +1,7 @@
 name: 合并后自动更新file.json和info.json
 
 on:
-  pull_request:
+  pull_request_target:
     types: [closed]
     branches: [main]
 
