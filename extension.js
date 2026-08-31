@@ -29,7 +29,7 @@ export default async function () {
 		intro: [
 			'新人制作扩展，希望大家支持。',
 			'新人技术不足，希望大家包涵。',
-			'<a href="https://github.com/HuoDong-Update-Organization/HuoDong-update">点击前往活动武将Github仓库</a>',
+			'<a href="https://github.com/xizifu/HuoDong-update">点击前往活动武将Github仓库</a>',
 			'<li>欢迎大家进群支持活动武将',
 			//入群二维码图片
 			'<img style=width:238px src=' + lib.assetURL + 'extension/活动武将/HuoDong_QQ.png>',

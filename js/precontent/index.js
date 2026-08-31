@@ -813,7 +813,7 @@ export async function precontent(bilibilicharacter) {
                 data: [
                     '新人制作扩展，希望大家支持',
                     '新人技术不足，希望大家包涵',
-                    '<a href="https://github.com/HuoDong-Update-Organization/HuoDong-update">点击前往活动武将Github仓库</a>'
+                    '<a href="https://github.com/xizifu/HuoDong-update">点击前往活动武将Github仓库</a>'
                 ],
             },
             {
