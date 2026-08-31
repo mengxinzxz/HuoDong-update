@@ -235,7 +235,7 @@ const packs = function () {
             Mbaby_sb_machao: ['male', 'shu', 4, ['miniyuma', 'minisbtieji']],
             Mbaby_sb_huangzhong: ['male', 'shu', 4, ['minisbliegong']],
             Mbaby_sb_zhaoyun: ['male', 'shu', 4, ['minisblongdan', 'minisbshilve']],
-            Mbaby_zhangyi: ['male', 'shu', 5, ['rewurong', 'minishizhi']],
+            Mbaby_zhangyi: ['male', 'shu', 5, ['miniwurong', 'minishizhi']],
             Mbaby_jiangfei: ['male', 'shu', 3, ['reshengxi', 'minishoucheng']],
             Mbaby_sb_sunshangxiang: ['female', 'wu', 3, ['minisbxiaoji', 'minisbjieyin', 'minisbfanxiang'], ['border:shu']],
             Mbaby_sb_xiahoushi: ['female', 'shu', 3, ['sbqiaoshi', 'minispyanyu'], ['name:夏侯|null']],
@@ -13920,14 +13920,104 @@ const packs = function () {
             },
             //张嶷
             rewurong_Mbaby_zhangyi: { audio: 'ext:活动武将/audio/skill:2' },
+            miniwurong: {
+                inherit: 'rewurong',
+                audio: 'rewurong',
+                audioname2: { Mbaby_zhangyi: 'rewurong_Mbaby_zhangyi' },
+                async content(event, trigger, player) {
+                    const { target } = event;
+                    if (!player.countCards('h') || !target.countCards('h')) return;
+                    const result = await player.chooseCardOL([player, target], '怃戎：请展示一张手牌', true).set('ai', card => {
+                        return Math.random();
+                    }).set('source', player).set('aiCard', target => {
+                        const cards = target.getCards('h');
+                        return { bool: true, cards: [cards.randomGet()] };
+                    }).forResult();
+                    const card1 = result[0].cards[0], card2 = result[1].cards[0];
+                    game.broadcastAll((card1, card2) => {
+                        card1.classList.remove('glow');
+                        card2.classList.remove('glow');
+                        ui.arena.classList.add('thrownhighlight');
+                    }, card1, card2);
+                    game.addVideo('thrownhighlight1');
+                    player.$compare(card1, target, card2);
+                    await game.delay(4);
+                    let next = game.createEvent('showCards');
+                    next.player = player;
+                    next.cards = [card1];
+                    next.setContent('emptyEvent');
+                    game.log(player, '展示了', card1);
+                    next = game.createEvent('showCards');
+                    next.player = target;
+                    next.cards = [card2];
+                    next.setContent('emptyEvent');
+                    game.log(target, '展示了', card2);
+                    const name1 = get.name(card1), name2 = get.name(card2);
+                    if (name1 == 'sha' && name2 != 'shan') {
+                        target.$gain2(card2);
+                        const clone = card1.clone;
+                        if (clone) {
+                            clone.style.transition = 'all 0.5s';
+                            clone.style.transform = 'scale(1.2)';
+                            clone.delete();
+                            game.addVideo('deletenode', player, get.cardsInfo([clone]));
+                        }
+                        game.broadcast(card => {
+                            const clone = card.clone;
+                            if (clone) {
+                                clone.style.transition = 'all 0.5s';
+                                clone.style.transform = 'scale(1.2)';
+                                clone.delete();
+                            }
+                        }, card1);
+                        await target.damage('nocard');
+                    }
+                    else if (name1 != 'sha' && name2 == 'shan') {
+                        target.$gain2(card2);
+                        const clone = card1.clone;
+                        if (clone) {
+                            clone.style.transition = 'all 0.5s';
+                            clone.style.transform = 'scale(1.2)';
+                            clone.delete();
+                            game.addVideo('deletenode', player, get.cardsInfo([clone]));
+                        }
+                        game.broadcast(card => {
+                            const clone = card.clone;
+                            if (clone) {
+                                clone.style.transition = 'all 0.5s';
+                                clone.style.transform = 'scale(1.2)';
+                                clone.delete();
+                            }
+                        }, card1);
+                        await player.gainPlayerCard(target, true, 'he');
+                    }
+                    else {
+                        player.$gain2(card1);
+                        target.$gain2(card2);
+                    }
+                    game.broadcastAll(() => {
+                        ui.arena.classList.remove('thrownhighlight');
+                    });
+                    game.addVideo('thrownhighlight2');
+                },
+            },
             minishizhi: {
                 audio: 'ext:活动武将/audio/skill:2',
-                inherit: 'reshizhi',
                 mod: {
                     cardname(card, player) {
                         if (card.name == 'shan' && _status.currentPhase === player) return 'sha';
                     },
                 },
+                trigger: { source: 'damageEnd' },
+                forced: true,
+                filter(event, player) {
+                    return _status.currentPhase === player && event.card?.name == 'sha' && event.cards?.length == 1 && event.cards[0].name == 'shan';
+                },
+                async content(event, trigger, player) {
+                    await player.recover();
+                    await player.draw();
+                },
+                ai: { halfneg: true },
             },
             //蒋琬费祎
             minishoucheng: {
@@ -46117,8 +46207,10 @@ const packs = function () {
             minisblongdan_info: '蓄力技（1/3）。①你可以消耗1点蓄力值，将一张基本牌当作任意基本牌使用或打出，然后你摸一张牌。②一名角色的回合结束时，你获得1点蓄力值。',
             minisbshilve: '识略',
             minisbshilve_info: '当你发动〖龙胆〗使用或打出【杀】或【闪】时，你可以和对方进行谋弈。若你赢，且你选择的选项为：“偃旗息鼓”，从牌堆或弃牌堆获得一张非基本牌；“胆壮心雄”，你获得1点蓄力值。',
+            miniwurong: '怃戎',
+            miniwurong_info: '出牌阶段限一次，你可以令一名其他角色与你同时展示一张手牌：若你展示的是【杀】且该角色展示的不是【闪】，则你对其造成1点伤害；若你展示的不是【杀】且该角色展示的是【闪】，则你获得其一张牌。',
             minishizhi: '矢志',
-            minishizhi_info: '锁定技，若当前回合角色为你，则你的【闪】视为【杀】，且当你使用对应的实体牌为一张【闪】的非转化普通杀造成伤害后，你回复1点体力。',
+            minishizhi_info: '锁定技，你的回合内，你的【闪】视为【杀】；当你使用这些【杀】造成伤害后，你回复1点体力并摸一张牌。',
             minishoucheng: '守成',
             minishoucheng_info: '每回合限一次，一名角色于回合外失去手牌后，若其手牌数小于其体力值，则你可以令其摸两张牌。',
             minisbxiaoji: '枭姬',
