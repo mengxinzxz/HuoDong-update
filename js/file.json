@@ -6,7 +6,7 @@
         },
         {
             "path": "README.md",
-            "size": 218
+            "size": 214
         },
         {
             "path": "audio/die/Mbaby_bianfuren.mp3",
@@ -2825,6 +2825,14 @@
             "size": 73889
         },
         {
+            "path": "audio/skill/mininiandingluan1.mp3",
+            "size": 56372
+        },
+        {
+            "path": "audio/skill/mininiandingluan2.mp3",
+            "size": 114260
+        },
+        {
             "path": "audio/skill/mininiandoupo1.mp3",
             "size": 42479
         },
@@ -2879,14 +2887,6 @@
         {
             "path": "audio/skill/mininiantazhen2.mp3",
             "size": 47876
-        },
-        {
-            "path": "audio/skill/mininiandingluan1.mp3",
-            "size": 56372
-        },
-        {
-            "path": "audio/skill/mininiandingluan2.mp3",
-            "size": 114260
         },
         {
             "path": "audio/skill/mininianying_Mnian_caopi1.mp3",
@@ -5094,11 +5094,11 @@
         },
         {
             "path": "extension.css",
-            "size": 11068
+            "size": 10518
         },
         {
             "path": "extension.js",
-            "size": 1494
+            "size": 1455
         },
         {
             "path": "image/background/PPmake1.png",
@@ -9198,79 +9198,79 @@
         },
         {
             "path": "js/config.js",
-            "size": 26291
+            "size": 25633
         },
         {
             "path": "js/content.js",
-            "size": 64333
+            "size": 62824
         },
         {
             "path": "js/help.js",
-            "size": 765
+            "size": 757
         },
         {
             "path": "js/precontent/FaDongCharacter.js",
-            "size": 20832
+            "size": 20466
         },
         {
             "path": "js/precontent/HD_chaoshikong.js",
-            "size": 53479
+            "size": 52493
         },
         {
             "path": "js/precontent/MX_feihongyinxue.js",
-            "size": 279464
+            "size": 274653
         },
         {
             "path": "js/precontent/MiNiAppkill.js",
-            "size": 221219
+            "size": 217451
         },
         {
             "path": "js/precontent/MiNikill.js",
-            "size": 2909244
+            "size": 2860125
         },
         {
             "path": "js/precontent/MiNikill_sight.js",
-            "size": 9456
+            "size": 9289
         },
         {
             "path": "js/precontent/WeChatkill.js",
-            "size": 1521074
+            "size": 1495714
         },
         {
             "path": "js/precontent/WeChatkill_sight.js",
-            "size": 8997
+            "size": 8834
         },
         {
             "path": "js/precontent/decadeKuiBa.js",
-            "size": 35916
+            "size": 35246
         },
         {
             "path": "js/precontent/decadeQiHuan.js",
-            "size": 53813
+            "size": 52877
         },
         {
             "path": "js/precontent/decadeZhuoGui.js",
-            "size": 59311
+            "size": 58311
         },
         {
             "path": "js/precontent/hezongkangqincharacter.js",
-            "size": 84206
+            "size": 82737
         },
         {
             "path": "js/precontent/huodongcharacter.js",
-            "size": 935891
+            "size": 920583
         },
         {
             "path": "js/precontent/index.js",
-            "size": 43652
+            "size": 42803
         },
         {
             "path": "js/precontent/模板.js",
-            "size": 1415
+            "size": 1343
         },
         {
             "path": "js/update.js",
-            "size": 2320
+            "size": 2264
         },
         {
             "path": "活动武将Logo.jpg",
