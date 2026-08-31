@@ -6,7 +6,7 @@
         },
         {
             "path": "README.md",
-            "size": 214
+            "size": 218
         },
         {
             "path": "audio/die/Mbaby_bianfuren.mp3",
@@ -5094,11 +5094,11 @@
         },
         {
             "path": "extension.css",
-            "size": 10518
+            "size": 11068
         },
         {
             "path": "extension.js",
-            "size": 1455
+            "size": 1494
         },
         {
             "path": "image/background/PPmake1.png",
@@ -9198,79 +9198,79 @@
         },
         {
             "path": "js/config.js",
-            "size": 25633
+            "size": 26291
         },
         {
             "path": "js/content.js",
-            "size": 62824
+            "size": 64333
         },
         {
             "path": "js/help.js",
-            "size": 757
+            "size": 765
         },
         {
             "path": "js/precontent/FaDongCharacter.js",
-            "size": 20466
+            "size": 20832
         },
         {
             "path": "js/precontent/HD_chaoshikong.js",
-            "size": 52493
+            "size": 53479
         },
         {
             "path": "js/precontent/MX_feihongyinxue.js",
-            "size": 274653
+            "size": 279464
         },
         {
             "path": "js/precontent/MiNiAppkill.js",
-            "size": 217451
+            "size": 221219
         },
         {
             "path": "js/precontent/MiNikill.js",
-            "size": 2860125
+            "size": 2909258
         },
         {
             "path": "js/precontent/MiNikill_sight.js",
-            "size": 9289
+            "size": 9456
         },
         {
             "path": "js/precontent/WeChatkill.js",
-            "size": 1495714
+            "size": 1521074
         },
         {
             "path": "js/precontent/WeChatkill_sight.js",
-            "size": 8834
+            "size": 8997
         },
         {
             "path": "js/precontent/decadeKuiBa.js",
-            "size": 35246
+            "size": 35916
         },
         {
             "path": "js/precontent/decadeQiHuan.js",
-            "size": 52877
+            "size": 53813
         },
         {
             "path": "js/precontent/decadeZhuoGui.js",
-            "size": 58311
+            "size": 59311
         },
         {
             "path": "js/precontent/hezongkangqincharacter.js",
-            "size": 82737
+            "size": 84206
         },
         {
             "path": "js/precontent/huodongcharacter.js",
-            "size": 920583
+            "size": 935891
         },
         {
             "path": "js/precontent/index.js",
-            "size": 42803
+            "size": 43652
         },
         {
             "path": "js/precontent/模板.js",
-            "size": 1343
+            "size": 1415
         },
         {
             "path": "js/update.js",
-            "size": 2264
+            "size": 2765
         },
         {
             "path": "活动武将Logo.jpg",

@@ -28,6 +28,13 @@ fs.writeFileSync(infoPath, JSON.stringify(info, null, 4), 'utf8');
 console.log(`本次commit提交时间: ${info.lastEditTime}`);
 
 //自动更新file.json
+//二进制文件直接使用实际字节数，文本文件统一按照Windows CRLF计算，以此统一不同环境下生成的file.json里面的可编辑文件的size计算
+const getFileSize = filePath => {
+    const buffer = fs.readFileSync(filePath);
+    if (buffer.includes(0)) return buffer.length;
+    const content = buffer.toString('utf8');
+    return Buffer.byteLength(content.replace(/\r?\n/g, '\r\n'), 'utf8');
+};
 const walkFiles = dir => {
     let result = [];
     //排除目录/文件
@@ -43,7 +50,7 @@ const walkFiles = dir => {
             if (ignoreFiles.has(relativePath)) continue;
             result.push({
                 path: relativePath,
-                size: stat.size,
+                size: getFileSize(fullPath),
             });
         }
     }
