@@ -6,7 +6,7 @@ export let config = {
 		name: '<button type="button">检查扩展更新</button>',
 		async onclick() {
 			if (this.textContent !== '检查扩展更新') return;
-			const rawBase = `https://raw.githubusercontent.com/mengxinzxz/HuoDong-update/main`;
+			const rawBase = `https://raw.githubusercontent.com/xizifu/HuoDong-update/main`;
 			const saveState = async state => {
 				lib.config['extension_活动武将_update_state'] = state;
 				await game.promises.saveConfig('extension_活动武将_update_state', state);
