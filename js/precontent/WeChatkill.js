@@ -18487,39 +18487,19 @@ const packs = function () {
             wechatsbkeji: {
                 audio: 'sbkeji',
                 inherit: 'sbkeji',
-                filter(event, player) {
-                    const list = player.getStorage('wechatsbkeji_used');
-                    return !list.includes('losehp') || player.countDiscardableCards(player, 'h') > 0;
-                },
-                prompt(event) {
-                    const player = get.player(), list = player.getStorage('wechatsbkeji_used');
-                    let str = '出牌阶段各限一次。你可以';
-                    let discard = list.includes('discard'), losehp = list.includes('losehp');
-                    if (!discard) str += '弃置一张手牌并获得1点护甲';
-                    if (!losehp) str += (!discard ? '，或' : '') + '点击“确定”失去1点体力并获得2点护甲';
-                    return str;
-                },
+                filterCard: lib.filter.cardDiscardable,
+                selectCard: [0, 1],
+                usable: 1,
+                prompt: '出牌阶段限一次，你可以弃置一张手牌并获得1点护甲，或失去1点体力并获得2点护甲',
                 async content(event, trigger, player) {
-                    player.addTempSkill(`${event.name}_used`, 'phaseUseAfter');
                     if ((event.cards ?? []).length > 0) {
-                        player.markAuto(`${event.name}_used`, 'discard');
                         await player.changeHujia(1, null, true);
                     }
                     else {
-                        player.markAuto(`${event.name}_used`, 'losehpd');
                         await player.loseHp();
                         await player.changeHujia(2, null, true);
                     }
                 },
-            },
-            wechatsbdujiang: {
-                audio: 'sbdujiang',
-                inherit: 'sbdujiang',
-                async content(event, trigger, player) {
-                    player.awakenSkill(event.name);
-                    await player.addSkills('sbduojing');
-                },
-                ai: { combo: 'wechatsbkeji' },
             },
             wechatsbduojing: {
                 audio: 'sbdujiang',
@@ -18528,10 +18508,10 @@ const packs = function () {
                     return player.hujia > 0 && event.card.name === 'sha' && event.target !== player;
                 },
                 check(event, player) {
-                    return get.attitude(player, event.target) <= 0 && event.target.countGainableCards(player, 'h') > 0 || player.getCardUsable('sha') === 0 && player.countCards('hs', (card) => {
+                    return get.attitude(player, event.target) <= 0 && event.target.countGainableCards(player, 'h') > 0 || player.getCardUsable('sha') === 0 && player.hasCard(card => {
                         if (get.name(card) !== 'sha') return false;
                         return player.hasValueTarget(card, true, true);
-                    }) > 0;
+                    }, 'hs');
                 },
                 logTarget: 'target',
                 async content(event, trigger, player) {
@@ -18545,9 +18525,7 @@ const packs = function () {
                     }
                     for (const name of lib.phaseName) {
                         const evt = event.getParent(name);
-                        if (!evt || evt.name != name) {
-                            continue;
-                        }
+                        if (!evt || evt.name !== name) continue;
                         player.addTempSkill('wechatsbduojing_add', name + 'After');
                         player.addMark('wechatsbduojing_add', 1, false);
                         break;
@@ -24823,7 +24801,8 @@ const packs = function () {
             wechatsbjieyue: '节钺',
             wechatsbjieyue_info: '结束阶段，你可以令一名其他角色获得1点护甲，然后其摸一张牌。',
             wechat_sb_lvmeng: '小程序谋吕蒙',
-            wechatsbdujiang_info: `觉醒技，准备阶段，若你的护甲数不少于3，你获得${get.poptip('sbduojing')}。`,
+            wechatsbkeji: '克己',
+            wechatsbkeji_info: '出牌阶段限一次，你可以弃置一张手牌并获得1点护甲，或失去1点体力并获得2点护甲；你的手牌上限+X（X为你的护甲数）；若你不处于濒死状态，你不能使用【桃】。',
             wechatsbduojing: '夺荆',
             wechatsbduojing_info: '当你使用【杀】指定其他角色为目标后，你可以失去1点护甲。然后令此【杀】无视防具，你获得目标角色一张手牌，本阶段使用【杀】的次数上限+1。',
             wechat_sb_lvbu: '小程序谋吕布',

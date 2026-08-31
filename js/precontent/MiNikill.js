@@ -558,7 +558,7 @@ const packs = function () {
             Mnian_zhugeliang: ['male', 'shu', 3, ['mininiandingluan', 'mininianliaoyuan', 'mininianying_Mnian_zhugeliang'], ['name:诸葛|亮', 'clan:琅琊诸葛氏']],
             Mnian_lvbu: ['male', 'qun', 5, ['mininiantazhen', 'mininiandoupo', 'mininianying_Mnian_lvbu']],
             Mnian_zhouyu: ['male', 'wu', 4, ['mininiansuhui', 'mininianchongzou', 'mininianying_Mnian_zhouyu']],
-            Mnian_caopi: ['male', 'wei', 3, ['mininiandengji', 'mininianchengming', 'mininianying_Mnian_caopi', 'mininiansongwei'], ['zhu', 'forbidai']],
+            Mnian_caopi: ['male', 'wei', 3, ['mininiandengji', 'mininianchengming', 'mininianying_Mnian_caopi', 'mininiansongwei'], ['zhu']],
             Mnian_sunquan: ['male', 'wu', 4, ['mininianquanheng', 'mininianrencai', 'mininianying_Mnian_sunquan'], ['forbidai']],
             //战
             Mfight_huangzhong: ['male', 'shu', 4, ['minifightdingjun', 'minifightlizhan']],
