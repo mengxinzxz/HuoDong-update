@@ -8,7 +8,7 @@ const packs = function () {
         characterSort: {
             MiNikill: {
                 MiNi_wei: ['zhanghu', 'yj_majun', 'caoyi', 'lvqian', 'hanlong', 'xiahoumao', 'guohuai', 'caochong', 'caochun', 'caoying', 'dc_jiachong', 'zhugeruoxue', 'dukui', 'xinpi', 'caimaozhangyun', 'bianyue', 'caoanmin', 'zhaoang', 'zhanggong', 'simalang', 'hanhaoshihuan', 'chentai', 'zhenghun', 'guanlu', 'guanqiujian', 'dc_liuye', 'chenlin', 'wangshuang', 'yanrou', 'dc_yanghu', 'ruanyu', 'chengyu', 'jianggan', 'yuejin', 'bianfuren', 'zhugedan', 'caohong', 'yinfuren', 'kuailiangkuaiyue', 'chenqun', 'xiahoulingnv', 'wenyang', 'caozhang', 'dufuren', 'yangxiu', 'zhangchangpu', 'zhonghui', 'caoxiu', 'xunyou', 'lidian', 'zhongyao', 'caozhen', 'guohuanghou', 'xinxianying', 'xiahouyuan', 'xizhicai', 'caorui', 'xunyu', 'dengai', 'caozhi', 'caopi', 'caoang', 'zhenji', 'old_caoren', 'zhangchunhua', 'xiahoudun', 'dianwei', 'zhanghe', 'yujin', 'xuhuang'].map(i => `Mbaby_${i}`),
-                MiNi_shu: ['wenyuan', 'xizheng', 'malingli', 'dc_wuban', 'pangtong', 'mifangfushiren', 'guanyue', 'xianglang', 'huanghao', 'zhaotongzhaoguang', 'wulan', 'leitong', 'zongyu', 're_mazhong', 're_dengzhi', 'dc_hujinding', 'jiangfei', 'zhangyi', 'guanzhang', 'wolongfengchu', 'wangtao', 'wangyue', 'xf_yiji', 'mizhu', 'mifuren', 'liuyong', 'ganfuren', 'lvkai', 'zhoucang', 'yangwan', 'liuchen', 'liyan', 'chendao', 'yanyan', 'xiahouba', 'huaman', 'sp_zhugeliang', 'zhugeguo', 'jianyong', 'wangping', 'mayunlu', 'guansuo', 'xiahoushi', 'shamoke', 'wuxian', 'zhugezhan', 'qinmi', 'guanyinping', 'guanyu', 'zhugeliang', 'liubei', 'machao', 'zhurong', 'zhangfei', 'zhaoyun', 'huangzhong', 'weiyan', 'liaohua', 'menghuo', 'ol_jiangwei', 'liushan', 'xin_fazheng', 'madai', 'guanping', 'liufeng', 'zhangxingcai', 'dongyun', 'xushu', 'xin_masu'].map(i => `Mbaby_${i}`),
+                MiNi_shu: ['ol_feiyi', 'wenyuan', 'xizheng', 'malingli', 'dc_wuban', 'pangtong', 'mifangfushiren', 'guanyue', 'xianglang', 'huanghao', 'zhaotongzhaoguang', 'wulan', 'leitong', 'zongyu', 're_mazhong', 're_dengzhi', 'dc_hujinding', 'jiangfei', 'zhangyi', 'guanzhang', 'wolongfengchu', 'wangtao', 'wangyue', 'xf_yiji', 'mizhu', 'mifuren', 'liuyong', 'ganfuren', 'lvkai', 'zhoucang', 'yangwan', 'liuchen', 'liyan', 'chendao', 'yanyan', 'xiahouba', 'huaman', 'sp_zhugeliang', 'zhugeguo', 'jianyong', 'wangping', 'mayunlu', 'guansuo', 'xiahoushi', 'shamoke', 'wuxian', 'zhugezhan', 'qinmi', 'guanyinping', 'guanyu', 'zhugeliang', 'liubei', 'machao', 'zhurong', 'zhangfei', 'zhaoyun', 'huangzhong', 'weiyan', 'liaohua', 'menghuo', 'ol_jiangwei', 'liushan', 'xin_fazheng', 'madai', 'guanping', 'liufeng', 'zhangxingcai', 'dongyun', 'xushu', 'xin_masu'].map(i => `Mbaby_${i}`),
                 MiNi_wu: ['sunhuan', 'gexuan', 'lvfan', 'xielingyu', 'zhupeilan', 'xugong', 'chendong', 'kanze', 're_panzhangmazhong', 'weiwenzhugezhi', 'zhangwen', 'dc_sunhanhua', 'heqi', 'lvdai', 'jiangqing', 're_guyong', 'quancong', 'yufan', 'dc_sunru', 'sunxiu', 'zhangfen', 'xuezong', 'panjun', 'luji', 'zhoufang', 'zhangxuan', 'yanjun', 'zhuhuan', 'luyusheng', 're_jsp_pangtong', 'sunhao', 'lukang', 'buzhi', 'xushi', 'zhugeke', 'zhoufei', 'zhangzhang', 'sunliang', 'sunjian', 'zhuzhi', 'bulianshi', 'chengpu', 'daqiao', 'ganning', 'huanggai', 'lusu', 'luxun', 'lvmeng', 'sunce', 'sunluban', 'sunluyu', 'sunquan', 'sunshangxiang', 'taishici', 'wuguotai', 'xiaoqiao', 'xusheng', 'old_zhoutai', 'zhouyu', 'zhugejin', 'zumao'].map(i => `Mbaby_${i}`),
                 MiNi_qun: ['dc_sp_zhurong', 'tianfeng', 'xunchen', 'dongguiren', 'zhangren', 'kebineng', 'mangyachang', 're_hucheer', 'sp_duyu', 'ol_lisu', 'zhangchu', 'leibo', 'wangcan', 'diaochan', 'xurong', 're_taoqian', 'hejin', 'jiling', 'zhangrang', 'duanwei', 're_chendeng', 'caiyong', 'mengjie', 'dc_gaolan', 'yl_luzhi', 'tadun', 're_hansui', 'dongxie', 'fuwan', 'wutugu', 'huangfusong', 'fanchou', 'guosi', 'yanbaihu', 'dc_huangzu', 'licaiwei', 'ol_dingyuan', 'liubian', 're_pangdegong', 'zhangning', 'zhanglu', 'wangyun', 'zoushi', 'dc_huangchengyan', 'simahui', 'tw_mateng', 'laiyinger', 'sp_kongrong', 'zhujun', 'gongsunyuan', 'guotufengji', 'yanfuren', 'tangji', 'caojie', 'liangxing', 'caoxing', 'wangrong', 'hetaihou', 'zhangji', 'dongbai', 'beimihu', 'chunyuqiong', 'zhangqiying', 'fuhuanghou', 'liuxie', 'quyi', 'lijue', 'panfeng', 'liuzhang', 'jiaxu', 'zhangbao', 'zhangliang', 'gaoshun', 'caifuren', 'xuyou', 'pangde', 'yj_jushou', 'liru', 'dongzhuo', 'sp_zhangjiao', 'huatuo', 'lvbu', 'huaxiong', 'yuji', 'liubiao', 'yuanshao', 'yuanshu', 'chengong', 'zuoci'].map(i => `Mbaby_${i}`),
                 MiNi_shen: [
@@ -258,6 +258,7 @@ const packs = function () {
             Mbaby_malingli: ['female', 'shu', 3, ['dclima', 'minixiaoyin', 'dchuahuo']],
             Mbaby_wenyuan: ['female', 'shu', 3, ['minikengqiang', 'dckuichi', 'minishangjue']],
             Mbaby_xizheng: ['male', 'shu', 3, ['dcdanyi', 'miniwencan']],
+            Mbaby_ol_feiyi: ['male', 'shu', 3, ['yanru', 'minihezhong']],
             //吴
             Mbaby_bulianshi: ['female', 'wu', 3, ['minianxu', 'zhuiyi']],
             Mbaby_chengpu: ['male', 'wu', 4, ['minilihuo', 'minichunlao']],
@@ -15704,6 +15705,139 @@ const packs = function () {
                 inherit: 'dcwencan',
                 filterTarget: lib.filter.notMe,
                 complexTarget: false,
+            },
+            //费祎
+            //孩子们，弱势费祎急需加强
+            minihezhong: {
+                audio: 'hezhong',
+                inherit: 'hezhong',
+                trigger: {
+                    player: 'loseAfter',
+                    global: ['equipAfter', 'addJudgeAfter', 'gainAfter', 'loseAsyncAfter', 'addToExpansionAfter'],
+                },
+                filter(event, player) {
+                    if (player.countCards('h') !== 1) return false;
+                    if (player.getStorage('minihezhong_used').length > 1) return false;
+                    let gain = 0, lose = 0;
+                    if (event.getg) gain = event.getg(player).length;
+                    if (event.getl) lose = event.getl(player).hs.length;
+                    return gain !== lose;
+                },
+                prompt2(event, player) {
+                    let str = '展示最后一张手牌并摸一张牌';
+                    if (typeof get.number(player.getCards('h')[0], player) === 'number') {
+                        let list = player.getStorage('minihezhong_used');
+                        if (list.length < 2) {
+                            str += '，然后令本回合使用点数';
+                            if (!list.includes('max')) str += '大于';
+                            if (!list.length) str += '或';
+                            if (!list.includes('min')) str += '小于';
+                            str += get.number(player.getCards('h')[0], player);
+                            str += '的普通锦囊牌额外结算一次';
+                        }
+                    }
+                    return str;
+                },
+                frequent: true,
+                async content(event, trigger, player) {
+                    const num = get.number(player.getCards('h')[0], player);
+                    await player.showHandcards(get.translation(player) + '发动了【和衷】');
+                    await player.draw();
+                    let result;
+                    if (player.getStorage('minihezhong_used').includes('max')) result = { index: 1 };
+                    else if (player.getStorage('minihezhong_used').includes('min')) result = { index: 0 };
+                    else result = await player.chooseControl({
+                        controls: ['大于等于', '小于等于'],
+                        choiceList: ['本回合使用点数大于等于' + num + '的普通锦囊牌额外结算一次', '本回合使用点数小于等于' + num + '的普通锦囊牌额外结算一次'],
+                        ai() {
+                            const { player, num } = get.event();
+                            if (player.getCards('h').reduce((num, card) => {
+                                return num + (get.number(card, player) || 0);
+                            }, 0) > num * 2) return 0;
+                            return 1;
+                        },
+                        num,
+                    }).forResult();
+                    const skill = 'minihezhong_' + result.index;
+                    player.addTempSkill('minihezhong_used');
+                    player.markAuto('minihezhong_used', ['max', 'min'][result.index]);
+                    player.addTempSkill(skill);
+                    player.markAuto(skill, [num]);
+                },
+                subSkill: {
+                    used: {
+                        charlotte: true,
+                        onremove: true,
+                    },
+                    0: {
+                        charlotte: true,
+                        onremove: true,
+                        marktext: '≥',
+                        intro: {
+                            markcount: list => {
+                                return list.reduce((str, num) => {
+                                    return str + get.strNumber(num);
+                                }, '');
+                            },
+                            content: '使用点数大于等于$的普通锦囊牌额外结算一次',
+                        },
+                        audio: 'minihezhong',
+                        trigger: { player: 'useCard' },
+                        filter(event, player) {
+                            if (get.type(event.card) !== 'trick') return false;
+                            const num = get.number(event.card, player);
+                            return typeof num === 'number' && player.getStorage('minihezhong_0').some(numx => num >= numx);
+                        },
+                        forced: true,
+                        content() {
+                            trigger.effectCount++;
+                            game.log(trigger.card, '额外结算一次');
+                        },
+                        ai: {
+                            effect: {
+                                player_use(card, player, target) {
+                                    const num = get.number(card, player);
+                                    if (!(typeof num === 'number' && player.getStorage('minihezhong_0').some(numx => num >= numx))) return;
+                                    if (get.tag(card, 'reverse') && get.type(card) === 'trick') return 'zerotarget';
+                                },
+                            },
+                        },
+                    },
+                    1: {
+                        charlotte: true,
+                        onremove: true,
+                        marktext: '≤',
+                        intro: {
+                            markcount: list => {
+                                return list.reduce((str, num) => {
+                                    return str + get.strNumber(num);
+                                }, '');
+                            },
+                            content: '使用点数小于等于$的普通锦囊牌额外结算一次',
+                        },
+                        audio: 'minihezhong',
+                        trigger: { player: 'useCard' },
+                        filter(event, player) {
+                            if (get.type(event.card) !== 'trick') return false;
+                            const num = get.number(event.card, player);
+                            return typeof num === 'number' && player.getStorage('minihezhong_1').some(numx => num <= numx);
+                        },
+                        forced: true,
+                        content() {
+                            trigger.effectCount++;
+                            game.log(trigger.card, '额外结算一次');
+                        },
+                        ai: {
+                            effect: {
+                                player_use(card, player, target) {
+                                    const num = get.number(card, player);
+                                    if (!(typeof num === 'number' && player.getStorage('minihezhong_1').some(numx => num <= numx))) return;
+                                    if (get.tag(card, 'reverse') && get.type(card) === 'trick') return 'zerotarget';
+                                },
+                            },
+                        },
+                    },
+                },
             },
             //吴
             //孙权
@@ -46115,6 +46249,7 @@ const packs = function () {
             Mbaby_malingli: '欢杀马伶俐',
             Mbaby_wenyuan: '欢杀文鸳',
             Mbaby_xizheng: '欢杀郤正',
+            Mbaby_ol_feiyi: '欢杀费祎',
             miniwusheng: '武圣',
             miniwusheng_info: '锁定技。①你使用红色【杀】造成的伤害+1。②回合开始时，你从牌堆或弃牌堆中获得一张红色【杀】。',
             miniguanxing: '观星',
@@ -46430,6 +46565,7 @@ const packs = function () {
             minishangjue_info: `觉醒技，你进入濒死状态时，回复体力至1点，增加1点体力上限并获得${get.poptip('minikunli')}，然后修改〖铿锵〗为“每回合每项各限一次”。`,
             minikunli_info: '觉醒技，你进入濒死状态时，回复体力至3点，增加1点体力上限并失去〖匮饬〗。',
             miniwencan_info: '出牌阶段限一次。你可以选择至多两名其他角色，这些角色依次选择一项：1.弃置两张花色不同的牌；2.本回合你对其使用牌无距离和次数限制。',
+            minihezhong_info: '每回合每项各限一次，当你的手牌数变为1后，你可以展示唯一手牌并摸一张牌，然后你选择本回合使用点数大于等于或小于等于此牌点数的普通锦囊牌额外结算一次。',
             //吴
             Mbaby_bulianshi: '欢杀步练师',
             Mbaby_chengpu: '欢杀程普',
