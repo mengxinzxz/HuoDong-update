@@ -44884,14 +44884,22 @@ const packs = function () {
                 },
                 forced: true,
                 direct: true,
+                getTargetHp(player, from, to, keepCurrentHp = false) {
+                    const baseMaxHp = {
+                        Mqing_lvdiao: 4,
+                        Mqing_lvbu: 5,
+                        Mqing_diaochan: 3,
+                    };
+                    const maxHp = player.maxHp - baseMaxHp[from] + baseMaxHp[to];
+                    return [keepCurrentHp ? Math.min(player.hp, maxHp) : maxHp, maxHp];
+                },
                 async content(event, trigger, player) {
                     const result = await player.chooseButton(true).set('createDialog', ['情缠：请选择你的登场形态', [['Mqing_diaochan', 'Mqing_lvbu'], 'character']]).set('ai', button => {
                         return button.link == 'Mqing_lvbu' ? 2 : 1;
                     }).forResult();
                     if (result?.bool) {
                         player.logSkill(event.name);
-                        const num = result.links[0] == 'Mqing_diaochan' ? 3 : 5;
-                        player.reinit('Mqing_lvdiao', result.links[0], [num, num]);
+                        player.reinit('Mqing_lvdiao', result.links[0], get.info(event.name).getTargetHp(player, 'Mqing_lvdiao', result.links[0]));
                     }
                 },
                 group: 'miniqingchan_change',
@@ -44915,7 +44923,8 @@ const packs = function () {
                         },
                         forced: true,
                         async content(event, trigger, player) {
-                            player.reinit(get.character(player.name2, 3).includes('miniqingchan') ? player.name2 : player.name1, 'Mqing_lvdiao', [4, 4]);
+                            const from = get.character(player.name2, 3).includes('miniqingchan') ? player.name2 : player.name1;
+                            player.reinit(from, 'Mqing_lvdiao', get.info('miniqingchan').getTargetHp(player, from, 'Mqing_lvdiao', true));
                         },
                     },
                 },
@@ -44940,13 +44949,14 @@ const packs = function () {
                             const sourcex = player === current ? target : player;
                             const result = await current.chooseToUse(function (card, player, event) {
                                 if (get.name(card) !== 'sha') return false;
-                                return lib.filter.filterCard.apply(this, arguments);
+                                return lib.filter.cardEnabled.apply(this, arguments);
                             }, '情战：对' + get.translation(sourcex) + '使用一张【杀】，或失去1点体力').set('filterTarget', function (card, player, target) {
                                 const source = get.event().sourcex;
                                 if (target !== source && !ui.selected.targets.includes(source)) return false;
                                 return lib.filter.targetEnabled.apply(this, arguments);
                             }).set('targetRequired', true).set('complexSelect', true).set('complexTarget', true).set('sourcex', sourcex).set('addCount', false).forResult();
                             if (!result?.bool) await current.loseHp();
+                            if (event.stop) break;
                         }
                         if (!player.sameSexAs(target)) {
                             event.stop = true;
@@ -44982,8 +44992,7 @@ const packs = function () {
                         onremove: true,
                         trigger: { global: 'dying' },
                         filter(event, player) {
-                            if (!event.getParent('miniqingzhan', true)) return false;
-                            return player.getStorage('miniqingzhan_break').includes(event.player) || player === event.player;
+                            return !!event.getParent('miniqingzhan', true);
                         },
                         silent: true,
                         firstDo: true,
@@ -44998,26 +45007,31 @@ const packs = function () {
                 audio: 'ext:活动武将/audio/skill:2',
                 audioname2: { Mqing_diaochan: 'miniqingyuan_Mqing_diaochan' },
                 trigger: {
-                    source: 'damageBegin2',
-                    target: 'useCardToTarget',
+                    source: 'damageSource',
+                    target: 'useCardToTargeted',
                 },
                 filter(event, player) {
-                    if (event.name === 'damage') return true;
-                    return get.is.damageCard(event.card);
+                    if (player.hasSkill('miniqingyuan_block')) return false;
+                    return event.name === 'damage' || get.is.damageCard(event.card);
                 },
                 forced: true,
-                logTarget(event, player) {
-                    return event[event.name === 'damage' ? 'source' : 'player'];
+                logTarget: 'player',
+                async resolve(owner, beneficiary, counterpart) {
+                    await beneficiary.draw();
+                    if (
+                        counterpart?.isIn() &&
+                        counterpart.countCards('h') &&
+                        (
+                            (owner.hasSex('male') && counterpart.hasSex('male')) ||
+                            (owner.hasSex('female') && counterpart.hasSex('female'))
+                        )
+                    ) {
+                        beneficiary.line(counterpart, 'green');
+                        await counterpart.randomDiscard('h', beneficiary);
+                    }
                 },
                 async content(event, trigger, player) {
-                    await player.draw();
-                    const target = trigger.name === 'damage' ? trigger.source : trigger.player;
-                    if (!target.isIn()) return;
-                    const targets = player.getStorage('miniqingyuan_effect') || game.filterPlayer(current => current.sameSexAs(player));
-                    if (targets.includes(target)) {
-                        player.line(target, 'green');
-                        await target.randomDiscard('h', player);
-                    }
+                    await get.info(event.name).resolve(player, player, trigger.player);
                 },
                 group: 'miniqingyuan_change',
                 subSkill: {
@@ -45026,26 +45040,74 @@ const packs = function () {
                         audio: 'miniqingyuan',
                         trigger: { global: 'roundStart' },
                         filter(event, player) {
-                            return game.hasPlayer(current => player.differentSexFrom(current));
+                            return game.hasPlayer(current => {
+                                return !player.sameSexAs(current) && !current.hasSkill('miniqingyuan') && !current.hasSkill('miniqingyuan_effect');
+                            });
                         },
                         async cost(event, trigger, player) {
-                            event.result = await player.chooseTarget(get.prompt(event.skill), '你可以选择一名角色，当你对一名角色造成伤害时或成为一名角色使用的伤害牌的目标时，你摸一张牌，若该角色为你以此法选择的角色，则你随机弃置其一张牌', (card, player, target) => {
-                                return player.differentSexFrom(target);
+                            event.result = await player.chooseTarget(get.prompt(event.skill), '你可以令一名非“情敌”角色获得〖情援〗直到本轮结束', (card, player, target) => {
+                                return !player.sameSexAs(target) && !target.hasSkill('miniqingyuan') && !target.hasSkill('miniqingyuan_effect');
                             }).set('ai', target => {
                                 const player = get.player();
-                                return -get.attitude(player, target);
+                                return get.attitude(player, target);
                             }).forResult();
                         },
                         async content(event, trigger, player) {
                             const target = event.targets[0];
-                            player.addTempSkill('miniqingyuan_effect', 'roundStart');
-                            player.markAuto('miniqingyuan_effect', [target]);
+                            player.addTempSkill('miniqingyuan_block', 'roundEnd');
+                            target.addTempSkill('miniqingyuan_effect', 'roundEnd');
+                            target.markAuto('miniqingyuan_effect', [player]);
                         },
+                    },
+                    block: {
+                        charlotte: true,
                     },
                     effect: {
                         charlotte: true,
                         onremove: true,
-                        intro: { content: '本轮“情援”角色：$' }
+                        audio: 'miniqingyuan',
+                        trigger: {
+                            source: 'damageSource',
+                            target: 'useCardToTargeted',
+                        },
+                        filter(event, player) {
+                            return event.name === 'damage' || get.is.damageCard(event.card);
+                        },
+                        getIndex(event, player) {
+                            const owners = player.getStorage('miniqingyuan_effect').filter(owner => owner?.isIn());
+                            return owners.length ? owners : false;
+                        },
+                        forced: true,
+                        logTarget: 'player',
+                        async content(event, trigger, player) {
+                            const owner = event.indexedData;
+                            await get.info('miniqingyuan').resolve(owner, player, trigger.player);
+                        },
+                        group: 'miniqingyuan_effect_cleanup',
+                        intro: { content: '本轮“情援”来源：$' },
+                    },
+                    effect_cleanup: {
+                        charlotte: true,
+                        trigger: { global: 'die' },
+                        filter(event, player) {
+                            return event.player === player || player.getStorage('miniqingyuan_effect').includes(event.player);
+                        },
+                        forced: true,
+                        silent: true,
+                        firstDo: true,
+                        forceDie: true,
+                        async content(event, trigger, player) {
+                            if (trigger.player === player) {
+                                for (const owner of player.getStorage('miniqingyuan_effect')) {
+                                    owner.removeSkill('miniqingyuan_block');
+                                }
+                                player.removeSkill('miniqingyuan_effect');
+                                return;
+                            }
+                            trigger.player.removeSkill('miniqingyuan_block');
+                            player.unmarkAuto('miniqingyuan_effect', [trigger.player]);
+                            if (!player.getStorage('miniqingyuan_effect').length) player.removeSkill('miniqingyuan_effect');
+                        },
                     },
                 },
             },
@@ -47626,7 +47688,7 @@ const packs = function () {
             miniqingzhan: '情战',
             miniqingzhan_info: '出牌阶段限一次，你可以选择一名其他角色A，你与其轮流选择一项：1.对对方使用一张无距离和次数限制的【杀】；2.失去1点体力。若A为你的“情敌”，则重复此流程直到你与其中的一名角色进入濒死。',
             miniqingyuan: '情援',
-            miniqingyuan_info: '锁定技。①当你对一名角色造成伤害时或成为一名角色使用的伤害牌的目标时，你摸一张牌，若该角色为你的“情敌”，则你随机弃置其一张手牌。②每轮开始时，你可以选择一名非“情敌”角色，直到本轮结束，将〖情援①〗的“若该角色为你的“情敌””改为“若该角色为你本轮因〖情援②〗选择的角色”。',
+            miniqingyuan_info: '锁定技。①当你对一名角色造成伤害时或成为一名角色使用的伤害牌的目标时，你摸一张牌，若该角色为你的“情敌”，则你随机弃置其一张手牌。②每轮开始时，你可以选择一名没有〖情援〗的非“情敌”角色，直到本轮结束，你失去〖情援①〗，其获得〖情援①〗。',
 
             // ----------------------- 台词部分 ----------------------- //
             '#ext:活动武将/audio/skill/minidoumao1': '喵～呜～',
