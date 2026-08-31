@@ -22464,40 +22464,60 @@ const packs = function () {
             //鲁肃
             minimingshi: {
                 audio: 'dcsbmingshi',
-                trigger: { player: 'phaseDrawEnd' },
+                trigger: { player: 'phaseDrawBegin2' },
+                filter(event, player) {
+                    return !event.numFixed && player.countCards('h') + event.num + 2 >= 3 && game.hasPlayer(current => current !== player);
+                },
                 frequent: true,
-                async content(event, trigger, player) {
-                    await player.draw({ num: 2 });
-                    if (player.countCards('he') < 3 || !game.hasPlayer(current => player != current)) return;
-                    let result = await player.chooseCardTarget({
-                        prompt: "明势：请展示三张牌并令一名其他角色选择获得其中的一张牌",
-                        filterTarget: lib.filter.notMe,
-                        filterCard: true,
-                        selectCard: 3,
-                        position: 'he',
+                content(event, trigger, player) {
+                    trigger.num += 2;
+                    player.addTempSkill('minimingshi_pending', 'phaseDrawAfter');
+                },
+                group: 'minimingshi_effect',
+                subSkill: {
+                    pending: {
+                        charlotte: true,
+                    },
+                    effect: {
+                        trigger: { player: 'phaseDrawEnd' },
                         forced: true,
-                        allowChooseAll: true,
-                        ai1(card) {
-                            return -get.value(card);
+                        popup: false,
+                        filter(event, player) {
+                            return player.hasSkill('minimingshi_pending');
                         },
-                        ai2(target) {
-                            const player = _status.event.player;
-                            if (player.hasSkill('dcsbmengmou') && !get.is.blocked('dcsbmengmou', player) && player.storage.dcsbmengmou && get.attitude(player, target) < 0) {
-                                return get.effect(target, { name: 'losehp' }, player, player);
+                        async content(event, trigger, player) {
+                            player.removeSkill('minimingshi_pending');
+                            let result = await player.chooseCardTarget({
+                                prompt: '明势：请展示三张手牌并令一名其他角色选择获得其中的一张牌',
+                                filterTarget: lib.filter.notMe,
+                                filterCard: true,
+                                selectCard: 3,
+                                position: 'h',
+                                forced: true,
+                                allowChooseAll: true,
+                                ai1(card) {
+                                    return -get.value(card);
+                                },
+                                ai2(target) {
+                                    const player = get.player();
+                                    if (player.hasSkill('minimengmou') && !get.is.blocked('minimengmou', player) && player.storage.minimengmou && get.attitude(player, target) < 0) {
+                                        return get.effect(target, { name: 'losehp' }, player, player);
+                                    }
+                                    return get.attitude(player, target);
+                                },
+                            }).forResult();
+                            if (!result?.bool || !result.targets?.length) return;
+                            const target = result.targets[0];
+                            const cards = result.cards;
+                            await player.showCards(cards, get.translation(player) + '发动了【明势】');
+                            result = await target.chooseButton(['明势：请获得其中一张牌', cards], true).set('ai', button => get.value(button.link)).set('source', player).forResult();
+                            if (result?.bool) {
+                                const card = result.links[0];
+                                if (lib.filter.canBeGained(card, player, target)) await target.gain({ cards: [card], giver: player, animate: 'giveAuto' });
+                                else game.log('但', card, '不能被', target, '获得！');
                             }
-                            return get.attitude(player, target);
                         },
-                    }).forResult();
-                    if (!result?.bool || !result.targets?.length) return;
-                    const target = result.targets[0];
-                    const cards = result.cards;
-                    await player.showCards(cards, get.translation(player) + '发动了【明势】');
-                    result = await target.chooseButton(['明势：请获得其中一张牌', cards], true).set('ai', button => get.value(button.link)).set("source", player).forResult();
-                    if (result?.bool) {
-                        const card = result.links[0];
-                        if (lib.filter.canBeGained(card, player, target)) await target.gain({ cards: [card], giver: player, animate: 'giveAuto' });
-                        else game.log('但', card, '不能被', player, '获得！');
-                    }
+                    },
                 },
             },
             minimengmou: {
@@ -22505,11 +22525,11 @@ const packs = function () {
                 trigger: { global: ['gainAfter', 'loseAsyncAfter'] },
                 getIndex(event, player) {
                     if (event.name === 'loseAsync' && event.type !== 'gain') return false;
-                    const cards1 = event.getl(player).cards2, cards2 = event.getg(player);
+                    const cards1 = event.getl(player).hs, cards2 = event.getg(player);
                     return game.filterPlayer(current => {
                         if (current === player) return false;
-                        const cardsx1 = event.getg(current), cardsx2 = event.getl(current).cards2;
-                        return cardsx1.some(i => cards1.includes(i)) || cards2.some(i => cardsx2.includes(i))
+                        const cardsx1 = event.getg(current), cardsx2 = event.getl(current).hs;
+                        return cardsx1.some(card => cards1.includes(card)) || cards2.some(card => cardsx2.includes(card));
                     }).sortBySeat();
                 },
                 filter(event, player, name, target) {
@@ -22523,26 +22543,13 @@ const packs = function () {
                     }, lib.skill[event.skill].intro.content(null, player)).set('list', [player, event.indexedData]).set('ai', target => {
                         const player = get.player(), att = get.attitude(player, target);
                         if (player.storage.minimengmou) return att < 0 ? get.effect(target, { name: 'losehp' }, player, player) : 0;
-                        switch (Math.abs(att)) {
-                            case 1:
-                                return target.hasCard(card => {
-                                    if (get.name(card) !== 'sha') return false;
-                                    return target.hasValueTarget(card);
-                                }, 'hs') ? 4 : 0.5;
-                            case -1:
-                                if (!target.hasCard(card => {
-                                    if (get.name(card) !== 'sha') return false;
-                                    return target.hasValueTarget(card);
-                                }, 'hs')) {
-                                    return target.hasCard(card => {
-                                        if (get.name(card) !== 'sha') return false;
-                                        return target.hasUseTarget(card);
-                                    }, 'hs') ? 5 : 1.5;
-                                }
-                                return 0;
-                            case 0:
-                                return 0;
+                        if (att > 0) {
+                            return target.hasCard(card => get.name(card) === 'sha' && target.hasValueTarget(card), 'hs') ? 4 : 0.5;
                         }
+                        if (att < 0 && !target.hasCard(card => get.name(card) === 'sha' && target.hasValueTarget(card), 'hs')) {
+                            return target.hasCard(card => get.name(card) === 'sha' && target.hasUseTarget(card), 'hs') ? 5 : 1.5;
+                        }
+                        return 0;
                     }).forResult();
                 },
                 async content(event, trigger, player) {
@@ -22551,6 +22558,7 @@ const packs = function () {
                     player.markAuto(`${event.name}_used`, [storage]);
                     player.changeZhuanhuanji(event.name);
                     let [num, maxHp] = [0, player.maxHp];
+                    let responded = 0;
                     while (num < maxHp) {
                         num++;
                         let result, next;
@@ -22559,6 +22567,8 @@ const packs = function () {
                             next.set('ai', () => 1 + Math.random());
                             next.set('prompt', `盟谋：是否打出第${get.cnNumber(num, true)}张【杀】？`);
                             result = await next.forResult();
+                            if (!result?.bool) break;
+                            responded++;
                         }
                         else {
                             player.addTempSkill(`${event.name}_effect`);
@@ -22569,15 +22579,10 @@ const packs = function () {
                             });
                             next.set('prompt', `盟谋：是否使用第${get.cnNumber(num, true)}张【杀】？`);
                             result = await next.forResult();
-                        }
-                        if (!result?.bool) {
-                            if (storage === 'yin') {
-                                target.popup('杯具');
-                                await target.loseHp(maxHp + 1 - num);
-                            }
-                            break;
+                            if (!result?.bool) break;
                         }
                     }
+                    if (storage === 'yin' && responded < maxHp) await target.loseHp(maxHp - responded);
                 },
                 mark: true,
                 marktext: '☯',
@@ -45390,10 +45395,10 @@ const packs = function () {
             minimengmou(player, skill) {
                 const bool = player.storage[skill];
                 let yang = '使用至多X张【杀】，且其每以此法造成1点伤害则回复1点体力';
-                let yin = '打出至多X张【杀】，然后其每少打出一张则失去1点体力';
+                let yin = '打出X张【杀】，然后其每少打出一张则失去1点体力';
                 if (bool) yin = `<span class='bluetext'>${yin}</span>`;
                 else yang = `<span class='firetext'>${yang}</span>`;
-                return `转换技。①游戏开始时，你可以转换此技能状态；②每回合每项各限一次，当你获得其他角色的牌后或其他角色获得你的牌后，你可以令你或其：阳，${yang}；阴，${yin}。（X为你的体力上限）`;
+                return `转换技。①游戏开始时，你可以转换此技能状态；②每回合每项各限一次，当你获得其他角色的手牌后或其他角色获得你的手牌后，你可以令你或其：阳，${yang}；阴，${yin}。（X为你的体力上限）`;
             },
             minishimou(player, skill) {
                 const bool = player.storage[skill];
@@ -46683,9 +46688,9 @@ const packs = function () {
             minixianshu: '贤淑',
             minixianshu_info: '出牌阶段，你可以将一张“箜篌”正面向上交给一名其他角色，然后你摸X张牌（X为你与其的体力值之差且至少为1，至多为5）。若此牌为红色，且该角色的体力值小于等于你，则其回复1点体力；若此牌为黑色，且该角色的体力值大于等于你，则其失去1点体力。',
             minimingshi: '明势',
-            minimingshi_info: '摸牌阶段结束时，你可以摸两张牌。若如此做，你展示三张牌并令一名其他角色选择获得其中的一张牌。',
+            minimingshi_info: '摸牌阶段，你可以多摸两张牌，然后展示三张手牌并令一名其他角色选择获得其中的一张牌。',
             minimengmou: '盟谋',
-            minimengmou_info: '转换技。①游戏开始时，你可以转换此技能状态；②每回合每项各限一次，当你获得其他角色的牌后或其他角色获得你的牌后，你可以令你或其：阳，使用至多X张【杀】，且其每以此法造成1点伤害则回复1点体力；阴，打出至多X张【杀】，然后其每少打出一张则失去1点体力。（X为你的体力上限）',
+            minimengmou_info: '转换技。①游戏开始时，你可以转换此技能状态；②每回合每项各限一次，当你获得其他角色的手牌后或其他角色获得你的手牌后，你可以令你或其：阳，使用至多X张【杀】，且其每以此法造成1点伤害则回复1点体力；阴，打出X张【杀】，然后其每少打出一张则失去1点体力。（X为你的体力上限）',
             minijianyu: '翦羽',
             minijianyu_info: '锁定技，其他角色在你回合内失去一张装备牌后，你摸一张牌。',
             minigangyi: '刚毅',
