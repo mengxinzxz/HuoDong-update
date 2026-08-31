@@ -43359,7 +43359,7 @@ const packs = function () {
                 filter(event, player) {
                     if (ui._minifightandu_jiangling) return false;
                     if (event.name !== 'phaseDiscard') return true;
-                    return !event.player.hasHistory('lose', evt => evt.getParent('phaseDiscard') == event);
+                    return !event.player.hasHistory('lose', evt => evt.type == 'discard' && evt.getParent('phaseDiscard') == event);
                 },
                 prompt2: `进入“江陵战场”，令所有角色获得${get.poptip('minikeji')}直到其下回合结束`,
                 async content(event, trigger, player) {
