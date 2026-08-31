@@ -11,13 +11,18 @@ const rootDir = path.join(__dirname, '..');
 const infoPath = path.join(rootDir, 'info.json');
 const info = JSON.parse(fs.readFileSync(infoPath, 'utf8'));
 const now = new Date();
-const yyyy = now.getFullYear();
-const mm = String(now.getMonth() + 1).padStart(2, '0');
-const dd = String(now.getDate()).padStart(2, '0');
-const hh = String(now.getHours()).padStart(2, '0');
-const mi = String(now.getMinutes()).padStart(2, '0');
-const ss = String(now.getSeconds()).padStart(2, '0');
-info.lastEditTime = `${yyyy}/${mm}/${dd} ${hh}:${mi}:${ss}`;
+const parts = new Intl.DateTimeFormat('zh-CN', {
+    timeZone: 'Asia/Shanghai',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: false,
+}).formatToParts(now);
+const time = Object.fromEntries(parts.filter(part => part.type !== 'literal').map(part => [part.type, part.value]));
+info.lastEditTime = `${time.year}/${time.month}/${time.day} ${time.hour}:${time.minute}:${time.second}`;
 fs.writeFileSync(infoPath, JSON.stringify(info, null, 4), 'utf8');
 //终端输出，给鸟鸟看的
 console.log(`本次commit提交时间: ${info.lastEditTime}`);
@@ -44,7 +49,7 @@ const walkFiles = dir => {
     }
     return result;
 };
-const files = walkFiles(rootDir).sort((a, b) => a.path.localeCompare(b.path));
+const files = walkFiles(rootDir).sort((a, b) => a.path < b.path ? -1 : a.path > b.path ? 1 : 0);
 const fileJsonPath = path.join(rootDir, 'js', 'file.json');
 fs.writeFileSync(fileJsonPath, JSON.stringify({ files }, null, 4), 'utf8');
 //终端输出，给鸟鸟看的
