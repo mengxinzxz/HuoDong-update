@@ -44882,44 +44882,9 @@ const packs = function () {
                             return typeof to !== 'number';
                         });
                         next.set('processAI', list => {
-                            const ox = [...list[0][1]], hs = [...list[1][1]], ts = get.event().ts;
-                            let bestOx = ox, bestPool = hs, bestInfo = lib.skill.miniyinyinming.getOXType(ox);
-                            if (lib.skill.miniyinyinming.compareOX(bestInfo, ts) > 0) return [bestOx, bestPool];
-                            for (let maskOut = 1; maskOut < (1 << 5); maskOut++) {
-                                const outIndex = [];
-                                for (let i = 0; i < 5; i++) {
-                                    if (maskOut & (1 << i)) outIndex.push(i);
-                                }
-                                const need = outIndex.length;
-                                const dfs = function (start, chosen) {
-                                    if (chosen.length === need) {
-                                        const newOx = ox.slice();
-                                        const newPool = hs.slice();
-                                        for (let i = 0; i < need; i++) {
-                                            const oxPos = outIndex[i];
-                                            const card = chosen[i];
-                                            newPool.push(newOx[oxPos]);
-                                            newOx[oxPos] = card;
-                                        }
-                                        for (const card of chosen) newPool.remove(card);
-                                        const info = lib.skill.miniyinyinming.getOXType(newOx);
-                                        if (lib.skill.miniyinyinming.compareOX(info, ts) >= 0 && lib.skill.miniyinyinming.compareOX(info, bestInfo) >= 0) {
-                                            bestInfo = info;
-                                            bestOx = newOx;
-                                            bestPool = newPool;
-                                        }
-                                        return;
-                                    }
-                                    for (let i = start; i < hs.length; i++) {
-                                        chosen.push(hs[i]);
-                                        dfs(i + 1, chosen);
-                                        chosen.pop();
-                                    }
-                                }
-                                dfs(0, []);
-                            }
-                            if (lib.skill.miniyinyinming.compareOX(bestInfo, ts) <= 0) return [ox, hs];
-                            return [bestOx, bestPool];
+                            const pool = [...list[0][1], ...list[1][1]];
+                            const cards = lib.skill.miniyinyinming.getBestOX(pool)?.cards ?? [];
+                            return [cards, [...pool].remove(...cards)];
                         });
                         next.set('ts', ts);
                         const func = lib.skill.miniyinyinming.func;
@@ -45120,44 +45085,9 @@ const packs = function () {
                                     return typeof to !== 'number';
                                 });
                                 next.set('processAI', list => {
-                                    const ox = [...list[0][1]], hs = [...list[1][1]], ts = get.event().ts;
-                                    let bestOx = ox, bestPool = hs, bestInfo = lib.skill.miniyinyinming.getOXType(ox);
-                                    if (lib.skill.miniyinyinming.compareOX(bestInfo, ts) > 0) return [bestOx, bestPool];
-                                    for (let maskOut = 1; maskOut < (1 << 5); maskOut++) {
-                                        const outIndex = [];
-                                        for (let i = 0; i < 5; i++) {
-                                            if (maskOut & (1 << i)) outIndex.push(i);
-                                        }
-                                        const need = outIndex.length;
-                                        const dfs = function (start, chosen) {
-                                            if (chosen.length === need) {
-                                                const newOx = ox.slice();
-                                                const newPool = hs.slice();
-                                                for (let i = 0; i < need; i++) {
-                                                    const oxPos = outIndex[i];
-                                                    const card = chosen[i];
-                                                    newPool.push(newOx[oxPos]);
-                                                    newOx[oxPos] = card;
-                                                }
-                                                for (const card of chosen) newPool.remove(card);
-                                                const info = lib.skill.miniyinyinming.getOXType(newOx);
-                                                if (lib.skill.miniyinyinming.compareOX(info, ts) > 0 && lib.skill.miniyinyinming.compareOX(info, bestInfo) > 0) {
-                                                    bestInfo = info;
-                                                    bestOx = newOx;
-                                                    bestPool = newPool;
-                                                }
-                                                return;
-                                            }
-                                            for (let i = start; i < hs.length; i++) {
-                                                chosen.push(hs[i]);
-                                                dfs(i + 1, chosen);
-                                                chosen.pop();
-                                            }
-                                        }
-                                        dfs(0, []);
-                                    }
-                                    if (lib.skill.miniyinyinming.compareOX(bestInfo, ts) <= 0) return [ox, hs];
-                                    return [bestOx, bestPool];
+                                    const pool = [...list[0][1], ...list[1][1]];
+                                    const cards = lib.skill.miniyinyinming.getBestOX(pool)?.cards ?? [];
+                                    return [cards, [...pool].remove(...cards)];
                                 });
                                 next.set('ts', ts);
                                 const func = lib.skill.miniyinyinming.func;
