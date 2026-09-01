@@ -22948,25 +22948,23 @@ const packs = function () {
                         })()).forResult();
                         event.result = {
                             bool: result.control !== 'cancel2',
-                            cost_data: result.index
+                            cost_data: { index: result.index, num }
                         }
                     }
                     else {
                         event.result = await player.chooseBool(`${get.prompt(event.skill, target)}`, `对其发动${get.poptip('starzhongyan')}`).set('choice', get.attitude(player, target) > 0).forResult();
-                        if (event.result.bool) event.result.cost_data = 0;
+                        if (event.result.bool) event.result.cost_data = { index: 0, num: 0 };
                     }
                 },
                 logTarget: 'source',
                 async content(event, trigger, player) {
                     const target = event.targets[0];
-                    const index = event.cost_data;
+                    const { index, num } = event.cost_data;
                     if (index == 0) {
-                        const num = target.countCards('e');
                         await target.draw(num);
                     }
                     await player.useSkill('starzhongyan', [target]);
                     if (index == 1) {
-                        const num = target.countCards('e');
                         await target.chooseToDiscard(num, 'he', 'allowChooseAll', true);
                     }
                 },
@@ -47126,7 +47124,7 @@ const packs = function () {
             minigangyi: '刚毅',
             minigangyi_info: '锁定技。①回合结束时，若你本回合没有造成伤害，你下回合使用【杀】的次数上限+1。②②当你处于濒死状态时，以你为目标的【桃】或【酒】的回复值+1。',
             minijinglun: '经纶',
-            minijinglun_info: `每回合限一次，当你距离1以内的角色造成伤害后，你可以选择一项：1.令其摸X张牌并对其发动${get.poptip('starzhongyan')}；2.对其发动${get.poptip('starzhongyan')}并令其弃置X张牌（X为其装备区的牌数）。`,
+            minijinglun_info: `每回合限一次，当你距离1以内的一名角色造成伤害后，你可以选择一项：①令其摸X张牌，然后对其发动${get.poptip('starzhongyan')}；②对其发动${get.poptip('starzhongyan')}，然后令其弃置X张牌（不足则全弃）。X为你发动此技能时其装备区里的牌数。`,
             //群
             Mbaby_zuoci: '欢杀左慈',
             Mbaby_gaoshun: '欢杀高顺',
