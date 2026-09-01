@@ -9978,9 +9978,15 @@ const packs = function () {
                         return;
                     }
                     event.color = get.color(result.cards[0]);
+                    if (!game.hasPlayer(function (target) {
+                        return player != target && get.distance(player, target) <= 1;
+                    })) {
+                        event.finish();
+                        return;
+                    }
                     player.chooseTarget(function (card, player, target) {
                         return player != target && get.distance(player, target) <= 1;
-                    }).set('ai', function (target) {
+                    }, true).set('ai', function (target) {
                         return -get.attitude(_status.event.player, target);
                     });
                     'step 2'
