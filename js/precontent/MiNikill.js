@@ -9989,6 +9989,12 @@ const packs = function () {
                         return;
                     }
                     event.color = get.color(result.cards[0]);
+                    if (!game.hasPlayer(function (target) {
+                        return player != target && get.distance(player, target) <= 1;
+                    })) {
+                        event.finish();
+                        return;
+                    }
                     player.chooseTarget(function (card, player, target) {
                         return player != target && get.distance(player, target) <= 1;
                     }, true).set('ai', function (target) {
@@ -46417,7 +46423,7 @@ const packs = function () {
             minirexuanhuo_info: '摸牌阶段结束时，你可以交给一名其他角色至多两张手牌，然后其选择一项：1.视为对你选择的另一名其他角色使用任意一张【杀】或【决斗】；2.你观看并获得其任意张手牌。',
             miniqianxi: '潜袭',
             miniqianxi2: '潜袭',
-            miniqianxi_info: '准备阶段，你可以摸两张牌并弃置其中的一张，然后你令一名与你距离为1的角色于本回合无法使用或打出与你弃置的牌颜色相同的手牌。',
+            miniqianxi_info: '准备阶段，你可以摸两张牌，并弃置其中一张牌，然后令距离为1的一名角色本回合不能使用或打出与你弃置牌颜色相同的手牌。',
             minilongyin: '龙吟',
             minilongyin_info: '当一名角色于其出牌阶段使用【杀】时，你可弃置一张牌令此【杀】不计入出牌阶段使用次数。若此【杀】为红色，则你摸一张牌；若你以此法弃置的牌与此【杀】的花色相同，则你重置〖竭忠〗。',
             minixiansi: '陷嗣',
