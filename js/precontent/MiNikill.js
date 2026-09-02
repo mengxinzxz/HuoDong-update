@@ -49427,7 +49427,7 @@ const packs = function () {
         const ori8 = game.gameDraw;
         game.gameDraw = function (...args) {
             const next = ori8.call(this, ...args);
-            if (next.num !== void 0) {
+            if (next?.num !== void 0) {
                 const numx = next.num;
                 next.num = function (player) {
                     let num = typeof numx === 'function' ? numx(player) : numx;
