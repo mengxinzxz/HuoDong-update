@@ -29297,7 +29297,7 @@ const packs = function () {
                             if (!storage.includes(3)) return false;
                             return game.hasPlayer(target => {
                                 if (!target.countCards('e')) return false;
-                                if (event.name == 'equip') return event.player == target;
+                                if (event.name == 'equip' && event.player == target) return true;
                                 return event.getl(target)?.es?.length;
                             });
                         },
@@ -29311,13 +29311,13 @@ const packs = function () {
                                     }).length;
                                 }).sortBySeat();
                             }
-                            if (event.name == 'useCard' || event.name == 'respond' || event.name == 'useCardToPlayer' || event.name == 'equip') {
+                            if (event.name == 'useCard' || event.name == 'respond' || event.name == 'useCardToPlayer') {
                                 return event.player;
                             }
                             return game.filterPlayer(target => {
                                 if (!target.countCards('e')) return false;
-                                const evt = event.getl(target);
-                                return evt?.es?.length;
+                                if (event.name == 'equip' && event.player == target) return true;
+                                return event.getl(target)?.es?.length;
                             }).sortBySeat();
                         },
                         forced: true,
