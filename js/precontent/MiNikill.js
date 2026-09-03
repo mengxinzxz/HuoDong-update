@@ -29286,7 +29286,7 @@ const packs = function () {
                             }
                             if (event.name == 'useCard' || event.name == 'respond') {
                                 if (storage.includes(1) && event.card.name == 'sha' && event.player.countCards('h')) return true;
-                                if (storage.includes(4) && (event.card.name == 'tao' || event.card.name == 'jiu')) return true;
+                                if (event.name == 'useCard' && storage.includes(4) && (event.card.name == 'tao' || event.card.name == 'jiu')) return true;
                                 return false;
                             }
                             if (event.name == 'useCardToPlayer') {
@@ -29326,6 +29326,7 @@ const packs = function () {
                             if (event.triggername === 'roundEnd') {
                                 player.markAuto('minianshi_effect', ['showed_2']);
                                 for (const target of targets) await target.damage(1, 'thunder');
+                                return;
                             }
                             if (trigger.name == 'useCard' || trigger.name == 'respond') {
                                 const target = targets[0];
@@ -29333,7 +29334,7 @@ const packs = function () {
                                     player.markAuto('minianshi_effect', ['showed_1']);
                                     await target.loseToDiscardpile(target.getCards('h'));
                                 }
-                                if (trigger.card.name == 'tao' || trigger.card.name == 'jiu') {
+                                if (trigger.name == 'useCard' && (trigger.card.name == 'tao' || trigger.card.name == 'jiu')) {
                                     player.markAuto('minianshi_effect', ['showed_4']);
                                     target.addTempSkill('minianshi_ban');
                                 }
