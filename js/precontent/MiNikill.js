@@ -10623,7 +10623,7 @@ const packs = function () {
                         }
                         var cards = list[0][1].slice(0), tops = [];
                         while (tops.length < 4 - _status.event.num) {
-                            list.sort(function (a, b) {
+                            cards.sort(function (a, b) {
                                 return check(b) - check(a);
                             });
                             tops.push(cards.shift());
