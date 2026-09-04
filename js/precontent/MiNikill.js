@@ -36733,8 +36733,8 @@ const packs = function () {
                                     let str = '下策：是否摸两张牌';
                                     if (player.isDamaged()) str += `并令${get.translation(player)}回复1点体力`;
                                     str += '？';
-                                    const { bool } = await source.chooseBool(str).set('choice', get.effect(source, { name: 'draw' }, source, source) * 2 + get.recoverEffect(player, source, source) > 0).forResult();
-                                    if (bool) {
+                                    const result = await source.chooseBool(str).set('choice', get.effect(source, { name: 'draw' }, source, source) * 2 + get.recoverEffect(player, source, source) > 0).forResult();
+                                    if (result?.bool) {
                                         bool = event.bool = true;
                                         source.line(target);
                                         await source.draw(2);
@@ -45373,14 +45373,14 @@ const packs = function () {
                 },
                 forced: true,
                 direct: true,
-                getTargetHp(player, from, to, keepCurrentHp = false) {
+                getTargetHp(player, from, to) {
                     const baseMaxHp = {
                         Mqing_lvdiao: 4,
                         Mqing_lvbu: 5,
                         Mqing_diaochan: 3,
                     };
                     const maxHp = player.maxHp - baseMaxHp[from] + baseMaxHp[to];
-                    return [keepCurrentHp ? Math.min(player.hp, maxHp) : maxHp, maxHp];
+                    return [maxHp, maxHp];
                 },
                 async content(event, trigger, player) {
                     const result = await player.chooseButton(true).set('createDialog', ['情缠：请选择你的登场形态', [['Mqing_diaochan', 'Mqing_lvbu'], 'character']]).set('ai', button => {
@@ -45413,7 +45413,7 @@ const packs = function () {
                         forced: true,
                         async content(event, trigger, player) {
                             const from = get.character(player.name2, 3).includes('miniqingchan') ? player.name2 : player.name1;
-                            player.reinit(from, 'Mqing_lvdiao', get.info('miniqingchan').getTargetHp(player, from, 'Mqing_lvdiao', true));
+                            player.reinit(from, 'Mqing_lvdiao', get.info('miniqingchan').getTargetHp(player, from, 'Mqing_lvdiao'));
                         },
                     },
                 },

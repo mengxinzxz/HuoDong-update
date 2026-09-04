@@ -18543,7 +18543,7 @@ const packs = function () {
                         ai: {
                             unequip: true,
                             skillTagFilter(player, tag, arg) {
-                                if (tag === 'unequip' && !arg?.card?.storage?.sbduojing) return false;
+                                if (tag === 'unequip' && !arg?.card?.storage?.wechatsbduojing) return false;
                             },
                         },
                     },
