@@ -8064,7 +8064,8 @@ const packs = function () {
                     let cards = trigger.cards.filterInD('od');
                     const myLen = player.getExpansions('minisbqingjian').length;
                     const num = Math.min(cards.length, player.getHp() - myLen);
-                    if (num > 0) cards = cards.randomGets(num);
+                    if (num <= 0) return;
+                    cards = cards.randomGets(num);
                     const next = player.addToExpansion(cards, 'gain2');
                     next.gaintag.add('minisbqingjian');
                     await next;
