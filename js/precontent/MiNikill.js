@@ -15371,34 +15371,74 @@ const packs = function () {
                     await player.draw(num);
                     player.addSkill(event.name + '_effect');
                     player.markAuto(event.name + '_effect', [target]);
-                    player.storage[event.name + '_effect_count'] = num;
+                    const storage = player.getStorage(event.name + '_effect_count', {});
+                    storage[target.playerid] = (storage[target.playerid] || 0) + num;
+                    player.setStorage(event.name + '_effect_count', storage, true);
                 },
                 subSkill: {
                     effect: {
                         audio: 'dcfenhui',
                         trigger: { global: ['damageBegin1', 'die', 'dyingAfter'] },
                         filter(event, player) {
-                            if (event.name == 'damage') return player.getStorage('minifenhui_effect').includes(event.player) && player.storage.minifenhui_effect_count > 0 && event.player.hasMark('minifenhui_mark');
-                            if (event.name == 'dying') return !player.storage.dcshouzhi_modified && event.player.isIn() && player.getStorage('minifenhui_effect').includes(event.player);
-                            return !player.storage.dcshouzhi_modified && player.getStorage('minifenhui_effect').includes(event.player);
+                            if (event.name == 'damage') return player.getStorage('minifenhui_effect_count', {})[event.player.playerid] > 0 && event.player.hasMark('minifenhui_mark');
+                            if (player.storage.minifenhui_effect_resolved) return false;
+                            if (event.name == 'dying') return event.player.isIn() && player.getStorage('minifenhui_effect').includes(event.player);
+                            return player.getStorage('minifenhui_effect').includes(event.player);
                         },
                         logTarget: 'player',
                         forced: true,
                         charlotte: true,
-                        onremove(player) {
-                            delete player.storage.minifenhui_effect;
-                            delete player.storage.minifenhui_effect_count;
+                        group: 'minifenhui_effect_cleanup',
+                        onremove(player, skill) {
+                            const targets = player.getStorage(skill).slice();
+                            const storage = player.getStorage(skill + '_count', {});
+                            for (const target of targets) {
+                                const count = storage[target.playerid] || 0;
+                                if (count > 0 && target.hasMark('minifenhui_mark')) {
+                                    target.removeMark('minifenhui_mark', Math.min(count, target.countMark('minifenhui_mark')));
+                                }
+                            }
+                            player.unmarkAuto(skill, targets);
+                            game.broadcastAll((player, skills) => {
+                                for (const skill of skills) delete player.storage[skill];
+                            }, player, [skill, skill + '_count', skill + '_resolved']);
                         },
                         async content(event, trigger, player) {
                             if (trigger.name === 'damage') {
-                                player.storage.minifenhui_effect_count--;
+                                const storage = player.getStorage('minifenhui_effect_count', {});
+                                storage[trigger.player.playerid]--;
+                                if (storage[trigger.player.playerid] <= 0) delete storage[trigger.player.playerid];
+                                player.setStorage('minifenhui_effect_count', storage, true);
                                 trigger.player.removeMark('minifenhui_mark', 1);
                                 trigger.num++;
                             } else {
+                                if (player.storage.minifenhui_effect_resolved) return;
+                                player.setStorage('minifenhui_effect_resolved', true, true);
                                 await player.loseMaxHp();
                                 player.storage.dcshouzhi_modified = true;
                                 await player.addSkills('dcxingmen');
                             }
+                        },
+                    },
+                    effect_cleanup: {
+                        trigger: { global: 'dieAfter' },
+                        filter(event, player) {
+                            return player.getStorage('minifenhui_effect').includes(event.player);
+                        },
+                        forced: true,
+                        popup: false,
+                        charlotte: true,
+                        content(event, trigger, player) {
+                            const target = trigger.player;
+                            const storage = player.getStorage('minifenhui_effect_count', {});
+                            const count = storage[target.playerid] || 0;
+                            if (count > 0 && target.hasMark('minifenhui_mark')) {
+                                target.removeMark('minifenhui_mark', Math.min(count, target.countMark('minifenhui_mark')));
+                            }
+                            delete storage[target.playerid];
+                            player.setStorage('minifenhui_effect_count', storage, true);
+                            player.unmarkAuto('minifenhui_effect', [target]);
+                            game.broadcastAll((player, skill, storage) => player.storage[skill] = storage, player, 'minifenhui_effect', player.getStorage('minifenhui_effect'));
                         },
                     },
                     mark: {
