@@ -9448,7 +9448,7 @@ const packs = function () {
                         trigger: { player: 'phaseUseBegin' },
                         forced: true,
                         async content(event, trigger, player) {
-                            const card = get.discardPile(card => card.name == 'nanman', 'random');
+                            const card = Array.from(ui.discardPile.childNodes).filter(card => card.name == 'nanman').randomGet();
                             if (card) {
                                 await player.gain(card, 'gain2');
                             } else {
