@@ -6721,6 +6721,7 @@ const packs = function () {
                             await player.recover();
                             break;
                         case -1:
+                            // 官方实现为无来源伤害，否则会再次触发【惊澜】导致循环结算。
                             await player.damage('nosource', 'fire');
                             await player.draw(5);
                             break;
