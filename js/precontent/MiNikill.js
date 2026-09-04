@@ -8023,7 +8023,7 @@ const packs = function () {
                     order: 6,
                     result: {
                         target(player, target) {
-                            return 2 * get.damageEffect(target, player, player);
+                            return 2 * get.damageEffect(target, player, target);
                         },
                     },
                 },
