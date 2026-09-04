@@ -15392,6 +15392,7 @@ const packs = function () {
                         onremove(player, skill) {
                             const targets = player.getStorage(skill).slice();
                             const storage = player.getStorage(skill + '_count', {});
+                            const resolved = player.storage[skill + '_resolved'] === true;
                             for (const target of targets) {
                                 const count = storage[target.playerid] || 0;
                                 if (count > 0 && target.hasMark('minifenhui_mark')) {
@@ -15399,9 +15400,11 @@ const packs = function () {
                                 }
                             }
                             player.unmarkAuto(skill, targets);
+                            const skills = [skill, skill + '_count'];
+                            if (!resolved) skills.push(skill + '_resolved');
                             game.broadcastAll((player, skills) => {
                                 for (const skill of skills) delete player.storage[skill];
-                            }, player, [skill, skill + '_count', skill + '_resolved']);
+                            }, player, skills);
                         },
                         async content(event, trigger, player) {
                             if (trigger.name === 'damage') {
@@ -15416,6 +15419,7 @@ const packs = function () {
                                 player.setStorage('minifenhui_effect_resolved', true, true);
                                 await player.loseMaxHp();
                                 player.setStorage('dcshouzhi_modified', true, true);
+                                player.addSkill('minifenhui_shouzhi_sync');
                                 await player.addSkills('dcxingmen');
                             }
                         },
@@ -15445,6 +15449,21 @@ const packs = function () {
                             player.setStorage('minifenhui_effect_count', storage, true);
                             player.unmarkAuto('minifenhui_effect', [target]);
                             game.broadcastAll((player, skill, storage) => player.storage[skill] = storage, player, 'minifenhui_effect', player.getStorage('minifenhui_effect'));
+                        },
+                    },
+                    shouzhi_sync: {
+                        trigger: { player: 'changeSkillsAfter' },
+                        filter(event) {
+                            return event.removeSkill.includes('dcshouzhi');
+                        },
+                        forced: true,
+                        popup: false,
+                        charlotte: true,
+                        forceDie: true,
+                        forceOut: true,
+                        content(event, trigger, player) {
+                            game.broadcastAll(player => delete player.storage.dcshouzhi_modified, player);
+                            player.removeSkill(event.name);
                         },
                     },
                     mark: {
