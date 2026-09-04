@@ -15452,6 +15452,16 @@ const packs = function () {
                         },
                     },
                     shouzhi_sync: {
+                        clearModified(player) {
+                            game.broadcastAll(player => delete player.storage.dcshouzhi_modified, player);
+                        },
+                        onremove(player) {
+                            const evt = get.event();
+                            const changeSkills = evt.name === 'changeSkills' ? evt : evt.getParent?.('changeSkills', true);
+                            if ((changeSkills?.player === player && changeSkills.removeSkill?.includes('dcshouzhi')) || !player.hasSkill('dcshouzhi', null, false, false)) {
+                                lib.skill.minifenhui_shouzhi_sync.clearModified(player);
+                            }
+                        },
                         trigger: { player: 'changeSkillsAfter' },
                         filter(event) {
                             return event.removeSkill.includes('dcshouzhi');
@@ -15462,7 +15472,6 @@ const packs = function () {
                         forceDie: true,
                         forceOut: true,
                         content(event, trigger, player) {
-                            game.broadcastAll(player => delete player.storage.dcshouzhi_modified, player);
                             player.removeSkill(event.name);
                         },
                     },
