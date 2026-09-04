@@ -32103,6 +32103,7 @@ const packs = function () {
                             next = Math.floor(num / 8) * 8 + 8;
                         }
                     }
+                    num %= 8;
                     if (num) player.addMark(skill + '_mark', num, false);
                 },
                 onremove(player, skill) {
@@ -32181,7 +32182,7 @@ const packs = function () {
                         charlotte: true,
                         onremove: true,
                         marktext: '道',
-                        intro: { content: '本局游戏已累计移去#枚“道兵”' },
+                        intro: { content: '距下次发动已累计弃置#枚“道兵”' },
                         trigger: { player: 'removeMark' },
                         filter(event, player) {
                             return event.num > 0 && event.markName == 'minisbguidao';
@@ -32190,7 +32191,10 @@ const packs = function () {
                         forced: true,
                         popup: false,
                         async content(event, trigger, player) {
-                            player.addMark(event.name, trigger.num, false);
+                            const current = player.countMark(event.name);
+                            const delta = (current + trigger.num) % 8 - current;
+                            if (delta > 0) player.addMark(event.name, delta, false);
+                            else if (delta < 0) player.removeMark(event.name, -delta, false);
                         },
                     }
                 }
