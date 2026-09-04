@@ -20250,7 +20250,7 @@ const packs = function () {
                 trigger: { player: 'phaseZhunbeiBegin' },
                 forced: true,
                 content() {
-                    if (!player.hasEquipableSlot(5) || player.getEquip('minidagongche')) {
+                    if (!player.hasEquipableSlot(1) || player.getEquip('minidagongche')) {
                         var next = player.phaseUse();
                         event.next.remove(next);
                         trigger.getParent().next.push(next);
@@ -20441,20 +20441,20 @@ const packs = function () {
                 equipSkill: true,
                 trigger: { player: 'phaseUseBegin' },
                 filter(event, player) {
-                    var cardx = {
+                    var cardx = new lib.element.VCard({
                         name: 'sha',
                         isCard: true,
                         storage: { minidagongche: true },
-                    };
+                    });
                     return player.hasUseTarget(cardx);
                 },
                 direct: true,
                 content() {
-                    var card = {
+                    var card = new lib.element.VCard({
                         name: 'sha',
                         isCard: true,
                         storage: { minidagongche: true },
-                    };
+                    });
                     lib.skill.miniwanglu.broadcast(player);
                     player.chooseUseTarget(card, '大攻车：是否视为使用【杀】？', false).logSkill = 'minidagongche_skill';
                 },
@@ -20506,7 +20506,7 @@ const packs = function () {
                             var num = 1;
                             var cardx = player.getEquip('minidagongche');
                             if (cardx?.storage?.大攻车选项三) num += cardx.storage.大攻车选项三;
-                            player.discardPlayerCard(trigger.player, true, num, 'he');
+                            player.discardPlayerCard(trigger.player, 'he', num, true);
                         },
                     },
                 },
