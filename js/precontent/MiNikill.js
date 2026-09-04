@@ -9448,7 +9448,7 @@ const packs = function () {
                         trigger: { player: 'phaseUseBegin' },
                         forced: true,
                         async content(event, trigger, player) {
-                            const card = get.discardPile(card => card.name == 'nanman');
+                            const card = get.discardPile(card => card.name == 'nanman', 'random');
                             if (card) {
                                 await player.gain(card, 'gain2');
                             } else {
@@ -46412,7 +46412,7 @@ const packs = function () {
             minihuoshou: '祸首',
             minihuoshou_info: '锁定技，【南蛮入侵】对你无效；当其他角色使用【南蛮入侵】指定目标后，你代替其成为此牌造成的伤害的来源，并摸一张牌。',
             minirehuoshou: '祸首',
-            minirehuoshou_info: '锁定技。①【南蛮入侵】对你无效。②当其他角色使用【南蛮入侵】时，你代替其成为此牌的伤害来源并摸一张牌。③出牌阶段开始时，你随机获得弃牌堆中的一张【南蛮入侵】。④出牌阶段，若你于此阶段使用过【南蛮入侵】，你不能使用【南蛮入侵】。',
+            minirehuoshou_info: '锁定技。①【南蛮入侵】对你无效。②当其他角色使用【南蛮入侵】指定目标后，你代替其成为此牌的伤害来源并摸一张牌。③出牌阶段开始时，你随机获得弃牌堆中的一张【南蛮入侵】。④出牌阶段，若你于此阶段使用过【南蛮入侵】，你不能使用【南蛮入侵】。',
             minizaiqi: '再起',
             minizaiqi_info: '摸牌阶段开始时，若你已受伤，你可以放弃摸牌并亮出牌堆顶的X张牌（X为你已损失的体力值），然后你回复等同于其中♥牌数量的体力，并获得其中的非♥牌。',
             minirezaiqi: '再起',
