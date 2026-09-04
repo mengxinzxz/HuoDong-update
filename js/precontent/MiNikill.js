@@ -9490,7 +9490,12 @@ const packs = function () {
                     return !event.numFixed && player.isDamaged();
                 },
                 check(event, player) {
-                    return player.getDamagedHp() > 1;
+                    if (player.getDamagedHp() < 2) {
+                        return false;
+                    } else if (player.getDamagedHp() == 2) {
+                        return player.countCards('h') >= 2;
+                    }
+                    return true;
                 },
                 async content(event, trigger, player) {
                     trigger.changeToZero();
