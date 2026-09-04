@@ -9156,7 +9156,6 @@ const packs = function () {
                 audioname2: { guansuo: 'dangxian_guansuo' },
                 trigger: { player: 'phaseBegin' },
                 forced: true,
-                locked: false,
                 content() {
                     const next = player.phaseUse();
                     event.next.remove(next);
@@ -9183,10 +9182,10 @@ const packs = function () {
                     event.num = game.countGroup();
                     player.recover(event.num - player.hp);
                     'step 1'
-                    var num2 = num - player.countCards('h');
-                    if (num2) player.draw(num2);
+                    var num2 = event.num - player.countCards('h');
+                    if (num2 > 0) player.draw(num2);
                     'step 2'
-                    if (num > 3) player.turnOver();
+                    if (event.num > 3) player.turnOver();
                     player.storage.minifuli = true;
                 },
                 ai: {
