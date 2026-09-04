@@ -176,7 +176,7 @@ const packs = function () {
             Mbaby_weiyan: ['male', 'shu', 4, ['minikuanggu'], ['die:re_weiyan']],
             Mbaby_re_weiyan: ['male', 'shu', 4, ['minikuanggu', 'miniqimou']],
             Mbaby_liaohua: ['male', 'shu', 4, ['minidangxian']],
-            Mbaby_re_liaohua: ['male', 'shu', 4, ['minijiedangxian', 'minifuli'], ['character:Mbaby_liaohua']],
+            Mbaby_re_liaohua: ['male', 'shu', 4, ['minidangxian', 'minifuli'], ['character:Mbaby_liaohua']],
             Mbaby_pangtong: ['male', 'shu', 3, ['minilianhuan', 'oldniepan']],
             Mbaby_ol_pangtong: ['male', 'shu', 3, ['minirelianhuan', 'mininiepan']],
             Mbaby_menghuo: ['male', 'shu', 5, ['minihuoshou', 'minizaiqi']],
@@ -9162,45 +9162,6 @@ const packs = function () {
                     trigger.next.push(next);
                     const card = get.cardPile(card => card.name === 'sha');
                     if (card) player.gain(card, 'gain2');
-                },
-            },
-            minijiedangxian: {
-                audio: 'dangxian',
-                trigger: { player: 'phaseBegin' },
-                forced: true,
-                content() {
-                    const next = player.phaseUse();
-                    next.minijiedangxian = true;
-                    player.addSkill('minijiedangxian_effect');
-                    event.next.remove(next);
-                    trigger.next.push(next);
-                },
-                async execute(player) {
-                    await player.loseHp();
-                    if (!player.isIn()) return;
-                    const card = get.discardPile('sha');
-                    if (card) await player.gain(card, 'gain2');
-                },
-            },
-            minijiedangxian_effect: {
-                charlotte: true,
-                trigger: { player: 'phaseUseBegin' },
-                filter(event) {
-                    return event.minijiedangxian;
-                },
-                direct: true,
-                popup: false,
-                async content(event, trigger, player) {
-                    player.removeSkill('minijiedangxian_effect');
-                    if (player.storage.minifuli) {
-                        const card = get.discardPile('sha');
-                        const result = await player.chooseBool(get.prompt('minijiedangxian'), '失去1点体力并从弃牌堆获得一张【杀】')
-                            .set('choice', player.hp > 1 && !!card)
-                            .forResult();
-                        if (!result.bool) return;
-                        player.logSkill('minijiedangxian');
-                    }
-                    await lib.skill.minijiedangxian.execute(player);
                 },
             },
             minifuli: {
@@ -45666,9 +45627,6 @@ const packs = function () {
             },
         },
         dynamicTranslate: {
-            minijiedangxian(player) {
-                return lib.translate[player.storage.minifuli ? 'minijiedangxian_optional_info' : 'minijiedangxian_info'];
-            },
             minizhongjian(player) {
                 return '出牌阶段限' + (player.hasSkill('recaishi2') ? '两' : '一') + '次，你可以选择一名本回合内未选择过的角色。你令其获得一项效果：①其下次造成伤害后弃置两张牌，然后你摸一张牌。②其下次受到伤害后摸两张牌，然后你摸一张牌。';
             },
@@ -46446,9 +46404,6 @@ const packs = function () {
             miniqimou_info: '限定技，出牌阶段，你可以失去任意点体力并摸一张牌，本回合你计算与其他角色的距离-X且你可以多使用X张【杀】（X为你失去的体力值）。',
             minidangxian: '当先',
             minidangxian_info: '锁定技，回合开始时，你进行一个额外的出牌阶段并摸一张【杀】。',
-            minijiedangxian: '当先',
-            minijiedangxian_info: '锁定技，回合开始时，你执行一个额外的出牌阶段，此阶段开始时你失去1点体力并从弃牌堆获得一张【杀】。',
-            minijiedangxian_optional_info: '锁定技，回合开始时，你执行一个额外的出牌阶段。此阶段开始时，你可以失去1点体力并从弃牌堆获得一张【杀】。',
             minifuli: '伏枥',
             minifuli_info: '限定技，当你处于濒死状态时，你可以将体力回复至X点并将手牌数摸至X张，然后若X大于3，你翻面（X为全场势力数）。',
             minilianhuan: '连环',
