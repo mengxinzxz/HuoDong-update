@@ -15367,13 +15367,13 @@ const packs = function () {
                     const target = event.target;
                     const count = player.getAllHistory('useCard', evt => evt.targets?.includes(target)).length;
                     const num = Math.min(5, count);
-                    target.addMark(event.name + '_mark', num);
-                    await player.draw(num);
-                    player.addSkill(event.name + '_effect');
-                    player.markAuto(event.name + '_effect', [target]);
                     const storage = player.getStorage(event.name + '_effect_count', {});
                     storage[target.playerid] = (storage[target.playerid] || 0) + num;
                     player.setStorage(event.name + '_effect_count', storage, true);
+                    player.markAuto(event.name + '_effect', [target]);
+                    player.addSkill(event.name + '_effect');
+                    target.addMark(event.name + '_mark', num);
+                    await player.draw(num);
                 },
                 subSkill: {
                     effect: {
@@ -15415,7 +15415,7 @@ const packs = function () {
                                 if (player.storage.minifenhui_effect_resolved) return;
                                 player.setStorage('minifenhui_effect_resolved', true, true);
                                 await player.loseMaxHp();
-                                player.storage.dcshouzhi_modified = true;
+                                player.setStorage('dcshouzhi_modified', true, true);
                                 await player.addSkills('dcxingmen');
                             }
                         },
@@ -15423,13 +15423,19 @@ const packs = function () {
                     effect_cleanup: {
                         trigger: { global: 'dieAfter' },
                         filter(event, player) {
-                            return player.getStorage('minifenhui_effect').includes(event.player);
+                            return event.player === player || player.getStorage('minifenhui_effect').includes(event.player);
                         },
                         forced: true,
                         popup: false,
                         charlotte: true,
+                        forceDie: true,
+                        forceOut: true,
                         content(event, trigger, player) {
                             const target = trigger.player;
+                            if (target === player) {
+                                player.removeSkill('minifenhui_effect');
+                                return;
+                            }
                             const storage = player.getStorage('minifenhui_effect_count', {});
                             const count = storage[target.playerid] || 0;
                             if (count > 0 && target.hasMark('minifenhui_mark')) {
