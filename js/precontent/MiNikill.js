@@ -9160,7 +9160,7 @@ const packs = function () {
                     const next = player.phaseUse();
                     event.next.remove(next);
                     trigger.next.push(next);
-                    const card = get.cardPile(card => card.name === 'sha');
+                    const card = get.cardPile2(card => card.name === 'sha');
                     if (card) player.gain(card, 'gain2');
                 },
             },
