@@ -27518,15 +27518,34 @@ const packs = function () {
                     },
                 },
             },
+            minijinghe_lundao: {
+                audio: 'nhlundao',
+                inherit: 'nhlundao',
+                check(event, player) {
+                    if (player.countCards('h') > event.source.countCards('h')) return true;
+                    if (get.attitude(player, event.source) > 0) return false;
+                    return event.source.countDiscardableCards(player, 'he') > 0 && get.effect(event.source, { name: 'guohe_copy2' }, player, player) > 0;
+                },
+            },
             minijinghe: {
                 audio: 'ext:活动武将/audio/skill:2',
                 inherit: 'jinghe',
                 filter(event, player) {
                     return !player.hasSkill('minijinghe_clear');
                 },
+                clear(player) {
+                    game.countPlayer2(current => current.removeAdditionalSkills('minijinghe_' + player.playerid), true);
+                },
+                subSkill: {
+                    clear: {
+                        charlotte: true,
+                        onremove(player) {
+                            lib.skill.minijinghe.clear(player);
+                        },
+                    },
+                },
                 content() {
                     'step 0'
-                    player.when('phaseBegin').then(() => game.countPlayer(current => current.removeAdditionalSkills('minijinghe_' + player.playerid)));
                     player.showCards(cards, get.translation(player) + '发动了【经合】');
                     event.skills = lib.skill.minijinghe.derivation.slice();
                     player.addTempSkill('minijinghe_clear', { player: 'phaseBegin' });
@@ -27564,7 +27583,7 @@ const packs = function () {
                     order: 10,
                     result: { target: 1 },
                 },
-                derivation: ['minijinghe_leiji', 'biyue', 'new_retuxi', 'minimingce', 'nhyinbing', 'nhhuoqi', 'nhguizhu', 'nhxianshou', 'nhlundao', 'nhguanyue', 'nhyanzheng', 'minizhiyan'],
+                derivation: ['minijinghe_leiji', 'biyue', 'new_retuxi', 'minimingce', 'nhyinbing', 'nhhuoqi', 'nhguizhu', 'nhxianshou', 'minijinghe_lundao', 'nhguanyue', 'nhyanzheng', 'minizhiyan'],
             },
             minigongxiu: {
                 audio: 'ext:活动武将/audio/skill:2',
@@ -47530,6 +47549,8 @@ const packs = function () {
             minijinghe_info: '每回合限一次，出牌阶段，你可以展示至多四张牌名各不相同的手牌并选择等量的角色，这些角色可以从“天书”中选择并获得一个其未拥有的技能直到你的下回合开始。“天书”中的技能为：雷击、闭月、突袭、明策、阴兵、活气、鬼助、仙授、论道、观月、言政、直言。',
             minijinghe_leiji: '雷击',
             minijinghe_leiji_info: '每当你使用或打出【闪】时，你可以令一名其他角色进行判定，若结果为：黑桃，你对该角色造成2点雷电伤害；梅花，你回复1点体力，然后对该角色造成1点雷电伤害。',
+            minijinghe_lundao: '论道',
+            minijinghe_lundao_info: '当你受到伤害后，若伤害来源比你手牌多，你可以弃置其一张牌；若伤害来源比你手牌少，你摸一张牌。',
             minichanni: '谗逆',
             minichanni_info: '出牌阶段限一次，你可将任意张手牌交给一名其他角色，然后其可以将等量的手牌当做【决斗】使用。其因此【决斗】造成伤害后摸X张牌（X为此【决斗】对应的实体牌数）。其因此【决斗】受到伤害时，你可以弃置所有手牌并防止此伤害。',
             mininifu: '匿伏',
