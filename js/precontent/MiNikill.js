@@ -471,7 +471,7 @@ const packs = function () {
             Mbaby_re_taoqian: ['male', 'qun', 3, ['minizhaohuo', 'reyixiang', 'reyirang']],
             Mbaby_xurong: ['male', 'qun', 4, ['minixionghuo', 'minishajue']],
             Mbaby_wangcan: ['male', 'qun', 3, ['xinfu_sanwen', 'xinfu_qiai', 'minidenglou']],
-            Mbaby_sb_zhangjiao: ['male', 'qun', 3, ['minisbsbleiji', 'minisbguidao', 'minisbhuangtian']],
+            Mbaby_sb_zhangjiao: ['male', 'qun', 3, ['minisbsbleiji', 'minisbguidao', 'minisbhuangtian'], ['zhu']],
             Mbaby_leibo: ['male', 'qun', 4, ['dcsilve', 'minishuaijie']],
             Mbaby_zhangchu: ['female', 'qun', 3, ['dcjizhong', 'minirihui', 'miniguangshi']],
             Mbaby_ol_lisu: ['male', 'qun', 3, ['qiaoyan', 'minilsxianzhu']],
@@ -32038,8 +32038,8 @@ const packs = function () {
                             `雷击：请选择一项`,
                             [
                                 [
-                                    [4, `移去4枚“道兵”对${name}造成1点雷电伤害`],
-                                    [6, `移去6枚“道兵”对${name}造成2点雷电伤害`],
+                                    [4, `弃4枚“道兵”，对${name}造成1点雷电伤害`],
+                                    [6, `弃6枚“道兵”，对${name}造成2点雷电伤害`],
                                 ],
                                 'textbutton',
                             ],
@@ -32083,7 +32083,7 @@ const packs = function () {
                     order: 9,
                     result: {
                         target(player, target) {
-                            return get.damageEffect(target, player, target, 'thunder');
+                            return get.damageEffect(target, player, player, 'thunder');
                         },
                     },
                 },
@@ -32137,7 +32137,7 @@ const packs = function () {
                         filter(event, player) {
                             return player.countMark('minisbguidao') >= 2;
                         },
-                        prompt2: '失去2枚“道兵”标记，防止伤害',
+                        prompt2: '弃2枚“道兵”，防止此伤害',
                         check(event, player) {
                             return event.num >= 2 || player.hp <= event.num;
                         },
@@ -32198,7 +32198,7 @@ const packs = function () {
             minisbhuangtian: {
                 mod: {
                     maxHandcard(player, num) {
-                        return num + game.countGroup() - 1;
+                        if (player.hasZhuSkill('minisbhuangtian')) return num + game.countGroup() - 1;
                     },
                 },
                 audio: 'sbhuangtian',
@@ -32214,7 +32214,7 @@ const packs = function () {
                 },
                 async content(event, trigger, player) {
                     const count = event.name + '_count';
-                    let num = Math.min(8 - player.countMark(count), 2);
+                    let num = Math.min(8 - player.countMark('minisbguidao'), 4 - player.countMark(count), 2);
                     if (num > 0) {
                         player.addMark('minisbguidao', num);
                         player.addTempSkill(count, 'roundStart');
@@ -47642,11 +47642,11 @@ const packs = function () {
             minidenglou: '登楼',
             minidenglou_info: '结束阶段，若你没有手牌，则你可以观看牌堆顶的四张牌，依次使用其中的所有基本牌（不能使用则弃置），然后获得其余的牌。',
             minisbsbleiji: '雷击',
-            minisbsbleiji_info: '出牌阶段，你可以选择一名其他角色并移去4/6枚“道兵”，对其造成1/2点雷电伤害。',
+            minisbsbleiji_info: '出牌阶段，你可以：①弃4枚“道兵”，对一名其他角色造成1点雷电伤害；②弃6枚“道兵”，对一名其他角色造成2点雷电伤害。',
             minisbguidao: '鬼道',
-            minisbguidao_info: '①每轮开始时/一名角色受到属性伤害时，你获得4/2枚“道兵”（标记上限为8）。②每回合限一次，当你受到伤害时，你可以弃2枚“道兵”并防止此伤害。③每当你累计弃置8枚“道兵”后，你可以令任意名角色依次进行【闪电】判定。',
+            minisbguidao_info: '①每轮游戏开始时，你获得4枚“道兵”（“道兵”数量至多为8）。②当一名角色受到属性伤害时，你获得2枚“道兵”。③每回合限一次，当你受到伤害时，你可以弃2枚“道兵”，防止此伤害。④每当你累计弃置8枚“道兵”后，你可令场上的任意名角色依次进行【闪电】判定。',
             minisbhuangtian: '黄天',
-            minisbhuangtian_info: `主公技，锁定技。①其他群势力角色造成伤害后，若你拥有${get.poptip('minisbguidao')}，你获得2枚“道兵”（每轮你至多以此法获得4枚“道兵”）。②你的手牌上限+X（X为场上势力数-1）。`,
+            minisbhuangtian_info: `主公技，锁定技。①当其他群势力角色造成伤害后，若你拥有${get.poptip('minisbguidao')}，你获得2枚“道兵”（每轮至多以此法获得4枚“道兵”）。②你的手牌上限+X（X为场上势力数-1）。`,
             minishuaijie: '衰劫',
             minishuaijie_info: '限定技。出牌阶段，若你的体力值小于“私掠”角色，或没有角色有“私掠”，你可以减1点体力上限，然后选择一项：1.获得“私掠”角色至多三张牌；2.从牌堆随机获得三张类型各不同的牌。最后将你的“私掠”角色改为你。',
             minirihui: '日彗',
