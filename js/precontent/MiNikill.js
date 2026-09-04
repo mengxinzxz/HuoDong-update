@@ -27534,7 +27534,7 @@ const packs = function () {
                     return !player.hasSkill('minijinghe_clear');
                 },
                 clear(player) {
-                    game.countPlayer2(current => current.removeAdditionalSkills('minijinghe_' + player.playerid), true);
+                    game.countPlayer2(current => current.removeAdditionalSkills('minijinghe_' + player.playerid).set('includeOut', true), true);
                 },
                 subSkill: {
                     clear: {
