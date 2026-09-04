@@ -9485,27 +9485,23 @@ const packs = function () {
             },
             minizaiqi: {
                 audio: 'zaiqi',
-                trigger: { player: 'phaseDrawBegin1', },
+                trigger: { player: 'phaseDrawBegin1' },
                 filter(event, player) {
                     return !event.numFixed && player.isDamaged();
                 },
                 check(event, player) {
-                    if (player.getDamagedHp() < 2) {
-                        return false;
-                    } else if (player.getDamagedHp() == 2) {
-                        return player.countCards('h') >= 2;
-                    }
-                    return true;
+                    return player.getDamagedHp() > 1;
                 },
                 async content(event, trigger, player) {
                     trigger.changeToZero();
                     if (player.isHealthy()) return;
-                    let cards = get.cards(player.getDamagedHp(), true);
-                    await player.showCards(event.cards);
-                    let num = cards.filter(card => get.suit(card) == 'heart');
-                    cards = cards.filter(card => get.suit(card) != 'heart');
-                    if (num) await player.recover(num);
-                    if (cards.length) await player.gain(cards, 'gain2');
+                    const cards = get.cards(player.getDamagedHp());
+                    await game.cardsGotoOrdering(cards);
+                    await player.showCards(cards, get.translation(player) + '发动了【再起】');
+                    const hearts = cards.filter(card => get.suit(card) == 'heart');
+                    const gains = cards.filter(card => get.suit(card) != 'heart');
+                    if (hearts.length) await player.recover(hearts.length);
+                    if (gains.length) await player.gain(gains, 'gain2');
                 },
                 ai: {
                     threaten(player, target) {
@@ -46414,11 +46410,11 @@ const packs = function () {
             mininiepan: '涅槃',
             mininiepan_info: '限定技，当你处于濒死状态时，你可以弃置你区域内的所有牌并复原你的武将牌，然后摸三张牌并将体力回复至3点。然后你选择一项：①获得〖八阵〗；②获得〖火计〗和〖看破〗。',
             minihuoshou: '祸首',
-            minihuoshou_info: '锁定技，【南蛮入侵】对你无效；当其他角色使用【南蛮入侵】时，你代替其成为此牌的伤害来源并摸一张牌。',
+            minihuoshou_info: '锁定技，【南蛮入侵】对你无效；当其他角色使用【南蛮入侵】指定目标后，你代替其成为此牌造成的伤害的来源，并摸一张牌。',
             minirehuoshou: '祸首',
             minirehuoshou_info: '锁定技。①【南蛮入侵】对你无效。②当其他角色使用【南蛮入侵】时，你代替其成为此牌的伤害来源并摸一张牌。③出牌阶段开始时，你随机获得弃牌堆中的一张【南蛮入侵】。④出牌阶段，若你于此阶段使用过【南蛮入侵】，你不能使用【南蛮入侵】。',
             minizaiqi: '再起',
-            minizaiqi_info: '摸牌阶段，若你已受伤，则你可以改为亮出牌堆顶的X张牌（X为你已损失的体力值），然后你回复X点体力（X为其中♥牌的数目）并获得其中的非♥牌。',
+            minizaiqi_info: '摸牌阶段开始时，若你已受伤，你可以放弃摸牌并亮出牌堆顶的X张牌（X为你已损失的体力值），然后你回复等同于其中♥牌数量的体力，并获得其中的非♥牌。',
             minirezaiqi: '再起',
             minirezaiqi_info: '①摸牌阶段，若你已受伤，则你可以改为亮出牌堆顶的X张牌（X为你已损失的体力值），并回复X点体力（X为其中♥牌的数目）。然后你将这些♥牌置入弃牌堆，并获得其余的牌。②结束阶段，你可以发动一次X为你本回合造成的伤害值的〖再起①〗。',
             minitiaoxin: '挑衅',
