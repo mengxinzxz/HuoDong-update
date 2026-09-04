@@ -27468,6 +27468,56 @@ const packs = function () {
                 },
             },
             //南华老仙
+            minijinghe_leiji: {
+                audio: 'ext:活动武将/audio/skill:2',
+                trigger: { player: ['useCard', 'respond'] },
+                filter(event, player) {
+                    return event.card.name == 'shan';
+                },
+                async cost(event, trigger, player) {
+                    event.result = await player.chooseTarget(get.prompt('minijinghe_leiji'), '令一名其他角色进行判定', lib.filter.notMe).set('ai', function (target) {
+                        if (target.hasSkill('hongyan')) return 0;
+                        return get.damageEffect(target, _status.event.player, _status.event.player, 'thunder');
+                    }).forResult();
+                },
+                content() {
+                    'step 0'
+                    event.target = targets[0];
+                    event.target.judge(function (card) {
+                        var suit = get.suit(card);
+                        if (suit == 'spade') return -4;
+                        if (suit == 'club') return -2;
+                        return 0;
+                    }).judge2 = function (result) {
+                        return result.bool == false ? true : false;
+                    };
+                    'step 1'
+                    if (result.suit == 'club') {
+                        player.recover();
+                        event.target.damage('thunder');
+                    }
+                    else if (result.suit == 'spade') event.target.damage(2, 'thunder');
+                },
+                ai: {
+                    useShan: true,
+                    effect: {
+                        target(card, player, target, current) {
+                            if (get.tag(card, 'respondShan') && !player.hasSkillTag('directHit_ai', true, {
+                                target: target,
+                                card: card,
+                            }, true)) {
+                                var hastarget = game.hasPlayer(function (current) {
+                                    return get.attitude(target, current) < 0;
+                                });
+                                if (!target.countCards('h', 'shan')) return;
+                                if (target.countCards('h') > 2) return [0, 0];
+                                if (target.countCards('h') == 1) return [1.2, hastarget ? 0.1 : 0];
+                                return [1, hastarget ? 0.2 : 0];
+                            }
+                        },
+                    },
+                },
+            },
             minijinghe: {
                 audio: 'ext:活动武将/audio/skill:2',
                 inherit: 'jinghe',
@@ -27478,33 +27528,42 @@ const packs = function () {
                     'step 0'
                     player.when('phaseBegin').then(() => game.countPlayer(current => current.removeAdditionalSkills('minijinghe_' + player.playerid)));
                     player.showCards(cards, get.translation(player) + '发动了【经合】');
-                    event.skills = lib.skill.minijinghe.derivation.randomGets(4);
+                    event.skills = lib.skill.minijinghe.derivation.slice();
                     player.addTempSkill('minijinghe_clear', { player: 'phaseBegin' });
                     event.targets.sortBySeat();
                     event.num = 0;
                     'step 1'
                     event.target = targets[num];
                     event.num++;
-                    event.target.chooseControl(event.skills, 'cancel2').set('choiceList', event.skills.map(function (i) {
-                        return '<div class="skill">【' + get.translation(lib.translate[i + '_ab'] || get.translation(i).slice(0, 2)) + '】</div><div>' + get.skillInfoTranslation(i, player) + '</div>';
-                    })).set('displayIndex', false).set('prompt', '选择获得一个技能');
+                    event.ownedSkillNames = event.target.getSkills(null, false, false).map(skill => get.translation(get.sourceSkillFor(skill)));
+                    event.availableSkills = event.skills.filter(skill => !event.ownedSkillNames.includes(get.translation(skill)));
+                    if (!event.availableSkills.length) event.goto(3);
+                    else {
+                        event.target.chooseControl(event.availableSkills, 'cancel2').set('choiceList', event.availableSkills.map(function (i) {
+                            return '<div class="skill">【' + get.translation(lib.translate[i + '_ab'] || get.translation(i).slice(0, 2)) + '】</div><div>' + get.skillInfoTranslation(i, event.target) + '</div>';
+                        })).set('displayIndex', false).set('prompt', '选择获得一个技能').set('ai', function () {
+                            var skills = _status.event.controls.filter(skill => skill != 'cancel2');
+                            skills.sort((a, b) => get.skillRank(b, 'in') - get.skillRank(a, 'in'));
+                            return skills.length && get.skillRank(skills[0], 'in') > 0 ? skills[0] : 'cancel2';
+                        });
+                    }
                     'step 2'
                     var skill = result.control;
                     if (skill != 'cancel2') {
-                        event.skills.remove(skill);
-                        target.addAdditionalSkills('minijinghe_' + player.playerid, skill);
-                        target.popup(skill);
-                        game.log(target, '获得了技能', '#g【' + get.translation(skill) + '】');
+                        event.target.addAdditionalSkills('minijinghe_' + player.playerid, skill);
+                        event.target.popup(skill);
+                        game.log(event.target, '获得了技能', '#g【' + get.translation(skill) + '】');
                     }
+                    'step 3'
                     if (event.num < event.targets.length) event.goto(1);
-                    if (target != game.me && !target.isOnline2()) game.delayx();
+                    if (event.target != game.me && !event.target.isOnline2()) game.delayx();
                 },
                 ai: {
                     threaten: 3,
                     order: 10,
                     result: { target: 1 },
                 },
-                derivation: ['minileiji', 'minipianyi', 'new_retuxi', 'minimingce', 'minizhiyan', 'nhyinbing', 'nhhuoqi', 'nhguizhu', 'nhxianshou', 'nhlundao', 'nhguanyue', 'nhyanzheng'],
+                derivation: ['minijinghe_leiji', 'biyue', 'new_retuxi', 'minimingce', 'nhyinbing', 'nhhuoqi', 'nhguizhu', 'nhxianshou', 'nhlundao', 'nhguanyue', 'nhyanzheng', 'minizhiyan'],
             },
             minigongxiu: {
                 audio: 'ext:活动武将/audio/skill:2',
@@ -27519,19 +27578,29 @@ const packs = function () {
                     var choices = [];
                     game.countPlayer(function (current) {
                         if (current.additionalSkills['minijinghe_' + player.playerid]) event.list1.push(current);
-                        else event.list2.push(current);
+                        else if (current != player) event.list2.push(current);
                     });
                     event.list1.sortBySeat();
                     if (event.list1.length) choices.push('令' + get.translation(event.list1) + (event.list1.length > 1 ? '各' : '') + '摸一张牌');
                     else event.addIndex++;
                     event.list2.sortBySeat();
                     if (event.list2.length) choices.push('令' + get.translation(event.list2) + (event.list2.length > 1 ? '各' : '') + '弃置一张手牌');
-                    const result = player.chooseControl('cancel2').set('choiceList', choices).set('prompt', get.prompt('minigongxiu')).set('', function () {
+                    const result = await player.chooseControl('cancel2').set('choiceList', choices).set('prompt', get.prompt('minigongxiu')).set('ai', function () {
                         var evt = _status.event.getParent();
-                        if (evt.list2.filter(function (current) {
-                            return get.attitude(player, current) <= 0 && !current.hasSkillTag('noh');
-                        }).length - evt.list1.length > 1) return 1 - evt.addIndex;
-                        return 0;
+                        var player = _status.event.player;
+                        var scores = [
+                            evt.list1.reduce(function (sum, current) {
+                                if (current.hasSkillTag('nogain')) return sum;
+                                return sum + get.attitude(player, current);
+                            }, 0),
+                            evt.list2.reduce(function (sum, current) {
+                                if (!current.countCards('h') || current.hasSkillTag('noh')) return sum;
+                                return sum - get.attitude(player, current);
+                            }, 0),
+                        ];
+                        var index = scores[1] > scores[0] ? 1 : 0;
+                        if (!([evt.list1, evt.list2][index].length) || scores[index] <= 0) return 'cancel2';
+                        return index - evt.addIndex;
                     }).forResult();
                     event.result = {
                         bool: result?.control && result.control !== 'cancel2',
@@ -47455,9 +47524,11 @@ const packs = function () {
             minishifei: '饰非',
             minishifei_info: '当你需要使用或打出【闪】时，你可以令当前回合角色摸一张牌。然后若其手牌数不为全场唯一最多，则你弃置一名角色的一张牌，视为你使用或打出了一张【闪】。',
             minigongxiu: '共修',
-            minigongxiu_info: '结束阶段，若你本回合内发动过〖经合〗，则你选择一项：①令所有本回合内成为过〖经合〗目标的角色各摸一张牌；②令所有本回合内未成为过〖经合〗目标的角色各弃置一张手牌。',
+            minigongxiu_info: '结束阶段，若你本回合已发动过〖经合〗，你可以选择一项：①所有本回合通过〖经合〗获得过技能的角色各摸一张牌；②所有本回合未通过〖经合〗获得过技能的其他角色各弃置一张手牌。',
             minijinghe: '经合',
-            minijinghe_info: '出牌阶段限一次，你可以展示四张牌名各不相同的牌并选择等量的角色。系统从“写满技能的天书”中随机选择等量的技能，然后这些角色依次选择获得其中的一个。',
+            minijinghe_info: '每回合限一次，出牌阶段，你可以展示至多四张牌名各不相同的手牌并选择等量的角色，这些角色可以从“天书”中选择并获得一个其未拥有的技能直到你的下回合开始。“天书”中的技能为：雷击、闭月、突袭、明策、阴兵、活气、鬼助、仙授、论道、观月、言政、直言。',
+            minijinghe_leiji: '雷击',
+            minijinghe_leiji_info: '每当你使用或打出【闪】时，你可以令一名其他角色进行判定，若结果为：黑桃，你对该角色造成2点雷电伤害；梅花，你回复1点体力，然后对该角色造成1点雷电伤害。',
             minichanni: '谗逆',
             minichanni_info: '出牌阶段限一次，你可将任意张手牌交给一名其他角色，然后其可以将等量的手牌当做【决斗】使用。其因此【决斗】造成伤害后摸X张牌（X为此【决斗】对应的实体牌数）。其因此【决斗】受到伤害时，你可以弃置所有手牌并防止此伤害。',
             mininifu: '匿伏',
