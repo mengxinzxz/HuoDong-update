@@ -27550,6 +27550,7 @@ const packs = function () {
                     'step 2'
                     var skill = result.control;
                     if (skill != 'cancel2') {
+                        event.skills.remove(skill);
                         event.target.addAdditionalSkills('minijinghe_' + player.playerid, skill);
                         event.target.popup(skill);
                         game.log(event.target, '获得了技能', '#g【' + get.translation(skill) + '】');
