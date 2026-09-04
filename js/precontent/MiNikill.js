@@ -29251,11 +29251,11 @@ const packs = function () {
                             markcount: () => 0,
                             content(storage, player) {
                                 const list = [
-                                    '一名角色使用或打出【杀】时，其弃置所有手牌',
-                                    '本轮结束时，所有未于本轮使用、打出或弃置过【闪】的角色各受到你对其造成的1点雷属性伤害',
-                                    '一名角色的装备区的牌数发生变化后，其弃置所有装备牌',
-                                    '一名角色使用或打出【桃】或【酒】后，其本回合无法使用或打出手牌',
-                                    '一名角色使用单目标锦囊牌指定目标时，你摸一张牌',
+                                    '使用或打出【杀】时，失去所有手牌',
+                                    '本轮结束时，未使用、打出或弃置过【闪】的角色受到1点雷属性伤害',
+                                    '装备发生变化时，失去所有装备',
+                                    '使用【桃】或【酒】后，本回合无法使用和打出任何手牌',
+                                    '使用单体锦囊指定目标时，小闪摸一张牌',
                                 ];
                                 const nums = Array.from({ length: 5 }).map((_, i) => i + 1).filter(num => storage.includes(num));
                                 let str = '';
@@ -29286,7 +29286,7 @@ const packs = function () {
                             }
                             if (event.name == 'useCard' || event.name == 'respond') {
                                 if (storage.includes(1) && event.card.name == 'sha' && event.player.countCards('h')) return true;
-                                if (storage.includes(4) && (event.card.name == 'tao' || event.card.name == 'jiu')) return true;
+                                if (event.name == 'useCard' && storage.includes(4) && (event.card.name == 'tao' || event.card.name == 'jiu')) return true;
                                 return false;
                             }
                             if (event.name == 'useCardToPlayer') {
@@ -29295,15 +29295,10 @@ const packs = function () {
                                 return info && !info.notarget && (info.toself || info.singleCard || !info.selectTarget || info.selectTarget == 1);
                             }
                             if (!storage.includes(3)) return false;
-                            if (event.name == 'equip') {
-                                if (!event.player.countCards('e')) return false;
-                                const evt = event.getl(event.player);
-                                return !evt || evt.cards.length != 1;
-                            }
                             return game.hasPlayer(target => {
                                 if (!target.countCards('e')) return false;
-                                const evt = event.getl(target);
-                                return evt?.es?.length;
+                                if (event.name == 'equip' && event.player == target) return true;
+                                return event.getl(target)?.es?.length;
                             });
                         },
                         logTarget(event, player, name) {
@@ -29316,13 +29311,13 @@ const packs = function () {
                                     }).length;
                                 }).sortBySeat();
                             }
-                            if (event.name == 'useCard' || event.name == 'respond' || event.name == 'useCardToPlayer' || event.name == 'equip') {
+                            if (event.name == 'useCard' || event.name == 'respond' || event.name == 'useCardToPlayer') {
                                 return event.player;
                             }
                             return game.filterPlayer(target => {
                                 if (!target.countCards('e')) return false;
-                                const evt = event.getl(target);
-                                return evt?.es?.length;
+                                if (event.name == 'equip' && event.player == target) return true;
+                                return event.getl(target)?.es?.length;
                             }).sortBySeat();
                         },
                         forced: true,
@@ -29331,14 +29326,15 @@ const packs = function () {
                             if (event.triggername === 'roundEnd') {
                                 player.markAuto('minianshi_effect', ['showed_2']);
                                 for (const target of targets) await target.damage(1, 'thunder');
+                                return;
                             }
                             if (trigger.name == 'useCard' || trigger.name == 'respond') {
                                 const target = targets[0];
-                                if (trigger.card.name == 'sha' && target.countDiscardableCards(target, 'h')) {
+                                if (trigger.card.name == 'sha') {
                                     player.markAuto('minianshi_effect', ['showed_1']);
-                                    await target.discard(target.getDiscardableCards(target, 'h'));
+                                    await target.loseToDiscardpile(target.getCards('h'));
                                 }
-                                if (trigger.card.name == 'tao' || trigger.card.name == 'jiu') {
+                                if (trigger.name == 'useCard' && (trigger.card.name == 'tao' || trigger.card.name == 'jiu')) {
                                     player.markAuto('minianshi_effect', ['showed_4']);
                                     target.addTempSkill('minianshi_ban');
                                 }
@@ -29349,7 +29345,7 @@ const packs = function () {
                             }
                             else {
                                 player.markAuto('minianshi_effect', ['showed_3']);
-                                for (const target of targets) await target.discard(target.getDiscardableCards(target, 'e'));
+                                for (const target of targets) await target.loseToDiscardpile(target.getCards('e'));
                             }
                         },
                     },
@@ -47504,9 +47500,9 @@ const packs = function () {
             minimoucheng: '谋逞',
             minimoucheng_info: '觉醒技，回合开始时，若有角色因你发动〖连计〗使用【杀】而造成过伤害，则你获得〖矜功〗。',
             minishanshan: '闪闪',
-            minishanshan_info: '①当你成为其他角色使用【杀】或普通锦囊牌的目标后，你可以打出一张【闪】令此牌对你无效，然后你摸一张牌。②你可以将一张装备牌当作【闪】使用或打出。',
+            minishanshan_info: '当你成为其他角色【杀】或普通锦囊的目标时，你可以打出一张【闪】，然后令此牌对你无效，并摸一张牌。你的装备牌可以当作【闪】使用或打出。',
             minianshi: '暗示',
-            minianshi_info: '锁定技，每轮开始时，你随机获得以下一个效果（仅对你可见）：①一名角色于本轮使用或打出【杀】时，其弃置所有手牌；②本轮结束时，所有未于本轮使用、打出或弃置过【闪】的角色各受到你对其造成的1点雷属性伤害；③一名角色的装备区的牌数于本轮发生变化后，其弃置所有装备牌；④一名角色于本轮使用或打出【桃】或【酒】后，其本回合无法使用或打出手牌；⑤一名角色于本轮使用单目标锦囊牌指定目标时，你摸一张牌。',
+            minianshi_info: '锁定技，每轮游戏开始时，随机选取下列一项效果，直到下轮开始：①使用或打出【杀】时，失去所有手牌；②本轮结束时，未使用、打出或弃置过【闪】的角色受到1点雷属性伤害；③装备发生变化时，失去所有装备；④使用【桃】或【酒】后，本回合无法使用和打出任何手牌；⑤使用单体锦囊指定目标时，小闪摸一张牌。（此效果全场生效，且仅小闪可见）',
             miniyishe: '义舍',
             miniyishe_info: '①结束阶段，你可以摸两张牌，然后将两张牌置于武将牌上，称为“米”。②当有“米”移至其他区域后，若你的武将牌上没有“米”，则你回复1点体力。',
             minibushi: '布施',
