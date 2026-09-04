@@ -36737,7 +36737,7 @@ const packs = function () {
                             player.removeSkill(skill);
                             if (source?.isIn()) {
                                 let bool = false;
-                                if (!player.hasHistory('sourceDamage', evt => evt.card?.name === 'sha' && evt.getParent('phaseUse')) && source.countCards('he')) {
+                                if (!player.hasHistory('sourceDamage', evt => evt.card?.name === 'sha' && evt.getParent('phaseUse', true)?.player === player) && source.countCards('he')) {
                                     const result = await source.chooseCard('he', [1, 3], '下策：是否将至多三张牌交给' + get.translation(player) + '并令其回复1点体力？').set('ai', card => {
                                         const source = get.player(), target = get.event().target;
                                         if (get.attitude(source, target) <= 0) return 0;
