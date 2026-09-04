@@ -42605,7 +42605,7 @@ const packs = function () {
                 enable: 'phaseUse',
                 filter(event, player) {
                     if (!event.filterCard(new lib.element.VCard({ name: 'sha' }), player, event)) return false;
-                    return player.hasCard(card => lib.skill.minifightlizhan.filterCard(card, player), 'hs');
+                    return player.countCards('hs', card => lib.skill.minifightlizhan.filterCard(card, player)) >= 2;
                 },
                 viewAs: { name: 'sha' },
                 filterCard(card, player) {
@@ -42613,7 +42613,10 @@ const packs = function () {
                 },
                 selectCard: [2, Infinity],
                 allowChooseAll: true,
-                check: () => Math.random() - 0.1,
+                check() {
+                    if (ui.selected.cards.length >= 5) return 0;
+                    return Math.random() - 0.1;
+                },
                 ignoreMod: true,
                 log: false,
                 async precontent(event, trigger, player) {
