@@ -27719,30 +27719,29 @@ const packs = function () {
                         return !ui.selected.cards.some(cardx => get.color(cardx, player) != get.color(card, player));
                     }, true).set('complexCard', true).set('ai', function (card) {
                         var player = _status.event.player;
-                        var num = game.countPlayer(current => current.countGainableCards(player, 'he') && get.effect(current, { name: 'shunshou_copy2' }, player, player) > 0);
-                        if (ui.selected.cards.length >= num) return 0;
-                        var suits = {};
+                        var num = game.countPlayer(current => current != player && current.countGainableCards(player, 'he') && get.effect(current, { name: 'shunshou_copy2' }, player, player) > 0);
+                        var colors = {};
                         for (var i of player.getDiscardableCards(player, 'h')) {
-                            if (!suits[get.suit(i, player)]) suits[get.suit(i, player)] = 1;
-                            else suits[get.suit(i, player)]++;
+                            var color = get.color(i, player);
+                            if (!colors[color]) colors[color] = 1;
+                            else colors[color]++;
                         }
-                        if (!Object.keys(suits).some(suit => suits[suit] < num)) {
-                            return num / (get.value(card) || 0.5);
-                        }
-                        if (suits[get.suit(card, player)] >= num) return (num / suits[get.suit(card, player)]) / (get.value(card) || 0.5);
-                        return 0;
+                        var max = Math.min(num, colors[get.color(card, player)]);
+                        if (ui.selected.cards.length >= max) return 0;
+                        return (max + 1) / (get.value(card) || 0.5);
                     });
                     'step 2'
                     if (!result.bool) { event.finish(); return; }
                     var color = get.color(result.cards[0], player);
-                    var cards = player.getCards('h', card => get.color(card) == color && player.canRecast(card));
+                    var cards = player.getCards('h', card => get.color(card, player) == color && player.canRecast(card));
                     if (cards.length) player.recast(cards);
                     event.num = result.cards.length;
                     'step 3'
-                    player.chooseTarget('请选择至多' + get.cnNumber(event.num) + '名有牌的其他角色，获得这些角色的各一张牌。', [1, num], function (card, player, target) {
+                    player.chooseTarget('请选择至多' + get.cnNumber(event.num) + '名有牌的其他角色，获得这些角色的各一张牌。', [1, event.num], function (card, player, target) {
                         return target != player && target.countGainableCards(player, 'he') > 0;
                     }).set('ai', function (target) {
-                        return -get.attitude(_status.event.player, target) + 0.5;
+                        var player = _status.event.player;
+                        return get.effect(target, { name: 'shunshou_copy2' }, player, player);
                     });
                     'step 4'
                     if (result.bool) {
@@ -27755,7 +27754,7 @@ const packs = function () {
                     order: 9,
                     result: {
                         player(player, target) {
-                            return game.countPlayer(current => current.countGainableCards(player, 'he') && get.effect(current, { name: 'shunshou_copy2' }, player, player) > 0);
+                            return game.countPlayer(current => current != player && current.countGainableCards(player, 'he') && get.effect(current, { name: 'shunshou_copy2' }, player, player) > 0);
                         },
                     },
                 },
@@ -47465,7 +47464,7 @@ const packs = function () {
             minihuaiyi: '怀异',
             minihuaiyi_info: '出牌阶段限一次，你可以展示所有手牌，若这些牌的颜色不全部相同，则你选择一种颜色并弃置该颜色的所有手牌，然后你可以获得至多X名角色的各一张牌（X为你以此法弃置的手牌数）。',
             minirehuaiyi: '怀异',
-            minirehuaiyi_info: '出牌阶段限一次，你可以展示所有手牌，然后弃置任意张颜色相同的手牌，并重铸剩余此颜色的手牌，然后你可以获得至多X名角色的各一张牌（X为你本次弃置的牌数）。',
+            minirehuaiyi_info: '出牌阶段限一次，你可以展示所有手牌并弃置任意张同颜色的手牌并重铸手中剩余的此颜色的手牌，然后你可获得至多X名其他角色的各一张牌（X为弃置的手牌数）。',
             minimubing: '募兵',
             minimubing_info: '出牌阶段限一次，你可以观看牌堆顶的四张牌，然后你可以弃置任意张手牌，获得任意张展示的牌（你弃置的牌点数和不得小于你获得的牌的点数之和），将其余牌置入弃牌堆。',
             miniziqu: '资取',
