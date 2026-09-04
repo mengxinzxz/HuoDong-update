@@ -15388,6 +15388,8 @@ const packs = function () {
                         logTarget: 'player',
                         forced: true,
                         charlotte: true,
+                        forceDie: true,
+                        forceOut: true,
                         group: 'minifenhui_effect_cleanup',
                         onremove(player, skill) {
                             const targets = player.getStorage(skill).slice();
@@ -15417,10 +15419,12 @@ const packs = function () {
                             } else {
                                 if (player.storage.minifenhui_effect_resolved) return;
                                 player.setStorage('minifenhui_effect_resolved', true, true);
-                                await player.loseMaxHp();
+                                const loseMaxHp = player.loseMaxHp({ forceDie: true, includeOut: true });
+                                await loseMaxHp;
+                                if (player.maxHp <= 0 && player.isAlive()) await player.die(loseMaxHp).set('forceDie', true).set('includeOut', true);
                                 player.setStorage('dcshouzhi_modified', true, true);
                                 player.addSkill('minifenhui_shouzhi_sync');
-                                await player.addSkills('dcxingmen');
+                                await player.addSkills('dcxingmen').set('includeOut', true);
                             }
                         },
                     },
