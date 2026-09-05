@@ -8006,7 +8006,8 @@ const packs = function () {
                 onChooseToUse(event) {
                     if (game.online || event.type !== 'phase') return;
                     const player = event.player;
-                    event.set('miniganglie_enabledTargets', player.getAllHistory('damage', evt => evt.source?.isIn()).map(evt => evt.source).unique());
+                    const resetTargets = player.getStorage('miniganglie_reset');
+                    event.set('miniganglie_enabledTargets', player.getAllHistory('damage', evt => evt.source?.isIn() && !resetTargets.includes(evt.source)).map(evt => evt.source).unique());
                 },
                 filterTarget(card, player, target) {
                     return get.event().miniganglie_enabledTargets.includes(target);
@@ -8016,26 +8017,30 @@ const packs = function () {
                 async content(event, trigger, player) {
                     const target = event.target;
                     await target.damage(2);
-                    const history = player.getAllHistory('damage', evt => evt.source === target);
-                    for (let i = 0; i < _status.globalHistory.length; i++) {
-                        _status.globalHistory[i].everything.removeArray(history);
-                        const history2 = _status.globalHistory[i].changeHp.filter(evt2 => history.includes(evt2.getParent()));
-                        if (history2.length > 0) {
-                            _status.globalHistory[i].everything.removeArray(history2);
-                            _status.globalHistory[i].changeHp.removeArray(history2);
-                        }
-                    }
-                    for (const current of [...game.players, ...game.dead]) {
-                        for (let i = 0; i < current.actionHistory.length; i++) {
-                            current.actionHistory[i].sourceDamage.removeArray(history);
-                            current.actionHistory[i].damage.removeArray(history);
-                        }
-                    }
+                    player.markAuto('miniganglie_reset', [target]);
                 },
                 ai: {
                     order: 6,
                     result: {
-                        target: -2,
+                        target(player, target) {
+                            return 2 * get.damageEffect(target, player, target);
+                        },
+                    },
+                },
+                group: 'miniganglie_record',
+                subSkill: {
+                    record: {
+                        trigger: { player: 'damageEnd' },
+                        forced: true,
+                        popup: false,
+                        charlotte: true,
+                        firstDo: true,
+                        filter(event, player) {
+                            return event.source && player.getStorage('miniganglie_reset').includes(event.source);
+                        },
+                        content() {
+                            player.unmarkAuto('miniganglie_reset', [trigger.source]);
+                        },
                     },
                 },
             },
@@ -8055,13 +8060,12 @@ const packs = function () {
                     return (evt.relatedEvent ?? {}).name !== 'useCard';
                 },
                 forced: true,
-                locked: false,
                 async content(event, trigger, player) {
                     let cards = trigger.cards.filterInD('od');
                     const myLen = player.getExpansions('minisbqingjian').length;
-                    const cardsLen = trigger.cards.length;
-                    const num = Math.min(cardsLen, player.getHp() - myLen);
-                    if (num > 0) cards = cards.randomGets(num);
+                    const num = Math.min(cards.length, player.getHp() - myLen);
+                    if (num <= 0) return;
+                    cards = cards.randomGets(num);
                     const next = player.addToExpansion(cards, 'gain2');
                     next.gaintag.add('minisbqingjian');
                     await next;
@@ -8091,33 +8095,27 @@ const packs = function () {
                                     createDialog: [`清俭：请选择要分配的牌`, expansions],
                                     selectButton: [1, Infinity],
                                     filterTarget: true,
+                                    forced: true,
                                     ai1(button) {
-                                        return get.value(button.link);
+                                        const player = get.player();
+                                        return Math.max(...game.filterPlayer().map(target => get.value(button.link, target) * get.attitude(player, target)));
                                     },
                                     canHidden: true,
                                     complexSelect: true,
                                     ai2(target) {
-                                        const att = get.attitude(get.player(), target);
-                                        if (get.value(ui.selected.buttons[0]?.link, player, 'raw') < 0) return Math.max(0.01, 100 - att);
-                                        else if (att > 0) return Math.max(0.1, att / Math.sqrt(2 + target.countCards('h')));
-                                        else return Math.max(0.01, (100 + att) / 200);
+                                        const player = get.player();
+                                        return ui.selected.buttons.reduce((sum, button) => sum + get.value(button.link, target), 0) * get.attitude(player, target);
                                     },
-                                }).forResult() : await player.chooseTarget(`清俭：是否令一名角色获得${get.translation(expansions)}？`).set('ai', target => {
-                                    const { player, enemy } = get.event();
-                                    const att = get.attitude(_status.event.player, target);
-                                    if (_status.event.enemy) return -att;
-                                    else if (att > 0) return att / (1 + target.countCards('h'));
-                                    else return att / 100;
-                                }).set('enemy', get.value(expansions[0], player, 'raw') < 0).forResult();
-                                if (result?.bool) {
-                                    if (!result.links?.length) result.links = expansions.slice(0);
-                                    expansions.removeArray(result.links);
-                                    const id = result.targets[0]?.playerid;
-                                    given_map[id] ??= [];
-                                    given_map[id].addArray(result.links);
-                                    targets.addArray(result.targets);
-                                }
-                                else break;
+                                }).forResult() : await player.chooseTarget(`清俭：令一名角色获得${get.translation(expansions)}`, true).set('ai', target => {
+                                    const player = get.player();
+                                    return get.value(expansions[0], target) * get.attitude(player, target);
+                                }).forResult();
+                                if (!result.links?.length) result.links = expansions.slice(0);
+                                expansions.removeArray(result.links);
+                                const id = result.targets[0]?.playerid;
+                                given_map[id] ??= [];
+                                given_map[id].addArray(result.links);
+                                targets.addArray(result.targets);
                             } while (expansions.length > 0);
                             if (_status.connectMode) {
                                 game.broadcastAll(() => {
@@ -46245,9 +46243,9 @@ const packs = function () {
             minishimou: '势谋',
             minishimou_info: '转换技。①游戏开始可自选阴阳状态。②出牌阶段限一次，你可令你或一名{阳：手牌数全场最低的角色}；{阴：手牌数全场最高的角色}将手牌调整至体力上限（至多摸五张）并视为使用一张仅指定单目标的普通锦囊牌（此牌牌名与目标由你指定）。若以此法摸牌，此牌可额外增加一个目标；若以此法弃牌，此牌额外结算一次。',
             miniganglie: '刚烈',
-            miniganglie_info: '出牌阶段限一次。你可以选择任意名本局游戏对你造成过伤害的角色，你对其造成2点伤害，然后其本局游戏视为未对你造成过伤害。',
+            miniganglie_info: '出牌阶段限一次，你可以选择任意名本局游戏中对你造成过伤害的角色，对其造成2点伤害，然后该角色视为未对你造成伤害。',
             minisbqingjian: '清俭',
-            minisbqingjian_info: '①当有一张牌不因使用而进入弃牌堆后，若你的“清俭”数小于X，你将此牌置于你的武将牌上，称为“清俭”（X为你的体力值）。②结束阶段，你将所有“清俭”分配给任意角色。',
+            minisbqingjian_info: '锁定技。当一张牌非因使用而进入弃牌堆时，若你的“清俭”牌不足X张（X为你的体力值），你将之置于你的武将牌上，称为“清俭”牌；结束阶段，你将这些牌分配给任意角色。',
             minijingyi: '精益',
             minijingyi_info: '锁定技。每回合每个副类别限一次，当有实体牌进入你的装备区后，你摸X张牌，然后弃置一张牌（X为你装备区内实体牌的数量+1）。',
             minirechengxiang: '称象',
