@@ -9156,12 +9156,11 @@ const packs = function () {
                 audioname2: { guansuo: 'dangxian_guansuo' },
                 trigger: { player: 'phaseBegin' },
                 forced: true,
-                locked: false,
                 content() {
                     const next = player.phaseUse();
                     event.next.remove(next);
                     trigger.next.push(next);
-                    const card = get.cardPile(card => card.name === 'sha');
+                    const card = get.cardPile2(card => card.name === 'sha');
                     if (card) player.gain(card, 'gain2');
                 },
             },
@@ -9183,10 +9182,10 @@ const packs = function () {
                     event.num = game.countGroup();
                     player.recover(event.num - player.hp);
                     'step 1'
-                    var num2 = num - player.countCards('h');
-                    if (num2) player.draw(num2);
+                    var num2 = event.num - player.countCards('h');
+                    if (num2 > 0) player.draw(num2);
                     'step 2'
-                    if (num > 3) player.turnOver();
+                    if (event.num > 3) player.turnOver();
                     player.storage.minifuli = true;
                 },
                 ai: {
@@ -46404,7 +46403,7 @@ const packs = function () {
             miniqimou: '奇谋',
             miniqimou_info: '限定技，出牌阶段，你可以失去任意点体力并摸一张牌，本回合你计算与其他角色的距离-X且你可以多使用X张【杀】（X为你失去的体力值）。',
             minidangxian: '当先',
-            minidangxian_info: '回合开始时，你进行一个额外的出牌阶段并从牌堆中获得一张【杀】。',
+            minidangxian_info: '锁定技，回合开始时，你进行一个额外的出牌阶段并摸一张【杀】。',
             minifuli: '伏枥',
             minifuli_info: '限定技，当你处于濒死状态时，你可以将体力回复至X点并将手牌数摸至X张，然后若X大于3，你翻面（X为全场势力数）。',
             minilianhuan: '连环',
