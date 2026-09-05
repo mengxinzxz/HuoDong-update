@@ -12684,7 +12684,7 @@ const packs = function () {
                     return player != event.player && event.player.isIn() && game.getGlobalHistory('changeHp', evt => evt.getParent().name == 'recover').length && event.player.countCards('h');
                 },
                 prompt(event, player) {
-                    return get.translation('minimingluan') + '（摸' + (event.player.countCards('h')) + '弃' + (player.countCards('h') + event.player.countCards('h') - 5) + '）';
+                    return get.translation('minimingluan') + '（摸' + (event.player.countCards('h')) + '弃' + Math.max(0, player.countCards('h') + event.player.countCards('h') - 5) + '）';
                 },
                 check(event, player) {
                     return player.countCards('h') < 5;
