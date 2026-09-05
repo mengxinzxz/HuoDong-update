@@ -6682,7 +6682,7 @@ const packs = function () {
             },
             //蔡瑁张允
             minilianzhou: {
-                audio: 'minijilang',
+                audio: 'lianzhou',
                 trigger: { player: 'phaseZhunbeiBegin' },
                 filter(event, player) {
                     if (!player.isLinked()) return true;
@@ -6692,7 +6692,7 @@ const packs = function () {
                 async content(event, trigger, player) {
                     if (!player.isLinked()) await player.link();
                     if (game.hasPlayer(current => current !== player && current.getHp() >= player.getHp() && !current.isLinked())) {
-                        const result = await player.chooseTarget(`${get.translation(event.name)}：选择横置任意名体力值等于你的其他角色`, (card, player, current) => {
+                        const result = await player.chooseTarget(`${get.translation(event.name)}：选择横置任意名体力值大于等于你的其他角色`, (card, player, current) => {
                             return current !== player && current.getHp() >= player.getHp() && !current.isLinked();
                         }, [1, Infinity], true).set('ai', target => {
                             const player = get.player();
@@ -6711,18 +6711,18 @@ const packs = function () {
                 audio: 'jinglan',
                 trigger: { source: 'damageSource' },
                 forced: true,
-                content() {
+                async content(event, trigger, player) {
                     switch (Math.sign(player.countCards('h') - player.getHp())) {
                         case 1:
-                            player.chooseToDiscard('h', 3, true);
+                            await player.chooseToDiscard('h', 3, true);
                             break;
                         case 0:
-                            player.chooseToDiscard('he', true);
-                            player.recover();
+                            await player.chooseToDiscard('he', true);
+                            await player.recover();
                             break;
                         case -1:
-                            player.damage('fire');
-                            player.draw(5);
+                            await player.damage('nosource', 'fire');
+                            await player.draw(5);
                             break;
                     }
                 },
@@ -46198,9 +46198,9 @@ const packs = function () {
             miniyiji: '遗计',
             miniyiji_info: '当你受到1点伤害后或当你每轮首次进入濒死状态时，你可以摸两张牌，然后可以将至多两张手牌交给其他角色。',
             minilianzhou: '连舟',
-            minilianzhou_info: '锁定技。准备阶段，你横置你与任意名体力值大于等于你的其他角色。',
+            minilianzhou_info: '锁定技。准备阶段，横置你和任意名体力值大于等于你的角色。',
             minijilang: '惊澜',
-            minijilang_info: '锁定技。当你造成伤害后，若你的手牌数：大于体力值，你弃置三张手牌；等于体力值，你弃置一张牌并回复1点体力；小于体力值，你受到1点火焰伤害并摸五张牌。',
+            minijilang_info: '锁定技。你造成伤害后，若你的手牌数：①大于体力值，弃置三张手牌；②等于体力值，弃置一张牌并回复1点体力；③小于体力值，受到1点火焰伤害并摸五张牌。',
             minichijie: '持节',
             minichijie_info: '每回合每项各限两次。①其他角色使用的牌对你结算结束后，你可以令此牌对所有后续目标无效。②其他角色使用的牌结算完成时，若你是此牌的目标之一且此牌未造成过伤害，则你可以获得此牌对应的所有实体牌。',
             minifanyin: '泛音',
