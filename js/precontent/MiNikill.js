@@ -6686,14 +6686,14 @@ const packs = function () {
                 trigger: { player: 'phaseZhunbeiBegin' },
                 filter(event, player) {
                     if (!player.isLinked()) return true;
-                    return game.hasPlayer(target => target !== player && target.getHp() >= player.getHp() && !target.isLinked());
+                    return game.hasPlayer(current => current !== player && current.getHp() >= player.getHp() && !current.isLinked());
                 },
                 forced: true,
                 async content(event, trigger, player) {
-                    if (!player.isLinked()) await player.link(true);
-                    if (game.hasPlayer(target => target !== player && target.getHp() >= player.getHp() && !target.isLinked())) {
-                        const result = await player.chooseTarget(`${get.translation(event.name)}：选择横置任意名体力值大于等于你的其他角色`, (card, player, target) => {
-                            return target !== player && target.getHp() >= player.getHp() && !target.isLinked();
+                    if (!player.isLinked()) await player.link();
+                    if (game.hasPlayer(current => current !== player && current.getHp() >= player.getHp() && !current.isLinked())) {
+                        const result = await player.chooseTarget(`${get.translation(event.name)}：选择横置任意名体力值大于等于你的其他角色`, (card, player, current) => {
+                            return current !== player && current.getHp() >= player.getHp() && !current.isLinked();
                         }, [1, Infinity], true).set('ai', target => {
                             const player = get.player();
                             return get.effect(target, { name: 'tiesuo' }, player, player);
@@ -6701,7 +6701,7 @@ const packs = function () {
                         if (result?.bool && result.targets?.length) {
                             const targets = result.targets.sortBySeat();
                             player.line(targets, 'green');
-                            for (const target of targets) await target.link(true);
+                            for (const i of targets) await i.link();
                         }
                     }
                 },
