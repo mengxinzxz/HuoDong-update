@@ -21439,7 +21439,7 @@ const packs = function () {
                     const { target } = event;
                     const { bool } = await player.chooseToCompare(target).set('small', get.attitude(player, target) > 0).forResult();
                     if (!bool) {
-                        const { bool: draw } = await player.chooseBool(`是否与${get.translation(target)}各摸两张牌`).forResult();
+                        const { bool: draw } = await player.chooseBool(`是否与${get.translation(target)}各摸两张牌`).set('choice', get.attitude(player, target) > 0).forResult();
                         if (draw) await game.asyncDraw([player, target], 2);
                     }
                     else {
@@ -21455,7 +21455,7 @@ const packs = function () {
                     trigger.changeToZero();
                     const cards = get.cards(4);
                     await game.cardsGotoOrdering(cards);
-                    await player.showCards(event.cards);
+                    await player.showCards(cards, `${get.translation(player)}发动了【思辩】`);
                     cards.sort(function (a, b) {
                         return b.number - a.number;
                     });
@@ -47041,9 +47041,9 @@ const packs = function () {
             minichongxu: '冲虚',
             minichongxu_info: '限定技。出牌阶段，若“灵”数不小于4，你可以失去〖汇灵〗，增加等同于“灵”数的体力上限（至多增加场上人数的体力上限），然后获得〖踏寂〗和〖清荒〗。',
             minisongshu: '颂蜀',
-            minisongshu_info: '出牌阶段限一次，你可以和其他角色拼点。若你没赢，你可以与其各摸两张牌；否则此技能视为未发动过。',
+            minisongshu_info: '出牌阶段限一次，与一名其他角色拼点：①若你没赢，你可令你和该角色各摸两张牌；②若你赢，此技能视为未发动过。',
             minisibian: '思辩',
-            minisibian_info: '摸牌阶段，你可以放弃摸牌，改为亮出牌堆顶的四张牌，然后获得其中所有点数最大与点数最小的牌，且可以将剩余的牌交给手牌数最少或最多的角色。',
+            minisibian_info: '摸牌阶段，你可以不摸牌，改为亮出牌堆顶的四张牌，并获得其中所有点数最大和最小的牌，然后你可将剩余的牌交给手牌数最少或最多的角色。',
             minifuhai: '浮海',
             minifuhai_info: '出牌阶段限一次。你可以令所有有手牌的其他角色同时展示一张手牌，然后你选择一个方向并摸X张牌（X为该方向上的角色展示的点数连续严格递增或严格递减的牌数，至少为2）。',
             miniduodao: '夺刀',
